@@ -61,7 +61,7 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'ip_address_fields' => ['l_ip'],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['l_session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
@@ -75,7 +75,7 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
@@ -89,7 +89,7 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['session_id'],
                     'extra_where' => db_string_not_equal_to('order_status', 'payment_received') . ' AND ' . db_string_not_equal_to('order_status', 'onhold'),
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
@@ -110,12 +110,7 @@ class Hook_privacy_shopping extends Hook_privacy_base
         $ret = parent::serialise($table_name, $row);
 
         switch ($table_name) {
-            case 'shopping_cart':
-                unset($ret['session_id']);
-                break;
-                
             case 'shopping_orders':
-                unset($ret['session_id']);
                 $ret += [
                     'details' => $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $row['id']]),
                     'addresses' => $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_txn_id' => $row['txn_id']]),

@@ -133,7 +133,7 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['password_answer'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,

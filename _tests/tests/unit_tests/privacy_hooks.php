@@ -109,6 +109,7 @@ class privacy_hooks_test_set extends cms_test_case
             $relevant_fields_email = [];
             $relevant_fields_username = [];
             $relevant_fields_time = [];
+            $fields_should_anonymise = [];
             $primary_key_fields = [];
             foreach ($all_fields as $name => $type) {
                 if (preg_match('#^[\*\?]*(MEMBER)$#', $type) != 0) {
@@ -128,6 +129,20 @@ class privacy_hooks_test_set extends cms_test_case
                 }
                 if (preg_match('#^\*#', $type) != 0) {
                     $primary_key_fields[$name] = $type;
+                }
+                
+                // Some additional potentially sensitive fields
+                if ((strpos($name, 'pass') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) {
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'code') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) {
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'sess') !== false) && (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0)) {
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'token') !== false) && ((preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0) || (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0))) {
+                    $fields_should_anonymise[$name] = $type;
                 }
             }
             if ($table == 'f_members') {
@@ -242,6 +257,25 @@ class privacy_hooks_test_set extends cms_test_case
                             }
                         }
                     }
+                }
+                
+                // Exceptions are table => [fields]
+                $exceptions = [
+                    'digestives_tin' => ['d_code_category'],
+                    'ecom_invoices' => ['i_processing_code'],
+                    'notifications_enabled' => ['l_code_category'],
+                    'w_rooms' => ['password_fail_message'],
+                    'device_token_details' => ['token_type'],
+                ];
+                foreach ($fields_should_anonymise as $name => $type) {
+                    if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {
+                        continue;
+                    }
+                    if (in_array($name, $found_tables[$table]['additional_anonymise_fields'])) {
+                        continue;
+                    }
+                    
+                    $this->assertTrue(false, 'You might want to anonymise the field ' . $name . ' in ' . $table . ' in hook ' . $hook . ' if it contains sensitive identifiable information.');
                 }
             } else {
                 $exceptions = [

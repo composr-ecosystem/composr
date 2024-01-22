@@ -358,6 +358,7 @@ abstract class Hook_privacy_base
                 require_code('cns_groups');
                 $row2[$key . '__dereferenced'] = cns_get_group_name($row[$key]);
             } elseif ((strpos($type, 'AUTO_LINK') !== false) && (isset($relation_map[$table_name . '.' . $key]))) {
+                $row2[$key] = $row[$key];
                 $row2[$key . '__auto_link'] = $relation_map[$table_name . '.' . $key];
             } else {
                 $row2[$key] = $row[$key];

@@ -90,7 +90,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'ip_address_fields' => ['i_ip'],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['i_val_code'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
@@ -174,7 +174,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'ip_address_fields' => ['m_ip_address'],
                     'email_fields' => ['m_email_address'],
                     'username_fields' => ['m_username'],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['m_pass_salt', 'm_pass_hash_salted', 'm_password_change_code', 'm_login_key', 'm_validated_email_confirm_code'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
@@ -272,7 +272,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => ['f_cache_last_username'],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['f_mail_password'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE,
@@ -421,16 +421,11 @@ class Hook_privacy_core_cns extends Hook_privacy_base
         switch ($table_name) {
             case 'f_warnings_punitive':
                 $hook = get_hook_ob('systems', 'cns_warnings', $row['p_hook'], 'Hook_cns_warnings_');
-                if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
+                if (($hook !== null) && method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
                     $ret += [
                         'p_action__dereferenced' => $hook->generate_text($row),
                     ];
                 }
-                break;
-
-            case 'f_members':
-                unset($ret['m_pass_hash_salted']);
-                unset($ret['m_pass_salt']);
                 break;
 
             case 'f_posts':
@@ -510,10 +505,10 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             case 'f_member_custom_fields':
                 // It is possible we want to delete a member's CPFs but not the member itself. We must re-create the row with default values.
                 parent::delete($table_name, $table_details, $row);
-                
+
                 require_code('cns_groups');
                 require_code('cns_members_action');
-                
+
                 $groups = cns_get_members_groups($row['mf_member_id']);
                 $all_fields = list_to_map('id', cns_get_all_custom_fields_match(array_keys($groups)));
                 _cns_make_member_cpfs($row['mf_member_id'], [], $all_fields);
@@ -524,7 +519,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $row['id']]);
                 cns_delete_posts_topic($topic_id, [$row['id']], '', false, true, false, false);
                 break;
-                
+
             case 'f_group_members':
                 require_code('cns_groups_action2');
                 cns_member_leave_secondary_group($row['gm_group_id'], $row['gm_member_id']);
@@ -534,7 +529,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 require_code('cns_groups_action2');
                 cns_delete_group($row['id']);
                 break;
-                
+
             case 'f_poll_votes':
                 require_code('cns_topicview');
                 require_code('cns_polls_action2');
@@ -545,7 +540,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 }
                 $topic_info = cns_read_in_topic($topic_id, 0, 0);
                 cns_revoke_vote_in_poll($topic_info, $row['pv_member_id']);
-                
+
                 // cns_revoke_vote_in_poll does not actually delete the record, but was necessary to recalculate voting power
                 parent::delete($table_name, $table_details, $row);
                 break;
@@ -554,10 +549,10 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 require_code('cns_topics_action2');
                 cns_delete_topic($row['id'], '', null, false);
                 break;
-                
+
             case 'f_group_member_timeouts':
                 parent::delete($table_name, $table_details, $row);
-                
+
                 // Must also be removed from the group
                 require_code('cns_groups_action2');
                 cns_member_leave_secondary_group($row['group_id'], $row['member_id']);

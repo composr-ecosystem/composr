@@ -189,7 +189,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'ip_address_fields' => ['ip'],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['param_a', 'param_b'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
@@ -259,7 +259,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'ip_address_fields' => ['ip_address'],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['session_id', 'token'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
@@ -273,7 +273,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'ip_address_fields' => ['ip'],
                     'email_fields' => [],
                     'username_fields' => ['cache_username'],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['the_session'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
@@ -560,15 +560,6 @@ class Hook_privacy_core extends Hook_privacy_base
         $ret = parent::serialise($table_name, $row);
 
         switch ($table_name) {
-            case 'sessions':
-                unset($ret['the_session']);
-                break;
-                
-            case 'post_tokens':
-                unset($ret['token']);
-                unset($ret['session_id']);
-                break;
-
             case 'rating':
                 require_code('content');
                 list($title, , $info) = content_get_details($row['rating_for_type'], $row['rating_for_id']);
@@ -610,7 +601,7 @@ class Hook_privacy_core extends Hook_privacy_base
                 require_code('zones3');
                 delete_cms_page($row['the_zone'], $row['the_page'], 'comcode_custom', false);
                 break;
-                
+
             case 'incoming_uploads':
                 parent::delete($table_name, $table_details, $row);
                 @unlink(get_custom_file_base() . '/' . $row['i_save_url']);

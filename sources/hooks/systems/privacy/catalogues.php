@@ -73,6 +73,7 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
+                // TODO: Smart searching within catalogue field values
             ],
         ];
     }

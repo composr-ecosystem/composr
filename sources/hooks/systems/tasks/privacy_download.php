@@ -37,22 +37,25 @@ class Hook_task_privacy_download
     public function run(array $table_actions, string $username, array $ip_addresses, ?int $member_id, string $email_address, array $others) : ?array
     {
         disable_php_memory_limit();
-        
+
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-        
+
         require_code('privacy');
         require_code('tar');
         require_code('files2');
-        
+
+        require_code('database_relations');
+        $table_descriptions = get_table_descriptions();
+
         // Create temporary file to use as archive
         $filename = preg_replace('#[^\w]#', '_', ($username != '' ? $username : do_lang('UNKNOWN'))) . '.tar.gz';
         $file_path = cms_tempnam();
         $data_file = tar_open($file_path, 'wb');
-        
+
         if (($username == '') && ($member_id !== null)) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         }
-        
+
         if (($member_id === null) && ($username != '')) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         }
@@ -65,9 +68,18 @@ class Hook_task_privacy_download
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
                     if ((array_key_exists($table_name, $table_actions)) && ($table_actions[$table_name] == 1)) {
-                        $data = [];
+                        $description = do_lang('UNKNOWN');
+                        if (isset($table_descriptions[$table_name])) {
+                            $description = $table_descriptions[$table_name];
+                        }
+                        $data = [
+                            'table_name' => $table_name,
+                            'table_description' => $description,
+                            'retention_days' => $table_details['retention_days'],
+                            'matched_records' => [],
+                        ];
 
-                        $db = get_db_for($table_name);             
+                        $db = get_db_for($table_name);
                         $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, 1, false, $username, $ip_addresses, $member_id, $email_address, $others);
                         if ($selection_sql != '') {
                             $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql);
@@ -75,13 +87,13 @@ class Hook_task_privacy_download
                                 if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
                                     // We do not want to leak data from other users out to this user
                                     $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
-                                    $data[] = $hook_ob->serialise($table_name, $row);
+                                    $data['matched_records'][] = $hook_ob->serialise($table_name, $row);
                                     continue;
                                 }
-                                $data[] = $hook_ob->serialise($table_name, $_row);
+                                $data['matched_records'][] = $hook_ob->serialise($table_name, $_row);
                             }
                         }
-                        
+
                         $this->create_json_file($table_name, $data, $data_file);
                     }
                 }
@@ -89,7 +101,7 @@ class Hook_task_privacy_download
         }
 
         pop_db_scope_check();
-        
+
         tar_close($data_file);
 
         // Start streaming the archive
@@ -101,10 +113,10 @@ class Hook_task_privacy_download
         $ini_set['ocproducts.xss_detect'] = '0';
         return ['application/x-gzip', [$filename, $file_path], $headers, $ini_set];
     }
-    
+
     /**
      * Create a JSON file from the given table data.
-     * 
+     *
      * @param  string $table_name The name of the table from which this data comes
      * @param  array $data The data to be saved
      * @param  array $data_file The tar data file array
@@ -112,13 +124,13 @@ class Hook_task_privacy_download
     protected function create_json_file(string $table_name, array $data, array &$data_file)
     {
         // Don't create a JSON file if we have no data to put into it
-        if (count($data) <= 0) {
+        if (count($data['matched_records']) <= 0) {
             return null;
         }
-        
+
         $filename = preg_replace('#[^\w]#', '_', $table_name) . '.json';
         $json_data = json_encode($data, JSON_PRETTY_PRINT);
-        
+
         require_code('tar');
         tar_add_file($data_file, $filename, $json_data);
     }

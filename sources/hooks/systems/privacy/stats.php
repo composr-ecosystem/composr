@@ -54,7 +54,7 @@ class Hook_privacy_stats extends Hook_privacy_base
                     'ip_address_fields' => ['ip'],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
@@ -90,25 +90,4 @@ class Hook_privacy_stats extends Hook_privacy_base
             ],
         ];
     }
-    
-    /**
-     * Serialise a row.
-     *
-     * @param  ID_TEXT $table_name Table name
-     * @param  array $row Row raw from the database
-     * @return array Row in a cleanly serialised format
-     */
-    public function serialise(string $table_name, array $row) : array
-    {
-        $ret = parent::serialise($table_name, $row);
-        
-        switch ($table_name) {
-            case 'stats':
-                unset($ret['session_id']);
-                break;
-        }
-        
-        return $ret;
-    }
-    
 }

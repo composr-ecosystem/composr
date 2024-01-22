@@ -68,7 +68,7 @@ class Hook_privacy_newsletter extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => ['email'],
                     'username_fields' => [],
-                    'additional_anonymise_fields' => ['n_forename', 'n_surname'],
+                    'additional_anonymise_fields' => ['n_forename', 'n_surname', 'the_password'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
