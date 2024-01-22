@@ -224,14 +224,14 @@ class DatabaseRepair
 
         $expected_tables = [];
         foreach ($data['tables'] as $table_name => $table) {
-            if (addon_installed($table['addon'])) {
+            if (addon_installed($table['addon'], false, false)) {
                 $expected_tables[$table_name] = $table['fields'];
             }
         }
 
         $expected_indices = [];
         foreach ($data['indices'] as $universal_index_key => $index) {
-            if (addon_installed($index['addon'])) {
+            if (addon_installed($index['addon'], false, false)) {
                 unset($index['addon']);
                 $expected_indices[$universal_index_key] = $index;
             }
@@ -239,7 +239,7 @@ class DatabaseRepair
 
         $expected_privileges = [];
         foreach ($data['privileges'] as $privilege_name => $privilege) {
-            if (addon_installed($privilege['addon'])) {
+            if (addon_installed($privilege['addon'], false, false)) {
                 unset($privilege['addon']);
                 $expected_privileges[$privilege_name] = $privilege;
             }
@@ -769,10 +769,8 @@ class DatabaseRepair
             }
         }
 
-        $queries = $GLOBALS['DB_DRIVER']->create_table(get_table_prefix() . $table_name, $table, $table_name, null);
-        foreach ($queries as $sql) {
-            $this->add_fixup_query($sql);
-        }
+        $db = get_db_for($table_name);
+        $db->create_table($table_name, $table);
     }
 
     /**
