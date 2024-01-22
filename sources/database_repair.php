@@ -770,7 +770,10 @@ class DatabaseRepair
         }
 
         $db = get_db_for($table_name);
-        $db->create_table($table_name, $table);
+        $queries = $GLOBALS['SITE_DB']->driver->create_table__sql(get_table_prefix() . $table_name, $table, $db->connection_write, $table_name);
+        foreach ($queries as $sql) {
+            $this->add_fixup_query($sql);
+        }
     }
 
     /**
