@@ -68,8 +68,12 @@ class Hook_health_check_upkeep extends Hook_Health_Check
         require_code('version2');
 
         $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-
-        $this->assert_true(is_php_version_supported($v), 'Unsupported PHP version ' . $v);
+        $is_supported = is_php_version_supported($v);
+        if ($is_supported === null) {
+            $this->state_check_skipped('Could not check whether this version of PHP is supported.');
+        } else {
+            $this->assert_true($is_supported, 'Unsupported PHP version ' . $v);
+        }
     }
 
     /**

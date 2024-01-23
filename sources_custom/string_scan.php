@@ -7126,6 +7126,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORD_INSECURE
         ADDON_WARNING_INCOMPATIBILITIES_VERSION
         INCOMPATIBLE_ADDON_REMEDIES
+        PHP_VERSION_CHECK_ERROR
+        PHP_VERSION_UNSUPPORTED
     ')));
 
     $non_admin_files = array(

@@ -30,11 +30,23 @@ class Hook_check_php_version
      */
     public function run()
     {
+        // Minimum required PHP for the website software
         $warning = array();
         $phpv = PHP_VERSION;
         if ((substr($phpv, 0, 2) == '3.') || (substr($phpv, 0, 2) == '4.') || (substr($phpv, 0, 4) == '5.0.')) {
             $warning[] = do_lang_tempcode('PHP_OLD');
         }
+        
+        // Whether this version of PHP is supported by the developers
+        require_code('version2');
+        $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
+        $is_supported = is_php_version_supported($v);
+        if ($is_supported === null) {
+            $warning[] = do_lang_tempcode('PHP_VERSION_CHECK_ERROR', escape_html($v));
+        } elseif (!$is_supported) {
+            $warning[] = do_lang_tempcode('PHP_VERSION_UNSUPPORTED', escape_html($v));
+        }
+        
         return $warning;
     }
 }
