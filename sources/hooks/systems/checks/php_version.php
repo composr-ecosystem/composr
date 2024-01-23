@@ -37,14 +37,16 @@ class Hook_check_php_version
             $warning[] = do_lang_tempcode('PHP_OLD');
         }
         
-        // Whether this version of PHP is supported by the developers
-        require_code('version2');
-        $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-        $is_supported = is_php_version_supported($v);
-        if ($is_supported === null) {
-            $warning[] = do_lang_tempcode('PHP_VERSION_CHECK_ERROR', escape_html($v));
-        } elseif (!$is_supported) {
-            $warning[] = do_lang_tempcode('PHP_VERSION_UNSUPPORTED', escape_html($v));
+        // Whether this version of PHP is supported by the developers (only check on installer)
+        if (running_script('install')) {
+            require_code('version2');
+            $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
+            $is_supported = is_php_version_supported($v);
+            if ($is_supported === null) {
+                $warning[] = do_lang_tempcode('PHP_VERSION_CHECK_ERROR', escape_html($v));
+            } elseif (!$is_supported) {
+                $warning[] = do_lang_tempcode('PHP_VERSION_UNSUPPORTED', escape_html($v));
+            }
         }
         
         return $warning;
