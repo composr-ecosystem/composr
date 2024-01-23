@@ -118,7 +118,7 @@ class privacy_hooks_test_set extends cms_test_case
                 if (preg_match('#^[\*\?]*(IP)$#', $type) != 0) {
                     $relevant_fields_ip_address[$name] = $type;
                 }
-                if ((strpos($name, 'email') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) {
+                if ((strpos($name, 'email') !== false) && ((preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0) || (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0))) {
                     $relevant_fields_email[$name] = $type;
                 }
                 if ((strpos($name, 'username') !== false) && (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0)) {
@@ -132,16 +132,37 @@ class privacy_hooks_test_set extends cms_test_case
                 }
                 
                 // Some additional potentially sensitive fields
-                if ((strpos($name, 'pass') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) {
+                if ((strpos($name, 'pass') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Passwords
                     $fields_should_anonymise[$name] = $type;
                 }
-                if ((strpos($name, 'code') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) {
+                if ((strpos($name, 'username') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // SHORT_TEXT usernames are typically not usernames pointing to members
                     $fields_should_anonymise[$name] = $type;
                 }
-                if ((strpos($name, 'sess') !== false) && (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0)) {
+                if ((strpos($name, 'name') !== false) && (((strpos($name, 'first') !== false)) || ((strpos($name, 'last') !== false)) || ((strpos($name, 'full') !== false)) || ((strpos($name, 'real') !== false)) || ((strpos($name, 'legal') !== false))) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Real names
                     $fields_should_anonymise[$name] = $type;
                 }
-                if ((strpos($name, 'token') !== false) && ((preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0) || (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0))) {
+                if ((strpos($name, 'address') !== false) && (strpos($name, 'email') === false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Physical addresses
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'salt') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Salts, such as for passwords
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'hash') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Hashed passwords
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'code') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Verification codes
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'sess') !== false) && (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0)) { // Session IDs
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'token') !== false) && ((preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0) || (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0))) { // Tokens, such as CSRF
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'phone') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Phone numbers
+                    $fields_should_anonymise[$name] = $type;
+                }
+                if ((strpos($name, 'credit') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Credit card numbers
                     $fields_should_anonymise[$name] = $type;
                 }
             }
@@ -275,7 +296,7 @@ class privacy_hooks_test_set extends cms_test_case
                         continue;
                     }
                     
-                    $this->assertTrue(false, 'You might want to anonymise the field ' . $name . ' in ' . $table . ' in hook ' . $hook . ' if it contains sensitive identifiable information.');
+                    $this->assertTrue(false, 'Potentially sensitive field detected which should possibly be added to additional_anonymise_fields: ' . $name . ' in ' . $table . ' in hook ' . $hook);
                 }
             } else {
                 $exceptions = [

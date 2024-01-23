@@ -84,7 +84,7 @@ class Module_newsletter
                 'join_time' => 'TIME',
                 'code_confirm' => 'INTEGER',
                 'the_password' => 'SHORT_TEXT',
-                'pass_salt' => 'ID_TEXT',
+                'pass_salt' => 'SHORT_TEXT',
                 'language' => 'ID_TEXT',
                 'n_forename' => 'SHORT_TEXT',
                 'n_surname' => 'SHORT_TEXT',

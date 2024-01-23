@@ -61,7 +61,7 @@ class Hook_privacy_composr_homesite extends Hook_privacy_base
                     'owner_id_field' => null,
                     'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
-                    'email_fields' => ['s_email_to'],
+                    'email_fields' => ['s_email_from', 's_email_to'],
                     'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
