@@ -190,16 +190,17 @@ function phase_1()
     }
 
     $changes = 'All reported bugs since the last release have been fixed.';
+    $git_authors = [];
     if ($previous_version !== null) {
-        $_changes = shell_exec('git log --pretty=oneline HEAD...refs/tags/' . $previous_version);
+        $_changes = shell_exec('git log --pretty=format:"%H :: %cn :: %s" HEAD...refs/tags/' . $previous_version);
         if (is_string($_changes)) {
             $discovered_tracker_issues = array(); // List of issues referenced on Git to pull from Mantis
             $__changes = array();
             $dig_deep = false;
             foreach (explode("\n", $_changes) as $change) {
-                $parts = explode(' ', $change, 2);
-                if (count($parts) == 2) {
-                    $change_label = $parts[1];
+                $parts = explode(' :: ', $change, 3);
+                if (count($parts) == 3) {
+                    $change_label = $parts[2];
                     $git_id = $parts[0];
                     $matches = array();
                     if (preg_match('#MANTIS-(\d+)#', $change_label, $matches) != 0) {
@@ -212,6 +213,9 @@ function phase_1()
                     } else {
                         // In Git only
                         $__changes[$git_id] = $change_label;
+                        if (!in_array($parts[1], $git_authors)) {
+                            $git_authors[] = $parts[1];
+                        }
 
                         $regexp = '/^(Fixed MANTIS-\d+|Implementing MANTIS-\d+|Implemented MANTIS-\d+|Security fix for MANTIS-\d+|New build|Merge branch .*)/';
                         if (preg_match($regexp, $change_label) == 0) {
@@ -221,10 +225,10 @@ function phase_1()
                 }
             }
 
-            $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
+            $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issues';
             $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
             $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $new_version, $dig_deep ? $previous_version : null)));
-            $tracker_issue_titles = json_decode($_result, true);
+            $tracker_issues = json_decode($_result, true);
 
             $new_version_parts = explode('.', $new_version);
             $last = count($new_version_parts) - 1;
@@ -237,13 +241,22 @@ function phase_1()
             }
 
             // Start populating changes
-            if (count($tracker_issue_titles) > 0) {
+            $tracker_reporters = [];
+            $tracker_handlers = [];
+            if (count($tracker_issues) > 0) {
                 $changes = 'The following [url="tracker issues"]' . $tracker_url . '[/url] have been resolved since version ' . $previous_version . "...\n";
-                ksort($tracker_issue_titles); // Sort by tracker ID (usually results in oldest to newest sorting)
-                foreach ($tracker_issue_titles as $key => $summary) {
+                ksort($tracker_issues); // Sort by tracker ID (usually results in oldest to newest sorting)
+                foreach ($tracker_issues as $key => $data) {
+                    list($summary, $reporter, $handler) = $data;
                     if (strpos($summary, '[[All Projects] General]') === false) { // Only ones in the main Composr project
                         $url = get_brand_base_url() . '/tracker/view.php?id=' . substr($key, 1);
                         $changes .= ' - [url="' . comcode_escape($summary) . '"]' . $url . '[/url]' . "\n";
+                        if (($reporter) && !in_array($reporter, $tracker_reporters)) {
+                            $tracker_reporters[] = $reporter;
+                        }
+                        if (($handler) && !in_array($handler, $tracker_handlers)) {
+                            $tracker_handlers[] = $handler;
+                        }
                     }
                 }
                 $changes .= "\n";
@@ -251,11 +264,31 @@ function phase_1()
 
             // Show Git-only commits
             if (count($__changes) > 0) {
-                $changes .= 'The following changes were made via [url="git"]' . COMPOSR_REPOS_URL . '[/url] since version ' . $previous_version . "...\n";
+                $changes .= "\n" . 'The following changes were made via [url="git"]' . COMPOSR_REPOS_URL . '[/url] since version ' . $previous_version . "...\n";
                 $__changes = array_reverse($__changes, true); // Sort by commit time, oldest to newest
                 foreach ($__changes as $git_id => $change_label) {
                     $url = COMPOSR_REPOS_URL . '/commit/' . $git_id;
                     $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
+                }
+            }
+            
+            // Show contributors
+            if (count($tracker_handlers) > 0) {
+                $changes .= "\n" . 'Special thanks to these members for resolving the issues above: ' . "\n";
+                foreach ($tracker_handlers as $handler) {
+                    $changes .= ' - [url="' . get_brand_base_url() . '/members/view/' . comcode_escape(escape_html($handler)) . '.htm"]' . $handler . '[/url]' . "\n";
+                }
+            }
+            if (count($tracker_reporters) > 0) {
+                $changes .= "\n" . 'Special thanks to these members for reporting the issues above to the tracker: ' . "\n";
+                foreach ($tracker_reporters as $reporter) {
+                    $changes .= ' - [url="' . get_brand_base_url() . '/members/view/' . comcode_escape(escape_html($reporter)) . '.htm"]' . $reporter . '[/url]' . "\n";
+                }
+            }
+            if (count($git_authors) > 0) {
+                $changes .= "\n" . 'Special thanks to these individuals for contributing to the software code on git: ' . "\n";
+                foreach ($git_authors as $author) {
+                    $changes .= ' - ' . $author . "\n";
                 }
             }
         }
