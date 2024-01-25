@@ -140,7 +140,7 @@ function make_installers($skip_file_grab = false)
             $out .= do_build_file_output($path);
             $size_list .= '\'' . $path . '\'=>' . strval($sizes[$path]) . ',' . "\n";
             $offset_list .= '\'' . $path . '\'=>' . strval($offsets[$path]) . ',' . "\n";
-            $file_list .= '\'' . $path . '\',';
+            $file_list .= '\'' . $path . '\',' . "\n";
         }
 
         // Build install.php, which has to have all our data.cms file offsets put into it (data.cms is an uncompressed ZIP, but the quick installer cheats - it can't truly read arbitrary ZIPs)
@@ -154,8 +154,8 @@ function make_installers($skip_file_grab = false)
             \$FILE_ARRAY = [{$file_list}];
             \$DATADOTCMS_FILE = @fopen('data.cms','rb');
             if (\$DATADOTCMS_FILE === false) exit('data.cms missing / inaccessible -- make sure you upload it');
-            if (filesize('data.cms') != " . strval($archive_size) . ") warn_exit('data.cms not fully uploaded, or wrong version for this installer');
-            if (md5(file_array_get('{$md5_test_path}')) != '{$md5}') warn_exit('data.cms corrupt. Must not be uploaded in text mode');
+            if (filesize('data.cms') != " . strval($archive_size) . ") exit('data.cms not fully uploaded, or wrong version for this installer');
+            if (md5(file_array_get('{$md5_test_path}')) != '{$md5}') exit('data.cms corrupt. Must not be uploaded in text mode');
 
             function file_array_get(\$path)
             {
@@ -192,7 +192,9 @@ function make_installers($skip_file_grab = false)
             function file_array_count()
             {
                 return " . strval($file_count) . ";
-            }";
+            }
+
+            ";
         $installer_start = preg_replace('#^\t{3}#m', '', $installer_start); // Format it correctly
         $auto_installer_code = '';
         $auto_installer_code .= $installer_start;

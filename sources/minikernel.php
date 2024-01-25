@@ -748,9 +748,24 @@ function get_charset()
     if (!file_exists($path)) {
         $path = get_file_base() . '/lang/' . $lang . '/global.ini';
     }
-    $file = fopen($path, 'rb');
-    $contents = unixify_line_format(fread($file, 100));
-    fclose($file);
+
+    global $FILE_ARRAY;
+    $contents = '';
+    if (@is_array($FILE_ARRAY)) {
+        if (file_array_exists('lang/' . $lang . '/global.ini')) {
+            $lang_file = 'lang/' . $lang . '/global.ini';
+        } elseif (file_array_exists('lang/EN/global.ini')) {
+            $lang_file = 'lang/EN/global.ini';
+        } else {
+            fatal_exit('Internal Error');
+        }
+        $contents = unixify_line_format(file_array_get($lang_file));
+    } else {
+        $file = fopen($path, 'rb');
+        $contents = unixify_line_format(fread($file, 100));
+        fclose($file);
+    }
+
     $matches = [];
     if (preg_match('#charset=([\w\-]+)\r?\n#', $contents, $matches) != 0) {
         return $matches[1];

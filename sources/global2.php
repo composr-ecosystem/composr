@@ -1181,9 +1181,24 @@ function get_charset() : string
     if (!is_file($path)) {
         $path = get_file_base() . '/lang/EN/global.ini';
     }
-    $file = fopen($path, 'rb');
-    $contents = str_replace("\r", "\n", fread($file, 3000));
-    fclose($file);
+
+    global $FILE_ARRAY;
+    $contents = '';
+    if (@is_array($FILE_ARRAY)) {
+        if (file_array_exists('lang/' . $lang . '/global.ini')) {
+            $lang_file = 'lang/' . $lang . '/global.ini';
+        } elseif (file_array_exists('lang/EN/global.ini')) {
+            $lang_file = 'lang/EN/global.ini';
+        } else {
+            fatal_exit('Internal Error');
+        }
+        $contents = str_replace("\r", "\n", file_array_get($lang_file));
+    } else {
+        $file = fopen($path, 'rb');
+        $contents = str_replace("\r", "\n", fread($file, 3000));
+        fclose($file);
+    }
+
     $matches = [];
     if (preg_match('#\[strings\].*charset=([\w\-]+)\n#s', $contents, $matches) != 0) {
         $temp_charset_cache = $matches[1];
