@@ -1,13 +1,13 @@
 DROP TABLE IF EXISTS cms_member_privileges;
 CREATE TABLE cms_member_privileges (
-    active_until integer unsigned NULL,
-    category_name varchar(80) NOT NULL,
-    privilege varchar(80) NOT NULL,
-    the_value tinyint(1) NOT NULL,
     member_id integer NOT NULL,
     the_page varchar(80) NOT NULL,
     module_the_name varchar(80) NOT NULL,
-    PRIMARY KEY (category_name, privilege, member_id, the_page, module_the_name)
+    category_name varchar(80) NOT NULL,
+    the_value tinyint(1) NOT NULL,
+    active_until integer unsigned NULL,
+    privilege varchar(80) NOT NULL,
+    PRIMARY KEY (member_id, the_page, module_the_name, category_name, privilege)
 ) CHARACTER SET=utf8 engine=MyISAM;
 ALTER TABLE cms_member_privileges ADD INDEX active_until (active_until);
 
@@ -16,13 +16,13 @@ ALTER TABLE cms_member_privileges ADD INDEX member_privileges_member (member_id)
 ALTER TABLE cms_member_privileges ADD INDEX member_privileges_name (privilege,the_page,module_the_name,category_name);
 DROP TABLE IF EXISTS cms_member_tracking;
 CREATE TABLE cms_member_tracking (
-    mt_member_id integer NOT NULL,
     mt_type varchar(80) NOT NULL,
-    mt_id varchar(80) NOT NULL,
-    mt_page varchar(80) NOT NULL,
     mt_time integer unsigned NOT NULL,
+    mt_page varchar(80) NOT NULL,
+    mt_id varchar(80) NOT NULL,
     mt_cache_username varchar(80) NOT NULL,
-    PRIMARY KEY (mt_member_id, mt_type, mt_id, mt_page, mt_time)
+    mt_member_id integer NOT NULL,
+    PRIMARY KEY (mt_type, mt_time, mt_page, mt_id, mt_member_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_member_tracking ADD INDEX mt_id (mt_page,mt_id,mt_type);
 
@@ -31,10 +31,10 @@ ALTER TABLE cms_member_tracking ADD INDEX mt_page (mt_page);
 ALTER TABLE cms_member_tracking ADD INDEX mt_time (mt_time);
 DROP TABLE IF EXISTS cms_member_zone_access;
 CREATE TABLE cms_member_zone_access (
+    zone_name varchar(80) NOT NULL,
     member_id integer NOT NULL,
     active_until integer unsigned NULL,
-    zone_name varchar(80) NOT NULL,
-    PRIMARY KEY (member_id, zone_name)
+    PRIMARY KEY (zone_name, member_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_member_zone_access ADD INDEX active_until (active_until);
 
@@ -43,11 +43,12 @@ ALTER TABLE cms_member_zone_access ADD INDEX mzamember_id (member_id);
 ALTER TABLE cms_member_zone_access ADD INDEX mzazone_name (zone_name);
 DROP TABLE IF EXISTS cms_menu_items;
 CREATE TABLE cms_menu_items (
-    i_check_permissions tinyint(1) NOT NULL,
+    i_theme_img_code varchar(80) NOT NULL,
     i_page_only varchar(80) NOT NULL,
     i_include_sitemap tinyint NOT NULL,
     i_new_window tinyint(1) NOT NULL,
     i_expanded tinyint(1) NOT NULL,
+    i_check_permissions tinyint(1) NOT NULL,
     i_url varchar(255) NOT NULL,
     i_caption_long longtext NOT NULL,
     i_caption longtext NOT NULL,
@@ -55,7 +56,6 @@ CREATE TABLE cms_menu_items (
     i_order integer NOT NULL,
     i_menu varchar(80) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    i_theme_img_code varchar(80) NOT NULL,
     i_caption_long__text_parsed longtext NOT NULL,
     i_caption_long__source_user integer DEFAULT 1 NOT NULL,
     i_caption__text_parsed longtext NOT NULL,
@@ -69,10 +69,10 @@ ALTER TABLE cms_menu_items ADD FULLTEXT i_caption_long (i_caption_long);
 ALTER TABLE cms_menu_items ADD INDEX menu_extraction (i_menu);
 DROP TABLE IF EXISTS cms_messages_to_render;
 CREATE TABLE cms_messages_to_render (
-    id integer unsigned auto_increment NOT NULL,
+    r_type varchar(80) NOT NULL,
     r_session_id varchar(80) NOT NULL,
     r_message longtext NOT NULL,
-    r_type varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     r_time integer unsigned NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
@@ -82,11 +82,11 @@ ALTER TABLE cms_messages_to_render ADD INDEX forsession (r_session_id);
 DROP TABLE IF EXISTS cms_modules;
 CREATE TABLE cms_modules (
     module_version integer NOT NULL,
-    module_the_name varchar(80) NOT NULL,
-    module_author varchar(80) NOT NULL,
-    module_organisation varchar(80) NOT NULL,
-    module_hacked_by varchar(80) NOT NULL,
     module_hack_version integer NULL,
+    module_hacked_by varchar(80) NOT NULL,
+    module_organisation varchar(80) NOT NULL,
+    module_author varchar(80) NOT NULL,
+    module_the_name varchar(80) NOT NULL,
     PRIMARY KEY (module_the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 INSERT INTO cms_modules (module_the_name, module_author, module_organisation, module_hacked_by, module_hack_version, module_version) VALUES ('admin_permissions', 'Chris Graham', 'ocProducts', '', NULL, 10),
@@ -210,28 +210,28 @@ INSERT INTO cms_modules (module_the_name, module_author, module_organisation, mo
 
 DROP TABLE IF EXISTS cms_news;
 CREATE TABLE cms_news (
-    author varchar(80) NOT NULL,
-    validated tinyint(1) NOT NULL,
-    notes longtext NOT NULL,
-    allow_trackbacks tinyint(1) NOT NULL,
-    allow_comments tinyint NOT NULL,
-    date_and_time integer unsigned NOT NULL,
-    allow_rating tinyint(1) NOT NULL,
-    news_article longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    news longtext NOT NULL,
     title longtext NOT NULL,
-    news_views integer NOT NULL,
+    news longtext NOT NULL,
+    news_article longtext NOT NULL,
+    date_and_time integer unsigned NOT NULL,
     news_image varchar(255) BINARY NOT NULL,
-    edit_date integer unsigned NULL,
+    news_views integer NOT NULL,
     news_category integer NOT NULL,
+    allow_rating tinyint(1) NOT NULL,
+    edit_date integer unsigned NULL,
+    validated tinyint(1) NOT NULL,
+    allow_comments tinyint NOT NULL,
+    allow_trackbacks tinyint(1) NOT NULL,
+    author varchar(80) NOT NULL,
+    notes longtext NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     submitter integer NOT NULL,
-    news_article__text_parsed longtext NOT NULL,
-    news_article__source_user integer DEFAULT 1 NOT NULL,
-    news__text_parsed longtext NOT NULL,
-    news__source_user integer DEFAULT 1 NOT NULL,
     title__text_parsed longtext NOT NULL,
     title__source_user integer DEFAULT 1 NOT NULL,
+    news__text_parsed longtext NOT NULL,
+    news__source_user integer DEFAULT 1 NOT NULL,
+    news_article__text_parsed longtext NOT NULL,
+    news_article__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_news ADD FULLTEXT news (news);
@@ -261,11 +261,11 @@ ALTER TABLE cms_news ADD INDEX newsauthor (author);
 ALTER TABLE cms_news ADD INDEX nvalidated (validated);
 DROP TABLE IF EXISTS cms_news_categories;
 CREATE TABLE cms_news_categories (
+    nc_owner integer NULL,
+    nc_title longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     notes longtext NOT NULL,
     nc_img varchar(255) NOT NULL,
-    nc_owner integer NULL,
-    nc_title longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_news_categories ADD FULLTEXT nc_title (nc_title);
@@ -289,75 +289,75 @@ ALTER TABLE cms_news_category_entries ADD INDEX news_entry_category (news_entry_
 DROP TABLE IF EXISTS cms_news_rss_cloud;
 CREATE TABLE cms_news_rss_cloud (
     watching_channel varchar(255) BINARY NOT NULL,
-    register_time integer unsigned NOT NULL,
-    rem_ip varchar(40) NOT NULL,
-    rem_path varchar(255) NOT NULL,
-    rem_procedure varchar(80) NOT NULL,
     rem_port integer NOT NULL,
-    rem_protocol varchar(80) NOT NULL,
+    rem_procedure varchar(80) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    rem_protocol varchar(80) NOT NULL,
+    rem_path varchar(255) NOT NULL,
+    rem_ip varchar(40) NOT NULL,
+    register_time integer unsigned NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_newsletter_archive;
 CREATE TABLE cms_newsletter_archive (
     newsletter longtext NOT NULL,
-    subject varchar(255) NOT NULL,
-    from_email varchar(255) NOT NULL,
-    from_name varchar(255) NOT NULL,
-    date_and_time integer NOT NULL,
-    template varchar(80) NOT NULL,
-    html_only tinyint(1) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    priority integer NOT NULL,
+    date_and_time integer NOT NULL,
+    html_only tinyint(1) NOT NULL,
     language varchar(80) NOT NULL,
+    from_name varchar(255) NOT NULL,
+    from_email varchar(255) NOT NULL,
+    priority integer NOT NULL,
+    subject varchar(255) NOT NULL,
+    template varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_newsletter_drip_send;
 CREATE TABLE cms_newsletter_drip_send (
     d_to_name varchar(255) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    d_inject_time integer unsigned NOT NULL,
-    d_message_id integer NOT NULL,
-    d_message_binding longtext NOT NULL,
     d_to_email varchar(255) NOT NULL,
+    d_message_binding longtext NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    d_message_id integer NOT NULL,
+    d_inject_time integer unsigned NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_newsletter_periodic;
 CREATE TABLE cms_newsletter_periodic (
-    id integer unsigned auto_increment NOT NULL,
+    np_template varchar(80) NOT NULL,
+    np_in_full tinyint(1) NOT NULL,
+    np_day tinyint NOT NULL,
+    np_spreadsheet_data longtext NOT NULL,
+    np_priority tinyint NOT NULL,
+    np_frequency varchar(255) NOT NULL,
+    np_from_name varchar(255) NOT NULL,
+    np_from_email varchar(255) NOT NULL,
+    np_html_only tinyint(1) NOT NULL,
     np_send_details longtext NOT NULL,
     np_lang varchar(5) NOT NULL,
     np_subject longtext NOT NULL,
     np_message longtext NOT NULL,
-    np_spreadsheet_data longtext NOT NULL,
-    np_html_only tinyint(1) NOT NULL,
-    np_template varchar(80) NOT NULL,
-    np_in_full tinyint(1) NOT NULL,
-    np_day tinyint NOT NULL,
-    np_frequency varchar(255) NOT NULL,
-    np_priority tinyint NOT NULL,
-    np_from_name varchar(255) NOT NULL,
-    np_from_email varchar(255) NOT NULL,
     np_last_sent integer unsigned NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_newsletter_subscribe;
 CREATE TABLE cms_newsletter_subscribe (
-    email varchar(255) NOT NULL,
     newsletter_id integer NOT NULL,
-    PRIMARY KEY (email, newsletter_id)
+    email varchar(255) NOT NULL,
+    PRIMARY KEY (newsletter_id, email)
 ) CHARACTER SET=utf8 engine=MyISAM;
 DROP TABLE IF EXISTS cms_newsletter_subscribers;
 CREATE TABLE cms_newsletter_subscribers (
-    email varchar(255) NOT NULL,
-    code_confirm integer NOT NULL,
     n_surname varchar(255) NOT NULL,
-    n_forename varchar(255) NOT NULL,
-    language varchar(80) NOT NULL,
-    pass_salt varchar(80) NOT NULL,
     the_password varchar(255) NOT NULL,
     join_time integer unsigned NOT NULL,
+    code_confirm integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    email varchar(255) NOT NULL,
+    pass_salt varchar(255) NOT NULL,
+    language varchar(80) NOT NULL,
+    n_forename varchar(255) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_newsletter_subscribers ADD INDEX code_confirm (code_confirm);
@@ -367,9 +367,9 @@ ALTER TABLE cms_newsletter_subscribers ADD INDEX email (email(250));
 ALTER TABLE cms_newsletter_subscribers ADD INDEX welcomemails (join_time);
 DROP TABLE IF EXISTS cms_newsletters;
 CREATE TABLE cms_newsletters (
-    id integer unsigned auto_increment NOT NULL,
-    title longtext NOT NULL,
     the_description longtext NOT NULL,
+    title longtext NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_newsletters ADD FULLTEXT the_description (the_description);
@@ -385,11 +385,11 @@ CREATE TABLE cms_notification_lockdown (
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_notifications_enabled;
 CREATE TABLE cms_notifications_enabled (
-    l_setting integer NOT NULL,
-    l_code_category varchar(255) NOT NULL,
-    l_member_id integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    l_member_id integer NOT NULL,
     l_notification_code varchar(80) NOT NULL,
+    l_code_category varchar(255) NOT NULL,
+    l_setting integer NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_notifications_enabled ADD INDEX l_code_category (l_code_category(250));
@@ -401,20 +401,20 @@ ALTER TABLE cms_notifications_enabled ADD INDEX l_notification_code (l_notificat
 ALTER TABLE cms_notifications_enabled ADD INDEX who_has (l_notification_code,l_code_category(10),l_setting);
 DROP TABLE IF EXISTS cms_points_ledger;
 CREATE TABLE cms_points_ledger (
-    t_subtype varchar(80) NOT NULL,
-    t_type_id varchar(80) NOT NULL,
-    anonymous tinyint(1) NOT NULL,
+    recipient_id integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     date_and_time integer unsigned NOT NULL,
     amount_gift_points integer NOT NULL,
     amount_points integer NOT NULL,
     sender_id integer NOT NULL,
-    recipient_id integer NOT NULL,
     reason longtext NOT NULL,
+    anonymous tinyint(1) NOT NULL,
     status integer NOT NULL,
     linked_to integer NULL,
     locked tinyint(1) NOT NULL,
     t_type varchar(80) NOT NULL,
+    t_subtype varchar(80) NOT NULL,
+    t_type_id varchar(80) NOT NULL,
     reason__text_parsed longtext NOT NULL,
     reason__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -438,61 +438,61 @@ ALTER TABLE cms_points_ledger ADD INDEX t_search_no_subtype (t_type,t_type_id);
 ALTER TABLE cms_points_ledger ADD INDEX t_search_subtype (t_type,t_subtype,t_type_id);
 DROP TABLE IF EXISTS cms_poll;
 CREATE TABLE cms_poll (
+    id integer unsigned auto_increment NOT NULL,
+    allow_rating tinyint(1) NOT NULL,
+    votes4 integer NOT NULL,
+    votes2 integer NOT NULL,
+    option10 longtext NOT NULL,
+    option9 longtext NOT NULL,
+    option8 longtext NOT NULL,
+    votes3 integer NOT NULL,
+    option7 longtext NOT NULL,
+    votes10 integer NOT NULL,
     question longtext NOT NULL,
+    option2 longtext NOT NULL,
+    option6 longtext NOT NULL,
+    option5 longtext NOT NULL,
+    option4 longtext NOT NULL,
+    votes1 integer NOT NULL,
     allow_comments tinyint NOT NULL,
     allow_trackbacks tinyint(1) NOT NULL,
-    notes longtext NOT NULL,
-    votes5 integer NOT NULL,
-    votes6 integer NOT NULL,
-    votes7 integer NOT NULL,
-    votes8 integer NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     option3 longtext NOT NULL,
-    option1 longtext NOT NULL,
-    option2 longtext NOT NULL,
-    votes9 integer NOT NULL,
-    votes10 integer NOT NULL,
-    allow_rating tinyint(1) NOT NULL,
-    option4 longtext NOT NULL,
-    votes2 integer NOT NULL,
-    option5 longtext NOT NULL,
-    option6 longtext NOT NULL,
-    option7 longtext NOT NULL,
-    option8 longtext NOT NULL,
+    notes longtext NOT NULL,
     num_options tinyint NOT NULL,
     is_current tinyint(1) NOT NULL,
     date_and_time integer unsigned NULL,
     submitter integer NOT NULL,
-    option9 longtext NOT NULL,
     add_time integer NOT NULL,
+    option1 longtext NOT NULL,
     poll_views integer NOT NULL,
     edit_date integer unsigned NULL,
-    option10 longtext NOT NULL,
-    votes1 integer NOT NULL,
-    votes3 integer NOT NULL,
-    votes4 integer NOT NULL,
+    votes5 integer NOT NULL,
+    votes6 integer NOT NULL,
+    votes7 integer NOT NULL,
+    votes8 integer NOT NULL,
+    votes9 integer NOT NULL,
+    option10__text_parsed longtext NOT NULL,
+    option10__source_user integer DEFAULT 1 NOT NULL,
+    option9__text_parsed longtext NOT NULL,
+    option9__source_user integer DEFAULT 1 NOT NULL,
+    option8__text_parsed longtext NOT NULL,
+    option8__source_user integer DEFAULT 1 NOT NULL,
+    option7__text_parsed longtext NOT NULL,
+    option7__source_user integer DEFAULT 1 NOT NULL,
     question__text_parsed longtext NOT NULL,
     question__source_user integer DEFAULT 1 NOT NULL,
+    option2__text_parsed longtext NOT NULL,
+    option2__source_user integer DEFAULT 1 NOT NULL,
+    option6__text_parsed longtext NOT NULL,
+    option6__source_user integer DEFAULT 1 NOT NULL,
+    option5__text_parsed longtext NOT NULL,
+    option5__source_user integer DEFAULT 1 NOT NULL,
+    option4__text_parsed longtext NOT NULL,
+    option4__source_user integer DEFAULT 1 NOT NULL,
     option3__text_parsed longtext NOT NULL,
     option3__source_user integer DEFAULT 1 NOT NULL,
     option1__text_parsed longtext NOT NULL,
     option1__source_user integer DEFAULT 1 NOT NULL,
-    option2__text_parsed longtext NOT NULL,
-    option2__source_user integer DEFAULT 1 NOT NULL,
-    option4__text_parsed longtext NOT NULL,
-    option4__source_user integer DEFAULT 1 NOT NULL,
-    option5__text_parsed longtext NOT NULL,
-    option5__source_user integer DEFAULT 1 NOT NULL,
-    option6__text_parsed longtext NOT NULL,
-    option6__source_user integer DEFAULT 1 NOT NULL,
-    option7__text_parsed longtext NOT NULL,
-    option7__source_user integer DEFAULT 1 NOT NULL,
-    option8__text_parsed longtext NOT NULL,
-    option8__source_user integer DEFAULT 1 NOT NULL,
-    option9__text_parsed longtext NOT NULL,
-    option9__source_user integer DEFAULT 1 NOT NULL,
-    option10__text_parsed longtext NOT NULL,
-    option10__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_poll ADD FULLTEXT option1 (option1);
@@ -542,12 +542,12 @@ ALTER TABLE cms_poll ADD INDEX poll_views (poll_views);
 ALTER TABLE cms_poll ADD INDEX ps (submitter);
 DROP TABLE IF EXISTS cms_poll_votes;
 CREATE TABLE cms_poll_votes (
-    v_voter_ip varchar(40) NOT NULL,
-    v_vote_for tinyint NULL,
+    v_vote_time integer unsigned NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     v_poll_id integer NOT NULL,
     v_voter_id integer NULL,
-    id integer unsigned auto_increment NOT NULL,
-    v_vote_time integer unsigned NOT NULL,
+    v_voter_ip varchar(40) NOT NULL,
+    v_vote_for tinyint NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_poll_votes ADD INDEX v_vote_for (v_vote_for);
@@ -558,19 +558,19 @@ ALTER TABLE cms_poll_votes ADD INDEX v_voter_ip (v_voter_ip);
 DROP TABLE IF EXISTS cms_post_tokens;
 CREATE TABLE cms_post_tokens (
     usage_tally integer NOT NULL,
-    generation_time integer unsigned NOT NULL,
     member_id integer NOT NULL,
-    ip_address varchar(40) NOT NULL,
-    session_id varchar(80) NOT NULL,
+    generation_time integer unsigned NOT NULL,
     token varchar(80) NOT NULL,
+    session_id varchar(80) NOT NULL,
+    ip_address varchar(40) NOT NULL,
     PRIMARY KEY (token)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_post_tokens ADD INDEX generation_time (generation_time);
 DROP TABLE IF EXISTS cms_privilege_list;
 CREATE TABLE cms_privilege_list (
+    p_section varchar(80) NOT NULL,
     the_default tinyint(1) NOT NULL,
     the_name varchar(80) NOT NULL,
-    p_section varchar(80) NOT NULL,
     PRIMARY KEY (the_default, the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('GENERAL_SETTINGS', 'may_enable_staff_notifications', 0),
@@ -762,39 +762,39 @@ INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('SUPPO
 
 DROP TABLE IF EXISTS cms_quiz_entries;
 CREATE TABLE cms_quiz_entries (
+    q_member integer NOT NULL,
+    q_quiz integer NOT NULL,
     q_results integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     q_time integer unsigned NOT NULL,
-    q_member integer NOT NULL,
-    q_quiz integer NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_quiz_entries ADD INDEX q_member (q_member);
 DROP TABLE IF EXISTS cms_quiz_entry_answer;
 CREATE TABLE cms_quiz_entry_answer (
-    q_question integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     q_answer longtext NOT NULL,
+    q_question integer NOT NULL,
     q_entry integer NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_quiz_member_last_visit;
 CREATE TABLE cms_quiz_member_last_visit (
-    id integer unsigned auto_increment NOT NULL,
-    v_time integer unsigned NOT NULL,
-    v_member_id integer NOT NULL,
     v_quiz_id integer NOT NULL,
+    v_member_id integer NOT NULL,
+    v_time integer unsigned NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_quiz_member_last_visit ADD INDEX member_id (v_member_id);
 DROP TABLE IF EXISTS cms_quiz_question_answers;
 CREATE TABLE cms_quiz_question_answers (
+    q_is_correct tinyint(1) NOT NULL,
+    q_explanation longtext NOT NULL,
+    q_order integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     q_question integer NOT NULL,
     q_answer_text longtext NOT NULL,
-    q_is_correct tinyint(1) NOT NULL,
-    q_order integer NOT NULL,
-    q_explanation longtext NOT NULL,
     q_answer_text__text_parsed longtext NOT NULL,
     q_answer_text__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -805,17 +805,17 @@ ALTER TABLE cms_quiz_question_answers ADD FULLTEXT q_explanation (q_explanation)
 DROP TABLE IF EXISTS cms_quiz_questions;
 CREATE TABLE cms_quiz_questions (
     q_marked tinyint(1) NOT NULL,
-    q_quiz integer NOT NULL,
-    q_question_extra_text longtext NOT NULL,
-    q_question_text longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    q_question_text longtext NOT NULL,
+    q_question_extra_text longtext NOT NULL,
+    q_quiz integer NOT NULL,
+    q_type varchar(80) NOT NULL,
     q_order integer NOT NULL,
     q_required tinyint(1) NOT NULL,
-    q_type varchar(80) NOT NULL,
-    q_question_extra_text__text_parsed longtext NOT NULL,
-    q_question_extra_text__source_user integer DEFAULT 1 NOT NULL,
     q_question_text__text_parsed longtext NOT NULL,
     q_question_text__source_user integer DEFAULT 1 NOT NULL,
+    q_question_extra_text__text_parsed longtext NOT NULL,
+    q_question_extra_text__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_quiz_questions ADD FULLTEXT q_question_extra_text (q_question_extra_text);
@@ -824,8 +824,8 @@ ALTER TABLE cms_quiz_questions ADD FULLTEXT q_question_text (q_question_text);
 DROP TABLE IF EXISTS cms_quiz_winner;
 CREATE TABLE cms_quiz_winner (
     q_entry integer NOT NULL,
-    q_quiz integer NOT NULL,
     q_winner_level integer NOT NULL,
+    q_quiz integer NOT NULL,
     PRIMARY KEY (q_entry, q_quiz)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_quizzes;
@@ -833,10 +833,10 @@ CREATE TABLE cms_quizzes (
     q_shuffle_questions tinyint(1) NOT NULL,
     q_shuffle_answers tinyint(1) NOT NULL,
     q_num_winners integer NOT NULL,
-    q_start_text longtext NOT NULL,
+    q_name longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     q_timeout integer NULL,
-    q_name longtext NOT NULL,
+    q_start_text longtext NOT NULL,
     q_end_text longtext NOT NULL,
     q_notes longtext NOT NULL,
     q_percentage integer NOT NULL,
@@ -874,13 +874,13 @@ ALTER TABLE cms_quizzes ADD INDEX ftjoin_qstarttext (q_start_text(250));
 ALTER TABLE cms_quizzes ADD INDEX q_validated (q_validated);
 DROP TABLE IF EXISTS cms_rating;
 CREATE TABLE cms_rating (
+    rating_for_id varchar(80) NOT NULL,
     rating_for_type varchar(80) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    rating_member integer NOT NULL,
     rating_ip varchar(40) NOT NULL,
-    rating_time integer unsigned NOT NULL,
+    rating_member integer NOT NULL,
     rating tinyint NOT NULL,
-    rating_for_id varchar(80) NOT NULL,
+    rating_time integer unsigned NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_rating ADD INDEX alt_key (rating_for_type,rating_for_id);
@@ -890,10 +890,10 @@ ALTER TABLE cms_rating ADD INDEX rating_for_id (rating_for_id);
 ALTER TABLE cms_rating ADD INDEX rating_member (rating_member);
 DROP TABLE IF EXISTS cms_redirects;
 CREATE TABLE cms_redirects (
-    r_to_page varchar(80) NOT NULL,
+    r_from_page varchar(80) NOT NULL,
     r_to_zone varchar(80) NOT NULL,
     r_is_transparent tinyint(1) NOT NULL,
-    r_from_page varchar(80) NOT NULL,
+    r_to_page varchar(80) NOT NULL,
     r_from_zone varchar(80) NOT NULL,
     PRIMARY KEY (r_from_page, r_from_zone)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
@@ -911,37 +911,37 @@ INSERT INTO cms_redirects (r_from_page, r_from_zone, r_to_page, r_to_zone, r_is_
 DROP TABLE IF EXISTS cms_reported_content;
 CREATE TABLE cms_reported_content (
     r_counts tinyint(1) NOT NULL,
-    r_content_id varchar(80) NOT NULL,
     r_session_id varchar(80) NOT NULL,
     r_content_type varchar(80) NOT NULL,
-    PRIMARY KEY (r_content_id, r_session_id, r_content_type)
+    r_content_id varchar(80) NOT NULL,
+    PRIMARY KEY (r_session_id, r_content_type, r_content_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_reported_content ADD INDEX reported_already (r_content_type,r_content_id);
 DROP TABLE IF EXISTS cms_review_supplement;
 CREATE TABLE cms_review_supplement (
-    r_post_id integer NOT NULL,
-    r_rating_type varchar(80) NOT NULL,
-    r_rating tinyint NOT NULL,
-    r_topic_id integer NOT NULL,
-    r_rating_for_id varchar(80) NOT NULL,
     r_rating_for_type varchar(80) NOT NULL,
-    PRIMARY KEY (r_post_id, r_rating_type)
+    r_rating_for_id varchar(80) NOT NULL,
+    r_topic_id integer NOT NULL,
+    r_rating tinyint NOT NULL,
+    r_rating_type varchar(80) NOT NULL,
+    r_post_id integer NOT NULL,
+    PRIMARY KEY (r_rating_type, r_post_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_review_supplement ADD INDEX rating_for_id (r_rating_for_id);
 DROP TABLE IF EXISTS cms_revisions;
 CREATE TABLE cms_revisions (
-    r_resource_id varchar(80) NOT NULL,
-    r_resource_type varchar(80) NOT NULL,
     r_original_text longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    r_category_id varchar(80) NOT NULL,
-    r_original_title varchar(255) NOT NULL,
     r_original_content_owner integer NOT NULL,
     r_original_content_timestamp integer unsigned NOT NULL,
     r_original_resource_fs_path longtext NOT NULL,
     r_original_resource_fs_record longtext NOT NULL,
     r_moderatorlog_id integer NULL,
     r_actionlog_id integer NULL,
+    id integer unsigned auto_increment NOT NULL,
+    r_resource_type varchar(80) NOT NULL,
+    r_resource_id varchar(80) NOT NULL,
+    r_category_id varchar(80) NOT NULL,
+    r_original_title varchar(255) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_revisions ADD INDEX actionlog_link (r_actionlog_id);
@@ -955,10 +955,10 @@ DROP TABLE IF EXISTS cms_searches_logged;
 CREATE TABLE cms_searches_logged (
     s_num_results integer NOT NULL,
     s_auxillary longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    s_member_id integer NOT NULL,
-    s_time integer unsigned NOT NULL,
     s_primary varchar(255) NOT NULL,
+    s_time integer unsigned NOT NULL,
+    s_member_id integer NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_searches_logged ADD FULLTEXT past_search_ft (s_primary);
@@ -968,10 +968,10 @@ ALTER TABLE cms_searches_logged ADD INDEX member_id (s_member_id);
 ALTER TABLE cms_searches_logged ADD INDEX past_search (s_primary(250));
 DROP TABLE IF EXISTS cms_seo_meta;
 CREATE TABLE cms_seo_meta (
-    meta_for_type varchar(80) NOT NULL,
-    meta_for_id varchar(80) NOT NULL,
     meta_description longtext NOT NULL,
+    meta_for_id varchar(80) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    meta_for_type varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_seo_meta ADD FULLTEXT meta_description (meta_description);
@@ -984,11 +984,11 @@ INSERT INTO cms_seo_meta (id, meta_for_type, meta_for_id, meta_description) VALU
 
 DROP TABLE IF EXISTS cms_seo_meta_keywords;
 CREATE TABLE cms_seo_meta_keywords (
-    meta_for_type varchar(80) NOT NULL,
-    meta_keyword longtext NOT NULL,
-    meta_for_id varchar(80) NOT NULL,
-    sort_order integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    sort_order integer NOT NULL,
+    meta_for_type varchar(80) NOT NULL,
+    meta_for_id varchar(80) NOT NULL,
+    meta_keyword longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_seo_meta_keywords ADD FULLTEXT meta_keyword (meta_keyword);
@@ -1004,18 +1004,18 @@ INSERT INTO cms_seo_meta_keywords (id, sort_order, meta_for_type, meta_for_id, m
 
 DROP TABLE IF EXISTS cms_sessions;
 CREATE TABLE cms_sessions (
-    cache_username varchar(255) NOT NULL,
-    the_zone varchar(80) NOT NULL,
-    session_invisible tinyint(1) NOT NULL,
-    session_confirmed tinyint(1) NOT NULL,
-    the_title varchar(255) NOT NULL,
-    the_session varchar(80) NOT NULL,
-    the_id varchar(80) NOT NULL,
     the_type varchar(80) NOT NULL,
     the_page varchar(80) NOT NULL,
-    last_activity integer unsigned NOT NULL,
-    member_id integer NOT NULL,
+    the_zone varchar(80) NOT NULL,
+    cache_username varchar(80) NOT NULL,
+    the_id varchar(80) NOT NULL,
+    session_invisible tinyint(1) NOT NULL,
     ip varchar(40) NOT NULL,
+    member_id integer NOT NULL,
+    last_activity integer unsigned NOT NULL,
+    the_session varchar(80) NOT NULL,
+    the_title varchar(255) NOT NULL,
+    session_confirmed tinyint(1) NOT NULL,
     PRIMARY KEY (the_session)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_sessions ADD INDEX delete_old (last_activity);
@@ -1025,13 +1025,13 @@ ALTER TABLE cms_sessions ADD INDEX member_id (member_id);
 ALTER TABLE cms_sessions ADD INDEX userat (the_zone,the_page,the_id);
 DROP TABLE IF EXISTS cms_shopping_cart;
 CREATE TABLE cms_shopping_cart (
-    type_code varchar(80) NOT NULL,
-    ordered_by integer NOT NULL,
-    session_id varchar(80) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     purchase_id varchar(80) NOT NULL,
     add_time integer unsigned NOT NULL,
     quantity integer NOT NULL,
+    type_code varchar(80) NOT NULL,
+    ordered_by integer NOT NULL,
+    session_id varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_shopping_cart ADD INDEX ordered_by (ordered_by);
@@ -1041,28 +1041,28 @@ ALTER TABLE cms_shopping_cart ADD INDEX session_id (session_id);
 ALTER TABLE cms_shopping_cart ADD INDEX type_code (type_code);
 DROP TABLE IF EXISTS cms_shopping_logging;
 CREATE TABLE cms_shopping_logging (
-    l_ip varchar(40) NOT NULL,
-    l_date_and_time integer unsigned NOT NULL,
-    l_last_action varchar(255) NOT NULL,
-    l_session_id varchar(80) NOT NULL,
-    l_member_id integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    PRIMARY KEY (l_member_id, id)
+    l_session_id varchar(80) NOT NULL,
+    l_last_action varchar(255) NOT NULL,
+    l_date_and_time integer unsigned NOT NULL,
+    l_member_id integer NOT NULL,
+    l_ip varchar(40) NOT NULL,
+    PRIMARY KEY (id, l_member_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_shopping_logging ADD INDEX cart_log (l_date_and_time);
 DROP TABLE IF EXISTS cms_shopping_order_details;
 CREATE TABLE cms_shopping_order_details (
-    p_sku varchar(255) NOT NULL,
-    p_purchase_id varchar(80) NOT NULL,
-    p_dispatch_status varchar(255) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     p_order_id integer NULL,
     p_type_code varchar(80) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
+    p_dispatch_status varchar(255) NOT NULL,
     p_tax real NOT NULL,
     p_tax_code varchar(80) NOT NULL,
     p_price real NOT NULL,
     p_quantity integer NOT NULL,
+    p_sku varchar(255) NOT NULL,
     p_name varchar(255) NOT NULL,
+    p_purchase_id varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_shopping_order_details ADD INDEX order_id (p_order_id);
@@ -1070,25 +1070,25 @@ ALTER TABLE cms_shopping_order_details ADD INDEX order_id (p_order_id);
 ALTER TABLE cms_shopping_order_details ADD INDEX type_code (p_type_code);
 DROP TABLE IF EXISTS cms_shopping_orders;
 CREATE TABLE cms_shopping_orders (
-    member_id integer NOT NULL,
-    session_id varchar(80) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    total_tax real NOT NULL,
-    total_shipping_tax real NOT NULL,
     total_product_weight real NOT NULL,
     total_tax_tracking longtext NOT NULL,
     total_product_length real NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    session_id varchar(80) NOT NULL,
+    member_id integer NOT NULL,
+    total_shipping_cost real NOT NULL,
+    add_date integer unsigned NOT NULL,
+    total_price real NOT NULL,
+    total_tax_derivation longtext NOT NULL,
+    total_tax real NOT NULL,
     total_product_width real NOT NULL,
-    total_product_height real NOT NULL,
     order_currency varchar(80) NOT NULL,
     order_status varchar(80) NOT NULL,
     notes longtext NOT NULL,
-    total_tax_derivation longtext NOT NULL,
     txn_id varchar(255) NOT NULL,
+    total_shipping_tax real NOT NULL,
     purchase_through varchar(255) NOT NULL,
-    total_shipping_cost real NOT NULL,
-    total_price real NOT NULL,
-    add_date integer unsigned NOT NULL,
+    total_product_height real NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_shopping_orders ADD INDEX finddispatchable (order_status);
@@ -1100,15 +1100,15 @@ ALTER TABLE cms_shopping_orders ADD INDEX somember_id (member_id);
 ALTER TABLE cms_shopping_orders ADD INDEX sosession_id (session_id);
 DROP TABLE IF EXISTS cms_sitemap_cache;
 CREATE TABLE cms_sitemap_cache (
-    page_link varchar(255) NOT NULL,
-    set_number integer NOT NULL,
-    add_date integer unsigned NULL,
+    edit_date integer unsigned NULL,
     last_updated integer unsigned NOT NULL,
     is_deleted tinyint(1) NOT NULL,
     priority real NOT NULL,
     refreshfreq varchar(80) NOT NULL,
     guest_access tinyint(1) NOT NULL,
-    edit_date integer unsigned NULL,
+    set_number integer NOT NULL,
+    page_link varchar(255) NOT NULL,
+    add_date integer unsigned NULL,
     PRIMARY KEY (page_link)
 ) CHARACTER SET=utf8 engine=MyISAM;
 ALTER TABLE cms_sitemap_cache ADD INDEX is_deleted (is_deleted);
@@ -1118,10 +1118,10 @@ ALTER TABLE cms_sitemap_cache ADD INDEX last_updated (last_updated);
 ALTER TABLE cms_sitemap_cache ADD INDEX set_number (set_number,last_updated);
 DROP TABLE IF EXISTS cms_sms_log;
 CREATE TABLE cms_sms_log (
-    s_trigger_ip varchar(40) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     s_member_id integer NOT NULL,
     s_time integer unsigned NOT NULL,
+    s_trigger_ip varchar(40) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_sms_log ADD INDEX sms_log_for (s_member_id,s_time);
@@ -1130,25 +1130,25 @@ ALTER TABLE cms_sms_log ADD INDEX sms_trigger_ip (s_trigger_ip);
 DROP TABLE IF EXISTS cms_staff_checklist_cus_tasks;
 CREATE TABLE cms_staff_checklist_cus_tasks (
     add_date integer unsigned NOT NULL,
-    recur_interval integer NOT NULL,
-    recur_every varchar(80) NOT NULL,
     task_is_done integer unsigned NULL,
+    recur_every varchar(80) NOT NULL,
     task_title longtext NOT NULL,
+    recur_interval integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, task_is_done) VALUES (1, 'Add your content', 1705614323, 0, '', NULL),
-(2, '[page=\"adminzone:admin_health_check\"]Run/schedule Health Checks[/page]', 1705614323, 0, '', NULL),
-(3, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1705614323, 0, '', NULL),
-(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://compo.sr/uploads/website_specific/compo.sr/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1705614323, 0, '', NULL),
-(5, '[page=\"adminzone:admin_version\"]Consider helping out with the Composr project[/page]', 1705614323, 0, '', NULL);
+INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, task_is_done) VALUES (1, 'Add your content', 1706210367, 0, '', NULL),
+(2, '[page=\"adminzone:admin_health_check\"]Run/schedule Health Checks[/page]', 1706210367, 0, '', NULL),
+(3, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1706210367, 0, '', NULL),
+(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://compo.sr/uploads/website_specific/compo.sr/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1706210367, 0, '', NULL),
+(5, '[page=\"adminzone:admin_version\"]Consider helping out with the Composr project[/page]', 1706210367, 0, '', NULL);
 
 DROP TABLE IF EXISTS cms_staff_links;
 CREATE TABLE cms_staff_links (
-    link_title varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    link varchar(255) BINARY NOT NULL,
     link_desc longtext NOT NULL,
+    link_title varchar(255) NOT NULL,
+    link varchar(255) BINARY NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 INSERT INTO cms_staff_links (id, link, link_title, link_desc) VALUES (1, 'https://compo.sr/', 'compo.sr', 'compo.sr'),
@@ -1156,25 +1156,25 @@ INSERT INTO cms_staff_links (id, link, link_title, link_desc) VALUES (1, 'https:
 
 DROP TABLE IF EXISTS cms_staff_tips_dismissed;
 CREATE TABLE cms_staff_tips_dismissed (
-    t_member integer NOT NULL,
     t_tip varchar(80) NOT NULL,
-    PRIMARY KEY (t_member, t_tip)
+    t_member integer NOT NULL,
+    PRIMARY KEY (t_tip, t_member)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_stats;
 CREATE TABLE cms_stats (
+    milliseconds integer NOT NULL,
+    requested_language varchar(80) NOT NULL,
+    operating_system varchar(255) NOT NULL,
     browser varchar(255) NOT NULL,
-    ip varchar(40) NOT NULL,
     session_id varchar(80) NOT NULL,
     member_id integer NOT NULL,
-    date_and_time integer unsigned NOT NULL,
-    referer varchar(255) BINARY NOT NULL,
-    post longtext NOT NULL,
-    page_link varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    date_and_time integer unsigned NOT NULL,
+    page_link varchar(255) NOT NULL,
+    post longtext NOT NULL,
+    referer varchar(255) BINARY NOT NULL,
+    ip varchar(40) NOT NULL,
     tracking_code varchar(80) NOT NULL,
-    milliseconds integer NOT NULL,
-    operating_system varchar(255) NOT NULL,
-    requested_language varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_stats ADD INDEX date_and_time (date_and_time);
@@ -1202,8 +1202,8 @@ ALTER TABLE cms_stats_known_events ADD INDEX e_times_seen (e_times_seen);
 DROP TABLE IF EXISTS cms_stats_known_links;
 CREATE TABLE cms_stats_known_links (
     l_times_seen integer NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     l_url varchar(255) BINARY NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_stats_known_links ADD INDEX l_times_seen (l_times_seen);
@@ -1211,32 +1211,32 @@ ALTER TABLE cms_stats_known_links ADD INDEX l_times_seen (l_times_seen);
 ALTER TABLE cms_stats_known_links ADD INDEX l_url (l_url(250));
 DROP TABLE IF EXISTS cms_stats_known_tracking;
 CREATE TABLE cms_stats_known_tracking (
-    t_tracking_code varchar(80) NOT NULL,
     t_times_seen integer NOT NULL,
+    t_tracking_code varchar(80) NOT NULL,
     PRIMARY KEY (t_tracking_code)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_stats_known_tracking ADD INDEX t_times_seen (t_times_seen);
 DROP TABLE IF EXISTS cms_stats_kpis;
 CREATE TABLE cms_stats_kpis (
-    k_filters longtext NOT NULL,
-    k_target real NULL,
-    k_added integer unsigned NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     k_added_by integer NOT NULL,
-    k_notes longtext NOT NULL,
+    k_title varchar(255) NOT NULL,
+    k_target real NULL,
+    k_filters longtext NOT NULL,
     k_pivot varchar(80) NOT NULL,
     k_graph_name varchar(80) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    k_title varchar(255) NOT NULL,
+    k_added integer unsigned NOT NULL,
+    k_notes longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_stats_kpis ADD INDEX k_graph_name (k_graph_name);
 DROP TABLE IF EXISTS cms_stats_link_tracker;
 CREATE TABLE cms_stats_link_tracker (
-    id integer unsigned auto_increment NOT NULL,
     c_url varchar(255) BINARY NOT NULL,
-    c_date_and_time integer unsigned NOT NULL,
-    c_member_id integer NOT NULL,
     c_ip_address varchar(40) NOT NULL,
+    c_member_id integer NOT NULL,
+    c_date_and_time integer unsigned NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_stats_link_tracker ADD INDEX c_date_and_time (c_date_and_time);
@@ -1244,54 +1244,54 @@ ALTER TABLE cms_stats_link_tracker ADD INDEX c_date_and_time (c_date_and_time);
 ALTER TABLE cms_stats_link_tracker ADD INDEX c_url (c_url(250));
 DROP TABLE IF EXISTS cms_stats_preprocessed;
 CREATE TABLE cms_stats_preprocessed (
-    p_bucket varchar(80) NOT NULL,
     p_data longtext NOT NULL,
     p_pivot varchar(80) NOT NULL,
     p_month integer NOT NULL,
-    PRIMARY KEY (p_bucket, p_pivot, p_month)
+    p_bucket varchar(80) NOT NULL,
+    PRIMARY KEY (p_pivot, p_month, p_bucket)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_stats_preprocessed_flat;
 CREATE TABLE cms_stats_preprocessed_flat (
-    p_bucket varchar(80) NOT NULL,
     p_data longtext NOT NULL,
+    p_bucket varchar(80) NOT NULL,
     PRIMARY KEY (p_bucket)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_task_queue;
 CREATE TABLE cms_task_queue (
-    t_locked tinyint(1) NOT NULL,
+    t_secure_ref varchar(80) NOT NULL,
+    t_member_id integer NOT NULL,
     t_add_time integer unsigned NOT NULL,
+    t_locked tinyint(1) NOT NULL,
+    t_send_notification tinyint(1) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     t_title varchar(255) NOT NULL,
-    t_args longtext NOT NULL,
     t_hook varchar(80) NOT NULL,
-    t_member_id integer NOT NULL,
-    t_secure_ref varchar(80) NOT NULL,
-    t_send_notification tinyint(1) NOT NULL,
+    t_args longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_temp_block_permissions;
 CREATE TABLE cms_temp_block_permissions (
-    p_session_id varchar(80) NOT NULL,
-    p_time integer unsigned NOT NULL,
-    p_block_constraints longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    p_session_id varchar(80) NOT NULL,
+    p_block_constraints longtext NOT NULL,
+    p_time integer unsigned NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_temp_block_permissions ADD INDEX p_session_id (p_session_id);
 DROP TABLE IF EXISTS cms_theme_images;
 CREATE TABLE cms_theme_images (
+    lang varchar(5) NOT NULL,
     id varchar(255) NOT NULL,
     theme varchar(40) NOT NULL,
     url varchar(255) BINARY NOT NULL,
-    lang varchar(5) NOT NULL,
-    PRIMARY KEY (id, theme, lang)
+    PRIMARY KEY (lang, id, theme)
 ) CHARACTER SET=utf8 engine=MyISAM;
 ALTER TABLE cms_theme_images ADD INDEX theme (theme,lang);
 DROP TABLE IF EXISTS cms_theme_screen_tree;
 CREATE TABLE cms_theme_screen_tree (
-    json_tree longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     page_link varchar(255) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    json_tree longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_theme_screen_tree ADD INDEX page_link (page_link(250));
@@ -1303,14 +1303,14 @@ CREATE TABLE cms_theme_template_relations (
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_ticket_extra_access;
 CREATE TABLE cms_ticket_extra_access (
-    member_id integer NOT NULL,
     ticket_id varchar(255) NOT NULL,
-    PRIMARY KEY (member_id, ticket_id)
+    member_id integer NOT NULL,
+    PRIMARY KEY (ticket_id, member_id)
 ) CHARACTER SET=utf8 engine=MyISAM;
 DROP TABLE IF EXISTS cms_ticket_known_emailers;
 CREATE TABLE cms_ticket_known_emailers (
-    member_id integer NOT NULL,
     email_address varchar(255) NOT NULL,
+    member_id integer NOT NULL,
     PRIMARY KEY (email_address)
 ) CHARACTER SET=utf8 engine=MyISAM;
 ALTER TABLE cms_ticket_known_emailers ADD INDEX member_id (member_id);
@@ -1318,9 +1318,9 @@ DROP TABLE IF EXISTS cms_ticket_types;
 CREATE TABLE cms_ticket_types (
     id integer unsigned auto_increment NOT NULL,
     ticket_type_name longtext NOT NULL,
+    cache_lead_time integer unsigned NULL,
     guest_emails_mandatory tinyint(1) NOT NULL,
     search_faq tinyint(1) NOT NULL,
-    cache_lead_time integer unsigned NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_ticket_types ADD FULLTEXT ticket_type_name (ticket_type_name);
@@ -1330,23 +1330,23 @@ INSERT INTO cms_ticket_types (id, ticket_type_name, guest_emails_mandatory, sear
 
 DROP TABLE IF EXISTS cms_tickets;
 CREATE TABLE cms_tickets (
-    forum_id integer NOT NULL,
-    ticket_id varchar(255) NOT NULL,
-    ticket_type integer NOT NULL,
     topic_id integer NOT NULL,
+    ticket_id varchar(255) NOT NULL,
+    forum_id integer NOT NULL,
+    ticket_type integer NOT NULL,
     PRIMARY KEY (ticket_id)
 ) CHARACTER SET=utf8 engine=MyISAM;
 DROP TABLE IF EXISTS cms_trackbacks;
 CREATE TABLE cms_trackbacks (
-    trackback_excerpt longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    trackback_for_type varchar(80) NOT NULL,
-    trackback_for_id varchar(80) NOT NULL,
     trackback_ip varchar(40) NOT NULL,
-    trackback_time integer unsigned NOT NULL,
-    trackback_url varchar(255) NOT NULL,
-    trackback_title varchar(255) NOT NULL,
+    trackback_for_type varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     trackback_name varchar(255) NOT NULL,
+    trackback_excerpt longtext NOT NULL,
+    trackback_title varchar(255) NOT NULL,
+    trackback_url varchar(255) NOT NULL,
+    trackback_time integer unsigned NOT NULL,
+    trackback_for_id varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_trackbacks ADD INDEX trackback_for_id (trackback_for_id);
@@ -1356,13 +1356,13 @@ ALTER TABLE cms_trackbacks ADD INDEX trackback_for_type (trackback_for_type);
 ALTER TABLE cms_trackbacks ADD INDEX trackback_time (trackback_time);
 DROP TABLE IF EXISTS cms_translate;
 CREATE TABLE cms_translate (
-    broken tinyint(1) NOT NULL,
-    source_user integer NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     text_parsed longtext NOT NULL,
     text_original longtext NOT NULL,
     importance_level tinyint NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     language varchar(5) NOT NULL,
+    source_user integer NOT NULL,
+    broken tinyint(1) NOT NULL,
     PRIMARY KEY (id, language)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_translate ADD FULLTEXT tsearch (text_original);
@@ -1374,37 +1374,37 @@ ALTER TABLE cms_translate ADD INDEX equiv_lang (text_original(4));
 ALTER TABLE cms_translate ADD INDEX importance_level (importance_level);
 DROP TABLE IF EXISTS cms_translation_cache;
 CREATE TABLE cms_translation_cache (
+    t_lang_from varchar(5) NOT NULL,
     t_text longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    t_lang_from varchar(5) NOT NULL,
-    t_lang_to varchar(5) NOT NULL,
-    t_context integer NOT NULL,
     t_text_result longtext NOT NULL,
+    t_context integer NOT NULL,
+    t_lang_to varchar(5) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_translation_cache ADD INDEX lookup (t_lang_from,t_lang_to,t_text(100),t_context);
 DROP TABLE IF EXISTS cms_tutorial_links;
 CREATE TABLE cms_tutorial_links (
-    the_value longtext NOT NULL,
     the_name varchar(80) NOT NULL,
+    the_value longtext NOT NULL,
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_unbannable_ip;
 CREATE TABLE cms_unbannable_ip (
-    ip varchar(40) NOT NULL,
     note varchar(255) NOT NULL,
+    ip varchar(40) NOT NULL,
     PRIMARY KEY (ip)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_url_id_monikers;
 CREATE TABLE cms_url_id_monikers (
-    m_moniker varchar(255) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     m_resource_page varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    m_manually_chosen tinyint(1) NOT NULL,
+    m_deprecated tinyint(1) NOT NULL,
+    m_moniker_reversed varchar(255) NOT NULL,
+    m_moniker varchar(255) NOT NULL,
     m_resource_id varchar(80) NOT NULL,
     m_resource_type varchar(80) NOT NULL,
-    m_manually_chosen tinyint(1) NOT NULL,
-    m_moniker_reversed varchar(255) NOT NULL,
-    m_deprecated tinyint(1) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_url_id_monikers ADD INDEX uim_moniker (m_moniker(250));
@@ -1414,34 +1414,34 @@ ALTER TABLE cms_url_id_monikers ADD INDEX uim_monrev (m_moniker_reversed(250));
 ALTER TABLE cms_url_id_monikers ADD INDEX uim_page_link (m_resource_page,m_resource_type,m_resource_id);
 DROP TABLE IF EXISTS cms_url_title_cache;
 CREATE TABLE cms_url_title_cache (
+    t_meta_title longtext NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    t_xml_discovery varchar(255) BINARY NOT NULL,
     t_json_discovery varchar(255) BINARY NOT NULL,
+    t_url varchar(255) BINARY NOT NULL,
+    t_title varchar(255) NOT NULL,
     t_mime_type varchar(80) NOT NULL,
-    t_image_url varchar(255) BINARY NOT NULL,
     t_description longtext NOT NULL,
     t_keywords longtext NOT NULL,
-    t_meta_title longtext NOT NULL,
-    t_title varchar(255) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    t_url varchar(255) BINARY NOT NULL,
-    t_xml_discovery varchar(255) BINARY NOT NULL,
+    t_image_url varchar(255) BINARY NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_url_title_cache ADD INDEX t_url (t_url(250));
 DROP TABLE IF EXISTS cms_urls_checked;
 CREATE TABLE cms_urls_checked (
-    url_destination_url varchar(255) BINARY NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    url longtext NOT NULL,
-    url_exists tinyint(1) NOT NULL,
-    url_message varchar(255) NOT NULL,
     url_check_time integer unsigned NOT NULL,
+    url_destination_url varchar(255) BINARY NOT NULL,
+    url_message varchar(255) NOT NULL,
+    url_exists tinyint(1) NOT NULL,
+    url longtext NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_urls_checked ADD INDEX url (url(200));
 DROP TABLE IF EXISTS cms_usersonline_track;
 CREATE TABLE cms_usersonline_track (
-    date_and_time integer unsigned NOT NULL,
     peak integer NOT NULL,
+    date_and_time integer unsigned NOT NULL,
     PRIMARY KEY (date_and_time)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_usersonline_track ADD INDEX peak_track (peak);
@@ -1458,42 +1458,49 @@ CREATE TABLE cms_values (
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_values ADD INDEX date_and_time (date_and_time);
-INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('cns_topic_count', '1', 1705614294),
-('cns_member_count', '1', 1705614295),
-('cns_post_count', '1', 1705614295),
-('version', '11.00', 1705614299),
-('cns_version', '11.00', 1705614299);
+INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('cns_topic_count', '1', 1706210347),
+('cns_member_count', '1', 1706210347),
+('cns_post_count', '1', 1706210347),
+('version', '11.00', 1706210350),
+('cns_version', '11.00', 1706210350);
 
 DROP TABLE IF EXISTS cms_values_elective;
 CREATE TABLE cms_values_elective (
-    date_and_time integer unsigned NOT NULL,
     the_value longtext NOT NULL,
     the_name varchar(80) NOT NULL,
+    date_and_time integer unsigned NOT NULL,
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('call_home', '0', 1705614299),
-('setupwizard_completed', '0', 1705614302);
+INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('call_home', '0', 1706210350),
+('setupwizard_completed', '0', 1706210352);
 
 DROP TABLE IF EXISTS cms_video_transcoding;
 CREATE TABLE cms_video_transcoding (
-    t_id varchar(80) NOT NULL,
-    t_local_id integer NULL,
-    t_local_id_field varchar(80) NOT NULL,
-    t_error longtext NOT NULL,
-    t_url varchar(255) BINARY NOT NULL,
-    t_table varchar(80) NOT NULL,
-    t_url_field varchar(80) NOT NULL,
-    t_orig_filename_field varchar(80) NOT NULL,
     t_width_field varchar(80) NOT NULL,
-    t_height_field varchar(80) NOT NULL,
+    t_orig_filename_field varchar(80) NOT NULL,
+    t_url_field varchar(80) NOT NULL,
+    t_table varchar(80) NOT NULL,
+    t_url varchar(255) BINARY NOT NULL,
+    t_local_id integer NULL,
+    t_error longtext NOT NULL,
+    t_local_id_field varchar(80) NOT NULL,
+    t_id varchar(80) NOT NULL,
     t_output_filename varchar(80) NOT NULL,
+    t_height_field varchar(80) NOT NULL,
     PRIMARY KEY (t_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_video_transcoding ADD INDEX t_local_id (t_local_id);
 DROP TABLE IF EXISTS cms_videos;
 CREATE TABLE cms_videos (
-    closed_captions_url varchar(255) BINARY NOT NULL,
+    video_length integer NOT NULL,
+    video_height integer NOT NULL,
+    thumb_url varchar(255) BINARY NOT NULL,
     video_width integer NOT NULL,
+    allow_rating tinyint(1) NOT NULL,
+    the_description longtext NOT NULL,
+    closed_captions_url varchar(255) BINARY NOT NULL,
+    cat varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     video_views integer NOT NULL,
     edit_date integer unsigned NULL,
     add_date integer unsigned NOT NULL,
@@ -1502,15 +1509,8 @@ CREATE TABLE cms_videos (
     notes longtext NOT NULL,
     allow_trackbacks tinyint(1) NOT NULL,
     allow_comments tinyint NOT NULL,
-    allow_rating tinyint(1) NOT NULL,
-    the_description longtext NOT NULL,
-    video_height integer NOT NULL,
     url varchar(255) BINARY NOT NULL,
-    thumb_url varchar(255) BINARY NOT NULL,
-    cat varchar(80) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     title longtext NOT NULL,
-    video_length integer NOT NULL,
     the_description__text_parsed longtext NOT NULL,
     the_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -1549,15 +1549,15 @@ CREATE TABLE cms_wiki_children (
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_wiki_pages;
 CREATE TABLE cms_wiki_pages (
-    submitter integer NOT NULL,
-    show_posts tinyint(1) NOT NULL,
-    wiki_views integer NOT NULL,
-    edit_date integer unsigned NULL,
-    add_date integer unsigned NOT NULL,
-    the_description longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     title longtext NOT NULL,
     notes longtext NOT NULL,
+    the_description longtext NOT NULL,
+    add_date integer unsigned NOT NULL,
+    edit_date integer unsigned NULL,
+    wiki_views integer NOT NULL,
+    show_posts tinyint(1) NOT NULL,
+    submitter integer NOT NULL,
     the_description__text_parsed longtext NOT NULL,
     the_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -1577,18 +1577,18 @@ ALTER TABLE cms_wiki_pages ADD INDEX sadd_date (add_date);
 ALTER TABLE cms_wiki_pages ADD INDEX sps (submitter);
 
 ALTER TABLE cms_wiki_pages ADD INDEX wiki_views (wiki_views);
-INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1705614321, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_65a99be5c087b9.08577982_31\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_65a99be5c087b9.08577982_31\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_65a99be5c087b9.08577982_31\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1706210365, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_65b2b435d5d806.26350853_31\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_65b2b435d5d806.26350853_31\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_65b2b435d5d806.26350853_31\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_wiki_posts;
 CREATE TABLE cms_wiki_posts (
-    date_and_time integer unsigned NOT NULL,
-    edit_date integer unsigned NULL,
-    member_id integer NOT NULL,
-    wiki_views integer NOT NULL,
     validated tinyint(1) NOT NULL,
-    the_message longtext NOT NULL,
-    page_id integer NOT NULL,
+    wiki_views integer NOT NULL,
+    member_id integer NOT NULL,
+    edit_date integer unsigned NULL,
+    date_and_time integer unsigned NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    page_id integer NOT NULL,
+    the_message longtext NOT NULL,
     the_message__text_parsed longtext NOT NULL,
     the_message__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
