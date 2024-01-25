@@ -333,31 +333,31 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
         $this->smtp_sockets_password = get_option('smtp_sockets_password');
         $this->smtp_from_address = get_option('smtp_from_address');
 
-        $smtp_sockets_host = isset($advanced_parameters['smtp_sockets_host']) ? $advanced_parameters['smtp_sockets_host'] : null; // SMTP hostname (null: default configured)
+        $smtp_sockets_host = isset($advanced_parameters['smtp_sockets_host']) ? $advanced_parameters['smtp_sockets_host'] : $this->smtp_sockets_host; // SMTP hostname
         if ($smtp_sockets_host !== null) {
             $this->smtp_sockets_host = $smtp_sockets_host;
         }
-        $smtp_sockets_port = isset($advanced_parameters['smtp_sockets_port']) ? $advanced_parameters['smtp_sockets_port'] : null; // SMTP port (null: default configured)
+        $smtp_sockets_port = isset($advanced_parameters['smtp_sockets_port']) ? $advanced_parameters['smtp_sockets_port'] : $this->smtp_sockets_port; // SMTP port
         if ($smtp_sockets_port !== null) {
             $this->smtp_sockets_port = $smtp_sockets_port;
         }
-        $smtp_sockets_username = isset($advanced_parameters['smtp_sockets_username']) ? $advanced_parameters['smtp_sockets_username'] : null; // SMTP username (null: default configured)
+        $smtp_sockets_username = isset($advanced_parameters['smtp_sockets_username']) ? $advanced_parameters['smtp_sockets_username'] : $this->smtp_sockets_username; // SMTP username
         if ($smtp_sockets_username !== null) {
             $this->smtp_sockets_username = $smtp_sockets_username;
         }
-        $smtp_sockets_password = isset($advanced_parameters['smtp_sockets_password']) ? $advanced_parameters['smtp_sockets_password'] : null; // SMTP password (null: default configured)
+        $smtp_sockets_password = isset($advanced_parameters['smtp_sockets_password']) ? $advanced_parameters['smtp_sockets_password'] : $this->smtp_sockets_password; // SMTP password
         if ($smtp_sockets_password !== null) {
             $this->smtp_sockets_password = $smtp_sockets_password;
         }
-        $smtp_from_address = isset($advanced_parameters['smtp_from_address']) ? $advanced_parameters['smtp_from_address'] : null; // SMTP from address (null: default configured)
+        $smtp_from_address = isset($advanced_parameters['smtp_from_address']) ? $advanced_parameters['smtp_from_address'] : $this->smtp_from_address; // SMTP from address
         if ($smtp_from_address !== null) {
             $this->smtp_from_address = $smtp_from_address;
         }
         if (empty($smtp_from_address)) {
-            $smtp_from_address = $this->website_email;
+            $this->smtp_from_address = $this->website_email;
         }
-        if (!is_valid_email_address($smtp_from_address)) { // Required for security
-            $smtp_from_address = '';
+        if (($this->smtp_from_address === null) || (!is_valid_email_address($this->smtp_from_address))) { // Required for security
+            $this->smtp_from_address = '';
         }
 
         $this->line_term = "\r\n";
@@ -651,19 +651,19 @@ abstract class Mail_dispatcher_base
             $this->website_email = get_option('staff_address');
         }*/
 
-        $enveloper_override = isset($advanced_parameters['enveloper_override']) ? $advanced_parameters['enveloper_override'] : null; // Use envelope override option for sendmail (null: default configured)
+        $enveloper_override = isset($advanced_parameters['enveloper_override']) ? $advanced_parameters['enveloper_override'] : $this->enveloper_override; // Use envelope override option for sendmail
         if ($enveloper_override !== null) {
             $this->enveloper_override = $enveloper_override;
         }
-        $allow_ext_images = isset($advanced_parameters['allow_ext_images']) ? $advanced_parameters['allow_ext_images'] : null; // Allow external image references rather than embedding images (null: default configured)
+        $allow_ext_images = isset($advanced_parameters['allow_ext_images']) ? $advanced_parameters['allow_ext_images'] : $this->allow_ext_images; // Allow external image references rather than embedding images
         if ($allow_ext_images !== null) {
             $this->allow_ext_images = $allow_ext_images;
         }
-        $website_email = isset($advanced_parameters['website_email']) ? $advanced_parameters['website_email'] : null; // Website e-mail address (null: default configured)
+        $website_email = isset($advanced_parameters['website_email']) ? $advanced_parameters['website_email'] : $this->website_email; // Website e-mail address
         if ($website_email !== null) {
             $this->website_email = $website_email;
         }
-        if (!is_valid_email_address($this->website_email)) { // Required for security
+        if (($this->website_email === null) || (!is_valid_email_address($this->website_email))) { // Required for security
             $this->website_email = '';
         }
 
