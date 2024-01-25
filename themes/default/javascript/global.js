@@ -1528,8 +1528,11 @@ function animate_frame_load(pf,frame,leave_gap_top,leave_height)
 	var extra=ifuob?((window!=window.top)?find_pos_y(ifuob):0):0;
 	if (ifuob) ifuob.scrolling='no';
 
-	if (window==window.top)
-		window.top.smooth_scroll(find_pos_y(pf)+extra-leave_gap_top);
+	if (window==window.top) {
+		window.setTimeout(function() {
+			window.top.smooth_scroll(find_pos_y(pf)+extra-leave_gap_top);
+		}, 25);
+	}
 }
 function illustrate_frame_load(pf,frame)
 {
@@ -3570,7 +3573,7 @@ function replace_comments_form_with_ajax(options,hash,comments_form_id,comments_
 					window.setTimeout(function() {
 						var comments_wrapper=document.getElementById(comments_wrapper_id); // outerhtml set will have broken the reference
 						smooth_scroll(find_pos_y(comments_wrapper,true));
-					},0);
+					}, 25);
 
 					// Force reload on back button, as otherwise comment would be missing
 					force_reload_on_back();
