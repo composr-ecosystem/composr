@@ -275,9 +275,9 @@ function render_gallery_box($myrow, $root = 'root', $show_member_stats_if_approp
     if (($pic == '') && ($is_member)) {
         $pic = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
     }
-    $thumb_order = 'ORDER BY id ASC';
+    $thumb_order = 'ORDER BY add_date ASC';
     if (get_option('reverse_thumb_order') == '1') {
-        $thumb_order = 'ORDER BY id DESC';
+        $thumb_order = 'ORDER BY add_date DESC';
     }
     if ($pic == '') {
         if (addon_installed('content_privacy')) {
