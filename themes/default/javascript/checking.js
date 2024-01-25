@@ -206,6 +206,8 @@ function do_form_submit(form,event)
 	if ((typeof form.old_action!='undefined') && (form.old_action)) form.setAttribute('action',form.old_action);
 	if ((typeof form.old_target!='undefined') && (form.old_target)) form.setAttribute('target',form.old_target);
 	if (!form.getAttribute('target')) form.setAttribute('target','_top');
+	if ((form.getAttribute('action').includes('overlay=1'))) form.setAttribute('target','_self');
+
 
 	/* Remove any stuff that is only in the form for previews if doing a GET request */
 	if (form.method.toLowerCase()=='get')
