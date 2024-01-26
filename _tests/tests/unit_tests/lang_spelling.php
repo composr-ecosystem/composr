@@ -281,7 +281,6 @@ class lang_spelling_test_set extends cms_test_case
             'eratic' => 'erratic',
             'psuedo' => 'pseudo',
             'licencing' => 'licensing',
-            'perf' => 'performance', // "perf" is strictly a noun, but we use it as an adjective in error a lot
         );
         if (strpos($file, 'calendar') !== false) {
             $common_spelling_mistakes['occurrence'] = 'recurrence';
@@ -312,6 +311,10 @@ class lang_spelling_test_set extends cms_test_case
             $this->assertTrue(false, 'The word \'thankyou\' was used in ' . $file . '. This should be changed to \'thank you\'.');
         }
 
+        // "perf" is strictly a noun, but we use it as an adjective in error a lot
+        if (preg_match('/\bperf\b/i', $string) != 0) {
+            $this->assertTrue(false, 'The word \'perf\' was used in ' . $file . '. This should be changed to \'performance\'.');
+        }
 
         // Extra checks that give lots of false-positives
         if ($verbose) {

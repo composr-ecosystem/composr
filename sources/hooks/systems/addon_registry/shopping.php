@@ -694,6 +694,7 @@ class Hook_addon_registry_shopping
                 'FIELDTYPE' => lorem_word(),
                 'VALUE_PLAIN' => lorem_phrase(),
                 'VALUE' => lorem_phrase(),
+                'FIELDS_GRID' => placeholder_table(),
             ));
             $fields->attach($_field);
         }

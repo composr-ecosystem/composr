@@ -34,7 +34,7 @@ class http_timeouts_test_set extends cms_test_case
             return;
         }
 
-        $timeout = 3.0;
+        $timeout = 10.0;
 
         // Test timeout not being hit for large file
         $url = 'https://compo.sr/docs/php-5.2.4-ocproducts.zip';

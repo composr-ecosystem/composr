@@ -860,8 +860,9 @@ class CRC24
         $this->lookupTable = $this->generateTable($this->poly);
     }
 
-    public function calculate($buffer)
+    public function calculate($_buffer)
     {
+        $buffer = strval($_buffer);
         $buffer_length = strlen($buffer);
 
         $mask = (((1 << ($this->bitLength - 1)) - 1) << 1) | 1;

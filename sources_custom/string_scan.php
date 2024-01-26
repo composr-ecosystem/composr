@@ -9811,6 +9811,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         links__CATALOGUE_INDEX
         locale
         _REQUIRED_NOT_FILLED_IN
+        NOT_VALID_ISBN
     ')));
 
     // Start with what we know
