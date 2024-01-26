@@ -45,8 +45,8 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
         }
     }
 
-    //@unlink(get_file_base() . '/_config.php');
-    //@rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
+    @unlink(get_file_base() . '/_config.php');
+    @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
 
     return $success;
 }
