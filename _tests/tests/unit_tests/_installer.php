@@ -62,7 +62,7 @@ class _installer_test_set extends cms_test_case
             return;
         }
 
-        $test = http_download_file(get_base_url() . '/install.php', null, false);
+        $test = http_download_file(get_base_url() . '/install.php', null, false, false, 'Composr', null, null, null, null, null, null, null, null, 15.0);
         $this->assertTrue($GLOBALS['HTTP_MESSAGE'] == '200', 'Expected main install.php to return HTTP status 200, but it instead returned ' . $GLOBALS['HTTP_MESSAGE']);
         $this->assertTrue(strpos($test, 'type="submit"') !== false, 'Expected main install.php to contain a start button, but it did not.'); // Has start button: meaning something worked
     }
