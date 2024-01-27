@@ -389,7 +389,7 @@ function save_zone_base_url($zone, $base_url)
 function upgrade_module($zone, $module)
 {
     require_code('version');
-    
+
     $rows = $GLOBALS['SITE_DB']->query_select('modules', array('*'), array('module_the_name' => $module), '', 1);
     if (!array_key_exists(0, $rows)) {
         return (-2); // Not installed, so can't upgrade
@@ -416,13 +416,13 @@ function upgrade_module($zone, $module)
     } else {
         $info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : eval($functions[0]);
     }
-    
+
     // Do not allow upgrading to a v11+ module
     if ((!empty($info['min_cms_version'])) && (floatval($info['min_cms_version']) > cms_version_number())) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
             escape_html($module),
             escape_html(float_to_raw_string(cms_version_number())),
-            escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+            escape_html(build_url(array('page' => 'admin_addons'), get_module_zone('admin_addons')))
             ));
     }
 
@@ -502,16 +502,16 @@ function reinstall_module($zone, $module)
     if (is_null($info['hacked_by'])) {
         $info['hacked_by'] = '';
     }
-    
+
     // Do not allow installing a v11+ module
     if ((!empty($info['min_cms_version'])) && (floatval($info['min_cms_version']) > cms_version_number())) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
             escape_html($module),
             escape_html(float_to_raw_string(cms_version_number())),
-            escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+            escape_html(build_url(array('page' => 'admin_addons'), get_module_zone('admin_addons')))
             ));
     }
-    
+
     if (!is_null($functions[1])) {
         if (is_array($functions[1])) {
             call_user_func_array($functions[1][0], $functions[1][1]);
@@ -677,17 +677,17 @@ function upgrade_block($block)
     }
 
     $info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : eval($functions[0]);
-    
+
     // Do not allow upgrading to a v11+ block
     require_code('version');
     if ((!empty($info['min_cms_version'])) && (floatval($info['min_cms_version']) > cms_version_number())) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
             escape_html($block),
             escape_html(float_to_raw_string(cms_version_number())),
-            escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+            escape_html(build_url(array('page' => 'admin_addons'), get_module_zone('admin_addons')))
             ));
     }
-    
+
     if ((!is_null($functions[1])) && (array_key_exists('update_require_upgrade', $info))) {
         if ((($upgrade_from < $info['version']) && (array_key_exists('update_require_upgrade', $info)))
             || (($upgrade_from_hack < $info['hack_version']) && (array_key_exists('hack_require_upgrade', $info)))
@@ -747,14 +747,14 @@ function reinstall_block($block)
     if (is_null($info['hacked_by'])) {
         $info['hacked_by'] = '';
     }
-    
+
     // Do not allow installing a v11+ block
     require_code('version');
     if ((!empty($info['min_cms_version'])) && (floatval($info['min_cms_version']) > cms_version_number())) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
             escape_html($block),
             escape_html(float_to_raw_string(cms_version_number())),
-            escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+            escape_html(build_url(array('page' => 'admin_addons'), get_module_zone('admin_addons')))
             ));
     }
 

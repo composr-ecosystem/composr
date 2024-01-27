@@ -161,14 +161,14 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
         } else {
             $default_icon = mixed();
         }
-        
+
         // LEGACY: Only used to ensure v11 addons are not being installed on v10.
         if ($_hook_bits[10] !== null) {
-            $min_cms_version = is_array($_hook_bits[10]) ? call_user_func_array($_hook_bits[10][0], $_hook_bits[10][1]) : cms_eval($_hook_bits[10], $path, false);
+            $min_cms_version = is_array($_hook_bits[10]) ? call_user_func_array($_hook_bits[10][0], $_hook_bits[10][1]) : @eval($_hook_bits[10]);
         } else {
             $min_cms_version = null;
         }
-        
+
 
         $addon_info = array(
             'name' => $addon,

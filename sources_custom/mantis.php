@@ -52,7 +52,7 @@ function get_tracker_issues($ids, $version = null, $previous_version = null)
         }
         $reporter = $issue['reporter'];
         $handler = $issue['handler'];
-        $issue_titles[$issue['category']][$issue['id']] = [$summary, $reporter, $handler];
+        $issue_titles[$issue['category']][$issue['id']] = array($summary, $reporter, $handler);
     }
     ksort($issue_titles);
 

@@ -190,7 +190,7 @@ function phase_1()
     }
 
     $changes = 'All reported bugs since the last release have been fixed.';
-    $git_authors = [];
+    $git_authors = array();
     if ($previous_version !== null) {
         $_changes = shell_exec('git log --pretty=format:"%H :: %cn :: %s" HEAD...refs/tags/' . $previous_version);
         if (is_string($_changes)) {
@@ -271,7 +271,7 @@ function phase_1()
                     $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
                 }
             }
-            
+
             // Show contributors
             if (count($tracker_handlers) > 0) {
                 $changes .= "\n" . 'Special thanks to these members for resolving the issues above: ' . "\n";
