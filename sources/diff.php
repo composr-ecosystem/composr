@@ -1428,15 +1428,17 @@ class Text_Diff_Renderer
      */
     var $_trailing_context_lines = 0;
 
+    var $v;
+
     /**
      * Constructor.
      */
     function __construct($params = array())
     {
         foreach ($params as $param => $value) {
-            $v = '_' . $param;
-            if (isset($this->$v)) {
-                $this->$v = $value;
+            $this->v = '_' . $param;
+            if (isset($this->v)) {
+                $this->v = $value;
             }
         }
     }
