@@ -18,6 +18,7 @@
  */
 class addon_references_test_set extends cms_test_case
 {
+    public $contents;
     public function setUp()
     {
         parent::setUp();

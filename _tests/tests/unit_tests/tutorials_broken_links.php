@@ -18,6 +18,8 @@
  */
 class tutorials_broken_links_test_set extends cms_test_case
 {
+    public $path;
+    public $pages;
     public function setUp()
     {
         $this->path = get_file_base() . '/docs/pages/comcode_custom/EN';

@@ -77,6 +77,8 @@ class SimpleSocket extends SimpleStickyError {
     var $_sent = '';
     var $lock_size;
 
+    var $_block_size;
+
     /**
      *    Opens a socket for reading and writing.
      *    @param string $host          Hostname to send request to.

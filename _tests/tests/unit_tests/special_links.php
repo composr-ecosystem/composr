@@ -33,7 +33,7 @@ class special_links_test_set extends cms_test_case
 
     public function testChicklets()
     {
-        $data = http_download_file('http://add.my.yahoo.com/content?url=' . urlencode('http://example.com'), null, false);
+        $data = http_download_file('https://add.my.yahoo.com/content?url=' . urlencode('http://example.com'), null, false);
         $this->assertTrue(is_string($data), 'External link not working, fix test and use within Composr (separate)');
     }
 

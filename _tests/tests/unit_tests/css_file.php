@@ -24,6 +24,8 @@ class css_file_test_set extends cms_test_case
     {
         parent::setUp();
 
+        disable_php_memory_limit();
+
         require_code('themes2');
         require_code('images');
         require_code('files2');

@@ -107,6 +107,7 @@ class Module_authors
 
     public $title;
     public $author;
+    public $details;
 
     /**
      * Module pre-run function. Allows us to know metadata for <head> before we start streaming output.
