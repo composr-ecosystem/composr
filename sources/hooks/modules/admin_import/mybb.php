@@ -1136,7 +1136,7 @@ class Hook_import_mybb
                 if ($topic_id === null) {
                     continue;
                 }
-                enable_notifications('cns_topic', strval($topic_id), $member_id);
+                set_notifications('cns_topic', strval($topic_id), $member_id);
 
                 import_id_remap_put('topic_notification', strval($row['tid']) . '-' . strval($row['uid']), 1);
             }

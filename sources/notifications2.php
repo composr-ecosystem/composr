@@ -180,7 +180,7 @@ function notifications_ui(int $member_id_of) : object
                     $new_setting = $new_setting | $notification_type_constant;
                 }
             }
-            enable_notifications($notification_code, null, $member_id_of, $new_setting);
+            set_notifications($notification_code, null, $member_id_of, $new_setting);
         }
     }
 
@@ -288,7 +288,7 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
     $notification_category = get_param_string('id', null);
     if ($notification_category === null) {
         if (has_interesting_post_fields()) { // If we've just saved via form POST - this is after editing all the category selections for $notification_code
-            enable_notifications($notification_code, null, null, A_NA); // Make it clear we've overridden the general value by doing this
+            set_notifications($notification_code, null, null, A_NA); // Make it clear we've overridden the general value by doing this
 
             foreach (array_keys($_POST) as $key) {
                 $matches = [];
@@ -302,7 +302,7 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
                         }
                     }
 
-                    enable_notifications($notification_code, $notification_category, null, $new_setting);
+                    set_notifications($notification_code, $notification_category, null, $new_setting);
                 }
             }
 
@@ -341,7 +341,7 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
     $notification_category_being_changed = get_param_string('id', null);
     if (($notification_category_being_changed !== null) && (!$done_get_change)) {
         // The tree has been pruned due to over-sizeness issue (too much content to list), so we have to set a notification here rather than during render.
-        enable_notifications($notification_code, $notification_category_being_changed);
+        set_notifications($notification_code, $notification_category_being_changed);
 
         // Re-render too
         $tree = _notifications_build_category_tree($_notification_types, $notification_code, $ob, null, 0, null, $done_get_change);
@@ -405,10 +405,10 @@ function _notifications_build_category_tree(array $_notification_types, string $
             if (!$done_get_change) {
                 // A change being called by GET URL
                 if (($force_change_children_to === false/*If recursively disabling*/) || (($force_change_children_to === null) && ($current_setting != A_NA)/*If explicitly toggling this one to disabled*/)) {
-                    enable_notifications($notification_code, $notification_category, null, A_NA);
+                    set_notifications($notification_code, $notification_category, null, A_NA);
                     $force_change_children_to_children = false;
                 } else {
-                    enable_notifications($notification_code, $notification_category);
+                    set_notifications($notification_code, $notification_category);
                     $force_change_children_to_children = true;
                 }
 

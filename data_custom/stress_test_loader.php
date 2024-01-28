@@ -154,9 +154,9 @@ function do_work()
 
         add_author(random_line(), '', $member_id, random_text(), random_text());
 
-        enable_notifications('cns_topic', 'forum:' . strval(db_get_first_id()), $member_id);
+        set_notifications('cns_topic', 'forum:' . strval(db_get_first_id()), $member_id);
 
-        enable_notifications('cns_topic', strval(db_get_first_id()), $member_id);
+        set_notifications('cns_topic', strval(db_get_first_id()), $member_id);
 
         // number of friends to a single member
         $GLOBALS['SITE_DB']->query_insert('chat_friends', [

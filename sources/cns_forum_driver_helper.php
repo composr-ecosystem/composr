@@ -151,7 +151,7 @@ function _helper_make_post_forum_topic(object $this_ref, string $forum_name, str
                 list($members, $possibly_has_more) = $ob->list_members_who_have_enabled('comment_posted', $topic_identifier, null, $start, $max);
 
                 foreach ($members as $to_member_id => $setting) {
-                    enable_notifications('cns_topic', strval($topic_id), $to_member_id);
+                    set_notifications('cns_topic', strval($topic_id), $to_member_id);
                 }
 
                 $start += $max;

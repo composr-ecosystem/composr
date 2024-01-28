@@ -168,7 +168,7 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
             ]);
             if ($test === null) {
                 require_code('notifications');
-                enable_notifications('comment_posted', $real_feedback_type . '_' . $content_id, $submitter);
+                set_notifications('comment_posted', $real_feedback_type . '_' . $content_id, $submitter);
             }
         }
     }
@@ -596,7 +596,7 @@ function actualise_credit_rating_points(string $content_type, string $content_id
             require_code('content');
             require_code('points2');
             require_lang('points');
-            
+
             list($title) = content_get_details($content_type, $content_id);
 
             // All feedback ledger records will have a t_type_id format of content_type:content_id
@@ -1016,7 +1016,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         if (get_forum_type() == 'cns') {
             $auto_monitor_contrib_content = $GLOBALS['CNS_DRIVER']->get_member_row_field(get_member(), 'm_auto_monitor_contrib_content');
             if ($auto_monitor_contrib_content == 1) {
-                enable_notifications('comment_posted', $real_feedback_type . '_' . $content_id);
+                set_notifications('comment_posted', $real_feedback_type . '_' . $content_id);
             }
         }
 

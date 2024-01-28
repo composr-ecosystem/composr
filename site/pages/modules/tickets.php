@@ -947,7 +947,7 @@ class Module_tickets
 
         if ((has_privilege(get_member(), 'support_operator')) && (get_option('ticket_auto_assign') == '1')) {
             require_code('notifications');
-            enable_notifications('ticket_assigned_staff', $ticket_id);
+            set_notifications('ticket_assigned_staff', $ticket_id);
         }
 
         // Send e-mail...
@@ -1395,7 +1395,7 @@ class Module_tickets
         }
 
         require_code('notifications');
-        enable_notifications('ticket_assigned_staff', $ticket_id, $member_id);
+        set_notifications('ticket_assigned_staff', $ticket_id, $member_id);
 
         // Notification to support operator that they are assigned
         $_ticket_url = build_url(['page' => '_SELF', 'type' => 'ticket', 'id' => $ticket_id, 'redirect' => null], '_SELF', [], false, true, true);
@@ -1486,7 +1486,7 @@ class Module_tickets
             ]
         );
 
-        disable_notifications('ticket_assigned_staff', $ticket_id, $member_id);
+        reset_notifications('ticket_assigned_staff', $ticket_id, $member_id);
 
         // Redirect
         require_code('templates_redirect_screen');

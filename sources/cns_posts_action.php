@@ -329,9 +329,9 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
         $auto_monitor_contrib_content = $GLOBALS['CNS_DRIVER']->get_member_row_field($poster, 'm_auto_monitor_contrib_content');
         if ($auto_monitor_contrib_content == 1) {
             require_code('notifications');
-            cms_profile_start_for('cns_make_post:enable_notifications');
-            enable_notifications('cns_topic', strval($topic_id), $poster);
-            cms_profile_end_for('cns_make_post:enable_notifications');
+            cms_profile_start_for('cns_make_post:set_notifications');
+            set_notifications('cns_topic', strval($topic_id), $poster);
+            cms_profile_end_for('cns_make_post:set_notifications');
         }
     }
 

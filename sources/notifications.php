@@ -851,21 +851,22 @@ function _find_member_statistical_notification_type(int $to_member_id, string $n
 }
 
 /**
- * Enable notifications for a member on a notification code+category.
+ * Set a notification setting for a member on a notification code+category.
  *
  * @param  ID_TEXT $notification_code The notification code to use
  * @param  ?SHORT_TEXT $notification_category The category within the notification code (null: none)
  * @param  ?MEMBER $member_id The member being signed up (null: current member)
  * @param  ?integer $setting Setting to use (null: default)
  * @param  boolean $reset_for_all_types Reset all notification codes, not just set for $setting
+ * @return boolean Whether a change was actually made to the notification settings
  */
-function enable_notifications(string $notification_code, ?string $notification_category, ?int $member_id = null, ?int $setting = null, bool $reset_for_all_types = true)
+function set_notifications(string $notification_code, ?string $notification_category, ?int $member_id = null, ?int $setting = null, bool $reset_for_all_types = true)
 {
     if ($member_id === null) {
         $member_id = get_member();
     }
     if (is_guest($member_id)) {
-        return;
+        return false;
     }
 
     $db = get_notification_code_db($notification_code);
@@ -889,11 +890,11 @@ function enable_notifications(string $notification_code, ?string $notification_c
         if ($setting == A__STATISTICAL || !_notification_setting_available($setting, $member_id)) {
             $setting = _find_member_statistical_notification_type($member_id, $notification_code);
         }
-    } elseif ($setting != A_NA) {
+    } else {
         // Check there is actually something to do here (when saving notifications tab usually everything will be still the same)
         $test = $db->query_select_value_if_there('notifications_enabled', 'l_setting', $map);
         if ($test === $setting) {
-            return;
+            return false;
         }
     }
 
@@ -903,23 +904,24 @@ function enable_notifications(string $notification_code, ?string $notification_c
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns') && ($notification_category !== null)) { // Sync comment_posted ones to also monitor the forum ones; no need for opposite way as comment ones already trigger forum ones
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $notification_category, do_lang('COMMENT'));
         if ($topic_id !== null) {
-            enable_notifications('cns_topic', strval($topic_id), $member_id);
+            set_notifications('cns_topic', strval($topic_id), $member_id);
         }
     }
 
     global $NOTIFICATION_SETTING_CACHE;
     $NOTIFICATION_SETTING_CACHE[serialize($basic_map)] = $setting;
+
+    return true;
 }
 
 /**
- * Disable notifications for a member on a notification code+category.
- * Chances are you don't want to call this, you want to call enable_notifications with $setting = A_NA. That'll stop the default coming back.
+ * Reset notification settings to the default for a member on a notification code+category.
  *
  * @param  ID_TEXT $notification_code The notification code to use
  * @param  SHORT_TEXT $notification_category The category within the notification code
  * @param  ?MEMBER $member_id The member being de-signed up (null: current member)
  */
-function disable_notifications(string $notification_code, string $notification_category, ?int $member_id = null)
+function reset_notifications(string $notification_code, string $notification_category, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -940,7 +942,7 @@ function disable_notifications(string $notification_code, string $notification_c
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns')) { // Sync comment_posted ones to the forum ones
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $notification_category, do_lang('COMMENT'));
         if ($topic_id !== null) {
-            disable_notifications('cns_topic', strval($topic_id), $member_id);
+            reset_notifications('cns_topic', strval($topic_id), $member_id);
         }
     }
 

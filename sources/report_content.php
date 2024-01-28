@@ -434,7 +434,7 @@ function _report_content(string $content_type, string $content_id, string $repor
     // Auto monitor this ticket for all support operators if auto assign is enabled
     if ((has_privilege(get_member(), 'support_operator')) && (get_option('ticket_auto_assign') == '1')) {
         require_code('notifications');
-        enable_notifications('ticket_assigned_staff', $ticket_id);
+        set_notifications('ticket_assigned_staff', $ticket_id);
     }
 
     // Find true ticket title

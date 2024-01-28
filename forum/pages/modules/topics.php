@@ -2620,10 +2620,10 @@ class Module_topics
         if (($new_topic) && ($forum_id === null)) {
             require_code('notifications');
 
-            enable_notifications('cns_topic', strval($topic_id), get_member()); // from
-            enable_notifications('cns_topic', strval($topic_id), $member_id); // to
+            set_notifications('cns_topic', strval($topic_id), get_member()); // from
+            set_notifications('cns_topic', strval($topic_id), $member_id); // to
             foreach ($invited_members as $invited_member) {
-                enable_notifications('cns_topic', strval($topic_id), $invited_member);
+                set_notifications('cns_topic', strval($topic_id), $invited_member);
 
                 cns_invite_to_pt($invited_member, $topic_id);
             }
@@ -4044,7 +4044,7 @@ class Module_topics
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
         require_code('notifications');
-        enable_notifications('cns_topic', strval($topic_id), $member_id);
+        set_notifications('cns_topic', strval($topic_id), $member_id);
         cns_invite_to_pt($member_id, $topic_id);
 
         return $this->redirect_to('EDIT_TOPIC', $topic_id);
@@ -4591,8 +4591,8 @@ class Module_topics
         $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_pt_from' => $a, 't_pt_to' => $b, 't_forum_id' => null], ['id' => $topic_id], '', 1);
 
         require_code('notifications');
-        enable_notifications('cns_topic', strval($topic_id), $a); // from
-        enable_notifications('cns_topic', strval($topic_id), $b); // to
+        set_notifications('cns_topic', strval($topic_id), $a); // from
+        set_notifications('cns_topic', strval($topic_id), $b); // to
 
         // Update forum cache view
         require_code('cns_posts_action2');

@@ -1188,7 +1188,7 @@ class Hook_import_phpbb3
                 if ($topic_id === null) {
                     continue;
                 }
-                enable_notifications('cns_topic', strval($topic_id), $member_id);
+                set_notifications('cns_topic', strval($topic_id), $member_id);
 
                 import_id_remap_put('topic_notification', strval($row['topic_id']) . '-' . strval($row['user_id']), 1);
             }
@@ -1213,7 +1213,7 @@ class Hook_import_phpbb3
                 if ($forum_id === null) {
                     continue;
                 }
-                enable_notifications('cns_topic', 'forum:' . strval($forum_id), $member_id);
+                set_notifications('cns_topic', 'forum:' . strval($forum_id), $member_id);
 
                 import_id_remap_put('forum_notification', strval($row['forum_id']) . '-' . strval($row['user_id']), 1);
             }
