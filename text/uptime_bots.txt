@@ -1,0 +1,6 @@
+uptimerobot=UptimeRobot
+uptimebot=Uptimebot
+monitoringbot=MonitoringBot
+uptimecom=Uptime.com
+betteruptimebot=Better Uptime Bot
+uptimekuma=Uptime-Kuma

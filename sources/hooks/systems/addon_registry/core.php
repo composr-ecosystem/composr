@@ -1354,6 +1354,7 @@ class Hook_addon_registry_core
             'adminzone/pages/modules_custom/index.html',
             'text/.htaccess',
             'text/bots.txt',
+            'text/uptime_bots.txt',
             'text/EN/.htaccess',
             'text/EN/index.html',
             'docs/INSTALL.md',

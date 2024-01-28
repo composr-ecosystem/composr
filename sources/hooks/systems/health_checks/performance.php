@@ -447,7 +447,7 @@ class Hook_health_check_performance extends Hook_Health_Check
 
         require_code('files');
         $bots = cms_parse_ini_file_fast(is_file(get_file_base() . '/text_custom/bots.txt') ? (get_file_base() . '/text_custom/bots.txt') : (get_file_base() . '/text/bots.txt'));
-        $bots[] = 'UptimeRobot';
+        $bots = array_merge($bots, cms_parse_ini_file_fast(is_file(get_file_base() . '/text_custom/uptime_bots.txt') ? (get_file_base() . '/text_custom/uptime_bots.txt') : (get_file_base() . '/text/uptime_bots.txt')));
         $bots_where = '';
         foreach ($bots as $bot) {
             if (trim($bot) != '') {
