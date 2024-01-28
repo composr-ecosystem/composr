@@ -224,7 +224,7 @@ class Hook_fields_just_date
         $_min_year = option_value_from_field_array($field, 'min_year', '');
         $_max_year = option_value_from_field_array($field, 'max_year', '');
         if ((($_min_year != '') && ($year < intval($_min_year))) || (($_max_year != '') && ($year > intval($_max_year)))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INVALID_DATE_GIVEN'));
         }
 
         return str_pad(strval($year), 4, '0', STR_PAD_LEFT) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($day), 2, '0', STR_PAD_LEFT);

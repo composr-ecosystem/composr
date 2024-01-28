@@ -79,7 +79,7 @@ class Block_main_contact_catalogues
 
         $subject = array_key_exists('subject', $map) ? $map['subject'] : '';
         if ($subject == '') {
-            $subject = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title'));
+            $subject = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', array('c_name' => $catalogue_name)));
         }
 
         $body_prefix = array_key_exists('body_prefix', $map) ? $map['body_prefix'] : '';

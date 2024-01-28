@@ -21,6 +21,9 @@ class Hook_symbol_MANTIS_WEEK_ACTIVITY
     public function run($param)
     {
         $cnt_in_last_week = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM mantis_bug_table WHERE last_updated>' . strval(time() - 60 * 60 * 24 * 7));
-        return strval($cnt_in_last_week);
+        if ($cnt_in_last_week === null) {
+            return '';
+        }
+        return integer_format($cnt_in_last_week);
     }
 }

@@ -694,13 +694,15 @@ function ModalWindow()
 
 			if (do_scroll)
 			{
-				try // Scroll to top to see
-				{
-					this.top_window.scrollTo(0,0);
-					if ((typeof iframe[0]!='undefined') && (has_iframe_ownership(iframe[0])))
-						iframe[0].contentWindow.scrolled_up_for=true;
-				}
-				catch (e) {}
+				window.setTimeout(function() {
+					try // Scroll to top to see
+					{
+						this.top_window.scrollTo(0,0);
+						if ((typeof iframe[0]!='undefined') && (has_iframe_ownership(iframe[0])))
+							iframe[0].contentWindow.scrolled_up_for=true;
+					}
+					catch (e) {}
+				}, 25);
 			}
 		},
 

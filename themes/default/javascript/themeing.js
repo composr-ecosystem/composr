@@ -409,11 +409,13 @@ function do_editarea_search(regexp)
 	ecw.document.getElementById('area_search').value=regexp;
 	ecw.editArea.execCommand('area_search');
 	ecw.editArea.execCommand('hidden_search');
-	try
-	{
-		window.scrollTo(0,find_pos_y(document.getElementById('css').parentNode));
-	}
-	catch (e) {}
+	window.setTimeout(function() {
+		try
+		{
+			window.scrollTo(0,find_pos_y(document.getElementById('css').parentNode));
+		}
+		catch (e) {}
+	}, 25);
 
 	// Force scroll to bottom, so scrolls up when searching and shows result without scrolling back down
 	ecw.document.getElementById('result').scrollTop=ecw.document.getElementById('result').scrollHeight;

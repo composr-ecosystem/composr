@@ -106,6 +106,8 @@ abstract class Standard_crud_module
     public $supports_mass_delete = false;
     public $title;
 
+    public $is_chained_with_parent_browse;
+
     // These only needed if we are generate create_selection_list_entries automatically
     public $table_prefix = '';
     public $array_key = 'id';

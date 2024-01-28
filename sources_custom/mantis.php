@@ -13,13 +13,13 @@
  * @package    composr_homesite_support_credits
  */
 
-function get_tracker_issue_titles($ids, $version = null, $previous_version = null)
+function get_tracker_issues($ids, $version = null, $previous_version = null)
 {
     if ((count($ids) == 0) && ($version === null) && ($previous_version === null)) {
         return array();
     }
 
-    $sql = 'SELECT id,summary,view_state,(SELECT name FROM mantis_category_table c WHERE c.id=m.category_id) AS category FROM mantis_bug_table m WHERE ';
+    $sql = 'SELECT id,summary,view_state,(SELECT username FROM mantis_user_table u WHERE u.id=m.reporter_id) AS reporter,(SELECT username FROM mantis_user_table u WHERE u.id=m.handler_id) AS handler,(SELECT name FROM mantis_category_table c WHERE c.id=m.category_id) AS category FROM mantis_bug_table m WHERE ';
 
     if (empty($ids)) {
         $sql .= '1=0';
@@ -50,14 +50,16 @@ function get_tracker_issue_titles($ids, $version = null, $previous_version = nul
         if (!array_key_exists($issue['category'], $issue_titles)) {
             $issue_titles[$issue['category']] = array();
         }
-        $issue_titles[$issue['category']][$issue['id']] = $summary;
+        $reporter = $issue['reporter'];
+        $handler = $issue['handler'];
+        $issue_titles[$issue['category']][$issue['id']] = array($summary, $reporter, $handler);
     }
     ksort($issue_titles);
 
     $_issue_titles = array();
     foreach ($issue_titles as $category_id => $issues) {
-        foreach ($issues as $issue_id => $summary) {
-            $_issue_titles['_' . strval($issue_id)] = $summary;
+        foreach ($issues as $issue_id => $data) {
+            $_issue_titles['_' . strval($issue_id)] = $data;
         }
     }
 

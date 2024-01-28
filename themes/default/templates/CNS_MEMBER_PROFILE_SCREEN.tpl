@@ -30,7 +30,9 @@
 
 								if (automated)
 								{
-									try { window.scrollTo(0,0); } catch (e) {};
+									window.setTimeout(function() {
+										try { window.scrollTo(0,0); } catch (e) {};
+									}, 25);
 								}
 
 								// Self destruct loader after this first run

@@ -337,6 +337,8 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
     if ($already_known === null) {
         $already_known = array();
     }
+    
+    require_code('version');
 
     $addons_available_for_installation = array();
     $files = array();
@@ -383,6 +385,11 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
 
         if (!is_null($info_file)) {
             $info = better_parse_ini_file(null, $info_file['data']);
+            
+            // skip over addon TARs meant for v11+ as they cannot be installed on v10
+            if ((!empty($info['min_cms_version'])) && (floatval($info['min_cms_version']) > cms_version_number())) {
+                continue;
+            }
 
             $info['file'] = $file;
 
@@ -623,6 +630,13 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true)
     $addon = $info['name'];
 
     $was_already_installed = addon_installed($addon, true);
+    
+    // Prevent installing v11+ addons on a v10 site
+    require_code('version');
+    if ((!empty($info['min_cms_version'])) && (floatval($info['min_cms_version']) > cms_version_number())) {
+        warn_exit(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon)));
+    }
+    
 
     require_code('developer_tools');
     destrictify();
@@ -1064,6 +1078,17 @@ function inform_about_addon_install($file, $also_uninstalling = null, $also_inst
     // Check incompatibilities, and show general warning
     // NB: It's theoretically possible that there may be incompatibilities between two addons installing together, and we can't detect this (only incompatibilities for what is already installed). However it's very unlikely as multi-install is only really going to happen with official addons which have no such problems.
     $warnings = new Tempcode();
+    require_code('version');
+    
+    // Prevent installing v11+ addons on a v10 site
+    if ((!empty($info['min_cms_version'])) && (floatval($info['min_cms_version']) > cms_version_number())) {
+        if (!$always_return) {
+            warn_exit(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon)));
+        }
+        $warnings->attach(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon)));
+    }
+    
+    // Non-core addon
     if ($info['author'] != 'Core Team') {
         static $done_non_core_warn = false;
         if (!$done_non_core_warn) {
@@ -1071,6 +1096,8 @@ function inform_about_addon_install($file, $also_uninstalling = null, $also_inst
         }
         $done_non_core_warn = true;
     }
+    
+    // Addon incompatibilities
     $incompatibilities = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name'), array('addon_name_dependant_upon' => $addon, 'addon_name_incompatibility' => 1), 'ORDER BY addon_name'));
     $_incompatibilities = new Tempcode();
     foreach ($incompatibilities as $in) {

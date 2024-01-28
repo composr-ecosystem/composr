@@ -155,7 +155,6 @@ class Breadcrumb_substitution_loader
         $this->tag_stack = array();
         $this->attribute_stack = array();
 
-        $this->substitution_current_match_key = null;
         $this->substitution_current_links = array();
 
         $this->substitutions = array();

@@ -293,7 +293,7 @@ function internalise_ajax_block_wrapper_links(url_stem,block_element,look_for,ex
 				clear_out_tooltips(null);
 
 				// Make AJAX block call
-				return call_block(url_stem+url_stub,'',block_element,append,function() { if (scroll_to_top) window.scrollTo(0,block_pos_y); },false,post_params);
+				return call_block(url_stem+url_stub,'',block_element,append,function() { if (scroll_to_top) window.setTimeout(function() { window.scrollTo(0,block_pos_y); }, 25); },false,post_params);
 			};
 			if (links[i].nodeName.toLowerCase()=='a')
 			{
@@ -414,11 +414,13 @@ function _call_block_render(raw_ajax_result,ajax_url,target_div,append,callback,
 	// Scroll up if required
 	if (scroll_to_top_of_wrapper)
 	{
-		try
-		{
-			window.scrollTo(0,find_pos_y(target_div));
-		}
-		catch (e) {}
+		window.setTimeout(function() {
+			try
+			{
+				window.scrollTo(0,find_pos_y(target_div));
+			}
+			catch (e) {}
+		}, 25);
 	}
 
 	// Defined callback

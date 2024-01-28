@@ -49,7 +49,7 @@ function init__version()
  */
 function cms_version_minor()
 {
-    return '0.44';
+    return '0.45';
 }
 
 /**
@@ -69,7 +69,7 @@ function cms_version_number()
  */
 function cms_version_time()
 {
-    return 1703887906;
+    return 1706401812;
 }
 
 /**

@@ -519,6 +519,7 @@ class Module_catalogues
 
     public $title;
     public $_title;
+    public $catalogue_title;
     public $catalogue_name;
     public $id;
     public $screen;
