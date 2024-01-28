@@ -241,8 +241,8 @@ function phase_1()
             }
 
             // Start populating changes
-            $tracker_reporters = [];
-            $tracker_handlers = [];
+            $tracker_reporters = array();
+            $tracker_handlers = array();
             if (count($tracker_issues) > 0) {
                 $changes = 'The following [url="tracker issues"]' . $tracker_url . '[/url] have been resolved since version ' . $previous_version . "...\n";
                 ksort($tracker_issues); // Sort by tracker ID (usually results in oldest to newest sorting)
