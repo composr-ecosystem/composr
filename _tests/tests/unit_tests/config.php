@@ -161,6 +161,7 @@ class config_test_set extends cms_test_case
                 'error_handling_notices',
                 'error_handling_warnings',
                 'points_ADD_BANNER',
+                'points_ADD_CALENDAR_EVENT',
                 'points_ADD_DOWNLOAD',
                 'points_ADD_IMAGE',
                 'points_ADD_NEWS',

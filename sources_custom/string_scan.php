@@ -1294,6 +1294,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_ADD_QUIZ
         ACTIVITY_ADD_VIDEO
         ACTIVITY_CALENDAR_EVENT
+        ACTIVITY_ADD_CALENDAR_EVENT
         ACTIVITY_CATALOGUE_GENERIC_ADD
         ACTIVITY_CATALOGUE_GENERIC_ADD_NO_LINK
         ACTIVITY_CHOOSE_POLL
@@ -3822,6 +3823,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_ping_url
         CONFIG_OPTION_point_logs_per_page
         CONFIG_OPTION_points_ADD_BANNER
+        CONFIG_OPTION_points_ADD_CALENDAR_EVENT
         CONFIG_OPTION_points_ADD_DOWNLOAD
         CONFIG_OPTION_points_ADD_IMAGE
         CONFIG_OPTION_points_ADD_NEWS

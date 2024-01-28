@@ -43,7 +43,7 @@ class Hook_addon_registry_calendar
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_calendar
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -137,6 +137,7 @@ class Hook_addon_registry_calendar
             'sources/hooks/systems/config/calendar_show_stats_count_events_this_month.php',
             'sources/hooks/systems/config/calendar_show_stats_count_events_this_week.php',
             'sources/hooks/systems/config/calendar_show_stats_count_events_this_year.php',
+            'sources/hooks/systems/config/points_ADD_CALENDAR_EVENT.php',
             'sources/hooks/systems/realtime_rain/calendar.php',
             'sources/hooks/systems/content_meta_aware/event.php',
             'sources/hooks/systems/content_meta_aware/calendar_type.php',
