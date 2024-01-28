@@ -951,6 +951,40 @@ function reset_notifications(string $notification_code, string $notification_cat
 }
 
 /**
+ * Dispatch a high-impact change notification to alert a member and staff that someone changed the member's notification settings.
+ *
+ * @param  MEMBER $member_id_of The member whose notifications were changed
+ * @param  boolean $sensitive_change_alert Whether to notify the member whose changes were applied (false: only staff get notified)
+ * @ignore
+ */
+function _dispatch_notifications_notification(int $member_id_of, bool $sensitive_change_alert)
+{
+    $sensitive_changes = do_lang('SECURITY_ASPECT_CHANGED__NOTIFICATIONS');
+    $part_b = '';
+    if (!has_actual_page_access(get_member(), 'admin_cns_members')) { // If change not by an admin
+        $part_b = do_lang('SECURITY_ASPECT_CHANGED_BODY_2', get_ip_address());
+    }
+
+    $old_username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
+    $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true);
+    $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id_of);
+
+    // Notify member e-mail addresses if specified
+    if (($email_address !== null) && ($sensitive_change_alert)) {
+        require_code('mail');
+
+        $cm_subject = do_lang('SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
+        $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), $sensitive_changes, $part_b]);
+        dispatch_mail($cm_subject, $cm_body, [$email_address], $old_username);
+    }
+
+    // Notify staff
+    $subject = do_lang('STAFF_SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()], get_site_default_lang());
+    $mail = do_notification_lang('STAFF_SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [comcode_escape(get_site_name()), comcode_escape($sensitive_changes), comcode_escape($part_b)], get_site_default_lang());
+    dispatch_notification('cns_profile_high_impact_edit', null, $subject, $mail, null, get_member(), ['use_real_from' => true]);
+}
+
+/**
  * Find whether notifications are enabled for a member on a notification code+category. Does not check security (must go through notification object for that).
  *
  * @param  ID_TEXT $notification_code The notification code to check

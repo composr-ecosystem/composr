@@ -173,6 +173,7 @@ function notifications_ui(int $member_id_of) : object
 
     // Save via form post (for top-level notification code, not under a notification category)
     if (has_interesting_post_fields()) {
+        $changes_made = false;
         foreach ($all_notification_codes as $notification_code => $notification_types) {
             $new_setting = A_NA;
             foreach ($notification_types as $notification_type_constant => $notification_type_codename) {
@@ -180,7 +181,20 @@ function notifications_ui(int $member_id_of) : object
                     $new_setting = $new_setting | $notification_type_constant;
                 }
             }
-            set_notifications($notification_code, null, $member_id_of, $new_setting);
+            $_changes_made = set_notifications($notification_code, null, $member_id_of, $new_setting);
+            if ($_changes_made) {
+                $changes_made = true;
+            }
+        }
+
+        // Treat as a high-impact change and send an e-mail alert if any changes were made
+        if ((get_member() == $member_id_of) || ((has_privilege(get_member(), 'member_maintenance')) && (post_param_integer('sensitive_change_alert', 0) == 0))) {
+            $sensitive_change_alert = false;
+        } else {
+            $sensitive_change_alert = true;
+        }
+        if ($changes_made) {
+            _dispatch_notifications_notification($member_id_of, $sensitive_change_alert);
         }
     }
 
@@ -288,7 +302,12 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
     $notification_category = get_param_string('id', null);
     if ($notification_category === null) {
         if (has_interesting_post_fields()) { // If we've just saved via form POST - this is after editing all the category selections for $notification_code
-            set_notifications($notification_code, null, null, A_NA); // Make it clear we've overridden the general value by doing this
+            $changes_made = false;
+
+            $_changes_made_a = set_notifications($notification_code, null, null, A_NA); // Make it clear we've overridden the general value by doing this
+            if ($_changes_made_a) {
+                $changes_made = true;
+            }
 
             foreach (array_keys($_POST) as $key) {
                 $matches = [];
@@ -302,8 +321,16 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
                         }
                     }
 
-                    set_notifications($notification_code, $notification_category, null, $new_setting);
+                    $_changes_made_b = set_notifications($notification_code, $notification_category, null, $new_setting);
+                    if ($_changes_made_b) {
+                        $changes_made = true;
+                    }
                 }
+            }
+
+            // Treat as a high-impact change and send an e-mail alert if any changes were made
+            if ($changes_made) {
+                _dispatch_notifications_notification(get_member(), false);
             }
 
             attach_message(do_lang_tempcode('SUCCESS'), 'inform');

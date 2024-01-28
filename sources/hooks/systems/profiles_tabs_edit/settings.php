@@ -207,7 +207,7 @@ class Hook_profiles_tabs_edit_settings
             }
 
             $old_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id_of);
-            if ((has_privilege($member_id_viewing, 'member_maintenance')) && ($member_id_viewing != $member_id_of) && (post_param_integer('sensitive_change_alert', 0) == 0)) {
+            if (($member_id_viewing == $member_id_of) || ((has_privilege($member_id_viewing, 'member_maintenance')) && (post_param_integer('sensitive_change_alert', 0) == 0))) {
                 $sensitive_change_alert = false;
             } else {
                 $sensitive_change_alert = true;
