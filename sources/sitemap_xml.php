@@ -281,11 +281,9 @@ function ping_sitemap_xml(string $url, bool $trigger_error = false) : string
         $local = is_local_machine(cms_parse_url_safe($url, PHP_URL_HOST));
         if (($ping) && (get_option('site_closed') == '0') && (!$local)) {
             // Submit to search engines
-            $services = [
-                'http://www.google.com/webmasters/tools/ping?sitemap=',
-            ];
-            foreach ($services as $service) {
-                $result = http_get_contents($service . urlencode($url), ['convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error]);
+            $hook_obs = find_all_hook_obs('systems', 'sitemap_ping', 'Hook_sitemap_ping_');
+            foreach ($hook_obs as $hook => $ob) {
+                $result = $ob->run($url);
                 if (is_string($result)) {
                     $out .= $result;
                 }

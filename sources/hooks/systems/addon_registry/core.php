@@ -43,7 +43,7 @@ class Hook_addon_registry_core
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_core
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -1245,6 +1245,10 @@ class Hook_addon_registry_core
             'sources_custom/hooks/systems/directives/.htaccess',
             'sources/hooks/systems/directives/index.html',
             'sources_custom/hooks/systems/directives/index.html',
+            'sources/hooks/systems/sitemap_ping/.htaccess',
+            'sources_custom/hooks/systems/sitemap_ping/.htaccess',
+            'sources/hooks/systems/sitemap_ping/index.html',
+            'sources_custom/hooks/systems/sitemap_ping/index.html',
             'sources/url_remappings.php',
             'sources/hooks/systems/addon_registry/.htaccess',
             'sources_custom/hooks/systems/addon_registry/.htaccess',
