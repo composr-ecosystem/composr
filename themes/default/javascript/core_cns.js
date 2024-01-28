@@ -256,7 +256,7 @@
                         window.setTimeout(function () {
                             // Then let subtab specified in URL get called up
                             $cms.ui.findUrlTab();
-                        }, 0);
+                        }, 25);
                     });
                 };
             }
@@ -371,9 +371,12 @@
         container.style.padding = '0.5em';
         container.style.left = ($dom.getWindowWidth() / 2 - 200).toString() + 'px';
         container.style.top = ($dom.getWindowHeight() / 2 - 100).toString() + 'px';
-        try {
-            scrollTo(0, 0);
-        } catch (e) {}
+
+        window.setTimeout(function() {
+            try {
+                scrollTo(0, 0);
+            } catch (e) {}
+        }, 25);
 
         var title = document.createElement('h2');
         title.appendChild(document.createTextNode('{!encryption:DECRYPT_TITLE;^}'));

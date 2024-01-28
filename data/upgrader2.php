@@ -169,13 +169,13 @@ echo '<script>
         if (scrollTime < new Date().valueOf() - 10000) {
             scrollPos = document.getElementById("file_' . strval(min(count($todo) - 1, $file_offset + $per_cycle)) . '").offsetTop - 50;
         }
-        window.scrollTo(0, scrollPos);
         window.setTimeout(function() {
+            window.scrollTo(0, scrollPos);
             window.onscroll = function() {
                 scrollTime = new Date().valueOf();
                 scrollPos = window.scrollY;
             };
-        }, 10);
+        }, 25);
     };
 ';
 if ($next_offset_url != '') {

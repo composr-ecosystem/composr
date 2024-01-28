@@ -39,7 +39,7 @@
                 $cms.ui.alert({notice: el.dataset.addonDetails, title: el.textContent, unescaped: true, width: 1000});
                 setTimeout(function () {
                     window.top.scrollTo(0, 0);
-                }, 0);
+                }, 25);
             }
         },
 

@@ -2414,13 +2414,15 @@
         if ((!$cms.configOption('enable_animations')) || (destY - currentScrollY > 2000)) {
             // Termination step: Animations not enabled, so just do simplest scroll
 
-            try {
-                window.scrollTo(0, destY);
-            } catch (ignore) {}
+            window.setTimeout(function() {
+                try {
+                    window.scrollTo(0, destY);
+                } catch (ignore) {}
 
-            if (callback) {
-                callback();
-            }
+                if (callback) {
+                    callback();
+                }
+            }, 25);
 
             return;
         }
@@ -2472,13 +2474,15 @@
 
             $util.log('Terminated smooth scroll due to pop-up blocker');
 
-            try {
-                window.scrollTo(0, destY);
-            } catch (ignore) {}
+            window.setTimeout(function() {
+                try {
+                    window.scrollTo(0, destY);
+                } catch (ignore) {}
 
-            if (callback) {
-                callback();
-            }
+                if (callback) {
+                    callback();
+                }
+            }, 25);
 
             return;
         }

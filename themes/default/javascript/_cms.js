@@ -773,11 +773,13 @@
 
             // Scroll up if required
             if (scrollToTopOfWrapper) {
-                try {
-                    window.scrollTo(0, $dom.findPosY(targetDiv));
-                } catch (e) {
-                    // continue
-                }
+                window.setTimeout(function() {
+                    try {
+                        window.scrollTo(0, $dom.findPosY(targetDiv));
+                    } catch (e) {
+                        // continue
+                    }
+                }, 25);
             }
 
             // Defined callback

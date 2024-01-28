@@ -223,7 +223,9 @@
                 $cms.ui.selectTab('g', tab, true);
 
                 if ((window.scrollY < 20) && (tab.indexOf('--') === -1)) {
-                    window.scrollTo(0, $dom.findPosY(tabMarker) - 120);
+                    window.setTimeout(function() {
+                        window.scrollTo(0, $dom.findPosY(tabMarker) - 120);
+                    }, 25);
                 }
             } else if ((tab.indexOf('--') !== -1) && ($dom.$id('g-' + tab.substr(0, tab.indexOf('--'))))) { // If the prefix of the hash exists as a tab
                 var tabLevel1 = tab.substr(0, tab.indexOf('--'));
@@ -232,7 +234,9 @@
                 var tabLevel1Marker = $dom.$id('g-' + tabLevel1);
                 if (tabLevel1Marker) {
                     if (window.scrollY < 20) {
-                        window.scrollTo(0, $dom.findPosY(tabLevel1Marker) - 120);
+                        window.setTimeout(function() {
+                            window.scrollTo(0, $dom.findPosY(tabLevel1Marker) - 120);
+                        }, 25);
                     }
                 }
             }

@@ -911,11 +911,13 @@ var SortableTable = (function(){
             SortableTable.page(this,"+i+"); \
             if (typeof window.scrollTo!='undefined') \
             { \
-              try \
-              { \
-                window.scrollTo(0, $dom.findPosY(document.getElementById('"+t.id+"'), true)); \
-              } \
-              catch (e) {}; \
+              window.setTimeout(function() { \
+                try \
+                { \
+                  window.scrollTo(0, $dom.findPosY(document.getElementById('"+t.id+"'), true)); \
+                } \
+                catch (e) {}; \
+              }, 25);  \
             } \
             return false; \
           ");

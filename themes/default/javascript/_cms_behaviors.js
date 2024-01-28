@@ -1060,7 +1060,9 @@
 
                     // Make AJAX block call
                     $cms.callBlock($util.rel(thisCallUrl), '', ajaxifyContainer, false, false, postParams).then(function () {
-                        window.scrollTo(0, $dom.findPosY(ajaxifyContainer, true));
+                        window.setTimeout(function() {
+                            window.scrollTo(0, $dom.findPosY(ajaxifyContainer, true));
+                        }, 25);
                         window.hasJsState = true;
                         if (updateURL) {
                             window.history.pushState({}, document.title, newWindowUrl.toString()); // Update window URL
