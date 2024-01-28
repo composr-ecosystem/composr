@@ -94,6 +94,9 @@ if (!function_exists('critical_error')) {
 
         $may_show_footer = true;
 
+        // Name of the log file for which this error should be logged (blank: no logging). If errorlog.php, then the error will be passed to error_log.
+        $error_log = 'errorlog.php';
+
         switch ($code) {
             case 'CORRUPT_OVERRIDE':
                 $error = '<div>An override seems to no longer be compatible, ' . htmlentities($relay) . '.</div>';
@@ -107,10 +110,12 @@ if (!function_exists('critical_error')) {
             case 'YOU_ARE_BANNED':
                 $error = '<div>The member you are masquerading as has been banned. We cannot finish initialising the virtualised environment for this reason.</div>';
                 $may_show_footer = false;
+                $error_log = '';
                 break;
             case 'BANNED':
                 $error = '<div>The IP address you are accessing this website from (' . get_ip_address() . ') has been banished from this website. If you believe this is a mistake, contact the staff to have it resolved (typically, postmaster@' . get_domain() . ' will be able to reach them).</div>' . "\n" . '<div>If you are yourself staff, you should be able to unban yourself by editing the <kbd>banned_ip</kbd> table in a database administation tool, by removing rows that qualify against yourself. This error is raised to a critical error to reduce the chance of this IP address being able to further consume server resources.';
                 $may_show_footer = false;
+                $error_log = 'banned_access.log';
                 break;
             case 'TEST':
                 $error = '<div>This is a test error.</div>';
@@ -137,6 +142,7 @@ if (!function_exists('critical_error')) {
                 }
                 if (file_exists($install_url)) {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
+                    $error_log = '';
                 } else {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
@@ -148,6 +154,7 @@ if (!function_exists('critical_error')) {
                 }
                 if (file_exists($install_url)) {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
+                    $error_log = '';
                 } else {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
@@ -295,8 +302,23 @@ END;
             echo '<meta http-equiv="refresh" content="0;url=' . htmlentities($url) . '" />';
         }
 
-        if (php_function_allowed('error_log')) {
+        // Standard error logging
+        if ((php_function_allowed('error_log')) && ($error_log == 'errorlog.php')) {
             @error_log('Composr critical error: ' . str_replace("\n", '', $error), 0);
+        }
+
+        // Custom error logging
+        if (($error_log != '') && ($error_log != 'errorlog.php')) {
+            if ((file_exists(get_custom_file_base() . '/data_custom/' . $error_log)) && (cms_is_writable(get_custom_file_base() . '/data_custom/' . $error_log))) {
+                require_code('files');
+                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/' . $error_log, true, 'ab');
+                fwrite($myfile, loggable_date() . "\n");
+                fwrite($myfile, 'Composr critical error: ' . "\n");
+                fwrite($myfile, $error);
+                fwrite($myfile, "\n\n");
+                flock($myfile, LOCK_UN);
+                fclose($myfile);
+            }
         }
 
         if ($exit) {

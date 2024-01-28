@@ -43,7 +43,7 @@ class Hook_addon_registry_core_privacy
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_core_privacy
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -150,6 +150,7 @@ class Hook_addon_registry_core_privacy
             'sources/hooks/systems/config/days_to_keep__queries_log.php',
             'sources/hooks/systems/config/days_to_keep__tasks_log.php',
             'sources/hooks/systems/config/days_to_keep__require_code_log.php',
+            'sources/hooks/systems/config/days_to_keep__banned_access_log.php',
             'themes/default/images/icons/menu/pages/privacy_policy.svg',
             'themes/default/images/icons_monochrome/menu/pages/privacy_policy.svg',
             'pages/comcode/EN/privacy.txt',

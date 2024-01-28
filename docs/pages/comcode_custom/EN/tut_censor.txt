@@ -134,6 +134,8 @@ There is also a [tt]redirect_url[/tt] parameter for [tt]reasonedBan[/tt] that we
 
 This system may seem extreme, but sometimes extreme measures are needed to deal with the most persistent of spammers. It could also be used to deal with people posting far-right/far-left/Islamist material that is designed to radicalise people into violent revolution -- by banning such people and redirecting those people to a deradicalisation programme. 
 
+Note that reasoned bans will not work when banning someone by IP address. The software intentionally bails out early with a generic error message when someone tries accessing the site from a banned IP address. This means the reasoned ban system never gets loaded when that happens.
+
 Automatic bans are similar to the security alerts (hack-attacks). The difference is hack-attacks are general hacker/spammer signals Composr is hard-coded to be able to detect, are individually logged as incidents, and cumulate towards IP bans -- while automatic bans are custom defined by the webmaster for clear specific threats, resulting in immediate configurable banning.
 The advanced banning configuration also has [tt]<hackattack>[/tt] rules, which are documented in the [page="_SEARCH:tut_security"]Security[/page] tutorial.
 

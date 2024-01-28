@@ -790,6 +790,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_days_to_keep__ecommerce_log
         DAYS_TO_KEEP__HEALTH_CHECK_LOG
         CONFIG_OPTION_days_to_keep__health_check_log
+        DAYS_TO_KEEP__BANNED_ACCESS_LOG
+        CONFIG_OPTION_days_to_keep__banned_access_log
         ROBOTS_TXT
         _ROBOTS_TXT
         ROBOTS_TXT_ALREADY_EXISTS

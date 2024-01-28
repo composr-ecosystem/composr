@@ -477,6 +477,7 @@ Useful Composr logs include:
  - Resource-fs operations (debugging and audit), if enabled (enable it via creating an empty writable [tt]data_custom/resource_fs.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Processes and memory use tracking from calls to [tt]require_code[/tt] (debugging), if enabled (enable it via creating an empty writable [tt]data_custom/require_code.log[/tt] file, and specifying the GET parameter [tt]keep_show_loading_code=1[/tt] in a request; can view from Admin Zone > Audit > Low-level logging).
  - Mail integration (debugging), if enabled (enable it via creating an empty writable [tt]data_custom/mail_integration.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
+ - Banned IP address access log, if enabled (useful for analyzing hits to the software by banned IP addresses) (enable it via creating an empty writable [tt]data_custom/banned_access.log[/tt] file; can view from Admin Zone > Audit > Low-level logging).
  - The mail log (view from Admin Zone > Audit > E-mail queue/log)
 Other very useful logs:
  - The web server's own access log; look carefully in it and you are likely to see things like HTTP response codes (e.g. 500 means Internal Server Error)
