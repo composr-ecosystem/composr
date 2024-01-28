@@ -331,6 +331,19 @@ function step_1() : object
     // Integrity check
     require_code('files');
     $warnings = new Tempcode();
+
+    // Software version
+    $version_status = cms_version_branch_status();
+    if ($version_status == VERSION_ALPHA) {
+        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('INSTALLING_ALPHA_VERSION')]));
+    }
+    if ($version_status == VERSION_BETA) {
+        $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('INSTALLING_BETA_VERSION')]));
+    }
+    if ($version_status == VERSION_EOL) {
+        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('INSTALLING_EOL_VERSION')]));
+    }
+
     global $DATADOTCMS_FILE;
     if (!@is_resource($DATADOTCMS_FILE)) { // Do an integrity check - missing corrupt files
         $sdc = get_param_integer('skip_disk_checks', null);

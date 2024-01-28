@@ -11875,6 +11875,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BAD_GUID
         NOT_VALID_COUNTRY
         NOT_VALID_US_STATE
+        INSTALLING_ALPHA_VERSION
+        INSTALLING_BETA_VERSION
+        INSTALLING_EOL_VERSION
     ')));
 
     // Remove blank lines
