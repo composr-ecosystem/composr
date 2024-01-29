@@ -203,6 +203,10 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             }
         } else {
             switch ($password_compatibility_scheme) {
+                case 'pending_deletion': // Account is actually pending deletion
+                    $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_PENDING_DELETION');
+                    return $out;
+
                 case '': // Composr style salted MD5 algorithm
                 case 'temporary': // as above, but forced temporary password
                 case 'expired': // as above, but forced temporary password because the previous one expired

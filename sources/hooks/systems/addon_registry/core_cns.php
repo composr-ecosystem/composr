@@ -43,7 +43,7 @@ class Hook_addon_registry_core_cns
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_core_cns
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -479,6 +479,7 @@ class Hook_addon_registry_core_cns
             'sources/cns_field_editability.php',
             'sources/hooks/systems/tasks/export_members.php',
             'sources/hooks/systems/tasks/rebuild_all_cpf_indices.php',
+            'sources/hooks/systems/tasks/cns_delete_member.php',
             'sources/hooks/systems/cleanup/rebuild_all_cpf_indices.php',
             'sources/hooks/systems/tasks/cns_members_recache.php',
             'sources/hooks/systems/tasks/import_members.php',

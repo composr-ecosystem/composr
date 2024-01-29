@@ -113,6 +113,10 @@ class Module_members
                 if (($username === null) || (is_guest($member_id_of))) {
                     warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                 }
+                $is_being_deleted = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_password_compat_scheme') === 'pending_deletion');
+                if ($is_being_deleted) {
+                    warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
+                }
             } else {
                 $member_id_of = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
                 if ($member_id_of === null) {
@@ -120,6 +124,10 @@ class Module_members
                     warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
                 }
                 if (is_guest($member_id_of)) {
+                    warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
+                }
+                $is_being_deleted = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_password_compat_scheme') === 'pending_deletion');
+                if ($is_being_deleted) {
                     warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                 }
             }

@@ -8463,6 +8463,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TEXT_PRIVACY_DOWNLOAD
         TEXT_PRIVACY_PURGE
         TEXT_PRIVACY_SQL
+        PRIVACY_UPON_MEMBER_DELETE
+        CONFIG_OPTION_privacy_upon_member_delete
+        CONFIG_OPTION_privacy_upon_member_delete_VALUE_never
+        CONFIG_OPTION_privacy_upon_member_delete_VALUE_ask
+        CONFIG_OPTION_privacy_upon_member_delete_VALUE_always
     ')));
 
     $non_admin_files = [

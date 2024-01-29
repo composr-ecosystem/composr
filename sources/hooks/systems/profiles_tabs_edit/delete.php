@@ -50,6 +50,8 @@ class Hook_profiles_tabs_edit_delete
             $usage_before = memory_get_usage();
         }
 
+        $purge_action = get_option('privacy_upon_member_delete');
+
         $title = do_lang_tempcode('DELETE');
 
         $order = 200;
@@ -61,10 +63,19 @@ class Hook_profiles_tabs_edit_delete
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
 
-            require_code('cns_members_action');
-            require_code('cns_members_action2');
+            // Queue the task
+            require_code('tasks');
+            require_lang('cns');
+            $also_purge = false;
+            if (($purge_action == 'always') || (($purge_action == 'ask') && (get_param_integer('purge', 0) == 1))) {
+                $also_purge = true;
+            }
+            call_user_func_array__long_task(do_lang('DELETE_MEMBER'), get_screen_title('DELETE_MEMBER'), 'cns_delete_member', [$member_id_of, $also_purge], true, false, false);
 
-            cns_delete_member($member_id_of);
+            // Security: Invalidate the session and prevent the member from logging in
+            require_code('users_active_actions');
+            delete_session_by_member_id($member_id_of);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'pending_deletion'], ['id' => $member_id_of]);
 
             inform_exit(do_lang_tempcode('SUCCESS'));
         }
@@ -115,6 +126,14 @@ class Hook_profiles_tabs_edit_delete
         $fields = new Tempcode();
         require_code('form_templates');
         $fields->attach(form_input_tick(do_lang_tempcode(($member_id_of != $member_id_viewing) ? 'DELETE_WITHOUT_MERGING' : 'DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
+
+        if ($purge_action == 'ask') {
+            require_lang('privacy');
+            $fields->attach(form_input_tick(do_lang_tempcode('MEMBER_DELETE_PURGE'), do_lang_tempcode(($member_id_of != $member_id_viewing) ? '_DESCRIPTION_MEMBER_DELETE_PURGE' : 'DESCRIPTION_MEMBER_DELETE_PURGE'), 'purge', false));
+        } elseif ($purge_action == 'always') {
+            require_lang('privacy');
+            $text->attach(paragraph(do_lang_tempcode(($member_id_of != $member_id_viewing) ? '_MEMBER_DELETE_PURGE_INFO' : 'MEMBER_DELETE_PURGE_INFO')));
+        }
 
         require_javascript('core_cns');
         $js_function_calls = ['hookProfilesTabsEditDeleteRenderTab'];

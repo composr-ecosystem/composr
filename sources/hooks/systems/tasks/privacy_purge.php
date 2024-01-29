@@ -44,15 +44,15 @@ class Hook_task_privacy_purge
                 unset($ip_addresses[$key]);
             }
         }
-        
+
         if (($username == '') && ($member_id !== null)) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         }
-        
+
         if (($member_id === null) && ($username != '')) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         }
-        
+
         if (($username == '') && empty($ip_addresses) && ($member_id === null) && ($email_address == '')) {
             warn_exit(do_lang_tempcode('PRIVACY_PURGE_NO_FILTERS_SPECIFIED'));
         }
@@ -63,6 +63,9 @@ class Hook_task_privacy_purge
 
         set_mass_import_mode(true);
         push_force_immediate_log_it(true);
+
+        // Must forcefully purge translate even if multi_lang_content is off (GDPR regulations take priority)
+        push_db_scope_check(false);
 
         // We must purge actionlogs and f_moderator_logs last because log_it and cns_mod_log_it may be called from purges.
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
@@ -77,7 +80,7 @@ class Hook_task_privacy_purge
                 }
             }
         }
-        
+
         // Now purge actionlogs and f_moderator_logs
         $core_cns_hook = get_hook_ob('systems', 'privacy', 'core_cns', 'Hook_privacy_');
         $details = $core_cns_hook->info();
@@ -92,6 +95,7 @@ class Hook_task_privacy_purge
 
         set_mass_import_mode(false);
         pop_force_immediate_log_it();
+        pop_db_scope_check();
 
         require_code('caches3');
         erase_block_cache();
@@ -115,12 +119,12 @@ class Hook_task_privacy_purge
     protected function handle_for_table(object $hook_ob, string $table_name, array $table_details, int $table_action, string $username, array $ip_addresses, ?int $member_id, string $email_address, array $others)
     {
         $db = get_db_for($table_name);
-        
+
         $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, $table_action, false, $username, $ip_addresses, $member_id, $email_address, $others);
         if ($selection_sql == '') { // Blank result means we should not run for this table (no filters)
             return;
         }
-        
+
         $sql = 'SELECT * FROM ' . $db->get_table_prefix() . $table_name;
         $sql .= $selection_sql;
         $rows = $db->query($sql);

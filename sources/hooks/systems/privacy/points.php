@@ -90,7 +90,7 @@ class Hook_privacy_points extends Hook_privacy_base
             ],
         ];
     }
-    
+
     /**
      * Modify table details according to special hook behaviour and given data before performing the method.
      *
@@ -104,19 +104,20 @@ class Hook_privacy_points extends Hook_privacy_base
         if (($table_name != 'points_ledger') || ($row === null)) {
             return;
         }
-        
+
         $applicable_methods = ['anonymise', 'delete', 'is_owner'];
         if (!in_array($method, $applicable_methods)) {
             return;
         }
-        
+
         // If sender_id is guest, then recipient_id is owner
+        // TODO: this does not work
         if (($row[$table_details['owner_id_field']] !== null) && (is_guest($row[$table_details['owner_id_field']]))) {
             $table_details['owner_id_field'] = 'recipient_id';
             $table_details['additional_member_id_fields'] = [];
         }
     }
-    
+
     /**
      * Delete a row.
      *
@@ -131,7 +132,7 @@ class Hook_privacy_points extends Hook_privacy_base
                 $GLOBALS['SITE_DB']->query_delete('escrow_logs', ['escrow_id' => $row['id']]);
                 parent::delete($table_name, $table_details, $row);
                 break;
-                
+
             default:
                 parent::delete($table_name, $table_details, $row);
                 break;

@@ -85,6 +85,20 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
             $__ip_addresses = lookup_user($email_address, $_username, $_member_id, $_ip_address, $_email_address);
         }
 
+        // Null values are not allowed in the privacy API.
+        if ($_username === null) {
+            $_username = '';
+        }
+        if ($_member_id === null) {
+            $_member_id = $member_id;
+        }
+        if ($_ip_address === null) {
+            $_ip_address = '';
+        }
+        if ($_email_address === null) {
+            $_email_address = '';
+        }
+
         // We cannot safely use this criteria if our final member ID is a guest
         if (($_member_id !== null) && is_guest($_member_id)) {
             return;
@@ -503,11 +517,11 @@ abstract class Hook_privacy_base
                     if (count($others) == 0) {
                         break;
                     }
-                    if (!in_array($row[$additional_anonymise_field], $others)) {
+                    if (in_array($row[$additional_anonymise_field], $others)) {
                         continue;
                     }
                 } else {
-                    if (in_array($row[$additional_anonymise_field], $others)) {
+                    if (!in_array($row[$additional_anonymise_field], $others)) {
                         continue;
                     }
                 }
@@ -525,10 +539,11 @@ abstract class Hook_privacy_base
                 if (strpos($type, '*') !== false) {
                     if (($table_details['allowed_handle_methods'] & PRIVACY_METHOD__DELETE) != 0) {
                         $this->delete($table_name, $table_details, $row);
+                        return null;
                     }
 
                     // Must error at this point
-                    warn_exit(do_lang_tempcode('PRIVACY_PURGE_COULD_NOT_ANONYMISE', escape_html($table_name)));
+                    warn_exit(do_lang_tempcode('PRIVACY_PURGE_COULD_NOT_ANONYMISE', escape_html($table_name), escape_html($field)));
                 }
             }
 
