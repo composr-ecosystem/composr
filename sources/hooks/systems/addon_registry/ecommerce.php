@@ -58,7 +58,7 @@ class Hook_addon_registry_ecommerce
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -68,7 +68,7 @@ class Hook_addon_registry_ecommerce
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -197,6 +197,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/config/payment_gateway_vpn_username.php',
             'sources/hooks/systems/config/payment_gateway_vpn_password.php',
             'sources/hooks/systems/config/payment_gateway_special_identifier.php',
+            'sources/hooks/systems/config_categories/ecommerce_products.php',
             'sources/hooks/systems/realtime_rain/ecommerce.php',
             'sources/hooks/systems/addon_registry/ecommerce.php',
             'sources/hooks/modules/admin_import_types/ecommerce.php',

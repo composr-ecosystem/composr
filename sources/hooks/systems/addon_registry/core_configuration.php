@@ -43,7 +43,7 @@ class Hook_addon_registry_core_configuration
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_core_configuration
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -169,7 +169,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config_categories/admin.php',
             'sources/hooks/systems/config_categories/blocks.php',
             'sources/hooks/systems/config_categories/content_editing.php',
-            'sources/hooks/systems/config_categories/ecommerce_products.php',
             'sources/hooks/systems/config_categories/composr_apis.php',
             'sources/hooks/systems/config_categories/feature.php',
             'sources/hooks/systems/config_categories/forums.php',
