@@ -114,56 +114,7 @@ function execute_task_background(array $task_row)
 
     // Send notification
     if ($task_row['t_send_notification'] == 1) {
-        $attachments = [];
-
-        require_code('notifications');
-
-        if ($result === null) {
-            $subject = do_lang('TASK_COMPLETED_SUBJECT', $task_row['t_title']);
-            $message = do_notification_lang('TASK_COMPLETED_BODY_SIMPLE');
-        } else {
-            $content_result = mixed();
-
-            if ($result === false) {
-                $mime_type = null;
-                $content_result = do_lang('INTERNAL_ERROR');
-            } else {
-                list($mime_type, $content_result) = $result;
-            }
-
-            // Handle error results
-            if ($mime_type === null) {
-                $subject = do_lang('TASK_FAILED_SUBJECT', $task_row['t_title']);
-                $_content_result = is_object($content_result) ? ('[semihtml]' . $content_result->evaluate() . '[/semihtml]') : $content_result;
-                $message = do_notification_lang('TASK_FAILED_BODY', $_content_result);
-            } else {
-                $subject = do_lang('TASK_COMPLETED_SUBJECT', $task_row['t_title']);
-
-                // HTML result
-                if ($mime_type == 'text/html') {
-                    if (is_array($content_result)) {
-                        $path = $content_result[1];
-                        $content_result = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
-                        @unlink($path);
-                        sync_file($path);
-                    }
-
-                    $_content_result = is_object($content_result) ? ('[semihtml]' . $content_result->evaluate() . '[/semihtml]') : $content_result;
-                    $message = do_notification_lang('TASK_COMPLETED_BODY', $_content_result);
-                } else {
-                    // Some downloaded result
-                    if (is_array($content_result)) {
-                        $attachments[$content_result[1]] = $content_result[0];
-                    } else {
-                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
-                    }
-
-                    $message = do_notification_lang('TASK_COMPLETED_BODY_ATTACHMENT');
-                }
-            }
-        }
-
-        dispatch_notification('task_completed', null, $subject, $message, [$requester], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'attachments' => $attachments, 'send_immediately' => true]);
+        dispatch_task_notification($task_row['t_title'], $requester, $result);
     }
 
     if (is_array($result)) {
@@ -208,7 +159,7 @@ function execute_task_background(array $task_row)
  * @param  array $args Arguments for the task
  * @param  boolean $run_at_end_of_script Whether to run the task at the end of the script (if it's not going to be put into the task queue)
  * @param  boolean $force_immediate Whether to forcibly bypass the task queue (because we've determined somehow it will be a quick task)
- * @param  boolean $send_notification Whether to send a notification of the task having come out of the queue
+ * @param  boolean $send_notification Whether to send a notification upon task completion (unless immediate and headers were not yet sent)
  * @return Tempcode UI (function may not return if the task is immediate and doesn't have a text/html result)
  */
 function call_user_func_array__long_task(string $plain_title, ?object $title, string $hook, array $args = [], bool $run_at_end_of_script = false, bool $force_immediate = false, bool $send_notification = true) : object
@@ -269,6 +220,14 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             $result[3] = [];
         }
         list($mime_type, $content_result, $headers, $ini_set) = $result;
+
+        if ((headers_sent()) && ($send_notification)) {
+            if ($title === null) {
+                $title = new Tempcode();
+            }
+            dispatch_task_notification($title, get_member(), $result);
+            return inform_screen($title, do_lang_tempcode('SUCCESS'));
+        }
 
         // Action ini_set commands
         foreach ($ini_set as $key => $val) {
@@ -422,4 +381,66 @@ function task_log_close()
         return;
     }
     fclose($TASK_LOG_FILE);
+}
+
+/**
+ * Dispatch a task notification.
+ *
+ * @param  SHORT_TEXT $task_title The title of the task that executed
+ * @param  MEMBER $requester The member who executed the task
+ * @param  ~?array $result The results of the task (null: task completed without output) (false: task failed)
+ */
+function dispatch_task_notification(string $task_title, int $requester, ?array $result)
+{
+    $attachments = [];
+
+    require_lang('tasks');
+    require_code('notifications');
+
+    if ($result === null) {
+        $subject = do_lang('TASK_COMPLETED_SUBJECT', $task_title);
+        $message = do_notification_lang('TASK_COMPLETED_BODY_SIMPLE');
+    } else {
+        $content_result = mixed();
+
+        if ($result === false) {
+            $mime_type = null;
+            $content_result = do_lang('INTERNAL_ERROR');
+        } else {
+            list($mime_type, $content_result) = $result;
+        }
+
+        // Handle error results
+        if ($mime_type === null) {
+            $subject = do_lang('TASK_FAILED_SUBJECT', $task_title);
+            $_content_result = is_object($content_result) ? ('[semihtml]' . $content_result->evaluate() . '[/semihtml]') : $content_result;
+            $message = do_notification_lang('TASK_FAILED_BODY', $_content_result);
+        } else {
+            $subject = do_lang('TASK_COMPLETED_SUBJECT', $task_title);
+
+            // HTML result
+            if ($mime_type == 'text/html') {
+                if (is_array($content_result)) {
+                    $path = $content_result[1];
+                    $content_result = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
+                    @unlink($path);
+                    sync_file($path);
+                }
+
+                $_content_result = is_object($content_result) ? ('[semihtml]' . $content_result->evaluate() . '[/semihtml]') : $content_result;
+                $message = do_notification_lang('TASK_COMPLETED_BODY', $_content_result);
+            } else {
+                // Some downloaded result
+                if (is_array($content_result)) {
+                    $attachments[$content_result[1]] = $content_result[0];
+                } else {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+
+                $message = do_notification_lang('TASK_COMPLETED_BODY_ATTACHMENT');
+            }
+        }
+    }
+
+    dispatch_notification('task_completed', null, $subject, $message, [$requester], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'attachments' => $attachments, 'send_immediately' => true]);
 }
