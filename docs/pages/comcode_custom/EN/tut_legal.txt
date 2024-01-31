@@ -60,6 +60,20 @@ To meet Californian law a privacy policy must:
  - Provide a 'Do Not Sell My Personal Information' link if you sell personal information
 The first four items are included with the default privacy policy. Note there are thresholds that specify what organisations have to apply with certain Californian privacy law, which is outside the scope of this tutorial.
 
+[title="3"]Management of Personal Data[/title]
+
+Many laws require that a site operating in their jurisdiction enable appropriate tools for members to manage their personal data. The software employs a privacy system which allows both staff and members to manage personal data:
+ - Staff can download, purge (anonymise or delete), or generate SQL queries for, personal data based on various criteria (Admin Zone > Tools > Privacy).
+ - Members can download or purge their personal data on their member profile under Edit > Personal data (though purging in this way is disabled by default; many sites might not want members being able to purge their data on their own unless they are deleting their account).
+ - Members can also purge their personal data when they delete their account on their member profile under Edit > Delete.
+ - Staff can control to what extent members can download or purge their data from their profile (Admin Zone > Setup > Configuration > Privacy options > Members). This includes disabling the functionality completely or setting a number of days members must wait between downloads / purges. Where functionality is disabled, members will be instructed on their profile to contact staff if they want to download or purge their data.
+
+The privacy purging system uses intelligence to ensure only data pertaining to the given individual is deleted or anonymised. Where the delete action is employed, if a record does not actually fully belong to that individual, their personal data will be anonymised on that record instead. Also, when downloading records, the system will anonymise fields in the downloaded records containing personal data which does not belong to that individual.
+
+It is highly recommended you have enabled [tt]Use a task queue[/tt] under Admin Zone > Setup > Configuration > Performance options. This is because downloading or purging data can be resource-intensive on a server.
+
+It is your obligation to fulfill a member's request to download or purge their data in accordance with the laws of your jurisdiction. It is also your obligation to ensure, when requested, the personal data of members is also purged from server logs, backups, and anywhere the privacy system cannot cover.
+
 [title="2"]Accessibility[/title]
 
 Potentially (under anti-discrimination laws) your website must satisfy the web-accessibility-initiative ([concept]WAI[/concept]), web content accessibility guidelines ([concept]WCAG[/concept]). Fortunately Composr complies to the highest level of accessibility under these guidelines (for [b]all[/b] interfaces: user and administrator), which is rare, as the vast majority of web applications are not close to complying with the lowest level of accessibility.
