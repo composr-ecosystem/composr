@@ -221,12 +221,24 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
         }
         list($mime_type, $content_result, $headers, $ini_set) = $result;
 
+        // Handle error results
+        if ($mime_type === null) {
+            if ($title === null) {
+                attach_message(do_lang_tempcode('TASK_FAILED_SUBJECT', escape_html($plain_title)), 'warn');
+                return $content_result;
+            }
+            return warn_screen($title, $content_result);
+        }
+
+        // If headers already sent, send results as a notification if $send_notification is true
         if ((headers_sent()) && ($send_notification)) {
             if ($title === null) {
                 $title = new Tempcode();
             }
             dispatch_task_notification($title, get_member(), $result);
-            return inform_screen($title, do_lang_tempcode('SUCCESS'));
+
+            // Good to inform the member they will receive a notification even if the "task queue" is immediate
+            return inform_screen($title, do_lang_tempcode('NEW_TASK_RUNNING'));
         }
 
         // Action ini_set commands
@@ -237,15 +249,6 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
         // Action HTTP headers
         foreach ($headers as $key => $val) {
             header($key . ': ' . $val);
-        }
-
-        // Handle error results
-        if ($mime_type === null) {
-            if ($title === null) {
-                attach_message(do_lang_tempcode('TASK_FAILED_SUBJECT', escape_html($plain_title)), 'warn');
-                return $content_result;
-            }
-            return warn_screen($title, $content_result);
         }
 
         // HTML result
