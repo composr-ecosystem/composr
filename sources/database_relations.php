@@ -442,7 +442,7 @@ function get_table_descriptions() : array
         'urls_checked' => 'stores whether URLs exists, may be used by any system within Composr',
         'url_id_monikers' => 'stores search-engine-friendly URL codes for all kinds of content (we call these "monikers")',
         'url_title_cache' => 'stores the HTML titles for URLs, used in particular by the Comcode parser when it auto-detects links, and the media rendering system',
-        'usersubmitban_member' => 'list of banned members',
+        'usersubmitban_member' => 'list of members who have been banned from submitting content',
         'values' => 'arbitrary store of data values (mapping of keys to values)',
         'values_elective' => 'arbitrary store of lengthy/elective data values (mapping of keys to values)',
         'videos' => 'maintains a list of videos / multimedia within galleries and their metadata',
