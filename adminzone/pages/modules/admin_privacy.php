@@ -294,12 +294,21 @@ class Module_admin_privacy
 
         fill_in_missing_privacy_criteria($username, $ip_addresses, $member_id, $email_address);
 
+        $action = post_param_string('result_action', 'download'); // Defaulting to download as it's safer; don't want to unknowingly purge data
+
         $table_actions = [];
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook_ob) {
             $details = $hook_ob->info();
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
+                    if ($action == 'download') {
+                        if (post_param_integer($table_name, 0) == 1) {
+                            $table_actions[$table_name] = PRIVACY_METHOD__DOWNLOAD;
+                        }
+                        continue;
+                    }
+
                     $table_actions[$table_name] = post_param_integer($table_name, 0);
 
                     if (($table_details['allowed_handle_methods'] == PRIVACY_METHOD__ANONYMISE) && ($table_actions[$table_name] == PRIVACY_METHOD__DELETE)) {
@@ -310,8 +319,6 @@ class Module_admin_privacy
                 }
             }
         }
-
-        $action = post_param_string('result_action', 'download'); // Defaulting to download as it's safer; don't want to unknowingly purge data
 
         switch ($action) {
             case 'download':

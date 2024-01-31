@@ -38,7 +38,7 @@ function make_installers($skip_file_grab = false)
         }
     }
 
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     global $MAKE_INSTALLERS__FILE_ARRAY, $MAKE_INSTALLERS__DIR_ARRAY, $MAKE_INSTALLERS__TOTAL_DIRS, $MAKE_INSTALLERS__TOTAL_FILES;
 

@@ -1,0 +1,25 @@
+.block-main-karma-graph {
+	position: relative;
+	width: 100%;
+	height: 1rem;
+	background-color: {$GET,area_4_background};
+}
+
+.block-main-karma-graph .karma-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 1rem;
+}
+
+.block-main-karma-graph .karma-bar.good-karma {
+	background-color: {$GET,success_color};
+}
+
+.block-main-karma-graph .karma-bar.really-bad-karma {
+	background-color: {$GET,danger_color};
+}
+
+.block-main-karma-graph .karma-bar.bad-karma {
+	background-color: {$GET,warning_color};
+}
