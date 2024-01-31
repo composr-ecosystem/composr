@@ -35,6 +35,10 @@ class Hook_privacy_stats extends Hook_privacy_base
         }
 
         return [
+            'label' => '_STATISTICS',
+
+            'description' => 'stats:DESCRIPTION_PRIVACY_STATISTICS',
+
             'cookies' => [
             ],
 

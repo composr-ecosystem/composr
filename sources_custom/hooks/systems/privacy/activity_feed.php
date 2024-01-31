@@ -30,6 +30,10 @@ class Hook_privacy_activity_feed extends Hook_privacy_base
         }
 
         return [
+            'label' => 'ACTIVITY',
+
+            'description' => 'activity_feed:DESCRIPTION_PRIVACY_ACTIVITY',
+
             'cookies' => [
             ],
 

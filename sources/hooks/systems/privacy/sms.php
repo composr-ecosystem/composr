@@ -35,6 +35,10 @@ class Hook_privacy_sms extends Hook_privacy_base
         }
 
         return [
+            'label' => 'sms:SMS',
+
+            'description' => 'sms:DESCRIPTION_PRIVACY_SMS',
+
             'cookies' => [
             ],
 

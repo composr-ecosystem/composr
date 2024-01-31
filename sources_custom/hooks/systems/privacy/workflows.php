@@ -30,6 +30,10 @@ class Hook_privacy_workflows extends Hook_privacy_base
         }
 
         return [
+            'label' => 'workflows:WORKFLOWS',
+
+            'description' => 'workflows:DESCRIPTION_PRIVACY_WORKFLOWS',
+
             'cookies' => [
             ],
 

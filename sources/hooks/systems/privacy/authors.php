@@ -35,6 +35,10 @@ class Hook_privacy_authors extends Hook_privacy_base
         }
 
         return [
+            'label' => 'authors:AUTHORS',
+
+            'description' => 'authors:DESCRIPTION_PRIVACY_AUTHORS',
+
             'cookies' => [
             ],
 
@@ -62,7 +66,7 @@ class Hook_privacy_authors extends Hook_privacy_base
             ],
         ];
     }
-    
+
     /**
      * Delete a row.
      *
@@ -73,13 +77,13 @@ class Hook_privacy_authors extends Hook_privacy_base
     public function delete(string $table_name, array $table_details, array $row)
     {
         require_lang('authors');
-        
+
         switch ($table_name) {
             case 'authors':
                 require_code('authors');
                 delete_author($row['author']);
                 break;
-                
+
             default:
                 parent::delete($table_name, $table_details, $row);
                 break;

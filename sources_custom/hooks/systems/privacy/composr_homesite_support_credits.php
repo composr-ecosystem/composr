@@ -30,6 +30,10 @@ class Hook_privacy_composr_homesite_support_credits extends Hook_privacy_base
         }
 
         return [
+            'label' => 'customers:CREDITS',
+
+            'description' => 'customers:DESCRIPTION_PRIVACY_CREDITS',
+
             'cookies' => [
             ],
 

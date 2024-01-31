@@ -54,7 +54,7 @@ class Hook_profiles_tabs_edit_delete
 
         $title = do_lang_tempcode('DELETE');
 
-        $order = 200;
+        $order = 201;
 
         // Actualiser
         $delete_account = post_param_integer('delete', 0);

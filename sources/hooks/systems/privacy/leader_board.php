@@ -35,6 +35,10 @@ class Hook_privacy_leader_board extends Hook_privacy_base
         }
 
         return [
+            'label' => 'leader_board:LEADER_BOARDS',
+
+            'description' => 'leader_board:DESCRIPTION_PRIVACY_LEADER_BOARDS',
+
             'cookies' => [
             ],
 

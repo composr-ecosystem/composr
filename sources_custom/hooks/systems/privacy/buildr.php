@@ -30,6 +30,10 @@ class Hook_privacy_buildr extends Hook_privacy_base
         }
 
         return [
+            'label' => 'buildr:BUILDR',
+
+            'description' => 'buildr:DESCRIPTION_PRIVACY_BUILDR',
+
             'cookies' => [
             ],
 

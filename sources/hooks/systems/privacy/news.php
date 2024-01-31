@@ -35,6 +35,10 @@ class Hook_privacy_news extends Hook_privacy_base
         }
 
         return [
+            'label' => 'news:NEWS_BLOG',
+
+            'description' => 'news:DESCRIPTION_PRIVACY_NEWS_BLOG',
+
             'cookies' => [
             ],
 

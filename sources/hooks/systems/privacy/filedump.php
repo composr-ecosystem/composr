@@ -35,6 +35,10 @@ class Hook_privacy_filedump extends Hook_privacy_base
         }
 
         return [
+            'label' => 'filedump:FILEDUMP',
+
+            'description' => 'filedump:DESCRIPTION_PRIVACY_FILEDUMP',
+
             'cookies' => [
             ],
 

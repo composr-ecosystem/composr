@@ -37,6 +37,10 @@ class Hook_privacy_shopping extends Hook_privacy_base
         require_lang('shopping');
 
         return [
+            'label' => 'shopping:SHOPPING',
+
+            'description' => 'shopping:DESCRIPTION_PRIVACY_SHOPPING',
+
             'cookies' => [
             ],
 

@@ -67,30 +67,39 @@ class Hook_task_privacy_purge
         // Must forcefully purge translate even if multi_lang_content is off (GDPR regulations take priority)
         push_db_scope_check(false);
 
-        // We must purge actionlogs and f_moderator_logs last because log_it and cns_mod_log_it may be called from purges.
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook_ob) {
             $details = $hook_ob->info();
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
+                    if (!isset($table_actions[$table_name])) {
+                        continue;
+                    }
+
+                    // We must purge actionlogs and f_moderator_logs last because log_it and cns_mod_log_it may be called from purges.
                     if (($table_name == 'actionlogs') && ($table_name == 'f_moderator_logs')) {
                         continue;
                     }
+
                     $this->handle_for_table($hook_ob, $table_name, $table_details, $table_actions[$table_name], $username, $ip_addresses, $member_id, $email_address, $others);
                 }
             }
         }
 
         // Now purge actionlogs and f_moderator_logs
-        $core_cns_hook = get_hook_ob('systems', 'privacy', 'core_cns', 'Hook_privacy_');
-        $details = $core_cns_hook->info();
-        if ($details !== null) {
-            $this->handle_for_table($core_cns_hook, 'f_moderator_logs', $details['database_records']['f_moderator_logs'], $table_actions['f_moderator_logs'], $username, $ip_addresses, $member_id, $email_address, $others);
+        if (isset($table_actions['f_moderator_logs'])) {
+            $core_cns_hook = get_hook_ob('systems', 'privacy', 'core_cns', 'Hook_privacy_');
+            $details = $core_cns_hook->info();
+            if ($details !== null) {
+                $this->handle_for_table($core_cns_hook, 'f_moderator_logs', $details['database_records']['f_moderator_logs'], $table_actions['f_moderator_logs'], $username, $ip_addresses, $member_id, $email_address, $others);
+            }
         }
-        $core_hook = get_hook_ob('systems', 'privacy', 'core', 'Hook_privacy_');
-        $details = $core_hook->info();
-        if ($details !== null) {
-            $this->handle_for_table($core_hook, 'actionlogs', $details['database_records']['actionlogs'], $table_actions['actionlogs'], $username, $ip_addresses, $member_id, $email_address, $others);
+        if (isset($table_actions['actionlogs'])) {
+            $core_hook = get_hook_ob('systems', 'privacy', 'core', 'Hook_privacy_');
+            $details = $core_hook->info();
+            if ($details !== null) {
+                $this->handle_for_table($core_hook, 'actionlogs', $details['database_records']['actionlogs'], $table_actions['actionlogs'], $username, $ip_addresses, $member_id, $email_address, $others);
+            }
         }
 
         set_mass_import_mode(false);

@@ -53,6 +53,10 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
         }
 
         return [
+            'label' => 'ecommerce:ECOMMERCE',
+
+            'description' => 'ecommerce:DESCRIPTION_PRIVACY_ECOMMERCE',
+
             'cookies' => [
             ],
 

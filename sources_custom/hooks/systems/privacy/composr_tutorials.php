@@ -30,6 +30,10 @@ class Hook_privacy_composr_tutorials extends Hook_privacy_base
         }
 
         return [
+            'label' => 'TUTORIALS',
+
+            'description' => 'tutorials:DESCRIPTION_PRIVACY_TUTORIALS',
+
             'cookies' => [
             ],
 
@@ -57,7 +61,7 @@ class Hook_privacy_composr_tutorials extends Hook_privacy_base
             ],
         ];
     }
-    
+
     /**
      * Delete a row.
      *
@@ -70,19 +74,19 @@ class Hook_privacy_composr_tutorials extends Hook_privacy_base
         if (!addon_installed('composr_tutorials')) {
             return null;
         }
-        
+
         require_lang('tutorials');
-        
+
         switch ($table_name) {
             case 'tutorials_external':
                 parent::delete($table_name, $table_details, $row);
                 $GLOBALS['SITE_DB']->query_delete('tutorials_external_tags', ['t_id' => $row['id']]);
-                
+
                 log_it('DELETE_TUTORIAL', strval($row['id']), $row['t_title']);
-                
+
                 @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
                 break;
-                
+
             default:
                 parent::delete($table_name, $table_details, $row);
                 break;

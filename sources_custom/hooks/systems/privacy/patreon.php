@@ -30,6 +30,10 @@ class Hook_privacy_patreon extends Hook_privacy_base
         }
 
         return [
+            'label' => 'patreon:PATREON',
+
+            'description' => 'patreon:DESCRIPTION_PRIVACY_PATREON',
+
             'cookies' => [
             ],
 

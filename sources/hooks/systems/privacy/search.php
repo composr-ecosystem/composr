@@ -35,6 +35,10 @@ class Hook_privacy_search extends Hook_privacy_base
         }
 
         return [
+            'label' => 'SEARCH',
+
+            'description' => 'search:DESCRIPTION_PRIVACY_SEARCH',
+
             'cookies' => [
             ],
 

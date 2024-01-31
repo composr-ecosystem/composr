@@ -30,6 +30,10 @@ class Hook_privacy_referrals extends Hook_privacy_base
         }
 
         return [
+            'label' => 'referrals:REFERRALS',
+
+            'description' => 'referrals:DESCRIPTION_PRIVACY_REFERRALS',
+
             'cookies' => [
             ],
 

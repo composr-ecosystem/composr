@@ -43,6 +43,10 @@ class Hook_privacy_core extends Hook_privacy_base
         $deletion_exemptions .= '</ul>';
 
         return [
+            'label' => 'WEBSITE_SOFTWARE',
+
+            'description' => 'privacy:DESCRIPTION_PRIVACY_WEBSITE_SOFTWARE',
+
             'cookies' => [
                 'cms_autosave_*' => [
                     'reason' => do_lang_tempcode('COOKIE_autosave'),

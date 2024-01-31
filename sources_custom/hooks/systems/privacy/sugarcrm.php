@@ -32,6 +32,10 @@ class Hook_privacy_sugarcrm extends Hook_privacy_base
         require_lang('sugarcrm');
 
         return [
+            'label' => 'sugarcrm:SUGARCRM',
+
+            'description' => 'sugarcrm:DESCRIPTION_PRIVACY_SUGARCRM',
+
             'cookies' => [
             ],
 

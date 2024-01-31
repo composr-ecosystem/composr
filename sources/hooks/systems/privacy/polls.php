@@ -35,6 +35,10 @@ class Hook_privacy_polls extends Hook_privacy_base
         }
 
         return [
+            'label' => 'POLLS',
+
+            'description' => 'polls:DESCRIPTION_PRIVACY_POLLS',
+
             'cookies' => [
             ],
 

@@ -47,11 +47,6 @@ class Hook_task_privacy_download
         require_code('database_relations');
         $table_descriptions = get_table_descriptions();
 
-        // Create temporary file to use as archive
-        $filename = preg_replace('#[^\w]#', '_', ($username != '' ? $username : do_lang('UNKNOWN'))) . '.tar.gz';
-        $file_path = cms_tempnam();
-        $data_file = tar_open($file_path, 'wb');
-
         if (($username == '') && ($member_id !== null)) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         }
@@ -60,6 +55,11 @@ class Hook_task_privacy_download
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         }
 
+        // Create temporary file to use as archive
+        $filename = preg_replace('#[^\w]#', '_', ($username != '' ? $username : do_lang('UNKNOWN'))) . '.tar.gz';
+        $file_path = cms_tempnam();
+        $data_file = tar_open($file_path, 'wb');
+
         push_db_scope_check(false);
 
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
@@ -67,35 +67,37 @@ class Hook_task_privacy_download
             $details = $hook_ob->info();
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
-                    if ((array_key_exists($table_name, $table_actions)) && ($table_actions[$table_name] == 1)) {
-                        $description = do_lang('UNKNOWN');
-                        if (isset($table_descriptions[$table_name])) {
-                            $description = $table_descriptions[$table_name];
-                        }
-                        $data = [
-                            'table_name' => $table_name,
-                            'table_description' => $description,
-                            'retention_days' => $table_details['retention_days'],
-                            'matched_records' => [],
-                        ];
-
-                        $db = get_db_for($table_name);
-                        $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, 1, false, $username, $ip_addresses, $member_id, $email_address, $others);
-                        if ($selection_sql != '') {
-                            $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql);
-                            foreach ($rows as $_row) {
-                                if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
-                                    // We do not want to leak data from other users out to this user
-                                    $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
-                                    $data['matched_records'][] = $hook_ob->serialise($table_name, $row);
-                                    continue;
-                                }
-                                $data['matched_records'][] = $hook_ob->serialise($table_name, $_row);
-                            }
-                        }
-
-                        $this->create_json_file($table_name, $data, $data_file);
+                    if (!isset($table_actions[$table_name]) || ($table_actions[$table_name] != PRIVACY_METHOD__DOWNLOAD)) {
+                        continue;
                     }
+
+                    $description = do_lang('UNKNOWN');
+                    if (isset($table_descriptions[$table_name])) {
+                        $description = $table_descriptions[$table_name];
+                    }
+                    $data = [
+                        'table_name' => $table_name,
+                        'table_description' => $description,
+                        'retention_days' => $table_details['retention_days'],
+                        'matched_records' => [],
+                    ];
+
+                    $db = get_db_for($table_name);
+                    $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, PRIVACY_METHOD__DOWNLOAD, false, $username, $ip_addresses, $member_id, $email_address, $others);
+                    if ($selection_sql != '') {
+                        $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql);
+                        foreach ($rows as $_row) {
+                            if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
+                                // We do not want to leak data from other users out to this user
+                                $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
+                                $data['matched_records'][] = $hook_ob->serialise($table_name, $row);
+                                continue;
+                            }
+                            $data['matched_records'][] = $hook_ob->serialise($table_name, $_row);
+                        }
+                    }
+
+                    $this->create_json_file($table_name, $data, $data_file);
                 }
             }
         }

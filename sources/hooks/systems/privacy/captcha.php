@@ -37,6 +37,10 @@ class Hook_privacy_captcha extends Hook_privacy_base
         require_lang('captcha');
 
         return [
+            'label' => 'captcha:CAPTCHA',
+
+            'description' => 'NA', // No actual personal database information for this hook
+
             'cookies' => [
             ],
 

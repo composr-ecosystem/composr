@@ -40,6 +40,10 @@ class Hook_privacy_content_privacy extends Hook_privacy_base
         require_lang('content_privacy');
 
         return [
+            'label' => 'content_privacy:PRIVACY_SETTINGS',
+
+            'description' => 'content_privacy:DESCRIPTION_PRIVACY_PRIVACY_SETTINGS',
+
             'cookies' => [
             ],
 
@@ -70,30 +74,5 @@ class Hook_privacy_content_privacy extends Hook_privacy_base
                 ],
             ],
         ];
-    }
-
-    /**
-     * Serialise a row.
-     *
-     * @param  ID_TEXT $table_name Table name
-     * @param  array $row Row raw from the database
-     * @return array Row in a cleanly serialised format
-     */
-    public function serialise(string $table_name, array $row) : array
-    {
-        $ret = parent::serialise($table_name, $row);
-
-        switch ($table_name) {
-            case 'content_privacy__members':
-                require_code('content');
-                list($title, , $info) = content_get_details($row['content_type'], $row['content_id']);
-                $ret += [
-                    'content_type__dereferenced' => do_lang($info['content_type_label']),
-                    'content_title__dereferenced' => $title,
-                ];
-                break;
-        }
-
-        return $ret;
     }
 }

@@ -35,6 +35,10 @@ class Hook_privacy_awards extends Hook_privacy_base
         }
 
         return [
+            'label' => 'awards:AWARDS',
+
+            'description' => 'awards:DESCRIPTION_PRIVACY_AWARDS',
+
             'cookies' => [
             ],
 

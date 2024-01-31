@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_privacy_upon_member_delete
+class Hook_config_privacy_download_days
 {
     /**
      * Gets the details relating to the config option.
@@ -31,13 +31,13 @@ class Hook_config_privacy_upon_member_delete
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'PRIVACY_UPON_MEMBER_DELETE',
-            'type' => 'list',
+            'human_name' => 'PRIVACY_DOWNLOAD_DAYS',
+            'type' => 'integer',
             'category' => 'PRIVACY',
             'group' => 'MEMBERS',
-            'explanation' => 'CONFIG_OPTION_privacy_upon_member_delete',
+            'explanation' => 'CONFIG_OPTION_privacy_download_days',
             'shared_hosting_restricted' => '0',
-            'list_options' => 'never|ask|always',
+            'list_options' => '',
             'required' => true,
             'public' => false,
             'addon' => 'core_privacy',
@@ -51,10 +51,6 @@ class Hook_config_privacy_upon_member_delete
      */
     public function get_default() : ?string
     {
-        if (!addon_installed('core_privacy')) {
-            return null;
-        }
-
-        return 'ask';
+        return '7';
     }
 }

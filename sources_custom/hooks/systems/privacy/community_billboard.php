@@ -30,6 +30,10 @@ class Hook_privacy_community_billboard extends Hook_privacy_base
         }
 
         return [
+            'label' => 'community_billboard:COMMUNITY_BILLBOARD',
+
+            'description' => 'community_billboard:DESCRIPTION_PRIVACY_COMMUNITY_BILLBOARD',
+
             'cookies' => [
             ],
 
@@ -57,7 +61,7 @@ class Hook_privacy_community_billboard extends Hook_privacy_base
             ],
         ];
     }
-    
+
     /**
      * Delete a row.
      *
@@ -70,15 +74,15 @@ class Hook_privacy_community_billboard extends Hook_privacy_base
         if (!addon_installed('community_billboard')) {
             return;
         }
-        
+
         require_lang('community_billboard');
-        
+
         switch ($table_name) {
             case 'community_billboard':
                 require_code('community_billboard');
                 delete_community_billboard_message($row['id']);
                 break;
-                
+
             default:
                 parent::delete($table_name, $table_details, $row);
                 break;

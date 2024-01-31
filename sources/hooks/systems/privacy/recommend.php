@@ -37,6 +37,10 @@ class Hook_privacy_recommend extends Hook_privacy_base
         require_lang('recommend');
 
         return [
+            'label' => 'RECOMMENDED',
+
+            'description' => 'NA', // No personal database data
+
             'cookies' => [
             ],
 

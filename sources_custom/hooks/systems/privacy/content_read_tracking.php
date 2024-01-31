@@ -30,6 +30,10 @@ class Hook_privacy_content_read_tracking extends Hook_privacy_base
         }
 
         return [
+            'label' => 'content_read_tracking:CONTENT_READ_TRACKING',
+
+            'description' => 'content_read_tracking:DESCRIPTION_PRIVACY_CONTENT_READ_TRACKING',
+
             'cookies' => [
             ],
 

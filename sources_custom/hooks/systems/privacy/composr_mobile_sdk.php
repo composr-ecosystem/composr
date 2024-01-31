@@ -30,6 +30,10 @@ class Hook_privacy_composr_mobile_sdk extends Hook_privacy_base
         }
 
         return [
+            'label' => 'composr_mobile_sdk:COMPOSR_MOBILE_SDK',
+
+            'description' => 'composr_mobile_sdk:DESCRIPTION_PRIVACY_COMPOSR_MOBILE_SDK',
+
             'cookies' => [
             ],
 

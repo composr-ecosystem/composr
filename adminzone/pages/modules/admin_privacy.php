@@ -163,7 +163,7 @@ class Module_admin_privacy
         if ((empty($username)) && (empty($ip_addresses)) && (cms_empty_safe($member_id)) && (empty($email_address)) && (empty($others))) {
             warn_exit(do_lang_tempcode('NO_RESULTS')); // Obviously
         }
-        
+
         fill_in_missing_privacy_criteria($username, $ip_addresses, $member_id, $email_address);
 
         $action = post_param_string('result_action', 'purge');
@@ -192,7 +192,7 @@ class Module_admin_privacy
                                 pop_db_scope_check();
                                 $pretty_name = do_lang('PRIVACY_PURGE_TABLE_RECORDS', $table_name, integer_format($rows[0]['search_rows']));
                             }
-                            
+
                             $options[] = [$pretty_name, $table_name, true, ''];
                         }
                     }
@@ -221,7 +221,7 @@ class Module_admin_privacy
                     if ($details !== null) {
                         foreach ($details['database_records'] as $table_name => $table_details) {
                             // TODO: Add record counts
-                            
+
                             $purge_options = new Tempcode();
                             $purge_options->attach(form_input_list_entry(strval(PRIVACY_METHOD__LEAVE), $table_details['removal_default_handle_method'] == PRIVACY_METHOD__LEAVE, do_lang_tempcode('PRIVACY_METHOD__LEAVE')));
                             if (($table_details['allowed_handle_methods'] & PRIVACY_METHOD__ANONYMISE) != 0) {
@@ -291,7 +291,7 @@ class Module_admin_privacy
         $member_id = post_param_integer('member_id', null);
         $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
         $others = isset($_POST['others']) ? $_POST['others'] : [];
-        
+
         fill_in_missing_privacy_criteria($username, $ip_addresses, $member_id, $email_address);
 
         $table_actions = [];

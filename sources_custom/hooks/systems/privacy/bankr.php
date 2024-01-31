@@ -30,6 +30,10 @@ class Hook_privacy_bankr extends Hook_privacy_base
         }
 
         return [
+            'label' => 'bank:BANKING',
+
+            'description' => 'bank:DESCRIPTION_PRIVACY_BANKING',
+
             'cookies' => [
             ],
 

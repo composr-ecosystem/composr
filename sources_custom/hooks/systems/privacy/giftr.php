@@ -30,6 +30,10 @@ class Hook_privacy_giftr extends Hook_privacy_base
         }
 
         return [
+            'label' => 'giftr:GIFTR_TITLE',
+
+            'description' => 'giftr:DESCRIPTION_PRIVACY_GIFTR',
+
             'cookies' => [
             ],
 

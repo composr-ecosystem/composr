@@ -43,7 +43,7 @@ class Hook_addon_registry_core_all_icons
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_core_all_icons
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -751,6 +751,7 @@ class Hook_addon_registry_core_all_icons
             'themes/default/images/icons/tabs/member_account/edit/settings.svg',
             'themes/default/images/icons/tabs/member_account/edit/signature.svg',
             'themes/default/images/icons/tabs/member_account/edit/title.svg',
+            'themes/default/images/icons/tabs/member_account/edit/data.svg',
             'themes/default/images/icons/tiers/bronze.svg',
             'themes/default/images/icons/tiers/gold.svg',
             'themes/default/images/icons/tiers/platinum.svg',
@@ -1393,6 +1394,7 @@ class Hook_addon_registry_core_all_icons
             'themes/default/images/icons_monochrome/tabs/member_account/edit/settings.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/signature.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/title.svg',
+            'themes/default/images/icons_monochrome/tabs/member_account/edit/data.svg',
             'themes/default/images/icons_monochrome/tiers/bronze.svg',
             'themes/default/images/icons_monochrome/tiers/gold.svg',
             'themes/default/images/icons_monochrome/tiers/platinum.svg',

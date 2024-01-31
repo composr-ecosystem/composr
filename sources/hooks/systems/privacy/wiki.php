@@ -35,6 +35,10 @@ class Hook_privacy_wiki extends Hook_privacy_base
         }
 
         return [
+            'label' => 'wiki:WIKI',
+
+            'description' => 'wiki:DESCRIPTION_PRIVACY_WIKI',
+
             'cookies' => [
             ],
 
@@ -118,7 +122,7 @@ class Hook_privacy_wiki extends Hook_privacy_base
                 require_code('wiki');
                 wiki_delete_post($row['id']);
                 break;
-                
+
             case 'wiki_pages':
                 require_code('wiki');
                 wiki_delete_page($row['id']);

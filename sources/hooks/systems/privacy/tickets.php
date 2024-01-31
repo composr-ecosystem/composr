@@ -35,6 +35,10 @@ class Hook_privacy_tickets extends Hook_privacy_base
         }
 
         return [
+            'label' => 'tickets:SUPPORT_TICKETS',
+
+            'description' => 'tickets:DESCRIPTION_PRIVACY_SUPPORT_TICKETS',
+
             'cookies' => [
             ],
 

@@ -35,6 +35,10 @@ class Hook_privacy_core_cns extends Hook_privacy_base
         }
 
         return [
+            'label' => 'cns:ACCOUNT_FORUMS',
+
+            'description' => 'cns:DESCRIPTION_PRIVACY_ACCOUNT_FORUMS',
+
             'cookies' => [
             ],
 

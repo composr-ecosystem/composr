@@ -30,6 +30,10 @@ class Hook_privacy_booking extends Hook_privacy_base
         }
 
         return [
+            'label' => 'booking:BOOKINGS',
+
+            'description' => 'booking:DESCRIPTION_PRIVACY_BOOKINGS',
+
             'cookies' => [
             ],
 

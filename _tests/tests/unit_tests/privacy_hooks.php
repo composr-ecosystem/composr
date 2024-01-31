@@ -21,7 +21,7 @@ class privacy_hooks_test_set extends cms_test_case
     public function testHookIntegrity()
     {
         $info_messages = [];
-        
+
         require_code('privacy');
 
         $all_tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']));
@@ -34,6 +34,12 @@ class privacy_hooks_test_set extends cms_test_case
             if ($info === null) {
                 continue;
             }
+
+            $this->assertTrue(((isset($info['label'])) && (($info['label'] === null) || (is_string($info['label'])))), 'Invalid label property in hook ' . $hook);
+            $this->assertTrue(((isset($info['description'])) && (($info['description'] === null) || (is_string($info['description'])))), 'Invalid description property in hook ' . $hook);
+
+            $this->assertTrue((isset($info['label']) && (do_lang($info['label'], null, null, null, null, false) !== null)), 'The label property in hook ' . $hook . ' is not a valid language codename.');
+            $this->assertTrue((isset($info['description']) && (do_lang($info['description'], null, null, null, null, false) !== null)), 'The description property in hook ' . $hook . ' is not a valid language codename.');
 
             foreach ($info['cookies'] as $x) {
                 $this->assertTrue($x === null || is_array($x) && array_key_exists('reason', $x), 'Invalid cookie name in ' . $hook . ' (' . serialize($x) . ')');
@@ -74,9 +80,9 @@ class privacy_hooks_test_set extends cms_test_case
                     $this->assertTrue($details['timestamp_field'] !== null, 'timestamp_field should be set for !PRIVACY_METHOD__LEAVE, for ' . $table . ' in hook ' . $hook);
                     $this->assertTrue($details['retention_days'] !== null, 'retention_days should be set for !PRIVACY_METHOD__LEAVE, for ' . $table . ' in hook ' . $hook);
                 }
-                
+
                 $this->assertTrue((($details['owner_id_field'] !== null) || (!empty($details['additional_member_id_fields'])) || (!empty($details['ip_address_fields'])) || (!empty($details['email_fields'])) || (!empty($details['username_fields'])) || (!empty($details['additional_anonymise_fields']))), 'No personal data fields defined in ' . $table . ' in hook ' . $hook . ', so table should not be defined.');
-                
+
                 $exceptions = [
                     'f_forums',
                 ];
@@ -130,7 +136,7 @@ class privacy_hooks_test_set extends cms_test_case
                 if (preg_match('#^\*#', $type) != 0) {
                     $primary_key_fields[$name] = $type;
                 }
-                
+
                 // Some additional potentially sensitive fields
                 if ((strpos($name, 'pass') !== false) && (preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0)) { // Passwords
                     $fields_should_anonymise[$name] = $type;
@@ -176,7 +182,7 @@ class privacy_hooks_test_set extends cms_test_case
 
             if (isset($found_tables[$table])) {
                 $hook = $found_tables[$table]['hook']; // FUDGE
-                
+
                 $this->assertTrue($found_tables[$table]['timestamp_field'] === null || isset($all_fields[$found_tables[$table]['timestamp_field']]), 'Could not find ' . $found_tables[$table]['timestamp_field'] . ' field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue($found_tables[$table]['owner_id_field'] === null || isset($all_fields[$found_tables[$table]['owner_id_field']]), 'Could not find ' . $found_tables[$table]['owner_id_field'] . ' field in ' . $table . ' in hook ' . $hook);
 
@@ -191,7 +197,7 @@ class privacy_hooks_test_set extends cms_test_case
                 if (!in_array($table, $exceptions)) {
                     $this->assertTrue($found_tables[$table]['timestamp_field'] !== null || empty($relevant_fields_time), 'Could have set a timestamp field for ' . $table . ' in hook ' . $hook . '[' . serialize($relevant_fields_time) . ']');
                 }
-                
+
                 $exceptions = [
                     'f_forums'
                 ];
@@ -225,7 +231,7 @@ class privacy_hooks_test_set extends cms_test_case
                 foreach ($found_tables[$table]['email_fields'] as $name) {
                     $this->assertTrue(isset($relevant_fields_email[$name]), 'Could not find ' . $name . ' email_fields field in ' . $table . ' in hook ' . $hook);
                 }
-                
+
                 $exceptions = [
                     'failedlogins',
                 ];
@@ -234,7 +240,7 @@ class privacy_hooks_test_set extends cms_test_case
                         $this->assertTrue(isset($relevant_fields_username[$name]), 'Could not find ' . $name . ' username_fields field in ' . $table . ' in hook ' . $hook);
                     }
                 }
-                
+
                 foreach ($found_tables[$table]['additional_anonymise_fields'] as $name) {
                     $this->assertTrue(isset($all_fields[$name]), 'Could not find ' . $name . ' additional_anonymise_fields field in ' . $table . ' in hook ' . $hook);
                 }
@@ -243,7 +249,7 @@ class privacy_hooks_test_set extends cms_test_case
                 $exceptions = [
                 ];
                 if (($found_tables[$table]['removal_default_handle_method'] == PRIVACY_METHOD__ANONYMISE) || (($found_tables[$table]['allowed_handle_methods'] & PRIVACY_METHOD__ANONYMISE) != 0)) {
-                    
+
                     if (($found_tables[$table]['owner_id_field'] !== null) && ((!isset($exceptions[$table])) || (!in_array($found_tables[$table]['owner_id_field'], $exceptions[$table])))) {
                         if (($found_tables[$table]['allowed_handle_methods'] & PRIVACY_METHOD__DELETE) != 0) {
                             // This is ugly but we don't have any other way to put out a warning
@@ -254,7 +260,7 @@ class privacy_hooks_test_set extends cms_test_case
                             $this->assertTrue((!isset($primary_key_fields[$found_tables[$table]['owner_id_field']])), 'PRIVACY_METHOD__ANONYMISE is specified in ' . $table . ' in hook ' . $hook . ', but field ' . $found_tables[$table]['owner_id_field'] . ' is a key. Furthermore, PRIVACY_METHOD__DELETE is not defined as an allowed action. Therefore, if criteria matches the indicated field, purging will bail out on error!');
                         }
                     }
-                    
+
                     $user_fields_array = [
                         'additional_member_id_fields',
                         'ip_address_fields',
@@ -267,7 +273,7 @@ class privacy_hooks_test_set extends cms_test_case
                             if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {
                                 continue;
                             }
-                            
+
                             if (($found_tables[$table]['allowed_handle_methods'] & PRIVACY_METHOD__DELETE) != 0) {
                                 // This is ugly but we don't have any other way to put out a warning
                                 if (isset($primary_key_fields[$name])) {
@@ -279,7 +285,7 @@ class privacy_hooks_test_set extends cms_test_case
                         }
                     }
                 }
-                
+
                 // Exceptions are table => [fields]
                 $exceptions = [
                     'digestives_tin' => ['d_code_category'],
@@ -295,7 +301,7 @@ class privacy_hooks_test_set extends cms_test_case
                     if (in_array($name, $found_tables[$table]['additional_anonymise_fields'])) {
                         continue;
                     }
-                    
+
                     $this->assertTrue(false, 'Potentially sensitive field detected which should possibly be added to additional_anonymise_fields: ' . $name . ' in ' . $table . ' in hook ' . $hook);
                 }
             } else {
@@ -307,7 +313,7 @@ class privacy_hooks_test_set extends cms_test_case
                 }
             }
         }
-        
+
         if (count($info_messages) > 0) {
             $this->dump($info_messages, 'Caution:');
         }

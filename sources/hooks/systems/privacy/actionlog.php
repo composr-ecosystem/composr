@@ -35,6 +35,10 @@ class Hook_privacy_actionlog extends Hook_privacy_base
         }
 
         return [
+            'label' => 'actionlog:REVISIONS',
+
+            'description' => 'actionlog:DESCRIPTION_PRIVACY_REVISIONS',
+
             'cookies' => [
             ],
 

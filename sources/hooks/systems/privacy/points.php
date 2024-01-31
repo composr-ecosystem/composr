@@ -35,6 +35,10 @@ class Hook_privacy_points extends Hook_privacy_base
         }
 
         return [
+            'label' => 'POINTS',
+
+            'description' => 'points:DESCRIPTION_PRIVACY_POINTS',
+
             'cookies' => [
             ],
 

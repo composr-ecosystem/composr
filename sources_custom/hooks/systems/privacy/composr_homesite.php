@@ -30,6 +30,10 @@ class Hook_privacy_composr_homesite extends Hook_privacy_base
         }
 
         return [
+            'label' => 'composr_homesite:CMS_SITES_INSTALLED',
+
+            'description' => 'composr_homesite:DESCRIPTION_PRIVACY_CMS_SITES_INSTALLED',
+
             'cookies' => [
             ],
 

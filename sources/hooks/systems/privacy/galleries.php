@@ -35,6 +35,10 @@ class Hook_privacy_galleries extends Hook_privacy_base
         }
 
         return [
+            'label' => 'galleries:GALLERIES',
+
+            'description' => 'galleries:DESCRIPTION_PRIVACY_GALLERIES',
+
             'cookies' => [
             ],
 

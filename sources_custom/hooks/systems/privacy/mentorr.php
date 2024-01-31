@@ -30,6 +30,10 @@ class Hook_privacy_mentorr extends Hook_privacy_base
         }
 
         return [
+            'label' => 'mentorr:MENTORSHIP',
+
+            'description' => 'mentorr:DESCRIPTION_PRIVACY_MENTORSHIP',
+
             'cookies' => [
             ],
 
@@ -44,7 +48,7 @@ class Hook_privacy_mentorr extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'owner_id_field' => 'mentor_id', // TODO: is_owner should allow both mentor_id and member_id as owners
+                    'owner_id_field' => 'mentor_id',
                     'additional_member_id_fields' => ['member_id'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
@@ -57,7 +61,7 @@ class Hook_privacy_mentorr extends Hook_privacy_base
             ],
         ];
     }
-    
+
     /**
      * Determine if, given the provided criteria and content, we have high confidence this individual owns the content.
      * You should run fill_in_missing_privacy_criteria before running this.
@@ -75,12 +79,12 @@ class Hook_privacy_mentorr extends Hook_privacy_base
         if ($table_name != 'members_mentors') {
             return parent::is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
         }
-        
+
         $is_owner_1 = parent::is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
         if ($is_owner_1) {
             return true;
         }
-        
+
         // The mentee can be considered owner as well, so check member ID against additional_member_id_fields
         if (($member_id !== null) && (!is_guest($member_id))) {
             foreach ($table_details['additional_member_id_fields'] as $member_field) {
@@ -89,7 +93,7 @@ class Hook_privacy_mentorr extends Hook_privacy_base
                 }
             }
         }
-        
+
         return false;
     }
 }

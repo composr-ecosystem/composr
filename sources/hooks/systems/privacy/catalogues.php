@@ -35,6 +35,10 @@ class Hook_privacy_catalogues extends Hook_privacy_base
         }
 
         return [
+            'label' => 'catalogues:CATALOGUES',
+
+            'description' => 'catalogues:DESCRIPTION_PRIVACY_CATALOGUES',
+
             'cookies' => [
             ],
 

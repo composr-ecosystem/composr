@@ -38,6 +38,10 @@ class Hook_privacy_chat extends Hook_privacy_base
         require_lang('chat');
 
         return [
+            'label' => 'chat:CHAT',
+
+            'description' => 'chat:DESCRIPTION_PRIVACY_CHAT',
+
             'cookies' => [
                 'software_chat_prefs' => [
                     'reason' => do_lang_tempcode('COOKIE_software_chat_prefs'),
@@ -175,7 +179,7 @@ class Hook_privacy_chat extends Hook_privacy_base
 
         return $ret;
     }
-    
+
     /**
      * Delete a row.
      *
@@ -186,13 +190,13 @@ class Hook_privacy_chat extends Hook_privacy_base
     public function delete(string $table_name, array $table_details, array $row)
     {
         require_lang('chat');
-        
+
         switch ($table_name) {
             case 'chat_friends':
                 require_code('chat2');
                 friend_remove($row['member_likes'], $row['member_liked']);
                 break;
-                
+
             default:
                 parent::delete($table_name, $table_details, $row);
                 break;

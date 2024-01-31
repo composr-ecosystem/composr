@@ -35,6 +35,10 @@ class Hook_privacy_downloads extends Hook_privacy_base
         }
 
         return [
+            'label' => 'downloads:SECTION_DOWNLOADS',
+
+            'description' => 'downloads:DESCRIPTION_PRIVACY_DOWNLOADS',
+
             'cookies' => [
             ],
 

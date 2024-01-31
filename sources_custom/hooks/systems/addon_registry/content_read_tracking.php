@@ -38,7 +38,7 @@ class Hook_addon_registry_content_read_tracking
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -48,7 +48,7 @@ class Hook_addon_registry_content_read_tracking
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -155,6 +155,7 @@ class Hook_addon_registry_content_read_tracking
             'sources_custom/hooks/systems/privacy/content_read_tracking.php',
             'sources_custom/hooks/systems/symbols/MARK_READ.php',
             'sources_custom/hooks/systems/symbols/HAS_READ.php',
+            'lang_custom/EN/content_read_tracking.ini',
         ];
     }
 

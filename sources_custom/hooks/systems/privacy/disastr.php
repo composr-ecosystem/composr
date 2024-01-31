@@ -30,6 +30,10 @@ class Hook_privacy_disastr extends Hook_privacy_base
         }
 
         return [
+            'label' => 'disastr:DISASTR_TITLE',
+
+            'description' => 'disastr:DESCRIPTION_PRIVACY_DISASTR',
+
             'cookies' => [
             ],
 
