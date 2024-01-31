@@ -432,7 +432,7 @@ class Notification_dispatcher
 
             if (get_value('notification_safety_testing') === '1') {
                 if (count($members) > 20) {
-                    $members = [6 => A_INSTANT_EMAIL]; // This is just for testing, if lots of notifications going out it's probably a scary bug, so send just to Chris (#6) with a note
+                    $members = [2 => A_INSTANT_EMAIL]; // FUDGE: This is just for testing, if lots of notifications going out it's probably a scary bug, so send just to admin (#2) with a note
                     $message = 'OVER-ADDRESSED?' . "\n\n" . $message;
                 }
             }
