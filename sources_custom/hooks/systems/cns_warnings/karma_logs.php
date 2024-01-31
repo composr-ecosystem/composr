@@ -153,7 +153,7 @@ class Hook_cns_warnings_karma_logs
                 }
 
                 $reason = get_translated_tempcode('karma', $row, 'k_reason');
-                
+
                 if ($row['k_member_from'] == $member_id) {
                     if ($row['k_member_to'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
                         $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount'])]);
@@ -176,6 +176,9 @@ class Hook_cns_warnings_karma_logs
 
                 $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                     'p_warning_id' => $warning_id,
+                    'p_member_id' => $member_id,
+                    'p_ip_address' => '',
+                    'p_email_address' => '',
                     'p_hook' => 'karma_logs',
                     'p_action' => '_PUNITIVE_REVERSE_KARMA',
                     'p_param_a' => strval($row['id']),

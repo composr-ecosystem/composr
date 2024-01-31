@@ -89,10 +89,10 @@ class Hook_cns_warnings_karma
         if (has_privilege(get_member(), 'moderate_karma')) {
             require_code('karma');
             require_lang('karma');
-            
+
             $description = do_lang_tempcode('DESCRIPTION_PUNITIVE_KARMA');
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUNITIVE_KARMA'), 'HELP' => $description, 'SECTION_HIDDEN' => true]));
-            
+
             $current_karma = get_karma($member_id);
 
             $fields->attach(form_input_integer(do_lang_tempcode('ASSESS_BAD_KARMA'), do_lang_tempcode('DESCRIPTION_ASSESS_BAD_KARMA', escape_html(integer_format($current_karma[0], 0)), escape_html(integer_format($current_karma[1], 0))), 'bad_karma', 0, true));
@@ -125,6 +125,9 @@ class Hook_cns_warnings_karma
 
             $punitive_action_id = $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                 'p_warning_id' => $warning_id,
+                'p_member_id' => $member_id,
+                'p_ip_address' => '',
+                'p_email_address' => '',
                 'p_hook' => 'karma',
                 'p_action' => '_PUNITIVE_BAD_KARMA',
                 'p_param_a' => strval($bad_karma),
@@ -133,7 +136,7 @@ class Hook_cns_warnings_karma
             ], true);
 
             add_karma('bad', get_member(), $member_id, $bad_karma, 'Warning #' . strval($warning_id), 'warnings_punitive', strval($punitive_action_id));
-            
+
             $current_karma = get_karma($member_id);
 
             $punitive_messages[] = do_lang('PUNITIVE_BAD_KARMA', integer_format($bad_karma), integer_format($current_karma[0]), integer_format($current_karma[1]), null, false);
