@@ -318,7 +318,7 @@ abstract class Hook_privacy_base
             }
         }
 
-        if ($table_details['extra_where'] !== null) {
+        if (($table_details['extra_where'] !== null) && ($table_action != PRIVACY_METHOD__DOWNLOAD)) {
             $sql .= ' AND ';
             $sql .= $table_details['extra_where'];
         }
