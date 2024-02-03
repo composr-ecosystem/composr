@@ -1419,7 +1419,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $supported = get_allowed_video_file_types();
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url, false, $supported));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url, false, $supported, null));
 
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
@@ -1465,7 +1465,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             require_code('locations');
             $fields->attach(form_input_regions($regions));
         }
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt'));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt', null));
 
         require_code('syndication');
         $fields->attach(get_syndication_option_fields('video', $id !== null));

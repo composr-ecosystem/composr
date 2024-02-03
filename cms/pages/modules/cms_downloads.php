@@ -416,7 +416,7 @@ class Module_cms_downloads extends Standard_crud_module
         }
 
         require_code('images');
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('FILE'), '', $hidden, 'file', null, true, $url));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('FILE'), '', $hidden, 'file', null, true, $url, false, null, null));
 
         if (has_privilege(get_member(), 'draw_to_server')) {
             $fields->attach(form_input_tick(do_lang_tempcode('COPY_TO_SERVER'), do_lang_tempcode('DESCRIPTION_COPY_TO_SERVER'), 'copy_to_server', false));
