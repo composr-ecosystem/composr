@@ -264,7 +264,16 @@ class basic_code_formatting_test_set extends cms_test_case
             if (isset($this->text_formats[$ext])) {
                 $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
-                $this->assertTrue(strpos($c, "\r") === false, 'Windows text format detected for ' . $path . '. This may be expected when using git for Windows. But make sure you commit and build in Linux/UNIX format.');
+                $ok = (strpos($c, "\r") === false);
+                $this->assertTrue($ok, 'Windows text format detected for ' . $path . '. This may be expected when using git for Windows. But make sure you commit and build in Linux/UNIX format.');
+
+                // Uncomment to automatically fix Windows newline issues. Then comment out and re-run the test again to confirm the fixes.
+                /*
+                if (!$ok) {
+                    $c = str_replace("\r", '', $c);
+                    cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+                }
+                */
 
                 if ($ext == 'svg') {
                     continue;
@@ -286,6 +295,14 @@ class basic_code_formatting_test_set extends cms_test_case
                 }
 
                 $this->assertTrue($num_term_breaks == $expected_term_breaks, 'Wrong number of terminating line breaks (got ' . integer_format($num_term_breaks) . ', expects ' . integer_format($expected_term_breaks) . ') for ' . $path);
+
+                // Uncomment and run to automatically fix files with 0 terminating line breaks (does not fix files with > 1). Then comment and run again to confirm fixes.
+                /*
+                if (($expected_term_breaks == 1) && ($num_term_breaks == 0)) {
+                    $c .= "\n";
+                    cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+                }
+                */
             }
         }
     }
