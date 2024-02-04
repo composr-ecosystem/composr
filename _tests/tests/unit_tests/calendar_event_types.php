@@ -25,18 +25,28 @@ class calendar_event_types_test_set extends cms_test_case
         parent::setUp();
 
         require_code('calendar2');
+    }
 
+    public function testCanAddEventType()
+    {
         $this->eventtype_id = add_event_type('test_event_type', 'icons/calendar/testtype', '');
         $this->assertTrue('test_event_type' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_types', 't_title', ['id' => $this->eventtype_id])));
+    }
 
+    public function testCanEditEventType()
+    {
         edit_event_type($this->eventtype_id, 'test_event_type1', 'icons/calendar/testtype1', '');
         $this->assertTrue('test_event_type1' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_types', 't_title', ['id' => $this->eventtype_id])));
     }
 
+    public function testCanDeleteEventType()
+    {
+        // This is just to pick up on exceptions
+        delete_event_type($this->eventtype_id);
+    }
+
     public function tearDown()
     {
-        delete_event_type($this->eventtype_id);
-
         parent::tearDown();
     }
 }
