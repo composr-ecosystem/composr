@@ -135,7 +135,7 @@ class Hook_cns_warnings_karma
                 'p_reversed' => 0,
             ], true);
 
-            add_karma('bad', get_member(), $member_id, $bad_karma, 'Warning #' . strval($warning_id), 'warnings_punitive', strval($punitive_action_id));
+            add_karma('bad', get_member(), $member_id, $bad_karma, 'Warning #' . strval($warning_id), 'warning_punitive', strval($punitive_action_id));
 
             $current_karma = get_karma($member_id);
 
