@@ -162,6 +162,7 @@ class Hook_addon_registry_core_privacy
             'sources/hooks/systems/config/send_error_emails_ocproducts.php',
             'sources/hooks/systems/config/privacy_download_days.php',
             'sources/hooks/systems/config/privacy_purge_days.php',
+            'sources/hooks/systems/config/privacy_upon_member_delete.php',
             'sources/hooks/systems/tasks/privacy_download.php',
             'sources/hooks/systems/tasks/privacy_purge.php',
             'sources/hooks/systems/logs/.htaccess',

@@ -37,7 +37,7 @@
 		var options = {
 			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
 			interaction: {
-            mode: 'index',
+			mode: 'index',
 			},
 
 			plugins: {

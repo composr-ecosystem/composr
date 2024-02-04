@@ -535,8 +535,14 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 break;
 
             case 'f_poll_votes':
+                if (!addon_installed('cns_forum')) {
+                    parent::delete($table_name, $table_details, $row);
+                    break;
+                }
+
                 require_code('cns_topicview');
                 require_code('cns_polls_action2');
+
                 $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topic', 'id', ['t_poll_id' => $row['pv_poll_id']]);
                 if ($topic_id === null) {
                     parent::delete($table_name, $table_details, $row);

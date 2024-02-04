@@ -88,7 +88,7 @@
 			},
 
 			interaction: {
-            mode: 'x',
+			mode: 'x',
 			},
 
 			plugins: {

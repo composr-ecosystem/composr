@@ -27,6 +27,9 @@ class adminzone_search_test_set extends cms_test_case
         if (method_exists($ob, 'pre_run')) {
             $ob->pre_run();
         }
-        $ob->run();
+        $results = $ob->run();
+        $evaluation = $results->evaluate();
+
+        $this->assertTrue((strpos($evaluation, 'title="SU"') !== false), 'Expected test search on Admin Zone to return an item for SU, but this did not happen.');
     }
 }

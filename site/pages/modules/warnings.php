@@ -676,7 +676,6 @@ class Module_warnings extends Standard_crud_module
      */
     public function view() : object
     {
-        require_code('actionlog');
         require_code('cns_topics');
         require_code('templates_tooltip');
         require_code('templates_map_table');
@@ -713,45 +712,49 @@ class Module_warnings extends Standard_crud_module
         }
 
         // Action logs
-        $view_actionlogs = [];
-        $_rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['warning_id' => $id], ' ORDER BY date_and_time');
-        $_rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id], ' ORDER BY date_and_time');
-        $rows = array_merge($_rows, $_rows2);
-        sort_maps_by($rows, 'date_and_time');
-
-        foreach ($rows as $_row) {
-            if ($_row['the_type'] === 'PRIVATE_TOPIC') {
-                continue;
-            }
-
-            $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_row['member_id'], '', false);
-
-            $mode = array_key_exists('reason', $_row) ? 'cns' : 'cms';
-            $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $_row['id'], 'mode' => $mode], get_module_zone('admin_actionlog'));
-            $date = hyperlink($url, get_timezoned_date_time($_row['date_and_time']), false, true, '#' . strval($_row['id']), null, null, null, '_top');
-
-            $linkage = actionlog_linkage($_row, null, null, false);
-            $action = do_lang($_row['the_type'], $_row['param_a'], $_row['param_b'], null, null, false);
-            $view_actionlogs[] = [$by, $date, ($action !== null) ? $action : $_row['the_type'], ($linkage !== null) ? $linkage[0] : ''];
-        }
-
-        if (count($view_actionlogs) == 0) {
-            $fields['VIEW_ACTIONLOGS'] = do_lang_tempcode('NA_EM');
-        } else {
-            $header_row = columned_table_header_row([
-                do_lang('BY'),
-                do_lang('DATE_TIME'),
-                do_lang('ACTION'),
-                do_lang('DETAILS')
-            ]);
-
-            $table_rows = new Tempcode();
-            foreach ($view_actionlogs as $actionlogs) {
-                $table_rows->attach(columned_table_row($actionlogs, true));
-            }
-
+        if (addon_installed('actionlog')) {
+            require_code('actionlog');
             require_lang('actionlog');
-            $fields['VIEW_ACTIONLOGS'] = do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $table_rows, 'NONRESPONSIVE' => false]);
+
+            $view_actionlogs = [];
+            $_rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['warning_id' => $id], ' ORDER BY date_and_time');
+            $_rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id], ' ORDER BY date_and_time');
+            $rows = array_merge($_rows, $_rows2);
+            sort_maps_by($rows, 'date_and_time');
+
+            foreach ($rows as $_row) {
+                if ($_row['the_type'] === 'PRIVATE_TOPIC') {
+                    continue;
+                }
+
+                $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_row['member_id'], '', false);
+
+                $mode = array_key_exists('reason', $_row) ? 'cns' : 'cms';
+                $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $_row['id'], 'mode' => $mode], get_module_zone('admin_actionlog'));
+                $date = hyperlink($url, get_timezoned_date_time($_row['date_and_time']), false, true, '#' . strval($_row['id']), null, null, null, '_top');
+
+                $linkage = actionlog_linkage($_row, null, null, false);
+                $action = do_lang($_row['the_type'], $_row['param_a'], $_row['param_b'], null, null, false);
+                $view_actionlogs[] = [$by, $date, ($action !== null) ? $action : $_row['the_type'], ($linkage !== null) ? $linkage[0] : ''];
+            }
+
+            if (count($view_actionlogs) == 0) {
+                $fields['VIEW_ACTIONLOGS'] = do_lang_tempcode('NA_EM');
+            } else {
+                $header_row = columned_table_header_row([
+                    do_lang('BY'),
+                    do_lang('DATE_TIME'),
+                    do_lang('ACTION'),
+                    do_lang('DETAILS')
+                ]);
+
+                $table_rows = new Tempcode();
+                foreach ($view_actionlogs as $actionlogs) {
+                    $table_rows->attach(columned_table_row($actionlogs, true));
+                }
+
+                $fields['VIEW_ACTIONLOGS'] = do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $table_rows, 'NONRESPONSIVE' => false]);
+            }
         }
 
         // Punitive actions

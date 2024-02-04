@@ -135,9 +135,9 @@
 			},
 
 			interaction: {
-            mode: 'index',
+			mode: 'index',
 				{+START,IF,{HORIZONTAL}}
-            	axis: 'y',
+				axis: 'y',
 				{+END}
 			},
 

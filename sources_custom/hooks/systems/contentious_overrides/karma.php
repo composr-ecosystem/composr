@@ -1,9 +1,9 @@
 <?php /*
 
- Composr
- Copyright (c) ocProducts, 2004-2023
+Composr
+Copyright (c) ocProducts, 2004-2023
 
- See docs/LICENSE.md for full licensing information.
+See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -23,43 +23,34 @@ class Hook_contentious_overrides_karma
         if (!addon_installed('karma') || (get_forum_type() != 'cns')) {
             return;
         }
-        
+
         if (strpos($directory, 'templates_custom') !== false) {
             return;
         }
-        
+
         if ($suffix != '.tpl') {
             return;
         }
-        
+
         switch ($template_name) {
             case 'CNS_MEMBER_PROFILE_ABOUT':
                 $data = override_str_replace_exactly(
-                '		{+START,IF_NON_EMPTY,{AVATAR_URL}}
-			<div class="cns-member-profile-avatar">
-				<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{AVATAR_URL}}" alt="{!AVATAR}" />
-			</div>
-		{+END}',
-		// {\$BLOCK,defer=1,block=main_karma_graph,param={MEMBER_ID}}
-                "<ditto>
-                {\$BLOCK,block=main_karma_graph,param={MEMBER_ID}}
-                ",
-            $data
+                    "\t\t" . '{+START,IF_NON_EMPTY,{AVATAR_URL}}' . "\n\t\t\t" . '<div class="cns-member-profile-avatar">' . "\n\t\t\t\t" . '<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{AVATAR_URL}}" alt="{!AVATAR}" />' . "\n\t\t\t" . '</div>' . "\n\t\t" . '{+END}',
+                    "<ditto>{\$BLOCK,block=main_karma_graph,param={MEMBER_ID}}",
+                    $data
                 );
                 break;
-                
+
             case 'CNS_TOPIC_POST':
-                // {\$BLOCK,defer=1,block=main_karma_graph,param=2}
                 $data = override_str_replace_exactly(
-                '{POST_AVATAR}',
-		        "<ditto>
-                {\$BLOCK,block=main_karma_graph,param={POSTER_ID}}",
-                $data
+                    '{POST_AVATAR}',
+                    "<ditto>{\$BLOCK,block=main_karma_graph,param={POSTER_ID}}",
+                    $data
                 );
                 break;
         }
     }
-    
+
     public function call_included_code($path, $codename, &$code)
     {
         if (!addon_installed('karma') || (get_forum_type() != 'cns')) {
@@ -209,13 +200,13 @@ class Hook_contentious_overrides_karma
                 "
             );
         }
-        
+
         // giftr karma
         if ($codename == 'hooks/systems/ecommerce/giftr') {
             if ($code === null) {
                 $code = clean_php_file_for_eval(file_get_contents($path));
             }
-            
+
             // Add karma when receiving a gift
             insert_code_before__by_command(
                 $code,
@@ -231,7 +222,7 @@ class Hook_contentious_overrides_karma
                     }
                 }
                 "
-                );
+            );
         }
     }
 }

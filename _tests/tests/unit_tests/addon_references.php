@@ -42,7 +42,7 @@ class addon_references_test_set extends cms_test_case
             $num_matches = preg_match_all('#addon_installed\(\'([^\']*)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $addon_name = $matches[1][$i];
-                $this->assertTrue(addon_installed($addon_name), 'Could not find PHP-referenced addon, ' . $addon_name);
+                $this->assertTrue(addon_installed($addon_name), 'Could not find PHP-referenced addon, ' . $addon_name . ', in file ' . $path);
             }
 
             unset($c);

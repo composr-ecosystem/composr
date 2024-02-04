@@ -112,9 +112,9 @@ class basic_code_formatting_test_set extends cms_test_case
                 $contains_spaced_tabs = strpos($c, '    ');
 
                 if (in_array($ext, $file_types_spaces)) {
-                    $this->assertTrue(!$contains_tabs, 'Tabs are in ' . $path);
+                    $this->assertTrue(!$contains_tabs, 'Tabs are in ' . $path . '; you should use spaced tabs instead.');
                 } elseif (in_array($ext, $file_types_tabs)) {
-                    $this->assertTrue(!$contains_spaced_tabs, 'Spaced tabs are in ' . $path);
+                    $this->assertTrue(!$contains_spaced_tabs, 'Spaced tabs are in ' . $path . '; you should use tabs instead.');
                 }
             }
         }

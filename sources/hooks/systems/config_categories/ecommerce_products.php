@@ -30,6 +30,10 @@ class Hook_config_categories_ecommerce_products
      */
     public function is_enabled() : bool
     {
+        if (!addon_installed('ecommerce')) {
+            return false;
+        }
+
         return true;
     }
 }

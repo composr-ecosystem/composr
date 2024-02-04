@@ -43,7 +43,7 @@ class Hook_addon_registry_cns_warnings
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_cns_warnings
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *
@@ -106,7 +106,9 @@ class Hook_addon_registry_cns_warnings
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => [
+                'actionlog'
+            ],
             'conflicts_with' => [],
         ];
     }
@@ -150,6 +152,8 @@ class Hook_addon_registry_cns_warnings
             'sources/cns_warnings.php',
             'sources/hooks/systems/preview/warnings.php',
             'sources/hooks/systems/points_transact/cns_warnings.php',
+            'sources/hooks/systems/resource_meta_aware/warning.php',
+            'sources/hooks/systems/resource_meta_aware/warning_punitive.php',
 
             'sources/hooks/modules/admin_stats/warnings.php',
 

@@ -51,10 +51,6 @@ class Hook_config_privacy_upon_member_delete
      */
     public function get_default() : ?string
     {
-        if (!addon_installed('core_privacy')) {
-            return null;
-        }
-
         return 'ask';
     }
 }
