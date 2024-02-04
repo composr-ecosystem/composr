@@ -38,7 +38,7 @@ class Hook_addon_registry_addon_publish
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -48,7 +48,7 @@ class Hook_addon_registry_addon_publish
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *

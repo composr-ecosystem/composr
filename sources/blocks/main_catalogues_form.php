@@ -109,22 +109,22 @@ PHP;
                 return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'catalogue')]);
             }
         }
-        
+
         // If only_one, check if the member already submitted an entry
         if (isset($map['only_one']) && ($map['only_one'] == '1')) {
             if (is_guest(get_member())) {
                 return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('permissions:ACCESS_DENIED__NOT_AS_GUEST')]);
             }
-            
+
             $already_filled_in = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', ['c_name' => $catalogue_name, 'ce_submitter' => get_member()]);
-            
+
             if ($already_filled_in !== null) {
                 return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('ALREADY_SUBMITTED_CONTENT')]);
             }
         }
 
         $special_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
-        
+
         $guid = isset($map['guid']) ? $map['guid'] : '6092b1533f549abe94a764d88d89c66b';
 
         $block_id = md5(serialize($map));
@@ -142,12 +142,12 @@ PHP;
             foreach ($special_fields as $field_num => $field) {
                 $ob = get_fields_hook($field['cf_type']);
                 $inputted_value = $ob->inputted_to_field_value(false, $field, null);
-                
+
                 // Required field validation (a standard for all field hooks)
                 if (($field['cf_required'] == 1) && (($inputted_value == '') || ($inputted_value === null) || (($inputted_value == STRING_MAGIC_NULL) && !fractional_edit()))) {
                     warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name']));
                 }
-                
+
                 if ($inputted_value !== null) {
                     $c_map[$field['id']] = $inputted_value;
                 }
@@ -179,7 +179,7 @@ PHP;
             $fields->attach(form_input_captcha($hidden));
             $text->attach(do_lang_tempcode('captcha:FORM_TIME_SECURITY'));
         }
-        
+
         // Attach catalogue category selection field
         $fields->attach(form_input_tree_list(do_lang_tempcode('CATEGORY'), '', 'catalogue_category', null, 'choose_catalogue_category', ['catalogue_name' => $catalogue_name], true));
 

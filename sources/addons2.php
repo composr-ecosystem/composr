@@ -256,7 +256,7 @@ QUERYING ADDONS
 function find_available_addons(bool $installed_too = true, bool $gather_mtimes = true, array $already_known = [], bool $get_info = true) : array
 {
     require_code('version');
-    
+
     $addons_available_for_installation = [];
     $files = [];
 
@@ -302,7 +302,7 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
 
         if ($info_file !== null) {
             $info = cms_parse_ini_file_fast(null, $info_file['data']);
-            
+
             // Skip incompatible addon TARs
             if (((empty($info['min_cms_version'])) || (floatval($info['min_cms_version']) > cms_version_number())) || ((!empty($info['max_cms_version'])) && (floatval($info['max_cms_version']) < cms_version_number()))) {
                 continue;
@@ -635,7 +635,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
     // NB: It's theoretically possible that there may be incompatibilities between two addons installing together, and we can't detect this (only incompatibilities for what is already installed). However it's very unlikely as multi-install is only really going to happen with official addons which have no such problems.
     $warnings = new Tempcode();
     require_code('version');
-    
+
     // Website software version incompatibilities
     if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
         if (!$always_return) {
@@ -643,7 +643,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
         }
         $warnings->attach(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon_name)));
     }
-    
+
     // Non-core addon
     if ($info['author'] != 'Core Team') {
         static $done_non_core_warn = false;
@@ -652,7 +652,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
         }
         $done_non_core_warn = true;
     }
-    
+
     // Addon incompatibilities
     $incompatibilities = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 1], 'ORDER BY addon_name'));
     $_incompatibilities = new Tempcode();
@@ -870,7 +870,7 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
     $addon_name = $info['name'];
 
     $was_already_installed = addon_installed($addon_name);
-    
+
     // Stop! Don't install an addon if it is not compatible with this version of the website software
     require_code('version');
     if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {

@@ -154,18 +154,18 @@ class Hook_fields_state
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
         $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
-        
+
         // Validation (when using a U.S. state)
         if (($value != '') && ($value != STRING_MAGIC_NULL) && (get_option('business_country') == 'US')) {
             require_code('locations');
-            
+
             global $USA_STATE_LIST;
-            
+
             if (!array_key_exists($value, $USA_STATE_LIST)) {
                 warn_exit(do_lang_tempcode('locations:NOT_VALID_US_STATE', escape_html($value)));
             }
         }
-        
+
         return $value;
     }
 

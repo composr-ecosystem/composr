@@ -218,11 +218,11 @@ class Hook_fields_content_link_multi
         $value = '';
         $tmp_name = 'field_' . strval($id);
         $type = preg_replace('#^choose\_#', '', substr($field['cf_type'], 3));
-        
+
         if (!array_key_exists($tmp_name, $_POST)) {
             return $editing ? STRING_MAGIC_NULL : '';
         }
-        
+
         require_code('content');
         foreach (is_array($_POST[$tmp_name]) ? $_POST[$tmp_name] : explode(',', $_POST[$tmp_name]) as $_value) {
             if ($_value != '') {
@@ -231,7 +231,7 @@ class Hook_fields_content_link_multi
                 if ($title === null) {
                     continue;
                 }
-                
+
                 if ($value != '') {
                     $value .= "\n";
                 }

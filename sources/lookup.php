@@ -106,7 +106,7 @@ function lookup_user($param, ?string &$username, ?int &$member_id, ?string &$ip,
         }
         $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
     }
-    
+
     if (!addon_installed('stats')) {
         return [];
     }

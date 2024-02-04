@@ -39,16 +39,16 @@ class Hook_commandr_command_add_karma
         }
 
         require_lang('karma');
-        
+
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('add_karma', ['h'], [true, true, true, true, true]), '', ''];
         }
-        
+
         if (!has_privilege(get_member(), 'moderate_karma')) {
             require_lang('permissions');
             return ['', '', '', do_lang('ACCESS_DENIED__PRIVILEGE', $GLOBALS['FORUM_DRIVER']->get_username(get_member()), 'moderate_karma')];
         }
-        
+
         if (!array_key_exists(0, $parameters)) {
             return ['', '', '', do_lang('MISSING_PARAM', '1', 'add_karma')];
         }
@@ -61,7 +61,7 @@ class Hook_commandr_command_add_karma
         if (!array_key_exists(3, $parameters)) {
             return ['', '', '', do_lang('MISSING_PARAM', '4', 'add_karma')];
         }
-        
+
         $karma_type = $parameters[0];
         if (!in_array($parameters[0], ['good', 'bad'])) {
             return ['', '', '', do_lang('CMD_ADD_KARMA_PARAM_0_INVALID')];
@@ -71,17 +71,17 @@ class Hook_commandr_command_add_karma
         if (($member_to === null) || (is_guest($member_to))) {
             return ['', '', '', do_lang('MEMBER_NO_EXIST')];
         }
-        
+
         $amount = intval($parameters[2]);
         $reason = escape_html($parameters[3]);
-        
+
         $content_id = '';
         if (array_key_exists(4, $parameters)) {
             $content_id = escape_html($parameters[4]);
         }
 
         require_code('karma');
-        
+
         add_karma($karma_type, get_member(), $member_to, $amount, $reason, 'commandr_command', $content_id);
 
         return ['', '', do_lang('SUCCESS'), ''];

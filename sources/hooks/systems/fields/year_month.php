@@ -198,7 +198,7 @@ class Hook_fields_year_month
         if ($month === null) {
             return $editing ? STRING_MAGIC_NULL : '';
         }
-        
+
         $min_year = $this->find_year_range_limiter($field, 'min_year');
         $max_year = $this->find_year_range_limiter($field, 'max_year');
         if ((($min_year !== null) && ($year < $min_year)) || (($max_year !== null) && ($year > $max_year))) {

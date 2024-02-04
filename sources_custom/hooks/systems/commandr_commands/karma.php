@@ -52,16 +52,16 @@ class Hook_commandr_command_karma
                 return ['', '', '', do_lang('MEMBER_NO_EXIST')];
             }
         }
-        
+
         if (($member_id != get_member()) && (!has_privilege(get_member(), 'view_others_karma'))) {
             require_lang('permissions');
             return ['', '', '', do_lang('ACCESS_DENIED__PRIVILEGE', $GLOBALS['FORUM_DRIVER']->get_username(get_member()), 'view_others_karma')];
         }
 
         require_code('karma');
-        
+
         $karma = get_karma($member_id);
-        
+
         if (has_privilege(get_member(), 'view_bad_karma')) {
             return ['', '', do_lang('GOOD_BAD_KARMA', integer_format($karma[0]), integer_format($karma[1])), ''];
         }

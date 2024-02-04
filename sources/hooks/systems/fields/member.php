@@ -166,14 +166,14 @@ class Hook_fields_member
         $value = post_param_string($tmp_name, strval(INTEGER_MAGIC_NULL));
         if (($value != '') && ($value != strval(INTEGER_MAGIC_NULL))) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($value);
-            
+
             // Invalid username?
             if (is_null($member_id)) {
                 warn_exit(do_lang_tempcode('javascript:NOT_USERNAME', $value));
             }
-            
+
             $value = strval($member_id);
-            
+
         }
         return $value;
     }

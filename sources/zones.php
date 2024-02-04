@@ -1877,13 +1877,13 @@ function _check_module_installation_status(object $object, string $codename)
             ) {
                 warn_exit(do_lang_tempcode('OUTDATED_ADDON_REMEDIES', escape_html($codename), escape_html(find_script('upgrader'))));
             }
-            
+
             // See if the module is not compatible with this version of the software
             require_code('version');
             if (($min_cms_version === null) || ($min_cms_version > cms_version_number()) || (($max_cms_version !== null) && ($max_cms_version < cms_version_number()))) {
                 warn_exit(do_lang_tempcode(
-                    'INCOMPATIBLE_ADDON_REMEDIES', 
-                    escape_html($codename), 
+                    'INCOMPATIBLE_ADDON_REMEDIES',
+                    escape_html($codename),
                     escape_html(float_to_raw_string(cms_version_number())),
                     [
                         escape_html($addon),
@@ -1938,7 +1938,7 @@ function _check_block_installation_status(object $object, string $codename) : ?o
                 $error_msg = do_lang_tempcode('OUTDATED_ADDON_REMEDIES', escape_html($codename), escape_html(find_script('upgrader')));
                 return do_template('RED_ALERT', ['_GUID' => '7jsfqaeaaf07kawlhnvteul10wm34bcu', 'TEXT' => $error_msg]);
             }
-            
+
             // See if the module is not compatible with this version of the software
             require_code('version');
             if (($min_cms_version === null) || ($min_cms_version > cms_version_number()) || (($max_cms_version !== null) && ($max_cms_version < cms_version_number()))) {

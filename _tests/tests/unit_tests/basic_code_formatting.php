@@ -113,8 +113,24 @@ class basic_code_formatting_test_set extends cms_test_case
 
                 if (in_array($ext, $file_types_spaces)) {
                     $this->assertTrue(!$contains_tabs, 'Tabs are in ' . $path . '; you should use spaced tabs instead.');
+
+                    // Uncomment to automatically fix tab issues. Then comment out and re-run the test again to confirm the fixes.
+                    /*
+                    if ($contains_tabs) {
+                        $c = str_replace("\t", '    ', $c);
+                        cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+                    }
+                    */
                 } elseif (in_array($ext, $file_types_tabs)) {
                     $this->assertTrue(!$contains_spaced_tabs, 'Spaced tabs are in ' . $path . '; you should use tabs instead.');
+
+                    // Uncomment to automatically fix tab issues. Then comment out and re-run the test again to confirm the fixes.
+                    /*
+                    if ($contains_spaced_tabs) {
+                        $c = str_replace('    ', "\t", $c);
+                        cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+                    }
+                    */
                 }
             }
         }
@@ -151,6 +167,14 @@ class basic_code_formatting_test_set extends cms_test_case
 
                 $ok = (preg_match('#[ \t]$#m', $c) == 0);
                 $this->assertTrue($ok, 'Has trailing whitespace in ' . $path . '; grep for [ \t]+$');
+
+                // Uncomment this and run the test to automatically fix whitespace issues. Then, comment it out and re-run the test to confirm the fixes.
+                /*
+                if (!$ok) {
+                    $c = preg_replace('#[ \t]+$#m', '', $c);
+                    cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+                }
+                */
             }
         }
     }

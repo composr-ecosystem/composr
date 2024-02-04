@@ -147,11 +147,11 @@ function karma_get_logs(string $type, int $member_id_of, int $member_id_viewing,
 {
     $where = [];
     $end = '';
-    
+
     switch ($type) {
         case 'sender': // Logs where the member sent karma to another member (karmic influence)
             $where = ['k_member_from' => $member_id_of];
-            
+
             $end = ' AND k_member_to<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
             break;
         case 'recipient': // Logs where the member received karma (either from other members or the system)
@@ -170,22 +170,22 @@ function karma_get_logs(string $type, int $member_id_of, int $member_id_viewing,
             $end = ' AND (k_member_to=' . strval($member_id_of) . ' OR k_member_from=' . strval($member_id_of) . ')';
             break;
     }
-    
+
     if ($reversed !== null) {
         $where['k_reversed'] = $reversed;
     }
-    
+
     if ($after_time !== null) {
         $end .= ' AND k_date_and_time>=' . strval($after_time);
     }
-    
+
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('karma', 'COUNT(*)', $where, $end);
-    
+
     if ($sortable != '') {
         $end .= ' ORDER BY ' . $sortable . ' ' . $sort_order;
     }
     $rows = $GLOBALS['SITE_DB']->query_select('karma', ['*'], $where, $end, $max, $start);
-    
+
     return [$max_rows, $rows];
 }
 
@@ -251,7 +251,7 @@ function reverse_karma(?int $id = null, ?int $member_from = null, ?int $member_t
     if (($id === null) && ($member_from === null) && ($member_to === null) && (($content_type === null) || ($content_id === null))) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
-    
+
     require_lang('karma');
 
     // Build our search query string

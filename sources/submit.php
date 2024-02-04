@@ -144,7 +144,7 @@ function give_submit_points(string $type, string $content_type, string $content_
         if ($already_awarded === null) {
             require_code('content');
             require_code('points2');
-            
+
             // Get our reason
             list($title) = content_get_details($content_type, $content_id);
             $lang_string = do_lang('ACTIVITY_' . $type, $title, null, null, null, false);
@@ -154,7 +154,7 @@ function give_submit_points(string $type, string $content_type, string $content_
             if ($lang_string === null) {
                 $lang_string = $type;
             }
-            
+
             // Credit points
             points_credit_member($member_id, $lang_string, intval($points), 0, true, 0, $content_type, 'add', strval($content_id));
             return do_lang('SUBMIT_AWARD', integer_format(intval($points), 0));

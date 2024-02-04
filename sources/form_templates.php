@@ -1720,7 +1720,7 @@ function make_previewable_url_absolute(?string $url) : array
             }
             $_url = ($custom ? get_custom_base_url() : get_base_url()) . '/' . $_url;
         }
-        
+
         require_code('images');
         $is_image = is_image($_url, IMAGE_CRITERIA_WEBSAFE, true);
     }
@@ -1806,14 +1806,14 @@ function form_input_upload_multi($pretty_name, $description, string $name, bool 
             $file_bits = explode('::', $_file);
             $image_url = '';
             list($_edit, $is_image) = make_previewable_url_absolute($file_bits[0]);
-            
+
             // If first bit is not an image, sometimes the second bit will be (e.g. video thumbnails)
             if (($is_image === false) && array_key_exists(1, $file_bits)) {
                 list($image_url, $is_image) = make_previewable_url_absolute($file_bits[1]);
             } else if ($is_image === true) {
                 $image_url = $_edit;
             }
-            
+
             $edit[] = ['INDEX' => strval($i), 'URL' => $_edit, 'IMAGE_URL' => $image_url, 'IS_IMAGE' => $is_image];
         }
     }

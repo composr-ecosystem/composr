@@ -199,9 +199,9 @@ class Hook_fields_reference_multi
         if (!array_key_exists($tmp_name, $_POST)) {
             return $editing ? STRING_MAGIC_NULL : '';
         }
-        
+
         require_code('content');
-        
+
         foreach (explode(',', $_POST[$tmp_name]) as $_value) {
             if ($_value != '') {
                 if ($value != '') {
@@ -209,7 +209,7 @@ class Hook_fields_reference_multi
                     if ($title === null) {
                         continue;
                     }
-                    
+
                     $value .= "\n";
                 }
                 $value .= $_value;

@@ -429,12 +429,12 @@ class DecisionTree
                         }
                     }
                     $val = $hook_ob->inputted_to_field_value(false, $field);
-                    
+
                     // Required field validation (a standard for all field hooks)
                     if (($field['cf_required'] == 1) && (($val == '') || ($val === null) || (($val == STRING_MAGIC_NULL) && !fractional_edit()))) {
                         warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name']));
                     }
-                    
+
                     $_POST = $backup;
                     if ($val !== null) {
                         $_POST[$question_name] = $val;

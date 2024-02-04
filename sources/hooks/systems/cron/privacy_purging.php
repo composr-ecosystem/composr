@@ -80,7 +80,7 @@ class Hook_cron_privacy_purging
         if ($selection_sql == '') { // Blank result means we should not run for this table (no filters / retention period)
             return;
         }
-        
+
         $sql = 'SELECT * FROM ' . $db->get_table_prefix() . $table_name;
         $sql .= $selection_sql;
         $rows = $db->query($sql);

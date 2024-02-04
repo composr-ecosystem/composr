@@ -354,7 +354,7 @@ function set_poll(int $id)
         if ($points_chosen != 0) {
             require_code('content');
             list($title) = content_get_details('poll', strval($id));
-            
+
             points_credit_member($submitter, do_lang('ACTIVITY_CHOOSE_POLL', $title), $points_chosen, 0, true, 0, 'poll', 'choose', strval($id));
         }
     } else {

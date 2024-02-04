@@ -102,7 +102,7 @@ class Hook_fields_tax_code
         if (!addon_installed('ecommerce')) {
             return '';
         }
-        
+
         if (is_object($ev)) {
             $ev = $ev->evaluate();
         }
@@ -164,7 +164,7 @@ class Hook_fields_tax_code
         if (!addon_installed('ecommerce')) {
             return null;
         }
-        
+
         require_code('ecommerce');
 
         if ($actual_value == '') {
@@ -196,7 +196,7 @@ class Hook_fields_tax_code
         if (!addon_installed('ecommerce')) {
             return null;
         }
-        
+
         require_code('ecommerce');
 
         $id = $field['id'];

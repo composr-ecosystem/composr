@@ -182,7 +182,7 @@ class Hook_fields_video_multi
     public function get_field_inputter(string $_cf_name, string $_cf_description, array $field, ?string $actual_value, bool $new) : ?array
     {
         $default = ($actual_value == '') ? null : explode("\n", $actual_value);
-        
+
         $say_required = ($field['cf_required'] == 1);
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         require_code('images');

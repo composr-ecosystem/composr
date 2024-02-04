@@ -398,7 +398,7 @@ function save_zone_base_url(string $zone, string $base_url)
 function upgrade_module(string $zone, string $module) : int
 {
     require_code('version');
-    
+
     $rows = $GLOBALS['SITE_DB']->query_select('modules', ['*'], ['module_the_name' => $module], '', 1);
     if (!array_key_exists(0, $rows)) {
         return (-2); // Not installed, so can't upgrade
@@ -444,11 +444,11 @@ function upgrade_module(string $zone, string $module) : int
     if ($info['hacked_by'] === null) {
         $info['installed_hacked_by'] = '';
     }
-    
+
     if (empty($info['addon'])) {
         $info['addon'] = do_lang('NA');
     }
-    
+
     // Version compatibility check
     if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
@@ -459,7 +459,7 @@ function upgrade_module(string $zone, string $module) : int
                 escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
             ]));
     }
-    
+
     $GLOBALS['SITE_DB']->query_update('modules', ['module_version' => $info['version'], 'module_hack_version' => $info['hack_version'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by']], ['module_the_name' => $module], '', 1);
     persistent_cache_delete('MODULES');
 
@@ -523,14 +523,14 @@ function reinstall_module(string $zone, string $module) : bool
             cms_eval($functions[1], $module_path);
         }
     }
-    
+
     if (empty($info['addon'])) {
         $info['addon'] = do_lang('NA');
     }
-    
+
     // Version compatibility check
     if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
-        warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',                     
+        warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
             escape_html($module),
             escape_html(float_to_raw_string(cms_version_number())),
             [
@@ -538,7 +538,7 @@ function reinstall_module(string $zone, string $module) : bool
                 escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
             ]));
     }
-    
+
     $GLOBALS['SITE_DB']->query_insert('modules', ['module_the_name' => $module, 'module_author' => $info['author'], 'module_organisation' => $info['organisation'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'module_hack_version' => $info['hack_version'], 'module_version' => $info['version']]);
 
     persistent_cache_delete('MODULES');
@@ -696,7 +696,7 @@ function get_standard_block_parameters() : array
 function upgrade_block(string $block) : int
 {
     require_code('version');
-    
+
     $rows = $GLOBALS['SITE_DB']->query_select('blocks', ['*'], ['block_name' => $block], '', 1);
     if (!array_key_exists(0, $rows)) {
         return (-2); // Not installed, so can't upgrade
@@ -729,11 +729,11 @@ function upgrade_block(string $block) : int
         if ($info['hacked_by'] === null) {
             $info['installed_hacked_by'] = '';
         }
-        
+
         if (empty($info['addon'])) {
             $info['addon'] = do_lang('NA');
         }
-        
+
         // Version compatibility check
         if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
             warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
@@ -744,7 +744,7 @@ function upgrade_block(string $block) : int
                     escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
                 ]));
         }
-        
+
         $GLOBALS['SITE_DB']->query_update('blocks', ['block_version' => $info['version'], 'block_hack_version' => $info['hack_version'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by']], ['block_name' => $block], '', 1);
         $ret = 1;
     }
@@ -787,11 +787,11 @@ function reinstall_block(string $block) : bool
     if ($info['hacked_by'] === null) {
         $info['hacked_by'] = '';
     }
-    
+
     if (empty($info['addon'])) {
         $info['addon'] = do_lang('NA');
     }
-    
+
     // Version compatibility check
     if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',

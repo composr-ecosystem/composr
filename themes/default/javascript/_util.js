@@ -1133,15 +1133,15 @@
 
     /**
      * Formats a large number with commas and k/m shortening
-     * @param {Number} value 
-     * @param {Boolean} force 
+     * @param {Number} value
+     * @param {Boolean} force
      * @returns {String}
      */
     $util.makeBigNumberNice = function makeBigNumberNice(value, force) {
         if (!isNumeric(value)) {
             return value;
         }
-        
+
         if (value >= 1000000) {
             if (value % 100000 == 0) {
                 return ((value / 1000000) + 'm');

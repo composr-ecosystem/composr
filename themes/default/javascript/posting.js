@@ -1074,11 +1074,11 @@
         function postFormSaving (temp) {
             if (temp) {
                 var post = encodeURIComponent(temp[0]) + '=' + encodeURIComponent(temp[1]);
-    
+
                 // Save remotely
                 if (navigator.onLine) {
                     $util.inform('Doing AJAX auto-save');
-    
+
                     if ($cms.form.isModSecurityWorkaroundEnabled()) {
                         post = $cms.form.modSecurityWorkaroundAjax(post);
                     }

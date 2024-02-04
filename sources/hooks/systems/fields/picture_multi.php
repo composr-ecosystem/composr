@@ -202,7 +202,7 @@ class Hook_fields_picture_multi
     public function get_field_inputter(string $_cf_name, string $_cf_description, array $field, ?string $actual_value, bool $new) : ?array
     {
         $default = ($actual_value == '') ? null : explode("\n", $actual_value);
-        
+
         require_code('images');
 
         $say_required = ($field['cf_required'] == 1);

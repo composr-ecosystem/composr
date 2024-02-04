@@ -381,7 +381,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         }
         $additional_criteria .= do_lang('THIS_WITH', $criterion, float_to_raw_string($_confidence_level));
     }
-    
+
     // Ban
     $spam_ban_threshold = intval(get_option('spam_ban_threshold'));
     if (intval($confidence_level * 100.0) >= $spam_ban_threshold) {

@@ -35,8 +35,8 @@ class Hook_commandr_command_whois
     {
         if (!addon_installed('securitylogging')) {
             return ['', '', '', do_lang('MISSING_ADDON', 'securitylogging')];
-        }        
-        
+        }
+
         require_code('lookup');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {

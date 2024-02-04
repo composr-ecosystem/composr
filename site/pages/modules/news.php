@@ -725,7 +725,7 @@ class Module_news
         $prev_article_title = null;
         $next_article_url   = null;
         $next_article_title = null;
-        
+
         // Find a previous article
         $prev_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], ' AND date_and_time<' . strval($myrow['date_and_time']), 100/*Performance*/);
         sort_maps_by($prev_articles, '!date_and_time');
@@ -736,7 +736,7 @@ class Module_news
                     continue;
                 }
             }
-            
+
             $_prev_article_title = $prev_article['title'];
             if (!cms_empty_safe($_prev_article_title)) {
                 $prev_article_title = get_translated_text($_prev_article_title);
@@ -744,7 +744,7 @@ class Module_news
                 break;
             }
         }
-        
+
         // Find a next article
         $next_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], ' AND date_and_time>=' . strval($myrow['date_and_time']), 101/*Performance*/, 1);
         sort_maps_by($next_articles, 'date_and_time');
@@ -755,7 +755,7 @@ class Module_news
                     continue;
                 }
             }
-            
+
             $_next_article_title = $next_article['title'];
             if (!cms_empty_safe($_next_article_title)) {
                 $next_article_title = get_translated_text($_next_article_title);

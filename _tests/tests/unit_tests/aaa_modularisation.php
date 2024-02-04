@@ -158,7 +158,7 @@ class aaa_modularisation_test_set extends cms_test_case
                                     $this->assertTrue($m_count > 0, 'No @package for <a href="txmt://open?url=file://' . htmlentities(get_file_base() . '/' . $_path) . '">' . htmlentities($path) . '</a> (should be ' . $addon_name . ')');
                                 }
                             }
-                            
+
                             // Prepare for info() function checks on modules and blocks
                             $skip_this_file = true;
                             if ((strpos($path, '/modules/') !== false) || (strpos($path, '/modules_custom/') !== false)) {
@@ -180,7 +180,7 @@ class aaa_modularisation_test_set extends cms_test_case
                             if (!$skip_this_file) {
                                 $skip_this_file = (in_array($path, $info_exclusions_files)) || ($m_count == 0);
                             }
-                            
+
                             if (!$skip_this_file) {
                                 // Check conformity with the addon $info property
                                 $_m_count2 = preg_match_all("#function info\(#", $data);
@@ -190,7 +190,7 @@ class aaa_modularisation_test_set extends cms_test_case
                                     $problem2 = ($m_count2 != 0) && (strpos($matches2[1][0], $addon_name) === false);
                                     $this->assertTrue(!$problem2, 'addon property of $info wrong for <a href="txmt://open?url=file://' . htmlentities(get_file_base() . '/' . $_path) . '">' . htmlentities($path) . '</a> (should be ' . $addon_name . ')');
                                     $this->assertTrue($m_count2 > 0, 'No addon property defined for $info in <a href="txmt://open?url=file://' . htmlentities(get_file_base() . '/' . $_path) . '">' . htmlentities($path) . '</a> (should be defined as ' . $addon_name . ')');
-                                    
+
                                 // Check that a min_cms_version property is defined (required as of v11)
                                 $m_count2 = preg_match_all('/\\$info\\[\'min_cms_version\'\\] = /', $data, $matches2);
                                 $this->assertTrue($m_count2 > 0, 'No min_cms_version property defined for $info in <a href="txmt://open?url=file://' . htmlentities(get_file_base() . '/' . $_path) . '">' . htmlentities($path) . '</a> (should be a float)');

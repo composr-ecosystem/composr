@@ -773,7 +773,7 @@ class Module_cms_catalogues extends Standard_crud_module
             } else {
                 $value = $object->inputted_to_field_value($editing_id !== null, $field, 'uploads/catalogues', ($editing_id === null) ? null : _get_catalogue_entry_field($field['id'], $editing_id, $storage_type));
             }
-            
+
             // Required field validation (a standard for all field hooks)
             if (($field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
                 warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name']));
@@ -805,7 +805,7 @@ class Module_cms_catalogues extends Standard_crud_module
         if ($catalogue_name === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue_category'));
         }
-        
+
         $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
 
         $map = $this->get_set_field_map($catalogue_name, get_member());
@@ -815,7 +815,7 @@ class Module_cms_catalogues extends Standard_crud_module
         $id = actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $metadata['add_time'], $metadata['submitter'], null, $metadata['views']);
 
         set_url_moniker('catalogue_entry', strval($id));
-        
+
         require_code('content');
         list($title,,,,, $url_safe) = content_get_details('catalogue_entry', strval($id));
 
@@ -899,9 +899,9 @@ class Module_cms_catalogues extends Standard_crud_module
             }
         }
         $map = $this->get_set_field_map($catalogue_name, $submitter, $id);
-        
+
         $metadata = actual_metadata_get_fields('catalogue_entry', strval($id));
-        
+
         actual_edit_catalogue_entry($id, $category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], true);
 
         if (addon_installed('content_privacy')) {

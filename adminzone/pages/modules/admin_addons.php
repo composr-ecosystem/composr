@@ -127,7 +127,7 @@ class Module_admin_addons
             $GLOBALS['SITE_DB']->alter_table_field('addons_files', 'filename', 'SHORT_TEXT', 'filepath');
             $GLOBALS['SITE_DB']->add_table_field('addons', 'addon_min_cms_version', 'SHORT_TEXT');
             $GLOBALS['SITE_DB']->add_table_field('addons', 'addon_max_cms_version', 'SHORT_TEXT');
-            
+
             // Populate min_cms_version and max_cms_version (presumably from addon hooks) into the database
             require_code('addons2');
             $addons = find_installed_addons();
@@ -1193,7 +1193,7 @@ class Module_admin_addons
         // Default metadata
         if ($theme === null) {
             require_code('version');
-            
+
             $addon_name = '';
             $author = '';
             $organisation = '';
@@ -1371,13 +1371,13 @@ class Module_admin_addons
         $fields .= $field->evaluate();
         $field = form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, true);
         $fields .= $field->evaluate();
-        
+
         require_code('version');
         $field = form_input_float(do_lang_tempcode('MIN_CMS_VERSION'), do_lang_tempcode('DESCRIPTION_MIN_CMS_VERSION'), 'min_cms_version', floatval($min_cms_version), true);
         $fields .= $field->evaluate();
         $field = form_input_float(do_lang_tempcode('MAX_CMS_VERSION'), do_lang_tempcode('DESCRIPTION_MAX_CMS_VERSION'), 'max_cms_version', ($max_cms_version != '') ? floatval($max_cms_version) : null, false);
         $fields .= $field->evaluate();
-        
+
         $field = form_input_line(do_lang_tempcode('DEPENDENCIES'), do_lang_tempcode('DESCRIPTION_DEPENDENCIES'), 'dependencies', $dependencies, false);
         $fields .= $field->evaluate();
         $field = form_input_line(do_lang_tempcode('INCOMPATIBILITIES'), do_lang_tempcode('DESCRIPTION_INCOMPATIBILITIES'), 'incompatibilities', $incompatibilities, false);
@@ -1613,7 +1613,7 @@ class Module_admin_addons
             } else {
                 $addon = do_lang_tempcode('NA_EM');
             }
-            
+
             $author = $info['author'];
             $organisation = $info['organisation'];
             $version = $info['version'];

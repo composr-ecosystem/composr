@@ -43,7 +43,7 @@ class Hook_addon_registry_core_forum_drivers
     {
         return cms_version_number();
     }
-    
+
     /**
      * Get the minimum required version of the website software needed to use this addon.
      *
@@ -53,7 +53,7 @@ class Hook_addon_registry_core_forum_drivers
     {
         return 11.0;
     }
-    
+
     /**
      * Get the maximum compatible version of the website software to use this addon.
      *

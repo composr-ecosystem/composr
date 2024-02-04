@@ -147,7 +147,7 @@ class Hook_fields_region
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
         $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
-        
+
         // Validation (region is country)
         if (($value != '') && ($value != STRING_MAGIC_NULL)) {
             require_code('locations');
@@ -156,7 +156,7 @@ class Hook_fields_region
                 warn_exit(do_lang_tempcode('locations:NOT_VALID_COUNTRY', escape_html($value)));
             }
         }
-        
+
         return value;
     }
 

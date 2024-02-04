@@ -139,7 +139,7 @@ class Hook_fields_guid
         if (!$editing) {
             return $this->get_field_guid();
         }
-        
+
         // Codename validation (minus URL stripping) since GUID is essentially a codename field
         require_code('type_sanitisation');
         $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
@@ -149,7 +149,7 @@ class Hook_fields_guid
             }
         }
         return $value;
-        
+
     }
 
     /**

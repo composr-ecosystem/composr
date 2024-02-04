@@ -34,18 +34,18 @@ function catalogue_file_script()
     }
 
     $table = get_param_string('table');
-    
+
     // Security check; doesn't work for very old attachments (pre-v8) LEGACY note
     if ($table != 'catalogue_efv_short' && $table != 'catalogue_efv_long' && $table != 'f_member_custom_fields') { // FUDGE
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
-    
+
     $original_filename = get_param_string('original_filename', null, INPUT_FILTER_GET_COMPLEX);
     $is_catalogue_type = ($table == 'catalogue_efv_short' || $table == 'catalogue_efv_long');
     $is_member_type = ($table == 'f_member_custom_fields');
-    
+
     $file = filter_naughty(get_param_string('file', false, INPUT_FILTER_GET_COMPLEX));
-    
+
     $entry_id = get_param_integer('id');
     $field_id = get_param_integer('field_id', null);
     $id_field = filter_naughty_harsh(get_param_string('id_field'));
@@ -66,9 +66,9 @@ function catalogue_file_script()
     if ($_ev_check === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
-    
+
     $ev_checks = explode("\n", $_ev_check);
-    
+
     // Check if the file exists in the field
     $ev_path = false;
     foreach ($ev_checks as $ev_item) {
@@ -81,7 +81,7 @@ function catalogue_file_script()
     if ($ev_path === false) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('FILE')));
     }
-    
+
     // Prepare the file
     $_full_path = get_custom_file_base() . '/' . $ev_path;
     $_path_bits = explode('::', $_full_path);
@@ -90,7 +90,7 @@ function catalogue_file_script()
     }
     $_full = $_path_bits[0];
     $size = filesize($_full);
-    
+
     if ($is_catalogue_type) { // Now check the match, if we support checking on it
         if (!is_our_server()/*We need to allow media renderer to get through*/) {
             $c_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => $entry_id]);
@@ -714,7 +714,7 @@ function save_form_custom_fields(string $content_type, string $id, ?string $old_
         list(, , $storage_type) = $ob->get_field_value_row_bits($field);
 
         $value = $ob->inputted_to_field_value($existing !== null, $field, 'uploads/catalogues', ($existing === null) ? null : _get_catalogue_entry_field($field['id'], $existing, $storage_type));
-        
+
         // Required field validation (a standard for all field hooks)
         if (($field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
             warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name']));
