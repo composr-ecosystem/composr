@@ -49,7 +49,9 @@ class catalogues_module_test_set extends cms_test_case
         require_code('content2');
         $_GET['type'] = 'add';
         $this->cms_catalogues_alt->pre_run();
-        $this->cms_catalogues_alt->add();
+        $results = $this->cms_catalogues_alt->add();
+        $evaluation = $results->evaluate();
+        $this->assertTrue((strpos($evaluation, '<form ') !== false), 'Expected a form on the add catalogue UI but did not get one.');
     }
 
     public function testAddCatalogueActualiser()
@@ -422,11 +424,17 @@ class catalogues_module_test_set extends cms_test_case
         $_GET['type'] = '_add';
         $this->cms_catalogues_alt->pre_run();
         $this->cms_catalogues_alt->_add();
+
+        $c_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'biodata']);
+        $this->assertTrue(($c_name === 'biodata'), 'Expected a biodata catalogue to be created via the UI, but this did not happen.');
     }
 
     public function testDeleteCatalogue()
     {
         require_code('autosave');
         $this->cms_catalogues_alt->delete_actualisation('biodata');
+
+        $c_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'biodata']);
+        $this->assertTrue(($c_name === null), 'Expected the biodata catalogue to be deleted via the UI, but this did not happen.');
     }
 }
