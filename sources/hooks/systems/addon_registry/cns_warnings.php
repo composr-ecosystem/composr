@@ -159,6 +159,8 @@ class Hook_addon_registry_cns_warnings
 
             'sources/hooks/systems/cns_warnings/.htaccess',
             'sources/hooks/systems/cns_warnings/index.html',
+            'sources_custom/hooks/systems/cns_warnings/.htaccess',
+            'sources_custom/hooks/systems/cns_warnings/index.html',
             'sources/hooks/systems/cns_warnings/ban_member.php',
             'sources/hooks/systems/cns_warnings/probation.php',
             'sources/hooks/systems/cns_warnings/content.php',

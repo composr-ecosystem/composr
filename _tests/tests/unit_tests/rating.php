@@ -20,10 +20,8 @@ class rating_test_set extends cms_test_case
 {
     protected $event_id;
 
-    public function setUp()
+    public function testRateCalendarEvent()
     {
-        parent::setUp();
-
         require_code('calendar2');
         require_code('feedback');
         $this->event_id = add_calendar_event(8, 'none', null, 0, 'test_event', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, null, null, null, 'day_of_month', null, null, null, 1, null, 1, 1, 1, 1, '', null, 0, null, null, null);

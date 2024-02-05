@@ -41,7 +41,7 @@ class webdav_test_set extends cms_test_case
 
         $ht = get_file_base() . '/.htaccess';
         if ((!is_file($ht)) || (strpos(file_get_contents($ht), 'WebDAV implementation') === false)) {
-            $this->assertTrue(false, '.htaccess file not present for WebDAV');
+            $this->assertTrue(false, 'root .htaccess file required for WebDAV tests');
             return;
         }
 

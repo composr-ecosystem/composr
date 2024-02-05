@@ -8473,6 +8473,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_min_cms_version
         CONFIG_OPTION_max_cms_version
         PUNITIVE_ACTION_ALREADY_UNDONE
+        MODULE_TRANS_NAME_admin_karma
     ')));
 
     $non_admin_files = [

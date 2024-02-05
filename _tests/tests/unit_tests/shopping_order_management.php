@@ -16,6 +16,8 @@
 /**
  * Composr test case class (unit testing).
  */
+
+ // TODO: Add assertions that what we wanted to do was actually done and not just checking for exceptions.
 class shopping_order_management_test_set extends cms_test_case
 {
     protected $admin_ecom;

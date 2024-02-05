@@ -109,7 +109,7 @@ class shopping_test_set extends cms_test_case
                     break;
 
                 case 'tax_code':
-                    $_POST['field_' . strval($id)] = '5.0';
+                    $_POST['field_' . strval($id) . '_flat'] = '5.0';
                     break;
 
                 case 'image':
@@ -171,9 +171,9 @@ class shopping_test_set extends cms_test_case
         $reason = '';
         $pending_reason = 'bar';
         $memo = 'foo';
-        $price = 65.00;
+        $price = 60.00;
         $tax = 5.00;
-        $shipping = 2.40;
+        $shipping = 12.40;
         $transaction_fee = 0.25;
         $currency = get_option('currency');
         $txn_id = strval(mt_rand(1, 1000000));

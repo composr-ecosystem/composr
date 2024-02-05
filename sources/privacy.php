@@ -168,7 +168,7 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
         }
 
         // Fill in IP addresses from member ID
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_member_id' => $member_id], ' ORDER BY i_time DESC');
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_member_id' => $member_id]);
         foreach ($rows as $row) {
             if (in_array($row['i_ip'], $ip_addresses)) {
                 continue;

@@ -155,7 +155,7 @@ When editing poll answers, the votes will be maintained; you should generally on
 
 [title="3"]Weighting poll results with points[/title]
 
-A site-wide setting can be enabled to allow poll results to be weighted according to the number of points each voter had in their balance at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for polls.
+A site-wide setting can be enabled to allow poll results to be weighted according to the number of points each voter had in their balance at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for topic polls.
 
 When the site-wide setting is enabled, individual polls can then have point-weighting enabled or disabled (they will be disabled by default).
 
@@ -164,7 +164,7 @@ Point weighting works by assigning a [b]voting power[/b] to every vote based on 
 The formula used to weigh poll results and generate a voting power is as follows:
 
 [html]<kbd>[/html]{!cns_polls:VOTING_POWER_EQUATION,&lt;maximum&gt;,&lt;offset&gt;,&lt;multiplier&gt;,&lt;points&gt;,&lt;base&gt;}[html]</kbd>[/html]
- - [b]base[/b], [b]multiplier[/b], [b]offset[/b], and [b]maximum[/b] are configurable values in the Forum / Point-weighting for polls options.
+ - [b]base[/b], [b]multiplier[/b], [b]offset[/b], and [b]maximum[/b] are configurable values in the Forum / Point-weighting for topic polls options.
  - First, the formula takes the log of the member's current points at the time of voting plus the log base.
  - Then, the formula multiplies the results of log by the absolute value of the configured multiplier.
  - Next, the offset is added to the result (offset can be negative to subtract instead).

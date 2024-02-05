@@ -501,6 +501,9 @@ function post_param_tax_code(string $name, string $default = '0%') : string
     $value = post_param_string($name . '_flat', ''); // Simple flat figure
     if ($value == '') { // No simple flat figure
         $value = post_param_string($name . '_rate', ''); // Simple rate
+        if ($value != '') { // simple rate post-processing
+            $value = float_to_raw_string(float_unformat($value)) . '%';
+        }
     } else { // simple flat figure post-processing
         $value = float_to_raw_string(float_unformat($value));
     }
@@ -514,8 +517,6 @@ function post_param_tax_code(string $name, string $default = '0%') : string
                 }
             }
         }
-    } else { // simple rate post-processing
-        $value = float_to_raw_string(float_unformat($value)) . '%';
     }
     if ($value == '') { // No semantic parameters; use default value
         $value = $default; // Default
