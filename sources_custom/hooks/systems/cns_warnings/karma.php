@@ -163,6 +163,6 @@ class Hook_cns_warnings_karma
 
         $id = intval($punitive_action['id']);
 
-        reverse_karma(null, null, null, 'warnings_punitive', strval($id));
+        reverse_karma(null, null, null, 'warning_punitive', strval($id));
     }
 }
