@@ -374,12 +374,12 @@ class Module_cms_authors
     /**
      * The do-next manager for after author content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?SHORT_TEXT $author The author we were working with (null: not working with one)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $author = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $author = null) : object
     {
         require_code('templates_donext');
         return do_next_manager(

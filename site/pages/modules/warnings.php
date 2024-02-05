@@ -811,7 +811,8 @@ class Module_warnings extends Standard_crud_module
 
         // Do not allow reversing an already-reversed action
         if ($punitive_action['p_reversed'] != 0) {
-            warn_exit(do_lang_tempcode('PUNITIVE_ACTION_ALREADY_UNDONE')); // TODO: add language string
+            require_lang('cns_warnings');
+            warn_exit(do_lang_tempcode('PUNITIVE_ACTION_ALREADY_UNDONE'));
         }
 
         // Get the associated warning

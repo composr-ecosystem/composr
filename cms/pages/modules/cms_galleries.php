@@ -1216,12 +1216,12 @@ class Module_cms_galleries extends Standard_crud_module
     /**
      * The do-next manager for after content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't do full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id));
     }
@@ -1765,12 +1765,12 @@ class Module_cms_galleries_alt extends Standard_crud_module
     /**
      * The do-next manager for after content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't do full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $GLOBALS['MODULE_CMS_GALLERIES']->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id), true);
     }
@@ -2197,12 +2197,12 @@ class Module_cms_galleries_cat extends Standard_crud_module
     /**
      * The do-next manager for after download content management (event types only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, ($id === null) ? null : $id);
     }
@@ -2210,14 +2210,14 @@ class Module_cms_galleries_cat extends Standard_crud_module
     /**
      * The do-next manager for after image/video content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $cat The gallery we were working in (null: deleted)
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @param  boolean $video Whether we were working with a video
      * @return Tempcode The UI
      */
-    public function _do_next_manager(object $title, object $description, ?string $cat = null, ?int $id = null, bool $video = false) : object
+    public function _do_next_manager(?object $title, object $description, ?string $cat = null, ?int $id = null, bool $video = false) : object
     {
         $extra = [];
         if ($cat !== null) {

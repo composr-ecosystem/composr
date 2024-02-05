@@ -56,6 +56,13 @@ class catalogues_module_test_set extends cms_test_case
 
     public function testAddCatalogueActualiser()
     {
+        // Cleanup after failed prior execution
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'biodata']);
+        if ($test !== null) {
+            require_code('autosave');
+            $this->cms_catalogues_alt->delete_actualisation('biodata');
+        }
+
         $_POST = [
             'new_field_0_visible' => '1',
             'new_field_0_required' => '1',

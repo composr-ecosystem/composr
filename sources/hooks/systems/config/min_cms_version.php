@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_autosave_time
+class Hook_config_min_cms_version
 {
     /**
      * Gets the details relating to the config option.
@@ -31,15 +31,16 @@ class Hook_config_autosave_time
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'AUTOSAVE_TIME',
-            'type' => 'integer',
-            'category' => 'CONTENT_EDITING',
-            'group' => 'ADVANCED',
-            'explanation' => 'CONFIG_OPTION_autosave_time',
+            'human_name' => 'MIN_CMS_VERSION',
+            'type' => 'float',
+            'category' => 'THEME',
+            'group' => 'GENERAL',
+            'explanation' => 'CONFIG_OPTION_min_cms_version',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'theme_override' => true,
             'required' => true,
-            'public' => true,
+            'public' => false,
             'addon' => 'core_configuration',
         ];
     }
@@ -51,6 +52,7 @@ class Hook_config_autosave_time
      */
     public function get_default() : ?string
     {
-        return '20';
+        require_code('version');
+        return strval(cms_version_number());
     }
 }

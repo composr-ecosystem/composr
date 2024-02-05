@@ -824,12 +824,12 @@ class Module_cms_news extends Standard_crud_module
     /**
      * The do-next manager for after download content management (events only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type);
     }
@@ -1190,12 +1190,12 @@ class Module_cms_news_cat extends Standard_crud_module
     /**
      * The do-next manager for after download content management (event types only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, ($id === null) ? null : intval($id));
     }
@@ -1203,13 +1203,13 @@ class Module_cms_news_cat extends Standard_crud_module
     /**
      * The do-next manager for after news content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @param  ?AUTO_LINK $cat The category ID we were working in (null: deleted)
      * @return Tempcode The UI
      */
-    public function _do_next_manager(object $title, object $description, ?int $id = null, ?int $cat = null) : object
+    public function _do_next_manager(?object $title, object $description, ?int $id = null, ?int $cat = null) : object
     {
         require_code('templates_donext');
 

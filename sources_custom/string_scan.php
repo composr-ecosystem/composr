@@ -8470,6 +8470,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_PURGE_DAYS
         PRIVACY_PURGE_TABLE_RECORDS
         TOPIC_POLLS_WEIGHTING_BASE
+        CONFIG_OPTION_min_cms_version
+        CONFIG_OPTION_max_cms_version
+        PUNITIVE_ACTION_ALREADY_UNDONE
     ')));
 
     $non_admin_files = [
@@ -11944,6 +11947,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _PERSONAL_DATA_LIMIT_PURGE
         _POST_IN_NUMBERED
         _POST_IN_TITLED
+        PUNITIVE_ACTION
     ')));
 
     // Remove blank lines

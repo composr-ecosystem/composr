@@ -1276,12 +1276,12 @@ class Module_cms_calendar extends Standard_crud_module
     /**
      * The do-next manager for after calendar content management (events only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type, $this->donext_date);
     }
@@ -1642,12 +1642,12 @@ class Module_cms_calendar_cat extends Standard_crud_module
     /**
      * The do-next manager for after calendar content management (event types only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, null, ($id === null) ? null : intval($id), '');
     }
@@ -1655,14 +1655,14 @@ class Module_cms_calendar_cat extends Standard_crud_module
     /**
      * The do-next manager for after calendar content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @param  ?AUTO_LINK $type The category ID we were working in (null: N/A)
      * @param  string $date The Y-m-d of the added/edited event (first recurrence) (blank: whatever)
      * @return Tempcode The UI
      */
-    public function _do_next_manager(object $title, object $description, ?int $id, ?int $type, string $date) : object
+    public function _do_next_manager(?object $title, object $description, ?int $id, ?int $type, string $date) : object
     {
         $archive_map = ['type' => 'browse', 'view' => 'day'];
         if ($date != '') {

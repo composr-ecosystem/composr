@@ -807,12 +807,12 @@ class Module_cms_downloads extends Standard_crud_module
     /**
      * The do-next manager for after download content management (events only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type);
     }
@@ -929,12 +929,12 @@ class Module_cms_downloads_alt extends Standard_crud_module
     /**
      * The do-next manager for after download content management (events only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $GLOBALS['MODULE_CMS_DOWNLOADS']->cat_crud_module->_do_next_manager($title, $description, null, null, $id);
     }
@@ -1148,12 +1148,12 @@ class Module_cms_downloads_cat extends Standard_crud_module
     /**
      * The do-next manager for after download content management (event types only).
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, null, ($id === null) ? null : intval($id));
     }
@@ -1161,14 +1161,14 @@ class Module_cms_downloads_cat extends Standard_crud_module
     /**
      * The do-next manager for after download content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: delete/NA)
      * @param  ?AUTO_LINK $category_id The category ID we were working in (null: deleted/NA)
      * @param  ?AUTO_LINK $download_licence_id The download licence ID we were working in (null: deleted/NA)
      * @return Tempcode The UI
      */
-    public function _do_next_manager(object $title, object $description, ?int $id = null, ?int $category_id = null, ?int $download_licence_id = null) : object
+    public function _do_next_manager(?object $title, object $description, ?int $id = null, ?int $category_id = null, ?int $download_licence_id = null) : object
     {
         require_code('templates_donext');
 

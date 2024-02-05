@@ -462,6 +462,8 @@ class Hook_addon_registry_core_configuration
             'themes/default/javascript/core_configuration.js',
             'sources/hooks/systems/config/use_site_name_text_as_logo.php',
             'sources/hooks/systems/config/autosave_time.php',
+            'sources/hooks/systems/config/min_cms_version.php',
+            'sources/hooks/systems/config/max_cms_version.php',
         ];
     }
 

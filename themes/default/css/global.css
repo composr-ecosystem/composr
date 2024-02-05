@@ -6728,8 +6728,7 @@ td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-cod
 	overflow: hidden;
 }
 
-.comcode-quote-inner *,
-.comcode-code-inner * {
+.comcode-quote-inner * {
 	color: inherit !important;/*So can look okay in a tooltip*/
 }
 

@@ -68,7 +68,7 @@ class blocks_test_set extends cms_test_case
 
             $path = _get_block_path($block);
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
-            $this->assertTrue(strpos($c, 'warn_exit(') === false, 'warn_exit in ' . $path);
+            $this->assertTrue(strpos($c, 'warn_exit(') === false, 'warn_exit detected in ' . $path . '; should return do_template RED_ALERT instead.');
         }
     }
 

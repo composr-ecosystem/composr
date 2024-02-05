@@ -2027,6 +2027,10 @@ class HttpDownloaderFilesystem extends HttpDownloader
         $parsed = cms_parse_url_safe(normalise_idn_url($url));
         $parsed_base_url = cms_parse_url_safe(get_custom_base_url());
         $file_base = get_custom_file_base();
+
+        // URLs always use forward slashes, but on Windows our path could use backslashes. Change these to forward slashes so our preg_replace works.
+        $file_base = str_replace('\\', '/', $file_base);
+
         $file_base = preg_replace('#' . preg_quote(urldecode($parsed_base_url['path'])) . '$#', '', $file_base);
         $file_path = $file_base . urldecode($parsed['path']);
 

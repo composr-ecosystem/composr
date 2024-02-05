@@ -54,6 +54,7 @@ class galleries_test_set extends cms_test_case
         $this->cms_gal->pre_run();
         $this->cms_gal->run_start('browse');
         $this->cms_gal_alt = new Module_cms_galleries_alt();
+        $this->cms_gal_alt->pre_run();
         $this->cms_gal_category = new Module_cms_galleries_cat();
     }
 
@@ -62,7 +63,9 @@ class galleries_test_set extends cms_test_case
         require_code('content2');
         $_GET['type'] = 'add';
         $this->cms_gal_category->pre_run();
-        $this->cms_gal_category->add();
+        $results = $this->cms_gal_category->add();
+        $evaluation = $results->evaluate();
+        $this->assertTrue((strpos($evaluation, '<form ') !== false), 'Expected a form on the gallery add UI but did not get one.');
     }
 
     public function testAddGalleryActualiser()
@@ -146,6 +149,9 @@ class galleries_test_set extends cms_test_case
         $_GET['type'] = '_add';
         $this->cms_gal_category->pre_run();
         $this->cms_gal_category->_add();
+
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => 'a_test_gallery_for_ut']);
+        $this->assertTrue(($test === 'a_test_gallery_for_ut'), 'Expected a a_test_gallery_for_ut gallery to be created via the UI, but this did not happen.');
     }
 
     public function testEditGalleryActualiser()
@@ -230,11 +236,16 @@ class galleries_test_set extends cms_test_case
         // Checking gallery image adding UI
         $_GET['type'] = 'add';
         $this->cms_gal->pre_run();
-        $this->cms_gal->add();
+        $results = $this->cms_gal->add();
+        $evaluation = $results->evaluate();
+        $this->assertTrue((strpos($evaluation, '<form ') !== false), 'Expected a form on the image add UI but did not get one.');
     }
 
     public function testAddImageActualiser()
     {
+        // Cleanup
+        $GLOBALS['SITE_DB']->query_delete('images', ['cat' => 'a_test_gallery_for_ut']);
+
         // Test data add to POST
         $_POST = [
             'title' => 'A test image',
@@ -275,17 +286,25 @@ class galleries_test_set extends cms_test_case
         $_GET['type'] = '_add';
         $this->cms_gal->pre_run();
         $this->cms_gal->_add();
+
+        $test = $GLOBALS['SITE_DB']->query_select('images', ['cat'], ['cat' => 'a_test_gallery_for_ut']);
+        $this->assertTrue((count($test) == 1), 'Expected exactly one image in the a_test_gallery_for_ut gallery, but there were ' . strval(count($test)));
     }
 
     public function testAddVideoUI()
     {
         $_GET['type'] = 'add';
         $this->cms_gal_alt->pre_run();
-        $this->cms_gal_alt->add();
+        $results = $this->cms_gal_alt->add();
+        $evaluation = $results->evaluate();
+        $this->assertTrue((strpos($evaluation, '<form ') !== false), 'Expected a form on the video add UI but did not get one.');
     }
 
     public function testAddVideoActuliser()
     {
+        // Cleanup
+        $GLOBALS['SITE_DB']->query_delete('videos', ['cat' => 'a_test_gallery_for_ut']);
+
         $_POST = [
             'title' => 'A test video',
             'require__title' => 0,
@@ -293,7 +312,7 @@ class galleries_test_set extends cms_test_case
             'require__cat' => 1,
             'require__file' => 0,
             'hid_file_id_file' => -1,
-            'url' => 'http://www.lcpvideo.com/MPEG/ACT60.MPG',
+            'video__url' => 'https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_2mb.mp4',
             'require__url' => 1,
             'require__file__thumb' => 1,
             'hid_file_id_file__thumb' => -1,
@@ -324,7 +343,13 @@ class galleries_test_set extends cms_test_case
             'description__is_wysiwyg' => 1,
         ];
         $_POST = @array_map('strval', $_POST);
-        //$this->cms_gal_alt->_add();
+
+        $_GET['type'] = '_add';
+        $this->cms_gal_alt->pre_run();
+        $this->cms_gal_alt->_add();
+
+        $test = $GLOBALS['SITE_DB']->query_select('videos', ['cat'], ['cat' => 'a_test_gallery_for_ut']);
+        $this->assertTrue((count($test) == 1), 'Expected exactly one video in the a_test_gallery_for_ut gallery, but there were ' . strval(count($test)));
     }
 
     public function testDeleteGallery()

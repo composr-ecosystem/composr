@@ -1031,12 +1031,12 @@ class Module_cms_catalogues extends Standard_crud_module
     /**
      * The do-next manager for after content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't do full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         $c_name = $this->donext_catalogue_name;
         $category_id = $this->donext_category_id;
@@ -1623,12 +1623,12 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     /**
      * The do-next manager for after catalogue content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         $catalogue_name = $this->donext_catalogue_name;
 
@@ -2360,12 +2360,12 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * The do-next manager for after catalogue content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $name The catalogue name we were working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $name = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $name = null) : object
     {
         if ($name !== null) {
             $cat_count = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $name]);

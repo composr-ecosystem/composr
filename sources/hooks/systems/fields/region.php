@@ -157,7 +157,7 @@ class Hook_fields_region
             }
         }
 
-        return value;
+        return $value;
     }
 
     /**

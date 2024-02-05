@@ -63,13 +63,13 @@ class config_lang_strings_test_set extends cms_test_case
 
                 $test = do_lang($option['explanation'], null, null, null, null, false);
             }
-            $this->assertTrue($test !== null, 'Error on: ' . $option['explanation']);
+            $this->assertTrue($test !== null, 'Could not load explanation string: ' . $option['explanation']);
 
             $test = do_lang('CONFIG_CATEGORY_' . $option['category'], null, null, null, null, false);
-            $this->assertFalse(($test === null), 'Error on: CONFIG_CATEGORY_' . $option['category']);
+            $this->assertFalse(($test === null), 'Could not load category string: CONFIG_CATEGORY_' . $option['category']);
 
             $test = do_lang($option['group'], null, null, null, null, false);
-            $this->assertFalse(($test === null), 'Error on: ' . $option['group']);
+            $this->assertFalse(($test === null), 'Could not load group string: ' . $option['group']);
         }
     }
 }

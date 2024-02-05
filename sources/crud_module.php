@@ -990,13 +990,15 @@ abstract class Standard_crud_module
             check_submit_permission($this->permissions_require, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)], $this->privilege_page_name);
         }
 
-        if (($this->second_stage_preview) && (get_param_integer('preview', 0) == 1)) {
-            return $this->preview_intercept($this->title);
-        }
+        if ($this->title) {
+            if (($this->second_stage_preview) && (get_param_integer('preview', 0) == 1)) {
+                return $this->preview_intercept($this->title);
+            }
 
-        $test = $this->handle_confirmations($this->title);
-        if ($test !== null) {
-            return $test;
+            $test = $this->handle_confirmations($this->title);
+            if ($test !== null) {
+                return $test;
+            }
         }
 
         if (($this->user_facing) && ($this->permissions_require !== null)) {
@@ -1854,12 +1856,12 @@ abstract class Standard_crud_module
     /**
      * The do-next manager for after content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't do full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
         $archive_url = null;
         if ($this->archive_entry_point !== null) {

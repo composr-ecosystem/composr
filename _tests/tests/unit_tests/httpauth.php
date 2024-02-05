@@ -27,7 +27,8 @@ class httpauth_test_set extends cms_test_case
 
         $pwd = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_pass_hash_salted', ['m_username' => 'admin']);
         if ($pwd !== '') {
-            return; // Test only works with blank admin password
+            $this->assertTrue(false, 'Test only works with a blank admin password');
+            return;
         }
 
         $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'));
@@ -42,6 +43,6 @@ class httpauth_test_set extends cms_test_case
             var_dump($data);
         }
 
-        $this->assertTrue(strpos($data, '<span class="fn nickname">admin</span>') !== false);
+        $this->assertTrue((strpos($data, '<span class="fn nickname">admin</span>') !== false), 'Expected to see the admin profile, but did not.');
     }
 }

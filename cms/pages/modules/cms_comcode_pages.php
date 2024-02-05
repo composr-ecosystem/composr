@@ -225,13 +225,13 @@ class Module_cms_comcode_pages
     /**
      * The do-next manager for after content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  ?ID_TEXT $page The name of the page just handled (null: none)
      * @param  ID_TEXT $zone The name of the zone just handled (blank: none/welcome-zone)
      * @param  Tempcode $completion_text The text to show (blank: default)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, ?string $page, string $zone, object $completion_text) : object
+    public function do_next_manager(?object $title, ?string $page, string $zone, object $completion_text) : object
     {
         if (!addon_installed('page_management')) {
             return redirect_screen($title, build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF'), $completion_text);

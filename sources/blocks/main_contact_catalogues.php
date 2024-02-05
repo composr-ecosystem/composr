@@ -142,7 +142,7 @@ PHP;
 
                 // Required field validation (a standard for all field hooks)
                 if (($field['cf_required'] == 1) && (($inputted_value == '') || ($inputted_value === null) || (($inputted_value == STRING_MAGIC_NULL) && !fractional_edit()))) {
-                    warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name']));
+                    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name'])]);
                 }
 
                 if ($inputted_value !== null) {

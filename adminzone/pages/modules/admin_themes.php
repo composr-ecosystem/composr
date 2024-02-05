@@ -1727,7 +1727,7 @@ class Module_admin_themes
     /**
      * The do-next manager for after download content management.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ID_TEXT $theme The theme that was just handled
      * @param  ?LANGUAGE_NAME $lang The language we were working in (null: autodetect) (blank: autodetect)
@@ -1735,7 +1735,7 @@ class Module_admin_themes
      * @param  ID_TEXT $file ID of file that an edit link should load (blank: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager(object $title, object $description, string $theme, ?string $lang, string $type, string $file) : object
+    public function do_next_manager(?object $title, object $description, string $theme, ?string $lang, string $type, string $file) : object
     {
         if ($lang === null) {
             $lang = '';

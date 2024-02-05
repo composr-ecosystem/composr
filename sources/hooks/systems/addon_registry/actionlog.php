@@ -107,7 +107,6 @@ class Hook_addon_registry_actionlog
             'requires' => [],
             'recommends' => [],
             'conflicts_with' => [],
-            'previously_in_addon' => ['actionlog'],
         ];
     }
 
