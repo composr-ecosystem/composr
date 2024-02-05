@@ -31,8 +31,16 @@ class Hook_actionlog_karma extends Hook_actionlog
 
         require_lang('karma');
 
-        // TODO: What should we log?
         return [
+            'AMEND_KARMA' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => null,
+                'identifier_index' => 0,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'VIEW_KARMA_RECORD' => '_SEARCH:admin_karma:view:{ID}',
+                ],
+            ],
             'REVERSED_KARMA' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,

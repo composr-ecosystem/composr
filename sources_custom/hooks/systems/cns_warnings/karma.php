@@ -116,6 +116,7 @@ class Hook_cns_warnings_karma
         // Assess bad karma if we have the privilege and requested to do so
         if (($bad_karma > 0) && (has_privilege(get_member(), 'has_karmic_influence'))) {
             require_code('karma');
+            require_code('karma2');
             require_lang('karma');
 
             $punitive_action_id = $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
@@ -157,7 +158,7 @@ class Hook_cns_warnings_karma
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        require_code('karma');
+        require_code('karma2');
         require_lang('karma');
 
         $id = intval($punitive_action['id']);

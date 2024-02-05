@@ -217,10 +217,12 @@ Karma and its API can be further extended for additional functionality. For exam
             'sources_custom/hooks/systems/cns_cpf_filter/karma.php',
             'sources_custom/hooks/systems/symbols/KARMA.php',
             'sources_custom/hooks/systems/points_transact/karma.php',
+            'sources_custom/hooks/systems/page_groupings/karma.php',
 
             // Source files / API
             'lang_custom/EN/karma.ini',
             'sources_custom/karma.php',
+            'sources_custom/karma2.php',
 
             // Overrides
             'sources_custom/hooks/systems/contentious_overrides/karma.php',

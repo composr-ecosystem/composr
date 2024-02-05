@@ -75,7 +75,7 @@ class Hook_commandr_command_add_karma
             $content_id = escape_html($parameters[4]);
         }
 
-        require_code('karma');
+        require_code('karma2');
 
         add_karma($karma_type, get_member(), $member_to, $amount, $reason, 'commandr_command', $content_id);
 

@@ -70,7 +70,7 @@ class Hook_contentious_overrides_karma
                 "give_award",
                 "\$GLOBALS['SITE_DB']->query_insert('award_archive',",
                 "if (addon_installed('karma')) {
-                    require_code('karma');
+                    require_code('karma2');
                     add_karma('good', null, \$member_id, intval(get_option('karma_awards')), 'award', strval(\$award_id), \$content_id);
                 }
                 "
@@ -90,6 +90,7 @@ class Hook_contentious_overrides_karma
                 "// Karma
                 if (addon_installed('karma')) {
                     require_code('karma');
+                    require_code('karma2');
 
                     \$karma_likes = floatval(get_option('karma_likes'));
                     \$karma_dislikes = floatval(get_option('karma_dislikes'));
@@ -129,7 +130,7 @@ class Hook_contentious_overrides_karma
                 "if (\$erase_votes) {",
                 "// Reverse all associated karma
                 if (addon_installed('karma')) {
-                    require_code('karma');
+                    require_code('karma2');
                     reverse_karma(null, null, null, 'topic_poll', strval(\$poll_id));
                 }
                 "
@@ -142,7 +143,7 @@ class Hook_contentious_overrides_karma
                 "\$GLOBALS['FORUM_DB']->query_delete('f_poll_votes', ['pv_poll_id' => \$poll_id]);",
                 "// Reverse all associated karma
                 if (addon_installed('karma')) {
-                    require_code('karma');
+                    require_code('karma2');
                     reverse_karma(null, null, null, 'topic_poll', strval(\$poll_id));
                 }
                 "
@@ -155,7 +156,7 @@ class Hook_contentious_overrides_karma
                 "// Award points",
                 "// Award karma
                 if (addon_installed('karma')) {
-                    require_code('karma');
+                    require_code('karma2');
                     \$karma_to_award = intval(get_option('karma_voting'));
                     if (\$karma_to_award > 0) {
                         add_karma('good', null, \$member_id, \$karma_to_award, 'Voted on topic poll', 'topic_poll', strval(\$poll_id));
@@ -171,7 +172,7 @@ class Hook_contentious_overrides_karma
                 "// Reverse points",
                 "// Reverse karma
                 if (addon_installed('karma')) {
-                    require_code('karma');
+                    require_code('karma2');
                     reverse_karma(null, null, \$member_id, 'topic_poll', strval(\$poll['id']));
                 }
                 "
@@ -191,7 +192,7 @@ class Hook_contentious_overrides_karma
                 "if (may_vote_in_poll(\$poll_id, \$member_id, \$ip)) {",
                 "// Award karma
                 if (addon_installed('karma')) {
-                    require_code('karma');
+                    require_code('karma2');
                     \$karma_to_award = intval(get_option('karma_voting'));
                     if (\$karma_to_award > 0) {
                         add_karma('good', null, \$member_id, \$karma_to_award, 'Voted on website poll', 'poll', strval(\$poll_id));
@@ -215,6 +216,7 @@ class Hook_contentious_overrides_karma
                 "// Award karma
                 if (addon_installed('karma')) {
                     require_code('karma');
+                    require_code('karma2');
                     \$karma_multiplier = intval(get_option('karma_giftr'));
                     if (\$karma_multiplier > 0) {
                         \$influence = get_karmic_influence(\$from_member_id);

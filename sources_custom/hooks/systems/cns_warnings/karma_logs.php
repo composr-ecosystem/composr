@@ -85,8 +85,8 @@ class Hook_cns_warnings_karma_logs
             require_lang('karma');
             require_code('karma');
 
-            $after_time = time() - (60 * 60 * 24 * 7);
-            list($max_rows, $rows) = karma_get_logs('sender_recipient', $member_id, get_member(), 50, 0, 'k_date_and_time', 'DESC', 0, $after_time);
+            $from_time = time() - (60 * 60 * 24 * 7);
+            list($max_rows, $rows) = karma_get_logs('sender_recipient', $member_id, get_member(), 50, 0, 'k_date_and_time', 'DESC', 0, $from_time);
             foreach ($rows as $row) {
                 $reason = get_translated_tempcode('karma', $row, 'k_reason');
                 if ($row['k_member_from'] == $member_id) {
@@ -137,6 +137,7 @@ class Hook_cns_warnings_karma_logs
 
         if (has_privilege(get_member(), 'moderate_karma')) {
             require_code('karma');
+            require_code('karma2');
             require_lang('karma');
 
             // We intentionally do not filter by time and have a higher max in case more transactions were added since the warnings form was loaded

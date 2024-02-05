@@ -47,6 +47,7 @@ class Hook_points_transact__karma
         }
 
         require_code('karma');
+        require_code('karma2');
         require_code('points');
 
         // Received points from another member
@@ -60,10 +61,10 @@ class Hook_points_transact__karma
             $ratio = floatval(get_option('karma_points'));
 
             if ($ratio > 0.0) { // Karma for every x points
-                add_karma('good', $sender_id, $recipient_id, intval((floatval($total_points) / $ratio) * $influence), 'Received points from member', 'points_transaction', $id);
+                add_karma('good', $sender_id, $recipient_id, intval((floatval($total_points) / $ratio) * $influence), 'Received points from member', 'points_transaction', strval($id));
             } elseif ($ratio < 0.0) { // Influence * ratio karma regardless of points sent
                 $ratio = abs($ratio);
-                add_karma('good', $sender_id, $recipient_id, intval($influence * $ratio), 'Received points from member', 'points_transaction', $id);
+                add_karma('good', $sender_id, $recipient_id, intval($influence * $ratio), 'Received points from member', 'points_transaction', strval($id));
             }
         }
     }
@@ -92,10 +93,9 @@ class Hook_points_transact__karma
             return;
         }
 
-        require_code('karma');
-
         // Undo karma when reversing point transactions
         if (($linked_to !== null) && ($status == LEDGER_STATUS_REVERSING)) {
+            require_code('karma2');
             reverse_karma(null, null, null, 'points_transaction', $linked_to['id']);
         }
     }
