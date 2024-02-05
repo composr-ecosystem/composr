@@ -804,7 +804,7 @@ class CMS_Topic
             $buttons = new Tempcode();
             $last_edited = new Tempcode();
             $last_edited_raw = '';
-            $unvalidated = new Tempcode();
+            $nonvalidated = new Tempcode();
             $poster = null;
             $poster_details = new Tempcode();
             $is_spacer_post = false;
@@ -837,7 +837,7 @@ class CMS_Topic
 
                 // Misc meta details for post
                 $emphasis = cns_get_post_emphasis($post);
-                $unvalidated = ($post['validated'] == 0) ? do_lang_tempcode('UNVALIDATED') : new Tempcode();
+                $nonvalidated = ($post['validated'] == 0) ? do_lang_tempcode('NONVALIDATED') : new Tempcode();
                 if (array_key_exists('last_edit_time', $post)) {
                     $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', [
                         '_GUID' => '6301ad8d8f80948ad8270828f1bdaf33',
@@ -982,7 +982,7 @@ class CMS_Topic
                 'LAST_EDITED_RAW' => $last_edited_raw,
                 'LAST_EDITED' => $last_edited,
                 'TOPIC_ID' => ($this->topic_id === null) ? '' : strval($this->topic_id),
-                'UNVALIDATED' => $unvalidated,
+                'NONVALIDATED' => $nonvalidated,
                 'IS_SPACER_POST' => $is_spacer_post,
                 'NUM_TO_SHOW_LIMIT' => strval($num_to_show_limit),
                 'SIGNATURE' => $sig->is_empty() ? null : $sig,

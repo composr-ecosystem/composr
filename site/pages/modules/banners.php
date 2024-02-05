@@ -328,7 +328,7 @@ class Module_banners
             'expiry_date' => do_lang_tempcode('EXPIRY_DATE'),
             'add_date' => do_lang_tempcode('ADDED'),
         ];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
@@ -344,7 +344,7 @@ class Module_banners
             do_lang_tempcode('EXPIRY_DATE'),
             do_lang_tempcode('ADDED'),
         ];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $hr[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '77d1bbbfc8e6847ecdce12489913a96a', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
         }
         $hr[] = do_lang_tempcode('ACTIONS');
@@ -388,7 +388,7 @@ class Module_banners
                 ($row['expiry_date'] === null) ? protect_from_escaping(do_lang_tempcode('NA_EM')) : make_string_tempcode(get_timezoned_date_time($row['expiry_date'])),
                 get_timezoned_date($row['add_date']),
             ];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fr[] = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
             $fr[] = protect_from_escaping(hyperlink($view_url, do_lang_tempcode('VIEW'), false, true, $row['name']));

@@ -99,6 +99,8 @@ PHP;
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('actionlogs', 'warning_id', '?AUTO_LINK');
+
+            $GLOBALS['SITE_DB']->query_update('actionlogs', ['the_type' => 'INVALIDATE_POST'], ['the_type' => 'UNVALIDATE_POST']);
         }
     }
 

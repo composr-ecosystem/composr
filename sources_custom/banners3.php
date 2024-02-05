@@ -57,7 +57,7 @@ function add_banner_quiet(string $name, string $imgurl, string $title_text, stri
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => $name]);
     if ($test === null) {
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             $validated = 1;
         }
         $map = [

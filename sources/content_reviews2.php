@@ -135,7 +135,7 @@ function content_review_get_fields(string $content_type, ?string $content_id = n
         $auto_actions = [];
         $auto_actions[] = 'leave';
         if ($content_info['validated_field'] !== null) {
-            $auto_actions[] = 'unvalidate';
+            $auto_actions[] = 'invalidate';
         }
         if (($auto_action == 'delete') || ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || (($content_info['permission_module'] !== null) && (has_privilege(get_member(), 'delete_' . $content_info['permission_module'] . 'range_content', $content_info['module'])))) {
             $auto_actions[] = 'delete';
@@ -208,7 +208,7 @@ function content_review_set(string $content_type, string $content_id, ?string $o
  * @param  ?integer $review_freq The review frequency in seconds (null: no repeat review pattern)
  * @param  ?TIME $next_review_time Manual next review time (null: work out from review frequency)
  * @param  ID_TEXT $auto_action Automatic action to perform upon review time
- * @set leave unvalidate delete
+ * @set leave invalidate delete
  * @param  BINARY $display_review_status Whether to display the review status publicly
  */
 function schedule_content_review(string $content_type, string $content_id, ?int $review_freq, ?int $next_review_time = null, string $auto_action = 'leave', int $display_review_status = 0)

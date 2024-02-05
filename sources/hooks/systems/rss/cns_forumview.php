@@ -61,7 +61,7 @@ class Hook_rss_cns_forumview
         if (!multi_lang_content()) {
             $sql .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id';
         }
-        $sql .= ' WHERE t_cache_last_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND t_validated=1 ' : '') . ' AND ' . $filters;
+        $sql .= ' WHERE t_cache_last_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) ? ' AND t_validated=1 ' : '') . ' AND ' . $filters;
         $sql .= ' ORDER BY t_cache_last_time DESC';
         $rows = $GLOBALS['FORUM_DB']->query($sql, $max, 0, false, true);
         $categories = collapse_2d_complexity('id', 'f_name', $GLOBALS['FORUM_DB']->query('SELECT id,f_name FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE f_cache_num_posts>0'));

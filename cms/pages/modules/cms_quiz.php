@@ -308,7 +308,7 @@ class Module_cms_quiz extends Standard_crud_module
         $fields->attach(form_input_text_comcode(do_lang_tempcode('QUIZ_END_TEXT'), do_lang_tempcode('DESCRIPTION_QUIZ_END_TEXT'), 'end_text', $end_text, false));
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
@@ -316,7 +316,7 @@ class Module_cms_quiz extends Standard_crud_module
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_QUIZ', 'param_a' => strval($id)]);
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_VALIDATED_SIMPLE'), 'validated', $validated == 1));
         }
 
@@ -482,7 +482,7 @@ class Module_cms_quiz extends Standard_crud_module
 
         $this->set_permissions(strval($id));
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'quiz')) {
                 require_code('syndication');
@@ -519,10 +519,10 @@ class Module_cms_quiz extends Standard_crud_module
         $name = post_param_string('quiz_name', STRING_MAGIC_NULL);
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'quiz')) {
-                $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_validated', ['id' => $id]) === 0);
+                $just_validated = (addon_installed('validation')) && ($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_validated', ['id' => $id]) === 0);
                 $submitter = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_submitter', ['id' => $id]);
 
                 $activities = [];

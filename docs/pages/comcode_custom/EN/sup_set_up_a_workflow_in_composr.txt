@@ -13,7 +13,7 @@ New content will enter the workflow unless otherwise specified and will pass alo
 [media width="150" description="Setting approvals on the workflow's level 1" float="right"]data_custom/images/docs/sup_set_up_a_workflow_in_composr/ad5913f2b21e4083d3dc8b33e88a119d.png[/media]
 [media width="150" description="Adding a new workflow" float="right"]data_custom/images/docs/sup_set_up_a_workflow_in_composr/305f3284473e0a9f8afba50c2401539d.png[/media]
 [media width="150" description="The workflows addon" float="right"]data_custom/images/docs/sup_set_up_a_workflow_in_composr/8705f92d256c0b166f2fb99385f3d25e.png[/media]
-First you need to make sure the [tt]unvalidated[/tt] addon has not been uninstalled. This system is automatically installed but may have been uninstalled. If it is not installed, install this from Admin Zone > Structure > Addons.
+First you need to make sure the [tt]validation[/tt] addon has not been uninstalled. This system is automatically installed but may have been uninstalled. If it is not installed, install this from Admin Zone > Structure > Addons.
 
 To install the Workflows addon:
 [list="1"]

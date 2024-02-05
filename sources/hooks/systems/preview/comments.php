@@ -107,7 +107,7 @@ class Hook_preview_comments
             'EMPHASIS' => '',
             'BUTTONS' => '',
             'TOPIC_ID' => '',
-            'UNVALIDATED' => '',
+            'NONVALIDATED' => '',
             'IS_SPACER_POST' => false,
             'LAST_EDITED_RAW' => '',
             'LAST_EDITED' => '',

@@ -922,7 +922,7 @@ class Forum_driver_cns extends Forum_driver_base
         $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
         $sql .= ' AND (m_join_time<' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id<' . strval($member_id) . ')';
         $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sql .= ' AND m_validated=1';
         }
         $sql .= ' ORDER BY m_join_time DESC,id DESC';
@@ -946,7 +946,7 @@ class Forum_driver_cns extends Forum_driver_base
             $sql .= ' AND (m_join_time>' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id>' . strval($member_id) . ')';
         }
         $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sql .= ' AND m_validated=1';
         }
         $sql .= ' ORDER BY m_join_time ASC,id ASC';
@@ -1298,7 +1298,7 @@ class Forum_driver_cns extends Forum_driver_base
 
         if ($value == 0) {
             $where = ['m_validated_email_confirm_code' => ''];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $where['m_validated'] = 1;
             }
             $value = max(0, $this->db->get_table_count_approx('f_members', $where) - 1);
@@ -1321,7 +1321,7 @@ class Forum_driver_cns extends Forum_driver_base
 
         if ($value == 0) {
             $where = [];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $where['t_validated'] = 1;
             }
             $value = $this->db->get_table_count_approx('f_topics', $where);
@@ -1344,7 +1344,7 @@ class Forum_driver_cns extends Forum_driver_base
 
         if ($value == 0) {
             $where = '';
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $where = ' AND p_validated=1';
             }
             $where = 'p_cache_forum_id IS NOT NULL' . $where;

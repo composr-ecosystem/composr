@@ -75,7 +75,7 @@ class CMSBoardStats
     private function get_active_members_count() : int
     {
         $where = ['m_validated_email_confirm_code' => ''];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $where['m_validated'] = 1;
         }
         return $GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(*)', $where, ' AND m_last_visit_time>' . strval(time() - 31 * 60 * 60 * 24)); // Active in last month

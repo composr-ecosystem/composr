@@ -35,7 +35,7 @@ class Module_admin_content_reviews
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 1;
+        $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'content_reviews';
@@ -60,8 +60,8 @@ class Module_admin_content_reviews
         if (!addon_installed('commandr')) {
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('commandr')));
         }
-        if (!addon_installed('unvalidated')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('unvalidated')));
+        if (!addon_installed('validation')) {
+            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('validation')));
         }
 
         return [
@@ -94,13 +94,17 @@ class Module_admin_content_reviews
             'content_id' => '*ID_TEXT',
             'review_freq' => '?INTEGER',
             'next_review_time' => 'TIME',
-            'auto_action' => 'ID_TEXT', // leave|unvalidate|delete
+            'auto_action' => 'ID_TEXT', // leave|invalidate|delete
             'review_notification_happened' => 'BINARY',
             'display_review_status' => 'BINARY',
             'last_reviewed_time' => 'TIME',
         ]);
         $GLOBALS['SITE_DB']->create_index('content_reviews', 'next_review_time', ['next_review_time', 'review_notification_happened']);
         $GLOBALS['SITE_DB']->create_index('content_reviews', 'needs_review', ['next_review_time', 'content_type']);
+
+        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
+            $GLOBALS['SITE_DB']->query_update('content_reviews', ['auto_action' => 'invalidate'], ['auto_action' => 'unvalidate']);
+        }
     }
 
     public $title;
@@ -209,7 +213,7 @@ class Module_admin_content_reviews
                     'TEXT' => '',
                 ]);
 
-                $out->attach(do_template('UNVALIDATED_SECTION', [
+                $out->attach(do_template('VALIDATION_SECTION', [
                     '_GUID' => '406d4c0a8abd36b9c88645df84692c7d',
                     'TITLE' => do_lang_tempcode($info['content_type_label']),
                     'CONTENT' => $content,
@@ -217,6 +221,6 @@ class Module_admin_content_reviews
             }
         }
 
-        return do_template('UNVALIDATED_SCREEN', ['_GUID' => 'c8574404597d25e3c027766c74d1a008', 'TITLE' => $_title, 'SECTIONS' => $out]);
+        return do_template('VALIDATION_SCREEN', ['_GUID' => 'c8574404597d25e3c027766c74d1a008', 'TITLE' => $_title, 'SECTIONS' => $out]);
     }
 }

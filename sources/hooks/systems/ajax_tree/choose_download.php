@@ -97,7 +97,7 @@ class Hook_ajax_tree_choose_download
                         require_lang('galleries');
                         $cat = 'download_' . strval($eid);
                         $map = ['cat' => $cat];
-                        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                        if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                             $map['validated'] = 1;
                         }
                         $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], $map, 'ORDER BY add_date,id', 200/*Stop silliness, could be a DOS attack*/);

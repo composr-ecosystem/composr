@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    unvalidated
+ * @package    validation
  */
 
 /**
  * Module page class.
  */
-class Module_admin_unvalidated
+class Module_admin_validation
 {
     /**
      * Find details of the module.
@@ -38,7 +38,7 @@ class Module_admin_unvalidated
         $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'unvalidated';
+        $info['addon'] = 'validation';
         return $info;
     }
 
@@ -53,12 +53,12 @@ class Module_admin_unvalidated
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return null;
         }
 
         return [
-            '!' => ['UNVALIDATED_RESOURCES', 'menu/adminzone/audit/unvalidated'],
+            '!' => ['NONVALIDATED_RESOURCES', 'menu/adminzone/audit/nonvalidated'],
         ];
     }
 
@@ -72,17 +72,17 @@ class Module_admin_unvalidated
     public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('unvalidated', $error_msg)) {
+        if (!addon_installed__messaged('validation', $error_msg)) {
             return $error_msg;
         }
 
         $type = get_param_string('type', 'browse');
 
-        require_lang('unvalidated');
+        require_lang('validation');
 
         set_helper_panel_tutorial('tut_censor');
 
-        $this->title = get_screen_title('UNVALIDATED_RESOURCES');
+        $this->title = get_screen_title('NONVALIDATED_RESOURCES');
 
         return null;
     }
@@ -152,7 +152,7 @@ class Module_admin_unvalidated
                 ]);
             }
 
-            $out[do_lang($info['content_type_label'])] = do_template('UNVALIDATED_SECTION', [
+            $out[do_lang($info['content_type_label'])] = do_template('VALIDATION_SECTION', [
                 '_GUID' => '838240008e190b9cbaa0280fbddd6baf',
                 'TITLE' => do_lang_tempcode($info['content_type_label']),
                 'CONTENT' => $content,
@@ -166,10 +166,10 @@ class Module_admin_unvalidated
             $_out->attach($__out);
         }
 
-        return do_template('UNVALIDATED_SCREEN', [
+        return do_template('VALIDATION_SCREEN', [
             '_GUID' => '4e971f1c8851b821af030b5c7bbcb3fb',
             'TITLE' => $this->title,
-            'TEXT' => do_lang_tempcode('UNVALIDATED_PAGE_TEXT'),
+            'TEXT' => do_lang_tempcode('NONVALIDATED_PAGE_TEXT'),
             'SECTIONS' => $_out,
         ]);
     }

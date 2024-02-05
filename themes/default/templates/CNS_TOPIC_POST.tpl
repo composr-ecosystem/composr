@@ -30,9 +30,9 @@
 						</div>
 					{+END}
 
-					{+START,IF_NON_EMPTY,{UNVALIDATED}}
-						<div class="cns-post-details-unvalidated">
-							{UNVALIDATED*}
+					{+START,IF_NON_EMPTY,{NONVALIDATED}}
+						<div class="cns-post-details-nonvalidated">
+							{NONVALIDATED*}
 						</div>
 					{+END}
 				{+END}

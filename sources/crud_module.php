@@ -1004,7 +1004,7 @@ abstract class Standard_crud_module
         if (($this->user_facing) && ($this->permissions_require !== null)) {
             require_code('antispam');
             inject_action_spamcheck();
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 if (!has_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', $this->privilege_page_name, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)])) {
                     $_POST['validated'] = '0';
                 }
@@ -1041,7 +1041,7 @@ abstract class Standard_crud_module
             require_code('submit');
 
             // Check validation
-            if (($this->check_validation) && (addon_installed('unvalidated')) && (post_param_integer('validated', 0) == 0)) {
+            if (($this->check_validation) && (addon_installed('validation')) && (post_param_integer('validated', 0) == 0)) {
                 if ($this->send_validation_request) {
                     $edit_url = build_url(['page' => '_SELF', 'type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id, 'validated' => 1], '_SELF', [], false, false, true);
                     send_validation_request($this->doing, $this->table, $this->non_integer_id, $id, $edit_url);
@@ -1051,7 +1051,7 @@ abstract class Standard_crud_module
                     $description = paragraph($description);
                     $description_is_multi_line = true;
                 }
-                $description->attach(paragraph(do_lang_tempcode('SUBMIT_UNVALIDATED', $this->content_type)));
+                $description->attach(paragraph(do_lang_tempcode('SUBMIT_NONVALIDATED', $this->content_type)));
             }
 
             // Give submission points
@@ -1714,7 +1714,7 @@ abstract class Standard_crud_module
                 return $test;
             }
 
-            if (($this->user_facing) && ($this->permissions_require !== null) && (addon_installed('unvalidated'))) {
+            if (($this->user_facing) && ($this->permissions_require !== null) && (addon_installed('validation'))) {
                 if (array_key_exists('validated', $_POST)) {
                     if (!has_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', $this->privilege_page_name, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)])) {
                         if (!$this->edit_keep_validation) {
@@ -1759,12 +1759,12 @@ abstract class Standard_crud_module
             if ($this->user_facing) {
                 if (($this->check_validation) && (post_param_integer('validated', 0) == 0) && (post_param_integer('tick_on_form__validated', null) === null)) {
                     require_code('submit');
-                    if (($this->send_validation_request) && (addon_installed('unvalidated'))) {
+                    if (($this->send_validation_request) && (addon_installed('validation'))) {
                         $edit_url = build_url(['page' => '_SELF', 'type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id, 'validated' => 1], '_SELF', [], false, false, true);
                         send_validation_request($this->doing, $this->table, $this->non_integer_id, $id, $edit_url);
                     }
 
-                    $description->attach(paragraph(do_lang_tempcode('SUBMIT_UNVALIDATED', $this->content_type)));
+                    $description->attach(paragraph(do_lang_tempcode('SUBMIT_NONVALIDATED', $this->content_type)));
                 }
             }
         }

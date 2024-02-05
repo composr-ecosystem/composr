@@ -61,8 +61,8 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $info['default'] = (get_option('search_cns_posts') == '1');
         $info['special_on'] = [];
         $info['special_off'] = ['open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED')];
-        if ((has_privilege($member_id, 'see_unvalidated')) && (addon_installed('unvalidated'))) {
-            $info['special_off']['unvalidated'] = do_lang_tempcode('POST_SEARCH_UNVALIDATED');
+        if ((has_privilege($member_id, 'see_nonvalidated')) && (addon_installed('validation'))) {
+            $info['special_off']['nonvalidated'] = do_lang_tempcode('POST_SEARCH_NONVALIDATED');
         }
         if (can_use_composr_fast_custom_index('cns_posts')) {
             $info['special_on']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
@@ -276,7 +276,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $use_simple_index = false;
             }
             $this->_handle_date_check($cutoff, 'ixxx.i_add_time', $extra_join_clause);
-            if (get_param_integer('option_tick_cns_posts_unvalidated', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_nonvalidated', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'r.p_validated=0';
             }
@@ -327,7 +327,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $where_clause .= ' OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member());
             }
             $where_clause .= ')';
-            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'p_validated=1';
             }
@@ -353,7 +353,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $where_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'p_time', $where_clause);
-            if (get_param_integer('option_tick_cns_posts_unvalidated', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_nonvalidated', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'r.p_validated=0';
             }
@@ -380,7 +380,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
             }
             $where_clause .= ')';
 
-            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'r.p_validated=1';
             }

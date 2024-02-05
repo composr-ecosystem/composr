@@ -69,7 +69,7 @@ function get_num_unread_topics(?int $forum_id, bool $subscribed_only = false, ?i
     }
     $sql .= ' AND (l_time IS NULL OR l_time<t_cache_last_time)'; // Cannot get join match OR gets one and it is behind of last post
     $sql .= ' AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))); // Within tracking range
-    if (addon_installed('unvalidated')) {
+    if (addon_installed('validation')) {
         $sql .= ' AND t_validated=1';
     }
 
@@ -109,7 +109,7 @@ function is_forum_unread(int $forum_id, ?int $member_id = null) : bool
  */
 function is_approved(string $type, int $id, ?array $details = null) : bool
 {
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         return true;
     }
     if ($type == 'topic') {
@@ -386,7 +386,7 @@ function tapatalk_get_topic_where(int $topic_id, ?int $member_id = null) : strin
     }
 
     $where = 'p_topic_id=' . strval($topic_id);
-    if ((addon_installed('unvalidated')) && (!has_privilege($member_id, 'see_unvalidated'))) {
+    if ((addon_installed('validation')) && (!has_privilege($member_id, 'see_nonvalidated'))) {
         $where .= ' AND p_validated=1';
     }
     if (!has_privilege(get_member(), 'view_other_pt')) {

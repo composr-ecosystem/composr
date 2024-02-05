@@ -157,7 +157,7 @@ class Hook_cron_disastr
 
             // If there is a randomly selected members that can be infected, otherwise all of the members are already infected or immunised
             $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND id NOT IN (' . $avoid_members . ') AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $sql .= ' AND m_validated=1';
             }
             $sql .= ' ORDER BY ' . db_function('RAND');

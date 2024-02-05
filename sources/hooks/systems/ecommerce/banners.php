@@ -348,7 +348,7 @@ class Hook_ecommerce_banners
                 // Send mail to staff
                 require_code('submit');
                 $edit_url = build_url(['page' => 'cms_banners', 'type' => '_edit', 'name' => $name], get_module_zone('cms_banners'), [], false, false, true);
-                if (addon_installed('unvalidated')) {
+                if (addon_installed('validation')) {
                     send_validation_request('ADD_BANNER', 'banners', true, $name, $edit_url);
                 }
 

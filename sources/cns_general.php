@@ -58,7 +58,7 @@ function cns_get_forums_stats() : array
     if ($forums_stats['newest_member_username'] === null) {
         $sql = 'SELECT m_username,id,m_join_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ';
         $sql .= db_string_equal_to('m_validated_email_confirm_code', '') . ' AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sql .= ' AND m_validated=1';
         }
         $sql .= ' ORDER BY m_join_time DESC';

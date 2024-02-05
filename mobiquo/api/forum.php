@@ -69,7 +69,7 @@ function get_config_func($raw_params)
         'get_latest_topic' => '1',
         'get_id_by_url' => '1',
         'delete_reason' => '1',
-        'mod_approve' => addon_installed('unvalidated') ? '1' : '0',
+        'mod_approve' => addon_installed('validation') ? '1' : '0',
         'mod_delete' => '0', // No "soft delete" feature
         'mod_report' => '0', // No centralised view of reports, it's just another forum
         'guest_search' => '1',

@@ -352,7 +352,7 @@ function add_quiz(string $name, ?int $timeout, string $start_text, string $end_t
         $open_time = time();
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [
@@ -448,7 +448,7 @@ function edit_quiz(int $id, string $name, ?int $timeout, string $start_text, str
         $open_time = time();
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 

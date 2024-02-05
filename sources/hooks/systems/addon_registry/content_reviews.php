@@ -105,7 +105,7 @@ class Hook_addon_registry_content_reviews
     {
         return [
             'requires' => [
-                'unvalidated',
+                'validation',
                 'commandr',
             ],
             'recommends' => [],

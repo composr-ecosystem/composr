@@ -15,7 +15,7 @@ xml_fields	filtering
 banner	advert	advertising	advertise	ad
 masthead	header
 news	blog	weblog	press release	journal
-check-in	workflow	unvalidated	validation	valid	approve	approval	approved	live	accept	posted	online	active	activate	activation	visible	verify	publish
+check-in	workflow	nonvalidated	validation	valid	approve	approval	approved	live	accept	posted	online	active	activate	activation	visible	verify	publish
 webstandards	check	conformance
 theme	skin	style
 basket	cart

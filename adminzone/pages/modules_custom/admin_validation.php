@@ -14,11 +14,11 @@
  */
 
 /**
- * Inject workflow code into the admin_unvalidated module.
+ * Inject workflow code into the admin_validation module.
  *
  * @return  string Altered code
  */
-function init__adminzone__pages__modules_custom__admin_unvalidated($code)
+function init__adminzone__pages__modules_custom__admin_validation($code)
 {
     i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -26,7 +26,7 @@ function init__adminzone__pages__modules_custom__admin_unvalidated($code)
         return $code;
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         return $code;
     }
 

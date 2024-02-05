@@ -651,7 +651,7 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
         // WHERE clause
         $where_clause .= ' AND r.cc_id=' . strval($category_id);
     }
-    if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+    if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
         $where_clause .= ' AND r.ce_validated=1';
     }
 
@@ -1918,14 +1918,14 @@ function render_catalogue_entry_screen(int $id) : object
     });
 
     // Validation
-    if (($entry['ce_validated'] == 0) && (addon_installed('unvalidated'))) {
-        if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && ((is_guest()) || ($entry['ce_submitter'] != get_member()))) {
-            access_denied('PRIVILEGE', 'jump_to_unvalidated');
+    if (($entry['ce_validated'] == 0) && (addon_installed('validation'))) {
+        if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($entry['ce_submitter'] != get_member()))) {
+            access_denied('PRIVILEGE', 'jump_to_nonvalidated');
         }
 
         $map['WARNINGS'] = do_template('WARNING_BOX', [
             '_GUID' => 'bf604859a572ca53e969bec3d91f9cfb',
-            'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'catalogue_entry'),
+            'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'catalogue_entry'),
         ]);
     } else {
         $map['WARNINGS'] = '';

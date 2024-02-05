@@ -30,7 +30,7 @@ class addon_guards_test_set extends cms_test_case
         'modules/admin_stats' => 'stats',
         'modules/admin_stats_redirects' => 'stats',
         'modules/admin_themewizard' => 'themewizard',
-        'modules/admin_unvalidated' => 'unvalidated',
+        'modules/admin_validation' => 'validation',
         'modules/chat_bots' => 'chat',
         'modules/galleries_users' => 'galleries',
         'modules/search' => 'search',

@@ -382,7 +382,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
             <td>
                 <img class="right" src="http://compo.sr/themes/default/images/icons/admin/tool.svg" />Content Reviews<br />(<kbd>content_reviews</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <kbd>unvalidated</kbd>, <kbd>commandr</kbd>
+                <strong>Dependencies</strong>: <kbd>validation</kbd>, <kbd>commandr</kbd>
             </td>
             <td>Regularly review content for accuracy.</td>
             <td><a href="http://compo.sr/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
@@ -1280,14 +1280,14 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/unvalidated.svg" />Unvalidated<br />(<kbd>unvalidated</kbd>)<br /><br />
+                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg" />Validation<br />(<kbd>validation</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Subject member&#039;s to validation (approval) of their content submissions, and enable/disable content.</td>
             <td><a href="http://compo.sr/docs11/tut-censor.htm">Dealing with annoying users</a></td>
             <td>check-in<br /><br />workflow<br /><br />validation<br /><br />valid<br /><br />approve<br /><br />approval<br /><br />approved<br /><br />live<br /><br />accept<br /><br />posted<br /><br />online<br /><br />active<br /><br />activate<br /><br />activation<br /><br />visible<br /><br />verify<br /><br />publish</td>
-            <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=unvalidated&amp;status_id=10">Link</a></td>
+            <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=validation&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>

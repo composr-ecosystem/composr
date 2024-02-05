@@ -57,7 +57,7 @@ class CMSSearchRead
             }
         }
 
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $where .= ' AND t_validated=1';
         }
 
@@ -183,7 +183,7 @@ class CMSSearchRead
         $sql .= ' JOIN ' . $table_prefix . 'f_topics t ON p.p_topic_id=t.id JOIN ' . $table_prefix . 'f_forums f ON t.t_forum_id=f.id';
         $sql .= ' WHERE ' . $search_sql;
         $sql .= ' AND p_cache_forum_id IN (' . get_allowed_forum_sql() . ')';
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sql .= ' AND p_validated=1';
         }
         if (!has_privilege(get_member(), 'view_other_pt')) {

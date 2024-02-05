@@ -148,7 +148,7 @@ class Hook_search_cns_within_topic extends FieldsSearchHook
         }
         $this->_handle_date_check($cutoff, 'p_time', $where_clause);
 
-        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+        if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
             $where_clause .= ' AND ';
             $where_clause .= 'p_validated=1';
         }

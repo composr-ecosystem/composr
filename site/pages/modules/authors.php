@@ -276,7 +276,7 @@ class Module_authors
                 $downloads_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
                 $downloads_where = ['author' => $author];
-                if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                     $downloads_where['validated'] = 1;
                 }
                 $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], $downloads_where, 'ORDER BY add_date');
@@ -307,7 +307,7 @@ class Module_authors
                 $news_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
                 $news_where = ['author' => $author];
-                if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                     $news_where['validated'] = 1;
                 }
                 $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], $news_where, 'ORDER BY date_and_time');

@@ -219,7 +219,7 @@ class Module_members
         $validated = $GLOBALS['FORUM_DRIVER']->get_member_row_field($this->member_id_of, 'm_validated');
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }

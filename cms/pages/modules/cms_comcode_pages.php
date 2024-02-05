@@ -1050,7 +1050,7 @@ class Module_cms_comcode_pages
             $validated = (get_param_integer('validated', 0) == 1);
         }
         if (has_bypass_validation_comcode_page_permission($zone)) {
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'comcode_page'), 'validated', $validated));
             }
         }
@@ -1255,7 +1255,7 @@ class Module_cms_comcode_pages
         }
 
         $validated = post_param_integer('validated', 0);
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             $validated = 1;
         }
         $include_on_sitemap = post_param_integer('include_on_sitemap', 0);
@@ -1379,11 +1379,11 @@ class Module_cms_comcode_pages
         if ($validated == 0) {
             require_code('submit');
             $edit_url = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => $zone . ':' . $new_file], '_SELF', [], false, false, true);
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 send_validation_request('COMCODE_PAGE_EDIT', 'comcode_pages', true, $zone . ':' . $new_file, $edit_url);
             }
         }
-        $completion_text = ($validated == 0) ? do_lang_tempcode('SUBMIT_UNVALIDATED', 'comcode_page') : do_lang_tempcode('SUCCESS');
+        $completion_text = ($validated == 0) ? do_lang_tempcode('SUBMIT_NONVALIDATED', 'comcode_page') : do_lang_tempcode('SUCCESS');
         if ($new_file == $file) {
             $url = post_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         } else {
@@ -1525,7 +1525,7 @@ class Module_cms_comcode_pages
             $_todo_checks = cms_mb_strtolower(do_lang('UNDER_CONSTRUCTION_MARKERS'));
             $todo_checks = ($_todo_checks == '') ? [] : explode('|', $_todo_checks);
 
-            $no_validation_support = !addon_installed('unvalidated');
+            $no_validation_support = !addon_installed('validation');
 
             $zone_start_pages = collapse_2d_complexity('zone_name', 'zone_default_page', $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page']));
 

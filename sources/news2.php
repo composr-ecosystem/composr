@@ -289,7 +289,7 @@ function add_news(string $title, string $news, ?string $author = null, int $vali
         $main_news_category_id = $main_news_category;
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [
@@ -487,7 +487,7 @@ function edit_news(int $id, string $title, string $news, string $author, int $va
     require_code('attachments2');
     require_code('attachments3');
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 
@@ -720,7 +720,7 @@ function import_rss_fields(bool $import_to_blog) : object
     $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '56ae4f6ded172f27ca37e86f4f6df8ef', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
     $fields->attach(form_input_tick(do_lang_tempcode('IMPORT_BLOG_COMMENTS'), do_lang_tempcode('DESCRIPTION_IMPORT_BLOG_COMMENTS'), 'import_blog_comments', true));
-    if (addon_installed('unvalidated')) {
+    if (addon_installed('validation')) {
         $fields->attach(form_input_tick(do_lang_tempcode('AUTO_VALIDATE_ALL_POSTS'), do_lang_tempcode('DESCRIPTION_VALIDATE_ALL_POSTS'), 'auto_validate', true));
     }
     if ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {

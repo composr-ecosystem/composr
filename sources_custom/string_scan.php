@@ -4076,7 +4076,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONTENT_REVIEW_AUTO_ACTION
         CONTENT_REVIEW_AUTO_ACTION_delete
         CONTENT_REVIEW_AUTO_ACTION_leave
-        CONTENT_REVIEW_AUTO_ACTION_unvalidate
+        CONTENT_REVIEW_AUTO_ACTION_invalidate
         CONTENT_TYPE
         CONTEXTUAL_EDITING_SCREEN
         CONTRACTED_BRANCH
@@ -5070,7 +5070,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_TRACKBACKS
         DOC_TRANSLATE
         DOC_TRANSLATE_CONTENT
-        DOC_UNVALIDATED
+        DOC_VALIDATION
         DOC_USERGROUP_SUBSCRIPTION
         DOC_WELCOME_EMAILS
         DOC_WELCOME_EMAIL_PREVIEW
@@ -6328,7 +6328,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_admin_themes
         MODULE_TRANS_NAME_admin_themewizard
         MODULE_TRANS_NAME_admin_tickets
-        MODULE_TRANS_NAME_admin_unvalidated
+        MODULE_TRANS_NAME_admin_validation
         MODULE_TRANS_NAME_admin_version
         MODULE_TRANS_NAME_admin_wordfilter
         MODULE_TRANS_NAME_admin_zones
@@ -6923,7 +6923,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_have_personal_category
         PRIVILEGE_high_catalogue_entry_timeout
         PRIVILEGE_high_personal_gallery_limit
-        PRIVILEGE_jump_to_unvalidated
+        PRIVILEGE_jump_to_nonvalidated
         PRIVILEGE_mass_delete_from_ip
         PRIVILEGE_mass_import
         PRIVILEGE_may_choose_custom_title
@@ -6953,7 +6953,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_see_php_errors
         PRIVILEGE_see_software_docs
         PRIVILEGE_see_stack_trace
-        PRIVILEGE_see_unvalidated
+        PRIVILEGE_see_nonvalidated
         PRIVILEGE_see_warnings
         PRIVILEGE_sees_javascript_error_alerts
         PRIVILEGE_sense_personal_conflicts
@@ -7373,7 +7373,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SUBMITTER_UNBANNED
         SUBMIT_POINTS
         SUBMIT_THANKYOU
-        SUBMIT_UNVALIDATED
+        SUBMIT_NONVALIDATED
         SUBSCRIPTION_EVENT_EMAILS
         SUBSCRIPTION_LENGTH
         SUBSCRIPTION_REF_POINT
@@ -7840,12 +7840,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNSILENCE_FORUM
         UNSILENCE_TOPIC
         UNUSED_CPF
-        UNVALIDATED_ENTRIES
-        UNVALIDATED_MAIL_A
-        UNVALIDATED_MAIL_B
-        UNVALIDATED_MAIL_C
-        UNVALIDATED_PAGE_TEXT
-        UNVALIDATED_RESOURCES
+        NONVALIDATED_ENTRIES
+        NONVALIDATED_MAIL_A
+        NONVALIDATED_MAIL_B
+        NONVALIDATED_MAIL_C
+        NONVALIDATED_PAGE_TEXT
+        NONVALIDATED_RESOURCES
         UNZIP_CMD
         UNZIP_DIR
         UPDATE_HANDLING_DELETE
@@ -9696,7 +9696,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FINISH_STARTED_ALREADY
         FIRST
         FIRST_POST
-        FIRST_POST_IS_UNVALIDATED
+        FIRST_POST_IS_NONVALIDATED
         FIXED_COMCODE
         FLOOD_CONTROL_BLOCKED
         FLOOD_CONTROL_RESTRICT
@@ -10056,7 +10056,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_INFORMATION
         MEMBER_IS_IN_GROUP
         MEMBER_IS_UNCONFIRMED
-        MEMBER_IS_UNVALIDATED
+        MEMBER_IS_NONVALIDATED
         MEMBER_LEADS_GROUP
         MEMBER_LOGIN_ERROR
         MEMBER_NOT_VALIDATED_EMAIL
@@ -10095,7 +10095,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODIFIER_involved
         MODIFIER_pinned
         MODIFIER_poll
-        MODIFIER_unvalidated
+        MODIFIER_nonvalidated
         MODIFY_POINTS
         MODULE_TRANS_NAME_authors
         MODULE_TRANS_NAME_awards
@@ -10519,7 +10519,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POST_SEARCH_OPEN
         POST_SEARCH_PINNED
         POST_SEARCH_STARTER
-        POST_SEARCH_UNVALIDATED
+        POST_SEARCH_NONVALIDATED
         POST_TEMPLATE
         POST_TOO_LONG
         POST_TOO_SHORT
@@ -10852,8 +10852,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SUBMITTER
         SUBMIT_AGE_DAYS
         SUBMIT_AWARD
-        SUBMIT_UNVALIDATED_FORUM_POSTS
-        SUBMIT_UNVALIDATED_FORUM_TOPICS
+        SUBMIT_NONVALIDATED_FORUM_POSTS
+        SUBMIT_NONVALIDATED_FORUM_TOPICS
         STATE_NEEDED_FOR_USA
         ZIP_NEEDED_FOR_USA
         INVALID_ZIP_FOR_USA
@@ -11015,12 +11015,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNSEEN_PERSONAL_POSTS
         UNSUBSCRIBE
         UNSUBSCRIBE_EVENT
-        UNVALIDATED
-        UNVALIDATED_TEXT
-        UNVALIDATED_TEXT_NON_DIRECT
-        UNVALIDATED_TEXT_STAFF
-        UNVALIDATED_TITLE
-        UNVALIDATE_POST
+        NONVALIDATED
+        NONVALIDATED_TEXT
+        NONVALIDATED_TEXT_NON_DIRECT
+        NONVALIDATED_TEXT_STAFF
+        NONVALIDATED_TITLE
+        INVALIDATE_POST
         UPDATE_CART
         _UPDATE_CART
         UPGRADE

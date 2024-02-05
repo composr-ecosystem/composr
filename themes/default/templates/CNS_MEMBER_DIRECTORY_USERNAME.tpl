@@ -4,7 +4,7 @@
 	<a href="{URL*}">{$DISPLAYED_USERNAME*,{USERNAME}}</a>
 
 	{+START,IF,{$NOT,{VALIDATED}}}
-		<span>{!MEMBER_IS_UNVALIDATED}</span>
+		<span>{!MEMBER_IS_NONVALIDATED}</span>
 	{+END}
 
 	{+START,IF,{$NOT,{CONFIRMED}}}

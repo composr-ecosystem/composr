@@ -935,7 +935,7 @@ function add_download(int $category_id, string $name, string $url, string $descr
         $file_size = 2147483647;
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 
@@ -1155,7 +1155,7 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
         call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), get_screen_title('INDEX_DOWNLOAD', true, [], null, [], false), 'index_download', [$id, $url, $original_filename], false, false, false);
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 

@@ -365,7 +365,7 @@ class Module_downloads
                 require_lang('galleries');
                 $cat = 'download_' . strval($id);
                 $map = ['cat' => $cat];
-                if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                     $map['validated'] = 1;
                 }
                 $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], $map, 'ORDER BY add_date,id', 200/*Stop silliness, could be a DOS attack*/);
@@ -604,7 +604,7 @@ class Module_downloads
 
         // Load up all data
         $cats = [];
-        $rows = $GLOBALS['SITE_DB']->query('SELECT p.name,p.category_id FROM ' . get_table_prefix() . 'download_downloads p' . $privacy_join . ' WHERE ' . (addon_installed('unvalidated') ? 'validated=1 AND ' : '') . '(' . $sql_select . ')' . $privacy_where . ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'), null, 0, false, true, ['name' => 'SHORT_TRANS']);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT p.name,p.category_id FROM ' . get_table_prefix() . 'download_downloads p' . $privacy_join . ' WHERE ' . (addon_installed('validation') ? 'validated=1 AND ' : '') . '(' . $sql_select . ')' . $privacy_where . ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'), null, 0, false, true, ['name' => 'SHORT_TRANS']);
         foreach ($rows as $row) {
             $download_name = get_translated_text($row['name']);
             $letter = cms_mb_strtoupper(cms_mb_substr($download_name, 0, 1));
@@ -714,14 +714,14 @@ class Module_downloads
         $warning_details = new Tempcode();
 
         // Validation
-        if (($myrow['validated'] == 0) && (addon_installed('unvalidated'))) {
-            if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_unvalidated');
+        if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
+            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
             }
 
             $warning_details->attach(do_template('WARNING_BOX', [
                 '_GUID' => '5b1781b8fbb1ef9b8f47693afcff02b9',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'download'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'download'),
             ]));
         }
 

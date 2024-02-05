@@ -489,7 +489,7 @@ class Module_topicview
 
                 $first_unread = (($_postdetails['id'] == $first_unread_id) || (($first_unread_id < 0) && ($array_id == count($topic_info['posts']) - 1))) ? do_template('CNS_TOPIC_FIRST_UNREAD') : new Tempcode();
 
-                $unvalidated = (($_postdetails['validated'] == 0) && (addon_installed('unvalidated'))) ? do_lang_tempcode('UNVALIDATED') : new Tempcode();
+                $validation = (($_postdetails['validated'] == 0) && (addon_installed('validation'))) ? do_lang_tempcode('NONVALIDATED') : new Tempcode();
 
                 $post_url = $GLOBALS['FORUM_DRIVER']->post_url($_postdetails['id'], ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']), true);
 
@@ -540,7 +540,7 @@ class Module_topicview
                     'RANK_IMAGES' => $rank_images,
                     'BUTTONS' => $buttons,
                     'SIGNATURE' => $signature,
-                    'UNVALIDATED' => $unvalidated,
+                    'NONVALIDATED' => $validation,
                     'DESCRIPTION' => $description,
                     'RATING' => $rating,
                     'POSTER_ONLINE' => $poster_online,
@@ -1063,7 +1063,7 @@ class Module_topicview
             if (array_key_exists('may_delete_posts', $topic_info)) {
                 $marked_post_actions .= '<option value="delete_posts">' . do_lang('DELETE_POSTS') . '</option>';
             }
-            if ((array_key_exists('may_validate_posts', $topic_info)) && (addon_installed('unvalidated'))) {
+            if ((array_key_exists('may_validate_posts', $topic_info)) && (addon_installed('validation'))) {
                 $marked_post_actions .= '<option value="validate_posts">' . do_lang('VALIDATE_POSTS') . '</option>';
             }
             if (get_option('enable_multi_quote') == '1') {
@@ -1101,10 +1101,10 @@ class Module_topicview
             list($num_guests, $num_members, $members_viewing) = get_members_viewing_wrap('topicview', '', strval($id), true); // This does a member_tracking_update to the topic internally
         }
 
-        if (($topic_info['validated'] == 0) && (addon_installed('unvalidated'))) {
+        if (($topic_info['validated'] == 0) && (addon_installed('validation'))) {
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '313de370c1aeab9545c4bee4e35e7f84',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'topic'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'topic'),
             ]);
         } else {
             $warning_details = new Tempcode();

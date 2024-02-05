@@ -139,7 +139,7 @@ class Module_admin_banners
             $_header_row = array_merge($_header_row, [do_lang_tempcode('BANNER_HITS_FROM'), do_lang_tempcode('BANNER_VIEWS_FROM')]);
         }
         $_header_row = array_merge($_header_row, [do_lang_tempcode('BANNER_HITS_TO'), do_lang_tempcode('BANNER_VIEWS_TO'), do_lang_tempcode('BANNER_CLICKTHROUGH'), do_lang_tempcode('DISPLAY_LIKELIHOOD'), do_lang_tempcode('SUBMITTER'), do_lang_tempcode('ADDED')]);
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $_header_row[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '7a2ed997384b823b25dc3c70d4ff82d6', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
         }
         $header_row = results_header_row($_header_row, $sortables, 'sort', $sortable . ' ' . $sort_order);
@@ -194,7 +194,7 @@ class Module_admin_banners
                 $result = array_merge($result, [escape_html($hits_from), escape_html($views_from)]);
             }
             $result = array_merge($result, [$hits_to, $views_to, $click_through, escape_html(strval($display_likelihood)), $username, escape_html($date)]);
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $result[] = escape_html($validated);
             }
 

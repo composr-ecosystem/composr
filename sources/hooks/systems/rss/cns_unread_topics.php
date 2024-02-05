@@ -63,7 +63,7 @@ class Hook_rss_cns_unread_topics
         if (!multi_lang_content()) {
             $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id';
         }
-        $query .= ' WHERE (' . $condition . ') AND t_forum_id IS NOT NULL ' . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND t_validated=1 ' : '');
+        $query .= ' WHERE (' . $condition . ') AND t_forum_id IS NOT NULL ' . ((!has_privilege(get_member(), 'see_nonvalidated')) ? ' AND t_validated=1 ' : '');
         $query .= ' AND t_cache_last_time>' . strval($cutoff);
         $query .= ' ORDER BY t_cache_last_time DESC';
         if (multi_lang_content()) {

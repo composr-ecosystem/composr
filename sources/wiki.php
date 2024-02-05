@@ -162,7 +162,7 @@ function wiki_add_post(int $page_id, string $message, int $validated = 1, ?int $
     require_code('comcode_check');
     check_comcode($message, null, false, null, true);
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [
@@ -258,7 +258,7 @@ function wiki_edit_post(int $post_id, string $message, int $validated, ?int $mem
     require_code('attachments2');
     require_code('attachments3');
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 

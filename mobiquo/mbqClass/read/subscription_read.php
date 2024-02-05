@@ -100,7 +100,7 @@ class CMSSubscriptionRead
             $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
             $sql = ' FROM ' . $table_prefix . 'f_topics t JOIN ' . $table_prefix . 'f_posts p ON p.id=t.t_cache_first_post_id JOIN ' . $table_prefix . 'f_forums f ON t.t_forum_id=f.id';
             $sql .= ' WHERE t.id IN (' . $notifications . ') AND f.id IN (' . get_allowed_forum_sql() . ') ';
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $sql .= 'AND t_validated=1 ';
             }
             $sql .= 'ORDER BY t_cache_first_time';

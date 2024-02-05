@@ -147,7 +147,7 @@ class Hook_search_downloads extends FieldsSearchHook
         }
         $this->_handle_date_check($cutoff, 'add_date', $where_clause);
 
-        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+        if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
             $where_clause .= ' AND ';
             $where_clause .= 'validated=1';
         }

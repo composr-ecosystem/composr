@@ -141,7 +141,7 @@ class Hook_task_import_wordpress
                     } else {
                         $validated = 0;
                     }
-                    if (!addon_installed('unvalidated')) {
+                    if (!addon_installed('validation')) {
                         $validated = 1;
                     }
 

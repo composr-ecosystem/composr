@@ -109,7 +109,7 @@ class Hook_cron_cns_welcome_emails
                     }
                     if ($send_seconds_after_joining != 0) {
                         $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-                        if (addon_installed('unvalidated')) {
+                        if (addon_installed('validation')) {
                             $where .= ' AND m_validated=1';
                         }
                     }

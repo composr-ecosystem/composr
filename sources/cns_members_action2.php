@@ -765,7 +765,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
         if (has_privilege(get_member(), 'member_maintenance')) {
             $_validated = get_param_integer('validated', 0);
             if ($validated == 0) {
-                if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                if (($_validated == 1) && (addon_installed('validation'))) {
                     $validated = 1;
                     attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
                 }
@@ -776,7 +776,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
             if (get_option_with_overrides('enable_highlight_name', $adjusted_config_options) == '1') {
                 $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('ecommerce') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));
             }
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_MEMBER_VALIDATED'), 'validated', $validated == 1));
             }
             if (($member_id !== null) && ($member_id != get_member())) {// Can't ban someone new, and can't ban yourself
@@ -1256,7 +1256,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     }
     if ($validated !== null) {
         $update['m_validated_email_confirm_code'] = '';
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $update['m_validated'] = $validated;
 
             if (($validated == 1) && ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_validated') == 0)) {

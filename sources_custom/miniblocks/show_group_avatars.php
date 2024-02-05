@@ -42,7 +42,7 @@ if (isset($map['order'])) {
 }
 
 $where = 'm_avatar_url<>\'\' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-if (addon_installed('unvalidated')) {
+if (addon_installed('validation')) {
     $where .= ' AND m_validated=1';
 }
 if (isset($map['param'])) {

@@ -363,7 +363,7 @@ class CMSModerationWrite
             require_code('cns_topics_action2');
             $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_validated' => 0], ['id' => $post_id], '', 1);
 
-            cns_mod_log_it('UNVALIDATE_POST', strval($post_id), $title);
+            cns_mod_log_it('INVALIDATE_POST', strval($post_id), $title);
         }
 
         return true;

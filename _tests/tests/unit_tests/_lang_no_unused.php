@@ -243,7 +243,7 @@ class _lang_no_unused_test_set extends cms_test_case
             'GEOCODE_ZERO_RESULTS',
             'GEOCODE_REQUEST_DENIED',
             'GEOCODE_UNKNOWN_ERROR',
-            'CONTENT_REVIEW_AUTO_ACTION_unvalidate',
+            'CONTENT_REVIEW_AUTO_ACTION_invalidate',
             'CONTENT_REVIEW_AUTO_ACTION_delete',
             'CONTENT_REVIEW_AUTO_ACTION_leave',
             'BLOCKS_TYPE_side',

@@ -101,7 +101,7 @@ PHP;
             attach_message(do_lang_tempcode('MESSAGE_POSTED'), 'inform');
 
             if (get_forum_type() == 'cns') {
-                if (addon_installed('unvalidated')) {
+                if (addon_installed('validation')) {
                     require_code('submit');
                     $validate_url = get_self_url(true, false, ['keep_session' => null]);
                     $_validate_url = build_url(['page' => 'topics', 'type' => 'validate_post', 'id' => $GLOBALS['LAST_POST_ID'], 'redirect' => protect_url_parameter($validate_url)], get_module_zone('topics'), [], false, false, true);

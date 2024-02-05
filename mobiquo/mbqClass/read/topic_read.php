@@ -48,7 +48,7 @@ class CMSTopicRead
         }
         $sql = 'SELECT *,id AS topic_id FROM ' . $table_prefix . 'f_topics WHERE id IN (' . $sql_ids . ')';
         $sql .= ' AND t_forum_id IN (' . get_allowed_forum_sql() . ')';
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sql .= ' AND t_validated=1';
         }
         $_topics = ($sql_ids == '') ? [] : $GLOBALS['FORUM_DB']->query($sql);
@@ -86,7 +86,7 @@ class CMSTopicRead
         }
 
         $where_basic = ['t_forum_id' => $forum_id];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $where_basic['t_validated'] = 1;
         }
         $where = $where_basic;
@@ -235,7 +235,7 @@ class CMSTopicRead
         $conditions_full[] = 't_cache_first_member_id IS NOT NULL';
 
         // Validated-only
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $conditions_full[] = 't_validated=1';
         }
 

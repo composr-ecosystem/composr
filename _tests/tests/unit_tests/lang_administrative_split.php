@@ -24,6 +24,8 @@ class lang_administrative_split_test_set extends cms_test_case
 
         require_code('string_scan');
         require_code('lang_compile');
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
     }
 
     public function testSplitStringScanComplete()

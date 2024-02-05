@@ -26,7 +26,7 @@ function init__site__pages__modules_custom__galleries($code)
         return $code;
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         return $code;
     }
 

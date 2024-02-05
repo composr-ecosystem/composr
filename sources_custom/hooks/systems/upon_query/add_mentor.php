@@ -76,7 +76,7 @@ class Hook_upon_query_add_mentor
             }
 
             $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON g.gm_member_id=m.id WHERE gm_group_id=' . strval($mentor_usergroup_id) . ' OR m_primary_group=' . strval($mentor_usergroup_id) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $sql .= ' AND m_validated=1';
             }
             $sql .= ' ORDER BY ' . db_function('RAND');

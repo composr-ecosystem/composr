@@ -674,7 +674,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
     }
 
     // Validation check
-    if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (!has_privilege($member_id, 'see_unvalidated'))) {
+    if ((array_key_exists('validated_field', $info)) && (addon_installed('validation')) && ($info['validated_field'] != '') && (!has_privilege($member_id, 'see_nonvalidated'))) {
         $extra_where .= ' AND r.' . $info['validated_field'] . '=1';
     }
 
@@ -720,7 +720,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
                 } else {
                     $extra_where .= ' AND r.' . db_string_not_equal_to($first_id_field, $awarded_content_id);
                 }
-                if ((!addon_installed('unvalidated')) || (!isset($info['validated_field'])) || ($award_content_row[$info['validated_field']] != 0)) {
+                if ((!addon_installed('validation')) || (!isset($info['validated_field'])) || ($award_content_row[$info['validated_field']] != 0)) {
                     $pinned_rows[$i] = $award_content_row;
                 }
             }

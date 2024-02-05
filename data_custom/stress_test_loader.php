@@ -424,11 +424,11 @@ function do_work()
 
     // videos / validation queue
     require_code('galleries2');
-    echo 'STARTING: Unvalidated Videos' . "\n";
+    echo 'STARTING: Non-validated Videos' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_video('', 'root', random_text(), get_logo_url(), get_logo_url(), 0, 1, 1, 1, '', 0, 0, 0);
     }
-    echo 'FINISHED: Unvalidated Videos' . "\n";
+    echo 'FINISHED: Non-validated Videos' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();

@@ -192,4 +192,4 @@ If you are using Conversr, then you may make use of the 'post history' feature. 
  - [page="_SEARCH:tut_fields_filter"]The form field filter system[/page]
  - [page="_SEARCH:tut_antispam"]Anti-spam settings[/page]
 
-{$SET,tutorial_tags,Security,wordfilter,unvalidated,cns_warnings,content_privacy,actionlog,Administration,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Little tricks: changing their permissions via usergroups, mandating prior post approval, and how to ban them.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Security,wordfilter,validation,cns_warnings,content_privacy,actionlog,Administration,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Little tricks: changing their permissions via usergroups, mandating prior post approval, and how to ban them.}[block]main_tutorial_rating[/block]

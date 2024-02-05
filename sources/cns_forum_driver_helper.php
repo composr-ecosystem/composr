@@ -204,7 +204,7 @@ function _helper_make_post_forum_topic(object $this_ref, string $forum_name, str
         $validated_actual = $this_ref->db->query_select_value('f_posts', 'p_validated', ['id' => $post_id]);
         if ($validated_actual == 0) {
             require_code('site');
-            attach_message(do_lang_tempcode('SUBMIT_UNVALIDATED', 'topic'), 'inform');
+            attach_message(do_lang_tempcode('SUBMIT_NONVALIDATED', 'topic'), 'inform');
             $is_hidden = true;
         }
     }

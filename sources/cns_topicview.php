@@ -280,9 +280,9 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
             decache_private_topics(get_member());
         }
         // Check validated
-        if (($topic_info['t_validated'] == 0) && (addon_installed('unvalidated'))) {
-            if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && ($check_perms) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_unvalidated');
+        if (($topic_info['t_validated'] == 0) && (addon_installed('validation'))) {
+            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ($check_perms) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
             }
         }
 
@@ -649,7 +649,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
     $buttons = new Tempcode();
 
     // Validate
-    if ((array_key_exists('may_validate_posts', $topic_info)) && (addon_installed('unvalidated')) && ((($topic_info['validated'] == 0) && ($_postdetails['id'] == $topic_info['first_post_id'])) || ($_postdetails['validated'] == 0))) {
+    if ((array_key_exists('may_validate_posts', $topic_info)) && (addon_installed('validation')) && ((($topic_info['validated'] == 0) && ($_postdetails['id'] == $topic_info['first_post_id'])) || ($_postdetails['validated'] == 0))) {
         $map = ['page' => 'topics', 'type' => 'validate_post', 'id' => $_postdetails['id']];
         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
         if (($test !== null) && ($test !== '0')) {
@@ -664,7 +664,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         $_title_full = new Tempcode();
         $_title_full->attach($_title);
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '712fdaee35f378e37b007f3a73246690', 'REL' => 'validate nofollow', 'IMMEDIATE' => true, 'IMG' => 'menu/adminzone/audit/unvalidated', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '712fdaee35f378e37b007f3a73246690', 'REL' => 'validate nofollow', 'IMMEDIATE' => true, 'IMG' => 'menu/adminzone/audit/nonvalidated', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
     // Quote/reply

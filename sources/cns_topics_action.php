@@ -100,7 +100,7 @@ function cns_make_topic(?int $forum_id, string $description = '', string $emotic
         }
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [

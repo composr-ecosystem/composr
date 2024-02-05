@@ -1482,7 +1482,7 @@ abstract class Hook_Notification
 
         // SQL: CNS member validation filters
         $clause_validation_cns = ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $clause_validation_cns .= ' AND m_validated=1';
         }
 

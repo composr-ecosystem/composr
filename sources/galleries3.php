@@ -90,9 +90,9 @@ function show_gallery_video_script()
     $myrow = $rows[0];
 
     // Validation
-    if (($myrow['validated'] == 0) && (addon_installed('unvalidated'))) {
-        if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-            access_denied('PRIVILEGE', 'jump_to_unvalidated');
+    if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
+        if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
+            access_denied('PRIVILEGE', 'jump_to_nonvalidated');
         }
     }
 

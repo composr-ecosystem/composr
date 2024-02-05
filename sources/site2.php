@@ -95,10 +95,10 @@ function get_staff_actions_list() : string
 function get_page_warning_details(string $zone, string $codename, object $edit_url) : object
 {
     $warning_details = new Tempcode();
-    if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && (addon_installed('unvalidated'))) {
-        access_denied('PRIVILEGE', 'jump_to_unvalidated');
+    if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && (addon_installed('validation'))) {
+        access_denied('PRIVILEGE', 'jump_to_nonvalidated');
     }
-    $uv_warning = do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'comcode_page'); // Wear sun cream
+    $uv_warning = do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'comcode_page'); // Wear sun cream
     if (!$edit_url->is_empty()) {
         $menu_links = $GLOBALS['SITE_DB']->query('SELECT DISTINCT i_menu FROM ' . get_table_prefix() . 'menu_items WHERE ' . db_string_equal_to('i_url', $zone . ':' . $codename) . ' OR ' . db_string_equal_to('i_url', '_SEARCH:' . $codename));
         if (!empty($menu_links)) {
@@ -110,7 +110,7 @@ function get_page_warning_details(string $zone, string $codename, object $edit_u
                 $menu_edit_url = build_url(['page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_link['i_menu']], get_module_zone('admin_menus'));
                 $menu_items_linking->attach(hyperlink($menu_edit_url, $menu_link['i_menu'], false, true));
             }
-            $uv_warning = do_lang_tempcode('UNVALIDATED_TEXT_STAFF', $menu_items_linking, 'comcode_page');
+            $uv_warning = do_lang_tempcode('NONVALIDATED_TEXT_STAFF', $menu_items_linking, 'comcode_page');
         }
     }
     $warning_details->attach(do_template('WARNING_BOX', ['_GUID' => 'ee79289f87986bcb916a5f1810a25330', 'WARNING' => $uv_warning]));

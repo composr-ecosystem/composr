@@ -837,7 +837,7 @@ class Module_cms_galleries extends Standard_crud_module
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION_ACCESSIBILITY'), 'description', $description, false));
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
@@ -1033,7 +1033,7 @@ class Module_cms_galleries extends Standard_crud_module
             save_privacy_form_fields('image', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
                 $privacy_ok = true;
@@ -1115,7 +1115,7 @@ class Module_cms_galleries extends Standard_crud_module
             save_privacy_form_fields('image', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
                 $privacy_ok = true;
@@ -1124,7 +1124,7 @@ class Module_cms_galleries extends Standard_crud_module
                     $privacy_ok = has_privacy_access('image', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('images', 'validated', ['id' => $id]) == 0);
+                    $just_validated = (addon_installed('validation')) && ($GLOBALS['SITE_DB']->query_select_value('images', 'validated', ['id' => $id]) == 0);
                     $submitter = $GLOBALS['SITE_DB']->query_select_value('images', 'submitter', ['id' => $id]);
 
                     $activities = [];
@@ -1423,7 +1423,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
@@ -1433,7 +1433,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         }
         $validated_field = new Tempcode();
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'video'), 'validated', $validated == 1);
             }
         }
@@ -1627,7 +1627,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
                 $privacy_ok = true;
@@ -1696,7 +1696,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
                 $privacy_ok = true;
@@ -1705,7 +1705,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
                     $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('videos', 'validated', ['id' => $id]) == 0);
+                    $just_validated = (addon_installed('validation')) && ($GLOBALS['SITE_DB']->query_select_value('videos', 'validated', ['id' => $id]) == 0);
                     $submitter = $GLOBALS['SITE_DB']->query_select_value('videos', 'submitter', ['id' => $id]);
 
                     $activities = [];

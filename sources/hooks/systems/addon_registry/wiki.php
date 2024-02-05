@@ -283,7 +283,7 @@ class Hook_addon_registry_wiki
 
         $posts = do_lorem_template('WIKI_POST', [
             'INCLUDE_EXPANSION' => lorem_phrase(),
-            'UNVALIDATED' => do_lang('UNVALIDATED'),
+            'NONVALIDATED' => do_lang('NONVALIDATED'),
             'STAFF_ACCESS' => lorem_phrase(),
             'RATE_URL' => placeholder_url(),
             'RATING' => $rating_details,

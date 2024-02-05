@@ -33,7 +33,7 @@ function get_num_unread_private_topics(?int $box_type = null) : int
     $sql .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs r ON t.id=r.l_topic_id AND l_member_id=' . strval($member_id);
     $sql .= ' WHERE';
     $sql .= ' t.t_forum_id IS NULL';
-    if (addon_installed('unvalidated')) {
+    if (addon_installed('validation')) {
         $sql .= ' AND t_validated=1';
     }
     if ($box_type === TAPATALK_MESSAGE_BOX_INBOX) {

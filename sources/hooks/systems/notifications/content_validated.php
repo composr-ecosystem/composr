@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    unvalidated
+ * @package    validation
  */
 
 /**
@@ -44,12 +44,12 @@ class Hook_notification_content_validated extends Hook_Notification
      */
     public function list_handled_codes() : array
     {
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return [];
         }
 
         $list = [];
-        $list['content_validated'] = [do_lang('CONTENT'), do_lang('unvalidated:NOTIFICATION_TYPE_content_validated')];
+        $list['content_validated'] = [do_lang('CONTENT'), do_lang('validation:NOTIFICATION_TYPE_content_validated')];
         return $list;
     }
 }

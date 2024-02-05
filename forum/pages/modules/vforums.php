@@ -293,7 +293,7 @@ class Module_vforums
 
         // Find topics
         $extra = ' AND ';
-        if (!has_privilege(get_member(), 'see_unvalidated')) {
+        if (!has_privilege(get_member(), 'see_nonvalidated')) {
             $extra .= 't_validated=1 AND ';
         }
         require_code('cns_forums');

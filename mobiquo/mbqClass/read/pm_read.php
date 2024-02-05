@@ -40,7 +40,7 @@ class CMSPmRead
         $member_id = get_member();
 
         $where = ['t_pt_to' => $member_id];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $where['t_validated'] = 1;
         }
         $inbox_total = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', $where);
@@ -48,7 +48,7 @@ class CMSPmRead
         $inbox_unread_total = get_num_unread_private_topics(TAPATALK_MESSAGE_BOX_INBOX);
 
         $where = ['t_pt_from' => $member_id];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $where['t_validated'] = 1;
         }
         $sent_total = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', $where);
@@ -106,7 +106,7 @@ class CMSPmRead
             $sql .= ' WHERE t_pt_from=' . strval($member_id);
         }
 
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sql .= ' AND t_validated=1';
         }
 
@@ -123,7 +123,7 @@ class CMSPmRead
             $select = ['*', 'p.id AS post_id', 't.id AS topic_id'];
 
             $where = ['p_topic_id' => $topic['topic_id']];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $where['p_validated'] = 1;
             }
 

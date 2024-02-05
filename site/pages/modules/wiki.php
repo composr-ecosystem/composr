@@ -321,7 +321,7 @@ class Module_wiki
             $breadcrumbs = wiki_breadcrumbs($chain, $current_title, has_privilege(get_member(), 'open_virtual_roots') && (get_option('virtual_root_links') == '1'), true, true);
 
             $where_map = ['page_id' => $id];
-            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                 $where_map['validated'] = 1;
             }
             $db_posts = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['*'], $where_map, 'ORDER BY date_and_time', intval(get_option('general_safety_listing_limit')));
@@ -608,7 +608,7 @@ class Module_wiki
             $posts->attach(do_template('WIKI_POST', [
                 '_GUID' => 'a29b107abfaf7689c8392676c63093f5',
                 'INCLUDE_EXPANSION' => $include_expansion_here,
-                'UNVALIDATED' => ($myrow['validated'] == 0) ? do_lang_tempcode('UNVALIDATED') : new Tempcode(),
+                'NONVALIDATED' => ($myrow['validated'] == 0) ? do_lang_tempcode('NONVALIDATED') : new Tempcode(),
                 'STAFF_ACCESS' => $staff_access,
                 'RATE_URL' => $rate_url . '#post_' . strval($post_id),
                 'RATING' => $rating,
@@ -1237,7 +1237,7 @@ class Module_wiki
             if ($validated == 0) {
                 require_code('submit');
                 $edit_url = build_url(['page' => 'wiki', 'type' => 'post', 'post_id' => $post_id, 'validated' => 1], '_SELF', [], false, false, true);
-                if (addon_installed('unvalidated')) {
+                if (addon_installed('validation')) {
                     send_validation_request('WIKI_MAKE_POST', 'wiki_posts', false, strval($post_id), $edit_url);
                 }
             }

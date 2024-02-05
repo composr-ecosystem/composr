@@ -361,7 +361,7 @@ class Module_cms_catalogues extends Standard_crud_module
             'ce_views' => do_lang_tempcode('COUNT_VIEWS'),
             'ce_submitter' => do_lang_tempcode('metadata:OWNER'),
         ];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sortables['ce_validated'] = do_lang_tempcode('VALIDATED');
         }
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
@@ -374,7 +374,7 @@ class Module_cms_catalogues extends Standard_crud_module
         $fh[] = do_lang_tempcode('ADDED');
         $fh[] = do_lang_tempcode('COUNT_VIEWS');
         $fh[] = do_lang_tempcode('metadata:OWNER');
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $fh[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '4341bfe5e713c94c8fd14ce1cb2e21aa', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
         }
         $fh[] = do_lang_tempcode('ACTIONS');
@@ -410,7 +410,7 @@ class Module_cms_catalogues extends Standard_crud_module
             $fr[] = integer_format($row['ce_views']);
             $username = protect_from_escaping($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['ce_submitter']));
             $fr[] = $username;
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fr[] = $row['ce_validated'] ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])));
@@ -618,7 +618,7 @@ class Module_cms_catalogues extends Standard_crud_module
 
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
@@ -627,7 +627,7 @@ class Module_cms_catalogues extends Standard_crud_module
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if ((has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require_b)) || (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require))) {
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 if (count($field_groups) != 1) {
                     $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '17e83c2d6412bddc12ac1873f9ec6092', 'TITLE' => do_lang_tempcode('SETTINGS')]));
                 }
@@ -838,7 +838,7 @@ class Module_cms_catalogues extends Standard_crud_module
             save_privacy_form_fields('catalogue_entry', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'catalogues')) && ((get_value('disable_cat_cat_perms') === '1') || (has_category_access(get_modal_user(), 'catalogues_category', strval($category_id))) && (has_category_access(get_modal_user(), 'catalogues_catalogue', $catalogue_name)))) {
                 $privacy_ok = true;
@@ -910,7 +910,7 @@ class Module_cms_catalogues extends Standard_crud_module
             save_privacy_form_fields('catalogue_entry', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'catalogues')) && ((get_value('disable_cat_cat_perms') === '1') || (has_category_access(get_modal_user(), 'catalogues_category', strval($category_id))) && (has_category_access(get_modal_user(), 'catalogues_catalogue', $catalogue_name)))) {
                 $privacy_ok = true;
@@ -919,7 +919,7 @@ class Module_cms_catalogues extends Standard_crud_module
                     $privacy_ok = has_privacy_access('catalogue_entry', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'ce_validated', ['id' => $id]) == 0);
+                    $just_validated = (addon_installed('validation')) && ($GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'ce_validated', ['id' => $id]) == 0);
 
                     $map_copy = $map;
                     $title = array_shift($map_copy);

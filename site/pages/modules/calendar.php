@@ -1549,14 +1549,14 @@ class Module_calendar
 
         // Validation
         $warning_details = new Tempcode();
-        if (($event['validated'] == 0) && (addon_installed('unvalidated'))) {
-            if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && ((is_guest()) || ($event['e_submitter'] != get_member()) && ($event['e_member_calendar'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_unvalidated');
+        if (($event['validated'] == 0) && (addon_installed('validation'))) {
+            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($event['e_submitter'] != get_member()) && ($event['e_member_calendar'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
             }
 
             $warning_details->attach(do_template('WARNING_BOX', [
                 '_GUID' => '332faacba974e648a67e5e91ffd3d8e5',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'event'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'event'),
             ]));
         }
 

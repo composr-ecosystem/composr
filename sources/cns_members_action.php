@@ -248,7 +248,7 @@ function cns_make_member(string $username, string $password, string $email_addre
         }
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [

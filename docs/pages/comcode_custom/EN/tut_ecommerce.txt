@@ -670,7 +670,7 @@ Once you are happy with your set of fields, you can add categories and entries t
 [title="4"]Deleting shopping cart items[/title]
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
-Be aware that once ordered, a catalogue entry shouldn't usually be deleted. You can unvalidate the entries instead (unselect 'Validated'), and/or move it into an archive category and/or set the stock to zero. This is vital to your ledger integrity. There is an option to forcibly purge an item from the database and all past order history for it, but it's not usually recommended.
+Be aware that once ordered, a catalogue entry shouldn't usually be deleted. You can invalidate the entries instead (unselect 'Validated'), and/or move it into an archive category and/or set the stock to zero. This is vital to your ledger integrity. There is an option to forcibly purge an item from the database and all past order history for it, but it's not usually recommended.
 
 [title="3"]Shopping catalogue[/title]
 

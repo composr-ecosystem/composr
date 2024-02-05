@@ -1067,7 +1067,7 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
 
     @ignore_user_abort(true);
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $imap = ['c_name' => $catalogue_name, 'ce_edit_date' => $edit_date, 'cc_id' => $category_id, 'ce_last_moved' => time(), 'ce_submitter' => $submitter, 'ce_add_date' => $time, 'ce_views' => $views, 'ce_views_prior' => $views, 'ce_validated' => $validated, 'notes' => $notes, 'allow_rating' => $allow_rating, 'allow_comments' => $allow_comments, 'allow_trackbacks' => $allow_trackbacks];
@@ -1259,7 +1259,7 @@ function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, 
 
     $old_category_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'cc_id', ['id' => $id]);
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 

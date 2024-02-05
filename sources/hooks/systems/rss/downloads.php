@@ -54,7 +54,7 @@ class Hook_rss_downloads
             $_categories[$i]['_title'] = get_translated_text($_category['category']);
         }
         $categories = collapse_2d_complexity('id', '_title', $_categories);
-        $query = 'SELECT *,d.id AS d_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_downloads d WHERE add_date>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . ' ORDER BY add_date DESC';
+        $query = 'SELECT *,d.id AS d_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_downloads d WHERE add_date>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . ' ORDER BY add_date DESC';
         $rows = $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['name' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
         foreach ($rows as $row) {
             // Workaround that some DB backends don't allow multiple fields to have the same name, so we have to use d_id for our specifically selected field instead of id

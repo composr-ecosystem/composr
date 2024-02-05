@@ -35,7 +35,7 @@ class CMSUserRead
         $user_type = 'normal';
         if ($GLOBALS['FORUM_DRIVER']->is_banned($user_id)) {
             $user_type = 'banned';
-        } elseif ((addon_installed('unvalidated')) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_validated') == 0)) {
+        } elseif ((addon_installed('validation')) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_validated') == 0)) {
             $user_type = 'unapproved';
         } elseif ($GLOBALS['FORUM_DRIVER']->is_super_admin($user_id)) {
             $user_type = 'admin';
@@ -437,7 +437,7 @@ class CMSUserRead
         $select = ['*', 't.id AS topic_id', 'f.id AS forum_id', 'p.id AS post_id'];
 
         $where = ['t_cache_first_member_id' => $user_id];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $where['t_validated'] = 1;
         }
 
@@ -470,7 +470,7 @@ class CMSUserRead
         $select = ['*', 'p.id AS post_id', 'f.id AS forum_id', 't.id AS topic_id'];
 
         $where = ['p_poster' => $user_id];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $where['p_validated'] = 1;
         }
 
@@ -524,7 +524,7 @@ class CMSUserRead
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
         $sql = 'FROM ' . $table_prefix . 'f_members WHERE m_username LIKE \'' . db_encode_like('%' . $keywords . '%') . '\' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sql .= ' AND m_validated=1';
         }
         $sql .= ' ORDER BY m_username';

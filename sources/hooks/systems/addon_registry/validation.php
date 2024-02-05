@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    unvalidated
+ * @package    validation
  */
 
 /**
  * Hook class.
  */
-class Hook_addon_registry_unvalidated
+class Hook_addon_registry_validation
 {
     /**
      * Get a list of file permissions to set.
@@ -107,7 +107,7 @@ class Hook_addon_registry_unvalidated
             'requires' => [],
             'recommends' => [],
             'conflicts_with' => [],
-            'previously_in_addon' => ['core_unvalidated'],
+            'previously_in_addon' => ['core_unvalidated', 'unvalidated'],
         ];
     }
 
@@ -118,7 +118,7 @@ class Hook_addon_registry_unvalidated
      */
     public function get_default_icon() : string
     {
-        return 'themes/default/images/icons/menu/adminzone/audit/unvalidated.svg';
+        return 'themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg';
     }
 
     /**
@@ -129,18 +129,18 @@ class Hook_addon_registry_unvalidated
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/audit/unvalidated.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/unvalidated.svg',
-            'sources/hooks/systems/addon_registry/unvalidated.php',
-            'themes/default/templates/UNVALIDATED_SCREEN.tpl',
-            'themes/default/templates/UNVALIDATED_SECTION.tpl',
+            'themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/audit/nonvalidated.svg',
+            'sources/hooks/systems/addon_registry/validation.php',
+            'themes/default/templates/VALIDATION_SCREEN.tpl',
+            'themes/default/templates/VALIDATION_SECTION.tpl',
             'themes/default/text/VALIDATION_REQUEST_MAIL.txt',
-            'adminzone/pages/modules/admin_unvalidated.php',
-            'lang/EN/unvalidated.ini',
-            'sources/hooks/blocks/main_staff_checklist/unvalidated.php',
+            'adminzone/pages/modules/admin_validation.php',
+            'lang/EN/validation.ini',
+            'sources/hooks/blocks/main_staff_checklist/validation.php',
             'sources/hooks/systems/notifications/content_validated.php',
             'sources/hooks/systems/notifications/needs_validation.php',
-            'sources/hooks/systems/page_groupings/unvalidated.php',
+            'sources/hooks/systems/page_groupings/validation.php',
         ];
     }
 
@@ -152,8 +152,8 @@ class Hook_addon_registry_unvalidated
     public function tpl_previews() : array
     {
         return [
-            'templates/UNVALIDATED_SECTION.tpl' => 'administrative__unvalidated_screen',
-            'templates/UNVALIDATED_SCREEN.tpl' => 'administrative__unvalidated_screen',
+            'templates/VALIDATION_SECTION.tpl' => 'administrative__validation_screen',
+            'templates/VALIDATION_SCREEN.tpl' => 'administrative__validation_screen',
             'text/VALIDATION_REQUEST_MAIL.txt' => 'administrative__validation_request_mail',
         ];
     }
@@ -184,13 +184,13 @@ class Hook_addon_registry_unvalidated
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__unvalidated_screen() : object
+    public function tpl_preview__administrative__validation_screen() : object
     {
-        $section = do_lorem_template('UNVALIDATED_SECTION', [
+        $section = do_lorem_template('VALIDATION_SECTION', [
             'TITLE' => lorem_phrase(),
             'CONTENT' => lorem_phrase(),
         ]);
-        return lorem_globalise(do_lorem_template('UNVALIDATED_SCREEN', [
+        return lorem_globalise(do_lorem_template('VALIDATION_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'SECTIONS' => $section,
             'TEXT' => lorem_paragraph_html(),

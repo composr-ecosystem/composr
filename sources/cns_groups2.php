@@ -25,10 +25,10 @@
  * @param  boolean $include_primaries Whether to include those in the group as a primary member
  * @param  boolean $non_validated Whether to include those applied to join the group, but not validated in
  * @param  boolean $include_secondaries Whether to include those in the group as a secondary member
- * @param  boolean $include_unvalidated_members Whether to include those members who are not validated as site members at all yet (parameter currently ignored)
+ * @param  boolean $include_nonvalidated_members Whether to include those members who are not validated as site members at all yet (parameter currently ignored)
  * @return integer The count
  */
-function cns_get_group_members_raw_count(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_unvalidated_members = true) : int
+function cns_get_group_members_raw_count(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_nonvalidated_members = true) : int
 {
     // Find groups for conventional members
     $a = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', ['gm_group_id' => $group_id]);
@@ -37,7 +37,7 @@ function cns_get_group_members_raw_count(int $group_id, bool $include_primaries 
     }
     if ($include_primaries) {
         $map = ['m_primary_group' => $group_id];
-        if (!$include_unvalidated_members) {
+        if (!$include_nonvalidated_members) {
             //$map['m_validated_confirm_code']=''; Actually we don't want to consider this here
             $map['m_validated'] = 1;
         }
@@ -88,12 +88,12 @@ function cns_get_group_members_raw_count(int $group_id, bool $include_primaries 
  * @param  boolean $include_primaries Whether to include those in the as a primary member
  * @param  boolean $non_validated Whether to include those applied to join the group, but not validated in (also causes it to return maps that contain this info)
  * @param  boolean $include_secondaries Whether to include those in the as a secondary member
- * @param  boolean $include_unvalidated_members Whether to include those members who are not validated as site members at all yet (parameter currently ignored)
+ * @param  boolean $include_nonvalidated_members Whether to include those members who are not validated as site members at all yet (parameter currently ignored)
  * @param  ?integer $max Return up to this many entries for primary members and this many entries for secondary members and all LDAP members (null: no limit, only use no limit if querying very restricted usergroups!)
  * @param  integer $start Return primary members after this offset and secondary members after this offset
  * @return array The list
  */
-function cns_get_group_members_raw(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_unvalidated_members = true, ?int $max = null, int $start = 0) : array
+function cns_get_group_members_raw(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_nonvalidated_members = true, ?int $max = null, int $start = 0) : array
 {
     // Find groups for conventional members
     $members = [];
@@ -113,7 +113,7 @@ function cns_get_group_members_raw(int $group_id, bool $include_primaries = true
 
     if ($include_primaries) {
         $map = ['m_primary_group' => $group_id];
-        if (!$include_unvalidated_members) {
+        if (!$include_nonvalidated_members) {
             //$map['m_validated_confirm_code']=''; Actually we don't want to consider this here
             $map['m_validated'] = 1;
         }

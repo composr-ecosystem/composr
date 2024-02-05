@@ -163,7 +163,7 @@ class Hook_preview_warnings
             'ID' => '',
             'POST_DATE_RAW' => strval($_post_date),
             'POST_DATE' => $post_date,
-            'UNVALIDATED' => false,
+            'NONVALIDATED' => false,
             'URL' => '',
             'POSTER' => $poster,
             'POST_AVATAR' => $post_avatar,

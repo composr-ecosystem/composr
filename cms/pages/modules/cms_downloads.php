@@ -440,7 +440,7 @@ class Module_cms_downloads extends Standard_crud_module
         }
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
@@ -449,7 +449,7 @@ class Module_cms_downloads extends Standard_crud_module
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'download'), 'validated', $validated == 1));
             }
         }
@@ -656,7 +656,7 @@ class Module_cms_downloads extends Standard_crud_module
             save_privacy_form_fields('download', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'downloads')) && (may_enter_download_category(get_modal_user(), $category_id))) {
                 $privacy_ok = true;
@@ -740,7 +740,7 @@ class Module_cms_downloads extends Standard_crud_module
             save_privacy_form_fields('download', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'downloads')) && (may_enter_download_category(get_modal_user(), $category_id))) {
                 $privacy_ok = true;
@@ -749,7 +749,7 @@ class Module_cms_downloads extends Standard_crud_module
                     $privacy_ok = has_privacy_access('download', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('download_downloads', 'validated', ['id' => $id]) == 0);
+                    $just_validated = (addon_installed('validation')) && ($GLOBALS['SITE_DB']->query_select_value('download_downloads', 'validated', ['id' => $id]) == 0);
                     $submitter = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'submitter', ['id' => $id]);
 
                     $activities = [];

@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    unvalidated
+ * @package    validation
  */
 
 /**
  * Hook class.
  */
-class Hook_checklist_unvalidated
+class Hook_checklist_validation
 {
     /**
      * Find items to include on the staff checklist.
@@ -30,31 +30,31 @@ class Hook_checklist_unvalidated
      */
     public function run() : array
     {
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return [];
         }
 
         // Validate/delete submissions
 
-        list($num_unvalidated_1, $num_unvalidated_2) = $this->get_num_unvalidated();
-        if ($num_unvalidated_1 >= 1) {
+        list($num_nonvalidated_1, $num_nonvalidated_2) = $this->get_num_nonvalidated();
+        if ($num_nonvalidated_1 >= 1) {
             $status = 0;
         } else {
             $status = 1;
         }
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-        $url = build_url(['page' => 'admin_unvalidated'], get_module_zone('admin_unvalidated'));
+        $url = build_url(['page' => 'admin_validation'], get_module_zone('admin_validation'));
 
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '48f2bc149dca356c8b6bd87092f70d3c',
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_VALIDATE', escape_html_tempcode($url)),
-            'INFO' => do_lang_tempcode('UNVALIDATED_ENTRIES', escape_html(integer_format($num_unvalidated_1, 0)), escape_html(integer_format($num_unvalidated_2, 0))),
+            'INFO' => do_lang_tempcode('NONVALIDATED_ENTRIES', escape_html(integer_format($num_nonvalidated_1, 0)), escape_html(integer_format($num_nonvalidated_2, 0))),
         ]);
 
-        return [[$tpl, null, $num_unvalidated_1, null]];
+        return [[$tpl, null, $num_nonvalidated_1, null]];
     }
 
     /**
@@ -62,7 +62,7 @@ class Hook_checklist_unvalidated
      *
      * @return array A pair: Number of major things, number of minor things
      */
-    public function get_num_unvalidated() : array
+    public function get_num_nonvalidated() : array
     {
         require_code('content');
 

@@ -27,7 +27,7 @@
  */
 function content_validated(string $content_type, string $content_id) : bool
 {
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         return true;
     }
 
@@ -53,7 +53,7 @@ function send_content_validated_notification(string $content_type, string $conte
 
     if ($content_url_safe !== null) {
         require_code('notifications');
-        require_lang('unvalidated');
+        require_lang('validation');
         $subject = do_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL_SUBJECT', $content_title, get_site_name());
         $mail = do_notification_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($content_title), [$content_url_safe->evaluate()]);
         if (addon_installed('points') && ($points_credited > 0)) {
@@ -77,7 +77,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
 {
     require_code('content');
     require_code('notifications');
-    require_lang('unvalidated');
+    require_lang('validation');
 
     $content_type = convert_composr_type_codes('table', $table, 'content_type');
     $cma_ob = get_content_object($content_type);
@@ -109,7 +109,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
         'URL' => $url,
     ], get_site_default_lang(), false, null, '.txt', 'text');
 
-    $subject = do_lang('UNVALIDATED_TITLE', $title, '', '', get_site_default_lang());
+    $subject = do_lang('NONVALIDATED_TITLE', $title, '', '', get_site_default_lang());
     $message = $comcode->evaluate(get_site_default_lang());
     dispatch_notification('needs_validation', null, $subject, $message, null, $member_id, ['use_real_from' => true]);
 }

@@ -229,7 +229,7 @@ class Module_cms_banners extends Standard_crud_module
             'expiry_date' => do_lang_tempcode('EXPIRY_DATE'),
             'add_date' => do_lang_tempcode('ADDED'),
         ];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
@@ -257,7 +257,7 @@ class Module_cms_banners extends Standard_crud_module
             $hr[] = do_lang_tempcode('EXPIRY_DATE');
         }
         $hr[] = do_lang_tempcode('ADDED');
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $hr[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => 'b8f1372bcdfb90f5c2fa8bf3329caf5f', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
         }
         $hr[] = do_lang_tempcode('ACTIONS');
@@ -292,7 +292,7 @@ class Module_cms_banners extends Standard_crud_module
                 $fr[] = ($row['expiry_date'] === null) ? protect_from_escaping(do_lang_tempcode('NA_EM')) : make_string_tempcode(get_timezoned_date_time($row['expiry_date']));
             }
             $fr[] = get_timezoned_date($row['add_date']);
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fr[] = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, $row['name']));
@@ -654,7 +654,7 @@ class Module_cms_banners extends Standard_crud_module
 
             $spreadsheet_row[do_lang('EXPIRY_DATE')] = ($row['expiry_date'] === null) ? do_lang('NA') : get_timezoned_date_time($row['expiry_date']);
 
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $spreadsheet_row[do_lang('VALIDATED')] = ($row['validated'] == 1) ? do_lang('YES') : do_lang('NO');
             }
 

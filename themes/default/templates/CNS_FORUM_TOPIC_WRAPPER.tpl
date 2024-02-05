@@ -40,7 +40,7 @@
 					{+START,IF_NON_EMPTY,{MODERATOR_ACTIONS}}{+START,IF_NON_EMPTY,{MODERATOR_ACTIONS}}{+START,IF,{$NOT,{$_GET,overlay}}}
 						<th class="cns-forum-box-right cell-desktop">
 							<a href="#!" class="js-click-mark-all-topics" title="{!TOGGLE_SELECTION}">{+START,INCLUDE,ICON}
-								NAME=cns_topic_modifiers/unvalidated
+								NAME=cns_topic_modifiers/validation
 								ICON_SIZE=14
 							{+END}</a>
 						</th>

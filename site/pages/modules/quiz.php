@@ -350,7 +350,7 @@ class Module_quiz
         $max = get_param_integer('quizzes_max', 20);
 
         $sql = 'SELECT q.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'quizzes q WHERE 1=1';
-        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+        if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
             $sql .= ' AND q_validated=1';
         }
         $filter = get_param_string('filter', '');
@@ -503,14 +503,14 @@ class Module_quiz
         $fields = render_quiz($questions);
 
         // Validation
-        if (($quiz['q_validated'] == 0) && (addon_installed('unvalidated'))) {
-            if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && ((is_guest()) || ($quiz['q_submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_unvalidated');
+        if (($quiz['q_validated'] == 0) && (addon_installed('validation'))) {
+            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($quiz['q_submitter'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
             }
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => 'fc690dedf8601cc456e011931dfec595',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'quiz'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'quiz'),
             ]);
         } else {
             $warning_details = new Tempcode();

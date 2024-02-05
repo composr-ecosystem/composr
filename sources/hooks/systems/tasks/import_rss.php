@@ -118,7 +118,7 @@ class Hook_task_import_rss
                 } else {
                     $validated = 0;
                 }
-                if (!addon_installed('unvalidated')) {
+                if (!addon_installed('validation')) {
                     $validated = 1;
                 }
             }

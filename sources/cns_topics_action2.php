@@ -99,7 +99,7 @@ function cns_edit_topic(?int $topic_id, ?string $description = null, ?string $em
     if ($emoticon !== null) {
         $update['t_emoticon'] = $emoticon;
     }
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     if ($validated !== null) {
@@ -233,7 +233,7 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
         require_code('cns_posts_action');
         if ($from_cnt != $to_cnt) {
             $where = ['p_topic_id' => $topic_id];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $where['p_validated'] = 1;
             }
             $_member_post_counts = collapse_1d_complexity('p_poster', $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_poster'], $where));
@@ -483,7 +483,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
         require_code('cns_posts_action');
         if ($from_cnt != $to_cnt) {
             $sql = 'SELECT p_poster FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list_2 . ')';
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $sql .= ' AND p_validated=1';
             }
             $_member_post_counts = collapse_1d_complexity('p_poster', $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true));

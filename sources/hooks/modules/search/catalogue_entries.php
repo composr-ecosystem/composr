@@ -297,7 +297,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 }
             }
 
-            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'ce_validated=1';
             }
@@ -345,7 +345,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 $where_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'r.ce_add_date', $where_clause);
-            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'ce_validated=1';
             }

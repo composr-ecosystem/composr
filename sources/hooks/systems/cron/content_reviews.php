@@ -41,7 +41,7 @@ class Hook_cron_content_reviews
         if (!addon_installed('commandr')) {
             return null;
         }
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return null;
         }
 
@@ -123,7 +123,7 @@ class Hook_cron_content_reviews
 
             // Do auto-action
             switch ($auto_action) {
-                case 'unvalidate':
+                case 'invalidate':
                     if ($info['validated_field'] !== null) {
                         $info['db']->query_update($info['table'], [$info['validated_field'] => 0], get_content_where_for_str_id($content_id, $info), '', 1);
                     }

@@ -560,7 +560,7 @@ class Module_admin_setupwizard
             'syndication_blocks',
             'themewizard',
             'uninstaller',
-            'unvalidated',
+            'validation',
             'phpinfo',
             'apache_config_files',
             'code_editor',

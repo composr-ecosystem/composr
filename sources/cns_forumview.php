@@ -576,8 +576,8 @@ function cns_get_topic_array(array $topic_row, int $member_id, int $hot_topic_de
     if ($topic_row['t_is_open'] == 0) {
         $topic['modifiers'][] = 'closed';
     }
-    if (($topic_row['t_validated'] == 0) && (addon_installed('unvalidated'))) {
-        $topic['modifiers'][] = 'unvalidated';
+    if (($topic_row['t_validated'] == 0) && (addon_installed('validation'))) {
+        $topic['modifiers'][] = 'nonvalidated';
     }
     if (($topic_row['t_poll_id'] !== null)) {
         $topic['modifiers'][] = 'poll';
@@ -802,7 +802,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
             $child_or_list .= ' AND ';
         }
         $query = 'SELECT DISTINCT t_forum_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l_topic_id AND l_member_id=' . strval(get_member()) . ' WHERE t_forum_id IS NOT NULL AND ' . $child_or_list . 't_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' AND (l_time<t_cache_last_time OR l_time IS NULL)';
-        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+        if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
             $query .= ' AND t_validated=1';
         }
         $unread_forums = array_flip(collapse_1d_complexity('t_forum_id', $GLOBALS['FORUM_DB']->query($query)));
@@ -905,7 +905,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
 
     // Find topics
     $extra = '';
-    if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated')) && (!cns_may_moderate_forum($forum_id, $member_id))) {
+    if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation')) && (!cns_may_moderate_forum($forum_id, $member_id))) {
         $extra = 't_validated=1 AND ';
     }
     if (($forum_info['f_parent_forum'] === null) || ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', ['t_cascading' => 1]) == 0)) {

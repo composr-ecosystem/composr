@@ -262,7 +262,7 @@ class Module_cms_news extends Standard_crud_module
             'news_views' => do_lang_tempcode('COUNT_VIEWS'),
             'submitter' => do_lang_tempcode('metadata:OWNER'),
         ];
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
@@ -272,7 +272,7 @@ class Module_cms_news extends Standard_crud_module
         $fh = [do_lang_tempcode('TITLE'), do_lang_tempcode('MAIN_CATEGORY')];
         $fh[] = do_lang_tempcode('ADDED');
         $fh[] = do_lang_tempcode('COUNT_VIEWS');
-        if (addon_installed('unvalidated')) {
+        if (addon_installed('validation')) {
             $fh[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '5e5269c25a2eb44fd92b554a50f6007f', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
         }
         $fh[] = do_lang_tempcode('metadata:OWNER');
@@ -302,7 +302,7 @@ class Module_cms_news extends Standard_crud_module
             }
             $fr[] = get_timezoned_date_time($row['date_and_time']);
             $fr[] = integer_format($row['news_views']);
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fr[] = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
             $username = protect_from_escaping($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['submitter']));
@@ -433,7 +433,7 @@ class Module_cms_news extends Standard_crud_module
 
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
@@ -442,7 +442,7 @@ class Module_cms_news extends Standard_crud_module
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'news'), 'validated', $validated == 1));
             }
         }
@@ -649,7 +649,7 @@ class Module_cms_news extends Standard_crud_module
             save_privacy_form_fields('news', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $main_news_category]) !== null);
 
             require_code('users2');
@@ -761,7 +761,7 @@ class Module_cms_news extends Standard_crud_module
             save_privacy_form_fields('news', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'news')) {
                 $privacy_ok = true;
@@ -770,7 +770,7 @@ class Module_cms_news extends Standard_crud_module
                     $privacy_ok = has_privacy_access('news', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('news', 'validated', ['id' => $id]) == 0);
+                    $just_validated = (addon_installed('validation')) && ($GLOBALS['SITE_DB']->query_select_value('news', 'validated', ['id' => $id]) == 0);
                     $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $main_news_category]) !== null);
                     $submitter = $GLOBALS['SITE_DB']->query_select_value('news', 'submitter', ['id' => $id]);
 
@@ -877,7 +877,7 @@ class Module_cms_news extends Standard_crud_module
         check_privilege('mass_import');
 
         $is_validated = post_param_integer('auto_validate', 0);
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             $is_validated = 1;
         }
         $download_images = post_param_integer('download_images', 0);

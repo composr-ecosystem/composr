@@ -759,7 +759,7 @@ function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?
             }
         }
     }
-    if (!has_privilege($auth_member_id, 'see_unvalidated')) {
+    if (!has_privilege($auth_member_id, 'see_nonvalidated')) {
         if ($where != '') {
             $where .= ' AND ';
         }

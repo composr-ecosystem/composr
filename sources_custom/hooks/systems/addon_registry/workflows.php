@@ -110,7 +110,7 @@ class Hook_addon_registry_workflows
 
 New content enters the default workflow (unless another is specified) and notifications are sent to those users with permission to approve the next level. This continues until all of the levels are approved, at which point the content goes live.
 
-Note that this addon only affects galleries at the moment, and it requires the "unvalidated" system to be installed (this comes with Composr but may have been uninstalled). Other content types can be added by a programmer as this addon has been implemented in a modular way.';
+Note that this addon only affects galleries at the moment, and it requires the "validation" system to be installed (this comes with Composr but may have been uninstalled). Other content types can be added by a programmer as this addon has been implemented in a modular way.';
     }
 
     /**
@@ -132,7 +132,7 @@ Note that this addon only affects galleries at the moment, and it requires the "
     {
         return [
             'requires' => [
-                'unvalidated',
+                'validation',
                 'galleries',
                 //'core_all_icons',
             ],
@@ -172,7 +172,7 @@ Note that this addon only affects galleries at the moment, and it requires the "
             'sources_custom/galleries2.php',
             'sources_custom/hooks/systems/page_groupings/workflows.php',
             'site/pages/modules_custom/galleries.php',
-            'adminzone/pages/modules_custom/admin_unvalidated.php',
+            'adminzone/pages/modules_custom/admin_validation.php',
             'themes/default/templates_custom/WORKFLOW_BOX.tpl',
             'sources_custom/hooks/systems/actionlog/workflows.php',
         ];

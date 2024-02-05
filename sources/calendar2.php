@@ -83,7 +83,7 @@ function add_calendar_event(int $type, string $recurrence, ?int $recurrences, in
     require_code('global4');
     prevent_double_submit('ADD_CALENDAR_EVENT', null, $title);
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [
@@ -275,7 +275,7 @@ function edit_calendar_event(int $id, ?int $type, string $recurrence, ?int $recu
     require_code('attachments2');
     require_code('attachments3');
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 

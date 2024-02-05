@@ -197,7 +197,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                     'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
                 ],
             ],
-            'UNVALIDATE_POST' => [
+            'INVALIDATE_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'post',
                 'identifier_index' => 0,
@@ -271,7 +271,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'EDIT_POST':
             case 'VALIDATE_POST':
-            case 'UNVALIDATE_POST':
+            case 'INVALIDATE_POST':
             case 'MAKE_ANONYMOUS_POST':
                 $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', ['id' => intval($actionlog_row['param_a'])]);
                 if ($member_id !== null) {
@@ -366,7 +366,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
 
             case 'EDIT_POST':
             case 'VALIDATE_POST':
-            case 'UNVALIDATE_POST':
+            case 'INVALIDATE_POST':
             case 'MAKE_ANONYMOUS_POST':
                 if ($identifier !== null) {
                     $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($identifier)]);

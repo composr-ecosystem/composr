@@ -807,7 +807,7 @@ function add_image($title, string $cat, $description, string $url, int $validate
         $add_date = time();
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [
@@ -941,7 +941,7 @@ function edit_image(int $id, string $title, string $cat, string $description, st
     require_code('files2');
     delete_upload('uploads/galleries', 'images', 'url', 'id', $id, $url);
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 
@@ -1129,7 +1129,7 @@ function add_video(string $title, string $cat, string $description, string $url,
         $add_date = time();
     }
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
     $map = [
@@ -1256,7 +1256,7 @@ function edit_video(int $id, string $title, string $cat, string $description, st
     delete_upload('uploads/galleries', 'videos', 'url', 'id', $id, $url);
     delete_upload('uploads/galleries_thumbs', 'videos', 'thumb_url', 'id', $id, $thumb_url);
 
-    if (!addon_installed('unvalidated')) {
+    if (!addon_installed('validation')) {
         $validated = 1;
     }
 

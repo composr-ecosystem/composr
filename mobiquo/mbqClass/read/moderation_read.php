@@ -33,7 +33,7 @@ class CMSModerationRead
             return false;
         }
 
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return [0, []];
         }
 
@@ -74,7 +74,7 @@ class CMSModerationRead
             return false;
         }
 
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return [0, []];
         }
 

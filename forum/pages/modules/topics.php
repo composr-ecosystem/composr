@@ -1548,7 +1548,7 @@ class Module_topics
                 } elseif ((!has_privilege(get_member(), 'view_other_pt')) && ($_postdetails[0]['p_intended_solely_for'] != get_member()) && ($_postdetails[0]['p_poster'] != get_member()) && ($_postdetails[0]['p_intended_solely_for'] !== null)) {
                     access_denied('I_ERROR');
                 }
-                if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated')) && ($_postdetails[0]['p_validated'] == 0) && (($_postdetails[0]['p_poster'] != get_member()) || ((is_guest($_postdetails[0]['p_poster'])) && ($_postdetails[0]['p_ip_address'] != get_ip_address())))) {
+                if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation')) && ($_postdetails[0]['p_validated'] == 0) && (($_postdetails[0]['p_poster'] != get_member()) || ((is_guest($_postdetails[0]['p_poster'])) && ($_postdetails[0]['p_ip_address'] != get_ip_address())))) {
                     access_denied('I_ERROR');
                 }
             }
@@ -1757,7 +1757,7 @@ class Module_topics
                 [do_lang_tempcode('EMPHASISED'), 'is_emphasised', false, do_lang_tempcode('DESCRIPTION_EMPHASISED')],
                 [do_lang_tempcode('PINNED'), 'pinned', false, do_lang_tempcode('DESCRIPTION_PINNED')],
             ];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $moderation_options[] = [
                     do_lang_tempcode('VALIDATED'),
                     'validated',
@@ -2041,7 +2041,7 @@ class Module_topics
             $moderation_options = [
                 [do_lang_tempcode('EMPHASISED'), 'is_emphasised', false, do_lang_tempcode('DESCRIPTION_EMPHASISED')],
             ];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 $moderation_options[] = [
                     do_lang_tempcode('VALIDATED'),
                     'validated',
@@ -2141,10 +2141,10 @@ class Module_topics
                 [do_lang_tempcode('OPEN'), 'open', $topic_info['t_is_open'] == 1, do_lang_tempcode('DESCRIPTION_OPEN')],
                 [do_lang_tempcode('PINNED'), 'pinned', $topic_info['t_pinned'] == 1, do_lang_tempcode('DESCRIPTION_PINNED')],
             ];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 if ($topic_info['t_validated'] == 0) {
                     $topic_info['t_validated'] = get_param_integer('validated', 0);
-                    if (($topic_info['t_validated'] == 1) && (addon_installed('unvalidated'))) {
+                    if (($topic_info['t_validated'] == 1) && (addon_installed('validation'))) {
                         attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
                     }
                 }
@@ -2596,11 +2596,11 @@ class Module_topics
             }
         }
 
-        $text = ($validated == 1) ? do_lang_tempcode('SUCCESS') : do_lang_tempcode('SUBMIT_UNVALIDATED_FORUM_POSTS');
+        $text = ($validated == 1) ? do_lang_tempcode('SUCCESS') : do_lang_tempcode('SUBMIT_NONVALIDATED_FORUM_POSTS');
 
         if ($forum_id !== null) {
             $topic_validated = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_validated', ['id' => $topic_id]);
-            if (($topic_validated == 0) && (!has_privilege(get_member(), 'jump_to_unvalidated'))) {
+            if (($topic_validated == 0) && (!has_privilege(get_member(), 'jump_to_nonvalidated'))) {
                 $map = ['page' => 'forumview', 'id' => $forum_id];
                 $test = get_param_string('kfs' . (($forum_id === null) ? '' : strval($forum_id)), null, INPUT_FILTER_GET_COMPLEX);
                 if (($test !== null) && ($test !== '0')) {
@@ -2613,7 +2613,7 @@ class Module_topics
                 $_url = build_url($map, get_module_zone('forumview'));
                 $url = $_url->evaluate();
 
-                $text = do_lang_tempcode('SUBMIT_UNVALIDATED_FORUM_TOPICS');
+                $text = do_lang_tempcode('SUBMIT_NONVALIDATED_FORUM_TOPICS');
             }
         }
 
@@ -3562,10 +3562,10 @@ class Module_topics
             $moderation_options = [
                 [do_lang_tempcode('EMPHASISED'), 'is_emphasised', $post_details[0]['p_is_emphasised'] == 1, do_lang_tempcode('DESCRIPTION_EMPHASISED')],
             ];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 if ($post_details[0]['p_validated'] == 0) {
                     $post_details[0]['p_validated'] = get_param_integer('validated', 0);
-                    if (($post_details[0]['p_validated'] == 1) && (addon_installed('unvalidated'))) {
+                    if (($post_details[0]['p_validated'] == 1) && (addon_installed('validation'))) {
                         attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
                     }
                 }
@@ -3785,7 +3785,7 @@ class Module_topics
         $validated = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_validated', ['id' => $topic_info['t_cache_first_post_id']]);
         if ($validated !== null) {
             if (($topic_info['t_validated'] == 1) && ($validated == 0)) {
-                attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
+                attach_message(do_lang_tempcode('FIRST_POST_IS_NONVALIDATED'), 'notice');
             }
         }
 
@@ -3812,10 +3812,10 @@ class Module_topics
                 [do_lang_tempcode('OPEN'), 'open', $topic_info['t_is_open'] == 1, do_lang_tempcode('DESCRIPTION_OPEN')],
                 [do_lang_tempcode('PINNED'), 'pinned', $topic_info['t_pinned'] == 1, do_lang_tempcode('DESCRIPTION_PINNED')],
             ];
-            if (addon_installed('unvalidated')) {
+            if (addon_installed('validation')) {
                 if ($topic_info['t_validated'] == 0) {
                     $topic_info['t_validated'] = get_param_integer('validated', 0);
-                    if (($topic_info['t_validated'] == 1) && (addon_installed('unvalidated'))) {
+                    if (($topic_info['t_validated'] == 1) && (addon_installed('validation'))) {
                         attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
                     }
                 }

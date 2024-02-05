@@ -65,7 +65,7 @@ function banner_select_sql(?string $b_type = null, bool $do_type_join = false, ?
         $sql .= ' AND ' . db_string_not_equal_to('name', $banner_to_avoid);
     }
 
-    if (addon_installed('unvalidated')) {
+    if (addon_installed('validation')) {
         $sql .= ' AND validated=1';
     }
 

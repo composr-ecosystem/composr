@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    unvalidated
+ * @package    validation
  */
 
 /**
  * Hook class.
  */
-class Hook_page_groupings_unvalidated
+class Hook_page_groupings_validation
 {
     /**
      * Run function for do_next_menu hooks. They find links to put on standard navigation menus of the system.
@@ -32,12 +32,12 @@ class Hook_page_groupings_unvalidated
      */
     public function run(?int $member_id = null, bool $extensive_docs = false) : array
     {
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return [];
         }
 
         return [
-            ['audit', 'menu/adminzone/audit/unvalidated', ['admin_unvalidated', [], get_module_zone('admin_unvalidated')], do_lang_tempcode('unvalidated:UNVALIDATED_RESOURCES'), 'unvalidated:DOC_UNVALIDATED'],
+            ['audit', 'menu/adminzone/audit/nonvalidated', ['admin_validation', [], get_module_zone('admin_validation')], do_lang_tempcode('validation:NONVALIDATED_RESOURCES'), 'validation:DOC_VALIDATION'],
         ];
     }
 }

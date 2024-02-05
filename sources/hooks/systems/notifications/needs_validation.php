@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    unvalidated
+ * @package    validation
  */
 
 /**
@@ -48,12 +48,12 @@ class Hook_notification_needs_validation extends Hook_notification__Staff
      */
     public function list_handled_codes() : array
     {
-        if (!addon_installed('unvalidated')) {
+        if (!addon_installed('validation')) {
             return [];
         }
 
         $list = [];
-        $list['needs_validation'] = [do_lang('VALIDATION'), do_lang('unvalidated:NOTIFICATION_TYPE_needs_validation')];
+        $list['needs_validation'] = [do_lang('VALIDATION'), do_lang('validation:NOTIFICATION_TYPE_needs_validation')];
         return $list;
     }
 }

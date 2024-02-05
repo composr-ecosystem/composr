@@ -162,7 +162,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
     }
 
     // Check valid user
-    if (addon_installed('unvalidated')) {
+    if (addon_installed('validation')) {
         if ($row['m_validated'] == 0) {
             $out['error'] = do_lang_tempcode('MEMBER_NOT_VALIDATED_STAFF');
             return $out;

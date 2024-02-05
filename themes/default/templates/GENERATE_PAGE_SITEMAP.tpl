@@ -3,7 +3,7 @@
 		<li>
 			{!PAGE}: <kbd><a href="{EDIT_URL*}">{ZONE_NAME*}:{PAGE_NAME*}</a></kbd>{+START,IF_NON_EMPTY,{PAGE_TITLE}} (&ldquo;{PAGE_TITLE`}&rdquo;){+END}
 			<span class="page-state">
-				{+START,IF,{$NOT,{VALIDATED}}}<span>&#10007; {!UNVALIDATED}</span>{+END}
+				{+START,IF,{$NOT,{VALIDATED}}}<span>&#10007; {!NONVALIDATED}</span>{+END}
 				{+START,IF,{TODO}}<span>&#10007; {!UNDER_CONSTRUCTION}</span>{+END}
 			</span>
 
