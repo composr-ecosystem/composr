@@ -79,6 +79,41 @@ Members can receive good karma based on how much they spend on your store. This 
 [media width="150" description="Auditing Karma" float="right"]data_custom/images/docs/sup_adding_a_member_reputation_system/audit_karma.jpg[/media]
 You can audit the karma that is assigned under Admin Zone > Audit > Karma. There, you can view a master log of all the karma assignments that occurred on your site. You can also amend the reason text for any record, or you can reverse a karma assignment. It is recommended that if you are reversing a karma assignment because of member abuse that you use the interface for adding a warning instead.
 
+[title="2"]Advanced concepts[/title]
+This section covers some additional advanced concepts or ideas regarding the karma addon which you can implement.
+
+[title="3"]Commandr[/title]
+The karma addon implements the following new commands (you can use --help to learn more about each command):
+[list]
+[*][b]karma[/b]
+Returns your karma or the karma of a specified member
+[*][b]add_karma[/b]
+Assigns a specified amount of karma of a given type (good or bad) to a member
+[*][b]karmic_influence[/b]
+Returns your karmic influence or the karmic influence of another member
+[/list]
+
+[title="3"]Tempcode[/title]
+The karma addon implements the following new Tempcode directives:
+[list]
+[*][b]$KARMA,member_id,type[/b]
+Returns the karma of the specified type for the specified member_id (or if member_id not specified, the current member).
+ - type 0: karma score
+ - type 1: good karma
+ - type 2: bad karma (or 0 if member does not have the &ldquo;View good and bad karma values separately&rdquo; privilege)
+[/list]
+
+[title="3"]Example: karma as a permission[/title]
+While the karma addon does not support permission integration out of the box, you can use the karma API to implement your own permissions. For example, you might not want someone who has less than 100 karma score or whose bad karma makes up 10% or more of their overall karma to fill out a catalogue applying for staff. Here is example code you can use to do that:
+
+[code="PHP"]
+require_code('karma');
+list($good_karma, $bad_karma) = get_karma($member_id);
+if ((($good_karma - $bad_karma) < 100) || (($good_karma + $bad_karma) <= 0) || (($bad_karma / ($good_karma + $bad_karma)) >= 0.1)) {
+    access_denied('I_ERROR');
+}
+[/code]
+
 [concepts
  0_key="Karma (proper)"   0_value="A public and crowdsourced member reputation system"
  1_key="Karma (common)"   1_value="Reputation points"
