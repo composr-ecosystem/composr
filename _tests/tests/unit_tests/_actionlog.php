@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) Christopher Graham, 2004-2024
 
  See docs/LICENSE.md for full licensing information.
 
@@ -23,6 +23,7 @@ class _actionlog_test_set extends cms_test_case
         parent::setUp();
 
         disable_php_memory_limit();
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
         require_code('actionlog');
         require_code('content');

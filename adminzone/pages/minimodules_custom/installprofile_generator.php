@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) Christopher Graham, 2004-2024
 
  See docs/LICENSE.md for full licensing information.
 
@@ -53,7 +53,7 @@ $profile = <<<END
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) Christopher Graham, 2004-2024
 
  See docs/LICENSE.md for full licensing information.
 
