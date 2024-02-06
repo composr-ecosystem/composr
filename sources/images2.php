@@ -302,11 +302,10 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
     $ext = get_file_extension($from);
     if ($using_path) {
         if (($ext == 'svg'/*SVG is pass-through*/) || (!check_memory_limit_for($from, $exit_on_error))) {
-            if ($using_path) {
-                copy($from, $to);
-                fix_permissions($to);
-                sync_file($to);
-            }
+            copy($from, $to);
+            fix_permissions($to);
+            sync_file($to);
+
             cms_set_time_limit($old_limit);
             return $from;
         }
@@ -638,9 +637,9 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
     // Save...
 
     if ($ext2 === null) {
-        $ext2 = get_file_extension($to);
+        $ext2 = get_file_extension($from);
         if ($ext2 == '') {
-            $ext2 = get_file_extension($from);
+            $ext2 = get_file_extension($to);
             if ($ext2 == '') {
                 $ext2 = null;
             }

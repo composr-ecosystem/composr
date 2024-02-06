@@ -26,6 +26,9 @@ class _filter_xml_test_set extends cms_test_case
     {
         parent::setUp();
 
+        disable_php_memory_limit();
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         $this->session_id = $this->establish_admin_callback_session();
 
         require_code('files');
