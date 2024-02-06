@@ -79,6 +79,14 @@ Members can receive good karma based on how much they spend on your store. This 
 [media width="150" description="Auditing Karma" float="right"]data_custom/images/docs/sup_adding_a_member_reputation_system/audit_karma.jpg[/media]
 You can audit the karma that is assigned under Admin Zone > Audit > Karma. There, you can view a master log of all the karma assignments that occurred on your site. You can also amend the reason text for any record, or you can reverse a karma assignment. It is recommended that if you are reversing a karma assignment because of member abuse that you use the interface for adding a warning instead.
 
+[title="2"]Tips[/title]
+The following are general tips and guidelines on how you can best utilise the karma system:
+ - Generally, members will be receiving a lot more good karma than bad karma. This is because the only way members can assign bad karma to each other is through giving bad ratings on content or through warnings. Keep this in mind when warning members. You might decide to assign a high amount of bad karma for a warning so their good / bad karma ratio reflects their overall community impact. A good recommendation is to assign an amount of bad karma which reflects how impactful their actions were on the community; the more negative the impact, the more bad karma they get assigned.
+ - You may need to adjust the [tt]Karma bar threshold[/tt] option over time; as more members join your community and become active, members' karma will increase faster because more members will be performing actions that affect their karma. As such, this value may need to be increased so it takes more karma to fill up the karma bar completely.
+ - Regularly check the audit logs for karma to monitor for abuse. There are several ways members could potentially abuse the system such as performing actions on each other to assign good karma for no good reason.
+ - Be cautious about using points as a factor in a member's karmic influence. The number of points a member has might not be a true representation of how established they are in the community especially if you heavily use points as a virtual currency.
+ - Also be cautious about using account age as a factor in a member's karmic influence. This setting does not differentiate between an active account and a stale account / lurker.
+
 [title="2"]Advanced concepts[/title]
 This section covers some additional advanced concepts or ideas regarding the karma addon which you can implement.
 
