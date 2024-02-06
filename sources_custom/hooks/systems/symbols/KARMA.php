@@ -44,8 +44,6 @@ class Hook_symbol_KARMA
         require_code('karma');
         $karma = get_karma($member_id);
 
-        // TODO: modify to account for privilege to view good/bad karma breakdown
-
         if (empty($param[1])) {
             $param[1] = '0';
         }
@@ -55,8 +53,14 @@ class Hook_symbol_KARMA
             case '0':
                 return strval($karma[0] - $karma[1]);
             case '1':
+                if (!has_privilege(get_member(), 'view_bad_karma')) {
+                    return '';
+                }
                 return strval($karma[0]);
             case '2':
+                if (!has_privilege(get_member(), 'view_bad_karma')) {
+                    return '';
+                }
                 return strval($karma[1]);
         }
 

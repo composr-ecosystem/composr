@@ -99,8 +99,8 @@ The karma addon implements the following new Tempcode directives:
 [*][b]$KARMA,member_id,type[/b]
 Returns the karma of the specified type for the specified member_id (or if member_id not specified, the current member).
  - type 0: karma score
- - type 1: good karma
- - type 2: bad karma (or 0 if member does not have the &ldquo;View good and bad karma values separately&rdquo; privilege)
+ - type 1: good karma (or blank if member does not have the &ldquo;View good and bad karma values separately&rdquo; privilege)
+ - type 2: bad karma (or blank if member does not have the &ldquo;View good and bad karma values separately&rdquo; privilege)
 [/list]
 
 [title="3"]Example: karma as a permission[/title]
