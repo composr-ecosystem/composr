@@ -218,7 +218,7 @@ class Hook_fields_content_link
             require_code('content');
             list($title) = content_get_details($type, $input);
             if ($title === null) {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE', $type));
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', escape_html($type)));
             }
         }
 

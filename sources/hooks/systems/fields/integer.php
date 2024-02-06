@@ -187,7 +187,7 @@ class Hook_fields_integer
                 $ret = '-2147483648';
             }
         } elseif (($ret != '') && ($ret != STRING_MAGIC_NULL)) {
-            warn_exit(do_lang_tempcode('javascript:NOT_INTEGER', $ret));
+            warn_exit(do_lang_tempcode('javascript:NOT_INTEGER', escape_html($ret)));
         } else {
             $ret = '';
         }

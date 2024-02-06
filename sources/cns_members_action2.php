@@ -368,7 +368,7 @@ function cns_read_in_custom_fields(array $custom_fields, ?int $member_id = null)
 
         // Required field validation (a standard for all field hooks)
         if (($custom_field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
-            warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $custom_field['cf_name']));
+            warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', get_translated_tempcode('f_custom_fields', $custom_field, 'cf_name')));
         }
 
         if ((fractional_edit()) && ($value != STRING_MAGIC_NULL)) {

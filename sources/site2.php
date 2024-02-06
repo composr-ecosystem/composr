@@ -110,7 +110,7 @@ function get_page_warning_details(string $zone, string $codename, object $edit_u
                 $menu_edit_url = build_url(['page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_link['i_menu']], get_module_zone('admin_menus'));
                 $menu_items_linking->attach(hyperlink($menu_edit_url, $menu_link['i_menu'], false, true));
             }
-            $uv_warning = do_lang_tempcode('NONVALIDATED_TEXT_STAFF', $menu_items_linking, 'comcode_page');
+            $uv_warning = do_lang_tempcode('NONVALIDATED_TEXT_STAFF', $menu_items_linking/*Tempcode*/, escape_html('comcode_page'));
         }
     }
     $warning_details->attach(do_template('WARNING_BOX', ['_GUID' => 'ee79289f87986bcb916a5f1810a25330', 'WARNING' => $uv_warning]));

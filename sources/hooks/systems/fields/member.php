@@ -169,7 +169,7 @@ class Hook_fields_member
 
             // Invalid username?
             if (is_null($member_id)) {
-                warn_exit(do_lang_tempcode('javascript:NOT_USERNAME', $value));
+                warn_exit(do_lang_tempcode('javascript:NOT_USERNAME', escape_html($value)));
             }
 
             $value = strval($member_id);

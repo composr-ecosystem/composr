@@ -100,17 +100,17 @@ class Hook_cns_warnings_point_transactions
                 $reason = get_translated_tempcode('points_ledger', $row, 'reason');
                 if ($row['sender_id'] == $member_id) {
                     if ($row['recipient_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']));
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']), ['', '', '', '', $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])), ['', '', '', '', escape_html($username)]);
                     }
                 } else if ($row['recipient_id'] == $member_id) {
                     if ($row['sender_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']));
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']), ['', '', '', '', $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])), ['', '', '', '', escape_html($username)]);
                     }
                 } else {
                     continue;
@@ -160,17 +160,17 @@ class Hook_cns_warnings_point_transactions
                 $reason = get_translated_tempcode('points_ledger', $row, 'reason');
                 if ($row['sender_id'] == $member_id) {
                     if ($row['recipient_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']));
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']), ['', '', '', '', $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points']), ['', '', '', '', escape_html($username)]));
                     }
                 } else if ($row['recipient_id'] == $member_id) {
                     if ($row['sender_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']));
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_POINTS', $reason, integer_format($row['amount_points'] + $row['amount_gift_points']), ['', '', '', '', $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])), ['', '', '', '', escape_html($username)]);
                     }
                 } else {
                     $pretty_name = do_lang_tempcode('POINT_TRANSACTION', strval($row['id']));
@@ -190,7 +190,7 @@ class Hook_cns_warnings_point_transactions
                     'p_reversed' => 0,
                 ]);
 
-                $punitive_messages[] = do_lang_tempcode('PUNITIVE_REVERSE_POINTS_TRANSACTION', $pretty_name);
+                $punitive_messages[] = do_lang_tempcode('PUNITIVE_REVERSE_POINTS_TRANSACTION', $pretty_name/*Tempcode*/);
             }
         }
     }

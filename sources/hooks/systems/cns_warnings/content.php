@@ -215,7 +215,11 @@ class Hook_cns_warnings_content
         }
 
         if (!$_fields->is_empty()) {
-            $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT', addon_installed('points') ? do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_SUP_POINTS') : null);
+            if (addon_installed('points')) {
+                $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT');
+            } else {
+                $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_POINTS');
+            }
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE_CONTENT'), 'HELP' => $description, 'SECTION_HIDDEN' => !$spam_mode]));
             $fields->attach($_fields);
         }

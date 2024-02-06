@@ -174,13 +174,13 @@ class Hook_profiles_tabs_edit_data
         // TODO: Needs to support RTL
         $limits = new Tempcode();
         if ($download_days != 0) {
-            $limits->attach(($download_days > 0) ? do_lang_tempcode('PERSONAL_DATA_LIMIT_DOWNLOAD', integer_format($download_days)) : do_lang_tempcode('_PERSONAL_DATA_LIMIT_DOWNLOAD'));
+            $limits->attach(($download_days > 0) ? do_lang_tempcode('PERSONAL_DATA_LIMIT_DOWNLOAD', escape_html(integer_format($download_days))) : do_lang_tempcode('_PERSONAL_DATA_LIMIT_DOWNLOAD'));
         }
         if ($purge_days != 0) {
             if ($download_days > 0) {
                 $limits->attach(' ');
             }
-            $limits->attach(($purge_days > 0) ? do_lang_tempcode('PERSONAL_DATA_LIMIT_PURGE', integer_format($purge_days)) : do_lang_tempcode('_PERSONAL_DATA_LIMIT_PURGE'));
+            $limits->attach(($purge_days > 0) ? do_lang_tempcode('PERSONAL_DATA_LIMIT_PURGE', escape_html(integer_format($purge_days))) : do_lang_tempcode('_PERSONAL_DATA_LIMIT_PURGE'));
         }
         $text->attach(paragraph($limits));
 

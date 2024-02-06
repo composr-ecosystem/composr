@@ -91,17 +91,17 @@ class Hook_cns_warnings_karma_logs
                 $reason = get_translated_tempcode('karma', $row, 'k_reason');
                 if ($row['k_member_from'] == $member_id) {
                     if ($row['k_member_to'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount'])]);
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount']))]);
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['k_member_to']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount']), $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount'])), escape_html($username]));
                     }
                 } else if ($row['k_member_to'] == $member_id) {
                     if ($row['k_member_from'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount'])]);
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount']))]);
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['k_member_from']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount']), $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount'])), escape_html($username)]);
                     }
                 } else {
                     continue;
@@ -152,20 +152,20 @@ class Hook_cns_warnings_karma_logs
 
                 if ($row['k_member_from'] == $member_id) {
                     if ($row['k_member_to'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount'])]);
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount']))]);
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['k_member_to']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount']), $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount'])), escape_html($username)]);
                     }
                 } else if ($row['k_member_to'] == $member_id) {
                     if ($row['k_member_from'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount'])]);
+                        $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount']))]);
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['k_member_from']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_KARMA', $reason, $row['k_type'], [integer_format($row['k_amount']), $username]);
+                        $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount'])), escape_html($username)]);
                     }
                 } else {
-                    $pretty_name = do_lang('_GOOD_BAD_KARMA', $row['k_type'], integer_format($row['k_amount']));
+                    $pretty_name = do_lang_tempcode('_GOOD_BAD_KARMA', escape_html($row['k_type']), escape_html(integer_format($row['k_amount'])));
                 }
 
                 reverse_karma($row['id']);
@@ -182,7 +182,7 @@ class Hook_cns_warnings_karma_logs
                     'p_reversed' => 0,
                 ]);
 
-                $punitive_messages[] = do_lang_tempcode('PUNITIVE_REVERSE_KARMA', $pretty_name);
+                $punitive_messages[] = do_lang_tempcode('PUNITIVE_REVERSE_KARMA', $pretty_name/*Tempcode*/);
             }
         }
     }

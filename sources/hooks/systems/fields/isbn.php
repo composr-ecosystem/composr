@@ -137,7 +137,7 @@ class Hook_fields_isbn
 
         if (option_value_from_field_array($field, 'strict_isbn_validation', 'off') == 'on') {
             if (!$this->is_valid_isbn($value)) {
-                warn_exit(do_lang_tempcode('javascript:NOT_VALID_ISBN', $value));
+                warn_exit(do_lang_tempcode('javascript:NOT_VALID_ISBN', escape_html($value)));
             }
         }
 

@@ -231,6 +231,10 @@ class __broken_links_test_set extends cms_test_case
         if (empty($url)) {
             return;
         }
+        
+        if (preg_match('#^https?://web\.archive\.org/web/#', $url) != 0) { // Web Archive is very slow
+            return;
+        }
 
         if (preg_match('#^http://sns.qzone.qq.com/#', $url) != 0) {
             return;

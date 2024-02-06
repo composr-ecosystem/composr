@@ -298,7 +298,7 @@ Go through this process:
 Initially you will be set up on an [tt]appspot.com[/tt] subdomain. You [url="may use your own domain"]https://cloud.google.com/appengine/docs/legacy/standard/python/mapping-custom-domains[/url]. Composr is set up to automatically detect your base URL from the access URL, so you do not need to worry about any configuration within Composr. Make sure though that you stop using the [tt]appspot.com[/tt] URL fully after switching to your custom domain name.
 
 If using SSL with your own custom domain, Composr's default configuration in [tt]_config.php[/tt] will assume that you want to serve uploaded data via that domain. To do that you need to setup [tt]storage.<domainname>[/tt] as per [url="Google's documentation on setting a CNAME record"]https://cloud.google.com/storage/docs/request-endpoints[/url].
-Of course you would also need to set up [url="your own SSL certificate"]https://cloud.google.com/appengine/docs/legacy/standard/python/securing-custom-domains-with-ssl[/url].
+Of course you would also need to set up your own SSL certificate.
 
 [title="3"]Error pages[/title]
 

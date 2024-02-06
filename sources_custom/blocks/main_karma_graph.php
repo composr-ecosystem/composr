@@ -123,7 +123,7 @@ class Block_main_karma_graph
                 }
             }
 
-            $karma_lang = do_lang_tempcode('_HAS_KARMA', $username, do_lang_tempcode('GOOD_BAD_KARMA', integer_format($karma[0]), integer_format($karma[1])));
+            $karma_lang = do_lang_tempcode('_HAS_KARMA', escape_html($username), do_lang_tempcode('GOOD_BAD_KARMA', escape_html(integer_format($karma[0])), escape_html(integer_format($karma[1]))));
         } else {
             $karma_large_percent = ($threshold > 0) ? floatval($total_karma / $threshold) : 1.0;
 
@@ -134,7 +134,7 @@ class Block_main_karma_graph
             }
             $karma_small_percent = 0.0;
 
-            $karma_lang = do_lang_tempcode('_HAS_KARMA', $username, do_lang_tempcode('TOTAL_KARMA', integer_format($total_karma)));
+            $karma_lang = do_lang_tempcode('_HAS_KARMA', escape_html($username), do_lang_tempcode('TOTAL_KARMA', escape_html(integer_format($total_karma))));
         }
 
         $karma_small_percent *= $karma_large_percent;

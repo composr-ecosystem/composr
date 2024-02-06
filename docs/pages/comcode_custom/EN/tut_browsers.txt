@@ -62,7 +62,7 @@ There are a number of approaches that can help you with the above problems:
 [list]
 [*] Google Chrome has excellent device emulation, for quick/earlier testing for different mobile devices (not a substitute for proper testing).
 [*] Microsoft Edge lets you run in compatibility modes to test on earlier versions of their engines (imperfect, but useful).
-[*] Virtual Machines let you test different Internet Explorer browsers without needing separate physical machines. [url="Microsoft supply free images to help"]https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/[/url]. They come at a hefty download size though, uses lots of disk space, and using VMs means lots of RAM usage.
+[*] Virtual Machines let you test different Internet Explorer browsers without needing separate physical machines. They come at a hefty download size though, uses lots of disk space, and using VMs means lots of RAM usage.
 [*] You can use a commercial online testing system like [url="BrowserStack"]https://www.browserstack.com/[/url]. BrowserStack host virtual machines for you in the cloud so that you don't need to maintain your own VMs. You can also automatically take mass-screenshots across many devices, and also run automated JavaScript testing (for developers).
 [/list]
 

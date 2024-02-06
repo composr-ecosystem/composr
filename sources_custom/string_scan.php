@@ -8237,7 +8237,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPAM
         DELETE_CONTENT
         DESCRIPTION_DELETE_CONTENT
-        DESCRIPTION_DELETE_CONTENT_SUP_POINTS
+        DESCRIPTION_DELETE_CONTENT_POINTS
         DESCRIPTION_DELETE_THIS
         USE_MONOCHROME_ICONS
         SVG_SPRITES

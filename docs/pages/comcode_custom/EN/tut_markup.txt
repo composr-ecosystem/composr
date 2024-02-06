@@ -107,7 +107,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>Knowledge of PHP is only required if changing core Composr code.</td>
 		</tr>
 		<tr>
-			<td>JavaScript (aka [url="http://www.ecma-international.org/publications/standards/Ecma-290.htm"]ECMAScript[/url]) [i](optional)[/i], [abbr="Document Object Model"][url="http://www.w3.org/DOM/DOMTR"]DOM[/url][/abbr], and [url="http://www.w3.org/TR/XMLHttpRequest/"]XMLHttpRequest[/url]</td>
+			<td>JavaScript (aka [url="https://ecma-international.org/publications-and-standards/standards/ecma-262/"]ECMAScript[/url]) [i](optional)[/i], [abbr="Document Object Model"][url="http://www.w3.org/DOM/DOMTR"]DOM[/url][/abbr], and [url="http://www.w3.org/TR/XMLHttpRequest/"]XMLHttpRequest[/url]</td>
 			<td>This is the standard to make web pages interactive; it ties into the (X)HTML.</td>
 			<td>You will only need to know JavaScript if doing particularly advanced themeing.</td>
 		</tr>
@@ -1248,7 +1248,6 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
  - http://webplatform.org
  - http://w3.org
  - http://caniuse.com/
- - https://developer.microsoft.com/en-us/microsoft-edge/status/
  - http://webdesign.about.com/
  - https://teamtreehouse.com/
 

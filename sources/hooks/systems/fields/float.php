@@ -179,7 +179,7 @@ class Hook_fields_float
 
         if (($ret != STRING_MAGIC_NULL) && ($ret != '')) {
             if (!is_numeric($ret)) {
-                warn_exit(do_lang_tempcode('javascript:NOT_FLOAT', $ret));
+                warn_exit(do_lang_tempcode('javascript:NOT_FLOAT', escape_html($ret)));
             }
             $ret = float_to_raw_string(float_unformat($ret), 30);
         }
