@@ -765,7 +765,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _INCOME
         POINT_TRANSACTIONS
         POINTS_LEDGER
-        RESTORE_USERGROUP_TO
         UNDO_GROUP_CHANGE
         GROUP_CHANGE
         DAYS_TO_KEEP__CRON_LOG
@@ -1294,7 +1293,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_ADD_QUIZ
         ACTIVITY_ADD_VIDEO
         ACTIVITY_CALENDAR_EVENT
-        ACTIVITY_ADD_CALENDAR_EVENT
         ACTIVITY_CATALOGUE_GENERIC_ADD
         ACTIVITY_CATALOGUE_GENERIC_ADD_NO_LINK
         ACTIVITY_CHOOSE_POLL
@@ -7134,7 +7132,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REMEMBER_PASSWORD
         REMOVE_PERIODIC
         REMOVE_PERIODIC_NEWSLETTER
-        REMOVE_PROBATION_DAYS
         RENAME_THEME
         REORDER_FORUMS
         REPEAT_PERMISSION
@@ -7151,7 +7148,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RESET_INTRO_ACCEPTANCE
         RESOURCE_FS_PATH_PRIOR_TO_REVISION
         RESOURCE_FS_RECORD_PRIOR_TO_REVISION
-        RESTORE_POINTS
         RESTRICTED_USERNAMES
         RESTRICTIONS
         RESTRICTION_CELL
@@ -7808,7 +7804,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TRY_TO_DOWNLOAD_SCRIPT
         TXMT_PROTOCOL_EXPLAIN
         UNBANNABLE_IP_ADDRESSES
-        UNBAN_IP
         UNBAN_IP_DESCRIPTION
         UNBAN_MEMBER
         UNBAN_MEMBER_DESCRIPTION
@@ -7822,7 +7817,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNDO
         UNDONE
         UNDO_CHARGE
-        UNDO_PROBATION
         UNDO_REVISION
         UNINSTALL
         UNINSTALLED
@@ -8448,7 +8442,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AUTOSAVE_TIME
         CONFIG_OPTION_autosave_time
         UNDO_PUNITIVE_ACTION
-        _UNDO_PUNITIVE_ACTION
         ARE_YOU_SURE_UNDO_PUNITIVE_ACTION
         PUNITIVE_ACTION_NUMBER
         PUNITIVE_POINTS
@@ -8561,7 +8554,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTION_LINK
         WARNING_NUMBER
         VIEW_WARNING
-        CHANGED_USERGROUP_TO
         I_AGREE_RULES
         I_AGREE_PRIVACY
         I_AGREE_UPDATES
@@ -11710,7 +11702,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_SUBJECT
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_POINTS
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_NO_POINTS
-        POLL_CHOSEN
         ARE_YOU_SURE_TRANSACTION_POINTS
         ARE_YOU_SURE_TRANSACTION_GIFT_POINTS
         SENDER

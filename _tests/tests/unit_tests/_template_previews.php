@@ -42,7 +42,7 @@ class _template_previews_test_set extends cms_test_case
         }
         $b = scandir(get_file_base() . '/_tests/screens_tested');
         if (count($b) > count($a)) {
-            exit('Already running');
+            fatal_exit('Test is already running');
         }
 
         disable_php_memory_limit();
@@ -147,8 +147,10 @@ class _template_previews_test_set extends cms_test_case
             restore_output_state();
 
             if (!is_object($out)) {
-                fatal_exit('Claimed screen for ' . $template . ' is not defined');
+                $this->assertTrue(false, 'Claimed screen for ' . $template . ' is not defined');
+                continue;
             }
+
             $_out = $out->evaluate();
 
             // Test all templates in this screen really were used...
@@ -228,7 +230,7 @@ class _template_previews_test_set extends cms_test_case
             $this->assertTrue(($result === null), $hook . ':' . $function);
             if ($result !== null) {
                 require_code('view_modes');
-                display_webstandards_results($_out, $result, false, false);
+                //display_webstandards_results($_out, $result, false, false);
             } else {
                 // Mark done
                 if (!$flag) {
@@ -308,10 +310,10 @@ class _template_previews_test_set extends cms_test_case
             if (!$different) {
                 cms_file_put_contents_safe(get_file_base() . '/_tests/screens_tested/consistency__' . $function . '.tmp', '1', FILE_WRITE_FIX_PERMISSIONS);
             } else {
-                cms_file_put_contents_safe(get_file_base() . '/_tests/screens_tested/v1__' . '.tmp', $_out1, FILE_WRITE_FIX_PERMISSIONS);
-                cms_file_put_contents_safe(get_file_base() . '/_tests/screens_tested/v2__' . '.tmp', $_out2, FILE_WRITE_FIX_PERMISSIONS);
+                cms_file_put_contents_safe(get_file_base() . '/_tests/screens_tested/consistency__' . $function . '_v1.tmp', $_out1, FILE_WRITE_FIX_PERMISSIONS);
+                cms_file_put_contents_safe(get_file_base() . '/_tests/screens_tested/consistency__' . $function . '_v2.tmp', $_out2, FILE_WRITE_FIX_PERMISSIONS);
 
-                exit('Error! Do a diff between v1__.tmp and v2__.tmp');
+                $this->assertTrue(false, 'Error! Do a diff between consistency__' . $function . '_v1.tmp and consistency__' . $function . '_v2.tmp');
             }
 
             unset($out1);

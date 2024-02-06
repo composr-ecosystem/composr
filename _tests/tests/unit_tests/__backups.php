@@ -87,9 +87,15 @@ $SITE_INFO[\'db_site_password\'] = isset($SITE_INFO[\'mysql_root_password\']) ? 
 $SITE_INFO[\'table_prefix\'] = \'cms_backup_test_\';
 $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_content']) . '\';
         ') . "\n";
-        cms_file_put_contents_safe($config_path, $config_php);
+        cms_file_put_contents_safe($config_path, $config_php, FILE_WRITE_FAILURE_CRITICAL);
 
-        $GLOBALS['SITE_DB']->query('CREATE DATABASE cms_backup_test', null, 0, true); // Suppress errors in case already exists
+        global $SITE_INFO;
+        $username = (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root';
+        $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';
+
+        $db = new DatabaseConnector(get_db_site(), get_db_site_host(), $username, $password, $GLOBALS['SITE_DB']->get_table_prefix());
+        $db->query('CREATE DATABASE cms_backup_test', null, 0, true); // Suppress errors in case already exists
+        unset($db);
 
         for ($i = 0; $i < 2; $i++) {
             $test = cms_http_request(get_custom_base_url() . '/exports/backups/test/restore.php?time_limit=1000', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [], 'timeout' => 1000.0]);
@@ -104,12 +110,41 @@ $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_con
             }
         }
 
-        global $SITE_INFO;
-        $username = (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root';
-        $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';
+        // Now determine errors in expected row counts
         $db = new DatabaseConnector('cms_backup_test', get_db_site_host(), $username, $password, 'cms_backup_test_');
-        $count = $db->query_select_value('zones', 'COUNT(*)');
-        $this->assertTrue($count > 0, 'Failed to restore database');
+        
+        $has_db_meta = $db->query_select_value_if_there('db_meta', 'COUNT(*)');
+        if ($has_db_meta === null) {
+            $this->assertTrue(false, 'Failed to restore database; db_meta is missing');
+            return;
+        }
+        
+        $has_db_meta_indices = $db->query_select_value_if_there('db_meta_indices', 'COUNT(*)');
+        if ($has_db_meta_indices === null) {
+            $this->assertTrue(false, 'Failed to restore database; db_meta_indices is missing');
+            return;
+        }
+        
+        require_code('database_relations');
+        
+        $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table AS m_table']);
+        foreach ($tables as $_table) {
+            $table = $_table['m_table'];
+            if (table_has_purpose_flag($table, TABLE_PURPOSE__NO_BACKUPS)) {
+                continue;
+            }
+            
+            $_db = get_db_for($table);
+            
+            $count_a = $_db->query_select_value($table, 'COUNT(*)');
+            $count_b = $db->query_select_value_if_there($table, 'COUNT(*)');
+            
+            if ($count_b === null) {
+                $this->assertTrue(false, 'Failed to restore table ' . $table);
+            } else {
+                $this->assertTrue(($count_a == $count_b), 'Expected ' . $count_a . ' rows to be restored from ' . $table . ' but instead got ' . $count_b);
+            }
+        }
 
         deldir_contents($temp_test_dir_full);
     }

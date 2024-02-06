@@ -115,6 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 $time_start = time();
 $time_max = $time_start + get_param_integer('time_limit', 10);
 
+cms_extend_time_limit(get_param_integer('time_limit', 10));
+
 // Open file
 $data_file_charset = null;
 $data_file = cms_fopen_text_read(__DIR__ . '/restore_data.php', $data_file_charset);
@@ -171,16 +173,6 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
             exit('Failed on: ' . $sql_buildup);
         }
         $sql_buildup = '';
-
-        // Need to go to a new iteration?
-        if (time() >= $time_max) {
-            $refresh_url = 'restore.php?start_offset=' . strval($offset);
-            $proceed_icon = do_template('ICON', ['NAME' => 'buttons/proceed']);
-            $msg = '';
-            $msg .= '<form action="' . escape_html($refresh_url) . '" method="post"><button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit" onclick="this.disabled=true; this.form.submit();">' . $proceed_icon->evaluate() . ' ' . escape_html(do_lang('CONTINUE_RESTORATION')) . '</button></form>';
-            $msg .= '<script>var button=document.getElementById(\'proceed-button\'); button.disabled=true; button.form.submit();</script>';
-            finish_restorer_output($msg);
-        }
     }
 
     // Keep building up
@@ -188,6 +180,16 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
 
     // Offset
     $offset = ftell($data_file);
+    
+    // Need to go to a new iteration?
+    if (time() >= $time_max) {
+        $refresh_url = 'restore.php?start_offset=' . strval($offset) . '&time_limit=' . get_param_string('time_limit', '10');
+        $proceed_icon = do_template('ICON', ['NAME' => 'buttons/proceed']);
+        $msg = '';
+        $msg .= '<form action="' . escape_html($refresh_url) . '" method="post"><button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit" onclick="this.disabled=true; this.form.submit();">' . $proceed_icon->evaluate() . ' ' . escape_html(do_lang('CONTINUE_RESTORATION')) . '</button></form>';
+        $msg .= '<script>var button=document.getElementById(\'proceed-button\'); button.disabled=true; button.form.submit();</script>';
+        finish_restorer_output($msg);
+    }
 }
 
 fclose($data_file);

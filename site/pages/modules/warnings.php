@@ -131,7 +131,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         if ($type == 'undo_punitive_action') {
-            $this->title = get_screen_title('_UNDO_PUNITIVE_ACTION', true, [strval(post_param_integer('id'))]);
+            $this->title = get_screen_title('UNDO_PUNITIVE_ACTION', true, [strval(post_param_integer('id'))]);
             breadcrumb_set_self(do_lang_tempcode('PUNITIVE_ACTION_NUMBER', strval(post_param_integer('id'))));
 
             $warning_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings_punitive', 'p_warning_id', ['id' => post_param_integer('id')]);
@@ -145,38 +145,6 @@ class Module_warnings extends Standard_crud_module
                 breadcrumb_set_parents($breadcrumbs);
             }
         }
-
-
-        /* TODO: Remove these language strings?
-        if ($type == 'undo_group_change') {
-            $this->title = get_screen_title('UNDO_GROUP_CHANGE');
-        }
-
-        if ($type == 'undo_charge') {
-            require_lang('points');
-            $this->title = get_screen_title('UNDO_CHARGE');
-        }
-
-        if ($type == 'undo_probation') {
-            $this->title = get_screen_title('UNDO_PROBATION');
-        }
-
-        if ($type == 'undo_banned_ip') {
-            $this->title = get_screen_title('UNBAN_IP');
-        }
-
-        if ($type == 'undo_banned_member') {
-            $this->title = get_screen_title('UNBAN_MEMBER');
-        }
-
-        if ($type == 'undo_silence_from_topic') {
-            $this->title = get_screen_title('UNSILENCE_TOPIC');
-        }
-
-        if ($type == 'undo_silence_from_forum') {
-            $this->title = get_screen_title('UNSILENCE_FORUM');
-        }
-        */
 
         return parent::pre_run($top_level);
     }

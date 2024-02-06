@@ -187,6 +187,9 @@ class _lang_no_unused_test_set extends cms_test_case
 
         $skip = array_flip([
             'ALLOWED_FILES',
+            'PLUPLOAD_QUEUED',
+            'PLUPLOAD_CANCEL',
+            'PLUPLOAD_REMOVE',
             'PLUPLOAD_UPLOADING',
             'PLUPLOAD_COMPLETE',
             'PLUPLOAD_FAILED',
