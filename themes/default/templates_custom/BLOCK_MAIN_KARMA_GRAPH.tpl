@@ -10,4 +10,6 @@
 		<div class="karma-bar good-karma" style="width: {KARMA_LARGE*}%"></div>
 		<div class="karma-bar bad-karma" style="width: {KARMA_SMALL*}%"></div>
 	{+END}
+
+	<div class="karma-bar karma-text">{!karma:KARMA}</div>
 </div>

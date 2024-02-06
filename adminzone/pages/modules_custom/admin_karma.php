@@ -137,6 +137,8 @@ class Module_admin_karma
 
         require_lang('karma');
 
+        set_helper_panel_tutorial('sup_adding_a_member_reputation_system');
+
         switch ($type) {
             case 'browse':
                 $this->title = get_screen_title('KARMA');

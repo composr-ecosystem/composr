@@ -1,0 +1,92 @@
+[title sub="Written by Patrick Schmalstig"]Composr Supplementary: Adding a Member Reputation System[/title]
+
+[contents]decimal,lower-alpha[/contents]
+
+[media width="150" description="Karma" float="right"]data_custom/images/docs/sup_adding_a_member_reputation_system/karma_bar_profile.jpg[/media]
+The [tt]karma[/tt] non-bundled addon enables site admins to introduce a member reputation system to their Conversr-powered site. Similar to other forum software which have a reputation system, karma is a publicly visible and crowdsourced 'score' of how reputable a member is within the community. Other members can then make a judgment call as to how they will interact with said member based on their karma. The Karma addon, however, goes way beyond that and has many configurable features.
+
+[title="2"]Installing the karma addon[/title]
+Before proceeding, be aware that the karma addon requires that you are running the Conversr forum software. This is by design as other forum software may have their own reputation systems. This requirement prevents confusion with the reputation systems of other forum software.
+
+The first thing you will need to do to utilise karma is to install the addon. To do this:
+[list="1"]
+[*] Go to the Admin Zone
+[*] Navigate to the Structure section of the Admin Zone menu
+[*] Choose the Addons icon
+[*] Scroll down and choose "Import non-bundled addon(s)"
+[*] Click Download and choose the New Features category
+[*] Choose Karma
+[*] Scroll down and click the "Import non-bundled addon(s)" button
+[*] The next screen shows all of the files which will be edited or installed. Check this list carefully if you have manually edited files to make sure nothing is being overwritten which will break your site. Special care was considered with the karma addon to prevent this scenario as much as possible. If you are happy you can click Proceed.
+[/list]
+
+Once installed, the karma addon will begin working immediately. Members will now have a karma bar below their avatar on their profile and forum posts indicating how much karma they have. Reasonable defaults have been set for the configuration and privileges. However, you may still wish to review and customise them according to your needs and desires.
+
+You can configure the karma addon under Admin Zone > Setup > Configuration > Feature options. There is a section for karma and a section for karmic influence. You can also configure privileges for the karma addon under Admin Zone > Security > Global privileges > Karma.
+
+[title="2"]Basic principles[/title]
+Every member has [tt]good karma[/tt] and [tt]bad karma[/tt]. Actions considered positive will assign good karma. And actions considered negative will assign bad karma. The difference between a member's good karma and bad karma makes up their total [tt]karma score[/tt]. While good karma and bad karma cannot individually be negative, a member's karma score can be negative if they have more bad karma than good karma. The following are general assumptions about a member's reputation based on the karma they have:
+ - If you sum both the good and bad karma scores together, then this is a general representation of how much influence the member had on the community whether good or bad.
+ - If a member has more good karma than bad karma (karma score is positive), then they are reputable. The greater the difference between the good karma and bad karma, the more reputable the member is considered.
+ - If a member has more bad karma than good karma (karma score is negative), then they are not reputable. The greater the difference between the bad karma and good karma, the more troublesome the member is considered.
+
+Members also have [tt]karmic influence[/tt]. This is how much a member can influence another member's karma based on the actions they take on their content. Generally, you would want more trustworthy and vetted members to have more karmic influence because their opinions / actions are considered more likely to be honest. There are multiple configurable options you can use to decide how karmic influence is calculated.
+
+[title="2"]Karma bar[/title]
+The karma of every member is represented as a bar below their avatar on their profile and forum posts. This is accomplished through the [b]main_karma_graph[/b] block. This bar will fill up according to the member's karma. The bar will behave differently depending on which privileges the viewing member has, according to the following:
+ - If they have the &ldquo;View good and bad karma values separately&rdquo; privilege:
+  - The bar will contain a combination of green, red, and yellow. The sum of their good karma and bad karma, compared with the [tt]Karma bar threshold[/tt] configuration option, determines how full the bar will be.
+  - Green represents good karma, and that the member has more good karma than bad karma.
+  - Red represents bad karma, and that the member has more bad karma than good karma.
+  - Yellow represents a negation. For instance, where the bar is filled with green (good karma), the portion that is filled with yellow indicates how much bad karma they have relative to good karma. So if 1/2 of the bar is yellow and 1/2 is green, that means they have 1/2 as much bad karma as good karma. If you see nothing but yellow, then they have an equal amount of bad karma and good karma.
+ - If they do not have the &ldquo;View good and bad karma values separately&rdquo; privilege:
+  - The bar will contain only red or green.
+  - Green indicates the member has more good karma than bad karma. The bar will be filled according to their karma score and the [tt]Karma bar threshold[/tt] configuration option.
+  - Red indicates the member has more bad karma than good karma. Since ideally we would not want members without this privilege knowing how much bad karma a member has, the bar will always be 100% filled with red regardless of karma so long as they have more bad karma than good.
+
+You can hover over a bar to see the raw karma values in a tooltip.
+
+[title="2"]Compatibility with other addons[/title]
+The karma addon will work together with various other addons you have installed. The karma addon currently works with the following other addons:
+[list]
+[*][b]karma[/b]
+A member's karma score can be a factor in how much karmic influence they have.
+[*][b]core_cns[/b]
+A member's account age can be a factor in how much karmic influence they have. Additionally, you can assign additional karmic influence as a privilege to certain usergroups such as staff members (which is the default). And there are other privileges as well, such as completely turning off karmic influence for certain usergroups (on by default except for the probation usergroup), deciding who can view karma (on by default for all usergroups), and deciding who can specifically view good karma and bad karma separately (off by default except for staff).
+[*][b]cns_forum[/b]
+Members can receive good karma for voting in topic polls. Additionally, the number of forum posts a member made can be a factor in their karmic influence.
+[*][b]feedback[/b]
+Members can be assigned good or bad karma for every rating they receive depending on the rating. This also works when using likes / dislikes.
+[*][b]awards[/b]
+Good karma can be assigned when a member receives a Top Content (Award) for some content.
+[*][b]cns_warnings[/b]
+Bad karma can be assigned as a punitive action for getting warned. You can also reverse recent karma assignments in a warning (e.g. in the event the member was abusing the karma system). Additionally, you can decrease the amount of karmic influence a member has based on how many formal warnings they received in a given period of time.
+[*][b]polls[/b]
+Good karma can be assigned for voting in a poll.
+[*][b]points[/b]
+Members can be assigned good karma when another member sends them points. Additionally, a member's points balance, voting power, and/or life-time points can be factors as to how much karmic influence a member has.
+[*][b]giftr[/b]
+Members can be assigned good karma when other members send them virtual gifts.
+[*][b]idolisr[/b]
+You can configure that members only receive good karma for receiving points from others if they received them for an Idolisr role.
+[*][b]member_comments[/b]
+Members can be assigned good karma when another member comments on their profile.
+[*][b]ecommerce[/b]
+Members can receive good karma based on how much they spend on your store. This can work for both points and currency.
+[/list]
+
+[title="2"]Auditing karma[/title]
+[media width="150" description="Auditing Karma" float="right"]data_custom/images/docs/sup_adding_a_member_reputation_system/audit_karma.jpg[/media]
+You can audit the karma that is assigned under Admin Zone > Audit > Karma. There, you can view a master log of all the karma assignments that occurred on your site. You can also amend the reason text for any record, or you can reverse a karma assignment. It is recommended that if you are reversing a karma assignment because of member abuse that you use the interface for adding a warning instead.
+
+[concepts
+ 0_key="Karma (proper)"   0_value="A public and crowdsourced member reputation system"
+ 1_key="Karma (common)"   1_value="Reputation points"
+ 2_key="Good karma"       2_value="Karma assigned from positive actions (e.g. good ratings, awards, receiving points)"
+ 3_key="Bad karma"        3_value="Karma assigned from negative actions (e.g. bad ratings, warnings)"
+ 4_key="Karma score"      4_value="The difference between a member's good karma and bad karma; higher is better"
+ 5_key="Karmic influence" 5_value="The amount by which a member can affect the karma of other members per action"
+ 6_key="Karma assignment" 6_value="When an amount of good or bad karma is applied to a member"
+]Concepts[/concepts]
+
+{$SET,tutorial_tags,Social,Members,karma,novice}{$SET,tutorial_add_date,Feb 2024}{$SET,tutorial_summary,This tutorial covers how you can implement a powerful crowdsourced member reputation system to your Conversr site.}[block]main_tutorial_rating[/block]

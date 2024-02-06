@@ -128,7 +128,9 @@ Karma and its API can be further extended for additional functionality. For exam
      */
     public function get_applicable_tutorials() : array
     {
-        return []; // TODO: Make tutorials?
+        return [
+            'sup_adding_a_member_reputation_system'
+        ];
     }
 
     /**
