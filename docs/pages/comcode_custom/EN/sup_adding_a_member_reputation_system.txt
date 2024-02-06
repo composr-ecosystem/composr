@@ -114,6 +114,8 @@ if ((($good_karma - $bad_karma) < 100) || (($good_karma + $bad_karma) <= 0) || (
 }
 [/code]
 
+In the 'if' condition, we first check if the member's karma score (good - bad karma) is below 100. In the second check, we see if the sum of their good and bad karma is <= 0 (to prevent division by zero in the third check). And in the third check, we see if bad karma makes up 10% or more of a member's overall karma. If any of these conditions are true, we throw an access denied error. This example uses the generic Internal Error, but you may want to make your own error.
+
 [concepts
  0_key="Karma (proper)"   0_value="A public and crowdsourced member reputation system"
  1_key="Karma (common)"   1_value="Reputation points"
