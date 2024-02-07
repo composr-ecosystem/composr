@@ -34,12 +34,14 @@ class _missing_strict_types_test_set extends cms_test_case
         foreach ($files as $path) {
             $code = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $matches = [];
-            if (preg_match('#declare\(strict_types=1\)#', $code, $matches) == 0) {
+            if ((preg_match('#declare\(strict_types=1\)#', $code, $matches) == 0) && (preg_match('#Christopher Graham#', $code, $matches) != 0)/*FUDGE: Ignore third-party code but not all non-bundled addons*/) {
                 $this->assertTrue(false, 'Missing declare(strict_types=1) in ' . $path);
 
-                // Uncomment below and re-run the test to fix copyright dates. Then comment and re-run the test to confirm the fixes.
+                // Uncomment below and re-run the test to add in declaration. Then comment and re-run the test to confirm the fixes.
+                /*
                 $code = preg_replace('/<\?php/s', '<?php' . "\n" . 'declare(strict_types=1);' . "\n\n", $code);
                 cms_file_put_contents_safe(get_file_base() . '/' . $path, $code, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_FAILURE_SILENT);
+                */
             }
         }
     }
