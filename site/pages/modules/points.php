@@ -375,7 +375,7 @@ class Module_points
             return null;
         }
 
-        if (get_forum_type() == 'cns' || get_forum_type() == 'none') {
+        if ((get_forum_type() == 'cns') || (get_forum_type() == 'none')) {
             return [];
         }
         $ret = [
@@ -406,7 +406,7 @@ class Module_points
 
         require_lang('points');
 
-        if ($type == 'browse' || $type == '_search') {
+        if (($type == 'browse') || ($type == '_search')) {
             inject_feed_url('?mode=points&select=', do_lang('POINTS'));
         }
 
@@ -435,7 +435,7 @@ class Module_points
             $this->title = get_screen_title('POINTS');
         }
 
-        if ($type == 'escrow' || $type == 'do_escrow') {
+        if (($type == 'escrow') || ($type == 'do_escrow')) {
             $member_id_of = get_param_integer('id');
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true, USERNAME_DEFAULT_ERROR | USERNAME_GUEST_AS_DEFAULT);
 
@@ -444,7 +444,7 @@ class Module_points
             $this->title = get_screen_title('_ESCROW_TO', true, [$username]);
         }
 
-        if ($type == 'view_escrow' || $type == 'satisfy_escrow' || $type == 'dispute_escrow' || $type == 'moderate_escrow') {
+        if (($type == 'view_escrow') || ($type == 'satisfy_escrow') || ($type == 'dispute_escrow') || ($type == 'moderate_escrow')) {
             $id = get_param_integer('id');
             $member_id_of = get_param_integer('member_id_of', null);
 
@@ -463,7 +463,7 @@ class Module_points
             if ($member_id_of === null) {
                 $member_id_viewing = get_member();
                 $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['id', 'sender_id', 'recipient_id'], ['id' => $id], '', 1);
-                if ($_row === null || !array_key_exists(0, $_row)) {
+                if (($_row === null) || !array_key_exists(0, $_row)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                 }
                 $row = $_row[0];
@@ -476,11 +476,10 @@ class Module_points
             }
             $map = [['_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')], ['_SELF:_SELF:member:' . strval($member_id_of), do_lang_tempcode('_POINTS', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true)))]];
             if ($type != 'view_escrow') {
-                $map[] = ['_SELF:_SELF:view_escrow:' . strval($row['id']), do_lang_tempcode('_ESCROW_VIEW', escape_html(strval($row['id'])))];
+                $map[] = ['_SELF:_SELF:view_escrow:' . strval($id), do_lang_tempcode('_ESCROW_VIEW', escape_html(strval($id)))];
             }
             breadcrumb_set_parents($map);
         }
-
 
         if ($type == 'member') {
             $this->member_id_of = get_param_integer('id', get_member());
@@ -737,7 +736,7 @@ class Module_points
                     if ($anonymous == 0) {
                         $reward_credit_chance = intval(get_option('reward_credit_chance'));
                         $reward_credit_amount = intval(get_option('reward_credit_amount'));
-                        if ((get_option('enable_gift_points') == '1') && (mt_rand(0, 100) < $reward_credit_chance) && ((floatval($reward_credit_chance) / 100.0 * $reward_credit_amount) >= floatval($amount))) {
+                        if ((get_option('enable_gift_points') == '1') && (mt_rand(0, 100) < $reward_credit_chance) && (((floatval($reward_credit_chance) / 100.0) * $reward_credit_amount) >= floatval($amount))) {
                             points_credit_member($member_id_viewing, do_lang('_PR_LUCKY'), $reward_credit_amount, 0, false);
 
                             $message = do_lang_tempcode('PR_LUCKY', escape_html(integer_format($reward_credit_amount)));
@@ -962,13 +961,13 @@ class Module_points
         $id = get_param_integer('id');
 
         $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id], '', 1);
-        if ($_row === null || !array_key_exists(0, $_row)) {
+        if (($_row === null) || !array_key_exists(0, $_row)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $row = $_row[0];
 
         // Are we trying to access an escrow we do not have the privilege to access?
-        if ($row['sender_id'] != $member_id_viewing && $row['recipient_id'] != $member_id_viewing && !has_privilege($member_id_viewing, 'moderate_points_escrow')) {
+        if (($row['sender_id'] != $member_id_viewing) && ($row['recipient_id'] != $member_id_viewing) && !has_privilege($member_id_viewing, 'moderate_points_escrow')) {
             access_denied('PRIVILEGE', 'moderate_points_escrow');
         }
 
@@ -1002,7 +1001,7 @@ class Module_points
                 }
 
                 // Satisfy escrow buttons; not shown / allowed if an escrow is disputed
-                if (($row['status'] == ESCROW_STATUS_PENDING) && (($member_id_viewing == $row['sender_id'] && $row['sender_status'] == 0) || ($member_id_viewing == $row['recipient_id'] && $row['recipient_status'] == 0))) {
+                if (($row['status'] == ESCROW_STATUS_PENDING) && ((($member_id_viewing == $row['sender_id']) && ($row['sender_status'] == 0)) || (($member_id_viewing == $row['recipient_id']) && ($row['recipient_status'] == 0)))) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'satisfy_escrow', 'id' => $row['id']]);
                     $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '4090ee4d36dd4006ef9e4ba5262fe786', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
@@ -1011,11 +1010,11 @@ class Module_points
                 // Determine actual status
                 if ($row['status'] == ESCROW_STATUS_DISPUTED) {
                     $status = do_lang_tempcode('ESCROW_STATUS__DISPUTED');
-                } elseif ($row['sender_status'] == 0 && $row['recipient_status'] == 0) {
+                } elseif (($row['sender_status'] == 0) && ($row['recipient_status'] == 0)) {
                     $status = do_lang_tempcode('ESCROW_STATUS__PENDING', do_lang('_ESCROW_STATUS__PENDING_BOTH_L'));
-                } elseif ($row['sender_status'] == 1 && $row['recipient_status'] == 0) {
+                } elseif (($row['sender_status'] == 1) && ($row['recipient_status'] == 0)) {
                     $status = do_lang_tempcode('ESCROW_STATUS__PENDING', escape_html($to_name));
-                } elseif ($row['sender_status'] == 0 && $row['recipient_status'] == 1) {
+                } elseif (($row['sender_status'] == 0) && ($row['recipient_status'] == 1)) {
                     $status = do_lang_tempcode('ESCROW_STATUS__PENDING', escape_html($from_name));
                 }
 
@@ -1075,13 +1074,13 @@ class Module_points
         $confirm = get_param_integer('confirm', 0);
 
         $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id], '', 1);
-        if ($_row === null || !array_key_exists(0, $_row)) {
+        if (($_row === null) || !array_key_exists(0, $_row)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $row = $_row[0];
 
         // Are we trying to satisfy an escrow we do not have the privilege to access?
-        if ($row['sender_id'] != $member_id_viewing && $row['recipient_id'] != $member_id_viewing) {
+        if (($row['sender_id'] != $member_id_viewing) && ($row['recipient_id'] != $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 
@@ -1141,13 +1140,13 @@ class Module_points
         $reason = post_param_string('reason', null);
 
         $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id], '', 1);
-        if ($_row === null || !array_key_exists(0, $_row)) {
+        if (($_row === null) || !array_key_exists(0, $_row)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $row = $_row[0];
 
         // Are we trying to access an escrow we do not have the privilege to access?
-        if ($row['sender_id'] != $member_id_viewing && $row['recipient_id'] != $member_id_viewing) {
+        if (($row['sender_id'] != $member_id_viewing) && ($row['recipient_id'] != $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 
@@ -1215,13 +1214,13 @@ class Module_points
         $agreement = post_param_string('agreement', null);
 
         $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id], '', 1);
-        if ($_row === null || !array_key_exists(0, $_row)) {
+        if (($_row === null) || !array_key_exists(0, $_row)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $row = $_row[0];
 
         // Are we trying to moderate an escrow in which we are involved?
-        if ($row['sender_id'] == $member_id_viewing || $row['recipient_id'] == $member_id_viewing) {
+        if (($row['sender_id'] == $member_id_viewing) || ($row['recipient_id'] == $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 
@@ -1233,7 +1232,6 @@ class Module_points
             require_code('form_templates');
 
             $fields = new Tempcode();
-            $entries = new Tempcode();
 
             // Cannot perform an action on an escrow that is already completed / cancelled; edit text only
             if ($row['status'] >= ESCROW_STATUS_PENDING) {
@@ -1243,7 +1241,7 @@ class Module_points
                 $entries->attach(form_input_radio_entry('moderate_action', 'cancel', false, do_lang_tempcode('ESCROW_MODERATE_ACTION__CANCEL')));
                 $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), do_lang_tempcode('DESCRIPTION_ESCROW_MODERATE_ACTION'), 'moderate_action', $entries, true));
             }
-            $fields->attach(form_input_text_comcode(do_lang_tempcode('EXPLANATION'), do_lang_tempcode('DESCRIPTION_ESCROW_MODERATE_REASON'), 'mod_reason', '', true, null, true, "", null, false, 5));
+            $fields->attach(form_input_text_comcode(do_lang_tempcode('EXPLANATION'), do_lang_tempcode('DESCRIPTION_ESCROW_MODERATE_REASON'), 'mod_reason', '', true, null, true, '', null, false, 5));
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
                 '_GUID' => 'cb4511a58a4c78eb75346a468e6e6fdf',
                 'TITLE' => do_lang_tempcode('DETAILS'),

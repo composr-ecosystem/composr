@@ -290,13 +290,11 @@ class Module_news
             // Title
             if ($blog === 1) {
                 $this->title = get_screen_title('BLOG_NEWS_ARCHIVE');
+            } elseif ($news_cat_id !== null) {
+                $news_cat_rows[0]['_nc_title'] = get_translated_text($news_cat_rows[0]['nc_title']);
+                $this->title = get_screen_title(make_fractionable_editable('news_category', $select, $news_cat_rows[0]['_nc_title']), false);
             } else {
-                if ($news_cat_id !== null) {
-                    $news_cat_rows[0]['_nc_title'] = get_translated_text($news_cat_rows[0]['nc_title']);
-                    $this->title = get_screen_title(make_fractionable_editable('news_category', $select, $news_cat_rows[0]['_nc_title']), false);
-                } else {
-                    $this->title = get_screen_title('NEWS_ARCHIVE');
-                }
+                $this->title = get_screen_title('NEWS_ARCHIVE');
             }
 
             // Metadata
@@ -401,16 +399,12 @@ class Module_news
             // Category membership
             load_news_cat_rows('nc_owner IS NULL OR id=' . strval($myrow['news_category']));
             $news_cat_row = get_news_cat_row($myrow['news_category']);
-            $img = get_news_category_image_url($news_cat_row['nc_img']);
             $category = get_translated_text($news_cat_row['nc_title']);
 
             $news_full = get_translated_tempcode('news', $myrow, 'news_article');
             $news_summary = get_translated_tempcode('news', $myrow, 'news');
             if ($news_full->is_empty()) {
                 $news_full = $news_summary;
-            }
-            if ($news_summary->is_empty()) {
-                $news_summary = $news_full;
             }
 
             // Metadata
@@ -612,7 +606,6 @@ class Module_news
         $select_and = $this->select_and;
         $myrow = $this->myrow;
         $_title = $this->_title;
-        $title_to_use = $this->title_to_use;
         $news_full = $this->news_full;
         $category = $this->category;
 
@@ -721,9 +714,9 @@ class Module_news
 
         $rep_image_url = get_news_category_image_url($news_cat_row['nc_img']);
 
-        $prev_article_url   = null;
+        $prev_article_url = null;
         $prev_article_title = null;
-        $next_article_url   = null;
+        $next_article_url = null;
         $next_article_title = null;
 
         // Find a previous article
@@ -740,7 +733,7 @@ class Module_news
             $_prev_article_title = $prev_article['title'];
             if (!cms_empty_safe($_prev_article_title)) {
                 $prev_article_title = get_translated_text($_prev_article_title);
-                $prev_article_url   = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $prev_article['id']], '_SELF');
+                $prev_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $prev_article['id']], '_SELF');
                 break;
             }
         }
@@ -759,7 +752,7 @@ class Module_news
             $_next_article_title = $next_article['title'];
             if (!cms_empty_safe($_next_article_title)) {
                 $next_article_title = get_translated_text($_next_article_title);
-                $next_article_url   = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $next_article['id']], '_SELF');
+                $next_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $next_article['id']], '_SELF');
                 break;
             }
         }

@@ -196,7 +196,10 @@ class CMSSocialRead
         foreach ($rows as $row) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['a_member_id']);
 
-            list($message, $memberpic, $date, $member_url) = render_activity($row, false);
+            list($message, $memberpic, $date,) = render_activity($row, false);
+
+            $content_type = '';
+            $content_id = null;
 
             switch ($row['a_language_string_code']) {
                 case 'cns:ACTIVITY_ADD_TOPIC':
@@ -211,6 +214,10 @@ class CMSSocialRead
                     $content_type = 'like';
                     $content_id = preg_replace('#:topicview:findpost:(\d+)#', '$1', $row['a_pagelink_1']);
                     break;*/
+            }
+
+            if (($content_type == '') || ($content_id === null)) {
+                continue;
             }
 
             $items[] = [

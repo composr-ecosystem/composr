@@ -1,19 +1,20 @@
 {
-  "require": {
-    "ext-json": "*",
-    "ext-openssl": "*",
-    "ext-posix": "*",
-    "ext-simplexml": "*",
-    "ext-zip": "*",
-    "ext-libxml": "*",
-    "ext-xml": "*",
-    "ext-ctype": "*",
-    "ext-curl": "*",
-    "ext-intl": "*",
-    "ext-gd": "*",
-    "ext-exif": "*",
-    "ext-mbstring": "*",
-    "ext-iconv": "*",
-    "ext-zlib": "*",
-  }
+    "require": {
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-posix": "*",
+        "ext-simplexml": "*",
+        "ext-zip": "*",
+        "ext-libxml": "*",
+        "ext-xml": "*",
+        "ext-ctype": "*",
+        "ext-curl": "*",
+        "ext-intl": "*",
+        "ext-gd": "*",
+        "ext-exif": "*",
+        "ext-mbstring": "*",
+        "ext-iconv": "*",
+        "ext-zlib": "*",
+        "ext-mysqli": "*"
+    }
 }

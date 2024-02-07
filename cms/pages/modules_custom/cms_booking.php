@@ -52,54 +52,54 @@ class Module_cms_booking extends Standard_crud_module
         }
 
         $ret = [
-           'browse' => ['BOOKINGS', 'booking/booking'],
+            'browse' => ['BOOKINGS', 'booking/booking'],
         ];
 
         if (has_privilege($member_id, 'submit_highrange_content', 'cms_booking')) {
             $ret += [
-               'add_booking' => ['ADD_BOOKING', 'booking/booking'],
+                'add_booking' => ['ADD_BOOKING', 'booking/booking'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit_booking' => ['EDIT_BOOKING', 'booking/booking'],
+                'edit_booking' => ['EDIT_BOOKING', 'booking/booking'],
             ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'add' => ['ADD_BOOKABLE', 'booking/bookable'],
+                'add' => ['ADD_BOOKABLE', 'booking/bookable'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit' => ['EDIT_BOOKABLE', 'booking/bookable'],
+                'edit' => ['EDIT_BOOKABLE', 'booking/bookable'],
             ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'add_other' => ['ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+                'add_other' => ['ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit_other' => ['EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+                'edit_other' => ['EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
             ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'add_category' => ['ADD_BOOKABLE_BLACKED', 'booking/blacked'],
+                'add_category' => ['ADD_BOOKABLE_BLACKED', 'booking/blacked'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit_category' => ['EDIT_BOOKABLE_BLACKED', 'booking/blacked'],
+                'edit_category' => ['EDIT_BOOKABLE_BLACKED', 'booking/blacked'],
             ];
         }
 
@@ -549,11 +549,6 @@ class Module_cms_booking_supplements extends Standard_crud_module
     public function get_form_fields(?array $details = null, array $bookables = []) : array
     {
         if ($details === null) {
-            $max_sort_order = $GLOBALS['SITE_DB']->query_select_value('bookable_supplement', 'MAX(sort_order)');
-            if ($max_sort_order === null) {
-                $max_sort_order = 0;
-            }
-
             $details = [
                 'price' => 0.00,
                 'price_is_per_period' => 0,
@@ -1045,15 +1040,21 @@ class Module_cms_booking_bookings extends Standard_crud_module
         if ($details === null) {
             $bookable_id = get_param_integer('bookable_id', null);
             if ($bookable_id === null) {
-                $bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], [], 'ORDER BY sort_order');
-                if (empty($bookables)) {
-                    inform_exit(do_lang_tempcode('NO_CATEGORIES'));
-                }
-
                 $bookables_list = new Tempcode();
-                foreach ($bookables as $bookable) {
-                    $bookables_list->attach(form_input_list_entry(strval($bookable['id']), false, get_translated_text($bookable['title'])));
-                }
+                $max = 50;
+                $start = 0;
+
+                do {
+                    $bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], [], 'ORDER BY sort_order', $max, $start);
+                    if (empty($bookables)) {
+                        inform_exit(do_lang_tempcode('NO_CATEGORIES'));
+                    }
+
+                    foreach ($bookables as $bookable) {
+                        $bookables_list->attach(form_input_list_entry(strval($bookable['id']), false, get_translated_text($bookable['title'])));
+                    }
+                    $start += $max;
+                } while (!empty($bookables));
 
                 $fields = form_input_huge_list(do_lang_tempcode('BOOKABLE'), '', 'bookable_id', $bookables_list, null, true);
                 $post_url = get_self_url(false, false, [], false, true);
@@ -1224,6 +1225,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
 
         // Find $i by loading all member requests and finding which one this is contained in
         $request = get_member_booking_request($member_id);
+        $i = null;
         foreach ($request as $i => $r) {
             foreach ($r['_rows'] as $row) {
                 if ($row['id'] == $request[0]['_rows'][0]['id']) {
@@ -1232,8 +1234,12 @@ class Module_cms_booking_bookings extends Standard_crud_module
             }
         }
 
+        if ($i === null) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
         if (get_option('member_booking_only') == '0') {
-            return strval($request[0]['_rows'][0]['id']);
+            return [strval($request[0]['_rows'][0]['id'])];
         }
 
         return [strval($member_id) . '_' . strval($i), null];

@@ -87,6 +87,8 @@ class CMSSubscriptionRead
             $start
         );
 
+        $topics = [];
+        $total = 0;
         if (!empty($_notifications)) {
             $notifications = '';
             foreach ($_notifications as $notification) {
@@ -104,18 +106,20 @@ class CMSSubscriptionRead
                 $sql .= 'AND t_validated=1 ';
             }
             $sql .= 'ORDER BY t_cache_first_time';
-            $_topics = $GLOBALS['FORUM_DB']->query('SELECT *,t.id AS topic_id,p.id AS post_id,f.id AS forum_id' . $sql);
-
             $total = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*)' . $sql);
-        } else {
-            $_topics = [];
 
-            $total = 0;
-        }
+            $max = 25;
+            $start = 0;
 
-        $topics = [];
-        foreach ($_topics as $topic) {
-            $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic, RENDER_TOPIC_POST_KEY_NAME);
+            do {
+                $_topics = $GLOBALS['FORUM_DB']->query('SELECT *,t.id AS topic_id,p.id AS post_id,f.id AS forum_id' . $sql, $max, $start);
+
+                foreach ($_topics as $topic) {
+                    $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic, RENDER_TOPIC_POST_KEY_NAME);
+                }
+
+                $start += $max;
+            } while (!empty($_topics));
         }
 
         return [$total, $topics];

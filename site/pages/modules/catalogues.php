@@ -1007,9 +1007,6 @@ class Module_catalogues
     {
         $catalogue_name = $this->catalogue_name;
         $catalogue = $this->catalogue;
-        $description_2 = $this->description_2;
-        $title_to_use = $this->title_to_use;
-        $title_to_use_2 = $this->title_to_use_2;
 
         // Description
         $description = get_translated_tempcode('catalogues', $catalogue, 'c_description');
@@ -1028,18 +1025,25 @@ class Module_catalogues
         } elseif ($_sort == 'recent') {
             $sort = 'cc_add_date ' . $_dir;
         }
-        $rows_subcategories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['*'], ['c_name' => $catalogue_name], 'ORDER BY ' . $sort);
 
-        // Render categories
-        // Not done via main_multi_content block due to need for custom query
+        $max = 25;
+        $start = 0;
         $content = new Tempcode();
-        foreach ($rows_subcategories as $myrow) {
-            if ((get_value('disable_cat_cat_perms') !== '1') && (!has_category_access(get_member(), 'catalogues_category', strval($myrow['id'])))) {
-                continue;
+        do {
+            $rows_subcategories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['*'], ['c_name' => $catalogue_name], 'ORDER BY ' . $sort, $max, $start);
+
+            // Render categories
+            // Not done via main_multi_content block due to need for custom query
+            foreach ($rows_subcategories as $myrow) {
+                if ((get_value('disable_cat_cat_perms') !== '1') && (!has_category_access(get_member(), 'catalogues_category', strval($myrow['id'])))) {
+                    continue;
+                }
+
+                $content->attach(render_catalogue_category_box($myrow, '_SELF', false, false, null, true));
             }
 
-            $content->attach(render_catalogue_category_box($myrow, '_SELF', false, false, null, true));
-        }
+            $start += $max;
+        } while (!empty($rows_subcategories));
 
         // Management links
         $edit_url = build_url(['page' => 'cms_catalogues', 'type' => '_edit_catalogue', 'id' => $catalogue_name], get_module_zone('cms_catalogues'));
@@ -1214,9 +1218,6 @@ class Module_catalogues
         $id = $this->id;
         $category = $this->category;
         $catalogue_name = $this->catalogue_name;
-        $root = $this->root;
-        $title_to_use = $this->title_to_use;
-        $title_to_use_2 = $this->title_to_use_2;
         $is_ecommerce = $this->is_ecommerce;
         $catalogue = $this->catalogue;
         $_title = $this->_title;

@@ -358,7 +358,6 @@ class Module_downloads
 
             // Images in associated gallery
             $images_details = new Tempcode();
-            $image_url = '';
             $counter = 0;
             if (addon_installed('galleries')) {
                 // Images
@@ -465,7 +464,6 @@ class Module_downloads
     public function view_category_screen() : object
     {
         $category_id = $this->category_id;
-        $root = $this->root;
         $category = $this->category;
 
         $description = get_translated_tempcode('download_categories', $category, 'the_description');
@@ -627,8 +625,6 @@ class Module_downloads
                 $letter = strval($letter); // Numbers come out as numbers not strings, even if they went in as strings- darned PHP
             }
 
-            $has_download = false;
-
             $data = [];
             $data['CAT_TITLE'] = $letter;
             $data['LETTER'] = $letter;
@@ -637,7 +633,6 @@ class Module_downloads
 
             foreach ($rows as $myrow) {
                 $out->attach(render_download_box($myrow, true, true/*breadcrumbs?*/, null, null, false/*context?*/));
-                $has_download = true;
             }
 
             $data['DOWNLOADS'] = $out;
@@ -686,7 +681,6 @@ class Module_downloads
         $name = $this->name;
         $images_details = $this->images_details;
         $num_images = $this->num_images;
-        $root = $this->root;
 
         // Feedback
         list($rating_details, $comment_details, $trackback_details) = embed_feedback_systems(
@@ -770,7 +764,6 @@ class Module_downloads
 
         // Licence
         $licence_title = null;
-        $licence_url = null;
         $licence_hyperlink = null;
         $licence = $myrow['download_licence'];
         if ($licence !== null) {

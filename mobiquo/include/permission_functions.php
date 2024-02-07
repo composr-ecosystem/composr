@@ -68,11 +68,10 @@ function action_assessment_forum(array $forum_details, ?int $member_id = null) :
     $can_post = (cns_may_post_topic($forum_details['forum_id'], $member_id)) && ($forum_details['f_redirection'] == '');
     $can_upload = (cns_get_member_best_group_property($member_id, 'max_attachments_per_post') > 0);
 
-    $ret = [
+    return [
         'can_post' => $can_post,
         'can_upload' => $can_upload,
     ];
-    return $ret;
 }
 
 /**
@@ -118,10 +117,9 @@ function moderation_assessment_topic(array $topic_details, ?int $member_id = nul
  *
  * @param  array $post_details Post details
  * @param  ?MEMBER $member_id Member involved (null: current member)
- * @param  integer $behaviour_modifiers A bitmask of RENDER_POST_* settings
  * @return array Details of capabilities
  */
-function moderation_assessment_post(array $post_details, ?int $member_id = null, int $behaviour_modifiers = 0) : array
+function moderation_assessment_post(array $post_details, ?int $member_id = null) : array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -296,7 +294,7 @@ function can_approve(string $type, int $id, ?int $member_id = null, ?array $deta
             } else {
                 $topic_details = $details;
             }
-            return !is_guest($member_id) && $topic_details['t_cache_first_member_id'] == $member_id && has_privilege($member_id, 'bypass_validation_midrange_content', 'topics') || can_moderate_topic($topic_details['topic_id'], $member_id, $topic_details);
+            return (!is_guest($member_id) && ($topic_details['t_cache_first_member_id'] == $member_id) && has_privilege($member_id, 'bypass_validation_midrange_content', 'topics')) || can_moderate_topic($topic_details['topic_id'], $member_id, $topic_details);
 
         case 'post':
             if ($details === null) {
@@ -309,7 +307,7 @@ function can_approve(string $type, int $id, ?int $member_id = null, ?array $deta
             } else {
                 $post_details = $details;
             }
-            return !is_guest($member_id) && $post_details['p_poster'] == $member_id && has_privilege($member_id, 'bypass_validation_lowrange_content', 'topics') || can_moderate_topic($post_details['topic_id'], $member_id, $post_details);
+            return (!is_guest($member_id) && ($post_details['p_poster'] == $member_id) && has_privilege($member_id, 'bypass_validation_lowrange_content', 'topics')) || can_moderate_topic($post_details['topic_id'], $member_id, $post_details);
     }
 
     return false;

@@ -50,7 +50,7 @@ class CMSPtRead
         $topics = [];
         foreach ($_topics as $topic) {
             $p_time_low = db_function('COALESCE', ['(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0']);
-            $extra = ' AND p_time>' . $p_time_low . ' AND p_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days')));
+            $extra = ' AND p_time>' . $p_time_low . ' AND p_time>' . strval(time() - (60 * 60 * 24 * intval(get_option('post_read_history_days'))));
             $unread_num = $GLOBALS['FORUM_DB']->query_select_value('f_posts p', 'COUNT(*)', ['p.p_topic_id' => $topic['topic_id']], $extra);
 
             $participants = get_topic_participants($topic['topic_id'], null, $topic);
@@ -127,7 +127,7 @@ class CMSPtRead
         $last_read_sql = db_function('COALESCE', ['(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0']);
 
         $extra = ' AND p_time>' . db_function('GREATEST', [
-            strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))),
+            strval(time() - (60 * 60 * 24 * intval(get_option('post_read_history_days')))),
             $last_read_sql,
         ]);
         $unread_num = $GLOBALS['FORUM_DB']->query_select_value('f_posts p', 'COUNT(*)', ['p.p_topic_id' => $topic_id], $extra);
@@ -201,7 +201,6 @@ class CMSPtRead
         $post_object = new CMSPostRead();
         $post_details = $post_object->get_raw_post($post_id);
 
-        $quote_content = '[quote="' . addslashes($post_details['post_username']) . '"]' . $post_details['post_content'] . "[/quote]\n";
-        return $quote_content;
+        return '[quote="' . addslashes($post_details['post_username']) . '"]' . $post_details['post_content'] . "[/quote]\n";
     }
 }

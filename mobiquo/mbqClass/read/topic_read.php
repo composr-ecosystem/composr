@@ -250,7 +250,7 @@ class CMSTopicRead
             $subquery .= 'l_topic_id=t.id AND ';
             $subquery .= 'l_time>=t_cache_last_time';
 
-            $conditions[] = 't_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' AND NOT EXISTS(' . $subquery . ')';
+            $conditions[] = 't_cache_last_time>' . strval(time() - (60 * 60 * 24 * intval(get_option('post_read_history_days')))) . ' AND NOT EXISTS(' . $subquery . ')';
         }
 
         // Only participated ones?

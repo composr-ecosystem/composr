@@ -324,10 +324,9 @@ class Module_wiki
             if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                 $where_map['validated'] = 1;
             }
+
             $db_posts = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['*'], $where_map, 'ORDER BY date_and_time', intval(get_option('general_safety_listing_limit')));
             $num_posts = count($db_posts);
-
-            $description_comcode = get_translated_text($page['the_description']);
 
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:wiki:browse:' . strval($page['id']),
@@ -391,11 +390,11 @@ class Module_wiki
             }
         }
 
-        if ($type == 'merge' || $type == '_merge') {
+        if (($type == 'merge') || ($type == '_merge')) {
             $this->title = get_screen_title('MERGE_WIKI_POSTS');
         }
 
-        if ($type == 'move' || $type == '_move') {
+        if (($type == 'move') || ($type == '_move')) {
             $this->title = get_screen_title('WIKI_MOVE_POST');
         }
 
@@ -461,14 +460,28 @@ class Module_wiki
         attach_message(do_lang_tempcode('TAKEN_RANDOM_WIKI_PAGE'), 'inform');
 
         $num_pages = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'MAX(id)');
+        $tried = [];
+        $iterations = 0;
         if ($num_pages <= db_get_first_id()) {
             $id = $num_pages;
         } else {
-            $pages = [];
-            do { // Loop. picking random pages between 0 and max-id till we find one that exists
+            do { // TODO: Needs further optimisation
+                $page = null;
+
+                if ($iterations >= 10000) { // We tried enough times; fall back to the most recent page
+                    $id = $num_pages;
+                    break;
+                }
                 $id = mt_rand(db_get_first_id(), $num_pages);
-                $pages = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['*'], ['id' => $id], '', 1);
-            } while (!array_key_exists(0, $pages));
+                if (isset($tried[$id])) {
+                    $iterations++;
+                    continue;
+                }
+
+                $tried[$id] = true;
+                $page = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'id', ['id' => $id]);
+                $iterations += 10; // Count a DB query as 10 iterations as queries are much more resource intensive than simple array checks
+            } while ($page === null);
         }
         $redir_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $id], '_SELF');
         return redirect_screen(get_screen_title('RANDOM_PAGE'), $redir_url);
@@ -485,8 +498,6 @@ class Module_wiki
         $chain = $this->chain;
         $page = $this->page;
         $current_title = $this->current_title;
-        $title_to_use = $this->title_to_use;
-        $title_to_use_2 = $this->title_to_use_2;
         $db_posts = $this->db_posts;
         $num_posts = $this->num_posts;
 
@@ -509,10 +520,8 @@ class Module_wiki
 
         // Description
         $description = get_translated_tempcode('wiki_pages', $page, 'the_description');
-        $description_comcode = get_translated_text($page['the_description']);
 
         // Child Links
-        $num_children = 0;
         $children = [];
         if (get_option('wiki_enable_children') == '1') {
             $children_rows = $GLOBALS['SITE_DB']->query_select('wiki_children c LEFT JOIN ' . get_table_prefix() . 'wiki_pages p ON c.child_id=p.id', ['child_id', 'c.title', 'show_posts', 'the_description'], ['c.parent_id' => $id], 'ORDER BY c.the_order');
@@ -550,8 +559,6 @@ class Module_wiki
                     'BODY_CONTENT' => (trim($child_description) != '') ? strval(strlen($child_description)) : '0',
                     'SHOW_POSTS' => $myrow['show_posts'] == 1,
                 ];
-
-                $num_children++;
             }
         }
 
@@ -559,7 +566,6 @@ class Module_wiki
 
         // Main text (posts)
         $posts = new Tempcode();
-        $include_expansion = (strpos($description_comcode, '[attachment') !== false);
         foreach ($db_posts as $myrow) {
             // Work out posters details
             $poster = $myrow['member_id'];
@@ -583,9 +589,6 @@ class Module_wiki
             // Display the post then ;)
             $post_comcode = get_translated_text($myrow['the_message']);
             $include_expansion_here = (strpos($post_comcode, '[attachment') !== false);
-            if ($include_expansion_here) {
-                $include_expansion = true;
-            }
             $post = get_translated_tempcode('wiki_posts', $myrow, 'the_message');
             if ((has_edit_permission('low', get_member(), $poster, 'cms_wiki', ['wiki_page', $id])) && (($id != db_get_first_id()) || (has_privilege(get_member(), 'feature')))) {
                 $edit_url = build_url(['page' => '_SELF', 'type' => 'post', 'id' => $chain, 'post_id' => $post_id], '_SELF');
@@ -626,7 +629,7 @@ class Module_wiki
             attach_message(do_lang_tempcode('TOO_MANY_WIKI_POSTS'), 'warn');
         }
 
-        $buttons = $this->_render_screen_buttons($chain, $id, $include_expansion, $num_posts < intval(get_option('general_safety_listing_limit')));
+        $buttons = $this->_render_screen_buttons($chain, $id, $num_posts < intval(get_option('general_safety_listing_limit')));
 
         return do_template('WIKI_PAGE_SCREEN', [
             '_GUID' => '1840d6934be3344c4f93a159fc737a45',
@@ -652,14 +655,11 @@ class Module_wiki
      *
      * @param  SHORT_TEXT $chain The ID chain being used to get to this page
      * @param  AUTO_LINK $id The ID of the page we are showing the menu on
-     * @param  boolean $include_expansion Whether to include the expansion/contraction button
      * @param  boolean $may_post Whether posting is generally allowed (may be passed false if too many posts)
      * @return Tempcode The button Tempcode
      */
-    public function _render_screen_buttons(string $chain, int $id, bool $include_expansion, bool $may_post = true) : object
+    public function _render_screen_buttons(string $chain, int $id, bool $may_post = true) : object
     {
-        $page_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $chain], '_SELF');
-
         /*if ((addon_installed('search')) && (has_actual_page_access(get_member(),'search'))) { // Not enough space
             $search_url = build_url(['page' => 'search', 'type' => 'browse', 'id' => 'wiki_posts', 'search_under' => $id], get_module_zone('search'));
             $search_button = do_template('BUTTON_SCREEN', [
@@ -672,6 +672,7 @@ class Module_wiki
             ]);
         } else */
         $search_button = new Tempcode();
+        $revisions_button = new Tempcode();
 
         if (addon_installed('actionlog')) {
             $revisions_url = build_url(['page' => '_SELF', 'type' => 'revisions', 'id' => $chain], '_SELF');
@@ -1089,12 +1090,10 @@ class Module_wiki
 
             $submit_name = do_lang_tempcode('MAKE_POST');
 
-            $validated = 1;
-
             list($warning_details, $ping_url) = [null, null];
 
             if (has_privilege(get_member(), 'bypass_validation_lowrange_content', 'cms_wiki')) {
-                $specialisation2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', $validated == 1));
+                $specialisation2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', true));
             }
 
             require_code('content2');
@@ -1117,7 +1116,7 @@ class Module_wiki
         if (addon_installed('actionlog')) {
             require_code('revisions_engine_database');
             $revision_engine = new RevisionEngineDatabase(false);
-            $notify = ($revision_engine->find_most_recent_category_change('wiki_post', strval($page_id)) < time() - 60 * 10);
+            $notify = ($revision_engine->find_most_recent_category_change('wiki_post', strval($page_id)) < time() - (60 * 10));
         } else {
             $notify = true;
         }
@@ -1145,15 +1144,9 @@ class Module_wiki
         if (addon_installed('awards')) {
             require_code('awards');
             $specialisation2->attach(get_award_fields('wiki_post', ($post_id === null) ? null : strval($post_id)));
-        } else {
-            $awards = [];
         }
 
         $message = post_param_string('message', $message);
-
-        $chain = $this->chain;
-
-        $breadcrumbs = breadcrumb_segments_to_tempcode(wiki_breadcrumbs($chain, null, true, true));
 
         $_redir_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => get_param_string('id', strval($page_id), INPUT_FILTER_GET_COMPLEX)], '_SELF');
         $post_url = build_url(['page' => '_SELF', 'type' => '_post', 'id' => get_param_string('id', strval(db_get_first_id()), INPUT_FILTER_GET_COMPLEX), 'redirect' => protect_url_parameter($_redir_url)], '_SELF');
@@ -1197,12 +1190,11 @@ class Module_wiki
 
         $_id = get_param_wiki_chain('id');
         $id = $_id[0];
+        $delete = 0;
         if ($mode == 'edit') {
             $delete = post_param_integer('delete', 0);
-        } else {
-            if ($GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'COUNT(*)', ['id' => $id]) >= intval(get_option('general_safety_listing_limit'))) {
-                warn_exit(do_lang_tempcode('TOO_MANY_WIKI_POSTS'));
-            }
+        } elseif ($GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'COUNT(*)', ['id' => $id]) >= intval(get_option('general_safety_listing_limit'))) {
+            warn_exit(do_lang_tempcode('TOO_MANY_WIKI_POSTS'));
         }
 
         // Post Text

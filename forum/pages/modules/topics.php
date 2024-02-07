@@ -152,7 +152,7 @@ class Module_topics
             inform_non_canonical_parameter('intended_solely_for');
         }
 
-        if ($type == 'browse' || $type == 'whisper' || $type == 'report_post' || $type == 'delete_post' || $type == 'new_post' || $type == 'edit_post' || $type == 'validate_post' || $type == 'new_topic') {
+        if (($type == 'browse') || ($type == 'whisper') || ($type == 'report_post') || ($type == 'delete_post') || ($type == 'new_post') || ($type == 'edit_post') || ($type == 'validate_post') || ($type == 'new_topic')) {
             // Bot (which runs as a dum guest) could conceivably try and index these things and we don't want that
             attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
         }
@@ -553,7 +553,6 @@ class Module_topics
         $hidden = $this->keep_markers();
 
         $set_name = 'destination';
-        $required = true;
         $set_title = do_lang_tempcode('DESTINATION_TOPIC');
         $field_set = alternate_fields_set__start($set_name);
 
@@ -561,7 +560,7 @@ class Module_topics
 
         $field_set->attach(form_input_line(do_lang_tempcode('DESTINATION_TOPIC_ID'), do_lang_tempcode('DESCRIPTION_DESTINATION_TOPIC'), 'manual_topic_id', null, false));
 
-        $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
+        $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, true));
 
         $fields->attach(form_input_tick(do_lang_tempcode('DELETE_IF_EMPTY'), do_lang_tempcode('DESCRIPTION_DELETE_IF_EMPTY'), 'delete_if_empty', true));
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON'), 'reason', '', false));
@@ -742,7 +741,7 @@ class Module_topics
         if ($last_time === null) {
             return true;
         }
-        $too_old = $last_time < time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'));
+        $too_old = $last_time < (time() - (60 * 60 * 24 * intval(get_option('post_read_history_days'))));
         if (!$too_old) {
             if (!$GLOBALS['FORUM_DB']->table_is_locked('f_read_logs')) {
                 $GLOBALS['FORUM_DB']->query_delete('f_read_logs', ['l_topic_id' => $topic_id, 'l_member_id' => get_member()], '', 1);
@@ -1255,6 +1254,7 @@ class Module_topics
         }
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
+        $forum_id = null;
         foreach ($topics as $topic_id) {
             $forum_id = cns_delete_topic($topic_id, post_param_string('reason'), null, true, $reverse_point_transaction);
         }
@@ -1372,7 +1372,6 @@ class Module_topics
         }
 
         $set_name = 'category';
-        $required = true;
         $set_title = do_lang_tempcode('CATEGORY');
         $field_set = alternate_fields_set__start($set_name);
 
@@ -1380,7 +1379,7 @@ class Module_topics
 
         $field_set->attach(form_input_line(do_lang_tempcode('NEW'), '', 'category_b', '', false));
 
-        $fields->attach(alternate_fields_set__end($set_name, $set_title, do_lang_tempcode('DESCRIPTION_CATEGORY'), $field_set, $required));
+        $fields->attach(alternate_fields_set__end($set_name, $set_title, do_lang_tempcode('DESCRIPTION_CATEGORY'), $field_set, true));
 
         $hidden = $this->keep_markers();
 
@@ -1642,12 +1641,12 @@ class Module_topics
         }
 
         $staff_help_url = null;
+        $username = false;
 
         // Breadcrumbs etc
         if ($private_topic) {
             breadcrumb_set_parents([['_SEARCH:forumview:pt', do_lang_tempcode('PRIVATE_TOPICS')]]);
 
-            $username = mixed();
             $username = ($member_id == get_member()) ? false : $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_ERROR);
         } else {
             if ($forum_id !== null) {
@@ -1707,7 +1706,7 @@ class Module_topics
             $threaded = false;
         } else {
             $hidden_fields->attach(form_input_hidden('forum_id', strval($forum_id)));
-            $_threaded = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_is_threaded', ['id' => $forum_id]) == 1);
+            $_threaded = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_is_threaded', ['id' => $forum_id]);
             if ($_threaded === null) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'forum'));
             }
@@ -1765,9 +1764,7 @@ class Module_topics
                     do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'topic'),
                 ];
             }
-            if (!$private_topic) {
-                $moderation_options[] = [do_lang_tempcode('CASCADING'), 'cascading', false, do_lang_tempcode('DESCRIPTION_CASCADING')];
-            }
+            $moderation_options[] = [do_lang_tempcode('CASCADING'), 'cascading', false, do_lang_tempcode('DESCRIPTION_CASCADING')];
             if (addon_installed('calendar')) {
                 $specialisation2->attach(form_input_date__cron(do_lang_tempcode('CNS_PUBLICATION_TIME'), do_lang_tempcode('CNS_DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, true, true));
             }
@@ -1966,9 +1963,9 @@ class Module_topics
         $topic_id = get_param_integer('id');
         $parent_id = either_param_integer('parent_id', null);
         $intended_solely_for = get_param_integer('intended_solely_for', null);
-        $post = mixed();
-        $post = post_param_string('post', null); // Copy existing post into box (from quick reply 'more options' button)
-        if ($post === null) {
+        $_post = post_param_string('post', null); // Copy existing post into box (from quick reply 'more options' button)
+        $post = new Tempcode();
+        if ($_post === null) {
             $quotes = [];
             $quote = get_param_integer('quote', null);
             if ($quote === null) {
@@ -2074,7 +2071,7 @@ class Module_topics
         if ($forum_id !== null) {
             $post_templates = $this->post_templates($forum_id);
             $specialisation->attach($post_templates[0]);
-            if (((is_object($post)) && ($post->is_empty())) || ($post === '')) {
+            if ($post->is_empty()) {
                 $post = $post_templates[1];
             }
         }
@@ -2271,8 +2268,7 @@ class Module_topics
     public function _add_reply() : object // Type
     {
         $info = $this->_add_reply_and_return_info();
-        $tempcode = $info['output'];
-        return $tempcode;
+        return $info['output'];
     }
 
     /**
@@ -2348,7 +2344,6 @@ class Module_topics
         }
         $title = substr($title, 0, 255); // Spambots may bypass normal UI restriction, and we don't want a crash
 
-        $check_permissions = true;
         $topic_validated = $validated;
         $anonymous = post_param_integer('anonymous', 0);
         $poster_name_if_guest = cns_get_safe_specified_poster_name();
@@ -2374,6 +2369,8 @@ class Module_topics
 
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
+
+        $first_post = $new_topic;
         if ($new_topic) { // A new topic
             cns_check_post($post);
 
@@ -2421,8 +2418,6 @@ class Module_topics
                 $first_post = true;
                 $_title = get_screen_title('ADD_TOPIC');
 
-                $_topic_id = strval($topic_id);
-
                 $schedule = post_param_date('schedule');
 
                 if (($schedule !== null) && (addon_installed('calendar'))) {
@@ -2453,7 +2448,6 @@ class Module_topics
             }
         } else {
             $_title = get_screen_title('ADD_POST');
-            $first_post = false;
 
             $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_title', 't_forum_id', 't_is_open', 't_description'], ['id' => $topic_id], '', 1);
             if (!array_key_exists(0, $_topic_info)) {
@@ -2494,7 +2488,7 @@ class Module_topics
                 }
 
                 if (($schedule !== null) && (addon_installed('calendar'))) {
-                    $parameters = [$forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, get_member(), get_ip_address()];
+                    $parameters = [$forum_id, $title, $post, $skip_sig, false, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, get_member(), get_ip_address()];
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));
                     $start_month = intval(date('m', $schedule));
@@ -2506,9 +2500,9 @@ class Module_topics
 
                     $text = do_lang_tempcode('SUCCESS');
                     $map = ['page' => 'topicview', 'type' => 'first_unread', 'id' => $topic_id];
-                    $test = get_param_string('kfs' . (($forum_id === null) ? '' : strval($forum_id)), null, INPUT_FILTER_GET_COMPLEX);
+                    $test = get_param_string('kfs' . strval($forum_id), null, INPUT_FILTER_GET_COMPLEX);
                     if (($test !== null) && ($test !== '0')) {
-                        $map['kfs' . (($forum_id === null) ? '' : strval($forum_id))] = $test;
+                        $map['kfs' . strval($forum_id)] = $test;
                     }
                     $test_threaded = get_param_integer('threaded', null);
                     if ($test_threaded !== null) {
@@ -2518,15 +2512,13 @@ class Module_topics
                     $url = $_url->evaluate();
                     $url = get_param_string('redirect', $url, INPUT_FILTER_URL_INTERNAL);
 
-                    $info = [
-                        'forum_id'  => $forum_id,
-                        'topic_id'  => $topic_id,
-                        'post_id'   => null,
+                    return [
+                        'forum_id' => $forum_id,
+                        'topic_id' => $topic_id,
+                        'post_id' => null,
                         'member_id' => $member_id,
                         'output' => redirect_screen($_title, $url, $text),
                     ];
-
-                    return $info;
                 }
             }
         }
@@ -2539,7 +2531,7 @@ class Module_topics
             if (addon_installed('tickets')) {
                 require_code('tickets');
                 if (is_ticket_forum($forum_id)) {
-                    if ($metadata['submitter'] === null || $metadata['submitter'] == get_member()) {
+                    if (($metadata['submitter'] === null) || ($metadata['submitter'] == get_member())) {
                         $metadata['submitter'] = get_active_support_user();
                         if ($poster_name_if_guest == $GLOBALS['FORUM_DRIVER']->get_username(get_member(), false, USERNAME_DEFAULT_BLANK)) {
                             $poster_name_if_guest = $GLOBALS['FORUM_DRIVER']->get_username($metadata['submitter']);
@@ -2549,7 +2541,7 @@ class Module_topics
             }
         }
 
-        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, $validated, $is_emphasised, $poster_name_if_guest, null, $metadata['add_time'], $metadata['submitter'], $intended_solely_for, null, null, $check_permissions, true, null, true, $topic_title, null, $anonymous == 1, $forum_id === null || ($forum_id === null), $forum_id === null || ($forum_id === null), false, $parent_id);
+        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, $validated, $is_emphasised, $poster_name_if_guest, null, $metadata['add_time'], $metadata['submitter'], $intended_solely_for, null, null, true, true, null, true, $topic_title, null, $anonymous == 1, ($forum_id === null), ($forum_id === null), false, $parent_id);
 
         set_url_moniker('post', strval($post_id));
 
@@ -2577,23 +2569,21 @@ class Module_topics
         if ($rep_post_id !== null) {
             require_code('cns_topicview');
             $url = find_post_id_url($rep_post_id);
+        } elseif ($validated != 0) {
+            require_code('cns_topicview');
+            $url = find_post_id_url($post_id);
         } else {
-            if ($validated != 0) {
-                require_code('cns_topicview');
-                $url = find_post_id_url($post_id);
-            } else {
-                $map = ['page' => 'topicview', 'type' => 'findpost', 'id' => $post_id];
-                $test = get_param_string('kfs' . (($forum_id === null) ? '' : strval($forum_id)), null, INPUT_FILTER_GET_COMPLEX);
-                if (($test !== null) && ($test !== '0')) {
-                    $map['kfs' . (($forum_id === null) ? '' : strval($forum_id))] = $test;
-                }
-                $test_threaded = get_param_integer('threaded', null);
-                if ($test_threaded !== null) {
-                    $map['threaded'] = $test_threaded;
-                }
-                $_url = build_url($map, get_module_zone('topicview'), [], false, false, false, 'post_' . strval($post_id));
-                $url = $_url->evaluate();
+            $map = ['page' => 'topicview', 'type' => 'findpost', 'id' => $post_id];
+            $test = get_param_string('kfs' . (($forum_id === null) ? '' : strval($forum_id)), null, INPUT_FILTER_GET_COMPLEX);
+            if (($test !== null) && ($test !== '0')) {
+                $map['kfs' . (($forum_id === null) ? '' : strval($forum_id))] = $test;
             }
+            $test_threaded = get_param_integer('threaded', null);
+            if ($test_threaded !== null) {
+                $map['threaded'] = $test_threaded;
+            }
+            $_url = build_url($map, get_module_zone('topicview'), [], false, false, false, 'post_' . strval($post_id));
+            $url = $_url->evaluate();
         }
 
         $text = ($validated == 1) ? do_lang_tempcode('SUCCESS') : do_lang_tempcode('SUBMIT_NONVALIDATED_FORUM_POSTS');
@@ -2602,9 +2592,9 @@ class Module_topics
             $topic_validated = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_validated', ['id' => $topic_id]);
             if (($topic_validated == 0) && (!has_privilege(get_member(), 'jump_to_nonvalidated'))) {
                 $map = ['page' => 'forumview', 'id' => $forum_id];
-                $test = get_param_string('kfs' . (($forum_id === null) ? '' : strval($forum_id)), null, INPUT_FILTER_GET_COMPLEX);
+                $test = get_param_string('kfs' . strval($forum_id), null, INPUT_FILTER_GET_COMPLEX);
                 if (($test !== null) && ($test !== '0')) {
-                    $map['kfs' . (($forum_id === null) ? '' : strval($forum_id))] = $test;
+                    $map['kfs' . strval($forum_id)] = $test;
                 }
                 $test_threaded = get_param_integer('threaded', null);
                 if ($test_threaded !== null) {
@@ -2645,15 +2635,13 @@ class Module_topics
 
         $url = get_param_string('redirect', $url, INPUT_FILTER_URL_INTERNAL);
 
-        $info = [
-            'forum_id'  => $forum_id,
-            'topic_id'  => $topic_id,
-            'post_id'   => $post_id,
+        return [
+            'forum_id' => $forum_id,
+            'topic_id' => $topic_id,
+            'post_id' => $post_id,
             'member_id' => $member_id,
             'output' => redirect_screen($_title, $url, $text), // Show it worked / Refresh
         ];
-
-        return $info;
     }
 
     /**
@@ -2818,7 +2806,7 @@ class Module_topics
             }
             $ip = $post_rows[0]['p_ip_address'];
             $time = $post_rows[0]['p_time'];
-            $count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time>' . strval($time - 60 * 60 * 24) . ' AND p_time<' . strval($time + 60 * 60 * 24) . ' AND ' . db_string_equal_to('p_ip_address', $ip));
+            $count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time>' . strval($time - (60 * 60 * 24)) . ' AND p_time<' . strval($time + (60 * 60 * 24)) . ' AND ' . db_string_equal_to('p_ip_address', $ip));
             $_ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => get_ip_address()], get_module_zone('admin_lookup'));
             $ip_url = $_ip_url->evaluate();
             $text = paragraph(do_lang_tempcode('DELETE_POSTS_DESCRIPTION', escape_html(integer_format($count, 0)), escape_html($ip), escape_html($ip_url)));
@@ -2887,7 +2875,7 @@ class Module_topics
             $ip = $post_rows[0]['p_ip_address'];
             $time = $post_rows[0]['p_time'];
             $topic_id = $post_rows[0]['p_topic_id'];
-            $posts = $GLOBALS['FORUM_DB']->query('SELECT id,p_topic_id,p_title FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time>' . strval($time - 60 * 60 * 24) . ' AND p_time<' . strval($time + 60 * 60 * 24) . ' AND ' . db_string_equal_to('p_ip_address', $ip));
+            $posts = $GLOBALS['FORUM_DB']->query('SELECT id,p_topic_id,p_title FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time>' . strval($time - (60 * 60 * 24)) . ' AND p_time<' . strval($time + (60 * 60 * 24)) . ' AND ' . db_string_equal_to('p_ip_address', $ip));
 
             $post_id = post_param_integer('id', null);
             if ($post_id === null) {
@@ -3122,7 +3110,7 @@ class Module_topics
         }
 
         // Show point weighting tick (check) if points addon is installed and point weighting is enabled site-wide
-        if (addon_installed('points') && get_option('enable_poll_point_weighting') == '1') {
+        if (addon_installed('points') && (get_option('enable_poll_point_weighting') == '1')) {
             if ($_default_options['pointWeighting'] !== null) {
                 $options[] = [do_lang_tempcode('ENABLE_POLL_POINT_WEIGHTING'), 'point_weighting', $_default_options['pointWeighting'], do_lang_tempcode('DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING'), true];
             } else {
@@ -3140,20 +3128,13 @@ class Module_topics
             $schedule = post_param_date('schedule');
             $topic_id = get_param_integer('id', null);
 
-            // If we are editing a poll, keep the current poll closing time value
-            if (!$new_poll) {
+            if (!$new_poll) { // If we are editing a poll, keep the current poll closing time value
                 $actual_poll_closing_time = $poll_closing_time;
-
-            // If the XML votingPeriodHours is false, do not allow setting a closing time
-            } elseif ($_default_options['votingPeriodHours'] === false) {
+            } elseif ($_default_options['votingPeriodHours'] === false) { // If the XML votingPeriodHours is false, do not allow setting a closing time
                 $actual_poll_closing_time = null;
-
-            // If a topic scheduled time was provided, add votingPeriodHours to that
-            } elseif ($schedule !== null) {
+            } elseif ($schedule !== null) { // If a topic scheduled time was provided, add votingPeriodHours to that
                 $actual_poll_closing_time = $schedule + intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
-
-            // If a topic ID was provided, add votingPeriodHours to t_cache_first_time (in case we are editing a poll)
-            } elseif ($topic_id !== null) {
+            } elseif ($topic_id !== null) { // If a topic ID was provided, add votingPeriodHours to t_cache_first_time (in case we are editing a poll)
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (!array_key_exists(0, $_topic_info)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
@@ -3161,9 +3142,7 @@ class Module_topics
                 $topic_info = $_topic_info[0];
 
                 $actual_poll_closing_time = $topic_info['t_cache_first_time'] + intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
-
-            // Otherwise, add votingPeriodHours to the current time
-            } else {
+            } else { // Otherwise, add votingPeriodHours to the current time
                 $actual_poll_closing_time += intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
             }
             $fields->attach(form_input_date(do_lang_tempcode('VOTING_OPEN_UNTIL'), do_lang_tempcode('DESCRIPTION_VOTING_OPEN_UNTIL'), 'closing_time', false, $actual_poll_closing_time === null, true, $actual_poll_closing_time, 10, null, null, true, null, true, null, true));
@@ -3219,10 +3198,10 @@ class Module_topics
         }
 
         url_default_parameters__enable();
-        if ($topic_id === null && $forum_id === null) {
+        if (($topic_id === null) && ($forum_id === null)) {
             $fields->attach($this->get_poll_form_fields(null, true));
         } else {
-            if ($forum_id === null && $topic_id !== null) {
+            if (($forum_id === null) && ($topic_id !== null)) {
                 $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
             }
             $fields->attach($this->get_poll_form_fields($forum_id, true));
@@ -3393,7 +3372,7 @@ class Module_topics
             }
         }
 
-        if ($results['view_member_votes'] != 1 || $results['is_private'] == 1) {
+        if (($results['view_member_votes'] != 1) || ($results['is_private'] == 1)) {
             access_denied('I_ERROR');
         }
 
@@ -3435,7 +3414,7 @@ class Module_topics
                 ($vote['pv_date_time'] > 0) ? get_timezoned_date_time($vote['pv_date_time']) : do_lang_tempcode('UNKNOWN'),
                 results_table_member_cell($vote['pv_member_id']),
             ];
-            if (get_option('enable_poll_point_weighting') == '1' && $results['point_weighting'] == 1) {
+            if ((get_option('enable_poll_point_weighting') == '1') && ($results['point_weighting'] == 1)) {
                 $_row[] = do_template('CNS_TOPIC_POLL_VOTING_POWER', [
                     '_GUID' => 'cdcff35bdac710d4b03b3542bc1bb01a',
                     'GUID' => '690423ddee434df79de7bead4fb5e79e',
@@ -3464,7 +3443,6 @@ class Module_topics
             $pagination = new Tempcode();
         }
 
-        $title = new Tempcode();
         if ($answer_id !== null) {
             $title = get_screen_title('POLL_RESULTS_TABLE_OPTION', true, [$answers[0]['answer'], $results['question']]);
         } else {
@@ -3499,7 +3477,7 @@ class Module_topics
 
         if (!has_privilege(get_member(), 'exceed_post_edit_time_limit')) {
             $post_time = $post_details[0]['p_time'];
-            $time_left = ($post_time - time() + intval(get_option('edit_time_limit')) * 60);
+            $time_left = (($post_time - time()) + (intval(get_option('edit_time_limit')) * 60));
             attach_message(do_lang_tempcode('TIME_LEFT_TO_EDIT_POST', escape_html(display_time_period($time_left))), 'notice');
         }
 
@@ -3928,7 +3906,6 @@ class Module_topics
         $hidden->attach(build_keep_form_fields());
 
         $set_name = 'destination';
-        $required = false;
         $set_title = do_lang_tempcode('DESTINATION_TOPIC');
         $field_set = alternate_fields_set__start($set_name);
 
@@ -3936,7 +3913,7 @@ class Module_topics
 
         $field_set->attach(form_input_integer(do_lang_tempcode('DESTINATION_TOPIC_ID'), '', 'manual_topic_id', null, false));
 
-        $fields->attach(alternate_fields_set__end($set_name, $set_title, do_lang_tempcode('DESCRIPTION_DESTINATION_TOPIC'), $field_set, $required));
+        $fields->attach(alternate_fields_set__end($set_name, $set_title, do_lang_tempcode('DESCRIPTION_DESTINATION_TOPIC'), $field_set, false));
 
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON'), 'reason', '', false));
 
@@ -4189,7 +4166,6 @@ class Module_topics
         }
         $topic_info = $_topic_info[0];
 
-        $default_poll_options = [];
         $default_poll_options = cns_get_default_poll_options($topic_info['t_forum_id']);
         if ($default_poll_options['requireTopicPoll']) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -4609,7 +4585,7 @@ class Module_topics
     public function birthday() : object
     {
         $id = get_param_string('id');
-        $topic_id = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_first_time>' . strval(time() - 60 * 60 * 24 * 3) . ' AND ' . db_string_equal_to('t_cache_first_title', do_lang('HAPPY_BIRTHDAY_PERSON', $id)));
+        $topic_id = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_first_time>' . strval(time() - (60 * 60 * 24 * 3)) . ' AND ' . db_string_equal_to('t_cache_first_title', do_lang('HAPPY_BIRTHDAY_PERSON', $id)));
         if ($topic_id !== null) {
             $title = get_screen_title('VIEW_TOPIC');
             $url = $GLOBALS['FORUM_DRIVER']->topic_url($topic_id, '', true);

@@ -141,7 +141,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             set_helper_panel_text(comcode_lang_string('DOC_USERGROUP_SUBSCRIPTION'));
         }
 
-        if ($type == 'prices' || $type == '_prices') {
+        if (($type == 'prices') || ($type == '_prices')) {
             $this->title = get_screen_title('ECOM_PRODUCTS_MANAGE_INVENTORY');
         }
 
@@ -309,20 +309,21 @@ class Module_admin_ecommerce extends Standard_crud_module
         }
 
         $list = new Tempcode();
+        $default_groups = null;
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
         if (get_forum_type() == 'cns') {
             require_code('cns_groups');
             $default_groups = cns_get_all_default_groups(true, true);
         }
-        foreach ($groups as $id => $group) {
+        foreach ($groups as $_id => $group) {
             if (get_forum_type() == 'cns') {
-                if ((in_array($id, $default_groups)) && ($id !== $group_id)) {
+                if ((in_array($_id, $default_groups)) && ($_id !== $group_id)) {
                     continue;
                 }
             }
 
-            if ($id != $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                $list->attach(form_input_list_entry(strval($id), $id === $group_id, $group));
+            if ($_id != $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+                $list->attach(form_input_list_entry(strval($_id), $_id === $group_id, $group));
             }
         }
         $fields->attach(form_input_list(do_lang_tempcode('USERGROUP'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_GROUP'), 'group_id', $list));
@@ -448,18 +449,24 @@ class Module_admin_ecommerce extends Standard_crud_module
         }
         $r = $m[0];
 
-        $_mails = $db->query_select('f_usergroup_sub_mails', ['*'], ['m_usergroup_sub_id' => intval($id)], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('m_subject'));
-        $mails = [];
-        foreach ($_mails as $_mail) {
-            $mails[] = [
-                'subject' => get_translated_text($_mail['m_subject'], $db),
-                'body' => get_translated_text($_mail['m_body'], $db),
-                'ref_point' => $_mail['m_ref_point'],
-                'ref_point_offset' => $_mail['m_ref_point_offset'],
-            ];
-        }
+        $max = 20;
+        $start = 0;
 
-        $fields = $this->get_form_fields(
+        do {
+            $_mails = $db->query_select('f_usergroup_sub_mails', ['*'], ['m_usergroup_sub_id' => intval($id)], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('m_subject'), $max, $start);
+            $mails = [];
+            foreach ($_mails as $_mail) {
+                $mails[] = [
+                    'subject' => get_translated_text($_mail['m_subject'], $db),
+                    'body' => get_translated_text($_mail['m_body'], $db),
+                    'ref_point' => $_mail['m_ref_point'],
+                    'ref_point_offset' => $_mail['m_ref_point_offset'],
+                ];
+            }
+            $start += $max;
+        } while (!empty($_mails));
+
+        return $this->get_form_fields(
             get_translated_text($r['s_title'], $db),
             get_translated_text($r['s_description'], $db),
             $r['s_price'],
@@ -476,8 +483,6 @@ class Module_admin_ecommerce extends Standard_crud_module
             $mails,
             intval($id)
         );
-
-        return $fields;
     }
 
     /**
@@ -499,7 +504,7 @@ class Module_admin_ecommerce extends Standard_crud_module
                     $ref_point_offset = 0;
                     attach_message(do_lang_tempcode('SUBSCRIPTION_REF_POINT_OFFSET_NEGATIVE_ERROR'), 'warn');
                 }
-                if ($subject != '' && $body != '') {
+                if (($subject != '') && ($body != '')) {
                     $mails[] = [
                         'subject' => $subject,
                         'body' => $body,

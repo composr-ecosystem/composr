@@ -32,6 +32,9 @@ class ___bash_parser_test_set extends cms_test_case
             if (basename($path) == 'phpstub.php') {
                 continue;
             }
+            if (basename($path) == 'test_with_parse_error.php') { // Intentionally has an error in it
+                continue;
+            }
 
             cms_set_time_limit(5);
 

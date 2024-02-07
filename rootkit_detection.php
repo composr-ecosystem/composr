@@ -53,7 +53,7 @@ if (!function_exists('mysqli_connect')) {
 if ($type == '') {
     echo <<<END
         <p>Be warned that this is a tool for experts, who wish to take active extra measures to make sure their website is not hacked against their knowledge. This is the most ominous security problem for many, because it means that their own website could be spreading customer information or compromised software downloads. When we say this script is for experts, we mean it &ndash; this script is strictly separated from any other Composr file and thus stands alone without access to our quality and standards frameworks.</p>
-        <p>This detector will provide you with a portion of text that identifies the state of the most critical areas of Composr. You can then take the text, and save it in a file on your computer. You then run this tool again at a later date and use a tool such as <a href="http://winmerge.sourceforge.net/">WinMerge</a> to compare the results &ndash; seeing what has changed.</p>
+        <p>This detector will provide you with a portion of text that identifies the state of the most critical areas of Composr. You can then take the text, and save it in a file on your computer. You then run this tool again at a later date and use a tool such as <a href="https://winmerge.sourceforge.net/">WinMerge</a> to compare the results &ndash; seeing what has changed.</p>
         <p>This tool will not find out if areas of your site have been vandalised, because there is way too much information to scan and present for that to be viable. Instead, it focuses on compromised file systems, Composr permissions, and database-stored PHP/Commandr-Code. It only checks staff settings on the local Conversr, not on any other third-party forum.</p>
         <p>It is important that you upload a new copy of this script before you run it, in case this script itself has been compromised.</p>
         <p>This script may take some time to run, as it computes hashes over a large number of files. It requires the 'mysqli' extension for usage on a MySQL database. If a different database is being used, then custom changes will be required to this script.</p>
@@ -232,7 +232,7 @@ END;
     $results = nl2br(htmlentities($results));
     echo <<<END
         <p>This is the result of the scan. Please save this to your own computer somewhere secure, and if you have run this tool previously, run a diff between those results and these. It is up to you to interpret the results &ndash; basically the diff will tell you what has been added and changed, and if you see anything you cannot fully explain, you may wish to investigate. This tool has been designed to empower, and to some extent promote secure practice, but it is only really useful in expert hands (there's no point ocProducts making it easier, as the security principles and analysis involved require expert knowledge in itself).</p>
-        <div style="font-family: Courier; white-space: pre">{$results}</div>
+        <div style="font-family: Courier,serif; white-space: pre;">$results</div>
 END;
 }
 
@@ -287,7 +287,7 @@ END;
 
     <meta name="robots" content="noindex, nofollow" />
 </head>
-<body class="website-body" style="margin: 1em"><div class="global-middle">
+<body class="website-body" style="margin: 1em;"><div class="global-middle">
     <h1 class="screen-title">Composr rootkit detector</h1>
     <form title="Proceed" action="rootkit_detection.php?type=go" method="post">
 END;

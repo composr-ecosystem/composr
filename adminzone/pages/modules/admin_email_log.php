@@ -88,7 +88,7 @@ class Module_admin_email_log
             $this->title = get_screen_title('VIEW_SENT_MESSAGE');
         }
 
-        if ($type == 'edit' || $type == '_edit') {
+        if (($type == 'edit') || ($type == '_edit')) {
             $this->title = get_screen_title('HANDLE_QUEUED_MESSAGE');
         }
 
@@ -123,7 +123,7 @@ class Module_admin_email_log
             return $this->view();
         }
         if ($type == 'attachment') {
-            return $this->attachment();
+            $this->attachment();
         }
         if ($type == 'edit') {
             return $this->edit();
@@ -364,10 +364,8 @@ class Module_admin_email_log
 
     /**
      * View an attachment.
-     *
-     * @return Tempcode The result of execution
      */
-    public function attachment() : object
+    public function attachment()
     {
         $id = get_param_integer('id');
         $i = get_param_integer('i');
@@ -409,8 +407,6 @@ class Module_admin_email_log
 
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
         exit();
-
-        return new Tempcode();
     }
 
     /**
@@ -607,6 +603,7 @@ class Module_admin_email_log
 
         $max = 20;
         $start = 0;
+        $sent = 0;
 
         do {
             $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['*'], ['m_queued' => 1], 'ORDER BY m_date_and_time', $max, $start);
@@ -643,13 +640,14 @@ class Module_admin_email_log
                 );
             }
 
+            $sent += count($rows);
             $start += $max;
         } while (!empty($rows));
 
         $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['m_queued' => 1]);
 
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SENT_NUM', escape_html(integer_format(count($rows), 0))));
+        return redirect_screen($this->title, $url, do_lang_tempcode('SENT_NUM', escape_html(integer_format($sent, 0))));
     }
 
     /**

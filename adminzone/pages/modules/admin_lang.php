@@ -125,19 +125,18 @@ class Module_admin_lang
             }
             $lang_file = get_param_string('lang_file', '');
 
-            if ($lang == '' || $lang_file == '') {
+            if (($lang == '') || ($lang_file == '')) {
                 breadcrumb_set_self(do_lang_tempcode('TRANSLATE_CODE'));
 
                 $this->title = get_screen_title('TRANSLATE_CODE');
             } else {
                 $search = get_param_string('search', '', INPUT_FILTER_GET_COMPLEX);
+                breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE')]]);
                 if ($search != '') {
-                    breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE')]]);
                     breadcrumb_set_self(do_lang_tempcode('RESULTS'));
 
                     $this->title = get_screen_title('TRANSLATE_CODE');
                 } else {
-                    breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE')]]);
                     breadcrumb_set_self(do_lang_tempcode('FILE'));
 
                     $this->title = get_screen_title('_TRANSLATE_CODE', true, [escape_html($lang_file), escape_html(lookup_language_full_name($lang))]);
@@ -145,11 +144,11 @@ class Module_admin_lang
             }
         }
 
-        if ($type == 'content' || $type == '_content') {
+        if (($type == 'content') || ($type == '_content')) {
             $this->title = get_screen_title('TRANSLATE_CONTENT');
         }
 
-        if ($type == '_code' || $type == '_code2') {
+        if (($type == '_code') || ($type == '_code2')) {
             $this->title = get_screen_title('TRANSLATE_CODE');
         }
 
@@ -199,11 +198,10 @@ class Module_admin_lang
      * @param  boolean $choose_lang_file Whether to also choose a language file
      * @param  boolean $add_lang Whether the user may add a language
      * @param  mixed $text Text message to show, provided in HTML format (string or Tempcode)
-     * @param  boolean $provide_na Whether to provide an N/A choice
      * @param  ID_TEXT $param_name The name of the parameter for specifying language
      * @return Tempcode The UI
      */
-    public function choose_lang(object $title, bool $choose_lang_file = false, bool $add_lang = false, $text = '', bool $provide_na = true, string $param_name = 'lang') : object
+    public function choose_lang(object $title, bool $choose_lang_file = false, bool $add_lang = false, mixed $text = '', string $param_name = 'lang') : object
     {
         $langs = new Tempcode();
         $langs->attach(create_selection_list_langs(get_param_string('lang', null), $add_lang));
@@ -212,7 +210,6 @@ class Module_admin_lang
 
         if ($add_lang) {
             $set_name = 'language';
-            $required = true;
             $set_title = do_lang_tempcode('LANGUAGE');
             $field_set = alternate_fields_set__start($set_name);
 
@@ -220,14 +217,13 @@ class Module_admin_lang
 
             $field_set->attach(form_input_codename(do_lang_tempcode('NEW'), do_lang_tempcode('DESCRIPTION_NEW_LANG'), 'lang_new', '', false));
 
-            $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
+            $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, true));
         } else {
             $fields->attach(form_input_list(do_lang_tempcode('LANGUAGE'), do_lang_tempcode('DESCRIPTION_LANGUAGE'), $param_name, $langs, null, false, false));
         }
 
         if ($choose_lang_file) {
             $set_name = 'language_file';
-            $required = true;
             $set_title = do_lang_tempcode('LANGUAGE_FILE');
             $field_set = alternate_fields_set__start($set_name);
 
@@ -237,7 +233,7 @@ class Module_admin_lang
 
             $field_set->attach(form_input_line(do_lang('SEARCH'), '', 'search', '', false));
 
-            $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
+            $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, true));
         }
 
         $post_url = get_self_url(false, false, [], false, true);
@@ -299,7 +295,7 @@ class Module_admin_lang
     {
         $lang = get_param_string('crit_lang', '');
         if ($lang == '') {
-            return $this->choose_lang($this->title, false, false, do_lang_tempcode('CHOOSE_CRITICISE_LIST_LANG_FILE'), false, 'crit_lang');
+            return $this->choose_lang($this->title, false, false, do_lang_tempcode('CHOOSE_CRITICISE_LIST_LANG_FILE'), 'crit_lang');
         }
 
         $files = '';
@@ -313,9 +309,8 @@ class Module_admin_lang
         $lang_files_base = get_lang_files(fallback_lang());
         $lang_files_criticise = get_lang_files($lang);
 
+        $file = new Tempcode();
         foreach (array_keys($lang_files_base) as $file_base) {
-            $file = new Tempcode();
-
             if (array_key_exists($file_base, $lang_files_criticise)) {
                 // Process this file
                 $base_map = get_lang_file_map(fallback_lang(), $file_base, true);
@@ -607,7 +602,7 @@ class Module_admin_lang
         $lang_file = get_param_string('lang_file', '');
 
         // UI to pick a language and lang file
-        if ($lang == '' || $lang_file == '') {
+        if (($lang == '') || ($lang_file == '')) {
             $choose_message = do_lang_tempcode(
                 'CHOOSE_EDIT_LIST_LANG_FILE',
                 escape_html(get_site_default_lang()),
@@ -751,7 +746,7 @@ class Module_admin_lang
         $i = 0;
         $actions = new Tempcode();
         foreach ($for_base_lang + $for_lang as $name => $old) {
-            if ($i < $start || $i >= $start + $max) {
+            if (($i < $start) || ($i >= $start + $max)) {
                 $i++;
                 continue;
             }
@@ -907,7 +902,7 @@ class Module_admin_lang
             }
         }
 
-        if ($out != '' && $one_changed_from_saved) {
+        if (($out != '') && $one_changed_from_saved) {
             $path = get_custom_file_base() . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
 
             // Backup

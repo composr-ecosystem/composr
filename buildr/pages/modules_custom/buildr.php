@@ -484,6 +484,7 @@ class Module_buildr
                 $GLOBALS['SITE_DB']->query_update('w_members', ['trolled' => 0], ['id' => $member_id], '', 1);
 
                 if ($pass == 0) {
+                    $penalty = new Tempcode();
                     $pen_id = mt_rand(0, 2);
                     if ($pen_id == 0) {
                         $joke = mt_rand(1, 10);
@@ -522,8 +523,6 @@ class Module_buildr
             $troll_loc = get_loc_details($troll_id, true);
             if ($troll_loc !== null) {
                 list(, $troll_x, $troll_y) = $troll_loc;
-                $dx = -1;
-                $dy = -1;
                 do {
                     $dx = mt_rand(-1, 1);
                     $dy = mt_rand(-1, 1);
@@ -559,15 +558,21 @@ class Module_buildr
             }
 
             $out = new Tempcode();
+            $max = 50;
+            $start = 0;
 
-            $rows = $GLOBALS['SITE_DB']->query_select('items', ['*'], ['copy_owner' => null], 'ORDER BY name');
-            foreach ($rows as $myrow) {
-                $owner = $GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $myrow['name']]);
-                if ($owner !== null) {
-                    $GLOBALS['SITE_DB']->query_update('w_items', ['copy_owner' => $owner], ['name' => $myrow['name'], 'copy_owner' => null]);
-                    $out->attach(paragraph(do_lang_tempcode('W_REALLOCATING', escape_html($myrow['name']), 'tfgdfgd4rf')));
+            do {
+                $rows = $GLOBALS['SITE_DB']->query_select('items', ['*'], ['copy_owner' => null], 'ORDER BY name', $max, $start);
+                foreach ($rows as $myrow) {
+                    $owner = $GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $myrow['name']]);
+                    if ($owner !== null) {
+                        $GLOBALS['SITE_DB']->query_update('w_items', ['copy_owner' => $owner], ['name' => $myrow['name'], 'copy_owner' => null]);
+                        $out->attach(paragraph(do_lang_tempcode('W_REALLOCATING', escape_html($myrow['name']), 'tfgdfgd4rf')));
+                    }
                 }
-            }
+
+                $start += $max;
+            } while (!empty($rows));
 
             return do_template('W_REALLOCATE', ['_GUID' => '8fa4b9205310d6bc2fc28348a52898d5', 'TITLE' => $this->title, 'OUT' => $out]);
         }
@@ -642,8 +647,7 @@ class Module_buildr
         }
 
         if ($type == 'inventory') {
-            $tpl = output_inventory_screen($dest_member_id);
-            return $tpl;
+            return output_inventory_screen($dest_member_id);
         }
 
         if ($type == 'findperson') {
@@ -672,7 +676,7 @@ class Module_buildr
 
             $name = post_param_string('item_name', '');
             if ($name == '') {
-                $tpl = do_template('W_ITEM_SCREEN', [
+                return do_template('W_ITEM_SCREEN', [
                     '_GUID' => '0246f7037a360996bdfb4f1dcf96bcfc',
                     'PRICE' => integer_format(get_product_price_points('mud_item'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ITEM_TEXT')),
@@ -686,7 +690,6 @@ class Module_buildr
                     'MAX_PER_PLAYER' => '10',
                     'REPLICATEABLE' => '1',
                 ]);
-                return $tpl;
             }
 
             $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
@@ -701,7 +704,7 @@ class Module_buildr
                 $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_itemdef WHERE replicateable=1 OR owner=' . strval(get_member()) . ' ORDER BY name');
                 $items = '';
                 foreach ($rows as $myrow) {
-                    $items .= "<option value=\"" . escape_html($myrow['name']) . "\">" . escape_html($myrow['name']) . "</option>";
+                    $items .= "<option value=\"" . escape_html($myrow['name']) . "\">" . escape_html($myrow['name']) . '</option>';
                 }
                 if ($items == '') {
                     buildr_refresh_with_message(do_lang_tempcode('W_NO_ITEMS_YET'), 'warn');
@@ -711,7 +714,7 @@ class Module_buildr
                     ocp_mark_as_escaped($items);
                 }
 
-                $tpl = do_template('W_ITEMCOPY_SCREEN', [
+                return do_template('W_ITEMCOPY_SCREEN', [
                     '_GUID' => '15799930bca51eafdee3c0a8e197866a',
                     'PRICE' => integer_format(get_product_price_points('mud_item_copy'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ITEM_COPY_TEXT')),
@@ -720,7 +723,6 @@ class Module_buildr
                     'NOT_INFINITE' => '1',
                     'ITEMS' => $items,
                 ]);
-                return $tpl;
             }
             add_item_wrap_copy($member_id, $name, post_param_integer('price'), post_param_integer('not_infinite', 0));
         }
@@ -731,8 +733,7 @@ class Module_buildr
             $name = post_param_string('room_name', '');
 
             if ($name == '') {
-                list($realm, $x, $y) = get_loc_details($member_id);
-                $tpl = do_template('W_ROOM_SCREEN', [
+                return do_template('W_ROOM_SCREEN', [
                     '_GUID' => '5357a6cf8648c952cf29c2b7234cfa6c',
                     'PRICE' => integer_format(get_product_price_points('mud_room'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ROOM_TEXT')),
@@ -751,7 +752,6 @@ class Module_buildr
                     'ALLOW_PORTAL' => '1',
                     'PICTURE_URL' => '',
                 ]);
-                return $tpl;
             }
             $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             add_room_wrap($member_id, post_param_integer('position'), $name, post_param_string('text'), post_param_string('password_question'), post_param_string('password_answer', false, INPUT_FILTER_PASSWORD), post_param_string('password_fail_message'), post_param_string('required_item'), post_param_integer('locked_up', 0), post_param_integer('locked_down', 0), post_param_integer('locked_right', 0), post_param_integer('locked_left', 0), $urls[0], post_param_integer('allow_portal', 0));
@@ -772,7 +772,7 @@ class Module_buildr
                     $_qa->attach(do_template('W_REALM_SCREEN_QUESTION', ['_GUID' => '5fa7725f11b0df7e58ff83f2f1751515', 'I' => strval($i), 'Q' => '', 'A' => '']));
                 }
 
-                $tpl = do_template('W_REALM_SCREEN', [
+                return do_template('W_REALM_SCREEN', [
                     '_GUID' => '7ae26fe1766aed02233e1be84772759b',
                     'PRICE' => integer_format(get_product_price_points('mud_realm'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_REALM_TEXT', escape_html(integer_format($left, 0)))),
@@ -783,7 +783,6 @@ class Module_buildr
                     'TROLL_NAME' => '',
                     'PRIVATE' => '0',
                 ]);
-                return $tpl;
             }
 
             $i = 1;
@@ -894,7 +893,7 @@ class Module_buildr
                 }
                 $row = $rows[0];
 
-                $tpl = do_template('W_ITEM_SCREEN', [
+                return do_template('W_ITEM_SCREEN', [
                     '_GUID' => '1f581864bd2f0cbe05742e03ab6c2a53',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'edititem',
@@ -907,7 +906,6 @@ class Module_buildr
                     'MAX_PER_PLAYER' => strval($row['max_per_player']),
                     'REPLICATEABLE' => strval($row['replicateable']),
                 ]);
-                return $tpl;
             }
 
             $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
@@ -926,7 +924,7 @@ class Module_buildr
                 $price = $GLOBALS['SITE_DB']->query_select_value('w_items', 'price', ['copy_owner' => $owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
                 $not_infinite = $GLOBALS['SITE_DB']->query_select_value('w_items', 'not_infinite', ['copy_owner' => $owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
 
-                $tpl = do_template('W_ITEMCOPY_SCREEN', [
+                return do_template('W_ITEMCOPY_SCREEN', [
                     '_GUID' => 'a8d28f6516408dba96a8b57ddcd7cee6',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'edititemcopy',
@@ -938,7 +936,6 @@ class Module_buildr
                     'OWNER' => strval($owner),
                     'PRICE' => strval($price),
                 ]);
-                return $tpl;
             }
 
             edit_item_wrap_copy($member_id, $item, $price, post_param_integer('not_infinite', 0), post_param_integer('new_x'), post_param_integer('new_y'), post_param_integer('new_realm'), grab_new_owner('new_owner'));
@@ -958,7 +955,7 @@ class Module_buildr
                 }
                 $row = $rows[0];
 
-                $tpl = do_template('W_ROOM_SCREEN', [
+                return do_template('W_ROOM_SCREEN', [
                     '_GUID' => 'a4c5f8ae962cdbaa304135cf07c583a0',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'editroom',
@@ -979,7 +976,6 @@ class Module_buildr
                     'PICTURE_URL' => $row['picture_url'],
                     'OWNER' => ($row['owner'] === null) ? '' : strval($row['owner']),
                 ]);
-                return $tpl;
             }
 
             $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
@@ -1005,7 +1001,7 @@ class Module_buildr
                     $qatc->attach(do_template('W_REALM_SCREEN_QUESTION', ['_GUID' => '0510427a3895969dede2bd13db7d46a6', 'I' => strval($i), 'Q' => $row['q' . strval($i)], 'A' => $row['a' . strval($i)]]));
                 }
 
-                $tpl = do_template('W_REALM_SCREEN', [
+                return do_template('W_REALM_SCREEN', [
                     '_GUID' => 'f2503e0be6e45a296baa8625cafb4d72',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'editrealm',
@@ -1015,7 +1011,6 @@ class Module_buildr
                     'TROLL_NAME' => $row['troll_name'],
                     'PRIVATE' => strval($row['r_private']),
                 ]);
-                return $tpl;
             }
 
             for ($i = 1; $i <= 30; $i++) {
@@ -1040,7 +1035,7 @@ class Module_buildr
                 }
                 $row = $rows[0];
 
-                $tpl = do_template('W_PORTAL_SCREEN', [
+                return do_template('W_PORTAL_SCREEN', [
                     '_GUID' => 'cad0e01c1c4c410e67b775c3ff6eeb3a',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'editportal',
@@ -1055,7 +1050,6 @@ class Module_buildr
                     'END_LOCATION_Y' => strval($row['end_location_y']),
                     'OWNER' => ($row['owner'] === null) ? '' : strval($row['owner']),
                 ]);
-                return $tpl;
             }
 
             edit_portal_wrap($member_id, intval($param), $name, post_param_string('text'), post_param_integer('end_location_realm'), post_param_integer('end_location_x'), post_param_integer('end_location_y'), grab_new_owner('new_owner'), post_param_integer('new_x'), post_param_integer('new_y'), post_param_integer('new_realm'));

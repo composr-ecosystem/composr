@@ -94,9 +94,9 @@ class Hook_cns_warnings_karma_logs
                         $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount']))]);
                     } else {
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['k_member_to']);
-                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount'])), escape_html($username]));
+                        $pretty_name = do_lang_tempcode('ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount'])), escape_html($username)]);
                     }
-                } else if ($row['k_member_to'] == $member_id) {
+                } elseif ($row['k_member_to'] == $member_id) {
                     if ($row['k_member_from'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
                         $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount']))]);
                     } else {
@@ -157,7 +157,7 @@ class Hook_cns_warnings_karma_logs
                         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['k_member_to']);
                         $pretty_name = do_lang_tempcode('ACTIVITY_SEND_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount'])), escape_html($username)]);
                     }
-                } else if ($row['k_member_to'] == $member_id) {
+                } elseif ($row['k_member_to'] == $member_id) {
                     if ($row['k_member_from'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
                         $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_KARMA', $reason, escape_html($row['k_type']), [escape_html(integer_format($row['k_amount']))]);
                     } else {

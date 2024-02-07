@@ -42,10 +42,8 @@ class ___blob_slowdown_test_set extends cms_test_case
 
             if ($this_unsafe) {
                 $tables_status[$table] = false;
-            } else {
-                if (!array_key_exists($table, $tables_status)) {
-                    $tables_status[$table] = true;
-                }
+            } elseif (!array_key_exists($table, $tables_status)) {
+                $tables_status[$table] = true;
             }
         }
         foreach ($tables_status as $table => $status) {
@@ -122,7 +120,7 @@ class ___blob_slowdown_test_set extends cms_test_case
 
             $c = file_get_contents(get_file_base() . '/' . $path);
             $matches = [];
-            $num_matches = preg_match_all('#query(_select)?.*\*.*#', $c, $matches);
+            $num_matches = preg_match_all('#query(_select|_value)?.*\*.*#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $line_orig = $matches[0][$i];
                 $line = trim($line_orig);
@@ -185,7 +183,7 @@ class ___blob_slowdown_test_set extends cms_test_case
                 if (get_param_integer('geany_syntax', 0) == 1) {
                     $message = 'geany ' . escapeshellarg($path) . ':' . strval($line_num);
                 } else {
-                    $message = '"' . $path . '" ' . strval($line_num) . ' 1 '  . $line . ' [tables_safe_ref=' . implode(',', $tables_safe_ref) . ', tables_unsafe_ref=' . implode(',', $tables_unsafe_ref) . ']';
+                    $message = '"' . $path . '" ' . strval($line_num) . ' 1 ' . $line . ' [tables_safe_ref=' . implode(',', $tables_safe_ref) . ', tables_unsafe_ref=' . implode(',', $tables_unsafe_ref) . ']';
                 }
                 $this->assertTrue(false, $message);
             }

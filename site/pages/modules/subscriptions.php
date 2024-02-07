@@ -124,27 +124,34 @@ class Module_subscriptions
             $GLOBALS['SITE_DB']->alter_table_field('subscriptions', 's_special', 'ID_TEXT', 's_purchase_id');
             $GLOBALS['SITE_DB']->add_table_field('subscriptions', 's_length', 'INTEGER', 1);
             $GLOBALS['SITE_DB']->add_table_field('subscriptions', 's_length_units', 'SHORT_TEXT', 'm');
-            $subscriptions = $GLOBALS['SITE_DB']->query_select('subscriptions', ['*']);
-            foreach ($subscriptions as $sub) {
-                if (substr($sub['s_type_code'], 0, 9) != 'USERGROUP') {
-                    continue;
+
+            $max = 100;
+            $start = 0;
+            do {
+                $subscriptions = $GLOBALS['SITE_DB']->query_select('subscriptions', ['*'], [], '', $max, $start);
+                foreach ($subscriptions as $sub) {
+                    if (substr($sub['s_type_code'], 0, 9) != 'USERGROUP') {
+                        continue;
+                    }
+
+                    $db = get_db_for('f_usergroup_subs');
+
+                    $usergroup_subscription_id = intval(substr($sub['s_type_code'], 9));
+                    $usergroup_subscription_rows = $db->query_select('f_usergroup_subs', ['*'], ['id' => $usergroup_subscription_id], '', 1);
+                    if (!array_key_exists(0, $usergroup_subscription_rows)) {
+                        continue;
+                    }
+                    $usergroup_subscription_row = $usergroup_subscription_rows[0];
+
+                    $update_map = [
+                        's_length' => $usergroup_subscription_row['s_length'],
+                        's_length_units' => $usergroup_subscription_row['s_length_units'],
+                    ];
+                    $GLOBALS['SITE_DB']->query_update('subscriptions', $update_map, ['id' => $sub['id']], '', 1);
                 }
 
-                $db = get_db_for('f_usergroup_subs');
-
-                $usergroup_subscription_id = intval(substr($sub['s_type_code'], 9));
-                $usergroup_subscription_rows = $db->query_select('f_usergroup_subs', ['*'], ['id' => $usergroup_subscription_id], '', 1);
-                if (!array_key_exists(0, $usergroup_subscription_rows)) {
-                    continue;
-                }
-                $usergroup_subscription_row = $usergroup_subscription_rows[0];
-
-                $update_map = [
-                    's_length' => $usergroup_subscription_row['s_length'],
-                    's_length_units' => $usergroup_subscription_row['s_length_units'],
-                ];
-                $GLOBALS['SITE_DB']->query_update('subscriptions', $update_map, ['id' => $sub['id']], '', 1);
-            }
+                $start += $max;
+            } while (!empty($subscriptions));
 
             $GLOBALS['SITE_DB']->add_table_field('f_usergroup_subs', 's_auto_recur', 'BINARY', 1);
         }

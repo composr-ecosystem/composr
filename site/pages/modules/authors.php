@@ -117,6 +117,7 @@ class Module_authors
 
     public $title;
     public $author;
+    public $details;
 
     /**
      * Module pre-run function. Allows us to know metadata for <head> before we start streaming output.
@@ -129,8 +130,6 @@ class Module_authors
         if (!addon_installed__messaged('authors', $error_msg)) {
             return $error_msg;
         }
-
-        $type = get_param_string('type', 'browse');
 
         require_lang('authors');
         require_code('authors');
@@ -167,11 +166,11 @@ class Module_authors
                 $_author_add_url = build_url(['page' => 'cms_authors', 'type' => '_add', 'id' => $author], get_module_zone('cms_authors'));
                 $author_add_url = $_author_add_url->evaluate();
                 $message = do_lang_tempcode('NO_SUCH_AUTHOR_CONFIGURE_ONE', escape_html($author), escape_html($author_add_url));
-
-                attach_message($message, 'inform');
             } else {
                 $message = do_lang_tempcode('NO_SUCH_AUTHOR', escape_html($author));
             }
+            attach_message($message, 'inform');
+
             $details = ['author' => $author, 'url' => '', 'member_id' => get_author_id_from_name($author), 'the_description' => null, 'skills' => null];
         } else {
             $details = $rows[0];
@@ -279,20 +278,27 @@ class Module_authors
                 if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                     $downloads_where['validated'] = 1;
                 }
-                $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], $downloads_where, 'ORDER BY add_date');
-                foreach ($rows as $myrow) {
-                    if (addon_installed('content_privacy')) {
-                        require_code('content_privacy');
-                        if (!has_privacy_access('download', strval($myrow['id']))) {
-                            continue;
+
+                $max = 25;
+                $start = 0;
+                do {
+                    $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], $downloads_where, 'ORDER BY add_date', $max, $start);
+                    foreach ($rows as $myrow) {
+                        if (addon_installed('content_privacy')) {
+                            require_code('content_privacy');
+                            if (!has_privacy_access('download', strval($myrow['id']))) {
+                                continue;
+                            }
+                        }
+
+                        if (may_enter_download_category(get_member(), $myrow['category_id'])) {
+                            require_code('downloads');
+                            $downloads_released->attach(render_download_box($myrow, true, true/*breadcrumbs?*/, null, null, false/*context?*/));
                         }
                     }
 
-                    if (may_enter_download_category(get_member(), $myrow['category_id'])) {
-                        require_code('downloads');
-                        $downloads_released->attach(render_download_box($myrow, true, true/*breadcrumbs?*/, null, null, false/*context?*/));
-                    }
-                }
+                    $start += $max;
+                } while (!empty($rows));
             }
         }
 
@@ -310,20 +316,27 @@ class Module_authors
                 if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
                     $news_where['validated'] = 1;
                 }
-                $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], $news_where, 'ORDER BY date_and_time');
-                foreach ($rows as $i => $row) {
-                    if (addon_installed('content_privacy')) {
-                        require_code('content_privacy');
-                        if (!has_privacy_access('news', strval($row['id']))) {
-                            continue;
+
+                $max = 25;
+                $start = 0;
+                do {
+                    $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], $news_where, 'ORDER BY date_and_time', $max, $start);
+                    foreach ($rows as $i => $row) {
+                        if (addon_installed('content_privacy')) {
+                            require_code('content_privacy');
+                            if (!has_privacy_access('news', strval($row['id']))) {
+                                continue;
+                            }
+                        }
+
+                        if (has_category_access(get_member(), 'news', strval($row['news_category']))) {
+                            require_code('news');
+                            $news_released->attach(render_news_box($row, '_SEARCH', false, true));
                         }
                     }
 
-                    if (has_category_access(get_member(), 'news', strval($row['news_category']))) {
-                        require_code('news');
-                        $news_released->attach(render_news_box($row, '_SEARCH', false, true));
-                    }
-                }
+                    $start += $max;
+                } while (!empty($rows));
             }
         }
 

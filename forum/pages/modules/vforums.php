@@ -170,7 +170,7 @@ class Module_vforums
             if (array_key_exists('last_visit', $_COOKIE)) {
                 $last_time = intval($_COOKIE['last_visit']);
             } else {
-                $last_time = time() - 60 * 60 * 24 * 7;
+                $last_time = time() - (60 * 60 * 24 * 7);
                 if (!$GLOBALS['DEV_MODE']) {
                     attach_message(do_lang_tempcode('NO_LAST_VISIT'), 'notice');
                 }
@@ -196,7 +196,7 @@ class Module_vforums
         $title = do_lang_tempcode('UNANSWERED_TOPICS');
 
         $condition = [
-            '(t_cache_num_posts=1 OR t_cache_num_posts<5 AND (SELECT COUNT(DISTINCT p2.p_poster) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p2 WHERE p2.p_topic_id=t.id)=1) AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * 14), // Extra limit, otherwise query can take forever
+            '(t_cache_num_posts=1 OR t_cache_num_posts<5 AND (SELECT COUNT(DISTINCT p2.p_poster) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p2 WHERE p2.p_topic_id=t.id)=1) AND t_cache_last_time>' . strval(time() - (60 * 60 * 24 * 14)), // Extra limit, otherwise query can take forever
         ];
         // NB: "t_cache_num_posts<5" above is an optimisation, to do accurate detection of "only poster" only if there are a handful of posts (scanning huge topics can be slow considering this is just to make a subquery pass). We assume that a topic is not consisting of a single user posting more than 5 times (and if so we can consider them a spammer so rule it out)
 
@@ -219,7 +219,7 @@ class Module_vforums
         $title = do_lang_tempcode('INVOLVED_TOPICS');
 
         if (($GLOBALS['FORUM_DRIVER']->get_post_count(get_member()) > 5000) && (get_value('innodb') !== '1')) { // Too many posts, so make time-sensitive
-            $condition = 'pos.p_time>' . strval(time() - 60 * 60 * 24 * 365);
+            $condition = 'pos.p_time>' . strval(time() - (60 * 60 * 24 * 365));
         } else {
             $condition = '1=1';
         }
@@ -244,7 +244,7 @@ class Module_vforums
         }
 
         $title = do_lang_tempcode('TOPICS_UNREAD');
-        $condition = ['l_time IS NOT NULL AND l_time<t_cache_last_time', 'l_time IS NULL AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days')))];
+        $condition = ['l_time IS NOT NULL AND l_time<t_cache_last_time', 'l_time IS NULL AND t_cache_last_time>' . strval(time() - (60 * 60 * 24 * intval(get_option('post_read_history_days'))))];
 
         return $this->_vforum($title, $condition, 'last_post', false);
     }
@@ -261,7 +261,7 @@ class Module_vforums
         }
 
         $title = do_lang_tempcode('RECENTLY_READ');
-        $condition = 'l_time>' . strval(time() - 60 * 60 * 24 * 2);
+        $condition = 'l_time>' . strval(time() - (60 * 60 * 24 * 2));
 
         return $this->_vforum($title, $condition, 'read_time', false);
     }
@@ -281,14 +281,13 @@ class Module_vforums
     public function _vforum(object $title, $condition, string $order, bool $separate_pins = true, array $extra_tpl_map = [], ?string $initial_table = null, string $extra_select = '') : object
     {
         require_code('templates_pagination');
-        list($max, $start, , $sql_sup, $sql_sup_order_by, $true_start, , $keyset_clause, $keyset_field) = get_keyset_pagination_settings('forum_max', intval(get_option('forum_topics_per_page')), 'forum_start', null, 'forum_sort', $order, 'get_forum_sort_order_vforums');
+        list($max, $start, , $sql_sup, $sql_sup_order_by, $true_start, , , $keyset_field) = get_keyset_pagination_settings('forum_max', intval(get_option('forum_topics_per_page')), 'forum_start', null, 'forum_sort', $order, 'get_forum_sort_order_vforums');
 
         $_breadcrumbs = cns_forum_breadcrumbs(db_get_first_id(), null, get_param_integer('keep_forum_root', db_get_first_id()), false);
         $_breadcrumbs[] = ['', $title];
         breadcrumb_set_parents($_breadcrumbs);
         $breadcrumbs = breadcrumb_segments_to_tempcode($_breadcrumbs);
 
-        $type = get_param_string('type', 'browse');
         $forum_name = do_lang_tempcode('VIRTUAL_FORUM');
 
         // Find topics
@@ -312,14 +311,12 @@ class Module_vforums
                 $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l.l_topic_id AND l.l_member_id=' . strval(get_member());
             }
             $query_cnt = $query;
-            $_query_cnt = $query;
             if (!multi_lang_content()) {
                 $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id';
             }
             $where = ' WHERE ((' . $_condition . ')' . $extra . ') AND t_forum_id IS NOT NULL';
             $query .= $where;
             $query_cnt .= $where;
-            $_query_cnt .= $where;
             $query .= $sql_sup;
             $query .= $sql_sup_order_by;
             $full_query = 'SELECT t.*,' . ((is_guest() ? 'NULL as l_time' : 'l_time') . ',t_cache_last_time AS last_time');
