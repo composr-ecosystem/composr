@@ -46,7 +46,7 @@ class __installer_test_set extends cms_test_case
         require_code('version2');
         require_code('make_release');
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $builds_path = get_builds_path();
         $version_dotted = get_version_dotted();
@@ -61,13 +61,13 @@ class __installer_test_set extends cms_test_case
         }
 
         $this->assertTrue(file_exists($build_path . '/site/index.php'), 'Could not find ' . $build_path . '/site/index.php');
-        $this->assertTrue(file_exists($build_path . '/docs/LICENSE.md'));
-        $this->assertTrue(!file_exists($build_path . '/docs/index.php'));
+        $this->assertTrue(file_exists($build_path . '/docs/LICENSE.md'), 'Could not find ' . $build_path . '/docs/LICENSE.md');
+        $this->assertTrue(!file_exists($build_path . '/docs/index.php'), 'Could not find ' . $build_path . '/docs/index.php');
 
         if (get_param_integer('build_only', 0) != 1) {
-            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'timeout' => 40.0]);
+            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'timeout' => 60.0]);
 
-            $this->assertTrue($http_result->message == '200');
+            $this->assertTrue(($http_result->message == '200'), 'Error testing install.php in exports/builds (' . $http_result->message . ')');
         }
     }
 
@@ -129,8 +129,8 @@ class __installer_test_set extends cms_test_case
             return false;
         }
 
-        $database = 'test';
-        $table_prefix = 'cms_installer_test_';
+        $database = 'cms__test';
+        $table_prefix = 'installer_';
 
         // Cleanup old install
         $tables = $GLOBALS['SITE_DB']->query('SHOW TABLES FROM ' . $database, null, 0, true); // Suppress errors in case database does not exist yet

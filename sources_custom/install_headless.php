@@ -15,12 +15,18 @@
 
 function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [], $do_index_test = true, $db_type = null)
 {
+    if ($db_type === null) {
+        $db_type = get_db_type();
+    }
+
     // Most Composr MySQL drivers auto-create the DB if missing, if root, but mysql_pdo does not because of how the connection works
-    if (strpos(get_db_type(), 'mysql') !== false) {
+    if (strpos($db_type, 'mysql') !== false) {
         if (get_db_site_user() == 'root') {
             $GLOBALS['SITE_DB']->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
         } else if ($username == 'root') {
-            $db = new DatabaseConnector(get_db_site(), get_db_site_host(), $username, $password, $table_prefix);
+            require_code('database/' . $db_type);
+            $db_driver = object_factory('Database_Static_' . $db_type, false, [$table_prefix]);
+            $db = new DatabaseConnector(get_db_site(), get_db_site_host(), $username, $password, $table_prefix, false, $db_driver);
             $db->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
             unset($db);
         }
@@ -45,7 +51,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
             @var_dump(escape_html($error));
             cms_flush_safe();
 
-            if ((!$success) && (isset($_GET['debug']))) {
+            if (!$success) {
                 exit('Exiting early due to error on home page test');
             }
         }
@@ -203,7 +209,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
             @var_dump(escape_html($error));
             cms_flush_safe();
 
-            if ((!$success) && (isset($_GET['debug']))) {
+            if (!$success) {
                 exit('Exiting early due to error on ' . json_encode($stage));
             }
         }

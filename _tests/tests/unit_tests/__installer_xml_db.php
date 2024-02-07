@@ -29,8 +29,10 @@ class __installer_xml_db_test_set extends cms_test_case
 {
     public function testFullInstallSafeMode()
     {
-        $database = 'test';
-        $table_prefix = 'cms_xmldb_test_';
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+        
+        $database = 'cms_test';
+        $table_prefix = 'xmldb_';
 
         deldir_contents(get_custom_file_base() . '/uploads/website_specific/' . $database);
 

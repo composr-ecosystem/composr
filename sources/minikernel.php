@@ -1011,7 +1011,7 @@ function get_param_string($name, $default = null)
  * @return ?string The value of the parameter (null: not there, and default was null)
  * @ignore
  */
-function __param($array, $name, $default, $must_integer = false, $is_post = false)
+function __param($array, string $name, $default, $must_integer = false, $is_post = false)
 {
     if (!array_key_exists($name, $array)) {
         return $default;
@@ -1503,4 +1503,25 @@ function get_localhost_ips() : array
 function loggable_date() : string
 {
     return gmdate('[d-M-Y H:i:s \U\T\C]');
+}
+
+/**
+ * Attach a message to the page output.
+ * For response-embedded messaging where the code isn't failing per-se, but it's more like a predictable messaging situation occurred.
+ * For failure-like messages call trigger_error which will in turn call attach_message itself.
+ *
+ * @sets_output_state
+ *
+ * @param  mixed $message The message to show, provided in plain-text format or HTML Tempcode
+ * @param  ID_TEXT $type The 'template' to use
+ * @set inform notice warn
+ * @param  boolean $put_in_helper_panel Whether to put into the helper panel instead of the normal header area (true: minikernel suppresses the message completely)
+ * @param  boolean $log_error Whether to log the error
+ * @return string Blank string so it can be chained in the Tempcode compiler. You will rarely want to use this return value. It's kind of a failsafe.
+ */
+function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
+{
+    // Just a wrapper for inform_exit
+    warn_exit($message);
+    return '';
 }
