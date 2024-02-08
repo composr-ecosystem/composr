@@ -135,7 +135,7 @@ class Block_main_friends_list
                 $friend_usergroup_id = $GLOBALS['FORUM_DRIVER']->get_member_row_field($row['member_liked'], 'm_primary_group');
                 $friend_usergroup = array_key_exists($friend_usergroup_id, $all_usergroups) ? $all_usergroups[$friend_usergroup_id] : do_lang_tempcode('UNKNOWN');
                 $mutual_label = do_lang('MUTUAL_FRIEND');
-                $box = render_member_box($row['member_liked'], true, true, ($row['member_liked'] == get_member() || $member_id == get_member()) ? [$mutual_label => do_lang($is_mutual ? 'YES' : 'NO')] : [], false, 'friends_list');
+                $box = render_member_box($row['member_liked'], true, true, (($row['member_liked'] == get_member()) || ($member_id == get_member())) ? [$mutual_label => do_lang($is_mutual ? 'YES' : 'NO')] : [], false, 'friends_list');
                 if (!$box->is_empty_shell()) {
                     $friend_map = [
                         'APPEARS_TWICE' => $is_mutual,
@@ -151,9 +151,7 @@ class Block_main_friends_list
                     } else {
                         $friends_nonmutual[] = $friend_map;
                     }
-                    if (($member_id == $row['member_likes']) || ($is_mutual)) {
-                        $friends_forward[] = $friend_map;
-                    }
+                    $friends_forward[] = $friend_map;
                 }
             }
         }

@@ -62,7 +62,7 @@ class Block_main_personal_galleries_list
 
         $block_id = get_block_id($map);
 
-        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
+        $check_perms = !array_key_exists('check', $map) || ($map['check'] == '1');
 
         require_lang('galleries');
 
@@ -159,10 +159,17 @@ class Block_main_personal_galleries_list
     protected function attach_gallery_subgalleries(string $gallery_name, object &$galleries, int $member_id, int $member_id_viewing)
     {
         // Not done via main_multi_content block due to need to custom query
-        $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['parent_id' => $gallery_name], 'ORDER BY add_date DESC');
-        foreach ($rows as $i => $row) {
-            $galleries->attach(render_gallery_box($row, 'root', false, get_module_zone('galleries'), true, false, false, false));
-            $this->attach_gallery_subgalleries($row['name'], $galleries, $member_id, $member_id_viewing);
-        }
+
+        $start = 0;
+        $max = 25;
+        do {
+            $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['parent_id' => $gallery_name], 'ORDER BY add_date DESC', $max, $start);
+            foreach ($rows as $i => $row) {
+                $galleries->attach(render_gallery_box($row, 'root', false, get_module_zone('galleries'), true, false, false, false));
+                $this->attach_gallery_subgalleries($row['name'], $galleries, $member_id, $member_id_viewing);
+            }
+
+            $start += $max;
+        } while (!empty($rows));
     }
 }

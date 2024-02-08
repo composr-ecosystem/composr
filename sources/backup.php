@@ -70,7 +70,7 @@ function download_backup_file_script()
             if (count($bits) == 2) {
                 list($from, $to) = array_map('intval', $bits);
                 if (($to - $from != 0) || ($from == 0)) {
-                    $new_length = $to - $from + 1;
+                    $new_length = ($to - $from) + 1;
 
                     header('HTTP/1.1 206 Partial Content');
                     header('Content-Range: bytes ' . $range . '/' . strval($size));
@@ -118,7 +118,7 @@ function download_backup_file_script()
  * @param  resource $install_php_file File to write in to
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  */
-function get_table_backup($log_file, string $db_meta, string $db_meta_indices, &$install_php_file, $callback = null)
+function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $install_php_file, $callback = null)
 {
     push_db_scope_check(false);
 
@@ -160,16 +160,14 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, &
             $data = $GLOBALS['SITE_DB']->query_select($table, ['*'], [], '', 100, $start, false, []);
             foreach ($data as $d) {
                 $list = '';
-                $value = mixed();
                 foreach ($d as $name => $value) {
+                    $value = mixed();
                     if (multi_lang_content()) {
                         if (($table == 'translate') && ($name == 'text_parsed')) {
                             $value = '';
                         }
-                    } else {
-                        if (strpos($name, '__text_parsed') !== false) {
-                            $value = '';
-                        }
+                    } elseif (strpos($name, '__text_parsed') !== false) {
+                        $value = '';
                     }
 
                     if ($value === null) {
@@ -289,7 +287,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
 
     $install_data_php_file_temp_path = cms_tempnam();
     $install_data_php_file = fopen($install_data_php_file_temp_path, 'wb');
-    fwrite($install_data_php_file, "<" . "?php
+    fwrite($install_data_php_file, '<' . "?php
 
 //COMMANDS BEGIN...
 //
@@ -332,7 +330,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
             $a = '';
             foreach ($d as $k => $v) {
                 if ($a != '') {
-                    $a .= ", ";
+                    $a .= ', ';
                 }
                 $a .= $k . '=' . $v;
             }
@@ -480,6 +478,7 @@ function directories_to_backup() : array
  */
 function deliver_remote_backup(string $file)
 {
+    $_file = $file;
     $path_stub = get_custom_file_base() . '/exports/backups/';
     if (file_exists($path_stub . $file . '.tar.gz')) {
         $_file = $file . '.tar.gz';

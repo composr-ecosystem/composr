@@ -282,14 +282,8 @@ class Module_booking
      */
     public function choose_bookables_and_dates() : object
     {
-        $query = 'SELECT * FROM ' . get_table_prefix() . 'bookable WHERE enabled=1';
-        $filter = get_param_string('filter', '*', INPUT_FILTER_GET_COMPLEX);
-        require_code('selectcode');
-        $query .= ' AND ' . selectcode_to_sqlfragment($filter, 'id');
-        $bookables = $GLOBALS['SITE_DB']->query($query . ' ORDER BY sort_order', null, 0, false, true);
-
         $has_date_ranges = false;
-        $has_single_dates = false;
+        $has_single_dates = false; // TODO: Always false; fix this or remove
         $has_details = false;
 
         $min_min_date = time();
@@ -299,108 +293,120 @@ class Module_booking
         $date_to = time();
 
         $categories = [];
-        foreach ($bookables as $bookable) {
-            $active_from = mktime(0, 0, 0, $bookable['active_from_month'], $bookable['active_from_day'], $bookable['active_from_year']);
-            $active_to = ($bookable['active_to_year'] === null) ? null : mktime(0, 0, 0, $bookable['active_to_month'], $bookable['active_to_day'], $bookable['active_to_year']);
-            $min_date = $active_from;
-            $max_date = $active_to;
 
-            if ($min_date < $min_min_date) {
-                $min_min_date = $min_date;
-            }
-            if (($max_max_date === null) || ($active_to !== null)) {
-                if ($max_date > $max_max_date) {
-                    $max_max_date = $max_date;
+        $query = 'SELECT * FROM ' . get_table_prefix() . 'bookable WHERE enabled=1';
+        $filter = get_param_string('filter', '*', INPUT_FILTER_GET_COMPLEX);
+        require_code('selectcode');
+        $query .= ' AND ' . selectcode_to_sqlfragment($filter, 'id');
+
+        $max = 25;
+        $start = 0;
+        do {
+            $bookables = $GLOBALS['SITE_DB']->query($query . ' ORDER BY sort_order', $max, $start, false, true);
+
+            foreach ($bookables as $bookable) {
+                $active_from = mktime(0, 0, 0, $bookable['active_from_month'], $bookable['active_from_day'], $bookable['active_from_year']);
+                $active_to = ($bookable['active_to_year'] === null) ? null : mktime(0, 0, 0, $bookable['active_to_month'], $bookable['active_to_day'], $bookable['active_to_year']);
+                $min_date = $active_from;
+                $max_date = $active_to;
+
+                if ($min_date < $min_min_date) {
+                    $min_min_date = $min_date;
                 }
-            }
-
-            if ($bookable['dates_are_ranges'] == 1) {
-                $has_date_ranges = true;
-            } elseif ($bookable['dates_are_ranges'] == 0) {
-                $has_single_ranges = true;
-            }
-
-            $messages = [];
-
-            // Message if not currently active
-            if ($active_from > time()) {
-                $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_NOT_STARTED', escape_html(get_timezoned_date($active_from, false)));
-            }
-
-            // Message if becomes inactive within next 6 months
-            if (($active_to !== null) && ($active_to < SHOW_WARNINGS_UNTIL)) {
-                $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_ENDED', escape_html(get_timezoned_date($active_to, false)));
-            }
-
-            // Message about any black-outs within next 6 months
-            $blacked = $GLOBALS['SITE_DB']->query_select(
-                'bookable_blacked b JOIN ' . get_table_prefix() . 'bookable_blacked_for f ON f.blacked_id=b.id',
-                ['*'],
-                [
-                    'bookable_id' => $bookable['id'],
-                ],
-                'ORDER BY id'
-            );
-            foreach ($blacked as $black) {
-                $black_from = mktime(0, 0, 0, $black['blacked_from_month'], $black['blacked_from_day'], $black['blacked_from_year']);
-                $black_to = ($black['blacked_to_year'] === null) ? null : mktime(0, 0, 0, $black['blacked_to_month'], $black['blacked_to_day'], $black['blacked_to_year']);
-                if (($black_from > time()) && ($black_to < SHOW_WARNINGS_UNTIL)) {
-                    $messages[] = do_lang_tempcode(
-                        ($black_from == $black_to) ? 'NOTE_BOOKING_IMPOSSIBLE_BLACKED_ONEOFF' : 'NOTE_BOOKING_IMPOSSIBLE_BLACKED_PERIOD',
-                        get_timezoned_date($black_from, false),
-                        get_timezoned_date($black_to, false),
-                        get_translated_tempcode('bookable_blacked', $black, 'blacked_explanation')
-                    );
+                if (($max_max_date === null) || ($active_to !== null)) {
+                    if ($max_date > $max_max_date) {
+                        $max_max_date = $max_date;
+                    }
                 }
+
+                if ($bookable['dates_are_ranges'] == 1) {
+                    $has_date_ranges = true;
+                }
+
+                $messages = [];
+
+                // Message if not currently active
+                if ($active_from > time()) {
+                    $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_NOT_STARTED', escape_html(get_timezoned_date($active_from, false)));
+                }
+
+                // Message if becomes inactive within next 6 months
+                if (($active_to !== null) && ($active_to < SHOW_WARNINGS_UNTIL)) {
+                    $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_ENDED', escape_html(get_timezoned_date($active_to, false)));
+                }
+
+                // Message about any black-outs within next 6 months
+                $blacked = $GLOBALS['SITE_DB']->query_select(
+                    'bookable_blacked b JOIN ' . get_table_prefix() . 'bookable_blacked_for f ON f.blacked_id=b.id',
+                    ['*'],
+                    [
+                        'bookable_id' => $bookable['id'],
+                    ],
+                    'ORDER BY id'
+                );
+                foreach ($blacked as $black) {
+                    $black_from = mktime(0, 0, 0, $black['blacked_from_month'], $black['blacked_from_day'], $black['blacked_from_year']);
+                    $black_to = ($black['blacked_to_year'] === null) ? null : mktime(0, 0, 0, $black['blacked_to_month'], $black['blacked_to_day'], $black['blacked_to_year']);
+                    if (($black_from > time()) && ($black_to < SHOW_WARNINGS_UNTIL)) {
+                        $messages[] = do_lang_tempcode(
+                            ($black_from == $black_to) ? 'NOTE_BOOKING_IMPOSSIBLE_BLACKED_ONEOFF' : 'NOTE_BOOKING_IMPOSSIBLE_BLACKED_PERIOD',
+                            get_timezoned_date($black_from, false),
+                            get_timezoned_date($black_to, false),
+                            get_translated_tempcode('bookable_blacked', $black, 'blacked_explanation')
+                        );
+                    }
+                }
+
+                $category = get_translated_text($bookable['categorisation']);
+
+                if (!array_key_exists($category, $categories)) {
+                    $categories[$category] = ['CATEGORY_TITLE' => $category, 'BOOKABLES' => []];
+                }
+
+                $quantity_available = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', ['bookable_id' => $bookable['id']]);
+
+                list($quantity, $date_from, $date_to) = $this->_read_chosen_bookable_settings($bookable);
+
+                if ($max_max_date === null) {
+                    $max_max_date = MAX_AHEAD_BOOKING_DATE;
+                }
+
+                $description = get_translated_tempcode('bookable', $bookable, 'the_description');
+
+                if ((!$description->is_empty()) || (!empty($messages))) {
+                    $has_details = true;
+                }
+
+                $categories[$category]['BOOKABLES'][] = [
+                    'BOOKABLE_ID' => strval($bookable['id']),
+                    'BOOKABLE_QUANTITY_AVAILABLE' => strval($quantity_available),
+                    'BOOKABLE_MESSAGES' => $messages,
+                    'BOOKABLE_TITLE' => get_translated_tempcode('bookable', $bookable, 'title'),
+                    'BOOKABLE_DESCRIPTION' => $description,
+                    'BOOKABLE_PRICE' => float_to_raw_string($bookable['price']),
+
+                    'BOOKABLE_SELECT_DATE_RANGE' => $bookable['dates_are_ranges'] == 1,
+                    'BOOKABLE_MIN_DATE_DAY' => date('d', $min_date),
+                    'BOOKABLE_MIN_DATE_MONTH' => date('m', $min_date),
+                    'BOOKABLE_MIN_DATE_YEAR' => date('Y', $min_date),
+                    'BOOKABLE_MAX_DATE_DAY' => date('d', $max_date),
+                    'BOOKABLE_MAX_DATE_MONTH' => date('m', $max_date),
+                    'BOOKABLE_MAX_DATE_YEAR' => date('Y', $max_date),
+
+                    // For re-entrancy
+                    'BOOKABLE_QUANTITY' => strval($quantity),
+                    'BOOKABLE_DATE_FROM_DAY' => date('d', $date_from),
+                    'BOOKABLE_DATE_FROM_MONTH' => date('m', $date_from),
+                    'BOOKABLE_DATE_FROM_YEAR' => date('Y', $date_from),
+                    'BOOKABLE_DATE_TO_DAY' => date('d', $date_to),
+                    'BOOKABLE_DATE_TO_MONTH' => date('m', $date_to),
+                    'BOOKABLE_DATE_TO_YEAR' => date('Y', $date_to),
+                ];
+                // Wrong - we're sorting by sort_order  sort_maps_by($categories[$category]['BOOKABLES'], 'BOOKABLE_TITLE', false, true);
             }
 
-            $category = get_translated_text($bookable['categorisation']);
-
-            if (!array_key_exists($category, $categories)) {
-                $categories[$category] = ['CATEGORY_TITLE' => $category, 'BOOKABLES' => []];
-            }
-
-            $quantity_available = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', ['bookable_id' => $bookable['id']]);
-
-            list($quantity, $date_from, $date_to) = $this->_read_chosen_bookable_settings($bookable);
-
-            if ($max_max_date === null) {
-                $max_max_date = MAX_AHEAD_BOOKING_DATE;
-            }
-
-            $description = get_translated_tempcode('bookable', $bookable, 'the_description');
-
-            if ((!$description->is_empty()) || (!empty($messages))) {
-                $has_details = true;
-            }
-
-            $categories[$category]['BOOKABLES'][] = [
-                'BOOKABLE_ID' => strval($bookable['id']),
-                'BOOKABLE_QUANTITY_AVAILABLE' => strval($quantity_available),
-                'BOOKABLE_MESSAGES' => $messages,
-                'BOOKABLE_TITLE' => get_translated_tempcode('bookable', $bookable, 'title'),
-                'BOOKABLE_DESCRIPTION' => $description,
-                'BOOKABLE_PRICE' => float_to_raw_string($bookable['price']),
-
-                'BOOKABLE_SELECT_DATE_RANGE' => $bookable['dates_are_ranges'] == 1,
-                'BOOKABLE_MIN_DATE_DAY' => date('d', $min_date),
-                'BOOKABLE_MIN_DATE_MONTH' => date('m', $min_date),
-                'BOOKABLE_MIN_DATE_YEAR' => date('Y', $min_date),
-                'BOOKABLE_MAX_DATE_DAY' => date('d', $max_date),
-                'BOOKABLE_MAX_DATE_MONTH' => date('m', $max_date),
-                'BOOKABLE_MAX_DATE_YEAR' => date('Y', $max_date),
-
-                // For re-entrancy
-                'BOOKABLE_QUANTITY' => strval($quantity),
-                'BOOKABLE_DATE_FROM_DAY' => date('d', $date_from),
-                'BOOKABLE_DATE_FROM_MONTH' => date('m', $date_from),
-                'BOOKABLE_DATE_FROM_YEAR' => date('Y', $date_from),
-                'BOOKABLE_DATE_TO_DAY' => date('d', $date_to),
-                'BOOKABLE_DATE_TO_MONTH' => date('m', $date_to),
-                'BOOKABLE_DATE_TO_YEAR' => date('Y', $date_to),
-            ];
-            // Wrong - we're sorting by sort_order  sort_maps_by($categories[$category]['BOOKABLES'], 'BOOKABLE_TITLE', false, true);
-        }
+            $start += $max;
+        } while (!empty($bookables));
 
         cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 
@@ -562,10 +568,10 @@ class Module_booking
      */
     public function join_or_login() : object
     {
-        // Check login: skip to thanks if logged in
+        // Check login: skip to done if logged in
         if (get_option('member_booking_only') == '1') {
             if (!is_guest()) {
-                return $this->thanks();
+                return $this->done();
             }
         }
 

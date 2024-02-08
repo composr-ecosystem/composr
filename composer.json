@@ -15,6 +15,7 @@
         "ext-mbstring": "*",
         "ext-iconv": "*",
         "ext-zlib": "*",
-        "ext-mysqli": "*"
+        "ext-mysqli": "*",
+        "ext-ftp": "*"
     }
 }

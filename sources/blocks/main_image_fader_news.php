@@ -94,7 +94,7 @@ PHP;
 
         $block_id = get_block_id($map);
 
-        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
+        $check_perms = !array_key_exists('check', $map) || ($map['check'] == '1');
 
         $cat = array_key_exists('param', $map) ? $map['param'] : '*';
         if ($cat == '') {
@@ -132,7 +132,7 @@ PHP;
 
         if (addon_installed('content_privacy')) {
             require_code('content_privacy');
-            $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
+            $as_guest = array_key_exists('as_guest', $map) && ($map['as_guest'] == '1');
             $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : null;
             list($privacy_join, $privacy_where) = get_privacy_where_clause('news', 'r', $viewing_member_id);
             $join .= $privacy_join;

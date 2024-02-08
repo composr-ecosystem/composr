@@ -84,13 +84,13 @@ PHP;
 
         $block_id = get_block_id($map);
 
-        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
+        $check_perms = !array_key_exists('check', $map) || ($map['check'] == '1');
 
         $parent_id = @cms_empty_safe($map['param']) ? 'root' : $map['param'];
 
         $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('galleries');
 
-        $show_empty = array_key_exists('show_empty', $map) ? ($map['show_empty'] == '1') : false;
+        $show_empty = array_key_exists('show_empty', $map) && ($map['show_empty'] == '1');
 
         $depth = array_key_exists('depth', $map) ? intval($map['depth']) : 0; // If depth is 1 then we go down 1 level. Only 0 or 1 is supported.
 

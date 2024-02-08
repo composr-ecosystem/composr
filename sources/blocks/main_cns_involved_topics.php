@@ -66,8 +66,8 @@ class Block_main_cns_involved_topics
 
         $block_id = get_block_id($map);
 
-        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
-        $private_topics = array_key_exists('private_topics', $map) ? ($map['private_topics'] == '1') : false;
+        $check_perms = !array_key_exists('check', $map) || ($map['check'] == '1');
+        $private_topics = array_key_exists('private_topics', $map) && ($map['private_topics'] == '1');
         $member_id_of = array_key_exists('member_id', $map) ? intval($map['member_id']) : get_member();
         $max = get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : 10);
         $start = get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0);
@@ -78,15 +78,8 @@ class Block_main_cns_involved_topics
         require_code('cns_forumview');
 
         $topics = new Tempcode();
-
-        $forum1 = null;//$GLOBALS['FORUM_DRIVER']->forum_id_from_name(get_option('comments_forum_name'));
-        $tf = get_option('ticket_forum_name', true);
-        if ($tf !== null) {
-            $forum2 = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($tf);
-        } else {
-            $forum2 = null;
-        }
         $where_more = '';
+
         /*
         Actually including this just slows down the COUNT part of the query due to lack of indexability
         if ($forum1 !== null) {
@@ -95,7 +88,16 @@ class Block_main_cns_involved_topics
         if ($forum2 !== null) {
             $where_more .= ' AND p_cache_forum_id<>' . strval($forum2);
         }
+
+        $forum1 = null;//$GLOBALS['FORUM_DRIVER']->forum_id_from_name(get_option('comments_forum_name'));
+        $tf = get_option('ticket_forum_name', true);
+        if ($tf !== null) {
+            $forum2 = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($tf);
+        } else {
+            $forum2 = null;
+        }
         */
+
         $sql = 'SELECT DISTINCT p_topic_id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval($member_id_of) . $where_more;
         if (!$private_topics) {
             $sql .= ' AND p_cache_forum_id IS NOT NULL';
