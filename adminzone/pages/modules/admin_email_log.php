@@ -81,7 +81,7 @@ class Module_admin_email_log
             $this->title = get_screen_title('VIEW_SENT_MESSAGE');
         }
 
-        if ($type == 'edit' || $type == '_edit') {
+        if (($type == 'edit') || ($type == '_edit')) {
             $this->title = get_screen_title('HANDLE_QUEUED_MESSAGE');
         }
 
@@ -405,6 +405,8 @@ class Module_admin_email_log
             default:
                 $to_name = array();
                 $to_email = array();
+                $_to_name = array();
+                $_to_email = array();
                 $extra_cc_addresses = array();
                 $extra_bcc_addresses = array();
                 foreach ($_POST as $key => $input_value) {
@@ -413,17 +415,38 @@ class Module_admin_email_log
                         $input_value = stripslashes($input_value);
                     }
 
+                    // We cannot simply ignore blank lines yet as name and e-mail pairs together
                     if (substr($key, 0, 8) == 'to_name_') {
-                        $to_name[] = $input_value;
+                        $i = intval(str_replace('to_name_', '', $key));
+                        $_to_name[$i] = $input_value;
                     }
                     if (substr($key, 0, 9) == 'to_email_') {
-                        $to_email[] = $input_value;
+                        $i = intval(str_replace('to_email_', '', $key));
+                        $_to_email[$i] = $input_value;
                     }
-                    if (substr($key, 0, 19) == 'extra_cc_addresses_') {
-                        $extra_cc_addresses[] = $input_value;
+
+                    if ($input_value != '') {
+                        if (substr($key, 0, 19) == 'extra_cc_addresses_') {
+                            $extra_cc_addresses[] = $input_value;
+                        }
+                        if (substr($key, 0, 20) == 'extra_bcc_addresses_') {
+                            $extra_bcc_addresses[] = $input_value;
+                        }
                     }
-                    if (substr($key, 0, 20) == 'extra_bcc_addresses_') {
-                        $extra_bcc_addresses[] = $input_value;
+                }
+
+                // Check e-mail addresses and only use name / e-mail pairings where the e-mail address is not blank.
+                foreach ($_to_email as $i => $email) {
+                    if ($email == '') {
+                        continue;
+                    }
+
+                    $to_email[] = $email;
+
+                    if (isset($_to_name[$i])) {
+                        $to_name[] = $_to_name[$i];
+                    } else { // If no name was set, default to using the e-mail address as the name
+                        $to_name[] = $email;
                     }
                 }
 
