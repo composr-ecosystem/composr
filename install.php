@@ -458,7 +458,7 @@ function step_1() : object
 
     // GitLab downloads should not be used directly
     if (file_exists(get_file_base() . '/_tests')) {
-        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => 'ce4972df590de8415b508ea368a708e1', 'MESSAGE' => 'You appear to be installing via the official GitLab repository. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.']));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => 'ce4972df590de8415b508ea368a708e1', 'MESSAGE' => 'You appear to be installing via the official GitLab repository as you have the test suite files present. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.']));
     }
 
     // Language selection...

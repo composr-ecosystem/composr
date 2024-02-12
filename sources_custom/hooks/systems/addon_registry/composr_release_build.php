@@ -168,7 +168,7 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
             'sources_custom/hooks/systems/addon_registry/composr_release_build.php',
             'data_custom/build_rewrite_rules.php',
             'sources_custom/make_release.php',
-            'adminzone/pages/minimodules_custom/make_release.php',
+            'adminzone/pages/modules_custom/admin_make_release.php',
             'sources_custom/hooks/systems/page_groupings/make_release.php',
             'adminzone/pages/minimodules_custom/push_bugfix.php',
             'adminzone/pages/minimodules_custom/plug_guid.php',
@@ -199,6 +199,8 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
             'aps/test/index.html',
             'exports/builds/build/index.html',
             'exports/builds/hotfixes/index.html',
+            'lang_custom/EN/composr_release_build.ini',
+            'themes/default/templates_custom/MAKE_RELEASE_STEP4_SCREEN.tpl',
         ];
     }
 }
