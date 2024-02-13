@@ -1,4 +1,4 @@
-[title sub="Written by temp1024 and Chris Graham (ocProducts)"]Composr Supplementary: ModSecurity[/title]
+[title sub="Written by temp1024 and Chris Graham"]Composr Supplementary: ModSecurity[/title]
 
 {$IS_MAINTAINED,platform_modsecurity,ModSecurity} is an "application firewall" which is often installed by Linux-based Apache webhosts.
 

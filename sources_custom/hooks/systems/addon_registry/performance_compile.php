@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    performance_compile
  */
 
@@ -76,7 +76,7 @@ class Hook_addon_registry_performance_compile
      */
     public function get_author() : string
     {
-        return 'ocProducts';
+        return 'Core Development Team';
     }
 
     /**

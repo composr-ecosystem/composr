@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Authoring Tool Accessibility Guidelines 2.0 - Composr version 10.0 compliance[/title]
+[title sub="Written by Chris Graham"]Authoring Tool Accessibility Guidelines 2.0 - Composr version 10.0 compliance[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/advantage.png[/media]
 This document fulfils the compliancy needs of the ATAG 2.0 draft document on demonstrating ATAG compliance for an authoring tool.
@@ -13,7 +13,7 @@ Some of the wording in the specification is, however, not completely appropriate
 [title="2"]Conformance profile[/title]
 
 [b]Product[/b]: Composr
-[b]Vendor[/b]: ocProducts
+[b]Vendor[/b]: Christopher Graham
 [b]Version[/b]: 10.0.0
 [b]Language[/b]: British English
 [b]Authoring tool functions available[/b]: Code-level, WYSIWYG, Indirect, Object-orientated

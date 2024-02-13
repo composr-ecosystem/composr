@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Dos and Do-nots of a (Composr) website[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Dos and Do-nots of a (Composr) website[/title]
 
 This tutorial will detail a few of the miscellaneous do and do-nots of running a website powered by Composr.
 

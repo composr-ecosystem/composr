@@ -2,23 +2,26 @@
 
 ## Overview ##
 
-Composr CMS has been primarily developed by ocProducts Ltd, principally by Chris Graham who is the founder of the project.
-There are contributions from many other developers, mostly under contract/employment for ocProducts Ltd, but others too.
+Composr CMS had been primarily developed by the former company ocProducts Ltd, principally by Chris Graham who is the founder of the project.
+There are contributions from many other developers, some who were under contract/employment for ocProducts Ltd, but others too.
 
-A sense of who is making contributions can be seen from the [GitLab Contributors page](https://gitlab.com/composr-foundation/composr/-/graphs/master).
+A sense of who is making contributions can be seen from the [GitLab Contributors page](https://gitlab.com/composr-foundation/composr/-/graphs/master). Contributors for each release are also listed in the release news articles as of version 10.0.45.
 A sense of who is prominent in the community can seen from the [community stars page](https://compo.sr/stars.htm). This is auto-generated based on community points.
 
-Developers include:
+Developers (e.g. the "Core Development Team") include:
 - Allen Ellis
-- Chris Graham
+- Chris Graham*
 - Chris Warburton
 - Jack Franklin
 - Jason Verhagen
 - Kamen Blaginov
-- Patrick Schmalstig
+- Patrick Schmalstig**
 - Philip Withnall
 - Robbie Goacher
 - Salman Abbas
+
+*Developers suffixed with an asterisk are still active among the Core Development Team as of this writing.
+**The developer suffixed with a double asterisk is the current lead developer.
 
 If you make a contribution (e.g. by patch or GitLab merge request) please feel free to add yourself to this list (preserving alphabetical order).
 
@@ -30,7 +33,7 @@ Non-bundled addons are credited in the blocks/modules/registry-hooks for the add
 
 This product includes:
 - Resources:
- - Emoticons and avatars, created for ocProducts by Dave Buckley (licensed as per Composr, mentioned here for crediting purposes only)
+ - Emoticons and avatars, created by Dave Buckley (licensed as per Composr, mentioned here for crediting purposes only)
  - Flag images from https://github.com/hjnilsson/country-flags (flags are generally not copyrightable)
  - Noto fonts (SIL Open Font License)
  - Sound effects from Asterisk (Copyright Allison Smith, Creative Commons Attribution License)
@@ -41,7 +44,7 @@ This product includes:
    - https://pixabay.com/photos/salt-creek-falls-waterfall-landmark-2315471/
    - https://pixabay.com/photos/rustic-cabin-mountains-landscape-945421/
 - Backend code used under licence:
- - Text_Diff (LGPL licence, ocProducts modifications also therefore are also licensed under the LGPL)
+ - Text_Diff (LGPL licence, Core Developement Team modifications also therefore are also licensed under the LGPL)
  - FirePHP (BSD-like licence)
  - SabreDAV (BSD-like licence)
  - m-zip (Francesco M. Munafo', liberal custom licence in sources/m_zip.php)

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Basic forum moderation[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Basic forum moderation[/title]
 
 The term 'moderation' is usually (in web applications) applied only to discussion forums and refers to the managing of topics, posts and polls, and managing the community in general (Composr also uses the term for chatroom and Wiki+ moderation, but these are not discussed in this tutorial).
 

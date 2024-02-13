@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Providing galleries[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Providing galleries[/title]
 
 [surround]
 [media width="150" description="An image in a gallery" float="right"]data_custom/images/docs/tut_galleries/gallery_view_image.png[/media]

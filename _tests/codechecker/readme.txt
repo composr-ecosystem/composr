@@ -13,7 +13,7 @@ The code quality checker is a tool to check web documents against a number of st
  - Spelling
 The checker consists of a number of linked checkers.
 
-The code quality checker is copyright ocProducts Ltd, licensed under the CPAL (http://opensource.org/licenses/cpal_1.0), and hence can be extended and re-distributed by third-parties.
+The code quality checker is copyright Christopher Graham, licensed under the CPAL (http://opensource.org/licenses/cpal_1.0), and hence can be extended and re-distributed by third-parties.
 
 The frontend is written in Java, and thus should run wherever Java can run. A minimum of Java 11 is required. Note the latest version of Java from java.com is version 8, as that website was created for the Java web plugin only, which has reached end-of-life some time ago.
 

@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    composr_homesite_support_credits
  */
 
@@ -89,8 +89,8 @@ $cms_sc_member_view_url = $cms_sc_site_url . '/members/view/%1$d.htm'; // Set th
 $cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
 $cms_sc_home_url = 'https://compo.sr';
 $cms_sc_product_name = 'Composr';
-$cms_sc_business_name = 'ocProducts';
-$cms_sc_business_name_possesive = 'ocProduct\'s';
+$cms_sc_business_name = 'Composr';
+$cms_sc_business_name_possesive = 'Composr\'s';
 $cms_sc_credits_per_hour = 6;
 $cms_sc_price_per_credit = 5.5;
 $cms_sc_main_currency = 'GBP';

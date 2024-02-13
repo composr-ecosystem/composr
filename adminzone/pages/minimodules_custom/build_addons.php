@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    addon_publish
  */
 
@@ -179,11 +179,11 @@ if (get_param_integer('export_themes', 0) == 1) {
         }
 
         $name = get_theme_option('title', '', $theme);
-        $author = get_theme_option('author', 'ocProducts', $theme);
+        $author = get_theme_option('author', 'Core Developer Team', $theme);
         if ($author == 'admin') {
-            $author = 'ocProducts';
+            $author = 'Core Developer Team';
         }
-        $organisation = get_theme_option('organisation', 'ocProducts Ltd', $theme);
+        $organisation = get_theme_option('organisation', 'Composr', $theme);
         $version = get_theme_option('version', '1.0', $theme);
         $copyright_attribution = get_theme_option('copyright_attribution', '', $theme);
         $licence = get_theme_option('licence', '(Unstated)', $theme);

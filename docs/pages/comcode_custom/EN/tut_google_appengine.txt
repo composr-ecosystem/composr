@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Installation on Google App Engine[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Installation on Google App Engine[/title]
 
 [b]The {$IS_MAINTAINED,platform_gae,Google App Engine} functionality was not working at the time of writing. It works on the development server, but a GAE crash has prevented us making it work live. Google were investigating the issue at the time of writing.[/b] Many of the improvements made for this functionality are of general advantage on other cloud hosts (e.g. the task queue improves general scalability). We still love App Engine, so we can put the functionality through to a new testing cycle based on customer demand.
 

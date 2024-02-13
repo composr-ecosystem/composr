@@ -261,4 +261,4 @@
 </body>
 </html>
 
-<!-- Powered by {$BRAND_NAME*} (admin theme), (c) ocProducts Ltd - {$BRAND_BASE_URL*} -->
+<!-- Powered by {$BRAND_NAME*} (admin theme), (c) Christopher Graham - {$BRAND_BASE_URL*} -->

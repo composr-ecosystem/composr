@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced site structure and flow[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Advanced site structure and flow[/title]
 
 This tutorial contains some advanced information about managing the structure and flow of a Composr website.
 

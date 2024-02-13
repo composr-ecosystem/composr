@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Optimising Performance[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Optimising Performance[/title]
 
 Composr is very heavily optimised so that pages load as quickly as possible, but there are also many ways to tune performance. This tutorial will provide information on techniques and issues for increasing throughput, so that your site may support more visitors. Some of these techniques are easy, others are programmer-level in complexity.
 

@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    debrand
  */
 
@@ -32,7 +32,7 @@ class Module_admin_debrand
     {
         $info = [];
         $info['author'] = 'Chris Graham';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
@@ -223,8 +223,9 @@ class Module_admin_debrand
             $critical_errors = cms_file_get_contents_safe(get_file_base() . '/sources/critical_errors.php', FILE_READ_LOCK);
             $critical_errors = str_replace('Composr', addslashes(post_param_string('rebrand_name')), $critical_errors);
             $critical_errors = str_replace('https://compo.sr', addslashes(post_param_string('rebrand_base_url', false, INPUT_FILTER_URL_GENERAL)), $critical_errors);
-            $critical_errors = str_replace('ocProducts Ltd', 'ocProducts Ltd / ' . addslashes(post_param_string('company_name')), $critical_errors);
-            $critical_errors = str_replace('ocProducts', 'ocProducts / ' . addslashes(post_param_string('company_name')), $critical_errors);
+            $critical_errors = str_replace('ocProducts Ltd', 'ocProducts Ltd / ' . addslashes(post_param_string('company_name')), $critical_errors); // LEGACY
+            $critical_errors = str_replace('ocProducts', 'ocProducts / ' . addslashes(post_param_string('company_name')), $critical_errors); // LEGACY
+            $critical_errors = str_replace('Christopher Graham', 'Christopher Graham / ' . addslashes(post_param_string('company_name')), $critical_errors);
 
             afm_make_file($critical_errors_path, $critical_errors, false);
         }
@@ -235,7 +236,8 @@ class Module_admin_debrand
             $global_tpl_path = get_file_base() . '/themes/default/templates/GLOBAL_HTML_WRAP.tpl';
         }
         $global_tpl = cms_file_get_contents_safe($global_tpl_path, FILE_READ_LOCK | FILE_READ_BOM);
-        $global_tpl = str_replace('Copyright ocProducts Limited', '', $global_tpl);
+        $global_tpl = str_replace('Copyright ocProducts Limited', '', $global_tpl); // LEGACY
+        $global_tpl = str_replace('Copyright ocProducts Ltd', '', $global_tpl); // LEGACY
         cms_file_put_contents_safe($save_global_tpl_path, $global_tpl, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         if (post_param_integer('churchy', 0) == 1) {

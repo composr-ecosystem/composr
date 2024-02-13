@@ -1,4 +1,4 @@
-[title sub="Written by Steven Gilson, and Chris Graham (ocProducts)"]Composr Tutorial: Backing up your site[/title]
+[title sub="Written by Steven Gilson, and Chris Graham"]Composr Tutorial: Backing up your site[/title]
 
 This tutorial will describe and explain Composr's in-built backup addon, including all its features, and the necessity of backups.
 

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Dealing with annoying users[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Dealing with annoying users[/title]
 
 Composr provides a number of ways to deal with the annoying users or the users who do not adhere to your site policies (for a good discussion of site policies see the [page="_SEARCH:tut_legal"]Legal and social responsibilities[/page] tutorial).
 

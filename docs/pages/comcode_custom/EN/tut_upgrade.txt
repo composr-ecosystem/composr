@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Performing an upgrade[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Performing an upgrade[/title]
 
 This tutorial will give background information for this process of upgrading Composr. The Composr upgrader does step you through the process, but further information will be given here so that you may gain a further understanding.
 
@@ -39,7 +39,7 @@ Be aware that a number of things can change significantly across releases. Make 
  - New features will be added, and that could possibly interfere with highly tuned layouts or site flows.
  - Minimum requirements may have changed, for example a newer version of PHP may be required as a baseline.
  - Non-bundled addons may no longer function.
-At the same time, bear in mind that fixes to security holes are not always back-ported to older releases, especially if a newer feature/major version has been out for a while. So ideally you should not stick around on old versions too long. If you want to avoid upgrading but also need to keep your site secure, you should strongly consider getting a developers support (such as ocProducts) so that you can be kept up-to-date manually.
+At the same time, bear in mind that fixes to security holes are not always back-ported to older releases, especially if a newer feature/major version has been out for a while. So ideally you should not stick around on old versions too long. If you want to avoid upgrading but also need to keep your site secure, you should strongly consider getting a developers support so that you can be kept up-to-date manually.
 
 [title="2"]The upgrade process[/title]
 

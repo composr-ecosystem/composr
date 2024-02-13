@@ -1,4 +1,4 @@
-[title sub="Written by Philip Withnall (ocProducts)"]Composr Tutorial: Running chatrooms (features and advice)[/title]
+[title sub="Written by Philip Withnall"]Composr Tutorial: Running chatrooms (features and advice)[/title]
 
 {!chat:DOC_CHAT}
 

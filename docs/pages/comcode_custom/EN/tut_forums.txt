@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Discussion forums[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Discussion forums[/title]
 
 This tutorial will explain how discussion forums work in [concept]Conversr[/concept] (sometimes abbreviated as CNS), and how best to organise them.
 
@@ -11,7 +11,7 @@ This tutorial will explain how discussion forums work in [concept]Conversr[/conc
 [media width="150" description="When editing forums, the full structure is displayed, with an opportunity to reorder both groupings and sub-forums within" float="right"]data_custom/images/docs/tut_forums/forums_edit.png[/media]
 {!cns:DOC_FORUMS}
 
-Forums are actually a very powerful collaboration tool, not merely limited to chat. For example, ocProducts used a forum as an integral part of the process for the designing of the software you're using right now: it is surprising what forums and topics can be made to represent.
+Forums are actually a very powerful collaboration tool, not merely limited to chat. For example, The Composr Core Development Team uses a forum as an integral part of the process for the designing of the software you're using right now: it is surprising what forums and topics can be made to represent.
 
 So, now that I have explained the structure of a discussion forum, I will explain what each of these constructs are for.
 

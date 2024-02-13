@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: How to disable joining[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: How to disable joining[/title]
 
 This tutorial explains how you can disable joining of your website. It also is a good example of how to use match-key error messages.
 The tutorial assumes that the [tt]match_key_permissions[/tt] addon is installed.

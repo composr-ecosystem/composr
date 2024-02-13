@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Code Book, part 4 (Coding Standards)[/title]
+[title sub="Written by Chris Graham"]Code Book, part 4 (Coding Standards)[/title]
 
 &laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]{$REQUIRE_CSS,tutorials}
 
@@ -646,11 +646,11 @@ Use the correct redirection APIs
 | Web API calls must log their errors and send an error notification (usually both via [tt]cms_error_log[/tt]), or pass back their errors via exceptions or reference parameters (then the callers must do said logging/notification). This implies to call [tt]cms_http_request[/tt] with [tt]trigger_error[/tt] as false, so that errors don't result in insta-exit (most APIs should be designed to gracefully handle errors rather than exiting anyway). We need to do this because API failure should not go unnoticed.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Do not e-mail ocProducts[/color]
+[color="red"]Do not e-mail the developers[/color]
 | Stability
 | Composr development +
 | Manually
-| Web API errors should not result in anything that would send an error e-mail to ocProducts (e.g. [tt]fatal_exit[/tt]). We do not want to be spammed when people mess up their key configuration or exceed quota.
+| Web API errors should not result in anything that would send an error e-mail to the developers (e.g. [tt]fatal_exit[/tt]). We do not want to be spammed when people mess up their key configuration or exceed quota.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Write automated tests[/color]

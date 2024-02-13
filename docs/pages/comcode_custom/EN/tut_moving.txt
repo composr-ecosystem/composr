@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Moving sites[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Moving sites[/title]
 
 This tutorial will explain how to move servers.
 

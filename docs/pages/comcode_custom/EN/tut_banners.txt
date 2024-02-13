@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Running advertisements (via the banner system)[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Running advertisements (via the banner system)[/title]
 
 [media width="150" description="A banner" float="right"]data_custom/images/docs/tut_banners/banners_action.png[/media]
 {!banners:DOC_BANNERS}

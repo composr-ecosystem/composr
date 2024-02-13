@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Code Book, part 1b (Further back-end concepts)[/title]
+[title sub="Written by Chris Graham"]Code Book, part 1b (Further back-end concepts)[/title]
 
 &laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]
 

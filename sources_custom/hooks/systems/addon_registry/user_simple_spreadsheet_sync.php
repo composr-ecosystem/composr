@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    user_simple_spreadsheet_sync
  */
 
@@ -76,7 +76,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
      */
     public function get_author() : string
     {
-        return 'ocProducts';
+        return 'Core Development Team';
     }
 
     /**

@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core
  */
 
@@ -49,9 +49,9 @@ function init__failure()
     global $RUNNING_TASK;
     $RUNNING_TASK = false;
 
-    global $BLOCK_OCPRODUCTS_ERROR_EMAILS;
-    if (!isset($BLOCK_OCPRODUCTS_ERROR_EMAILS)) {
-        $BLOCK_OCPRODUCTS_ERROR_EMAILS = false;
+    global $BLOCK_CORE_DEVELOPERS_ERROR_EMAILS;
+    if (!isset($BLOCK_CORE_DEVELOPERS_ERROR_EMAILS)) {
+        $BLOCK_CORE_DEVELOPERS_ERROR_EMAILS = false;
     }
 }
 
@@ -1099,7 +1099,7 @@ function get_webservice_result($error_message) : ?string
 }
 
 /**
- * Log an error message and send a notification about it (to site staff but not to ocProducts).
+ * Log an error message and send a notification about it (to site staff but not to the core developers).
  * Generally used when a web API fails.
  *
  * @param  string $errormsg A error message
@@ -1114,13 +1114,13 @@ function cms_error_log(string $errormsg, string $notification_category = 'error_
 }
 
 /**
- * Relay an error message, if appropriate, to e-mail listeners (sometimes ocProducts, and site staff).
+ * Relay an error message, if appropriate, to e-mail listeners (sometimes core developers, and site staff).
  *
  * @param  string $text A error message (in HTML)
- * @param  boolean $ocproducts Also send to ocProducts
+ * @param  boolean $developers Also send to core developers
  * @param  ID_TEXT $notification_category The error_occurred notification category
  */
-function relay_error_notification(string $text, bool $ocproducts = true, string $notification_category = 'error_occurred')
+function relay_error_notification(string $text, bool $developers = true, string $notification_category = 'error_occurred')
 {
     if (isset($GLOBALS['SENDING_MAIL']) && $GLOBALS['SENDING_MAIL']) {
         return;
@@ -1146,16 +1146,16 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
 
     $error_url = get_self_url_easy(true);
 
-    global $BLOCK_OCPRODUCTS_ERROR_EMAILS;
+    global $BLOCK_CORE_DEVELOPERS_ERROR_EMAILS;
 
     require_code('notifications');
     require_code('comcode');
-    $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $ocproducts ? '?' : get_ip_address(), get_site_default_lang());
-    dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $ocproducts ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
+    $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $developers ? '?' : get_ip_address(), get_site_default_lang());
+    dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     if (
-        ($ocproducts) &&
-        (get_option('send_error_emails_ocproducts') == '1') &&
-        (!$BLOCK_OCPRODUCTS_ERROR_EMAILS) &&
+        ($developers) &&
+        (get_option('send_error_emails_developers') == '1') &&
+        (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
         (!running_script('cron_bridge')) &&
         ($text != '!') &&
         (strpos($text, '_custom/') === false) &&
@@ -1234,7 +1234,7 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
         require_code('mail');
         dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, ['errors_final' . strval(cms_version()) . '@compo.sr'], '', '', '', ['no_cc' => true, 'as_admin' => true]);
     }
-    if (($ocproducts) && (get_value('agency_email_address') !== null)) {
+    if (($developers) && (get_value('agency_email_address') !== null)) {
         require_code('mail');
         $agency_email_address = get_value('agency_email_address');
         dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, [$agency_email_address], '', '', '', ['no_cc' => true, 'as_admin' => true]);

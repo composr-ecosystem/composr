@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Basic configuration and getting started[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Basic configuration and getting started[/title]
 
 Once Composr is installed, there is some basic configuration to do before your website is ready to open.
 

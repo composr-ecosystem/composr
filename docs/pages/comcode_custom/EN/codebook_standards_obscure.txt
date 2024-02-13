@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Code Book, part 4 (Obscure Coding Standards)[/title]
+[title sub="Written by Chris Graham"]Code Book, part 4 (Obscure Coding Standards)[/title]
 
 &laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]{$REQUIRE_CSS,tutorials}
 

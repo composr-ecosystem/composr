@@ -1,4 +1,4 @@
-[title sub="Written by Salman Abbas (ocProducts)"]Composr Tutorial: JavaScript Reference[/title]
+[title sub="Written by Salman Abbas"]Composr Tutorial: JavaScript Reference[/title]
 
 [contents]decimal,lower-alpha[/contents]
 

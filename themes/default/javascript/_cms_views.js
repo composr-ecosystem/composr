@@ -327,7 +327,7 @@
      Code & Documentation:
      http://kd3sign.co.uk/examples/modalwindow/
 
-     HEAVILY Modified by ocProducts for composr.
+     HEAVILY Modified by Chris Graham for composr.
 
      */
 

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: How domain names work[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: How domain names work[/title]
 
 This tutorial is designed to give a full explanation of domain names, DNS, and the politics surrounding it all. It is written primarily for agencies/consultancies who need to work with previously registered domain names.
 

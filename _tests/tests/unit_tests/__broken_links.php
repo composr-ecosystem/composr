@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    testing_platform
  */
 
@@ -231,7 +231,7 @@ class __broken_links_test_set extends cms_test_case
         if (empty($url)) {
             return;
         }
-        
+
         if (preg_match('#^https?://web\.archive\.org/web/#', $url) != 0) { // Web Archive is very slow
             return;
         }

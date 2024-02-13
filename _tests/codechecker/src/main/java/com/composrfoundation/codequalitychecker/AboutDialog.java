@@ -35,7 +35,7 @@ public class AboutDialog extends JDialog {
         jLabel1.setText("<html>This is the Web Code Quality Checker, for checking web documents against web standards.<br><br>See the readme.txt file for full documentation.</html>");
         jLabel1.setBounds(new Rectangle(20, 31, 349, 70));
         jLabel2.setToolTipText("");
-        jLabel2.setText("<html>Copyright (c) ocProducts Ltd, 2004-2023.</html>");
+        jLabel2.setText("<html>Copyright (c) Christopher Graham Ltd, 2004-2024.</html>"); /* TODO: Keep updated with the current copyright year */
         jLabel2.setBounds(new Rectangle(20, 196, 348, 40));
         this.setModal(true);
         this.setResizable(false);

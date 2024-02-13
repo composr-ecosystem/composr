@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    calendar
  */
 
@@ -84,7 +84,7 @@ function output_ical(bool $headers_and_exit = true)
 
     echo "BEGIN:VCALENDAR\r\n";
     echo "VERSION:2.0\r\n";
-    echo "PRODID:-//ocProducts/Composr//NONSGML v1.0//EN\r\n";
+    echo "PRODID:-//Christopher Graham/Composr//NONSGML v1.0//EN\r\n";
     echo "CALSCALE:GREGORIAN\r\n";
     $categories = [];
     $_categories = $GLOBALS['SITE_DB']->query_select('calendar_types', ['*']);

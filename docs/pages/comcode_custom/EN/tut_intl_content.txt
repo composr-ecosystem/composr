@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Translating Composr content[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Translating Composr content[/title]
 
 Composr can have its content translated and delivered for each language, without requiring any duplication. i.e. it can be fully multilingual.
 

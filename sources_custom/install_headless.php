@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    meta_toolkit
  */
 
@@ -98,7 +98,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         'cns_table_prefix' => $table_prefix,
         'master_password' => '',
         'master_password_confirm' => '',
-        'send_error_emails_ocproducts' => '1',
+        'send_error_emails_developers' => '1',
         'admin_username' => 'admin',
         'cns_admin_password' => '',
         'cns_admin_password_confirm' => '',

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: Linux file permissions[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Linux file permissions[/title]
 
 Most Composr sites are hosted on Linux web servers. Linux uses the traditional file permission scheme from Unix, which is actually a very simple scheme in terms of what can be done, but technically complex to understand. Composr requires special file permissions for any uploaded file or directory that it needs to write to.
 

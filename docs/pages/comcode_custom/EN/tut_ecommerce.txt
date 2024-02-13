@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: eCommerce[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: eCommerce[/title]
 
 {!ecommerce:DOC_ECOMMERCE}
 

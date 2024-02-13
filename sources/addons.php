@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core_addon_management
  */
 
@@ -57,7 +57,7 @@ function get_default_addon_info() : array
 /**
  * Read all the addons, in the most efficient way possible.
  */
-function preload_all_ocproducts_addons_info()
+function preload_all_addons_info()
 {
     global $ADDON_INFO_CACHE;
 
@@ -143,12 +143,12 @@ function read_addon_info(string $addon_name, bool $get_dependencies_on_this = fa
         if ($_hook_bits[6] !== null) {
             $author = is_array($_hook_bits[6]) ? call_user_func_array($_hook_bits[6][0], $_hook_bits[6][1]) : cms_eval($_hook_bits[6], $path, false);
         } else {
-            $author = $is_orig ? 'Core Team' : $defaults['author'];
+            $author = $is_orig ? 'Core Development Team' : $defaults['author'];
         }
         if ($_hook_bits[7] !== null) {
             $organisation = is_array($_hook_bits[7]) ? call_user_func_array($_hook_bits[7][0], $_hook_bits[7][1]) : cms_eval($_hook_bits[7], $path, false);
         } else {
-            $organisation = $is_orig ? 'ocProducts' : $defaults['organisation'];
+            $organisation = $is_orig ? 'Composr' : $defaults['organisation'];
         }
         if ($_hook_bits[8] !== null) {
             $file_list = is_array($_hook_bits[8]) ? call_user_func_array($_hook_bits[8][0], $_hook_bits[8][1]) : cms_eval($_hook_bits[8], $path, false);

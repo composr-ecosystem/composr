@@ -89,7 +89,7 @@ This is a {EXAMPLE*}.
 
 Both the [url="Conposr"]https://gitlab.com/composr-foundation/conposr[/url] and [url="Conposr++"]https://gitlab.com/composr-foundation/conposr_plus_plus[/url] libraries are available on [url="GitLab"]https://gitlab.com/composr-foundation[/url].
 
-These libraries are not going to be managed as official projects, at least not by ocProducts. There won't be official releases or versions, and there won't be development documentation. Developers interested in using them can grab them directly off of GitLab and use them as they please. As with Composr, they are under the Open Source CPAL license.
+These libraries are not going to be managed as official projects, at least not by the Composr Core Development Team. There won't be official releases or versions, and there won't be development documentation. Developers interested in using them can grab them directly off of GitLab and use them as they please. As with Composr, they are under the Open Source CPAL license.
 
 [title="2"]FAQ[/title]
 
@@ -103,7 +103,7 @@ It's a play on C++, which adds extra functionality around the C language.
 
 [title="3"]Why these silly names?[/title]
 
-We never took ourselves too seriously, and silly names are fun. Actually there's a precedent... the name ocProducts is derived from the evil OCP of the Robocop movies. We wanted to name our company after an evil company, so people would keep us in check -- a parody of Google's "do no evil" (but trust us with all your data) motto.
+While we pride ourselves on professional and high standards for the Composr software, we never took ourselves too seriously, and silly names are fun.
 
 [title="3"]Why not actually build Composr itself on top of Conposr, for maximum code re-use?[/title]
 

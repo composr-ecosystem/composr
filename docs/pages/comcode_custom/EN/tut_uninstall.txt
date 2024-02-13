@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Uninstalling Composr from a server[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Uninstalling Composr from a server[/title]
 
 [box="Destructive operation" width="25em" float="right"]
 Uninstalling Composr will remove all database data, such that it is irrecoverable (unless you have backups). This means that all that will remain of content such as downloads are the actual uploaded files under the [tt]uploads[/tt] directory.

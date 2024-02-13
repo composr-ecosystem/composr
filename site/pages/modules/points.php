@@ -10,7 +10,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    points
  */
 
@@ -29,7 +29,7 @@ class Module_points
     {
         $info = [];
         $info['author'] = 'Chris Graham';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 9;

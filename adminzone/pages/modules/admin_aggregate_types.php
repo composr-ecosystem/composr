@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    aggregate_types
  */
 
@@ -47,7 +47,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
     {
         $info = [];
         $info['author'] = 'Chris Graham';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;

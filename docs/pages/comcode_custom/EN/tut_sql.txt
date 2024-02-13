@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Manually editing your database with phpMyAdmin[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Manually editing your database with phpMyAdmin[/title]
 
 Composr stores most of its data in a database, as almost all web applications do. This allows it to efficiently read and write data to a predefined structure, without requiring complex customised file formats to do so.
 

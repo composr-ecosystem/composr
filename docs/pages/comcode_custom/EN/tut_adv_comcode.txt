@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced Comcode[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Advanced Comcode[/title]
 
 This tutorial will explain some of the more advanced aspects of the Comcode system, for those who already have a handle on the basics.
 

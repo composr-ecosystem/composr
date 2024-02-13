@@ -42,7 +42,7 @@ In our opening paragraph we talked about your website being an investment. In ma
 
 This way DIY users get a better website than if they had used a lesser tool, or save tens of thousands of pounds/dollars/euros that you'd need to pay for a ground-up development from a traditional web development company. Really passionate Composr users go further, and maybe learn XHTML, CSS, or even PHP -- and from this, push Composr as far as they want. The most advanced users are often the people who contribute directly to the Composr product (via the Open Source process) and/or come on to become web professionals.
 
-Sometimes (often for businesses), the investment might be in money rather than time, and go to a web development company (such as ocProducts). Businesses and organisations can pay professional developers to make a whole website using Composr.
+Sometimes (often for businesses), the investment might be in money rather than time, and go to a web development company. Businesses and organisations can pay professional developers to make a whole website using Composr.
 
 In-between there's a proportion of users who want a balance -- to invest their own time, and also to pay for some professional services. This usually means users will make websites themselves in Composr, and pay a developer to add some extra features, or to provide some direct technical support for the software.
 

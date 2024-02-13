@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: How the Internet actually works[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: How the Internet actually works[/title]
 
 In this tutorial I will explain how the Internet works, all the way from what goes through the wires and how the wires across the globe connect, to how meaningful activities are performed on your computer.
 

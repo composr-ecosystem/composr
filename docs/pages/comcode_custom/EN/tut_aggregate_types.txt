@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Aggregate Content Types[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Aggregate Content Types[/title]
 
 {!aggregate_types:DOC_AGGREGATE_TYPES}
 

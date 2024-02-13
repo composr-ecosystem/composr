@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    code_editor
  */
 
@@ -194,7 +194,7 @@ END;
     </p>
     <hr />
     <ul class="actions-list" role="navigation">
-        <li><a title="ocProducts programming tutorial (this link will open in a new window)" target="_blank" href="https://compo.sr/docs/tut-programming.htm">Read the ocProducts programming tutorial</a></li>
+        <li><a title="Introduction to programming tutorial (this link will open in a new window)" target="_blank" href="https://compo.sr/docs/tut-programming.htm">Read the introduction to programming tutorial</a></li>
 END;
     if (array_key_exists('base_url', $SITE_INFO)) {
         $_base_url = code_editor_escape_html($SITE_INFO['base_url']);

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Anti-spam settings[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Anti-spam settings[/title]
 
 Attack by spam-bots can be a major problem for a website. Fortunately Composr provides a number of tools to help you.
 

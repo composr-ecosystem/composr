@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Code Book, part 1a (Core back-end programming)[/title]
+[title sub="Written by Chris Graham"]Code Book, part 1a (Core back-end programming)[/title]
 
 &laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]
 
@@ -230,7 +230,7 @@ A module is a PHP file that defines one class. For a page in the [tt]site[/tt] z
 
 The module class must include a function named [tt]info[/tt], which returns a map of fields that describe the module:
  - [tt]author[/tt] -- this is a string indicating who authored the module. The author does not need to be defined anywhere else -- this field is only intended for human-reading.
- - [tt]organisation[/tt] -- like author, but this is the organisation that the author is working on behalf of. For all official modules, it is 'ocProducts'.
+ - [tt]organisation[/tt] -- like author, but this is the organisation that the author is working on behalf of. For modules developed and maintained by the Core Development Team, it is 'Composr'.
  - [tt]hacked_by[/tt] -- this should be left to null, unless the module is an edited version of someone else's module, in which case it would be the name of the person altering the module (the new author)
  - [tt]hack_version[/tt] -- this should be left to null, unless the module is an edited version of someone else's module, in which case it should start as the integer '1' and then be incremented for each new version of the module (see explanation of [tt]version[/tt])
  - [tt]version[/tt] -- this is the version number for the module. The version can start at any integer, but '1' is usual. This number should be incremented whenever a compatibility-breaking change is implemented.
@@ -1175,7 +1175,7 @@ To raise an error you'll typically call one of these functions:
 
 Use [tt]trigger_error[/tt]/[tt]fatal_exit[/tt] if it is a totally unexpected but detectable error condition (i.e. not user error, not a common system error, i.e. very likely a Composr bug). As such it would be subject to logging and error notifications. As [tt]trigger_error[/tt] goes through the Composr's handling of the PHP error system, the configuration options for how to handle PHP errors are respected. In many cases [tt]trigger_error[/tt] will effectively call [tt]fatal_exit[/tt]/[tt]attach_message[/tt] based on these settings. The other functions are to be called directly in detectable situations that are typically user errors, where you want to specify the precise handling for them.
 
-[tt]warn_exit[/tt] and [tt]attach_message[/tt] can be told to do logging and error notifications also via setting a special parameter. In this case though no error e-mail will send to ocProducts, as it's not a Composr bug.
+[tt]warn_exit[/tt] and [tt]attach_message[/tt] can be told to do logging and error notifications also via setting a special parameter. In this case though no error e-mail will send to the developers, as it's not a Composr bug.
 
 {|
 ! Function
@@ -1183,7 +1183,7 @@ Use [tt]trigger_error[/tt]/[tt]fatal_exit[/tt] if it is a totally unexpected but
 ! Handling type
 ! Logging
 ! Error notification
-! ocProducts error e-mail
+! Developer error e-mail
 |-
 ! [tt]trigger_error[/tt]
 | Notice, Warn, Error

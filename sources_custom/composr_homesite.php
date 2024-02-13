@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    composr_homesite
  */
 
@@ -118,7 +118,7 @@ function find_version_download_fast($version_pretty, $type_wanted = 'manual', $v
         ];
     } else {
         $sql = 'SELECT d.num_downloads,d.name,d.file_size,d.id AS d_id,d.add_date FROM ' . get_table_prefix() . 'download_downloads d' . $GLOBALS['SITE_DB']->prefer_index('download_downloads', 'downloadauthor');
-        $sql .= ' WHERE ' . db_string_equal_to('author', 'ocProducts') . ' AND validated=1';
+        $sql .= ' WHERE ' . db_string_equal_to('author', 'Core Development Team') . ' AND validated=1';
         $like = 'Composr Version ';
         $like .= (($version_pretty === null) ? '%' : $version_pretty);
         if ($type_wanted != '') {

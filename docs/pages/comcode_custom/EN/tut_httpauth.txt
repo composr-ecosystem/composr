@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Integrating Composr into a network via HTTP authentication[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Integrating Composr into a network via HTTP authentication[/title]
 
 [surround]
 [media width="150" description="Authentication is required to even reach the web application" float="right"]data_custom/images/docs/tut_httpauth/httpauth_deny.png[/media]

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Custom structured content (via catalogues)[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Custom structured content (via catalogues)[/title]
 
 [media width="150" description="Adding a catalogue" float="right"]data_custom/images/docs/tut_catalogues/catalogues_add.png[/media]
 {!catalogues:DOC_CATALOGUES}

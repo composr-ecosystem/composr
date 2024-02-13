@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: The form field filter system[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: The form field filter system[/title]
 
 Composr provides a powerful feature for filtering the user input data given through various forms in Composr without having to change the PHP code. The feature can also influence the default values displayed within form fields.
 

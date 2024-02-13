@@ -1,4 +1,4 @@
-[title sub="Written by Steve Jarvis (ocProducts)"]Composr Tutorial: Changing the site language (for end users)[/title]
+[title sub="Written by Steve Jarvis"]Composr Tutorial: Changing the site language (for end users)[/title]
 
 This tutorial covers how to translate your (Composr-powered) website into a different language. It is designed for the more casual webmaster who is not seeking to create their own Composr translation. We also have more thorough tutorials, linked under See Also.
 

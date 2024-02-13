@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: The Composr programming framework[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: The Composr programming framework[/title]
 
 Composr is not just a web application, but also a programming framework. Composr defines a very large, fully documented, API, and has numerous mechanisms for the addition of code. Programmers are able to cleanly extend or override any aspect of the system, to enhance Composr or bend Composr in any area necessary.
 
@@ -31,7 +31,7 @@ With PHPDoc and the function header-line itself, every function has the followin
   - A description of the parameter
   - Whether the parameter is optional
  - The return type (if any), and a description of it
-Of course, the actual function code is also available. All this information is presented as a part of the [url="API guide"]{$BRAND_BASE_URL}/docs/api/[/url] which is precompiled using phpDocumentor. We also have the [page="_SEARCH:codebook"]Code Book[/page] which includes a lot of additional information about programming for Composr, and is one of the actual sources of information for ocProducts staff; it includes a lot of important and expert information, including guidelines for writing secure code.
+Of course, the actual function code is also available. All this information is presented as a part of the [url="API guide"]{$BRAND_BASE_URL}/docs/api/[/url] which is precompiled using phpDocumentor. We also have the [page="_SEARCH:codebook"]Code Book[/page] which includes a lot of additional information about programming for Composr, and is one of the actual sources of information for the staff; it includes a lot of important and expert information, including guidelines for writing secure code.
 
 [title="2"]Extending Composr[/title]
 

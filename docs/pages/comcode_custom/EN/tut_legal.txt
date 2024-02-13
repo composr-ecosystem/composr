@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Legal and social responsibilities[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Legal and social responsibilities[/title]
 
 [media width="350" description="" float="right"]data_custom/images/docs/tut_legal/image.png[/media]
 If you are running a website, in particular a large or corporate website, there are important legal and social issues that need to be understood, and procedures or rules need to be put in place.

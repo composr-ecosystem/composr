@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core
  */
 
@@ -32,7 +32,7 @@ class Module_admin_version
     {
         $info = [];
         $info['author'] = 'Chris Graham';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 18;
@@ -1108,6 +1108,8 @@ class Module_admin_version
 
             rename_config_option('oembed_html_whitelist', 'oembed_html_safelist');
 
+            rename_config_option('send_error_emails_ocproducts', 'send_error_emails_developers');
+
             $GLOBALS['FORUM_DB']->add_table_field('logged_mail_messages', 'm_sender_email', 'SHORT_TEXT');
             $GLOBALS['FORUM_DB']->add_table_field('logged_mail_messages', 'm_plain_subject', 'BINARY');
 
@@ -1265,7 +1267,7 @@ class Module_admin_version
         }
 
         $sponsors = [
-            'ocProducts' => ['AREAS' => ['Primary sponsor']],
+            'ocProducts' => ['AREAS' => ['Primary sponsor']], // TODO: remove?
         ];
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');

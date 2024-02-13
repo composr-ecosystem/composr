@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: File permissions[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: File permissions[/title]
 
 This tutorial lists the file permissions Composr needs. It is useful when:
  - Installing with the manual installer

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Supplementary web technologies (media, social networking, etc)[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Supplementary web technologies (media, social networking, etc)[/title]
 
 This tutorial will explain and detail some of the fringe features of web technologies.
 

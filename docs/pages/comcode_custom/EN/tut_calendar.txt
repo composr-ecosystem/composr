@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Running a calendar/diary[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Running a calendar/diary[/title]
 
 {!calendar:DOC_CALENDAR}
 

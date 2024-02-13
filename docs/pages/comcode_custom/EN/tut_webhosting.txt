@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Webhosting for Composr[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Webhosting for Composr[/title]
 
 [media width="350" float="right" framed="0"]data_custom/images/docs/tut_webhosting/kind.png[/media]
 To put a website on-to the Internet, you need to arrange for 'webhosting'. This is usually done by paying for the services of a [concept]webhost[/concept], who will provide you space-on and access-to, a computer (a web server) that is permanently connected to the Internet via a high-speed connection.

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced Composr member system[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Advanced Composr member system[/title]
 
 This tutorial will cover some of the more advanced features of the [concept]Conversr[/concept] member system.
 

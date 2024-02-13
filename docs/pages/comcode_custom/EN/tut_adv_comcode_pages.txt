@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Using blocks[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Using blocks[/title]
 
 Composr provides features to allow Comcode pages to be very feature rich. This tutorial explains how you can add blocks to your pages. Blocks can be used to display dynamic data such as recent forum posts onto a page (i.e. embedding it within the flower of the wider page). It will give an example of how to add third-party widgets to a page. Finally it will also explain how Composr allows your website content to be organised using different methodologies.
 

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Filtering using Selectcode syntax[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Filtering using Selectcode syntax[/title]
 
 Selectcode is a special Composr syntax (language) for writing down what you would like to be matched. Sometimes we have requirements that a page should "only show this" or should "only show except this" -- Selectcode makes that possible.
 

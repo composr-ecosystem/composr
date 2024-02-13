@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Introduction to web design[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Introduction to web design[/title]
 
 This tutorial is an introduction to the artistic side of web development -- web design.
 

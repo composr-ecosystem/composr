@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Theme Lifecycle[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Theme Lifecycle[/title]
 
 If you've developed a theme, you'll need to keep it updated as new Composr versions come out.
 Where possible we try and automate this, but automation is imperfect.

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Web-applications, Composr, and PHP[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Web-applications, Composr, and PHP[/title]
 
 This tutorial will provide some background into the different kinds of solutions that are out there for creating websites. It is not only specific to Composr -- we hope to explain the inherent advantages of using a CMS such as our own -- as well as what makes Composr special.
 
@@ -554,9 +554,9 @@ Composr provides the best of all the main competing kinds of system, seamlessly 
 [title="2"]Composr vs third party services[/title]
 
 [media float="right" framed="0" thumb="0"]data_custom/images/docs/dont.png[/media]
-ocProducts takes pride in developing integrated systems that provide as much functionality as possible without relying upon external services. Many of our competitors provide a content management framework, however their users often have to rely upon external services or third-party developers to produce embedded code or "plug-in" packages that provide advanced or interactive functions.
+The Core Development Team takes pride in developing integrated systems that provide as much functionality as possible without relying upon external services. Many of our competitors provide a content management framework, however their users often have to rely upon external services or third-party developers to produce embedded code or "plug-in" packages that provide advanced or interactive functions.
 
-While Composr fully supports embedded code and provides a plug-in architecture, ocProducts believes that users should be able to construct (and extend) fully featured sites without relying upon external service providers or searching through an archive of unreliable/unsupported plug-ins. Thus, Composr comes with the most comprehensive feature set in its class, maximising site functionality straight "out of the box". This holistic design philosophy aims to ensure that all features on a site work harmoniously, while maintaining maximum design fidelity and providing a unified administration interface. This ensures that you retain full control over your data and guarantees room for your site to grow as and when your needs change.
+While Composr fully supports embedded code and provides a plug-in architecture, the core team believes that users should be able to construct (and extend) fully featured sites without relying upon external service providers or searching through an archive of unreliable/unsupported plug-ins. Thus, Composr comes with the most comprehensive feature set in its class, maximising site functionality straight "out of the box". This holistic design philosophy aims to ensure that all features on a site work harmoniously, while maintaining maximum design fidelity and providing a unified administration interface. This ensures that you retain full control over your data and guarantees room for your site to grow as and when your needs change.
 
 If your CMS has a limited range of features, utilising external services to provide added functionality may seem like an attractive option for extending your website. Unfortunately, there are a number of risks inherent with third-party dependencies, which can be avoided by hosting your required features directly.
 

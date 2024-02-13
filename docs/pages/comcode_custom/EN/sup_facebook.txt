@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: Facebook Support / Open Graph[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Facebook Support / Open Graph[/title]
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/sup_facebook/fb_composr.jpg[/media]
 This tutorial describes {$IS_MAINTAINED,facebook,Composr Facebook integration}. It mostly describes functionality supplied by the non-bundled Facebook Support addon.

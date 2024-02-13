@@ -1,4 +1,4 @@
-[title sub="Written by ocProducts"]Composr Tutorial: Mobile apps via Composr Mobile SDK[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Mobile apps via Composr Mobile SDK[/title]
 
 Composr Mobile SDK ("CMS SDK") is a toolkit to help you build mobile apps that work with a central Composr-powered website. It is intended for use by experienced iOS and Android developers.
 

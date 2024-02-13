@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    testing_platform
  */
 
@@ -111,7 +111,7 @@ class tutorial_quality_test_set extends cms_test_case
 
     protected function skip_tutorial($file)
     {
-        // Not subject to ocProducts coding standards
+        // Not subject to coding standards
         if (in_array(basename($file, '.txt'), ['sup_youtube_channel_integration_block_addon_documentation'])) {
             return true;
         }

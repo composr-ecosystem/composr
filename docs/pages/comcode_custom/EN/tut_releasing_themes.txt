@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Releasing a theme[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Releasing a theme[/title]
 
 If you've developed your own theme for Composr, and would like to share it with others, we strongly encourage you to do so via the {$BRAND_BASE_URL} theme gallery. This tutorial explains how to do it.
 

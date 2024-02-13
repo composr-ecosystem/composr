@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    commandr
  */
 
@@ -32,7 +32,7 @@ class Module_admin_commandr
     {
         $info = [];
         $info['author'] = 'Philip Withnall';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 3;

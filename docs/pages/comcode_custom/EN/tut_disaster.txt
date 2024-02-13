@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Disaster recovery[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Disaster recovery[/title]
 
 [i]The Composr 'error log' screen points to this tutorial (as well as the 'critical error' screen and the 'system scheduler hooks' screen). If you think you have found a bug, please [page=":contact:free"]report it[/page]. The rest of this tutorial deals with potential disaster situations -- an error in the error log does not imply a disaster has happened.[/i]
 
@@ -6,7 +6,7 @@ This tutorial will go through some solutions to 'disastrous' scenarios that coul
 
 I am going to assume that you have access to phpMyAdmin for the purposes of this tutorial. phpMyAdmin is a user-friendly web-based frontend to MySQL, and is available from most webhosting control panels. For more information, see the [page="_SEARCH:tut_sql"]Manually editing your database with phpMyAdmin[/page] tutorial.
 
-If you need a quick data rescue, consider [page=":support"]using ocProducts support[/page] (it will be handled more quickly if you already have support credits in your account). Or, your preferred third-party developer.
+If you need a quick data rescue, consider [page=":partners"]hiring a Composr partner[/page] or, your preferred third-party developer.
 
 [contents]decimal,lower-alpha[/contents]
 

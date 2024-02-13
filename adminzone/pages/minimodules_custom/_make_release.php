@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    composr_homesite
  */
 
@@ -174,9 +174,9 @@ foreach ($all_downloads_to_add as $i => $d) {
 
     $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $category_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $name]);
     if ($download_id === null) {
-        $download_id = add_download($category_id, $name, $url, $description, 'ocProducts', $additional_details, null, 1, 0, 0, 0, '', $original_filename, $file_size, 0, 0);
+        $download_id = add_download($category_id, $name, $url, $description, 'Core Developer Team', $additional_details, null, 1, 0, 0, 0, '', $original_filename, $file_size, 0, 0);
     } else {
-        edit_download($download_id, $category_id, $name, $url, $description, 'ocProducts', $additional_details, null, 0, 1, 0, 0, 0, '', $original_filename, $file_size, 0, 0, null, '', '');
+        edit_download($download_id, $category_id, $name, $url, $description, 'Core Developer Team', $additional_details, null, 0, 1, 0, 0, 0, '', $original_filename, $file_size, 0, 0, null, '', '');
     }
 
     $d['download_id'] = $download_id;
@@ -193,7 +193,7 @@ if ((!$is_bleeding_edge) && (!$is_old_tree) && (isset($all_downloads_to_add[0]['
     if ($last_version_str !== null) {
         $last_version_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
         if ($last_version_id != $all_downloads_to_add[0]['download_id']) {
-            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by ocProducts{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the ocProducts news archive\" target=\"_blank\"]https://compo.sr/site/news.htm[/url].";
+            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Developer Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the Composr news archive\" target=\"_blank\"]https://compo.sr/site/news.htm[/url].";
             $GLOBALS['SITE_DB']->query_update('download_downloads', lang_remap_comcode('description', $last_version_str, $description), ['id' => $last_version_id], '', 1);
         }
     }
@@ -241,9 +241,9 @@ if ($news_category === null) {
 
 $news_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'id', ['news_category' => $news_category, $GLOBALS['SITE_DB']->translate_field_ref('title') => $news_title]);
 if ($news_id === null) {
-    $news_id = add_news($news_title, $summary, 'ocProducts', 1, 0, 1, 0, '', $article, $news_category);
+    $news_id = add_news($news_title, $summary, 'Core Developer Team', 1, 0, 1, 0, '', $article, $news_category);
 } else {
-    edit_news($news_id, $news_title, $summary, 'ocProducts', 1, 0, 1, 0, '', $article, $news_category, null, '', '', '');
+    edit_news($news_id, $news_title, $summary, 'Core Developer Team', 1, 0, 1, 0, '', $article, $news_category, null, '', '', '');
 }
 $urls['News: ' . $news_title] = static_evaluate_tempcode(build_url(['page' => 'news', 'type' => 'view', 'id' => $news_id], get_module_zone('news'), [], false, false, true));
 

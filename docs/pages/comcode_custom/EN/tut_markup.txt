@@ -1,4 +1,4 @@
-[title sub="Written by Philip Withnall (ocProducts)"]Composr Tutorial: Guide to web technologies (including HTML, CSS, and JavaScript)[/title]
+[title sub="Written by Philip Withnall"]Composr Tutorial: Guide to web technologies (including HTML, CSS, and JavaScript)[/title]
 
 This tutorial is an introduction to the main standard web technologies that Composr is built upon. It does not explain any technologies specific to Composr. If you need to learn about the Composr's own Tempcode technology, please read the [page="_SEARCH:tut_tempcode"]Tempcode programming[/page] tutorial.
 
@@ -804,7 +804,7 @@ What follows is an example XHTML document, utilising all of the above principles
 		<title>Example HTML document</title>
 		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 		<meta name="keywords" content="example document,XHTML,element,attribute" />
-		<meta name="author" content="ocProducts" />
+		<meta name="author" content="Core Development Team" />
 		<meta name="description" content="An example XHTML document." />
 		<script src="http://example.com/script.js" />
 		<link href="http://example.com/style.css" rel="stylesheet" media="all" />

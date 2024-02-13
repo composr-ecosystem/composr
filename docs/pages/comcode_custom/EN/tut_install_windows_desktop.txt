@@ -1,4 +1,4 @@
-[title sub="Written by Jean Gosselin, and Chris Graham (ocProducts)"]Composr Tutorial: Installation on a Windows desktop[/title]
+[title sub="Written by Jean Gosselin, and Chris Graham"]Composr Tutorial: Installation on a Windows desktop[/title]
 
 This tutorial will explain how to get a Composr installation running on your own Windows computer. Linux is easier as it usually comes with everything Composr requires pre-installed.
 

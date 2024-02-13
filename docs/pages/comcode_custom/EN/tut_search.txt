@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Searching your website[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Searching your website[/title]
 
 As you add content to your website, it becomes increasingly important that your visitors are able to find your content when they need to. Composr includes a 'search' feature, which allows you to search your entire website for content.
 Under-the-hood this is implemented using either database [concept]full-text search[/concept] capabilities of the [concept]Composr fast custom index[/concept].

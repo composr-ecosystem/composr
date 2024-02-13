@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core
  */
 
@@ -657,8 +657,8 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
 
     // Filtercode support
     if ($filter != '') {
-        global $BLOCK_OCPRODUCTS_ERROR_EMAILS;
-        $BLOCK_OCPRODUCTS_ERROR_EMAILS = true;
+        global $BLOCK_CORE_DEVELOPER_ERROR_EMAILS;
+        $BLOCK_CORE_DEVELOPER_ERROR_EMAILS = true;
 
         // Convert the filters to SQL
         require_code('filtercode');

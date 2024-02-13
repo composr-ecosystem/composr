@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core_addon_management
  */
 
@@ -50,7 +50,7 @@ function resolve_addon_dependency_problems(array &$installing, array &$uninstall
     require_lang('addons');
     require_code('addons');
 
-    preload_all_ocproducts_addons_info();
+    preload_all_addons_info();
 
     $addons_not_installed = find_available_addons(false); // filename => addon details
     $addons_installed = find_installed_addons(false, true, true); // addon name => addon details
@@ -428,10 +428,10 @@ function find_addon_dependencies_on(string $addon_name) : array
     // From DB
     $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 0], 'ORDER BY addon_name'));
 
-    // From ocProducts addons
-    static $ocproducts_addon_dep_cache = null;
-    if ($ocproducts_addon_dep_cache === null) {
-        $ocproducts_addon_dep_cache = [];
+    // From core addons
+    static $composr_addon_dep_cache = null;
+    if ($composr_addon_dep_cache === null) {
+        $composr_addon_dep_cache = [];
         $hooks = find_all_hooks('systems', 'addon_registry');
         foreach (array_keys($hooks) as $hook) {
             $_found_hook = false;
@@ -453,11 +453,11 @@ function find_addon_dependencies_on(string $addon_name) : array
             } else {
                 $dep = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
             }
-            $ocproducts_addon_dep_cache[$hook] = $dep['requires'];
+            $composr_addon_dep_cache[$hook] = $dep['requires'];
         }
     }
     $list_b = [];
-    foreach ($ocproducts_addon_dep_cache as $hook => $hook_requires) {
+    foreach ($composr_addon_dep_cache as $hook => $hook_requires) {
         if (in_array($addon_name, $hook_requires)) {
             $list_b[] = $hook;
         }

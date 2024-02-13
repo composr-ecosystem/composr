@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    community_billboard
  */
 
@@ -37,7 +37,7 @@ class Module_admin_community_billboard extends Standard_crud_module
     {
         $info = [];
         $info['author'] = 'Chris Graham';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['update_require_upgrade'] = true;

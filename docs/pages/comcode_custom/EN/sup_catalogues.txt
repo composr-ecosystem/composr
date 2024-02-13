@@ -1,4 +1,4 @@
-[title sub="Written by ocProducts"]Composr Supplementary: Catalogues in Composr[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Catalogues in Composr[/title]
 
 If you want to create your own mini-database, a Composr catalogue will allow you to do it.
 

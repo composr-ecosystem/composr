@@ -1,4 +1,4 @@
-[title sub="Written by Philip Withnall (ocProducts)"]Composr Tutorial: Keeping on track of busy forums[/title]
+[title sub="Written by Philip Withnall"]Composr Tutorial: Keeping on track of busy forums[/title]
 
 Once you've got a community set up and running, and it has attracted lots of members, it can get quite hard to keep up with all the discussion on your forums. However, Conversr provides several methods to assist you in keeping up with the activity. (This tutorial only applies to websites using [concept]Conversr[/concept]).
 

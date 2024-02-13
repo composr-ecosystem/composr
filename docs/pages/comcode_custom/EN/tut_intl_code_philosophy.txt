@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Translations code philosophy[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Translations code philosophy[/title]
 
 This tutorial discusses some technical matters relating to how Composr's translation system is defined. It is designed to be read by translators wanting to know why things are as they are, and by programmers trying to uphold standards.
 

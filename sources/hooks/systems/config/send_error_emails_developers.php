@@ -14,14 +14,14 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core_privacy
  */
 
 /**
  * Hook class.
  */
-class Hook_config_send_error_emails_ocproducts
+class Hook_config_send_error_emails_developers
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_send_error_emails_ocproducts
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'SEND_ERROR_EMAILS_OCPRODUCTS',
+            'human_name' => 'SEND_ERROR_EMAILS_DEVELOPERS',
             'type' => 'tick',
             'category' => 'PRIVACY',
             'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_send_error_emails_ocproducts',
+            'explanation' => 'CONFIG_OPTION_send_error_emails_developers',
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'required' => true,

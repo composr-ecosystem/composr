@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Notifications[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Notifications[/title]
 
 Composr includes a highly-configurable notification system for members to be alerted on what is going on.
 

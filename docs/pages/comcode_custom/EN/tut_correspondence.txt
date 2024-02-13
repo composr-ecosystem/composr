@@ -1,4 +1,4 @@
-[title sub="Written by Philip Withnall (ocProducts)"]Composr Tutorial: Correspondence between members[/title]
+[title sub="Written by Philip Withnall"]Composr Tutorial: Correspondence between members[/title]
 
 [media width="150" description="Choosing whether to do a whisper or a private topic" float="right"]data_custom/images/docs/tut_correspondence/correspondence_whisper_page.png[/media]
 At times you'll want to know how to talk to your members privately (i.e. not on the public forum). This tutorial only applies to websites using [concept]Conversr[/concept] -- if you're running another forum system, you'll have to consult its documentation with reference to "private/personal messaging".

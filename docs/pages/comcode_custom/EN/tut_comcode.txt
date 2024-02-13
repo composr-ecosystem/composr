@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Comcode and the attachment system[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Comcode and the attachment system[/title]
 
 Comcode is the Composr 'mark-up language', available in many content spots throughout the system. This tutorial explains how to use Comcode.
 

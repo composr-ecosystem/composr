@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Tools for subsites and subcommunities[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Tools for subsites and subcommunities[/title]
 
 Composr is designed to be able to support large websites, and a common features of the largest sites is to have subsites and/or subcommunities within the larger website. There are a number of features in Composr to support this, including:
  - [b]Zones[/b] (different zones may be created for each subsite, located under a URL beneath the main site, with their own set of pages)

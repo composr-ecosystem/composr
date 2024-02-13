@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts CEO)"]Composr Supplementary: Project pricing[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Project pricing[/title]
 
 [media description="" width="410" float="right" framed="0"]data_custom/images/docs/sup_pricing/image.jpg[/media]
 This tutorial is written to give an idea of how the web design industry is structured. It should be of interest to web design companies, as well as to people looking for a web design company to get a better idea of what kind of company to be talking to, what kind of process to go through, and the kind of price range you should plan to receive quotes for when you put out a website RFP (request for proposals).
@@ -43,7 +43,7 @@ There are eight main kinds of web design company, ordered roughly by price:
 [*][b]Web design service[/b]: a company doing very simple web implementations very cheaply in a matter of hours; often an IT or PR company will offer this among their range of services.[/*]
 [*][b]Specialist web design company/creative agency[/b]: a company specialising in implementing custom designs, but not new programming.[/*]
 [*][b]Web development company[/b]: a company specialising in implementing new code for sophisticated websites, but not particularly attractive ones.[/*]
-[*][b]Web design and development company[/b]: a company that has the skills of a specialist web design company and web development company ([i]this is what ocProducts is[/i]).[/*]
+[*][b]Web design and development company[/b]: a company that has the skills of a specialist web design company and web development company ([i]this is what ocProducts was, the former company behind primary sponsorship of Composr[/i]).[/*]
 [*][b]Full service marketing/creative agency[/b]: a company that provides the full range of marketing services, including web design, but also PR, print advertising, market research, TV adverts, and other services. The advantage to a full service agency is you get a single company that can integrate all your marketing, but the disadvantage is the expense of the extra levels of management (which will include some [i]very[/i] highly paid senior people), and the chance for miscommunication and misunderstanding between those levels.[/*]
 [/list][/*]
 [/list]
@@ -122,7 +122,7 @@ Some companies on the mid-market will do a proper website RFP response, some wil
 
 Another difference with the low end, is that in the mid-market people tend to be more "solution focused" than "product focused" or "feature focus". The web design company will usually choose what CMS to use without the client having any idea about it.
 
-The choice of CMS is usually the standard CMS the web design company uses, which tends to be one which is "industry standard". Employees love this because using a standard gives them transferable job skills. Employers love it because they can plug people easily into training courses and hire people with the CMS on their r&eacute;sum&eacute;. We at ocProducts hate it because it keeps the industry locked into non-innovative systems.
+The choice of CMS is usually the standard CMS the web design company uses, which tends to be one which is "industry standard". Employees love this because using a standard gives them transferable job skills. Employers love it because they can plug people easily into training courses and hire people with the CMS on their r&eacute;sum&eacute;.
 
 [title="3"]The high end ($50,000-$1,000,000)[/title]
 
@@ -234,19 +234,14 @@ Companies in scenario 1 would be thinking of [acronym title="Return On Investmen
 
 I strongly advise that you consult with someone who has been involved in the development of at least one modern and [i]successful[/i] website to get a third-party opinion from them for how much your site should cost (make sure they include the value of your time too).
 
-[title="2"]My company (the Composr company, ocProducts)[/title]
-
-[media description="" width="300" float="right" framed="0"]data_custom/images/docs/sup_pricing/image4.jpg[/media]
-ocProducts tends to operate in the mid-market. We certainly don't work too deep into the low end because our staff are too skilled to compete just on price, and we have a brand that creates high expectations and too much of a reputation at stake to risk lowering our design standards. We can work on the high end, but because we're an innovative engineering-lead company, it doesn't tend to fit too well to the risk-adversity of the buyers (it's such a shame, so often on the high end organisations guarantee themselves mediocrity, missing out on quality and innovation).
-
 [title="2"]How much would Composr cost to make from scratch?[/title]
 
 According to a tool that a few of our users have run on our code base:
 [quote="ohloh.net"]
-it would take over 7 million dollars to write Composr from scratch
+it would take over 7 million U.S. dollars to write Composr from scratch
 [/quote]
 
-That's simply not true to be honest. There is no way 7 millions dollars, has flowed through our company. We are just a small business after all, and I'm proud we've been completely independent -- there are no external investors. We're not like Zend, or Acquia, or DotNetNuke Corp, who have received this kind of money, but in my opinion are as a result forced to be overly corporate and charge 3 times what we charge to their business users.
+That's simply not true to be honest. There is no way 7 millions U.S. dollars, has flowed through our company. We are just a small business after all, and I'm proud we've been completely independent -- there are no external investors. We're not like Zend, or Acquia, or DotNetNuke Corp, who have received this kind of money, but in my opinion are as a result forced to be overly corporate and charge 3 times what we charge to their business users.
 
 However, in actual reality, very skilled core developers with world-class skills have thrown insane numbers of hours in development. If another company had developed Composr, where everyone involved was incentivised only as staff paid at market value, supported in a typical corporate setting (office space, management, etc), I actually really believe that figure of $7 million could be accurate.
 
@@ -276,6 +271,6 @@ Note that some of these may be out-dated by now.
  - [page="_SEARCH:sup_developer_relationships"]Maintaining a good agency relationship[/page]
  - [page="_SEARCH:sup_complex_projects"]How to approach complex projects[/page]
  - [page="_SEARCH:sup_running_agency"]Guide to running a web agency[/page]
- - [page="_SEARCH:faq"]Composr/ocProducts FAQ[/page]
+ - [page="_SEARCH:faq"]Composr FAQ[/page]
 
 {$SET,tutorial_tags,Business Development,Advice & Guidance,novice}{$SET,tutorial_add_date,Jul 2011}{$SET,tutorial_summary,An honest and detailed look at how much professional websites typically cost.}[block]main_tutorial_rating[/block]

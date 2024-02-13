@@ -14,7 +14,7 @@
 	<input type="hidden" name="shipping" value="{SHIPPING_COST*}" />
 	<input type="hidden" name="tax" value="{TAX*}" />
 	<input type="hidden" name="rm" value="2" />
-	<input type="hidden" name="bn" value="ocproducts_SP" />
+	<input type="hidden" name="bn" value="composr_SP" />
 	{+START,IF_NON_EMPTY,{MEMBER_ADDRESS}}
 		<input type="hidden" name="address_override" value="1" />
 		{+START,LOOP,MEMBER_ADDRESS}

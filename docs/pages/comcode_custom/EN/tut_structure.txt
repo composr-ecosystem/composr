@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Composr site structure[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Composr site structure[/title]
 
 Composr has a number of interacting systems, that together form the structure and navigation paradigm of your website. This tutorial will provide advanced detail to these systems, and show how they fit together. Users who just want to get content won't need to understand the full details of the Composr structure, but users needing complex navigations will.
 

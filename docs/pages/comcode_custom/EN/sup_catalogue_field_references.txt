@@ -1,4 +1,4 @@
-[title sub="Written by ocProducts"]Composr Supplementary: Catalogue field references[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Catalogue field references[/title]
 
 This tutorial shows some advanced usage of catalogue field references. It will show you how to create a reference from one catalogue to another, and then extract individual fields for display.
 

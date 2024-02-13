@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham and Patrick Schmalstig (ocProducts)"]Composr Tutorial: Coordination between staff and staff/members[/title]
+[title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Coordination between staff and staff/members[/title]
 
 When you run a Composr site, you do not merely create a website for people to visit. As an interactive, dynamic, system, Composr can provide different features for different users, and in particular, different features for staff than are available to ordinary members or visitors. Some of these features are specifically written to be for staff, some of these are a result of the [concept]privileges[/concept] system, and some are the combination between the ability to create new categories/forums and control access to these using permissions. The term 'staff' is used loosely in this tutorial, to mean anyone with the necessary permission: by default, it is staff who have the mentioned permissions, but this may be altered.
 
@@ -54,7 +54,7 @@ Additionally, most content has an explicit 'staff notes' field for you to share 
 
 You may wish to intentionally not validate content, even when a staff member adds it. This provides an opportunity for another member of staff (perhaps monitoring the needs-validation notification) to check the content is ready for publishing.
 
-Larger enterprises may require a more sophisticated workflow system. Composr has a non-bundled workflows addon, which provides a fully-managed process of multiple configurable approval steps for content (to different staff usergroups), before it goes live. The workflow system can be implemented for different content types, and is currently implemented for galleries out-of-the-box. Enterprise customers will want the system tuning for individual needs. If you require an advanced enterprise workflow system, you should enquire with ocProducts (or other third-party developers) with your specific needs, and whatever system you require can be set up for you.
+Larger enterprises may require a more sophisticated workflow system. Composr has a non-bundled workflows addon, which provides a fully-managed process of multiple configurable approval steps for content (to different staff usergroups), before it goes live. The workflow system can be implemented for different content types, and is currently implemented for galleries out-of-the-box. Enterprise customers will want the system tuning for individual needs. If you require an advanced enterprise workflow system, you should enquire with a third-party developer or a [page=":partners"]Composr partner[/page] with your specific needs, and whatever system you require can be set up for you.
 
 [title="3"]Reviews[/title]
 
@@ -83,7 +83,7 @@ There are a few angles to version control on a Composr site:
 3) You can make use of the popular [tt]git[/tt] tool (useful for enterprise users)
 
 On point '3':
-[tt]git[/tt] is a standard tool to use when making code changes, but not for database changes. However it is possible to use WebDAV in coordination with [tt]git[/tt] to manually do formal "commits" when changes are made to a website. If you are an enterprise interested in this functionality, you'll likely want to take on a developer (such as ocProducts) as a consultant to test/tune this functionality to your particular content needs, or set up an automated system if appropriate.
+[tt]git[/tt] is a standard tool to use when making code changes, but not for database changes. However it is possible to use WebDAV in coordination with [tt]git[/tt] to manually do formal "commits" when changes are made to a website. If you are an enterprise interested in this functionality, you'll likely want to take on a developer as a consultant to test/tune this functionality to your particular content needs, or set up an automated system if appropriate.
 
 [title="2"]Content reporting[/title]
 
@@ -106,12 +106,12 @@ When a user submits a report, the addon will then first check to see if the same
 
 The support ticket will include the content title (as a link to the content), the content type label, the content ID, the content submitter (i.e. the member who created it), and an embedded rendering of the content taken at the point of the report. It will also contain the report information supplied by the reporter.
 
-We have found it often to be the case that staff will report content themselves, so that they can easily bring them (and possibly their related action) to the attention of other staff.
+We have found it often to be the case that staff will report content themselves, so that they can easily bring them (and possibly their related action) to the attention of other staff. It may also be useful for staff to report content to maintain a record of evidence in case the original content is edited or deleted.
 [/surround]
 
 [title="2"]Warning members[/title]
 
-Conversr provides a facility for warning members. This is just one example of a punitive measure that may be taken out against a member. For full details, see the 'Tools for punishment' section of the [page="_SEARCH:tut_censor"]Dealing with annoying users[/page] tutorial.
+Conversr provides a facility for warning members. This is just one (although powerful and flexible) example of a punitive measure that may be taken out against a member. For full details, see the 'Tools for punishment' section of the [page="_SEARCH:tut_censor"]Dealing with annoying users[/page] tutorial.
 
 [title="2"]Whispering[/title]
 

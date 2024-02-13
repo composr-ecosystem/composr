@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    composr_homesite
  */
 
@@ -27,7 +27,9 @@ Notes:
 
 require_code('locations');
 
-$disclaimer = 'Be aware that once the work is referred, it is your responsibility to ensure confidence in the chosen provider. ocProducts do the matching service as a part of the Composr CMS stewardship role and don\'t charge a commission for the service &ndash; so are not in any way commercially responsible for the implementation, or for developer training. We do encourage third-party companies to give back to the Composr CMS project by contributing code improvements made for projects though, and we do often make ourselves available to the developer for implementation of certain parts of a referred project.' . "\n\n" . 'Be aware that third-party developers have no special control over the ocProducts development and maintenance priorities.';
+// TODO: Modify as necessary to remove ocProducts branding
+
+$disclaimer = 'Be aware that once the work is referred, it is your responsibility to ensure confidence in the chosen provider. The Composr core team does the matching service as a part of the Composr CMS stewardship role and don\'t charge a commission for the service &ndash; so are not in any way commercially responsible for the implementation, or for developer training. We do encourage third-party companies to give back to the Composr CMS project by contributing code improvements made for projects though, and we do often make ourselves available to the developer for implementation of certain parts of a referred project.' . "\n\n" . 'Be aware that third-party developers have no special control over the core team\'s development and maintenance priorities.';
 
 $extra_support_inform = [];
 $extra_support_notice = [];
@@ -94,7 +96,7 @@ $decision_tree = [
 
     'free' => [
         'title' => 'Free options',
-        'text' => "The options below are kinds of request ocProducts can take in without requiring support credits.\n\nWe regret ocProducts cannot provide official 1-on-1 support or consultancy, due to the free status of Composr. For informal support (i.e. no guarantees, honour system) choose the forum or chatroom.",
+        'text' => "The options below are kinds of requests the core team can take in without requiring salaried contracts.\n\nWe regret the core team cannot provide official 1-on-1 support or consultancy, due to the free status of Composr. For informal support (i.e. no guarantees, honour system) choose the forum or chatroom.",
         'notice' => [
             //    Parameter             Value                               Warning
             ['free_service_type',  'Report a bug',                     'Usually we get bugs fixed within a couple of days. Please only report bugs that look to be genuine bugs in the Composr CMS code. You will be taken through to the tracker where you\'ll also see a link to read additional advice about how to make a good bug report.' . "\n\n" . 'If you have a [i]very high urgency[/i] to get a bug fixed, or if you want a hotfix deployed and tested for you individually, you may want to consider putting it through as a paid support question.'],
@@ -119,7 +121,6 @@ $decision_tree = [
                     'Send some general feedback',
                     'Contribute some code',
                     'Make a partnership enquiry',
-                    'Apply for a job with ocProducts Ltd',
                 ],
                 'options' => 'widget=radio',
                 'required' => true,
@@ -138,7 +139,6 @@ $decision_tree = [
             ['free_service_type',  'Send some general feedback',           build_url(['page' => 'tickets', 'type' => 'ticket', 'ticket_type' => 'Feedback'], get_module_zone('tickets'))],
             ['free_service_type',  'Contribute some code',                 'contribute_code'],
             ['free_service_type',  'Make a partnership enquiry',           build_url(['page' => 'tickets', 'type' => 'ticket', 'ticket_type' => 'Partnership'], get_module_zone('tickets'))],
-            ['free_service_type',  'Apply for a job with ocProducts Ltd',  'job'],
         ],
     ],
 
@@ -188,44 +188,6 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
         'previous' => 'free',
     ],
 
-    'job' => [
-        'title' => 'Apply for a job with ocProducts Ltd',
-        'text' => 'We are always on the lookout for very skilled people. We may hire people from anywhere in the world to work from home, if you are very good at what you do and your English spelling/grammar/fluency is excellent.',
-        'previous' => 'free',
-        'form_method' => 'POST',
-        'hidden' => [
-            'title' => 'Applying for a job',
-        ],
-        'questions' => [
-            'job_role' => [
-                'label' => 'Job role',
-                'description' => 'What job role would you like with ocProducts?',
-                'type' => 'short_text',
-                'default' => 'Full stack developer',
-                'options' => '',
-                'required' => true,
-            ],
-            'cover_letter' => [
-                'label' => 'Cover letter',
-                'description' => 'Paste in your cover letter. i.e. your interests, you requirements, and how you think you can contribute to ocProducts/Composr.',
-                'type' => 'long_text',
-                'default' => '',
-                'options' => '',
-                'required' => true,
-            ],
-            'cv' => [
-                'label' => 'CV',
-                'description' => 'Attach your CV (aka resum&eacute;)',
-                'type' => 'upload',
-                'default' => '',
-                'options' => '',
-                'required' => false,
-            ],
-        ] + $extra_brief_details,
-        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
-        'next' => build_url(['page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Job'], get_module_zone('tickets')),
-    ],
-
     'paid' => [
         'title' => 'Professional services',
         'text' => 'We have a few different ways of doing business, depending on your needs.',
@@ -267,10 +229,9 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
         'text' => 'Exciting! We will now be asking a lot of questions to try and get a clear picture for what you\'re looking for.' . "\n\n" . 'Apologies if the questions don\'t quite apply (e.g. if the project is not a full website implementation). Rest assured that a real human with common sense will read over whatever you fill in.',
         'notice' => [
             //    Parameter             Value                                                                                           Warning
-            ['ideal_developer',    'ocProducts (the Composr CMS sponsoring company)',                                              'That\'s cool. ocProducts is run by founding developers of Composr CMS, with work done to a very high standard by foremost Composr experts. Communication is generally done via e-mail due to the balancing we need to do between Composr CMS stewardship, and commercial work.' . "\n\n" . 'You should expect we will charge around the same as a high-quality established UK/US agency. If you need lower costs, or physical meetings, it may be best to choose a local agency or freelancer, especially if you are not based in a &ldquo;Western&rdquo; country.' . "\n\n" . 'We cannot guarantee availability of ocProducts staff for any particular project because we may sometimes be very busy or not be a good match. Sometimes we may have a waiting period as we have to clear back-logs or hire additional staff (top developers are hard to find). In such a case we\'ll try and match you with a local developer.'],
-            ['ideal_developer',    'A local agency that ocProducts will help you pick',                                            'That\'s cool. We will try and find an appropriate company in your country.' . "\n\n" . $disclaimer],
-            ['ideal_developer',    'A local freelancer that ocProducts will help you pick (lower cost, more basic, less formal)',  'That\'s cool. We will try and find someone appropriate in your country. Just be aware that a freelancer usually won\'t be able to offer the full reliability than an established agency can. It\'s a trade-off of service breadth/reliability vs. cost.' . "\n\n" . $disclaimer],
-            ['ideal_developer',    'Specifically Chris Graham, Composr lead developer',                                            'Chris is the ocProducts CEO, so has limited availability and a higher cost. Work is charged on a strict hourly basis (without advance quotes), for the work done in the hours he is available. If you\'re happy to pay top dollar for the world\'s foremost expert in Composr CMS then this is the option for you.'],
+            ['ideal_developer',    'A local agency that the core team will help you pick',                                         'That\'s cool. We will try and find an appropriate company in your country.' . "\n\n" . $disclaimer],
+            ['ideal_developer',    'A local freelancer that the core team will help you pick',                                     'That\'s cool. We will try and find someone appropriate in your country. Just be aware that a freelancer usually won\'t be able to offer the full reliability than an established agency can. It\'s a trade-off of service breadth/reliability vs. cost.' . "\n\n" . $disclaimer],
+            ['ideal_developer',    'One of the Core Development Team members',                                                     'That\'s cool. The core team ensures work is done to high standards. Communication and terms vary depending on the core team member\'s preference.' . "\n\n" . 'You should expect to be charged around the same as a high-quality established UK/US agency, however quotes will vary depending on the core team member\'s own terms. If you need lower costs, or physical meetings, it may be best to choose a local agency or freelancer, especially if you are not based in a &ldquo;Western&rdquo; country.' . "\n\n" . 'There is no guarantee for availability of a core team member for any particular project because they may sometimes be very busy (especially with Composr development) or not be a good match. Sometimes they may have a waiting period as they have to clear back-logs. In such a case a team member will try and match you with a local developer.'],
         ],
         'previous' => 'paid',
         'form_method' => 'POST',
@@ -355,10 +316,9 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'default' => '',
                 'default_list' => [
                     'Unsure',
-                    'A local freelancer that ocProducts will help you pick (lower cost, more basic, less formal)',
-                    'A local agency that ocProducts will help you pick',
-                    'ocProducts (the Composr CMS sponsoring company)',
-                    'Specifically Chris Graham, Composr lead developer',
+                    'A local freelancer that a core team member will help you pick (lower cost, more basic, less formal)',
+                    'A local agency that a core team member will help you pick',
+                    'A Composr Core Development Team member',
                 ],
                 'options' => 'widget=radio',
                 'required' => true,
@@ -369,10 +329,13 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'type' => 'list_multi',
                 'default' => 'E-mail',
                 'default_list' => [
-                    'Skype text chat',
+                    'Skype',
+                    'Slack',
                     'Phone calls',
+                    'Text messages',
                     'E-mail',
-                    'Out-of-hours contact',
+                    'Remote Meetings (Zoom, Jitsi, Google Meet, Microsoft Teams, etc.)',
+                    'Available for out-of-hours contact',
                 ],
                 'options' => 'widget=vertical_checkboxes',
                 'required' => false,
@@ -485,7 +448,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'default' => 'News/Blogs' . "\n" . 'Page editing',
                 'default_list' => [
                     'Calendar / Upcoming events',
-                    'Catalogues (custom databases)',
+                    'Catalogues (custom databases / forms)',
                     'Chatrooms',
                     'Contact us page with address, phone number, possibly a map',
                     'Content comments and rating by users',
@@ -545,6 +508,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                     'Let your users host their own customised sites under yours',
                     'Advanced intranet support (e.g. LDAP login or automatic Kerberos login)',
                     'Bookings system (e.g. events, hotels, taxis, ...)',
+                    'Autonomous organisation features (members usually govern themselves)',
                 ],
                 'options' => 'widget=vertical_checkboxes',
                 'required' => false,
@@ -556,8 +520,9 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'default' => '',
                 'default_list' => [
                     'Login to website using Facebook account',
-                    'Login to website using a variety of different accounts (Google, Twitter, etc)',
-                    'Automatic syndication of content to Twitter and/or Facebook',
+                    'Login to website using Hybridauth and any supported providers',
+                    'Login to website using a variety of different accounts (Google, X, etc)',
+                    'Automatic syndication of content to X and/or Facebook',
                     'Automatic syndication of content to other services',
                     'Custom Facebook app (integration functionality directly onto Facebook)',
                 ],
@@ -719,6 +684,19 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'options' => 'widget=vertical_checkboxes',
                 'required' => false,
             ],
+            'legal_compliance' => [
+                'label' => 'Legal compliance work',
+                'description' => 'Although we highly recommend hiring a legal team to handle these matters, we can help you get started with some of these items. Indicate what you would need help on.',
+                'type' => 'list_multi',
+                'default' => '',
+                'default_list' => [
+                    'Customised Privacy Policy page',
+                    'Customised Rules / Terms and Conditions page',
+                    'Customised Privacy / Data Handling',
+                ],
+                'options' => 'widget=vertical_checkboxes',
+                'required' => false,
+            ],
         ],
         'next' => 'project_qs_testing_and_training',
         'expects_parameters' => [
@@ -815,13 +793,13 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'label' => 'Enhanced deployment options',
                 'description' => 'Apart from uploading the finished website, you may need other things doing.',
                 'type' => 'list_multi',
-                'default' => 'Set up Google Analytics' . "\n" . 'SSL certificate setup (the padlock icon in the browser toolbar)' . "\n" . 'Setting up of automatic downtime alerts ("uptime monitoring")',
+                'default' => 'Set up Google Analytics' . "\n" . 'SSL certificate setup (the padlock icon in the browser toolbar)' . "\n" . 'Setting up of automatic downtime alerts ("uptime monitoring")' . "\n" . 'Maintain a separate staging/testing website',
                 'default_list' => [
                     'Set up Google Analytics',
                     'Set up Google Adsense (so you can make money from displaying adverts)',
                     'Search Engine and Directory submission',
                     'SSL certificate setup (the padlock icon in the browser toolbar)',
-                    'Setting up of social media accounts (Twitter, Facebook, etc)',
+                    'Setting up of social media accounts (X, Facebook, etc)',
                     'Setting up of business on Google/Bing/Apple Maps',
                     'Setting up of automatic downtime alerts ("uptime monitoring")',
                     'On-site (i.e. in person) deployment',
@@ -832,7 +810,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             ],
             'migration' => [
                 'label' => 'Migration',
-                'description' => 'You may have an existing project that needs to be migrated over to the new project.',
+                'description' => 'You may have an existing project that needs to be migrated over to the new project. What should we do if that is the case? Leave all of these blank if you have nothing to migrate.',
                 'type' => 'list_multi',
                 'default' => '',
                 'default_list' => [
@@ -856,14 +834,15 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             ],
             'expected_traffic_levels' => [
                 'label' => 'Expected traffic levels',
-                'description' => 'How many visitors do you expect on a peak day? This will help with hosting recommendations.',
+                'description' => 'How many total visitors do you expect on a peak (busy) day? This will help with hosting recommendations.',
                 'type' => 'list',
                 'default' => 'Under 1,000 visitors',
                 'default_list' => [
                     'Unsure',
                     'Under 1,000 visitors', // ~ shared hosting
-                    'Under 5,000 visitors', // ~ 1 moderate server
-                    'Larger numbers', // Multiple servers, e.g. EC2
+                    '1,000 - 5,000 visitors', // ~ VPS
+                    '5,000 - 25,000 visitors', // ~ Dedicated server
+                    'Over 25,000 visitors', // Multiple servers, e.g. EC2
                 ],
                 'options' => 'widget=radio',
                 'required' => true,
@@ -895,10 +874,10 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'label' => 'Regular/routine maintenance',
                 'description' => 'What maintenance do you need doing?',
                 'type' => 'list_multi',
-                'default' => 'Priority patching for security vulnerabilities' . "\n" . 'Developer hours each month for unspecified maintenance and support' . "\n" . 'Security audit/review of logs and system software',
+                'default' => 'Priority patching for security vulnerabilities' . "\n" . 'Developer hours each month for maintenance and support' . "\n" . 'Security audit/review of logs and system software',
                 'default_list' => [
                     'Priority patching for security vulnerabilities',
-                    'Developer hours each month for unspecified maintenance and support',
+                    'Developer hours each month for maintenance and support',
                     'Security audit/review of logs and system software',
                     'Review of competitors',
                     'On-site (i.e. in person) visits',
@@ -942,7 +921,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
 
     'installation' => [
         'title' => 'Request an installation',
-        'text' => 'We will install Composr for you by setting up the databases, uploading the files, and so on. We will not charge credits for more than an hours time if your server is not faulty, meets our [page="docs:tut_webhosting" external="1"]minimum requirements[/page], and the given access details work.' . "\n\n" . 'Please be aware that this isn\'t a full site build service, just a Composr CMS installation service.',
+        'text' => 'We will install Composr for you by setting up the databases, uploading the files, and so on.' . "\n\n" . 'Please be aware that this isn\'t a full site build service, just a Composr CMS installation service.',
         'inform' => [
             'Did you know that some webhosts can install Composr CMS for you, automatically and free? Composr is published via Installatron, Softaculous, Bitnami, Microsoft Web Platform, and APS. Many hosts have one of these installation systems.',
         ],
@@ -1167,10 +1146,9 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             '[*] Find the feature you want to sponsor on the tracker, which usually will have a number of hours filled in for it already. If the issue is not yet on the tracker, you\'ll need to add it, mention that you\'ll sponsor it, and wait for the hours field to be updated. If it is on the tracker already but has no hours set yet, similarly reply to say that you\'d like to sponsor it and wait.' . "\n\n" .
             '[*] Bring up your desire to sponsor as a note on the tracker issue.' . "\n\n" .
             '[/list]' . "\n\n" .
-            'A developer will then need to agree to accept sponsorship, after reviewing the accuracy of the issue and their own availability. ocProducts will then need to open the issue for sponsorship and assign the issue.' . "\n\n" .
+            'A developer will then need to agree to accept sponsorship, after reviewing the accuracy of the issue and their own availability. The Composr Core Developer Team will then need to open the issue for sponsorship and assign the issue.' . "\n\n" .
             'Then:[list="1"]' . "\n\n" .
             '[*] Fill in the sponsor form on the tracker issue.' . "\n\n" .
-            '[*] The developer may or may not work for ocProducts. If not ocProducts then payment would be negotiated and made in private, e.g. using PayPal. If it is an ocProducts developer, you should [page="_SEARCH:professional_support" external="1"]purchase some support credits[/page] to back up the amount. You can only buy support credits in certain bundles, although you can work out what set of bundles to get to get the exact right number of credits. If this is too bothersome, you can pay directly via PayPal to payment@ocproducts.com with a note to turn it into support credits (include your username).' . "\n\n" .
             '[/list]' . "\n\n" .
             'If you don\'t know what you want to sponsor but just want to support Composr, you could consider [url="Chris\'s Patreon"]https://www.patreon.com/composr[/url], or sponsoring any other individual developer.' . "\n\n" .
             'We do need to explain some possible caveats of sponsorship...' . "\n\n" .

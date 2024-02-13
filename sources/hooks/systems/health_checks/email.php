@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    health_check
  */
 
@@ -638,14 +638,14 @@ class Hook_health_check_email extends Hook_Health_Check
                 $username = get_option('mail_username');
                 $password = get_option('mail_password');
             } else {
-                $address = 'test@ocproducts.com';
+                $address = 'test@ocproducts.com'; // TODO: change?
 
                 $type = 'imaps';
                 $host = 'imap.gmail.com';
                 $port = 993;
                 $folder = 'INBOX';
 
-                $username = 'test@ocproducts.com';
+                $username = 'test@ocproducts.com'; // TODO: change?
                 $password = '!Xtest1234';
             }
 

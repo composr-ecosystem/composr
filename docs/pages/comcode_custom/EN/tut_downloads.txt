@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Providing downloads[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Providing downloads[/title]
 
 [media width="150" description="Adding a download category" float="right"]data_custom/images/docs/tut_downloads/downloads_add_category.png[/media]
 {!downloads:DOC_DOWNLOADS}

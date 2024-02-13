@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Using PostgreSQL with Composr[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Using PostgreSQL with Composr[/title]
 
 [media float="right" framed="0"]data_custom/images/docs/tut_postgresql/postgresql_logo.png[/media]
 This tutorial provides some advice targeted towards PostgreSQL (also known simply as 'Postgres').

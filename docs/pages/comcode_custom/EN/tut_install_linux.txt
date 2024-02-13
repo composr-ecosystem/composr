@@ -1,4 +1,4 @@
-[title sub="Written by Jean Gosselin, and Chris Graham (ocProducts)"]Composr Tutorial: Installation on Linux[/title]
+[title sub="Written by Jean Gosselin, and Chris Graham"]Composr Tutorial: Installation on Linux[/title]
 
 This tutorial covers some more advanced installation considerations when installing on Linux. The majority of people on Linux hosting will not need to read this tutorial.
 

@@ -1,6 +1,6 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr/ocProducts FAQ[/title]
+[title sub="Written by Chris Graham"]Composr FAQ[/title]
 
-This page will answer frequently asked questions (FAQs) about Composr and ocProducts, including:
+This page will answer frequently asked questions (FAQs) about Composr, including:
  - Basic background information
  - Solutions to common problems
  - Succinct answers to common requests

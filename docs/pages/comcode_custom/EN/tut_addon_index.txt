@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Addon index[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Addon index[/title]
 
 This tutorial features an index of the Composr addons, with links to tutorials that are relevant to them, and other useful information and links.
 
@@ -72,7 +72,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Certain kinds of content can have authors instead of submitters (e.g. &#039;ocProducts&#039;). The authors may be independently described and searched under.</td>
+            <td>Certain kinds of content can have authors instead of submitters (e.g. &#039;Core Development Team&#039;). The authors may be independently described and searched under.</td>
             <td><a href="http://compo.sr/docs11/tut-authors.htm">Authors</a><br /><br /><a href="http://compo.sr/docs11/tut-users.htm">People in their roles</a></td>
             <td>login<br /><br />log-in<br /><br />sign-in<br /><br />sign-on<br /><br />logon<br /><br />log-on<br /><br />authorize<br /><br />bio<br /><br />biography</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=authors&amp;status_id=10">Link</a></td>

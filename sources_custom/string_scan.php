@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    meta_toolkit
  */
 
@@ -3870,7 +3870,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_search_with_date_range
         CONFIG_OPTION_secondary_members_per_page
         CONFIG_OPTION_security_token_exceptions
-        CONFIG_OPTION_send_error_emails_ocproducts
+        CONFIG_OPTION_send_error_emails_developers
         CONFIG_OPTION_seq_post_ids
         CONFIG_OPTION_session_expiry_time
         CONFIG_OPTION_session_prudence
@@ -7217,7 +7217,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SENDING_NEWSLETTER_TO_QUEUE
         SEND_ALL
         SEND_DISPATCH_NOTIFICATION
-        SEND_ERROR_EMAILS_OCPRODUCTS
+        SEND_ERROR_EMAILS_DEVELOPERS
         SEND_TIME
         SEND_TRACKBACKS
         SENT_NUM

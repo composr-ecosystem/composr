@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core
  */
 
@@ -958,7 +958,7 @@ function get_custom_base_url()
  */
 function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '')
 {
-    exit('You should not see this message. If you do, contact ocProducts and tell them a \'lhaae\' showed during installation.');
+    exit('You should not see this message. If you do, contact the Core Development Team and tell them a \'lhaae\' showed during installation.');
 }
 
 /**

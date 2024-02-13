@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Helping improve site accessibility for disabled users[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Helping improve site accessibility for disabled users[/title]
 
 [surround]
 [media width="150" description="Composr has an inbuilt webstandards checker to ensure high compliance against many standards" float="right"]data_custom/images/docs/tut_accessibility/accessibility_enable_webstandards_checker.png[/media]

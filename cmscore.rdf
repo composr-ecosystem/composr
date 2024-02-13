@@ -12,7 +12,7 @@
 <rdf:Description rdf:about="https://compo.sr/cmscore.rdf">
 <cmscore:title xml:lang="en-US">DCMI Namespace for metadata terms in the https://compo.sr/cmscore.rdf namespace</cmscore:title>
 <rdfs:comment>To comment on this schema, please post on the Composr CMS forum.</rdfs:comment>
-<cmscore:publisher xml:lang="en-US">ocProducts Ltd</cmscore:publisher>
+<cmscore:publisher xml:lang="en-US">Christopher Graham</cmscore:publisher>
 <cmscore:modified>2009-01-19</cmscore:modified>
 </rdf:Description>
 

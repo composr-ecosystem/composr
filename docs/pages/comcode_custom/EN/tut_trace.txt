@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Using IP addresses to trace users[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Using IP addresses to trace users[/title]
 
 If you find there is malicious activity on your website, you may feel the need to try and trace this activity back to a real world source, or the very least, to identify a troublesome computer.
 

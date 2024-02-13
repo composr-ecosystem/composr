@@ -1,6 +1,6 @@
 <?php /*
 
-Composr/ocProducts is free to use or incorporate this into Composr and assert any copyright.
+Composr is free to use or incorporate this into Composr and assert any copyright.
 This notification hook was created using the classifieds notification hook as a template.
 
 */

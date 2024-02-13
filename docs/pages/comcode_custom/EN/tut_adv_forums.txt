@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced forum settings[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Advanced forum settings[/title]
 
 This tutorial covers more advanced forum configuration.
 

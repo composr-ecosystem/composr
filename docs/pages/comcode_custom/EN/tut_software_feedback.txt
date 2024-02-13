@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Problem and feedback reports, and development policies[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Problem and feedback reports, and development policies[/title]
 
 This tutorial will provide you some advice for reporting different kinds of feedback for Composr. It will teach you how to do it the right way, specifically:
  - Comprehensively (you don't want to provide vague non-actionable feedback)
@@ -328,9 +328,9 @@ It is best that risk and incompatibility is managed in bulk, in major releases.
 
 First, we all thank you for considering contributing to the future of Composr!
 
-If you are releasing some code and would like it to be considered for official inclusion into future versions of Composr, you need to choose to assign dual copyright to yourself and to ocProducts (the maintainers). This gives the core team the option to include your work, without the possibility of any future legal problems. Potentially contributions could become critical to the software, and it'd be impractical to negotiate/remove each case of contributed code if required.
+If you are releasing some code and would like it to be considered for official inclusion into future versions of Composr, you need to choose to assign dual copyright to yourself and to Christopher Graham. This gives the core team the option to include your work, without the possibility of any future legal problems. Potentially contributions could become critical to the software, and it'd be impractical to negotiate/remove each case of contributed code if required.
 
-If you would like the project to consider including your code, mention when you post your work on the tracker (or make a pull request) that you're "assigning dual copyright with ocProducts Ltd" and be clear about what code it is that it applies to. Also, if you make a future version and do not want a past copyright assignment to carry forward, you should clearly state this too. If you want credit, please clearly request to have it included in the attributions part of the Composr licence. Be aware that assigning copyright is not something revocable, and it is not the same as just assigning us a licence, so please think carefully about what you want to do.
+If you would like the project to consider including your code, mention when you post your work on the tracker (or make a pull request) that you're "assigning dual copyright with Christopher Graham" and be clear about what code it is that it applies to. Also, if you make a future version and do not want a past copyright assignment to carry forward, you should clearly state this too. If you want credit, please clearly request to have it included in the attributions part of the Composr licence. Be aware that assigning copyright is not something revocable, and it is not the same as just assigning us a licence, so please think carefully about what you want to do.
 
 [title="2"]Providing design feedback[/title]
 
@@ -536,6 +536,6 @@ This security policy may be amended based on particular unique contexts the deve
  - [page="_SEARCH:sup_choosing_a_developer"]Choosing a software company for your project[/page]
  - [page="_SEARCH:sup_minimum_viable_products"]Minimum Viable Products[/page]
  - [page="_SEARCH:sup_developer_relationships"]Maintaining a good agency relationship[/page]
- - [page="_SEARCH:faq"]Composr/ocProducts FAQ[/page]
+ - [page="_SEARCH:faq"]Composr FAQ[/page]
 
 {$SET,tutorial_tags,Contributing,Advice & Guidance,novice}{$SET,tutorial_add_date,Dec 2014}{$SET,tutorial_summary,Providing feedback and making contributions to Composr.}[block]main_tutorial_rating[/block]

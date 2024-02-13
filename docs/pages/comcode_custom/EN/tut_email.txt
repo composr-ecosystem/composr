@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Understanding and configuring e-mail[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Understanding and configuring e-mail[/title]
 
 [media description="" width="410" float="right" framed="0"]data_custom/images/docs/tut_email/image.jpg[/media]
 E-mail can be a complex thing. There are a number of e-mail protocols with standards that seem cobbled together, and there are a wide array of different tools that work with e-mail. Making everything compatible can be quite a challenge.

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Composr keyboard shortcuts[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Composr keyboard shortcuts[/title]
 
 Many functions in a Composr website may be activated by key code, rather than clicking or using tab to move between components. This short tutorial will list these key codes.
 

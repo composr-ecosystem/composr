@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    leader_board
  */
 
@@ -46,7 +46,7 @@ class Module_admin_leader_board extends Standard_crud_module
     {
         $info = [];
         $info['author'] = 'Patrick Schmalstig';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;

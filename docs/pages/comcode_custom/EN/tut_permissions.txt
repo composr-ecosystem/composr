@@ -1,4 +1,4 @@
-[title sub="Written by Philip Withnall (ocProducts)"]Composr Tutorial: Access control and privileges[/title]
+[title sub="Written by Philip Withnall"]Composr Tutorial: Access control and privileges[/title]
 
 Any large site will have areas that it wants certain members to be able to access, but not others. For example:
  - Categories of information that are visible to the eyes of members from only one usergroup

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts/Tapatalk, 2004-2023
+ Copyright (c) Christopher Graham/Tapatalk, 2004-2024
 
  See docs/LICENSE.md for full licensing information.
 
@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    cns_tapatalk
  */
 
@@ -78,7 +78,7 @@ class Hook_addon_registry_cns_tapatalk
      */
     public function get_author() : string
     {
-        return 'ocProducts';
+        return 'Core Development Team';
     }
 
     /**
@@ -126,7 +126,7 @@ Therefore please decide if you accept this or not before going down the Tapatalk
 
 If you use the BYO service you can avoid this issue.
 
-ocProducts can provide custom mobile app development for organisations with sufficient budgets. Mobile development is costly, which is why Tapatalk is a great thing for many site owners.
+Mobile development is costly, which is why Tapatalk is a great thing for many site owners.
 
 Composr provides a mobile mode out-of-the-box, which smartphones will use. However, mobile websites are significantly inferior to native mobile apps for a number of reasons, but particularly: responsiveness of user interface, bandwidth requirements, better access to phone capabilities. Mobile website capabilities are improving, but the gap will never close substantially.
 

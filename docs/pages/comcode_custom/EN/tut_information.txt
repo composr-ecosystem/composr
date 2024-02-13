@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Choosing how to publish[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Choosing how to publish[/title]
 
 When it comes to deciding how to release information, things can be difficult with Composr. Not due to complexity, or lack of features -- but because Composr offers so much to choose from, that you actually have the opportunity to sit back, and think, 'which is best for me?'.
 

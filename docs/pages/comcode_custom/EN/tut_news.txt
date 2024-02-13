@@ -1,4 +1,4 @@
-[title sub="Written by Allen Ellis (ocProducts)"]Composr Tutorial: Releasing news & running a Blog[/title]
+[title sub="Written by Allen Ellis"]Composr Tutorial: Releasing news & running a Blog[/title]
 
 {!news:DOC_NEWS}
 

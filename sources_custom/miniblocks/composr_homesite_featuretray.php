@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    composr_homesite
  */
 
@@ -37,7 +37,7 @@ $feature_tree = [
                 ['YouTube', 'Rate and comment on [url="http://youtube.com/c/ComposrCMSvideo"]our video tutorials[/url] on YouTube.'],
                 (get_forum_type() != 'cns') ? null : ['Post about Composr', 'If you see other CMSs compared on other websites, {$COMCODE,[page="forum:topicview:browse:{$FIND_ID_VIA_LABEL,topic,Composr evangelism}"]let us know about it[/page]}!'],
                 ['Tell a friend about Composr', '[page=":recommend"]Recommend Composr[/page] if a friend or your company is looking to make a website.'],
-                ['Recommend ocProducts', 'Mention the ocProducts developers to help them bring in an income.'],
+                //['Recommend ocProducts', 'Mention the ocProducts developers to help them bring in an income.'],
                 ['Show our ad', 'You can advertise Composr via the [url="banner ad"]{$BRAND_BASE_URL}/uploads/website_specific/compo.sr/banners.zip[/url] we have created.'],
                 ['Self-initiatives', 'Find any opportunity to share Composr with someone. Write your own article and publish it. Talk about Composr at a conference. Be creative!'],
             ],
@@ -49,7 +49,7 @@ $feature_tree = [
                 ['Make addons', 'If you know PHP, or want to learn, [page="docs:sup_hardcore_1"]make and release some addons[/page] for the community. It takes a lot of knowledge, but [page="docs:tut_programming"]anybody can learn[/page] and it\'s fun, fulfilling and makes you more employable.'],
                 ['Make themes', 'If you know [abbr="HyperText Markup Language"]HTML[/abbr]/[abbr="Cascading Style Sheets"]CSS[/abbr], or are [page="docs:tut_markup"]learning[/page], [page="docs:tut_releasing_themes"]make and release some themes[/page] for the community. With CSS you can start small and still achieve cool things.'],
                 ['Translate', 'If you know another language, [url="collaborate with others on Transifex"]https://www.transifex.com/organization/ocproducts/dashboard[/url] to [page="docs:tut_intl"]make a new language pack[/page].'],
-                //['Use Composr for your own clients', 'Are you a professional website developer? Try to start using Composr for your projects &ndash; it provides you [page="site:features"]lots of advantages[/page] to other software, it\'s free, and we want the community and install-base to grow!'],         Removed to save space
+                ['Use Composr for clients', 'Are you a professional website developer? Try using Composr for your projects &ndash; it provides you [page="site:features"]lots of advantages[/page] to other software, it\'s free, and we want the community and install-base to grow!'],
                 ['Google Summer of Code', 'If you\'re a student and want to work on Composr for the [url="https://summerofcode.withgoogle.com/archive/"]Google Summer of Code[/url], please [page="site:tickets:ticket:ticket_type=Partnership"]contact us[/page] and we will work to try and make it happen.'],
                 ['Developing automated tests', 'If you know some PHP you can help us test Composr en-masse. Write [page="docs:codebook_3"]automated tests[/page] (the latest version of the testing framework is in our public [url="git"]' . COMPOSR_REPOS_URL . '[/url] repository).'],
                 ['Contribute code', 'Help improve Composr directly by [page=":contact:contribute_code"]contributing code[/page].'],

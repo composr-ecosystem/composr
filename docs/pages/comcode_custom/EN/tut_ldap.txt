@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Integrating Composr into a corporate network via LDAP[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Integrating Composr into a corporate network via LDAP[/title]
 
 {!cns:DOC_LDAP}
 

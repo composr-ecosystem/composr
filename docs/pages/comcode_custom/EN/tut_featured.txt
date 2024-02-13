@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Featuring content[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Featuring content[/title]
 
 [media width="150" description="The Admin Zone provides a list of tasks, including rotation of featured content" float="right"]data_custom/images/docs/tut_featured/featured_checklist.png[/media]
 Regular Composr content modules will typically display all content, perhaps with categorisation, perhaps by date.

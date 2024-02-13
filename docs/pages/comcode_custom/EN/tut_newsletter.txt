@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Running a newsletter[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Running a newsletter[/title]
 
 Composr has an inbuilt e-mail newsletter system which will allow you to send out newsletters to subscribers and your members.
 

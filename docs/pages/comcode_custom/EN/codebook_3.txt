@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Code Book, part 3 (Miscellany)[/title]
+[title sub="Written by Chris Graham"]Code Book, part 3 (Miscellany)[/title]
 
 &laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]
 
@@ -284,7 +284,7 @@ Here's a helpful script to search a codebase for a function call happening on a 
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) Christopher Graham, 2004-2024
 
  See docs/LICENSE.md for full licensing information.
 
@@ -421,7 +421,7 @@ Here is a good workflow for writing high-quality code for Composr:
 3) Lay out the basic structure of how the code will come together (files, classes, functions).
 4) Document the solution using pseudo-code comments throughout the structure. Put a "TODO" comment under each of the pseudo-code comments.
 5) Fill in the TODOs with real code. Make sure you are writing quality code and matching appropriate coding standards.
-6) Run the ocProducts Code Quality checker on the code. Specifically: recalculate function signatures, then check the files you've added/changed. Fix any errors found, it should be possible to have zero reported errors with the default settings (all of Composr passes).
+6) Run the Composr Code Quality checker on the code. Specifically: recalculate function signatures, then check the files you've added/changed. Fix any errors found, it should be possible to have zero reported errors with the default settings (all of Composr passes).
 7) Write automated tests to prove to yourself it works well, if appropriate. This makes most sense if your code implements algorithms or APIs. User-interfacing testing is a lot harder, more subtle, and the tests more fragile, so frankly this is usually left to human testers.
 8) Test manually / debug.
 9) Add new files to Git, and Commit/push (actually you may do this a few times throughout the work, depending on task length).
@@ -450,7 +450,7 @@ Here are some general tips:
  - Have a mind-set of automatic tasks to increase your own efficiency. Write temporary scripts to get things done faster or to reveal data to prove/disprove hypotheses about the nature of a problem, or to build confidence that you've properly fixed things.
  - Whenever something confuses you, try and understand your way through it, even if you've already found another solution. Confusion is an opportunity for learning, a revelation of a gap in your knowledge -- make the best of it so that you get a strong understanding of all technologies. With time, things will get easier and easier, but only if you constantly work at expanding your understanding. Work to build up a unified mental model of how everything works and fits together across all of computer technology.
  - If you want to see how a function is operating in random different calls (i.e. not always just the first call), add some temporary code like [tt]if (rand(0,10)==1) exit($some_variable);[/tt] and refresh the page a few times. This is a useful technique for many cases where you need to sample data.
- - PHP often will not tell you about syntax/parse errors in your code. If you are stuck with the code randomly exiting, try using [tt]php -l <filepath>[/tt] to see if PHP's lint tool will tell you about a parse error. Use of the ocProducts Code Quality Checker tool is even more useful, returning all kinds of potential problems.
+ - PHP often will not tell you about syntax/parse errors in your code. If you are stuck with the code randomly exiting, try using [tt]php -l <filepath>[/tt] to see if PHP's lint tool will tell you about a parse error. Use of the Composr Code Quality Checker tool is even more useful, returning all kinds of potential problems.
 
 If you are debugging a standalone PHP script (i.e. outside Composr), make sure you have errors turned on:
 [code="PHP"]
@@ -572,7 +572,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]brand_base_url[/tt] -- the base URL to the brand site (by default this is {$BRAND_BASE_URL} but may be changed)
   - [tt]rebrand_name[/tt] -- if Composr is called something else as far as the site staff are concerned, set the name here
   - [tt]rebrand_base_url[/tt] -- to change where branding URLs go to (e.g. the stub that is used when linking to documentation), set it here
-  - [tt]company_name[/tt] -- if Composr is being rebranded to be 'made' by another company, set the name here (this has no effect of copyright of course, but ocProducts allows this)
+  - [tt]company_name[/tt] -- if Composr is being rebranded to be 'made' by another company, set the name here (this has no effect of copyright of course, but Christopher Graham allows this)
  - Developer testing:
   - [tt]notification_safety_testing[/tt] -- set this to '1' to enable extra checks to ensure notifications or welcome e-mails don't get misdirected/over-sent
   - [tt]memory_tracking[/tt] -- set this to the number of megabytes peak memory usage after which you want the execution URL to be silently logged to the error log (useful for debugging memory usage on a live site). The value must be an integer, with no trailing 'M'. This does not impose a memory limit, which is 64MB by default in Composr, but may be turned off within certain carefully-chosen execution contexts (usually admin tasks which are necessarily memory consuming). Requires PHP 5.2+.

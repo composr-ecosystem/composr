@@ -1,4 +1,4 @@
-[title sub="Written by Philip Withnall (ocProducts)"]Composr Tutorial: Commandr[/title]
+[title sub="Written by Philip Withnall"]Composr Tutorial: Commandr[/title]
 
 Commandr, the Composr Command-Line Environment, is designed for experienced system administrators who find command-lines faster to use than GUI-based alternatives.
 

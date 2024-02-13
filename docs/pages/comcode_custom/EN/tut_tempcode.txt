@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Tempcode programming[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Tempcode programming[/title]
 
 Tempcode is Composr's template programming language. On the simplest level, it provides a substitution mechanism so that parameters and global symbols (like the current user's username, or the time) can be inserted into a template.
 

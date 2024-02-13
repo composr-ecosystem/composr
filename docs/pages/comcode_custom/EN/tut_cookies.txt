@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Introduction to Cookies and sessions (and JavaScript)[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Introduction to Cookies and sessions (and JavaScript)[/title]
 
 [media width="150" description="" float="right"]data_custom/images/docs/tut_cookies/image.png[/media]
 This is a tutorial that will explain the concept of cookies and sessions, as well as briefly explain how they relate to JavaScript in Composr.

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Filtering using Filtercode syntax[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Filtering using Filtercode syntax[/title]
 
 Composr contains a filtering system for selecting content based upon defined filters. Filtercode is the language for defining filter strings, and is an advanced feature of Composr. 
 

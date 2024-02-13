@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Running a collaboration hub[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Running a collaboration hub[/title]
 
 Composr includes many features that allow your website to function, in whole or in part, as an online collaboration tool.
 Some of these features are directly documented in this tutorial as they are implemented directly for collaboration purposes; others are referenced and discussed in other tutorials.

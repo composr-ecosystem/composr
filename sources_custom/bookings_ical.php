@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    booking
  */
 
@@ -51,7 +51,7 @@ function bookables_ical_script()
     $events = $GLOBALS['SITE_DB']->query($query, null, 0, false, true);
     echo "BEGIN:VCALENDAR\n";
     echo "VERSION:2.0\n";
-    echo "PRODID:-//ocProducts/Composr//NONSGML v1.0//EN\n";
+    echo "PRODID:-//Christopher Graham/Composr//NONSGML v1.0//EN\n";
     echo "CALSCALE:GREGORIAN\n";
     echo "X-WR-CALNAME:" . ical_escape(get_site_name() . ': ' . do_lang('BOOKABLE_EVENTS')) . "\n";
 
@@ -210,7 +210,7 @@ function bookings_ical_script()
     $members_with_bookings = $GLOBALS['SITE_DB']->query('SELECT DISTINCT member_id,booked_at FROM ' . get_table_prefix() . 'booking WHERE ' . $where . ' ORDER BY booked_at DESC', 10000/*reasonable limit*/);
     echo "BEGIN:VCALENDAR\n";
     echo "VERSION:2.0\n";
-    echo "PRODID:-//ocProducts/Composr//NONSGML v1.0//EN\n";
+    echo "PRODID:-//Christopher Graham/Composr//NONSGML v1.0//EN\n";
     echo "CALSCALE:GREGORIAN\n";
     $bookable_category = get_translated_text($GLOBALS['SITE_DB']->query_select_value('bookable', 'title', ['id' => $id]));
     echo "X-WR-CALNAME:" . ical_escape(get_site_name() . ': ' . do_lang('BOOKINGS') . ': ' . $bookable_category) . "\n";

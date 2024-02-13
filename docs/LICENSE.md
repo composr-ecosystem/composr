@@ -190,7 +190,7 @@ The Original Code is Composr.
 
 The Original Developer is the Initial Developer.
 
-The Initial Developer of the Original Code is ocProducts. All portions of the code written by ocProduct are Copyright (c) ocProducts Ltd. All Rights Reserved.
+The Initial Developer of the Original Code is Chris Graham. All portions of the code Written by Chris Graham are Copyright (c) Christopher Graham. All Rights Reserved.
 
 [NOTE: The text of this Exhibit A may differ slightly from the text of the notices in the Source Code files of the Original Code. You should use the text of this Exhibit A rather than the text found in the Original Code Source Code for Your Modifications.]
 
@@ -198,7 +198,7 @@ The Initial Developer of the Original Code is ocProducts. All portions of the co
 
 EXHIBIT B. Attribution Information
 
-Attribution Copyright Notice: Copyright (c) ocProducts Ltd
+Attribution Copyright Notice: Copyright (c) Christopher Graham
 
 Attribution Phrase (not exceeding 10 words): Built with the Composr Content Management System, derivative under license.
 

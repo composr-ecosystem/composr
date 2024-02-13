@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    composr_homesite
  */
 
@@ -60,7 +60,7 @@ function get_problem_match_nearest(string $error_message) : ?string
             $brand_base_url = get_param_string('product_site', '');
             if ($brand_base_url != '') {
                 $assembled = str_replace('Composr', $brand, $assembled);
-                $assembled = str_replace('ocProducts', 'The developers', $assembled);
+                $assembled = str_replace('ocProducts', 'Core Development Team', $assembled);
                 $assembled = str_replace(get_brand_base_url(), $brand_base_url, $assembled);
             }
         }

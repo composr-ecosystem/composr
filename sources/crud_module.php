@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core
  */
 
@@ -32,7 +32,7 @@ abstract class Standard_crud_module
     protected $skip_webstandards = false;
     protected $default_type = null;
     protected $author = 'Chris Graham';
-    protected $organisation = 'ocProducts';
+    protected $organisation = 'Composr';
     protected $user_facing = false;
     protected $send_validation_request = true; // Only applies if $user_facing
     protected $check_validation = true; // Only applies if $user_facing

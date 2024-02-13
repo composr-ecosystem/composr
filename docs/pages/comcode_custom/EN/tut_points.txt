@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Creating an economy/reward-system for members via points[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Creating an economy/reward-system for members via points[/title]
 
 [media width="150" description="A logged-in member may see their points from the header" float="right"]data_custom/images/docs/tut_points/points_block.png[/media]
 {!points:DOC_POINTS}

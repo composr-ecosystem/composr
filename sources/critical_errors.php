@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core
  */
 
@@ -90,7 +90,7 @@ if (!function_exists('critical_error')) {
             }
         }
 
-        $error = '<div>Unknown critical error type: this should not happen, so please report this to ocProducts.</div>';
+        $error = '<div>Unknown critical error type: this should not happen, so please report this to the Core Development Team.</div>';
 
         $may_show_footer = true;
 
@@ -144,7 +144,7 @@ if (!function_exists('critical_error')) {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.</div>';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official Composr installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_EMPTY':
@@ -156,7 +156,7 @@ if (!function_exists('critical_error')) {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.</div>';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official Composr installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_CORRUPTED':
@@ -268,7 +268,7 @@ END;
         }
         echo $extra, "\n";
         if ($may_show_footer) {
-            echo '<p>Details here are intended only for the website/system-administrator, not for regular website users.<br />&raquo; <strong>If you are a regular website user, please let the website staff deal with this problem.</strong></p>' . "\n" . '<p class="associated-details">Depending on the error, and only if the website installation finished, you may need to edit the installation options (the <kbd>_config.php</kbd> file via the <kbd>config_editor.php</kbd> script).</p>' . "\n" . '<p class="associated-details">ocProducts maintains full documentation for all procedures and tools (including <a href="https://compo.sr/docs/tut-disaster.htm">disaster recovery</a>). These may be found on the <a href="https://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p>' . "\n" . '<hr />' . "\n" . '<p style="font-size: 0.8em"><a href="https://compo.sr/">Composr</a> is a <abbr title="Content Management System">CMS</abbr> for building websites, developed by ocProducts.</p>' . "\n";
+            echo '<p>Details here are intended only for the website/system-administrator, not for regular website users.<br />&raquo; <strong>If you are a regular website user, please let the website staff deal with this problem.</strong></p>' . "\n" . '<p class="associated-details">Depending on the error, and only if the website installation finished, you may need to edit the installation options (the <kbd>_config.php</kbd> file via the <kbd>config_editor.php</kbd> script).</p>' . "\n" . '<p class="associated-details">The core developers maintain full documentation for all procedures and tools (including <a href="https://compo.sr/docs/tut-disaster.htm">disaster recovery</a>). These may be found on the <a href="https://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p>' . "\n" . '<hr />' . "\n" . '<p style="font-size: 0.8em"><a href="https://compo.sr/">Composr</a> is a <abbr title="Content Management System">CMS</abbr> for building websites, developed by Christopher Graham and others.</p>' . "\n";
         }
         echo '</div></body>' . "\n" . '</html>';
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';

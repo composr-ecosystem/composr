@@ -1,4 +1,4 @@
-[title sub="Written by kenno, Edited by Chris Graham (ocProducts)"]Composr Supplementary: Separate forums for separate zones[/title]
+[title sub="Written by kenno, Edited by Chris Graham"]Composr Supplementary: Separate forums for separate zones[/title]
 
 This tutorial will show how to set up separate forums on individual zones using the Composr virtual roots feature.
 

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Browser version requirements[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Browser version requirements[/title]
 
 This is a tutorial that details the default browser requirements for visitors to a Composr site. It also contains a lot of historical information, as understanding the development history is useful for understanding the current browser landscape.
 

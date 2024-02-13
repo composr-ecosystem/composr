@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    composr_tutorials
  */
 
@@ -226,7 +226,7 @@ class Module_cms_tutorials extends Standard_crud_module
         if ($author == '') {
             $author = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
             if ($GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {
-                $author .= ', ocProducts';
+                $author .= ', Core Developer Team';
             }
         }
 

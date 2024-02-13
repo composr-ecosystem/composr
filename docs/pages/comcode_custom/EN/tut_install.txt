@@ -1,4 +1,4 @@
-[title sub="Written by Allen Ellis (ocProducts)"]Composr Tutorial: Installation[/title]
+[title sub="Written by Allen Ellis"]Composr Tutorial: Installation[/title]
 
 Before you begin using Composr, you will need to install it. Installing Composr is easy with our installation utility, which will be explained in detail in this tutorial -- or various third-party systems can install Composr for you automatically.
 

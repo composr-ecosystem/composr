@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Custom structured content (via Wiki+)[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Custom structured content (via Wiki+)[/title]
 
 This tutorial will describe the Wiki+ system, which is Composr's equivalent to a wiki.
 

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: Web design glossary[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Web design glossary[/title]
 
 We don't blame you if you get a little bit baffled by all the terminology involved in modern web design.
 
@@ -104,7 +104,7 @@ Here are the top ~100 buzzwords that will help you understand what web designers
 		</tr>
 		<tr>
 			<td>Composr</td>
-			<td>The Open Source Content Management System developed by ocProducts.</td>
+			<td>The Open Source Content Management System developed by Christopher Graham and others.</td>
 		</tr>
 		<tr>
 			<td>Content Management System</td>

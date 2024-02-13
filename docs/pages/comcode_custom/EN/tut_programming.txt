@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Introduction to programming[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Introduction to programming[/title]
 
 This tutorial serves as an introduction to programming, with a particular emphasis on PHP. Programming knowledge is not necessary to use Composr, and we do not provide support for re/new-programming issues, but those who wish to do advance customisation by themselves, or are otherwise interested, may wish to read this tutorial. This tutorial is not intended to fully explain PHP programming: few examples are given, as hopefully you will be able to use Composr source code to see examples, and use this tutorial as an explanation of the 'syntax'.
 
@@ -518,7 +518,7 @@ N/A is used to mark characters that have a special meaning.
  3_key="OOP"                    3_value="Object Orientated Programming: programming that is focused on \"autonomous\" objects (data and code associated with that data), rather than a global mix of commands and procedures"
  4_key="Binary"                 4_value="The number system that computers use; unlike decimal, computers use only 2 numbers ('bits') instead of 10 ('digits')"
  5_key="PHP"                    5_value="PHP hypertext processor: a scripting language designed to make programming web systems quick and easy"
- 6_key="Code quality checker"   6_value="The ocProducts tool designed to make programming robust PHP/Composr code easier, with and end reliability that would otherwise be unreachable"
+ 6_key="Code quality checker"   6_value="A Composr tool designed to make programming robust PHP/Composr code easier, with and end reliability that would otherwise be unreachable"
  7_key="Loop"                   7_value="A sequence of commands set to cycle until a condition is met"
  8_key="Expression"             8_value="A piece of algebra with no equals sign that would lead to a single result if computed"
  9_key="Command"                9_value="An instruction to the computer; often an assignment or a function call (or both); there isn't really a distinct boundary to say unambiguously whether larger constructs like 'If statements' are single commands or not: but the term is convenient"

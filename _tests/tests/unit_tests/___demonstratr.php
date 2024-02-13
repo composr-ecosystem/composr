@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    testing_platform
  */
 
@@ -45,7 +45,7 @@ class ___demonstratr_test_set extends cms_test_case
                 $SITE_INFO['mysql_demonstratr_password'] = $SITE_INFO['db_site_password'];
             }
 
-            demonstratr_add_site_raw('localhost', 'test', 'info@ocproducts.com', '');
+            demonstratr_add_site_raw('localhost', 'test', 'info@localhost', '');
         }
     }
 }

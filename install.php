@@ -15,7 +15,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    installer
  */
 
@@ -993,7 +993,7 @@ function step_4() : object
     $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), ($forum_type == 'none') ? example('', 'CHOOSE_MASTER_PASSWORD_ADMIN') : example('', 'CHOOSE_MASTER_PASSWORD_NO_ADMIN'), 'master_password', $master_password, true));
     require_lang('config');
     require_lang('privacy');
-    $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_OCPRODUCTS'), example('', 'CONFIG_OPTION_send_error_emails_ocproducts'), 'send_error_emails_ocproducts', 1));
+    $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_DEVELOPERS'), example('', 'CONFIG_OPTION_send_error_emails_developers'), 'send_error_emails_developers', 1));
     $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'f051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     $hidden->attach(form_input_hidden('self_learning_cache', '1'));
 
@@ -1829,7 +1829,7 @@ if (!function_exists(\'git_repos\')) {
             'cns_admin_password_confirm',
 
             'clear_existing_forums_on_install',
-            'send_error_emails_ocproducts',
+            'send_error_emails_developers',
             'board_path',
             'confirm',
             'email',
@@ -2467,7 +2467,7 @@ function step_7() : object
         }
     }
 
-    set_option('send_error_emails_ocproducts', strval(post_param_integer('send_error_emails_ocproducts', 0)));
+    set_option('send_error_emails_developers', strval(post_param_integer('send_error_emails_developers', 0)));
 
     require_code('addons2');
     $addons = find_all_hooks('systems', 'addon_registry');
@@ -2870,7 +2870,7 @@ function require_code(string $codename)
         }
     } else {
         if (!file_exists($path)) {
-            exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr installer startup error</h1><p>A required installation file, sources/' . $codename . '.php, could not be located. This is almost always due to an incomplete upload of the Composr manual installation package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the installer can function. Please note that we have a quick installer package which requires uploading only two files, so you might consider using that instead.</p><p>ocProducts maintains full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by ocProducts.</p></body></html>');
+            exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr installer startup error</h1><p>A required installation file, sources/' . $codename . '.php, could not be located. This is almost always due to an incomplete upload of the Composr manual installation package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the installer can function. Please note that we have a quick installer package which requires uploading only two files, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
         }
 
         require_once($path);

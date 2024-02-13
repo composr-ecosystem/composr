@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Fixed-width layouts[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Fixed-width layouts[/title]
 
 [surround]
 [media width="150" description="A fixed-width Composr site" float="right"]data_custom/images/docs/tut_fixed_width/fixed_width.png[/media]

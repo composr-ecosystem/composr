@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Drinking from the feature pool[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Drinking from the feature pool[/title]
 
 This tutorial will describe the thought processes required to successfully design a complex and personalised website using Composr, and an overview of what features are available.
 

@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    testing_platform
  */
 
@@ -301,7 +301,7 @@ class aaa_modularisation_test_set extends cms_test_case
 
     public function should_check_package($data, $path)
     {
-        if (strpos($data, 'ocProducts') === false) {
+        if (strpos($data, 'Composr') === false) { // TODO: Make more efficient since the change from ocProducts
             return false;
         }
 

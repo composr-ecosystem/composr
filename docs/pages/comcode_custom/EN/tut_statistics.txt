@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Statistics for your site (analytics)[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Statistics for your site (analytics)[/title]
 
 [media width="150" description="Lots of statistics types are available" float="right"]data_custom/images/docs/tut_statistics/statistics_icons.png[/media]
 {!stats:DOC_STATISTICS}

@@ -17,7 +17,7 @@ MySQL client ran out of memory,MySQL could not serve a Composr database request 
 ",Contact your webhost.
 The SELECT would examine more than MAX_JOIN_SIZE rows,MySQL could not serve a Composr database request because a configured limit was exceeded.,"Either
  - A database table contains a very large amount of data
- - The server is configured to have a very low limit","There is currently no straight-forward fix to this problem. It may be a bug, or it may be a server configuration problem. Make a judgement call whether to contact your webhost or whether to post on the Composr forum. If you can afford to pay ocProducts can look into the problem under a commercial support arrangement (in which case, open a support ticket)."
+ - The server is configured to have a very low limit","There is currently no straight-forward fix to this problem. It may be a bug, or it may be a server configuration problem. Make a judgement call whether to contact your webhost or whether to post on the Composr forum."
 Can't open file: 'xxx.MYI',A MySQL data file has corrupted or gone missing on your server.,"Something outside the control of Composr caused this error, such as a hard disk fault, a power surge, a power cut, a forced computer reset, or a system administration mistake.",Contact your webhost. Anticipate that you may need to restore a backed up database.
 Lost connection to MySQL server,MySQL was not able to serve a Composr database request.,"There are three likely possible causes:
 1) The MySQL server is overloaded
@@ -63,9 +63,9 @@ The PHP FTP extension on your server is needed to use this feature,Composr is tr
 
 [i]Note that this advice is not relevant for Windows servers.[/i]","Consult with your webhost. Let them know you need either:
  - PHP to have the FTP extensions enabled, and an FTP server to be running
- - suEXEC to be enabled (this is a major change for a webhost to implement but ocProducts strongly recommend it)"
+ - suEXEC to be enabled (this is a major change for a webhost to implement but the Composr core team strongly recommends it)"
 "Nothing was selected/chosen, so no operation could be performed",You are trying to do a bulk action but selected nothing to do it on.,You probably did not tick (check) anything before clicking a button.,Go back and make sure you have ticked (checked) something.
-"You are using a shared install, which renders this action prohibited",You are trying to do a low-level administrative action but cannot as you are on a shared install.,"You cannot perform certain actions on shared installs, either for security reasons, or because it would impact all other websites.","There is no way around this. If it is a problem for you please discuss it on the Composr forums, or contact ocProducts if you want a professional (commercial) response."
+"You are using a shared install, which renders this action prohibited",You are trying to do a low-level administrative action but cannot as you are on a shared install.,"You cannot perform certain actions on shared installs, either for security reasons, or because it would impact all other websites.","There is no way around this. If it is a problem for you please discuss it on the Composr forums."
 This TAR file is corrupt,"You tried to use a corrupted file, such as a corrupted addon archive.
 
 [i]Note that there is a bug in Composr versions 4.1.5 and lower that incorrectly triggers this error message on certain servers. If you are running these versions please upgrade.[/i]",The file likely corrupted at some point when being downloaded/uploaded.,Try again or get a new copy of the file. If the problem persists contact the creator of the file.

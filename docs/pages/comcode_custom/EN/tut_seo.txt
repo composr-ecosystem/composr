@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Improving your search engine ranking[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Improving your search engine ranking[/title]
 
 For most websites, it is important to draw in visitors. There are many ways to do this, and one of these ways is by improving your site's 'findability' in search engines; this includes presence in the results for keywords appropriate to the visitors you wish to attract, and your actual position in the displayed search results.
 
@@ -67,10 +67,10 @@ Here are a few things to bare in mind
  - Use Heading 1 (H1) and Heading 2 (H2) tags, these should both relate to the topic of the document and should work together. Composr will automatically add the H1 tag for you when you fill in the page title. There should only ever be one H1 tag on a page.
  - Use contextual links. When you link to one of your pages make the text which is linking the same as the page title or related to the topic of the page. For example if you page is about orange juice make the link be orange juice. This helps build an authority within your site, search engines understand that you are saying that page is about orange juice.
  - Link to the new page from a first level page. A first level page is anything that is linked directly from home page and the homepage itself. A second level page is everything that is linked form a first level page. Usually a good drop-down menu will achieve this for you.
- - Use the key word/phrase within the alt attributes of Images. For example "a picture of a glass of orange juice" might become "A picture of a glass of orange juice on a table at ocProducts".
+ - Use the key word/phrase within the alt attributes of Images. For example "a picture of a glass of orange juice" might become "A picture of a glass of orange juice on a table on a Composr site".
  - Try and write at least 250 words, as far as google is concerned the more keyword rich text the better for relevance.
  - [b]Don't[/b] just add lots of meta keywords because you think they might be good to have, if they are not relevant to the page you are working on leave them out. 15 to 20 keywords is more than adequate.
- - The meta description should be no more than 155 Characters as search engines may cut off after this point. It should include your main keyword/phrase. For example if the page was about ocProducts and our love for orange juice, "This is a page written about the ocProducts staffs love for orange juice and their ongoing search for the best tasting orange juice in Sheffield"
+ - The meta description should be no more than 155 Characters as search engines may cut off after this point. It should include your main keyword/phrase. For example if the page was about Composr and our love for orange juice, "This is a page written about the Composr staff's love for orange juice and their ongoing search for the best tasting orange juice in Sheffield"
  - Ideally the keyword density should be around 5-7% of the page. (and never above 10%). This means 7% of the words should be related to the keywords and phrases.
  - Copy should seem natural and not forced. If your website copy is unreadable to site visitors no-one will stick around or link to you.
  - Search engines read top to bottom on the page so make sure you use the keywords & phrases near the top of the page.

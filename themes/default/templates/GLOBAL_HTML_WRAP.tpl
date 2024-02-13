@@ -289,4 +289,4 @@
 </body>
 </html>
 
-<!-- Powered by {$BRAND_NAME*}, (c) ocProducts Ltd - {$BRAND_BASE_URL*} -->
+<!-- Powered by {$BRAND_NAME*}, (c) Christopher Graham - {$BRAND_BASE_URL*} -->

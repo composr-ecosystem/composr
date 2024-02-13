@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: Making an addon (part 1)[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Making an addon (part 1)[/title]
 
 A Composr addon is simply a set of new files that together achieve some goal.
 

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Importing data into Composr[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Importing data into Composr[/title]
 
 [media width="150" description="Importing will generally use the contents of database tables designed for one product to create equivalent data suitable for Composr" float="right"]data_custom/images/docs/tut_importer/importer_dbs.png[/media]
 {!import:DOC_IMPORT}

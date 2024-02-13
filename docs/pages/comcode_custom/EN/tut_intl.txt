@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Localisation and internationalisation[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Localisation and internationalisation[/title]
 
 This tutorial is designed as a comprehensive guide to Composr's translation features, written for people wanting to make a complete Composr translation and understand the full technical details. We also have a [page="_SEARCH:tut_intl_users"]simpler[/page] tutorial.
 

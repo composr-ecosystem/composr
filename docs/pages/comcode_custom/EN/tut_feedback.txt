@@ -1,4 +1,4 @@
- [title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Feedback and user interaction[/title]
+ [title sub="Written by Chris Graham"]Composr Tutorial: Feedback and user interaction[/title]
 
 Composr allows you to create a highly interactive site if you desire, with numerous features for user feedback at your disposal.
 

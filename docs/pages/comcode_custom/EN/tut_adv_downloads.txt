@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced provision of downloads[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Advanced provision of downloads[/title]
 
 This tutorial details advanced usage and features for the Composr download system.
 

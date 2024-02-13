@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Supplementary: Making an addon (part 2)[/title]
+[title sub="Written by Chris Graham"]Composr Supplementary: Making an addon (part 2)[/title]
 
 Welcome to the second of our series of addon making tutorials. If you haven't yet read the first tutorial then it's advisable that you do so before reading this one.
 

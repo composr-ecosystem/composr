@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Designer themes, implementing a clean-room design[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Designer themes, implementing a clean-room design[/title]
 
 Composr is designed for maximum design flexibility, and has a lot of functionality so you can match high quality designs with high quality features. This tutorial will show you how you, as a web designer, can leverage Composr to efficiently implement your design.
 

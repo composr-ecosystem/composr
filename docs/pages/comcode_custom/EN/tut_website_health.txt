@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Website Health[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Website Health[/title]
 
 This tutorial will cover some aspects of keeping your website running smoothly.
 

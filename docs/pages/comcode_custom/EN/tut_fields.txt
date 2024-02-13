@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Custom fields[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Custom fields[/title]
 
 When building catalogues, custom fields for inbuilt content types, and Custom Profile Fields, you have a unified set of fields to choose from.
 This tutorial describes all the different fields and their options.

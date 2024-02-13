@@ -1,4 +1,4 @@
-[title sub="Written by Allen Ellis (ocProducts)"]Composr Tutorial: Themeing your site[/title]
+[title sub="Written by Allen Ellis"]Composr Tutorial: Themeing your site[/title]
 
 [media width="150" float="right" framed="0"]data_custom/images/docs/tut_themes/intro_themes.png[/media]
 {!themes:DOC_THEMES}

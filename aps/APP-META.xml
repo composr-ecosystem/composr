@@ -11,8 +11,8 @@
     <icon path="images/icon.png"/>
   </vendor>
   <packager>
-    <name>ocProducts</name>
-    <homepage>http://ocproducts.com/</homepage>
+    <name>Christopher Graham</name>
+    <homepage>https://compo.sr/</homepage>
     <icon path="images/icon.gif"/>
     <uri>uuid:ba037922-5e0f-46bc-b94f-9772d7b9706a</uri>
   </packager>

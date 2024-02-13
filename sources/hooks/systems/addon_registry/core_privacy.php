@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    core_privacy
  */
 
@@ -159,7 +159,7 @@ class Hook_addon_registry_core_privacy
             'sources/hooks/systems/config/bottom_show_privacy_link.php',
             'sources/hooks/systems/config/call_home.php',
             'sources/hooks/systems/config/cookie_notice.php',
-            'sources/hooks/systems/config/send_error_emails_ocproducts.php',
+            'sources/hooks/systems/config/send_error_emails_developers.php',
             'sources/hooks/systems/config/privacy_download_days.php',
             'sources/hooks/systems/config/privacy_purge_days.php',
             'sources/hooks/systems/config/privacy_upon_member_delete.php',

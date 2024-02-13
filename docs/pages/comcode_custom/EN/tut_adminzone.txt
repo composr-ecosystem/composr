@@ -1,4 +1,4 @@
-[title sub="Written by Allen Ellis (ocProducts)"]Composr Tutorial: Admin Zone overview[/title]
+[title sub="Written by Allen Ellis"]Composr Tutorial: Admin Zone overview[/title]
 
 [media width="150" description="The Admin Zone at first glance" float="right"]data_custom/images/docs/tut_adminzone/adminzone_first_glance.png[/media]
 {!menus:DOC_ADMIN_ZONE} It can be accessed from anywhere by choosing the 'Admin Zone' zone link which appears at the bottom of every default-themed Composr page. You may be prompted to login again to confirm your current session -- this is for added security.

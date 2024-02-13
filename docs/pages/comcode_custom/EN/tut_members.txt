@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Composr member system[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Composr member system[/title]
 
 Members are key to most participative or eCommerce websites. If you are using Composr's own forum, [concept]Conversr[/concept], then you will also be using Composr's own member system. If you are using a third-party forum, you will be using the member system from that, and you will need to consult its own documentation.
 

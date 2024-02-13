@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Quizzes[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Quizzes[/title]
 
 [media width="150" description="Viewing a quiz" float="right"]data_custom/images/docs/tut_quizzes/quiz_view.png[/media]
 {!quiz:DOC_QUIZZES}

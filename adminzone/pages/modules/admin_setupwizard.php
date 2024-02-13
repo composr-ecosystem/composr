@@ -14,7 +14,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    setupwizard
  */
 
@@ -32,7 +32,7 @@ class Module_admin_setupwizard
     {
         $info = [];
         $info['author'] = 'Chris Graham';
-        $info['organisation'] = 'ocProducts';
+        $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
@@ -1443,7 +1443,7 @@ class Module_admin_setupwizard
         require_code('addons');
         require_code('addons2');
 
-        preload_all_ocproducts_addons_info();
+        preload_all_addons_info();
 
         $addons_not_installed = find_available_addons(false); // filename => addon details
         $addons_installed = find_installed_addons(false, true, true); // addon name => addon details

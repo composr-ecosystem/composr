@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Integration of Composr and other installed scripts/applications[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Integration of Composr and other installed scripts/applications[/title]
 
 This tutorial will provide details on how to integrate Composr with another web system (known henceforth as the 'other system') installed for your website.
 

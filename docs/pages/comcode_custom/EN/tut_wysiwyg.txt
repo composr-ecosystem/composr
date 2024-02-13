@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: WYSIWYG editing[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: WYSIWYG editing[/title]
 
 Composr's multi-line Comcode content is, by default, edited using a WYSIWYG editor. This makes things easier for beginners to edit.
 

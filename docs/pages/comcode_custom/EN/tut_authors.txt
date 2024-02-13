@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Authors[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Authors[/title]
 
 {!authors:DOC_AUTHORS}
 

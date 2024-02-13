@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced access control[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Advanced access control[/title]
 
 There are more ways that you could wish to control access than we have direct options within Composr.
 Some software tries to make options for everything, but the result tends to be too many assumptions and too much configuration complexity. Our approach is to give you some additional general-purpose tools for defining your own permissions, giving you increased flexibility overall, while keeping the core permission system relatively intuitive.

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Security[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Security[/title]
 
 This tutorial details and explains Composr's security features and provides a lot of general advice for maintaining security.
 

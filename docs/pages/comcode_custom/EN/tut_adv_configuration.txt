@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced configuration[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Advanced configuration[/title]
 
 This tutorial will cover various aspects of Composr configuration you may go into beyond your initial installation and configuration of Composr.
 
@@ -30,8 +30,8 @@ To manage addons go to Admin Zone > Structure > Addons. Any addons that are unin
 There are also many non-bundled addons that you can install. Some of these are official and some of these are third-party. An addon may be non-bundled if any of the following hold true:
  - It is not considered mainstream enough
  - It ties into a third-party service that is not officially endorsed
- - It has been written by a third-party, and not checked to ocProducts standards
- - It is known to not fully conform to ocProducts standards but still is considered useful for some audiences
+ - It has been written by a third-party, and not checked to Composr standards
+ - It is known to not fully conform to Composr standards but still is considered useful for some audiences
 In reality the developers make pragmatic decisions. For example, as PayPal is so mainstream and the PayPal driver has low overhead, PayPal support is bundled with Composr -- but as Facebook support is a much more expansive thing, Facebook support is in a non-bundled addon.
 
 Non-bundled addons are installed via the "Import non-bundled addon(s)" link at the bottom of the Addons screen. The process goes as follows:

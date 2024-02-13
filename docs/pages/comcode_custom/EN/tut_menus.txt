@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Customising what's on the menus[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Customising what's on the menus[/title]
 
 {!menus:DOC_MENUS}
 

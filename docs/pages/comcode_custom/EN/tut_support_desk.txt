@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Running a virtual support desk[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Running a virtual support desk[/title]
 
 [media width="150" description="Configuring the support ticket and comment topic systems" float="right"]data_custom/images/docs/tut_support_desk/support_forum_config.png[/media]
 Running an online support desk is something many companies will want to do. It allows customers to easily communicate via a website, suggesting new features, reporting bugs, or otherwise asking for support. Composr can be used as an effective support desk tool.

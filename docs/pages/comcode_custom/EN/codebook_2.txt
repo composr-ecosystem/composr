@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Code Book, part 2 (Front-end)[/title]
+[title sub="Written by Chris Graham"]Code Book, part 2 (Front-end)[/title]
 
 &laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]
 
@@ -423,7 +423,7 @@ Here's a script for if you want to know some basic stats about Composr's English
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) Christopher Graham, 2004-2024
 
  See docs/LICENSE.md for full licensing information.
 
@@ -467,7 +467,7 @@ Here's a script for if you want to find out what are the most common functions u
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) Christopher Graham, 2004-2024
 
  See docs/LICENSE.md for full licensing information.
 

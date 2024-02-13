@@ -30,7 +30,7 @@ You may also hear terms like "web designer". A designer typically is closer to t
 [title="2"]How to evaluate a software company[/title]
 
 [media description="" width="400" float="right" framed="0"]data_custom/images/docs/sup_choosing_a_developer/criteria.png[/media]
-At ocProducts we often find that prospective clients don't know how to evaluate a software company. It's understandable: a lot of web businesses are first-time-businesses, and they are often started by people who are expert in the subject matter, but not web technology. People can't know everything.
+Developers often find that prospective clients don't know how to evaluate a software company. It's understandable: a lot of web businesses are first-time-businesses, and they are often started by people who are expert in the subject matter, but not web technology. People can't know everything.
 
 It becomes a problem in two particular scenarios:
 [list="1"]
@@ -161,7 +161,7 @@ Here are a few things I would not necessarily expect a web developer to suggest,
 [*] A proper training course for any site administrators to go through[/*]
 [/list]
 
-A larger set of possible work items is included when [page="site:support"]contacting ocProducts[/page].
+A larger set of possible work items is included when [page="site:support"]contacting the Composr Core Development Team[/page].
 
 [title="2"]Offshoring[/title]
 
@@ -172,7 +172,7 @@ There's a huge advantage to offshoring PHP development: cost. The numbers seem e
 
 In this tutorial I will try and explain when offshoring PHP development works, and when it does not.
 
-First, let's discuss a bit of context. When a company says their rate is xxx per hour, you need to consider what that actually means. Comparing to a serious Open Source engineering company like my company ocProducts:
+First, let's discuss a bit of context. When a company says their rate is xxx per hour, you need to consider what that actually means. Comparing to a serious Open Source engineering company like my former company ocProducts:
 [list]
 [*] We work on an Open Source model, so the customer is essentially paying for the maintenance of the ecosystem they are working in within the hourly rate, but as a result there is a bit of a monopoly of expertise: you're paying the people who created the ecosystem, so there'll be a huge efficiency from that.[/*]
 [*] In our case, often there is a certain lead of project management time that doesn't get counted in the hours. A project will be spec'd up, and we do try and charge for it in project management, but it is rarely equal to the amount actually spent setting up a job. When offshoring you typically do absolutely everything on the clock, because there's no lower service tier that the offshoring companies need to differentiate themselves against.[/*]

@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Adding standalone pages of content (via Comcode)[/title]
+[title sub="Written by Chris Graham"]Composr Tutorial: Adding standalone pages of content (via Comcode)[/title]
 
 You may easily add new pages of information to Composr by making a 'Comcode page'.
 

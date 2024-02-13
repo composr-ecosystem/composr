@@ -9,7 +9,7 @@
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
- * @copyright  ocProducts Ltd
+ * @copyright  Christopher Graham
  * @package    testing_platform
  */
 
@@ -65,8 +65,8 @@ class lang_tokeniser_test_set extends cms_test_case
 
         // Indexing...
 
-        $got = $tokeniser->text_to_ngrams('Composr/ocProducts FAQ');
-        $this->assertTrue(array_keys($got) == ['composr', 'ocproducts', 'faq']);
+        $got = $tokeniser->text_to_ngrams('Composr/software FAQ');
+        $this->assertTrue(array_keys($got) == ['composr', 'software', 'faq']);
 
         $got = $tokeniser->text_to_ngrams("it's 'its'");
         $this->assertTrue(array_keys($got) == ["it's", 'its']);
