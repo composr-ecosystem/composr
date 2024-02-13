@@ -266,7 +266,8 @@ class Hook_health_check_integrity extends Hook_Health_Check
         } else {
             $minimum_level = CMSPermissionsScanner::RESULT_TYPE_ERROR_EXCESSIVE;
         }
-        list($messages) = scan_permissions(false, false, null, null, $minimum_level);
+
+        list($messages) = scan_permissions(is_cli(), false, null, null, $minimum_level);
 
         $this->assertTrue(empty($messages), implode("\n", $messages));
     }

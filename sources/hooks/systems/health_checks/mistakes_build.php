@@ -993,7 +993,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 /*if ($result != 0) { Debugging
                     @header('Content-Type: text/plain');@var_dump($matches);exit();
                 }*/
-                $this->assertTrue($result == 0, $description);
+                $this->assertTrue($result == 0, $description . ' (' . $page_link . ')');
             }
         }
     }

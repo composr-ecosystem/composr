@@ -175,7 +175,7 @@ function display_health_check_results_as_text(array $categories) : string
  */
 function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool $show_passes = false, bool $show_skips = false, bool $show_manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, ?int $check_context = null) : array
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
     if ($check_context === null) {
         if (running_script('install')) {
@@ -292,13 +292,17 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
 function health_check_log_start()
 {
     $_log_file = get_custom_file_base() . '/data_custom/health_check.log';
+    $origin = running_script('index') ? get_self_url_easy() : $_SERVER['SCRIPT_NAME'];
+
     global $HEALTH_CHECK_LOG_FILE;
     if (is_file($_log_file)) {
         $HEALTH_CHECK_LOG_FILE = fopen($_log_file, 'at');
 
-        $origin = running_script('index') ? get_self_url_easy() : $_SERVER['SCRIPT_NAME'];
-
         fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING FROM ' . $origin . ')' . "\n");
+    }
+
+    if (is_cli()) {
+        echo loggable_date() . '  (HEALTH CHECK STARTING FROM ' . $origin . ')' . "\n";
     }
 }
 
@@ -312,6 +316,10 @@ function health_check_log_stop()
         fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK ENDING)' . "\n");
 
         fclose($HEALTH_CHECK_LOG_FILE);
+    }
+
+    if (is_cli()) {
+        echo loggable_date() . '  (HEALTH CHECK ENDING)' . "\n";
     }
 }
 
@@ -356,11 +364,17 @@ abstract class Hook_Health_Check
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  STARTING ' . $this->category_label . ' \\ ' . $section_label . "\n");
             }
+            if (is_cli()) {
+                echo loggable_date() . '  STARTING ' . $this->category_label . ' \\ ' . $section_label . "\n";
+            }
             $time_before = microtime(true);
             call_user_func([$this, $method], $check_context, $show_manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             $time_after = microtime(true);
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . ' (' . float_format($time_after - $time_before) . ' seconds)' . "\n");
+            }
+            if (is_cli()) {
+                echo loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . ' (' . float_format($time_after - $time_before) . ' seconds)' . "\n";
             }
         } else {
             if (strpos($section_label, ',') !== false) {
@@ -383,6 +397,9 @@ abstract class Hook_Health_Check
         global $HEALTH_CHECK_LOG_FILE;
         if ($HEALTH_CHECK_LOG_FILE !== null) {
             fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  ' . $this->category_label . ' \\ ' . $this->current_section_label . ': ' . $contents . "\n");
+        }
+        if (is_cli()) {
+            echo loggable_date() . '  ' . $this->category_label . ' \\ ' . $this->current_section_label . ': ' . $contents . "\n";
         }
     }
 
@@ -532,10 +549,10 @@ abstract class Hook_Health_Check
             }
         }
 
-        $error_message = '';
+        $error_message = 'UNKNOWN_ERROR';
         $http_result = $this->get_page_http_content($page_link, $error_message);
         if ($http_result->data === null) {
-            $this->assertTrue(false, $error_message);
+            $this->assertTrue(false, $error_message . ' ([tt]' . $page_link . '[/tt])');
             return '';
         }
         return $http_result->data;
@@ -550,7 +567,7 @@ abstract class Hook_Health_Check
      */
     protected function get_page_http_content(string $page_link = ':', string &$error_message = '') : object
     {
-        $error_message = '';
+        $error_message = 'UNKNOWN_HTTP_ERROR';
         global $HEALTH_CHECK_PAGE_RESPONSE_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_PAGE_RESPONSE_CACHE)) {
             $page_link_url = $this->get_page_url($page_link);
@@ -563,9 +580,16 @@ abstract class Hook_Health_Check
 
             // Server blocked to access itself
             if ($page_link == ':') {
-                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, $error_message);
+                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, 'The server blocked access to itself ([tt]' . $page_link . '[/tt])');
+            }
+
+            // Do not cache if we got no output; this breaks error messages
+            if ($ob->data === null) {
+                unset($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link]);
+                return $ob;
             }
         }
+
         return $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link];
     }
 

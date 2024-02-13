@@ -114,7 +114,7 @@ PHP;
         if (empty($categories)) {
             foreach ($_categories as $category) {
                 if ((!$check_perms) || (has_category_access(get_member(), 'news', strval($category['id'])))) {
-                    $count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'news p WHERE validated=1 AND (news_entry_category=' . strval($category['id']) . ' OR news_category=' . strval($category['id']) . ')');
+                    $count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'news p WHERE validated=1 AND news_category=' . strval($category['id']));
                     $category['_nc_title'] = get_translated_text($category['nc_title']);
                     $categories[] = [$category, $count, $category['_nc_title']];
                 }
