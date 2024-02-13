@@ -71,7 +71,7 @@ function cms_version_number() : float
  */
 function cms_version_time() : int
 {
-    return 1706928676;
+    return 1707779248;
 }
 
 /**

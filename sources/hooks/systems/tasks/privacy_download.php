@@ -85,16 +85,22 @@ class Hook_task_privacy_download
                     $db = get_db_for($table_name);
                     $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, PRIVACY_METHOD__DOWNLOAD, false, $username, $ip_addresses, $member_id, $email_address, $others);
                     if ($selection_sql != '') {
-                        $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql);
-                        foreach ($rows as $_row) {
-                            if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
-                                // We do not want to leak data from other users out to this user
-                                $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
-                                $data['matched_records'][] = $hook_ob->serialise($table_name, $row);
-                                continue;
+                        $start = 0;
+                        $max = 100;
+                        do {
+                            $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql, $max, $start);
+                            foreach ($rows as $_row) {
+                                if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
+                                    // We do not want to leak data from other users out to this user
+                                    $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
+                                    $data['matched_records'][] = $hook_ob->serialise($table_name, $row);
+                                    continue;
+                                }
+                                $data['matched_records'][] = $hook_ob->serialise($table_name, $_row);
                             }
-                            $data['matched_records'][] = $hook_ob->serialise($table_name, $_row);
-                        }
+
+                            $start += $max;
+                        } while (!empty($rows));
                     }
 
                     $this->create_json_file($table_name, $data, $data_file);

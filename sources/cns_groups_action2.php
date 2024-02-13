@@ -603,33 +603,24 @@ function cns_group_absorb_privileges_of(int $to, int $from)
 /**
  * Helper function, for copy permissions relating to one, to another.
  *
- * @param  GROUP $to The that is having its permissions replaced
- * @param  GROUP $from The that the permissions are being drawn from
+ * @param  GROUP $to The record ID that is having its permissions replaced
+ * @param  GROUP $from The record ID that the permissions are being drawn from
  * @param  ID_TEXT $table The table holding the permissions
  * @param  ID_TEXT $id The name of the field in the table that holds the ID
- * @param  boolean $cns Whether the operation is being carried out over the Conversr driver
- *
  * @ignore
  */
-function _cns_group_absorb_privileges_of(int $to, int $from, string $table, string $id = 'group_id', bool $cns = false)
+function _cns_group_absorb_privileges_of(int $to, int $from, string $table, string $id = 'group_id')
 {
     if ($to == $from) {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    if ($cns) {
-        $GLOBALS['FORUM_DB']->query_delete($table, [$id => $to]);
-        $rows = $GLOBALS['FORUM_DB']->query_select($table, ['*'], [$id => $from]);
-        foreach ($rows as $row) {
-            $row[$id] = $to;
-            $GLOBALS['FORUM_DB']->query_insert($table, $row);
-        }
-    } else {
-        $GLOBALS['SITE_DB']->query_delete($table, [$id => $to]);
-        $rows = $GLOBALS['SITE_DB']->query_select($table, ['*'], [$id => $from]);
-        foreach ($rows as $row) {
-            $row[$id] = $to;
-            $GLOBALS['SITE_DB']->query_insert($table, $row);
-        }
+    $db = get_db_for($table);
+
+    $db->query_delete($table, [$id => $to]);
+    $rows = $db->query_select($table, ['*'], [$id => $from]);
+    foreach ($rows as $row) {
+        $row[$id] = $to;
+        $db->query_insert($table, $row);
     }
 }

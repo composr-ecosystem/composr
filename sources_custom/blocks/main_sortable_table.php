@@ -249,11 +249,13 @@ PHP;
                     $tooltip_headers[] = isset($labels_tooltip[$j]) ? $labels_tooltip[$j] : $full_header_row[$pos - 1];
                 }
             }
-        } else {
-            // Database table...
-
+        } else { // Database table...
             if (stripos($file, 'f_members') !== false) {
                 return do_template('RED_ALERT', ['_GUID' => '71d6xnfv3fnomqo2jo4xqlm8n98xngwk', 'TEXT' => 'Security filter disallows display of the ' . escape_html($file) . ' table.']);
+            }
+
+            if ($max_rows === null) {
+                $max_rows = 10000; // Prevent DOS attacks on the database
             }
 
             $records = $GLOBALS['SITE_DB']->query_select($file, ['*'], [], '', $max_rows);

@@ -95,10 +95,16 @@ class Hook_commandr_command_db_search
 
         foreach ($fields as $field) {
             $db = get_db_for($field['m_table']);
-            $ofs = $db->query_select($field['m_table'], ['*'], [$field['m_name'] => $search]);
 
-            if (!empty($ofs)) {
-                $out .= '<h2>' . escape_html($field['m_table']) . ':' . escape_html($field['m_name']) . '</h2>';
+            $start = 0;
+            $max = 100;
+            do {
+                $ofs = $db->query_select($field['m_table'], ['*'], [$field['m_name'] => $search], '', $max, $start);
+
+                if (($start == 0) && (!empty($ofs))) {
+                    $out .= '<h2>' . escape_html($field['m_table']) . ':' . escape_html($field['m_name']) . '</h2>';
+                    $sql_for[] = [$db->get_table_prefix() . $field['m_table'], $field['m_name']];
+                }
 
                 foreach ($ofs as $of) {
                     $out .= '<table class="results-table">';
@@ -112,8 +118,8 @@ class Hook_commandr_command_db_search
                     $out .= '</table>';
                 }
 
-                $sql_for[] = [$db->get_table_prefix() . $field['m_table'], $field['m_name']];
-            }
+                $start += $max;
+            } while (!empty($ofs));
         }
 
         if ($out == '') {

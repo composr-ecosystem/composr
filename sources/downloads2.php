@@ -1058,17 +1058,33 @@ function set_download_gallery_permissions(?int $id, ?int $submitter = null)
 
     // Copy through requisite permissions
     $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)]);
-    $perms = $GLOBALS['SITE_DB']->query_select('group_category_access', ['*'], ['module_the_name' => 'galleries', 'category_name' => $download_gallery_root]);
-    foreach ($perms as $perm) {
-        $perm['category_name'] = 'download_' . strval($id);
-        $GLOBALS['SITE_DB']->query_insert('group_category_access', $perm);
-    }
+
+    $start = 0;
+    $max = 100;
+    do {
+        $perms = $GLOBALS['SITE_DB']->query_select('group_category_access', ['*'], ['module_the_name' => 'galleries', 'category_name' => $download_gallery_root], '', $max, $start);
+        foreach ($perms as $perm) {
+            $perm['category_name'] = 'download_' . strval($id);
+            $GLOBALS['SITE_DB']->query_insert('group_category_access', $perm);
+        }
+
+        $start += $max;
+    } while (!empty($perms));
+
     $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)]);
-    $perms = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['module_the_name' => 'galleries', 'category_name' => $download_gallery_root]);
-    foreach ($perms as $perm) {
-        $perm['category_name'] = 'download_' . strval($id);
-        $GLOBALS['SITE_DB']->query_insert('group_privileges', $perm);
-    }
+
+    $start = 0;
+    $max = 100;
+    do {
+        $perms = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['module_the_name' => 'galleries', 'category_name' => $download_gallery_root], '', $max, $start);
+        foreach ($perms as $perm) {
+            $perm['category_name'] = 'download_' . strval($id);
+            $GLOBALS['SITE_DB']->query_insert('group_privileges', $perm);
+        }
+
+        $start += $max;
+    } while (!empty($perms));
+
     // If they were able to submit the download, they should be able to submit extra images
     $GLOBALS['SITE_DB']->query_delete('member_privileges', ['module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)]);
     foreach (['submit_midrange_content'] as $privilege) {

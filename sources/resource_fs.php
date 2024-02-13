@@ -593,19 +593,25 @@ function table_to_portable_rows(string $table, array $fields_to_skip = [], array
         }
     }
 
-    $rows = $db->query_select($table, ['*'], $where_map, ($key_field === null) ? '' : ('ORDER BY ' . $key_field));
-
     $relation_map = get_relation_map_for_table($table);
 
     $fields_to_skip = array_merge($fields_to_skip, array_keys($where_map));
 
-    foreach ($rows as &$row) {
-        foreach ($fields_to_skip as $field_to_skip) {
-            unset($row[$field_to_skip]);
+    $start = 0;
+    $max = 1000;
+    $rows = [];
+    do {
+        $_rows = $db->query_select($table, ['*'], $where_map, ($key_field === null) ? '' : ('ORDER BY ' . $key_field), $max, $start);
+        foreach ($_rows as $row) {
+            foreach ($fields_to_skip as $field_to_skip) {
+                unset($row[$field_to_skip]);
+            }
+
+            $rows[] = table_row_to_portable_row($row, $db_fields, $relation_map, $db);
         }
 
-        $row = table_row_to_portable_row($row, $db_fields, $relation_map, $db);
-    }
+        $start += $max;
+    } while (!empty($_rows));
 
     return $rows;
 }

@@ -300,19 +300,25 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
     }
 
     // Check access
-    $_postdetails = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . $or_list, null, 0, false, true);
-    $num_posts_counted = 0;
-    foreach ($_postdetails as $post) {
-        if (($post['p_intended_solely_for'] === null) && ($post['p_validated'] == 1)) {
-            $num_posts_counted++;
-        }
-        $post_owner = $post['p_poster'];
-        if ($check_perms) {
-            if (!cns_may_delete_post_by($post['id'], $post['p_time'], $post_owner, $forum_id)) {
-                access_denied('I_ERROR');
+    $start = 0;
+    $max = 250;
+    do {
+        $_postdetails = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . $or_list, $max, $start, false, true);
+        $num_posts_counted = 0;
+        foreach ($_postdetails as $post) {
+            if (($post['p_intended_solely_for'] === null) && ($post['p_validated'] == 1)) {
+                $num_posts_counted++;
+            }
+            $post_owner = $post['p_poster'];
+            if ($check_perms) {
+                if (!cns_may_delete_post_by($post['id'], $post['p_time'], $post_owner, $forum_id)) {
+                    access_denied('I_ERROR');
+                }
             }
         }
-    }
+
+        $start += $max;
+    } while (!empty($_postdetails));
 
     // Logging
     require_code('cns_general_action2');

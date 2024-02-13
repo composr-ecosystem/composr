@@ -96,7 +96,7 @@ function notification_poller_script()
 
     $time_barrier = get_param_integer('time_barrier', time() - NOTIFICATION_POLL_FREQUENCY - NOTIFICATION_POLL_SAFETY_LAG_SECS);
 
-    $max = get_param_integer('max', null);
+    $max = get_param_integer('max', 10);
 
     $forced_update = (get_param_integer('forced_update', 0) == 1);
 
@@ -109,7 +109,7 @@ function notification_poller_script()
         $query .= ' AND d_date_and_time>=' . strval($time_barrier);
         $query .= ' AND d_read=0';
         $query .= ' AND d_frequency=' . strval(A_WEB_NOTIFICATION);
-        $rows = $GLOBALS['SITE_DB']->query($query);
+        $rows = $GLOBALS['SITE_DB']->query($query, $max);
     }
 
     if ((!empty($rows)) || ($forced_update)) {
@@ -127,14 +127,20 @@ function notification_poller_script()
 
         // Only keep around for X days
         $sql = 'd_frequency=' . strval(A_WEB_NOTIFICATION) . ' AND d_date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('notification_keep_days')));
-        $rows = $GLOBALS['SITE_DB']->query('SELECT d_message FROM ' . get_table_prefix() . 'digestives_tin WHERE ' . $sql);
-        if (!empty($rows)) {
+        $start = 0;
+        $max = 100;
+        $found_something = false;
+        do {
+            $rows = $GLOBALS['SITE_DB']->query('SELECT d_message FROM ' . get_table_prefix() . 'digestives_tin WHERE ' . $sql, $max, $start);
             foreach ($rows as $row) {
+                $found_something = true;
                 delete_lang($row['d_message']);
             }
 
+            $start += $max;
+        } while (!empty($rows));
+        if ($found_something) {
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'digestives_tin WHERE ' . $sql);
-
             delete_cache_entry('_get_notifications', null, get_member());
         }
     }

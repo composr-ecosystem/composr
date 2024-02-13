@@ -161,10 +161,18 @@ function edit_usergroup_subscription(int $id, string $title, string $description
     // Handle extra mails. Add/edit/delete as required
     if ($mails !== null) {
         $existing_mails = [];
-        $_mails = $db->query_select('f_usergroup_sub_mails', ['*'], ['m_usergroup_sub_id' => $id], 'ORDER BY id');
-        foreach ($_mails as $_mail) {
-            $existing_mails[] = [$_mail['id'], $_mail['m_subject'], $_mail['m_body']];
-        }
+
+        $start = 0;
+        $max = 100;
+        do {
+            $_mails = $db->query_select('f_usergroup_sub_mails', ['*'], ['m_usergroup_sub_id' => $id], 'ORDER BY id', $max, $start);
+            foreach ($_mails as $_mail) {
+                $existing_mails[] = [$_mail['id'], $_mail['m_subject'], $_mail['m_body']];
+            }
+
+            $start += $max;
+        } while (!empty($_mails));
+
         foreach ($mails as $i => $mail) {
             if (isset($existing_mails[$i])) {
                 $map = [

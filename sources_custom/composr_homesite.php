@@ -223,10 +223,18 @@ function load_version_news_rows()
         } else {
             // Live data
             $db = $GLOBALS['SITE_DB'];
-            $NEWS_ROWS = $db->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], ' AND ' . $db->translate_field_ref('title') . ' LIKE \'' . db_encode_like('%released%') . '\' ORDER BY add_date');
-            foreach ($NEWS_ROWS as $i => $row) {
-                $NEWS_ROWS[$i]['nice_title'] = get_translated_text($row['title']);
-            }
+
+            $start = 0;
+            $max = 100;
+            $NEWS_ROWS = [];
+            do {
+                $rows = $db->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], ' AND ' . $db->translate_field_ref('title') . ' LIKE \'' . db_encode_like('%released%') . '\' ORDER BY add_date', $max, $start);
+                foreach ($rows as $i => $row) {
+                    $NEWS_ROWS[$i]['nice_title'] = get_translated_text($row['title']);
+                }
+
+                $start += $max;
+            } while (!empty($rows));
         }
     }
 }

@@ -760,38 +760,63 @@ function _get_wordpress_db_data() : array
     // Create database connector
     $db = new DatabaseConnector($db_name, $host_name, $db_user, $db_passwrod, $db_table_prefix);
 
-    $users = $db->query_select('users', ['*'], [], '', null, 0, true);
-    if ($users === null) {
-        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
-    }
-
     $data = [];
-    foreach ($users as $user) {
-        $user_id = $user['ID'];
-        $data[$user_id] = $user;
 
-        // Fetch user posts/pages
-        $posts = $db->query('SELECT * FROM ' . $db_table_prefix . 'posts WHERE post_author=' . strval($user_id) . ' AND (' . db_string_equal_to('post_type', 'post') . ' OR ' . db_string_equal_to('post_type', 'page') . ') AND ' . db_string_not_equal_to('post_status', 'auto-draft'));
-        foreach ($posts as $post) {
-            $post_id = $post['ID'];
-            $post['post_id'] = $post_id; // Consistency with XML feed
-            $data[$user_id]['POSTS'][$post_id] = $post;
-
-            // Get categories
-            $categories = $db->query_select('terms t1 JOIN ' . $db_table_prefix . 'term_taxonomy t2 ON t1.term_id=t2.term_id JOIN ' . $db_table_prefix . 'term_relationships t3 ON t2.term_taxonomy_id=t3.term_taxonomy_id', ['t1.slug', 't1.name'], ['t3.object_id' => $post_id], 'ORDER BY t3.term_order');
-            foreach ($categories as $category) {
-                $data[$user_id]['POSTS'][$post_id]['category'][$category['slug']] = $category['name'];
-            }
-
-            // Comments
-            $comments = $db->query_select('comments', ['*'], ['comment_post_ID' => $post_id], 'ORDER BY comment_date_gmt');
-            foreach ($comments as $comment) {
-                $comment_id = $comment['comment_ID'];
-                $comment['author_ip'] = $comment['comment_author_IP']; // Consistency with XML feed
-                $data[$user_id]['POSTS'][$post_id]['COMMENTS'][$comment_id] = $comment;
-            }
+    $start = 0;
+    $max = 100;
+    do {
+        $users = $db->query_select('users', ['*'], [], '', $max, $start, true);
+        if ($users === null) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
-    }
+
+        foreach ($users as $user) {
+            $user_id = $user['ID'];
+            $data[$user_id] = $user;
+
+            // Fetch user posts/pages
+            $start2 = 0;
+            $max2 = 100;
+            do {
+                $posts = $db->query('SELECT * FROM ' . $db_table_prefix . 'posts WHERE post_author=' . strval($user_id) . ' AND (' . db_string_equal_to('post_type', 'post') . ' OR ' . db_string_equal_to('post_type', 'page') . ') AND ' . db_string_not_equal_to('post_status', 'auto-draft'), $max2, $start2);
+                foreach ($posts as $post) {
+                    $post_id = $post['ID'];
+                    $post['post_id'] = $post_id; // Consistency with XML feed
+                    $data[$user_id]['POSTS'][$post_id] = $post;
+
+                    // Get categories
+                    $start3 = 0;
+                    $max3 = 100;
+                    do {
+                        $categories = $db->query_select('terms t1 JOIN ' . $db_table_prefix . 'term_taxonomy t2 ON t1.term_id=t2.term_id JOIN ' . $db_table_prefix . 'term_relationships t3 ON t2.term_taxonomy_id=t3.term_taxonomy_id', ['t1.slug', 't1.name'], ['t3.object_id' => $post_id], 'ORDER BY t3.term_order', $max3, $start3);
+                        foreach ($categories as $category) {
+                            $data[$user_id]['POSTS'][$post_id]['category'][$category['slug']] = $category['name'];
+                        }
+
+                        $start3 += $max3;
+                    } while (!empty($categories));
+
+                    // Comments
+                    $start3 = 0;
+                    $max3 = 100;
+                    do {
+                        $comments = $db->query_select('comments', ['*'], ['comment_post_ID' => $post_id], 'ORDER BY comment_date_gmt', $max3, $start3);
+                        foreach ($comments as $comment) {
+                            $comment_id = $comment['comment_ID'];
+                            $comment['author_ip'] = $comment['comment_author_IP']; // Consistency with XML feed
+                            $data[$user_id]['POSTS'][$post_id]['COMMENTS'][$comment_id] = $comment;
+                        }
+
+                        $start3 += $max3;
+                    } while (!empty($comments));
+                }
+
+                $start2 += $max2;
+            } while (!empty($posts));
+        }
+
+        $start += $max;
+    } while (!empty($users));
 
     return $data;
 }

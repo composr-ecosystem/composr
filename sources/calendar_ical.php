@@ -101,7 +101,7 @@ function output_ical(bool $headers_and_exit = true)
     do {
         $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
-        $events = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'calendar_events r' . $privacy_join . ' WHERE ' . $where . ' ORDER BY e_add_date ASC', 1000, $start);
+        $events = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'calendar_events r' . $privacy_join . ' WHERE ' . $where . ' ORDER BY e_add_date ASC', 250, $start);
         foreach ($events as $event) {
             if (!has_category_access(get_member(), 'calendar', strval($event['e_type']))) {
                 continue;
@@ -171,7 +171,7 @@ function output_ical(bool $headers_and_exit = true)
                 if ($topic_id === null) {
                     break;
                 }
-                $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, 1000, $start);
+                $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, 250, $start);
                 if (!is_array($_comments)) {
                     break;
                 }
@@ -187,7 +187,7 @@ function output_ical(bool $headers_and_exit = true)
                     echo "COMMENT:" . ical_escape(strip_comcode(is_object($comment['message']) ? $comment['message']->evaluate() : $comment['message']) . ' - ' . $username . ' (' . get_timezoned_date_time($comment['date']) . ')') . "\r\n";
                 }
 
-                $start += 1000;
+                $start += 250;
             } while (!empty($_comments));
 
             $_start_hour = ($event['e_start_hour'] === null) ? find_timezone_start_hour_in_utc($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type']) : $event['e_start_hour'];

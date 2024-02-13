@@ -3018,18 +3018,38 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
     }
 
     // Read in IP bans - we need to check both DB and .htaccess for completeness (expiring bans will not be in .htaccess)
-    $ip_bans = function_exists('persistent_cache_get') ? persistent_cache_get('IP_BANS') : null;
+    $ip_bans = (function_exists('persistent_cache_get') && ($check_caching)) ? persistent_cache_get('IP_BANS') : null;
     if ($ip_bans === null) {
-        $ip_bans = $GLOBALS['SITE_DB']->query_select('banned_ip', ['*'], [], '', null, 0, true);
-        if (!is_array($ip_bans)) { // LEGACY
-            $ip_bans = $GLOBALS['SITE_DB']->query_select('usersubmitban_ip', ['*'], [], '', null, 0, true);
+        $tables = ['banned_ip', 'usersubmitban_ip'/*LEGACY*/];
+        $ip_bans = null;
+        foreach ($tables as $table) {
+            $_ip_bans = $GLOBALS['SITE_DB']->query_select_value_if_there($table, 'COUNT(*)', [], '', true);
+            if ($_ip_bans === null) {
+                continue;
+            }
+
+            if ($ip_bans === null) {
+                $ip_bans = [];
+            }
+
+            $start = 0;
+            $max = 100;
+            do {
+                $rows = $GLOBALS['SITE_DB']->query_select($table, ['*'], [], '', $max, $start);
+                foreach ($rows as $row) {
+                    $ip_bans[] = $row;
+                }
+
+                $start += $max;
+            } while (!empty($rows));
+
+            break;
         }
-        if ($ip_bans !== null) {
-            persistent_cache_set('IP_BANS', $ip_bans);
+        if ($ip_bans === null) {
+            critical_error('DATABASE_FAIL');
         }
-    }
-    if ($ip_bans === null) {
-        critical_error('DATABASE_FAIL');
+
+        persistent_cache_set('IP_BANS', $ip_bans);
     }
 
     global $SITE_INFO;

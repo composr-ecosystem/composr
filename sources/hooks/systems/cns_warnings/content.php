@@ -117,7 +117,7 @@ class Hook_cns_warnings_content
                 if (!has_privilege(get_member(), 'view_other_pt')) {
                     $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
                 }
-                $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'], $where, $sup, 10);
+                $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'], $where, $sup, 25);
                 $spam_urls = [];
                 foreach ($posts_by_member as $post) {
                     $just_post_row = db_map_restrict($post, ['id', 'p_post'], ['id' => 'p_id']);
