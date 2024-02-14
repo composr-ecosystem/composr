@@ -92,6 +92,10 @@ class ___performance_test_set extends cms_test_case
 
         $url = page_link_to_url($page_link);
 
+        if (is_cli()) {
+            echo 'TESTING ' . $url . '... ';
+        }
+
         $times = [];
         for ($i = 0; $i < 3; $i++) { // We can do it multiple times so that caches are primed for final time
             $before = microtime(true);
@@ -107,6 +111,10 @@ class ___performance_test_set extends cms_test_case
 
         sort($times);
         $time = $times[0];
+
+        if (is_cli()) {
+            echo '(' . float_format($time) . ' seconds)' . "\n";
+        }
 
         $slow = ($time > $this->threshold);
         $this->page_links[$page_link] = $time;

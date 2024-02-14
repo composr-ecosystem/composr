@@ -102,8 +102,11 @@ function _cms_profile_start_for(string $identifier)
         $PROFILER_DATA[$identifier] = [];
     }
 
+    require_code('files');
+
     $at = [
         'time_start' => microtime(true),
+        'memory_start' => clean_file_size(memory_get_usage()),
         'specifics' => null,
     ];
     $PROFILER_DATA[$identifier][] = $at;
@@ -128,16 +131,20 @@ function _cms_profile_end_for(string $identifier, ?string $specifics = null)
         return; // Error, should never happen
     }
 
+    require_code('files');
+
     end($PROFILER_DATA[$identifier]);
     $key = key($PROFILER_DATA[$identifier]);
     $at = &$PROFILER_DATA[$identifier][$key];
     $time_start = $at['time_start'];
     $time_end = microtime(true);
+    $memory_end = clean_file_size(memory_get_usage());
     $at = [
-              'time_end' => $time_end,
-              'time_length' => ($time_end - $time_start),
-              'specifics' => $specifics,
-          ] + $at;
+            'time_end' => $time_end,
+            'memory_end' => $memory_end,
+            'time_length' => ($time_end - $time_start),
+            'specifics' => $specifics,
+        ] + $at;
 
     _cms_profile_log_line(_cms_profile_generate_line($identifier, $at, $key + 1));
 }
@@ -154,11 +161,14 @@ function _cms_profile_end_for(string $identifier, ?string $specifics = null)
  */
 function _cms_profile_generate_line(string $identifier, array $at, int $cnt) : string
 {
+    require_code('files');
+
     $line = $identifier;
     $line .= '(x' . strval($cnt) . ')';
     $line .= str_repeat(' ', max(1, 55 - strlen($line))) . float_to_raw_string($at['time_length'], 4) . 's';
+    $line .= '    ' . clean_file_size(memory_get_usage());
     if ($at['specifics'] !== null) {
-        $line .= '  ' . $at['specifics'];
+        $line .= '    ' . $at['specifics'];
     }
     return $line;
 }

@@ -320,6 +320,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         }
 
         // Catalogue
+        if (substr($filename, 0, 10) == 'CATALOGUE-') { // Strip prefix if it exists
+            $filename = substr($filename, 10);
+        }
+
         list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
         list($description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time) = $this->__folder_read_in_properties_catalogue($path, $properties);
@@ -474,6 +478,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
         if ($resource_type == 'catalogue') {
+            if (substr($filename, 0, 10) == 'CATALOGUE-') { // Strip prefix if it exists
+                $filename = substr($filename, 10);
+            }
+
             $label = $this->_default_property_str($properties, 'label');
             list($description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time) = $this->__folder_read_in_properties_catalogue($path, $properties);
 
@@ -513,7 +521,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 }
             }
 
-            $this->_resource_save_extend('catalogue', $name, $filename, $label, $properties);
+            $this->_resource_save_extend('catalogue', $resource_id, $filename, $label, $properties);
         } else {
             $label = $this->_default_property_str($properties, 'label');
 

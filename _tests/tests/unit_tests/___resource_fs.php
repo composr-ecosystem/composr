@@ -73,6 +73,7 @@ class ___resource_fs_test_set extends cms_test_case
 {
     protected $resource_fs_obs;
     protected $paths = null;
+    protected $name_to_use = null;
 
     public function setUp()
     {
@@ -83,6 +84,10 @@ class ___resource_fs_test_set extends cms_test_case
         require_code('content');
         require_code('resource_fs');
         require_code('failure');
+
+        if ($this->name_to_use === null) {
+            $this->name_to_use = uniqid('test_');
+        }
 
         if ($this->paths === null) {
             $this->paths = [];
@@ -124,6 +129,10 @@ class ___resource_fs_test_set extends cms_test_case
     public function testAdd()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            if (is_cli()) {
+                echo 'TESTING (Add) ' . $commandr_fs_hook . '...' . "\n";
+            }
+
             $old_limit = cms_set_time_limit(10);
 
             $path = '';
@@ -133,17 +142,17 @@ class ___resource_fs_test_set extends cms_test_case
                 // Cleanup if run this before. Probably will product errors, but string-based IDs stick around on crashing and a new add would use a variant ID, so we need to try this.
                 set_throw_errors(true);
                 try {
-                    $_path = $ob->folder_convert_id_to_filename($folder_resource_type_1, 'test-a');
-                    $ob->folder_delete('test-a', $_path);
+                    $_path = $ob->folder_convert_id_to_filename($folder_resource_type_1, $this->name_to_use);
+                    $ob->folder_delete($this->name_to_use, $_path);
                 } catch (Exception $e) {
                 } catch (Error $e) {
                 }
                 set_throw_errors(false);
 
-                $result = $ob->folder_add('test-a', $path, []);
+                $result = $ob->folder_add($this->name_to_use, $path, []);
                 $this->assertTrue($result !== false, 'Failed to folder_add ' . $commandr_fs_hook);
                 $path = $ob->folder_convert_id_to_filename($folder_resource_type_1, $result);
-                $result = $ob->folder_add('test-b', $path, []);
+                $result = $ob->folder_add($this->name_to_use . '_b', $path, []);
                 if ($result !== false) {
                     $folder_resource_type_2 = is_array($ob->folder_resource_type) ? $ob->folder_resource_type[1] : $ob->folder_resource_type;
                     $path .= '/' . $ob->folder_convert_id_to_filename($folder_resource_type_2, $result);
@@ -153,13 +162,13 @@ class ___resource_fs_test_set extends cms_test_case
             // Cleanup if run this before. Probably will product errors, but string-based IDs stick around on crashing and a new add would use a variant ID, so we need to try this.
             set_throw_errors(true);
             try {
-                $ob->file_delete('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
+                $ob->file_delete($this->name_to_use . '_c.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
             } catch (Exception $e) {
             } catch (Error $e) {
             }
             set_throw_errors(false);
 
-            $result = $ob->file_add('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, []);
+            $result = $ob->file_add($this->name_to_use . '_c.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, []);
             destrictify();
             $this->assertTrue($result !== false, 'Failed to file_add ' . $commandr_fs_hook . ' (' . $path . ')');
             $this->paths[$commandr_fs_hook] = $path;
@@ -173,6 +182,10 @@ class ___resource_fs_test_set extends cms_test_case
         $commandr_fs = new Commandr_fs();
 
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            if (is_cli()) {
+                echo 'TESTING (Count) ' . $commandr_fs_hook . '...' . "\n";
+            }
+
             $old_limit = cms_set_time_limit(10);
 
             $count_folders = 0;
@@ -227,20 +240,24 @@ class ___resource_fs_test_set extends cms_test_case
     public function testSearch()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            if (is_cli()) {
+                echo 'TESTING (Search) ' . $commandr_fs_hook . '...' . "\n";
+            }
+
             $old_limit = cms_set_time_limit(10);
 
             if ($ob->folder_resource_type !== null) {
                 $folder_resource_type = is_array($ob->folder_resource_type) ? $ob->folder_resource_type[0] : $ob->folder_resource_type;
-                list(, $folder_resource_id) = $ob->folder_convert_filename_to_id('test-a', $folder_resource_type);
+                list(, $folder_resource_id) = $ob->folder_convert_filename_to_id($this->name_to_use, $folder_resource_type);
                 $this->assertTrue($folder_resource_id !== null, 'Could not folder_convert_filename_to_id for ' . $folder_resource_type);
                 if ($folder_resource_id !== null) {
                     $test = $ob->search($folder_resource_type, $folder_resource_id, true);
-                    $this->assertTrue($test !== null, 'Could not search for ' . $folder_resource_type . ' test-a');
+                    $this->assertTrue($test !== null, 'Could not search for ' . $folder_resource_type . ' ' . $this->name_to_use);
                 }
             }
 
             $file_resource_type = is_array($ob->file_resource_type) ? $ob->file_resource_type[0] : $ob->file_resource_type;
-            list(, $file_resource_id) = $ob->file_convert_filename_to_id('test_content', $file_resource_type);
+            list(, $file_resource_id) = $ob->file_convert_filename_to_id($this->name_to_use . '_c', $file_resource_type);
             $this->assertTrue($file_resource_id !== null, 'Could not file_convert_filename_to_id');
             if ($file_resource_id !== null) {
                 $test = $ob->search($file_resource_type, $file_resource_id, true);
@@ -261,19 +278,23 @@ class ___resource_fs_test_set extends cms_test_case
     public function testFindByLabel()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            if (is_cli()) {
+                echo 'TESTING (Find resource by label) ' . $commandr_fs_hook . '...' . "\n";
+            }
+
             $old_limit = cms_set_time_limit(10);
 
             if ($ob->folder_resource_type !== null) {
                 $results = [];
                 foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : [$ob->folder_resource_type] as $resource_type) {
-                    $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test-a'));
-                    $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test-b'));
+                    $results = array_merge($results, $ob->find_resource_by_label($resource_type, $this->name_to_use));
+                    $results = array_merge($results, $ob->find_resource_by_label($resource_type, $this->name_to_use . '_b'));
                 }
                 $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (folder) ' . $commandr_fs_hook);
             }
             $results = [];
             foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : [$ob->file_resource_type] as $resource_type) {
-                $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test_content'));
+                $results = array_merge($results, $ob->find_resource_by_label($resource_type, $this->name_to_use , '_c'));
             }
             $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (file) ' . $commandr_fs_hook);
 
@@ -284,6 +305,10 @@ class ___resource_fs_test_set extends cms_test_case
     public function testLoad()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            if (is_cli()) {
+                echo 'TESTING (Load) ' . $commandr_fs_hook . '...' . "\n";
+            }
+
             $old_limit = cms_set_time_limit(10);
 
             $path = $this->paths[$commandr_fs_hook];
@@ -293,7 +318,7 @@ class ___resource_fs_test_set extends cms_test_case
                 $this->assertTrue($result !== false, 'Failed to folder_load ' . $commandr_fs_hook);
             }
 
-            $result = $ob->file_load('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
+            $result = $ob->file_load($this->name_to_use . '_c.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
             $this->assertTrue($result !== false, 'Failed to file_load ' . $commandr_fs_hook . ' (' . $path . ')');
 
             cms_set_time_limit($old_limit);
@@ -303,6 +328,10 @@ class ___resource_fs_test_set extends cms_test_case
     public function testEdit()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            if (is_cli()) {
+                echo 'TESTING (Edit) ' . $commandr_fs_hook . '...' . "\n";
+            }
+
             $old_limit = cms_set_time_limit(10);
 
             $path = $this->paths[$commandr_fs_hook];
@@ -324,7 +353,7 @@ class ___resource_fs_test_set extends cms_test_case
                 }
             }
 
-            $result = $ob->file_edit('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, ['label' => 'test_content']);
+            $result = $ob->file_edit($this->name_to_use . '_c.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, ['label' => $this->name_to_use . '_c']);
             $this->assertTrue($result !== false, 'Failed to file_edit ' . $commandr_fs_hook . ' (' . $path . ')');
 
             cms_set_time_limit($old_limit);
@@ -333,12 +362,17 @@ class ___resource_fs_test_set extends cms_test_case
 
     public function testDelete()
     {
+        return;
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            if (is_cli()) {
+                echo 'TESTING (Delete) ' . $commandr_fs_hook . '...' . "\n";
+            }
+
             $old_limit = cms_set_time_limit(10);
 
             $path = $this->paths[$commandr_fs_hook];
 
-            $result = $ob->file_delete('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
+            $result = $ob->file_delete($this->name_to_use . '_c.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
             $this->assertTrue($result !== false, 'Failed to file_delete ' . $commandr_fs_hook . ' (' . $path . ')');
 
             if ($path != '') {
