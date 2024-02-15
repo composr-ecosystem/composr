@@ -20,7 +20,7 @@
  */
 class aaa_modularisation_test_set extends cms_test_case
 {
-    protected $stricter_checking = false; // Set to true to check against non-bundled files as well
+    protected $stricter_checking = true; // Set to true to check against non-bundled and third-party files (false positives expected; review carefully!)
     public function setUp()
     {
         parent::setUp();
@@ -123,7 +123,7 @@ class aaa_modularisation_test_set extends cms_test_case
         $unput_files = []; // A map of non-existent packages to a list in them
         $ignore = IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_FLOATING | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES;
         if ($this->stricter_checking) {
-            $ignore = IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE;
+            $ignore = IGNORE_FLOATING | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_UNSHIPPED_VOLATILE;
         }
         $files = get_directory_contents(get_file_base(), '', $ignore);
         $forum_drivers = get_directory_contents(get_file_base() . '/sources/forum', '', 0, false, true, ['php']);
@@ -131,9 +131,13 @@ class aaa_modularisation_test_set extends cms_test_case
             $forum_driver = basename($forum_driver, '.php');
         }
 
-        $exceptions = array_merge(list_untouchable_third_party_directories(), [
+        $exceptions = [
             'themes/admin/images_custom', // If admin sprites are generated
-        ]);
+        ];
+
+        if (!$this->stricter_checking) {
+            $exceptions += list_untouchable_third_party_directories();
+        }
 
         foreach ($files as $path) {
             // Exceptions
