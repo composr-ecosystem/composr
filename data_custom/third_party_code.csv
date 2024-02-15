@@ -22,7 +22,7 @@ Noto fonts,,https://fonts.google.com/noto,Yes,Yes,Re-sync regularly,15th Feb 202
 HTML5-Desktop-Notifications,,https://github.com/ttsvetko/HTML5-Desktop-Notifications,Yes,Yes,Remove when browsers don't need it,N/A,3.0.0,IE9+,N/A,N/A,
 Hybridauth,,https://hybridauth.github.io/,Yes,No,Re-sync regularly,15th Feb 2024,3.11.0,PHP 5.4+,N/A,N/A,3.6.0 is the release enhanced with many fixes from Chris Graham
 jQuery,,https://jquery.com/,Yes,Yes,Re-sync regularly,15th Feb 2024,3.7.1,IE9+,N/A,N/A,
-JShrink,,https://github.com/tedious/JShrink/,Yes,Yes,Re-sync regularly,30th Mar 2020,1.3.3,PHP 5.6+,N/A,N/A,Just paste src/JShrink/Minifier.php into jsmin.php
+JShrink,,https://github.com/tedious/JShrink/,Yes,Yes,Re-sync regularly,15th Feb 2024,1.7.0,PHP 5.6+,N/A,N/A,Just paste src/JShrink/Minifier.php into jsmin.php
 JSON5,,https://github.com/json5/json5/,Yes,Yes,Re-sync regularly,12th Apr 2020,2.1.3,,N/A,N/A,Use the unpkg.com link they provide
 m-zip,,http://esurfers.com/m-zip/,No,Yes,No action,30th Mar 2020,N/A,N/A,zip,N/A,"Very heavily forked from original project, not a lot of code"
 CRC,,https://github.com/pburggraf/CRC,Yes,Yes,No action,17th May 2020,N/A,N/A,N/A,N/A,"Basic algorithm, no maintenance required"
