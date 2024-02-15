@@ -245,7 +245,7 @@ class Browser
      */
     public function setVersion($version)
     {
-        $this->_version = preg_replace('#^([^\.]*\.[^\.]*)\..*#', '$1', preg_replace('/[^0-9,.,a-z,A-Z-]/', '', $version));
+        $this->_version = preg_replace('/[^0-9,.,a-z,A-Z-]/', '', $version);
     }
 
     /**
