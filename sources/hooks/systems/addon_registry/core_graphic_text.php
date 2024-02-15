@@ -131,7 +131,6 @@ class Hook_addon_registry_core_graphic_text
             'sources/hooks/systems/addon_registry/core_graphic_text.php',
             'sources/fonts.php',
             'themes/default/css/fonts.css',
-            'data/fonts/NotoMono-Regular.ttf',
             'data/fonts/NotoSans-Bold.ttf',
             'data/fonts/NotoSans-BoldItalic.ttf',
             'data/fonts/NotoSans-Italic.ttf',

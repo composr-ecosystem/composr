@@ -42,7 +42,7 @@ function has_ttf() : bool
         return $result;
     }
 
-    if (@imagettfbbox(26.0, 0.0, get_file_base() . '/data/fonts/NotoMono-Regular.ttf', 'test') === false) {
+    if (@imagettfbbox(26.0, 0.0, get_file_base() . '/data/fonts/NotoSans-Regular.ttf', 'test') === false) {
         $result = false;
         return $result;
     }
@@ -77,7 +77,7 @@ function find_default_font(bool $mono = false) : string
         $precedence = [
             'Courier New Bold', // Microsoft (preferred, de facto standard)
             'Courier New', // Microsoft (preferred, de facto standard)
-            'NotoMono-Regular', // Google (bundled)
+            'NotoSans-Regular', // Google (bundled)
             'FreeMonoBold', // GNU FreeFont
             'FreeMono', // GNU FreeFont
             'LiberationMono-Bold', // Liberation fonts
@@ -94,7 +94,7 @@ function find_default_font(bool $mono = false) : string
             'Segoe UI', // Microsoft (preferred, de facto standard)
             'Tahoma', // Microsoft (preferred, de facto standard)
             'Verdana', // Microsoft (preferred, de facto standard)
-            'NotoMono-Regular', // Google (bundled)
+            'NotoSans-Regular', // Google (bundled)
             'FreeSans', // GNU FreeFont
             'FreeSerif', // GNU FreeFont
             'Calibri', // Microsoft

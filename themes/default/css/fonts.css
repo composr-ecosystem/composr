@@ -5,8 +5,8 @@
 
 @font-face
 {
-	font-family: NotoMonoRegular;
-	src: url('{$BASE_URL;}/data/fonts/NotoMono-Regular.ttf');
+	font-family: NotoSansRegular;
+	src: url('{$BASE_URL;}/data/fonts/NotoSans-Regular.ttf');
 }
 
 @font-face
