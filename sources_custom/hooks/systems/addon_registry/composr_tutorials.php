@@ -1414,6 +1414,8 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_wiki/index.html',
             'data_custom/images/docs/tut_wysiwyg/index.html',
             'data_custom/images/docs/codebook_standards_obscure/index.html',
+            'data_custom/images/docs/sup_adding_a_member_reputation_system/audit_karma.jpg',
+            'data_custom/images/docs/sup_adding_a_member_reputation_system/karma_bar_profile.jpg',
 
             'docs/pages/comcode_custom/EN/tut_install.txt',
             'docs/pages/comcode_custom/EN/tut_install_linux.txt',
@@ -1634,6 +1636,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'docs/pages/comcode_custom/EN/sup_youtube_channel_integration_block_addon_documentation.txt',
             'docs/pages/comcode_custom/EN/tut_intl_maintenance.txt',
             'docs/pages/comcode_custom/EN/sup_conposr.txt',
+            'docs/pages/comcode_custom/EN/sup_adding_a_member_reputation_system.txt',
 
             'docs/composr-api-template/README.md',
             'docs/composr-api-template/class.xsl',

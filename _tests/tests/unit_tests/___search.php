@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// php _tests/index.php ___search
+
 /**
  * Composr test case class (unit testing).
  */
@@ -32,8 +34,16 @@ class ___search_test_set extends cms_test_case
         require_code('lorem');
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'id', ['title' => $GLOBALS['SITE_DB']->translate_field_ref(lorem_phrase())]);
         if ($test === null) {
+            if (is_cli()) {
+                echo 'INSTALLING test content...';
+            }
+
             require_code('setupwizard');
             install_test_content();
+
+            if (is_cli()) {
+                echo ' DONE!' . "\n";
+            }
         }
 
         require_code('database_search');
@@ -121,6 +131,10 @@ class ___search_test_set extends cms_test_case
                     continue;
                 }
 
+                if (is_cli()) {
+                    echo 'TESTING ' . $test_name . ' on ' . $hook . '...';
+                }
+
                 $content = '"' . lorem_word() . '"'; // Implies the site was installed with test content, and searches in boolean mode
                 $author_id = $test_details['author_id'];
                 $search_under = $test_details['search_under'];
@@ -158,6 +172,9 @@ class ___search_test_set extends cms_test_case
 
                 $info = $ob->info();
                 if (($info === null) || ($info === false)) {
+                    if (is_cli()) {
+                        echo ' (DISABLED)' . "\n";
+                    }
                     continue;
                 }
 
@@ -167,6 +184,10 @@ class ___search_test_set extends cms_test_case
 
                 list($content_where) = build_content_where($content, false);
 
+                if (is_cli()) {
+                    echo ' (where: ' . $content_where . ')' . "\n";
+                }
+
                 $hook_results = $ob->run($content, $content_where, $where_clause, $search_under, $test_details['only_search_meta'], $test_details['only_titles'], $max, $start, $sort, $direction, $test_details['author'], $author_id, $test_details['cutoff']);
 
                 // Test that the hook did not crash (bail from the rest of this test if it did)
@@ -174,6 +195,10 @@ class ___search_test_set extends cms_test_case
                 $this->assertTrue($is_array, 'Test ' . $test_name . ', hook ' . $hook . ': it crashed!');
                 if (!$is_array) {
                     continue;
+                }
+
+                if (is_cli()) {
+                    var_dump($hook_results);
                 }
 
                 // Result set count check

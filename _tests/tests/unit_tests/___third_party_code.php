@@ -130,7 +130,7 @@ class ___third_party_code_test_set extends cms_test_case
         foreach ($this->third_party_code as $row) {
             if (($row['Intention'] != 'No action') && ($row['Last sync/review date'] != 'N/A') && ($row['Last sync/review date'] != 'TODO')) {
                 $last_date = strtotime($row['Last sync/review date']);
-                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365 * $years_between_reviews, 'Need to reconsider integration of ' . $row['Project'] . ' SDK');
+                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365 * $years_between_reviews, 'Need to review integration of ' . $row['Project'] . ' SDK');
             }
 
             $this->assertTrue(strpos($row['Last sync/review date'], 'TODO') === false, 'Review-TODO for ' . $row['Project']);
@@ -141,7 +141,7 @@ class ___third_party_code_test_set extends cms_test_case
         foreach ($this->third_party_apis as $row) {
             if (($row['Intention'] != 'No action') && ($row['Last sync/review date'] != 'N/A') && ($row['Last sync/review date'] != 'TODO')) {
                 $last_date = strtotime($row['Last sync/review date']);
-                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365 * $years_between_reviews, 'Need to reconsider integration of ' . $row['API'] . ' API');
+                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365 * $years_between_reviews, 'Need to review integration of ' . $row['API'] . ' API');
             }
 
             $this->assertTrue(strpos($row['Last sync/review date'], 'TODO') === false, 'Review-TODO for ' . $row['API']);

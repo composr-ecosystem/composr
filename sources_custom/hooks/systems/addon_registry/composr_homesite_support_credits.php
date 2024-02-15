@@ -196,6 +196,12 @@ class Hook_addon_registry_composr_homesite_support_credits
             'themes/default/images_custom/icons/tracker/hard.svg',
             'themes/default/images_custom/icons/tracker/minus.svg',
             'themes/default/images_custom/icons/tracker/plus.svg',
+            'themes/default/images_custom/icons_monochrome/tracker/easy.svg',
+            'themes/default/images_custom/icons_monochrome/tracker/hard.svg',
+            'themes/default/images_custom/icons_monochrome/tracker/minus.svg',
+            'themes/default/images_custom/icons_monochrome/tracker/plus.svg',
+
+
             'themes/default/templates_custom/BLOCK_CREDIT_EXPS_INNER.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_MANTIS_TRACKER.tpl',
             'themes/default/templates_custom/MANTIS_TRACKER.tpl',

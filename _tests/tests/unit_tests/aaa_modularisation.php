@@ -20,6 +20,7 @@
  */
 class aaa_modularisation_test_set extends cms_test_case
 {
+    protected $stricter_checking = false; // Set to true to check against non-bundled files as well
     public function setUp()
     {
         parent::setUp();
@@ -121,7 +122,9 @@ class aaa_modularisation_test_set extends cms_test_case
         require_code('third_party_code');
         $unput_files = []; // A map of non-existent packages to a list in them
         $ignore = IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_FLOATING | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES;
-        //$ignore = IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE; Uncomment for more careful testing
+        if ($this->stricter_checking) {
+            $ignore = IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE;
+        }
         $files = get_directory_contents(get_file_base(), '', $ignore);
         $forum_drivers = get_directory_contents(get_file_base() . '/sources/forum', '', 0, false, true, ['php']);
         foreach ($forum_drivers as &$forum_driver) {
