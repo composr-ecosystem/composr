@@ -27,10 +27,8 @@ class missing_colour_equations_test_set extends cms_test_case
             'install.css',
             'widget_plupload.css',
             'widget_color.css',
-            'widget_date.css',
             'widget_select2.css',
             'phpinfo.css',
-            'jquery_ui.css',
             'mediaelementplayer.css',
             'skitter.css',
         ];

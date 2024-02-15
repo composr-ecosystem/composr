@@ -20,7 +20,6 @@
 /themes/default/javascript/glide.js
 /themes/default/javascript/jquery_autocomplete.js
 /themes/default/javascript/jquery.js
-/themes/default/javascript/jquery_ui.js
 /themes/default/javascript/webfontloader.js
 /themes/default/javascript/_json5.js
 /themes/default/javascript/masonry.js
@@ -39,7 +38,6 @@
 /themes/default/javascript/sound.js
 /themes/default/javascript/toastify.js
 /themes/default/javascript/widget_color.js
-/themes/default/javascript/widget_date.js
 /themes/default/javascript/_wysiwyg_settings.js
 /themes/default/javascript/xsl_mopup.js
 /themes/*/templates_cached/*

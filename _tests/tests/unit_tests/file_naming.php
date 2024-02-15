@@ -35,7 +35,6 @@ class file_naming_test_set extends cms_test_case
                 'data_custom/webfonts',
                 'themes/default/images/realtime_rain',
                 'themes/default/images/cns_emoticons',
-                'themes/default/images/jquery_ui',
                 'themes/default/images/skitter',
                 'data/mediaelement',
                 'data/plupload',

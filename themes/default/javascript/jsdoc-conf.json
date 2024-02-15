@@ -4,7 +4,7 @@
     "source": {
         "include": ".",
         "includePattern": ".+\\.js(doc|x)?$",
-        "excludePattern": "(mediaelement-and-player|modernizr|plupload|jquery|jquery_ui|jquery_autocomplete|select2)\\.js"
+        "excludePattern": "(mediaelement-and-player|modernizr|plupload|jquery|jquery_autocomplete|select2)\\.js"
     },
 
     "opts": {

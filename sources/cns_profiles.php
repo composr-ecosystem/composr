@@ -84,9 +84,7 @@ function render_profile_tabset(object $title, int $member_id_of, ?int $member_id
         'tree_list',
         'modernizr',
         'jquery',
-        'jquery_ui',
         'widget_color',
-        'widget_date',
     ];
     foreach ($scripts as $script) {
         require_javascript($script);

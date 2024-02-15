@@ -222,8 +222,6 @@ class Hook_addon_registry_core_form_interfaces
             'sources/preview.php',
             'sources/hooks/systems/symbols/CKEDITOR_PATH.php',
             'sources/hooks/systems/symbols/COMCODE_TAGS.php',
-            'themes/default/css/widget_date.css',
-            'themes/default/javascript/widget_date.js',
             'themes/default/css/widget_color.css',
             'themes/default/javascript/widget_color.js',
             'themes/default/css/widget_select2.css',

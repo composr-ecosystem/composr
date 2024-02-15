@@ -69,7 +69,6 @@ class _web_resources_test_set extends cms_test_case
     {
         $exceptions = [
             // Won't parse
-            'jquery_ui.js',
             'modernizr.js',
             'plupload.js',
             'confluence.js',
@@ -79,7 +78,6 @@ class _web_resources_test_set extends cms_test_case
 
             // Third-party code not confirming to Composr standards
             'widget_color.js',
-            'widget_date.js',
             'select2.js',
             'skitter.js',
             'cookie_consent.js',
@@ -174,12 +172,10 @@ class _web_resources_test_set extends cms_test_case
 
             // Third-party code not confirming to Composr standards
             'widget_color.css',
-            'widget_date.css',
             'widget_select2.css',
             'unslider.css',
             'skitter.css',
             'mediaelementplayer.css',
-            'jquery_ui.css',
             'confluence.css',
             'widget_glide.css',
             'toastify.css',

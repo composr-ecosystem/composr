@@ -1,8 +1,4 @@
 {$REQUIRE_JAVASCRIPT,jquery}
-{$REQUIRE_JAVASCRIPT,jquery_ui}
-{$REQUIRE_JAVASCRIPT,widget_date}
-{$REQUIRE_CSS,jquery_ui}
-{$REQUIRE_CSS,widget_date}
 
 {$SET,date_value,{$PAD_LEFT,{YEAR},4,0}-{$PAD_LEFT,{MONTH},2,0}-{$PAD_LEFT,{DAY},2,0}}
 {$SET,date_value_min,{$?,{$IS_NON_EMPTY,{MIN_DATE_YEAR}},{$PAD_LEFT,{MIN_DATE_YEAR},4,0}-{$PAD_LEFT,{MIN_DATE_MONTH},2,0}-{$PAD_LEFT,{MIN_DATE_DAY},2,0}}}

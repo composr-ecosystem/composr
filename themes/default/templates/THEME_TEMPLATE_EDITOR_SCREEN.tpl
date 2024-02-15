@@ -1,10 +1,8 @@
 {$REQUIRE_JAVASCRIPT,jquery}
-{$REQUIRE_JAVASCRIPT,jquery_ui}
 {$REQUIRE_JAVASCRIPT,core_rich_media}
 {$REQUIRE_JAVASCRIPT,core_themeing}
 {$REQUIRE_JAVASCRIPT,core_form_interfaces}
 {$REQUIRE_JAVASCRIPT,actionlog}
-{$REQUIRE_CSS,jquery_ui}
 
 <div data-tpl="themeTemplateEditorScreen" data-tpl-params="{+START,PARAMS_JSON,THEME,ACTIVE_GUID,LIVE_PREVIEW_URL,FILES_TO_LOAD}{_*}{+END}">
 	{TITLE}

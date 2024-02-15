@@ -65,7 +65,6 @@ class css_beta_test_set extends cms_test_case
                         'mediaelementplayer.css',
                         'widget_select2.css',
                         'widget_color.css',
-                        'jquery_ui.css',
                     ])) {
                         continue;
                     }
