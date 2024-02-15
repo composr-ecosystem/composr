@@ -8,23 +8,23 @@
 namespace Hybridauth\Provider;
 
 use Hybridauth\Adapter\OAuth2;
-use Hybridauth\Adapter\AtomInterface;
+use Hybridauth\Adapter\AtomInterface; // Composr
 use Hybridauth\Data\Collection;
 use Hybridauth\Exception\UnexpectedApiResponseException;
-use Hybridauth\Exception\BadMethodCallException;
-use Hybridauth\Exception\NotImplementedException;
+use Hybridauth\Exception\BadMethodCallException; // Composr
+use Hybridauth\Exception\NotImplementedException; // Composr
 use Hybridauth\User;
-use Hybridauth\Atom\Atom;
-use Hybridauth\Atom\Enclosure;
-use Hybridauth\Atom\Author;
-use Hybridauth\Atom\AtomFeedBuilder;
-use Hybridauth\Atom\AtomHelper;
-use Hybridauth\Atom\Filter;
+use Hybridauth\Atom\Atom; // Composr
+use Hybridauth\Atom\Enclosure; // Composr
+use Hybridauth\Atom\Author; // Composr
+use Hybridauth\Atom\AtomFeedBuilder; // Composr
+use Hybridauth\Atom\AtomHelper; // Composr
+use Hybridauth\Atom\Filter; // Composr
 
 /**
  * Instagram OAuth2 provider adapter via Instagram Basic Display API.
  */
-class Instagram extends OAuth2 implements AtomInterface
+class Instagram extends OAuth2 implements AtomInterface // Composr
 {
     /**
      * {@inheritdoc}
@@ -145,9 +145,11 @@ class Instagram extends OAuth2 implements AtomInterface
 
         $this->validateApiResponse('Unable to exchange the access token');
 
+        // BEGIN Composr
         if ($accessToken = $this->getStoredData('access_token')) {
             $this->apiRequestParameters['appsecret_proof'] = hash_hmac('sha256', $accessToken, $this->clientSecret);
         }
+        // END Composr
 
         return $response;
     }
@@ -264,6 +266,10 @@ class Instagram extends OAuth2 implements AtomInterface
 
         return $data;
     }
+
+    /*
+        BEGIN Composr from here forth
+    */
 
     /**
      * {@inheritdoc}

@@ -24,11 +24,13 @@ final class Collection
      */
     public function __construct($data = null)
     {
+        // BEGIN edit for Compose
         $this->collection = new \stdClass();
 
         if (is_object($data)) {
             $this->collection = $data;
         }
+        // END edit for Composr
 
         $this->collection = (object)$data;
     }

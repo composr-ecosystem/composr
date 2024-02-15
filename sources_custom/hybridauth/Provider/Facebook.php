@@ -9,21 +9,21 @@ namespace Hybridauth\Provider;
 
 use Hybridauth\Exception\InvalidArgumentException;
 use Hybridauth\Exception\UnexpectedApiResponseException;
-use Hybridauth\Exception\HttpRequestFailedException;
-use Hybridauth\Exception\NotImplementedException;
-use Hybridauth\Exception\BadMethodCallException;
+use Hybridauth\Exception\HttpRequestFailedException; // Composr
+use Hybridauth\Exception\NotImplementedException; // Composr
+use Hybridauth\Exception\BadMethodCallException; // Composr
 use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Adapter\AtomInterface;
-use Hybridauth\Data\Collection;
-use Hybridauth\Data\Parser;
+use Hybridauth\Data\Collection; // Composr
+use Hybridauth\Data\Parser; // Composr
 use Hybridauth\User;
-use Hybridauth\Atom\Atom;
-use Hybridauth\Atom\Enclosure;
-use Hybridauth\Atom\Category;
-use Hybridauth\Atom\Author;
-use Hybridauth\Atom\AtomFeedBuilder;
-use Hybridauth\Atom\AtomHelper;
-use Hybridauth\Atom\Filter;
+use Hybridauth\Atom\Atom; // Composr
+use Hybridauth\Atom\Enclosure; // Composr
+use Hybridauth\Atom\Category; // Composr
+use Hybridauth\Atom\Author; // Composr
+use Hybridauth\Atom\AtomFeedBuilder; // Composr
+use Hybridauth\Atom\AtomHelper; // Composr
+use Hybridauth\Atom\Filter; // Composr
 
 /**
  * Facebook OAuth2 provider adapter.
@@ -56,12 +56,12 @@ use Hybridauth\Atom\Filter;
  *       echo $e->getMessage() ;
  *   }
  */
-class Facebook extends OAuth2 implements AtomInterface
+class Facebook extends OAuth2 implements AtomInterface // Composr
 {
     /**
      * {@inheritdoc}
      */
-    protected $scope = 'email';
+    protected $scope = 'email, public_profile';
 
     /**
      * {@inheritdoc}
@@ -148,9 +148,11 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $this->validateAccessTokenExchange($response);
 
+        // BEGIN Composr
         if ($accessToken = $this->getStoredData('access_token')) {
             $this->apiRequestParameters['appsecret_proof'] = hash_hmac('sha256', $accessToken, $this->clientSecret);
         }
+        // END Composr
 
         return $response;
     }
@@ -188,7 +190,7 @@ class Facebook extends OAuth2 implements AtomInterface
             'locale' => $locale,
         ]);
 
-        $data = new Collection($response);
+        $data = new Collection($response); // Composr
 
         if (!$data->exists('id')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -214,7 +216,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $userProfile->region = $data->filter('hometown')->get('name');
 
-        $userProfile->photoURL = $this->generatePhotoURL($userProfile->identifier);
+        $userProfile->photoURL = $this->generatePhotoURL($userProfile->identifier); // Composr
 
         $userProfile->emailVerified = $userProfile->email;
 
@@ -226,7 +228,7 @@ class Facebook extends OAuth2 implements AtomInterface
     }
 
     /**
-     * Generate a photo URL for a user.
+     * Composr: Generate a photo URL for a user.
      *
      * @param string $identifier
      * @param ?int $photoSize
@@ -269,17 +271,19 @@ class Facebook extends OAuth2 implements AtomInterface
      * Retrieve the user birthday.
      *
      * @param User\Profile $userProfile
-     * @param ?string $birthday (null: no birthday set)
+     * @param ?string $birthday (Composr) (null: no birthday set)
      *
      * @return \Hybridauth\User\Profile
      */
     protected function fetchBirthday(User\Profile $userProfile, $birthday)
     {
+        // BEGIN Composr
         if ($birthday === null) {
             return $userProfile;
         }
+        // END Composr
 
-        $result = (new Parser())->parseBirthday($birthday, '/');
+        $result = (new Parser())->parseBirthday($birthday);
 
         $userProfile->birthYear = (int)$result[0];
         $userProfile->birthMonth = (int)$result[1];
@@ -304,7 +308,7 @@ class Facebook extends OAuth2 implements AtomInterface
         do {
             $response = $this->apiRequest($apiUrl);
 
-            $data = new Collection($response);
+            $data = new Collection($response); // Composr
 
             if (!$data->exists('data')) {
                 throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -339,7 +343,7 @@ class Facebook extends OAuth2 implements AtomInterface
     {
         $userContact = new User\Contact();
 
-        $item = new Collection($item);
+        $item = new Collection($item); // Composr
 
         $userContact->identifier = $item->get('id');
         $userContact->displayName = $item->get('name');
@@ -347,7 +351,7 @@ class Facebook extends OAuth2 implements AtomInterface
         $userContact->profileURL = $item->exists('link')
             ?: $this->getProfileUrl($userContact->identifier);
 
-        $userContact->photoURL = $this->generatePhotoURL($userContact->identifier, 150);
+        $userContact->photoURL = $this->generatePhotoURL($userContact->identifier, 150); // Composr
 
         return $userContact;
     }
@@ -364,15 +368,17 @@ class Facebook extends OAuth2 implements AtomInterface
             return $this->setUserStatus($status);
         }
 
+        // BEGIN Composr
         list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
 
         $parameters = $tokenParameters + $status;
 
         return $this->apiRequest("{$pageId}/feed", 'POST', $parameters, $tokenHeaders);
+        // END Composr
     }
 
     /**
-     * Get a page access token.
+     * Composr: Get a page access token.
      *
      * @param string $pageId Page we need to work with
      * @param boolean $writable Pages returned need to have write access
@@ -413,10 +419,12 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function getUserPages($writable = false)
     {
+        // BEGIN Composr
         static $cache = [];
         if (isset($cache[$writable])) {
             return $cache[$writable];
         }
+        // END Composr
 
         $pages = $this->apiRequest('me/accounts');
 
@@ -425,11 +433,11 @@ class Facebook extends OAuth2 implements AtomInterface
         }
 
         // Filter user pages by CREATE_CONTENT permission.
-        $cache[$writable] = array_filter($pages->data, function ($page) {
+        $cache[$writable] = array_filter($pages->data, function ($page) { // Composr
             return in_array('CREATE_CONTENT', $page->tasks);
         });
 
-        return $cache[$writable];
+        return $cache[$writable]; // Composr
     }
 
     /**
@@ -441,7 +449,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $response = $this->apiRequest($apiUrl);
 
-        $data = new Collection($response);
+        $data = new Collection($response); // Composr
 
         if (!$data->exists('data')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -465,7 +473,7 @@ class Facebook extends OAuth2 implements AtomInterface
     {
         $userActivity = new User\Activity();
 
-        $item = new Collection($item);
+        $item = new Collection($item); // Composr
 
         $userActivity->id = $item->get('id');
         $userActivity->date = $item->get('created_time');
@@ -488,7 +496,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
             $userActivity->user->profileURL = $this->getProfileUrl($userActivity->user->identifier);
 
-            $userActivity->user->photoURL = $this->generatePhotoURL($userActivity->user->identifier, 150);
+            $userActivity->user->photoURL = $this->generatePhotoURL($userActivity->user->identifier, 150); // Composr
         }
 
         return $userActivity;
@@ -498,7 +506,6 @@ class Facebook extends OAuth2 implements AtomInterface
      * Get profile URL.
      *
      * @param int $identity User ID.
-     *
      * @return string|null NULL when identity is not provided.
      */
     protected function getProfileUrl($identity)
@@ -509,6 +516,10 @@ class Facebook extends OAuth2 implements AtomInterface
 
         return sprintf($this->profileUrlTemplate, $identity);
     }
+
+    /*
+        BEGIN Composr from here forth
+    */
 
     /**
      * {@inheritdoc}

@@ -8,17 +8,17 @@
 namespace Hybridauth\Provider;
 
 use Hybridauth\Adapter\OAuth1;
-use Hybridauth\Adapter\AtomInterface;
-use Hybridauth\Exception\NotImplementedException;
+use Hybridauth\Adapter\AtomInterface; // Composr
+use Hybridauth\Exception\NotImplementedException; // Composr
 use Hybridauth\Exception\UnexpectedApiResponseException;
-use Hybridauth\Data\Collection;
+use Hybridauth\Data\Collection; // Composr
 use Hybridauth\User;
-use Hybridauth\Atom\Atom;
-use Hybridauth\Atom\Enclosure;
-use Hybridauth\Atom\Author;
-use Hybridauth\Atom\AtomFeedBuilder;
-use Hybridauth\Atom\AtomHelper;
-use Hybridauth\Atom\Filter;
+use Hybridauth\Atom\Atom; // Composr
+use Hybridauth\Atom\Enclosure; // Composr
+use Hybridauth\Atom\Author; // Composr
+use Hybridauth\Atom\AtomFeedBuilder; // Composr
+use Hybridauth\Atom\AtomHelper; // Composr
+use Hybridauth\Atom\Filter; // Composr
 
 /**
  * Twitter OAuth1 provider adapter.
@@ -28,7 +28,7 @@ use Hybridauth\Atom\Filter;
  *
  *   $config = [
  *       'callback' => Hybridauth\HttpClient\Util::getCurrentUrl(),
- *       'keys' => [ 'key' => '', 'secret' => '' ], // OAuth1 uses 'key' not 'id'
+ *       'keys' => ['key' => '', 'secret' => ''], // OAuth1 uses 'key' not 'id'
  *       'authorize' => true // Needed to perform actions on behalf of users (see below link)
  *         // https://developer.twitter.com/en/docs/authentication/oauth-1-0a/obtaining-user-access-tokens
  *   ];
@@ -46,7 +46,7 @@ use Hybridauth\Atom\Filter;
  *       echo $e->getMessage() ;
  *   }
  */
-class Twitter extends OAuth1 implements AtomInterface
+class Twitter extends OAuth1 implements AtomInterface // Composr
 {
     /**
      * {@inheritdoc}
@@ -94,7 +94,7 @@ class Twitter extends OAuth1 implements AtomInterface
             'include_email' => $this->config->get('include_email') === false ? 'false' : 'true',
         ]);
 
-        $data = new Collection($response);
+        $data = new Collection($response); // Composr
 
         if (!$data->exists('id_str')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -112,7 +112,7 @@ class Twitter extends OAuth1 implements AtomInterface
         $userProfile->region = $data->get('location');
 
         $userProfile->profileURL = $data->exists('screen_name')
-            ? ('http://twitter.com/' . $data->get('screen_name'))
+            ? ('https://twitter.com/' . $data->get('screen_name'))
             : '';
 
         $photoSize = $this->config->get('photo_size') ?: 'original';
@@ -138,7 +138,7 @@ class Twitter extends OAuth1 implements AtomInterface
 
         $response = $this->apiRequest('friends/ids.json', 'GET', $parameters);
 
-        $data = new Collection($response);
+        $data = new Collection($response); // Composr
 
         if (!$data->exists('ids')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -179,7 +179,7 @@ class Twitter extends OAuth1 implements AtomInterface
      */
     protected function fetchUserContact($item)
     {
-        $item = new Collection($item);
+        $item = new Collection($item); // Composr
 
         $userContact = new User\Contact();
 
@@ -189,7 +189,7 @@ class Twitter extends OAuth1 implements AtomInterface
         $userContact->description = $item->get('description');
 
         $userContact->profileURL = $item->exists('screen_name')
-            ? ('http://twitter.com/' . $item->get('screen_name'))
+            ? ('https://twitter.com/' . $item->get('screen_name'))
             : '';
 
         return $userContact;
@@ -216,7 +216,9 @@ class Twitter extends OAuth1 implements AtomInterface
             $params['media_ids'] = $media->media_id;
         }
 
-        return $this->apiRequest('statuses/update.json', 'POST', $params);
+        $response = $this->apiRequest('statuses/update.json', 'POST', $params);
+
+        return $response;
     }
 
     /**
@@ -245,12 +247,11 @@ class Twitter extends OAuth1 implements AtomInterface
 
     /**
      * @param $item
-     *
      * @return User\Activity
      */
     protected function fetchUserActivity($item)
     {
-        $item = new Collection($item);
+        $item = new Collection($item); // Composr
 
         $userActivity = new User\Activity();
 
@@ -263,11 +264,15 @@ class Twitter extends OAuth1 implements AtomInterface
         $userActivity->user->photoURL = $item->filter('user')->get('profile_image_url');
 
         $userActivity->user->profileURL = $item->filter('user')->get('screen_name')
-            ? ('http://twitter.com/' . $item->filter('user')->get('screen_name'))
+            ? ('https://twitter.com/' . $item->filter('user')->get('screen_name'))
             : '';
 
         return $userActivity;
     }
+
+    /*
+        BEGIN Composr from here forth
+    */
 
     /**
      * {@inheritdoc}
