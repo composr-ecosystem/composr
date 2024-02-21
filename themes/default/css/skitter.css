@@ -13,8 +13,8 @@
 	margin-bottom: 60px
 }
 
-.skitter>a img,
-.skitter>img {
+.skitter > a img,
+.skitter > img {
 	max-width: none
 }
 
@@ -35,8 +35,8 @@
 	overflow: hidden
 }
 
-.skitter .image>a img,
-.skitter .image>img {
+.skitter .image > a img,
+.skitter .image > img {
 	width: 100%;
 	display: none
 }
@@ -746,6 +746,7 @@
 }
 
 @media (max-width: 1024px) {
+
 	.skitter .info_slide_dots,
 	.skitter .info_slide {
 		display: none
@@ -777,6 +778,7 @@
 	0% {
 		transform: rotate(0deg)
 	}
+
 	100% {
 		transform: rotate(360deg)
 	}
