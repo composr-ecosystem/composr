@@ -1,5 +1,5 @@
 /*!
- * Toastify js 1.10.0
+ * Toastify js 1.12.0
  * https://github.com/apvarun/toastify-js
  * @license MIT licensed
  *
@@ -18,7 +18,34 @@
       return new Toastify.lib.init(options);
     },
     // Library version
-    version = "1.10.0";
+    version = "1.12.0";
+
+  // Set the default global options
+  Toastify.defaults = {
+    oldestFirst: true,
+    text: "Toastify is awesome!",
+    node: undefined,
+    duration: 3000,
+    selector: undefined,
+    callback: function () {
+    },
+    destination: undefined,
+    newWindow: false,
+    close: false,
+    gravity: "toastify-top",
+    positionLeft: false,
+    position: '',
+    backgroundColor: '',
+    avatar: "",
+    className: "",
+    stopOnFocus: true,
+    onClick: function () {
+    },
+    offset: {x: 0, y: 0},
+    escapeMarkup: true,
+    ariaLive: 'polite',
+    style: {background: ''}
+  };
 
   // Defining the prototype of the object
   Toastify.lib = Toastify.prototype = {
@@ -39,29 +66,29 @@
       this.toastElement = null;
 
       // Validating the options
-      this.options.text = options.text || "Hi there!"; // Display message
-      this.options.node = options.node // Display content as node
-      this.options.duration = options.duration === 0 ? 0 : options.duration || 3000; // Display duration
-      this.options.selector = options.selector; // Parent selector
-      this.options.callback = options.callback || function() {}; // Callback after display
-      this.options.destination = options.destination; // On-click destination
-      this.options.newWindow = options.newWindow || false; // Open destination in new window
-      this.options.close = options.close || false; // Show toast close icon
-      this.options.gravity = options.gravity === "bottom" ? "toastify-bottom" : "toastify-top"; // toast position - top or bottom
-      this.options.positionLeft = options.positionLeft || false; // toast position - left or right
-      this.options.position = options.position || ''; // toast position - left or right
-      this.options.backgroundColor = options.backgroundColor; // toast background color
-      this.options.avatar = options.avatar || ""; // img element src - url or a path
-      this.options.className = options.className || ""; // additional class names for the toast
-      this.options.stopOnFocus = options.stopOnFocus === undefined? true: options.stopOnFocus; // stop timeout on focus
-      this.options.onClick = options.onClick; // Callback after click
-
-      this.options.offset = options.offset || { x: 0, y: 0 }; // toast offset
-
-      this.options.escapeMarkup = options.escapeMarkup !== undefined ? options.escapeMarkup : true;
-      this.options.style = options.style || {};
-
-      this.options.style.background = this.options.style.background || options.backgroundColor;
+      this.options.text = options.text || Toastify.defaults.text; // Display message
+      this.options.node = options.node || Toastify.defaults.node;  // Display content as node
+      this.options.duration = options.duration === 0 ? 0 : options.duration || Toastify.defaults.duration; // Display duration
+      this.options.selector = options.selector || Toastify.defaults.selector; // Parent selector
+      this.options.callback = options.callback || Toastify.defaults.callback; // Callback after display
+      this.options.destination = options.destination || Toastify.defaults.destination; // On-click destination
+      this.options.newWindow = options.newWindow || Toastify.defaults.newWindow; // Open destination in new window
+      this.options.close = options.close || Toastify.defaults.close; // Show toast close icon
+      this.options.gravity = options.gravity === "bottom" ? "toastify-bottom" : Toastify.defaults.gravity; // toast position - top or bottom
+      this.options.positionLeft = options.positionLeft || Toastify.defaults.positionLeft; // toast position - left or right
+      this.options.position = options.position || Toastify.defaults.position; // toast position - left or right
+      this.options.backgroundColor = options.backgroundColor || Toastify.defaults.backgroundColor; // toast background color
+      this.options.avatar = options.avatar || Toastify.defaults.avatar; // img element src - url or a path
+      this.options.className = options.className || Toastify.defaults.className; // additional class names for the toast
+      this.options.stopOnFocus = options.stopOnFocus === undefined ? Toastify.defaults.stopOnFocus : options.stopOnFocus; // stop timeout on focus
+      this.options.onClick = options.onClick || Toastify.defaults.onClick; // Callback after click
+      this.options.offset = options.offset || Toastify.defaults.offset; // toast offset
+      this.options.escapeMarkup = options.escapeMarkup !== undefined ? options.escapeMarkup : Toastify.defaults.escapeMarkup;
+      this.options.ariaLive = options.ariaLive || Toastify.defaults.ariaLive;
+      this.options.style = options.style || Toastify.defaults.style;
+      if(options.backgroundColor) {
+        this.options.style.background = options.backgroundColor;
+      }
 
       // Returning the current object for chaining functions
       return this;
@@ -101,8 +128,13 @@
       }
 
       // Loop through our style object and apply styles to divElement
-      for (const property in this.options.style) {
+      for (var property in this.options.style) {
         divElement.style[property] = this.options.style[property];
+      }
+
+      // Announce the toast to screen readers
+      if (this.options.ariaLive) {
+        divElement.setAttribute('aria-live', this.options.ariaLive)
       }
 
       // Adding the toast message/node
@@ -135,10 +167,11 @@
       // Adding a close icon to the toast
       if (this.options.close === true) {
         // Create a span for close element
-        var closeElement = document.createElement("span");
-        closeElement.innerHTML = "&#10006;";
-
+        var closeElement = document.createElement("button");
+        closeElement.type = "button";
+        closeElement.setAttribute("aria-label", "Close");
         closeElement.className = "toast-close";
+        closeElement.innerHTML = "&#10006;";
 
         // Triggering the removal of toast from DOM on close click
         closeElement.addEventListener(
@@ -240,7 +273,7 @@
       var rootElement;
       if (typeof this.options.selector === "string") {
         rootElement = document.getElementById(this.options.selector);
-      } else if (this.options.selector instanceof HTMLElement || this.options.selector instanceof ShadowRoot) {
+      } else if (this.options.selector instanceof HTMLElement || (typeof ShadowRoot !== 'undefined' && this.options.selector instanceof ShadowRoot)) {
         rootElement = this.options.selector;
       } else {
         rootElement = document.body;
@@ -252,7 +285,8 @@
       }
 
       // Adding the DOM element
-      rootElement.insertBefore(this.toastElement, rootElement.firstChild);
+      var elementToInsert = Toastify.defaults.oldestFirst ? rootElement.firstChild : rootElement.lastChild;
+      rootElement.insertBefore(this.toastElement, elementToInsert);
 
       // Repositioning the toasts in case multiple toasts are present
       Toastify.reposition();
