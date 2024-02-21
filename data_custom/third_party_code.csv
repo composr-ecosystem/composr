@@ -28,11 +28,11 @@ m-zip,,http://esurfers.com/m-zip/,No,Yes,No action,30th Mar 2020,N/A,N/A,zip,N/A
 CRC,,https://github.com/pburggraf/CRC,Yes,Yes,No action,21st Feb 2024,N/A,N/A,N/A,N/A,"Basic algorithm, no maintenance required"
 MantisBT,,https://github.com/mantisbt/mantisbt,Yes,No,Re-sync regularly,N/A,2.24.0,PHP 5.5.9+,N/A,N/A,"Have to diff changes to see how to get our fork back, create a .diff file (e.g. diff -ur /home/chrisgraham/Downloads/mantisbt-release-2.18.0 tracker). Remove old tracker folder and replace with MantisBT. rm -rf tracker/admin tracker/doc tracker/docbook tracker/.gitignore tracker/.mailmap tracker/tests tracker/.travis.yml; git checkout HEAD tracker/config/config_inc.php; mkdir tracker/uploads; touch tracker/uploads/index.html; cd tracker; composer install"
 Masonry,,https://github.com/desandro/masonry,No,Yes,Re-sync regularly,21st Feb 2024,4.2.2,IE10+,N/A,N/A,
-MediaElement.js,,https://github.com/mediaelement/mediaelement,Yes,Yes,Re-sync regularly,30th Mar 2020,4.2.16,IE11+,N/A,N/A,From 'build' directory. Files strewn around.
-modalwindow.js,,,No,Yes,No action,N/A,N/A,N/A,N/A,N/A,Original website dead
-Modernizr,,https://modernizr.com/,Yes,Yes,Re-sync regularly,30th Mar 2020,3.6.0,N/A,N/A,N/A,
-Osano Cookie Consent,,https://github.com/osano/cookieconsent,Yes,Yes,Re-sync regularly,22nd Jul 2021,4,IE10+,N/A,N/A,From build directory
-PDF.js,,https://github.com/mozilla/pdf.js,Yes,No,Re-sync regularly,30th Mar 2020,2.4.456,IE11+,N/A,N/A,Disable print/download buttons each time in viewer.html. Don't include web/compressed.tracemonkey-pldi-09.pdf
+MediaElement.js,,https://github.com/mediaelement/mediaelement,Yes,Yes,Re-sync regularly,21st Feb 2024,7.0.3,IE11+,N/A,N/A,From 'build' directory. Files strewn around.
+modalwindow.js,,,No,Yes,No action,N/A,N/A,N/A,N/A,N/A,Original website dead; consider replacing with another library (perhaps Bootstrap's implementation)
+Modernizr,,https://modernizr.com/,No,Yes,Re-sync regularly,21st Feb 2024,3.6.0,N/A,N/A,N/A,
+Osano Cookie Consent,,https://github.com/osano/cookieconsent,No,Yes,Re-sync regularly,21st Feb 2024,4,IE10+,N/A,N/A,From build directory
+PDF.js,,https://github.com/mozilla/pdf.js,Yes,No,Re-sync regularly,21st Feb 2024,4.0.379,IE11+,N/A,N/A,Disable print/download buttons each time in viewer.html. Don't include web/compressed.tracemonkey-pldi-09.pdf
 PHP,php,https://github.com/php,Yes,N/A,"Maintain our github fork, re-sync if our origin version is no longer meeting our minimum requirements",20th Oct 2020,8.0.0 RC2,N/A,N/A,N/A,
 php-mail-signature,,https://github.com/louisameline/php-mail-signature,Yes,Yes,Re-sync regularly,N/A,1.2,PHP 5.3+,N/A,N/A,"DKIM support. Lots of modifications, so must re-sync by hand from commits"
 Plupload,,https://github.com/moxiecode/plupload,No,Yes,Re-sync regularly,9th Apr 2020,3.1.2,N/A,N/A,N/A,"Consider ripping out and replacing with pure ""HTML5"" solution. Use dev versions of movie and plupload code into plupload.js, but set MXI_DEBUG to false. Do /s/(return|param|type) \{([\w\|]+)\}/\1 \2/"

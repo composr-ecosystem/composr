@@ -59,6 +59,7 @@ SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 
 # Exotic file types we may want
 AddType text/vtt .vtt
+AddType application/javascript .mjs # PDF viewer non-bundled addon
 
 <IfModule mod_alias.c>
 # Security - block access to .git

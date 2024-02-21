@@ -106,7 +106,7 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_description() : string
     {
-        return 'PDF media (including the Comcode media tag, Comcode attachments, and in galleries) will be displayed inline using a PDF viewer than prevents easy download or printing.';
+        return 'PDF media (including the Comcode media tag, Comcode attachments, and in galleries) will be displayed inline using a PDF viewer than prevents easy download or printing.' . "\n\n" . 'Note that in order for this addon to work properly, your server must be able to specify the application/javascript MIME type for .mjs files. This is handled for Apache automatically if you use recommended.htaccess from the software.';
     }
 
     /**
