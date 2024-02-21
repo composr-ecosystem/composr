@@ -110,6 +110,8 @@ function _cms_profile_start_for(string $identifier)
         'specifics' => null,
     ];
     $PROFILER_DATA[$identifier][] = $at;
+
+    _cms_profile_log_line(_cms_profile_generate_line($identifier, $at, null));
 }
 
 /**
@@ -154,21 +156,26 @@ function _cms_profile_end_for(string $identifier, ?string $specifics = null)
  *
  * @param  ID_TEXT $identifier Identifier
  * @param  array $at The signature for what we just profiled
- * @param  integer $cnt This will be the nth of this identifier to be logged
+ * @param  ?integer $cnt The nth time this identifier was profiled (null: we started profiling opposed to finished)
  * @return string Log line
  *
  * @ignore
  */
-function _cms_profile_generate_line(string $identifier, array $at, int $cnt) : string
+function _cms_profile_generate_line(string $identifier, array $at, ?int $cnt) : string
 {
     require_code('files');
 
     $line = $identifier;
-    $line .= '(x' . strval($cnt) . ')';
-    $line .= str_repeat(' ', max(1, 55 - strlen($line))) . float_to_raw_string($at['time_length'], 4) . 's';
-    $line .= '    ' . clean_file_size(memory_get_usage());
-    if ($at['specifics'] !== null) {
-        $line .= '    ' . $at['specifics'];
+    if ($cnt === null) {
+        $line .= '(START)';
+        $line .= str_repeat(' ', max(1, 55 - strlen($line)));
+    } else {
+        $line .= '(x' . strval($cnt) . ')';
+        $line .= str_repeat(' ', max(1, 55 - strlen($line))) . float_to_raw_string($at['time_length'], 4) . 's';
+    }
+    $line .= str_repeat(' ', max(1, 68 - strlen($line))) . clean_file_size(memory_get_usage());
+    if (!is_null($at['specifics'])) {
+        $line .= str_repeat(' ', max(1, 79 - strlen($line))) . $at['specifics'];
     }
     return $line;
 }
