@@ -51,5 +51,5 @@ Toastify,,https://github.com/apvarun/toastify-js,Yes,Yes,Re-sync regularly,21st 
 Twitter class,,https://github.com/tijsverkoyen/TwitterOAuth,No,No,No action,N/A,2.3.1,PHP 5.2+,___api_twitter,N/A,"While this library is not maintained, it's still the best for us. There's https://github.com/dg/twitter-php which has much less functionality, and https://github.com/abraham/twitteroauth which is relatively bloated. If Twitter class stops working we'll likely either maintain it ourselves in a new repository, or switch to abraham/twitteroauth."
 Unslider,,https://github.com/idiot/unslider,No,No,No action,31st Mar 2020,N/A,IE9+,N/A,N/A,"Library is not maintained, but there are some embedded jQuery libraries that needed updated for the newest jQuery - and that's now done."
 xsl_mopup.js,,,No,Yes,"Remove when Firefox doesn't need it, unlikely to happen",N/A,N/A,N/A,N/A,N/A,
-Web Font Loader,,https://github.com/typekit/webfontloader,Yes,Yes,Re-sync regularly,27th Feb 2021,1.6.28,N/A,N/A,N/A,
-php-imap2,,https://github.com/javanile/php-imap2,Yes,No,Re-sync regularly,19th Jan 2023,0.1.10,PHP 7.0+,_protocol_imap,N/A,
+Web Font Loader,,https://github.com/typekit/webfontloader,No,Yes,Re-sync regularly,21st Feb 2024,1.6.28,N/A,N/A,N/A,
+php-imap2,,https://github.com/javanile/php-imap2,Yes,No,Re-sync regularly,21st Feb 2024,0.1.10,PHP 7.0+,_protocol_imap,N/A,
