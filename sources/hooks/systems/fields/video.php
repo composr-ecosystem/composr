@@ -98,8 +98,8 @@ class Hook_fields_video
             $submitter = get_member();
         }
 
-        if (strpos($ev, ' ') !== false) {
-            list(, $thumb_url, $_width, $_height, $_length) = explode(' ', $ev, 5);
+        if (strpos($ev, '::') !== false) {
+            list(, $thumb_url, $_width, $_height, $_length) = explode('::', $ev, 5);
             $width = intval($_width);
             $height = intval($_height);
             $length = intval($_length);
@@ -113,7 +113,7 @@ class Hook_fields_video
         $width = intval(option_value_from_field_array($field, 'width', strval($width)));
         $height = intval(option_value_from_field_array($field, 'height', strval($height)));
 
-        $basic_url = preg_replace('# .*$#', '', $ev);
+        $basic_url = preg_replace('#::.*$#', '', $ev);
         if (url_is_local($basic_url)) {
             $keep = symbol_tempcode('KEEP');
             $download_url = find_script('catalogue_file') . '?file=' . urlencode(basename($basic_url)) . '&table=' . urlencode(($table === null) ? '' : $table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode(($id_field === null) ? '' : $id_field) . '&url_field=' . urlencode(($url_field === null) ? '' : $url_field);

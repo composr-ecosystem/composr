@@ -140,7 +140,7 @@ function _reorganise_content_row_upload(array $row, string $content_type, string
     $current_upload_url = $row[$upload_field];
 
     if ($content_type == 'catalogue_entry') { // FUDGE, we have meta details after the URL
-        $current_upload_url = preg_replace('/\s.*$/', '', $current_upload_url);
+        $current_upload_url = preg_replace('/::.*$/', '', $current_upload_url);
     }
 
     if (substr($current_upload_url, 0, strlen($upload_directory) + 1) != $upload_directory . '/') {
