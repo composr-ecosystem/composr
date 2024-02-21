@@ -25,9 +25,9 @@ jQuery,,https://jquery.com/,Yes,Yes,Re-sync regularly,15th Feb 2024,3.7.1,IE9+,N
 JShrink,,https://github.com/tedious/JShrink/,Yes,Yes,Re-sync regularly,15th Feb 2024,1.7.0,PHP 5.6+,N/A,N/A,Just paste src/JShrink/Minifier.php into jsmin.php
 JSON5,,https://github.com/json5/json5/,Yes,Yes,Re-sync regularly,21st Feb 2024,2.2.3,,N/A,N/A,Use the unpkg.com link they provide
 m-zip,,http://esurfers.com/m-zip/,No,Yes,No action,30th Mar 2020,N/A,N/A,zip,N/A,"Very heavily forked from original project, not a lot of code"
-CRC,,https://github.com/pburggraf/CRC,Yes,Yes,No action,17th May 2020,N/A,N/A,N/A,N/A,"Basic algorithm, no maintenance required"
+CRC,,https://github.com/pburggraf/CRC,Yes,Yes,No action,21st Feb 2024,N/A,N/A,N/A,N/A,"Basic algorithm, no maintenance required"
 MantisBT,,https://github.com/mantisbt/mantisbt,Yes,No,Re-sync regularly,N/A,2.24.0,PHP 5.5.9+,N/A,N/A,"Have to diff changes to see how to get our fork back, create a .diff file (e.g. diff -ur /home/chrisgraham/Downloads/mantisbt-release-2.18.0 tracker). Remove old tracker folder and replace with MantisBT. rm -rf tracker/admin tracker/doc tracker/docbook tracker/.gitignore tracker/.mailmap tracker/tests tracker/.travis.yml; git checkout HEAD tracker/config/config_inc.php; mkdir tracker/uploads; touch tracker/uploads/index.html; cd tracker; composer install"
-Masonry,,https://github.com/desandro/masonry,No,Yes,Re-sync regularly,9th Apr 2020,4.2.2,IE10+,N/A,N/A,
+Masonry,,https://github.com/desandro/masonry,No,Yes,Re-sync regularly,21st Feb 2024,4.2.2,IE10+,N/A,N/A,
 MediaElement.js,,https://github.com/mediaelement/mediaelement,Yes,Yes,Re-sync regularly,30th Mar 2020,4.2.16,IE11+,N/A,N/A,From 'build' directory. Files strewn around.
 modalwindow.js,,,No,Yes,No action,N/A,N/A,N/A,N/A,N/A,Original website dead
 Modernizr,,https://modernizr.com/,Yes,Yes,Re-sync regularly,30th Mar 2020,3.6.0,N/A,N/A,N/A,
