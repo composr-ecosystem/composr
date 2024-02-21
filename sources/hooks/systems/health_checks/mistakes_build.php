@@ -983,7 +983,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 continue;
             }
 
-            foreach ($patterns as $regexp => $description) {
+            foreach ($patterns as $regexp => $_description) {
                 $matches = [];
                 $result = @preg_match($regexp, $html, $matches);
                 if ($result === false) {
@@ -993,7 +993,12 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 /*if ($result != 0) { Debugging
                     @header('Content-Type: text/plain');@var_dump($matches);exit();
                 }*/
-                $this->assertTrue($result == 0, $description . ' (' . $page_link . ')');
+
+                // Description could be a language string Tempcode
+                require_code('tempcode_compiler');
+                $description = template_to_tempcode($_description);
+
+                $this->assertTrue($result == 0, static_evaluate_tempcode($description) . ' (' . $page_link . ')');
             }
         }
     }
