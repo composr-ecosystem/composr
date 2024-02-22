@@ -70,12 +70,13 @@ function scan_modularisation($only_populate_data = false) : array
         }
     }
 
-    if ($only_populate_data) {
-        global $MODULARISATION_ADDON_DATA;
-        $MODULARISATION_ADDON_DATA = $addon_data;
+    global $MODULARISATION_ADDON_DATA;
+    $MODULARISATION_ADDON_DATA = $addon_data;
 
-        require_code('caches2');
-        set_cache_entry('modularisation_addon_data', 15, serialize([]), $addon_data);
+    require_code('caches2');
+    set_cache_entry('modularisation_addon_data', 15, serialize([]), $MODULARISATION_ADDON_DATA);
+
+    if ($only_populate_data) {
         return [];
     }
 
@@ -291,13 +292,6 @@ function scan_modularisation($only_populate_data = false) : array
             $problems[] = ['MODULARISATION_ALIEN_FILE', $path, $addon_name, [$addon_name]];
         }
     }
-
-    // Prevent the need to re-scan when we run fix_modularisation
-    global $MODULARISATION_ADDON_DATA;
-    $MODULARISATION_ADDON_DATA = $addon_data;
-
-    require_code('caches2');
-    set_cache_entry('modularisation_addon_data', 15, serialize([]), $addon_data);
 
     return $problems;
 }
