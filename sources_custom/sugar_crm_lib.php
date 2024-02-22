@@ -5,7 +5,7 @@ use \Alexsoft\Curl;
 /**
  * SugarCRM REST API Class
  *
- * @package     SugarCRM
+ * @package     sugarcrm
  * @category    Libraries
  * @author  Asa Kusuma
  * @license MIT License

@@ -14,7 +14,7 @@
  */
 
 // "aaa" as we want it to run first, else files not correctly modularised won't be tested.
-// You can also run the admin_modularisation module to fix some issues via a UI; you should still run this test though.
+// You can also run the admin_modularisation module to fix some issues via a UI (and to organise addon registry files alphabetically); you should still run this test though.
 // If this test is edited, you may need to also edit the code in sources_custom/modularisation.
 
 /**
@@ -22,7 +22,8 @@
  */
 class aaa_modularisation_test_set extends cms_test_case
 {
-    protected $stricter_checking = true; // Set to true to check against non-bundled and third-party files (false positives expected; review carefully!)
+    protected $stricter_checking = false; // Set to true to check against non-bundled and third-party files (false positives expected; review carefully!)
+
     public function setUp()
     {
         parent::setUp();
