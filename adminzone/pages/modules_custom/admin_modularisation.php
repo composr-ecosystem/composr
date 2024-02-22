@@ -230,10 +230,11 @@ class Module_admin_modularisation
             }
         }
 
-        // Finalise
-        fix_modularisation_finished();
-
         $out->attach('</ul>');
+
+        // Finalise
+        $out->attach(fix_modularisation_finished());
+
         return $out;
     }
 }
