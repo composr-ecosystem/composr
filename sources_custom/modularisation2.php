@@ -105,7 +105,7 @@ function fix_modularisation_finished() : object
             }
 
             $pattern = '/public function get_file_list\(\) : array\s*{\s*return \[\n\s*(.*?)\s*\]\;\s*}/s';
-            $replacement = "public function get_file_list() : array\n    {\n        return [\n" . $file_text . "\n        ];\n    }";
+            $replacement = "public function get_file_list() : array\n    {\n        return [\n" . $file_text . "        ];\n    }";
             $hook_data_updated = preg_replace($pattern, $replacement, $hook_data);
 
             $success = cms_file_put_contents_safe(get_file_base() . '/' . $addon_file, $hook_data_updated, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
