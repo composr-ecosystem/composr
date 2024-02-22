@@ -129,16 +129,16 @@ class Hook_addon_registry_wordfilter
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/modules/admin_wordfilter.php',
+            'lang/EN/wordfilter.ini',
+            'sources/hooks/modules/admin_import_types/wordfilter.php',
+            'sources/hooks/modules/admin_setupwizard/wordfilter.php',
+            'sources/hooks/systems/actionlog/wordfilter.php',
+            'sources/hooks/systems/addon_registry/wordfilter.php',
+            'sources/hooks/systems/commandr_fs_extended_config/wordfilter.php',
+            'sources/hooks/systems/page_groupings/wordfilter.php',
             'themes/default/images/icons/menu/adminzone/security/wordfilter.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/wordfilter.svg',
-            'sources/hooks/systems/addon_registry/wordfilter.php',
-            'sources/hooks/systems/page_groupings/wordfilter.php',
-            'lang/EN/wordfilter.ini',
-            'adminzone/pages/modules/admin_wordfilter.php',
-            'sources/hooks/modules/admin_setupwizard/wordfilter.php',
-            'sources/hooks/modules/admin_import_types/wordfilter.php',
-            'sources/hooks/systems/commandr_fs_extended_config/wordfilter.php',
-            'sources/hooks/systems/actionlog/wordfilter.php',
             'themes/default/javascript/wordfilter.js',
         ];
     }

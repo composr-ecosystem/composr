@@ -128,19 +128,19 @@ class Hook_addon_registry_random_quotes
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/style/quotes.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/style/quotes.svg',
+            'adminzone/pages/comcode/EN/quotes.txt',
+            'lang/EN/quotes.ini',
+            'sources/blocks/main_quotes.php',
             'sources/hooks/blocks/main_notes/quotes.php',
             'sources/hooks/modules/admin_import_types/quotes.php',
             'sources/hooks/modules/admin_setupwizard/random_quotes.php',
             'sources/hooks/systems/addon_registry/random_quotes.php',
-            'themes/default/templates/BLOCK_MAIN_QUOTES.tpl',
-            'adminzone/pages/comcode/EN/quotes.txt',
-            'text/EN/quotes.txt',
-            'lang/EN/quotes.ini',
-            'sources/blocks/main_quotes.php',
             'sources/hooks/systems/page_groupings/quotes.php',
+            'text/EN/quotes.txt',
             'themes/default/css/random_quotes.css',
+            'themes/default/images/icons/menu/adminzone/style/quotes.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/style/quotes.svg',
+            'themes/default/templates/BLOCK_MAIN_QUOTES.tpl',
         ];
     }
 

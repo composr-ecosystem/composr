@@ -131,17 +131,17 @@ class Hook_addon_registry_content_reviews
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/content_reviews.php',
-            'sources/hooks/systems/cron/content_reviews.php',
-            'sources/hooks/blocks/main_staff_checklist/content_reviews.php',
-            'sources/hooks/systems/notifications/content_reviews.php',
             'adminzone/pages/modules/admin_content_reviews.php',
+            'lang/EN/content_reviews.ini',
             'sources/content_reviews.php',
             'sources/content_reviews2.php',
-            'lang/EN/content_reviews.ini',
-            'themes/default/templates/REVIEW_STATUS.tpl',
+            'sources/hooks/blocks/main_staff_checklist/content_reviews.php',
+            'sources/hooks/systems/addon_registry/content_reviews.php',
+            'sources/hooks/systems/cron/content_reviews.php',
+            'sources/hooks/systems/notifications/content_reviews.php',
             'themes/default/images/icons/menu/adminzone/audit/content_reviews.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/content_reviews.svg',
+            'themes/default/templates/REVIEW_STATUS.tpl',
         ];
     }
 

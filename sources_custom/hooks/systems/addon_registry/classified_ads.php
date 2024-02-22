@@ -177,23 +177,23 @@ This addon does not itself handle the transaction to purchase what is being adve
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/classified_ads.php',
             'adminzone/pages/minimodules_custom/admin_classifieds.php',
             'lang_custom/EN/classifieds.ini',
             'site/pages/modules_custom/classifieds.php',
             'sources_custom/classifieds.php',
             'sources_custom/hooks/modules/members/classifieds.php',
+            'sources_custom/hooks/systems/actionlog/classified_ads.php',
+            'sources_custom/hooks/systems/addon_registry/classified_ads.php',
             'sources_custom/hooks/systems/config/classifieds_tax_code.php',
+            'sources_custom/hooks/systems/config/max_classified_listings_per_page.php',
             'sources_custom/hooks/systems/cron/classifieds.php',
-            'sources_custom/hooks/systems/page_groupings/classifieds.php',
             'sources_custom/hooks/systems/ecommerce/classifieds.php',
             'sources_custom/hooks/systems/notifications/classifieds.php',
+            'sources_custom/hooks/systems/page_groupings/classifieds.php',
             'sources_custom/miniblocks/main_classifieds_prices.php',
-            'themes/default/templates_custom/CLASSIFIED_ADVERTS_SCREEN.tpl',
-            'themes/default/templates_custom/CLASSIFIEDS_PRICING_SCREEN.tpl',
             'themes/default/templates_custom/CLASSIFIEDS.tpl',
-            'sources_custom/hooks/systems/config/max_classified_listings_per_page.php',
-            'sources_custom/hooks/systems/actionlog/classified_ads.php',
+            'themes/default/templates_custom/CLASSIFIEDS_PRICING_SCREEN.tpl',
+            'themes/default/templates_custom/CLASSIFIED_ADVERTS_SCREEN.tpl',
         ];
     }
 }

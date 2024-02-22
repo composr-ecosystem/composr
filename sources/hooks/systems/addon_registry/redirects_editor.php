@@ -129,19 +129,19 @@ class Hook_addon_registry_redirects_editor
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/structure/redirects.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/structure/redirects.svg',
-            'sources/hooks/systems/addon_registry/redirects_editor.php',
-            'sources/hooks/systems/commandr_fs_extended_config/redirects.php',
-            'themes/default/templates/PAGE_REDIRECT_SCREEN.tpl',
-            'themes/default/templates/PAGE_REDIRECT_ROW.tpl',
-            'themes/default/templates/URL_REDIRECT_SCREEN.tpl',
-            'themes/default/templates/URL_REDIRECT_ROW.tpl',
             'adminzone/pages/modules/admin_redirects.php',
             'lang/EN/redirects.ini',
-            'themes/default/css/redirects_editor.css',
-            'themes/default/javascript/redirects_editor.js',
             'sources/hooks/systems/actionlog/redirects_editor.php',
+            'sources/hooks/systems/addon_registry/redirects_editor.php',
+            'sources/hooks/systems/commandr_fs_extended_config/redirects.php',
+            'themes/default/css/redirects_editor.css',
+            'themes/default/images/icons/menu/adminzone/structure/redirects.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/structure/redirects.svg',
+            'themes/default/javascript/redirects_editor.js',
+            'themes/default/templates/PAGE_REDIRECT_ROW.tpl',
+            'themes/default/templates/PAGE_REDIRECT_SCREEN.tpl',
+            'themes/default/templates/URL_REDIRECT_ROW.tpl',
+            'themes/default/templates/URL_REDIRECT_SCREEN.tpl',
         ];
     }
 

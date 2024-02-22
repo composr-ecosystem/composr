@@ -157,13 +157,13 @@ Set up oAuth for Google Search Console at Admin Zone > Setup > Setup API Access.
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/google_search_console.php',
             'lang_custom/EN/google_search_console.ini',
             'sources_custom/hooks/modules/admin_stats/.htaccess',
-            'sources_custom/hooks/modules/admin_stats/index.html',
             'sources_custom/hooks/modules/admin_stats/google_keywords.php',
-            'sources_custom/stats.php',
+            'sources_custom/hooks/modules/admin_stats/index.html',
+            'sources_custom/hooks/systems/addon_registry/google_search_console.php',
             'sources_custom/hooks/systems/health_checks/google_search_console.php',
+            'sources_custom/stats.php',
         ];
     }
 }

@@ -128,16 +128,16 @@ class Hook_addon_registry_cns_signatures
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/tabs/member_account/edit/signature.svg',
-            'themes/default/images/icons_monochrome/tabs/member_account/edit/signature.svg',
             'sources/hooks/systems/addon_registry/cns_signatures.php',
-            'themes/default/templates/CNS_EDIT_SIGNATURE_TAB.tpl',
             'sources/hooks/systems/attachments/cns_signature.php',
-            'sources/hooks/systems/preview/cns_signature.php',
-            'sources/hooks/systems/profiles_tabs_edit/signature.php',
             'sources/hooks/systems/config/enable_skip_sig.php',
             'sources/hooks/systems/config/enable_views_sigs_option.php',
+            'sources/hooks/systems/preview/cns_signature.php',
+            'sources/hooks/systems/profiles_tabs_edit/signature.php',
+            'themes/default/images/icons/tabs/member_account/edit/signature.svg',
+            'themes/default/images/icons_monochrome/tabs/member_account/edit/signature.svg',
             'themes/default/javascript/cns_signatures.js',
+            'themes/default/templates/CNS_EDIT_SIGNATURE_TAB.tpl',
         ];
     }
 

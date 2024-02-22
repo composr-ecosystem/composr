@@ -128,19 +128,19 @@ class Hook_addon_registry_sms
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/privacy/sms.php',
-            'sources/hooks/systems/addon_registry/sms.php',
-            'sources/sms.php',
+            'data/sms.php',
             'lang/EN/sms.ini',
+            'sources/hooks/systems/addon_registry/sms.php',
+            'sources/hooks/systems/cns_cpf_filter/sms.php',
+            'sources/hooks/systems/config/sms_api_id.php',
+            'sources/hooks/systems/config/sms_high_limit.php',
+            'sources/hooks/systems/config/sms_high_trigger_limit.php',
+            'sources/hooks/systems/config/sms_low_limit.php',
+            'sources/hooks/systems/config/sms_low_trigger_limit.php',
             'sources/hooks/systems/config/sms_password.php',
             'sources/hooks/systems/config/sms_username.php',
-            'sources/hooks/systems/config/sms_low_limit.php',
-            'sources/hooks/systems/config/sms_high_limit.php',
-            'sources/hooks/systems/config/sms_low_trigger_limit.php',
-            'sources/hooks/systems/config/sms_high_trigger_limit.php',
-            'sources/hooks/systems/config/sms_api_id.php',
-            'sources/hooks/systems/cns_cpf_filter/sms.php',
-            'data/sms.php',
+            'sources/hooks/systems/privacy/sms.php',
+            'sources/sms.php',
         ];
     }
 

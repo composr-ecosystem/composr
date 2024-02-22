@@ -170,8 +170,8 @@ RewriteRule ^/?(.*) - [L]
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/directory_protect.php',
             'data_custom/directory_protect.php',
+            'sources_custom/hooks/systems/addon_registry/directory_protect.php',
         ];
     }
 }

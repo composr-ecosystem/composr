@@ -163,24 +163,24 @@ Allows people to specify who referred them when they join your site or other con
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/referrals.php',
-            'sources_custom/hooks/systems/privacy/referrals.php',
-            'sources_custom/hooks/systems/notifications/referral.php',
-            'sources_custom/hooks/systems/notifications/referral_staff.php',
-            'text_custom/referrals.txt',
+            'adminzone/pages/comcode_custom/EN/referrals.txt',
+            'adminzone/pages/modules_custom/admin_referrals.php',
             'data_custom/referrer_report.php',
             'lang_custom/EN/referrals.ini',
             'sources_custom/cns_join.php',
-            'sources_custom/referrals.php',
-            'sources_custom/hooks/systems/ecommerce/usergroup.php',
-            'sources_custom/hooks/systems/ecommerce/cart_orders.php',
-            'sources_custom/hooks/systems/page_groupings/referrals.php',
             'sources_custom/hooks/modules/members/referrals.php',
-            'adminzone/pages/comcode_custom/EN/referrals.txt',
-            'adminzone/pages/modules_custom/admin_referrals.php',
+            'sources_custom/hooks/systems/actionlog/referrals.php',
+            'sources_custom/hooks/systems/addon_registry/referrals.php',
+            'sources_custom/hooks/systems/ecommerce/cart_orders.php',
+            'sources_custom/hooks/systems/ecommerce/usergroup.php',
+            'sources_custom/hooks/systems/notifications/referral.php',
+            'sources_custom/hooks/systems/notifications/referral_staff.php',
+            'sources_custom/hooks/systems/page_groupings/referrals.php',
+            'sources_custom/hooks/systems/privacy/referrals.php',
             'sources_custom/hooks/systems/referrals/.htaccess',
             'sources_custom/hooks/systems/referrals/index.html',
-            'sources_custom/hooks/systems/actionlog/referrals.php',
+            'sources_custom/referrals.php',
+            'text_custom/referrals.txt',
         ];
     }
 

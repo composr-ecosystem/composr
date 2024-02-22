@@ -143,13 +143,13 @@ class Hook_addon_registry_cns_member_photos
     public function get_file_list() : array
     {
         return [
+            'sources/hooks/systems/addon_registry/cns_member_photos.php',
+            'sources/hooks/systems/profiles_tabs_edit/photo.php',
             'themes/default/images/icons/tabs/member_account/edit/photo.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/photo.svg',
-            'sources/hooks/systems/addon_registry/cns_member_photos.php',
-            'uploads/cns_photos/index.html',
-            'uploads/cns_photos/.htaccess',
-            'sources/hooks/systems/profiles_tabs_edit/photo.php',
             'themes/default/templates/CNS_EDIT_PHOTO_TAB.tpl',
+            'uploads/cns_photos/.htaccess',
+            'uploads/cns_photos/index.html',
         ];
     }
 

@@ -158,10 +158,10 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=IFIl_
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/image_slider.php',
-            'sources_custom/blocks/main_image_slider.php',
-            'themes/default/templates_custom/BLOCK_MAIN_IMAGE_SLIDER.tpl',
             'lang_custom/EN/image_slider.ini',
+            'sources_custom/blocks/main_image_slider.php',
+            'sources_custom/hooks/systems/addon_registry/image_slider.php',
+            'themes/default/templates_custom/BLOCK_MAIN_IMAGE_SLIDER.tpl',
         ];
     }
 }

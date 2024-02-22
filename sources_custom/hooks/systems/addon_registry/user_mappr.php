@@ -170,18 +170,18 @@ Parameters:
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/user_mappr.php',
+            'data_custom/get_member_tooltip.php',
+            'data_custom/set_coordinates.php',
             'lang_custom/EN/google_map_users.ini',
             'sources_custom/blocks/main_google_map_users.php',
-            'themes/default/templates_custom/BLOCK_MAIN_GOOGLE_MAP_USERS.tpl',
-            'themes/default/templates_custom/FORM_SCREEN_INPUT_MAP_POSITION.tpl',
-            'sources_custom/hooks/systems/fields/float.php',
-            'data_custom/set_coordinates.php',
+            'sources_custom/hooks/systems/addon_registry/user_mappr.php',
             'sources_custom/hooks/systems/cns_cpf_filter/latitude.php',
-            'data_custom/get_member_tooltip.php',
-            'themes/default/javascript_custom/user_mappr.js',
+            'sources_custom/hooks/systems/fields/float.php',
             'sources_custom/hooks/systems/trusted_sites/user_mappr.php',
             'sources_custom/hooks/systems/upon_query/google_maps_users.php',
+            'themes/default/javascript_custom/user_mappr.js',
+            'themes/default/templates_custom/BLOCK_MAIN_GOOGLE_MAP_USERS.tpl',
+            'themes/default/templates_custom/FORM_SCREEN_INPUT_MAP_POSITION.tpl',
         ];
     }
 }

@@ -129,14 +129,14 @@ class Hook_addon_registry_robots_txt
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/robots_txt.php',
-            'data/robots.txt.template',
-            'sources/robots_txt.php',
-            'lang/EN/robots_txt.ini',
             'adminzone/pages/modules/admin_robots_txt.php',
+            'data/robots.txt.template',
+            'lang/EN/robots_txt.ini',
+            'sources/hooks/systems/actionlog/robots_txt.php',
+            'sources/hooks/systems/addon_registry/robots_txt.php',
+            'sources/robots_txt.php',
             'themes/default/javascript/robots_txt.js',
             'themes/default/templates/ROBOTS_TXT_SCREEN.tpl',
-            'sources/hooks/systems/actionlog/robots_txt.php',
         ];
     }
 

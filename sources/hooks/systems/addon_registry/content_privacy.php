@@ -129,12 +129,12 @@ class Hook_addon_registry_content_privacy
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/content_privacy.php',
-            'sources/hooks/systems/privacy/content_privacy.php',
-            'sources/content_privacy2.php',
-            'sources/content_privacy.php',
-            'sources/hooks/systems/notifications/invited_content.php',
             'lang/EN/content_privacy.ini',
+            'sources/content_privacy.php',
+            'sources/content_privacy2.php',
+            'sources/hooks/systems/addon_registry/content_privacy.php',
+            'sources/hooks/systems/notifications/invited_content.php',
+            'sources/hooks/systems/privacy/content_privacy.php',
         ];
     }
 }

@@ -133,23 +133,23 @@ class Hook_addon_registry_core_database_drivers
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/core_database_drivers.php',
-            'sources/database/shared/.htaccess',
-            'sources/database/shared/index.html',
             'sources/database/.htaccess',
             'sources/database/database.ini',
             'sources/database/ibm.php',
             'sources/database/index.html',
             'sources/database/mysql.php',
-            'sources/database/mysqli.php',
             'sources/database/mysql_pdo.php',
+            'sources/database/mysqli.php',
             'sources/database/oracle.php',
             'sources/database/postgresql.php',
-            'sources/database/xml.php',
+            'sources/database/shared/.htaccess',
+            'sources/database/shared/index.html',
             'sources/database/shared/mysql.php',
             'sources/database/shared/sqlserver.php',
             'sources/database/sqlserver.php',
             'sources/database/sqlserver_odbc.php',
+            'sources/database/xml.php',
+            'sources/hooks/systems/addon_registry/core_database_drivers.php',
             'sources/hooks/systems/cron/oracle.php',
         ];
     }

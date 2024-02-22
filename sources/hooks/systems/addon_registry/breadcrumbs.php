@@ -129,12 +129,12 @@ class Hook_addon_registry_breadcrumbs
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/structure/breadcrumbs.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/structure/breadcrumbs.svg',
-            'sources/hooks/systems/addon_registry/breadcrumbs.php',
             'data/xml_config/breadcrumbs.xml',
             'sources/breadcrumbs.php',
             'sources/hooks/systems/actionlog/breadcrumbs.php',
+            'sources/hooks/systems/addon_registry/breadcrumbs.php',
+            'themes/default/images/icons/menu/adminzone/structure/breadcrumbs.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/structure/breadcrumbs.svg',
         ];
     }
 }

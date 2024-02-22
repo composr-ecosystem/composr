@@ -130,14 +130,14 @@ class Hook_addon_registry_page_management
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/modules/admin_sitemap.php',
+            'sources/hooks/systems/addon_registry/page_management.php',
             'themes/default/images/icons/menu/adminzone/structure/sitemap/sitemap_editor.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/sitemap/sitemap_editor.svg',
-            'sources/hooks/systems/addon_registry/page_management.php',
-            'themes/default/templates/WEBSTANDARDS_CHECK_SCREEN.tpl',
-            'themes/default/templates/WEBSTANDARDS_CHECK_ERROR.tpl',
-            'adminzone/pages/modules/admin_sitemap.php',
-            'themes/default/templates/SITEMAP_EDITOR_SCREEN.tpl',
             'themes/default/javascript/page_management.js',
+            'themes/default/templates/SITEMAP_EDITOR_SCREEN.tpl',
+            'themes/default/templates/WEBSTANDARDS_CHECK_ERROR.tpl',
+            'themes/default/templates/WEBSTANDARDS_CHECK_SCREEN.tpl',
         ];
     }
 

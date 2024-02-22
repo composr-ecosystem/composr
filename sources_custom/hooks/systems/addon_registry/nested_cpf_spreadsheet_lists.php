@@ -153,10 +153,10 @@ Set Custom Profile Field list fields to have a default value like [tt]countries.
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/nested_cpf_spreadsheet_lists.php',
-            'sources_custom/nested_spreadsheet.php',
-            'sources_custom/hooks/systems/contentious_overrides/nested_cpf_spreadsheet_lists.php',
             'lang_custom/EN/nested_spreadsheet.ini',
+            'sources_custom/hooks/systems/addon_registry/nested_cpf_spreadsheet_lists.php',
+            'sources_custom/hooks/systems/contentious_overrides/nested_cpf_spreadsheet_lists.php',
+            'sources_custom/nested_spreadsheet.php',
         ];
     }
 }

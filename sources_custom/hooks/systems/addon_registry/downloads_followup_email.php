@@ -159,8 +159,8 @@ Admins can force the follow-up emails and/or private topics and prevent the memb
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/downloads_followup_email.php',
             'lang_custom/EN/downloads_followup_email.ini',
+            'sources_custom/hooks/systems/addon_registry/downloads_followup_email.php',
             'sources_custom/hooks/systems/cron/downloads_followup_email.php',
             'sources_custom/hooks/systems/notifications/downloads_followup_email.php',
             'themes/default/templates_custom/DOWNLOADS_FOLLOWUP_EMAIL.tpl',

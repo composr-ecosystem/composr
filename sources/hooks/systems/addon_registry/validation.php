@@ -129,18 +129,18 @@ class Hook_addon_registry_validation
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/nonvalidated.svg',
-            'sources/hooks/systems/addon_registry/validation.php',
-            'themes/default/templates/VALIDATION_SCREEN.tpl',
-            'themes/default/templates/VALIDATION_SECTION.tpl',
-            'themes/default/text/VALIDATION_REQUEST_MAIL.txt',
             'adminzone/pages/modules/admin_validation.php',
             'lang/EN/validation.ini',
             'sources/hooks/blocks/main_staff_checklist/validation.php',
+            'sources/hooks/systems/addon_registry/validation.php',
             'sources/hooks/systems/notifications/content_validated.php',
             'sources/hooks/systems/notifications/needs_validation.php',
             'sources/hooks/systems/page_groupings/validation.php',
+            'themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/audit/nonvalidated.svg',
+            'themes/default/templates/VALIDATION_SCREEN.tpl',
+            'themes/default/templates/VALIDATION_SECTION.tpl',
+            'themes/default/text/VALIDATION_REQUEST_MAIL.txt',
         ];
     }
 

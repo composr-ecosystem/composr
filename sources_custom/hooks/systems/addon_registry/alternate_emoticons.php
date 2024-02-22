@@ -162,6 +162,7 @@ class Hook_addon_registry_alternate_emoticons
             'themes/default/images_custom/cns_emoticons/cyborg.gif',
             'themes/default/images_custom/cns_emoticons/dry.png',
             'themes/default/images_custom/cns_emoticons/grin.png',
+            'themes/default/images_custom/cns_emoticons/index.html',
             'themes/default/images_custom/cns_emoticons/kiss.png',
             'themes/default/images_custom/cns_emoticons/lol.png',
             'themes/default/images_custom/cns_emoticons/mellow.png',
@@ -178,7 +179,6 @@ class Hook_addon_registry_alternate_emoticons
             'themes/default/images_custom/cns_emoticons/whistle.png',
             'themes/default/images_custom/cns_emoticons/wink.png',
             'themes/default/images_custom/cns_emoticons/wub.png',
-            'themes/default/images_custom/cns_emoticons/index.html',
         ];
     }
 

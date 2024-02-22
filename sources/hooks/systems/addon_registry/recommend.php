@@ -128,23 +128,23 @@ class Hook_addon_registry_recommend
     public function get_file_list() : array
     {
         return [
+            'lang/EN/recommend.ini',
+            'pages/comcode/EN/recommend_help.txt',
+            'pages/modules/recommend.php',
+            'sources/blocks/main_screen_actions.php',
+            'sources/hooks/systems/actionlog/recommend.php',
+            'sources/hooks/systems/addon_registry/recommend.php',
+            'sources/hooks/systems/config/enable_spreadsheet_recommend.php',
+            'sources/hooks/systems/config/points_RECOMMEND_SITE.php',
+            'sources/hooks/systems/page_groupings/recommend.php',
+            'sources/hooks/systems/privacy/recommend.php',
+            'sources/hooks/systems/realtime_rain/recommend.php',
+            'sources/recommend.php',
+            'themes/default/css/recommend.css',
+            'themes/default/css/screen_actions.css',
             'themes/default/images/icons/menu/site_meta/recommend.svg',
             'themes/default/images/icons_monochrome/menu/site_meta/recommend.svg',
-            'sources/hooks/systems/config/points_RECOMMEND_SITE.php',
-            'sources/hooks/systems/realtime_rain/recommend.php',
-            'sources/hooks/systems/addon_registry/recommend.php',
-            'lang/EN/recommend.ini',
-            'pages/modules/recommend.php',
-            'pages/comcode/EN/recommend_help.txt',
-            'sources/hooks/systems/actionlog/recommend.php',
-            'sources/recommend.php',
-            'sources/blocks/main_screen_actions.php',
-            'themes/default/css/screen_actions.css',
             'themes/default/templates/BLOCK_MAIN_SCREEN_ACTIONS.tpl',
-            'sources/hooks/systems/config/enable_spreadsheet_recommend.php',
-            'sources/hooks/systems/page_groupings/recommend.php',
-            'themes/default/css/recommend.css',
-            'sources/hooks/systems/privacy/recommend.php',
         ];
     }
 

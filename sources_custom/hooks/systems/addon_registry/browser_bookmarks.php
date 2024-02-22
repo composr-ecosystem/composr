@@ -158,8 +158,8 @@ Ever wished it was quicker to navigate around your site? If you\'re anything lik
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/browser_bookmarks.php',
             'adminzone/pages/minimodules_custom/admin_generate_bookmarks.php',
+            'sources_custom/hooks/systems/addon_registry/browser_bookmarks.php',
             'sources_custom/hooks/systems/page_groupings/browser_bookmarks.php',
         ];
     }

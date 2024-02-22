@@ -153,25 +153,24 @@ class Hook_addon_registry_meta_toolkit
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/meta_toolkit.php',
+            'adminzone/pages/minimodules_custom/admin_generate_adhoc_upgrade.php',
+            'adminzone/pages/minimodules_custom/sql_dump.php',
             'adminzone/pages/minimodules_custom/sql_schema_generate.php',
             'adminzone/pages/minimodules_custom/sql_schema_generate_by_addon.php',
             'adminzone/pages/minimodules_custom/sql_show_tables_by_addon.php',
-            'adminzone/pages/minimodules_custom/sql_dump.php',
-            'adminzone/pages/minimodules_custom/tar_dump.php',
             'adminzone/pages/minimodules_custom/string_scan.php',
-            'sources_custom/string_scan.php',
-            'sources_custom/hooks/systems/page_groupings/meta_toolkit.php',
-            'sources_custom/database_relations.php',
+            'adminzone/pages/minimodules_custom/tar_dump.php',
             'data_custom/cleanout.php',
-            'adminzone/pages/minimodules_custom/admin_generate_adhoc_upgrade.php',
+            'data_custom/third_party_apis.csv',
+            'data_custom/third_party_code.csv',
             'delete_alien_files.php',
             'line_count.php',
+            'sources_custom/database_relations.php',
+            'sources_custom/hooks/systems/addon_registry/meta_toolkit.php',
+            'sources_custom/hooks/systems/page_groupings/meta_toolkit.php',
             'sources_custom/install_headless.php',
-
+            'sources_custom/string_scan.php',
             'sources_custom/third_party_code.php',
-            'data_custom/third_party_code.csv',
-            'data_custom/third_party_apis.csv', // Does not include anything integration via a library/SDK
         ];
     }
 }

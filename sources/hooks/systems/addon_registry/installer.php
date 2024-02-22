@@ -134,25 +134,25 @@ class Hook_addon_registry_installer
     {
         return [
             'sources/hooks/systems/addon_registry/installer.php',
+            'themes/default/templates/INSTALLER_DONE_SOMETHING.tpl',
             'themes/default/templates/INSTALLER_FORUM_CHOICE.tpl',
             'themes/default/templates/INSTALLER_FORUM_CHOICE_VERSION.tpl',
-            'themes/default/templates/INSTALLER_STEP_4_SECTION.tpl',
-            'themes/default/templates/INSTALLER_STEP_4_SECTION_HIDE.tpl',
-            'themes/default/templates/INSTALLER_STEP_4_SECTION_OPTION.tpl',
             'themes/default/templates/INSTALLER_HTML_WRAP.tpl',
-            'themes/default/templates/INSTALLER_WARNING_LONG.tpl',
-            'themes/default/templates/INSTALLER_DONE_SOMETHING.tpl',
             'themes/default/templates/INSTALLER_INPUT_LINE.tpl',
             'themes/default/templates/INSTALLER_INPUT_PASSWORD.tpl',
             'themes/default/templates/INSTALLER_INPUT_TICK.tpl',
+            'themes/default/templates/INSTALLER_NOTICE.tpl',
             'themes/default/templates/INSTALLER_STEP_1.tpl',
+            'themes/default/templates/INSTALLER_STEP_10.tpl',
             'themes/default/templates/INSTALLER_STEP_2.tpl',
             'themes/default/templates/INSTALLER_STEP_3.tpl',
             'themes/default/templates/INSTALLER_STEP_4.tpl',
+            'themes/default/templates/INSTALLER_STEP_4_SECTION.tpl',
+            'themes/default/templates/INSTALLER_STEP_4_SECTION_HIDE.tpl',
+            'themes/default/templates/INSTALLER_STEP_4_SECTION_OPTION.tpl',
             'themes/default/templates/INSTALLER_STEP_LOG.tpl',
-            'themes/default/templates/INSTALLER_STEP_10.tpl',
             'themes/default/templates/INSTALLER_WARNING.tpl',
-            'themes/default/templates/INSTALLER_NOTICE.tpl',
+            'themes/default/templates/INSTALLER_WARNING_LONG.tpl',
         ];
     }
 

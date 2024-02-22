@@ -151,11 +151,11 @@ class Hook_addon_registry_transifex
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/transifex.php',
-            'sources_custom/transifex.php',
             'data_custom/transifex_pull.php',
             'data_custom/transifex_push.php',
             'site/pages/minimodules_custom/transifex.php',
+            'sources_custom/hooks/systems/addon_registry/transifex.php',
+            'sources_custom/transifex.php',
             'themes/default/templates_custom/TRANSIFEX_SCREEN.tpl',
         ];
     }

@@ -128,10 +128,10 @@ class Hook_addon_registry_printer_friendly_block
     public function get_file_list() : array
     {
         return [
-            'themes/default/templates/BLOCK_SIDE_PRINTER_FRIENDLY.tpl',
             'sources/blocks/side_printer_friendly.php',
-            'sources/hooks/systems/addon_registry/printer_friendly_block.php',
             'sources/hooks/modules/admin_setupwizard/printer_friendly_block.php',
+            'sources/hooks/systems/addon_registry/printer_friendly_block.php',
+            'themes/default/templates/BLOCK_SIDE_PRINTER_FRIENDLY.tpl',
         ];
     }
 

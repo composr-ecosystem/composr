@@ -159,22 +159,22 @@ Note that this addon only affects galleries at the moment, and it requires the "
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/workflows.php',
-            'sources_custom/hooks/systems/privacy/workflows.php',
-            'sources_custom/hooks/systems/notifications/workflow_step.php',
-            'lang_custom/EN/workflows.ini',
-            'cms/pages/modules_custom/cms_galleries.php',
+            'adminzone/pages/modules_custom/admin_validation.php',
             'adminzone/pages/modules_custom/admin_workflow.php',
+            'cms/pages/modules_custom/cms_galleries.php',
+            'lang_custom/EN/workflows.ini',
+            'site/pages/modules_custom/galleries.php',
+            'sources_custom/galleries2.php',
+            'sources_custom/hooks/systems/actionlog/workflows.php',
+            'sources_custom/hooks/systems/addon_registry/workflows.php',
             'sources_custom/hooks/systems/content_meta_aware/image.php',
             'sources_custom/hooks/systems/content_meta_aware/video.php',
+            'sources_custom/hooks/systems/notifications/workflow_step.php',
+            'sources_custom/hooks/systems/page_groupings/workflows.php',
+            'sources_custom/hooks/systems/privacy/workflows.php',
             'sources_custom/workflows.php',
             'sources_custom/workflows2.php',
-            'sources_custom/galleries2.php',
-            'sources_custom/hooks/systems/page_groupings/workflows.php',
-            'site/pages/modules_custom/galleries.php',
-            'adminzone/pages/modules_custom/admin_validation.php',
             'themes/default/templates_custom/WORKFLOW_BOX.tpl',
-            'sources_custom/hooks/systems/actionlog/workflows.php',
         ];
     }
 }

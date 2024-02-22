@@ -156,12 +156,12 @@ Includes the code for pulling translations from {$IS_MAINTAINED,transifex,Transi
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/addon_publish.php',
-            'adminzone/pages/minimodules_custom/publish_addons_as_downloads.php',
             'adminzone/pages/minimodules_custom/build_addons.php',
-            'sources_custom/hooks/systems/page_groupings/addon_publish.php',
-            'sources_custom/addon_publish.php',
+            'adminzone/pages/minimodules_custom/publish_addons_as_downloads.php',
             'data_custom/change_addon_bundling.php',
+            'sources_custom/addon_publish.php',
+            'sources_custom/hooks/systems/addon_registry/addon_publish.php',
+            'sources_custom/hooks/systems/page_groupings/addon_publish.php',
         ];
     }
 }

@@ -164,23 +164,23 @@ If the [tt]delay[/tt] is set to blank or 0, it will disable automatic (timed) tr
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/unslider.php',
-            'sources_custom/blocks/main_unslider.php',
-            'themes/default/css_custom/unslider.css',
-            'themes/default/templates_custom/BLOCK_MAIN_UNSLIDER.tpl',
-            'themes/default/javascript_custom/unslider.js',
+            'lang_custom/EN/unslider.ini',
             'pages/comcode_custom/EN/_unslider_slide1.txt',
             'pages/comcode_custom/EN/_unslider_slide2.txt',
             'pages/comcode_custom/EN/_unslider_slide3.txt',
             'pages/comcode_custom/EN/_unslider_slide4.txt',
             'pages/comcode_custom/EN/_unslider_slide5.txt',
             'pages/comcode_custom/EN/_unslider_slide6.txt',
-            'lang_custom/EN/unslider.ini',
+            'sources_custom/blocks/main_unslider.php',
+            'sources_custom/hooks/systems/addon_registry/unslider.php',
+            'themes/default/css_custom/unslider.css',
             'themes/default/images_custom/unslider_backgrounds/index.html',
             'themes/default/images_custom/unslider_backgrounds/shop.jpg',
             'themes/default/images_custom/unslider_backgrounds/subway.jpg',
             'themes/default/images_custom/unslider_backgrounds/sunset.jpg',
             'themes/default/images_custom/unslider_backgrounds/wood.jpg',
+            'themes/default/javascript_custom/unslider.js',
+            'themes/default/templates_custom/BLOCK_MAIN_UNSLIDER.tpl',
         ];
     }
 }

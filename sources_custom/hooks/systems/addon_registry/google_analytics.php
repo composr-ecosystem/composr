@@ -169,19 +169,19 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/google_analytics.php',
             'lang_custom/EN/google_analytics.ini',
             'sources_custom/google_analytics.php',
-            'sources_custom/hooks/modules/admin_stats/google_analytics.php',
             'sources_custom/hooks/modules/admin_stats/.htaccess',
+            'sources_custom/hooks/modules/admin_stats/google_analytics.php',
             'sources_custom/hooks/modules/admin_stats/index.html',
+            'sources_custom/hooks/systems/addon_registry/google_analytics.php',
+            'sources_custom/hooks/systems/config/ga_property_view_id.php',
+            'sources_custom/hooks/systems/trusted_sites/google_analytics.php',
             'sources_custom/miniblocks/main_staff_google_analytics.php',
+            'themes/default/javascript_custom/google_analytics.js',
             'themes/default/templates_custom/GOOGLE_ANALYTICS.tpl',
             'themes/default/templates_custom/GOOGLE_ANALYTICS_TABS.tpl',
             'themes/default/templates_custom/GOOGLE_TIME_PERIODS.tpl',
-            'themes/default/javascript_custom/google_analytics.js',
-            'sources_custom/hooks/systems/config/ga_property_view_id.php',
-            'sources_custom/hooks/systems/trusted_sites/google_analytics.php',
         ];
     }
 }

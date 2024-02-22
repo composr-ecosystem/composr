@@ -165,16 +165,16 @@ Note that it is a requirement that your [tt]_google_search[/tt] page is in a zon
     public function get_file_list() : array
     {
         return [
+            'lang_custom/EN/google_search.ini',
+            'pages/comcode_custom/EN/_google_search.txt',
+            'sources_custom/blocks/main_google_results.php',
+            'sources_custom/blocks/side_google_search.php',
             'sources_custom/hooks/systems/addon_registry/google_search.php',
             'sources_custom/hooks/systems/trusted_sites/google_search.php',
-            'lang_custom/EN/google_search.ini',
-            'sources_custom/blocks/side_google_search.php',
-            'sources_custom/blocks/main_google_results.php',
-            'themes/default/templates_custom/BLOCK_SIDE_GOOGLE_SEARCH.tpl',
-            'themes/default/templates_custom/BLOCK_MAIN_GOOGLE_SEARCH_RESULTS.tpl',
             'themes/default/css_custom/google_search.css',
-            'pages/comcode_custom/EN/_google_search.txt',
             'themes/default/javascript_custom/google_search.js',
+            'themes/default/templates_custom/BLOCK_MAIN_GOOGLE_SEARCH_RESULTS.tpl',
+            'themes/default/templates_custom/BLOCK_SIDE_GOOGLE_SEARCH.tpl',
         ];
     }
 }

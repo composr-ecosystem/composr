@@ -126,12 +126,8 @@ class Hook_addon_registry_failover
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/failover.php',
             'data/failover_script.php',
-
-            // These aren't bundled. Make empty files if you want them
-            //'data_custom/failover_rewritemap.txt',
-            //'data_custom/failover_rewritemap__mobile.txt',
+            'sources/hooks/systems/addon_registry/failover.php',
         ];
     }
 }

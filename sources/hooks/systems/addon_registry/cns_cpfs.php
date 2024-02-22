@@ -143,22 +143,22 @@ class Hook_addon_registry_cns_cpfs
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/tools/users/custom_profile_fields.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/tools/users/custom_profile_fields.svg',
-            'sources/hooks/systems/resource_meta_aware/cpf.php',
             'adminzone/pages/modules/admin_cns_customprofilefields.php',
-            'themes/default/templates/CNS_CPF_STATS_SCREEN.tpl',
-            'uploads/cns_cpf_upload/index.html',
-            'uploads/cns_cpf_upload/.htaccess',
-            'themes/default/templates/CNS_CPF_PERMISSIONS_TAB.tpl',
             'lang/EN/cns_privacy.ini',
-            'sources/hooks/systems/profiles_tabs_edit/privacy.php',
+            'sources/hooks/systems/actionlog/cns_cpfs.php',
             'sources/hooks/systems/addon_registry/cns_cpfs.php',
             'sources/hooks/systems/commandr_fs/cpfs.php',
             'sources/hooks/systems/commandr_fs_extended_member/cpf_perms.php',
-            'themes/default/javascript/cns_cpfs.js',
-            'sources/hooks/systems/actionlog/cns_cpfs.php',
             'sources/hooks/systems/page_groupings/cns_cpfs.php',
+            'sources/hooks/systems/profiles_tabs_edit/privacy.php',
+            'sources/hooks/systems/resource_meta_aware/cpf.php',
+            'themes/default/images/icons/menu/adminzone/tools/users/custom_profile_fields.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/tools/users/custom_profile_fields.svg',
+            'themes/default/javascript/cns_cpfs.js',
+            'themes/default/templates/CNS_CPF_PERMISSIONS_TAB.tpl',
+            'themes/default/templates/CNS_CPF_STATS_SCREEN.tpl',
+            'uploads/cns_cpf_upload/.htaccess',
+            'uploads/cns_cpf_upload/index.html',
         ];
     }
 

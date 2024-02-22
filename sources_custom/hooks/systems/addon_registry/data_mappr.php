@@ -186,18 +186,18 @@ Coordinates of the Google map centre point and zoom level are configurable. You 
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/data_mappr.php',
             'lang_custom/EN/google_map.ini',
-            'sources_custom/hooks/systems/trusted_sites/data_mappr.php',
             'sources_custom/blocks/main_google_map.php',
-            'themes/default/templates_custom/BLOCK_MAIN_GOOGLE_MAP.tpl',
-            'sources_custom/hooks/systems/fields/float.php',
-            'themes/default/templates_custom/FORM_SCREEN_INPUT_MAP_POSITION.tpl',
-            'themes/default/images_custom/maps/star_highlight.svg',
-            'themes/default/images_custom/maps/index.html',
             'sources_custom/catalogues2.php',
+            'sources_custom/hooks/systems/addon_registry/data_mappr.php',
+            'sources_custom/hooks/systems/fields/float.php',
+            'sources_custom/hooks/systems/trusted_sites/data_mappr.php',
             'sources_custom/hooks/systems/upon_query/google_maps.php',
+            'themes/default/images_custom/maps/index.html',
+            'themes/default/images_custom/maps/star_highlight.svg',
             'themes/default/javascript_custom/data_mappr.js',
+            'themes/default/templates_custom/BLOCK_MAIN_GOOGLE_MAP.tpl',
+            'themes/default/templates_custom/FORM_SCREEN_INPUT_MAP_POSITION.tpl',
         ];
     }
 }

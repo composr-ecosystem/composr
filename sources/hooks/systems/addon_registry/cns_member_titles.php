@@ -128,11 +128,11 @@ class Hook_addon_registry_cns_member_titles
     public function get_file_list() : array
     {
         return [
+            'sources/hooks/systems/addon_registry/cns_member_titles.php',
+            'sources/hooks/systems/config/max_member_title_length.php',
+            'sources/hooks/systems/profiles_tabs_edit/title.php',
             'themes/default/images/icons/tabs/member_account/edit/title.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/title.svg',
-            'sources/hooks/systems/addon_registry/cns_member_titles.php',
-            'sources/hooks/systems/profiles_tabs_edit/title.php',
-            'sources/hooks/systems/config/max_member_title_length.php',
         ];
     }
 }

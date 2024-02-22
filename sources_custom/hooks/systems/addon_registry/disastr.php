@@ -166,19 +166,19 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/disastr.php',
-            'sources_custom/hooks/systems/privacy/disastr.php',
-            'sources_custom/hooks/systems/notifications/got_disease.php',
             'adminzone/pages/modules_custom/admin_disastr.php',
-            'lang_custom/EN/disastr.ini',
-            'sources_custom/hooks/systems/ecommerce/disastr.php',
-            'sources_custom/hooks/systems/cron/disastr.php',
-            'sources_custom/hooks/systems/page_groupings/disastr.php',
-            'uploads/disastr_addon/index.html',
-            'data_custom/images/disastr/hazard.jpg', // LEGACY
+            'data_custom/images/disastr/hazard.jpg',
             'data_custom/images/disastr/hazard.png',
             'data_custom/images/disastr/index.html',
+            'lang_custom/EN/disastr.ini',
             'sources_custom/hooks/systems/actionlog/disastr.php',
+            'sources_custom/hooks/systems/addon_registry/disastr.php',
+            'sources_custom/hooks/systems/cron/disastr.php',
+            'sources_custom/hooks/systems/ecommerce/disastr.php',
+            'sources_custom/hooks/systems/notifications/got_disease.php',
+            'sources_custom/hooks/systems/page_groupings/disastr.php',
+            'sources_custom/hooks/systems/privacy/disastr.php',
+            'uploads/disastr_addon/index.html',
         ];
     }
 }

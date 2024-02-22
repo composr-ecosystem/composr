@@ -176,64 +176,46 @@ Karma and its API can be further extended for additional functionality. For exam
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/modules_custom/admin_karma.php',
+            'lang_custom/EN/karma.ini',
+            'sources_custom/blocks/main_karma_graph.php',
+            'sources_custom/hooks/systems/actionlog/karma.php',
             'sources_custom/hooks/systems/addon_registry/karma.php',
-
-            // Config hooks
-            'sources_custom/hooks/systems/config/karma_influence_use_voting_power.php',
-            'sources_custom/hooks/systems/config/karma_influence_account_age.php',
-            'sources_custom/hooks/systems/config/karma_influence_forum_posts.php',
-            'sources_custom/hooks/systems/config/karma_influence_lifetime_points.php',
-            'sources_custom/hooks/systems/config/karma_influence_points.php',
-            'sources_custom/hooks/systems/config/karma_influence_karma.php',
-            'sources_custom/hooks/systems/config/karma_influence_additional.php',
-            'sources_custom/hooks/systems/config/karma_influence_warnings.php',
-            'sources_custom/hooks/systems/config/karma_influence_warnings_amount.php',
-            'sources_custom/hooks/systems/config/karma_influence_multiplier.php',
-            'sources_custom/hooks/systems/config/karma_awards.php',
-            'sources_custom/hooks/systems/config/karma_likes.php',
-            'sources_custom/hooks/systems/config/karma_dislikes.php',
-            'sources_custom/hooks/systems/config/karma_points.php',
-            'sources_custom/hooks/systems/config/karma_points_idolisr.php',
-            'sources_custom/hooks/systems/config/karma_voting.php',
-            'sources_custom/hooks/systems/config/karma_giftr.php',
-            'sources_custom/hooks/systems/config/karma_threshold.php',
-
-            // TODO: not yet implemented
-            'sources_custom/hooks/systems/config/karma_member_comments.php',
-            'sources_custom/hooks/systems/config/karma_ecommerce.php',
-
-            // Compliance hooks
-            'sources_custom/hooks/systems/privacy/karma.php',
-
-            // Warnings hooks
+            'sources_custom/hooks/systems/cns_cpf_filter/karma.php',
             'sources_custom/hooks/systems/cns_warnings/karma.php',
             'sources_custom/hooks/systems/cns_warnings/karma_logs.php',
-
-            // Commandr hooks
             'sources_custom/hooks/systems/commandr_commands/add_karma.php',
             'sources_custom/hooks/systems/commandr_commands/karma.php',
             'sources_custom/hooks/systems/commandr_commands/karmic_influence.php',
-
-            // Other hooks
-            'sources_custom/hooks/systems/actionlog/karma.php',
-            'sources_custom/hooks/systems/cns_cpf_filter/karma.php',
-            'sources_custom/hooks/systems/symbols/KARMA.php',
-            'sources_custom/hooks/systems/points_transact/karma.php',
+            'sources_custom/hooks/systems/config/karma_awards.php',
+            'sources_custom/hooks/systems/config/karma_dislikes.php',
+            'sources_custom/hooks/systems/config/karma_ecommerce.php',
+            'sources_custom/hooks/systems/config/karma_giftr.php',
+            'sources_custom/hooks/systems/config/karma_influence_account_age.php',
+            'sources_custom/hooks/systems/config/karma_influence_additional.php',
+            'sources_custom/hooks/systems/config/karma_influence_forum_posts.php',
+            'sources_custom/hooks/systems/config/karma_influence_karma.php',
+            'sources_custom/hooks/systems/config/karma_influence_lifetime_points.php',
+            'sources_custom/hooks/systems/config/karma_influence_multiplier.php',
+            'sources_custom/hooks/systems/config/karma_influence_points.php',
+            'sources_custom/hooks/systems/config/karma_influence_use_voting_power.php',
+            'sources_custom/hooks/systems/config/karma_influence_warnings.php',
+            'sources_custom/hooks/systems/config/karma_influence_warnings_amount.php',
+            'sources_custom/hooks/systems/config/karma_likes.php',
+            'sources_custom/hooks/systems/config/karma_member_comments.php',
+            'sources_custom/hooks/systems/config/karma_points.php',
+            'sources_custom/hooks/systems/config/karma_points_idolisr.php',
+            'sources_custom/hooks/systems/config/karma_threshold.php',
+            'sources_custom/hooks/systems/config/karma_voting.php',
+            'sources_custom/hooks/systems/contentious_overrides/karma.php',
             'sources_custom/hooks/systems/page_groupings/karma.php',
-
-            // Source files / API
-            'lang_custom/EN/karma.ini',
+            'sources_custom/hooks/systems/points_transact/karma.php',
+            'sources_custom/hooks/systems/privacy/karma.php',
+            'sources_custom/hooks/systems/symbols/KARMA.php',
             'sources_custom/karma.php',
             'sources_custom/karma2.php',
-
-            // Overrides
-            'sources_custom/hooks/systems/contentious_overrides/karma.php',
-
-            // Templates / MV
-            'adminzone/pages/modules_custom/admin_karma.php',
-            'sources_custom/blocks/main_karma_graph.php',
-            'themes/default/templates_custom/BLOCK_MAIN_KARMA_GRAPH.tpl',
             'themes/default/css_custom/karma.css',
+            'themes/default/templates_custom/BLOCK_MAIN_KARMA_GRAPH.tpl',
         ];
     }
 }

@@ -131,18 +131,18 @@ class Hook_addon_registry_aggregate_types
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/structure/aggregate_types.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/structure/aggregate_types.svg',
-            'sources/hooks/systems/addon_registry/aggregate_types.php',
-            'sources/hooks/systems/resource_meta_aware/aggregate_type_instance.php',
-            'lang/EN/aggregate_types.ini',
             'adminzone/pages/modules/admin_aggregate_types.php',
             'data/xml_config/aggregate_types.xml',
-            'sources/hooks/systems/commandr_fs/aggregate_type_instances.php',
+            'lang/EN/aggregate_types.ini',
             'sources/aggregate_types.php',
             'sources/hooks/modules/admin_import_types/aggregate_types.php',
-            'sources/hooks/systems/page_groupings/aggregate_types.php',
             'sources/hooks/systems/actionlog/aggregate_types.php',
+            'sources/hooks/systems/addon_registry/aggregate_types.php',
+            'sources/hooks/systems/commandr_fs/aggregate_type_instances.php',
+            'sources/hooks/systems/page_groupings/aggregate_types.php',
+            'sources/hooks/systems/resource_meta_aware/aggregate_type_instance.php',
+            'themes/default/images/icons/menu/adminzone/structure/aggregate_types.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/structure/aggregate_types.svg',
         ];
     }
 }

@@ -151,9 +151,9 @@ class Hook_addon_registry_multi_domain_login
     public function get_file_list() : array
     {
         return [
+            'data_custom/multi_domain_login.php',
             'sources_custom/hooks/systems/addon_registry/multi_domain_login.php',
             'sources_custom/hooks/systems/startup/multi_domain_login.php',
-            'data_custom/multi_domain_login.php',
         ];
     }
 }

@@ -178,6 +178,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
     public function get_file_list() : array
     {
         return [
+            'lang_custom/EN/facebook.ini',
             'sources_custom/blocks/main_facebook_comments.php',
             'sources_custom/blocks/main_facebook_like.php',
             'sources_custom/blocks/main_facebook_page.php',
@@ -186,17 +187,15 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
             'sources_custom/hooks/systems/config/facebook_appid.php',
             'sources_custom/hooks/systems/config/facebook_secret_code.php',
             'sources_custom/hooks/systems/config/facebook_uid.php',
-            'lang_custom/EN/facebook.ini',
+            'sources_custom/hooks/systems/contentious_overrides/facebook_support.php',
+            'sources_custom/hooks/systems/hybridauth/facebook.php',
+            'sources_custom/hooks/systems/startup/facebook.php',
+            'sources_custom/hooks/systems/trusted_sites/facebook_support.php',
+            'themes/default/javascript_custom/facebook_support.js',
             'themes/default/templates_custom/BLOCK_MAIN_FACEBOOK_COMMENTS.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_FACEBOOK_LIKE.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_FACEBOOK_PAGE.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_SCREEN_ACTIONS.tpl',
-            'sources_custom/hooks/systems/hybridauth/facebook.php',
-            'sources_custom/hooks/systems/contentious_overrides/facebook_support.php',
-            'sources_custom/hooks/systems/trusted_sites/facebook_support.php',
-
-            'themes/default/javascript_custom/facebook_support.js',
-            'sources_custom/hooks/systems/startup/facebook.php',
             'themes/default/templates_custom/FACEBOOK_FOOTER.tpl',
         ];
     }

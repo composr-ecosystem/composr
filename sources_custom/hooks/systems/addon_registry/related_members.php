@@ -155,9 +155,9 @@ The particular CPF used is defined by the [tt]RELATED_CPF[/tt] language string (
     public function get_file_list() : array
     {
         return [
+            'lang_custom/EN/related.ini',
             'sources_custom/hooks/systems/addon_registry/related_members.php',
             'sources_custom/hooks/systems/profiles_tabs/related.php',
-            'lang_custom/EN/related.ini',
         ];
     }
 }

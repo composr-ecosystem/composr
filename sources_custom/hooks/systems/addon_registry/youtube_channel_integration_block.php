@@ -151,17 +151,17 @@ You must first configure Google/YouTube API access:
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/youtube_channel_integration_block.php',
             'lang_custom/EN/youtube_channel.ini',
             'sources_custom/blocks/youtube_channel.php',
+            'sources_custom/hooks/systems/addon_registry/youtube_channel_integration_block.php',
+            'sources_custom/hooks/systems/config/youtube_channel_block_update_time.php',
+            'themes/default/images_custom/youtube_channel_integration/index.html',
             'themes/default/images_custom/youtube_channel_integration/star_empty.gif',
             'themes/default/images_custom/youtube_channel_integration/star_full.gif',
             'themes/default/images_custom/youtube_channel_integration/star_half.gif',
             'themes/default/images_custom/youtube_channel_integration/youtube_channel_integration_icon.png',
-            'themes/default/images_custom/youtube_channel_integration/index.html',
             'themes/default/templates_custom/BLOCK_YOUTUBE_CHANNEL.tpl',
             'themes/default/templates_custom/BLOCK_YOUTUBE_CHANNEL_VIDEO.tpl',
-            'sources_custom/hooks/systems/config/youtube_channel_block_update_time.php',
         ];
     }
 

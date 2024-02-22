@@ -173,19 +173,17 @@ You can add more banners through this section, just make sure they are 120px &ti
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/charity_banners.php',
-            'sources_custom/blocks/main_buttons.php',
-            'data_custom/images/causes/index.html',
+            'data_custom/images/causes/GNU.gif',
             'data_custom/images/causes/amnestyinternational.gif',
             'data_custom/images/causes/bhf.gif',
             'data_custom/images/causes/cancerresearch.gif',
             'data_custom/images/causes/cnd.gif',
+            'data_custom/images/causes/composr.gif',
             'data_custom/images/causes/firefox.gif',
-            'data_custom/images/causes/GNU.gif',
             'data_custom/images/causes/greenpeace.gif',
             'data_custom/images/causes/helptheaged.gif',
+            'data_custom/images/causes/index.html',
             'data_custom/images/causes/nspcc.gif',
-            'data_custom/images/causes/composr.gif',
             'data_custom/images/causes/oxfam.gif',
             'data_custom/images/causes/peta.gif',
             'data_custom/images/causes/rspca.gif',
@@ -193,10 +191,12 @@ You can add more banners through this section, just make sure they are 120px &ti
             'data_custom/images/causes/w3c-css.gif',
             'data_custom/images/causes/w3c-xhtml.gif',
             'data_custom/images/causes/wwf.gif',
+            'lang_custom/EN/buttons.ini',
+            'sources_custom/banners3.php',
+            'sources_custom/blocks/main_buttons.php',
+            'sources_custom/hooks/systems/addon_registry/charity_banners.php',
             'themes/default/templates_custom/BLOCK_MAIN_BANNER_WAVE_BWRAP_CUSTOM.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_BUTTONS.tpl',
-            'sources_custom/banners3.php',
-            'lang_custom/EN/buttons.ini',
         ];
     }
 }

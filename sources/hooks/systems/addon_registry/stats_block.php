@@ -128,6 +128,12 @@ class Hook_addon_registry_stats_block
     public function get_file_list() : array
     {
         return [
+            'sources/blocks/side_stats.php',
+            'sources/hooks/blocks/side_stats/.htaccess',
+            'sources/hooks/blocks/side_stats/forum.php',
+            'sources/hooks/blocks/side_stats/index.html',
+            'sources/hooks/modules/admin_setupwizard/stats_block.php',
+            'sources/hooks/systems/addon_registry/stats_block.php',
             'sources/hooks/systems/config/activity_show_stats_count_page_views_this_month.php',
             'sources/hooks/systems/config/activity_show_stats_count_page_views_this_week.php',
             'sources/hooks/systems/config/activity_show_stats_count_page_views_today.php',
@@ -144,17 +150,11 @@ class Hook_addon_registry_stats_block
             'sources/hooks/systems/config/forum_show_stats_count_posts.php',
             'sources/hooks/systems/config/forum_show_stats_count_posts_today.php',
             'sources/hooks/systems/config/forum_show_stats_count_topics.php',
-            'sources/hooks/systems/addon_registry/stats_block.php',
-            'sources/hooks/modules/admin_setupwizard/stats_block.php',
+            'sources_custom/hooks/blocks/side_stats/.htaccess',
+            'sources_custom/hooks/blocks/side_stats/index.html',
+            'themes/default/templates/BLOCK_SIDE_STATS.tpl',
             'themes/default/templates/BLOCK_SIDE_STATS_SECTION.tpl',
             'themes/default/templates/BLOCK_SIDE_STATS_SUBLINE.tpl',
-            'themes/default/templates/BLOCK_SIDE_STATS.tpl',
-            'sources/blocks/side_stats.php',
-            'sources/hooks/blocks/side_stats/forum.php',
-            'sources/hooks/blocks/side_stats/.htaccess',
-            'sources_custom/hooks/blocks/side_stats/.htaccess',
-            'sources/hooks/blocks/side_stats/index.html',
-            'sources_custom/hooks/blocks/side_stats/index.html',
         ];
     }
 

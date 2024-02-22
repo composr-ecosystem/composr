@@ -153,11 +153,11 @@ class Hook_addon_registry_static_export
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/static_export.php',
             'adminzone/pages/minimodules_custom/static_export.php',
-            'sources_custom/static_export.php',
-            'sources_custom/hooks/systems/page_groupings/static_export.php',
             'exports/static/readme.txt',
+            'sources_custom/hooks/systems/addon_registry/static_export.php',
+            'sources_custom/hooks/systems/page_groupings/static_export.php',
+            'sources_custom/static_export.php',
         ];
     }
 }

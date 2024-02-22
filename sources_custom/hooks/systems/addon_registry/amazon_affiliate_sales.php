@@ -159,11 +159,11 @@ This addon will lower the CSP security on the page the block is displayed on. Th
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/amazon_affiliate_sales.php',
             'lang_custom/EN/amazon.ini',
             'sources_custom/blocks/side_amazon_affiliate_sales.php',
-            'themes/default/templates_custom/BLOCK_SIDE_AMAZON_AFFILIATE_SALES.tpl',
+            'sources_custom/hooks/systems/addon_registry/amazon_affiliate_sales.php',
             'sources_custom/hooks/systems/trusted_sites/amazon_affiliate_sales.php',
+            'themes/default/templates_custom/BLOCK_SIDE_AMAZON_AFFILIATE_SALES.tpl',
         ];
     }
 }

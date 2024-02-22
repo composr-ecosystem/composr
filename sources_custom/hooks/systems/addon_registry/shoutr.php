@@ -155,11 +155,11 @@ After installing this addon your shout box will essentially be treated as an emb
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/shoutr.php',
             'sources_custom/blocks/side_shoutbox.php',
-            'themes/default/templates_custom/BLOCK_SIDE_SHOUTBOX.tpl',
+            'sources_custom/hooks/systems/addon_registry/shoutr.php',
             'themes/default/css_custom/shoutbox.css',
             'themes/default/javascript_custom/shoutr.js',
+            'themes/default/templates_custom/BLOCK_SIDE_SHOUTBOX.tpl',
         ];
     }
 }

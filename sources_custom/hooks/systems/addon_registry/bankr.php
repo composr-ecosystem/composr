@@ -155,12 +155,12 @@ class Hook_addon_registry_bankr
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/bankr.php',
-            'sources_custom/hooks/systems/privacy/bankr.php',
-            'sources_custom/hooks/systems/ecommerce/bank.php',
             'lang_custom/EN/bank.ini',
-            'sources_custom/hooks/systems/cron/bank.php',
+            'sources_custom/hooks/systems/addon_registry/bankr.php',
             'sources_custom/hooks/systems/config/bank_dividend.php',
+            'sources_custom/hooks/systems/cron/bank.php',
+            'sources_custom/hooks/systems/ecommerce/bank.php',
+            'sources_custom/hooks/systems/privacy/bankr.php',
         ];
     }
 

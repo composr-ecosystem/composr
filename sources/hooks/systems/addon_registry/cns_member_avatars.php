@@ -143,16 +143,16 @@ class Hook_addon_registry_cns_member_avatars
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/tabs/member_account/edit/avatar.svg',
-            'themes/default/images/icons_monochrome/tabs/member_account/edit/avatar.svg',
             'sources/hooks/systems/addon_registry/cns_member_avatars.php',
-            'themes/default/templates/CNS_EDIT_AVATAR_TAB.tpl',
-            'uploads/cns_avatars/index.html',
-            'uploads/cns_avatars/.htaccess',
+            'sources/hooks/systems/config/random_avatars.php',
             'sources/hooks/systems/profiles_tabs_edit/avatar.php',
             'themes/default/images/cns_default_avatars/index.html',
             'themes/default/images/cns_default_avatars/system.png',
-            'sources/hooks/systems/config/random_avatars.php',
+            'themes/default/images/icons/tabs/member_account/edit/avatar.svg',
+            'themes/default/images/icons_monochrome/tabs/member_account/edit/avatar.svg',
+            'themes/default/templates/CNS_EDIT_AVATAR_TAB.tpl',
+            'uploads/cns_avatars/.htaccess',
+            'uploads/cns_avatars/index.html',
         ];
     }
 

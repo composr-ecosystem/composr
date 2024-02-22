@@ -128,33 +128,30 @@ class Hook_addon_registry_actionlog
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/audit/actionlog.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/actionlog.svg',
-            'sources/hooks/systems/notifications/actionlog.php',
-            'sources/hooks/systems/realtime_rain/actionlog.php',
-            'sources/hooks/systems/addon_registry/actionlog.php',
             'adminzone/pages/modules/admin_actionlog.php',
-            'sources/hooks/systems/rss/admin_recent_actions.php',
-            'lang/EN/actionlog.ini',
-            'themes/default/javascript/actionlog.js',
-            'sources/hooks/systems/actionlog/actionlog.php',
-            'themes/default/templates/ACTIONLOG_FOLLOWUP_URLS.tpl',
-            'sources/hooks/systems/privacy/actionlog.php',
-
-            // Revisions
-            'sources/hooks/systems/config/store_revisions.php',
-            'sources/revisions_engine_files.php',
-            'sources/revisions_engine_database.php',
             'adminzone/pages/modules/admin_revisions.php',
+            'lang/EN/actionlog.ini',
+            'sources/hooks/modules/admin_stats/actionlogs.php',
+            'sources/hooks/systems/actionlog/actionlog.php',
+            'sources/hooks/systems/addon_registry/actionlog.php',
+            'sources/hooks/systems/config/store_revisions.php',
+            'sources/hooks/systems/notifications/actionlog.php',
+            'sources/hooks/systems/privacy/actionlog.php',
+            'sources/hooks/systems/realtime_rain/actionlog.php',
+            'sources/hooks/systems/rss/admin_recent_actions.php',
+            'sources/revisions_engine_database.php',
+            'sources/revisions_engine_files.php',
             'themes/default/images/icons/admin/revisions.svg',
+            'themes/default/images/icons/menu/adminzone/audit/actionlog.svg',
             'themes/default/images/icons_monochrome/admin/revisions.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/audit/actionlog.svg',
+            'themes/default/javascript/actionlog.js',
+            'themes/default/templates/ACTIONLOG_FOLLOWUP_URLS.tpl',
+            'themes/default/templates/DIFF_SCREEN.tpl',
+            'themes/default/templates/REVISIONS_DIFF_ICON.tpl',
             'themes/default/templates/REVISIONS_SCREEN.tpl',
             'themes/default/templates/REVISIONS_WRAP.tpl',
-            'themes/default/templates/REVISIONS_DIFF_ICON.tpl',
             'themes/default/templates/REVISION_UNDO.tpl',
-            'themes/default/templates/DIFF_SCREEN.tpl',
-
-            'sources/hooks/modules/admin_stats/actionlogs.php',
         ];
     }
 

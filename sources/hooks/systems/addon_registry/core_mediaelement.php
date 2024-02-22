@@ -158,13 +158,13 @@ class Hook_addon_registry_core_mediaelement
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/core_mediaelement.php',
             'data/mediaelement/index.html',
             'data/mediaelement/mediaelement-flash-audio-ogg.swf',
             'data/mediaelement/mediaelement-flash-audio.swf',
             'data/mediaelement/mediaelement-flash-video-hls.swf',
             'data/mediaelement/mediaelement-flash-video-mdash.swf',
             'data/mediaelement/mediaelement-flash-video.swf',
+            'sources/hooks/systems/addon_registry/core_mediaelement.php',
             'themes/default/css/mediaelementplayer.css',
             'themes/default/images/mediaelement/index.html',
             'themes/default/images/mediaelement/mejs-controls.svg',

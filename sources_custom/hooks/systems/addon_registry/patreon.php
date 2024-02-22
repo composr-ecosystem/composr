@@ -177,19 +177,19 @@ Basic setup instructions:
     public function get_file_list() : array
     {
         return [
+            'data_custom/patreon_patrons.php',
+            'data_custom/patreon_webhook.php',
+            'lang_custom/EN/patreon.ini',
             'sources_custom/hooks/systems/addon_registry/patreon.php',
             'sources_custom/hooks/systems/cns_implicit_usergroups/patreon.php',
             'sources_custom/hooks/systems/config/patreon_group.php',
-            'sources_custom/hooks/systems/config/patreon_webhook_secret.php',
             'sources_custom/hooks/systems/config/patreon_tiers.php',
+            'sources_custom/hooks/systems/config/patreon_webhook_secret.php',
             'sources_custom/hooks/systems/cron/patreon.php',
-            'lang_custom/EN/patreon.ini',
-            'data_custom/patreon_webhook.php',
-            'themes/default/templates_custom/BLOCK_MAIN_PATREON_PATRONS.tpl',
-            'sources_custom/patreon.php',
-            'sources_custom/miniblocks/main_patreon_patrons.php',
-            'data_custom/patreon_patrons.php',
             'sources_custom/hooks/systems/privacy/patreon.php',
+            'sources_custom/miniblocks/main_patreon_patrons.php',
+            'sources_custom/patreon.php',
+            'themes/default/templates_custom/BLOCK_MAIN_PATREON_PATRONS.tpl',
         ];
     }
 

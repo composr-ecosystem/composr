@@ -151,13 +151,13 @@ class Hook_addon_registry_locations_catalogues
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/locations_catalogues.php',
             'data_custom/locations/index.html',
-            'data_custom/locations/sources.zip',
             'data_custom/locations/readme.txt',
-            'sources_custom/locations_catalogues_install.php',
-            'sources_custom/locations_catalogues_geopositioning.php',
+            'data_custom/locations/sources.zip',
             'data_custom/locations_catalogues_geoposition.php',
+            'sources_custom/hooks/systems/addon_registry/locations_catalogues.php',
+            'sources_custom/locations_catalogues_geopositioning.php',
+            'sources_custom/locations_catalogues_install.php',
         ];
     }
 

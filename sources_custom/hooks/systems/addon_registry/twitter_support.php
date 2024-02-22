@@ -168,20 +168,18 @@ class Hook_addon_registry_twitter_support
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/twitter_support.php',
-            'sources_custom/twitter.php',
             'lang_custom/EN/twitter.ini',
+            'sources_custom/blocks/twitter_feed.php',
+            'sources_custom/hooks/systems/addon_registry/twitter_support.php',
+            'sources_custom/hooks/systems/config/twitter_allow_signups.php',
             'sources_custom/hooks/systems/config/twitter_api_key.php',
             'sources_custom/hooks/systems/config/twitter_api_secret.php',
-            'sources_custom/hooks/systems/config/twitter_allow_signups.php',
+            'sources_custom/hooks/systems/config/twitterfeed_update_time.php',
             'sources_custom/hooks/systems/health_checks/twitter.php',
             'sources_custom/hooks/systems/hybridauth/twitter.php',
             'sources_custom/hooks/systems/oauth_screen_sup/twitter.php',
             'sources_custom/hooks/systems/trusted_sites/twitter_support.php',
-
-            'sources_custom/blocks/twitter_feed.php',
-            'themes/default/templates_custom/BLOCK_TWITTER_FEED.tpl',
-            'themes/default/templates_custom/BLOCK_TWITTER_FEED_TWEET.tpl',
+            'sources_custom/twitter.php',
             'themes/default/images_custom/twitter_feed/bird_black_16.png',
             'themes/default/images_custom/twitter_feed/bird_black_32.png',
             'themes/default/images_custom/twitter_feed/bird_black_48.png',
@@ -194,15 +192,16 @@ class Hook_addon_registry_twitter_support
             'themes/default/images_custom/twitter_feed/favorite.png',
             'themes/default/images_custom/twitter_feed/favorite_hover.png',
             'themes/default/images_custom/twitter_feed/favorite_on.png',
-            'themes/default/images_custom/twitter_feed/twitter_feed_icon.png',
             'themes/default/images_custom/twitter_feed/index.html',
             'themes/default/images_custom/twitter_feed/reply.png',
             'themes/default/images_custom/twitter_feed/reply_hover.png',
             'themes/default/images_custom/twitter_feed/retweet.png',
             'themes/default/images_custom/twitter_feed/retweet_hover.png',
             'themes/default/images_custom/twitter_feed/retweet_on.png',
-            'sources_custom/hooks/systems/config/twitterfeed_update_time.php',
+            'themes/default/images_custom/twitter_feed/twitter_feed_icon.png',
             'themes/default/javascript_custom/twitter_feed.js',
+            'themes/default/templates_custom/BLOCK_TWITTER_FEED.tpl',
+            'themes/default/templates_custom/BLOCK_TWITTER_FEED_TWEET.tpl',
         ];
     }
 }

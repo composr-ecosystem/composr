@@ -155,8 +155,6 @@ class Hook_addon_registry_purrrr
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/purrrr.php',
-            'data_custom/images/lolcats/index.html',
             'data_custom/images/lolcats/funny-pictures-basement-cat-has-pink-sheets.jpg',
             'data_custom/images/lolcats/funny-pictures-cat-ai-calld-jenny-craig.jpg',
             'data_custom/images/lolcats/funny-pictures-cat-asks-you-for-a-favor.jpg',
@@ -197,6 +195,8 @@ class Hook_addon_registry_purrrr
             'data_custom/images/lolcats/funny-pictures-kittens-dispose-of-boyfriend.jpg',
             'data_custom/images/lolcats/funny-pictures-kittens-yell-at-eachother.jpg',
             'data_custom/images/lolcats/funny-pictures-ridiculous-poses-moddles.jpg',
+            'data_custom/images/lolcats/index.html',
+            'sources_custom/hooks/systems/addon_registry/purrrr.php',
         ];
     }
 

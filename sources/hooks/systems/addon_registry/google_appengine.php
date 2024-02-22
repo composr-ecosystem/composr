@@ -128,15 +128,15 @@ class Hook_addon_registry_google_appengine
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/google_appengine.php',
             'app.yaml',
+            'data/modules/google_appengine/cloud_storage_proxy.php',
             'data/modules/google_appengine/cron.yaml',
             'data/modules/google_appengine/dos.yaml',
-            'data/modules/google_appengine/queue.yaml',
             'data/modules/google_appengine/index.html',
-            'data/modules/google_appengine/cloud_storage_proxy.php',
+            'data/modules/google_appengine/queue.yaml',
             'data_custom/modules/google_appengine/index.html',
             'sources/google_appengine.php',
+            'sources/hooks/systems/addon_registry/google_appengine.php',
         ];
     }
 }

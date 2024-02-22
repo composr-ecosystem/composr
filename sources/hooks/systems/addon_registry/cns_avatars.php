@@ -132,19 +132,19 @@ class Hook_addon_registry_cns_avatars
         return [
             'sources/hooks/systems/addon_registry/cns_avatars.php',
             'themes/default/images/cns_default_avatars/default_set/airplane.png',
+            'themes/default/images/cns_default_avatars/default_set/berries.png',
             'themes/default/images/cns_default_avatars/default_set/bird.png',
             'themes/default/images/cns_default_avatars/default_set/bonfire.png',
+            'themes/default/images/cns_default_avatars/default_set/chess.png',
             'themes/default/images/cns_default_avatars/default_set/cool_flare.png',
             'themes/default/images/cns_default_avatars/default_set/dog.png',
             'themes/default/images/cns_default_avatars/default_set/eagle.png',
+            'themes/default/images/cns_default_avatars/default_set/fireman.png',
             'themes/default/images/cns_default_avatars/default_set/forks.png',
             'themes/default/images/cns_default_avatars/default_set/horse.png',
             'themes/default/images/cns_default_avatars/default_set/index.html',
             'themes/default/images/cns_default_avatars/default_set/music.png',
             'themes/default/images/cns_default_avatars/default_set/trees.png',
-            'themes/default/images/cns_default_avatars/default_set/chess.png',
-            'themes/default/images/cns_default_avatars/default_set/fireman.png',
-            'themes/default/images/cns_default_avatars/default_set/berries.png',
         ];
     }
 }

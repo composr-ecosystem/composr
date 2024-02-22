@@ -157,8 +157,8 @@ You will still need to assign "Avoid broad input filtering security layer" privi
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/comcode_html_safelist.php',
             'adminzone/pages/comcode_custom/EN/comcode_safelist.txt',
+            'sources_custom/hooks/systems/addon_registry/comcode_html_safelist.php',
             'sources_custom/hooks/systems/comcode_parsing/comcode_html_safelist.php',
             'sources_custom/hooks/systems/page_groupings/comcode_safelist.php',
             'text_custom/comcode_safelist.txt',

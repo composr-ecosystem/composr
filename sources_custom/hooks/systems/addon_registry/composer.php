@@ -151,8 +151,8 @@ class Hook_addon_registry_composer
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/composer.php',
             'composer.json',
+            'sources_custom/hooks/systems/addon_registry/composer.php',
             'sources_custom/hooks/systems/startup/composer.php',
         ];
     }

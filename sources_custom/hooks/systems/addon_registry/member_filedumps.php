@@ -151,10 +151,10 @@ class Hook_addon_registry_member_filedumps
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/member_filedumps.php',
             'sources_custom/hooks/modules/members/filedump.php',
-            'sources_custom/miniblocks/myfiles.php',
+            'sources_custom/hooks/systems/addon_registry/member_filedumps.php',
             'sources_custom/hooks/systems/profiles_tabs/filedump.php',
+            'sources_custom/miniblocks/myfiles.php',
             'themes/default/templates_custom/CNS_MEMBER_PROFILE_FILEDUMP.tpl',
         ];
     }

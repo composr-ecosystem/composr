@@ -130,11 +130,9 @@ class Hook_addon_registry_language_block
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/language_block.php',
-            'themes/default/templates/BLOCK_SIDE_LANGUAGE.tpl',
-            'themes/default/templates/BLOCK_TOP_LANGUAGE.tpl',
             'sources/blocks/side_language.php',
             'sources/blocks/top_language.php',
+            'sources/hooks/systems/addon_registry/language_block.php',
             'sources/hooks/systems/config/block_top_language.php',
             'themes/default/images/flags_large/ad.svg',
             'themes/default/images/flags_large/ae.svg',
@@ -389,6 +387,8 @@ class Hook_addon_registry_language_block
             'themes/default/images/flags_large/za.svg',
             'themes/default/images/flags_large/zm.svg',
             'themes/default/images/flags_large/zw.svg',
+            'themes/default/templates/BLOCK_SIDE_LANGUAGE.tpl',
+            'themes/default/templates/BLOCK_TOP_LANGUAGE.tpl',
         ];
     }
 

@@ -150,12 +150,12 @@ New users should then be assigned a mentor/friend who will receive an equal amou
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/mentorr.php',
-            'sources_custom/hooks/systems/points_transact/mentorr.php',
-            'sources_custom/hooks/systems/upon_query/add_mentor.php',
             'lang_custom/EN/mentorr.ini',
+            'sources_custom/hooks/systems/addon_registry/mentorr.php',
             'sources_custom/hooks/systems/config/mentor_usergroup.php',
+            'sources_custom/hooks/systems/points_transact/mentorr.php',
             'sources_custom/hooks/systems/privacy/mentorr.php',
+            'sources_custom/hooks/systems/upon_query/add_mentor.php',
         ];
     }
 

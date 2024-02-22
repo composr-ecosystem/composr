@@ -153,9 +153,9 @@ class Hook_addon_registry_free_article_import
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/free_article_import.php',
             'data_custom/free_article_import.php',
             'data_custom/free_article_import__articles.csv',
+            'sources_custom/hooks/systems/addon_registry/free_article_import.php',
         ];
     }
 }

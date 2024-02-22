@@ -130,15 +130,15 @@ class Hook_addon_registry_forum_blocks
     public function get_file_list() : array
     {
         return [
-            'themes/default/templates/BLOCK_MAIN_FORUM_NEWS.tpl',
-            'themes/default/templates/BLOCK_MAIN_FORUM_TOPICS.tpl',
-            'themes/default/templates/BLOCK_SIDE_FORUM_NEWS.tpl',
             'sources/blocks/bottom_forum_news.php',
             'sources/blocks/main_forum_news.php',
             'sources/blocks/main_forum_topics.php',
             'sources/blocks/side_forum_news.php',
-            'sources/hooks/systems/addon_registry/forum_blocks.php',
             'sources/hooks/modules/admin_setupwizard/forum_blocks.php',
+            'sources/hooks/systems/addon_registry/forum_blocks.php',
+            'themes/default/templates/BLOCK_MAIN_FORUM_NEWS.tpl',
+            'themes/default/templates/BLOCK_MAIN_FORUM_TOPICS.tpl',
+            'themes/default/templates/BLOCK_SIDE_FORUM_NEWS.tpl',
         ];
     }
 

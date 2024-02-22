@@ -128,8 +128,8 @@ class Hook_addon_registry_apache_config_files
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/apache_config_files.php',
             'recommended.htaccess',
+            'sources/hooks/systems/addon_registry/apache_config_files.php',
         ];
     }
 }

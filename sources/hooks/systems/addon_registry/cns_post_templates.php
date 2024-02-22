@@ -130,16 +130,16 @@ class Hook_addon_registry_cns_post_templates
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/structure/forum/post_templates.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/post_templates.svg',
-            'sources/hooks/systems/resource_meta_aware/post_template.php',
-            'sources/hooks/systems/commandr_fs/post_templates.php',
-            'sources/hooks/systems/addon_registry/cns_post_templates.php',
-            'themes/default/templates/CNS_POST_TEMPLATE_SELECT.tpl',
             'adminzone/pages/modules/admin_cns_post_templates.php',
             'lang/EN/cns_post_templates.ini',
-            'themes/default/javascript/cns_post_templates.js',
             'sources/hooks/systems/actionlog/cns_post_templates.php',
+            'sources/hooks/systems/addon_registry/cns_post_templates.php',
+            'sources/hooks/systems/commandr_fs/post_templates.php',
+            'sources/hooks/systems/resource_meta_aware/post_template.php',
+            'themes/default/images/icons/menu/adminzone/structure/forum/post_templates.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/post_templates.svg',
+            'themes/default/javascript/cns_post_templates.js',
+            'themes/default/templates/CNS_POST_TEMPLATE_SELECT.tpl',
         ];
     }
 

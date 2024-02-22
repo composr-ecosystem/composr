@@ -129,17 +129,17 @@ class Hook_addon_registry_core_forum_drivers
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/core_forum_drivers.php',
             'sources/forum/.htaccess',
             'sources/forum/forums.ini',
             'sources/forum/index.html',
-            'sources/forum/none.php',
             'sources/forum/ipb3.php',
+            'sources/forum/mybb.php',
+            'sources/forum/none.php',
             'sources/forum/phpbb3.php',
             'sources/forum/smf2.php',
             'sources/forum/vb3.php',
             'sources/forum/wbb22.php',
-            'sources/forum/mybb.php',
+            'sources/hooks/systems/addon_registry/core_forum_drivers.php',
             'sources_custom/forum/.htaccess',
             'sources_custom/forum/index.html',
         ];

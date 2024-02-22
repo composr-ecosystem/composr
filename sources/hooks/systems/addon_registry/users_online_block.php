@@ -128,11 +128,11 @@ class Hook_addon_registry_users_online_block
     public function get_file_list() : array
     {
         return [
+            'sources/blocks/side_users_online.php',
+            'sources/hooks/systems/addon_registry/users_online_block.php',
             'sources/hooks/systems/config/usersonline_show_birthdays.php',
             'sources/hooks/systems/config/usersonline_show_newest_member.php',
-            'sources/hooks/systems/addon_registry/users_online_block.php',
             'themes/default/templates/BLOCK_SIDE_USERS_ONLINE.tpl',
-            'sources/blocks/side_users_online.php',
         ];
     }
 

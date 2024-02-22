@@ -133,26 +133,26 @@ class Hook_addon_registry_syndication
     public function get_file_list() : array
     {
         return [
+            'backend.php',
+            'data/backend_cloud.php',
             'sources/hooks/systems/addon_registry/syndication.php',
+            'sources/hooks/systems/non_active_urls/news_rss_cloud.php',
+            'sources/hooks/systems/rss/.htaccess',
+            'sources/hooks/systems/rss/index.html',
+            'sources/rss2.php',
+            'sources_custom/hooks/systems/rss/.htaccess',
+            'sources_custom/hooks/systems/rss/index.html',
             'themes/default/xml/ATOM_ENTRY.xml',
             'themes/default/xml/ATOM_WRAPPER.xml',
+            'themes/default/xml/ATOM_XSLT.xml',
+            'themes/default/xml/OPML_WRAPPER.xml',
+            'themes/default/xml/OPML_XSLT.xml',
+            'themes/default/xml/RSS_ABBR.xml',
             'themes/default/xml/RSS_CLOUD.xml',
             'themes/default/xml/RSS_ENTRY.xml',
             'themes/default/xml/RSS_ENTRY_COMMENTS.xml',
             'themes/default/xml/RSS_WRAPPER.xml',
-            'themes/default/xml/ATOM_XSLT.xml',
-            'themes/default/xml/RSS_ABBR.xml',
             'themes/default/xml/RSS_XSLT.xml',
-            'themes/default/xml/OPML_WRAPPER.xml',
-            'themes/default/xml/OPML_XSLT.xml',
-            'backend.php',
-            'data/backend_cloud.php',
-            'sources/rss2.php',
-            'sources/hooks/systems/rss/.htaccess',
-            'sources_custom/hooks/systems/rss/.htaccess',
-            'sources/hooks/systems/rss/index.html',
-            'sources_custom/hooks/systems/rss/index.html',
-            'sources/hooks/systems/non_active_urls/news_rss_cloud.php',
         ];
     }
 

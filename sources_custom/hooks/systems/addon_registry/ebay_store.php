@@ -155,9 +155,9 @@ The normal Composr block construction assistant will help you set up the block o
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/ebay_store.php',
-            'sources_custom/blocks/main_ebay.php',
             'lang_custom/EN/ebay.ini',
+            'sources_custom/blocks/main_ebay.php',
+            'sources_custom/hooks/systems/addon_registry/ebay_store.php',
             'themes/default/templates_custom/BLOCK_MAIN_EBAY.tpl',
         ];
     }

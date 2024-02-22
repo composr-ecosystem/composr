@@ -160,14 +160,14 @@ The insulted member has to try and make the right reply, if they succeed then th
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/bantr.php',
             'adminzone/pages/comcode_custom/EN/insults.txt',
             'lang_custom/EN/insults.ini',
+            'sources_custom/hooks/systems/addon_registry/bantr.php',
+            'sources_custom/hooks/systems/config/insult_points.php',
             'sources_custom/hooks/systems/cron/insults.php',
             'sources_custom/hooks/systems/page_groupings/insults.php',
             'sources_custom/hooks/systems/upon_query/insults.php',
             'text_custom/EN/insults.txt',
-            'sources_custom/hooks/systems/config/insult_points.php',
         ];
     }
 }

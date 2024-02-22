@@ -158,18 +158,18 @@ and
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/idolisr.php',
+            'lang_custom/EN/idolisr.ini',
+            'site/pages/modules_custom/points.php',
             'sources_custom/hooks/modules/members/idolisr.php',
+            'sources_custom/hooks/systems/addon_registry/idolisr.php',
+            'sources_custom/hooks/systems/config/idolisr_roles.php',
             'sources_custom/miniblocks/main_stars.php',
             'sources_custom/miniblocks/side_recent_points.php',
-            'site/pages/modules_custom/points.php',
-            'themes/default/templates_custom/POINTS_SEND.tpl',
+            'sources_custom/points2.php',
+            'themes/default/javascript_custom/idolisr.js',
             'themes/default/templates_custom/BLOCK_MAIN_STARS.tpl',
             'themes/default/templates_custom/BLOCK_SIDE_RECENT_POINTS.tpl',
-            'themes/default/javascript_custom/idolisr.js',
-            'sources_custom/points2.php',
-            'sources_custom/hooks/systems/config/idolisr_roles.php',
-            'lang_custom/EN/idolisr.ini',
+            'themes/default/templates_custom/POINTS_SEND.tpl',
         ];
     }
 }

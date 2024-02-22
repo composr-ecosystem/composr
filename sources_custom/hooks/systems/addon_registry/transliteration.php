@@ -151,10 +151,9 @@ class Hook_addon_registry_transliteration
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/transliteration.php',
-            'sources_custom/transliteration.php',
-            'sources_custom/hooks/systems/startup/transliteration.php',
+            'sources_custom/Transliterator/.htaccess',
             'sources_custom/Transliterator/Transliterator.php',
+            'sources_custom/Transliterator/data/index.html',
             'sources_custom/Transliterator/data/x00.php',
             'sources_custom/Transliterator/data/x01.php',
             'sources_custom/Transliterator/data/x02.php',
@@ -331,8 +330,9 @@ class Hook_addon_registry_transliteration
             'sources_custom/Transliterator/data/xfe.php',
             'sources_custom/Transliterator/data/xff.php',
             'sources_custom/Transliterator/index.html',
-            'sources_custom/Transliterator/data/index.html',
-            'sources_custom/Transliterator/.htaccess',
+            'sources_custom/hooks/systems/addon_registry/transliteration.php',
+            'sources_custom/hooks/systems/startup/transliteration.php',
+            'sources_custom/transliteration.php',
         ];
     }
 }

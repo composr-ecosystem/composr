@@ -130,14 +130,14 @@ class Hook_addon_registry_cns_multi_moderations
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/structure/forum/multi_moderations.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/multi_moderations.svg',
-            'sources/hooks/systems/resource_meta_aware/multi_moderation.php',
-            'sources/hooks/systems/commandr_fs/multi_moderations.php',
-            'sources/hooks/systems/addon_registry/cns_multi_moderations.php',
             'adminzone/pages/modules/admin_cns_multi_moderations.php',
             'lang/EN/cns_multi_moderations.ini',
             'sources/hooks/systems/actionlog/cns_multi_moderations.php',
+            'sources/hooks/systems/addon_registry/cns_multi_moderations.php',
+            'sources/hooks/systems/commandr_fs/multi_moderations.php',
+            'sources/hooks/systems/resource_meta_aware/multi_moderation.php',
+            'themes/default/images/icons/menu/adminzone/structure/forum/multi_moderations.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/multi_moderations.svg',
         ];
     }
 }

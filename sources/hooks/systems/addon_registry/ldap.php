@@ -128,8 +128,10 @@ class Hook_addon_registry_ldap
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/security/ldap.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/security/ldap.svg',
+            'adminzone/pages/modules/admin_cns_ldap.php',
+            'sources/cns_ldap.php',
+            'sources/hooks/systems/actionlog/ldap.php',
+            'sources/hooks/systems/addon_registry/ldap.php',
             'sources/hooks/systems/config/ldap_allow_joining.php',
             'sources/hooks/systems/config/ldap_base_dn.php',
             'sources/hooks/systems/config/ldap_bind_password.php',
@@ -145,13 +147,11 @@ class Hook_addon_registry_ldap
             'sources/hooks/systems/config/ldap_member_search_qualifier.php',
             'sources/hooks/systems/config/ldap_none_bind_logins.php',
             'sources/hooks/systems/config/ldap_version.php',
-            'sources/hooks/systems/addon_registry/ldap.php',
+            'sources/hooks/systems/page_groupings/ldap.php',
+            'themes/default/images/icons/menu/adminzone/security/ldap.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/security/ldap.svg',
             'themes/default/templates/CNS_LDAP_LIST_ENTRY.tpl',
             'themes/default/templates/CNS_LDAP_SYNC_SCREEN.tpl',
-            'adminzone/pages/modules/admin_cns_ldap.php',
-            'sources/cns_ldap.php',
-            'sources/hooks/systems/page_groupings/ldap.php',
-            'sources/hooks/systems/actionlog/ldap.php',
         ];
     }
 

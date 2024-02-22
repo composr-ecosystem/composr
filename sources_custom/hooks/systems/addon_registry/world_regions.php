@@ -152,13 +152,13 @@ class Hook_addon_registry_world_regions
     {
         return [
             'sources_custom/hooks/systems/addon_registry/world_regions.php',
+            'sources_custom/hooks/systems/symbols/STATE_CODE_TO_NAME.php',
+            'sources_custom/hooks/systems/symbols/STATE_NAME_TO_CODE.php',
             'sources_custom/locations.php',
             'sources_custom/locations/.htaccess',
             'sources_custom/locations/index.html',
             'sources_custom/locations/uk.php',
             'sources_custom/locations/us.php',
-            'sources_custom/hooks/systems/symbols/STATE_CODE_TO_NAME.php',
-            'sources_custom/hooks/systems/symbols/STATE_NAME_TO_CODE.php',
         ];
     }
 }

@@ -128,13 +128,13 @@ class Hook_addon_registry_errorlog
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/modules/admin_errorlog.php',
+            'data_custom/errorlog.php',
+            'lang/EN/errorlog.ini',
+            'sources/hooks/systems/addon_registry/errorlog.php',
+            'themes/default/css/errorlog.css',
             'themes/default/images/icons/menu/adminzone/audit/errorlog.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/errorlog.svg',
-            'themes/default/css/errorlog.css',
-            'sources/hooks/systems/addon_registry/errorlog.php',
-            'lang/EN/errorlog.ini',
-            'data_custom/errorlog.php',
-            'adminzone/pages/modules/admin_errorlog.php',
             'themes/default/templates/ERRORLOG_SCREEN.tpl',
         ];
     }

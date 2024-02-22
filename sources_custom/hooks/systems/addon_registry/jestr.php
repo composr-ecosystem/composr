@@ -163,11 +163,10 @@ The jokes you can play are:
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/jestr.php',
-            'sources_custom/forum/cns.php',
-            'lang_custom/EN/jestr.ini',
-            'themes/default/templates_custom/EMOTICON_IMG_CODE_THEMED.tpl',
             'forum/pages/modules_custom/topicview.php',
+            'lang_custom/EN/jestr.ini',
+            'sources_custom/forum/cns.php',
+            'sources_custom/hooks/systems/addon_registry/jestr.php',
             'sources_custom/hooks/systems/config/jestr_avatar_switch_shown_for.php',
             'sources_custom/hooks/systems/config/jestr_emoticon_magnet_shown_for.php',
             'sources_custom/hooks/systems/config/jestr_leet_shown_for.php',
@@ -178,6 +177,7 @@ The jokes you can play are:
             'sources_custom/hooks/systems/config/jestr_string_changes.php',
             'sources_custom/hooks/systems/config/jestr_string_changes_shown_for.php',
             'themes/default/javascript_custom/jestr.js',
+            'themes/default/templates_custom/EMOTICON_IMG_CODE_THEMED.tpl',
         ];
     }
 }

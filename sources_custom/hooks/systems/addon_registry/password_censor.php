@@ -157,18 +157,18 @@ This is a system scheduler hook that regularly censors anything looking like a p
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/password_censor.php',
             'data_custom/password_censor.php',
-            'sources_custom/password_censor.php',
-            'sources_custom/hooks/systems/cron/password_censor.php',
+            'sources_custom/hooks/systems/addon_registry/password_censor.php',
             'sources_custom/hooks/systems/comcode/encrypt.php',
             'sources_custom/hooks/systems/comcode/self_destruct.php',
-            'sources_custom/notifications.php',
+            'sources_custom/hooks/systems/cron/password_censor.php',
             'sources_custom/hooks/systems/startup/password_censor.php',
             'sources_custom/hooks/systems/symbols/DECRYPT.php',
+            'sources_custom/notifications.php',
+            'sources_custom/password_censor.php',
+            'themes/default/javascript_custom/password_censor.js',
             'themes/default/templates_custom/COMCODE_ENCRYPT.tpl',
             'themes/default/templates_custom/COMCODE_SELF_DESTRUCT.tpl',
-            'themes/default/javascript_custom/password_censor.js',
         ];
     }
 }

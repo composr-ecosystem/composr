@@ -151,8 +151,8 @@ class Hook_addon_registry_custom_ratings
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/custom_ratings.php',
             'sources_custom/feedback.php',
+            'sources_custom/hooks/systems/addon_registry/custom_ratings.php',
         ];
     }
 }

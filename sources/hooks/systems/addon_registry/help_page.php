@@ -128,8 +128,8 @@ class Hook_addon_registry_help_page
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/help_page.php',
             'site/pages/comcode/EN/help.txt',
+            'sources/hooks/systems/addon_registry/help_page.php',
             'sources/hooks/systems/page_groupings/help_page.php',
         ];
     }

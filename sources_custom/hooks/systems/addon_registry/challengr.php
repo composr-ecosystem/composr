@@ -153,11 +153,11 @@ class Hook_addon_registry_challengr
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/challengr.php',
             'lang_custom/EN/quiz.ini',
-            'themes/default/templates_custom/QUIZ_DONE_SCREEN.tpl',
             'site/pages/modules_custom/quiz.php',
+            'sources_custom/hooks/systems/addon_registry/challengr.php',
             'themes/default/templates_custom/QUIZ_BOX.tpl',
+            'themes/default/templates_custom/QUIZ_DONE_SCREEN.tpl',
         ];
     }
 }

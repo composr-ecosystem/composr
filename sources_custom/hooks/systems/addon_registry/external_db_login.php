@@ -153,14 +153,14 @@ class Hook_addon_registry_external_db_login
     public function get_file_list() : array
     {
         return [
+            'pages/modules_custom/join.php',
+            'pages/modules_custom/login.php',
+            'pages/modules_custom/lost_password.php',
+            'sources_custom/external_db.php',
             'sources_custom/hooks/systems/addon_registry/external_db_login.php',
             'sources_custom/hooks/systems/login_providers/external_db.php',
             'sources_custom/hooks/systems/login_providers_direct_auth/external_db.php',
             'sources_custom/hooks/systems/upon_login/external_db.php',
-            'sources_custom/external_db.php',
-            'pages/modules_custom/join.php',
-            'pages/modules_custom/lost_password.php',
-            'pages/modules_custom/login.php',
         ];
     }
 }

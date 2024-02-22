@@ -173,8 +173,8 @@ This script takes days to run properly.';
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/stress_test.php',
             'data_custom/stress_test_loader.php',
+            'sources_custom/hooks/systems/addon_registry/stress_test.php',
         ];
     }
 }

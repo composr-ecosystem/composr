@@ -128,9 +128,6 @@ class Hook_addon_registry_core_graphic_text
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/core_graphic_text.php',
-            'sources/fonts.php',
-            'themes/default/css/fonts.css',
             'data/fonts/NotoSans-Bold.ttf',
             'data/fonts/NotoSans-BoldItalic.ttf',
             'data/fonts/NotoSans-Italic.ttf',
@@ -138,6 +135,9 @@ class Hook_addon_registry_core_graphic_text
             'data/fonts/index.html',
             'data/gd_text.php',
             'data_custom/fonts/index.html',
+            'sources/fonts.php',
+            'sources/hooks/systems/addon_registry/core_graphic_text.php',
+            'themes/default/css/fonts.css',
         ];
     }
 }

@@ -129,11 +129,11 @@ class Hook_addon_registry_news_shared
     public function get_file_list() : array
     {
         return [
+            'lang/EN/news.ini',
             'sources/hooks/systems/addon_registry/news_shared.php',
+            'themes/default/css/news.css',
             'themes/default/templates/NEWS_BOX.tpl',
             'themes/default/templates/NEWS_BRIEF.tpl',
-            'themes/default/css/news.css',
-            'lang/EN/news.ini',
         ];
     }
 

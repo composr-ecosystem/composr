@@ -129,8 +129,8 @@ class Hook_addon_registry_uninstaller
     {
         return [
             'sources/hooks/systems/addon_registry/uninstaller.php',
-            'uninstall.php',
             'themes/default/templates/UNINSTALL_SCREEN.tpl',
+            'uninstall.php',
         ];
     }
 

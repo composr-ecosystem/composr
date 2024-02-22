@@ -151,16 +151,16 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/user_simple_spreadsheet_sync.php',
             'data_custom/modules/user_export/in.csv',
+            'data_custom/modules/user_export/index.html',
             'data_custom/user_export.php',
             'data_custom/user_import.php',
+            'sources_custom/hooks/systems/addon_registry/user_simple_spreadsheet_sync.php',
             'sources_custom/hooks/systems/cron/user_export.php',
             'sources_custom/hooks/systems/cron/user_import.php',
             'sources_custom/hooks/systems/upon_query/user_export.php',
             'sources_custom/user_export.php',
             'sources_custom/user_import.php',
-            'data_custom/modules/user_export/index.html',
         ];
     }
 }

@@ -159,10 +159,10 @@ If you would like to show the message as a Composr warning (at the top of the sc
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/browser_detect.php',
-            'sources_custom/browser_detect.php',
-            'sources_custom/miniblocks/browser_upgrade_suggest.php',
             'lang_custom/EN/browser_upgrade_suggest.ini',
+            'sources_custom/browser_detect.php',
+            'sources_custom/hooks/systems/addon_registry/browser_detect.php',
+            'sources_custom/miniblocks/browser_upgrade_suggest.php',
         ];
     }
 }

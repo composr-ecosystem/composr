@@ -155,11 +155,10 @@ class Hook_addon_registry_trickstr
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/trickstr.php',
             'sources_custom/hooks/modules/chat_bots/knowledge.txt',
             'sources_custom/hooks/modules/chat_bots/trickstr.php',
+            'sources_custom/hooks/systems/addon_registry/trickstr.php',
             'sources_custom/programe/.htaccess',
-            'sources_custom/programe/index.html',
             'sources_custom/programe/aiml/.htaccess',
             'sources_custom/programe/aiml/index.html',
             'sources_custom/programe/aiml/readme.txt',
@@ -170,6 +169,7 @@ class Hook_addon_registry_trickstr
             'sources_custom/programe/customtags.php',
             'sources_custom/programe/db.sql',
             'sources_custom/programe/graphnew.php',
+            'sources_custom/programe/index.html',
             'sources_custom/programe/respond.php',
             'sources_custom/programe/util.php',
         ];

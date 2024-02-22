@@ -128,10 +128,10 @@ class Hook_addon_registry_cns_contact_member
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/links/contact_member.svg',
-            'themes/default/images/icons_monochrome/links/contact_member.svg',
             'site/pages/modules/contact_member.php',
             'sources/hooks/systems/addon_registry/cns_contact_member.php',
+            'themes/default/images/icons/links/contact_member.svg',
+            'themes/default/images/icons_monochrome/links/contact_member.svg',
         ];
     }
 }

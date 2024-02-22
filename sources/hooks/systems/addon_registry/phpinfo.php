@@ -128,12 +128,12 @@ class Hook_addon_registry_phpinfo
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/modules/admin_phpinfo.php',
+            'sources/hooks/systems/addon_registry/phpinfo.php',
+            'sources/hooks/systems/page_groupings/phpinfo.php',
+            'themes/default/css/phpinfo.css',
             'themes/default/images/icons/menu/adminzone/tools/phpinfo.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/phpinfo.svg',
-            'themes/default/css/phpinfo.css',
-            'sources/hooks/systems/page_groupings/phpinfo.php',
-            'sources/hooks/systems/addon_registry/phpinfo.php',
-            'adminzone/pages/modules/admin_phpinfo.php',
         ];
     }
 }

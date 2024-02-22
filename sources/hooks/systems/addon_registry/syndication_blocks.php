@@ -131,20 +131,20 @@ class Hook_addon_registry_syndication_blocks
     public function get_file_list() : array
     {
         return [
+            'sources/blocks/bottom_rss.php',
+            'sources/blocks/main_rss.php',
+            'sources/blocks/side_rss.php',
+            'sources/hooks/modules/admin_setupwizard/syndication_blocks.php',
+            'sources/hooks/systems/addon_registry/syndication_blocks.php',
+            'sources/hooks/systems/commandr_commands/feed_display.php',
             'sources/hooks/systems/config/is_on_rss.php',
             'sources/hooks/systems/config/is_rss_advertised.php',
             'sources/hooks/systems/config/rss_update_time.php',
+            'themes/default/css/rss.css',
             'themes/default/templates/BLOCK_MAIN_RSS.tpl',
             'themes/default/templates/BLOCK_MAIN_RSS_SUMMARY.tpl',
             'themes/default/templates/BLOCK_SIDE_RSS.tpl',
             'themes/default/templates/BLOCK_SIDE_RSS_SUMMARY.tpl',
-            'themes/default/css/rss.css',
-            'sources/blocks/bottom_rss.php',
-            'sources/blocks/main_rss.php',
-            'sources/blocks/side_rss.php',
-            'sources/hooks/systems/commandr_commands/feed_display.php',
-            'sources/hooks/systems/addon_registry/syndication_blocks.php',
-            'sources/hooks/modules/admin_setupwizard/syndication_blocks.php',
         ];
     }
 

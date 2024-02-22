@@ -131,18 +131,14 @@ class Hook_addon_registry_helper_scripts
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/helper_scripts.php',
-
-            // The following are PHP shell scripts, and the most commonly used
-            'fixperms.php',
-            'decache.php',
-
-            // The following are sh shell scripts
-            'themechanges.sh',
-            'recentchanges.sh',
-            'db_init.sh',
             'db_export.sh',
             'db_import.sh',
+            'db_init.sh',
+            'decache.php',
+            'fixperms.php',
+            'recentchanges.sh',
+            'sources/hooks/systems/addon_registry/helper_scripts.php',
+            'themechanges.sh',
         ];
     }
 }

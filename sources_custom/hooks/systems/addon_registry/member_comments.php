@@ -153,11 +153,11 @@ class Hook_addon_registry_member_comments
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/member_comments.php',
-            'sources_custom/hooks/systems/profiles_tabs/comments.php',
             'lang_custom/EN/member_comments.ini',
-            'themes/default/templates_custom/CNS_MEMBER_PROFILE_COMMENTS.tpl',
+            'sources_custom/hooks/systems/addon_registry/member_comments.php',
             'sources_custom/hooks/systems/config/member_comments_forum_name.php',
+            'sources_custom/hooks/systems/profiles_tabs/comments.php',
+            'themes/default/templates_custom/CNS_MEMBER_PROFILE_COMMENTS.tpl',
         ];
     }
 }

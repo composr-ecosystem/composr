@@ -128,9 +128,9 @@ class Hook_addon_registry_filebased_persistent_caching
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/filebased_persistent_caching.php',
             'caches/persistent/.htaccess',
             'caches/persistent/index.html',
+            'sources/hooks/systems/addon_registry/filebased_persistent_caching.php',
         ];
     }
 }

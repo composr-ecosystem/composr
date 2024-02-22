@@ -128,14 +128,14 @@ class Hook_addon_registry_counting_blocks
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/counting_blocks.php',
             'sources/blocks/main_count.php',
             'sources/blocks/main_countdown.php',
+            'sources/hooks/systems/addon_registry/counting_blocks.php',
             'sources/hooks/systems/snippets/count.php',
             'themes/default/css/counting_blocks.css',
-            'themes/default/templates/BLOCK_MAIN_COUNTDOWN.tpl',
-            'themes/default/templates/BLOCK_MAIN_COUNT.tpl',
             'themes/default/javascript/counting_blocks.js',
+            'themes/default/templates/BLOCK_MAIN_COUNT.tpl',
+            'themes/default/templates/BLOCK_MAIN_COUNTDOWN.tpl',
         ];
     }
 

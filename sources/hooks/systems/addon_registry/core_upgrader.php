@@ -129,10 +129,9 @@ class Hook_addon_registry_core_upgrader
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/tools/upgrade.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/tools/upgrade.svg',
+            'data/upgrader2.php',
+            'lang/EN/upgrade.ini',
             'sources/hooks/systems/addon_registry/core_upgrader.php',
-            'upgrader.php',
             'sources/upgrade.php',
             'sources/upgrade_db_upgrade.php',
             'sources/upgrade_files.php',
@@ -141,10 +140,11 @@ class Hook_addon_registry_core_upgrader
             'sources/upgrade_mysql.php',
             'sources/upgrade_shared_installs.php',
             'sources/upgrade_themes.php',
-            'lang/EN/upgrade.ini',
-            'data/upgrader2.php',
             'themes/default/images/icons/admin/upgrade.svg',
+            'themes/default/images/icons/menu/adminzone/tools/upgrade.svg',
             'themes/default/images/icons_monochrome/admin/upgrade.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/tools/upgrade.svg',
+            'upgrader.php',
         ];
     }
 }

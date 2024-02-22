@@ -151,8 +151,8 @@ class Hook_addon_registry_content_oop_api
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/content_oop_api.php',
             'sources_custom/content3.php',
+            'sources_custom/hooks/systems/addon_registry/content_oop_api.php',
         ];
     }
 }

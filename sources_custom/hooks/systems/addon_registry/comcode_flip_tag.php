@@ -158,10 +158,10 @@ The above example creates a flip between text A and text B, taking 400ms. This i
     {
         return [
             'sources_custom/hooks/systems/addon_registry/comcode_flip_tag.php',
-            'themes/default/css_custom/flip.css',
-            'themes/default/templates_custom/COMCODE_FLIP.tpl',
-            'themes/default/javascript_custom/jquery_flip.js',
             'sources_custom/hooks/systems/comcode/flip.php',
+            'themes/default/css_custom/flip.css',
+            'themes/default/javascript_custom/jquery_flip.js',
+            'themes/default/templates_custom/COMCODE_FLIP.tpl',
         ];
     }
 }

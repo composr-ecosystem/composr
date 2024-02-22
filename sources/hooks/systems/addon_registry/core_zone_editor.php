@@ -129,16 +129,16 @@ class Hook_addon_registry_core_zone_editor
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/modules/admin_zones.php',
+            'sources/hooks/systems/addon_registry/core_zone_editor.php',
+            'sources/hooks/systems/resource_meta_aware/zone.php',
+            'sources/hooks/systems/snippets/exists_zone.php',
+            'themes/default/css/zone_editor.css',
             'themes/default/images/icons/menu/adminzone/structure/zones/zone_editor.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/zones/zone_editor.svg',
-            'sources/hooks/systems/resource_meta_aware/zone.php',
-            'themes/default/css/zone_editor.css',
-            'sources/hooks/systems/snippets/exists_zone.php',
-            'sources/hooks/systems/addon_registry/core_zone_editor.php',
-            'themes/default/templates/ZONE_EDITOR_SCREEN.tpl',
-            'themes/default/templates/ZONE_EDITOR_PANEL.tpl',
             'themes/default/javascript/core_zone_editor.js',
-            'adminzone/pages/modules/admin_zones.php',
+            'themes/default/templates/ZONE_EDITOR_PANEL.tpl',
+            'themes/default/templates/ZONE_EDITOR_SCREEN.tpl',
         ];
     }
 

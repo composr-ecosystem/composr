@@ -184,51 +184,41 @@ CRM software supported:
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/sugarcrm.php',
-            'sources_custom/hooks/systems/privacy/sugarcrm.php',
-            'sources_custom/hooks/systems/health_checks/sugarcrm.php',
-            'sources_custom/sugarcrm.php',
-            'sources_custom/hooks/systems/contact_forms/sugarcrm.php',
-            'sources_custom/hooks/systems/upon_query/sugarcrm.php',
-            'lang_custom/EN/sugarcrm.ini',
-
-            'sources_custom/curl.php',
-            'sources_custom/sugar_crm_lib.php',
-
-            'sources_custom/hooks/systems/config/sugarcrm_username.php',
-            'sources_custom/hooks/systems/config/sugarcrm_password.php',
-            'sources_custom/hooks/systems/config/sugarcrm_base_url.php',
-
-            'sources_custom/hooks/systems/config/sugarcrm_default_company.php',
-            'sources_custom/hooks/systems/config/sugarcrm_composr_company_field.php',
-
-            'sources_custom/hooks/systems/config/sugarcrm_messaging_sync_type.php',
-            'sources_custom/hooks/systems/config/sugarcrm_messaging_mappings.php',
-            'sources_custom/hooks/systems/config/sugarcrm_exclusive_messaging.php',
-
-            'sources_custom/hooks/systems/config/sugarcrm_member_sync_types.php',
-            'sources_custom/hooks/systems/config/sugarcrm_member_mappings.php',
-            'sources_custom/hooks/systems/config/sugarcrm_contact_metadata_field.php',
-            'sources_custom/hooks/systems/config/sugarcrm_lead_metadata_field.php',
-
-            'sources_custom/hooks/systems/config/sugarcrm_skip_string.php',
-
-            'sources_custom/hooks/systems/tasks/sugarcrm_sync_message.php',
-            'sources_custom/hooks/systems/tasks/sugarcrm_sync_member.php',
-            'sources_custom/hooks/systems/tasks/sugarcrm_sync_contact_metadata.php',
-            'sources_custom/hooks/systems/tasks/sugarcrm_sync_lead_metadata.php',
-
-            'sources_custom/hooks/systems/config/days_to_keep__sugarcrm_log.php',
-            'sources_custom/hooks/systems/logs/index.html',
-            'sources_custom/hooks/systems/logs/sugarcrm.php',
-
             'data_custom/user_metadata_display.php',
-            'sources_custom/user_metadata_display.php',
+            'lang_custom/EN/sugarcrm.ini',
+            'pages/modules_custom/newsletter_opt.php',
+            'sources_custom/curl.php',
+            'sources_custom/hooks/systems/addon_registry/sugarcrm.php',
+            'sources_custom/hooks/systems/config/days_to_keep__sugarcrm_log.php',
+            'sources_custom/hooks/systems/config/sugarcrm_base_url.php',
+            'sources_custom/hooks/systems/config/sugarcrm_composr_company_field.php',
+            'sources_custom/hooks/systems/config/sugarcrm_contact_metadata_field.php',
+            'sources_custom/hooks/systems/config/sugarcrm_default_company.php',
+            'sources_custom/hooks/systems/config/sugarcrm_exclusive_messaging.php',
+            'sources_custom/hooks/systems/config/sugarcrm_lead_metadata_field.php',
+            'sources_custom/hooks/systems/config/sugarcrm_member_mappings.php',
+            'sources_custom/hooks/systems/config/sugarcrm_member_sync_types.php',
+            'sources_custom/hooks/systems/config/sugarcrm_messaging_mappings.php',
+            'sources_custom/hooks/systems/config/sugarcrm_messaging_sync_type.php',
+            'sources_custom/hooks/systems/config/sugarcrm_password.php',
+            'sources_custom/hooks/systems/config/sugarcrm_skip_string.php',
+            'sources_custom/hooks/systems/config/sugarcrm_username.php',
+            'sources_custom/hooks/systems/contact_forms/sugarcrm.php',
             'sources_custom/hooks/systems/cron/sugarcrm_sync_contact_metadata.php',
             'sources_custom/hooks/systems/cron/sugarcrm_sync_lead_metadata.php',
-
-            'pages/modules_custom/newsletter_opt.php',
             'sources_custom/hooks/systems/cron/sugarcrm_sync_newsletter_opt.php',
+            'sources_custom/hooks/systems/health_checks/sugarcrm.php',
+            'sources_custom/hooks/systems/logs/index.html',
+            'sources_custom/hooks/systems/logs/sugarcrm.php',
+            'sources_custom/hooks/systems/privacy/sugarcrm.php',
+            'sources_custom/hooks/systems/tasks/sugarcrm_sync_contact_metadata.php',
+            'sources_custom/hooks/systems/tasks/sugarcrm_sync_lead_metadata.php',
+            'sources_custom/hooks/systems/tasks/sugarcrm_sync_member.php',
+            'sources_custom/hooks/systems/tasks/sugarcrm_sync_message.php',
+            'sources_custom/hooks/systems/upon_query/sugarcrm.php',
+            'sources_custom/sugar_crm_lib.php',
+            'sources_custom/sugarcrm.php',
+            'sources_custom/user_metadata_display.php',
         ];
     }
 }

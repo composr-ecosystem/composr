@@ -168,13 +168,13 @@ To configure Stealr go to Admin Zone > Setup > Configuration > eCommerce options
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/stealr.php',
             'lang_custom/EN/stealr.ini',
-            'sources_custom/hooks/systems/cron/stealr.php',
+            'sources_custom/hooks/systems/addon_registry/stealr.php',
             'sources_custom/hooks/systems/config/stealr_group.php',
             'sources_custom/hooks/systems/config/stealr_number.php',
             'sources_custom/hooks/systems/config/stealr_points.php',
             'sources_custom/hooks/systems/config/stealr_type.php',
+            'sources_custom/hooks/systems/cron/stealr.php',
         ];
     }
 }

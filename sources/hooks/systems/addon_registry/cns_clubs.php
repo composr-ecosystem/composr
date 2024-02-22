@@ -128,15 +128,15 @@ class Hook_addon_registry_cns_clubs
     public function get_file_list() : array
     {
         return [
+            'cms/pages/modules/cms_cns_groups.php',
+            'sources/hooks/modules/search/cns_clubs.php',
+            'sources/hooks/systems/addon_registry/cns_clubs.php',
+            'sources/hooks/systems/config/club_forum_parent_forum.php',
+            'sources/hooks/systems/config/club_forum_parent_forum_grouping.php',
+            'sources/hooks/systems/config/search_cns_clubs.php',
+            'sources/hooks/systems/notifications/cns_club.php',
             'themes/default/images/icons/menu/cms/clubs.svg',
             'themes/default/images/icons_monochrome/menu/cms/clubs.svg',
-            'sources/hooks/systems/notifications/cns_club.php',
-            'sources/hooks/systems/addon_registry/cns_clubs.php',
-            'sources/hooks/modules/search/cns_clubs.php',
-            'cms/pages/modules/cms_cns_groups.php',
-            'sources/hooks/systems/config/club_forum_parent_forum_grouping.php',
-            'sources/hooks/systems/config/club_forum_parent_forum.php',
-            'sources/hooks/systems/config/search_cns_clubs.php',
         ];
     }
 }

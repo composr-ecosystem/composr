@@ -151,8 +151,8 @@ class Hook_addon_registry_performance_compile
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/performance_compile.php',
             'data_custom/compile_in_includes.php',
+            'sources_custom/hooks/systems/addon_registry/performance_compile.php',
         ];
     }
 }

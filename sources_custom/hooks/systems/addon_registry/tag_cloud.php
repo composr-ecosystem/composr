@@ -156,8 +156,8 @@ class Hook_addon_registry_tag_cloud
     {
         return [
             'sources_custom/hooks/systems/addon_registry/tag_cloud.php',
-            'themes/default/templates_custom/BLOCK_SIDE_TAG_CLOUD.tpl',
             'themes/default/javascript_custom/tag_cloud.js',
+            'themes/default/templates_custom/BLOCK_SIDE_TAG_CLOUD.tpl',
         ];
     }
 }

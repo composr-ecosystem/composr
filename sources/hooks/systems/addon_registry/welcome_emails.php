@@ -128,18 +128,18 @@ class Hook_addon_registry_welcome_emails
     public function get_file_list() : array
     {
         return [
-            'themes/default/images/icons/menu/adminzone/setup/welcome_emails.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/setup/welcome_emails.svg',
-            'sources/hooks/systems/addon_registry/welcome_emails.php',
             'adminzone/pages/modules/admin_cns_welcome_emails.php',
             'lang/EN/cns_welcome_emails.ini',
+            'sources/cns_welcome_emails.php',
+            'sources/hooks/systems/actionlog/welcome_emails.php',
+            'sources/hooks/systems/addon_registry/welcome_emails.php',
+            'sources/hooks/systems/commandr_fs/welcome_emails.php',
             'sources/hooks/systems/cron/cns_welcome_emails.php',
             'sources/hooks/systems/preview/cns_welcome_email.php',
-            'sources/hooks/systems/commandr_fs/welcome_emails.php',
             'sources/hooks/systems/resource_meta_aware/welcome_email.php',
+            'themes/default/images/icons/menu/adminzone/setup/welcome_emails.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/setup/welcome_emails.svg',
             'themes/default/javascript/welcome_emails.js',
-            'sources/hooks/systems/actionlog/welcome_emails.php',
-            'sources/cns_welcome_emails.php',
         ];
     }
 }

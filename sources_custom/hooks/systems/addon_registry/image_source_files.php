@@ -151,11 +151,11 @@ class Hook_addon_registry_image_source_files
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/image_source_files.php',
             'data_custom/images/source_files/blank_emoticon.png',
             'data_custom/images/source_files/dark_emoticons/blink.gif',
             'data_custom/images/source_files/dark_emoticons/devil.gif',
             'data_custom/images/source_files/dark_emoticons/guitar.gif',
+            'data_custom/images/source_files/dark_emoticons/index.html',
             'data_custom/images/source_files/dark_emoticons/lol.gif',
             'data_custom/images/source_files/dark_emoticons/ninja2.gif',
             'data_custom/images/source_files/dark_emoticons/nod.gif',
@@ -164,8 +164,8 @@ class Hook_addon_registry_image_source_files
             'data_custom/images/source_files/dark_emoticons/rolleyes.gif',
             'data_custom/images/source_files/dark_emoticons/shake.gif',
             'data_custom/images/source_files/dark_emoticons/shutup.gif',
-            'data_custom/images/source_files/dark_emoticons/index.html',
             'data_custom/images/source_files/index.html',
+            'sources_custom/hooks/systems/addon_registry/image_source_files.php',
         ];
     }
 }
