@@ -106,10 +106,10 @@ function fix_modularisation_finished()
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_DOUBLE_REFERENCED_ADDON(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_DOUBLE_REFERENCED_ADDON(string $file, string $addon, string $responsible_addon) : ?object
 {
     global $MODULARISATION_ADDON_DATA;
 
@@ -137,10 +137,10 @@ function _fix_modularisation__MODULARISATION_DOUBLE_REFERENCED_ADDON(string $fil
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_DOUBLE_REFERENCED(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_DOUBLE_REFERENCED(string $file, string $addon, string $responsible_addon) : ?object
 {
     global $MODULARISATION_ADDON_DATA;
 
@@ -170,15 +170,15 @@ function _fix_modularisation__MODULARISATION_DOUBLE_REFERENCED(string $file, str
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_ICON_NOT_IN_CORE(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_ICON_NOT_IN_CORE(string $file, string $addon, string $responsible_addon) : ?object
 {
     global $MODULARISATION_ADDON_DATA;
 
     if (!isset($MODULARISATION_ADDON_DATA['core_all_icons'])) {
-        return false;
+        return null;
     }
 
     if (in_array($file, $MODULARISATION_ADDON_DATA['core_all_icons'])) {
@@ -196,10 +196,10 @@ function _fix_modularisation__MODULARISATION_ICON_NOT_IN_CORE(string $file, stri
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_CORE_ICON_NOT_IN_ADDON(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_CORE_ICON_NOT_IN_ADDON(string $file, string $addon, string $responsible_addon) : ?object
 {
     // Technically the same thing as a file without an addon defined
     return _fix_modularisation__MODULARISATION_UNKNOWN_ADDON($file, $addon, $responsible_addon);
@@ -211,14 +211,14 @@ function _fix_modularisation__MODULARISATION_CORE_ICON_NOT_IN_ADDON(string $file
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_WRONG_PACKAGE(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_WRONG_PACKAGE(string $file, string $addon, string $responsible_addon) : ?object
 {
     $contents = cms_file_get_contents_safe(get_file_base() . '/' . $file);
     if (!$contents) {
-        return false;
+        return null;
     }
 
     $pattern = '/@package (.*?)\n/s';
@@ -228,7 +228,7 @@ function _fix_modularisation__MODULARISATION_WRONG_PACKAGE(string $file, string 
     require_code('files');
     $success = cms_file_put_contents_safe(get_file_base() . '/' . $file, $contents_updated, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
     if (!$success) {
-        return false;
+        return null;
     }
 
     return do_lang_tempcode('SUCCESS');
@@ -240,24 +240,24 @@ function _fix_modularisation__MODULARISATION_WRONG_PACKAGE(string $file, string 
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_WRONG_ADDON_INFO(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_WRONG_ADDON_INFO(string $file, string $addon, string $responsible_addon) : ?object
 {
     $contents = cms_file_get_contents_safe(get_file_base() . '/' . $file);
     if (!$contents) {
-        return false;
+        return null;
     }
 
-    $pattern = '/$info\[\'addon\'\] = \'(.*?)\';/s';
+    $pattern = '/\$info\[\'addon\'\] = \'(.*?)\';/s';
     $replacement = '$info[\'addon\'] = \'' . $addon . '\';';
     $contents_updated = preg_replace($pattern, $replacement, $contents);
 
     require_code('files');
     $success = cms_file_put_contents_safe(get_file_base() . '/' . $file, $contents_updated, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
     if (!$success) {
-        return false;
+        return null;
     }
 
     return do_lang_tempcode('SUCCESS');
@@ -269,15 +269,15 @@ function _fix_modularisation__MODULARISATION_WRONG_ADDON_INFO(string $file, stri
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_UNKNOWN_ADDON(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_UNKNOWN_ADDON(string $file, string $addon, string $responsible_addon) : ?object
 {
     global $MODULARISATION_ADDON_DATA;
 
     if (!isset($MODULARISATION_ADDON_DATA[$responsible_addon])) {
-        return false;
+        return null;
     }
 
     if (in_array($file, $MODULARISATION_ADDON_DATA[$responsible_addon])) {
@@ -295,15 +295,15 @@ function _fix_modularisation__MODULARISATION_UNKNOWN_ADDON(string $file, string 
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_FILE_MISSING(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_FILE_MISSING(string $file, string $addon, string $responsible_addon) : ?object
 {
     global $MODULARISATION_ADDON_DATA;
 
     if (!isset($MODULARISATION_ADDON_DATA[$addon])) {
-        return false;
+        return null;
     }
 
     $index = array_search($file, $MODULARISATION_ADDON_DATA[$addon]);
@@ -322,15 +322,15 @@ function _fix_modularisation__MODULARISATION_FILE_MISSING(string $file, string $
  * @param  PATH $file The relevant file
  * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
  * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
- * @return ~Tempcode Results of execution (false: internal error)
+ * @return ?Tempcode Results of execution (null: internal error)
  * @ignore
  */
-function _fix_modularisation__MODULARISATION_ALIEN_FILE(string $file, string $addon, string $responsible_addon) : object|false
+function _fix_modularisation__MODULARISATION_ALIEN_FILE(string $file, string $addon, string $responsible_addon) : ?object
 {
     global $MODULARISATION_ADDON_DATA;
 
     if (!isset($MODULARISATION_ADDON_DATA[$addon])) {
-        return false;
+        return null;
     }
 
     if (in_array($file, $MODULARISATION_ADDON_DATA[$addon])) {

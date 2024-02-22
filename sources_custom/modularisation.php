@@ -184,6 +184,7 @@ function scan_modularisation($only_populate_data = false) : array
                         $data = cms_file_get_contents_safe(get_file_base() . '/' . $_path);
                         $check_package = _modularisation_should_check_package($data, $path);
 
+                        $m_count = 0;
                         if ($check_package) {
                             $matches = [];
                             $m_count = preg_match_all('#@package\s+(\w+)#', $data, $matches);
