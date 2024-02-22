@@ -48,16 +48,22 @@ function init__modularisation2()
  */
 function fix_modularisation(string $issue, string $file, string $addon, string $responsible_addon) : ?object
 {
+    $output = new Tempcode();
+    $output->attach($file . ': ');
+
     if (!addon_installed('composr_release_build')) {
-        return do_lang_tempcode('INTERNAL_ERROR');
+        $output->attach(do_lang_tempcode('INTERNAL_ERROR'));
+        return $output;
     }
 
     if (function_exists('_fix_modularisation__' . $issue)) {
         $result = call_user_func_array('_fix_modularisation__' . $issue, [$file, $addon, $responsible_addon]);
         if ($result === false) {
-            return do_lang_tempcode('INTERNAL_ERROR');
+            $output->attach(do_lang_tempcode('INTERNAL_ERROR'));
+            return $output;
         }
-        return $result;
+        $output->attach($result);
+        return $output;
     }
 
     return null;
@@ -66,12 +72,18 @@ function fix_modularisation(string $issue, string $file, string $addon, string $
 /**
  * Finalise and save changes to addon file lists.
  *
- * @return void
+ * @return Tempcode Results of execution
  */
-function fix_modularisation_finished()
+function fix_modularisation_finished() : object
 {
+    require_code('files');
+
     global $MODULARISATION_ADDON_DATA;
+
+    $out = new Tempcode();
+    $out->attach('<ul>');
     foreach ($MODULARISATION_ADDON_DATA as $hook => $files) {
+        $out->attach('<li>' . $hook . ': ');
         sort($files);
 
         $addon_file = null;
@@ -87,17 +99,31 @@ function fix_modularisation_finished()
         if ($addon_file !== null) {
             $hook_data = cms_file_get_contents_safe(get_file_base() . '/' . $addon_file);
             if (!$hook_data) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                $out->attach(do_lang_tempcode('INTERNAL_ERROR'));
+                $out->attach('</li>');
+                continue;
             }
 
             $pattern = '/public function get_file_list\(\) : array\s*{\s*return \[\n\s*(.*?)\s*\]\;\s*}/s';
             $replacement = "public function get_file_list() : array\n    {\n        return [\n" . $file_text . "\n        ];\n    }";
             $hook_data_updated = preg_replace($pattern, $replacement, $hook_data);
 
-            require_code('files');
-            cms_file_put_contents_safe(get_file_base() . '/' . $addon_file, $hook_data_updated, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+            $success = cms_file_put_contents_safe(get_file_base() . '/' . $addon_file, $hook_data_updated, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+            if (!$success) {
+                $out->attach(do_lang_tempcode('INTERNAL_ERROR'));
+                $out->attach('</li>');
+                continue;
+            }
+
+            $out->attach(do_lang_tempcode('MODULARISATION_REGISTRY_HOOK_SAVED'));
+            $out->attach('</li>');
+        } else {
+            $out->attach(do_lang_tempcode('MODULARISATION_MISSING_REGISTRY_HOOK'));
+            $out->attach('</li>');
         }
     }
+    $out->attach('</ul>');
+    return $out;
 }
 
 /**
