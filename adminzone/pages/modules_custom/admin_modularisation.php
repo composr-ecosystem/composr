@@ -152,6 +152,7 @@ class Module_admin_modularisation
 
         $current_section = '';
         $fields = new Tempcode();
+        $count = 0;
         foreach ($problems as $i => $problem) {
             list($issue, $file, $addon, $params) = $problem;
 
@@ -162,6 +163,12 @@ class Module_admin_modularisation
             }
 
             $fields->attach(form_input_tick(do_lang_tempcode('MODULARISATION_FILE_ITEM__' . strval(count($params)), $file, null, $params), do_lang_tempcode('DESCRIPTION_MODULARISATION_FILE_ITEM'), strtolower($issue) . '__' . strval($i), in_array($issue, $ticked_by_default), null, $file . '::' . $addon . '::' . $issue, false, !in_array($issue, $actionable)));
+
+            $count++;
+            if ($count >= 100) {
+                attach_message(do_lang_tempcode('MODULARISATION_TOO_MANY_ENTRIES'), 'warn');
+                break;
+            }
         }
 
         // Action items
@@ -204,7 +211,7 @@ class Module_admin_modularisation
         $out->attach('<ul>');
 
         foreach ($_POST as $key => $value) {
-            if (strpos($key, 'tick_on_form__') !== 0) {
+            if (strpos($key, 'tick_on_form__') === 0) {
                 $value = post_param_string(str_replace('tick_on_form__', '', $key), null);
                 if ($value === null) {
                     continue;
