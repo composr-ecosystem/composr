@@ -13,7 +13,9 @@
  * @package    testing_platform
  */
 
-// "aaa" as we want it to run first, else files not correctly modularised won't be tested
+// "aaa" as we want it to run first, else files not correctly modularised won't be tested.
+// You can also run the admin_modularisation module to fix some issues via a UI; you should still run this test though.
+// If this test is edited, you may need to also edit the code in sources_custom/modularisation.
 
 /**
  * Composr test case class (unit testing).
@@ -26,7 +28,6 @@ class aaa_modularisation_test_set extends cms_test_case
         parent::setUp();
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
-
         cms_ini_set('memory_limit', '500M');
     }
 
