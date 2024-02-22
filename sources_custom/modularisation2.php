@@ -53,7 +53,7 @@ function fix_modularisation(string $issue, string $file, string $addon, string $
     }
 
     if (function_exists('_fix_modularisation__' . $issue)) {
-        $result = call_user_func_array('_fix_modulerisation__' . $issue, [$file, $addon, $responsible_addon]);
+        $result = call_user_func_array('_fix_modularisation__' . $issue, [$file, $addon, $responsible_addon]);
         if ($result === false) {
             return do_lang_tempcode('INTERNAL_ERROR');
         }
