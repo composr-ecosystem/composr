@@ -331,7 +331,7 @@ function get_secure_random_number()
  * Calculate a reasonable cryptographic ratchet based on the server's CPU speed.
  *
  * @param  float $target_time The ratchet should not exceed this amount of time in seconds when calculating
- * @param  int $minimum_cost The minimum allowed ratchet
+ * @param  int $minimum_cost The minimum allowed ratchet; must be between 4 and 31
  * @return ?int The suggested ratchet to use (null: password_hash is not supported)
  */
 function calculate_reasonable_ratchet($target_time = 0.1, $minimum_cost = 4)
@@ -342,8 +342,16 @@ function calculate_reasonable_ratchet($target_time = 0.1, $minimum_cost = 4)
 
     $cost = ($minimum_cost - 1);
 
+    // Costs < 4 are not supported. This will be increased by 1 in the first iteration.
+    if ($cost < 3) {
+        $cost = 3;
+    }
+
     do {
         $cost++;
+        if ($cost > 31) { // Costs > 31 are not supported
+            break;
+        }
         $start = microtime(true);
         password_hash('test', PASSWORD_BCRYPT, ['cost' => $cost]);
         $end = microtime(true);
