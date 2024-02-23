@@ -2272,6 +2272,16 @@ function step_6()
     require_code('database_action');
     require_code('menus2');
     require_code('config');
+    require_code('crypt');
+
+    // Determine a default ratchet (we must set this before installing cns as we want the ratchet to apply to our default accounts)
+    $cost = calculate_reasonable_ratchet();
+    if ($cost !== null) {
+        require_code('config2');
+        set_option('crypt_ratchet', strval($cost));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '83dcbisducdiscubsdcaufbvkdhyfsgvuy', 'SOMETHING' => do_lang_tempcode('SET_DEFAULT_CRYPT_RATCHET', escape_html(integer_format($cost))))));
+    }
+
     include_cns();
 
     require_code('cns_install');
@@ -2316,6 +2326,7 @@ function big_installation_common()
     require_code('database_action');
     require_code('menus2');
     require_code('config');
+    require_code('config2');
     require_code('zones2');
 }
 
