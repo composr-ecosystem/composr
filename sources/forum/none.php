@@ -105,6 +105,19 @@ class Forum_driver_none extends Forum_driver_base
     }
 
     /**
+     * Edit a custom profile field.
+     *
+     * @param  string $old_name The name of the current custom field
+     * @param  string $new_name The new name of the custom profile field (blank: do not rename)
+     * @param  integer $length The new length of the custom field
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field($old_name, $new_name, $length)
+    {
+        return false;
+    }
+
+    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array
      * - name, the name of the attribute for _config.php

@@ -35,7 +35,7 @@ class Module_admin_version
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 17;
+        $info['version'] = 18;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         return $info;
@@ -309,11 +309,11 @@ class Module_admin_version
             );
             if (strpos(get_db_type(), 'sqlserver') !== false) { // Full-text search requires a single key
                 $fields = array(
-                    'id' => '*AUTO',
-                    'the_zone' => 'ID_TEXT',
-                    'the_page' => 'ID_TEXT',
-                    'the_theme' => 'ID_TEXT',
-                ) + $fields;
+                        'id' => '*AUTO',
+                        'the_zone' => 'ID_TEXT',
+                        'the_page' => 'ID_TEXT',
+                        'the_theme' => 'ID_TEXT',
+                    ) + $fields;
             }
             $GLOBALS['SITE_DB']->create_table('cached_comcode_pages', $fields);
 
@@ -480,18 +480,18 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_notification_code', array('l_notification_code'));
 
             $GLOBALS['SITE_DB']->create_table('digestives_tin', array( // Notifications queued up ready for the regular digest email
-                                                                       'id' => '*AUTO',
-                                                                       'd_subject' => 'LONG_TEXT',
-                                                                       'd_message' => 'LONG_TRANS__COMCODE',
-                                                                       'd_from_member_id' => '?MEMBER',
-                                                                       'd_to_member_id' => 'MEMBER',
-                                                                       'd_priority' => 'SHORT_INTEGER',
-                                                                       'd_no_cc' => 'BINARY',
-                                                                       'd_date_and_time' => 'TIME',
-                                                                       'd_notification_code' => 'ID_TEXT',
-                                                                       'd_code_category' => 'SHORT_TEXT',
-                                                                       'd_frequency' => 'INTEGER', // e.g. A_DAILY_EMAIL_DIGEST
-                                                                       'd_read' => 'BINARY',
+                'id' => '*AUTO',
+                'd_subject' => 'LONG_TEXT',
+                'd_message' => 'LONG_TRANS__COMCODE',
+                'd_from_member_id' => '?MEMBER',
+                'd_to_member_id' => 'MEMBER',
+                'd_priority' => 'SHORT_INTEGER',
+                'd_no_cc' => 'BINARY',
+                'd_date_and_time' => 'TIME',
+                'd_notification_code' => 'ID_TEXT',
+                'd_code_category' => 'SHORT_TEXT',
+                'd_frequency' => 'INTEGER', // e.g. A_DAILY_EMAIL_DIGEST
+                'd_read' => 'BINARY',
             ));
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'd_date_and_time', array('d_date_and_time'));
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'd_frequency', array('d_frequency'));
@@ -790,16 +790,15 @@ class Module_admin_version
                             }
 
                             $GLOBALS['SITE_DB']->query_insert('seo_meta_keywords', array(
-                                'meta_for_type' => $_keyword['meta_for_type'],
-                                'meta_for_id' => $_keyword['meta_for_id'],
-                            ) + insert_lang('meta_keyword', $keyword, 2));
+                                    'meta_for_type' => $_keyword['meta_for_type'],
+                                    'meta_for_id' => $_keyword['meta_for_id'],
+                                ) + insert_lang('meta_keyword', $keyword, 2));
                         }
                         delete_lang($_keyword['meta_keywords']);
                     }
                     $start += $max;
                 }
-            }
-            while (count($keywords) > 0);
+            } while (count($keywords) > 0);
 
             $GLOBALS['SITE_DB']->delete_table_field('seo_meta', 'meta_keywords');
 
@@ -842,12 +841,12 @@ class Module_admin_version
 
         if ((is_null($upgrade_from)) || ($upgrade_from < 17)) {
             $GLOBALS['SITE_DB']->create_table('alternative_ids', array( // Needs to be first, as install_create_custom_field needs it
-                                                                        'resource_type' => '*ID_TEXT',
-                                                                        'resource_id' => '*ID_TEXT',
-                                                                        'resource_moniker' => 'ID_TEXT',
-                                                                        'resource_label' => 'SHORT_TEXT',
-                                                                        'resource_guid' => 'ID_TEXT',
-                                                                        'resource_resource_fs_hook' => 'ID_TEXT',
+                'resource_type' => '*ID_TEXT',
+                'resource_id' => '*ID_TEXT',
+                'resource_moniker' => 'ID_TEXT',
+                'resource_label' => 'SHORT_TEXT',
+                'resource_guid' => 'ID_TEXT',
+                'resource_resource_fs_hook' => 'ID_TEXT',
             ));
             $GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_guid', array('resource_guid'));
             $GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_label', array('resource_label'/*, 'resource_type'key would be too long*/));
@@ -857,7 +856,7 @@ class Module_admin_version
 
             add_privilege('SUBMISSION', 'edit_meta_fields');
             add_privilege('SUBMISSION', 'perform_webstandards_check_by_default');
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('smart_topic_notification', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/1, /*required=*/1, '', 'tick', 0, '0');
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('smart_topic_notification', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'tick', 0, '0');
 
             $GLOBALS['SITE_DB']->create_table('email_bounces', array(
                 'id' => '*AUTO',
@@ -992,6 +991,10 @@ class Module_admin_version
                 'usage_tally' => 'INTEGER',
             ));
             $GLOBALS['SITE_DB']->create_index('post_tokens', 'generation_time', array('generation_time'));
+        }
+
+        if ((!is_null($upgrade_from)) && ($upgrade_from < 18)) { // LEGACY 10.0.46
+            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('smart_topic_notification', 'smart_topic_notification', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'tick', 0, '0');
         }
     }
 

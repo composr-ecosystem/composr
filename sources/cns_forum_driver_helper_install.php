@@ -55,6 +55,47 @@ function _helper_install_create_custom_field($this_ref, $name, $length, $locked 
 }
 
 /**
+ * Edit a custom profile field.
+ *
+ * @param  string $old_name The name of the current custom field
+ * @param  string $new_name The new name of the custom profile field (blank: do not rename)
+ * @param  integer $length The new length of the custom field
+ * @param  BINARY $locked Whether the field is locked
+ * @param  BINARY $viewable Whether the field is for viewing
+ * @param  BINARY $settable Whether the field is for setting
+ * @param  BINARY $required Whether the field is required
+ * @param  string $description Description
+ * @param  string $type The field type
+ * @param  BINARY $encrypted Whether the field is encrypted
+ * @param  ?string $default Default field value (null: standard for field type)
+ * @return boolean Whether the custom field was edited successfully
+ * @ignore
+ */
+function _helper_install_edit_custom_field($this_ref, $old_name, $new_name, $length, $locked = 1, $viewable = 0, $settable = 0, $required = 0, $description = '', $type = 'long_text', $encrypted = 0, $default = null)
+{
+    cns_require_all_forum_stuff();
+    require_code('cns_members_action2');
+
+    $old_name = 'cms_' . $old_name;
+    if ($new_name != '') {
+        $new_name = 'cms_' . $new_name;
+    } else {
+        $new_name = 'cms_' . $old_name;
+    }
+
+    $id = $this_ref->connection->query_select_value_if_there('f_custom_fields', 'id', array($this_ref->connection->translate_field_ref('cf_name') => $old_name));
+    if (!is_null($id)) {
+        if (is_null($default)) {
+            $default = (strpos($new_name, 'points') !== false) ? '0' : '';
+        }
+        cns_edit_custom_field($id, $new_name, $description, $default, $viewable, $viewable, $settable, $encrypted, $required, 0, 0, null, '', $type, 0, '');
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
  * The attributes have 4 values in an array
  * - name, the name of the attribute for _config.php

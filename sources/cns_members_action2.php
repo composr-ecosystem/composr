@@ -355,12 +355,12 @@ function cns_read_in_custom_fields($custom_fields, $member_id = null)
         }
 
         $value = $ob->inputted_to_field_value($member_id !== null, $custom_field, 'uploads/cns_cpf_upload', ($old_value === null) ? null : array('cv_value' => $old_value));
-        
+
         // Required field validation (a standard for all field hooks)
         if (($custom_field['cf_required'] == 1) && (($value == '') || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
             warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $custom_field['cf_name']));
         }
-        
+
         if ((fractional_edit()) && ($value != STRING_MAGIC_NULL)) {
             $rendered = $ob->render_field_value($custom_field, $value, 0, null, 'f_member_custom_fields', $member_id, 'ce_id', 'cf_id', 'field_' . strval($custom_field['id']), $member_id);
             $_POST['field_' . strval($custom_field['id']) . '__altered_rendered_output'] = is_object($rendered) ? $rendered->evaluate() : $rendered;
@@ -1339,7 +1339,7 @@ function cns_unban_member($member_id)
  * @param  BINARY $required Whether the field is to be shown on the join form
  * @param  BINARY $show_in_posts Whether this field is shown in posts and places where member details are highlighted (such as an image in a member gallery).
  * @param  BINARY $show_in_post_previews Whether this field is shown in preview places, such as in the forum member tooltip.
- * @param  integer $order The order of this field relative to other fields.
+ * @param  ?integer $order The order of this field relative to other fields. (null: keep the current order)
  * @param  LONG_TEXT $only_group The usergroups that this field is confined to (comma-separated list).
  * @param  ID_TEXT $type The type of the field.
  * @set    short_text long_text short_trans long_trans integer upload picture url list tick float
@@ -1367,7 +1367,6 @@ function cns_edit_custom_field($id, $name, $description, $default, $public_view,
         'cf_required' => $required,
         'cf_show_in_posts' => $show_in_posts,
         'cf_show_in_post_previews' => $show_in_post_previews,
-        'cf_order' => $order,
         'cf_only_group' => $only_group,
         'cf_type' => $type,
         'cf_show_on_join_form' => $show_on_join_form,
@@ -1375,6 +1374,10 @@ function cns_edit_custom_field($id, $name, $description, $default, $public_view,
     );
     $map += lang_remap('cf_name', $_name, $name, $GLOBALS['FORUM_DB']);
     $map += lang_remap('cf_description', $_description, $description, $GLOBALS['FORUM_DB']);
+
+    if ($order !== null) {
+        $map['cf_order'] = $order;
+    }
 
     $GLOBALS['FORUM_DB']->query_update('f_custom_fields', $map, array('id' => $id), '', 1);
 

@@ -174,6 +174,28 @@ class Forum_driver_cns extends Forum_driver_base
     }
 
     /**
+     * Edit a custom profile field.
+     *
+     * @param  string $old_name The name of the current custom field
+     * @param  string $new_name The new name of the custom profile field (blank: do not rename)
+     * @param  integer $length The new length of the custom field
+     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $viewable Whether the field is for viewing
+     * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $required Whether the field is required
+     * @param  string $description Description
+     * @param  string $type The field type
+     * @param  BINARY $encrypted Whether the field is encrypted
+     * @param  ?string $default Default field value (null: standard for field type)
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field($old_name, $new_name, $length, $locked = 1, $viewable = 0, $settable = 0, $required = 0, $description = '', $type = 'long_text', $encrypted = 0, $default = null)
+    {
+        require_code('cns_forum_driver_helper_install');
+        return _helper_install_edit_custom_field($this, $old_name, $new_name, $length, $locked, $viewable, $settable, $required, $description, $type, $encrypted, $default);
+    }
+
+    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array
      * - name, the name of the attribute for _config.php
@@ -955,6 +977,38 @@ class Forum_driver_cns extends Forum_driver_base
         $sql .= ' ORDER BY id';
         $tempid = $this->connection->query_value_if_there($sql);
         return $tempid;
+    }
+
+    /**
+     * Get rows of members after the given one.
+     * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
+     *
+     * @param  ?MEMBER $member_id The member ID to increment (null: find the very first members)
+     * @param  integer $total Number of members to retrieve
+     * @return array Member rows
+     */
+    public function get_next_members($member_id, $total = 1)
+    {
+        $sql = 'SELECT * FROM ' . $this->connection->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        if ($member_id !== null) {
+            $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
+            $sql .= ' AND (m_join_time>' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id>' . strval($member_id) . ')';
+        }
+        $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        if (addon_installed('validation')) {
+            $sql .= ' AND m_validated=1';
+        }
+        $sql .= ' ORDER BY m_join_time ASC,id ASC';
+        $rows = $this->connection->query($sql, $total);
+
+        // Reset member row cache to free memory
+        unset($this->MEMBER_ROWS_CACHED);
+        $this->MEMBER_ROWS_CACHED = [];
+        foreach ($rows as $row) {
+            $this->MEMBER_ROWS_CACHED[$row['id']] = $row;
+        }
+
+        return $rows;
     }
 
     /**
