@@ -121,7 +121,7 @@ function js_compile($j, $js_cache_path, $minify = true)
         }
     }
 
-    cms_profile_start_for('js_compile');
+    cms_profile_start_for('js_compile file ' . $j);
 
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS;
     $temp_keep_markers = $KEEP_MARKERS;
@@ -158,16 +158,25 @@ function js_compile($j, $js_cache_path, $minify = true)
         $tpl_params['URL_PATTERNS'] = array_values($url_patterns);
     }
     require_code('tempcode');
+    cms_profile_start_for('js_compile: do_template');
     $js = do_template($j, $tpl_params, null, false, null, '.js', 'javascript');
+    cms_profile_end_for('js_compile: do_template');
+
     $KEEP_MARKERS = $temp_keep_markers;
     $SHOW_EDIT_LINKS = $temp_show_edit_links;
     global $ATTACHED_MESSAGES_RAW;
     $num_msgs_before = count($ATTACHED_MESSAGES_RAW);
+
+    cms_profile_start_for('js_compile: do_template->evaluate');
     $out = $js->evaluate();
+    cms_profile_end_for('js_compile: do_template->evaluate');
+
     $num_msgs_after = count($ATTACHED_MESSAGES_RAW);
     $success_status = ($num_msgs_before == $num_msgs_after);
     if ($minify) {
+        cms_profile_start_for('js_compile: js_minify');
         $out = js_minify($out);
+        cms_profile_end_for('js_compile: js_minify');
     }
 
     if (($out == '') || ($minify)) {
@@ -180,10 +189,12 @@ function js_compile($j, $js_cache_path, $minify = true)
     if (!$success_status) {
         @touch($js_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
     } else {
+        cms_profile_start_for('js_compile: compress_cms_stub_file');
         compress_cms_stub_file($js_cache_path);
+        cms_profile_end_for('js_compile: compress_cms_stub_file');
     }
 
-    cms_profile_end_for('js_compile', $j);
+    cms_profile_end_for('js_compile file ' . $j);
 }
 
 /**
@@ -217,7 +228,7 @@ function compress_cms_stub_file($stub_file)
  */
 function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $minify = true)
 {
-    cms_profile_start_for('css_compile');
+    cms_profile_start_for('css_compile file ' . $c);
 
     if ($c != 'global') { // We need to make sure the global.css file is parsed, as it contains some shared THEME_WIZARD_COLOR variables that Tempcode will pick up on
         $found = find_template_place('global', '', $active_theme, '.css', 'css');
@@ -229,21 +240,28 @@ function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $mi
 
         if (strpos(cms_file_get_contents_safe($global_full_path), '{$THEME_WIZARD_COLOR,') !== false) {
             require_code('tempcode_compiler');
+            cms_profile_start_for('css_compile: template_to_tempcode');
             $temp = template_to_tempcode(cms_file_get_contents_safe($global_full_path), 0, false, $c, $active_theme, user_lang());
             $temp->evaluate(); // We just need it to evaluate, not do anything with it
+            cms_profile_end_for('css_compile: template_to_tempcode');
         }
     }
 
+    cms_profile_start_for('css_compile: _css_compile');
     list($success_status, $out) = _css_compile($active_theme, $theme, $c, $full_path, $minify);
+    cms_profile_end_for('css_compile: _css_compile');
+
     require_code('files');
     $success_status = cms_file_put_contents_safe($css_cache_path, $out, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     if (!$success_status) {
         @touch($css_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
     } else {
+        cms_profile_start_for('css_compile: compress_cms_stub_file');
         compress_cms_stub_file($css_cache_path);
+        cms_profile_end_for('css_compile: compress_cms_stub_file');
     }
 
-    cms_profile_end_for('css_compile', $c);
+    cms_profile_end_for('css_compile file ' . $c);
 }
 
 /**
@@ -260,6 +278,8 @@ function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $mi
  */
 function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
 {
+    cms_profile_start_for('_css_compile file ' . $c);
+
     // Book-keeping, then loading up the CSS text
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS;
     $keep_markers = $KEEP_MARKERS;
@@ -277,8 +297,15 @@ function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
     global $ATTACHED_MESSAGES_RAW;
     $num_msgs_before = count($ATTACHED_MESSAGES_RAW);
     $suffix = '.' . get_file_extension($full_path);
+
+    cms_profile_start_for('_css_compile: _do_template');
     $css = _do_template($theme, (strpos($full_path, '/css_custom/') !== false) ? '/css_custom/' : '/css/', $c, $c, user_lang(), $suffix, $active_theme);
+    cms_profile_end_for('_css_compile: _do_template');
+
+    cms_profile_start_for('_css_compile: _do_template->evaluate');
     $out = $css->evaluate();
+    cms_profile_end_for('_css_compile: _do_template->evaluate');
+
     $num_msgs_after = count($ATTACHED_MESSAGES_RAW);
     global $CSS_COMPILE_ACTIVE_THEME;
     $CSS_COMPILE_ACTIVE_THEME = $active_theme;
@@ -294,7 +321,9 @@ function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
 
     // Minification
     if ($minify) {
+        cms_profile_start_for('_css_compile: css_minify');
         $out = css_minify($out);
+        cms_profile_end_for('_css_compile: css_minify');
     }
 
     // "Do not edit the cache file" warning
@@ -307,6 +336,9 @@ function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
     // Book-keeping then finish
     $KEEP_MARKERS = $keep_markers;
     $SHOW_EDIT_LINKS = $show_edit_links;
+
+    cms_profile_end_for('_css_compile file ' . $c);
+
     if ($num_msgs_after > $num_msgs_before) { // Was an error (e.g. missing theme image), so don't cache so that the error will be visible on refresh and hence debugged
         return array(false, $out);
     }

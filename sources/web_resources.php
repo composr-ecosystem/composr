@@ -113,7 +113,9 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
     }
 
     if (($support_smart_decaching) || (!$is_cached)) {
+        cms_profile_start_for('javascript_enforce: find_template_place');
         $found = find_template_place($j, '', $theme, '.js', 'javascript');
+        cms_profile_end_for('javascript_enforce: find_template_place');
         if ($found === null) {
             return '';
         }
@@ -141,7 +143,9 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
         }
 
         require_code('css_and_js');
+        cms_profile_start_for('javascript_enforce: js_compile');
         js_compile($j, $js_cache_path, $minify);
+        cms_profile_end_for('javascript_enforce: js_compile');
     }
 
     if (@intval(filesize($js_cache_path)) == 0/*@ for race condition*/) {
@@ -351,7 +355,9 @@ function css_enforce($c, $theme = null, $allow_defer = false)
     }
 
     if (($support_smart_decaching) || (!$is_cached) || ($text_only)) {
+        cms_profile_start_for('css_enforce: find_template_place');
         $found = find_template_place($c, '', $theme, '.css', 'css');
+        cms_profile_end_for('css_enforce: find_template_place');
         if ($found === null) {
             return '';
         }
@@ -388,7 +394,10 @@ function css_enforce($c, $theme = null, $allow_defer = false)
         }
 
         require_code('css_and_js');
+
+        cms_profile_start_for('css_enforce: css_compile');
         css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $minify);
+        cms_profile_end_for('css_enforce: css_compile');
     }
 
     if (@intval(filesize($css_cache_path)) == 0/*@ for race condition*/) {

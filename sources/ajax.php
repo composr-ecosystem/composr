@@ -587,10 +587,13 @@ function load_template_script()
  */
 function sheet_script()
 {
+    $sheet = get_param_string('sheet');
+
+    cms_profile_start_for('sheet_script: ' . $sheet);
+
     prepare_for_known_ajax_response();
 
     header('Content-Type: text/css');
-    $sheet = get_param_string('sheet');
     if ($sheet != '') {
         $theme = get_param_string('theme', null);
         if ((!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) {
@@ -602,6 +605,8 @@ function sheet_script()
         }
     }
 
+    cms_profile_end_for('sheet_script: ' . $sheet);
+
     cms_safe_exit_flow();
 }
 
@@ -612,10 +617,13 @@ function sheet_script()
  */
 function script_script()
 {
+    $script = get_param_string('script');
+
+    cms_profile_start_for('script_script: ' . $script);
+
     prepare_for_known_ajax_response();
 
     header('Content-Type: application/javascript');
-    $script = get_param_string('script');
     if ($script != '') {
         $theme = get_param_string('theme', null);
         if ((!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) {
@@ -626,6 +634,8 @@ function script_script()
             echo @str_replace('../../../', '', cms_file_get_contents_safe($path));
         }
     }
+
+    cms_profile_end_for('script_script: ' . $script);
 
     cms_safe_exit_flow();
 }
