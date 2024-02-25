@@ -356,7 +356,11 @@ function ticket_add_post($member_id, $ticket_id, $ticket_type_id, $title, $post,
     // Get the forum ID first
     $fid = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'forum_id', array('ticket_id' => $ticket_id));
     if (is_null($fid)) {
-        $fid = get_ticket_forum_id($member_id, $ticket_type_id);
+        $_member_id = $member_id;
+        if (is_null($_member_id)) {
+            $_member_id = get_member();
+        }
+        $fid = get_ticket_forum_id($_member_id, $ticket_type_id);
     }
 
     // Find member ID
