@@ -65,6 +65,7 @@ class standard_dir_files_test_set extends cms_test_case
                 'a37601228b335ab973d9b6a891e22173', // uploads/incoming/.htaccess
                 'f2e4764b5f1f516f2a8f09fc3d861a66', // uploads/*/.htaccess
                 '6df8752284886eee788dd3d1f3cfb5d3', // */pages/modules*/.htaccess
+                '8fbbec6b8fd8a4999a5b07f5ddcf5ea8', // */pages/modules*/.htaccess (sometimes Windows will have the same hash as Linux)
                 '4eb44a47deb8ed9ce56d3fe7d7b4ab89', // data*/images/.htaccess, uploads/.htaccess
                 'e78c651a22dea4ad388b386baa620b8a', // */pages/html*/EN/.htaccess
                 '13dadee3af952ab7364f6927d3ba8a8b', // sources/.htaccess
@@ -94,7 +95,7 @@ class standard_dir_files_test_set extends cms_test_case
             );
         }
         foreach ($types as $hash => $file_paths) {
-            $this->assertTrue(in_array($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths) . ', hash ' . $hash);
+            $this->assertTrue(in_array($hash, $valid_hashes), 'Possibly invalid .htaccess files: ' . serialize($file_paths) . ', hash ' . $hash);
         }
     }
 

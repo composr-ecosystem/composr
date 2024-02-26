@@ -854,7 +854,7 @@ class Forum_driver_aef extends Forum_driver_base
 
         // Reset member row cache to free memory
         unset($this->MEMBER_ROWS_CACHED);
-        $this->MEMBER_ROWS_CACHED = [];
+        $this->MEMBER_ROWS_CACHED = array();
         foreach ($rows as $row) {
             $this->MEMBER_ROWS_CACHED[$row['id']] = $row;
         }

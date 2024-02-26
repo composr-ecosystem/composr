@@ -721,6 +721,7 @@ class Hook_addon_registry_shopping
             'URL' => placeholder_url(),
             'VIEW_URL' => placeholder_url(),
             'ALLOW_RATING' => false,
+            'FIELDS_GRID' => placeholder_table(),
         );
         $entry = do_lorem_template('CATALOGUE_products_GRID_ENTRY_WRAP', $map);
 

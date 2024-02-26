@@ -57,6 +57,7 @@ function _helper_install_create_custom_field($this_ref, $name, $length, $locked 
 /**
  * Edit a custom profile field.
  *
+ * @param  object $this_ref Link to the real forum driver
  * @param  string $old_name The name of the current custom field
  * @param  string $new_name The new name of the custom profile field (blank: do not rename)
  * @param  integer $length The new length of the custom field
