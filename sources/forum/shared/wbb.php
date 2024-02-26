@@ -135,6 +135,39 @@ class Forum_driver_wbb_shared extends Forum_driver_base
     }
 
     /**
+     * Edit a custom field.
+     *
+     * @param  string $old_name The name of the current custom field
+     * @param  string $new_name The new name of the custom field (blank: do not rename))
+     * @param  integer $length The length of the custom field
+     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $viewable Whether the field is for viewing
+     * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $required Whether the field is required
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field($old_name, $new_name, $length, $locked = 1, $viewable = 0, $settable = 0, $required = 0)
+    {
+        if (!array_key_exists('bb_forum_number', $_POST)) {
+            $_POST['bb_forum_number'] = ''; // for now
+        }
+
+        $old_name = 'cms_' . $old_name;
+        if ($new_name != '') {
+            $new_name = 'cms_' . $new_name;
+        } else {
+            $new_name = 'cms_' . $old_name;
+        }
+
+        $test = $this->connection->query('SELECT profilefieldid FROM bb' . $_POST['bb_forum_number'] . '_profilefields WHERE ' . db_string_equal_to('title', $old_name));
+        if (array_key_exists(0, $test)) {
+            $this->connection->query('UPDATE bb' . $_POST['bb_forum_number'] . '_profilefields SET title=\'' . db_escape_string($new_name) . '\', required=' . strval(intval($required)) . ', hidden=' . strval(1 - intval($viewable)) . ', maxlength=' . strval($length) . ', fieldsize=' . strval($length) . ' WHERE profilefieldid=' . strval($test[0]['profilefieldid']));
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array
      * - name, the name of the attribute for _config.php

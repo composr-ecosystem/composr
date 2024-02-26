@@ -113,6 +113,22 @@ class Forum_driver_aef extends Forum_driver_base
     }
 
     /**
+     * Edit a custom profile field.
+     *
+     * @param  string $old_name The name of the current custom field
+     * @param  string $new_name The new name of the custom profile field (blank: do not rename)
+     * @param  integer $length The new length of the custom field
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field($old_name, $new_name, $length)
+    {
+        if ($new_name != '') {
+            $this->connection->query('ALTER TABLE ' . $this->connection->get_table_prefix() . 'users RENAME COLUMN cms_' . $old_name . ' TO cms_' . $new_name, null, null, true);
+        }
+        return true;
+    }
+
+    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array
      * - name, the name of the attribute for _config.php
@@ -819,6 +835,31 @@ class Forum_driver_aef extends Forum_driver_base
     {
         $tempid = $this->connection->query_value_if_there('SELECT id FROM ' . $this->connection->get_table_prefix() . 'users WHERE id>' . strval($member) . ' ORDER BY id');
         return $tempid;
+    }
+
+    /**
+     * Get rows of members after the given one.
+     * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
+     *
+     * @param  ?MEMBER $member_id The member ID to increment (null: find the very first members)
+     * @param  integer $total Number of members to retrieve
+     * @return array Member rows
+     */
+    public function get_next_members($member_id, $total = 1)
+    {
+        // LEGACY
+        $sql = 'SELECT * FROM ' . $this->connection->get_table_prefix() . 'users WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        $sql .= ' ORDER BY id ASC';
+        $rows = $this->connection->query($sql, $total);
+
+        // Reset member row cache to free memory
+        unset($this->MEMBER_ROWS_CACHED);
+        $this->MEMBER_ROWS_CACHED = array();
+        foreach ($rows as $row) {
+            $this->MEMBER_ROWS_CACHED[$row['id']] = $row;
+        }
+
+        return $rows;
     }
 
     /**

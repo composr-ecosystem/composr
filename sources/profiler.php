@@ -107,6 +107,8 @@ function _cms_profile_start_for($identifier)
         'specifics' => null,
     );
     $PROFILER_DATA[$identifier][] = $at;
+
+    _cms_profile_log_line(_cms_profile_generate_line($identifier, $at, 0));
 }
 
 /**
@@ -134,10 +136,10 @@ function _cms_profile_end_for($identifier, $specifics = null)
     $time_start = $at['time_start'];
     $time_end = microtime(true);
     $at = array(
-              'time_end' => $time_end,
-              'time_length' => ($time_end - $time_start),
-              'specifics' => $specifics,
-          ) + $at;
+            'time_end' => $time_end,
+            'time_length' => ($time_end - $time_start),
+            'specifics' => $specifics,
+        ) + $at;
 
     _cms_profile_log_line(_cms_profile_generate_line($identifier, $at, $key + 1));
 }
@@ -154,9 +156,17 @@ function _cms_profile_end_for($identifier, $specifics = null)
  */
 function _cms_profile_generate_line($identifier, $at, $cnt)
 {
+    require_code('files');
+
     $line = $identifier;
-    $line .= '(x' . strval($cnt) . ')';
-    $line .= str_repeat(' ', max(1, 55 - strlen($line))) . float_to_raw_string($at['time_length'], 4) . 's';
+    if ($cnt < 1) {
+        $line .= '(START)';
+        $line .= str_repeat(' ', max(1, 62 - strlen($line)));
+    } else {
+        $line .= '(x' . strval($cnt) . ')';
+        $line .= str_repeat(' ', max(1, 55 - strlen($line))) . float_to_raw_string($at['time_length'], 4) . 's';
+    }
+    $line .= '    ' . clean_file_size(memory_get_usage());
     if (!is_null($at['specifics'])) {
         $line .= '  ' . $at['specifics'];
     }

@@ -124,6 +124,49 @@ class Forum_driver_vb_shared extends Forum_driver_base
     }
 
     /**
+     * Edit a custom field
+     *
+     * @param  string $old_name The name of the current custom field
+     * @param  string $new_name The new name of the custom field (blank: do not rename)
+     * @param  integer $length The length of the new custom field
+     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $viewable Whether the field is for viewing
+     * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $required Whether the field is required
+     * @return boolean Whether the custom field was created successfully
+     */
+    public function install_edit_custom_field($old_name, $new_name, $length, $locked = 1, $viewable = 0, $settable = 0, $required = 0)
+    {
+        if (!array_key_exists('vb_table_prefix', $_POST)) {
+            $_POST['vb_table_prefix'] = ''; // for now
+        }
+
+        $old_name = 'cms_' . $old_name;
+        if ($new_name != '') {
+            $new_name = 'cms_' . $new_name;
+        } else {
+            $new_name = 'cms_' . $old_name;
+        }
+
+        if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
+            $r = $this->connection->query('SELECT f.profilefieldid FROM ' . $this->connection->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->connection->get_table_prefix() . 'phrase p ON (' . db_string_equal_to('product', 'vbulletin') . ' AND p.varname=' . db_function('CONCAT', array('\'field\'', 'f.profilefieldid', '\'_title\'')) . ') WHERE ' . db_string_equal_to('p.text', $old_name));
+        } else {
+            $r = $this->connection->query('SELECT profilefieldid FROM ' . $_POST['vb_table_prefix'] . 'profilefield WHERE ' . db_string_equal_to('title', $old_name) . '\'');
+        }
+
+        if (array_key_exists(0, $r)) {
+            if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
+                $this->connection->query_update('profilefield', array('required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'size' => $length, 'editable' => $settable), array('profilefieldid' => $r[0]['profilefieldid']), true);
+                $this->connection->query_update('phrase', array('text' => $new_name), array('fieldname' => 'cprofilefield', 'varname' => 'field' . strval($r[0]['profilefieldid']) . '_title'));
+            } else {
+                $this->connection->query('UPDATE ' . $_POST['vb_table_prefix'] . 'profilefield SET title=\'' . db_escape_string($new_name) . '\', required=' . strval(intval($required)) . ', hidden=' . strval(intval(1 - $viewable)) . ', maxlength=\'' . strval($length) . '\', size=\'' . strval($length) . '\', editable=' . strval(intval($settable)) . ' WHERE profilefieldid=' . strval($r['profilefieldid']));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Get the forums' table prefix for the database.
      *
      * @return string The forum database table prefix

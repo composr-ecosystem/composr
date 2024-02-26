@@ -147,6 +147,33 @@ class Forum_driver_ipb2 extends forum_driver_ipb_shared
     }
 
     /**
+     * Edit a custom profile field.
+     *
+     * @param  string $old_name The name of the current custom field
+     * @param  string $new_name The new name of the custom profile field (blank: do not rename)
+     * @param  integer $length The new length of the custom field
+     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $viewable Whether the field is for viewing
+     * @param  BINARY $settable Whether the field is for setting
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field($old_name, $new_name, $length, $locked = 1, $viewable = 0, $settable = 0)
+    {
+        $old_name = 'cms_' . $old_name;
+        if ($new_name != '') {
+            $new_name = 'cms_' . $new_name;
+        } else {
+            $new_name = 'cms_' . $old_name;
+        }
+        $id = $this->connection->query_select_value_if_there('pfields_data', 'pf_id', array('pf_title' => $old_name));
+        if (!is_null($id)) {
+            $this->connection->query_update('pfields_data', array('pf_title' => $new_name, 'pf_member_hide' => 1 - $viewable, 'pf_max_input' => $length, 'pf_member_edit' => $settable), array('pf_title' => $old_name));
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Set a custom profile field's value, if the custom field exists. Only works on specially-named (titled) fields.
      *
      * @param  MEMBER $member The member ID

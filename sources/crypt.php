@@ -223,7 +223,7 @@ function ratchet_hash($password, $salt, $legacy_style = 0)
 {
     if (function_exists('password_hash')) {
         // NB: We don't pass the salt separately, we let password_hash generate its own internal salt also (that builds into the hash). So it is double salted.
-        $ratchet = max(10, intval(get_option('crypt_ratchet')));
+        $ratchet = max(4, min(31, intval(get_option('crypt_ratchet'))));
         return password_hash($salt . md5($password), PASSWORD_BCRYPT, array('cost' => $ratchet));
     }
 
@@ -268,7 +268,7 @@ function produce_salt()
     if ((function_exists('openssl_random_pseudo_bytes')) && (get_value('disable_openssl') !== '1')) {
         $u = substr(md5(openssl_random_pseudo_bytes(13)), 0, 13);
     } elseif (function_exists('password_hash')) { // password_hash will include a randomised component
-        $ratchet = max(10, intval(get_option('crypt_ratchet')));
+        $ratchet = max(4, min(31, intval(get_option('crypt_ratchet'))));
         return substr(md5(password_hash(uniqid('', true), PASSWORD_BCRYPT, array('cost' => $ratchet))), 0, 13);
     } else {
         $u = substr(md5(uniqid(strval(get_secure_random_number()), true)), 0, 13);
@@ -318,11 +318,45 @@ function get_secure_random_number()
             $code = -$code;
         }
     } elseif (function_exists('password_hash')) { // password_hash will include a randomised component
-        $ratchet = max(10, intval(get_option('crypt_ratchet')));
+        $ratchet = max(4, min(31, intval(get_option('crypt_ratchet'))));
         $hash = password_hash(uniqid('', true), PASSWORD_BCRYPT, array('cost' => $ratchet));
         return crc32($hash);
     } else {
         $code = mt_rand(0, min(2147483647, mt_getrandmax()));
     }
     return $code;
+}
+
+/**
+ * Calculate a reasonable cryptographic ratchet based on the server's CPU speed.
+ *
+ * @param  float $target_time The ratchet should not exceed this amount of time in seconds when calculating
+ * @param  integer $minimum_cost The minimum allowed ratchet; must be between 4 and 31
+ * @return ?integer The suggested ratchet to use (null: password_hash is not supported)
+ */
+function calculate_reasonable_ratchet($target_time = 0.1, $minimum_cost = 4)
+{
+    if (!function_exists('password_hash')) {
+        return null;
+    }
+
+    $cost = ($minimum_cost - 1);
+
+    // Costs < 4 are not supported. This will be increased by 1 in the first iteration.
+    if ($cost < 3) {
+        $cost = 3;
+    }
+
+    do {
+        $cost++;
+        if ($cost > 31) { // Costs > 31 are not supported
+            break;
+        }
+        $start = microtime(true);
+        password_hash('test', PASSWORD_BCRYPT, array('cost' => $cost));
+        $end = microtime(true);
+        $elapsed_time = $end - $start;
+    } while ($elapsed_time < $target_time);
+
+    return ($cost - 1); // We don't want to use the cost that exceeded our target time; use the one below it.
 }
