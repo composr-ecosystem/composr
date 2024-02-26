@@ -78,6 +78,8 @@ function upgrader_db_upgrade_screen() : string
         $out .= do_lang('UPGRADER_MUST_UPGRADE_CNS', upgrader_link('upgrader.php?type=db_upgrade_cns', do_lang('UPGRADER_UPGRADE_CNS')));
     }
 
+    set_value('db_version', strval(cms_version_time_db()), true);
+
     return $out;
 }
 
@@ -439,6 +441,18 @@ function version_specific() : bool
                 @unlink(get_custom_file_base() . '/imports/addons/' . $addon . '.tar');
             }
 
+            // Renamed addons (old name => new name)
+            //  Note that any non-bundled addons are not handled by Composr's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
+            $renamed_addons = [
+                'unvalidated' => 'validation'
+            ];
+            foreach ($renamed_addons as $old_addon => $new_addon) {
+                $GLOBALS['SITE_DB']->query_update('addons', ['addon_name' => $new_addon], ['addon_name' => $old_addon]);
+                @copy(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar', get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
+                @fix_permissions(get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
+                @unlink(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar');
+            }
+
             // File replacements
             $reps = [
                 '#main_activities#' => 'main_activity_feed',
@@ -566,7 +580,6 @@ function cns_upgrade() : bool
     } else {
         $version_database_cns = floatval($_version_database_cns);
     }
-
 
     if ($version_files != $version_database_cns) {
         global $SITE_INFO;

@@ -442,13 +442,11 @@ function upgrader_menu_screen() : string
     $l_customisations = do_lang('UPGRADER_CUSTOMISATIONS');
     $l_error_correction = do_lang('UPGRADER_ERROR_CORRECTION');
 
-    // Show version number
-    $a = float_to_raw_string(cms_version_number(), 10, true);
-    $b = get_value('version');
+    // Show database version number
+    $a = strval(cms_version_time_db());
+    $b = get_value('db_version', null, true);
     if ($b === null) {
         $b = do_lang('UNKNOWN');
-    } else {
-        $b = float_to_raw_string(floatval($b), 10, true); // Normalise decimal places
     }
     $l_up_info = do_lang('UPGRADER_UP_INFO' . (($a == $b) ? '_1' : '_2'), $a, $b);
 
@@ -513,7 +511,7 @@ function upgrader_menu_screen() : string
 
     $out = '';
 
-    $step_num = 0;
+    $step_num = 1;
 
     $out .= "
         <p>{$l_choices}</p>
@@ -543,7 +541,7 @@ function upgrader_menu_screen() : string
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><th>X</th><td>{$l_not_for_patch} {$l_tutorial}</td><td>" . escape_html(display_time_period(60 * 120)) . "</td></tr>
+                    <tr><th>1</th><td>{$l_tutorial}<br />{$l_not_for_patch}</td><td>" . escape_html(display_time_period(60 * 120)) . "</td></tr>
     ";
     $step_num++;
     $_step_num = strval($step_num);
@@ -563,12 +561,12 @@ function upgrader_menu_screen() : string
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_not_for_patch} {$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--></td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 10))) . "&nbsp;&dagger;</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--><br />{$l_not_for_patch}</td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 10))) . "&nbsp;&dagger;</td></tr>
     ";
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_not_for_patch} {$l_db_upgrade}<br />{$l_up_info}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_db_upgrade}<br />{$l_up_info}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
     ";
     if (is_maintained('theme_upgrader')) {
         $step_num++;

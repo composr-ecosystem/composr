@@ -189,14 +189,17 @@ class Hook_health_check_integrity extends Hook_Health_Check
         }
 
         $version_files = cms_version_number();
-
         $_version_database = get_value('version');
         $version_database = floatval($_version_database);
-        $this->assertTrue($version_files <= $version_database, 'Database seems to need an upgrade (' . float_format($version_files, 1) . ' vs ' . float_format($version_database, 1) . '), run upgrader');
+        $this->assertTrue($version_files <= $version_database, 'The software seems to need an upgrade (on-disk ' . float_format($version_files, 1) . ' vs in-database ' . float_format($version_database, 1) . '), run upgrader');
+
+        $version_files_database = strval(cms_version_time_db());
+        $version_database_database = get_value('db_version', 'unknown', true);
+        $this->assertTrue($version_files <= $version_database, 'The database seems to need an upgrade (on-disk ' . $version_files_database . ' vs in-database ' . $version_database_database . '), run upgrader');
 
         $_version_database = get_value('cns_version');
         $version_database = floatval($_version_database);
-        $this->assertTrue($version_files <= $version_database, 'Database seems to need an upgrade (' . float_format($version_files, 1) . ' vs ' . float_format($version_database, 1) . '), run upgrader');
+        $this->assertTrue($version_files <= $version_database, 'Conversr seems to need an upgrade (on-disk ' . float_format($version_files, 1) . ' vs in-database ' . float_format($version_database, 1) . '), run upgrader');
     }
 
     /**

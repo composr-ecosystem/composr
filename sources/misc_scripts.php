@@ -354,7 +354,8 @@ function cron_bridge_script(string $caller)
 
     // Upgrade pending?
     $version_files = float_to_raw_string(cms_version_number(), 10, true);
-    if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files)) {
+    $version_db = strval(cms_version_time_db());
+    if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files) || (get_value('db_version', '', true) != $version_db)) {
         if ($verbose) {
             echo loggable_date() . ' An upgrade is pending, cannot run' . "\n";
         }

@@ -71,17 +71,18 @@ function cms_version_number() : float
  */
 function cms_version_time() : int
 {
-    return 1707779248;
+    return 1708918041;
 }
 
 /**
- * Get the timestamp at which this MAJOR version was released.
+ * Get the timestamp at which a database / module change was last made.
+ * This will dictate when the installer instructs the user to perform a database / module upgrade.
  *
- * @return integer The timestamp at which this MAJOR version was released
+ * @return integer The timestamp at which a database / module change was last made
  */
-function cms_version_time_major() : int
+function cms_version_time_db() : int
 {
-    return 1211025869;
+    return 1708918041;
 }
 
 /**

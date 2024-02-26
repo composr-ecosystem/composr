@@ -134,7 +134,7 @@ class Module_admin_addons
             foreach ($addons as $addon_name => $details) {
                 $GLOBALS['SITE_DB']->query_update('addons', [
                     'addon_min_cms_version' => $details['min_cms_version'],
-                    'addon_max_cms_version' => $details['max_cms_version'],
+                    'addon_max_cms_version' => ($details['max_cms_version'] !== null) ? $details['max_cms_version'] : '',
                 ], ['addon_name' => $addon_name]);
             }
         }

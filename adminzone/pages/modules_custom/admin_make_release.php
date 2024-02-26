@@ -176,6 +176,7 @@ class Module_admin_make_release
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_VERSION'), 'HELP' => do_lang_tempcode('DESCRIPTON_MAKE_RELEASE_STEP1_VERSION')]));
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP1_OLD_VERSION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_OLD_VERSION'), 'previous_version', ($previous_version !== null) ? $previous_version : '', false));
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP1_NEW_VERSION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_NEW_VERSION'), 'version', $current_version, true));
+        $fields->attach(form_input_tick(do_lang_tempcode('MAKE_RELEASE_STEP1_DB_UPGRADE'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_DB_UPGRADE'), 'db_upgrade', false));
 
         // URLs
         $tracker_url = get_brand_base_url() . '/tracker';
@@ -218,58 +219,56 @@ class Module_admin_make_release
         $previous_version = $this->get_previous_version();
 
         // Update version.php
-        if (($new_version !== $previous_version)) {
-            $version_file = cms_file_get_contents_safe(get_file_base() . '/sources/version.php');
-            if (!$version_file) {
-                fatal_exit('Failed to get sources/version.php file contents for editing.');
-            }
-
-            list(, , , , $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($new_version);
-
-            // Determine if this is a major release, and update version times accordingly
-            if (preg_match('#^\d+\.0\.0(\.beta1|\.RC1|)$#', $long_dotted_number_with_qualifier) != 0) { // e.g. 3.0.0 or 3.0.0.beta1 or 3.0.0.RC1
-                // cms_version_time() and cms_version_time_major()
-                $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 2);
-            } else {
-                // Just cms_version_time()
-                $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 1);
-            }
-
-            // Update cms_version_number()
-            $_replacement = $general_number;
-            $pattern = '/function cms_version_number\(\) : float\s*{\s*return\s*(.*?)\;\s*}/s';
-            $replacement = "function cms_version_number() : float\n{\n    return " . float_to_raw_string($_replacement, 1) . ";\n}";
-            $version_file = preg_replace($pattern, $replacement, $version_file);
-
-            // Update cms_version_minor(); first we must remove the major version part.
-            $parts = explode('.', $new_version);
-            array_shift($parts);
-            $_replacement = implode('.', $parts);
-            if ($_replacement == '') { // No minor version defined? We should define 0 as minor version.
-                $_replacement = '0';
-            }
-            $pattern = '/function cms_version_minor\(\) : string\s*{\s*return\s*\'(.*?)\'\;\s*}/s';
-            $replacement = "function cms_version_minor() : string\n{\n    return '" . $_replacement . "';\n}";
-            $version_file = preg_replace($pattern, $replacement, $version_file);
-
-            // Update branch status flag
-            if (strpos($new_version, 'alpha') !== false) {
-                $_replacement = 'VERSION_ALPHA';
-            } elseif (strpos($new_version, 'beta') !== false) {
-                $_replacement = 'VERSION_BETA';
-            } elseif (strpos($new_version, 'RC') !== false) {
-                $_replacement = 'VERSION_SUPPORTED';
-            } else {
-                $_replacement = 'VERSION_MAINLINE';
-            }
-            $pattern = '/function cms_version_branch_status\(\) : string\s*{\s*return\s*(.*?)\;\s*}/s';
-            $replacement = "function cms_version_branch_status() : string\n{\n    return " . $_replacement . ";\n}";
-            $version_file = preg_replace($pattern, $replacement, $version_file);
-
-            // Save the updated file
-            require_code('files');
-            cms_file_put_contents_safe(get_file_base() . '/sources/version.php', $version_file, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+        $version_file = cms_file_get_contents_safe(get_file_base() . '/sources/version.php');
+        if (!$version_file) {
+            fatal_exit('Failed to get sources/version.php file contents for editing.');
         }
+
+        list(, , , , $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($new_version);
+
+        // Determine if a database / module upgrade is necessary, and update version times accordingly
+        if (post_param_integer('db_upgrade', '0') != 0) {
+            // cms_version_time() and cms_version_time_db()
+            $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 2);
+        } else {
+            // Just cms_version_time()
+            $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 1);
+        }
+
+        // Update cms_version_number()
+        $_replacement = $general_number;
+        $pattern = '/function cms_version_number\(\) : float\s*{\s*return\s*(.*?)\;\s*}/s';
+        $replacement = "function cms_version_number() : float\n{\n    return " . float_to_raw_string($_replacement, 1) . ";\n}";
+        $version_file = preg_replace($pattern, $replacement, $version_file);
+
+        // Update cms_version_minor(); first we must remove the major version part.
+        $parts = explode('.', $new_version);
+        array_shift($parts);
+        $_replacement = implode('.', $parts);
+        if ($_replacement == '') { // No minor version defined? We should define 0 as minor version.
+            $_replacement = '0';
+        }
+        $pattern = '/function cms_version_minor\(\) : string\s*{\s*return\s*\'(.*?)\'\;\s*}/s';
+        $replacement = "function cms_version_minor() : string\n{\n    return '" . $_replacement . "';\n}";
+        $version_file = preg_replace($pattern, $replacement, $version_file);
+
+        // Update branch status flag
+        if (strpos($new_version, 'alpha') !== false) {
+            $_replacement = 'VERSION_ALPHA';
+        } elseif (strpos($new_version, 'beta') !== false) {
+            $_replacement = 'VERSION_BETA';
+        } elseif (strpos($new_version, 'RC') !== false) {
+            $_replacement = 'VERSION_SUPPORTED';
+        } else {
+            $_replacement = 'VERSION_MAINLINE';
+        }
+        $pattern = '/function cms_version_branch_status\(\) : string\s*{\s*return\s*(.*?)\;\s*}/s';
+        $replacement = "function cms_version_branch_status() : string\n{\n    return " . $_replacement . ";\n}";
+        $version_file = preg_replace($pattern, $replacement, $version_file);
+
+        // Save the updated file
+        require_code('files');
+        cms_file_put_contents_safe(get_file_base() . '/sources/version.php', $version_file, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
     }
 
     /**

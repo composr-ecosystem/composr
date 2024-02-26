@@ -1232,10 +1232,13 @@ function upgrade_addon_soft(string $addon_name) : int
         }
     }
 
+    // We should always update the database because min / max cms version could change in the registry hook
+    $min_cms_version = $ob->get_min_cms_version();
+    $max_cms_version = $ob->get_max_cms_version();
     $GLOBALS['SITE_DB']->query_update('addons', [
         'addon_version' => $disk_version,
-        'addon_min_cms_version' => $ob->get_min_cms_version(),
-        'addon_max_cms_version' => $ob->get_max_cms_version(),
+        'addon_min_cms_version' => strval($min_cms_version),
+        'addon_max_cms_version' => ($max_cms_version !== null) ? strval($max_cms_version) : '',
     ], ['addon_name' => $addon_name], '', 1);
 
     return $ret;
