@@ -375,6 +375,14 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
         attach_message(do_lang_tempcode('ALREADY_EXISTS', escape_html($username)), 'notice');
     }
 
+    // Run form handlers for joining
+    $hook_obs = find_all_hooks('form_handlers', 'join'); // TODO: find_all_hook_obs in v11
+    foreach (array_keys($hook_obs) as $hook) {
+        require_code('hooks/form_handlers/join/' . $hook);
+        $hook_ob = object_factory('Hook_form_handlers_join_' . $hook);
+        $hook_ob->run($username, $email_address, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $validated, $language, $allow_emails, $allow_emails_from_staff, get_ip_address());
+    }
+
     // Send confirm mail
     if ($email_validation) {
         $zone = get_module_zone('join');
