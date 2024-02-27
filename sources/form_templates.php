@@ -1196,6 +1196,7 @@ function form_input_username_multi($pretty_name, $description, string $name, arr
  * @param  ID_TEXT $name The name which this input field is for
  * @param  string $default The default value for this input field
  * @param  boolean $required Whether this is a required input field
+ * @param  boolean $display_only Whether this should not be an actual input field but rather display $description as a paragraph (true: only $pretty_name, $description, $name, and $tabindex are considered)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  boolean $scrolls Whether the field scrolls
  * @param  ?integer $maxlength The maximum length of the field (null: unlimited)
@@ -1203,7 +1204,7 @@ function form_input_username_multi($pretty_name, $description, string $name, arr
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_text($pretty_name, $description, string $name, string $default, bool $required, ?int $tabindex = null, bool $scrolls = false, ?int $maxlength = null, ?int $rows = null, $autocomplete = null) : object
+function form_input_text($pretty_name, $description, string $name, string $default, bool $required, bool $display_only = false, ?int $tabindex = null, bool $scrolls = false, ?int $maxlength = null, ?int $rows = null, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1227,6 +1228,7 @@ function form_input_text($pretty_name, $description, string $name, string $defau
         'DEFAULT' => $default,
         'MAXLENGTH' => ($maxlength === null) ? null : strval($maxlength),
         'AUTOCOMPLETE' => $autocomplete,
+        'DISPLAY_ONLY' => $display_only
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex, true);
 }
@@ -1489,7 +1491,7 @@ function form_input_tick($pretty_name, $description, string $name, bool $ticked,
 /**
  * Get the Tempcode for a bank of tick (check) boxes.
  *
- * @param  array $options A list of tuples: (prettyname, name, value, description, disabled)
+ * @param  array $options A list of tuples (asterisk are required): (prettyname*, name*, value, description, disabled, ticked (null or not defined: true if value is truthy))
  * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ?integer $_tabindex The tab index of the field (null: not specified)
  * @param  mixed $_pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode) (blank: use default)
@@ -1525,12 +1527,22 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
     foreach ($options as $_option) {
         $out = [];
         foreach ($_option[0] as $option) {
-            list($pretty_name, $name, $value, $_description) = $option;
+            list($pretty_name, $name, $_value, $_description) = $option;
+
+            if (($_value === false) || ($_value === null) || ($_value === '')) {
+                $value = '0';
+            } elseif ($_value === true) {
+                $value = '1';
+            } else {
+                $value = $_value;
+            }
+
+            $value = (filter_form_field_default($name, $value));
+
             $disabled = !empty($option[4]) && $option[4];
+            $ticked = ((isset($option[5]) && $option[5]) || (!isset($option[5]) && ($value != '0') && ($value != '')));
 
-            $value = (filter_form_field_default($name, $value ? '1' : '0') == '1');
-
-            $out[] = ['DISABLED' => $disabled, 'CHECKED' => $value, 'TABINDEX' => strval($tabindex), 'NAME' => $name, 'PRETTY_NAME' => $pretty_name, 'DESCRIPTION' => $_description];
+            $out[] = ['DISABLED' => $disabled, 'CHECKED' => $ticked, 'VALUE' => $value, 'TABINDEX' => strval($tabindex), 'NAME' => $name, 'PRETTY_NAME' => $pretty_name, 'DESCRIPTION' => $_description];
         }
 
         if ($custom_value === []) {

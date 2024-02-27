@@ -942,6 +942,7 @@ class Hook_addon_registry_core_form_interfaces
             'NAME' => $name,
             'DEFAULT' => '',
             'RAW' => false,
+            'DISPLAY_ONLY' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
