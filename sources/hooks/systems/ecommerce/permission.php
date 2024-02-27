@@ -77,7 +77,7 @@ class Hook_ecommerce_permission
         $fields = new Tempcode();
 
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'permission_title' . $name_suffix, $title, true));
-        $fields->attach(form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'permission_description' . $name_suffix, $description, true));
+        $fields->attach(form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'permission_description' . $name_suffix, $description, true, false));
         $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_PRICE'), 'permission_price' . $name_suffix, $price, false));
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_TAX_CODE'), 'permission_tax_code' . $name_suffix, $tax_code, false));
         if (addon_installed('points')) {

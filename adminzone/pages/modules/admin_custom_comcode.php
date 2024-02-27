@@ -270,7 +270,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TAG_TITLE'), 'title', $title, true));
         $fields->attach(form_input_line(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, true));
         $fields->attach(form_input_line_multi(do_lang_tempcode('PARAMETERS'), do_lang_tempcode('DESCRIPTION_COMCODE_PARAMETERS'), 'parameters', explode(',', $parameters), 0));
-        $fields->attach(form_input_text(do_lang_tempcode('COMCODE_REPLACE'), do_lang_tempcode('DESCRIPTION_COMCODE_REPLACE'), 'replace', $replace, true));
+        $fields->attach(form_input_text(do_lang_tempcode('COMCODE_REPLACE'), do_lang_tempcode('DESCRIPTION_COMCODE_REPLACE'), 'replace', $replace, true, false));
         $fields->attach(form_input_line(do_lang_tempcode('EXAMPLE'), do_lang_tempcode('DESCRIPTION_COMCODE_EXAMPLE'), 'example', $example, true));
         $fields->attach(form_input_tick(do_lang_tempcode('DANGEROUS_TAG'), do_lang_tempcode('DESCRIPTION_DANGEROUS_TAG'), 'dangerous_tag', $dangerous_tag == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('BLOCK_TAG'), do_lang_tempcode('DESCRIPTION_BLOCK_TAG'), 'block_tag', $block_tag == 1));

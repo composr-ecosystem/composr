@@ -1369,7 +1369,7 @@ class Module_admin_addons
         $fields .= $field->evaluate();
         $field = form_input_line(do_lang_tempcode('LICENCE'), do_lang_tempcode('DESCRIPTION_ADDON_LICENCE'), 'licence', $licence, true);
         $fields .= $field->evaluate();
-        $field = form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, true);
+        $field = form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, true, false);
         $fields .= $field->evaluate();
 
         require_code('version');

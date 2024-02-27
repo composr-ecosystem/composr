@@ -267,7 +267,7 @@ class Module_cms_wiki
             $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '5ae885a9f92415498340c41edfb47501', 'SECTION_HIDDEN' => $notes == '', 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
             if (get_option('enable_staff_notes') == '1') {
-                $fields2->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+                $fields2->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false, false));
             }
 
             if (has_tied_catalogue('wiki_page')) {
@@ -583,7 +583,7 @@ class Module_cms_wiki
         require_javascript('tree_list');
 
         $fields = new Tempcode();
-        $fields->attach(form_input_text(do_lang_tempcode('CHILD_PAGES'), new Tempcode(), 'children', $children, false, null, true));
+        $fields->attach(form_input_text(do_lang_tempcode('CHILD_PAGES'), new Tempcode(), 'children', $children, false, false, null, true));
         $form = do_template('FORM', [
             '_GUID' => 'b908438ccfc9be6166cf7c5c81d5de8b',
             'FIELDS' => $fields,

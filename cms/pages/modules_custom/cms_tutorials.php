@@ -257,7 +257,7 @@ class Module_cms_tutorials extends Standard_crud_module
 
         $fields->attach(form_input_line('Title', 'The title to the tutorial.', 'title', $title, true));
 
-        $fields->attach(form_input_text('Summary', 'A short paragraph describing the tutorial.', 'summary', $summary, true));
+        $fields->attach(form_input_text('Summary', 'A short paragraph describing the tutorial.', 'summary', $summary, true, false));
 
         require_code('themes2');
         $ids = get_all_image_ids_type('icons', true);

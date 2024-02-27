@@ -193,7 +193,7 @@ function feedback_fields(string $content_type, bool $allow_rating, bool $allow_c
     }
 
     if ((get_option('enable_staff_notes') == '1') && ($has_notes)) {
-        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), $field_name_prefix . 'notes', $notes, false));
+        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), $field_name_prefix . 'notes', $notes, false, false));
     }
 
     if ($show_header) {

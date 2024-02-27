@@ -200,7 +200,7 @@ class Module_contact_member
 
         $fields->attach(form_input_line(do_lang_tempcode('SUBJECT'), '', 'subject', get_param_string('subject', '', INPUT_FILTER_GET_COMPLEX), true));
 
-        $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), '', 'message', get_param_string('message', '', INPUT_FILTER_GET_COMPLEX), true));
+        $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), '', 'message', get_param_string('message', '', INPUT_FILTER_GET_COMPLEX), true, false));
 
         if (addon_installed('captcha')) {
             require_code('captcha');

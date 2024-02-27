@@ -129,7 +129,7 @@ function build_config_inputter(string $name, array $details, ?string $current_va
 
         case 'text':
         case 'transtext':
-            return form_input_text($title, $explanation_with_default, $config_field_name, $current_value, $required, null, true);
+            return form_input_text($title, $explanation_with_default, $config_field_name, $current_value, $required, false, null, true);
 
         case 'comcodeline':
             return form_input_line_comcode($title, $explanation_with_default, $config_field_name, $current_value, $required);

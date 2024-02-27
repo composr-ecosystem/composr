@@ -496,7 +496,7 @@ class Module_admin_shopping
             $note .= do_lang('ADD_NOTE_APPEND_TEXT', get_timezoned_date_time(time(), false), do_lang('ORDER_STATUS_' . $last_action));
         }
 
-        $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('NOTE_DESCRIPTION'), 'note', $note, true));
+        $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('NOTE_DESCRIPTION'), 'note', $note, true, false));
 
         $fields->attach(form_input_hidden('order_id', strval($id)));
 
@@ -509,7 +509,7 @@ class Module_admin_shopping
 
             $message = do_lang('ORDER_DISPATCHED_MAIL_MESSAGE', comcode_escape(get_site_name()), comcode_escape($username), [strval($id)], get_lang($order_details['member_id']));
 
-            $fields->attach(form_input_text(do_lang_tempcode('DISPATCH_MAIL_PREVIEW'), do_lang_tempcode('DISPATCH_MAIL_PREVIEW_DESCRIPTION'), 'dispatch_mail_content', $message, true));
+            $fields->attach(form_input_text(do_lang_tempcode('DISPATCH_MAIL_PREVIEW'), do_lang_tempcode('DISPATCH_MAIL_PREVIEW_DESCRIPTION'), 'dispatch_mail_content', $message, true, false));
 
             $submit_name = do_lang_tempcode('SEND_DISPATCH_NOTIFICATION');
         } else {

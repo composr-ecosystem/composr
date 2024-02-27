@@ -1396,7 +1396,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, false));
 
         if (get_option('enable_staff_notes') == '1') {
-            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false, false));
         }
 
         require_code('images');
@@ -1835,7 +1835,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $fields->attach(form_input_list(do_lang_tempcode('CATEGORIES_SORT_ORDER'), do_lang_tempcode('DESCRIPTION_CATEGORIES_SORT_ORDER'), 'categories_sort_order', $sort_orders));
 
             if (get_option('enable_staff_notes') == '1') {
-                $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+                $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false, false));
             }
             if (addon_installed('points')) {
                 $fields->attach(form_input_integer(do_lang_tempcode('SUBMIT_POINTS'), do_lang_tempcode('DESCRIPTION_SUBMIT_POINTS'), 'submit_points', $submit_points, false));

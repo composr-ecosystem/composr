@@ -128,7 +128,7 @@ class Hook_fields_long_text
         $maxlength = ($_maxlength == '') ? null : intval($_maxlength);
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
-        return form_input_text($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, !$wordwrap, $maxlength, $input_size, $autocomplete);
+        return form_input_text($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, false, null, !$wordwrap, $maxlength, $input_size, $autocomplete);
     }
 
     /**

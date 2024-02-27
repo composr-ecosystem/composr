@@ -354,7 +354,7 @@ class Module_cms_booking extends Standard_crud_module
         $fields->attach(form_input_tick(do_lang_tempcode('SUPPORTS_NOTES'), do_lang_tempcode('DESCRIPTION_SUPPORTS_NOTES'), 'supports_notes', $details['supports_notes'] == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('BOOKABLE_DATES_ARE_RANGES'), do_lang_tempcode('DESCRIPTION_BOOKABLE_DATES_ARE_RANGES'), 'dates_are_ranges', $details['dates_are_ranges'] == 1));
 
-        $fields->attach(form_input_text(do_lang_tempcode('BOOKABLE_CODES'), do_lang_tempcode('DESCRIPTION_BOOKABLE_CODES'), 'codes', implode("\n", $codes), true));
+        $fields->attach(form_input_text(do_lang_tempcode('BOOKABLE_CODES'), do_lang_tempcode('DESCRIPTION_BOOKABLE_CODES'), 'codes', implode("\n", $codes), true, false));
 
         $_supplements = new Tempcode();
         $all_supplements = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['id', 'title', 'sort_order'], [], 'ORDER BY sort_order');
@@ -769,7 +769,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
         $fields = new Tempcode();
         $fields->attach(form_input_date(do_lang_tempcode('BLACKED_FROM'), do_lang_tempcode('DESCRIPTION_BLACKED_FROM'), 'blacked_from', true, false, false, [0, 0, $details['blacked_from_month'], $details['blacked_from_day'], $details['blacked_from_year']], 10, null, null, true, get_server_timezone()));
         $fields->attach(form_input_date(do_lang_tempcode('BLACKED_TO'), do_lang_tempcode('DESCRIPTION_BLACKED_TO'), 'blacked_to', true, false, false, [0, 0, $details['blacked_to_month'], $details['blacked_to_day'], $details['blacked_to_year']], 10, null, null, true, get_server_timezone()));
-        $fields->attach(form_input_text(do_lang_tempcode('BLACKED_EXPLANATION'), do_lang_tempcode('DESCRIPTION_BLACKED_EXPLANATION'), 'blacked_explanation', ($details['blacked_explanation'] === null) ? '' : get_translated_text($details['blacked_explanation']), true));
+        $fields->attach(form_input_text(do_lang_tempcode('BLACKED_EXPLANATION'), do_lang_tempcode('DESCRIPTION_BLACKED_EXPLANATION'), 'blacked_explanation', ($details['blacked_explanation'] === null) ? '' : get_translated_text($details['blacked_explanation']), true, false));
 
         $_bookables = new Tempcode();
         $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title', 'sort_order'], [], 'ORDER BY sort_order');
@@ -1108,7 +1108,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $fields->attach(form_input_date(do_lang_tempcode('TO'), '', 'bookable_' . strval($details['bookable_id']) . '_date_to', true, false, false, [0, 0, $details['end_month'], $details['end_day'], $details['end_year']], 10, null, null, true, get_server_timezone()));
         }
         $fields->attach(form_input_integer(do_lang_tempcode('QUANTITY'), '', 'bookable_' . strval($details['bookable_id']) . '_quantity', $details['quantity'], true));
-        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), '', 'bookable_' . strval($details['bookable_id']) . '_notes', $details['notes'], false));
+        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), '', 'bookable_' . strval($details['bookable_id']) . '_notes', $details['notes'], false, false));
 
         $member_directory_url = build_url(['page' => 'members'], get_module_zone('members'));
         if (get_option('member_booking_only') == '1') {
@@ -1138,7 +1138,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             } else {
                 $fields->attach(form_input_tick(get_translated_tempcode('bookable_supplement', $_supplement_row, 'title'), '', 'bookable_' . strval($details['bookable_id']) . '_supplement_' . strval($supplement_row['id']) . '_quantity', $quantity == 1));
             }
-            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), '', 'bookable_' . strval($details['bookable_id']) . '_supplement_' . strval($supplement_row['id']) . '_notes', $notes, false));
+            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), '', 'bookable_' . strval($details['bookable_id']) . '_supplement_' . strval($supplement_row['id']) . '_notes', $notes, false, false));
         }
 
         return [$fields, $hidden];

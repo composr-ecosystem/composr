@@ -750,7 +750,7 @@ class Module_admin_stats extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', is_object($title) ? $title->evaluate() : $title, true));
 
-        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false, false));
 
         return [$fields, $hidden];
     }

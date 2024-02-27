@@ -75,7 +75,7 @@ class Hook_ecommerce_custom
         require_code('images');
 
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'custom_title' . $name_suffix, $title, true));
-        $fields->attach(form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'custom_description' . $name_suffix, $description, true));
+        $fields->attach(form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'custom_description' . $name_suffix, $description, true, false));
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image' . $name_suffix, null, true, $image_url, false, null, IMAGE_CRITERIA_WEBSAFE));
         $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_PRICE'), 'custom_price' . $name_suffix, $price, false));
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_TAX_CODE'), 'custom_tax_code' . $name_suffix, $tax_code, false));

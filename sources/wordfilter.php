@@ -193,7 +193,7 @@ function warn_exit_wordfilter(?string $name, object $message)
     if (strpos($value, "\n") === false) {
         $fields = form_input_line(do_lang_tempcode('CHANGE'), '', $name, $value, true);
     } else {
-        $fields = form_input_text(do_lang_tempcode('CHANGE'), '', $name, $value, true);
+        $fields = form_input_text(do_lang_tempcode('CHANGE'), '', $name, $value, true, false);
     }
     $post_url = get_self_url();
     $output = do_template('FORM_SCREEN', [

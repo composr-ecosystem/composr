@@ -25,8 +25,12 @@ function init__modularisation()
     require_lang('composr_release_build');
 
     global $MODULARISATION_ADDON_DATA;
+    global $MODULARISATION_ISSUES_DATA;
     if (!is_array($MODULARISATION_ADDON_DATA)) {
         $MODULARISATION_ADDON_DATA = [];
+    }
+    if (!is_array($MODULARISATION_ISSUES_DATA)) {
+        $MODULARISATION_ISSUES_DATA = [];
     }
 }
 
@@ -34,7 +38,7 @@ function init__modularisation()
  * Run modularisation scan.
  *
  * @param  boolean $only_populate_data Whether to only populate $MODULARISATION_ADDON_DATA and cache opposed to actually checking
- * @return array Tuple; issue code, file path, array of parameters to pass to the issue code language string
+ * @return array Tuple; issue code, file path, addon hook, tick description (such as indicating relevant addon hook)
  */
 function scan_modularisation($only_populate_data = false) : array
 {
@@ -42,11 +46,12 @@ function scan_modularisation($only_populate_data = false) : array
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     cms_ini_set('memory_limit', '500M');
 
-    // Array duple; issue section, file, addon name (blank: not applicable), array of parameters to pass to language string
-    $problems = [];
+    require_code('caches2');
+
+    global $MODULARISATION_ISSUES_DATA;
+    $MODULARISATION_ISSUES_DATA = [];
 
     // Read in all addons, while checking for default icons and any double referencing within a single hook...
-
     $addon_data = [];
     $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
     foreach ($hooks as $hook => $ob) {
@@ -60,20 +65,19 @@ function scan_modularisation($only_populate_data = false) : array
         $counts = array_count_values($files);
         foreach ($counts as $file => $count) {
             if ($count > 1) {
-                $problems[] = ['MODULARISATION_DOUBLE_REFERENCED_ADDON', $file, $hook, []];
+                $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_DOUBLE_REFERENCED_ADDON', $file, $hook, ''];
             }
         }
 
         $icon_file = $ob->get_default_icon();
         if (!is_file(get_file_base() . '/' . $icon_file)) {
-            $problems[] = ['MODULARISATION_DEFAULT_ICON_MISSING', $icon_file, $hook, [$hook]];
+            $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_DEFAULT_ICON_MISSING', $icon_file, $hook, $hook];
         }
     }
 
+    // cache addon file data
     global $MODULARISATION_ADDON_DATA;
     $MODULARISATION_ADDON_DATA = $addon_data;
-
-    require_code('caches2');
     set_cache_entry('modularisation_addon_data', 15, serialize([]), $MODULARISATION_ADDON_DATA);
 
     if ($only_populate_data) {
@@ -90,24 +94,24 @@ function scan_modularisation($only_populate_data = false) : array
 
         foreach ($d as $path) {
             if (((array_key_exists($path, $seen)) && (strpos($path, '_custom/') === false))) {
-                $problems[] = ['MODULARISATION_DOUBLE_REFERENCED', $path, $addon_name, [$seen[$path]]];
+                $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_DOUBLE_REFERENCED', $path, $addon_name, $seen[$path]];
             }
             $seen[$path] = $addon_name;
 
             if (preg_match('#^themes/default/images/(icons|icons_monochrome)/#', $path) != 0) {
                 if (!in_array($path, $addon_data['core_all_icons'])) {
-                    $problems[] = ['MODULARISATION_ICON_NOT_IN_CORE', $path, $addon_name, []];
+                    $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_ICON_NOT_IN_CORE', $path, $addon_name, ''];
                 }
 
                 $matches = [];
                 if (preg_match('#^themes/default/images/icons/(.*)$#', $path, $matches) != 0) {
                     if (!in_array('themes/default/images/icons_monochrome/' . $matches[1], $d)) {
-                        $problems[] = ['MODULARISATION_ICON_NO_MONOCHROME', $path, $addon_name, []];
+                        $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_ICON_NO_MONOCHROME', $path, $addon_name, ''];
                     }
                 } else {
                     preg_match('#^themes/default/images/icons_monochrome/(.*)$#', $path, $matches);
                     if (!in_array('themes/default/images/icons/' . $matches[1], $d)) {
-                        $problems[] = ['MODULARISATION_ICON_NO_NON_MONOCHROME', $path, $addon_name, []];
+                        $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_ICON_NO_NON_MONOCHROME', $path, $addon_name, ''];
                     }
                 }
             }
@@ -138,7 +142,7 @@ function scan_modularisation($only_populate_data = false) : array
         }
 
         if (!$ok) {
-            $problems[] = ['MODULARISATION_CORE_ICON_NOT_IN_ADDON', $path, '', []];
+            $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_CORE_ICON_NOT_IN_ADDON', $path, '', ''];
         }
     }
 
@@ -147,7 +151,7 @@ function scan_modularisation($only_populate_data = false) : array
     foreach ($addon_data as $addon_files) {
         foreach ($addon_files as $_path) {
             if (is_link(get_file_base() . '/' . $_path)) {
-                $problems[] = ['MODULARISATION_SYMLINK', $_path, '', []];
+                $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_SYMLINK', $_path, '', ''];
             }
         }
     }
@@ -191,9 +195,9 @@ function scan_modularisation($only_populate_data = false) : array
                             $m_count = preg_match_all('#@package\s+(\w+)#', $data, $matches);
                             $problem = ($m_count != 0) && ($matches[1][0] != $addon_name) && (@$matches[1][1] != $addon_name/*FUDGE: should ideally do a loop, but we'll assume max of 2 packages for now*/);
                             if ($problem) {
-                                $problems[] = ['MODULARISATION_WRONG_PACKAGE', $path, $addon_name, [$addon_name]];
+                                $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_WRONG_PACKAGE', $path, $addon_name, $addon_name];
                             } elseif ($m_count == 0) {
-                                $problems[] = ['MODULARISATION_NO_PACKAGE', $path, $addon_name, [$addon_name]];
+                                $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_NO_PACKAGE', $path, $addon_name, $addon_name];
                             }
                         }
 
@@ -227,16 +231,16 @@ function scan_modularisation($only_populate_data = false) : array
                                 $m_count2 = preg_match_all('/\\$info\\[\'addon\'\\] = \'([^\']+)\'/', $data, $matches2);
                                 $problem2 = ($m_count2 != 0) && (strpos($matches2[1][0], $addon_name) === false);
                                 if ($problem2) {
-                                    $problems[] = ['MODULARISATION_WRONG_ADDON_INFO', $path, $addon_name, [$addon_name]];
+                                    $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_WRONG_ADDON_INFO', $path, $addon_name, $addon_name];
                                 }
                                 if ($m_count2 == 0) {
-                                    $problems[] = ['MODULARISATION_NO_ADDON_INFO', $path, $addon_name, [$addon_name]];
+                                    $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_NO_ADDON_INFO', $path, $addon_name, $addon_name];
                                 }
 
                                 // Check that a min_cms_version property is defined (required as of v11)
                                 $m_count2 = preg_match_all('/\\$info\\[\'min_cms_version\'\\] = /', $data, $matches2);
                                 if ($m_count2 == 0) {
-                                    $problems[] = ['MODULARISATION_NO_MIN_CMS_VERSION', $path, $addon_name, []];
+                                    $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_NO_MIN_CMS_VERSION', $path, $addon_name, ''];
                                 }
                             }
                         }
@@ -262,7 +266,7 @@ function scan_modularisation($only_populate_data = false) : array
                 }
             }
 
-            $problems[] = ['MODULARISATION_UNKNOWN_ADDON', $path, '', []];
+            $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_UNKNOWN_ADDON', $path, '', ''];
         }
     }
 
@@ -271,7 +275,7 @@ function scan_modularisation($only_populate_data = false) : array
     foreach ($addon_data as $addon_name => $addon_files) {
         $ok = addon_installed($addon_name, false, false, false);
         if (!$ok) {
-            $problems[] = ['MODULARISATION_FILES_MISSING', '', $addon_name, [$addon_name]];
+            $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_FILES_MISSING', '', $addon_name, $addon_name];
         }
         foreach ($addon_files as $path) {
             if ($path == 'data_custom/execute_temp.php') {
@@ -279,7 +283,7 @@ function scan_modularisation($only_populate_data = false) : array
             }
 
             if (!file_exists($path)) {
-                $problems[] = ['MODULARISATION_FILE_MISSING', $path, $addon_name, [$addon_name]];
+                $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_FILE_MISSING', $path, $addon_name, $addon_name];
             }
         }
     }
@@ -289,11 +293,14 @@ function scan_modularisation($only_populate_data = false) : array
     ksort($unput_files);
     foreach ($unput_files as $addon_name => $paths) {
         foreach ($paths as $path) {
-            $problems[] = ['MODULARISATION_ALIEN_FILE', $path, $addon_name, [$addon_name]];
+            $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_ALIEN_FILE', $path, $addon_name, $addon_name];
         }
     }
 
-    return $problems;
+    // Cache issues so we do not have to re-scan when actualising fixes
+    set_cache_entry('modularisation_issues_data', 15, serialize([]), $MODULARISATION_ISSUES_DATA);
+
+    return $MODULARISATION_ISSUES_DATA;
 }
 
 /**

@@ -228,7 +228,7 @@ class Module_admin_invoices
         $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), do_lang_tempcode('DESCRIPTION_INVOICE_FOR'), 'to', $to, true));
         $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_INVOICE_PRICE', escape_html(get_option('currency')), ecommerce_get_currency_symbol(get_option('currency'))), 'price', null, false));
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_INVOICE_TAX_CODE'), 'tax_code', '', false));
-        $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('DESCRIPTION_INVOICE_NOTE'), 'note', '', false));
+        $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('DESCRIPTION_INVOICE_NOTE'), 'note', '', false, false));
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '69252fa24b33a567c8e97783b9cbb9f4', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields->attach(form_input_line(do_lang_tempcode('PROCESSING_CODE'), do_lang_tempcode('DESCRIPTION_PROCESSING_CODE'), 'processing_code', '', false));

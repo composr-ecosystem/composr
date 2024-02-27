@@ -197,7 +197,7 @@ function get_banner_form_fields(bool $simplified = false, string $name = '', str
     }
 
     if (get_option('enable_staff_notes') == '1') {
-        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false, false));
     }
 
     if (has_privilege(get_member(), 'bypass_validation_midrange_content', 'cms_banners')) {
@@ -232,7 +232,7 @@ function get_banner_form_fields(bool $simplified = false, string $name = '', str
     }
 
     if (has_privilege(get_member(), 'use_html_banner')) {
-        $field_set->attach(form_input_text(do_lang_tempcode('BANNER_DIRECT_CODE'), do_lang_tempcode('DESCRIPTION_BANNER_DIRECT_CODE'), 'direct_code', $direct_code, false));
+        $field_set->attach(form_input_text(do_lang_tempcode('BANNER_DIRECT_CODE'), do_lang_tempcode('DESCRIPTION_BANNER_DIRECT_CODE'), 'direct_code', $direct_code, false, false));
     }
 
     $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));

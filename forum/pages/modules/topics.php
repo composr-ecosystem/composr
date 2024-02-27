@@ -1053,7 +1053,7 @@ class Module_topics
         $hidden = new Tempcode();
         $hidden->attach(build_keep_post_fields());
         $hidden->attach(build_keep_form_fields());
-        $fields->attach(form_input_text(do_lang_tempcode('MM_POST_TEXT'), do_lang_tempcode('DESCRIPTION_MM_POST_TEXT'), 'post_text', $post_text, false));
+        $fields->attach(form_input_text(do_lang_tempcode('MM_POST_TEXT'), do_lang_tempcode('DESCRIPTION_MM_POST_TEXT'), 'post_text', $post_text, false, false));
         $options = [];
         if (addon_installed('cns_signatures')) {
             if (get_option('enable_skip_sig') == '1') {
@@ -4382,7 +4382,7 @@ class Module_topics
         $hidden = new Tempcode();
         $hidden->attach(build_keep_post_fields());
         $hidden->attach(build_keep_form_fields());
-        $fields->attach(form_input_text(do_lang_tempcode('MM_POST_TEXT'), do_lang_tempcode('DESCRIPTION_MM_POST_TEXT'), 'post_text', $post_text, false));
+        $fields->attach(form_input_text(do_lang_tempcode('MM_POST_TEXT'), do_lang_tempcode('DESCRIPTION_MM_POST_TEXT'), 'post_text', $post_text, false, false));
         $options = [];
         if (addon_installed('cns_signatures')) {
             if (get_option('enable_skip_sig') == '1') {

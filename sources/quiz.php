@@ -108,7 +108,7 @@ function render_quiz(array $questions) : object
                 break;
 
             case 'LONG':
-                $fields->attach(form_input_text($question, $description, $name, '', $q['q_required'] == 1));
+                $fields->attach(form_input_text($question, $description, $name, '', $q['q_required'] == 1, false));
                 break;
 
             case 'SHORT':

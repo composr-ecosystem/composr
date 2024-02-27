@@ -25,14 +25,16 @@ function init__modularisation2()
     require_lang('composr_release_build');
 
     global $MODULARISATION_ADDON_DATA;
-    if (!is_array($MODULARISATION_ADDON_DATA)) {
+    global $MODULARISATION_ISSUES_DATA;
+    if (!is_array($MODULARISATION_ADDON_DATA) || !is_array($MODULARISATION_ISSUES_DATA)) {
         cms_ini_set('memory_limit', '256M');
 
         require_code('caches');
         $MODULARISATION_ADDON_DATA = get_cache_entry('modularisation_addon_data', serialize([]));
-        if ($MODULARISATION_ADDON_DATA === null) {
+        $MODULARISATION_ISSUES_DATA = get_cache_entry('modularisation_issues_data', serialize([]));
+        if (($MODULARISATION_ADDON_DATA === null) || ($MODULARISATION_ISSUES_DATA === null)) {
             require_code('modularisation');
-            scan_modularisation(true); // This will set $MODULARISATION_ADDON_DATA
+            scan_modularisation(); // This will set $MODULARISATION_ADDON_DATA and $MODULARISATION_ISSUES_DATA
         }
     }
 }

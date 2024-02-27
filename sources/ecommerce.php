@@ -948,7 +948,7 @@ function get_address_fields(string $prefix, string $street_address, string $city
 
     $hidden = new Tempcode();
 
-    $fields->attach(form_input_text(do_lang_cpf('street_address'), '', $prefix . 'address1', $street_address, $require_all_details));
+    $fields->attach(form_input_text(do_lang_cpf('street_address'), '', $prefix . 'address1', $street_address, $require_all_details, false));
 
     $fields->attach(form_input_line(do_lang_cpf('city'), '', $prefix . 'city', $city, $require_all_details));
 
@@ -1240,7 +1240,7 @@ function ecommerce_attach_memo_field_if_needed(?object &$fields)
             if ($fields === null) {
                 $fields = new Tempcode();
             }
-            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('TRANSACTION_NOTES'), 'memo', '', false));
+            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('TRANSACTION_NOTES'), 'memo', '', false, false));
         }
     }
 }

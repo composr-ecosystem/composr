@@ -354,7 +354,7 @@ class Module_cms_quiz extends Standard_crud_module
             }
         }
         if (get_option('enable_staff_notes') == '1') {
-            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+            $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false, false));
         }
 
         $fields->attach(metadata_get_fields('quiz', ($id === null) ? null : strval($id)));

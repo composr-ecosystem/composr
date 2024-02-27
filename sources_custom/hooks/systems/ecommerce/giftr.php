@@ -135,7 +135,7 @@ class Hook_ecommerce_giftr
 
         $fields = new Tempcode();
         $fields->attach(form_input_username(do_lang_tempcode('TO_USERNAME'), do_lang_tempcode('DESCRIPTION_MEMBER_TO_GIVE'), 'username', get_param_string('username', '', INPUT_FILTER_GET_IDENTIFIER), true));
-        $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_GIFT_MESSAGE'), 'gift_message', '', true));
+        $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_GIFT_MESSAGE'), 'gift_message', '', true, false));
         $fields->attach(form_input_tick(do_lang_tempcode('ANON'), do_lang_tempcode('DESCRIPTION_ANONYMOUS'), 'anonymous', false));
 
         return [$fields, null, null, []];

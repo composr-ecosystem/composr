@@ -304,7 +304,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
                     $actions = new Tempcode();
                 }
                 $description->attach($actions);
-                $fields->attach(form_input_text(($names[$key] === null) ? ('#' . strval($key)) : $names[$key], $description, 'trans_' . strval($key), $value_found, false));
+                $fields->attach(form_input_text(($names[$key] === null) ? ('#' . strval($key)) : $names[$key], $description, 'trans_' . strval($key), $value_found, false, false));
             }
         }
 
@@ -398,7 +398,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
                     }
                 }
 
-                $fields->attach(form_input_text($key_extended, $description, 'trans_' . $key, str_replace('\n', "\n", $value_found), false));
+                $fields->attach(form_input_text($key_extended, $description, 'trans_' . $key, str_replace('\n', "\n", $value_found), false, false));
             }
         }
 

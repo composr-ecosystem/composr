@@ -522,7 +522,7 @@ class Module_cms_calendar extends Standard_crud_module
             $this->posting_form_title = null;
             $this->posting_form_description = null;
 
-            $fields->attach(form_input_text(do_lang_tempcode('CODE'), do_lang_tempcode('DESCRIPTION_EVENT_CODE_TEXT'), 'post', $content, true));
+            $fields->attach(form_input_text(do_lang_tempcode('CODE'), do_lang_tempcode('DESCRIPTION_EVENT_CODE_TEXT'), 'post', $content, true, false));
         }
 
         // Validation

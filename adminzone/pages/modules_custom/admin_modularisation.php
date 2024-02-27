@@ -118,26 +118,6 @@ class Module_admin_modularisation
      */
     public function browse() : object
     {
-        // Issues that can safely be resolved right away
-        $ticked_by_default = [
-            'MODULARISATION_DOUBLE_REFERENCED_ADDON',
-            'MODULARISATION_ICON_NOT_IN_CORE',
-            'MODULARISATION_FILE_MISSING',
-        ];
-
-        // Issues that can be resolved through the UI. There should exist an _fix_modularisation__ISSUE function in the modularisation2 code.
-        $actionable = [
-            'MODULARISATION_DOUBLE_REFERENCED_ADDON',
-            'MODULARISATION_DOUBLE_REFERENCED',
-            'MODULARISATION_ICON_NOT_IN_CORE',
-            'MODULARISATION_CORE_ICON_NOT_IN_ADDON',
-            'MODULARISATION_WRONG_PACKAGE',
-            'MODULARISATION_WRONG_ADDON_INFO',
-            'MODULARISATION_UNKNOWN_ADDON',
-            'MODULARISATION_FILE_MISSING',
-            'MODULARISATION_ALIEN_FILE',
-        ];
-
         require_code('modularisation');
 
         $problems = scan_modularisation();
@@ -152,24 +132,35 @@ class Module_admin_modularisation
 
         $current_section = '';
         $fields = new Tempcode();
+        $list = [];
+        $list_action = null;
         $count = 0;
+        $max = 100; // Some servers limit the number of POST parameters to 500. And each tick adds 3-4 parameters.
         foreach ($problems as $i => $problem) {
-            list($issue, $file, $addon, $params) = $problem;
+            list($issue, $file, $addon, $description) = $problem;
 
-            // New section; add a divider
+            // New section
             if ($current_section != $issue) {
+                // Finalise list from previous section
+                $this->finalise_section($list, $current_section, $list_action, $fields);
+                $list = [];
+
+                // Set current section info
                 $current_section = $issue;
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode($issue), 'HELP' => do_lang_tempcode($issue . '_TEXT')]));
+                $list_action = do_lang_tempcode($issue . '_ACTION');
             }
 
-            $fields->attach(form_input_tick(do_lang_tempcode('MODULARISATION_FILE_ITEM__' . strval(count($params)), $file, null, $params), do_lang_tempcode('DESCRIPTION_MODULARISATION_FILE_ITEM'), strtolower($issue) . '__' . strval($i), in_array($issue, $ticked_by_default), null, $file . '::' . $addon . '::' . $issue, false, !in_array($issue, $actionable)));
+            $list[] = [$file . '::' . $addon . '::' . $issue, ($description != '') ? do_lang_tempcode('MODULARISATION_ITEM_WITH_DESCRIPTION', escape_html($file), escape_html($description)) : do_lang_tempcode('MODULARISATION_ITEM', escape_html($file))];
 
             $count++;
-            if ($count >= 100) {
-                attach_message(do_lang_tempcode('MODULARISATION_TOO_MANY_ENTRIES'), 'warn');
+            if ($count >= $max) {
+                attach_message(do_lang_tempcode('MODULARISATION_TOO_MANY_ENTRIES', strval($max)), 'warn');
                 break;
             }
         }
+
+        // Finalise last tick section
+        $this->finalise_section($list, $current_section, $list_action, $fields);
 
         // Action items
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTION')]));
@@ -196,6 +187,62 @@ class Module_admin_modularisation
     }
 
     /**
+     * Finalise a modularisation action section.
+     *
+     * @param  array $list Tuple list entries [value, text]
+     * @param  ID_TEXT $current_section The name of the current section which should be an issue language string
+     * @param  Tempcode $list_action The text describing the action that will be taken for selected items
+     * @param  Tempcode $fields The fields for the UI, passed by reference
+     */
+    protected function finalise_section($list, $current_section, $list_action, &$fields)
+    {
+        if (count($list) <= 0) { // Nothing to do
+            return;
+        }
+
+        // Issues that can safely be resolved right away, so the resolution will be set to all except selected
+        $safe_to_action_now = [
+            'MODULARISATION_DOUBLE_REFERENCED_ADDON',
+            'MODULARISATION_ICON_NOT_IN_CORE',
+            'MODULARISATION_FILE_MISSING',
+        ];
+
+        // Issues that can be resolved through the UI. There should exist an _fix_modularisation__ISSUE function in the modularisation2 code.
+        $actionable = [
+            'MODULARISATION_DOUBLE_REFERENCED_ADDON',
+            'MODULARISATION_DOUBLE_REFERENCED',
+            'MODULARISATION_ICON_NOT_IN_CORE',
+            'MODULARISATION_CORE_ICON_NOT_IN_ADDON',
+            'MODULARISATION_WRONG_PACKAGE',
+            'MODULARISATION_WRONG_ADDON_INFO',
+            'MODULARISATION_UNKNOWN_ADDON',
+            'MODULARISATION_FILE_MISSING',
+            'MODULARISATION_ALIEN_FILE',
+        ];
+
+        // Add divider
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode($current_section), 'HELP' => do_lang_tempcode($current_section . '_TEXT')]));
+
+        // Add fields
+        $_list = new Tempcode();
+        if (in_array($current_section, $actionable)) {
+            foreach ($list as $item) {
+                list($value, $text) = $item;
+                $_list->attach(form_input_list_entry($value, in_array($current_section, $safe_to_action_now), $text));
+            }
+            $fields->attach(form_input_multi_list($list_action, do_lang_tempcode($current_section . '_TEXT'), 'modularisation_action_' . $current_section, $_list, null, 10));
+        } else { // Not actionable; just display issues as text
+            $_list->attach('<ul>');
+            foreach ($list as $item) {
+                list($value, $text) = $item;
+                $_list->attach('<li>' . $text . '</li>');
+            }
+            $_list->attach('</ul>');
+            $fields->attach(form_input_text(do_lang_tempcode($current_section . '_ACTION'), do_lang_tempcode($current_section . '_TEXT'), 'modularisation_' . $current_section, $_list, false, true));
+        }
+    }
+
+    /**
      * The actualiser to fix modularisation issues.
      *
      * @return Tempcode Results of execution
@@ -206,18 +253,16 @@ class Module_admin_modularisation
 
         $responsible_addon = post_param_string('responsible_addon');
 
-        // Process each actionable tick box
+        // Process each actionable issue from the multiselect fields, and output the result of execution.
         $out = new Tempcode();
         $out->attach('<ul>');
-
         foreach ($_POST as $key => $value) {
-            if (strpos($key, 'tick_on_form__') === 0) {
-                $value = post_param_string(str_replace('tick_on_form__', '', $key), null);
-                if ($value === null) {
-                    continue;
-                }
+            if (strpos($key, 'modularisation_action_') !== 0) {
+                continue;
+            }
 
-                list($file, $addon, $issue) = explode('::', $value);
+            foreach ($value as $action) {
+                list($file, $addon, $issue) = explode('::', $action);
 
                 $results = fix_modularisation($issue, $file, $addon, $responsible_addon);
                 if ($results === null) {
@@ -229,11 +274,13 @@ class Module_admin_modularisation
                 $out->attach('</li>');
             }
         }
-
         $out->attach('</ul>');
 
         // Finalise
         $out->attach(fix_modularisation_finished());
+
+        // Output next steps
+        $out->attach(paragraph(do_lang_tempcode('MODULARISATION_RESCAN')));
 
         return $out;
     }

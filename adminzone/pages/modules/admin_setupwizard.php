@@ -1029,7 +1029,7 @@ class Module_admin_setupwizard
 
         $fields = new Tempcode();
         $fields->attach(form_input_tick(do_lang_tempcode('CLOSED_SITE'), do_lang_tempcode('CONFIG_OPTION_site_closed'), 'site_closed', true));
-        $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('CONFIG_OPTION_closed'), 'closed', get_option('closed'), false));
+        $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('CONFIG_OPTION_closed'), 'closed', get_option('closed'), false, false));
 
         $js_function_calls = ['adminSetupWizardStep9'];
         $inner = do_template('FORM', [

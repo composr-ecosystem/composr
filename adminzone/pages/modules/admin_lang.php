@@ -628,7 +628,7 @@ class Module_admin_lang
             global $LANGUAGE_STRINGS_CACHE;
             foreach ($LANGUAGE_STRINGS_CACHE[user_lang()] as $key => $value) {
                 if ((stripos($value, $search) !== false) || (stripos($key, $search) !== false)) {
-                    $fields->attach(form_input_text($key, '', 'trans_' . $key, str_replace('\n', "\n", $value), false));
+                    $fields->attach(form_input_text($key, '', 'trans_' . $key, str_replace('\n', "\n", $value), false, false));
                 }
             }
             if ($fields->is_empty()) {
