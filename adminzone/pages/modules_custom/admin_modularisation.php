@@ -135,7 +135,7 @@ class Module_admin_modularisation
         $list = [];
         $list_action = null;
         $count = 0;
-        $max = 100; // Some servers limit the number of POST parameters to 500. And each tick adds 3-4 parameters.
+        $max = 250; // Save on resource use and POST size
         foreach ($problems as $i => $problem) {
             list($issue, $file, $addon, $description) = $problem;
 
