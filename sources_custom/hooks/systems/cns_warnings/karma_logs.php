@@ -87,6 +87,7 @@ class Hook_cns_warnings_karma_logs
 
             $from_time = time() - (60 * 60 * 24 * 7);
             list($max_rows, $rows) = karma_get_logs('sender_recipient', $member_id, get_member(), 50, 0, 'k_date_and_time', 'DESC', 0, $from_time);
+            $_fields = new Tempcode();
             foreach ($rows as $row) {
                 $reason = get_translated_tempcode('karma', $row, 'k_reason');
                 if ($row['k_member_from'] == $member_id) {
@@ -113,7 +114,10 @@ class Hook_cns_warnings_karma_logs
                 }
                 $description->attach('.');
 
-                $fields->attach(form_input_tick($pretty_name, $description, 'karma_reverse__' . strval($row['id']), false));
+                $_fields->attach(form_input_list_entry($row['id'], false, $pretty_name, false, false)); // TODO: need to use proper Composr tooltips for description
+            }
+            if (!$_fields->is_empty()) {
+                $fields->attach(form_input_multi_list(do_lang_tempcode('PUNITIVE_KARMA_LOGS'), do_lang_tempcode('DESCRIPTION_PUNITIVE_KARMA_LOGS'), 'karma_reverse', $_fields, null, 10));
             }
         }
     }
@@ -136,17 +140,20 @@ class Hook_cns_warnings_karma_logs
         }
 
         if (has_privilege(get_member(), 'moderate_karma')) {
+            if (!isset($_POST['karma_reverse']) || !is_array($_POST['karma_reverse']) || (count($_POST['karma_reverse']) <= 0)) { // Nothing to do
+                return;
+            }
+
             require_code('karma');
             require_code('karma2');
             require_lang('karma');
 
-            // We intentionally do not filter by time and have a higher max in case more transactions were added since the warnings form was loaded
-            list($max_rows, $rows) = karma_get_logs('sender_recipient', $member_id, get_member(), 75, 0, 'k_date_and_time', 'DESC', 0);
-
-            foreach ($rows as $row) {
-                if (post_param_integer('karma_reverse__' . strval($row['id']), 0) != 1) {
-                    continue;
+            foreach ($_POST['karma_reverse'] as $log_id) {
+                $_row = $GLOBALS['SITE_DB']->query_select('karma', ['*'], ['id' => intval($log_id)], '', 1);
+                if (!array_key_exists(0, $_row)) { // Sanity check
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
+                $row = $_row[0];
 
                 $reason = get_translated_tempcode('karma', $row, 'k_reason');
 

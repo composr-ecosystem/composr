@@ -102,9 +102,10 @@ class Hook_cns_warnings_content
         // Get form fields for actions on forum topics / posts
         $posts_deletable = [];
         if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
-            $first_post_time = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'MIN(p_time)', ['p_poster' => $member_id]);
+            $time_limit = time() - (60 * 60 * 24 * 7); // Limit to posts within the last 7 days
+            $max = 50; // Limit to the last 50 posts
             if (
-                (($GLOBALS['DEV_MODE']) || ($first_post_time > time() - 60 * 60 * 24 * 14)) && // i.e. a recent spammer, not a normal member being punished
+                (($GLOBALS['DEV_MODE']) || ($spam_mode)) && // i.e. we are dealing with this user as a spammer
                 ((!is_guest($member_id)) || ($ip_address !== null))
             ) {
                 $where = [];
@@ -113,11 +114,11 @@ class Hook_cns_warnings_content
                 } else {
                     $where['p_poster'] = $member_id;
                 }
-                $sup = 'ORDER BY p_time DESC';
+                $sup = ' AND p_time<' . strval($time_limit) . ' ORDER BY p_time DESC';
                 if (!has_privilege(get_member(), 'view_other_pt')) {
                     $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
                 }
-                $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'], $where, $sup, 25);
+                $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id', 'p_time', 'p_title'], $where, $sup, 50);
                 $spam_urls = [];
                 foreach ($posts_by_member as $post) {
                     $just_post_row = db_map_restrict($post, ['id', 'p_post'], ['id' => 'p_id']);
@@ -166,9 +167,11 @@ class Hook_cns_warnings_content
         }
 
         $_fields = new Tempcode();
-
+        $available_posts_to_delete = [];
         foreach ($posts_deletable as $_post_id => $_post_deletable) {
             list($post_context, $_post_id, $topic_id, $topic_title, $post_time, $forum_id) = $_post_deletable;
+            $available_posts_to_delete[] = $_post_id;
+
             $post_url = $GLOBALS['FORUM_DRIVER']->post_url($_post_id, $forum_id, true);
 
             $list_options = new Tempcode();
@@ -199,27 +202,33 @@ class Hook_cns_warnings_content
             }
             $_fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
         }
+        $hidden->attach(form_input_hidden('available_posts_to_delete', implode("\n", $available_posts_to_delete)));
+
+        if (addon_installed('points')) {
+            $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_POINTS');
+        } else {
+            $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT');
+        }
 
         // See also hooks/systems/tasks/privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
         if (addon_installed('commandr') && has_privilege(get_member(), 'delete_highrange_content')) {
-            $content = find_member_content($member_id);
+            $content = find_member_content($member_id, 7);
+            $list_options = new Tempcode();
+            $content_deletable = [];
             foreach ($content as $content_details) {
                 list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
                 if (is_object($content_url)) {
                     $content_url = $content_url->evaluate();
                 }
-                $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), $content_type_title]);
 
-                $_fields->attach(form_input_tick(do_lang_tempcode('CONTENT_IS_OF_TYPE', $content_type_title, escape_html($content_title)), $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
+                $list_options->attach(form_input_list_entry($content_type . '::' . $content_id, $spam_mode, do_lang_tempcode('CONTENT_IS_OF_TYPE', $content_type_title, escape_html($content_title))));
+                $content_deletable[] = $content_type . '::' . $content_id;
             }
+            $_fields->attach(form_input_all_and_not(do_lang_tempcode('DELETE_CONTENT'), $description, 'delete_content', $list_options));
+            $hidden->attach(form_input_hidden('available_content_to_delete', implode("\n", $content_deletable)));
         }
 
         if (!$_fields->is_empty()) {
-            if (addon_installed('points')) {
-                $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT');
-            } else {
-                $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_POINTS');
-            }
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE_CONTENT'), 'HELP' => $description, 'SECTION_HIDDEN' => !$spam_mode]));
             $fields->attach($_fields);
         }
@@ -229,12 +238,12 @@ class Hook_cns_warnings_content
      * Actualise punitive actions.
      * Note that this assumes action was applied through the warnings form, and that post parameters still exist.
      *
-     * @param array &$punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
-     * @param AUTO_LINK $warning_id The ID of the warning that was created for this punitive action
-     * @param MEMBER $member_id The member this warning is being applied to
-     * @param SHORT_TEXT $username The username of the member this warning is being applied to
-     * @param SHORT_TEXT $explanation The defined explanation for this warning
-     * @param LONG_TEXT &$message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
+     * @param  array &$punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
+     * @param  AUTO_LINK $warning_id The ID of the warning that was created for this punitive action
+     * @param  MEMBER $member_id The member this warning is being applied to
+     * @param  SHORT_TEXT $username The username of the member this warning is being applied to
+     * @param  SHORT_TEXT $explanation The defined explanation for this warning
+     * @param  LONG_TEXT &$message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
      */
     public function actualise_punitive_action(array &$punitive_messages, int $warning_id, int $member_id, string $username, string $explanation, string &$message)
     {
@@ -245,31 +254,35 @@ class Hook_cns_warnings_content
         // Post deletion
         $deleted_all = false;
         if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
-            $where = ['p_poster' => $member_id];
-            $sup = 'ORDER BY p_time';
-            if (!has_privilege(get_member(), 'view_other_pt')) {
-                $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
-            }
-            $posts_already_deleted = [];
-            $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id', 'p_title', 'p_topic_id', 'p_time'], $where, $sup);
-            $deleted_all = true;
-            foreach ($posts_by_member as $post) {
-                if (isset($posts_already_deleted[$post['id']])) {
+            $posts_deletable = post_param_string('available_posts_to_delete');
+            foreach (explode("\n", $posts_deletable) as $_post_id) {
+                $post_id = intval($_post_id);
+
+                if (isset($posts_already_deleted[$post_id])) {
                     continue;
                 }
-                $p_title = do_lang('POST_IN_TITLED', strval($post['p_title']), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($post['id'])])]));
-                $_p_title = do_lang('_POST_IN_TITLED', strval($post['p_title']), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($post['id'])])]));
-                if (empty($post['p_title'])) {
-                    $p_title = do_lang('POST_IN_NUMBERED', strval($post['id']), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($post['id'])])]));
-                    $_p_title = do_lang('_POST_IN_NUMBERED', strval($post['id']), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($post['id'])])]));
+
+                $_post = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $post_id], '', 1);
+                if (!array_key_exists(0, $_post)) { // Sanity check
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
+                $post = $_post[0];
+                $post_title = $post['p_title'];
+
+                $p_title = do_lang('POST_IN_TITLED', strval($post_title), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $post_id])]));
+                $_p_title = do_lang('_POST_IN_TITLED', strval($post_title), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $post_id])]));
+                if (empty($post_title)) {
+                    $p_title = do_lang('POST_IN_NUMBERED', $_post_id, $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $post_id])]));
+                    $_p_title = do_lang('_POST_IN_NUMBERED', $_post_id, $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $post_id])]));
+                }
+
                 require_code('cns_posts_action3');
-                $post_action = post_param_string('handle_post__' . strval($post['id']), '');
+                $post_action = post_param_string('handle_post__' . $_post_id, '');
                 $posts = [];
                 switch ($post_action) {
                     case 'delete_post':
-                        $posts[] = $post['id'];
-                        $posts_already_deleted[$post['id']] = true;
+                        $posts[] = $post_id;
+                        $posts_already_deleted[$post_id] = true;
                         $punitive_messages[] = do_lang('PUNITIVE_DELETE_POST', strval($p_title), null, null, null, false);
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $warning_id,
@@ -278,13 +291,13 @@ class Hook_cns_warnings_content
                             'p_email_address' => '',
                             'p_hook' => 'content',
                             'p_action' => '_PUNITIVE_DELETE_POST',
-                            'p_param_a' => strval($post['id']),
-                            'p_param_b' => strval($_p_title),
+                            'p_param_a' => $_post_id,
+                            'p_param_b' => $_p_title,
                             'p_reversed' => 0,
                         ]);
                         break;
                     case 'delete_post_and_following':
-                        $posts[] = $post['id'];
+                        $posts[] = $post_id;
                         $further_posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id'], ['p_topic_id' => $post['p_topic_id']], 'AND p_time>' . strval($post['p_time']));
                         foreach ($further_posts as $_post) {
                             $posts[] = $_post['id'];
@@ -297,8 +310,8 @@ class Hook_cns_warnings_content
                             'p_email_address' => '',
                             'p_hook' => 'content',
                             'p_action' => '_PUNITIVE_DELETE_POST_AND_FOLLOWING',
-                            'p_param_a' => strval($post['id']),
-                            'p_param_b' => strval($_p_title),
+                            'p_param_a' => $_post_id,
+                            'p_param_b' => $_p_title,
                             'p_reversed' => 0,
                         ]);
                         $punitive_messages[] = do_lang('PUNITIVE_DELETE_POST_AND_FOLLOWING', strval($p_title), null, null, null, false);
@@ -320,43 +333,65 @@ class Hook_cns_warnings_content
 
         // Delete content
         if (addon_installed('commandr') && has_privilege(get_member(), 'delete_highrange_content')) {
-            $content = find_member_content($member_id);
-            $done_deleting = false;
-            foreach ($content as $content_details) {
-                list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
+            $content_deletable = explode("\n", post_param_string('available_content_to_delete'));
+            $content_to_delete = [];
+            $multi_code = read_multi_code('delete_content');
 
-                if (post_param_integer('delete__' . $content_type . '_' . $content_id, 0) == 1) {
-                    require_all_lang();
-                    require_code('resource_fs');
-                    $object_fs = get_resource_commandr_fs_object($content_type);
-                    if ($object_fs !== null) {
-                        $filename = $object_fs->convert_id_to_filename($content_type, $content_id);
-                        if ($filename !== null) {
-                            $subpath = $object_fs->search($content_type, $content_id, true);
-                            $object_fs->resource_delete($content_type, $filename, dirname($subpath));
+            require_code('selectcode');
+            if ((substr($multi_code, 0, 1) == '-') || (substr($multi_code, 0, 1) == '*')) {
+                foreach ($content_deletable as $key => $value) {
+                    $content_to_delete[$value] = true;
+                }
+            }
+            if ($multi_code != '') {
+                foreach (explode(',', substr($multi_code, 1)) as $m) {
+                    if (substr($multi_code, 0, 1) == '-') {
+                        unset($content_to_delete[$m]);
+                    } elseif (substr($multi_code, 0, 1) == '+') {
+                        $content_to_delete[$m] = true;
+                    }
+                }
+            }
+            $content_to_delete = array_keys($content_to_delete);
 
-                            // Reverse associated points as well
-                            if (addon_installed('points')) {
-                                require_code('points2');
-                                points_transactions_reverse_all(null, null, $member_id, $content_type, 'add', $content_id);
-                            }
+            foreach ($content_to_delete as $content) {
+                list($content_type, $content_id) = explode('::', $content);
 
-                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                                'p_warning_id' => $warning_id,
-                                'p_member_id' => $member_id,
-                                'p_ip_address' => '',
-                                'p_email_address' => '',
-                                'p_hook' => 'content',
-                                'p_action' => '_PUNITIVE_DELETE_CONTENT',
-                                'p_param_a' => strval($content_type_title),
-                                'p_param_b' => strval($content_title),
-                                'p_reversed' => 0,
-                            ]);
+                require_code('content');
+                require_code('resource_fs');
+                require_all_lang();
 
-                            $punitive_messages[] = do_lang('PUNITIVE_DELETE_CONTENT', strval($content_type_title), strval($content_title), null, null, false);
+                list($content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe, $cma_ob) = content_get_details($content_type, $content_id, true);
+                $content_type_title = $cma_ob->get_content_type_label($content_row);
 
-                            $done_deleting = true;
+                $object_fs = get_resource_commandr_fs_object($content_type);
+                if ($object_fs !== null) {
+                    $filename = $object_fs->convert_id_to_filename($content_type, $content_id);
+                    if ($filename !== null) {
+                        $subpath = $object_fs->search($content_type, $content_id, true);
+                        $object_fs->resource_delete($content_type, $filename, dirname($subpath));
+
+                        // Reverse associated points as well
+                        if (addon_installed('points')) {
+                            require_code('points2');
+                            points_transactions_reverse_all(null, null, $member_id, $content_type, 'add', $content_id);
                         }
+
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $warning_id,
+                            'p_member_id' => $member_id,
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
+                            'p_hook' => 'content',
+                            'p_action' => '_PUNITIVE_DELETE_CONTENT',
+                            'p_param_a' => $content_type_title->evaluate(),
+                            'p_param_b' => $content_title,
+                            'p_reversed' => 0,
+                        ]);
+
+                        $punitive_messages[] = do_lang('PUNITIVE_DELETE_CONTENT', $content_type_title->evaluate(), $content_title, null, null, false);
+
+                        $done_deleting = true;
                     }
                 }
             }

@@ -22,10 +22,11 @@
  * Find a member's content.
  *
  * @param  MEMBER $member_id Member ID
- * @param  integer $max Maximum results
+ * @param  ?integer $days Only consider content posted in the last specified days (null: do not consider)
+ * @param  ?integer $max Maximum results (null: no maximum; you should specify $days in this case)
  * @return array List of content rows
  */
-function find_member_content(int $member_id, int $max = 30) : array
+function find_member_content(int $member_id, ?int $days = null, ?int $max = 30) : array
 {
     if (!has_privilege(get_member(), 'delete_highrange_content')) {
         return [];
@@ -58,7 +59,7 @@ function find_member_content(int $member_id, int $max = 30) : array
     }
 
     require_code('content');
-    list($rows) = content_rows_for_multi_type($content_types, null, '', '', 'recent DESC', 0, $max * 10);
+    list($rows) = content_rows_for_multi_type($content_types, $days, '', '', 'recent DESC', 0, $max * 10);
 
     foreach ($rows as $row) {
         $ob = get_content_object($row['content_type']);

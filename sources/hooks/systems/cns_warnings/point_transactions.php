@@ -96,6 +96,7 @@ class Hook_cns_warnings_point_transactions
 
             $after_time = time() - (60 * 60 * 24 * 7);
             list($max_rows, $rows) = points_get_transactions('sender_recipient', $member_id, get_member(), 50, 0, 'date_and_time', 'DESC', null, true, false, $after_time);
+            $_fields = new Tempcode();
             foreach ($rows as $row) {
                 $reason = get_translated_tempcode('points_ledger', $row, 'reason');
                 if ($row['sender_id'] == $member_id) {
@@ -122,7 +123,10 @@ class Hook_cns_warnings_point_transactions
                 }
                 $description->attach('.');
 
-                $fields->attach(form_input_tick($pretty_name, $description, 'points_reverse__' . strval($row['id']), false));
+                $_fields->attach(form_input_list_entry($row['id'], false, $pretty_name, false, false)); // TODO: need to use proper Composr tooltips for description
+            }
+            if (!$_fields->is_empty()) {
+                $fields->attach(form_input_multi_list(do_lang_tempcode('PUNITIVE_POINTS_TRANSACTIONS'), do_lang_tempcode('DESCRIPTION_PUNITIVE_POINTS_TRANSACTIONS'), 'points_reverse', $_fields, null, 10));
             }
         }
     }
@@ -145,17 +149,20 @@ class Hook_cns_warnings_point_transactions
         }
 
         if (has_privilege(get_member(), 'moderate_points')) {
+            if (!isset($_POST['points_reverse']) || !is_array($_POST['points_reverse']) || (count($_POST['points_reverse']) <= 0)) { // Nothing to do
+                return;
+            }
+
             require_code('points3');
             require_code('points2');
             require_lang('points');
 
-            // We intentionally do not filter by time and have a higher max in case more transactions were added since the warnings form was loaded
-            list($max_rows, $rows) = points_get_transactions('sender_recipient', $member_id, get_member(), 75, 0, 'date_and_time', 'DESC', null, true, false);
-
-            foreach ($rows as $row) {
-                if (post_param_integer('points_reverse__' . strval($row['id']), 0) != 1) {
-                    continue;
+            foreach ($_POST['points_reverse'] as $transaction_id) {
+                $_row = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => intval($transaction_id)], '', 1);
+                if (!array_key_exists(0, $_row)) { // Sanity check
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
+                $row = $_row[0];
 
                 $reason = get_translated_tempcode('points_ledger', $row, 'reason');
                 if ($row['sender_id'] == $member_id) {
