@@ -88,7 +88,7 @@ function unit_testing_run()
         if (get_param_integer('keep_safe_mode', 0) == 1) {
             $url .= '&keep_safe_mode=1';
         }
-        echo '<li><a href="' . escape_html($url) . '">' . escape_html($set) . '</a></li>' . "\n";
+        echo '<li><a href="' . escape_html($url) . '">' . escape_html($set) . '</a> <span style="padding-left: 2em; cursor: pointer;" class="js_test_status" id="status-' . escape_html(str_replace('/', '__', $set)) . '"></span></span></li>' . "\n";
     }
     echo '
         </ul>
@@ -114,89 +114,123 @@ function unit_testing_run()
     echo "
         </select>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
+        <p>Status of tests will appear on the left. Click a status to view its output at the bottom of the page.</p>
         <script nonce=\"" . $GLOBALS['CSP_NONCE'] . "\" id=\"select-list\">
-            var maxToRun = 5; // Maximum tests to run concurrently
+            var max_slots = 2; // Set to the maximum number of tests to run concurrently. Careful as too many tests could result in some timing out.
+
+            var process_urls_process;
+            var test_urls;
+            var navigated_iframes;
 
             var list = document.getElementById('select-list');
             var button = document.getElementById('select-button');
             button.onclick = function() {
                 button.disabled = true;
 
+                var test_statuses = document.querySelectorAll('.js_test_status');
+                test_statuses.forEach(function initTestStatus(test_status) {
+                    test_status.innerHTML = '';
+                    test_status.addEventListener('click', function() {
+                        console.dir(test_status);
+                        var test_iframes = document.querySelectorAll('.js_test_iframe');
+                        for (var j = 0; j < test_iframes.length; j++) {
+                            if (test_iframes[j].id === test_status.id.replace('status-', 'iframe-')) {
+                                test_iframes[j].style.display = 'block';
+                            } else {
+                                test_iframes[j].style.display = 'none';
+                            }
+                        }
+                    });
+                });
+
+                test_urls = [];
                 for (var i = 0; i < list.options.length; i++) {
                     if (list.options[i].selected) {
-                        let url = 'index.php?id=' + list.options[i].value + '&close_if_passed=1" . ((get_param_integer('keep_safe_mode', 0) == 1) ? '&keep_safe_mode=1' : '') . "';
-                        addTest(url);
+                        var name = list.options[i].value;
+                        var url = 'index.php?id=' + name + '" . ((get_param_integer('keep_safe_mode', 0) == 1) ? '&keep_safe_mode=1' : '') . "';
+                        var existing_iframe = document.getElementById('iframe-' + name.replace('/', '__'));
+                        if (existing_iframe == null) {
+                            var url_iframe = document.createElement('iframe');
+                            url_iframe.classList.add('js_test_iframe');
+                            url_iframe.id = 'iframe-' + name.replace('/', '__');
+                            url_iframe.style.display = 'none';
+                            url_iframe.style.width = '100%';
+                            url_iframe.style.height = '768px';
+                            document.body.appendChild(url_iframe);
+                            test_urls.push([url, url_iframe, name.replace('/', '__')]);
+                        } else {
+                            delete existing_iframe.src;
+                            test_urls.push([url, existing_iframe, name.replace('/', '__')]);
+                        }
+                        var test_status = document.getElementById('status-' + name.replace('/', '__'));
+                        test_status.innerHTML = '<span style=\"color: DimGrey;\">Queued</span>';
                     }
                 }
+
+                process_urls_process = window.setInterval(process_urls, 1000);
+
+                navigated_iframes = [];
             };
 
-            var testQueue = []; // Queue to store tests
-            var runningTests = 0; // Counter for running tests
+            function process_urls()
+            {
+                var navigated_iframes_cleaned = [];
+                var active_iframes = 0;
+                for (var i = 0; i < navigated_iframes.length; i++) {
+                    var url = navigated_iframes[i][0];
+                    var url_iframe = navigated_iframes[i][1];
+                    var name = navigated_iframes[i][2];
+                    var test_status = document.getElementById('status-' + name);
+                    try {
+                        if (url_iframe && url_iframe.contentDocument && (url_iframe.contentDocument.readyState !== 'complete' || url_iframe.contentDocument.URL == 'about:blank' || url_iframe.contentDocument.URL == '')) {
+                            navigated_iframes_cleaned.push([url, url_iframe, name]);
+                            test_status.innerHTML = '<span style=\"color: GoldenRod;\">Running test...</span>';
+                            active_iframes++;
+                        } else {
+                            console.log('Concluded ' + name);
+                            if (url_iframe.contentDocument.body.innerText.includes('0 fails and 0 exceptions')) {
+                                test_status.innerHTML = '<span style=\"color: Green;\">Finished; all tests passed</span>';
+                            } else if (url_iframe.contentDocument.body.innerText.includes('fails')) {
+                                test_status.innerHTML = '<span style=\"color: Orange;\">Finished; some tests failed</span>';
+                            } else {
+                                test_status.innerHTML = '<span style=\"color: Red;\">Failed to run!</span>';
+                            }
+                        }
+                    } catch {
+                        navigated_iframes_cleaned.push([url, url_iframe, name]); // Consider errors as the test is still open but not running
+                        test_status.innerHTML = '<span style=\"color: Red;\">An error occurred checking status!</span>';
+                    }
+                }
+                navigated_iframes = navigated_iframes_cleaned;
 
-            function addTest(url) {
-              testQueue.push(url);
-              runTests();
-            }
+                var free_slots = max_slots - active_iframes;
+                while ((free_slots > 0) && (test_urls.length > 0)) {
+                    var url = test_urls[0][0];
+                    var url_iframe = test_urls[0][1];
+                    var name = test_urls[0][2];
+                    var test_status = document.getElementById('status-' + name);
 
-            function runTests() {
-              while (runningTests < maxToRun && testQueue.length > 0) {
-                let url = testQueue.shift(); // Dequeue a test
-                runningTests++;
-                runTest(url)
-                  .then(() => {
-                    runningTests--;
-                    runTests(); // Continue running tests after recalculating active tabs
-                  })
-                  .catch((error) => {
-                    console.error('Error running test:', error);
-                    runningTests--;
-                    runTests(); // Continue running tests after recalculating active tabs
-                  });
-              }
+                    console.log('Loading ' + name);
 
-              if ((runningTests <= 0) && (testQueue.length <= 0)) {
-                  button.disabled = false;
-              }
-            }
+                    url_iframe.src = url;
 
-            function runTest(url) {
-              return new Promise((resolve, reject) => {
-                let newTab = window.open(url);
+                    navigated_iframes.push([url, url_iframe, name]);
 
-                // This browser does not support opening any more tabs; add the test back to the queue and reset maxToRun.
-                if (!newTab) {
-                    testQueue = [];
-                    return reject(new Error('Exceeded the browser tab limit. Abandoned testing!'));
+                    test_urls.splice(0, 1); // Delete array element
+
+                    free_slots--;
+
+                    test_status.innerHTML = '<span style=\"color: GoldenRod;\">Running test...</span>';
                 }
 
-                let loadHandler = () => {
-                  console.log(`Test finished with failures: ${url}`);
-                  cleanup();
-                  resolve();
-                };
+                if (navigated_iframes.length == 0) {
+                    button.disabled = false;
+                    window.clearInterval(process_urls_process);
 
-                let errorHandler = () => {
-                  console.error(`Failed to start test: ${url}`);
-                  cleanup();
-                  resolve();
-                };
-
-                let closeHandler = () => {
-                  console.log(`Test passed / closed: ${url}`);
-                  cleanup();
-                  resolve();
-                };
-
-                let cleanup = () => {
-                  newTab.removeEventListener('load', loadHandler);
-                  newTab.removeEventListener('error', errorHandler);
-                  newTab.removeEventListener('beforeunload', closeHandler);
-                };
-
-                newTab.addEventListener('load', loadHandler);
-                newTab.addEventListener('error', errorHandler);
-                newTab.addEventListener('beforeunload', closeHandler);
-              });
+                    console.log('Finished testing');
+                } else {
+                    console.log('(Sleeping for 1s)');
+                }
             }
         </script>
     </div>
@@ -275,6 +309,7 @@ function testset_do_footer()
     echo <<<END
         <hr />
         <p>Composr test set tool, based on SimpleTest.</p>
+        <p>When running concurrent tests, click its status to view its output below:</p>
     </div></body>
 </html>
 END;
