@@ -280,6 +280,7 @@ class Hook_addon_registry_installer
             'URL' => placeholder_url(),
             'HIDDEN' => '',
             'LICENCE' => lorem_chunk(),
+            'OFFICIAL_GIT' => false,
         ]);
         return do_lorem_template('INSTALLER_HTML_WRAP', [
             'CSS_NOCACHE' => '.nocss{}',

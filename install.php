@@ -328,7 +328,6 @@ function step_1() : object
     erase_cached_templates();
     erase_cached_language();
 
-    // Integrity check
     require_code('files');
     $warnings = new Tempcode();
 
@@ -568,6 +567,7 @@ function step_2() : object
         'URL' => $url,
         'HIDDEN' => $hidden,
         'LICENCE' => $licence,
+        'OFFICIAL_GIT' => file_exists(get_file_base() . '/_tests'),
     ]);
 }
 
@@ -993,7 +993,7 @@ function step_4() : object
     $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), ($forum_type == 'none') ? example('', 'CHOOSE_MASTER_PASSWORD_ADMIN') : example('', 'CHOOSE_MASTER_PASSWORD_NO_ADMIN'), 'master_password', $master_password, true));
     require_lang('config');
     require_lang('privacy');
-    $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_DEVELOPERS'), example('', 'CONFIG_OPTION_send_error_emails_developers'), 'send_error_emails_developers', 1));
+    $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_DEVELOPERS'), example('', 'CONFIG_OPTION_send_error_emails_developers'), 'send_error_emails_developers', file_exists(get_file_base() . '/_tests') ? 0 : 1));
     $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'f051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     $hidden->attach(form_input_hidden('self_learning_cache', '1'));
 

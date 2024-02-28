@@ -16,7 +16,7 @@
 			</div>
 
 			<p>
-				<input type="checkbox" checked="checked" value="1" name="advertise_on" id="advertise_on" />
+				<input type="checkbox"{+START,IF,{$NOT,{OFFICIAL_GIT}}}checked="checked" {+END}value="1" name="advertise_on" id="advertise_on" />
 				<label for="advertise_on">{!ADVERTISE_ON_COMPOSR}</label>
 			</p>
 		</div>
