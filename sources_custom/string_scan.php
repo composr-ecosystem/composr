@@ -1014,7 +1014,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_dashboard_links
         CONFIG_OPTION_dashboard_new_version
         CONFIG_OPTION_dashboard_tips
-        CONFIG_OPTION_hc_cpu_normative_threshold
+        CONFIG_OPTION_hc_cpu_score_threshold
         CONFIG_OPTION_hc_io_mbs
         CONFIG_OPTION_list_unsubscribe_target
         CONFIG_OPTION_max_queued_mails_per_cron_cycle
@@ -1040,7 +1040,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EMAIL_GENERAL
         ENABLE_CRON_HOOK
         EXECUTE_SCRIPT
-        HC_CPU_NORMATIVE_THRESHOLD
+        HC_CPU_SCORE_THRESHOLD
         HC_IO_MBS
         INIT_LOG
         LAST_RUN

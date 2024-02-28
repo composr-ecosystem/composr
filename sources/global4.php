@@ -760,23 +760,26 @@ function generate_guid() : string
 }
 
 /**
- * Find a percentage performance figure relative to a Late 2014 iMac (at the time of writing this is the lead developers main machine).
+ * Calculate a performance score for this server.
+ * The resulting number indicates how many md5 uniqid operations can be performed in a second.
  *
- * @return float Performance figure
+ * @return float Performance score; higher is better
  */
-function find_normative_performance() : float
+function calculate_performance_score() : float
 {
-    static $percentage = null;
-    if ($percentage !== null) {
-        return $percentage;
+    static $score = null;
+    if ($score !== null) {
+        return $score;
     }
 
+    $operations = 10000;
+
     $t = microtime(true);
-    for ($i = 0; $i < 10000; $i++) {
+    for ($i = 0; $i < $operations; $i++) {
         md5(uniqid('', false)); // Some fairly heavy crunching
     }
-    $percentage = 100.0 * (0.055 / (microtime(true) - $t));
-    return $percentage;
+    $score = $operations / (microtime(true) - $t);
+    return $score;
 }
 
 /**

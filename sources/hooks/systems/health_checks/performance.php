@@ -360,28 +360,6 @@ class Hook_health_check_performance extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testNormativePerformance(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
-    {
-        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
-            $this->log('Skipped; running on specific page links.');
-            return;
-        }
-
-        require_code('global4');
-        $percentage = find_normative_performance();
-        $this->assertTrue($percentage > 4.0, do_lang('SLOW_SERVER', escape_html(float_format($percentage, 1))));
-    }
-
-    /**
-     * Run a section of health checks.
-     *
-     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
-     * @param  boolean $manual_checks Mention manual checks
-     * @param  boolean $automatic_repair Do automatic repairs where possible
-     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
-     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
-     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
-     */
     public function testSetup(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {

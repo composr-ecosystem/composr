@@ -174,14 +174,14 @@ class Hook_health_check_performance_server extends Hook_Health_Check
         }
 
         if ($check_context == CHECK_CONTEXT__INSTALL) {
-            $threshold = 10;
+            $threshold = 25000;
         } else {
-            $threshold = intval(get_option('hc_cpu_normative_threshold'));
+            $threshold = intval(get_option('hc_cpu_score_threshold'));
         }
 
         require_code('global4');
-        $performance = find_normative_performance();
-        $this->assertTrue($performance > floatval($threshold), 'Server\'s normative performance score seems low, at ' . float_format($performance) . ' (at least ' . integer_format($threshold) . ' expected); 1.0 was set at the level of a 2014 iMac');
+        $performance = calculate_performance_score();
+        $this->assertTrue($performance > floatval($threshold), 'Server\'s performance score seems low, at ' . float_format($performance) . ' (at least ' . integer_format($threshold) . ' expected). This represents the number of MD5 uniqid operations that can be performed per second.');
     }
 
     /**

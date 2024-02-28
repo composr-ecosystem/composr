@@ -1025,7 +1025,7 @@ if (function_exists('tideways_xhprof_enable')) {
             //require_code('global4');
             $context_data = array(
                 'wall_time' => microtime(true) - $TIDEWAYS_INIT_TIME,
-                //'normative_performance' => find_normative_performance(),
+                //'cpu_performance' => calculate_performance_score(),
                 'cat /proc/meminfo' => shell_exec('cat /proc/meminfo'),
                 'uptime' => shell_exec('uptime'),
                 'ps -Af' => shell_exec('ps -Af'),

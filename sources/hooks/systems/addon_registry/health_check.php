@@ -171,7 +171,7 @@ class Hook_addon_registry_health_check
             'sources/hooks/systems/config/hc_admin_stale_threshold.php',
             'sources/hooks/systems/config/hc_compound_requests_per_second_threshold.php',
             'sources/hooks/systems/config/hc_compound_requests_window_size.php',
-            'sources/hooks/systems/config/hc_cpu_normative_threshold.php',
+            'sources/hooks/systems/config/hc_cpu_score_threshold.php',
             'sources/hooks/systems/config/hc_cpu_pct_threshold.php',
             'sources/hooks/systems/config/hc_cron_notify_regardless.php',
             'sources/hooks/systems/config/hc_cron_regularity.php',

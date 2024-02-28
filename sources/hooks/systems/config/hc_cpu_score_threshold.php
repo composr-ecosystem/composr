@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_hc_cpu_normative_threshold
+class Hook_config_hc_cpu_score_threshold
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_hc_cpu_normative_threshold
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'HC_CPU_NORMATIVE_THRESHOLD',
+            'human_name' => 'HC_CPU_SCORE_THRESHOLD',
             'type' => 'float',
             'category' => 'HEALTH_CHECK',
             'group' => 'PERFORMANCE',
-            'explanation' => 'CONFIG_OPTION_hc_cpu_normative_threshold',
+            'explanation' => 'CONFIG_OPTION_hc_cpu_score_threshold',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 5,
@@ -56,6 +56,6 @@ class Hook_config_hc_cpu_normative_threshold
             return null;
         }
 
-        return '20';
+        return '25000';
     }
 }
