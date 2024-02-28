@@ -110,71 +110,93 @@ function unit_testing_run()
         }
     }
     $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed']));
+    // TODO: more efficient method
     echo "
         </select>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
         <script nonce=\"" . $GLOBALS['CSP_NONCE'] . "\" id=\"select-list\">
-            var process_urls_process;
-            var test_urls;
-            var navigated_windows;
+            var maxToRun = 5; // Maximum tests to run concurrently
 
             var list = document.getElementById('select-list');
             var button = document.getElementById('select-button');
             button.onclick = function() {
                 button.disabled = true;
 
-                test_urls = [];
                 for (var i = 0; i < list.options.length; i++) {
                     if (list.options[i].selected) {
-                        var url = 'index.php?id=' + list.options[i].value + '&close_if_passed=1" . ((get_param_integer('keep_safe_mode', 0) == 1) ? '&keep_safe_mode=1' : '') . "';
-                        var url_window = window.open('');
-                        test_urls.push([url, url_window]);
+                        let url = 'index.php?id=' + list.options[i].value + '&close_if_passed=1" . ((get_param_integer('keep_safe_mode', 0) == 1) ? '&keep_safe_mode=1' : '') . "';
+                        addTest(url);
                     }
                 }
-
-                process_urls_process = window.setInterval(process_urls, 10);
-
-                navigated_windows = [];
             };
 
-            function process_urls()
-            {
-                var navigated_windows_cleaned = [];
-                for (var i = 0; i < navigated_windows.length; i++) {
-                    var url = navigated_windows[i][0];
-                    var url_window = navigated_windows[i][1];
-                    if (!url_window.closed && url_window.document.readyState != 'complete') {
-                        navigated_windows_cleaned.push([url, url_window]);
-                    } else {
-                        console.log('Concluded ' + url);
-                    }
+            var testQueue = []; // Queue to store tests
+            var runningTests = 0; // Counter for running tests
+
+            function addTest(url) {
+              testQueue.push(url);
+              runTests();
+            }
+
+            function runTests() {
+              while (runningTests < maxToRun && testQueue.length > 0) {
+                let url = testQueue.shift(); // Dequeue a test
+                runningTests++;
+                runTest(url)
+                  .then(() => {
+                    runningTests--;
+                    runTests(); // Continue running tests after recalculating active tabs
+                  })
+                  .catch((error) => {
+                    console.error('Error running test:', error);
+                    runningTests--;
+                    runTests(); // Continue running tests after recalculating active tabs
+                  });
+              }
+
+              if ((runningTests <= 0) && (testQueue.length <= 0)) {
+                  button.disabled = false;
+              }
+            }
+
+            function runTest(url) {
+              return new Promise((resolve, reject) => {
+                let newTab = window.open(url);
+
+                // This browser does not support opening any more tabs; add the test back to the queue and reset maxToRun.
+                if (!newTab) {
+                    testQueue = [];
+                    return reject(new Error('Exceeded the browser tab limit. Abandoned testing!'));
                 }
-                navigated_windows = navigated_windows_cleaned;
 
-                var free_slots = 4 - navigated_windows.length;
-                while ((free_slots > 0) && (test_urls.length > 0)) {
-                    var url = test_urls[0][0];
-                    var url_window = test_urls[0][1];
+                let loadHandler = () => {
+                  console.log(`Test finished with failures: ${url}`);
+                  cleanup();
+                  resolve();
+                };
 
-                    console.log('Loading ' + url);
+                let errorHandler = () => {
+                  console.error(`Failed to start test: ${url}`);
+                  cleanup();
+                  resolve();
+                };
 
-                    url_window.location.replace(url);
+                let closeHandler = () => {
+                  console.log(`Test passed / closed: ${url}`);
+                  cleanup();
+                  resolve();
+                };
 
-                    navigated_windows.push([url, url_window]);
+                let cleanup = () => {
+                  newTab.removeEventListener('load', loadHandler);
+                  newTab.removeEventListener('error', errorHandler);
+                  newTab.removeEventListener('beforeunload', closeHandler);
+                };
 
-                    test_urls.splice(0, 1); // Delete array element
-
-                    free_slots--;
-                }
-
-                if (navigated_windows.length == 0) {
-                    button.disabled = false;
-                    window.clearTimeout(process_urls_process);
-
-                    console.log('Finished testing');
-                } else {
-                    console.log('(Sleeping for 10ms)');
-                }
+                newTab.addEventListener('load', loadHandler);
+                newTab.addEventListener('error', errorHandler);
+                newTab.addEventListener('beforeunload', closeHandler);
+              });
             }
         </script>
     </div>
