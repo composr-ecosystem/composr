@@ -94,6 +94,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'ecom_subscriptions' => [
@@ -106,8 +107,9 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'email_fields' => [],
                     'username_fields' => [],
                     'additional_anonymise_fields' => [],
-                    'extra_where' => db_string_not_equal_to('s_state', 'active'),
+                    'extra_where' => db_string_not_equal_to('s_state', 'active'), // Prevent fraud
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'ecom_invoices' => [
@@ -120,8 +122,9 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'email_fields' => [],
                     'username_fields' => [],
                     'additional_anonymise_fields' => [],
-                    'extra_where' => db_string_equal_to('i_state', 'paid') . ' OR ' . db_string_equal_to('i_state', 'delivered'),
+                    'extra_where' => db_string_equal_to('i_state', 'paid') . ' OR ' . db_string_equal_to('i_state', 'delivered'), // Prevent fraud
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'ecom_transactions' => [
@@ -136,6 +139,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'additional_anonymise_fields' => ['t_session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'ecom_trans_expecting' => [
@@ -150,6 +154,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'additional_anonymise_fields' => ['e_session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'ecom_trans_addresses' => [
@@ -164,6 +169,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'additional_anonymise_fields' => ['a_firstname', 'a_lastname', 'a_street_address', 'a_city', 'a_state', 'a_post_code', 'a_country', 'a_phone'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],

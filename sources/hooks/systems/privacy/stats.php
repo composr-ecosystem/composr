@@ -61,6 +61,7 @@ class Hook_privacy_stats extends Hook_privacy_base
                     'additional_anonymise_fields' => ['session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'stats_link_tracker' => [
@@ -75,6 +76,7 @@ class Hook_privacy_stats extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'stats_kpis' => [
@@ -89,6 +91,7 @@ class Hook_privacy_stats extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],

@@ -83,6 +83,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'f_member_known_login_ips' => [
@@ -97,6 +98,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => ['i_val_code'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_group_join_log' => [
@@ -111,6 +113,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_group_approvals' => [
@@ -125,6 +128,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'f_invites' => [
@@ -139,6 +143,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'f_warnings' => [
@@ -153,6 +158,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Security
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE,
                 ],
                 'f_warnings_punitive' => [
@@ -167,6 +173,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Security
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE,
                 ],
                 'f_members' => [
@@ -181,6 +188,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => ['m_pass_salt', 'm_pass_hash_salted', 'm_password_change_code', 'm_login_key', 'm_validated_email_confirm_code'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Prevent accidental lock-out
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_posts' => [
@@ -195,6 +203,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => ['p_poster_name_if_guest'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'f_password_history' => [
@@ -209,6 +218,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => ['p_hash_salted', 'p_salt'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_member_custom_fields' => [
@@ -223,6 +233,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_member_cpf_perms' => [
@@ -237,6 +248,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_group_members' => [
@@ -251,6 +263,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_groups' => [
@@ -265,6 +278,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'f_forums' => [
@@ -279,6 +293,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => ['f_mail_password', 'f_mail_username'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE,
                 ],
                 'f_topics' => [
@@ -293,6 +308,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'f_special_pt_access' => [
@@ -307,6 +323,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_poll_votes' => [
@@ -321,6 +338,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_read_logs' => [
@@ -335,6 +353,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_group_member_timeouts' => [
@@ -349,6 +368,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_forum_intro_ip' => [
@@ -363,6 +383,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_forum_intro_member' => [
@@ -377,6 +398,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'f_posts_fulltext_index' => [
@@ -391,6 +413,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'f_pposts_fulltext_index' => [
@@ -405,6 +428,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
             ],

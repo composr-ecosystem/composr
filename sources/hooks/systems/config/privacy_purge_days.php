@@ -51,6 +51,6 @@ class Hook_config_privacy_purge_days
      */
     public function get_default() : ?string
     {
-        return '-1'; // Normally, members should not be allowed to purge their own data for security reasons except from the delete account screen
+        return '7';
     }
 }

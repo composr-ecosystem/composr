@@ -61,6 +61,7 @@ class Hook_privacy_securitylogging extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Security
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'usersubmitban_member' => [
@@ -75,6 +76,7 @@ class Hook_privacy_securitylogging extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Security
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'banned_ip' => [
@@ -89,6 +91,7 @@ class Hook_privacy_securitylogging extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Security
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'unbannable_ip' => [
@@ -103,6 +106,7 @@ class Hook_privacy_securitylogging extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
             ],

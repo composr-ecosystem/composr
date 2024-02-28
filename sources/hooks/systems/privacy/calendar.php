@@ -64,6 +64,7 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'calendar_reminders' => [
@@ -78,6 +79,7 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'calendar_interests' => [
@@ -92,6 +94,7 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'calendar_jobs' => [
@@ -106,6 +109,7 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
             ],

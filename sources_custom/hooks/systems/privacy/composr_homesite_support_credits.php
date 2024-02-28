@@ -56,6 +56,7 @@ class Hook_privacy_composr_homesite_support_credits extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'credit_charge_log' => [
@@ -70,6 +71,7 @@ class Hook_privacy_composr_homesite_support_credits extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
             ],

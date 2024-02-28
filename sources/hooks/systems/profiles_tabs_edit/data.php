@@ -126,6 +126,11 @@ class Hook_profiles_tabs_edit_data
 
                     foreach ($info['database_records'] as $table => $details) {
                         $table_actions[$table] = $details['removal_default_handle_method'];
+
+                        // Defined overrides for methods used when a member purges their data
+                        if (!empty($details['removal_default_handle_method_member_override'])) {
+                            $table_actions[$table] = $details['removal_default_handle_method_member_override'];
+                        }
                     }
                 }
 
@@ -213,7 +218,7 @@ class Hook_profiles_tabs_edit_data
 
         $action_radios = new Tempcode();
         $action_radios->attach(form_input_radio_entry('data_action', '1', false, do_lang_tempcode('DOWNLOAD'), 0, do_lang_tempcode('_DATA_DOWNLOAD_TASK'), !$can_download));
-        $action_radios->attach(form_input_radio_entry('data_action', '2', false, do_lang_tempcode('PURGE'), 0, '', !$can_purge));
+        $action_radios->attach(form_input_radio_entry('data_action', '2', false, do_lang_tempcode('PURGE'), 0, do_lang_tempcode('_DATA_PURGE_TASK'), !$can_purge));
         $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), do_lang_tempcode('DESCRIPTION_ACTION_DATA'), 'data_action', $action_radios, false));
 
         if ($memory_debugging) {

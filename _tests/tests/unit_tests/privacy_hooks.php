@@ -53,10 +53,41 @@ class privacy_hooks_test_set extends cms_test_case
                 $this->assertTrue($x === null || is_array($x) && array_key_exists('heading', $x) && array_key_exists('action', $x) && array_key_exists('reason', $x), 'Invalid general message in ' . $hook . ' (' . serialize($x) . ')');
             }
 
+            $required_table_details = [
+                'timestamp_field',
+                'retention_days',
+                'retention_handle_method',
+                'owner_id_field',
+                'additional_member_id_fields',
+                'ip_address_fields',
+                'email_fields',
+                'username_fields',
+                'additional_anonymise_fields',
+                'extra_where',
+                'removal_default_handle_method',
+                'removal_default_handle_method_member_override',
+                'allowed_handle_methods',
+            ];
+
+            $must_include_cannot_purge_lang = false;
+
             foreach ($info['database_records'] as $table => $details) {
                 $this->assertTrue(in_array($table, $all_tables), 'Table unknown: ' . $table . ' in hook ' . $hook);
 
                 $this->assertTrue(!isset($found_tables[$table]), 'Table defined more than once: ' . $table . ' in hook ' . $hook);
+
+                $all_ok = true;
+                foreach ($required_table_details as $r_table) {
+                    $ok = array_key_exists($r_table, $details);
+                    $this->assertTrue($ok, 'Missing property ' . $r_table . ' on table details in ' . $table . ' in hook ' . $hook . '. All other checks skipped for this table (ignore any errors about this not being defined in a hook).');
+
+                    if (!$ok) {
+                        $all_ok = false;
+                    }
+                }
+                if (!$all_ok) { // Cannot proceed with other checks if there are missing properties.
+                    continue;
+                }
 
                 $this->assertTrue($details['timestamp_field'] === null || is_string($details['timestamp_field']), 'Invalid timestamp field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue($details['retention_days'] === null || is_integer($details['retention_days']), 'Invalid retention_days field in ' . $table . ' in hook ' . $hook);
@@ -68,8 +99,9 @@ class privacy_hooks_test_set extends cms_test_case
                 $this->assertTrue(is_array($details['username_fields']), 'Invalid username_fields field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue(is_array($details['additional_anonymise_fields']), 'Invalid additional_anonymise_fields field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue($details['extra_where'] === null || is_string($details['extra_where']), 'Invalid extra_where field in ' . $table . ' in hook ' . $hook);
-                $this->assertTrue(is_integer($details['removal_default_handle_method']), 'Invalid removal_default_handle_method field in ' . $table . ' in hook ' . $hook);
-                $this->assertTrue(is_integer($details['allowed_handle_methods']), 'Invalid allowed_handle_methods field in ' . $table . ' in hook ' . $hook);
+                $this->assertTrue(is_integer($details['removal_default_handle_method']), 'Invalid removal_default_handle_method setting in ' . $table . ' in hook ' . $hook);
+                $this->assertTrue(is_integer($details['allowed_handle_methods']), 'Invalid allowed_handle_methods setting in ' . $table . ' in hook ' . $hook);
+                $this->assertTrue((($details['removal_default_handle_method_member_override'] === null) || is_integer($details['removal_default_handle_method_member_override'])), 'Invalid removal_default_handle_method_member_override setting in ' . $table . ' in hook ' . $hook);
 
                 $this->assertTrue(($details['retention_handle_method'] == PRIVACY_METHOD__LEAVE) || (($details['allowed_handle_methods'] & $details['retention_handle_method']) != 0), 'Invalid retention_handle_method value in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue(($details['removal_default_handle_method'] == PRIVACY_METHOD__LEAVE) || (($details['allowed_handle_methods'] & $details['removal_default_handle_method']) != 0), 'Invalid removal_default_handle_method value in ' . $table . ' in hook ' . $hook);
@@ -90,6 +122,10 @@ class privacy_hooks_test_set extends cms_test_case
                     $this->assertTrue(((count($details['additional_member_id_fields']) == 0) || ($details['owner_id_field'] !== null)), 'additional_member_id_fields fields defined, but no owner_id_field defined, in ' . $table . ' in hook ' . $hook);
                 }
 
+                if (($details['removal_default_handle_method_member_override'] !== null) || ($details['extra_where'] !== null)) {
+                    $must_include_cannot_purge_lang = true;
+                }
+
                 // Make comparison to what we want easier for the next foreach loop
                 sort($details['additional_member_id_fields']);
                 sort($details['ip_address_fields']);
@@ -102,6 +138,16 @@ class privacy_hooks_test_set extends cms_test_case
             }
 
             $this->assertTrue(strpos(serialize($info), 'TODO') === false);
+
+            // We need to check to be sure we're specifying certain data cannot be purged on the member screen
+            $lang = do_lang($info['description'], null, null, null, null, false);
+            if ($lang !== null) {
+                if ($must_include_cannot_purge_lang) {
+                    $this->assertTrue((strpos($lang, 'cannot be purged') !== false), 'Description string for hook ' . $hook . ' must contain information about what data will not be purged or can only be purged by staff (based on extra_where and/or removal_default_handle_method_member_override). The string should include "cannot be purged" somewhere in it to assert.');
+                } else {
+                    $this->assertTrue((strpos($lang, 'cannot be purged') === false), 'Not necessary to include "cannot be purged" language in the description for hook ' . $hook);
+                }
+            }
         }
 
         foreach ($all_tables as $table) {

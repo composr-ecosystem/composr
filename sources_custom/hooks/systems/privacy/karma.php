@@ -56,13 +56,14 @@ class Hook_privacy_karma extends Hook_privacy_base
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Must prevent cheating to preserve integrity of the system
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE | PRIVACY_METHOD__ANONYMISE,
                 ],
             ],
         ];
     }
 
-        /**
+    /**
      * Serialise a row.
      *
      * @param  ID_TEXT $table_name Table name

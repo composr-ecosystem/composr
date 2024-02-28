@@ -68,6 +68,7 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'additional_anonymise_fields' => ['l_session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'shopping_cart' => [
@@ -82,6 +83,7 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'additional_anonymise_fields' => ['session_id'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'shopping_orders' => [
@@ -94,8 +96,9 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'email_fields' => [],
                     'username_fields' => [],
                     'additional_anonymise_fields' => ['session_id'],
-                    'extra_where' => db_string_not_equal_to('order_status', 'payment_received') . ' AND ' . db_string_not_equal_to('order_status', 'onhold'),
+                    'extra_where' => db_string_not_equal_to('order_status', 'payment_received') . ' AND ' . db_string_not_equal_to('order_status', 'onhold'), // Prevent loss of orders in progress
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],
