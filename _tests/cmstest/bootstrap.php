@@ -79,7 +79,7 @@ function unit_testing_run()
             <li>Many support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
         </ul>
     </div>";
-    echo '<div style="float: left; width: 40%">
+    echo '<div style="float: left; width: 60%">
         <p class="lonely-label">Tests:</p>
         <ul>';
 
@@ -188,19 +188,22 @@ function unit_testing_run()
                     try {
                         if (url_iframe && url_iframe.contentDocument && (url_iframe.contentDocument.readyState !== 'complete' || url_iframe.contentDocument.URL == 'about:blank' || url_iframe.contentDocument.URL == '')) {
                             navigated_iframes_cleaned.push([url, url_iframe, name]);
-                            test_status.innerHTML = '<span style=\"color: GoldenRod;\">Running test...</span>';
+                            test_status.innerHTML = '<span style=\"color: BlueViolet;\">Running test...</span>';
                             active_iframes++;
                         } else {
                             console.log('Concluded ' + name);
                             if (url_iframe.contentDocument.body.innerText.includes('0 fails and 0 exceptions')) {
                                 test_status.innerHTML = '<span style=\"color: Green;\">Finished; all tests passed</span>';
                             } else if (url_iframe.contentDocument.body.innerText.includes('fails')) {
-                                test_status.innerHTML = '<span style=\"color: Orange;\">Finished; some tests failed</span>';
+                                test_status.innerHTML = '<span style=\"color: Coral;\">Finished; some tests failed</span>';
                             } else if (actual_max_slots > 1) {
-                                test_status.innerHTML = '<span style=\"color: Red;\">Failed to run; pending second attempt</span>';
+                                test_status.innerHTML = '<span style=\"color: DarkRed;\">Failed to run; pending second attempt</span>';
                                 on_hold_iframes.push([url, url_iframe, name]);
+
+                                // Allow us to reload the source later
+                                url_iframe.src = 'about:blank';
                             } else {
-                                test_status.innerHTML = '<span style=\"color: Red;\">Failed to run!</span>';
+                                test_status.innerHTML = '<span style=\"color: Red;\">Failed to run! Will not try again.</span>';
                             }
                         }
                     } catch {
@@ -227,13 +230,15 @@ function unit_testing_run()
 
                     free_slots--;
 
-                    test_status.innerHTML = '<span style=\"color: GoldenRod;\">Running test...</span>';
+                    test_status.innerHTML = '<span style=\"color: BlueViolet;\">Running test...</span>';
                 }
 
                 if (navigated_iframes.length == 0) {
                     if (on_hold_iframes.length > 0) { // Process failed tests again, but one at a time
                         actual_max_slots = 1;
                         test_urls = on_hold_iframes;
+
+                        console.log('Finished testing; synchronously re-loading tests that failed to run');
                     } else {
                         button.disabled = false;
                         window.clearInterval(process_urls_process);
