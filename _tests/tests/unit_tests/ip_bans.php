@@ -160,6 +160,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($ip);
             remove_ip_ban($wildcarded_ip);
 
             // Test adding a negative temporary ban (add, then not banned, add a positive, still not banned) - then cleanup
@@ -215,6 +216,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === $future_timestamp);
             remove_ip_ban($wildcarded_ip);
+            remove_ip_ban($ip);
 
             // Miscellaneous...
 
@@ -235,6 +237,8 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($wildcarded_ip);
+            remove_ip_ban($ip);
 
             // Test adding a positive ban against a localhost IP (add, then not banned)
             $ip = '127.0.0.1';
@@ -245,6 +249,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($ip);
 
             // Test adding a positive ban against an invalid IP (add, then not banned)
             $ip = '123';
@@ -255,6 +260,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($ip);
         }
 
         set_option('spam_check_exclusions', '');
@@ -268,7 +274,7 @@ class ip_bans_test_set extends cms_test_case
                 $components[] = strval(mt_rand(0, 255));
             }
             $ip = implode('.', $components);
-        } while ($ip == '12.34.56.78');
+        } while ($ip == '12.34.56.78' || $ip == '127.0.0.1');
 
         $components[3] = '*';
         $ip_wildcarded = implode('.', $components);
