@@ -50,7 +50,7 @@ The upgrade process involves a number of stages (the upgrader will step you thro
 Pre-steps:
 [list="1"]
 [*] get to the upgrader, either via the upgrade link from the top-right of the Admin Zone dashboard (which may take up to 3 hours to update), or going to [tt]http://yourbaseurl/upgrader.php[/tt]
-[*] log in to the upgrader using your master password (the one you set when you installed, different to your admin login)
+[*] log in to the upgrader using your maintenance password (the one you set when you installed, different to your admin login)
 [/list]
 
 Steps:
@@ -93,7 +93,7 @@ This section contains standalone details on using the integrity checker.
 
 Composr comes with a built-in "integrity checker" which can be used to repair a corrupted copy of Composr. Integrity checker is a part of the upgrader tool. The integrity checker can be used to find outdated and corrupt files in the Composr system. You can use this tool at any point, regardless of whether you have recently upgraded or not.
 
-You must provide the master password to access the Composr upgrade tool.
+You must provide the maintenance password to access the Composr upgrade tool.
 
 The integrity checker is placed in the "Step 4" of the table under the "Upgrade steps" section in upgrader tools page.
 

@@ -186,7 +186,7 @@ if (intval($_GET['step']) == 4) { // Define settings
     if ($forum_type == 'none') {
         $username = 'admin';
     }
-    $PASSWORD_PROMPT = do_lang_tempcode('CONFIRM_MASTER_PASSWORD');
+    $PASSWORD_PROMPT = do_lang_tempcode('CONFIRM_MAINTENANCE_PASSWORD');
 }
 
 if (intval($_GET['step']) == 5) {
@@ -989,8 +989,8 @@ function step_4() : object
         $options->attach(make_option(do_lang_tempcode('GAE_BUCKET_NAME'), do_lang_tempcode('DESCRIPTION_GAE_BUCKET_NAME'), 'gae_bucket_name', '<application>', false, true));
     }
     $options->attach(make_option(do_lang_tempcode('EMAIL_ADDRESS'), example('', 'INSTALLER_EMAIL_ADDRESS'), 'email', post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER), false, false));
-    $master_password = '';
-    $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), ($forum_type == 'none') ? example('', 'CHOOSE_MASTER_PASSWORD_ADMIN') : example('', 'CHOOSE_MASTER_PASSWORD_NO_ADMIN'), 'master_password', $master_password, true));
+    $maintenance_password = '';
+    $options->attach(make_option(do_lang_tempcode('MAINTENANCE_PASSWORD'), ($forum_type == 'none') ? example('', 'CHOOSE_MAINTENANCE_PASSWORD_ADMIN') : example('', 'CHOOSE_MAINTENANCE_PASSWORD_NO_ADMIN'), 'maintenance_password', $maintenance_password, true));
     require_lang('config');
     require_lang('privacy');
     $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_DEVELOPERS'), example('', 'CONFIG_OPTION_send_error_emails_developers'), 'send_error_emails_developers', file_exists(get_file_base() . '/_tests') ? 0 : 1));
@@ -1293,7 +1293,7 @@ function step_5() : object
         if (in_array($key, [
             'ftp_password',
             'ftp_password_confirm',
-            'master_password_confirm',
+            'maintenance_password_confirm',
             'cns_admin_password',
             'cns_admin_password_confirm',
             'post_data',
@@ -1301,8 +1301,9 @@ function step_5() : object
             continue;
         }
 
-        if ($key == 'master_password') {
-            $val = password_hash($val, PASSWORD_BCRYPT, ['cost' => 12]);
+        if ($key == 'maintenance_password') {
+            $cost = in_calculate_reasonable_ratchet();
+            $val = password_hash($val, PASSWORD_BCRYPT, ['cost' => ($cost !== null) ? $cost : 12]);
         }
         $SITE_INFO[$key] = trim($val);
     }
@@ -1381,6 +1382,37 @@ function step_5() : object
         'LOG' => $log,
         'HIDDEN' => build_keep_post_fields(),
     ]);
+}
+
+/**
+ * Calculate a reasonable cryptographic ratchet based on the server's CPU speed for the maintenance password.
+ *
+ * @return ?integer The suggested ratchet to use (null: password_hash is not supported)
+ */
+function in_calculate_reasonable_ratchet() : ?int
+{
+    if (!function_exists('password_hash')) {
+        return null;
+    }
+
+    // We want the maintenance password to be very secure
+    $minimum_cost = 10;
+    $target_time = 1.0;
+
+    $cost = ($minimum_cost - 1);
+
+    do {
+        $cost++;
+        if ($cost > 31) { // Costs > 31 are not supported
+            break;
+        }
+        $start = microtime(true);
+        password_hash('test', PASSWORD_BCRYPT, ['cost' => $cost]);
+        $end = microtime(true);
+        $elapsed_time = $end - $start;
+    } while ($elapsed_time < $target_time);
+
+    return ($cost - 1); // We don't want to use the cost that exceeded our target time; use the one below it.
 }
 
 /**
@@ -1824,7 +1856,7 @@ if (!function_exists(\'git_repos\')) {
         if (in_array($key, [
             'ftp_password',
             'ftp_password_confirm',
-            'master_password_confirm',
+            'maintenance_password_confirm',
             'cns_admin_password',
             'cns_admin_password_confirm',
 
@@ -1869,8 +1901,9 @@ if (!function_exists(\'git_repos\')) {
             continue;
         }
 
-        if ($key == 'master_password') {
-            $val = password_hash($val, PASSWORD_BCRYPT, ['cost' => 12]);
+        if ($key == 'maintenance_password') {
+            $cost = in_calculate_reasonable_ratchet();
+            $val = password_hash($val, PASSWORD_BCRYPT, ['cost' => ($cost !== null) ? $cost : 12]);
         }
 
         if ($key == 'base_url') {

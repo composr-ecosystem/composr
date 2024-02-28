@@ -23,21 +23,21 @@ IMPORTANT: This file is loaded outside Composr, so must work as standalone.
 */
 
 /**
- * Check the given master password is valid.
+ * Check the given maintenance password is valid.
  *
- * @param  SHORT_TEXT $password_given Given master password
+ * @param  SHORT_TEXT $password_given Given maintenance password
  * @return boolean Whether it is valid
  */
-function check_master_password(string $password_given) : bool
+function check_maintenance_password(string $password_given) : bool
 {
-    _master_password_check__init();
+    _maintenance_password_check__init();
 
     global $SITE_INFO;
 
-    $actual_password_hashed = $SITE_INFO['master_password'];
+    $actual_password_hashed = $SITE_INFO['maintenance_password'];
     if (strpos($actual_password_hashed, '$') !== false) {
         $ret = password_verify($password_given, $actual_password_hashed);
-        _master_password_check__result($ret);
+        _maintenance_password_check__result($ret);
         return $ret;
     }
     $salt = '';
@@ -51,39 +51,39 @@ function check_master_password(string $password_given) : bool
         }
     }
     $ret = (((strlen($password_given) != 32) && ($actual_password_hashed == $password_given)) || (hash_equals($actual_password_hashed, md5($password_given . $salt))));
-    _master_password_check__result($ret);
+    _maintenance_password_check__result($ret);
     return $ret;
 }
 
 /**
- * Check the given master password is valid.
+ * Check the given maintenance password is valid.
  *
- * @param  SHORT_TEXT $password_given_hashed Given master password
+ * @param  SHORT_TEXT $password_given_hashed Given maintenance password
  * @return boolean Whether it is valid
  */
-function check_master_password_from_hash(string $password_given_hashed) : bool
+function check_maintenance_password_from_hash(string $password_given_hashed) : bool
 {
-    _master_password_check__init();
+    _maintenance_password_check__init();
 
     global $SITE_INFO;
 
-    $actual_password_hashed = $SITE_INFO['master_password'];
+    $actual_password_hashed = $SITE_INFO['maintenance_password'];
 
     if ($password_given_hashed === md5($actual_password_hashed)) {
         $ret = true; // LEGACY: Upgrade from v7 where hashed input password given even if plain-text password is in use
-        _master_password_check__result($ret);
+        _maintenance_password_check__result($ret);
         return $ret;
     }
 
     $ret = hash_equals($password_given_hashed, $actual_password_hashed);
-    _master_password_check__result($ret);
+    _maintenance_password_check__result($ret);
     return $ret;
 }
 
 /**
- * Prepare for checking the master password.
+ * Prepare for checking the maintenance password.
  */
-function _master_password_check__init()
+function _maintenance_password_check__init()
 {
     if ((function_exists('php_function_allowed')) && (php_function_allowed('usleep'))) {
         @usleep(500000); // Wait for half a second, to reduce brute force potential
@@ -92,21 +92,25 @@ function _master_password_check__init()
     global $SITE_INFO;
 
     if (isset($SITE_INFO['admin_password'])) { // LEGACY
-        $SITE_INFO['master_password'] = $SITE_INFO['admin_password'];
+        $SITE_INFO['maintenance_password'] = $SITE_INFO['admin_password'];
         unset($SITE_INFO['admin_password']);
     }
+    if (isset($SITE_INFO['master_password'])) { // LEGACY
+        $SITE_INFO['maintenance_password'] = $SITE_INFO['master_password'];
+        unset($SITE_INFO['master_password']);
+    }
 
-    if (!array_key_exists('master_password', $SITE_INFO)) {
-        exit('No master password defined in _config.php currently so cannot authenticate');
+    if (!array_key_exists('maintenance_password', $SITE_INFO)) {
+        exit('Access denied - a maintenance password is not defined in _config.php.');
     }
 }
 
 /**
- * Prepare for checking the master password.
+ * Prepare for checking the maintenance password.
  *
  * @param  boolean $result Whether login is successful
  */
-function _master_password_check__result(bool $result)
+function _maintenance_password_check__result(bool $result)
 {
     $msg = 'Composr administrative script ' . basename($_SERVER['SCRIPT_NAME']);
     if (!empty($_SERVER['REMOTE_ADDR'])) {
@@ -114,9 +118,9 @@ function _master_password_check__result(bool $result)
     }
     if (function_exists('syslog')) {
         if ($result) {
-            @syslog(LOG_NOTICE, 'Successfully logged into ' . $msg);
+            @syslog(LOG_NOTICE, 'Composr: Successfully logged into ' . $msg);
         } else {
-            @syslog(LOG_WARNING, 'Incorrect master password given while logging into ' . $msg);
+            @syslog(LOG_WARNING, 'Composr: Incorrect maintenance password given while logging into ' . $msg);
         }
     }
 
@@ -124,7 +128,12 @@ function _master_password_check__result(bool $result)
         global $FILE_BASE;
         @ini_set('error_log', $FILE_BASE . '/data_custom/errorlog.php');
         if (!$result) {
-            @error_log('Incorrect master password given while logging into ' . $msg);
+            @error_log('Composr: Incorrect maintenance password given while logging into ' . $msg);
         }
+    }
+
+    // Actually we want to bail with a clear message to the member about their attempt being logged (to comply with data regulations)
+    if (!$result) {
+        exit('Access denied - Incorrect maintenance password. Your attempt has been logged with your IP address.');
     }
 }

@@ -180,7 +180,7 @@ Advice for website maintenance:
  - Use secure passwords, according to best practices
  - Don't re-use passwords across different services (if one is found you don't want everything to tumble like a house of cards)
  - Keep your own computers secure and patched (if your own machine becomes infected and you are being targeted actively by a hacker then anything you do becomes exploitable)
- - Remove the master password from the [tt]_config.php[/tt], only put it back when you need access to Composr's low-level configuration/upgrade system
+ - Remove the maintenance password from the [tt]_config.php[/tt], only put it back when you need access to Composr's low-level configuration/upgrade system
 
 [title="2"]Some philosophy[/title]
 
@@ -587,23 +587,23 @@ To solve this problem, simply remove execute permission for the [tt]_config.php[
 
 It may seem an obvious solution, to not use an executable file to store configuration information. However this file contains critical data, and therefore if it was a file that would be downloaded if accessed instead of executed, this critical data would be exposed; the usual advice is to put the file outside of a downloadable location, or to restrict download, but this is tenuous due to differing web environments Composr must on: in trying to increase security, there would be a big likelihood we could incidentally decrease it.
 
-[title="3"]Master password[/title]
+[title="3"]Maintenance password[/title]
 
 For added security you can remove the:
 [code="PHP"]
-$SITE_INFO['master_password'] = '...';
+$SITE_INFO['maintenance_password'] = '...';
 [/code]
 line from [tt]_config.php[/tt].
 
-It is best to remove it completely, not comment it out. This prevents master password based logins to tools such as the code editor and upgrader.
+It is best to remove it completely, not comment it out. This prevents maintenance password based logins to tools such as the code editor and upgrader.
 
 It means:
-1) If someone found a vulnerability that allowed them to read the hashed master password out of [tt]_config.php[/tt], they could not use Composr-specific rainbow tables to get the original password and therefore login.
+1) If someone found a vulnerability that allowed them to read the hashed maintenance password out of [tt]_config.php[/tt], they could not use Composr-specific rainbow tables to get the original password and therefore login.
 2) Bruce force login attempts cannot work.
 
 [title="3"]Maintenance scripts[/title]
 
-To provide additional protection beyond the master password you may want to set IP-based restrictions (or temporary access blocks) to the following scripts:
+To provide additional protection beyond the maintenance password you may want to set IP-based restrictions (or temporary access blocks) to the following scripts:
  - [tt]rootkit_detection.php[/tt]
  - [tt]upgrader.php[/tt]
  - [tt]uninstall.php[/tt]

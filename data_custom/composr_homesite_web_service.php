@@ -82,7 +82,7 @@ if ($password_given === null) {
         }
     } else {
         require_code('crypt_master');
-        if (!check_master_password($password_given)) {
+        if (!check_maintenance_password($password_given)) {
             exit('Access Denied');
         }
 

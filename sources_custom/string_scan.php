@@ -4056,7 +4056,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIRM_DELETE_ALL_MESSAGES
         CONFIRM_DELETE_LINK
         CONFIRM_DELETE_LINK_NICE
-        CONFIRM_MASTER_PASSWORD
+        CONFIRM_MAINTENANCE_PASSWORD
         CONFIRM_MOVE
         CONFIRM_MOVE_LINK_NICE
         CONFIRM_REMOVE_PERIODIC
@@ -6132,7 +6132,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MARK_TASK_DONE
         MASQUERADE_AS_MEMBER
         MASS_DELETE
-        MASTER_PASSWORD
+        MAINTENANCE_PASSWORD
         MATCH_KEY
         MATCH_KEYS
         MATCH_KEY_MESSAGES
@@ -11861,9 +11861,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COMCODE_PAGE_FRIENDLY
         WIKI_POST_ON
         SUBMITTED_BY_FRIENDLY
-        CHOOSE_MASTER_PASSWORD_ADMIN
-        CHOOSE_MASTER_PASSWORD_NO_ADMIN
-        DESCRIPTION_ADMIN_USERNAME_MASTER_PASSWORD
+        CHOOSE_MAINTENANCE_PASSWORD_ADMIN
+        CHOOSE_MAINTENANCE_PASSWORD_NO_ADMIN
+        DESCRIPTION_ADMIN_USERNAME_MAINTENANCE_PASSWORD
         PRIVACY_ACTION_tornevall
         PRIVACY_REASON_tornevall
         ERROR_CHECKING_FOR_SPAMMERS_RBL_IS_NORMAL_DNS

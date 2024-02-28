@@ -49,7 +49,7 @@ require_once($FILE_BASE . '/_config.php');
 
 if ((array_key_exists('given_password', $_POST))) {
     $given_password = $_POST['given_password'];
-    if (ce_check_master_password($given_password)) {
+    if (ce_check_maintenance_password($given_password)) {
         if ((!array_key_exists('path', $_POST)) && (!array_key_exists('path', $_GET))) {
             do_get_path($given_password);
         } else {
@@ -179,7 +179,7 @@ END;
     $_ftp_username = code_editor_escape_html($ftp_username);
     echo <<<END
     <p>
-        <label for="given_password">Master Password: <input type="password" name="given_password" autocomplete="current-password" id="given_password" class="form-control" /></label>
+        <label for="given_password">Maintenance Password: <input type="password" name="given_password" autocomplete="current-password" id="given_password" class="form-control" /></label>
     </p>
     <hr />
     <p>If you need to edit original Composr files (rather than overriding or making custom ones), then you probably need to enter FTP details below. This will allow this editor to save via FTP, and if no username is given, it will try and save directly.</p>
@@ -640,16 +640,16 @@ function ce_sync_file_move(string $old, string $new)
 }
 
 /**
- * Check the given master password is valid.
+ * Check the given maintenance password is valid.
  *
- * @param  SHORT_TEXT $password_given Given master password
+ * @param  SHORT_TEXT $password_given Given maintenance password
  * @return boolean Whether it is valid
  */
-function ce_check_master_password(string $password_given) : bool
+function ce_check_maintenance_password(string $password_given) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
-    return check_master_password($password_given);
+    return check_maintenance_password($password_given, 'code_editor');
 }
 
 /**

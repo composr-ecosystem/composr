@@ -30,8 +30,12 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 
 require_once($FILE_BASE . '/_config.php');
 if (isset($GLOBALS['SITE_INFO']['admin_password'])) { // LEGACY
-    $GLOBALS['SITE_INFO']['master_password'] = $GLOBALS['SITE_INFO']['admin_password'];
+    $GLOBALS['SITE_INFO']['maintenance_password'] = $GLOBALS['SITE_INFO']['admin_password'];
     unset($GLOBALS['SITE_INFO']['admin_password']);
+}
+if (isset($GLOBALS['SITE_INFO']['master_password'])) { // LEGACY
+    $GLOBALS['SITE_INFO']['maintenance_password'] = $GLOBALS['SITE_INFO']['master_password'];
+    unset($GLOBALS['SITE_INFO']['master_password']);
 }
 
 if (!is_writable($FILE_BASE . '/_config.php')) {
@@ -44,7 +48,7 @@ if (!is_writable($FILE_BASE . '/_config.php')) {
 ce_do_header();
 if ((array_key_exists('given_password', $_POST))) {
     $given_password = $_POST['given_password'];
-    if (co_check_master_password($given_password)) {
+    if (co_check_maintenance_password($given_password)) {
         if (count($_POST) == 1) {
             do_access($given_password);
         } else {
@@ -81,14 +85,14 @@ function ce_do_header()
     $password_check_js = file_get_contents($FILE_BASE . '/themes/default/javascript/password_checks.js');
     $ls_rep = [
         '{!ADMIN_USERS_PASSWORD;^/}' => 'Administration account password',
-        '{!MASTER_PASSWORD;^/}' => 'Master password',
+        '{!MAINTENANCE_PASSWORD;^/}' => 'Maintenance password',
         '{!PASSWORDS_DO_NOT_MATCH;^/}' => 'The given {1} passwords do not match',
         '{!PASSWORDS_DO_NOT_REUSE;^/}' => 'It is important that you do not re-use the database password for the {1} password, as the database password has to be stored as plain-text.',
-        '{!PASSWORD_INSECURE;^/}' => 'Are you sure you want such an insecure {1} password? This will leave your installation and web hosting wide open to attack. You should use at least 8 characters and a combination of lower case, upper case, digits, and punctuation symbols.',
+        '{!PASSWORD_INSECURE;^/}' => 'Are you sure you want such an insecure {1} password? This will leave your installation and web hosting wide open to attack. You should use at least 12 characters and a combination of lower case, upper case, digits, and punctuation symbols.',
         '{!CONFIRM_REALLY;^/}' => 'REALLY?',
 
         '{PASSWORD_PROMPT;/}' => '',
-        '{!installer:CONFIRM_MASTER_PASSWORD}' => '',
+        '{!installer:CONFIRM_MAINTENANCE_PASSWORD}' => '',
     ];
     $password_check_js = str_replace(array_keys($ls_rep), array_values($ls_rep), $password_check_js);
     @print('<script>' . $password_check_js . '</script>');
@@ -135,7 +139,7 @@ function ce_do_login()
         echo '<p><strong>Invalid password</strong></p>';
     }
     echo "
-        <label for=\"given_password\">Master Password: <input type=\"password\" name=\"given_password\" id=\"given_password\" class=\"form-control\" /></label>
+        <label for=\"given_password\">Maintenance Password: <input type=\"password\" name=\"given_password\" id=\"given_password\" class=\"form-control\" /></label>
         <p><button class=\"btn btn-primary btn-scr menu--site-meta--user-actions--login\" type=\"submit\">Log in</button></p>
     ";
 }
@@ -149,7 +153,7 @@ function do_access(string $given_password)
 {
     $settings = [
         'admin_username' => 'The username used for the administrator when Composr is installed to not use a forum. On the vast majority of sites this setting does nothing.',
-        'master_password' => 'If you wish the password to be changed, enter a new password here. Otherwise leave blank.',
+        'maintenance_password' => 'If you wish the maintenance password to be changed, enter a new password here. Otherwise leave blank.',
 
         'base_url' => 'A critical option, that defines the URL of the site (no trailing slash). You can blank this out for auto-detection, but only do this during development -- if you do it live and somehow multiple domains can get to your site, random errors will occur due to caching problems.',
         'domain' => 'The domain that e-mail addresses are registered on, and possibly other things. This is only used by some very select parts of the system. It may be different from the domain in the base URL due to not having "www." on for example.',
@@ -247,7 +251,7 @@ function do_access(string $given_password)
     foreach ($settings as $key => $notes) {
         $val = array_key_exists($key, $SITE_INFO) ? $SITE_INFO[$key] : '';
 
-        if (($key == 'master_password') || ($key == 'master_password_confirm')) {
+        if (($key == 'maintenance_password') || ($key == 'maintenance_password_confirm')) {
             $val = '';
         }
 
@@ -283,14 +287,14 @@ function do_access(string $given_password)
                 </td>
             </tr>
         ';
-        if ($key == 'master_password') {
+        if ($key == 'maintenance_password') {
             echo '
                 <tr>
                     <th style="text-align: right">
                         &raquo; Confirm password
                     </th>
                     <td>
-                        <input type="' . $type . '" name="master_password_confirm" value="' . $_val . '" size="20" />
+                        <input type="' . $type . '" name="maintenance_password_confirm" value="' . $_val . '" size="20" />
                     </td>
                     <td>
                     </td>
@@ -346,7 +350,7 @@ function do_set()
         }
 
         // If new password is blank use existing one
-        if ((($key == 'master_password') || ($key == 'master_password_confirm')) && ($val == '')) {
+        if ((($key == 'maintenance_password') || ($key == 'maintenance_password_confirm')) && ($val == '')) {
             $val = $given_password;
         }
 
@@ -355,14 +359,15 @@ function do_set()
     }
 
     // Check confirm password matches
-    if ($new['master_password_confirm'] != $new['master_password']) {
-        echo '<hr /><p><strong>Your passwords do not match up.</strong></p>';
+    if ($new['maintenance_password_confirm'] != $new['maintenance_password']) {
+        echo '<hr /><p><strong>Your maintenance passwords do not match up. Please double-check you are putting them in correctly.</strong></p>';
         return;
     }
-    unset($new['master_password_confirm']);
+    unset($new['maintenance_password_confirm']);
 
     // Encrypt password
-    $new['master_password'] = password_hash($new['master_password'], PASSWORD_BCRYPT, ['cost' => 12]);
+    $cost = co_calculate_reasonable_ratchet();
+    $new['maintenance_password'] = password_hash($new['maintenance_password'], PASSWORD_BCRYPT, ['cost' => ($cost !== null) ? $cost : 12]);
 
     // Test cookie settings. BASED ON CODE FROM INSTALL.PHP
     $base_url = $new['base_url'];
@@ -513,14 +518,45 @@ function co_sync_file_move(string $old, string $new)
 }
 
 /**
- * Check the given master password is valid.
+ * Check the given maintenance password is valid.
  *
- * @param  SHORT_TEXT $password_given Given master password
+ * @param  SHORT_TEXT $password_given Given maintenance password
  * @return boolean Whether it is valid
  */
-function co_check_master_password(string $password_given) : bool
+function co_check_maintenance_password(string $password_given) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
-    return check_master_password($password_given);
+    return check_maintenance_password($password_given, 'config_editor');
+}
+
+/**
+ * Calculate a strong ratchet based on the CPU speed for the maintenance password.
+ *
+ * @return ?integer The suggested ratchet to use (null: password_hash is not supported)
+ */
+function co_calculate_reasonable_ratchet() : ?int
+{
+    if (!function_exists('password_hash')) {
+        return null;
+    }
+
+    // We want the ratchet to be fairly secure as this is a very sensitive password
+    $minimum_cost = 10;
+    $target_time = 1.0;
+
+    $cost = ($minimum_cost - 1);
+
+    do {
+        $cost++;
+        if ($cost > 31) { // Costs > 31 are not supported
+            break;
+        }
+        $start = microtime(true);
+        password_hash('test', PASSWORD_BCRYPT, ['cost' => $cost]);
+        $end = microtime(true);
+        $elapsed_time = $end - $start;
+    } while ($elapsed_time < $target_time);
+
+    return ($cost - 1); // We don't want to use the cost that exceeded our target time; use the one below it.
 }

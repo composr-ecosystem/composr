@@ -60,7 +60,7 @@ if ($type == '') {
         <p>This script cannot extract database access details from your config file because the config file itself (which is an executable file for Composr) may have been configured to give out fake details to this script. Therefore you will need to enter them here, and the config file will only be used for accessing the Composr password (which will be extracted using a non-executive method).</p>
 
         <div>
-            <p>Composr master password: <input type="password" name="password" autocomplete="current-password" /></p>
+            <p>Composr maintenance password: <input type="password" name="password" autocomplete="current-password" /></p>
             <p>Database host: <input type="text" name="db_host" value="localhost" /></p>
             <p>Database name: <input type="text" name="db_name" value="cms" /></p>
             <p>Database table prefix: <input type="text" name="db_prefix" value="cms_" /></p>
@@ -105,13 +105,13 @@ END;
     if (!defined('EXTERNAL_ROOTKIT_DETECTION_CALL')) {
         $config_file = file_get_contents($FILE_BASE . '/_config.php');
         $matches = [];
-        if (preg_match('#\$SITE_INFO\[\'master_password\'\] = \'([^\']*)\';#', $config_file, $matches) == 0) {
+        if (preg_match('#\$SITE_INFO\[\'maintenance_password\'\] = \'([^\']*)\';#', $config_file, $matches) == 0) {
             exit(':(');
         }
         global $SITE_INFO;
-        $SITE_INFO = ['master_password' => $matches[1]];
-        if (!rk_check_master_password($settings['password'])) {
-            echo '<p>Incorrect master password</p>';
+        $SITE_INFO = ['maintenance_password' => $matches[1]];
+        if (!rk_check_maintenance_password($settings['password'])) {
+            echo '<p>Incorrect maintenance password</p>';
             rd_do_footer();
             exit();
         }
@@ -306,14 +306,14 @@ END;
 }
 
 /**
- * Check the given master password is valid.
+ * Check the given maintenance password is valid.
  *
- * @param  SHORT_TEXT $password_given Given master password
+ * @param  SHORT_TEXT $password_given Given maintenance password
  * @return boolean Whether it is valid
  */
-function rk_check_master_password(string $password_given) : bool
+function rk_check_maintenance_password(string $password_given) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
-    return check_master_password($password_given);
+    return check_maintenance_password($password_given, 'rootkit_detection');
 }

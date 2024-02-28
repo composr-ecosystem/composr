@@ -103,7 +103,7 @@ The Installation Options editor may be accessed by the [tt]http://yourbaseurl/co
 It can also be accessed from:
 Admin Zone > Setup > Configuration > Installation Options.
 
-To operate the script, you will need the master password that you specified at installation. If you have forgotten it, you will need to edit [tt]_config.php[/tt] by hand.
+To operate the script, you will need the maintenance password that you specified at installation. If you have forgotten it, you will need to edit [tt]_config.php[/tt] by hand.
 
 [box="Note" width="25em" float="right"]
 If you change servers you will also need to set file permissions. Please read the advanced installation tutorial for details on this. If you upload new themes, you will need to set permissions on the [tt]templates_cached/<lang>[/tt] and [tt]*_custom[/tt] directories after uploading.

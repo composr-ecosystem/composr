@@ -307,11 +307,11 @@ class Hook_health_check_security extends Hook_Health_Check
         }
 
         global $SITE_INFO;
-        $ok = !isset($SITE_INFO['master_password']);
+        $ok = !isset($SITE_INFO['maintenance_password']);
         if (!$ok) {
             $ok = (http_get_contents(get_base_url() . '/config_editor.php', ['trigger_error' => false]) === null);
         }
-        $this->assertTrue($ok, 'Should not have a master password defined, or should control access to config scripts');
+        $this->assertTrue($ok, 'Should not have a maintenance password defined, or should control access to config scripts');
     }
 
     /**

@@ -154,7 +154,7 @@ class Forum_driver_none extends Forum_driver_base
         $c = [];
         $c['name'] = 'admin_username';
         $c['default'] = 'admin';
-        $c['description'] = do_lang('DESCRIPTION_ADMIN_USERNAME_MASTER_PASSWORD');
+        $c['description'] = do_lang('DESCRIPTION_ADMIN_USERNAME_MAINTENANCE_PASSWORD');
         $c['title'] = do_lang('ADMIN_USERNAME');
         return [$c];
     }
@@ -915,7 +915,7 @@ class Forum_driver_none extends Forum_driver_base
         $_COOKIE[get_member_cookie()] = $username;
 
         global $SITE_INFO;
-        cms_setcookie(get_pass_cookie(), $SITE_INFO['master_password'], false, true);
+        cms_setcookie(get_pass_cookie(), $SITE_INFO['maintenance_password'], false, true);
     }
 
     /**
@@ -971,13 +971,13 @@ class Forum_driver_none extends Forum_driver_base
 
         if ($cookie_login) {
             global $SITE_INFO;
-            if (!hash_equals($SITE_INFO['master_password'], $password_mixed)) {
+            if (!hash_equals($SITE_INFO['maintenance_password'], $password_mixed)) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;
             }
         } else {
             require_code('crypt_master');
-            if (!check_master_password($password_mixed)) {
+            if (!check_maintenance_password($password_mixed)) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;
             }

@@ -388,7 +388,7 @@ function add_bookable(array $bookable_details, array $_codes, array $blacked = [
 
     require_code('calendar2');
     require_code('crypt');
-    $external_feed = find_script('bookings_ical') . '?id=' . strval($bookable_id) . '&pass=' . ratchet_hash($GLOBALS['SITE_INFO']['master_password'], get_site_salt());
+    $external_feed = find_script('bookings_ical') . '?id=' . strval($bookable_id) . '&pass=' . ratchet_hash($GLOBALS['SITE_INFO']['maintenance_password'], get_site_salt());
     $bookable_details['calendar_type'] = add_event_type($title, 'icons/calendar/booking', $external_feed);
 
     $GLOBALS['SITE_DB']->query_update('bookable', ['calendar_type' => $bookable_details['calendar_type']], ['id' => $bookable_id], '', 1);
@@ -450,7 +450,7 @@ function edit_bookable(int $bookable_id, array $bookable_details, array $codes, 
 
     $bookable_details['calendar_type'] = $_old_bookable[0]['calendar_type'];
     require_code('calendar2');
-    $external_feed = find_script('bookings_ical') . '?id=' . strval($bookable_id) . '&pass=' . md5('booking_salt_' . $GLOBALS['SITE_INFO']['master_password']);
+    $external_feed = find_script('bookings_ical') . '?id=' . strval($bookable_id) . '&pass=' . md5('booking_salt_' . $GLOBALS['SITE_INFO']['maintenance_password']);
     if (($bookable_details['calendar_type'] === null) && ($GLOBALS['SITE_DB']->query_select_value_if_there('calendar_types', 'id', ['id' => $bookable_details['calendar_type']]) === null)) {
         $bookable_details['calendar_type'] = add_event_type($title, 'icons/calendar/booking', $external_feed);
     } else {

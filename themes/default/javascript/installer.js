@@ -258,8 +258,8 @@
                 }
             }
 
-            if (form.elements['master_password_confirm'] != null) {
-                if (!checkPassword(form, 'master_password', '{!MASTER_PASSWORD;^}', ignoreBlankMasterPassword)) {
+            if (form.elements['maintenance_password_confirm'] != null) {
+                if (!checkPassword(form, 'maintenance_password', '{!MAINTENANCE_PASSWORD;^}', ignoreBlankMasterPassword)) {
                     return false;
                 }
             }
@@ -289,7 +289,7 @@
 
                 // Check password is secure
                 var isSecurePassword = true;
-                if (form.elements[fieldName].value.length < 8) {
+                if (form.elements[fieldName].value.length < 12) {
                     isSecurePassword = false;
                 }
                 if (!form.elements[fieldName].value.match(/[a-z]/)) {

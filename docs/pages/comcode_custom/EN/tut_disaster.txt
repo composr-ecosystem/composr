@@ -82,13 +82,13 @@ You will then be logged in as the first admin user there is. Additionally member
 
 It should go without saying that you should only use this 'backdoor' for a short space of time and not disclose your IP address to third parties when doing it. The developers make no claims to how secure this backdoor might be and you open it up entirely at your own risk.
 
-[title="2"]Changing the master password[/title]
+[title="2"]Changing the maintenance password[/title]
 
-If you need to log in to the upgrader, config editor, or code editor, you'll need the master password.
+If you need to log in to the upgrader, config editor, or code editor, you'll need the maintenance password.
 
 If you have forgotten it, to change it just edit the [tt]_config.php[/tt] file:
 [code="PHP"]
-$SITE_INFO['master_password'] = '...';
+$SITE_INFO['maintenance_password'] = '...';
 [/code]
 Change the [tt]...[/tt] bit to the actual password you want. You don't need to encrypt it, just put it in exactly.
 
@@ -118,7 +118,7 @@ and then clear the Comcode page cache from Admin Zone > Tools > Cleanup tools.
 
 [title="2"]Changing Installation Options[/title]
 
-If your server base configuration has changed (such as your database password, for example) then you need to update Composr's [tt]_config.php[/tt] config file to reflect this. You can either do this directly, or you can do it via launching the [tt]http://yourbaseurl/config_editor.php[/tt] script installed at the base of your website (you will need your master password to do this).
+If your server base configuration has changed (such as your database password, for example) then you need to update Composr's [tt]_config.php[/tt] config file to reflect this. You can either do this directly, or you can do it via launching the [tt]http://yourbaseurl/config_editor.php[/tt] script installed at the base of your website (you will need your maintenance password to do this).
 
 [title="2"]Removing Facebook from an account[/title]
 

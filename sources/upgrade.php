@@ -43,7 +43,7 @@ function upgrade_script()
 
     $given_password = post_param_string('given_password', false, INPUT_FILTER_PASSWORD);
     require_code('crypt_master');
-    if (!check_master_password($given_password)) {
+    if (!check_maintenance_password($given_password)) {
         upgrader_output_header();
         upgrader_output_login(do_lang((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD'));
         upgrader_output_footer();
@@ -294,7 +294,7 @@ function upgrader_output_login(?string $message = null)
         }
     }
     require_lang('installer');
-    $l_password = do_lang('MASTER_PASSWORD');
+    $l_password = do_lang('MAINTENANCE_PASSWORD');
     $l_ftp_info = do_lang('UPGRADER_FTP_INFO');
     $l_ftp_domain = do_lang('FTP_DOMAIN');
     $l_ftp_directory = do_lang('FTP_DIRECTORY');

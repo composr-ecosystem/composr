@@ -58,7 +58,7 @@ The first post in comment topics is a special 'spacer post'. This is necessary b
 
 [title="2"]Forum base URL[/title]
 
-It is very common for Composr users to install Composr with the forum base URL wrong. This can be easily corrected after installation by using the separate [tt]http://yourbaseurl/config_editor.php[/tt] script (the one where you need to enter the master password you chose upon install to change the installation environment). Once this is done, it is necessary to clean the Comcode page cache (go to: Admin Zone > Tools > Cleanup tools).
+It is very common for Composr users to install Composr with the forum base URL wrong. This can be easily corrected after installation by using the separate [tt]http://yourbaseurl/config_editor.php[/tt] script (the one where you need to enter the maintenance password you chose upon install to change the installation environment). Once this is done, it is necessary to clean the Comcode page cache (go to: Admin Zone > Tools > Cleanup tools).
 
 The forum base URL should not include a script name -- it should be a URL-prefix to your forums. For example,
  - [tt]http://forums.example.com[/tt] would be okay

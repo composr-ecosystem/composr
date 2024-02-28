@@ -50,6 +50,41 @@ function ratchet_hash_verify(string $password, string $salt, string $pass_hash_s
 }
 
 /**
+ * Calculate a reasonable cryptographic ratchet based on the server's CPU speed.
+ *
+ * @param  float $target_time The ratchet should not exceed this amount of time in seconds when calculating
+ * @param  integer $minimum_cost The minimum allowed ratchet; must be between 4 and 31
+ * @return ?integer The suggested ratchet to use (null: password_hash is not supported)
+ */
+function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cost = 4) : ?int
+{
+    if (!function_exists('password_hash')) {
+        return null;
+    }
+
+    $cost = ($minimum_cost - 1);
+
+    // Costs < 4 are not supported. This will be increased by 1 in the first iteration.
+    if ($cost < 3) {
+        $cost = 3;
+    }
+
+    do {
+        $cost++;
+        if ($cost > 31) { // Costs > 31 are not supported
+            break;
+        }
+        $start = microtime(true);
+        password_hash('test', PASSWORD_BCRYPT, array('cost' => $cost));
+        $end = microtime(true);
+        $elapsed_time = $end - $start;
+    } while ($elapsed_time < $target_time);
+
+    return ($cost - 1); // We don't want to use the cost that exceeded our target time; use the one below it.
+}
+
+
+/**
  * Get the site-wide salt. It should be something hard for a hacker to get, so we depend on data gathered both from the database and file-system.
  *
  * @return ID_TEXT The salt

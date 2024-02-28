@@ -373,14 +373,18 @@ function _upgrader_file_upgrade_screen() : string
         // LEGACY: Copy by old password key if needed
         global $SITE_INFO;
         if (isset($GLOBALS['SITE_INFO']['admin_password'])) {
-            $GLOBALS['SITE_INFO']['master_password'] = $GLOBALS['SITE_INFO']['admin_password'];
+            $GLOBALS['SITE_INFO']['maintenance_password'] = $GLOBALS['SITE_INFO']['admin_password'];
             unset($GLOBALS['SITE_INFO']['admin_password']);
+        }
+        if (isset($GLOBALS['SITE_INFO']['master_password'])) {
+            $GLOBALS['SITE_INFO']['maintenance_password'] = $GLOBALS['SITE_INFO']['master_password'];
+            unset($GLOBALS['SITE_INFO']['master_password']);
         }
 
         if (!$dry_run) {
             // Create the iframe
             $extract_url = get_base_url() . '/data/upgrader2.php';
-            $extract_url .= '?hashed_password=' . urlencode($SITE_INFO['master_password']);
+            $extract_url .= '?hashed_password=' . urlencode($SITE_INFO['maintenance_password']);
             $extract_url .= '&file_offset=0';
             $extract_url .= '&done=' . urlencode(do_lang('DONE'));
             $extract_url .= '&original_filename=' . urlencode($original_filename);

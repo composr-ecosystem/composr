@@ -12,7 +12,7 @@ The first task you will need to do is make sure you conduct a backup of your sit
 [*] Fill in your current version and click Generate. This will give you a URL link like this [tt]https://compo.sr/upgrades/9.0.6-9.0.7.tar[/tt].
 [*] Copy this URL into notepad (or whatever text editor your computer has) as you will need it soon.
 [*] Navigate to your upgrade page which will be the base URL of your site with upgrader.php after it e.g. [tt]http://yourbaseurl/upgrader.php[/tt]
-[*] Log in with your master password.
+[*] Log in with your maintenance password.
 [*] If this is your first upgrade I highly recommend reading this [page="_SEARCH:tut_upgrade"]upgrading Composr document[/page]
 [*] Close your site via the button with a message to say it will be back soon and is just closed for maintenance or something else suitable.
 [*] Click the Transfer across your files button.

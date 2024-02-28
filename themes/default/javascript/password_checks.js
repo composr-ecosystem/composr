@@ -2,7 +2,7 @@
 var passwordPrompt = '{PASSWORD_PROMPT;/}';
 /*{+END}*/
 /*{+START,IF_NON_PASSED,PASSWORD_PROMPT}*/
-var passwordPrompt = '{!installer:CONFIRM_MASTER_PASSWORD}';
+var passwordPrompt = '{!installer:CONFIRM_MAINTENANCE_PASSWORD}';
 /*{+END}*/
 
 /**
@@ -21,8 +21,8 @@ function checkPasswords(form) {
         }
     }
 
-    if ((form.elements['master_password_confirm'] != null) && (form.elements['master_password_confirm'].value != '')) {
-        if (!checkPassword(form, 'master_password', '{!MASTER_PASSWORD;^/}')) {
+    if ((form.elements['maintenance_password_confirm'] != null) && (form.elements['maintenance_password_confirm'].value != '')) {
+        if (!checkPassword(form, 'maintenance_password', '{!MAINTENANCE_PASSWORD;^/}')) {
             return false;
         }
     }
@@ -50,7 +50,7 @@ function checkPasswords(form) {
 
         // Check password is secure
         var isSecurePassword = true;
-        if (form.elements[fieldName].value.length < 8) {
+        if (form.elements[fieldName].value.length < 12) {
             isSecurePassword = false;
         }
         if (!form.elements[fieldName].value.match(/[a-z]/)) {

@@ -449,6 +449,9 @@ class lang_spelling_test_set extends cms_test_case
 
             // Common inconsistencies
             'stack dump' => 'stack trace',
+
+            // Terminology changed in v11
+            'master password' => 'maintenance password'
         ];
         if (strpos($file, 'calendar') !== false) {
             $common_spelling_mistakes['occurrence'] = 'recurrence';

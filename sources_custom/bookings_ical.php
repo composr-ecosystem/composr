@@ -176,7 +176,7 @@ function bookings_ical_script()
     }
 
     require_code('crypt');
-    $pass_ok = ratchet_hash_verify($GLOBALS['SITE_INFO']['master_password'], get_site_salt(), get_param_string('pass', '', INPUT_FILTER_GET_COMPLEX));
+    $pass_ok = ratchet_hash_verify($GLOBALS['SITE_INFO']['maintenance_password'], get_site_salt(), get_param_string('pass', '', INPUT_FILTER_GET_COMPLEX));
     if ((!$pass_ok) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         access_denied('I_ERROR');
     }

@@ -144,7 +144,7 @@ function configure() {
 
     $vars['domain']                = $vars['BASE_URL_HOST'].(strval($vars['BASE_URL_PORT']) === '' ? '' : ':'.$vars['BASE_URL_PORT']);
     $vars['base_url']              = $vars['BASE_URL_SCHEME'].'://'.$vars['domain'].$base_url_path_fixed;
-    $vars['master_password']       = '!'.md5($vars['SETTINGS_admin_password'].'cms');
+    $vars['maintenance_password']       = '!'.md5($vars['SETTINGS_admin_password'].'cms');
     $vars['session_cookie_suffix'] = substr(md5($vars['base_url']), 0, 12);
 
     // Write configuration files

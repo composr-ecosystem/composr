@@ -22,12 +22,14 @@ class rootkit_detection_test_set extends cms_test_case
     {
         $password = '';
         global $SITE_INFO;
-        if ((!empty($SITE_INFO['master_password'])) && (strlen($SITE_INFO['master_password']) != 32) && (strlen($SITE_INFO['master_password']) != 60)) {
-            $password = $SITE_INFO['master_password'];
+        if ((!empty($SITE_INFO['maintenance_password'])) && (strlen($SITE_INFO['maintenance_password']) != 32) && (strlen($SITE_INFO['maintenance_password']) != 60)) {
+            $password = $SITE_INFO['maintenance_password'];
         }
 
+        // TODO: automatically modify _config.php for this test
+
         require_code('crypt_master');
-        if (!check_master_password($password)) {
+        if (!check_maintenance_password($password)) {
             $this->assertTrue(false, 'Cannot run test unless admin password is blank or defined as non-hashed');
             return; // If we don't have a blank password test cannot work
         }

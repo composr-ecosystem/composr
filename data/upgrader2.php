@@ -51,7 +51,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 $hashed_password = $_GET['hashed_password'];
 global $SITE_INFO;
 require_once(is_file($FILE_BASE . '/_config.php') ? ($FILE_BASE . '/_config.php') : ($FILE_BASE . '/info.php')); // LEGACY
-if (!upgrader2_check_master_password($hashed_password)) {
+if (!upgrader2_check_maintenance_password($hashed_password)) {
     exit('Access Denied');
 }
 
@@ -230,14 +230,14 @@ END;
 }
 
 /**
- * Check the given master password is valid.
+ * Check the given maintenance password is valid.
  *
- * @param  SHORT_TEXT $password_given_hashed Given master password
+ * @param  SHORT_TEXT $password_given_hashed Given maintenance password
  * @return boolean Whether it is valid
  */
-function upgrader2_check_master_password(string $password_given_hashed) : bool
+function upgrader2_check_maintenance_password(string $password_given_hashed) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
-    return check_master_password_from_hash($password_given_hashed);
+    return check_maintenance_password_from_hash($password_given_hashed, 'upgrader2');
 }

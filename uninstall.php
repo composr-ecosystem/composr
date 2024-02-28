@@ -49,7 +49,7 @@ require($FILE_BASE . '/sources/global.php');
 
 appengine_general_guard();
 
-if (uninstall_check_master_password(post_param_string('given_password', null, INPUT_FILTER_PASSWORD))) {
+if (uninstall_check_maintenance_password(post_param_string('given_password', null, INPUT_FILTER_PASSWORD))) {
     $uninstalled = do_template('BASIC_HTML_WRAP', ['_GUID' => '5614c65c4f388fd47aabb24b9624ce65', 'TITLE' => do_lang_tempcode('UNINSTALL'), 'CONTENT' => do_lang_tempcode('UNINSTALLED')]);
     $ret = $uninstalled->evaluate();
 
@@ -67,12 +67,12 @@ if (uninstall_check_master_password(post_param_string('given_password', null, IN
 }
 
 /**
- * Check the given master password is valid.
+ * Check the given maintenance password is valid.
  *
- * @param  ?SHORT_TEXT $password_given Given master password (null: none)
+ * @param  ?SHORT_TEXT $password_given Given maintenance password (null: none)
  * @return boolean Whether it is valid
  */
-function uninstall_check_master_password(?string $password_given) : bool
+function uninstall_check_maintenance_password(?string $password_given) : bool
 {
     if ($password_given === null) {
         return false;
@@ -80,5 +80,5 @@ function uninstall_check_master_password(?string $password_given) : bool
 
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
-    return check_master_password($password_given);
+    return check_maintenance_password($password_given, 'uninstall');
 }

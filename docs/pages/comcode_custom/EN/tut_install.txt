@@ -108,7 +108,7 @@ On step three, you are presented with a choice to choose which forum system you 
 On step 4 is where the core configuration settings are input. Fill out each of the configuration options to the best of your knowledge.
 
 Most of the settings will have been auto-detected for you. You will definitely need to fill in the following fields manually though:
- - Master password
+ - Maintenance password
  - Administration account password
  - Database details
 
@@ -143,7 +143,7 @@ Therefore if you control the hosting and provide someone with a Composr staff us
 3) that you trust any administrator with full control over the hosting
 
 [concepts
- 1_key="Master password"       1_value="The master password is a special password that will help you restore settings if something makes the traditional Composr interface unusable."
+ 1_key="Maintenance password"       1_value="The maintenance password is a special password used in low-level interfaces such as the upgrader, code editor, config editor, or rootkit detection. It can also be used to recover the site if traditional Composr interfaces fail to work."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
