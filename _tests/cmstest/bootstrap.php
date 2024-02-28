@@ -149,7 +149,7 @@ function unit_testing_run()
                             document.body.appendChild(url_iframe);
                             test_urls.push([url, url_iframe, name.replace('/', '__')]);
                         } else {
-                            delete existing_iframe.src;
+                            existing_iframe.src = 'about:blank';
                             test_urls.push([url, existing_iframe, name.replace('/', '__')]);
                         }
                         var test_status = document.getElementById('status-' + name.replace('/', '__'));
