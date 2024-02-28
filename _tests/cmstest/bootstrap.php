@@ -79,20 +79,6 @@ function unit_testing_run()
             <li>Many support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
         </ul>
     </div>";
-    echo '<div style="float: left; width: 60%">
-        <p class="lonely-label">Tests:</p>
-        <ul>';
-
-    foreach ($sets as $set) {
-        $url = 'index.php?id=' . urlencode($set);
-        if (get_param_integer('keep_safe_mode', 0) == 1) {
-            $url .= '&keep_safe_mode=1';
-        }
-        echo '<li><a href="' . escape_html($url) . '">' . escape_html($set) . '</a> <span style="padding-left: 2em; cursor: pointer;" class="js_test_status" id="status-' . escape_html(str_replace('/', '__', $set)) . '"></span></span></li>' . "\n";
-    }
-    echo '
-        </ul>
-    </div>';
 
     $cnt = 0;
     foreach ($sets as $set) {
@@ -101,7 +87,7 @@ function unit_testing_run()
         }
     }
     echo '
-    <div>
+    <div style="float: right; width: 40%">
         <p class="lonely-label">Running tests concurrently:</p>
         <select id="select-list" multiple="multiple" size="' . escape_html(integer_format($cnt)) . '">';
     foreach ($sets as $set) {
@@ -110,7 +96,7 @@ function unit_testing_run()
         }
     }
     $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed']));
-    // TODO: more efficient method
+
     echo "
         </select>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
@@ -250,6 +236,21 @@ function unit_testing_run()
                 }
             }
         </script>
+    </div>";
+
+    echo '<div>
+        <p class="lonely-label">Tests:</p>
+        <ul>';
+
+    foreach ($sets as $set) {
+        $url = 'index.php?id=' . urlencode($set);
+        if (get_param_integer('keep_safe_mode', 0) == 1) {
+            $url .= '&keep_safe_mode=1';
+        }
+        echo '<li><a href="' . escape_html($url) . '">' . escape_html($set) . '</a> <span style="padding-left: 2em; cursor: pointer;" class="js_test_status" id="status-' . escape_html(str_replace('/', '__', $set)) . '"></span></span></li>' . "\n";
+    }
+    echo "
+        </ul>
     </div>
     <br style=\"clear: both\" />";
 
