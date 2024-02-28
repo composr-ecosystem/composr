@@ -86,7 +86,7 @@ class Hook_cns_warnings_karma
             require_lang('karma');
 
             $description = do_lang_tempcode('DESCRIPTION_PUNITIVE_KARMA');
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUNITIVE_KARMA'), 'HELP' => $description, 'SECTION_HIDDEN' => true]));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'fa30bef2270e8cf5df488fd0636fdcec', 'TITLE' => do_lang_tempcode('PUNITIVE_KARMA'), 'HELP' => $description, 'SECTION_HIDDEN' => true]));
 
             $current_karma = get_karma($member_id);
 

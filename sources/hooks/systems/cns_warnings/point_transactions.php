@@ -90,7 +90,7 @@ class Hook_cns_warnings_point_transactions
             require_lang('points');
 
             $description = do_lang_tempcode('DESCRIPTION_PUNITIVE_POINTS');
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUNITIVE_POINTS'), 'HELP' => $description, 'SECTION_HIDDEN' => true]));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'd81f56a3657321b89a5319c8d3c01831', 'TITLE' => do_lang_tempcode('PUNITIVE_POINTS'), 'HELP' => $description, 'SECTION_HIDDEN' => true]));
 
             require_code('points3');
 

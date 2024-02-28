@@ -316,6 +316,7 @@ class Module_admin_karma
             if ($myrow['k_reversed'] == 0) {
                 $delete_url = build_url(['page' => '_SELF', 'type' => 'delete', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '3d4444df14b8298a55d3d11ef19763bc',
                     'NAME' => '#' . strval($myrow['id']),
                     'URL' => $delete_url,
                     'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
@@ -328,6 +329,7 @@ class Module_admin_karma
             // Edit / amend button
             $edit_url = build_url(['page' => '_SELF', 'type' => 'edit', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
             $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                '_GUID' => '25178125de647e0736c3370db77078dc',
                 'URL' => $edit_url,
                 'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
                 'NAME' => '#' . strval($myrow['id']),
@@ -392,7 +394,7 @@ class Module_admin_karma
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
-            '_GUID' => 'e796e4efe18afa26424a3ceae282cf90',
+            '_GUID' => 'ee1b42664dfe09da882d2a2173c2d749',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => new Tempcode(),
@@ -474,7 +476,7 @@ class Module_admin_karma
         if ($row['k_reversed'] == 0) {
             $delete_url = build_url(['page' => '_SELF', 'type' => 'delete', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
             $buttons->attach(do_template('BUTTON_SCREEN', [
-                '_GUID' => '787c80a9dc8e4a4b9679277696da9fc9',
+                '_GUID' => '9c76feeb72b59a9fe9ead5519f249c1c',
                 'IMMEDIATE' => true,
                 'HIDDEN' => form_input_hidden('id', strval($row['id'])),
                 'URL' => $delete_url,
@@ -485,7 +487,7 @@ class Module_admin_karma
 
         $edit_url = build_url(['page' => '_SELF', 'type' => 'edit', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
         $buttons->attach(do_template('BUTTON_SCREEN', [
-            '_GUID' => 'a4085e1641804fa8b4ca4794ea57b3f0',
+            '_GUID' => '492feada39e89665cf5a91cc2a9cd720',
             'IMMEDIATE' => true,
             'HIDDEN' => form_input_hidden('id', strval($row['id'])),
             'URL' => $edit_url,
@@ -540,6 +542,7 @@ class Module_admin_karma
         $url = build_url($map, '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => 'd9fd21ef566129468ea4297716966258',
             'HIDDEN' => new Tempcode(),
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -612,6 +615,7 @@ class Module_admin_karma
         $url = build_url($map, '_SELF');
 
         return do_template('CONFIRM_SCREEN', [
+            '_GUID' => 'c2b52b64793eb7a12015d7915024e6ff',
             'TITLE' => $this->title,
             'PREVIEW' => $preview,
             'URL' => $url,

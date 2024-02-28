@@ -192,6 +192,7 @@ class Hook_profiles_tabs_edit_data
         // User exceeded their quota
         if (!$can_download && !$can_purge) {
             $text->attach(do_template('MESSAGE', [
+                '_GUID' => 'e446ea42414b9db74f998f1e28182949',
                 'TYPE' => 'warn',
                 'MESSAGE' => do_lang_tempcode('_PERSONAL_DATA_INTRO_CONTACT_STAFF'),
             ]));

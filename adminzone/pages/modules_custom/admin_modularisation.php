@@ -163,7 +163,7 @@ class Module_admin_modularisation
         $this->finalise_section($list, $current_section, $list_action, $fields);
 
         // Action items
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTION')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '26e5b6da4589c54e94deb8940c26d657', 'TITLE' => do_lang_tempcode('ACTION')]));
         $addons = new Tempcode();
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($hooks as $hook => $ob) {
@@ -174,6 +174,7 @@ class Module_admin_modularisation
         $post_url = build_url(['page' => '_SELF', 'type' => 'fix'], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => 'a5f5f42573b836c30dcdf2c0747f513c',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => new Tempcode(),
@@ -221,7 +222,7 @@ class Module_admin_modularisation
         ];
 
         // Add divider
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode($current_section), 'HELP' => do_lang_tempcode($current_section . '_TEXT')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '872b56cb285e63f2906f5f2e646596a9', 'TITLE' => do_lang_tempcode($current_section), 'HELP' => do_lang_tempcode($current_section . '_TEXT')]));
 
         // Add fields
         $_list = new Tempcode();

@@ -721,7 +721,7 @@ class Module_warnings extends Standard_crud_module
                     $table_rows->attach(columned_table_row($actionlogs, true));
                 }
 
-                $fields['VIEW_ACTIONLOGS'] = do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $table_rows, 'NONRESPONSIVE' => false]);
+                $fields['VIEW_ACTIONLOGS'] = do_template('COLUMNED_TABLE', ['_GUID' => 'df009e51c7795ce634d76aef9eabe129', 'HEADER_ROW' => $header_row, 'ROWS' => $table_rows, 'NONRESPONSIVE' => false]);
             }
         }
 
@@ -803,6 +803,7 @@ class Module_warnings extends Standard_crud_module
 
             $preview = do_lang_tempcode('ARE_YOU_SURE_UNDO_PUNITIVE_ACTION', escape_html($undo_action), escape_html($member));
             return do_template('CONFIRM_SCREEN', [
+                '_GUID' => 'a8c48f5437f4258833577b2f785af755',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),

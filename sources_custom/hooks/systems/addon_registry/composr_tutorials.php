@@ -507,7 +507,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/sup_pricing/image.jpg',
             'data_custom/images/docs/sup_pricing/image2.jpg',
             'data_custom/images/docs/sup_pricing/image3.jpg',
-            'data_custom/images/docs/sup_pricing/image4.jpg',
             'data_custom/images/docs/sup_pricing/image5.jpg',
             'data_custom/images/docs/sup_pricing/index.html',
             'data_custom/images/docs/sup_project_management/image.jpg',

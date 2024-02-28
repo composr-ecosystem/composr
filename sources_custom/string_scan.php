@@ -8466,7 +8466,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_min_cms_version
         CONFIG_OPTION_max_cms_version
         PUNITIVE_ACTION_ALREADY_UNDONE
-        MODULE_TRANS_NAME_admin_karma
+        DESCRIPTION_PUNITIVE_POINTS_TRANSACTIONS
+        PUNITIVE_POINTS_TRANSACTIONS
     ')));
 
     $non_admin_files = [
@@ -11928,7 +11929,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PERSONAL_DATA_INTRO_SCREEN
         PERSONAL_DATA_LIMIT_DOWNLOAD
         PERSONAL_DATA_LIMIT_PURGE
-        PRIVACY_PURGE_COULD_NOT_DELETE
         WEBSITE_SOFTWARE
         _DATA_DOWNLOAD_TASK
         _DATA_MEMBER_PRIVACY
@@ -11940,6 +11940,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _POST_IN_NUMBERED
         _POST_IN_TITLED
         PUNITIVE_ACTION
+        _DATA_PURGE_TASK
     ')));
 
     // Remove blank lines

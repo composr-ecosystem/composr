@@ -334,13 +334,13 @@ function step_1() : object
     // Software version
     $version_status = cms_version_branch_status();
     if ($version_status == VERSION_ALPHA) {
-        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('INSTALLING_ALPHA_VERSION')]));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => 'ac01e3ee32cfe34d8aab256cf0530969', 'MESSAGE' => do_lang_tempcode('INSTALLING_ALPHA_VERSION')]));
     }
     if ($version_status == VERSION_BETA) {
-        $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('INSTALLING_BETA_VERSION')]));
+        $warnings->attach(do_template('INSTALLER_NOTICE', ['_GUID' => '973aae9c89d1f8ea067ff234f411e21d', 'MESSAGE' => do_lang_tempcode('INSTALLING_BETA_VERSION')]));
     }
     if ($version_status == VERSION_EOL) {
-        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('INSTALLING_EOL_VERSION')]));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => 'c8374ed6264394947c39e2cc679ee472', 'MESSAGE' => do_lang_tempcode('INSTALLING_EOL_VERSION')]));
     }
 
     global $DATADOTCMS_FILE;

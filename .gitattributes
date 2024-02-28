@@ -72,6 +72,9 @@
 *.wsdl text
 *.yaml text
 *.yml text
+*.ftl text
+*.mjs text
+
 
 # We have some upper case ones
 *.TXT text
@@ -188,3 +191,4 @@
 *.xap binary
 *.lock binary
 *.sq3 binary
+*.pfb binary

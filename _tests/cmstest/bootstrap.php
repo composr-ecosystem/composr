@@ -120,12 +120,15 @@ function unit_testing_run()
 
             var process_urls_process;
             var test_urls;
+            var on_hold_iframes;
             var navigated_iframes;
+            var actual_max_slots = 0;
 
             var list = document.getElementById('select-list');
             var button = document.getElementById('select-button');
             button.onclick = function() {
                 button.disabled = true;
+                actual_max_slots = max_slots;
 
                 var test_statuses = document.querySelectorAll('.js_test_status');
                 test_statuses.forEach(function initTestStatus(test_status) {
@@ -144,6 +147,7 @@ function unit_testing_run()
                 });
 
                 test_urls = [];
+                on_hold_iframes = [];
                 for (var i = 0; i < list.options.length; i++) {
                     if (list.options[i].selected) {
                         var name = list.options[i].value;
@@ -192,6 +196,9 @@ function unit_testing_run()
                                 test_status.innerHTML = '<span style=\"color: Green;\">Finished; all tests passed</span>';
                             } else if (url_iframe.contentDocument.body.innerText.includes('fails')) {
                                 test_status.innerHTML = '<span style=\"color: Orange;\">Finished; some tests failed</span>';
+                            } else if (actual_max_slots > 1) {
+                                test_status.innerHTML = '<span style=\"color: Red;\">Failed to run; pending second attempt</span>';
+                                on_hold_iframes.push([url, url_iframe, name]);
                             } else {
                                 test_status.innerHTML = '<span style=\"color: Red;\">Failed to run!</span>';
                             }
@@ -203,7 +210,7 @@ function unit_testing_run()
                 }
                 navigated_iframes = navigated_iframes_cleaned;
 
-                var free_slots = max_slots - active_iframes;
+                var free_slots = actual_max_slots - active_iframes;
                 while ((free_slots > 0) && (test_urls.length > 0)) {
                     var url = test_urls[0][0];
                     var url_iframe = test_urls[0][1];
@@ -224,10 +231,15 @@ function unit_testing_run()
                 }
 
                 if (navigated_iframes.length == 0) {
-                    button.disabled = false;
-                    window.clearInterval(process_urls_process);
+                    if (on_hold_iframes.length > 0) { // Process failed tests again, but one at a time
+                        actual_max_slots = 1;
+                        test_urls = on_hold_iframes;
+                    } else {
+                        button.disabled = false;
+                        window.clearInterval(process_urls_process);
 
-                    console.log('Finished testing');
+                        console.log('Finished testing');
+                    }
                 } else {
                     console.log('(Sleeping for 1s)');
                 }

@@ -101,25 +101,25 @@ PHP;
         if (@cms_empty_safe($map['param'])) {
             $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => db_get_first_id()]);
             if ($catalogue_name === null) {
-                return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'catalogue')]);
+                return do_template('RED_ALERT', ['_GUID' => '9acd95ab5376b10fc915f37352660702', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'catalogue')]);
             }
         } else {
             $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => $map['param']]);
             if ($catalogue_name === null) {
-                return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'catalogue')]);
+                return do_template('RED_ALERT', ['_GUID' => 'c5cb67b3671126c856f09e9450b5a78f', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'catalogue')]);
             }
         }
 
         // If only_one, check if the member already submitted an entry
         if (isset($map['only_one']) && ($map['only_one'] == '1')) {
             if (is_guest(get_member())) {
-                return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('permissions:ACCESS_DENIED__NOT_AS_GUEST')]);
+                return do_template('RED_ALERT', ['_GUID' => 'cbb8b4f7e2ee46831cd79a51224cb627', 'TEXT' => do_lang_tempcode('permissions:ACCESS_DENIED__NOT_AS_GUEST')]);
             }
 
             $already_filled_in = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', ['c_name' => $catalogue_name, 'ce_submitter' => get_member()]);
 
             if ($already_filled_in !== null) {
-                return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('ALREADY_SUBMITTED_CONTENT')]);
+                return do_template('RED_ALERT', ['_GUID' => '35a0bc49640864adf9d6d2e8a622a32d', 'TEXT' => do_lang_tempcode('ALREADY_SUBMITTED_CONTENT')]);
             }
         }
 
@@ -145,7 +145,7 @@ PHP;
 
                 // Required field validation (a standard for all field hooks)
                 if (($field['cf_required'] == 1) && (($inputted_value == '') || ($inputted_value === null) || (($inputted_value == STRING_MAGIC_NULL) && !fractional_edit()))) {
-                    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', get_translated_tempcode('catalogue_fields', $field, 'cf_name'))]);
+                    return do_template('RED_ALERT', ['_GUID' => 'ae4e4f4f2a3423bf141faa953ee8a705', 'TEXT' => do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', get_translated_tempcode('catalogue_fields', $field, 'cf_name'))]);
                 }
 
                 if ($inputted_value !== null) {
@@ -235,7 +235,7 @@ PHP;
             }
 
             if ($field_group_title != '') {
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => $field_group_title]));
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '19ac569b304134af6ad9589872cf8ef1', 'TITLE' => $field_group_title]));
             }
             $fields->attach($extra_fields);
         }

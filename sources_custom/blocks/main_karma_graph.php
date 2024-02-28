@@ -140,6 +140,7 @@ class Block_main_karma_graph
         $karma_small_percent *= $karma_large_percent;
 
         return do_template('BLOCK_MAIN_KARMA_GRAPH', [
+            '_GUID' => 'd40378081ea3f23b1bd6eb9bd1fd6c98',
             'BLOCK_ID' => $block_id,
             'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'KARMA_TITLE' => $karma_lang,

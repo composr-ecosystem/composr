@@ -173,7 +173,7 @@ class Module_admin_make_release
         // Version
         $previous_version = $this->get_previous_version();
         $current_version = $this->get_new_version();
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_VERSION'), 'HELP' => do_lang_tempcode('DESCRIPTON_MAKE_RELEASE_STEP1_VERSION')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '5a0eac4680a4063cb53e8bdedc1e82da', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_VERSION'), 'HELP' => do_lang_tempcode('DESCRIPTON_MAKE_RELEASE_STEP1_VERSION')]));
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP1_OLD_VERSION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_OLD_VERSION'), 'previous_version', ($previous_version !== null) ? $previous_version : '', false));
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP1_NEW_VERSION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_NEW_VERSION'), 'version', $current_version, true));
         $fields->attach(form_input_tick(do_lang_tempcode('MAKE_RELEASE_STEP1_DB_UPGRADE'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_DB_UPGRADE'), 'db_upgrade', false));
@@ -184,7 +184,7 @@ class Module_admin_make_release
         $make_release_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release';
         $profile_url = get_brand_base_url() . '/members/view';
         $git_url = COMPOSR_REPOS_URL;
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTON_MAKE_RELEASE_STEP1_URLS')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6dc15cd17b0ca901ffe869ad91863ad4', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTON_MAKE_RELEASE_STEP1_URLS')]));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_URL'), 'tracker_url', $tracker_url, true));
         $fields->attach(form_input_integer(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_PROJECT'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_PROJECT'), 'project_id', 1, true));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_WEBSERVICE_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_WEBSERVICE_URL'), 'web_service_url', $web_service_url, true));
@@ -198,6 +198,7 @@ class Module_admin_make_release
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2', 'skip' => strval(get_param_integer('skip', 0))], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => 'e3f3611da7a35c1cd44ae636afdfe95a',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -506,6 +507,7 @@ class Module_admin_make_release
         $post_url = build_url(['page' => '_SELF', 'type' => 'step3'], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => '27fc1274f3bb4ef33c647c98737231ab',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -531,6 +533,7 @@ class Module_admin_make_release
         $preview = do_lang_tempcode('MAKE_RELEASE_SUBSTANTIAL', escape_html($plug_guid_url), escape_html($legacy_issue_url), [escape_html($advanced_testing_issue_url)]);
 
         return do_template('CONFIRM_SCREEN', [
+            '_GUID' => '4953d2db2f617d0b5e955a7085cc2339',
             'TITLE' => $this->title,
             'PREVIEW' => $preview,
             'URL' => get_self_url(false, false, ['intermediary_tasks' => 1]),
@@ -572,6 +575,7 @@ class Module_admin_make_release
         $post_url = build_url(['page' => '_SELF', 'type' => 'step4'], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => '8c8928e30de3be54e13fa65029c18afa',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -637,6 +641,7 @@ class Module_admin_make_release
         $text = do_lang_tempcode('MAKE_RELEASE_STEP4_TEXT');
 
         return do_template('MAKE_RELEASE_STEP4_SCREEN', [
+            '_GUID' => '8ab9d23a5cfedf2e9eeb6bf8834a2c39',
             'TITLE' => $this->title,
             'TEXT' => $text,
             'NEW_VERSION_DOTTED' => $new_version,
