@@ -30,6 +30,6 @@ class adminzone_search_test_set extends cms_test_case
         $results = $ob->run();
         $evaluation = $results->evaluate();
 
-        $this->assertTrue((strpos($evaluation, 'title="SU"') !== false), 'Expected test search on Admin Zone to return an item for SU, but this did not happen.');
+        $this->assertTrue((strpos($evaluation, '>SU</a>') !== false), 'Expected test search on Admin Zone to return an item for SU, but this did not happen.');
     }
 }
