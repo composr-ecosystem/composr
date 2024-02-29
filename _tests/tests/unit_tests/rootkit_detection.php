@@ -29,8 +29,14 @@ class rootkit_detection_test_set extends cms_test_case
         // TODO: automatically modify _config.php for this test
 
         require_code('crypt_master');
-        if (!check_maintenance_password($password)) {
+
+        if ($password == '') {
             $this->assertTrue(false, 'Cannot run test unless admin password is blank or defined as non-hashed');
+            return; // If we don't have a blank password test cannot work
+        }
+
+        if (!check_maintenance_password($password)) {
+            $this->assertTrue(false, 'Incorrect maintenance password');
             return; // If we don't have a blank password test cannot work
         }
 
