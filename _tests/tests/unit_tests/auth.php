@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// This test will likely fail if using a proxy or Cloudflare.
+
 /**
  * Composr test case class (unit testing).
  */
@@ -127,7 +129,7 @@ class auth_test_set extends cms_test_case
                 if ((!$success) && ($this->debug)) {
                     var_dump($http_result);
                 }
-                $this->assertTrue($success, 'No access when expected for ' . $ip . ' with ' . $fake_session_id);
+                $this->assertTrue($success, 'No access when expected for ' . $ip . ' with ' . $fake_session_id . ' (this might be failing if you are using Cloudflare or a proxy)');
             } else {
                 $success = ($http_result->message == '401');
                 if ((!$success) && ($this->debug)) {

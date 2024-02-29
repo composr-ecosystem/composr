@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// This test will likely fail if using Cloudflare or a proxy
+
 /**
  * Composr test case class (unit testing).
  */

@@ -936,7 +936,7 @@ function init__webstandards()
         $autofill_contact_info_type_regex . 'impp',
     ];
 
-    $autocomplete_regex = '(on|off|autocomplete-disabled|((section-[\w\-]+ )?(shipping |billing )?(' . implode('|', $autofill_field_names) . ')))'; // ("autocomplete-disabled" is an invalid value we use to disable autofill)
+    $autocomplete_regex = '(on|off|autocomplete-disabled|((section-[\w\-]+ )?(shipping |billing )?(' . implode('|', $autofill_field_names) . ')))'; // autocomplete disabled is an invalid value we use to disable autofill
 
     global $TAG_ATTRIBUTES;
     $TAG_ATTRIBUTES = [
