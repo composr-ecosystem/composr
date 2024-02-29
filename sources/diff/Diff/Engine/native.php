@@ -36,6 +36,15 @@
  */
 class Text_Diff_Engine_native
 {
+    protected $xchanged = [];
+    protected $ychanged = [];
+    protected $xv = [];
+    protected $yv = [];
+    protected $xind = [];
+    protected $yind = [];
+    protected $seq = [];
+    protected $in_seq = [];
+    protected $lcs = [];
     public function diff($from_lines, $to_lines)
     {
         array_walk($from_lines, array('Text_Diff', 'trimNewlines'));
