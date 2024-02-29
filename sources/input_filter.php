@@ -901,6 +901,8 @@ class Advanced_banning_loader
     private $reasoned_bans; // Output
     private $hackattack_specifiers; // Output
 
+    private $text_so_far;
+
     /**
      * Run the loader, to load up field-restrictions from the XML file.
      *
@@ -1044,5 +1046,16 @@ class Advanced_banning_loader
                 }
                 break;
         }
+    }
+
+    /**
+     * Standard PHP XML parser function.
+     *
+     * @param  mixed $parser The parser
+     * @param  string $data The text
+     */
+    public function startText($parser, string $data)
+    {
+        $this->text_so_far .= $data;
     }
 }

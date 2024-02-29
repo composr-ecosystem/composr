@@ -419,7 +419,7 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
                 $sup = '';
             }
             if (is_object($text)) {
-                if (!empty($text->pure_lang)) {
+                if ($text->pure_lang === true) {
                     $sup = htmlentities($sup); // Intentionally not using escape_html, as may not be defined yet
                 }
                 $text->attach($sup);

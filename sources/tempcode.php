@@ -1693,7 +1693,10 @@ class Tempcode
 
     public $is_all_static; // Whether this Tempcode is entirely static content
     public $metadata; // Map of Tempcode metadata
-    private $is_empty; // Whether this Tempcode has no content
+    public $pure_lang = null;
+    public $preprocessable_bits = null;
+    private $is_empty = null; // Whether this Tempcode has no content
+    private $cached_output = ''; // Cached output of the Tempcode
 
     /**
      * Constructor of Tempcode.
@@ -1809,7 +1812,7 @@ class Tempcode
         if (isset($this->preprocessable_bits)) {
             $ret[] = 'preprocessable_bits';
         }
-        if (isset($this->pure_lang)) {
+        if ($this->pure_lang === true) {
             $ret[] = 'pure_lang';
         }
         return $ret;
@@ -1829,7 +1832,7 @@ class Tempcode
                 }
             }
         }
-        unset($this->cached_output);
+        $this->cached_output = '';
     }
 
     /**
@@ -1841,7 +1844,7 @@ class Tempcode
      */
     public function parse_from(string &$code, int &$pos, int &$len)
     {
-        unset($this->cached_output);
+        $this->cached_output = '';
         require_code('tempcode_compiler');
         $temp = template_to_tempcode(substr($code, $pos, $len - $pos), 0, false, '');
         $this->code_to_preexecute = $temp->code_to_preexecute;
@@ -1866,9 +1869,9 @@ class Tempcode
             return;
         }
 
-        unset($this->is_empty);
+        $this->is_empty = null;
 
-        unset($this->cached_output);
+        $this->cached_output = '';
 
         global $TEMPCODE_PARAMETER_INLINING_MODE;
         $inlining_mode = end($TEMPCODE_PARAMETER_INLINING_MODE)/*in inlining mode*/;
@@ -1948,7 +1951,7 @@ class Tempcode
         require_code('tempcode_optimiser');
         optimise_tempcode($this);
 
-        return 'return unserialize("' . php_addslashes(serialize([$this->seq_parts, isset($this->preprocessable_bits) ? $this->preprocessable_bits : [], $this->codename, !empty($this->pure_lang), $this->code_to_preexecute])) . '");' . "\n";
+        return 'return unserialize("' . php_addslashes(serialize([$this->seq_parts, isset($this->preprocessable_bits) ? $this->preprocessable_bits : [], $this->codename, ($this->pure_lang === true), $this->code_to_preexecute])) . '");' . "\n";
     }
 
     /**
@@ -1970,7 +1973,7 @@ class Tempcode
             return false; // May never get here, as PHP fatal errors can't be suppressed or skipped over
         }
 
-        unset($this->cached_output);
+        $this->cached_output = '';
 
         $this->seq_parts = $result[0];
         if (!empty($result[1])) {
@@ -2086,7 +2089,7 @@ class Tempcode
             fatal_exit(cms_error_get_last());
         }
 
-        unset($this->cached_output);
+        $this->cached_output = '';
 
         $this->seq_parts = $result[0];
         if (!empty($result[1])) {
@@ -2222,7 +2225,7 @@ class Tempcode
      */
     public function singular_bind(string $key, $value)
     {
-        unset($this->cached_output);
+        $this->cached_output = '';
 
         if ($GLOBALS['RECORD_TEMPLATES_USED']) {
             if (is_object($value)) {
@@ -2309,10 +2312,10 @@ class Tempcode
      */
     public function is_empty() : bool
     {
-        if (isset($this->cached_output)) {
+        if (!empty($this->cached_output)) {
             return strlen($this->cached_output) === 0;
         }
-        if (isset($this->is_empty)) {
+        if ($this->is_empty !== null) {
             return $this->is_empty;
         }
 
@@ -2423,7 +2426,7 @@ class Tempcode
      */
     public function evaluate(?string $current_lang = null) : string
     {
-        if (isset($this->cached_output)) {
+        if (!empty($this->cached_output)) {
             return $this->cached_output;
         }
         if ($this->is_empty_shell()) { // Optimisation: empty
@@ -2512,9 +2515,9 @@ class Tempcode
             return '';
         }
 
-        if (isset($this->cached_output)) {
+        if (!empty($this->cached_output)) {
             echo $this->cached_output;
-            unset($this->cached_output); // Won't be needed again
+            $this->cached_output = ''; // Won't be needed again
             return '';
         }
         if ($this->is_empty_shell()) { // Optimisation: empty

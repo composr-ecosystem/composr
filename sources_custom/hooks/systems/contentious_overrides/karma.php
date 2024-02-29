@@ -24,7 +24,7 @@ class Hook_contentious_overrides_karma
             return;
         }
 
-        if (strpos($directory, 'templates_custom') !== false) {
+        if (($directory === null) || (strpos($directory, 'templates_custom') !== false)) {
             return;
         }
 
