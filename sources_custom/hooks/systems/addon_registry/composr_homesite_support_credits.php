@@ -143,6 +143,7 @@ class Hook_addon_registry_composr_homesite_support_credits
     public function get_file_list()
     {
         return array(
+            'pages/minimodules_custom/report_issue.php',
             'sources_custom/hooks/systems/addon_registry/composr_homesite_support_credits.php',
             'adminzone/pages/minimodules_custom/outstanding_credits.php',
             'adminzone/pages/modules_custom/admin_customers.php',

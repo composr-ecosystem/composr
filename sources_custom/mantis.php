@@ -66,7 +66,7 @@ function get_tracker_issues($ids, $version = null, $previous_version = null)
     return $_issue_titles;
 }
 
-function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project = '1')
+function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project = '1', $steps_to_reproduce = '')
 {
     $query = "
         INSERT INTO
@@ -79,7 +79,7 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
         VALUES
         (
             '" . db_escape_string($tracker_message) . "',
-            '',
+            '" . db_escape_string($steps_to_reproduce) . "',
             '" . db_escape_string($tracker_additional) . "'
         )
     ";
