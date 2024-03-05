@@ -138,7 +138,7 @@ if ($type == 'submit') {
                     'required' => true,
                 ),
                 'project' => array(
-                    'label' => 'Component',
+                    'label' => 'Choose relevant component',
                     'description' => 'Which of these best describes the component of the issue you are reporting or the request you are making?',
                     'type' => 'list',
                     'default' => 'Core software / bundled addons / default theme',
@@ -227,7 +227,7 @@ if ($type == 'submit') {
             'text' => 'Step 2 of 3: Please provide the following basic information about your issue.',
             'form_method' => 'POST',
             'notice' => array(
-              'Please do not use the issue tracker to report issues with addons or themes which were not downloaded from Composr\'s Addon management screen on the Admin Zone or from the Addons / Themes pages on the Composr homesite. If you need support for an addon independently distributed by someone else, please see https://compo.sr/support.htm .'
+              'Please do not use the issue tracker to report issues with addons or themes which were not downloaded from Composr\'s Addon management screen on the Admin Zone or from the Addons / Themes pages on the Composr homesite. If you need support for an addon independently distributed by someone else, please see ' . $BASE_URL . '/support.htm .'
             ),
             'questions' => array(
                 'category_aux' => array(
@@ -322,8 +322,8 @@ if ($type == 'submit') {
             'form_method' => 'POST',
             'questions' => array(
                 'summary' => array(
-                    'label' => 'Brief Label / Summary',
-                    'description' => 'Please state your feature / request in one concise title; this will help developers quickly understand your request at a glance. For example, you might say "Implement support for the Doggy Biscuits API".',
+                    'label' => 'Concise sentence / summary',
+                    'description' => 'Please state your feature / request in one concise sentence; this will help developers quickly understand your request at a glance. For example, you might say "Implement support for the Doggy Biscuits API".',
                     'type' => 'short_text',
                     'default' => '',
                     'options' => '',
@@ -366,15 +366,15 @@ if ($type == 'submit') {
             'form_method' => 'POST',
             'questions' => array(
                 'summary' => array(
-                    'label' => 'Brief Label / Summary',
-                    'description' => 'Please state the bug in one concise title; this will help developers quickly understand your issue at a glance. For example, you might say "Uploading an entry to a member gallery triggers a critical error".',
+                    'label' => 'Concise sentence / summary',
+                    'description' => 'Please state the bug in one concise sentence; this will help developers quickly understand your issue at a glance. For example, you might say "Uploading an entry to a member gallery triggers a critical error".',
                     'type' => 'short_text',
                     'default' => '',
                     'options' => '',
                     'required' => true,
                 ),
                 'description' => array(
-                    'label' => 'Description of Bug',
+                    'label' => 'Explain the bug / issue',
                     'description' => 'Elaborate on the bug / issue in more details here. What did you attempt to do? What did you expect to happen? What actually happened? What error messages did you get?',
                     'type' => 'long_text',
                     'default' => '',
@@ -382,7 +382,7 @@ if ($type == 'submit') {
                     'required' => true,
                 ),
                 'steps_to_reproduce' => array(
-                    'label' => 'Steps to Reproduce',
+                    'label' => 'How do you reproduce the bug / issue?',
                     'description' => 'If possible / applicable, please explain how one can reproduce this bug / issue. Please list steps in sequential order and note any special details (such as config options that need to be set).',
                     'type' => 'long_text',
                     'default' => '',
@@ -422,15 +422,15 @@ if ($type == 'submit') {
             'form_method' => 'POST',
             'questions' => array(
                 'summary' => array(
-                    'label' => 'Brief Label / Summary',
-                    'description' => 'Please state the security vulnerability in one concise title; this will help developers quickly understand your issue at a glance. For example, you might say "XSS injection vulnerability on the tickets creation page".',
+                    'label' => 'Concise sentence / summary',
+                    'description' => 'Please state the security vulnerability in one concise sentence; this will help developers quickly understand your issue at a glance. For example, you might say "XSS injection vulnerability on the tickets creation page".',
                     'type' => 'short_text',
                     'default' => '',
                     'options' => '',
                     'required' => true,
                 ),
                 'description' => array(
-                    'label' => 'Description of Vulnerability',
+                    'label' => 'Explain the vulnerability',
                     'description' => 'Elaborate on the security vulnerability in more details here. What did you attempt to do? What did you expect to happen? What actually happened? What error messages did you get? How did the vulnerability affect the stability of your site?',
                     'type' => 'long_text',
                     'default' => '',
@@ -438,7 +438,7 @@ if ($type == 'submit') {
                     'required' => true,
                 ),
                 'steps_to_reproduce' => array(
-                    'label' => 'Steps to Reproduce',
+                    'label' => 'How do you expose / exploit this vulnerability?',
                     'description' => 'Please explain how one can reproduce / verify this security vulnerability. Please list steps in sequential order and note any special details (such as config options that need to be set or that one must gain access to a privileged account first). This field is required for security vulnerability reports.',
                     'type' => 'long_text',
                     'default' => '',
@@ -516,7 +516,7 @@ if ($type == 'submit') {
             'form_method' => 'POST',
             'questions' => array(
                 'search_tutorials' => array(
-                    'label' => 'I searched for an existing tutorial already',
+                    'label' => 'Did you search for an existing tutorial?',
                     'description' => 'Please tick this box to confirm you already searched the tutorials at ' . $BASE_URL . '/docs/tutorials.htm and did not find a tutorial that exists pertaining to what you are about to suggest.',
                     'type' => 'tick',
                     'default' => '',
@@ -524,7 +524,7 @@ if ($type == 'submit') {
                     'required' => true,
                 ),
                 'summary' => array(
-                    'label' => 'Brief Label / Summary',
+                    'label' => 'Concise sentence / summary',
                     'description' => 'Please state your new tutorial request in one concise sentence; this will help developers quickly understand your issue at a glance. For example, you might say "New documentation on how to set-up LiteSpeed".',
                     'type' => 'short_text',
                     'default' => '',
@@ -532,7 +532,7 @@ if ($type == 'submit') {
                     'required' => true,
                 ),
                 'description' => array(
-                    'label' => 'Description of Tutorial',
+                    'label' => 'Description of Tutorial / Additions',
                     'description' => 'Elaborate on what information you would like to see in this new tutorial.',
                     'type' => 'long_text',
                     'default' => '',
@@ -540,7 +540,7 @@ if ($type == 'submit') {
                     'required' => true,
                 ),
                 'additional_information' => array(
-                    'label' => 'Benefits to the Community',
+                    'label' => 'How will this benefit the community?',
                     'description' => 'Please let us know why you feel this new tutorial will benefit the Composr community at large (why it should be an official tutorial instead of one you can make yourself off-site and add via off-site links).',
                     'type' => 'long_text',
                     'default' => '',
@@ -568,7 +568,7 @@ if ($type == 'submit') {
             'form_method' => 'POST',
             'questions' => array(
                 'summary' => array(
-                    'label' => 'Brief Label / Summary',
+                    'label' => 'Concise sentence / summary',
                     'description' => 'Please state your issue in one concise sentence; this will help developers quickly understand your issue at a glance. For example, you might say "Minimum supported PHP version indicated in tutorial is wrong".',
                     'type' => 'short_text',
                     'default' => '',
@@ -576,7 +576,7 @@ if ($type == 'submit') {
                     'required' => true,
                 ),
                 'description' => array(
-                    'label' => 'Tutorial Error(s) and their Corrections',
+                    'label' => 'Explain the tutorial error(s) and their corrections',
                     'description' => 'Explain what error(s) you found in the tutorial and to what they should be corrected (if you can find the correct information).',
                     'type' => 'long_text',
                     'default' => '',
