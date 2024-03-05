@@ -465,9 +465,6 @@ if ($type == 'submit') {
             'title' => 'Basic Issue Information (Documentation)',
             'text' => 'Step 2 of 3: I will now ask a few quick questions so I can best guide you to the next screen for your issue.',
             'form_method' => 'POST',
-            'notice' => array(
-                ''
-            ),
             'questions' => array(
                 'category_aux' => array(
                     'label' => 'Name of Tutorial Page',
