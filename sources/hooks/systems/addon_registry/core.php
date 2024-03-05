@@ -1411,6 +1411,14 @@ class Hook_addon_registry_core
             'sources_custom/hooks/endpoints/misc/.htaccess',
             'sources_custom/hooks/endpoints/misc/index.html',
 
+            // Form handlers - no actual handlers defined in core (or even bundled at time of writing), but may be added by other addons
+            'sources/hooks/form_handlers/index.html',
+            'sources/hooks/form_handlers/join/index.html',
+            'sources/hooks/form_handlers/profile_edit/index.html',
+            'sources_custom/hooks/form_handlers/index.html',
+            'sources_custom/hooks/form_handlers/join/index.html',
+            'sources_custom/hooks/form_handlers/profile_edit/index.html',
+
             // Admin theme
             'themes/admin/css/index.html',
             'themes/admin/css/.htaccess',

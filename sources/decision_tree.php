@@ -398,6 +398,8 @@ class DecisionTree
      */
     private function get_question_field_details($question_name, $question_details, $i)
     {
+        require_code('fields');
+
         $default = either_param_string($question_name, isset($question_details['default']) ? $question_details['default'] : '');
         $default_list = isset($question_details['default_list']) ? $question_details['default_list'] : array($default);
 

@@ -195,6 +195,14 @@ class Hook_profiles_tabs_edit_settings
 
             cns_edit_member($member_id_of, $email_address, $preview_posts, $dob_day, $dob_month, $dob_year, $timezone, $primary_group, $actual_custom_fields, $theme, post_param_integer('reveal_age', fractional_edit() ? INTEGER_MAGIC_NULL : 0), $views_signatures, $auto_monitor_contrib_content, post_param_string('language', fractional_edit() ? STRING_MAGIC_NULL : null), post_param_integer('allow_emails', fractional_edit() ? INTEGER_MAGIC_NULL : 0), post_param_integer('allow_emails_from_staff', fractional_edit() ? INTEGER_MAGIC_NULL : 0), $validated, $username, $password, $highlighted_name, $pt_allow, $pt_rules_text, $on_probation_until, $auto_mark_read);
 
+            // Run form handlers for editing profile
+            $hook_obs = find_all_hooks('form_handlers', 'profile_edit'); // TODO: find_all_hook_obs in v11
+            foreach (array_keys($hook_obs) as $hook) {
+                require_code('hooks/form_handlers/profile_edit/' . $hook);
+                $hook_ob = object_factory('Hook_form_handlers_profile_edit_' . $hook);
+                $hook_ob->run($member_id_of, $username, $email_address, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, post_param_string('language', fractional_edit() ? STRING_MAGIC_NULL : null), post_param_integer('allow_emails', fractional_edit() ? INTEGER_MAGIC_NULL : 0), post_param_integer('allow_emails_from_staff', fractional_edit() ? INTEGER_MAGIC_NULL : 0), $validated);
+            }
+
             if (addon_installed('content_reviews')) {
                 require_code('content_reviews2');
                 content_review_set('member', strval($member_id_of));
