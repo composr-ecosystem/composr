@@ -64,6 +64,10 @@ if ($type == 'submit') {
         'Security-hole' => '95'
     );
 
+    // Set security reports to private
+    $view_state = ($severities[$severity] == '95') ? '50' : '10';
+
+    // Get category ID
     $category = array_search($_category, $_categories);
     if (($category === false) || ($category === '')) {
         $_category = $GLOBALS['SITE_DB']->query('SELECT id FROM mantis_category_table WHERE status=0 ORDER BY id LIMIT 1');
@@ -71,7 +75,7 @@ if ($type == 'submit') {
     }
 
     // Create the tracker issue
-    $tracker_id = create_tracker_issue($version, $summary, $description, $additional_information, $severities[$severity], strval($category), $projects[$project], $steps_to_reproduce);
+    $tracker_id = create_tracker_issue($version, $summary, $description, $additional_information, $severities[$severity], strval($category), $projects[$project], '0', $steps_to_reproduce, '100', '10', '10', $view_state);
     create_tracker_post($tracker_id, 'Automated message: This issue was created using the Report Issue Wizard on the Composr homesite.');
 
     // Inform the member it has been done with a redirect to it.
