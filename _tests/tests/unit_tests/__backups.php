@@ -104,6 +104,7 @@ $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_con
 
         if (!$this->debug) { // We assume the backup test already ran if debug is present
             for ($i = 0; $i < 2; $i++) {
+                cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
                 $test = cms_http_request(get_custom_base_url() . '/exports/backups/test/restore.php?time_limit=1000', ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'post_params' => [], 'timeout' => 1000.0]);
                 $success = ($test->data !== null) && (strpos($test->data, do_lang('backups:BACKUP_RESTORE_SUCCESS')) !== false);
                 $message = 'Failed to run restorer script on iteration ' . strval($i + 1) . ' [' . $test->data . ']; to debug manually run exports/backups/test/restore.php?time_limit=1000 . After completing the restore, run this test again with debug=1.';
