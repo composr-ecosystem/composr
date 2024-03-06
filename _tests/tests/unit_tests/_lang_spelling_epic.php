@@ -3256,6 +3256,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'valignment',
             'submissionflow',
             'undef',
+            'whitelisted',
         ];
 
         $spell_link = spellcheck_initialise('en_GB');

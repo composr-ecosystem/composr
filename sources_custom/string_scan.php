@@ -7293,7 +7293,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SIZE_CHANGE
         SKU
         SLOW_DOWN
-        SLOW_SERVER
         SMS_HIGH_LIMIT
         SMS_HIGH_TRIGGER_LIMIT
         SMS_LOW_LIMIT
@@ -8238,7 +8237,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DELETE_CONTENT
         DESCRIPTION_DELETE_CONTENT
         DESCRIPTION_DELETE_CONTENT_POINTS
-        DESCRIPTION_DELETE_THIS
         USE_MONOCHROME_ICONS
         SVG_SPRITES
         PREVIEW_SPRITE

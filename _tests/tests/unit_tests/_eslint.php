@@ -22,7 +22,12 @@ class _eslint_test_set extends cms_test_case
     {
         cms_set_time_limit(120);
 
-        if (strpos(shell_exec('npx eslint -v'), 'v') === false) {
+        $result = shell_exec('npx eslint -v');
+        if ($result === null) {
+            $result = '';
+        }
+
+        if (strpos($result, 'v') === false) {
             $this->assertTrue(false, 'eslint not available');
             return;
         }

@@ -637,7 +637,7 @@ abstract class Hook_privacy_base
             return true;
         }
 
-        // If any criterium matches a database field that is a key, then consider them owner
+        // If any criteria match a database field that is a key, then consider them owner
         $metadata = $this->get_field_metadata($table_name);
         $criteria = [
             'additional_member_id_fields' => $member_id,

@@ -124,7 +124,7 @@ class Hook_cns_warnings_ban_member
             return;
         }
 
-        // Perma-ban member if requested and we have the privilege
+        // Permanently ban a member if requested and we have the privilege
         $banned_member = post_param_string('banned_member', '0');
         if (has_privilege(get_member(), 'member_maintenance')) {
             if ($banned_member != '0') {
