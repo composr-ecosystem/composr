@@ -114,6 +114,7 @@ class __specsettings_documented_test_set extends cms_test_case
                 (/*Demonstratr*/$var != 'mysql_root_password') &&
                 (/*Custom domains*/strpos($var, 'ZONE_MAPPING') === false) &&
                 (/*Legacy password name*/$var != 'admin_password') &&
+                (/*Legacy password name*/$var != 'master_password') &&
                 (/*XML dev environment*/strpos($var, '_chain') === false) &&
                 (/*LEGACY*/$var != 'board_prefix') &&
                 (/*forum-driver-specific*/!in_array($var, ['aef_table_prefix', 'bb_forum_number', 'ipb_table_prefix', 'mybb_table_prefix', 'phpbb_table_prefix', 'smf_table_prefix', 'stronghold_cookies', 'vb_table_prefix', 'vb_unique_id', 'vb_version', 'wowbb_table_prefix']))
