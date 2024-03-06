@@ -113,9 +113,12 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 // This is necessary for re-entrant code, and because we can't load it all through the PHP parser at once!
 
 $time_start = time();
-$time_max = $time_start + get_param_integer('time_limit', 10);
-
-cms_extend_time_limit(get_param_integer('time_limit', 10));
+$time_limit = get_param_integer('time_limit', 8);
+$extended_time = cms_ini_set('max_execution_time', strval($time_limit));
+if ($extended_time === false) {
+    $time_limit = 8;
+}
+$time_max = $time_start + ($time_limit - 2); // 2 second buffer
 
 // Open file
 $data_file_charset = null;
@@ -183,7 +186,7 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
     
     // Need to go to a new iteration?
     if (time() >= $time_max) {
-        $refresh_url = 'restore.php?start_offset=' . strval($offset) . '&time_limit=' . get_param_string('time_limit', '10');
+        $refresh_url = 'restore.php?start_offset=' . strval($offset) . '&time_limit=' . strval($time_limit);
         $proceed_icon = do_template('ICON', ['NAME' => 'buttons/proceed']);
         $msg = '';
         $msg .= '<form action="' . escape_html($refresh_url) . '" method="post"><button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit" onclick="this.disabled=true; this.form.submit();">' . $proceed_icon->evaluate() . ' ' . escape_html(do_lang('CONTINUE_RESTORATION')) . '</button></form>';

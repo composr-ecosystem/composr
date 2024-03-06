@@ -5165,7 +5165,7 @@ function send_http_output_ping()
  * You will rarely want to use this standalone, as cms_extend_time_limit is more appropriate.
  * However, in computationally-expensive library code this is useful for restoring the execution time to what it was once your code has finished.
  *
- * @param  integer $secs Number of seconds to extend (likely a TIME_LIMIT_EXTEND_* constant)
+ * @param  integer $secs Number of seconds to set (likely a TIME_LIMIT_EXTEND_* constant)
  * @return integer The old time limit
  */
 function cms_set_time_limit(int $secs) : int
