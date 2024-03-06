@@ -28,7 +28,7 @@ class closed_file_test_set extends cms_test_case
         $url = static_evaluate_tempcode(build_url(['page' => ''], ''));
         $result = cms_http_request($url);
 
-        $this->assertTrue($result->download_url == get_base_url() . '/closed.html');
+        $this->assertTrue($result->download_url == get_base_url() . '/closed.html', 'Expected to download the closed.html page, but instead got ' . $result->download_url);
 
         unlink($path);
         sync_file($path);
