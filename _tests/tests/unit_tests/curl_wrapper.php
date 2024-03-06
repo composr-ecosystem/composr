@@ -34,6 +34,6 @@ class curl_wrapper_test_set extends cms_test_case
         $ob = new Alexsoft\Curl();
         $result = $ob->get('https://www.example.com');
         $this->assertTrue((strpos($result['body'], 'Example Domain') !== false), 'Expected the body to contain Example Domain, but it did not.');
-        $this->assertTrue((trim($result['statusCode']) == '200'), 'Expected response code to be 200, but instead it was ' . $result['statusCode']);
+        $this->assertTrue(((trim($result['statusCode']) == '200') || (trim($result['statusCode']) == '200 OK')), 'Expected response code to be 200, but instead it was ' . $result['statusCode']);
     }
 }
