@@ -240,6 +240,10 @@ class Text_Diff3_Op_copy extends Text_Diff3_Op
 class Text_Diff3_BlockBuilder
 {
 
+    public $orig;
+    public $final1;
+    public $final2;
+
     public function __construct()
     {
         $this->_init();
