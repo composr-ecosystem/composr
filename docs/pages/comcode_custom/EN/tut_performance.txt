@@ -362,7 +362,7 @@ Composr has in the past tested up to a million of the following:
  - Clubs (but not usergroups in general)
  - Galleries under a single gallery
  - Images under a single gallery
- - Videos under a single gallery (non-validated, to test validation queue)
+ - Videos under a single gallery (not validated, to test validation queue)
  - Quizzes
  - Hack attempts
  - Logged hits

@@ -94,14 +94,14 @@ You can set field options to tag fields used for the contact message:
 [media width="170" description="Choosing the [tt]main_catalogues_form[/tt] block from the block construction assistant"]data_custom/images/docs/tut_feedback/catalogue_block_4.png[/media]
 [/surround]
 [media width="150" description="Adding a catalogue form" float="right"]data_custom/images/docs/tut_feedback/catalogue_add.png[/media]
-The [tt]main_catalogues_form[/tt] block shows a form of custom fields coded into a catalogue. The submissions from this block are stored as non-validated catalogue entries which can then be reviewed by staff.
+The [tt]main_catalogues_form[/tt] block shows a form of custom fields coded into a catalogue. The submissions from this block are stored as not validated entries which can then be reviewed by staff.
 
 The process for using this block is as follows:
 1) Add a new catalogue, via Admin Zone > Content > Catalogues > Add catalogue. Include whatever fields on the catalogue that you want on the form. You'll probably also want to disable View access on all the usergroups if you do not want members seeing submitted entries.
 2) Optionally add categories to the catalogue; the generated form by the block will prompt the member to select a category if more than one exists.
 3) Go to add/edit the page where the block should go.
 4) Add the block to it in the normal way. When adding the block, you are asked which catalogue to use and whether members may only submit one entry per member (which also prevents guests from submitting).
-The user will fill in the block, and it will be added as an non-validated entry into the appropriate catalogue and category. Staff may then review the entries and process them as necessary. If [tt]Members only; one entry each[/tt] is enabled, then deleting the entry will allow the member to re-submit the form.
+The user will fill in the block, and it will be added as an entry which is not validated into the appropriate catalogue and category. Staff may then review the entries and process them as necessary. If [tt]Members only; one entry each[/tt] is enabled, then deleting the entry will allow the member to re-submit the form.
 
 [title="3"]Simple e-mail form[/title]
 

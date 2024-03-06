@@ -716,13 +716,13 @@ class Module_galleries
             // If else, then we have no probe_type, and thus won't be able to show anything
         }
         if (($row !== null) && ($row['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($row['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
+            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($row['submitter'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_not_validated');
             }
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '5500ce574232db1e1577b3d69bbc0d6d',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'gallery'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'gallery'),
             ]);
         } else {
             $warning_details = new Tempcode();
@@ -736,7 +736,7 @@ class Module_galleries
                         require_code('content_privacy');
                         check_privacy('video', strval($probe_id));
                     }
-                    if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+                    if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
                         $map['validated'] = 1;
                     }
                     $rows = $GLOBALS['SITE_DB']->query_select('videos', ['*'], $map, '', 1);
@@ -805,7 +805,7 @@ class Module_galleries
                         require_code('content_privacy');
                         check_privacy('image', strval($probe_id));
                     }
-                    if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+                    if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
                         $map['validated'] = 1;
                     }
                     $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], $map, '', 1);
@@ -1350,13 +1350,13 @@ class Module_galleries
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
+            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_not_validated');
             }
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => 'c32faacba974e648a67e5e91ffd3d8e5',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'image'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'image'),
             ]);
         } else {
             $warning_details = new Tempcode();
@@ -1474,13 +1474,13 @@ class Module_galleries
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
+            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_not_validated');
             }
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => 'b32faacba974e648a67e5e91ffd3d8e5',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'video'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'video'),
             ]);
         } else {
             $warning_details = new Tempcode();

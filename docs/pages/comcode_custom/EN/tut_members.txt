@@ -174,7 +174,7 @@ When editing the default accounts, you will need to specify e-mail addresses bef
 Interesting editable fields for profiles include:
  - changing the account password. If the password fields are left blank, the password is not changed
  - changing primary usergroup. Obviously the member can not do this themselves
- - (un)validating the account. There is an option for staff to require in the 'Forum options' of the main Admin Zone Configuration to set new members as non-validated upon joining, so as to require staff validation before they may login; this can be used to perform this validation, or reverse it
+ - changing the validation status of the account. There is an option for staff to require in the 'Forum options' of the main Admin Zone Configuration to set new members as not validated upon joining, to require staff validation before they may login; this can be used to perform this validation, or reverse it
  - banning of the member. Note that Composr will not let you ban yourself, for obvious reasons
 
 [surround]

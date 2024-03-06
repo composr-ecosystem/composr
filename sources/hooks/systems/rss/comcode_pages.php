@@ -124,7 +124,7 @@ class Hook_rss_comcode_pages
                     $summary = xmlentities(get_translated_text($rows2[$id]['meta_description']));
                 }
                 if (array_key_exists($id, $rows3)) {
-                    if ((!has_privilege(get_member(), 'see_nonvalidated')) && ($rows3[$id]['p_validated'] == 0) && (addon_installed('validation'))) {
+                    if ((!has_privilege(get_member(), 'see_not_validated')) && ($rows3[$id]['p_validated'] == 0) && (addon_installed('validation'))) {
                         continue;
                     }
 

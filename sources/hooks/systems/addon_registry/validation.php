@@ -118,7 +118,7 @@ class Hook_addon_registry_validation
      */
     public function get_default_icon() : string
     {
-        return 'themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg';
+        return 'themes/default/images/icons/menu/adminzone/audit/not_validated.svg';
     }
 
     /**
@@ -136,8 +136,8 @@ class Hook_addon_registry_validation
             'sources/hooks/systems/notifications/content_validated.php',
             'sources/hooks/systems/notifications/needs_validation.php',
             'sources/hooks/systems/page_groupings/validation.php',
-            'themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/nonvalidated.svg',
+            'themes/default/images/icons/menu/adminzone/audit/not_validated.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/audit/not_validated.svg',
             'themes/default/templates/VALIDATION_SCREEN.tpl',
             'themes/default/templates/VALIDATION_SECTION.tpl',
             'themes/default/text/VALIDATION_REQUEST_MAIL.txt',

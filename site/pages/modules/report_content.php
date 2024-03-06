@@ -66,7 +66,7 @@ class Module_report_content
                 'r_session_id' => '*ID_TEXT',
                 'r_content_type' => '*ID_TEXT',
                 'r_content_id' => '*ID_TEXT',
-                'r_counts' => 'BINARY', // If the content is marked non-validated, r_counts is set to 0 for each row for it, so if it's revalidated the counts apply elsewhere
+                'r_counts' => 'BINARY', // If the content is marked not validated, r_counts is set to 0 for each row for it, so if it's revalidated the counts apply elsewhere
             ]);
             $GLOBALS['SITE_DB']->create_index('reported_content', 'reported_already', ['r_content_type', 'r_content_id']);
         }

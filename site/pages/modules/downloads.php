@@ -364,7 +364,7 @@ class Module_downloads
                 require_lang('galleries');
                 $cat = 'download_' . strval($id);
                 $map = ['cat' => $cat];
-                if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+                if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
                     $map['validated'] = 1;
                 }
                 $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], $map, 'ORDER BY add_date,id', 200/*Stop silliness, could be a DOS attack*/);
@@ -709,13 +709,13 @@ class Module_downloads
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
+            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_not_validated');
             }
 
             $warning_details->attach(do_template('WARNING_BOX', [
                 '_GUID' => '5b1781b8fbb1ef9b8f47693afcff02b9',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'download'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'download'),
             ]));
         }
 

@@ -281,8 +281,8 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
         }
         // Check validated
         if (($topic_info['t_validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ($check_perms) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
+            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ($check_perms) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_not_validated');
             }
         }
 
@@ -664,7 +664,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         $_title_full = new Tempcode();
         $_title_full->attach($_title);
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '712fdaee35f378e37b007f3a73246690', 'REL' => 'validate nofollow', 'IMMEDIATE' => true, 'IMG' => 'menu/adminzone/audit/nonvalidated', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '712fdaee35f378e37b007f3a73246690', 'REL' => 'validate nofollow', 'IMMEDIATE' => true, 'IMG' => 'menu/adminzone/audit/not_validated', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
     // Quote/reply

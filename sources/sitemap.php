@@ -83,7 +83,7 @@ function init__sitemap()
         define('SITEMAP_GEN_REQUIRE_PERMISSION_SUPPORT', 1); // Only go so deep as needed to find nodes with permission-support (typically, stopping prior to the entry-level).
         define('SITEMAP_GEN_USE_PAGE_GROUPINGS', 2); // Whether to make use of page groupings, to organise stuff with the hook schema, supplementing the default zone organisation.
         define('SITEMAP_GEN_CONSIDER_SECONDARY_CATEGORIES', 4); // Whether to consider secondary categorisations for content that primarily exists elsewhere.
-        define('SITEMAP_GEN_CONSIDER_VALIDATION', 8); // Whether to filter out non-validated content.
+        define('SITEMAP_GEN_CONSIDER_VALIDATION', 8); // Whether to filter out content which is not validated.
         define('SITEMAP_GEN_LABEL_CONTENT_TYPES', 16); // Whether to change title labels to show what nodes and what kinds of content (i.e. more technical).
         define('SITEMAP_GEN_NO_EMPTY_PAGE_LINKS', 32); // When iteratively expanding we need to make sure this is set, otherwise we won't be able to expand everything. But when generating menus we do not want it set.
         define('SITEMAP_GEN_KEEP_FULL_STRUCTURE', 64); // Avoid merging structure together to avoid page-link duplication.
@@ -1347,7 +1347,7 @@ function get_root_comcode_pages(string $zone, bool $include_zone = false) : arra
  * @param  ?array $valid_selectable_content_types List of node types we will allow to be selectable (null: no limit)
  * @param  integer $check_permissions_against Check permissions according to this bitmask of possibilities (requiring all in the bitmask to be matched)
  * @param  ?MEMBER $check_permissions_for The member we are checking permissions for (null: current member)
- * @param  boolean $consider_validation Whether to filter out non-validated entries if the $check_permissions_for user doesn't have the privilege to see them AND doesn't own them
+ * @param  boolean $consider_validation Whether to filter out entries which are not validated if the $check_permissions_for user doesn't have the privilege to see them AND doesn't own them
  * @param  ?MEMBER $only_owned The member we are only finding owned content of (null: no such limit); nodes leading up to owned content will be shown, but not as selectable
  * @param  boolean $use_compound_list Whether to produce selection IDs as a comma-separated list of all selectable sub-nodes
  * @param  ?mixed $filter_func Filter function for limiting what rows will be included (null: none)

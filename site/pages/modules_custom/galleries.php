@@ -52,7 +52,7 @@ function init__site__pages__modules_custom__galleries($code)
         $code,
         "do_gallery_carousel_mode",
         "\$current_entry = do_template('GALLERY_CAROUSEL_MODE_IMAGE'",
-        "// Add the workflow form if this entry is non-validated
+        "// Add the workflow form if this entry is not validated
         if (\$row['validated'] == 0) {
             require_code('workflows');
 
@@ -71,7 +71,7 @@ function init__site__pages__modules_custom__galleries($code)
         $code,
         "do_gallery_carousel_mode",
         "\$current_entry = do_template('GALLERY_CAROUSEL_MODE_VIDEO'",
-        "// Add the workflow form if this entry is non-validated
+        "// Add the workflow form if this entry is not validated
         if (\$row['validated'] == 0) {
             require_code('workflows');
 

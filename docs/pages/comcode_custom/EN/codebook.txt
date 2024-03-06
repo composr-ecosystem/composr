@@ -137,7 +137,7 @@ Composr contains many "cross-cutting" features that are often present in differe
  - Blocking guests trying to edit something owned by Guest (a bug if it isn't, but it would be good to try and abstract this)
  - Ditto blocking editing interface for something you don't have category access to
  - [b]Attachments[/b], Comcode, Multi-language support (instructions for implementation provided in this book)
- - [b]Validation[/b], validation-required e-mails, Non-validated warnings, and permissions to determine who may view non-validated content, and a hook to identify all non-validated resources (see how it's done in existing modules, it's quite straight-forward -- just identify the lines of code that involve validation and basically copy&paste them to the right spots in your own code)
+ - [b]Validation[/b], validation-required e-mails, not validated warnings, and permissions to determine who may view content which is not validated, and a hook to identify all not validated resources (see how it's done in existing modules, it's quite straight-forward -- just identify the lines of code that involve validation and basically copy&paste them to the right spots in your own code)
  - [b]Control actions[/b] links (see the [tt]{+START,INCLUDE,STAFF_ACTIONS}[/tt] code in [tt]DOWNLOAD_SCREEN.tpl[/tt])
  - [b]Logging[/b] (use the [tt]log_it[/tt] function in your model code, for adding, editing, and deleting)
  - [b]Mass action[/b], and policy for deletion of categories (implementation varies, but consider what happens to a categories entry when you delete that category)

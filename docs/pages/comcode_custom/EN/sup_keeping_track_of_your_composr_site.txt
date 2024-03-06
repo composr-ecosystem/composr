@@ -13,7 +13,7 @@ The dashboard screen in Composr lists a number of tasks which need to be complet
 
 Keeping track of forum posts will be a large part of any community site and Composr offers a 'Topics with unread posts' screen which can be found at [tt]http://yourwebsite/forum/pg/vforums/unread[/tt] (assuming short URLs are configured).
 
-For sites with galleries (for example -- but any content really) you will also need to keep track of uploads there. If your site limits the ability to post for newer members, you will have to keep track of non-validated entries which will be linked from your dashboard screen. By leaving entries non-validated for a long time it is likely the users will leave the site so you need to keep track of this at least once a day. Fortunately you can set e-mail notifications in your account so that you don't actually need to keep regularly checking manually.
+For sites with galleries (for example -- but any content really) you will also need to keep track of uploads there. If your site limits the ability to post for newer members, you will have to keep track of entries which are not validated, which will be linked from your dashboard screen. By leaving entries not validated for a long time it is likely the users will leave the site so you need to keep track of this at least once a day. Fortunately you can set e-mail notifications in your account so that you don't actually need to keep regularly checking manually.
 
 [title="2"]Audit section of the Admin Zone[/title]
 

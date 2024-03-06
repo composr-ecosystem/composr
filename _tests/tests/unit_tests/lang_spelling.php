@@ -173,6 +173,11 @@ class lang_spelling_test_set extends cms_test_case
             }
         }
 
+        // unvalidated and non-validated are both bad English
+        if (preg_match('#([^A-Za-z]+)(unvalidated|un-validated|unvalidate|un-validate|nonvalidated|non-validated)([^A-Za-z]+)#', $string) != 0) {
+            $ob->assertTrue(false, 'A misspelling of \'not validated\' occurred in ' . $path . '. Be mindful of grammar; you may need to say \'(subject) which is/are not validated\'.');
+        }
+
         // Hyphen wanted (we want our canonical way)
         if (
             (preg_match('#([^\[\]\|"\'/_])email#', $string, $matches) != 0) &&
@@ -286,12 +291,6 @@ class lang_spelling_test_set extends cms_test_case
         }
 
         // Wrong way of writing proper noun (we want our canonical way)
-        if (
-            (stripos($string, 'unvalidated') !== false) &&
-            (!in_array($file, ['tut_addon_index.txt', 'sup_set_up_a_workflow_in_composr.txt']))
-        ) {
-            $ob->assertTrue(false, 'The word \'unvalidated\' was used in ' . $path . '. This should be changed to \'non-validated\'.');
-        }
         if (
             (preg_match('#([^\]/A-Za-z"_<\']+)comcode([^A-Za-z"\']+)#', $string) != 0) &&
             (!in_array($file, ['stress_test_loader.php', 'global.css', 'zones.ini', 'blocks.ini', 'main_multi_content.php']))

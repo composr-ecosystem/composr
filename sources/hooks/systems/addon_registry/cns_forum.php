@@ -291,7 +291,7 @@ class Hook_addon_registry_cns_forum
             'themes/default/images/icons/cns_topic_modifiers/hot.svg',
             'themes/default/images/icons/cns_topic_modifiers/index.html',
             'themes/default/images/icons/cns_topic_modifiers/involved.svg',
-            'themes/default/images/icons/cns_topic_modifiers/nonvalidated.svg',
+            'themes/default/images/icons/cns_topic_modifiers/not_validated.svg',
             'themes/default/images/icons/cns_topic_modifiers/pinned.svg',
             'themes/default/images/icons/cns_topic_modifiers/poll.svg',
             'themes/default/images/icons/cns_topic_modifiers/unread.svg',
@@ -323,7 +323,7 @@ class Hook_addon_registry_cns_forum
             'themes/default/images/icons_monochrome/cns_topic_modifiers/hot.svg',
             'themes/default/images/icons_monochrome/cns_topic_modifiers/index.html',
             'themes/default/images/icons_monochrome/cns_topic_modifiers/involved.svg',
-            'themes/default/images/icons_monochrome/cns_topic_modifiers/nonvalidated.svg',
+            'themes/default/images/icons_monochrome/cns_topic_modifiers/not_validated.svg',
             'themes/default/images/icons_monochrome/cns_topic_modifiers/pinned.svg',
             'themes/default/images/icons_monochrome/cns_topic_modifiers/poll.svg',
             'themes/default/images/icons_monochrome/cns_topic_modifiers/unread.svg',
@@ -695,7 +695,7 @@ class Hook_addon_registry_cns_forum
             'RANK_IMAGES' => $rank_images,
             'BUTTONS' => $buttons,
             'SIGNATURE' => lorem_phrase(),
-            'NONVALIDATED' => lorem_phrase(),
+            'NOT_VALIDATED' => lorem_phrase(),
             'DESCRIPTION' => lorem_phrase(),
         ];
         $post = do_lorem_template('CNS_TOPIC_POST', $map);
@@ -1441,7 +1441,7 @@ class Hook_addon_registry_cns_forum
             'RANK_IMAGES' => new Tempcode(),
             'BUTTONS' => '',
             'SIGNATURE' => '',
-            'NONVALIDATED' => '',
+            'NOT_VALIDATED' => '',
             'DESCRIPTION' => '',
             'PREVIEWING' => true,
             'RATING' => new Tempcode(),
@@ -2014,7 +2014,7 @@ class Hook_addon_registry_cns_forum
                 'RANK_IMAGES' => $rank_images,
                 'BUTTONS' => $buttons,
                 'SIGNATURE' => lorem_phrase(),
-                'NONVALIDATED' => lorem_phrase(),
+                'NOT_VALIDATED' => lorem_phrase(),
                 'DESCRIPTION' => lorem_phrase(),
             ]));
         }
@@ -2092,8 +2092,8 @@ class Hook_addon_registry_cns_forum
             cns_delete_topic($record['id']);
         }
 
-        // Non-validated topic
-        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_nonvalidated') . ')']);
+        // Not validated topic
+        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_not_validated') . ')']);
         foreach ($to_delete as $record) {
             cns_delete_topic($record['id']);
         }
@@ -2146,9 +2146,9 @@ class Hook_addon_registry_cns_forum
         cns_make_post($topic_id, lorem_phrase(), lorem_chunk(), 0, true, 1, 0, null, null, null, null, null, null, null, false, true, null, true, lorem_phrase() . ' (' . do_lang('MODIFIER_closed') . ')');
         cns_make_post($topic_id, lorem_phrase(), lorem_chunk(), 0, true, 1, 1, null, null, null, null, null, null, null, false, true, null, true, lorem_phrase() . ' (' . do_lang('MODIFIER_closed') . ')'); // With emphasised post
 
-        // Non-validated topic
+        // Not validated topic
         $topic_id = cns_make_topic(db_get_first_id(), lorem_phrase(), '', 0, 1, 0, 0, null, null, false);
-        cns_make_post($topic_id, lorem_phrase(), lorem_chunk(), 0, true, 1, 0, null, null, null, null, null, null, null, false, true, null, true, lorem_phrase() . ' (' . do_lang('MODIFIER_nonvalidated') . ')');
+        cns_make_post($topic_id, lorem_phrase(), lorem_chunk(), 0, true, 1, 0, null, null, null, null, null, null, null, false, true, null, true, lorem_phrase() . ' (' . do_lang('MODIFIER_not_validated') . ')');
 
         // Pinned topic
         $topic_id = cns_make_topic(db_get_first_id(), lorem_phrase(), '', 1, 1, 1, 0, null, null, false);

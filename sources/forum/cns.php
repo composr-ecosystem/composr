@@ -251,8 +251,8 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  ?URLPATH $content_url URL to the content (null: do not make spacer post)
      * @param  ?TIME $time The topic time (null: use current time)
      * @param  ?IP $ip The post IP address (null: use current members IP address)
-     * @param  ?BINARY $validated Whether the post is validated (null: unknown, find whether it needs to be marked non-validated initially). This only works with the Conversr driver.
-     * @param  ?BINARY $topic_validated Whether the topic is validated (null: unknown, find whether it needs to be marked non-validated initially). This only works with the Conversr driver.
+     * @param  ?BINARY $validated Whether the post is validated (null: unknown, find whether it needs to be marked not validated initially). This only works with the Conversr driver.
+     * @param  ?BINARY $topic_validated Whether the topic is validated (null: unknown, find whether it needs to be marked not validated initially). This only works with the Conversr driver.
      * @param  boolean $skip_post_checks Whether to skip post checks
      * @param  SHORT_TEXT $poster_name_if_guest The name of the poster
      * @param  ?AUTO_LINK $parent_id ID of post being replied to (null: N/A)

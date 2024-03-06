@@ -58,7 +58,7 @@ class Module_admin_validation
         }
 
         return [
-            '!' => ['NONVALIDATED_RESOURCES', 'menu/adminzone/audit/nonvalidated'],
+            '!' => ['NOT_VALIDATED_RESOURCES', 'menu/adminzone/audit/not_validated'],
         ];
     }
 
@@ -82,7 +82,7 @@ class Module_admin_validation
 
         set_helper_panel_tutorial('tut_censor');
 
-        $this->title = get_screen_title('NONVALIDATED_RESOURCES');
+        $this->title = get_screen_title('NOT_VALIDATED_RESOURCES');
 
         return null;
     }
@@ -169,7 +169,7 @@ class Module_admin_validation
         return do_template('VALIDATION_SCREEN', [
             '_GUID' => '4e971f1c8851b821af030b5c7bbcb3fb',
             'TITLE' => $this->title,
-            'TEXT' => do_lang_tempcode('NONVALIDATED_PAGE_TEXT'),
+            'TEXT' => do_lang_tempcode('NOT_VALIDATED_PAGE_TEXT'),
             'SECTIONS' => $_out,
         ]);
     }

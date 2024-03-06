@@ -91,7 +91,7 @@ function cns_get_topic_where(int $topic_id, ?int $member_id = null) : string
     } elseif (!has_privilege($member_id, 'view_other_pt')) {
         $where .= ' AND (p_intended_solely_for=' . strval($member_id) . ' OR p_poster=' . strval($member_id) . ' OR p_intended_solely_for IS NULL)';
     }
-    if ((!has_privilege($member_id, 'see_nonvalidated')) && (addon_installed('validation'))) {
+    if ((!has_privilege($member_id, 'see_not_validated')) && (addon_installed('validation'))) {
         if (is_guest($member_id)) {
             $where .= ' AND (p_validated=1 OR (' . db_string_equal_to('p_ip_address', get_ip_address()) . ' AND p_poster=' . strval($member_id) . '))';
         } else {
@@ -133,7 +133,7 @@ function cns_may_access_topic(int $topic_id, ?int $member_id = null, ?array $top
     if ($check_validation) {
         if (addon_installed('validation')) {
             if (($topic_info['t_validated'] == 0) && (addon_installed('validation'))) {
-                if ((!has_privilege($member_id, 'jump_to_nonvalidated')) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != $member_id))) {
+                if ((!has_privilege($member_id, 'jump_to_not_validated')) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != $member_id))) {
                     return false;
                 }
             }

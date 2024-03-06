@@ -35,8 +35,8 @@
 						<span class="post-action-link">({EMPHASIS})</span>
 					{+END}
 
-					{+START,IF_NON_EMPTY,{NONVALIDATED}}
-						<span class="post-action-link">({NONVALIDATED})</span>
+					{+START,IF_NON_EMPTY,{NOT_VALIDATED}}
+						<span class="post-action-link">({NOT_VALIDATED})</span>
 					{+END}
 
 					{+START,LOOP,INDIVIDUAL_REVIEW_RATINGS}

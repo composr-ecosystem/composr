@@ -811,7 +811,7 @@ function extract_topic_identifier(string $full_text) : string
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
  * @param  ?string $forum The name of the forum to use (null: default comment forum)
  * @param  boolean $do_captcha Whether to require a captcha
- * @param  ?BINARY $validated Whether the post is validated (null: unknown, find whether it needs to be marked non-validated initially). This only works with the Conversr driver (hence is the last parameter).
+ * @param  ?BINARY $validated Whether the post is validated (null: unknown, find whether it needs to be marked not validated initially). This only works with the Conversr driver (hence is the last parameter).
  * @param  boolean $explicit_allow Whether to force allowance
  * @param  boolean $show_success_message Whether to show a success message
  * @param  boolean $private Whether posts made should not be shared

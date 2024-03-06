@@ -239,6 +239,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/sup_add_shoutboxes_to_composr/b26649fcbe9c9b88151e0ec84e3812f5.png',
             'data_custom/images/docs/sup_add_shoutboxes_to_composr/index.html',
             'data_custom/images/docs/sup_adding_a_member_reputation_system/audit_karma.jpg',
+            'data_custom/images/docs/sup_adding_a_member_reputation_system/index.html',
             'data_custom/images/docs/sup_adding_a_member_reputation_system/karma_bar_profile.jpg',
             'data_custom/images/docs/sup_adding_an_activity_feed_to_your_composr_website/5f3cffdcb87391fefa9fb791afc602bb.jpg',
             'data_custom/images/docs/sup_adding_an_activity_feed_to_your_composr_website/d5e85597404052bffa53e8e97d41f912.png',

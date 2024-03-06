@@ -503,7 +503,7 @@ class Module_news
         $_content = [];
         foreach ($categories as $category) {
             if (has_category_access(get_member(), 'news', strval($category['id']))) {
-                $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'news r' . $join . ' WHERE ' . (((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) ? 'validated=1 AND ' : '') . ' (news_entry_category=' . strval($category['id']) . ' OR news_category=' . strval($category['id']) . ') AND ' . $where;
+                $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'news r' . $join . ' WHERE ' . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? 'validated=1 AND ' : '') . ' (news_entry_category=' . strval($category['id']) . ' OR news_category=' . strval($category['id']) . ') AND ' . $where;
                 $count = $GLOBALS['SITE_DB']->query_value_if_there($query);
                 if ($count > 0) {
                     $_content[] = render_news_category_box($category, '_SELF', false, true, $blogs);
@@ -641,13 +641,13 @@ class Module_news
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_nonvalidated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_nonvalidated');
+            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
+                access_denied('PRIVILEGE', 'jump_to_not_validated');
             }
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '5fd82328dc2ac9695dc25646237065b0',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'news'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'news'),
             ]);
         } else {
             $warning_details = new Tempcode();
@@ -725,7 +725,7 @@ class Module_news
         foreach ($prev_articles as $prev_article) {
             // Validation
             if (($prev_article['validated'] == 0) && (addon_installed('validation'))) {
-                if ((!has_privilege(get_member(), 'see_nonvalidated')) && ((is_guest()) || ($prev_article['submitter'] != get_member()))) {
+                if ((!has_privilege(get_member(), 'see_not_validated')) && ((is_guest()) || ($prev_article['submitter'] != get_member()))) {
                     continue;
                 }
             }
@@ -744,7 +744,7 @@ class Module_news
         foreach ($next_articles as $next_article) {
             // Validation
             if (($next_article['validated'] == 0) && (addon_installed('validation'))) {
-                if ((!has_privilege(get_member(), 'see_nonvalidated')) && ((is_guest()) || ($next_article['submitter'] != get_member()))) {
+                if ((!has_privilege(get_member(), 'see_not_validated')) && ((is_guest()) || ($next_article['submitter'] != get_member()))) {
                     continue;
                 }
             }

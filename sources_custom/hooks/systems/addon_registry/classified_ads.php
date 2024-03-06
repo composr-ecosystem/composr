@@ -126,7 +126,7 @@ The basic process for setting up this addon is:
 6) Set prices up against your catalogue
 7) Make sure your catalogue is on your menus
 
-Users will find add links when browsing the catalogue. Their entries will be added as non-validated. From their classifieds module they may then pay for their classified advert to go live (this uses the eCommerce module, validating the entry upon payment).
+Users will find add links when browsing the catalogue. Their entries will be added as not validated. From their classifieds module they may then pay for their classified advert to go live (this uses the eCommerce module, validating the entry upon payment).
 
 This addon does not itself handle the transaction to purchase what is being advertised. Payment is a private matter between the buyer and seller. The eCommerce aspect of classifieds is the advertiser paying the webmaster (i.e. you) for the right to put an advertisement up.';
     }

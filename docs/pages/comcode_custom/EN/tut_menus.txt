@@ -218,7 +218,7 @@ It consists of:
   - [tt]valid_node_types[/tt] -- a "|" separated list of Sitemap node-types to include (advanced); you can put a minus in front for it to be inverted into a list of invalid node-types
   - [tt]child_cutoff[/tt] -- the maximum number of children a node may have (if this limit is exceeded [i]no[/i] children will be shown for that node)
   - [tt]consider_secondary_categories[/tt] -- if set to 1, secondary categorisations will be considered, meaning nodes may be duplicated
-  - [tt]consider_validation[/tt] -- if set to 1, non-validated resources will not be shown
+  - [tt]consider_validation[/tt] -- if set to 1, resources which are not validated will not be shown
   - [tt]title[/tt] -- forced override for node title
   - [tt]icon[/tt] -- forced override for node icon (a theme image under [tt]icons[/tt])
 

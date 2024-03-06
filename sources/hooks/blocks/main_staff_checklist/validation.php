@@ -36,8 +36,8 @@ class Hook_checklist_validation
 
         // Validate/delete submissions
 
-        list($num_nonvalidated_1, $num_nonvalidated_2) = $this->get_num_nonvalidated();
-        if ($num_nonvalidated_1 >= 1) {
+        list($num_not_validated_1, $num_not_validated_2) = $this->get_num_not_validated();
+        if ($num_not_validated_1 >= 1) {
             $status = 0;
         } else {
             $status = 1;
@@ -51,18 +51,18 @@ class Hook_checklist_validation
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_VALIDATE', escape_html_tempcode($url)),
-            'INFO' => do_lang_tempcode('NONVALIDATED_ENTRIES', escape_html(integer_format($num_nonvalidated_1, 0)), escape_html(integer_format($num_nonvalidated_2, 0))),
+            'INFO' => do_lang_tempcode('NOT_VALIDATED_ENTRIES', escape_html(integer_format($num_not_validated_1, 0)), escape_html(integer_format($num_not_validated_2, 0))),
         ]);
 
-        return [[$tpl, null, $num_nonvalidated_1, null]];
+        return [[$tpl, null, $num_not_validated_1, null]];
     }
 
     /**
-     * Get the number of non-validated items.
+     * Get the number of items which are not validated.
      *
      * @return array A pair: Number of major things, number of minor things
      */
-    public function get_num_nonvalidated() : array
+    public function get_num_not_validated() : array
     {
         require_code('content');
 

@@ -206,7 +206,7 @@ Attachments in Tapatalk are restricted to images, and shown separately to the po
 
 You cannot do post rating in Tapatalk, but you can like a post. This is the same as rating a post maximally. Actually in Composr by default we implement the same, but Composr provides both mechanisms as options.
 
-Non-validated content is not shown inline like it is in Composr (to posters or those with permission to view it). It is shown from special moderation areas.
+Content which is not validated is not shown inline like it is in Composr (to posters or those with permission to view it). It is shown from special moderation areas.
 
 Redirect forums are supported, if they point to an external URL. Jumps between forums are not supported (such redirect forums will be skipped).
 

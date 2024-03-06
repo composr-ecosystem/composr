@@ -1124,7 +1124,7 @@ CRUD modules usually define the following standard properties:
 
 Often they also define the following:
  - [tt]user_facing[/tt], whether regular users are likely to have access to the module (adds in extra user-friendly references that might seem a bit odd for a regular administrative module).
- - [tt]send_validation_request[/tt], whether to send out e-mail notifications to staff when non-validated resources are submitted.
+ - [tt]send_validation_request[/tt], whether to send out e-mail notifications to staff when resources which are not validated are submitted.
  - [tt]upload[/tt], if set it should be [tt]image[/tt] or [tt]file[/tt], and has the effect of extra 'maximum file size' messages being output, as well as other extra mechanism preparation.
  - [tt]javascript[/tt], JavaScript code to be included when add/edit forms are shown; it is common to put code in here to handle field alternation ([tt]standard_alternate_fields[/tt]), automatic field disabling based on values in other fields (e.g. not allowing specifying of the fine details to something if that something is not entered at all), or extra custom field value santisations.
  - [tt]non_integer_id[/tt], whether the ID field for the table is a string (a 'codename' in Composr terminology).

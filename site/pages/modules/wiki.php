@@ -321,7 +321,7 @@ class Module_wiki
             $breadcrumbs = wiki_breadcrumbs($chain, $current_title, has_privilege(get_member(), 'open_virtual_roots') && (get_option('virtual_root_links') == '1'), true, true);
 
             $where_map = ['page_id' => $id];
-            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
                 $where_map['validated'] = 1;
             }
 
@@ -611,7 +611,7 @@ class Module_wiki
             $posts->attach(do_template('WIKI_POST', [
                 '_GUID' => 'a29b107abfaf7689c8392676c63093f5',
                 'INCLUDE_EXPANSION' => $include_expansion_here,
-                'NONVALIDATED' => ($myrow['validated'] == 0) ? do_lang_tempcode('NONVALIDATED') : new Tempcode(),
+                'NOT_VALIDATED' => ($myrow['validated'] == 0) ? do_lang_tempcode('NOT_VALIDATED') : new Tempcode(),
                 'STAFF_ACCESS' => $staff_access,
                 'RATE_URL' => $rate_url . '#post_' . strval($post_id),
                 'RATING' => $rating,

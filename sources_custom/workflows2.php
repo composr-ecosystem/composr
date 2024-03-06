@@ -49,7 +49,7 @@ function add_approval_point_to_workflow(array $bits, int $workflow_id, ?int $pos
 /**
  * Deleting a workflow will remove the workflow, leaving the validation system to handle content, ie. content which has passed
  * completely through the workflow will have its validated bit set and will thus remain live. Those not completely through will not have
- * theirs set yet and will thus remain non-validated and not live.
+ * theirs set yet and will thus remain not validated and not live.
  * NOTE: Approval points can be reused, so they will stay behind.
  *
  * @param  AUTO_LINK $id The ID of the workflow to delete

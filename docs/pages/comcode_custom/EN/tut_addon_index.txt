@@ -1280,7 +1280,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/nonvalidated.svg" />Validation<br />(<kbd>validation</kbd>)<br /><br />
+                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/not_validated.svg" />Validation<br />(<kbd>validation</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>

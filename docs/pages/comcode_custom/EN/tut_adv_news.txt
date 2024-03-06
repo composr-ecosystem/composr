@@ -10,7 +10,7 @@ See the [page="_SEARCH:tut_configuration"]basic configuration[/page] tutorial fo
 
 You will see an advance scheduling option once the system scheduler is enabled (requires the Composr [tt]calendar[/tt] and [tt]commandr[/tt] addons to be installed also).
 
-Scheduling posts work by having the entry initially non-validated, then it will be auto-validated at the chosen time.
+Scheduling posts work by having the entry initially not validated, then it will be auto-validated at the chosen time.
 
 [title="2"]Pinging[/title]
 

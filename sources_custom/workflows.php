@@ -455,7 +455,7 @@ function get_workflow_form(int $workflow_content_id) : object
         'URL' => $post_url,
         'SUBMIT_NAME' => do_lang_tempcode('SUBMIT_WORKFLOW_CHANGES'),
         'SKIP_REQUIRED' => true,
-        'SUBMIT_ICON' => 'menu/adminzone/audit/nonvalidated',
+        'SUBMIT_ICON' => 'menu/adminzone/audit/not_validated',
     ]);
 
     // Then pass it to whoever wanted it

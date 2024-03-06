@@ -489,7 +489,7 @@ class Module_topicview
 
                 $first_unread = (($_postdetails['id'] == $first_unread_id) || (($first_unread_id < 0) && ($array_id == count($topic_info['posts']) - 1))) ? do_template('CNS_TOPIC_FIRST_UNREAD') : new Tempcode();
 
-                $validation = (($_postdetails['validated'] == 0) && (addon_installed('validation'))) ? do_lang_tempcode('NONVALIDATED') : new Tempcode();
+                $validation = (($_postdetails['validated'] == 0) && (addon_installed('validation'))) ? do_lang_tempcode('NOT_VALIDATED') : new Tempcode();
 
                 $post_url = $GLOBALS['FORUM_DRIVER']->post_url($_postdetails['id'], ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']), true);
 
@@ -540,7 +540,7 @@ class Module_topicview
                     'RANK_IMAGES' => $rank_images,
                     'BUTTONS' => $buttons,
                     'SIGNATURE' => $signature,
-                    'NONVALIDATED' => $validation,
+                    'NOT_VALIDATED' => $validation,
                     'DESCRIPTION' => $description,
                     'RATING' => $rating,
                     'POSTER_ONLINE' => $poster_online,
@@ -1104,7 +1104,7 @@ class Module_topicview
         if (($topic_info['validated'] == 0) && (addon_installed('validation'))) {
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '313de370c1aeab9545c4bee4e35e7f84',
-                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NONVALIDATED_TEXT_NON_DIRECT' : 'NONVALIDATED_TEXT', 'topic'),
+                'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'topic'),
             ]);
         } else {
             $warning_details = new Tempcode();

@@ -168,7 +168,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
             $diff = ($last_visit === null) ? '(never)' : display_time_period(time() - $last_visit);
             if (($automatic_repair) && (get_forum_type() == 'cns')) {
                 $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated' => 0], ['id' => $member_id], '', 1);
-                $this->assertTrue(($last_visit === null) || ($last_visit > $threshold), 'Admin account "' . $username . '" not logged in for a long time @ ' . $diff . ', automatically marked as non-validated');
+                $this->assertTrue(($last_visit === null) || ($last_visit > $threshold), 'Admin account "' . $username . '" not logged in for a long time @ ' . $diff . ', automatically marked as not validated');
             } else {
                 $this->assertTrue(($last_visit === null) || ($last_visit > $threshold), 'Admin account "' . $username . '" not logged in for a long time @ ' . $diff . ', consider deleting');
             }

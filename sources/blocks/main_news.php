@@ -227,10 +227,10 @@ PHP;
         }
 
         // Read in rows
-        $query = 'SELECT COUNT(DISTINCT r.id) FROM ' . get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_nonvalidated')) ? ' AND validated=1' : '');
+        $query = 'SELECT COUNT(DISTINCT r.id) FROM ' . get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_not_validated')) ? ' AND validated=1' : '');
         $max_rows = $GLOBALS['SITE_DB']->query_value_if_there($query, false, true);
         if ($historic == '') {
-            $query_full = 'SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_nonvalidated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC';
+            $query_full = 'SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_not_validated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC';
             $rows = $GLOBALS['SITE_DB']->query($query_full, $display_slides + $display_summaries + $display_briefs, $start, false, true, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
         } else {
             $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
@@ -238,7 +238,7 @@ PHP;
             $search_start = 0;
             $okayed = 0;
             do {
-                $_rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_nonvalidated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC', 200, $search_start, false, true);
+                $_rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_not_validated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC', 200, $search_start, false, true);
                 foreach ($_rows as $row) {
                     $ok = false;
                     switch ($historic) {

@@ -57,7 +57,7 @@ class Block_main_comcode_page_children
             array_key_exists('zone', $map) ? $map['zone'] : post_param_string('zone', get_comcode_zone(((array_key_exists('param', $map)) && ($map['param'] != '')) ? $map['param'] : get_page_name(), false)),
         ]
 PHP;
-        $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to see_nonvalidated privilege
+        $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to see_not_validated privilege
         $info['ttl'] = 60 * 24 * 7;
         return $info;
     }
@@ -82,7 +82,7 @@ PHP;
         if ($zone !== null) {
             $qmap['the_zone'] = $zone;
         }
-        if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
             $qmap['p_validated'] = 1;
         }
         $children = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'the_zone', 'p_order'], $qmap, 'ORDER BY p_order,the_page');

@@ -109,7 +109,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
         'URL' => $url,
     ], get_site_default_lang(), false, null, '.txt', 'text');
 
-    $subject = do_lang('NONVALIDATED_TITLE', $title, '', '', get_site_default_lang());
+    $subject = do_lang('NOT_VALIDATED_TITLE', $title, '', '', get_site_default_lang());
     $message = $comcode->evaluate(get_site_default_lang());
     dispatch_notification('needs_validation', null, $subject, $message, null, $member_id, ['use_real_from' => true]);
 }

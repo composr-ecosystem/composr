@@ -124,7 +124,7 @@ class Hook_search_quiz extends FieldsSearchHook
         }
         $this->_handle_date_check($cutoff, 'q_add_date', $where_clause);
 
-        if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
             $where_clause .= ' AND ';
             $where_clause .= 'q_validated=1';
         }

@@ -20,10 +20,10 @@ In addition to the word filter there is a more sophisticated filtering system, t
 
 [title="2"]Validation[/title]
 
-Composr, by default, will not allow most forms of non-trusted content to appear live on the website without validation by the staff. When a user that is not in a trusted usergroup posts content, then they will have no choice but to have it posted as non-validated, and a notification will be dispatched to the staff. The staff can then choose what to do with the content (as part of their "moderation" duties).
+Composr, by default, will not allow most forms of non-trusted content to appear live on the website without validation by the staff. When a user that is not in a trusted usergroup posts content, then they will have no choice but to have it posted as not validated, and a notification will be dispatched to the staff. The staff can then choose what to do with the content (as part of their "moderation" duties).
 
-There is a module where staff can see all non-validated content (in case the notification was missed or disabled):
-Admin Zone > Audit > Non-validated resources
+There is a module where staff can see all content which is not validated (in case the notification was missed or disabled):
+Admin Zone > Audit > Not validated resources
 
 By default, the forum, the chatrooms, and Wiki+, are the main exceptions where validation is not required. This is because these are community orientated areas of the website, where instant posting is desirable.
 

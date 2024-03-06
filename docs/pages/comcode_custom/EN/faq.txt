@@ -338,7 +338,7 @@ Use the [tt]http://yourbaseurl/config_editor.php[/tt] script to force URL Scheme
 
 Please check the documentation -- we have a [page="_SEARCH:tut_moving"]tutorial about moving sites[/page].
 
-[title="3"]Why don't non-validated posts show up in the staff checklist?[/title]
+[title="3"]Why don't posts which are not validated show up in the staff checklist?[/title]
 
 This is an intentional design decision, to make sure the tally only took into account website resources, and wasn't always 'spammed to the point of meaninglessness' by an ongoing stream of forum posts. However, we have since learnt that some users prefer the tally to be more transparent, and thus we have made an unofficial method to set this. Please see the 'hidden functionality' section of our [page="_SEARCH:codebook_3"]Code Book[/page].
 

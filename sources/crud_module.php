@@ -1051,7 +1051,7 @@ abstract class Standard_crud_module
                     $description = paragraph($description);
                     $description_is_multi_line = true;
                 }
-                $description->attach(paragraph(do_lang_tempcode('SUBMIT_NONVALIDATED', $this->content_type)));
+                $description->attach(paragraph(do_lang_tempcode('SUBMIT_NOT_VALIDATED', $this->content_type)));
             }
 
             // Give submission points
@@ -1764,7 +1764,7 @@ abstract class Standard_crud_module
                         send_validation_request($this->doing, $this->table, $this->non_integer_id, $id, $edit_url);
                     }
 
-                    $description->attach(paragraph(do_lang_tempcode('SUBMIT_NONVALIDATED', $this->content_type)));
+                    $description->attach(paragraph(do_lang_tempcode('SUBMIT_NOT_VALIDATED', $this->content_type)));
                 }
             }
         }

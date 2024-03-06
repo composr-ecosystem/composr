@@ -99,7 +99,7 @@ class Hook_preview_cns_post
         if (cms_mb_strlen($post_title) > 120) {
             warn_exit(do_lang_tempcode('TITLE_TOO_LONG'));
         }
-        $nonvalidated = ((post_param_integer('validated', 0) == 0) && (get_page_name() == 'topics')) ? do_lang_tempcode('NONVALIDATED') : new Tempcode();
+        $not_validated = ((post_param_integer('validated', 0) == 0) && (get_page_name() == 'topics')) ? do_lang_tempcode('NOT_VALIDATED') : new Tempcode();
         $emphasis = new Tempcode();
         $intended_solely_for = post_param_string('intended_solely_for', null);
         if ($intended_solely_for == '') {
@@ -210,7 +210,7 @@ class Hook_preview_cns_post
             'ID' => '',
             'POST_DATE_RAW' => strval($_post_date),
             'POST_DATE' => $post_date,
-            'NONVALIDATED' => $nonvalidated,
+            'NOT_VALIDATED' => $not_validated,
             'URL' => '',
             'POSTER' => $poster,
             'POST_AVATAR' => $post_avatar,

@@ -6921,7 +6921,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_have_personal_category
         PRIVILEGE_high_catalogue_entry_timeout
         PRIVILEGE_high_personal_gallery_limit
-        PRIVILEGE_jump_to_nonvalidated
+        PRIVILEGE_jump_to_not_validated
         PRIVILEGE_mass_delete_from_ip
         PRIVILEGE_mass_import
         PRIVILEGE_may_choose_custom_title
@@ -6951,7 +6951,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_see_php_errors
         PRIVILEGE_see_software_docs
         PRIVILEGE_see_stack_trace
-        PRIVILEGE_see_nonvalidated
+        PRIVILEGE_see_not_validated
         PRIVILEGE_see_warnings
         PRIVILEGE_sees_javascript_error_alerts
         PRIVILEGE_sense_personal_conflicts
@@ -7368,7 +7368,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SUBMITTER_UNBANNED
         SUBMIT_POINTS
         SUBMIT_THANKYOU
-        SUBMIT_NONVALIDATED
+        SUBMIT_NOT_VALIDATED
         SUBSCRIPTION_EVENT_EMAILS
         SUBSCRIPTION_LENGTH
         SUBSCRIPTION_REF_POINT
@@ -7833,12 +7833,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNSILENCE_FORUM
         UNSILENCE_TOPIC
         UNUSED_CPF
-        NONVALIDATED_ENTRIES
-        NONVALIDATED_MAIL_A
-        NONVALIDATED_MAIL_B
-        NONVALIDATED_MAIL_C
-        NONVALIDATED_PAGE_TEXT
-        NONVALIDATED_RESOURCES
+        NOT_VALIDATED_ENTRIES
+        NOT_VALIDATED_MAIL_A
+        NOT_VALIDATED_MAIL_B
+        NOT_VALIDATED_MAIL_C
+        NOT_VALIDATED_PAGE_TEXT
+        NOT_VALIDATED_RESOURCES
         UNZIP_CMD
         UNZIP_DIR
         UPDATE_HANDLING_DELETE
@@ -9688,7 +9688,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FINISH_STARTED_ALREADY
         FIRST
         FIRST_POST
-        FIRST_POST_IS_NONVALIDATED
+        FIRST_POST_IS_NOT_VALIDATED
         FIXED_COMCODE
         FLOOD_CONTROL_BLOCKED
         FLOOD_CONTROL_RESTRICT
@@ -10048,7 +10048,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_INFORMATION
         MEMBER_IS_IN_GROUP
         MEMBER_IS_UNCONFIRMED
-        MEMBER_IS_NONVALIDATED
+        MEMBER_IS_NOT_VALIDATED
         MEMBER_LEADS_GROUP
         MEMBER_LOGIN_ERROR
         MEMBER_NOT_VALIDATED_EMAIL
@@ -10087,7 +10087,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODIFIER_involved
         MODIFIER_pinned
         MODIFIER_poll
-        MODIFIER_nonvalidated
+        MODIFIER_not_validated
         MODIFY_POINTS
         MODULE_TRANS_NAME_authors
         MODULE_TRANS_NAME_awards
@@ -10511,7 +10511,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POST_SEARCH_OPEN
         POST_SEARCH_PINNED
         POST_SEARCH_STARTER
-        POST_SEARCH_NONVALIDATED
+        POST_SEARCH_NOT_VALIDATED
         POST_TEMPLATE
         POST_TOO_LONG
         POST_TOO_SHORT
@@ -10844,8 +10844,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SUBMITTER
         SUBMIT_AGE_DAYS
         SUBMIT_AWARD
-        SUBMIT_NONVALIDATED_FORUM_POSTS
-        SUBMIT_NONVALIDATED_FORUM_TOPICS
+        SUBMIT_NOT_VALIDATED_FORUM_POSTS
+        SUBMIT_NOT_VALIDATED_FORUM_TOPICS
         STATE_NEEDED_FOR_USA
         ZIP_NEEDED_FOR_USA
         INVALID_ZIP_FOR_USA
@@ -11007,11 +11007,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNSEEN_PERSONAL_POSTS
         UNSUBSCRIBE
         UNSUBSCRIBE_EVENT
-        NONVALIDATED
-        NONVALIDATED_TEXT
-        NONVALIDATED_TEXT_NON_DIRECT
-        NONVALIDATED_TEXT_STAFF
-        NONVALIDATED_TITLE
+        NOT_VALIDATED
+        NOT_VALIDATED_TEXT
+        NOT_VALIDATED_TEXT_NON_DIRECT
+        NOT_VALIDATED_TEXT_STAFF
+        NOT_VALIDATED_TITLE
         INVALIDATE_POST
         UPDATE_CART
         _UPDATE_CART

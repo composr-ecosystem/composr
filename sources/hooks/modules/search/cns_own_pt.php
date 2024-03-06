@@ -215,7 +215,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= ' OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member());
             }
             $where_clause .= ')';
-            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'p_validated=1';
             }
@@ -246,7 +246,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= 's.t_cache_first_post_id=r.id';
             }
 
-            if ((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) {
+            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'p_validated=1';
             }

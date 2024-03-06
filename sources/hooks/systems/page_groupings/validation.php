@@ -37,7 +37,7 @@ class Hook_page_groupings_validation
         }
 
         return [
-            ['audit', 'menu/adminzone/audit/nonvalidated', ['admin_validation', [], get_module_zone('admin_validation')], do_lang_tempcode('validation:NONVALIDATED_RESOURCES'), 'validation:DOC_VALIDATION'],
+            ['audit', 'menu/adminzone/audit/not_validated', ['admin_validation', [], get_module_zone('admin_validation')], do_lang_tempcode('validation:NOT_VALIDATED_RESOURCES'), 'validation:DOC_VALIDATION'],
         ];
     }
 }

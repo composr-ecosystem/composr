@@ -1383,7 +1383,7 @@ class Module_cms_comcode_pages
                 send_validation_request('COMCODE_PAGE_EDIT', 'comcode_pages', true, $zone . ':' . $new_file, $edit_url);
             }
         }
-        $completion_text = ($validated == 0) ? do_lang_tempcode('SUBMIT_NONVALIDATED', 'comcode_page') : do_lang_tempcode('SUCCESS');
+        $completion_text = ($validated == 0) ? do_lang_tempcode('SUBMIT_NOT_VALIDATED', 'comcode_page') : do_lang_tempcode('SUCCESS');
         if ($new_file == $file) {
             $url = post_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         } else {

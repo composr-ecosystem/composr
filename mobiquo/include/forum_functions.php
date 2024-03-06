@@ -382,7 +382,7 @@ function tapatalk_get_topic_where(int $topic_id, ?int $member_id = null) : strin
     }
 
     $where = 'p_topic_id=' . strval($topic_id);
-    if ((addon_installed('validation')) && (!has_privilege($member_id, 'see_nonvalidated'))) {
+    if ((addon_installed('validation')) && (!has_privilege($member_id, 'see_not_validated'))) {
         $where .= ' AND p_validated=1';
     }
     if (!has_privilege(get_member(), 'view_other_pt')) {

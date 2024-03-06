@@ -44,7 +44,7 @@ The first section in your content area is your to-do list. This is an automatica
 
 Composr will attempt to mark whether or not these actions have been completely recently. For example, if it has been more than 24 hours since you updated your image of the day, it will be marked as 'not done'. You can choose how often you would like to do these activities (for example, making backups monthly instead of weekly) by going to the Setup Section then the 'Configuration' icon and then 'Administrative options'.
 
-If there are non-validated options then a link to edit these is included.
+If there are options which are not validated then a link to edit these is included.
 
 [title="3"]Version Information[/title]
 

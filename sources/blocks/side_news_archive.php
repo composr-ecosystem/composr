@@ -96,7 +96,7 @@ PHP;
             $q_filter = '1=1';
         }
 
-        $rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT p.id,p.date_and_time FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id WHERE ' . $q_filter . (((!has_privilege(get_member(), 'see_nonvalidated')) && (addon_installed('validation'))) ? ' AND validated=1' : '') . ' ORDER BY date_and_time DESC');
+        $rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT p.id,p.date_and_time FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id WHERE ' . $q_filter . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? ' AND validated=1' : '') . ' ORDER BY date_and_time DESC');
         $rows = array_reverse($rows);
 
         if (empty($rows)) {

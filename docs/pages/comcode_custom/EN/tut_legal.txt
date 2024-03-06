@@ -152,7 +152,7 @@ There are laws in various jurisdictions that provide special protection for chil
 
 For simplicity and historical reasons, we refer to any international child consent provisions as COPPA in the administration, and keep the language in the user UI vague.
 
-If COPPA support is configured in [concept]Conversr[/concept], then when visitors try to join they will be added as non-validated if they are too young, with a notice to send in a COPPA form to you via mail or fax.
+If COPPA support is configured in [concept]Conversr[/concept], then when visitors try to join they will be added as not validated if they are too young, with a notice to send in a COPPA form to you via mail or fax.
 In addition to Composr's COPPA support, you should also add your real-world contact details to your privacy policy, along with thorough details about what Custom Profile Fields may be filled in, how the information is used, how it is disclosed (if at all), and specification of various parent rights (which are listed on the COPPA website).
 
 In order to enable COPPA you need to turn on "COPPA enabled", and configure your fax number and postal address.

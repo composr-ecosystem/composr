@@ -105,7 +105,7 @@ function cns_check_post(string $post, ?int $topic_id = null, ?int $poster = null
  * @param  LONG_TEXT $post The post
  * @param  BINARY $skip_sig Whether to skip showing the posters signature in the post
  * @param  ?boolean $is_starter Whether the post is the first in the topic (null: work it out)
- * @param  ?BINARY $validated Whether the post is validated (null: unknown, find whether it needs to be non-validated initially)
+ * @param  ?BINARY $validated Whether the post is validated (null: unknown, find whether it needs to be not validated initially)
  * @param  BINARY $is_emphasised Whether the post is marked emphasised
  * @param  ?string $poster_name_if_guest The name of the person making the post (null: username of current member)
  * @param  ?IP $ip_address The IP address the post is to be made under (null: IP of current user)

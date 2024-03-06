@@ -674,7 +674,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
     }
 
     // Validation check
-    if ((array_key_exists('validated_field', $info)) && (addon_installed('validation')) && ($info['validated_field'] != '') && (!has_privilege($member_id, 'see_nonvalidated'))) {
+    if ((array_key_exists('validated_field', $info)) && (addon_installed('validation')) && ($info['validated_field'] != '') && (!has_privilege($member_id, 'see_not_validated'))) {
         $extra_where .= ' AND r.' . $info['validated_field'] . '=1';
     }
 

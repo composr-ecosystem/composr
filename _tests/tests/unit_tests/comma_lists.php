@@ -38,7 +38,7 @@ class comma_lists_test_set extends cms_test_case
         ];
         $str = '=lorem,hello=this\\=that,4=foobar,5=,a=b,foo=foo\\,bar';
         $got = comma_list_arr_to_str($map);
-        $this->assertTrue($got == $str, 'Got ' . $got . ' when we expected ' . $str);
+        $this->assertTrue($got == $str, 'Got ' . $got . ' when we expected ' . $str . '. This test may fail on PHP < 8.'); // From PHP: If two members compare as equal, they retain their original order. Prior to PHP 8.0.0, their relative order in the sorted array was undefined.
     }
 
     public function testDeserialize()

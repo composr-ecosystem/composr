@@ -19,9 +19,9 @@
 					{!POSTED_TIME_SIMPLE,<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{POST_DATE_RAW}}">{POST_DATE*}</time>}
 				</div>
 
-				{+START,IF_NON_EMPTY,{NONVALIDATED}}
-					<div class="cns-post-details-nonvalidated">
-						{NONVALIDATED*}
+				{+START,IF_NON_EMPTY,{NOT_VALIDATED}}
+					<div class="cns-post-details-not-validated">
+						{NOT_VALIDATED*}
 					</div>
 				{+END}
 			</div>
