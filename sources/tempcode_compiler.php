@@ -601,11 +601,11 @@ function compile_template(string $data, string $template_name, string $theme, st
                                     $s_escaped .= strval($esc);
                                 }
                                 if (($s_escaped === strval(ENTITY_ESCAPED)) && (!$GLOBALS['XSS_DETECT'])) {
-                                    $new_line = '(($bound_' . $parameter . '->pure_lang!==true)?@htmlspecialchars(' . $temp . ',ENT_QUOTES | ENT_SUBSTITUTE,get_charset()):' . $temp . ')';
+                                    $new_line = '(!isset($bound_' . $parameter . '->pure_lang)?@htmlspecialchars(' . $temp . ',ENT_QUOTES | ENT_SUBSTITUTE,get_charset()):' . $temp . ')';
                                     tc_add_to_current_level_data($current_level_data, $just_done_string, $new_line);
                                 } else {
                                     if ($s_escaped === strval(ENTITY_ESCAPED)) {
-                                        $new_line = '(($bound_' . $parameter . '->pure_lang!==true)?apply_tempcode_escaping_inline([' . $s_escaped . '],' . $temp . '):' . $temp . ')';
+                                        $new_line = '(!isset($bound_' . $parameter . '->pure_lang)?apply_tempcode_escaping_inline([' . $s_escaped . '],' . $temp . '):' . $temp . ')';
                                         tc_add_to_current_level_data($current_level_data, $just_done_string, $new_line);
                                     } else {
                                         $new_line = 'apply_tempcode_escaping_inline([' . $s_escaped . '],' . $temp . ')';
