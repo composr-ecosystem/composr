@@ -305,8 +305,6 @@ class __broken_links_test_set extends cms_test_case
         if (in_array($url, [ // cURL doesn't like the SSL config / just times out connecting
             'https://www.hobo-web.co.uk/website-design-tips/',
             'https://www.microsoft.com/en-us/download/details.aspx?id=48264',
-            'https://www.transifex.com/ocproducts/',
-            'https://www.transifex.com/organization/ocproducts/dashboard',
             'https://www.paypal.com/us/webapps/helpcenter/helphub/article/?solutionId=FAQ2347',
             'http://stackoverflow.com/search?q=cms',
             'http://www.projecthoneypot.org/add_honey_pot.php',

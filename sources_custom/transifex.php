@@ -227,7 +227,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
             }
         }
 
-        echo "A new project was created. You need to manually edit the organization settings (https://www.transifex.com/ocproducts/settings/tm/) to add it to the translation memory group.\n";
+        echo "A new project was created. You need to manually edit the organization settings to add it to the translation memory group.\n";
     }
 
     // Upload special files

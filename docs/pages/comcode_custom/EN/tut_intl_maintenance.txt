@@ -5,7 +5,7 @@ There is a commercial opportunity for individuals or organisations that want to 
 (For details on how Composr translation works, see the [page="_SEARCH:tut_intl"]Localisation and internationalisation[/page] tutorial)
 
 Th process works like this:[list="1"]
-[*] Join the translation team on [url="Transifex"]https://www.transifex.com/ocproducts/[/url]
+[*] Join the translation team on [url="Transifex"]https://explore.transifex.com/composr/[/url]
 [*] Ensure all urgent and high priority strings have been translated (this is a big job, it may take around 2 weeks of person hours)
 [*] [url="Send a partnership request"]https://compo.sr/tickets/ticket.htm?ticket_type=Partnership[/url] telling us:[list]
 [*] which language you've finished translating

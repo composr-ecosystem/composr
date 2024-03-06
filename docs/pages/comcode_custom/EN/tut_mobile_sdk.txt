@@ -2321,7 +2321,7 @@ The standardised [tt]id[/tt] specifies the Commandr-fs path
 | [i]Whatever the Commandr-fs hook has[/i]
 |}
 
-You may want to install a browser extension such as [url="JSONView"]https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc?hl=en[/url] when developing with the API. Mozilla Firefox has great JSON viewing built-in.
+You may want to install a browser extension such as [url="JSONView"]https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?hl=en[/url] when developing with the API. Mozilla Firefox has great JSON viewing built-in.
 
 [title="2"]Other approaches to mobile integration[/title]
 

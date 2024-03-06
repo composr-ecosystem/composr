@@ -161,7 +161,7 @@ You can use an online tool to generate your keys, including the specific DNS rec
  - [url="DKIM Generator"]https://luxsci.com/extranet/dkim.html[/url]
 
 Tools for testing DKIM:
- - [url="Check a TXT record (1)"]http://dkimcore.org/tools/[/url]
+ - [url="Check a TXT record (1)"]https://dkimcore.org/tools/[/url]
  - [url="Check a TXT record (2)"]https://protodave.com/tools/dkim-key-checker/[/url]
  - [url="E-mail scanner and tips"]http://www.appmaildev.com/en/dkim/[/url]
 
