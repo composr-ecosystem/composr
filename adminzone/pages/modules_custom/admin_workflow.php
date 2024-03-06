@@ -317,13 +317,13 @@ class Module_admin_workflow extends Standard_crud_module
 
         $all_points = ($id === null) ? [] : get_all_approval_points($id); // We need to display which points are available
         if (empty($all_points)) {
-            $points_list = do_lang_tempcode('APPROVAL_POINTS_DESCRIPTION_EMPTY_LIST');
+            $points_list = do_lang('APPROVAL_POINTS_DESCRIPTION_EMPTY_LIST');
         } else {
-            $points_list = do_lang_tempcode('APPROVAL_POINTS_DESCRIPTION_LIST', escape_html(implode(', ', $all_points)));
+            $points_list = do_lang('APPROVAL_POINTS_DESCRIPTION_LIST', escape_html(implode(', ', $all_points)));
         }
 
         // Now add the approval point lines
-        $fields->attach(form_input_text(do_lang_tempcode('WORKFLOW_APPROVAL_POINTS'), do_lang_tempcode('APPROVAL_POINTS_DESCRIPTION', protect_from_escaping($points_list)), 'points', implode("\n", $approval_points), true, false, null, true));
+        $fields->attach(form_input_text(do_lang('WORKFLOW_APPROVAL_POINTS'), do_lang('APPROVAL_POINTS_DESCRIPTION', escape_html($points_list)), 'points', implode("\n", $approval_points), true, false, null, true));
 
         // Add an option to make this default
         $fields->attach(form_input_tick(do_lang('DEFAULT_WORKFLOW'), do_lang('DEFAULT_WORKFLOW_DESCRIPTION'), 'is_default', $default));
