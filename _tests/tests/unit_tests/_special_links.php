@@ -23,6 +23,9 @@ class _special_links_test_set extends cms_test_case
         parent::setUp();
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+
+        $message = 'Some tests may fail if sites block your server for being a bot.';
+        $this->dump($message, 'INFO:');
     }
 
     public function testISBN()
