@@ -37,6 +37,8 @@ class __backups_test_set extends cms_test_case
         $temp_test_dir_full = get_custom_file_base() . '/' . $temp_test_dir;
 
         if (!$this->debug) {
+            cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+            
             set_option('backup_server_hostname', '');
             $backup_name = 'test_backup';
             $backup_tar_path = get_custom_file_base() . '/exports/backups/' . $backup_name . '.tar';
