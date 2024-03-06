@@ -1693,10 +1693,16 @@ class Tempcode
 
     public $is_all_static; // Whether this Tempcode is entirely static content
     public $metadata; // Map of Tempcode metadata
-    public $pure_lang = null;
-    public $preprocessable_bits = null;
-    private $is_empty = null; // Whether this Tempcode has no content
-    private $cached_output = ''; // Cached output of the Tempcode
+    public $preprocessable_bits;
+    public $pure_lang;
+    public $preprocessed;
+    private $is_empty; // Whether this Tempcode has no content
+    private $cached_output;
+    private $evaluate_echo_offset_group;
+    private $evaluate_echo_offset_inner;
+    /**
+     * @var true
+     */
 
     /**
      * Constructor of Tempcode.
@@ -1812,7 +1818,7 @@ class Tempcode
         if (isset($this->preprocessable_bits)) {
             $ret[] = 'preprocessable_bits';
         }
-        if (!empty($this->pure_lang)) {
+        if (isset($this->pure_lang)) {
             $ret[] = 'pure_lang';
         }
         return $ret;
@@ -1832,7 +1838,7 @@ class Tempcode
                 }
             }
         }
-        $this->cached_output = '';
+        unset($this->cached_output);
     }
 
     /**
@@ -1844,7 +1850,7 @@ class Tempcode
      */
     public function parse_from(string &$code, int &$pos, int &$len)
     {
-        $this->cached_output = '';
+        unset($this->cached_output);
         require_code('tempcode_compiler');
         $temp = template_to_tempcode(substr($code, $pos, $len - $pos), 0, false, '');
         $this->code_to_preexecute = $temp->code_to_preexecute;
@@ -1869,9 +1875,9 @@ class Tempcode
             return;
         }
 
-        $this->is_empty = null;
+        unset($this->is_empty);
 
-        $this->cached_output = '';
+        unset($this->cached_output);
 
         global $TEMPCODE_PARAMETER_INLINING_MODE;
         $inlining_mode = end($TEMPCODE_PARAMETER_INLINING_MODE)/*in inlining mode*/;
@@ -1973,7 +1979,7 @@ class Tempcode
             return false; // May never get here, as PHP fatal errors can't be suppressed or skipped over
         }
 
-        $this->cached_output = '';
+        unset($this->cached_output);
 
         $this->seq_parts = $result[0];
         if (!empty($result[1])) {
@@ -2089,7 +2095,7 @@ class Tempcode
             fatal_exit(cms_error_get_last());
         }
 
-        $this->cached_output = '';
+        unset($this->cached_output);
 
         $this->seq_parts = $result[0];
         if (!empty($result[1])) {
@@ -2225,7 +2231,7 @@ class Tempcode
      */
     public function singular_bind(string $key, $value)
     {
-        $this->cached_output = '';
+        unset($this->cached_output);
 
         if ($GLOBALS['RECORD_TEMPLATES_USED']) {
             if (is_object($value)) {
@@ -2312,10 +2318,10 @@ class Tempcode
      */
     public function is_empty() : bool
     {
-        if (!empty($this->cached_output)) {
+        if (isset($this->cached_output)) {
             return strlen($this->cached_output) === 0;
         }
-        if ($this->is_empty !== null) {
+        if (isset($this->is_empty)) {
             return $this->is_empty;
         }
 
@@ -2426,7 +2432,7 @@ class Tempcode
      */
     public function evaluate(?string $current_lang = null) : string
     {
-        if (!empty($this->cached_output)) {
+        if (isset($this->cached_output)) {
             return $this->cached_output;
         }
         if ($this->is_empty_shell()) { // Optimisation: empty
@@ -2515,9 +2521,9 @@ class Tempcode
             return '';
         }
 
-        if (!empty($this->cached_output)) {
+        if (isset($this->cached_output)) {
             echo $this->cached_output;
-            $this->cached_output = ''; // Won't be needed again
+            unset($this->cached_output); // Won't be needed again
             return '';
         }
         if ($this->is_empty_shell()) { // Optimisation: empty
