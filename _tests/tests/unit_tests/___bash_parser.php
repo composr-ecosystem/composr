@@ -48,10 +48,14 @@ class ___bash_parser_test_set extends cms_test_case
             cms_set_time_limit(5);
 
             // NB: php-no-ext bit works around bug in Windows version of PHP with slow startup. Make a ../php-no-ext/php.ini file with no extensions listed for loading
-            $message = shell_exec($php_path . ' -l ' . cms_escapeshellarg(get_file_base() . '/' . $path) . ' -c ' . cms_escapeshellarg(get_file_base() . '/../php-no-ext'));
+            $cmd = $php_path . ' -l ' . cms_escapeshellarg(get_file_base() . '/' . $path) . ' -c ' . cms_escapeshellarg(get_file_base() . '/../php-no-ext');
+            $message = shell_exec($cmd);
+            if ($message === null) {
+                $message = '';
+            }
 
             if (is_cli()) {
-                echo $message;
+                echo $cmd . ': ' . $message;
             }
 
             $this->assertTrue(strpos($message, 'No syntax errors detected') !== false, $message . ' (' . $path . ')');
