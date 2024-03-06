@@ -40,11 +40,12 @@ class auth_test_set extends cms_test_case
         $password = 'wrongpassword';
         $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $password);
         $member_id = $login_array['id'];
-        $this->assertTrue($member_id === null);
+        $this->assertTrue($member_id === null, 'Expected no member ID, but got one.');
         $this->assertTrue(
             isset($login_array['error']) &&
             is_object($login_array['error']) &&
-            (static_evaluate_tempcode($login_array['error']) == do_lang('MEMBER_BAD_PASSWORD') || static_evaluate_tempcode($login_array['error']) == do_lang('MEMBER_INVALID_LOGIN'))
+            (static_evaluate_tempcode($login_array['error']) == do_lang('MEMBER_BAD_PASSWORD') || static_evaluate_tempcode($login_array['error']) == do_lang('MEMBER_INVALID_LOGIN')),
+            'Expected a bad password or invalid login error, but instead got ' . static_evaluate_tempcode($login_array['error'])
         );
     }
 
@@ -54,39 +55,39 @@ class auth_test_set extends cms_test_case
         $password = '';
         $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $password);
         $member_id = $login_array['id'];
-        $this->assertTrue($member_id === null);
+        $this->assertTrue($member_id === null, 'Expected no member ID, but we got one.');
     }
 
     public function testZoneAccessDoesFail()
     {
-        $this->assertTrue(has_zone_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), ''));
-        $this->assertTrue(!has_zone_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'adminzone'));
+        $this->assertTrue(has_zone_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), ''), 'Expected guest access to the root zone, but did not have it.');
+        $this->assertTrue(!has_zone_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'adminzone'), 'Expected no guest access to the adminzone zone, but we had it.');
     }
 
     public function testPageAccessDoesFail()
     {
-        $this->assertTrue(has_page_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'feedback', ''));
-        $this->assertTrue(!has_page_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'admin_commandr', 'adminzone'));
+        $this->assertTrue(has_page_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'feedback', ''), 'Expected guest access to the feedback page, but did not have it.');
+        $this->assertTrue(!has_page_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'admin_commandr', 'adminzone'), 'Expected no guest access to Commandr, but we had it.');
     }
 
     public function testCategoryAccessDoesFail()
     {
         $second_calendar_category = $GLOBALS['SITE_DB']->query_select_value('calendar_types', 'id', [], ' AND id<>' . strval(db_get_first_id()));
         $this->assertTrue(has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'calendar', strval($second_calendar_category)), 'Does not have access to category #' . strval($second_calendar_category));
-        $this->assertTrue(!has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'calendar', '1')); // System-command category
+        $this->assertTrue(!has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'calendar', '1'), 'Expected no guest access to the system command category, but we had it.'); // System-command category
     }
 
     public function testPrivilegeDoesFail()
     {
-        $this->assertTrue(has_privilege($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'submit_lowrange_content'));
-        $this->assertTrue(!has_privilege($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'bypass_validation_highrange_content'));
+        $this->assertTrue(has_privilege($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'submit_lowrange_content'), 'Expected guest to have submit_lowrange_content privilege, but they did not.');
+        $this->assertTrue(!has_privilege($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'bypass_validation_highrange_content'), 'Expected guest not to have bypass_validation_highrange_content privilege, but they had it.');
     }
 
     public function testAdminZoneDoesFail()
     {
         require_code('files');
         $http_result = cms_http_request(static_evaluate_tempcode(build_url(['page' => '', 'keep_su' => 'Guest'], 'adminzone', [], false, false, true)), ['trigger_error' => false]);
-        $this->assertTrue($http_result->message == '401', 'Expected 401 HTTP status but got ' . $http_result->message);
+        $this->assertTrue($http_result->message == '401', 'Expected 401 HTTP status when accessing the Admin Zone as Guest SU, but got ' . $http_result->message);
     }
 
     public function testCannotStealSession()
