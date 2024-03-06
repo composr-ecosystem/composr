@@ -176,23 +176,24 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
             exit('Failed on: ' . $sql_buildup);
         }
         $sql_buildup = '';
+        
+        // Need to go to a new iteration? (Not ideal we wait until this long to check, but we have to considering how command build-ups work.)
+        if (time() >= $time_max) {
+            $refresh_url = 'restore.php?start_offset=' . strval($offset) . '&time_limit=' . strval($time_limit);
+            $proceed_icon = do_template('ICON', ['NAME' => 'buttons/proceed']);
+            $msg = '';
+            $msg .= '<form action="' . escape_html($refresh_url) . '" method="post"><button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit" onclick="this.disabled=true; this.form.submit();">' . $proceed_icon->evaluate() . ' ' . escape_html(do_lang('CONTINUE_RESTORATION')) . '</button></form>';
+            $msg .= '<script>var button=document.getElementById(\'proceed-button\'); button.disabled=true; button.form.submit();</script>';
+            finish_restorer_output($msg);
+            break;
+        }
     }
 
     // Keep building up
     $sql_buildup .= $line . "\n";
-
+    
     // Offset
     $offset = ftell($data_file);
-    
-    // Need to go to a new iteration?
-    if (time() >= $time_max) {
-        $refresh_url = 'restore.php?start_offset=' . strval($offset) . '&time_limit=' . strval($time_limit);
-        $proceed_icon = do_template('ICON', ['NAME' => 'buttons/proceed']);
-        $msg = '';
-        $msg .= '<form action="' . escape_html($refresh_url) . '" method="post"><button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit" onclick="this.disabled=true; this.form.submit();">' . $proceed_icon->evaluate() . ' ' . escape_html(do_lang('CONTINUE_RESTORATION')) . '</button></form>';
-        $msg .= '<script>var button=document.getElementById(\'proceed-button\'); button.disabled=true; button.form.submit();</script>';
-        finish_restorer_output($msg);
-    }
 }
 
 fclose($data_file);
