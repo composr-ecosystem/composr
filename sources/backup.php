@@ -157,11 +157,10 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $
 
         $start = 0;
         do {
-            $data = $GLOBALS['SITE_DB']->query_select($table, ['*'], [], '', 100, $start, false, []);
+            $data = $GLOBALS['SITE_DB']->query_select($table, ['*'], [], '', 100, $start);
             foreach ($data as $d) {
                 $list = '';
                 foreach ($d as $name => $value) {
-                    $value = mixed();
                     if (multi_lang_content()) {
                         if (($table == 'translate') && ($name == 'text_parsed')) {
                             $value = '';
@@ -183,8 +182,10 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $
                         $list .= strval($value);
                     } elseif (is_float($value)) {
                         $list .= float_to_raw_string($value);
-                    } else {
+                    } elseif (is_string($value)) {
                         $list .= '"' . php_addslashes($value) . '"';
+                    } else {
+                        $list .= '""'; // Should never get here
                     }
                 }
 
