@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// This test will likely fail if using Cloudflare or a proxy. Please disable them first.
-
 /**
  * Composr test case class (unit testing).
  */
@@ -46,6 +44,9 @@ class ecommerce_custom_test_set extends cms_test_case
         $map += insert_lang('c_mail_body', '', 2);
         $this->custom_product_id = $GLOBALS['SITE_DB']->query_insert('ecom_prods_custom', $map, true);
         $this->map = $map;
+
+        $message = 'You may encounter failures if using a proxy such as Cloudflare.';
+        $this->dump($message, 'INFO:');
     }
 
     public function testCustomProductPurchaseWorks()

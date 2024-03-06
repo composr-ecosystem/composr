@@ -138,6 +138,8 @@ class comcode_code_test_set extends cms_test_case
             $cases[14] = [$from, $to, $forced_html_to_comcode, $do_for_admin_too];
         }
         */
+        $message = 'Manually check GeSHI code blocks.';
+        $this->dump($message, 'INFO:');
 
         // No textual syntax for WYSIWYG
         $from = "[semihtml][code]\n--\n[/code][/semihtml]";

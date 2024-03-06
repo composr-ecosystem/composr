@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// Pass &debug=1 for extra checks that would not be expected to ever consistently pass
-
 /**
  * Composr test case class (unit testing).
  */

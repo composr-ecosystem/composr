@@ -361,7 +361,7 @@ class privacy_hooks_test_set extends cms_test_case
         }
 
         if (count($info_messages) > 0) {
-            $this->dump($info_messages, 'Caution:');
+            $this->dump($info_messages, 'INFO:');
         }
     }
 }

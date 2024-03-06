@@ -33,5 +33,8 @@ class php_versioning_test_set extends cms_test_case
         $this->assertTrue((is_php_version_supported_by_phpdevs(float_to_raw_string(9.0, 1)) === true), 'Expected PHP version 9.0 to be supported, but it appears it is not.'); // Future, assume supported
         $this->assertTrue((is_php_version_supported_by_phpdevs(float_to_raw_string(7.4, 1)) === false), 'Expected PHP version 7.4 to NOT be supported, but it appears it is.'); // Known unsupported
         $this->assertTrue((is_php_version_supported_by_phpdevs(float_to_raw_string(5.5, 1)) === false), 'Expected PHP version 5.5 to NOT be supported, but it appears it is.'); // Known unsupported and too old to be tracked
+
+        $message = 'This test will need manually updating with PHP\'s current supported and unsupported versions.';
+        $this->dump($message, 'INFO:');
     }
 }

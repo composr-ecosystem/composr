@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// This test will likely fail if using Cloudflare or a proxy
-
 /**
  * Composr test case class (unit testing).
  */
@@ -25,6 +23,9 @@ class webdav_test_set extends cms_test_case
         parent::setUp();
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
+        $message = 'You may encounter failures if using a proxy such as Cloudflare.';
+        $this->dump($message, 'INFO:');
     }
 
     public function testWebdav()

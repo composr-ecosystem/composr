@@ -52,9 +52,9 @@ class media_test_set extends cms_test_case
         }
     }
 
-    /* Facebook removed non-authenticated access
     public function testFacebookThumbnail()
     {
+        /*
         $test_url = 'https://www.facebook.com/CollegeHumor/videos/10154300448557807/';
         require_code('hooks/systems/media_rendering/video_facebook');
         $ob = new Hook_media_rendering_video_facebook();
@@ -64,5 +64,8 @@ class media_test_set extends cms_test_case
             $test = cms_getimagesizefromstring(http_get_contents($thumb_url));
             $this->assertTrue(is_array($test) && is_integer($test[0]) && is_integer($test[1]));
         }
-    }*/
+    */
+        $message = 'Facebook must be tested manually as API requires authentication.';
+        $this->dump($message, 'INFO:');
+    }
 }

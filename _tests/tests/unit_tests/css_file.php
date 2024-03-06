@@ -106,6 +106,9 @@ class css_file_test_set extends cms_test_case
 
                     $this->assertTrue(isset($classes_defined[$class]), 'CSS class used but not defined: ' . $class . ' (for theme: ' . $theme . ')');
                 }
+            } else {
+                $message = 'Pass in debug for more aggressive testing which may include false-positives.';
+                $this->dump($message, 'INFO:');
             }
 
             foreach (array_keys($classes_defined) as $class) {

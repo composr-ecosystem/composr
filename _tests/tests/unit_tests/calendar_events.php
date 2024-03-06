@@ -656,7 +656,7 @@ class calendar_events_test_set extends cms_test_case
 }
 
 /*
-These complexities also exist, but we don't have automated tests for them:
+TODO: These complexities also exist, but we don't have automated tests for them:
  - In the week view, a multi-day event wraps around correctly
  - In the week view, events that finish at the end of a day show right up to the end, and not on the next day
  - In any view, events that started before the bound of the view, flow in correctly

@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// This test will likely fail if using Cloudflare or a proxy
-
 /**
  * Composr test case class (unit testing).
  */
@@ -32,6 +30,9 @@ class xss_test_set extends cms_test_case
     public function testNoBackdoor()
     {
         $this->assertTrue(empty($GLOBALS['SITE_INFO']['backdoor_ip']), 'Backdoor to IP address present, may break other tests');
+
+        $message = 'You may encounter failures if using a proxy such as Cloudflare.';
+        $this->dump($message, 'INFO:');
     }
 
     public function testComcodeHTMLFilter()

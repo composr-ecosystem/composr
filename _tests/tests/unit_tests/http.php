@@ -35,6 +35,8 @@ class http_test_set extends cms_test_case
         //   https://stackoverflow.com/questions/5011102/apache-reverse-proxy-with-basic-authentication
         //   https://www.web2generators.com/apache-tools/htpasswd-generator
         if (($this->only === null) || ($this->only != 'proxy')) {
+            $message = 'Proxy test needs to be tested manually / explicitly when a proxy is set up. See the test for documentation.';
+            $this->dump($message, 'INFO:');
             return;
         }
 

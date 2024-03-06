@@ -30,6 +30,9 @@ class aaa_modularisation_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
         cms_ini_set('memory_limit', '500M');
+
+        $message = 'Some issues can be fixed automatically on the admin_modularisation module in build tools.';
+        $this->dump($message, 'INFO:');
     }
 
     public function testDefaultIconsExist()

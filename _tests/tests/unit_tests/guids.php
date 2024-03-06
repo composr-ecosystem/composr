@@ -23,6 +23,9 @@ class guids_test_set extends cms_test_case
         parent::setup();
 
         disable_php_memory_limit();
+
+        $message = 'Missing or duplicated GUIDs can be fixed automatically with the minimodule in build tools. They should only be fixed on major releases.';
+        $this->dump($message, 'INFO:');
     }
 
     public function testDuplicateGUIDs()

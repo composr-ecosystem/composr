@@ -98,6 +98,9 @@ class antispam_test_set extends cms_test_case
 
         set_option('spam_stale_threshold', $prev_stale, 0);
         */
+
+        $message = 'testHTTPBL needs manually enabled / tested; disabled by default as it requires a key.';
+        $this->dump($message, 'INFO:');
     }
 
     public function testStopForumSpam()

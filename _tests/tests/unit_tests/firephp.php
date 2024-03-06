@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// This test will likely fail if using Cloudflare, a proxy, or a webhost that modifies headers.
-
 /**
  * Composr test case class (unit testing).
  */
@@ -22,6 +20,9 @@ class firephp_test_set extends cms_test_case
 {
     public function testFirePHP()
     {
+        $message = 'This test will likely fail if using a proxy such as Cloudflare or running on a host that modifies headers.';
+        $this->dump($message, 'INFO:');
+
         $session_id = $this->establish_admin_callback_session();
 
         $url = build_url(['page' => '', 'keep_firephp' => 1, 'keep_su' => $this->get_canonical_username('test')], 'adminzone');

@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// This test will likely fail if using Cloudflare or a proxy
-
 /**
  * Composr test case class (unit testing).
  */
@@ -33,6 +31,9 @@ class usergroup_subscriptions_test_set extends cms_test_case
 
         require_code('ecommerce');
         require_code('ecommerce2');
+
+        $message = 'You may encounter failures if using a proxy such as Cloudflare.';
+        $this->dump($message, 'INFO:');
 
         $this->usergroup_subscription_id = add_usergroup_subscription('test', 'test', 123.00, '10.00', 12, 'y', 1, 3, 0, 1, ' ', ' ', ' ', []);
 
