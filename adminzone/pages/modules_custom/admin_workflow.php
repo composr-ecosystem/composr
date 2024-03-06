@@ -323,7 +323,7 @@ class Module_admin_workflow extends Standard_crud_module
         }
 
         // Now add the approval point lines
-        $fields->attach(form_input_text(do_lang_tempcode('WORKFLOW_APPROVAL_POINTS'), do_lang_tempcode('APPROVAL_POINTS_DESCRIPTION', $points_list), 'points', implode("\n", $approval_points), true, false, null, true));
+        $fields->attach(form_input_text(do_lang_tempcode('WORKFLOW_APPROVAL_POINTS'), do_lang_tempcode('APPROVAL_POINTS_DESCRIPTION', protect_from_escaping($points_list)), 'points', implode("\n", $approval_points), true, false, null, true));
 
         // Add an option to make this default
         $fields->attach(form_input_tick(do_lang('DEFAULT_WORKFLOW'), do_lang('DEFAULT_WORKFLOW_DESCRIPTION'), 'is_default', $default));
