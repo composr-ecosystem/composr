@@ -32,12 +32,18 @@ class __rate_limiting_test_set extends cms_test_case
         for ($i = 0; $i < 4; $i++) {
             $result = cms_http_request($url->evaluate(), ['trigger_error' => false, 'timeout' => 10.0]);
             if ($i < 3) {
-                $this->assertTrue($result->data !== null);
-                $this->assertTrue($result->message === '200', 'Got ' . $result->message);
+                $this->assertTrue($result->data !== null, 'Iteration ' . strval($i) . ' expected data but did not get any.');
+                $this->assertTrue($result->message === '200', 'Iteration ' . strval($i) . ' expected status code 200 but got ' . $result->message . '.');
             } else {
-                $this->assertTrue($result->data === null);
-                $this->assertTrue($result->message === '429', 'Got ' . $result->message);
+                $this->assertTrue($result->data === null, 'Iteration ' . strval($i) . ' expected NO data (rate limit) but got some.');
+                $this->assertTrue($result->message === '429', 'Iteration ' . strval($i) . ' expected status code 429 (rate limit) but got ' . $result->message . '.');
             }
+        }
+
+        // Output contents of rate limit file if debugging
+        if ($this->debug) {
+            $test = cms_file_get_contents_safe($rate_limiter_path, FILE_READ_LOCK);
+            var_dump($test);
         }
 
         file_put_contents($config_file_path, $config_file);
