@@ -25,7 +25,7 @@ class comma_lists_test_set extends cms_test_case
         ];
         $str = '';
         $got = comma_list_arr_to_str($map);
-        $this->assertTrue($got == $str, 'Got ' . $got);
+        $this->assertTrue($got == $str, 'Got ' . $got . ' when expected ' . $str);
 
         // Test various cases
         $map = [
@@ -36,9 +36,9 @@ class comma_lists_test_set extends cms_test_case
             4 => 'foobar', // Numeric key
             5 => '', // Totally blank
         ];
-        $str = '=lorem,a=b,foo=foo\,bar,hello=this\\=that,4=foobar,5=';
+        $str = '=lorem,hello=this\\=that,4=foobar,5=,a=b,foo=foo\\,bar';
         $got = comma_list_arr_to_str($map);
-        $this->assertTrue($got == $str, 'Got ' . $got);
+        $this->assertTrue($got == $str, 'Got ' . $got . ' when we expected ' . $str);
     }
 
     public function testDeserialize()
@@ -50,7 +50,7 @@ class comma_lists_test_set extends cms_test_case
         $got = comma_list_str_to_arr($str);
         ksort($map);
         ksort($got);
-        $this->assertTrue($got == $map, 'Got ' . var_export($got, true));
+        $this->assertTrue($got == $map, 'Got ' . var_export($got, true) . ' when expected ' . var_export($map, true));
 
         // Test various cases with $block_symbol_style off
         $str = '=lorem,a=b,foo=foo\,bar,3=hello=this,4=foobar,,=lorem2,x=';
@@ -67,7 +67,7 @@ class comma_lists_test_set extends cms_test_case
         $got = comma_list_str_to_arr($str);
         ksort($map);
         ksort($got);
-        $this->assertTrue($got == $map, 'Got ' . var_export($got, true));
+        $this->assertTrue($got == $map, 'Got ' . var_export($got, true) . ' when expected ' . var_export($map, true));
 
         // Test various cases with $block_symbol_style on
         $str = '=lorem,a=b,foo=foo\,bar,3=hello=this,4=foobar,,=lorem2,x=';
@@ -84,6 +84,6 @@ class comma_lists_test_set extends cms_test_case
         $got = comma_list_str_to_arr($str, true);
         sort($map);
         sort($got);
-        $this->assertTrue($got == $map, 'Got ' . var_export($got, true));
+        $this->assertTrue($got == $map, 'Got ' . var_export($got, true) . ' when expected ' . var_export($map, true));
     }
 }
