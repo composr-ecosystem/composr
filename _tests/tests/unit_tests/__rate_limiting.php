@@ -38,6 +38,10 @@ class __rate_limiting_test_set extends cms_test_case
                 $this->assertTrue($result->data === null, 'Iteration ' . strval($i) . ' expected NO data (rate limit) but got some.');
                 $this->assertTrue($result->message === '429', 'Iteration ' . strval($i) . ' expected status code 429 (rate limit) but got ' . $result->message . '.');
             }
+
+            if ($this->debug) {
+                var_dump($i, $result->data);
+            }
         }
 
         // Output contents of rate limit file if debugging
