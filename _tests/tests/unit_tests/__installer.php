@@ -124,26 +124,31 @@ class __installer_test_set extends cms_test_case
 
     protected function do_headless_install($safe_mode)
     {
+        global $SITE_INFO;
+
         if (strpos(get_db_type(), 'mysql') === false) {
             $this->assertTrue(false, 'Cannot run test without MySQL');
             return false;
         }
 
-        $database = 'cms__test';
-        $table_prefix = 'installer_';
+        $username = ((!isset($SITE_INFO['mysql_root_password'])) || (strpos(get_db_type(), 'mysql') === false)) ? get_db_site_user() : 'root';
+        $can_use_own_db = ($username == 'root');
+        $database = ($can_use_own_db) ? 'cms__test' : get_db_site();
+        $table_prefix = ($can_use_own_db) ? 'installer_' : 't' . $GLOBALS['SITE_DB']->get_table_prefix();
+        $password = (isset($SITE_INFO['mysql_root_password'])) ? $SITE_INFO['mysql_root_password'] : get_db_site_password();
 
-        // Cleanup old install
-        $tables = $GLOBALS['SITE_DB']->query('SHOW TABLES FROM ' . $database, null, 0, true); // Suppress errors in case database does not exist yet
-        if ($tables === null) {
-            $tables = [];
-        }
-        foreach ($tables as $table) {
-            if (substr($table['Tables_in_' . $database], 0, strlen($table_prefix)) == $table_prefix) {
-                $GLOBALS['SITE_DB']->query('DROP TABLE IF EXISTS ' . $database . '.' . $table['Tables_in_' . $database]);
-            }
+        if ($can_use_own_db) {
+            require_code('database/' . get_db_type());
+            $db_driver = object_factory('Database_Static_' . get_db_type(), false, [$table_prefix]);
+            $db = new DatabaseConnector(get_db_site(), get_db_site_host(), $username, $password, $table_prefix, false, $db_driver); // Use site DB for actual connection because our test DB might not yet exist
+            $db->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true); // Suppress errors as the database might already exist
+        } else {
+            $db = $GLOBALS['SITE_DB'];
         }
 
-        // Assumes we're using a blank root password, which is typically the case on development) - or you have it in $SITE_INFO['mysql_root_password']
+        $this->cleanup($db, $database, $table_prefix);
+
+        // Test will use its own database if using a root account, else will use the site DB with a special prefix.
         global $SITE_INFO;
         require_code('install_headless');
         for ($i = 0; $i < (($this->only === null) ? 2 : 1); $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
@@ -151,8 +156,8 @@ class __installer_test_set extends cms_test_case
 
             $success = do_install_to(
                 $database,
-                (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root',
-                isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '',
+                $username,
+                $password,
                 $table_prefix,
                 $safe_mode,
                 'cns',
@@ -173,10 +178,26 @@ class __installer_test_set extends cms_test_case
             $this->assertTrue($success, $fail_message);
 
             if (!$success) {
+                $this->cleanup($db, $database, $table_prefix);
                 return false; // Don't do further trials if there's an error
             }
         }
 
+        $this->cleanup($db, $database, $table_prefix);
         return true;
+    }
+
+    protected function cleanup($db, $database, $table_prefix)
+    {
+        // Cleanup old install
+        $tables = $db->query('SHOW TABLES FROM ' . $database, null, 0);
+        if ($tables === null) {
+            $tables = [];
+        }
+        foreach ($tables as $table) {
+            if (substr($table['Tables_in_' . $database], 0, strlen($table_prefix)) == $table_prefix) {
+                $db->query('DROP TABLE IF EXISTS ' . $database . '.' . $table['Tables_in_' . $database]);
+            }
+        }
     }
 }

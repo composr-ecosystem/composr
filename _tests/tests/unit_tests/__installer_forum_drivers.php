@@ -78,8 +78,22 @@ class __installer_forum_drivers_test_set extends cms_test_case
 
     protected function do_headless_install($safe_mode = false, $forum_driver = 'cns', $username = null, $password = null, $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [])
     {
-        $database = 'test';
-        $table_prefix = 'cms_forumdriver_test_';
+        global $SITE_INFO;
+
+        $username = ((!isset($SITE_INFO['mysql_root_password'])) || (strpos(get_db_type(), 'mysql') === false)) ? get_db_site_user() : 'root';
+        $can_use_own_db = ($username == 'root');
+        $database = ($can_use_own_db) ? 'cms__forumtest' : get_db_site();
+        $table_prefix = ($can_use_own_db) ? 'installer_' : 'fdt' . $GLOBALS['SITE_DB']->get_table_prefix();
+        $password = (isset($SITE_INFO['mysql_root_password'])) ? $SITE_INFO['mysql_root_password'] : get_db_site_password();
+
+        if ($can_use_own_db) {
+            require_code('database/' . get_db_type());
+            $db_driver = object_factory('Database_Static_' . get_db_type(), false, [$table_prefix]);
+            $db = new DatabaseConnector(get_db_site(), get_db_site_host(), $username, $password, $table_prefix, false, $db_driver); // Use site DB for actual connection because our test DB might not yet exist
+            $db->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true); // Suppress errors as the database might already exist
+        } else {
+            $db = $GLOBALS['SITE_DB'];
+        }
 
         // Assumes we're using a blank root password, which is typically the case on development) - or you have it in $SITE_INFO['mysql_root_password']
         require_code('install_headless');
@@ -100,5 +114,16 @@ class __installer_forum_drivers_test_set extends cms_test_case
             'mysqli'
         );
         $this->assertTrue($success);
+
+        // Cleanup old install
+        $tables = $db->query('SHOW TABLES FROM ' . $database, null, 0);
+        if ($tables === null) {
+            $tables = [];
+        }
+        foreach ($tables as $table) {
+            if (substr($table['Tables_in_' . $database], 0, strlen($table_prefix)) == $table_prefix) {
+                $db->query('DROP TABLE IF EXISTS ' . $database . '.' . $table['Tables_in_' . $database]);
+            }
+        }
     }
 }
