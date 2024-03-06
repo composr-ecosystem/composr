@@ -1812,7 +1812,7 @@ class Tempcode
         if (isset($this->preprocessable_bits)) {
             $ret[] = 'preprocessable_bits';
         }
-        if ($this->pure_lang === true) {
+        if (!empty($this->pure_lang)) {
             $ret[] = 'pure_lang';
         }
         return $ret;
@@ -1951,7 +1951,7 @@ class Tempcode
         require_code('tempcode_optimiser');
         optimise_tempcode($this);
 
-        return 'return unserialize("' . php_addslashes(serialize([$this->seq_parts, isset($this->preprocessable_bits) ? $this->preprocessable_bits : [], $this->codename, ($this->pure_lang === true), $this->code_to_preexecute])) . '");' . "\n";
+        return 'return unserialize("' . php_addslashes(serialize([$this->seq_parts, isset($this->preprocessable_bits) ? $this->preprocessable_bits : [], $this->codename, !empty($this->pure_lang), $this->code_to_preexecute])) . '");' . "\n";
     }
 
     /**
