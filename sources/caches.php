@@ -143,11 +143,11 @@ class Self_learning_cache
     private $bucket_name = null;
     private $path = null;
     private $data = null; // null means "Nothing loaded"
-    private $keys_inital = [];
     private $pending_save = false;
     public $paused = false;
     public $empty = true;
     private $already_invalidated = false;
+    private $keys_initial = [];
 
     /**
      * Constructor. Initialise our cache.

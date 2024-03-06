@@ -145,6 +145,7 @@ class Breadcrumb_substitution_loader
     private $text_so_far;
     private $substitution_current_links;
     private $substitutions; // Output
+    private $substitution_current_match_key;
 
     /**
      * Run the loader, to load up field-restrictions from the XML file.
