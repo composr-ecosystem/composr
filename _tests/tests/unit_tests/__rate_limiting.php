@@ -22,7 +22,7 @@ class __rate_limiting_test_set extends cms_test_case
     {
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
-        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['rate_limiting'] = '1';\n\$SITE_INFO['rate_limit_time_window'] = '60';\n\$SITE_INFO['rate_limit_hits_per_window'] = '3';\n\$_SERVER['SERVER_ADDR'] = '';\n\$_SERVER['LOCAL_ADDR'] = '';");
+        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['rate_limiting'] = '1';\n\$SITE_INFO['rate_limit_time_window'] = '60';\n\$SITE_INFO['rate_limit_hits_per_window'] = '3';");
         fix_permissions($config_file_path);
 
         $rate_limiter_path = get_custom_file_base() . '/data_custom/rate_limiter.php';
