@@ -441,7 +441,8 @@ class file_type_safelisting_test_set extends cms_test_case
         }
 
         // Test Git is conclusive
-        $lines = explode("\n", shell_exec('git ls-files'));
+        $ls_files = shell_exec('git ls-files');
+        $lines = explode("\n", is_string($ls_files) ? $ls_files : '');
         $exts = [];
         foreach ($lines as $line) {
             $filename = basename($line);

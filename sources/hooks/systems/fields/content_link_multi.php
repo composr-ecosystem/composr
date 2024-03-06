@@ -118,7 +118,7 @@ class Hook_fields_content_link_multi
         foreach ($evs as $ev) {
             require_code('content');
             list($title, , $info) = content_get_details($type, $ev);
-            if ($info === null) {
+            if (($info === null) || empty($info['view_page_link_pattern'])) {
                 continue;
             }
 

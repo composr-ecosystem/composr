@@ -168,7 +168,7 @@ function force_keep($file, $files_to_always_keep)
         }
     }
 
-    if ((in_array('git_only', $_SERVER['argv'])) && (shell_exec('git ls-files ' . cms_escapeshellarg($file)) == '')) {
+    if ((in_array('git_only', $_SERVER['argv'])) && (shell_exec('git ls-files ' . cms_escapeshellarg($file)) === '')) {
         return true;
     }
 

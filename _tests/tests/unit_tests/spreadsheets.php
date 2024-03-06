@@ -18,6 +18,9 @@
  */
 class spreadsheets_test_set extends cms_test_case
 {
+    protected $files;
+    protected $expected;
+
     public function setUp()
     {
         parent::setUp();

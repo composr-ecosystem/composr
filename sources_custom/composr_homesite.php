@@ -245,7 +245,7 @@ function get_composr_branches()
 
     $_branches = shell_exec('git branch');
     $branches = [];
-    foreach (explode("\n", $_branches) as $_branch) {
+    foreach (explode("\n", is_string($_branches) ? $_branches : '') as $_branch) {
         $matches = [];
         if (preg_match('#^\s*\*?\s*(master|main|v[\d\.]+)$#', $_branch, $matches) != 0) {
             $git_branch = $matches[1];

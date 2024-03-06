@@ -163,6 +163,10 @@ class Text_Diff3 extends Text_Diff
  */
 class Text_Diff3_Op
 {
+    public $orig;
+    public $final1;
+    public $final2;
+    protected $_merged;
 
     public function __construct($orig = false, $final1 = false, $final2 = false)
     {
@@ -203,6 +207,10 @@ class Text_Diff3_Op
  */
 class Text_Diff3_Op_copy extends Text_Diff3_Op
 {
+
+    public $orig;
+    public $final1;
+    public $final2;
 
     public function __construct($lines = false)
     {

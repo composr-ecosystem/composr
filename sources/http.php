@@ -1292,12 +1292,13 @@ class HttpDownloaderCurl extends HttpDownloader
     */
     protected function file_curl_body($ch, string $str) : int
     {
+        if ($this->curl_body === null) {
+            $this->curl_body = '';
+        }
+
         if ($this->write_to_file !== null) {
             fwrite($this->write_to_file, $str);
         } else {
-            if ($this->curl_body === null) {
-                $this->curl_body = '';
-            }
             $this->curl_body .= $str;
         }
 

@@ -282,5 +282,8 @@ function _git_exec($cmd)
     $_cmd = 'git ' . $cmd . ' 2>&1';
 
     $cache[$cmd] = shell_exec($_cmd);
+    if (!is_string($cache[$cmd])) {
+        $cache[$cmd] = '';
+    }
     return $cache[$cmd];
 }
