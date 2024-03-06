@@ -22,6 +22,14 @@
  */
 class ___health_check_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run via the Health Check UI chunk by chunk, or on the command line: php _tests/index.php ___health_check.');
+        }
+    }
     public function testHealthCheck()
     {
         require_code('health_check');

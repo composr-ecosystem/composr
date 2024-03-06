@@ -24,6 +24,10 @@ class ___search_test_set extends cms_test_case
     {
         parent::setUp();
 
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php ___search.');
+        }
+
         disable_php_memory_limit();
     }
 

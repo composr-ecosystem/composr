@@ -23,6 +23,7 @@ https://chrisgraham.name:7455/composr-copy/_tests/index.php?id=unit_tests%2F___p
 
 Can track progress with:
 SELECT * FROM cms11_stats ORDER BY date_and_time DESC LIMIT 1;
+(if using the command line, progress will be returned)
 
 */
 
@@ -52,6 +53,10 @@ class ___performance_test_set extends cms_test_case
     public function setUp()
     {
         parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php ___performance.');
+        }
 
         $this->establish_admin_session();
 

@@ -16,7 +16,8 @@
 // php _tests/index.php __installer
 
 /*
-Note that this test installs Composr to a new database ON TOP your dev install, using a new _config.php file.
+Note that this test installs Composr to a new database ON TOP your dev install (if using a root username or a root password is defined)
+using a new _config.php file.
 The test installs using the root MySQL user, and whatever is defined in your $SITE_INFO['mysql_root_password'] (or blank).
 Your _config.php file is backed up to _config.php.bak in case the test fails and leaves you with a broken install.
 If the test fails, make sure to manually revert _config.php before re-running it.
@@ -27,6 +28,14 @@ If the test fails, make sure to manually revert _config.php before re-running it
  */
 class __installer_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php __installer.');
+        }
+    }
     public function testQuickInstallerBuildsAndDoesNotFullyCrash()
     {
         if (($this->only !== null) && ($this->only != 'testQuickInstallerBuildsAndDoesNotFullyCrash')) {

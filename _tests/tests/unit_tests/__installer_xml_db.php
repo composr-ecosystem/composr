@@ -27,10 +27,19 @@ If the test fails, make sure to manually revert _config.php before re-running it
  */
 class __installer_xml_db_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php __installer_xml_db.');
+        }
+    }
+
     public function testFullInstallSafeMode()
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
-        
+
         $database = 'cms_test';
         $table_prefix = 'xmldb_';
 

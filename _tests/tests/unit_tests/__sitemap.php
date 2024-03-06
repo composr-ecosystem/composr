@@ -13,7 +13,7 @@
  * @package    testing_platform
  */
 
-// php _tests/index.php sitemap
+// php _tests/index.php __sitemap
 
 /**
  * Composr test case class (unit testing).
@@ -28,6 +28,10 @@ class __sitemap_test_set extends cms_test_case
     public function setUp()
     {
         parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php __sitemap.');
+        }
 
         if ($GLOBALS['SITE_DB']->query_select_value('sitemap_cache', 'COUNT(*)') > 3000) {
             $this->assertTrue(false, 'Test will not work on databases with a huge sitemap');

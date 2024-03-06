@@ -28,6 +28,15 @@ If the test fails, make sure to manually revert _config.php before re-running it
  */
 class __installer_forum_drivers_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php __installer_forum_drivers.');
+        }
+    }
+
     public function testPhpBBInstall()
     {
         if (($this->only !== null) && ($this->only != 'testPhpBBInstall')) {

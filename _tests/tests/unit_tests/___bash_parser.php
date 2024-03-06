@@ -22,6 +22,15 @@
  */
 class ___bash_parser_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php ___bash_parser.');
+        }
+    }
+
     public function testValidCode()
     {
         require_code('files2');

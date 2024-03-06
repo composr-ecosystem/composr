@@ -79,6 +79,10 @@ class ___resource_fs_test_set extends cms_test_case
     {
         parent::setUp();
 
+        if (!is_cli() && (empty($this->only))) {
+            warn_exit('This test should be run on the command line when running all sets together: php _tests/index.php ___resource_fs.');
+        }
+
         push_query_limiting(false);
 
         require_code('content');

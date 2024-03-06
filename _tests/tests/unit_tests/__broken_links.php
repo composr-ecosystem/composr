@@ -24,6 +24,10 @@ class __broken_links_test_set extends cms_test_case
     {
         parent::setUp();
 
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php __broken_links');
+        }
+
         require_code('files2');
         require_code('site');
         require_code('global4');
