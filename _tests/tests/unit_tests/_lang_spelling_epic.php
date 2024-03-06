@@ -3257,6 +3257,10 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'submissionflow',
             'undef',
             'whitelisted',
+            'uniqid',
+            'bak',
+            'crowdsourced',
+            'mjs',
         ];
 
         $spell_link = spellcheck_initialise('en_GB');

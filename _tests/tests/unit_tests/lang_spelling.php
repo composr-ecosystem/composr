@@ -173,7 +173,7 @@ class lang_spelling_test_set extends cms_test_case
             }
         }
 
-        // unvalidated and non-validated are both bad English
+        // These are both bad English
         if (preg_match('#([^A-Za-z]+)(unvalidated|un-validated|unvalidate|un-validate|nonvalidated|non-validated)([^A-Za-z]+)#', $string) != 0) {
             $ob->assertTrue(false, 'A misspelling of \'not validated\' occurred in ' . $path . '. Be mindful of grammar; you may need to say \'(subject) which is/are not validated\'.');
         }
