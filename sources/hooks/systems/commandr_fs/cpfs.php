@@ -166,7 +166,7 @@ class Hook_commandr_fs_cpfs extends Resource_fs_base
 
         require_code('encryption');
         if (is_encryption_enabled()) {
-            $properties['encryption'] = $row['cf_encryption'];
+            $properties['encrypted'] = $row['cf_encrypted'];
         }
 
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
