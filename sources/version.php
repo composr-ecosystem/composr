@@ -71,7 +71,7 @@ function cms_version_number() : float
  */
 function cms_version_time() : int
 {
-    return 1708918041;
+    return 1709770706;
 }
 
 /**
@@ -82,7 +82,7 @@ function cms_version_time() : int
  */
 function cms_version_time_db() : int
 {
-    return 1708918041;
+    return 1709770706;
 }
 
 /**
