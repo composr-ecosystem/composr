@@ -39,7 +39,7 @@ class ___static_caching_test_set extends cms_test_case
         }
         foreach ($bad_blocks as $bad_block) {
             if (strpos($panel_text, $bad_block . '[/block]') !== false) {
-                $this->assertTrue(false, 'Cannot have a POSTing block in a panel for this test. Try creating blank comcode_custom pages for each panel.');
+                $this->assertTrue(false, 'Cannot have a POSTing block in a panel for this test. Try creating comcode_custom pages for each panel and putting some random word in it.');
                 break;
             }
         }
