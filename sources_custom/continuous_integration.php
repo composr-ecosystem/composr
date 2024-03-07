@@ -289,7 +289,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
     $tests = find_all_applicable_tests($limit_to);
     foreach ($tests as $test) {
         $before = microtime(true);
-        $result = trim(shell_exec('php _tests/index.php ' . escapeshellarg($test) . ' 2>&1'));
+        $result = trim(shell_exec(PHP_BINARY . ' _tests/index.php ' . escapeshellarg($test) . ' 2>&1'));
         $after = microtime(true);
         $time = $after - $before;
 
