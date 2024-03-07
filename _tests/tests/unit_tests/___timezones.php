@@ -64,7 +64,22 @@ class ___timezones_test_set extends cms_test_case
             $all_cities[] = $this->tz_to_city($timezone);
         }
 
-        var_dump($equivalencies);
+        $output = [];
+        foreach ($equivalencies as $_offsets => $cities) {
+            $offset = explode(',', $_offsets)[0];
+            $new = '(UTC';
+            $new .= ($offset < 0.0) ? '-' : '+';
+            $offset_abs = abs($offset);
+            $hours = intval(floor($offset_abs));
+            $new .= str_pad(strval($hours), 2, '0', STR_PAD_LEFT);
+            $new .= ':';
+            $new .= str_pad(strval(abs($hours - $offset_abs) * 100), 2, '0', STR_PAD_LEFT);
+            $new .= ') ';
+
+            $output[$cities[0]] = $new . implode(', ', $cities);
+        }
+
+        var_dump($output);
 
         // Check tzinfo zones against Composr zones
         $matched = [];
