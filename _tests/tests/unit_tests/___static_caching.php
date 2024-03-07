@@ -46,17 +46,18 @@ class ___static_caching_test_set extends cms_test_case
 
         $time_before = microtime(true);
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
-        if ($this->debug) {
-            var_dump($data);
-        }
+
         $time_after = microtime(true);
 
         $time = $time_after - $time_before;
 
         $this->assertTrue($time < 0.2/*HTTPS negotiation takes a little time at least*/, 'Took too long, ' . float_format($time) . ' seconds');
 
-        $this->assertTrue(preg_match('#global\w*\.css#', $data) != 0);
-        $this->assertTrue(strpos($data, '</html>') !== false);
+        $this->assertTrue(preg_match('#global\w*\.css#', $data) != 0, 'Expected global.css to be loaded but was not.');
+        $this->assertTrue(strpos($data, '</html>') !== false, 'Expected closing HTML tag but did not get one.');
+        if ($this->debug) {
+            var_dump($data);
+        }
 
         file_put_contents($config_file_path, $config_file);
     }
@@ -87,13 +88,22 @@ class ___static_caching_test_set extends cms_test_case
 
         clearstatcache();
         $ccc = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
-        $this->assertTrue(strpos($ccc, "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not...' . $ccc);
+        $this->assertTrue(strpos($ccc, "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not...');
+        if ($this->debug) {
+            var_dump($ccc);
+        }
 
         $result = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0]); // Should be failed over, but cached
         $this->assertTrue($result !== null && strpos($result, '</body>') !== false, 'Failover should have been able to use static cache but did not');
+        if ($this->debug) {
+            var_dump($result);
+        }
 
         $result = http_get_contents($url2->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0]); // Should be failed over, but cached
         $this->assertTrue($result !== null && strpos($result, 'FAILOVER_CACHE_MISS') !== false, 'Failover cache miss message not found');
+        if ($this->debug) {
+            var_dump($result);
+        }
 
         file_put_contents($config_file_path, $config_file);
     }
