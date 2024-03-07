@@ -20,9 +20,28 @@ class ___static_caching_test_set extends cms_test_case
 {
     public function testStaticCacheWorks()
     {
-        $panel_text = @strval(file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt') . file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt'));
-        if ((strpos($panel_text, 'main_newsletter_signup') !== false) || (strpos($panel_text, 'side_newsletter') !== false) || (strpos($panel_text, 'side_shoutbox') !== false)) {
-            $this->assertTrue(false, 'Cannot have a POSTing block in a side panel for this test');
+        // Check for POSTing blocks
+        $bad_blocks = [
+            'main_newsletter_signup',
+            'side_newsletter',
+            'side_shoutbox'
+        ];
+
+        $panel_text = '';
+        foreach (['panel_left', 'panel_right', 'panel_top', 'panel_bottom'] as $panel) {
+            $_panel_text = @strval(file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $panel . '.txt'));
+            if (empty($_panel_text)) {
+                $_panel_text = @strval(file_get_contents(get_custom_file_base() . '/pages/comcode/' . get_site_default_lang() . '/' . $panel . '.txt'));
+            }
+            if (is_string($_panel_text)) {
+                $panel_text .= $_panel_text;
+            }
+        }
+        foreach ($bad_blocks as $bad_block) {
+            if (strpos($panel_text, $bad_block . '[/block]') !== false) {
+                $this->assertTrue(false, 'Cannot have a POSTing block in a panel for this test. Try creating blank comcode_custom pages for each panel.');
+                break;
+            }
         }
 
         $config_file_path = get_file_base() . '/_config.php';
