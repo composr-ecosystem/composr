@@ -58,7 +58,7 @@ class Database_Static_mysqli extends Database_super_mysql
         // Potential caching
         $x = serialize([$db_user, $db_host]);
         if (array_key_exists($x, $this->cache_db)) {
-            if ($this->last_select_db[1] !== $db_name) {
+            if (($this->last_select_db === null) || ($this->last_select_db[1] !== $db_name)) {
                 mysqli_select_db($this->cache_db[$x], $db_name);
                 $this->last_select_db = [$this->cache_db[$x], $db_name];
             }
@@ -138,7 +138,7 @@ class Database_Static_mysqli extends Database_super_mysql
             return null;
         }
 
-        if ($this->last_select_db[1] !== $db_name) {
+        if (($this->last_select_db === null) || ($this->last_select_db[1] !== $db_name)) {
             mysqli_select_db($db_link, $db_name);
             $this->last_select_db = [$db_link, $db_name];
         }
