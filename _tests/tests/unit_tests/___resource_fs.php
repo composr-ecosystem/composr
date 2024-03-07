@@ -88,6 +88,7 @@ class ___resource_fs_test_set extends cms_test_case
         require_code('content');
         require_code('resource_fs');
         require_code('failure');
+        require_code('developer_tools');
 
         if ($this->name_to_use === null) {
             $this->name_to_use = uniqid('test_');
