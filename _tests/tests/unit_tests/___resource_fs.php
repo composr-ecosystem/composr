@@ -299,7 +299,7 @@ class ___resource_fs_test_set extends cms_test_case
             }
             $results = [];
             foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : [$ob->file_resource_type] as $resource_type) {
-                $results = array_merge($results, $ob->find_resource_by_label($resource_type, $this->name_to_use , '_c'));
+                $results = array_merge($results, $ob->find_resource_by_label($resource_type, $this->name_to_use . '_c'));
             }
             $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (file) ' . $commandr_fs_hook);
 
