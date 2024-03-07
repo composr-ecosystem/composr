@@ -55,10 +55,6 @@ class ___bash_parser_test_set extends cms_test_case
                 $message = '';
             }
 
-            if (is_cli()) {
-                echo $cmd . ': ' . $message;
-            }
-
             $this->assertTrue(strpos($message, 'No syntax errors detected') !== false, $message . ' (' . $path . ')');
         }
     }
