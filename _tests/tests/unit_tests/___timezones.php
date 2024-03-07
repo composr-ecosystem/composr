@@ -49,9 +49,9 @@ class ___timezones_test_set extends cms_test_case
             foreach ([$current_year, $current_year + 1] as $year) {
                 for ($hour = 0; $hour < 24; $hour += $quick ? 3 : 1) {
                     $timestamp = mktime($hour, 0, 0, 1, 1, $year);
-                    for ($day_of_year = 1; $day_of_year <= 355; $day_of_year += $quick ? 3 : 1) {
+                    for ($day_of_year = 1; $day_of_year <= 363; $day_of_year += $quick ? 3 : 1) {
                         $offsets[] = timezone_offset_get($ob, date_create('@' . strval($timestamp), $ob));
-                        $timestamp += 60 * 60 * 24;
+                        $timestamp += 60 * 60 * ($quick ? 72 : 24);
                     }
                 }
             }
@@ -63,6 +63,8 @@ class ___timezones_test_set extends cms_test_case
 
             $all_cities[] = $this->tz_to_city($timezone);
         }
+
+        var_dump($equivalencies);
 
         // Check tzinfo zones against Composr zones
         $matched = [];
