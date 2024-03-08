@@ -120,7 +120,7 @@ class Module_admin_modularisation
     {
         require_code('modularisation');
 
-        $problems = scan_modularisation();
+        $problems = scan_modularisation(false, true);
 
         if (count($problems) == 0) {
             inform_exit('NO_ENTRIES');

@@ -34,7 +34,7 @@ function init__modularisation2()
         $MODULARISATION_ISSUES_DATA = get_cache_entry('modularisation_issues_data', serialize([]));
         if (($MODULARISATION_ADDON_DATA === null) || ($MODULARISATION_ISSUES_DATA === null)) {
             require_code('modularisation');
-            scan_modularisation(); // This will set $MODULARISATION_ADDON_DATA and $MODULARISATION_ISSUES_DATA
+            scan_modularisation(false, true); // This will set $MODULARISATION_ADDON_DATA and $MODULARISATION_ISSUES_DATA
         }
     }
 }
@@ -366,6 +366,45 @@ function _fix_modularisation__MODULARISATION_ALIEN_FILE(string $file, string $ad
     }
 
     $MODULARISATION_ADDON_DATA[$addon][] = $file;
+
+    return do_lang_tempcode('SUCCESS');
+}
+
+/**
+ * Fix a non-bundled file which should be bundled.
+ *
+ * @param  PATH $file The relevant file
+ * @param  ID_TEXT $addon The addon to which the file belongs (blank: none)
+ * @param  ID_TEXT $responsible_addon The name of the responsible addon hook, applicable for some issues
+ * @return ?Tempcode Results of execution (null: internal error)
+ * @ignore
+ */
+function _fix_modularisation__MODULARISATION_BUNDLED_HAS_NON_BUNDLED(string $file, string $addon, string $responsible_addon) : ?object
+{
+    global $MODULARISATION_ADDON_DATA;
+
+    if (!isset($MODULARISATION_ADDON_DATA[$addon])) {
+        return null;
+    }
+
+    $index = array_search($file, $MODULARISATION_ADDON_DATA[$addon]);
+    if ($index === false) {
+        return do_lang_tempcode('NA');
+    }
+
+    // Unset the old version
+    unset($MODULARISATION_ADDON_DATA[$addon][$index]);
+
+    // Remove all _custom suffixes in path
+    $new_file = preg_replace('/_custom\//', '/', $file);
+
+    // Use new file in addon registry
+    $MODULARISATION_ADDON_DATA[$addon][] = $file;
+
+    // Move the file
+    rename($file, $new_file);
+    fix_permissions($new_file);
+    sync_file_move($file, $new_file);
 
     return do_lang_tempcode('SUCCESS');
 }

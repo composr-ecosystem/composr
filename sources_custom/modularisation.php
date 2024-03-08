@@ -38,9 +38,10 @@ function init__modularisation()
  * Run modularisation scan.
  *
  * @param  boolean $only_populate_data Whether to only populate $MODULARISATION_ADDON_DATA and cache opposed to actually checking
+ * @param  boolean $stricter_checking Whether to also check against non-bundled code
  * @return array Tuple; issue code, file path, addon hook, tick description (such as indicating relevant addon hook)
  */
-function scan_modularisation($only_populate_data = false) : array
+function scan_modularisation($only_populate_data = false, $stricter_checking = false) : array
 {
     // Increase resource limits
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
@@ -161,7 +162,10 @@ function scan_modularisation($only_populate_data = false) : array
     require_code('files2');
     require_code('third_party_code');
     $unput_files = []; // A map of non-existent packages to a list in them
-    $ignore = IGNORE_FLOATING | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_UNSHIPPED_VOLATILE;
+    $ignore = IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_FLOATING | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES;
+    if ($stricter_checking) {
+        $ignore = IGNORE_FLOATING | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_UNSHIPPED_VOLATILE;
+    }
     $files = get_directory_contents(get_file_base(), '', $ignore);
     $forum_drivers = get_directory_contents(get_file_base() . '/sources/forum', '', 0, false, true, ['php']);
     foreach ($forum_drivers as &$forum_driver) {
@@ -171,6 +175,10 @@ function scan_modularisation($only_populate_data = false) : array
     $exceptions = [
         'themes/admin/images_custom', // If admin sprites are generated
     ];
+    if (!$stricter_checking) {
+        $exceptions += list_untouchable_third_party_directories();
+    }
+
 
     foreach ($files as $path) {
         // Exceptions
@@ -294,6 +302,61 @@ function scan_modularisation($only_populate_data = false) : array
     foreach ($unput_files as $addon_name => $paths) {
         foreach ($paths as $path) {
             $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_ALIEN_FILE', $path, $addon_name, $addon_name];
+        }
+    }
+
+    // List any _custom files in bundled addons, or non-custom files in non-bundled addons...
+
+    require_code('addons');
+    $hooks = find_all_hooks('systems', 'addon_registry');
+    foreach ($hooks as $hook => $place) {
+        $hook_path = get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
+        $addon_info = read_addon_info($hook, false, null, null, $hook_path);
+
+        foreach (array_map('cms_strtolower_ascii', $addon_info['files']) as $file) {
+            // Normalise
+            if (strpos($file, '/') !== false) {
+                $dir = dirname($file);
+                $filename = basename($file);
+            } else {
+                $dir = '';
+                $filename = $file;
+            }
+
+            // FUDGE: Exceptions
+            $exceptions = [
+                '_tests/',
+                'uploads/',
+                'docs/',
+                'buildr/',
+                'aps/',
+                'mobiquo/',
+                'tracker/',
+                'exports/',
+                'data_custom/firewall_rules.txt', // bundled as-is
+                'data_custom/errorlog.php', // bundled as blank
+                'data_custom/execute_temp.php', // bundled but actually taking contents of execute_temp.php.bundle
+                'themes/default/images/icons/',
+                'themes/default/images/icons_monochrome/',
+            ];
+
+            foreach ($exceptions as $untouchable) {
+                if (strpos($file, $untouchable) !== false) {
+                    continue 2;
+                }
+            }
+
+            if (($dir != '') && preg_match('#^(?!index\.html$)(?!\.htaccess$).*$#i', $filename) != 0) {
+                if ($place == 'sources') {
+                    if ((preg_match('#^.*_custom(/.*)?$#i', $dir) != 0)) {
+                        $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_BUNDLED_HAS_NON_BUNDLED', $file, $hook, $hook];
+                    }
+                } elseif ($place == 'sources_custom') {
+                    if ((preg_match('#^.*_custom(/.*)?$#i', $dir) == 0)) {
+                        $MODULARISATION_ISSUES_DATA[] = ['MODULARISATION_NON_BUNDLED_HAS_BUNDLED', $file, $hook, $hook];
+                    }
+                }
+            }
         }
     }
 
