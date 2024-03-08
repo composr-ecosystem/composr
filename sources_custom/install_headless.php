@@ -21,9 +21,6 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
 
     // Most Composr MySQL drivers auto-create the DB if missing, if root, but mysql_pdo does not because of how the connection works
     if (strpos($db_type, 'mysql') !== false) {
-        if (is_cli()) {
-            echo "\n" . 'Making a database... ';
-        }
         if (get_db_site_user() == 'root') {
             $GLOBALS['SITE_DB']->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
         } else if ($username == 'root') {
@@ -33,35 +30,20 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
             $db->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
             unset($db);
         }
-        if (is_cli()) {
-            echo 'DONE';
-        }
     }
 
-    if (is_cli()) {
-        echo "\n" . 'Copying config... ';
-    }
     copy(get_file_base() . '/_config.php', get_file_base() . '/_config.php.bak');
     fix_permissions(get_file_base() . '/_config.php.bak');
-    if (is_cli()) {
-        echo 'DONE';
-    }
 
     $success = _do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver, $board_path, $forum_base_url, $database_forums, $username_forums, $password_forums, $extra_settings, $db_type);
 
     if ($success && $do_index_test) {
-        if (is_cli()) {
-            echo "\n" . 'Doing index test... ';
-        }
         $url = get_base_url() . '/index.php?keep_query_limit=0';
         $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 200.0 : 30.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200', '503'/*site closed*/])) && (strpos($data, '<!--ERROR-->') === false);
-        if (is_cli()) {
-            echo 'DONE';
-        }
 
-        if (/*(!$success) && */(isset($_GET['debug'])) || (is_cli())) {
+        if (/*(!$success) && */(isset($_GET['debug']))) {
             @var_dump($url);
             @var_dump($http_result->message);
             @var_dump($http_result->message_b);
@@ -76,14 +58,8 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
     }
 
     if (!$keep_config) {
-        if (is_cli()) {
-            echo "\n" . 'Switching back to old config... ';
-        }
         @unlink(get_file_base() . '/_config.php');
         @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
-        if (is_cli()) {
-            echo 'DONE';
-        }
     }
 
     return $success;
@@ -217,10 +193,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         ],
     ];
 
-    foreach ($stages as $i => $stage) {
-        if (is_cli()) {
-            echo "\n" . 'Starting install stage ' . $i . ' (index)... ';
-        }
+    foreach ($stages as $stage) {
         list($get, $post) = $stage;
         $url = get_base_url() . '/install.php?keep_safe_mode=' . ($safe_mode ? '1' : '0');
         if (!empty($get)) {
@@ -229,11 +202,8 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 240.0 : 50.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200'])) && (strpos($data, '<!--ERROR-->') === false);
-        if (is_cli()) {
-            echo 'DONE';
-        }
 
-        if (/*(!$success) && */(isset($_GET['debug'])) || (is_cli())) {
+        if (/*(!$success) && */(isset($_GET['debug']))) {
             @var_dump($url);
             @var_dump($http_result->message);
             @var_dump($http_result->message_b);

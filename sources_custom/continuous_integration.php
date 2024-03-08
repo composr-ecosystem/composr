@@ -284,7 +284,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
     $hooks = find_all_hook_obs('systems', 'continuous_integration', 'Hook_ci_');
 
     if (!process_ci_context_hooks($hooks, 'before_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
-        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
             echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
         }
@@ -306,7 +306,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
     }
 
     if (!process_ci_context_hooks($hooks, 'before', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
-        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
             echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
         }
@@ -321,7 +321,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
 
     if (!process_ci_context_hooks($hooks, 'after', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
         $context['results'] = $results;
-        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
             echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
         }
@@ -338,7 +338,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
 
     if (!process_ci_context_hooks($hooks, 'after_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
         $context['results'] = $results;
-        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
             echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
         }
@@ -362,7 +362,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
     $tests = find_all_applicable_tests($limit_to);
     foreach ($tests as $test) {
         $before = microtime(true);
-        $result = trim(shell_exec(PHP_BINARY . ' _tests/index.php ' . escapeshellarg($test) . ' 2>&1'));
+        $result = trim(shell_exec('"' . PHP_BINARY . '" _tests/index.php ' . escapeshellarg($test) . ' 2>&1'));
         $after = microtime(true);
         $time = $after - $before;
 

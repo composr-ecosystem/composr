@@ -40,6 +40,7 @@ class Hook_ci_fresh_install
         $table_prefix = 'ci_' . $GLOBALS['SITE_DB']->get_table_prefix();
 
         require_code('install_headless');
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $success = do_install_to(
             $database,
