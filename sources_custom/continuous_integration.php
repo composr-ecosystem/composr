@@ -257,6 +257,7 @@ function process_ci_queue($output, $ignore_lock = false, $lifo = false)
 
             // Unlock
             if ($results !== false) {
+                $commit_queue = load_ci_queue();
                 $commit_queue['lock_timestamp'] = null;
                 $commit_queue['lock_commit'] = null;
                 cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, serialize($commit_queue));
