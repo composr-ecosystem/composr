@@ -121,7 +121,7 @@ class Hook_ci_fresh_install
         }
 
         @unlink(get_file_base() . '/_config.php');
-        @rename(get_file_base() . '/_config_ci.php.bak', get_file_base() . '/_config.php');
+        @rename(get_file_base() . '/_config_php.bak', get_file_base() . '/_config.php');
 
         if ($output) {
             echo 'DONE';
