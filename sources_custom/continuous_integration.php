@@ -296,8 +296,18 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
         $success = (strpos($result, 'Failures: 0, Exceptions: 0') !== false);
 
         $matches = [];
-        if (preg_match('/^.*Test cases run.*$/m', $result, $matches)) {
-            $result_count = $matches[0];
+        $result_count = '';
+        if (preg_match_all('/^.*Test cases run.*$/m', $result, $matches)) {
+            if (array_key_exists(0, $matches)) {
+                foreach ($matches[0] as $match) {
+                    if ($result_count != '') {
+                        $result_count .= ' | ';
+                    }
+                    $result_count .= str_replace("\n", '', $match);
+                }
+            } else {
+                $result_count = $success ? 'Success (unknown counts)' : 'Failure (unknown counts)';
+            }
         } else {
             $result_count = $success ? 'Success (unknown counts)' : 'Failure (unknown counts)';
         }
