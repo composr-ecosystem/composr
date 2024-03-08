@@ -67,6 +67,9 @@ class Hook_ci_fresh_install
             throw new Exception('Failed to install a fresh Composr CMS installation for continuous integration.');
         }
 
+        // The installer test will overwrite this if we do not use a different name
+        @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php.ci.bak');
+
         // Cannot continue CI on this process since we have a new database
         $context['fresh_install'] = '0';
         return false;
@@ -138,7 +141,7 @@ class Hook_ci_fresh_install
         }
 
         // Load in our backup config file before reset
-        $config_file_path = get_file_base() . '/_config.php.bak';
+        $config_file_path = get_file_base() . '/_config.php.ci.bak';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
 
         // We also need to load in the ci_queue.bin file
