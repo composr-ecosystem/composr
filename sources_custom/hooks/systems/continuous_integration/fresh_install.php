@@ -34,13 +34,12 @@ class Hook_ci_fresh_install
 
         // Set up a fresh install of Composr CMS before running tests
 
-        copy(get_file_base() . '/_config.php', get_file_base() . '/_config_ci.php.bak');
-        fix_permissions(get_file_base() . '/_config_ci.php.bak');
-
         $database = get_db_site();
         $username = get_db_site_user();
         $password = get_db_site_password();
         $table_prefix = 'ci_' . $GLOBALS['SITE_DB']->get_table_prefix();
+
+        require_code('install_headless');
 
         $success = do_install_to(
             $database,
@@ -68,7 +67,7 @@ class Hook_ci_fresh_install
         }
 
         // Cannot continue CI on this process since we have a new database
-        $context['fresh_install'] = 0;
+        $context['fresh_install'] = '0';
         return false;
     }
 

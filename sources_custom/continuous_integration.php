@@ -109,7 +109,7 @@ function continuous_integration_script()
         if (($commit_id !== null) && (!$cli)) {
             $verbose = (get_param_integer('verbose', 0) == 1) || ($cli);
             $dry_run = (get_param_integer('dry_run', 0) == 1) || ($cli);
-            $output = (get_param_integer('output', 0) == 1);
+            $output = (get_param_integer('output', 0) == 1) || ($cli);
             $_limit_to = get_param_string('limit_to', '');
             $limit_to = ($_limit_to == '') ? null : explode(',', $_limit_to);
             if ($limit_to !== null) {
@@ -122,7 +122,7 @@ function continuous_integration_script()
             $context = [];
             foreach ($_GET as $name => $value) {
                 if (strpos($name, 'context__') === 0) {
-                    $context[$name] = get_param_string($name);
+                    $context[str_replace('context__', '', $name)] = get_param_string($name);
                 }
             }
             enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output);
