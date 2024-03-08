@@ -280,7 +280,12 @@ function process_ci_queue($output, $ignore_lock = false, $lifo = false)
 
 function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$context)
 {
-    $old_branch = git_repos();
+    if (!isset($context['old_branch'])) {
+        $old_branch = git_repos();
+        $context['old_branch'] = $old_branch;
+    } else {
+        $old_branch = $context['old_branch'];
+    }
 
     if (!process_ci_context_hooks('before_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
         enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
