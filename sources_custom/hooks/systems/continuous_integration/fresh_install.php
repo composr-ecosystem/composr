@@ -72,7 +72,7 @@ class Hook_ci_fresh_install
         return false;
     }
 
-    public function after($output, $commit_id, $verbose, $dry_run, $limit_to, $context)
+    public function after($output, $commit_id, $verbose, $dry_run, $limit_to, &$context)
     {
         if (!addon_installed('testing_platform')) {
             return true;
