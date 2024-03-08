@@ -77,7 +77,7 @@ function init__continuous_integration()
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_tracker_categories' : null,
         ]);
 
-        define('CI_COMMIT_QUEUE_PATH', get_custom_file_base() . '/data_custom/ci_queue.json');
+        define('CI_COMMIT_QUEUE_PATH', get_custom_file_base() . '/data_custom/ci_queue.bin');
     }
 
     require_code('files');
@@ -178,7 +178,7 @@ function load_ci_queue()
     ];
 
     if (is_file(CI_COMMIT_QUEUE_PATH)) {
-        $commit_queue = @json_decode(cms_file_get_contents_safe(CI_COMMIT_QUEUE_PATH, FILE_READ_LOCK), true);
+        $commit_queue = @unserialize(cms_file_get_contents_safe(CI_COMMIT_QUEUE_PATH, FILE_READ_LOCK));
         if ($commit_queue === false) {
             $commit_queue = $blank_queue;
         }
@@ -195,7 +195,7 @@ function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $con
     // Write to queue
     $queue_item = ['commit_id' => $commit_id, 'verbose' => $verbose, 'dry_run' => $dry_run, 'limit_to' => $limit_to, 'context' => $context];
     $commit_queue['queue'][] = $queue_item;
-    cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, json_encode($commit_queue));
+    cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, serialize($commit_queue));
 
     if ($output) {
         @header('Content-Type: text/plain; charset=' . get_charset());
@@ -223,7 +223,7 @@ function process_ci_queue($output, $ignore_lock = false, $lifo = false)
         if ($next_commit_details !== null) {
             // Lock (and remove from queue)
             $commit_queue['lock_timestamp'] = time();
-            cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, json_encode($commit_queue));
+            cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, serialize($commit_queue));
 
             // Process
             $commit_id = $next_commit_details['commit_id'];
@@ -235,7 +235,7 @@ function process_ci_queue($output, $ignore_lock = false, $lifo = false)
 
             // Unlock
             $commit_queue['lock_timestamp'] = null;
-            cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, json_encode($commit_queue));
+            cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, serialize($commit_queue));
         } else {
             if ($output) {
                 echo 'Queue is empty';

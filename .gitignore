@@ -105,7 +105,7 @@ _meta_tree
 /themes/default/images_custom/*/logo/standalone_logo.png
 /themes/default/images_custom/*/logo/small_logo.png
 /themes/default/images_custom/*/logo/small_white_logo.png
-/data_custom/ci_queue.json
+/data_custom/ci_queue.bin
 /System Volume Information
 /themes/default/images_custom/icons_monochrome_sprite.svg
 /themes/default/images_custom/icons_sprite.svg
