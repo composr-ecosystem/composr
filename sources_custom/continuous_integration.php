@@ -106,7 +106,7 @@ function continuous_integration_script()
         } else {
             $commit_id = ($cli ? 'HEAD' : get_param_string('commit_id', null)); // Can be HEAD
         }
-        if ($commit_id !== null) {
+        if (($commit_id !== null) && (!$cli)) {
             $verbose = (get_param_integer('verbose', 0) == 1) || ($cli);
             $dry_run = (get_param_integer('dry_run', 0) == 1) || ($cli);
             $output = (get_param_integer('output', 0) == 1);
