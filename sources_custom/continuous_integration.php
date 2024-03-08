@@ -282,9 +282,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
 {
     $old_branch = git_repos();
 
-    $hooks = find_all_hook_obs('systems', 'continuous_integration', 'Hook_ci_');
-
-    if (!process_ci_context_hooks($hooks, 'before_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+    if (!process_ci_context_hooks('before_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
         enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
             echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
@@ -306,7 +304,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
         $context['do_first_checkout'] = false;
     }
 
-    if (!process_ci_context_hooks($hooks, 'before', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+    if (!process_ci_context_hooks('before', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
         enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
             echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
@@ -320,7 +318,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
         $results = $context['results'];
     }
 
-    if (!process_ci_context_hooks($hooks, 'after', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+    if (!process_ci_context_hooks('after', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
         $context['results'] = $results;
         enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
@@ -337,7 +335,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$conte
         $context['do_last_checkout'] = false;
     }
 
-    if (!process_ci_context_hooks($hooks, 'after_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+    if (!process_ci_context_hooks('after_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
         $context['results'] = $results;
         enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $commit_id);
         if ($output) {
@@ -481,10 +479,11 @@ function post_results_to_commit($commit_id, $note)
     }
 }
 
-function process_ci_context_hooks($hooks, $method, $output, $commit_id, $verbose, $dry_run, $limit_to, &$context)
+function process_ci_context_hooks($method, $output, $commit_id, $verbose, $dry_run, $limit_to, &$context)
 {
-    foreach ($hooks as $hook => $ob) {
-        if (!isset($context[$hook])) {
+    foreach ($context as $hook => $data) {
+        $ob = get_hook_ob('systems', 'continuous_integration', $hook, 'Hook_ci_', true);
+        if ($ob === null) {
             continue;
         }
 

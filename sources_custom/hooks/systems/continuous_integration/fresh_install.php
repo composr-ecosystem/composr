@@ -83,22 +83,17 @@ class Hook_ci_fresh_install
         }
 
         if ($output) {
-            echo "\n" . 'Cleaning up fresh installation... ';
+            echo "\n" . 'Cleaning up fresh install database... ';
         }
 
         $table_prefix = $GLOBALS['SITE_DB']->get_table_prefix();
 
-        if (strpos($table_prefix, 'ci') !== 0) {
-            @unlink(get_file_base() . '/_config.php');
-            @rename(get_file_base() . '/_config_ci.php.bak', get_file_base() . '/_config.php');
-
+        if (strpos($table_prefix, 'ci_') !== 0) {
             if ($output) {
                 echo 'NOT NECESSARY';
             }
 
-            // Cannot continue CI on this process since we have a new database
-            unset($context['fresh_install']);
-            return false;
+            return true;
         }
 
         // Delete database tables
@@ -120,14 +115,45 @@ class Hook_ci_fresh_install
             $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta_indices');
         }
 
-        @unlink(get_file_base() . '/_config.php');
-        @rename(get_file_base() . '/_config_php.bak', get_file_base() . '/_config.php');
 
         if ($output) {
             echo 'DONE';
         }
 
-        // Cannot continue CI on this process since we have a new database
+        return true;
+    }
+
+    public function after_checkout($output, $commit_id, $verbose, $dry_run, $limit_to, &$context)
+    {
+        if (!addon_installed('testing_platform')) {
+            return true;
+        }
+
+        if ($context['fresh_install'] !== '0') {
+            return true;
+        }
+
+        if ($output) {
+            echo "\n" . 'Cleaning up git repository... ';
+        }
+
+        // Load in our backup config file before reset
+        $config_file_path = get_file_base() . '/_config.php.bak';
+        $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
+
+        // We also need to load in the ci_queue.bin file
+        require_code('continuous_integration');
+        $commit_queue = cms_file_get_contents_safe(CI_COMMIT_QUEUE_PATH, FILE_READ_LOCK);
+
+        // Reset
+        shell_exec('git clean -fdx');
+
+        // Put our config and ci queue files back where they belong
+        require_code('files');
+        cms_file_put_contents_safe(get_file_base() . '/_config.php', $config_file); // bak file now becomes the main file
+        cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, $commit_queue);
+
+        // Cannot continue CI on this process since we changed config files
         unset($context['fresh_install']);
         return false;
     }
