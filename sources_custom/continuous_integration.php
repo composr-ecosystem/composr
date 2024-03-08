@@ -294,7 +294,15 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
         $time = $after - $before;
 
         $success = (strpos($result, 'Failures: 0, Exceptions: 0') !== false);
-        $details = ['result' => $result, 'time' => $time, 'stub' => ' [time = ' . float_format($time) . ' seconds]'];
+
+        $matches = [];
+        if (preg_match('/^.*Test cases run.*$/m', $result, $matches)) {
+            $result_count = $matches[0];
+        } else {
+            $result_count = $success ? 'Success (unknown counts)' : 'Failure (unknown counts)';
+        }
+
+        $details = ['result' => $result, 'count' => $result_count, 'time' => $time, 'stub' => ' [time = ' . float_format($time) . ' seconds]'];
         if ($success) {
             $successes[$test] = $details;
         } else {
@@ -319,12 +327,16 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
 
         if (!empty($fails)) {
             foreach ($fails as $test => $details) {
-                $result = $details['result'];
-                if (strlen($result) > 1000) {
-                    $result = substr($result, 0, 100) . '...';
+                if ($verbose) {
+                    $result = $details['result'];
+                    if (strlen($result) > 900) {
+                        $result = substr($result, 0, 900) . '...' . "\n" . $details['count'];
+                    }
+                    $results .= $test . $details['stub'] . "\n" . str_repeat('=', strlen($test)) . "\n\n" . $result . "\n\n";
+                } else {
+                    $result = $details['count'];
+                    $results .= $test . $details['stub'] . '... ' . $result . "\n";
                 }
-
-                $results .= $test . $details['stub'] . "\n" . str_repeat('=', strlen($test)) . "\n\n" . $result . "\n\n";
             }
         } else {
             $results .= '(none)' . "\n\n";
