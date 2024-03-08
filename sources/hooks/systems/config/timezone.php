@@ -72,11 +72,7 @@ class Hook_config_timezone
             $current_value = convert_timezone_offset_to_formal_timezone(floatval($current_value));
         }
 
-        $list = '';
-        $timezone = get_site_timezone();
-        foreach (get_timezone_list() as $_timezone => $timezone_nice) {
-            $list .= static_evaluate_tempcode(form_input_list_entry($_timezone, $_timezone == $current_value, $timezone_nice));
-        }
-        return form_input_list($human_name, $explanation, $config_field_name, make_string_tempcode($list));
+        require_code('form_templates');
+        return form_input_timezone($human_name, $explanation, $config_field_name, $current_value);
     }
 }

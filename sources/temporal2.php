@@ -34,8 +34,8 @@ function make_nice_timezone_name(string $in) : string
 }
 
 /**
- * Get a list of timezones.
- * We merge tzinfo zones into a simpler list. It makes things nice and compact and save on memory use.
+ * Generate and return a list of timezones.
+ * This also saves into the cache for quick access from get_timezone_list().
  *
  * @param  boolean $translate_for_dst Translate written timezone offsets for current DST status
  * @return array Timezone (map between boring-style and human-readable name). Sorted in offset order then likelihood order.
@@ -44,6 +44,48 @@ function make_nice_timezone_name(string $in) : string
  */
 function _get_timezone_list(bool $translate_for_dst = true) : array
 {
+    // Specific city name overrides
+    $overrides = [
+        'Antarctica/DumontDUrville' => 'Dumont d\'Urville'
+    ];
+
+    $ret = [];
+
+    $timezones = timezone_identifiers_list();
+    foreach ($timezones as $timezone) {
+        if ($timezone == 'UTC') { // Special meaning
+            continue;
+        }
+
+        // Get the timezone offset
+        $date_tz = new DateTimeZone($timezone);
+        $datetime = date_create('now', $date_tz);
+        $_offset = $date_tz->getOffset($datetime);
+
+        // Create the offset text
+        $offset = floatval($_offset) / 3600.0;
+        $offset_text = ' (UTC';
+        $offset_text .= ($offset < 0.0) ? '-' : '+';
+        $offset_abs = abs($offset);
+        $hours = intval(floor($offset_abs));
+        $offset_text .= str_pad(strval($hours), 2, '0', STR_PAD_LEFT);
+        $offset_text .= ':';
+        $offset_text .= str_pad(strval(abs($hours - $offset_abs) * 100), 2, '0', STR_PAD_LEFT);
+        $offset_text .= ')';
+
+        // Add to array
+        $city = array_key_exists($timezone, $overrides) ? $overrides[$timezone] : ucwords(str_replace('_', ' ', preg_replace('#^.*/#', '', $timezone)));
+        $ret[$timezone] = $city . $offset_text;
+
+        // Free up memory
+        unset($date_tz);
+        unset($datetime);
+    }
+
+    require_code('caches2');
+    set_cache_entry('timezone_list', (60 * 24), serialize(['type' => 'flat']), $ret);
+
+    /*
     $ret = [
         'Pacific/Midway' => '(UTC-11:00) Midway Island, Niue, Pago Pago, Samoa',
         'America/Adak' => '(UTC-10:00) Adak, Hawaii-Aleutian',
@@ -119,7 +161,9 @@ function _get_timezone_list(bool $translate_for_dst = true) : array
         'Pacific/Chatham' => '(UTC+13:45) Chatham Islands',
         'Pacific/Kiritimati' => '(UTC+14:00) Kiritimati',
     ];
+    */
 
+    /*
     if ($translate_for_dst) {
         // Make shown times dynamic to consider DST etc
         foreach ($ret as $zone => $title) {
@@ -142,6 +186,7 @@ function _get_timezone_list(bool $translate_for_dst = true) : array
             $ret[$zone] = $bits[0];
         }
     }
+    */
 
     return $ret;
 }

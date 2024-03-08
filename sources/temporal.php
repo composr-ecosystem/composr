@@ -261,10 +261,19 @@ function find_timezone_offset(int $time, string $zone) : int
 /**
  * Get a list of timezones.
  *
+ * @param  boolean $bypass_cache Whether to bypass the timezone cache
  * @return array Timezone (map between boring-style and human-readable name). Sorted in offset order then likelihood order.
  */
-function get_timezone_list() : array
+function get_timezone_list($bypass_cache = false) : array
 {
+    if (!$bypass_cache) {
+        require_code('caches');
+        $ret = get_cache_entry('timezone_list', serialize(['type' => 'flat']));
+        if ($ret) {
+            return $ret;
+        }
+    }
+
     require_code('temporal2');
     return _get_timezone_list();
 }

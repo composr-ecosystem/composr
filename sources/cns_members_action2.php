@@ -117,26 +117,6 @@ function member_get_spreadsheet_headings() : array
 }
 
 /**
- * Get a nice, formatted, HTML list of all the timezones.
- *
- * @param  ?string $timezone Current timezone to select (null: server default)
- * @return Tempcode List of timezones
- */
-function create_selection_list_timezone_list(?string $timezone = null) : object
-{
-    if ($timezone === null) {
-        $timezone = get_site_timezone();
-    }
-
-    $timezone_list = '';
-    $time_now = time();
-    foreach (get_timezone_list() as $_timezone => $timezone_nice) {
-        $timezone_list .= '<option ' . (($timezone == $_timezone) ? 'selected="selected" ' : '') . 'value="' . escape_html($_timezone) . '">' . escape_html($timezone_nice) . '</option>'; // XHTMLXHTML
-    }
-    return make_string_tempcode($timezone_list);
-}
-
-/**
  * If we are using human names for usernames, a conflict is likely. Store a suffixed variety. Maybe later Composr will strip these suffixes out in some contexts.
  *
  * @param  SHORT_TEXT $username The desired human name for the member profile
@@ -625,8 +605,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
     // Timezones, if enabled
     if ($doing_timezones) {
-        $timezone_list = create_selection_list_timezone_list($timezone);
-        $fields->attach(form_input_list(do_lang_tempcode('TIMEZONE'), do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER'), 'timezone', $timezone_list));
+        $fields->attach(form_input_timezone(do_lang_tempcode('TIMEZONE'), do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER'), 'timezone', $timezone));
     }
 
     // Language choice, if we have multiple languages on site

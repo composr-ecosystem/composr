@@ -689,7 +689,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/___search.php',
             '_tests/tests/unit_tests/___static_caching.php',
             '_tests/tests/unit_tests/___third_party_code.php',
-            '_tests/tests/unit_tests/___timezones.php',
+            '_tests/tests/unit_tests/___timezones.php.bak',
             '_tests/tests/unit_tests/__backups.php',
             '_tests/tests/unit_tests/__broken_links.php',
             '_tests/tests/unit_tests/__critical_error_display.php',

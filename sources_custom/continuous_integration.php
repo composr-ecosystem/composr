@@ -340,12 +340,12 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
                 if ($verbose) {
                     $result = $details['result'];
                     if (strlen($result) > 900) {
-                        $result = substr($result, 0, 900) . '...' . "\n" . $details['count'];
+                        $result = substr($result, 0, 900) . '...' . "\n\n" . $details['count'];
                     }
                     $results .= $test . $details['stub'] . "\n" . str_repeat('=', strlen($test)) . "\n\n" . $result . "\n\n";
                 } else {
                     $result = $details['count'];
-                    $results .= $test . $details['stub'] . '... ' . $result . "\n";
+                    $results .= $test . $details['stub'] . '... ' . $result . "\n\n";
                 }
             }
         } else {

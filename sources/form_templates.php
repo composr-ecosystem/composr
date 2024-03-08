@@ -2686,6 +2686,66 @@ function form_input_float($pretty_name, $description, string $name, ?float $defa
 }
 
 /**
+ * Create a list entry for a timezone.
+ *
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
+ * @param  ID_TEXT $name The name which this input field is for
+ * @param  string $default The selected value by default (blank: none)
+ * @param  boolean $required Whether this is required
+ * @param  integer $size How much space the list takes up (inline lists only)
+ * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @return Tempcode The input field
+ */
+function form_input_timezone($pretty_name, $description, string $name, string $default = '', bool $required = true, int $size = 10, $autocomplete = null) : object
+{
+    require_code('caches');
+
+    // Group timezones by region
+    $timezones = get_cache_entry('timezone_list', serialize(['type' => 'grouped']));
+    if ($timezones === null) {
+        require_code('temporal');
+        require_code('caches2');
+
+        $timezones = [];
+        foreach (get_timezone_list() as $timezone => $text) {
+            if (strpos($timezone, '/') !== false) {
+                $parts = explode('/', $timezone);
+                $region = $parts[0];
+
+                if (!isset($timezones[$region])) {
+                    $timezones[$region] = [];
+                }
+                $timezones[$region][$timezone] = $text;
+            } else {
+                if (!isset($timezones['OTHER'])) {
+                    $timezones['OTHER'] = [];
+                }
+                $timezones['OTHER'][$timezone] = $text;
+            }
+        }
+        set_cache_entry('timezone_list', (60 * 24), serialize(['type' => 'grouped']), $timezones);
+    }
+
+    // Populate our list
+    $list = new Tempcode();
+    foreach ($timezones as $region => $entries) {
+        $list_group = new Tempcode();
+        foreach ($entries as $timezone => $text) {
+            $list_group->attach(form_input_list_entry($timezone, $timezone == $default, $text));
+        }
+        if ($region == 'OTHER') { // FUDGE to prevent adding language strings to the cache
+            $region = do_lang('OTHER');
+        }
+        $list->attach(form_input_list_group($region, $list_group));
+    }
+
+    unset($timezones);
+
+    return form_input_list($pretty_name, $description, $name, $list, null, false, $required, null, $size, $autocomplete);
+}
+
+/**
  * Start off a field set.
  *
  * IMPORTANT: Note that this function uses global state -- any fields generated between alternate_fields_set__start and alternate_fields_set__end will be rendered using field set templating.

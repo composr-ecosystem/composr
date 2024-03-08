@@ -385,11 +385,7 @@ class Module_admin_setupwizard
 
         $fields->attach(form_input_line(do_lang_tempcode('KEYWORDS'), do_lang_tempcode('CONFIG_OPTION_keywords'), 'keywords', $keywords, false));
 
-        $timezone_list = '';
-        foreach (get_timezone_list() as $_timezone => $timezone_nice) {
-            $timezone_list .= static_evaluate_tempcode(form_input_list_entry($_timezone, $_timezone == $timezone, $timezone_nice));
-        }
-        $fields->attach(form_input_list(do_lang_tempcode('TIMEZONE'), do_lang_tempcode('CONFIG_OPTION_timezone'), 'timezone', make_string_tempcode($timezone_list)));
+        $fields->attach(form_input_timezone(do_lang_tempcode('TIMEZONE'), do_lang_tempcode('CONFIG_OPTION_timezone'), 'timezone', $timezone));
 
         $fields->attach(form_input_line(do_lang_tempcode('GOOGLE_ANALYTICS'), do_lang_tempcode('CONFIG_OPTION_google_analytics'), 'google_analytics', $google_analytics, false));
 
