@@ -119,7 +119,12 @@ function continuous_integration_script()
                     }
                 }
             }
-            $context = json_decode(get_param_string('context', '{}'), true);
+            $context = [];
+            foreach ($_GET as $name => $value) {
+                if (strpos($name, 'context__') === 0) {
+                    $context[$name] = get_param_string($name);
+                }
+            }
             enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output);
 
             $immediate = (get_param_integer('immediate', 0) == 1) || ($cli);
@@ -175,6 +180,7 @@ function load_ci_queue()
     $blank_queue = [
         'queue' => [],
         'lock_timestamp' => null,
+        'lock_commit' => null,
     ];
 
     if (is_file(CI_COMMIT_QUEUE_PATH)) {
@@ -188,9 +194,13 @@ function load_ci_queue()
     return $commit_queue;
 }
 
-function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output)
+function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, $lock_to_commit = null)
 {
     $commit_queue = load_ci_queue();
+    if (is_string($lock_to_commit)) {
+        $commit_queue['lock_timestamp'] = null;
+        $commit_queue['lock_commit'] = $lock_to_commit;
+    }
 
     // Write to queue
     $queue_item = ['commit_id' => $commit_id, 'verbose' => $verbose, 'dry_run' => $dry_run, 'limit_to' => $limit_to, 'context' => $context];
@@ -213,12 +223,19 @@ function process_ci_queue($output, $ignore_lock = false, $lifo = false)
 
     $commit_queue = load_ci_queue();
     $prior_lock_timestamp = $commit_queue['lock_timestamp'];
+    $prior_lock_commit = $commit_queue['lock_commit'];
 
     if (($prior_lock_timestamp === null) || ($ignore_lock)) {
-        if ($lifo) {
-            $next_commit_details = array_pop($commit_queue['queue']);
+        if (is_string($prior_lock_commit)) {
+            $next_commit_index = array_search($prior_lock_commit, collapse_1d_complexity('commit_id', $commit_queue['queue']));
+            if ($next_commit_index !== false) {
+                $next_commit_details = $commit_queue['queue'][$next_commit_index];
+                unset($commit_queue['queue'][$next_commit_index]);
+            } else {
+                $next_commit_details = array_pop($commit_queue['queue']);
+            }
         } else {
-            $next_commit_details = array_shift($commit_queue['queue']);
+            $next_commit_details = array_pop($commit_queue['queue']);
         }
         if ($next_commit_details !== null) {
             // Lock (and remove from queue)
@@ -231,11 +248,19 @@ function process_ci_queue($output, $ignore_lock = false, $lifo = false)
             $dry_run = $next_commit_details['dry_run'];
             $limit_to = $next_commit_details['limit_to'];
             $context = $next_commit_details['context'];
+
+            if ($output) {
+                echo "\n" . 'Running test on commit ' . $commit_id;
+            }
+
             $results = test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $context);
 
             // Unlock
-            $commit_queue['lock_timestamp'] = null;
-            cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, serialize($commit_queue));
+            if ($results !== false) {
+                $commit_queue['lock_timestamp'] = null;
+                $commit_queue['lock_commit'] = null;
+                cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, serialize($commit_queue));
+            }
         } else {
             if ($output) {
                 echo 'Queue is empty';
@@ -252,24 +277,72 @@ function process_ci_queue($output, $ignore_lock = false, $lifo = false)
     }
 }
 
-function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $context)
+function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, &$context)
 {
-    // We do not currently do anything with $context. Future work would be to be able to use it to switch main configuration (e.g. database backend).
-
     $old_branch = git_repos();
 
-    if ($commit_id != 'HEAD') {
+    $hooks = find_all_hook_obs('systems', 'continuous_integration', 'Hook_ci_');
+
+    if (!process_ci_context_hooks($hooks, 'before_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        if ($output) {
+            echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
+        }
+        return false;
+    }
+
+    if (($commit_id != 'HEAD') && ((!isset($context['do_first_checkout'])) || ($context['do_first_checkout'] !== false))) {
+        if ($output) {
+            echo "\n" . 'Checking out commit';
+        }
+        shell_exec('git stash push 2>&1');
         shell_exec('git fetch 2>&1');
         $msg = shell_exec('git checkout ' . escapeshellarg($commit_id) . ' 2>&1');
         if (trim(shell_exec('git rev-parse HEAD 2>&1')) != $commit_id) {
+            shell_exec('git stash pop 2>&1');
             throw new Exception('Failed to checkout commit ' . $commit_id . ': ' . $msg);
         }
+        $context['do_first_checkout'] = false;
     }
 
-    $results = run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limit_to);
+    if (!process_ci_context_hooks($hooks, 'before', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        if ($output) {
+            echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
+        }
+        return false;
+    }
 
-    if (($commit_id != 'HEAD') && ($commit_id != $old_branch)) {
-        shell_exec('git checkout ' . $old_branch . ' 2>&1');
+    if (!isset($context['results'])) {
+        $results = run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limit_to);
+    } else {
+        $results = $context['results'];
+    }
+
+    if (!process_ci_context_hooks($hooks, 'after', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+        $context['results'] = $results;
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        if ($output) {
+            echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
+        }
+        return false;
+    }
+
+    if (($commit_id != 'HEAD') && ((!isset($context['do_last_checkout'])) || ($context['do_last_checkout'] !== false))) {
+        if (($commit_id != $old_branch)) {
+            shell_exec('git checkout ' . $old_branch . ' 2>&1');
+        }
+        shell_exec('git stash pop 2>&1');
+        $context['do_last_checkout'] = false;
+    }
+
+    if (!process_ci_context_hooks($hooks, 'after_checkout', $output, $commit_id, $verbose, $dry_run, $limit_to, $context)) {
+        $context['results'] = $results;
+        enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output, true);
+        if ($output) {
+            echo "\n" . 'Need to defer continuous integration to another process / iteration. Re-added to queue.';
+        }
+        return false;
     }
 
     return $results;
@@ -405,4 +478,22 @@ function post_results_to_commit($commit_id, $note)
     if (substr($result->message, 0, 1) != '2') {
         throw new Exception($result->data);
     }
+}
+
+function process_ci_context_hooks($hooks, $method, $output, $commit_id, $verbose, $dry_run, $limit_to, &$context)
+{
+    foreach ($hooks as $hook => $ob) {
+        if (!isset($context[$hook])) {
+            continue;
+        }
+
+        if (method_exists($ob, $method)) {
+            $can_continue = call_user_func_array([$ob, $method], [$output, $commit_id, $verbose, $dry_run, $limit_to, &$context]);
+            if (!$can_continue) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }

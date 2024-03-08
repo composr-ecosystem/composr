@@ -13,7 +13,7 @@
  * @package    meta_toolkit
  */
 
-function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [], $do_index_test = true, $db_type = null)
+function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [], $do_index_test = true, $db_type = null, $keep_config = false)
 {
     if ($db_type === null) {
         $db_type = get_db_type();
@@ -57,8 +57,10 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
         }
     }
 
-    @unlink(get_file_base() . '/_config.php');
-    @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
+    if (!$keep_config) {
+        @unlink(get_file_base() . '/_config.php');
+        @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
+    }
 
     return $success;
 }
