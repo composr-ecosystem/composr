@@ -248,7 +248,7 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
     }
 
     $theme_images_to_skip_path_map = [];
-    foreach ($theme_images_to_skip as $theme_image) {
+    foreach ($theme_images_to_skip as $theme_image => $image_is_multi_lang) {
         $path = get_custom_file_base() . '/' . urldecode(find_theme_image($theme_image, false, false, $theme));
         if (!is_file($path)) {
             $path = get_file_base() . '/' . urldecode(find_theme_image($theme_image, false, false, $theme));
