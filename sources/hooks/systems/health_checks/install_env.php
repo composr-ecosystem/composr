@@ -331,11 +331,13 @@ class Hook_health_check_install_env extends Hook_Health_Check
             // Probably running from the installer, let's see if we can detect MySQL client via command line (we'll assume user is a MySQL user as that is the default)
             if (php_function_allowed('shell_exec')) {
                 $_version = shell_exec('mysql -V');
-                $matches = [];
-                if (preg_match('#Distrib ([^\s]*)#', $_version, $matches) != 0) {
-                    $version = $matches[1];
-                } elseif (preg_match('#Ver ([^\s]*)#', $_version, $matches) != 0) {
-                    $version = $matches[1];
+                if ($_version !== null) {
+                    $matches = [];
+                    if (preg_match('#Distrib ([^\s]*)#', $_version, $matches) != 0) {
+                        $version = $matches[1];
+                    } elseif (preg_match('#Ver ([^\s]*)#', $_version, $matches) != 0) {
+                        $version = $matches[1];
+                    }
                 }
             }
 
