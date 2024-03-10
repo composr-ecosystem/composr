@@ -70,7 +70,11 @@ class Hook_ci_fresh_install
         // The installer test will overwrite this if we do not use a different name
         @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php.ci.bak');
 
-        // Cannot continue CI on this process since we have a new database
+        // Copy recommended.htaccess to .htaccess
+        $htaccess = cms_file_get_contents_safe(get_file_base() . '/recommended.htaccess', FILE_READ_LOCK);
+        cms_file_put_contents_safe(get_file_base() . '/.htaccess', $htaccess);
+
+        // Cannot continue CI on this process since we have a new config
         $context['fresh_install'] = '0';
         return false;
     }
@@ -148,13 +152,18 @@ class Hook_ci_fresh_install
         require_code('continuous_integration');
         $commit_queue = cms_file_get_contents_safe(CI_COMMIT_QUEUE_PATH, FILE_READ_LOCK);
 
-        // Reset
+        // Hard reset our git repository to remove all stray files created by the unit tests
+        shell_exec('git reset --hard origin/' . $context['old_branch']);
         shell_exec('git clean -fdx');
 
         // Put our config and ci queue files back where they belong
         require_code('files');
         cms_file_put_contents_safe(get_file_base() . '/_config.php', $config_file); // bak file now becomes the main file
         cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, $commit_queue);
+
+        // Also copy recommended.htaccess back to .htaccess
+        $htaccess = cms_file_get_contents_safe(get_file_base() . '/recommended.htaccess', FILE_READ_LOCK);
+        cms_file_put_contents_safe(get_file_base() . '/.htaccess', $htaccess);
 
         // Cannot continue CI on this process since we changed config files
         unset($context['fresh_install']);

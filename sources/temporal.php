@@ -266,8 +266,6 @@ function find_timezone_offset(int $time, string $zone) : int
  */
 function get_timezone_list($bypass_cache = false) : array
 {
-    return [];
-
     if (!$bypass_cache) {
         require_code('caches');
         $ret = get_cache_entry('timezone_list', serialize(['type' => 'flat']));
