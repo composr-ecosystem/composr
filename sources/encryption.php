@@ -206,17 +206,17 @@ function decrypt_data(string $data, string $passphrase, ?string &$error_msg = nu
 }
 
 /**
- * Get the contents of the software's public key file.
+ * Get the contents of the software's public key file for telemetry use.
  *
  * @param  ?float $version The version of the software of which to return the public key (null: return the key bundled with this version)
  * @return ~string File contents (false: error)
  */
-function cms_get_public_key(float $version = null)
+function get_public_key_telemetry(float $version = null)
 {
     if ($version === null) {
-        return cms_file_get_contents_safe(get_file_base() . '/data/keys/key.pub', FILE_READ_LOCK);
+        return cms_file_get_contents_safe(get_file_base() . '/data/keys/telemetry.pub', FILE_READ_LOCK);
     }
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/build-' . strval($version) . '.pub', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.pub', FILE_READ_LOCK);
 }
 
 /**
@@ -225,22 +225,21 @@ function cms_get_public_key(float $version = null)
  * @param  float $version The version of the software of which to return the private key
  * @return ~string File contents (false: error)
  */
-function cms_get_private_key(float $version)
+function get_private_key_telemetry(float $version)
 {
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/build-' . strval($version) . '.key', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.key', FILE_READ_LOCK);
 }
 
 /**
- * Encrypt some data using symmetric encryption and the software's public key.
- * This is different from encrypt_data such that it uses the software's bundled public key instead of the site's key and is symmetric.
+ * Encrypt some data for telemetry using symmetric encryption and the software's public key.
  *
  * @param  string $data The data to encrypt
  * @return array Map of parameters for the JSON payload
  */
-function encrypt_data_symmetric(string $data) : array
+function encrypt_data_telemetry(string $data) : array
 {
     // Get and decode the public key
-    $_public_key = cms_get_public_key();
+    $_public_key = get_public_key_telemetry();
     if ($_public_key === false) {
         warn_exit(do_lang_tempcode('MISSING_PUBLIC_KEY'));
     }
@@ -270,8 +269,7 @@ function encrypt_data_symmetric(string $data) : array
 }
 
 /**
- * Decrypt some data using symmetric decryption and the software's private keys.
- * This is different from decrypt_data such that it uses the software's private keys instead of the site's key and is symmetric. You must have the version's private key in data_custom/keys.
+ * Decrypt some data for telemetry using symmetric decryption and the software's private key.
  *
  * @param  string $nonce_base64 The base64-encoded nonce
  * @param  string $encrypted_data_base64 The base64-encoded encrypted data
@@ -279,10 +277,10 @@ function encrypt_data_symmetric(string $data) : array
  * @param  float $version The version of the software which encrypted the data
  * @return string The decrypted data
  */
-function decrypt_data_symmetric(string $nonce_base64, string $encrypted_data_base64, string $encrypted_session_key_base64, float $version) : string
+function decrypt_data_telemetry(string $nonce_base64, string $encrypted_data_base64, string $encrypted_session_key_base64, float $version) : string
 {
     // Get and decode the private key
-    $_private_key = cms_get_private_key($version);
+    $_private_key = get_private_key_telemetry($version);
     if ($_private_key === false) {
         warn_exit(do_lang_tempcode('MISSING_PRIVATE_KEY', escape_html(float_to_raw_string($version))));
     }
@@ -291,7 +289,7 @@ function decrypt_data_symmetric(string $nonce_base64, string $encrypted_data_bas
         warn_exit(do_lang_tempcode('CORRUPT_PRIVATE_KEY', escape_html(float_to_raw_string($version))));
     }
     // Get and decode the public key
-    $_public_key = cms_get_public_key($version);
+    $_public_key = get_public_key_telemetry($version);
     if ($_public_key === false) {
         warn_exit(do_lang_tempcode('_MISSING_PUBLIC_KEY', escape_html(float_to_raw_string($version))));
     }
@@ -308,19 +306,19 @@ function decrypt_data_symmetric(string $nonce_base64, string $encrypted_data_bas
     $encrypted_session_key = base64_decode($encrypted_session_key_base64);
     $nonce = base64_decode($nonce_base64);
     if (($encrypted_data === false) || ($encrypted_session_key === false) || ($nonce === false)) {
-        warn_exit(do_lang_tempcode('INVALID_SYMMETRIC_DATA'));
+        warn_exit(do_lang_tempcode('INVALID_TELEMETRY_DATA'));
     }
 
     // Decrypt the session key using the recipient's private key
     $session_key = sodium_crypto_box_seal_open($encrypted_session_key, $key_pair);
     if ($session_key === false) {
-        warn_exit(do_lang_tempcode('INVALID_SYMMETRIC_DATA'));
+        warn_exit(do_lang_tempcode('INVALID_TELEMETRY_DATA'));
     }
 
     // Decrypt the data using the session key and nonce
     $data = sodium_crypto_secretbox_open($encrypted_data, $nonce, $session_key);
     if ($data === false) {
-        warn_exit(do_lang_tempcode('INVALID_SYMMETRIC_DATA'));
+        warn_exit(do_lang_tempcode('INVALID_TELEMETRY_DATA'));
     }
 
     return $data;

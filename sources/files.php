@@ -653,7 +653,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'csprj' => '.*', // Code Lobster
         'geany' => '', // Geany
 
-        // Keys generated in data_custom (only meant for the composr_homesite server)
+        // Telemetry keys generated from release build (only the ones in data/keys should be included in the build)
         'key' => 'data_custom/keys',
         'pub' => 'data_custom/keys',
     ];

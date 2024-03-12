@@ -1234,7 +1234,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
         // Send the error securely to the core developers (telemetry)
         require_code('encryption');
         require_code('version');
-        $_payload = encrypt_data_symmetric($mail->evaluate());
+        $_payload = encrypt_data_telemetry($mail->evaluate());
         $_payload['version'] = cms_version_number();
         $payload = json_encode($_payload);
         if ($payload === false) {

@@ -668,7 +668,7 @@ class Hook_addon_registry_core
             'data/guids.bin',
             'data/keys/index.html',
             'data/keys/.htaccess',
-            'data/keys/key.pub',
+            'data/keys/telemetry.pub',
             'data/iframe.php',
             'data/images/.htaccess',
             'data/images/index.html',

@@ -395,15 +395,15 @@ function server__public__relay_error_notification()
 
     // Sanity checks
     if ($data === false) {
-        exit('Invalid payload');
+        exit('Invalid telemetry data');
     }
     if (!array_key_exists('nonce', $data) || !array_key_exists('encrypted_data', $data) || !array_key_exists('encrypted_session_key', $data) || !array_key_exists('version', $data)) {
-        exit('Invalid payload');
+        exit('Invalid telemetry data');
     }
 
     // Decrypt our message
     require_code('encryption');
-    $data = decrypt_data_symmetric($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
+    $data = decrypt_data_telemetry($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
 
     // TODO: implement telemetry with our data
 }

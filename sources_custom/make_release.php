@@ -79,11 +79,11 @@ function make_installers($skip_file_grab = false)
         fix_permissions($builds_path . '/builds/build/' . $version_branch . '/install.php');
 
         // Generate key pair
-        generate_version_key_pair($version, (post_param_integer('overwrite_key_pair', 0) == 1));
+        generate_telemetry_key_pair($version, (post_param_integer('overwrite_key_pair', 0) == 1));
 
-        // Copy new public key to our static "key" file
-        @copy(get_file_base() . '/data_custom/keys/build-' . strval($version) . '.pub', get_file_base() . '/data/keys/key.pub');
-        fix_permissions(get_file_base() . '/data/keys/key.pub');
+        // Copy new public key to our static "telemetry" file
+        @copy(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.pub', get_file_base() . '/data/keys/telemetry.pub');
+        fix_permissions(get_file_base() . '/data/keys/telemetry.pub');
 
         // Get file data array
         $out .= '<ul>';
@@ -1209,9 +1209,9 @@ function _guid_scan_callback($match)
  * @param  boolean $overwrite_existing Whether to overwrite an existing key pair
  * @throws SodiumException
  */
-function generate_version_key_pair(float $version, bool $overwrite_existing = false)
+function generate_telemetry_key_pair(float $version, bool $overwrite_existing = false)
 {
-    $key_path = get_file_base() . '/data_custom/keys/build-' . strval($version);
+    $key_path = get_file_base() . '/data_custom/keys/telemetry-' . strval($version);
 
     // Key already exists, so nothing to do
     if (!$overwrite_existing && file_exists($key_path . '.key')) {
