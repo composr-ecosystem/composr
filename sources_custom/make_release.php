@@ -49,7 +49,9 @@ function make_installers($skip_file_grab = false)
     $out = '';
     $out .= '<p>A Composr build is being compiled and packed up into installation packages.</p>';
 
+    require_code('version');
     require_code('version2');
+    $version = cms_version_number();
     $version_dotted = get_version_dotted();
     $version_branch = get_version_branch();
 
@@ -75,6 +77,13 @@ function make_installers($skip_file_grab = false)
     if (!$skip_file_grab) {
         @copy(get_file_base() . '/install.php', $builds_path . '/builds/build/' . $version_branch . '/install.php');
         fix_permissions($builds_path . '/builds/build/' . $version_branch . '/install.php');
+
+        // Generate key pair
+        generate_version_key_pair($version, (post_param_integer('overwrite_key_pair', 0) == 1));
+
+        // Copy new public key to our static "key" file
+        @copy(get_file_base() . '/data_custom/keys/build-' . strval($version) . '.pub', get_file_base() . '/data/keys/key.pub');
+        fix_permissions(get_file_base() . '/data/keys/key.pub');
 
         // Get file data array
         $out .= '<ul>';
@@ -586,6 +595,8 @@ function do_build_archive_output($file, $new_output)
 function populate_build_files_list($dir = '', $pretend_dir = '')
 {
     require_code('files');
+    require_code('version');
+    require_code('version2');
 
     disable_php_memory_limit();
 
@@ -595,6 +606,7 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
 
     $out = '';
 
+    $version = cms_version_number();
     $version_branch = get_version_branch();
 
     // Imply files into the root that we would have skipped
@@ -1187,6 +1199,39 @@ function _guid_scan_callback($match)
     }
 
     return $full_match_line;
+}
+
+/**
+ * Generate a public and private key pair for this version of the software and save it into the data_custom/keys directory.
+ * You should copy the public key to data/key.pub during the build process.
+ *
+ * @param  float $version The major.minor version for which we are generating a key pair
+ * @param  boolean $overwrite_existing Whether to overwrite an existing key pair
+ * @throws SodiumException
+ */
+function generate_version_key_pair(float $version, bool $overwrite_existing = false)
+{
+    $key_path = get_file_base() . '/data_custom/keys/build-' . strval($version);
+
+    // Key already exists, so nothing to do
+    if (!$overwrite_existing && file_exists($key_path . '.key')) {
+        return;
+    }
+
+    $key_pair = sodium_crypto_box_keypair();
+
+    // Extract the public and private keys
+    $public_key = sodium_crypto_box_publickey($key_pair);
+    $private_key = sodium_crypto_box_secretkey($key_pair);
+
+    // Convert keys to base64
+    $public_key_base64 = base64_encode($public_key);
+    $private_key_base64 = base64_encode($private_key);
+
+    // Save our keys
+    require_code('files2');
+    cms_file_put_contents_safe($key_path . '.pub', $public_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($key_path . '.key', $private_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
 
 // See phpdoc_parser.php for functions.bin manifest building

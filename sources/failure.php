@@ -1153,6 +1153,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
     $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $developers ? '?' : get_ip_address(), get_site_default_lang());
     dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     if (
+        ($mail !== null) &
         ($developers) &&
         (get_option('send_error_emails_developers') == '1') &&
         (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
@@ -1165,21 +1166,21 @@ function relay_error_notification(string $text, bool $developers = true, string 
         (strpos($text, 'Can\'t contact LDAP server') === false) && // LDAP error, network issue
         (strpos($text, 'Unknown: failed to open stream') === false) && // Comes up on some free webhosts
         (strpos($text, 'failed with: Connection refused') === false) && // Memcache error
-        (strpos($text, 'data/commandr.php') === false) &&
+        (strpos($text, 'data/commandr.php') === false) && // Could be a user input error
         (strpos($text, '.less problem') === false) &&
         (strpos($text, '/mini') === false) &&
         (strpos($text, 'A transaction for the wrong IPN e-mail went through') === false) &&
-        (strpos($text, 'XCache var cache was not initialized properly') === false) &&
+        (strpos($text, 'XCache var cache was not initialized properly') === false) && // Cache issue
         (strpos($text, 'has been disabled for security reasons') === false) &&
         (strpos($text, 'max_questions')/*mysql limit*/ === false) &&
         (strpos($text, 'Error at offset') === false) &&
-        (strpos($text, 'expects parameter 1 to be a valid path, string given') === false) &&
-        (strpos($text, 'gd-png: fatal libpng error') === false) &&
-        (strpos($text, 'No word lists can be found for the language &quot;en&quot;') === false) &&
+        (strpos($text, 'expects parameter 1 to be a valid path, string given') === false) && // Misconfigured path or URL
+        (strpos($text, 'gd-png: fatal libpng error') === false) && // PHP extension error
+        (strpos($text, 'No word lists can be found for the language &quot;en&quot;') === false) && // EN is the default, so almost certainly a misconfiguration
         (strpos($text, 'Unable to allocate memory for pool') === false) &&
         (strpos($text, 'Out of memory') === false) &&
         (strpos($text, 'Can\'t open file') === false) &&
-        (strpos($text, 'INSERT command denied to user') === false) &&
+        (strpos($text, 'INSERT command denied to user') === false) && // Locked out database
         (strpos($text, 'Disk is full writing') === false) &&
         (strpos($text, 'Disk quota exceeded') === false) &&
         (strpos($text, 'Lock wait timeout exceeded') === false) &&
@@ -1208,7 +1209,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
         (strpos($text, 'Illegal mix of collations') === false) &&
         (strpos($text, 'Query execution was interrupted') === false) &&
         (strpos($text, 'The MySQL server is running with the --read-only option so it cannot execute this statement') === false) &&
-        (strpos($text, 'marked as crashed and should be repaired') === false) &&
+        (strpos($text, 'marked as crashed and should be repaired') === false) && // Can be fixed with the database repair tool
         (strpos($text, 'Can\'t find record in') === false) &&
         (strpos($text, 'connect to') === false) &&
         (strpos($text, 'Access denied for') === false) &&
@@ -1230,9 +1231,23 @@ function relay_error_notification(string $text, bool $developers = true, string 
         ((strpos($text, 'No such file or directory') === false) || ((strpos($text, 'admin_setupwizard') === false))) &&
         (strpos($text, 'File(/tmp/) is not within the allowed path') === false)
     ) {
-        // Send error e-mail (telemetry) to developers
-        require_code('mail');
-        dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, ['errors_final' . strval(cms_version()) . '@compo.sr'], '', '', '', ['no_cc' => true, 'as_admin' => true]);
+        // Send the error securely to the core developers (telemetry)
+        require_code('encryption');
+        require_code('version');
+        $_payload = encrypt_data_symmetric($mail->evaluate());
+        $_payload['version'] = cms_version_number();
+        $payload = json_encode($_payload);
+        if ($payload === false) {
+            cms_error_log('Telemetry error: Failed to JSON encode the payload');
+        } else {
+            $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
+            $error_code = null;
+            $error_message = null;
+            $response = cms_fsock_request($payload, $url, $error_code, $error_message);
+            if (($response === false) || ($error_message !== null)) {
+                cms_error_log('Telemetry error: ' . $error_message . escape_html($response));
+            }
+        }
     }
     if (($developers) && (get_value('agency_email_address') !== null)) {
         require_code('mail');

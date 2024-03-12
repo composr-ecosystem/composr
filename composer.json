@@ -16,6 +16,7 @@
         "ext-iconv": "*",
         "ext-zlib": "*",
         "ext-mysqli": "*",
-        "ext-ftp": "*"
+        "ext-ftp": "*",
+        "ext-sodium": "*"
     }
 }

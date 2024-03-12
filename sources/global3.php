@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fileowner|filegroup|collator_.**/
+/*EXTRA FUNCTIONS: fsockopen|fileowner|filegroup|collator_.**/
 
 /*
     global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
@@ -498,6 +498,79 @@ function cms_http_request(string $url, array $options = []) : object
 {
     require_code('http');
     return _cms_http_request($url, $options);
+}
+
+/**
+ * Make a low-level fsockopen request to an API.
+ * Ideally, you should use a secure endpoint and encrypt the data to be sent using encrypt_message().
+ *
+ * @param  string $payload The payload to send (blank: make a GET request)
+ * @param  URLPATH $url The URL to call including the path and port
+ * @param  ?integer $error_code The error code returned (passed by reference) (null: No error)
+ * @param  ?string $error_message The error message returned (passed by reference) (null: No error)
+ * @param  float $timeout The timeout in seconds
+ * @return ?string response from the fsock (null: error)
+ */
+function cms_fsock_request(string $payload, string $url, int &$error_code = null, string &$error_message = null, float $timeout = 6.0) : ?string
+{
+    cms_profile_start_for('cms_fsock_request');
+
+    require_code('encryption');
+
+    $hostname = cms_parse_url_safe($url, PHP_URL_HOST);
+    $fsock_hostname = $hostname;
+    $port = cms_parse_url_safe($url, PHP_URL_PORT);
+    if (is_encryption_available() && cms_parse_url_safe($url, PHP_URL_SCHEME) == 'https') {
+        $fsock_hostname = 'tls://' . $hostname;
+    }
+    $path = cms_parse_url_safe($url, PHP_URL_PATH);
+    $query = cms_parse_url_safe($url, PHP_URL_QUERY);
+    if ($query != '') {
+        $path .= '?' . $query;
+    }
+
+    $fsock = fsockopen($fsock_hostname, $port, $error_code, $error_message, $timeout);
+    if ($fsock === false) {
+        cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+        return null;
+    }
+
+    // Construct the HTTP request
+    if ($payload != '') {
+        $request = 'POST ' . $path . ' HTTP/1.1' . "\r\n";
+        $request .= 'Host: ' . $hostname . "\r\n";
+        $request .= 'Content-Type: application/json' . "\r\n";
+        $request .= 'Content-Length: ' . strlen($payload) . "\r\n";
+        $request .= 'Connection: close' . "\r\n\r\n";
+        $request .= $payload . "\r\n\r\n";
+    } else {
+        $request = 'GET ' . $path . ' HTTP/1.1' . "\r\n";
+        $request .= 'Host: ' . $hostname . "\r\n";
+        $request .= 'Connection: close' . "\r\n\r\n";
+    }
+
+    // Send the request
+    $fwrite = fwrite($fsock, $request);
+    if ($fwrite === false) {
+        cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+        return null;
+    }
+
+    // Read the response
+    $response = '';
+    while (!feof($fsock)) {
+        $_response = fgets($fsock, 128);
+        if ($_response === false) {
+            cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+            return false;
+        }
+        $response .= $_response;
+    }
+
+    fclose($fsock);
+
+    cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+    return $response;
 }
 
 /**

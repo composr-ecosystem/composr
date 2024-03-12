@@ -652,6 +652,10 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'clpprj' => '.*', // Code Lobster
         'csprj' => '.*', // Code Lobster
         'geany' => '', // Geany
+
+        // Keys generated in data_custom (only meant for the composr_homesite server)
+        'key' => 'data_custom/keys',
+        'pub' => 'data_custom/keys',
     ];
 
     $ignore_filename_and_dir_name_patterns = [ // Case insensitive

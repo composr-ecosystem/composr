@@ -180,6 +180,8 @@ This addon does not contain the compo.sr install code and the overall site and t
             'data_custom/demonstratr_build_database.php',
             'data_custom/demonstratr_upgrade.php',
             'data_custom/download_composr.php',
+            'data_custom/keys/index.html',
+            'data_custom/keys/.htaccess',
             'lang_custom/EN/composr_homesite.ini',
             'lang_custom/EN/sites.ini',
             'pages/minimodules_custom/contact.php',

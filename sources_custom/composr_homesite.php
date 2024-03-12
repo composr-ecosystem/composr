@@ -387,6 +387,27 @@ function server__upload_to_tracker_issue($tracker_id)
     echo strval($file_id);
 }
 
+function server__public__relay_error_notification()
+{
+    // Retrieve the JSON payload sent by the client
+    $json_payload = file_get_contents('php://input');
+    $data = json_decode($json_payload, true);
+
+    // Sanity checks
+    if ($data === false) {
+        exit('Invalid payload');
+    }
+    if (!array_key_exists('nonce', $data) || !array_key_exists('encrypted_data', $data) || !array_key_exists('encrypted_session_key', $data) || !array_key_exists('version', $data)) {
+        exit('Invalid payload');
+    }
+
+    // Decrypt our message
+    require_code('encryption');
+    $data = decrypt_data_symmetric($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
+
+    // TODO: implement telemetry with our data
+}
+
 // DEMONSTRATR
 // -----------
 

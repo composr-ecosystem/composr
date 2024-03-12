@@ -502,6 +502,13 @@ class Module_admin_make_release
                 '',
                 false
             ],
+            [
+                do_lang_tempcode('BUILD_OPTIONS_OVERWRITE_KEY_PAIR'),
+                'overwrite_key_pair',
+                '0',
+                '',
+                false
+            ]
         ], do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_BUILD_OPTIONS'), null, do_lang_tempcode('MAKE_RELEASE_STEP2_BUILD_OPTIONS'), true));
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step3'], '_SELF');
