@@ -31,7 +31,7 @@ Apart from the above caveat, this tutorial should be valid for Windows, Linux, a
 Before you install Composr:
 [list="1"]
 [*] Ensure that your webhost covers our [page="_SEARCH:tut_webhosting"]minimum requirements[/page].
-[*] Make yourself familiar with the control panel your webhost has provided. Common ones include Plesk and cPanel. Your webhost may not name the control panel, but they will have provided you to the details to log in to it. You will typically use the control panel to set many things up, including: databases, subdomains, SFTP/FTP accounts, e-mail accounts. As mentioned in the previous section, if you don't have a control panel you will need to configure things by hand.
+[*] Make yourself familiar with the control panel your webhost has provided. Common ones include {$IS_MAINTAINED,platform_plesk,Plesk} and {$IS_MAINTAINED,platform_cpanel,cPanel}. Your webhost may not name the control panel, but they will have provided you to the details to log in to it. You will typically use the control panel to set many things up, including: databases, subdomains, SFTP/FTP accounts, e-mail accounts. As mentioned in the previous section, if you don't have a control panel you will need to configure things by hand.
 [*] You also need the following information from your webhost:
  - SFTP/FTP hostname
  - SFTP/FTP username

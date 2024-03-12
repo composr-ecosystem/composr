@@ -518,8 +518,6 @@ The mail add address (POP3 and forwarding) is:
 [indent][tt]https://{DOMAIN}:8443/domains/mail/mail_name_preferences.php?mn_id=0&previous_page=mail_names[/tt][/indent]
 Forwarders are added through adding a mail address, and then specifying a forwarder for it.
 
-We're not sure if it is currently possible to manage POP3 quota with Plesk.
-
 [title="4"]For Ensim users[/title]
 
 The POP3 add address is:

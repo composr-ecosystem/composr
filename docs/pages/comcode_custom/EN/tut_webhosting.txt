@@ -21,15 +21,15 @@ We have various different installation tutorials that go into details on how to 
 [title="3"]Operating system[/title]
 
 Choices:
- - Linux (the default)
- - Mac (if you're developing on your own machine; equivalent to Linux)
- - Windows (if you're developing on your own machine or on a Windows server)
+ - {$IS_MAINTAINED,os_linux,Linux} (the default)
+ - {$IS_MAINTAINED,os_macos,Mac} (if you're developing on your own machine; equivalent to Linux)
+ - {$IS_MAINTAINED,os_windows,Windows} (if you're developing on your own machine or on a Windows server)
 
 [title="3"]Hosting control panel[/title]
 
 When you are provided webhosting, you are usually allocated a webhosting control panel that runs software such as:
- - Plesk
- - cPanel
+ - {$IS_MAINTAINED,platform_plesk,Plesk}
+ - {$IS_MAINTAINED,platform_cpanel,cPanel}
  - Ensim
  - DirectAdmin
 This allows you to manage your account on the server, and create databases, FTP accounts (additional to your primary account that already would exist), and e-mail addresses.
@@ -105,7 +105,7 @@ We require:
 [title="3"]Web Server[/title]
 
 We require:
- - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial). It is possible to use a reverse proxy, such as Nginx, along with a web server such as Apache. However, we do not have special support for reverse proxies. It will be up to the webhost to ensure the proxy is configured properly. Be aware that static caching on the proxy could interfere with the software.
+ - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial). It is possible to use a reverse proxy, such as {$IS_MAINTAINED,platform_nginx,Nginx}, along with a web server such as Apache. However, we do not have special support for reverse proxies. It will be up to the webhost to ensure the proxy is configured properly. Be aware that static caching on the proxy could interfere with the software.
  - The CGI timeout on the server must not be lower than 60 seconds (which is the default on Apache).
  - That the web server is not overloaded with too many users, or has very poor performance.
  - Either a suEXEC-style web server (strongly recommended) &dagger;, or a working FTP connection from PHP back to the hosting (so the server has to be running FTP, and PHP has to be running the PHP [tt]ftp[/tt] extension).
@@ -146,7 +146,7 @@ We require:
  - A minimum of PHP version 7.2, however:
   - We strongly discourage hosting anything that is [url="not officially supported by the PHP developers"]https://www.php.net/supported-versions.php[/url].
   - Forum drivers may require a newer version of PHP if the forum software itself does.
- - A maximum of PHP 8.0 (this is what we have tested up to, although newer versions usually do work or are quickly fixed to work).
+ - A maximum of PHP 8.3 (this is what we have tested up to, although newer versions usually do work or are quickly fixed to work).
  - The following PHP extensions:
   - GD2 ([tt]gd[/tt]), including PNG and JPEG support (GD is used by PHP for image generation, e.g. to generate thumbnails).
   - MySQL extension ([tt]mysqli[/tt] or [tt]pdo_mysql[/tt])
@@ -156,6 +156,7 @@ We require:
   - The Multibyte String ([tt]mbstring[/tt]) PHP extension (for reliable Unicode support).
   - cURL extension ([tt]curl[/tt]) (for reliable file downloading).
   - JSON support is required in PHP which should be available by default, but for controversial licensing reasons is provided in separate packaging on some Linux distributions
+  - Sodium ([tt]libsodium[/tt]), available via PECL (for cryptographic encryption).
  - The file upload settings set to allow at least 5MB (or higher, depending on your particular needs).
  - A maximum execution time of at least 30 seconds.
  - Key functions may not be disabled with [tt]disable_functions[/tt] (PHP can be stripped down heavily by disreputable webhosts) -- the installer will warn if any critical functions have been.
@@ -169,8 +170,8 @@ MySQL is the database software which Composr uses to store the majority of its d
 
 We require:
  - MySQL database software (if you want it to be fully supported).
- - MySQL version 5.5.3 (&dagger;) or higher.
- - At least 10MB of database storage space (which should be available on any reputable webhost).
+ - MySQL version 5.5.3 (&dagger;) or higher (although we have not tested the software beyond version 8.0).
+ - At least 25MB of database storage space (which should be available on any reputable webhost).
   - You may need a substantially larger amount of database space for sites utilising content translations, using the software's fulltext search, or heavily utilising content (e.g. social communities or catalogue-heavy sites).
  - The [tt]max_allowed_packet[/tt] server system setting must be at least [tt]4M[/tt] (this became the default in MySQL 5.6).
 
@@ -201,7 +202,7 @@ If you need to be able to easily remove 'bounce' e-mails from newsletter subscri
 
 [title="4"]Very specific features[/title]
 
-If you want automatic thumbnail generation you need a server with FFMPEG on it. It must be accessible via PHP either via the unofficial PHP FFMPEG extension, or the ability for [tt]shell_exec[/tt] to run from PHP.
+If you want automatic thumbnail generation on videos you need a server with FFMPEG on it. It must be accessible via PHP either via the unofficial PHP FFMPEG extension, or the ability for [tt]shell_exec[/tt] to run from PHP.
 
 If LDAP integration is required (for corporate network authentication integration), the PHP LDAP extension ([tt]ldap[/tt]) is required.
 

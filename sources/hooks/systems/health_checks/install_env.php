@@ -89,7 +89,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $this->assertTrue((stripos($server_software, $_server_software) === false), do_lang('WARNING_SERVER_SOFTWARE', $_server_software));
         }*/
 
-        $supported_server_software = ['LiteSpeed', 'Apache', 'Microsoft-IIS'];
+        $supported_server_software = ['LiteSpeed', 'Apache', 'nginx',  'Microsoft-IIS'];
         $supported = false;
         foreach ($supported_server_software as $_server_software) {
             if (stripos($server_software, $_server_software) !== false) {
@@ -116,6 +116,12 @@ class Hook_health_check_install_env extends Hook_Health_Check
             }
         }
 
+        if (!is_maintained('platform_nginx')) {
+            $this->assertTrue(
+                (stripos($server_software, 'nginx') === false),
+                '[html]' . do_lang('WARNING_NON_MAINTAINED', escape_html('NGINX'), escape_html(get_brand_base_url()), escape_html('platform_nginx')) . '[/html]'
+            );
+        }
         if (!is_maintained('platform_litespeed')) {
             $this->assertTrue(
                 (stripos($server_software, 'LiteSpeed') === false),

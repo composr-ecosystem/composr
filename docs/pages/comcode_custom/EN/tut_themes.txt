@@ -38,9 +38,9 @@ An example of this is the front page in the Welcome zone. If, for example you wa
 {!themes:DOC_THEMEWIZARD}
 
 Be aware of the following small deficiencies:
- - {$IS_MAINTAINED,dark_mode,Dark} themes tend to be less well tested.
+ - {$IS_MAINTAINED,dark_mode,Dark mode themes} are usually not tested as thoroughly since the default theme is a light theme.
  - Some default software emoticons are animated, and attractive animated images have to be saved to a particular background colour -- so you may wish to uninstall these animated emoticons or rework them in an image editor.
- - {$IS_MAINTAINED,theme_wizard_extreme_seeds,Extreme light/dark themes} will not come out of the Theme Wizard 100% perfectly, and need a small amount of tuning. Using the Theme Wizard at extreme light/dark, causes contrast problems, as a result of the maths (essentially, there are fewer intermediate shades of black or white than there are shades of colour if the saturation is high enough for colour to be discernible). There's no good automatic solution to that, other than to manually go in and change some of our subtly shaded colours to hard light/dark as required. The issue is worst in the few places where we're using different colours to provide contrast rather than contrasting dark & light directly.
+ - If you use {$IS_MAINTAINED,theme_wizard_extreme_seeds,extreme light/dark seeds} (bright seeds on a light theme or dark seeds on a dark theme), some elements may turn out hard to see. There is no easy way to fix this using automated methods, therefore you may have to do some manual adjustments.
 
 The Theme Wizard is available at Admin Zone > Style > Themes > Theme Wizard.
 
