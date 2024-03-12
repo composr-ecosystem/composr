@@ -37,12 +37,10 @@ function make_nice_timezone_name(string $in) : string
  * Generate and return a list of timezones.
  * This also saves into the cache for quick access from get_timezone_list().
  *
- * @param  boolean $translate_for_dst Translate written timezone offsets for current DST status
  * @return array Timezone (map between boring-style and human-readable name). Sorted in offset order then likelihood order.
- *
  * @ignore
  */
-function _get_timezone_list(bool $translate_for_dst = true) : array
+function _get_timezone_list() : array
 {
     // Specific city name overrides
     $overrides = [
@@ -51,7 +49,7 @@ function _get_timezone_list(bool $translate_for_dst = true) : array
 
     $ret = [];
 
-    $timezones = timezone_identifiers_list();
+    $timezones = timezone_identifiers_list(DateTimeZone::ALL_WITH_BC);
     foreach ($timezones as $timezone) {
         if ($timezone == 'UTC') { // Special meaning
             continue;
@@ -84,109 +82,6 @@ function _get_timezone_list(bool $translate_for_dst = true) : array
 
     require_code('caches2');
     set_cache_entry('timezone_list', (60 * 24), serialize(['type' => 'flat']), $ret);
-
-    /*
-    $ret = [
-        'Pacific/Midway' => '(UTC-11:00) Midway Island, Niue, Pago Pago, Samoa',
-        'America/Adak' => '(UTC-10:00) Adak, Hawaii-Aleutian',
-        'Pacific/Honolulu' => '(UTC-10:00) Hawaii, Honolulu, Rarotonga, Tahiti',
-        'Pacific/Marquesas' => '(UTC-09:30) Marquesas Islands',
-        'America/Anchorage' => '(UTC-09:00) Anchorage, Juneau, Metlakatla, Nome, Sitka, Yakutat',
-        'Pacific/Gambier' => '(UTC-09:00) Gambier Islands',
-        'Pacific/Pitcairn' => '(UTC-08:00) Pitcairn Islands',
-        'America/Los_Angeles' => '(UTC-08:00) Los Angeles, Pacific Time (US & Canada), Tijuana, Vancouver',
-        'America/Chihuahua' => '(UTC-07:00) Chihuahua, La Paz (Mexico)',
-        'America/Denver' => '(UTC-07:00) Boise, Cambridge Bay, Ciudad Juarez, Denver, Edmonton, Inuvik, Mountain Time (US & Canada), Yellowknife',
-        'America/Phoenix' => '(UTC-07:00) Creston, Dawson, Dawson Creek, Fort Nelson, Hermosillo, Mazatlan, Phoenix, Whitehorse',
-        'America/Mexico_City' => '(UTC-06:00) Bahia Banderas, Guadalajara, Merida, Mexico City, Monterrey',
-        'America/Guatemala' => '(UTC-06:00) Belize, Central America, Costa Rica, El Salvador, Galapagos, Guatemala, Managua, Regina, Saskatchewan, Swift Current, Tegucigalpa',
-        'America/Chicago' => '(UTC-06:00) Beulah, Center, Central Time (US & Canada), Chicago, Knox, Matamoros, Menominee, New Salem, Ojinaga, Rainy River, Rankin Inlet, Resolute, Tell City, Winnipeg',
-        'Pacific/Easter' => '(UTC-05:00) Easter Island',
-        'America/Havana' => '(UTC-05:00) Havana',
-        'America/Panama' => '(UTC-05:00) Atikokan, Bogota, Cancun, Cayman, Eirunepe, Guayaquil, Jamaica, Lima, Panama, Quito, Rio Branco',
-        'America/New_York' => '(UTC-05:00) Detroit, Eastern Time (US & Canada), Grand Turk, Indianapolis, Iqaluit, Louisville, Marengo, Monticello, Montreal, Nassau, New York, Nipigon, Pangnirtung, Petersburg, Port-au-Prince, Thunder Bay, Toronto, Vevay, Vincennes, Winamac',
-        'America/Campo_Grande' => '(UTC-04:00) Campo Grande, Cuiaba',
-        'America/Caracas' => '(UTC-04:00) Anguilla, Antigua, Aruba, Barbados, Blanc-Sablon, Boa Vista, Caracas, Curacao, Dominica, Georgetown, Grenada, Guadeloupe, Guyana, Kralendijk, La Paz (Bolivia), Lower Princes, Manaus, Marigot, Martinique, Montserrat, Port of Spain, Porto Velho, Puerto Rico, Santo Domingo, St. Barthelemy, St. Kitts, St. Lucia, St. Thomas, St. Vincent, Tortola',
-        'Atlantic/Bermuda' => '(UTC-04:00) Atlantic Time, Bermuda, Glace Bay, Goose Bay, Halifax, Moncton, Thule',
-        'America/St_Johns' => '(UTC-03:30) Newfoundland, St. Johns',
-        'America/Santiago' => '(UTC-03:00) Santiago',
-        'America/Asuncion' => '(UTC-03:00) Asuncion',
-        'America/Araguaina' => '(UTC-03:00) Araguaina, Bahia, Belem, Buenos Aires, Catamarca, Cayenne, Cordoba, Fortaleza, Jujuy, La Rioja, Maceio, Mendoza, Montevideo, Palmer, Paramaribo, Punta Arenas, Recife, Rio Gallegos, Rothera, Salta, San Juan, San Luis, Santarem, Stanley, Tucuman, Ushuaia',
-        'America/Miquelon' => '(UTC-03:00) Miquelon, St. Pierre',
-        'America/Nuuk' => '(UTC-03:00) Nuuk',
-        'America/Sao_Paulo' => '(UTC-03:00) Brasilia, Sao Paulo',
-        'Atlantic/South_Georgia' => '(UTC-02:00) Mid-Atlantic, Noronha, South Georgia',
-        'Atlantic/Azores' => '(UTC-01:00) Azores, Scoresbysund',
-        'Atlantic/Cape_Verde' => '(UTC-01:00) Cape Verde Islands',
-        'UTC' => '(UTC) ' . do_lang('NO_DAYLIGHT_SAVING'),
-        'Europe/London' => '(UTC+00:00) Belfast, Canary, Dublin, Edinburgh, Faroe, Guernsey, Isle Of Man, Jersey, Lisbon, London, Madeira',
-        'Antarctica/Troll' => '(UTC+00:00) Troll',
-        'Africa/Abidjan' => '(UTC+00:00) Abidjan, Accra, Bamako, Banjul, Bissau, Conakry, Dakar, Danmarkshavn, Freetown, Lome, Monrovia, Nouakchott, Ouagadougou, Reykjavik, Sao Tome, St. Helena',
-        'Africa/Casablanca' => '(UTC+01:00) Casablanca, El Aaiun',
-        'Africa/Algiers' => '(UTC+01:00) Algiers, Bangui, Brazzaville, Douala, Kinshasa, Lagos, Libreville, Luanda, Malabo, Ndjamena, Niamey, Porto-Novo, Tunis',
-        'Europe/Brussels' => '(UTC+01:00) Amsterdam, Andorra, Belgrade, Berlin, Bern, Bratislava, Brussels, Budapest, Busingen, Ceuta, Copenhagen, Gibraltar, Ljubljana, Longyearbyen, Luxembourg, Madrid, Malta, Monaco, Oslo, Paris, Podgorica, Prague, Rome, San Marino, Sarajevo, Skopje, Stockholm, Tirane, Vaduz, Vatican, Vienna, Warsaw, Zagreb, Zurich',
-        'Asia/Gaza' => '(UTC+02:00) Gaza, Hebron',
-        'Africa/Cairo' => '(UTC+02:00) Cairo',
-        'Europe/Chisinau' => '(UTC+02:00) Chisinau',
-        'Europe/Athens' => '(UTC+02:00) Athens, Bucharest, Famagusta, Helsinki, Kiev, Mariehamn, Nicosia, Riga, Sofia, Tallinn, Uzhgorod, Vilnius, Zaporozhye',
-        'Asia/Jerusalem' => '(UTC+02:00) Jerusalem',
-        'Asia/Amman' => '(UTC+02:00) Amman',
-        'Asia/Beirut' => '(UTC+02:00) Beirut',
-        'Asia/Damascus' => '(UTC+02:00) Damascus',
-        'Europe/Moscow' => '(UTC+03:00) Addis Ababa, Aden, Antananarivo, Asmara, Baghdad, Bahrain, Comoro, Dar es Salaam, Djibouti, Istanbul, Kampala, Kirov, Kuwait, Mayotte, Minsk, Mogadishu, Moscow, Nairobi, Qatar, Riyadh, Simferopol, Syowa, Volgograd',
-        'Asia/Tehran' => '(UTC+03:30) Tehran',
-        'Asia/Dubai' => '(UTC+04:00) Abu Dhabi, Astrakhan, Baku, Dubai, Mahe, Mauritius, Muscat, Port Louis, Reunion, Samara, Saratov, Tbilisi, Ulyanovsk, Yerevan',
-        'Asia/Kabul' => '(UTC+04:30) Kabul',
-        'Asia/Karachi' => '(UTC+05:00) Aqtau, Aqtobe, Ashgabat, Atyrau, Dushanbe, Islamabad, Karachi, Kerguelen, Maldives, Mawson, Oral, Qyzylorda, Samarkand, Tashkent, Yekaterinburg',
-        'Asia/Kolkata' => '(UTC+05:30) Chennai, Colombo, Kolkata, Mumbai, New Delhi, Sri Jayawardenepura Kotte',
-        'Asia/Kathmandu' => '(UTC+05:45) Kathmandu',
-        'Asia/Dhaka' => '(UTC+06:00) Almaty, Astana, Bishkek, Chagos, Dhaka, Omsk, Qostanay, Thimphu, Urumqi, Vostok',
-        'Asia/Yangon' => '(UTC+06:30) Cocos, Yangon',
-        'Asia/Bangkok' => '(UTC+07:00) Bangkok, Barnaul, Christmas, Davis, Hanoi, Ho Chi Minh, Hovd, Jakarta, Krasnoyarsk, Novokuznetsk, Novosibirsk, Phnom Penh, Pontianak, Tomsk, Vientiane',
-        'Asia/Hong_Kong' => '(UTC+08:00) Beijing, Brunei, Choibalsan, Hong Kong, Irkutsk, Kuala Lumpur, Kuching, Macau, Makassar, Manila, Perth, Shanghai, Singapore, Taipei, Ulaanbaatar',
-        'Australia/Eucla' => '(UTC+08:45) Eucla',
-        'Asia/Tokyo' => '(UTC+09:00) Chita, Dili, Jayapura, Khandyga, Palau, Pyongyang, Seoul, Tokyo, Yakutsk',
-        'Australia/Darwin' => '(UTC+09:30) Darwin',
-        'Australia/Brisbane' => '(UTC+10:00) Brisbane, Chuuk, Dumont d\'Urville, Guam, Lindeman, Port Moresby, Saipan, Ust-Nera, Vladivostok',
-        'Australia/Adelaide' => '(UTC+10:30) Adelaide, Broken Hill',
-        'Australia/Lord_Howe' => '(UTC+11:00) Lord Howe Island',
-        'Australia/Sydney' => '(UTC+11:00) Canberra, Hobart, Macquarie, Melbourne, Sydney',
-        'Asia/Magadan' => '(UTC+11:00) Bougainville, Casey, Efate, Guadalcanal, Kosrae, Magadan, New Caledonia, Noumea, Pohnpei, Sakhalin, Solomon Islands, Srednekolymsk',
-        'Asia/Kamchatka' => '(UTC+12:00) Anadyr, Funafuti, Kamchatka, Kwajalein, Majuro, Nauru, Tarawa, Wake, Wallis',
-        'Pacific/Norfolk' => '(UTC+12:00) Norfolk',
-        'Pacific/Fiji' => '(UTC+13:00) Fiji, Marshall Islands',
-        'Pacific/Apia' => '(UTC+13:00) Apia',
-        'Pacific/Auckland' => '(UTC+13:00) Auckland, McMurdo, Wellington',
-        'Pacific/Tongatapu' => '(UTC+13:00) Fakaofo, Johnston, Kanton, Tongatapu',
-        'Pacific/Chatham' => '(UTC+13:45) Chatham Islands',
-        'Pacific/Kiritimati' => '(UTC+14:00) Kiritimati',
-    ];
-    */
-
-    /*
-    if ($translate_for_dst) {
-        // Make shown times dynamic to consider DST etc
-        foreach ($ret as $zone => $title) {
-            $offset = (tz_time(time(), $zone) - time()) / 3600.0;
-            $new = '(UTC';
-            $new .= ($offset < 0.0) ? '-' : '+';
-            $offset_abs = abs($offset);
-            $hours = intval(floor($offset_abs));
-            $new .= str_pad(strval($hours), 2, '0', STR_PAD_LEFT);
-            $new .= ':';
-            $new .= str_pad(strval(abs($hours - $offset_abs) * 100), 2, '0', STR_PAD_LEFT);
-            $new .= ') ';
-            $title = preg_replace('#^\(UTC[+-]\d\d:\d\d\) #', $new, $title);
-            $ret[$zone] = [$title, $offset];
-        }
-
-        sort_maps_by($ret, 1);
-
-        foreach ($ret as $zone => $bits) {
-            $ret[$zone] = $bits[0];
-        }
-    }
-    */
 
     return $ret;
 }
