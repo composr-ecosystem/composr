@@ -49,7 +49,7 @@ function _get_timezone_list() : array
 
     $ret = [];
 
-    $timezones = timezone_identifiers_list(DateTimeZone::ALL_WITH_BC);
+    $timezones = timezone_identifiers_list();
     foreach ($timezones as $timezone) {
         if ($timezone == 'UTC') { // Special meaning
             continue;
