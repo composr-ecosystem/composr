@@ -2690,6 +2690,10 @@ function step_10() : object
     $log->attach(step_10_populate_database());
     $log->attach(step_10_forum_stuff());
 
+    // We can consider the database up-to-date at this point
+    require_code('version');
+    set_value('db_version', strval(cms_version_time_db()), true);
+
     if (addon_installed('robots_txt')) {
         require_code('robots_txt');
         $robots_txt_msg = '';
