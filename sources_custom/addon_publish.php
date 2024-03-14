@@ -26,15 +26,15 @@ function find_addon_category_download_category($category_name, $parent_id = null
         if ($category_name == 'Addons') {
             $parent_id = db_get_first_id();
         } else {
-            global $COMPO_SR_ADDONS_CATEGORY;
-            if (isset($COMPO_SR_ADDONS_CATEGORY)) {
-                $parent_id = $COMPO_SR_ADDONS_CATEGORY;
+            global $COMPOSR_APP_ADDONS_CATEGORY;
+            if (isset($COMPOSR_APP_ADDONS_CATEGORY)) {
+                $parent_id = $COMPOSR_APP_ADDONS_CATEGORY;
             } else {
                 $parent_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons']);
                 if ($parent_id === null) {
                     $parent_id = find_addon_category_download_category('Addons'); // This will auto-create it
                 }
-                $COMPO_SR_ADDONS_CATEGORY = $parent_id;
+                $COMPOSR_APP_ADDONS_CATEGORY = $parent_id;
             }
 
             if (isset($cache[$category_name][$parent_id])) {

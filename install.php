@@ -2155,7 +2155,7 @@ function step_5_core() : object
     $GLOBALS['SITE_DB']->create_index('translate', '#tsearch', ['text_original'], null, true);
     $GLOBALS['SITE_DB']->create_index('translate', 'importance_level', ['importance_level']);
     if (strpos(get_db_type(), 'mysql') !== false) {
-        // Only MySQL has these prefix indexes https://compo.sr/tracker/view.php?id=4909
+        // Only MySQL has these prefix indexes https://composr.app/tracker/view.php?id=4909
         $GLOBALS['SITE_DB']->create_index('translate', 'equiv_lang', ['text_original(4)']); // Make finding particular strings easier, but this is not a common operation
         $GLOBALS['SITE_DB']->create_index('translate', 'decache', ['text_parsed(2)']); // Makes Comcode cache emptying a little faster, but this is not a common operation
     }

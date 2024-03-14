@@ -33,7 +33,7 @@ So please bear this in mind and structure your own processes accordingly.
 We don't want people to have to labour over bug reports. However there are some basic rules you will need to follow...
 
 Before starting your report:
- - [b]Check the bug has not already been reported[/b] on the [url="tracker"]https://compo.sr/tracker[/url]. Don't spend more than 5 minutes looking, but at least have a glance over.
+ - [b]Check the bug has not already been reported[/b] on the [url="tracker"]https://composr.app/tracker[/url]. Don't spend more than 5 minutes looking, but at least have a glance over.
  - [b]Try not to report unrelated problems together[/b]. Generally speaking it is better each issue is reported separately so that it can be handled in one go without interdependence.
  - [b]Check it is a Composr bug[/b]. If it relates to a third-party addon, it should not be reported as a Composr bug.
  - [b]Check the FAQ[/b]. If your problem looks like it might be caused by a server configuration issue (for example if you are getting an 'Internal server error' message), please check our [page="_SEARCH:faq"]FAQ[/page] first.
@@ -71,7 +71,7 @@ Composr comes with an automatic bug reporting mechanism, that is enabled by defa
 
 [title="3"]Where to post[/title]
 
-The "correct" place is the [url="tracker"]https://compo.sr/tracker[/url]. However, practically speaking most users are most comfortable posting informally on the forum, and up to this point the developers have been very happy with that. The developers have tools for automatic submission of formal reports to the tracker anyway.
+The "correct" place is the [url="tracker"]https://composr.app/tracker[/url]. However, practically speaking most users are most comfortable posting informally on the forum, and up to this point the developers have been very happy with that. The developers have tools for automatic submission of formal reports to the tracker anyway.
 
 The developers don't promise to check the forum, so if you don't get a reply to a bug after about a week then you should go to post on the tracker, but not getting a reply on the forum has been rare in the past.
 
@@ -251,7 +251,7 @@ Unfortunately, it is often not possible for the developers to comment on whether
 
 The reason the developers can't comment on user feedback is because whether they answer 'yes' or 'no' they end up in a difficult situation, as described below.
 
-Regardless, we have the [url="feature tracker"]https://compo.sr/tracker/[/url] available for full discussions, so your feedback will always be heard, even though the developers won't necessarily be able to address it. In the spirit of Open Source you can even see ideas direct from the developers (which is our rough equivalent to having a product roadmap). Features can be directly sponsored from the tracker.
+Regardless, we have the [url="feature tracker"]https://composr.app/tracker/[/url] available for full discussions, so your feedback will always be heard, even though the developers won't necessarily be able to address it. In the spirit of Open Source you can even see ideas direct from the developers (which is our rough equivalent to having a product roadmap). Features can be directly sponsored from the tracker.
 
 [title="3"]If the developers declare 'yes' to a suggestion immediately[/title]
 
@@ -389,12 +389,12 @@ Usually this is more of an issue of a specific configuration of Composr looking 
 
 [media width="100" thumb="0" float="right" framed="0"]themes/default/images/icons/status/inform.svg[/media]
 This is best shown by example. Recently (at the time of writing) the developers got some very vague feedback, mentioned in passing in our chatroom. It was not mentioned, but we were able to guess that this related to some display issues on the Composr demo, and analysis (read: second guessing) led to some bug reports, that the developers could then resolve:
- - https://compo.sr/tracker/view.php?id=1169
- - https://compo.sr/tracker/view.php?id=1170
- - https://compo.sr/tracker/view.php?id=1171
- - https://compo.sr/tracker/view.php?id=1172
- - https://compo.sr/tracker/view.php?id=1173
- - https://compo.sr/tracker/view.php?id=1175
+ - https://composr.app/tracker/view.php?id=1169
+ - https://composr.app/tracker/view.php?id=1170
+ - https://composr.app/tracker/view.php?id=1171
+ - https://composr.app/tracker/view.php?id=1172
+ - https://composr.app/tracker/view.php?id=1173
+ - https://composr.app/tracker/view.php?id=1175
 
 This is exactly what the developers would like people to do directly. Isolate specific issues, then report them to us. We can then expedite the fixing of such issues very easily.
 

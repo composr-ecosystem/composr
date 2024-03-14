@@ -99,7 +99,7 @@ Content translation may not be supported in every feature perfectly, here are so
   - see the next section for a workaround
  - Content sorting will only sort consistently if translations are complete
   - for example, if you have some translations into German, but some falling back to English, and viewing in German, only the German entries will be sorted correctly
-  - tracker issue: https://compo.sr/tracker/view.php?id=3732
+  - tracker issue: https://composr.app/tracker/view.php?id=3732
   - a workaround is the hidden [tt]force_memory_sort__<catalogue-name>[/tt] option, but this has a performance hit
 
 [title="2"]Language string references into Comcode fields (advanced)[/title]

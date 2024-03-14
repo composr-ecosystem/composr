@@ -71,7 +71,7 @@ Other features:
  - Automatic download of new web application firewall rules (for emergency patching)
  - Many moderation systems such as warnings, probations, and bans (outside the scope of this tutorial)
 
-We are always coming up with new ideas for security. If you want us to keep going further then you can consider sponsoring new ideas posted on our [url="development tracker"]https://compo.sr/tracker/tag_view_page.php?tag_id=47[/url].
+We are always coming up with new ideas for security. If you want us to keep going further then you can consider sponsoring new ideas posted on our [url="development tracker"]https://composr.app/tracker/tag_view_page.php?tag_id=47[/url].
 
 [title="2"]Advice for webhosting[/title]
 

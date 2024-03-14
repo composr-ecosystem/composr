@@ -172,7 +172,7 @@ The formula used to weigh poll results and generate a voting power is as follows
  - When a member's points are 0 or negative, their voting power will be offset + multiplier (if it is below maximum) since the log value will always come out 1.
 
 There are a couple nuances with the weighted voting system:
- - Currently, the weighted voting system is very inefficient for large polls as it must tally all of the voting powers (see [url="Composr tracker issue 4876"]https://compo.sr/tracker/view.php?id=4876[/url]).
+ - Currently, the weighted voting system is very inefficient for large polls as it must tally all of the voting powers (see [url="Composr tracker issue 4876"]https://composr.app/tracker/view.php?id=4876[/url]).
  - The votes of early voters may not be weighted as high as they could be especially when a member later earns more points. If revoke vote is enabled on a poll, a member can revoke and re-vote to have their voting power re-calculated with their new points. Otherwise, a member can wait until close to the poll closing time, or when they expect to have the most number of points, to vote.
 
 There is a tool at Admin Zone > Structure > Forums > Voting power calculator, for running simulations on different settings to see what the outcomes will be.

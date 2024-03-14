@@ -17,7 +17,7 @@ We use the Transifex platform for organising community translation. Transifex is
 [title="3"]From addons[/title]
 
 When we release new versions we aim to bundle all translation from Transifex that has had significant progress into language packs, distributed as addons. These are available in the addon directory.
-If you see a language on Transifex that has been translated, but there's no addon, open an issue on the [url="Tracker"]https://compo.sr/tracker[/url] about that.
+If you see a language on Transifex that has been translated, but there's no addon, open an issue on the [url="Tracker"]https://composr.app/tracker[/url] about that.
 
 [title="3"]Direct from Transifex[/title]
 

@@ -689,7 +689,7 @@ A proper load balancer is better than Round-Robin DNS as it can detect when serv
 
 Some people with very ambitious goals want to have multiple servers dotted around the world, able to operate in isolation to each other for maximum redundancy and performance. Priority-based geo-DNS resolution would be used for request routing.
 
-Composr can not currently support this, as ID numbers would conflict if database servers are not kept in strict sync with each other. We hope in a future version we can make changes for it to be possible (see https://compo.sr/tracker/view.php?id=3147). 
+Composr can not currently support this, as ID numbers would conflict if database servers are not kept in strict sync with each other. We hope in a future version we can make changes for it to be possible (see https://composr.app/tracker/view.php?id=3147). 
 
 [title="4"]Platform notes[/title]
 
@@ -1122,7 +1122,7 @@ If you create a [tt]data_custom/debug_fs.log[/tt] file then all disk activity wi
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
  - https://pagespeed.web.dev/
- - https://compo.sr/tracker/tag_view_page.php?tag_id=16
+ - https://composr.app/tracker/tag_view_page.php?tag_id=16
  - https://share.transistor.fm/s/38a4e496
 
 {$SET,tutorial_tags,Performance,filebased_persistent_caching,cloudinary,failover,Maintenance,Development,Power tools,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Composr is very heavily optimised for high performance out-of-the-box, but here are some advanced performance tips.}[block]main_tutorial_rating[/block]

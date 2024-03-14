@@ -24,7 +24,7 @@ Specifically, the following use-cases are served by the repository:
 
 And the following work-in-progress use-cases:
  - Making content/resource [b]import and export[/b] very easy -- we are able to code up import/export support into the repository by coding in additional views of the same data; for example, we would be able to allow automatic import of images into galleries via just copying in JPEG files
-See the [url="tracker"]https://compo.sr/tracker/[/url] for where we'd like to take this functionality.
+See the [url="tracker"]https://composr.app/tracker/[/url] for where we'd like to take this functionality.
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -174,14 +174,14 @@ If you manually specify the name of a folder or a file, you may find it changes 
 
 These are the current known omissions for the repository:
  - If you add content via the repository, no syndication will be performed for it. E.g. if you add a news article, it won't be syndicated to Facebook if you've configured such syndication. This is normal within Composr, as syndication is an automated assistant built into the CMS modules, not the underlying framework. You can always syndicate things manually if required.
- - Multi-language-content translations are not retained (https://compo.sr/tracker/view.php?id=2111)
+ - Multi-language-content translations are not retained (https://composr.app/tracker/view.php?id=2111)
  - Staging site limitations
-  - If importing eCommerce product configuration, the IDs for custom permission products can't be automatically remapped (https://compo.sr/tracker/view.php?id=2113)
-  - For custom fields representing IDs, the IDs can't be automatically remapped (https://compo.sr/tracker/view.php?id=2125)
-  - For config option values representing IDs, the IDs can't be automatically remapped (https://compo.sr/tracker/view.php?id=2126) -- but in most cases names (e.g. forum names) can be used instead of IDs, mitigating the problem
+  - If importing eCommerce product configuration, the IDs for custom permission products can't be automatically remapped (https://composr.app/tracker/view.php?id=2113)
+  - For custom fields representing IDs, the IDs can't be automatically remapped (https://composr.app/tracker/view.php?id=2125)
+  - For config option values representing IDs, the IDs can't be automatically remapped (https://composr.app/tracker/view.php?id=2126) -- but in most cases names (e.g. forum names) can be used instead of IDs, mitigating the problem
   - Transferring members
-   - For an imported member's category-level notifications, the IDs can't be automatically remapped (https://compo.sr/tracker/view.php?id=2114)
-   - Member signature attachments cannot transfer (https://compo.sr/tracker/view.php?id=2127)
+   - For an imported member's category-level notifications, the IDs can't be automatically remapped (https://composr.app/tracker/view.php?id=2114)
+   - Member signature attachments cannot transfer (https://composr.app/tracker/view.php?id=2127)
 
 These limitations only affect particularly advanced/fringe usage, mainly those wanting perfect automatic staging site transference on complex data schemas. If you are an enterprise pushing things to the very edge, you'll likely want to sponsor some continued development. This cost would be tiny compared to normal enterprise CMS licensing costs.
 

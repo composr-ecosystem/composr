@@ -25,7 +25,7 @@ The following are known limitations with GAE:
  - Individual non-bundled Composr addons, or third party frameworks, may or may not work. The Composr development tools can scan for most issues but generally most programmers will not be developing with App Engine's constraints in mind. Most professional developers will be happy to bring non-bundled third-party addons up to scratch. If possible/ideally we might try and contribute improvements back into "upstream" to the actual project, but sometimes we may feel it better to just fork our own version of the project.
  - The comments above extend to other applications you may wish to integrate. You need to be comfortable of their compatibility, or that you will get them updated, or that you will run them on another server.
  - LDAP will not work (LDAP would typically be used on a local corporate network anyway).
- - There is a 32MB upload limit, which means uploading large files is not realistic. This could be worked around, [url="with investment"]https://compo.sr/tracker/view.php?id=1426[/url].
+ - There is a 32MB upload limit, which means uploading large files is not realistic. This could be worked around, [url="with investment"]https://composr.app/tracker/view.php?id=1426[/url].
  - Outgoing web requests cannot exceed 10MB, which limits some syndication options.
  - There is a 32MB response size limit. This should not generally be a problem for most users, but worth noting.
  - You will need to maintain a local development site, and won't be able to do things such as themeing or addon management directly on the live site.
@@ -33,7 +33,7 @@ The following are known limitations with GAE:
  - While we are making sure Composr runs well on GAE (i.e. stably, without special patches), initial set up, and some maintenance tasks, are inherently very complex. If you are not a programmer, you will need one to perform some things for you.
  - You may not use a third-party forum with Composr: you must use Conversr. You must also not be using a shared forum database.
  - If you have unusually large amounts of data (as a rough example, over 50,000 catalogue entries), it is possible some actions could time-out, such as deleting a catalogue with those entries in. Such high-volume use-cases may need custom solutions for individual sites (requiring custom programming), such as shifting certain actions into background maintenance tasks. This kind of problem would affect any hosting, but particularly GAE has hard-limits on how much a web request can do (which is a good thing).
- - The feature to e-mail in support tickets is not supported, although [url="it could be added via an alternative mechanism"]https://compo.sr/tracker/view.php?id=1429[/url].
+ - The feature to e-mail in support tickets is not supported, although [url="it could be added via an alternative mechanism"]https://composr.app/tracker/view.php?id=1429[/url].
 
 The following Composr bundled addons will not work:
  - (All the addons mentioned for uninstallation in the Setup Wizard, further down in this tutorial, under "Setup Wizard: Step 4")

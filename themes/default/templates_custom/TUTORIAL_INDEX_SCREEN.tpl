@@ -64,8 +64,8 @@
 		<p>The Composr documentation is user-driven:</p>
 
 		<ul>
-			<li>If you have found documentation problems that you'd like someone else to solve log an <a target="_blank" href="https://compo.sr/tracker/set_project.php?project_id=7" title="Report issue on tracker {!LINK_NEW_WINDOW}">issue to the tracker</a>.</li>
-			<li>If you'd like to contribute a chunk of documentation to go into a tutorial, also log an <a target="_blank" href="https://compo.sr/tracker/set_project.php?project_id=7" title="Report issue on tracker {!LINK_NEW_WINDOW}">issue to the tracker</a>.</li>
+			<li>If you have found documentation problems that you'd like someone else to solve log an <a target="_blank" href="https://composr.app/tracker/set_project.php?project_id=7" title="Report issue on tracker {!LINK_NEW_WINDOW}">issue to the tracker</a>.</li>
+			<li>If you'd like to contribute a chunk of documentation to go into a tutorial, also log an <a target="_blank" href="https://composr.app/tracker/set_project.php?project_id=7" title="Report issue on tracker {!LINK_NEW_WINDOW}">issue to the tracker</a>.</li>
 			<li>If you want to contribute a new tutorial you can <a href="{$PAGE_LINK*,_SEARCH:cms_tutorials}">submit a link</a>.</li>
 		</ul>
 	</div>

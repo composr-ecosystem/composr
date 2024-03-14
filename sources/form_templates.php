@@ -2958,7 +2958,7 @@ function _form_input(string $name, $pretty_name, $description, object $input, bo
 function _get_autocomplete_attribute_value(string $name, $provided_autocomplete) : ?string
 {
     $autocomplete_field_names = [
-        // Keys ([name] attribute values) as agreed upon by "#0003470: Change our approach to autofill" https://compo.sr/tracker/view.php?id=3470
+        // Keys ([name] attribute values) as agreed upon by "#0003470: Change our approach to autofill" https://composr.app/tracker/view.php?id=3470
         // Values ([autocomplete] attribute values) from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
         'username'   => 'username',
         'password'   => 'current-password',

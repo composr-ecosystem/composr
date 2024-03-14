@@ -4,7 +4,7 @@
 This tutorial provides some advice targeted towards Microsoft SQL Server (including SQL Server Express).
 
 Composr has internal 'support' for many different databases backends and is intentionally written with a combination of simple common-denominator SQL and use of an abstraction API. However officially only MySQL is supported, due to the significant effort testing across new versions of Composr and the database backends involved. Different database systems vary in all kinds of surprising and subtle ways. Those wanting to do extra testing and bug fixing can put fixes put back into the mainline version of Composr if they choose to.
-Composr functionality that only works on MySQL can be identified by looking on the [url="Composr feature tracker"]https://compo.sr/tracker/view.php?id=4909[/url].
+Composr functionality that only works on MySQL can be identified by looking on the [url="Composr feature tracker"]https://composr.app/tracker/view.php?id=4909[/url].
 
 SQL Server has been tested for Composr v10.0.x for a commercial user of Composr CMS (starting with 10.0.10). We tested on SQL Server Express 2017 across our whole test set and all screens and blocks, with both multi-lang-content on and off. We expect in practice SQL Server 2005+ is supported (we use [tt]VARCHAR(MAX)[/tt]).
 

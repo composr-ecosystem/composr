@@ -104,7 +104,7 @@ There is a developer addon, [tt]antispam_question[/tt], which checks the value o
 
 You could then configure your forum permissions so there is only a single forum these members see, that normal members don't. This effectively works as a shadow-ban. You can then move people out of Probation manually if you need to.
 
-The developer addon hard-codes the CPF ID being checked against, and the expected value, and the ID of the usergroup to put failing members in (the default Probation usergroup). It would be fairly easy to customise with minimal coding skills, although ideally we'd add a [url="more extensive configurable feature"]https://compo.sr/tracker/view.php?id=1579[/url].
+The developer addon hard-codes the CPF ID being checked against, and the expected value, and the ID of the usergroup to put failing members in (the default Probation usergroup). It would be fairly easy to customise with minimal coding skills, although ideally we'd add a [url="more extensive configurable feature"]https://composr.app/tracker/view.php?id=1579[/url].
 
 [title="2"]Setting rules[/title]
 
@@ -153,7 +153,7 @@ There are two ways to open the spammer mode:
 
 [title="2"]Additional future techniques[/title]
 
-Fighting spam is an ongoing challenge. Actual humans are paid to post spam, and increasingly will try and hide spam behind legitimate activity. Ideas for fighting spammer are categorised under the [url="Type: Spam"]https://compo.sr/tracker/tag_view_page.php?tag_id=52[/url] tracker tag.
+Fighting spam is an ongoing challenge. Actual humans are paid to post spam, and increasingly will try and hide spam behind legitimate activity. Ideas for fighting spammer are categorised under the [url="Type: Spam"]https://composr.app/tracker/tag_view_page.php?tag_id=52[/url] tracker tag.
 
 [concepts
  1_key="CAPTCHA"           1_value="A security image/sound consisting of numbers that a human must enter into a text box. It is designed to prevent bots from spamming your website."

@@ -1002,7 +1002,7 @@ Composr has a multi-faceted testing strategy as there is no perfect solution for
 1) Code Quality Checker, a lint (henceforth 'CQC'). This is a standalone tool, but also integrated into our automated testing. See [tt]_tests/codechecker/readme.txt[/tt] in the [tt]testing_platform[/tt] addon for documentation.
 2) Automated test framework, with a large number of tests written for it. The framework can incorporate  regression testing, as long as we write regression tests whenever we find bugs. It can incorporate UI testing in a sense as we can program a web bot to do things plus dump all the XHTML). The framework is documented in the description for the [tt]testing_platform[/tt] addon.
 3) Web standards Validation (partly built into CQC, partly built into Composr -- and also implemented as an automated test).
-4) Manual functional test set. The main test set is no longer maintained due to the enormous amount of time required to manually go through the tests, while things likely to break are picked up pretty well by the automated testing. However, we also maintain a smaller list of important tests (https://compo.sr/tracker/view.php?id=3383).
+4) Manual functional test set. The main test set is no longer maintained due to the enormous amount of time required to manually go through the tests, while things likely to break are picked up pretty well by the automated testing. However, we also maintain a smaller list of important tests (https://composr.app/tracker/view.php?id=3383).
 5) [url="Custom version of PHP"]https://gitlab.com/composr-foundation/ocp-php[/url], with type strictness, and XSS detection, among other things.
 6) Manual testing at core-team meet-ups, especially Usability testing / Blackbox testing.
 7) Public beta testing and bug reporting.

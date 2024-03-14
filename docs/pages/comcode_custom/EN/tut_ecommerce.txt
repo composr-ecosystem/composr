@@ -648,7 +648,7 @@ If you want another shopping catalogue then add a new catalogue with the Advance
 
 [title="4"]Product options[/title]
 
-A [url="popular request"]https://compo.sr/tracker/view.php?id=268[/url] is to be able to specify options when purchasing a product, such as size or colour.
+A [url="popular request"]https://composr.app/tracker/view.php?id=268[/url] is to be able to specify options when purchasing a product, such as size or colour.
 This would be a major task for us to implement, and complicate the system, so we are not currently planning to add it.
 There are, however, three workarounds:
 1) Simply add the different product options as separate products.
@@ -789,7 +789,7 @@ Basically if you are selling products or services commercially, you must registe
 In the UK and some other countries there is an income threshold after which you need to register. If you don't you can't get rebate on purchases you make, but you also benefit competitively by being able to charge buyers less money. If you are selling digital goods then there is no threshold, you must collect VAT and remit it (e.g. via the "MOSS" if you are based in UK).
 
 Known limitations at this time which could be worked around with custom code...
- - EU VAT-registered buyers may not input a VAT number to disable VAT charging -- they must use the government rebate process when they file tax returns (https://compo.sr/tracker/view.php?id=3062)
+ - EU VAT-registered buyers may not input a VAT number to disable VAT charging -- they must use the government rebate process when they file tax returns (https://composr.app/tracker/view.php?id=3062)
 
 The EU system for calculating digital product taxes charges the tax rate of the buyer's country, not yours, and is then paid to the government in the buyer's country.
 It only applies to certain digital sales, not shipped products. To use digital product tax:
@@ -843,9 +843,9 @@ You have 3 possible approaches for calculating shipping costs:[list="1"]
 [/list]
 
 Known limitations at this time which could be worked around with custom code...
- - There's no way to give a product a flat rate for shipping (https://compo.sr/tracker/view.php?id=1520)
- - Free shipping above a certain payment amount is not supported (https://compo.sr/tracker/view.php?id=3064)
- - Customer-selectable shipping options are not supported (https://compo.sr/tracker/view.php?id=3065)
+ - There's no way to give a product a flat rate for shipping (https://composr.app/tracker/view.php?id=1520)
+ - Free shipping above a certain payment amount is not supported (https://composr.app/tracker/view.php?id=3064)
+ - Customer-selectable shipping options are not supported (https://composr.app/tracker/view.php?id=3065)
 
 [title="4"]Shippo[/title]
 

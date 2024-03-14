@@ -2325,7 +2325,7 @@ You may want to install a browser extension such as [url="JSONView"]https://chro
 
 [title="2"]Other approaches to mobile integration[/title]
 
-On the [url="tracker"]https://compo.sr/tracker/search.php?tag_string=Type%3A+Mobile[/url] you will find a number of plans and issues relating to further development of Composr Mobile SDK. This is an active process, as we move forward a number of complementary alternative approaches, suited for different mobile integration/extension scenarios. As with all Composr development, development is primary implemented as a byproduct of commercial projects or direct feature sponsorship, but guided by a shared plan that benefits all interested users.
+On the [url="tracker"]https://composr.app/tracker/search.php?tag_string=Type%3A+Mobile[/url] you will find a number of plans and issues relating to further development of Composr Mobile SDK. This is an active process, as we move forward a number of complementary alternative approaches, suited for different mobile integration/extension scenarios. As with all Composr development, development is primary implemented as a byproduct of commercial projects or direct feature sponsorship, but guided by a shared plan that benefits all interested users.
 
 [title="3"]Tapatalk[/title]
 

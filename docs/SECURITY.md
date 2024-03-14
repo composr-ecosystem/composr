@@ -6,4 +6,4 @@ Basically we appreciate those who report security issues, and respect their righ
 
 Issues will be fixed within a month. Whether they will or will not be disclosed directly by the Composr CMS developers depends on context (basically what we think is best for users based on the situation).
 
-To report an issue, submit to [the tracker](https://compo.sr/tracker), with 'Severity' marked as 'Security-hole' and 'View Status' as 'private'.
+To report an issue, submit to [the tracker](https://composr.app/tracker), with 'Severity' marked as 'Security-hole' and 'View Status' as 'private'.

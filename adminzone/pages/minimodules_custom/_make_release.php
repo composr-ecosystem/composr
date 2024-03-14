@@ -72,7 +72,7 @@ $urls = [];
 // Bugs list
 
 if (!$is_bleeding_edge) {
-    $urls['Bugs'] = 'https://compo.sr/tracker/search.php?project_id=1&product_version=' . urlencode($version_dotted);
+    $urls['Bugs'] = 'https://composr.app/tracker/search.php?project_id=1&product_version=' . urlencode($version_dotted);
 }
 
 // Add downloads (assume uploaded already)

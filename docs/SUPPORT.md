@@ -36,4 +36,4 @@ The most reliable way of moving the project forward in the way you want is to co
 ## Reporting issues (including bugs and feature suggestions) ##
 
 We have an extensive tutorial, [Problem and feedback reports, and development policies](https://composr.app/docs/tut-software-feedback.htm).
-Basically, issues are submitted to [the tracker](https://compo.sr/tracker).
+Basically, issues are submitted to [the tracker](https://composr.app/tracker).
