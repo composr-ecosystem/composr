@@ -35,7 +35,7 @@ class Module_admin_version
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 18;
+        $info['version'] = 19;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -1006,7 +1006,11 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('post_tokens', 'generation_time', ['generation_time']);
         }
 
-        if (($upgrade_from === null) || ($upgrade_from < 18)) {
+        if (($upgrade_from !== null) && ($upgrade_from < 18)) { // LEGACY 10.0.46
+            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('smart_topic_notification', 'smart_topic_notification', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'tick', 0, '0');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 19)) {
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'from_member_id', ['d_from_member_id']);
             $GLOBALS['SITE_DB']->create_index('cache', 'the_member', ['the_member']);
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as', ['m_as']);
@@ -1033,7 +1037,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('translation_cache', 'lookup', ['t_lang_from', 't_lang_to', 't_text(100)', 't_context']);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 18)) { // LEGACY
+        if (($upgrade_from !== null) && ($upgrade_from < 19)) { // LEGACY
             $GLOBALS['SITE_DB']->drop_table_if_exists('bookmarks');
 
             rename_config_option('allowed_partner_sites', 'trusted_sites_2');
@@ -1147,7 +1151,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->add_table_field('seo_meta_keywords', 'sort_order', 'INTEGER');
         }
 
-        if (($upgrade_from === null) || ($upgrade_from < 18)) {
+        if (($upgrade_from === null) || ($upgrade_from < 19)) {
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences2', ['a_id']);
             $GLOBALS['SITE_DB']->create_index('member_privileges', 'active_until', ['active_until']);
             $GLOBALS['SITE_DB']->create_index('member_zone_access', 'active_until', ['active_until']);
