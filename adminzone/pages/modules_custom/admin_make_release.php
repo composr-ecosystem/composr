@@ -633,8 +633,9 @@ class Module_admin_make_release
         $is_bleeding_edge = (post_param_integer('bleeding_edge', 0) == 1);
         $is_old_tree = (post_param_integer('old_tree', 0) == 1);
         $is_substantial = is_substantial_release($new_version);
+        $db_upgrade = post_param_integer('db_upgrade', 0);
 
-        $push_url = post_param_string('make_release_url') . '&version=' . urlencode($new_version) . '&is_bleeding_edge=' . ($is_bleeding_edge ? '1' : '0') . '&is_old_tree=' . ($is_old_tree ? '1' : '0') . '&descrip=' . urlencode($descrip) . '&needed=' . urlencode($needed) . '&criteria=' . urlencode($criteria) . '&justification=' . urlencode($justification);
+        $push_url = post_param_string('make_release_url') . '&version=' . urlencode($new_version) . '&is_bleeding_edge=' . ($is_bleeding_edge ? '1' : '0') . '&is_old_tree=' . ($is_old_tree ? '1' : '0') . '&descrip=' . urlencode($descrip) . '&needed=' . urlencode($needed) . '&criteria=' . urlencode($criteria) . '&justification=' . urlencode($justification) . '&db_upgrade=' . strval($db_upgrade);
 
         if (strpos(PHP_OS, 'Darwin') !== false) {
             $command_to_try = 'open';

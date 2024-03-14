@@ -41,22 +41,22 @@ if (!function_exists('mu_ui')) {
     {$spammer_blackhole}
 
     <p style="margin: 4px 0">
-        <label style="width: 170px; float: left" for="from_version_a">Major version (e.g. <kbd>10</kbd>)</label>
+        <label style="width: 170px; float: left" for="from_version_a">Major version (e.g. <kbd>11</kbd>)</label>
         <input size="2" maxlength="2" type="text" name="from_version_a" id="from_version_a" value="" />
     </p>
     <p style="margin: 4px 0">
         <label style="width: 170px; float: left" for="from_version_b">Minor version (e.g. <kbd>0</kbd>)</label>
-        <input size="1" maxlength="1" type="text" name="from_version_b" id="from_version_b" value="" />
+        <input size="1" maxlength="2" type="text" name="from_version_b" id="from_version_b" value="" />
     </p>
     <p style="margin: 4px 0">
         <label style="width: 170px; float: left" for="from_version_c">Patch version (e.g. <kbd>0</kbd>)</label>
-        <input size="2" maxlength="2" type="text" name="from_version_c" id="from_version_c" value="" />
+        <input size="2" maxlength="3" type="text" name="from_version_c" id="from_version_c" value="" />
     </p>
     <p style="margin: 4px 0; font-size: 0.8em">
-        <label style="width: 170px; float: left" for="from_version_d">Pre-release version (e.g. beta1)</label>
+        <label style="width: 170px; float: left" for="from_version_d">Bleeding-edge version (e.g. alpha1)</label>
         <input size="6" type="text" name="from_version_d" id="from_version_d" value="" /> (usually blank)
     </p>
-    <p>(example above is for upgrading from 10.0.0 beta1)</p>
+    <p>(example above is for upgrading from 11.0.0 alpha1)</p>
     <p>
         <button class="btn btn-primary btn-scri buttons--proceed" id="make-upgrader-button" type="submit">{$proceed_icon} Generate</button>
     </p>

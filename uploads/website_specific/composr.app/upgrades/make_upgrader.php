@@ -60,6 +60,29 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
         }
     }
 
+    $version_parts = explode('.', $to_version_dotted);
+    $a = intval($version_parts[0]);
+
+    // Sanity; version 10 and version 11 are on different sites
+    if (get_base_url() == 'https://compo.sr' || get_base_url() == 'https://www.compo.sr') {
+        if ($a > 10) {
+            $url = hyperlink('https://composr.app', 'Composr.app', true, true);
+            $err = 'Version 11+ is available at ' . $url->evaluate();
+            return [null, $err];
+        }
+    }
+    if (get_base_url() == 'https://composr.app' || get_base_url() == 'https://www.composr.app') {
+        if ($a == 10) {
+            $url = hyperlink('https://compo.sr', 'Compo.sr', true, true);
+            $err = 'Version 10 is available at ' . $url->evaluate();
+            return [null, $err];
+        }
+    }
+    if ($a < 10) {
+        $err = 'You cannot upgrade to a version prior to 10 as versions < 10 are no longer supported.';
+        return [null, $err];
+    }
+
     $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
     // Find out path/filenames for the upgrade file we're making

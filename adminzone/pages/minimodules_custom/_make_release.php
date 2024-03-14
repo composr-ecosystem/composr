@@ -66,6 +66,7 @@ $descrip = get_param_string('descrip', '', INPUT_FILTER_GET_COMPLEX);
 $needed = get_param_string('needed', '', INPUT_FILTER_GET_COMPLEX);
 $criteria = get_param_string('criteria', '', INPUT_FILTER_GET_COMPLEX);
 $justification = get_param_string('justification', '', INPUT_FILTER_GET_COMPLEX);
+$db_upgrade = get_param_integer('db_upgrade', 0) == 1;
 
 $urls = [];
 
@@ -113,7 +114,7 @@ if ($aps_category_id === null) {
 $all_downloads_to_add = [
     [
         'name' => "Composr Version {$version_pretty}{$bleeding1}",
-        'description' => "This is version {$version_pretty}.",
+        'description' => "This is version {$version_pretty}.\n\n{$changes}",
         'filename' => 'composr_quick_installer-' . $version_dotted . '.zip',
         'additional_details' => ($is_bleeding_edge || $is_old_tree) ? '' : 'This is the latest version.',
         'category_id' => $release_category_id,
@@ -122,7 +123,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr Version {$version_pretty} ({$bleeding2}manual)",
-        'description' => "Manual installer (as opposed to the regular quick installer). Please note this isn't documentation.",
+        'description' => "Manual installer (as opposed to the regular quick installer). Please note this isn't documentation.\n\n{$changes}",
         'filename' => 'composr_manualextraction_installer-' . $version_dotted . '.zip',
         'additional_details' => '',
         'category_id' => $release_category_id,
@@ -131,7 +132,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr {$version_pretty}",
-        'description' => "This archive is designed for webhosting control panels that integrate Composr. It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of Composr.",
+        'description' => "This archive is designed for webhosting control panels that integrate Composr. It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of Composr.\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.tar.gz',
         'additional_details' => '',
         'category_id' => $installatron_category_id,
@@ -140,7 +141,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr {$version_pretty}",
-        'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\n\nIt can be manually installed into Plesk using the Application Vault interface available to administrators.",
+        'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\n\nIt can be manually installed into Plesk using the Application Vault interface available to administrators.\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.app.zip',
         'additional_details' => '',
         'category_id' => $aps_category_id,
@@ -192,8 +193,9 @@ if ((!$is_bleeding_edge) && (!$is_old_tree) && (isset($all_downloads_to_add[0]['
     $last_version_str = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'additional_details', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
     if ($last_version_str !== null) {
         $last_version_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
+        $last_version_description = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', $GLOBALS['SITE_DB']->translate_field_ref('description'), [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
         if ($last_version_id != $all_downloads_to_add[0]['download_id']) {
-            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Developer Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the Composr news archive\" target=\"_blank\"]https://composr.app/site/news.htm[/url].";
+            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Developer Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the Composr news archive\" target=\"_blank\"]https://composr.app/site/news.htm[/url].\n\n" . $last_version_description;
             $GLOBALS['SITE_DB']->query_update('download_downloads', lang_remap_comcode('description', $last_version_str, $description), ['id' => $last_version_id], '', 1);
         }
     }
@@ -211,12 +213,16 @@ if ((!$is_bleeding_edge) && (!$is_old_tree)) {
 
 $major_release = '';
 $major_release_1 = '';
+$db_upgrade_1 = '';
 if ($is_substantial) {
     $major_release = " As this is more than just a patch release it is crucial that you also choose to run a file integrity scan and a database upgrade.";
     $major_release_1 = "Please [b]make sure you take a backup before uploading your new files![/b]";
     $news_title = 'Composr ' . $version_pretty . ' released!';
 } else {
     $news_title = 'Composr ' . $version_pretty . ' released';
+    if ($db_upgrade) {
+        $db_upgrade_1 = 'A database upgrade is required for this release. Be sure to run step 6 ("Do a database upgrade") in the upgrader after step 4 and, if applicable, step 5.';
+    }
 }
 
 require_code('news');
@@ -226,8 +232,9 @@ $summary = "{$version_pretty} released. Read the full article for more informati
 
 $article = "Version {$version_pretty} has now been released. {$descrip}. Upgrading to this release is {$needed}{$criteria}{$justification}.
 
-To upgrade follow the steps in your website's [tt]http://mybaseurl/upgrader.php[/tt] script. You will need to copy the URL of the attached file (created via the form below) during step 3.
+To upgrade follow the steps in your website's [tt]http://mybaseurl/upgrader.php[/tt] script. You will need to copy the URL of the attached file (created via the form below) during step 4.{$major_release}
 {$major_release_1}
+{$db_upgrade_1}
 
 [block=\"{$version_dotted}\"]composr_homesite_make_upgrader[/block]
 

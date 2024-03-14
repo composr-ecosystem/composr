@@ -31,6 +31,11 @@
 		</ul>
 	</li>
 
+	{$,key-pairs}
+	{+START,IF,{IS_SUBSTANTIAL}}
+	<li>{!MAKE_RELEASE_STEP4_KEY_PAIRS}</li>
+	{+END}
+
 	{$,e-mails}
 	{+START,IF,{IS_SUBSTANTIAL}}
 	<li>{!MAKE_RELEASE_STEP4_ERROR_EMAILS,{NEW_VERSION_MAJOR*},{BRAND_DOMAIN*}}</li>
