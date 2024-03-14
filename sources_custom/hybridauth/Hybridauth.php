@@ -69,7 +69,7 @@ class Hybridauth
         if (is_string($config) && file_exists($config)) {
             $config = include $config;
         } elseif (!is_array($config)) {
-            throw new InvalidArgumentException('Hybridauth config does not exist on the given path.');
+            throw new InvalidArgumentException('Hybridauth: config does not exist on the given path.'); // Composr
         }
 
         $this->config = $config + [
@@ -134,7 +134,7 @@ class Hybridauth
                 }
             }
             if ($adapter === null) {
-                throw new InvalidArgumentException('Unknown Provider.');
+                throw new InvalidArgumentException('Hybridauth: Unknown Provider, ' . $name); // Composr
             }
         }
 
@@ -158,11 +158,11 @@ class Hybridauth
         $providersConfig = array_change_key_case($this->config['providers'], CASE_LOWER);
 
         if (!isset($providersConfig[$name])) {
-            throw new InvalidArgumentException('Unknown Provider.');
+            throw new InvalidArgumentException('Hybridauth: Unknown Provider, ' . $name); // Composr
         }
 
         if (!$providersConfig[$name]['enabled']) {
-            throw new UnexpectedValueException('Disabled Provider.');
+            throw new UnexpectedValueException('Hybridauth: Disabled Provider, ' . $name);
         }
 
         $config = $providersConfig[$name];
