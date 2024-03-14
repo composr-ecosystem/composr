@@ -6,7 +6,7 @@ Composr CMS had been primarily developed by the former company ocProducts Ltd, p
 There are contributions from many other developers, some who were under contract/employment for ocProducts Ltd, but others too.
 
 A sense of who is making contributions can be seen from the [GitLab Contributors page](https://gitlab.com/composr-foundation/composr/-/graphs/master). Contributors for each release are also listed in the release news articles as of version 10.0.45.
-A sense of who is prominent in the community can seen from the [community stars page](https://compo.sr/stars.htm). This is auto-generated based on community points.
+A sense of who is prominent in the community can seen from the [community stars page](https://composr.app/stars.htm). This is auto-generated based on community points.
 
 Developers (e.g. the "Core Development Team") include:
 - Allen Ellis

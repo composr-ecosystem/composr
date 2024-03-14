@@ -41,7 +41,7 @@ class _http_timeouts_test_set extends cms_test_case
         $timeout = 3.0;
 
         // Test timeout not being hit for large file
-        $url = 'http://compo.sr/docs/php-5.2.4-ocproducts.zip' /*TODO: change name of file*/; // Must be HTTP; some PHP clients do not have the https wrapper
+        $url = 'https://composr.app/docs/php-5.2.4-ocproducts.zip' /*TODO: change name of file*/; // Must be HTTP; some PHP clients do not have the https wrapper
         $expected_size = 28941943;
         if (($this->only === null) || ($this->only == 'big_curl')) {
             $r1 = $this->_testCurl($url, $timeout);

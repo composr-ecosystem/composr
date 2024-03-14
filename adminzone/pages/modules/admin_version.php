@@ -1255,7 +1255,7 @@ class Module_admin_version
     {
         $level = get_param_integer('level', 50);
 
-        $data = cms_http_request('https://compo.sr/data_custom/patreon_patrons.php?level=' . strval($level), ['convert_to_internal_encoding' => true]);
+        $data = cms_http_request('https://composr.app/data_custom/patreon_patrons.php?level=' . strval($level), ['convert_to_internal_encoding' => true]);
         $_patreon_patrons = json_decode($data->data);
 
         $patreon_patrons = [];

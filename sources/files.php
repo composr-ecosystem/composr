@@ -803,7 +803,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         if (preg_match('#^tracker/uploads(/|$)#i', $path) != 0) {
             return true; // Mantis upload files
         }
-        if (preg_match('#^uploads/website_specific/compo.sr/demonstratr/servers(/|$)#i', $path) != 0) {
+        if (preg_match('#^uploads/website_specific/composr.app/demonstratr/servers(/|$)#i', $path) != 0) {
             return true; // Demonstrate site
         }
         if (preg_match('#^exports/(static|builds|backups)(/|$)#i', $path) != 0) {

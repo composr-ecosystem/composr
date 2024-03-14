@@ -25,7 +25,7 @@ class firewall_rules_test_set extends cms_test_case
         if (cms_is_writable($rules_path)) {
             require_code('version2');
 
-            $new_contents = @http_get_contents('https://compo.sr/data_custom/firewall_rules.txt?version=' . urlencode(get_version_dotted()), ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+            $new_contents = @http_get_contents('https://composr.app/data_custom/firewall_rules.txt?version=' . urlencode(get_version_dotted()), ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             $this->assertTrue(($new_contents !== false), 'Unable to download dynamic firewall rules from the Composr site.');
         } else {
             $this->assertTrue(false, 'data_custom/firewall_rules.txt is not writable.');

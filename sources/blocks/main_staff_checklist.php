@@ -97,7 +97,7 @@ PHP;
                 do_lang('CHECKLIST_INITIAL_TASK_CONTENT'),
                 '[page="adminzone:admin_health_check"]' . do_lang('CHECKLIST_HEALTH_CHECK') . '[/page]',
                 '[url="' . do_lang('CHECKLIST_INITIAL_TASK_UPTIME_MONITOR') . '"]https://uptimerobot.com/[/url]',
-                '[html]<p style="margin: 0">Facebook user? Like Composr on Facebook:</p><iframe src="https://compo.sr/uploads/website_specific/compo.sr/facebook.html" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:330px; height:20px;" allowTransparency="true"></iframe>[/html]',
+                '[html]<p style="margin: 0">Facebook user? Like Composr on Facebook:</p><iframe src="https://composr.app/uploads/website_specific/composr.app/facebook.html" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:330px; height:20px;" allowTransparency="true"></iframe>[/html]',
                 '[page="adminzone:admin_version"]Consider helping out with the Composr project[/page]',
             ];
             foreach ($tasks as $task) {

@@ -300,7 +300,7 @@ class LangFilter_EN extends LangFilter
         }
 
         // Strip out Conversr notes
-        if ((get_forum_type() == 'cns') && (get_base_url_hostname() != 'compo.sr')) {
+        if ((get_forum_type() == 'cns') && (get_base_url_hostname() != 'composr.app')) {
             $value = str_replace([' (Conversr only)', ' Note that most checks only work if running Conversr.'], ['', ''], $value);
         }
 

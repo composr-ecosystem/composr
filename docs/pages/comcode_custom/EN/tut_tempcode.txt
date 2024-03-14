@@ -1276,7 +1276,7 @@ where:
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$BRAND_BASE_URL}</td>
-			<td>The brand URL, defaults to https://compo.sr</td>
+			<td>The brand URL, defaults to https://composr.app</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$COPPA_ON}</td>

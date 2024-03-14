@@ -1140,7 +1140,7 @@ CREATE TABLE cms_staff_checklist_cus_tasks (
 INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, task_is_done) VALUES (1, 'Add your content', 1706928820, 0, '', NULL),
 (2, '[page=\"adminzone:admin_health_check\"]Run/schedule Health Checks[/page]', 1706928820, 0, '', NULL),
 (3, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1706928820, 0, '', NULL),
-(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://compo.sr/uploads/website_specific/compo.sr/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1706928820, 0, '', NULL),
+(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://compo.sr/uploads/website_specific/composr.app/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1706928820, 0, '', NULL),
 (5, '[page=\"adminzone:admin_version\"]Consider helping out with the Composr project[/page]', 1706928820, 0, '', NULL);
 
 DROP TABLE IF EXISTS cms_staff_links;

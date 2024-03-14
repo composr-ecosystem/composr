@@ -34,7 +34,7 @@ class Hook_page_groupings_addon_publish
         return [
             ['tools', 'admin/tool', ['admin_generate_adhoc_upgrade', [], get_page_zone('admin_generate_adhoc_upgrade', false, 'adminzone', 'minimodules')], make_string_tempcode('Release tools: Create ad hoc-upgrade-TAR/guidance')],
             ['tools', 'admin/tool', ['build_addons', [], get_page_zone('build_addons', false, 'adminzone', 'minimodules')], make_string_tempcode('Release tools: Build non-bundled addon TARs')],
-            ['tools', 'admin/tool', ['publish_addons_as_downloads', [], get_page_zone('publish_addons_as_downloads', false, 'adminzone', 'minimodules')], make_string_tempcode('compo.sr: Publish non-bundled addons')],
+            ['tools', 'admin/tool', ['publish_addons_as_downloads', [], get_page_zone('publish_addons_as_downloads', false, 'adminzone', 'minimodules')], make_string_tempcode('composr.app: Publish non-bundled addons')],
         ];
     }
 }

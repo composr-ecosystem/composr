@@ -202,7 +202,7 @@ function up2_do_header()
 <html lang="EN">
 <head>
     <title>Extracting files</title>
-    <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
 END;
     echo <<<END
     <style>

@@ -54,7 +54,7 @@ $g_phpMailer_method = PHPMAILER_METHOD_MAIL; // or PHPMAILER_METHOD_SMTP, PHPMAI
 $g_smtp_host = 'localhost'; // used with PHPMAILER_METHOD_SMTP
 $g_smtp_username = ''; // used with PHPMAILER_METHOD_SMTP
 $g_smtp_password = ''; // used with PHPMAILER_METHOD_SMTP
-$g_administrator_email = 'info@compo.sr'; // TODO: Customise
+$g_administrator_email = 'tracker@composr.app'; // TODO: Customise
 $g_webmaster_email = $g_administrator_email;
 $g_from_name = 'Composr CMS feature tracker'; // TODO: Customise
 $g_from_email = $g_administrator_email; // the "From: " field in emails
@@ -77,7 +77,7 @@ $g_log_destination = __DIR__ . '/../../data_custom/errorlog.php';
 
 // Composr-specific
 $cms_sc_site_url = $SITE_INFO['base_url'];
-$cms_sc_site_name = 'compo.sr';
+$cms_sc_site_name = 'composr.app';
 $g_default_home_page = 'my_view_page.php'; // Set to name of page to go to after login
 $g_logo_url = './';
 $cms_sc_profile_url = $cms_sc_site_url . '/members/view.htm';
@@ -87,7 +87,7 @@ $cms_sc_join_url = $cms_sc_site_url . '/join.htm';
 $cms_sc_lostpassword_url = $cms_sc_site_url . '/lost_password.htm';
 $cms_sc_member_view_url = $cms_sc_site_url . '/members/view/%1$d.htm'; // Set the user id as variable in the url ie %1$d
 $cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
-$cms_sc_home_url = 'https://compo.sr';
+$cms_sc_home_url = 'https://composr.app';
 $cms_sc_product_name = 'Composr';
 $cms_sc_business_name = 'Composr';
 $cms_sc_business_name_possesive = 'Composr\'s';

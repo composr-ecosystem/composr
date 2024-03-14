@@ -14,7 +14,7 @@
  */
 
 /**
- * Handler for compo.sr error message web service.
+ * Handler for composr.app error message web service.
  */
 function get_problem_match_script()
 {
@@ -45,7 +45,7 @@ function get_problem_match_nearest(string $error_message) : ?string
 
     // Find matches. Stored in a spreadsheet file.
     $matches = [];
-    $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/uploads/website_specific/compo.sr/errorservice.csv');
+    $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/uploads/website_specific/composr.app/errorservice.csv');
     while (($row = $sheet_reader->read_row()) !== false) {
         $message = $row['Message'];
         $summary = $row['Summary'];

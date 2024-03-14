@@ -651,7 +651,7 @@ class Module_admin_addons
         $__url = post_param_string('url', '', INPUT_FILTER_URL_GENERAL);
         foreach (explode(',', $__url) as $i => $url) {
             if (is_numeric($url)) {
-                $_POST['url'] = 'https://compo.sr/site/dload.php?id=' . $url;
+                $_POST['url'] = 'https://composr.app/site/dload.php?id=' . $url;
             } else {
                 $_POST['url'] = $url; // In case it was submitted in array form, which is possible on some UAs (based on an automated bug report)
             }

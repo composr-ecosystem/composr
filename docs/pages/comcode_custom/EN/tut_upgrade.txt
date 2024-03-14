@@ -70,7 +70,7 @@ Steps:
  - removing any files from previous versions of Composr that are no longer required
  - removing any files relating to bundled addons that you have previously uninstalled
 [*] upgrading your database; this is the most key step, which upgrades all modules and blocks, as well as doing some cross-system updates, and updating Conversr -- if any errors happen they'll be displayed and you should note them down and report them, but Composr will generally try and continue anyway if there are minor errors happening
-[*] performing an {$IS_MAINTAINED,theme_upgrader,automatic theme upgrade} (if available for the version jump you're doing -- we usually have this disabled because it is not something we can support well currently; instead we recommend using https://compo.sr/themeing-changes.htm to help you do it manually, and also using the "Theme Wizard files" Website cleanup tool)
+[*] performing an {$IS_MAINTAINED,theme_upgrader,automatic theme upgrade} (if available for the version jump you're doing -- we usually have this disabled because it is not something we can support well currently; instead we recommend using https://composr.app/themeing-changes.htm to help you do it manually, and also using the "Theme Wizard files" Website cleanup tool)
 [*] clearing caches
 [*] re-opening your website
 [/list]

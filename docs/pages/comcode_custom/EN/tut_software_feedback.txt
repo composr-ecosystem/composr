@@ -504,7 +504,7 @@ Composr works off a "rolling release" development process. New major/minor versi
 
 Please note that if Composr is installed by a hosting-control-panel, it is very unlikely that it will be up-to-date. Thus, hosting-control-panel installs will need immediate upgrade.
 
-To see the current history of releases, see [url="Maintenance status"]https://compo.sr/maintenance-status.htm[/url].
+To see the current history of releases, see [url="Maintenance status"]https://composr.app/maintenance-status.htm[/url].
 
 [title="3"]Security policy[/title]
 

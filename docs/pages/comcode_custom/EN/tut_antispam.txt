@@ -109,7 +109,7 @@ The developer addon hard-codes the CPF ID being checked against, and the expecte
 [title="2"]Setting rules[/title]
 
 If spam is being posted by real humans, those humans may not realise you have [tt]nofollow[/tt], and other measures that minimise the effectiveness of their spam.
-It may be a good idea to explicitly mention your policies on your join page so that human spammers will know they are wasting their time, and thus avoid wasting your time too. The compo.sr site has a good example you can follow.
+It may be a good idea to explicitly mention your policies on your join page so that human spammers will know they are wasting their time, and thus avoid wasting your time too. The composr.app site has a good example you can follow.
 
 [title="2"]What we don't do[/title]
 

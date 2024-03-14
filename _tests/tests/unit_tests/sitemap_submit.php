@@ -23,6 +23,6 @@ class sitemap_submit_test_set extends cms_test_case
         set_option('site_closed', '0');
         set_option('auto_submit_sitemap', '1');
         require_code('sitemap_xml');
-        ping_sitemap_xml('https://compo.sr/data_custom/sitemaps/index.xml', true);
+        ping_sitemap_xml('https://composr.app/data_custom/sitemaps/index.xml', true);
     }
 }

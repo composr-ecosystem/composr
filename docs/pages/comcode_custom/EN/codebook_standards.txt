@@ -10,7 +10,7 @@ This document documents many coding standards. Agencies may wish to integrate so
 
 Ideally you should try and learn to apply all these standards naturally, so going through this as a checklist will be a quick final formality when you're finished coding.
 
-You may also wish to read the "Engineering standards and trade-off" section of [page="_SEARCH:codebook_3"]Code Book, part 3 (Miscellany)[/page] and the descriptions of design concerns across the main compo.sr website (particularly the Composr Manifesto).
+You may also wish to read the "Engineering standards and trade-off" section of [page="_SEARCH:codebook_3"]Code Book, part 3 (Miscellany)[/page] and the descriptions of design concerns across the main composr.app website (particularly the Composr Manifesto).
 
 [title="2"]What standards to apply[/title]
 
@@ -2277,7 +2277,7 @@ Compress images and strip gamma from PNG files
 
 [title="4"]Documentation[/title]
 
-If you make a Composr tutorial that doesn't meet the normal rules (e.g. a video tutorial), then you can still add it in. There's a feature on the compo.sr website to link it through.
+If you make a Composr tutorial that doesn't meet the normal rules (e.g. a video tutorial), then you can still add it in. There's a feature on the composr.app website to link it through.
 
 {|
 ! Standard

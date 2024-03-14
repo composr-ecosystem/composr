@@ -1255,7 +1255,7 @@ This section is not designed as primary documentation for the tools. Those tools
 | Composr module
 |-
 | [tt]adminzone:push_bugfix[/tt]
-| Push a bug fix to compo.sr.
+| Push a bug fix to composr.app.
 | [tt]composr_release_build[/tt]
 | Composr module
 |}

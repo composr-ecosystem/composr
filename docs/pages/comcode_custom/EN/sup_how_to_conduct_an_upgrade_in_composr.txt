@@ -2,14 +2,14 @@
 
 [media width="150" description="The upgrader screen" float="right"]data_custom/images/docs/sup_how_to_conduct_an_upgrade_in_composr/f559c1c2d04fd47a9c4a8f8f2cec4362.png[/media]
 [media width="150" description="Generating an upgrade link from a news post" float="right"]data_custom/images/docs/sup_how_to_conduct_an_upgrade_in_composr/548a50de96ce065e02e056688b18c71f.png[/media]
-[media width="150" description="Upgrade link is found in compo.sr news posts" float="right"]data_custom/images/docs/sup_how_to_conduct_an_upgrade_in_composr/5b111f854937fa6e26e1bfc6abe46de9.png[/media]
+[media width="150" description="Upgrade link is found in composr.app news posts" float="right"]data_custom/images/docs/sup_how_to_conduct_an_upgrade_in_composr/5b111f854937fa6e26e1bfc6abe46de9.png[/media]
 A regular task you will need to do is upgrading your Composr website to the latest version of the software. It's important to use the latest version of software as upgrades fix bugs and improve how some features work. The upgrade process in Composr is fairly straight forward. There are a few ways you can go about it; the step by step process I like is detailed below.
 
 The first task you will need to do is make sure you conduct a backup of your site and database in-case there is any issues. Once you have created your back up follow this process:
 [list="1"]
-[*] Find the upgrade link for your version of Composr; to find this you will need to go to https://compo.sr
+[*] Find the upgrade link for your version of Composr; to find this you will need to go to https://composr.app
 [*] Click on the newest release link for your version of Composr.
-[*] Fill in your current version and click Generate. This will give you a URL link like this [tt]https://compo.sr/upgrades/9.0.6-9.0.7.tar[/tt].
+[*] Fill in your current version and click Generate. This will give you a URL link like this [tt]https://composr.app/upgrades/9.0.6-9.0.7.tar[/tt].
 [*] Copy this URL into notepad (or whatever text editor your computer has) as you will need it soon.
 [*] Navigate to your upgrade page which will be the base URL of your site with upgrader.php after it e.g. [tt]http://yourbaseurl/upgrader.php[/tt]
 [*] Log in with your maintenance password.

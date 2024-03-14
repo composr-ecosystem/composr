@@ -222,7 +222,7 @@ class Module_admin_debrand
         if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install
             $critical_errors = cms_file_get_contents_safe(get_file_base() . '/sources/critical_errors.php', FILE_READ_LOCK);
             $critical_errors = str_replace('Composr', addslashes(post_param_string('rebrand_name')), $critical_errors);
-            $critical_errors = str_replace('https://compo.sr', addslashes(post_param_string('rebrand_base_url', false, INPUT_FILTER_URL_GENERAL)), $critical_errors);
+            $critical_errors = str_replace('https://composr.app', addslashes(post_param_string('rebrand_base_url', false, INPUT_FILTER_URL_GENERAL)), $critical_errors);
             $critical_errors = str_replace('ocProducts Ltd', 'ocProducts Ltd / ' . addslashes(post_param_string('company_name')), $critical_errors); // LEGACY
             $critical_errors = str_replace('ocProducts', 'ocProducts / ' . addslashes(post_param_string('company_name')), $critical_errors); // LEGACY
             $critical_errors = str_replace('Christopher Graham', 'Christopher Graham / ' . addslashes(post_param_string('company_name')), $critical_errors);

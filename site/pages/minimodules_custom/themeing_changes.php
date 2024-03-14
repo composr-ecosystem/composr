@@ -33,7 +33,7 @@ $releases = get_release_tree();
 // ==================
 
 foreach ($releases as $version => $release) {
-    $full_path = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/full/' . $version;
+    $full_path = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $version;
 
     if (file_exists($full_path)) {
         continue;
@@ -120,7 +120,7 @@ $all_files_processed = [];
 foreach ($special_file_types as $label => $_search) {
     list($search_path, $search_ext) = $_search;
 
-    $path = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/full/' . $last_version;
+    $path = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $last_version;
     $deep_path = $path . (($search_path == '') ? '' : ('/' . $search_path));
 
     $_files = get_directory_contents($deep_path);
@@ -219,7 +219,7 @@ foreach (array_keys($releases) as $version) {
         continue;
     }
 
-    $path_new = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/full/' . $version;
+    $path_new = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $version;
     $version_new = $version;
 
     if ($path_old !== null) {

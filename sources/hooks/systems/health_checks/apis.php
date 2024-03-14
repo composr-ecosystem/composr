@@ -238,7 +238,7 @@ class Hook_health_check_apis extends Hook_Health_Check
         }
 
         if ($use_test_data_for_pass !== null) {
-            $url = 'https://compo.sr';
+            $url = 'https://composr.app';
         } else {
             $url = get_base_url();
         }

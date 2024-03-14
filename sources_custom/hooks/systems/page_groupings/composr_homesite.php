@@ -32,7 +32,7 @@ class Hook_page_groupings_composr_homesite
         }
 
         return [
-            ['tools', 'admin/tool', ['admin_cmsusers', [], get_module_zone('admin_cmsusers')], make_string_tempcode('compo.sr: Table of Composr users')],
+            ['tools', 'admin/tool', ['admin_cmsusers', [], get_module_zone('admin_cmsusers')], make_string_tempcode('composr.app: Table of Composr users')],
         ];
     }
 }

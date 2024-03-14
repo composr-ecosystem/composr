@@ -2,10 +2,10 @@
 
 ## Support resources ##
 
-The primary place for support is the [forum](https://compo.sr/forum).
+The primary place for support is the [forum](https://composr.app/forum).
 We also have the IRC room, which is the #composrcms channel on FreeNode.
 
-Companies may provide commercial support services, and may list their services on the [Composr website](https://compo.sr/).
+Companies may provide commercial support services, and may list their services on the [Composr website](https://composr.app/).
 
 ## Rights and responsibilities ##
 
@@ -16,7 +16,7 @@ If you require free support from others, bear these things in mind:
 1. Be the change you want to see. If you think people should be helping each other out with free support, actively provide free support yourself. Set an example. Answer questions on the forum. Stay connected to the IRC channel. You cannot expect others to help more so than you are doing yourself.
 2. Make it easy for people to help you. Go out of your way to make your questions and situation as clear as possible, so those helping you can do so as quickly as possible, preferably without any back and forth. Put a higher value on the time of those helping you than your own time.
 3. Active participation in the community is likely to forge relationships that will help you when you are in need. It's a family, or if you prefer, it's an implicit version of "you scratch my back, I scratch yours".
-4. If you can, support key people in the community financially. The [community stars](https://compo.sr/stars.htm) page lists ways to do that. If community members are funded, they can pour more time into what they are doing. For example, maybe Sue can pay someone to mow her lawn and spend more time helping others out if she has Patreon money coming in each month.
+4. If you can, support key people in the community financially. The [community stars](https://composr.app/stars.htm) page lists ways to do that. If community members are funded, they can pour more time into what they are doing. For example, maybe Sue can pay someone to mow her lawn and spend more time helping others out if she has Patreon money coming in each month.
 
 Everyone in the community should make a reasonable good faith effort to use official channels and documented procedures, so that things are done in the open in a way that is easy for stakeholders to manage.
 
@@ -35,5 +35,5 @@ The most reliable way of moving the project forward in the way you want is to co
 
 ## Reporting issues (including bugs and feature suggestions) ##
 
-We have an extensive tutorial, [Problem and feedback reports, and development policies](https://compo.sr/docs/tut-software-feedback.htm).
+We have an extensive tutorial, [Problem and feedback reports, and development policies](https://composr.app/docs/tut-software-feedback.htm).
 Basically, issues are submitted to [the tracker](https://compo.sr/tracker).

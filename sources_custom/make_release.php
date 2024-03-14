@@ -361,7 +361,7 @@ function make_installers($skip_file_grab = false)
             $changelog_version_el->setAttribute('version', $version_dotted);
 
             $changelog_version_entry_el = $changelog_version_el->getElementsByTagName('entry')->item(0);
-            $changelog_version_entry_el->nodeValue = 'Composr ' . $version_dotted . ' release notes: https://compo.sr/uploads/website_specific/compo.sr/scripts/goto_release_notes.php?version=' . urlencode($version_dotted);
+            $changelog_version_entry_el->nodeValue = 'Composr ' . $version_dotted . ' release notes: https://composr.app/uploads/website_specific/composr.app/scripts/goto_release_notes.php?version=' . urlencode($version_dotted);
 
             $changelog_el->insertBefore($changelog_version_el, $changelog_previous_version_el);
         }

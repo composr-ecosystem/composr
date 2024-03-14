@@ -90,8 +90,8 @@ PHP;
             ]);
 
             $default_links = [
-                'compo.sr' => 'https://compo.sr/',
-                'compo.sr (topics with unread posts)' => get_brand_page_url(['page' => 'vforums', 'type' => 'unread'], 'forum'),
+                'composr.app' => 'https://composr.app/',
+                'composr.app (topics with unread posts)' => get_brand_page_url(['page' => 'vforums', 'type' => 'unread'], 'forum'),
             ];
             foreach ($default_links as $link_title => $url) {
                 $GLOBALS['SITE_DB']->query_insert('staff_links', [

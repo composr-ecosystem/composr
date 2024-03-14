@@ -106,15 +106,15 @@ class Hook_addon_registry_composr_homesite
      */
     public function get_description() : string
     {
-        return 'This addon contains various aspects of compo.sr:
+        return 'This addon contains various aspects of composr.app:
  - Composr CMS release management and upgrading
- - compo.sr addon management scripts
+ - composr.app addon management scripts
  - Composr CMS download scripts
  - The Composr deployment/hosting platform (Demonstratr)
  - Error message explainer system for Composr
- - Various other scripts for running compo.sr
+ - Various other scripts for running composr.app
 
-This addon does not contain the compo.sr install code and the overall site and theme. That is not categorised into an addon, but is in the composr_homesite Git branch.
+This addon does not contain the composr.app install code and the overall site and theme. That is not categorised into an addon, but is in the composr_homesite Git branch.
 ';
     }
 
@@ -218,36 +218,36 @@ This addon does not contain the compo.sr install code and the overall site and t
             'themes/default/templates_custom/CMS_DOWNLOAD_RELEASES.tpl',
             'themes/default/templates_custom/CMS_HOSTING_COPY_SUCCESS_SCREEN.tpl',
             'themes/default/templates_custom/CMS_SITES_SCREEN.tpl',
-            'uploads/website_specific/compo.sr/.htaccess',
-            'uploads/website_specific/compo.sr/banners.zip',
-            'uploads/website_specific/compo.sr/demonstratr/servers/index.html',
-            'uploads/website_specific/compo.sr/demonstratr/template.sql',
-            'uploads/website_specific/compo.sr/demonstratr/template.tar',
-            'uploads/website_specific/compo.sr/errorservice.csv',
-            'uploads/website_specific/compo.sr/facebook.html',
-            'uploads/website_specific/compo.sr/index.html',
-            'uploads/website_specific/compo.sr/logos/a.png',
-            'uploads/website_specific/compo.sr/logos/b.png',
-            'uploads/website_specific/compo.sr/logos/choice.php',
-            'uploads/website_specific/compo.sr/logos/default.png',
-            'uploads/website_specific/compo.sr/logos/index.html',
-            'uploads/website_specific/compo.sr/scripts/addon_manifest.php',
-            'uploads/website_specific/compo.sr/scripts/api.php',
-            'uploads/website_specific/compo.sr/scripts/build_personal_upgrader.php',
-            'uploads/website_specific/compo.sr/scripts/errorservice.php',
-            'uploads/website_specific/compo.sr/scripts/fetch_release_details.php',
-            'uploads/website_specific/compo.sr/scripts/goto_release_notes.php',
-            'uploads/website_specific/compo.sr/scripts/index.html',
-            'uploads/website_specific/compo.sr/scripts/newsletter_join.php',
-            'uploads/website_specific/compo.sr/scripts/testing.php',
-            'uploads/website_specific/compo.sr/scripts/user.php',
-            'uploads/website_specific/compo.sr/scripts/version.php',
-            'uploads/website_specific/compo.sr/upgrades/full/index.html',
-            'uploads/website_specific/compo.sr/upgrades/index.html',
-            'uploads/website_specific/compo.sr/upgrades/make_upgrader.php',
-            'uploads/website_specific/compo.sr/upgrades/sample_data/index.html',
-            'uploads/website_specific/compo.sr/upgrades/tar_build/index.html',
-            'uploads/website_specific/compo.sr/upgrades/tars/index.html',
+            'uploads/website_specific/composr.app/.htaccess',
+            'uploads/website_specific/composr.app/banners.zip',
+            'uploads/website_specific/composr.app/demonstratr/servers/index.html',
+            'uploads/website_specific/composr.app/demonstratr/template.sql',
+            'uploads/website_specific/composr.app/demonstratr/template.tar',
+            'uploads/website_specific/composr.app/errorservice.csv',
+            'uploads/website_specific/composr.app/facebook.html',
+            'uploads/website_specific/composr.app/index.html',
+            'uploads/website_specific/composr.app/logos/a.png',
+            'uploads/website_specific/composr.app/logos/b.png',
+            'uploads/website_specific/composr.app/logos/choice.php',
+            'uploads/website_specific/composr.app/logos/default.png',
+            'uploads/website_specific/composr.app/logos/index.html',
+            'uploads/website_specific/composr.app/scripts/addon_manifest.php',
+            'uploads/website_specific/composr.app/scripts/api.php',
+            'uploads/website_specific/composr.app/scripts/build_personal_upgrader.php',
+            'uploads/website_specific/composr.app/scripts/errorservice.php',
+            'uploads/website_specific/composr.app/scripts/fetch_release_details.php',
+            'uploads/website_specific/composr.app/scripts/goto_release_notes.php',
+            'uploads/website_specific/composr.app/scripts/index.html',
+            'uploads/website_specific/composr.app/scripts/newsletter_join.php',
+            'uploads/website_specific/composr.app/scripts/testing.php',
+            'uploads/website_specific/composr.app/scripts/user.php',
+            'uploads/website_specific/composr.app/scripts/version.php',
+            'uploads/website_specific/composr.app/upgrades/full/index.html',
+            'uploads/website_specific/composr.app/upgrades/index.html',
+            'uploads/website_specific/composr.app/upgrades/make_upgrader.php',
+            'uploads/website_specific/composr.app/upgrades/sample_data/index.html',
+            'uploads/website_specific/composr.app/upgrades/tar_build/index.html',
+            'uploads/website_specific/composr.app/upgrades/tars/index.html',
         ];
     }
 }

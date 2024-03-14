@@ -48,7 +48,7 @@
 					Composr, {!version:CREATED_BY,Christopher Graham}
 				</p>
 				<p>
-					<a target="_blank" title="compo.sr {!LINK_NEW_WINDOW}" href="{$BRAND_BASE_URL*}">{$BRAND_BASE_URL*}</a>
+					<a target="_blank" title="composr.app {!LINK_NEW_WINDOW}" href="{$BRAND_BASE_URL*}">{$BRAND_BASE_URL*}</a>
 				</p>
 			</div>
 

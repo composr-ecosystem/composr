@@ -285,7 +285,7 @@ class __broken_links_test_set extends cms_test_case
             'https://console.developers.google.com/project',
             'https://developer.twitter.com/en/apps',
             'http://dev.twitter.com/apps/new',
-            'https://compo.sr/themeing-changes.htm',
+            'https://composr.app/themeing-changes.htm',
             'https://pixabay.com/',
             'https://www.patreon.com/posts/18644315',
             'https://foundation.mozilla.org/en/insights/internet-health-report/',

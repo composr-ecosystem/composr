@@ -5,4 +5,4 @@ It interferes with request patterns it thinks are "suspicious", which can block 
 
 Unfortunately there is no standardised workaround we can deploy for you. You will need to ask your webhost to disable ModSecurity, or at least disable troublesome rules in it.
 
-[url="More information is available"]https://compo.sr/docs{$VERSION}/sup_modsecurity.htm[/url]
+[url="More information is available"]https://composr.app/docs{$VERSION}/sup_modsecurity.htm[/url]

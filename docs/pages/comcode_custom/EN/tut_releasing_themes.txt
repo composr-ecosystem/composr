@@ -19,7 +19,7 @@ To actually make a theme pack that is ready for release, you just need to export
 [title="2"]Releasing your theme pack[/title]
 
 Once this is done, all you need to do is to upload the addon to our site:
-1) Go to [url="our website"]https://compo.sr/[/url]
+1) Go to [url="our website"]https://composr.app/[/url]
 2) Go to the Community section (you will be taken to the addons category for the most recent version)
 3) Go to the Themes category
 4) Use the 'Add a new download' link

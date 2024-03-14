@@ -66,7 +66,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at
-equity@compo.sr.
+equity@composr.app.
 This address currently forwards to Chris Graham, the lead developer.
 All complaints will be reviewed and investigated promptly and fairly.
 
@@ -173,4 +173,4 @@ And some negative ones we will not tolerate:
 
 ## See also ##
 
-The [Composr CMS website rules](https://compo.sr/rules.htm) are more specific to the forum and a bit more stringent.
+The [Composr CMS website rules](https://composr.app/rules.htm) are more specific to the forum and a bit more stringent.

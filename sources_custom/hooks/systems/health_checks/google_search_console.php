@@ -69,7 +69,7 @@ class Hook_health_check_google_search_console extends Hook_Health_Check
         require_code('stats');
 
         if ($use_test_data_for_pass !== null) {
-            $url = 'https://compo.sr';
+            $url = 'https://composr.app';
         } else {
             $url = get_base_url();
         }

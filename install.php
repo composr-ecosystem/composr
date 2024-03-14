@@ -592,7 +592,7 @@ function step_3() : object
     }
     if (($email != '') || ($advertise_on == 1)) {
         require_code('files');
-        http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . strval($advertise_on) . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
+        http_get_contents('https://composr.app/uploads/website_specific/composr.app/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . strval($advertise_on) . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
     }
 
     // Forum chooser
@@ -2903,7 +2903,7 @@ function require_code(string $codename)
         }
     } else {
         if (!file_exists($path)) {
-            exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr installer startup error</h1><p>A required installation file, sources/' . $codename . '.php, could not be located. This is almost always due to an incomplete upload of the Composr manual installation package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the installer can function. Please note that we have a quick installer package which requires uploading only two files, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+            exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr installer startup error</h1><p>A required installation file, sources/' . $codename . '.php, could not be located. This is almost always due to an incomplete upload of the Composr manual installation package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the installer can function. Please note that we have a quick installer package which requires uploading only two files, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
         }
 
         require_once($path);

@@ -84,7 +84,7 @@ http://tour.winmerge.org/
 
 [title="2"]Our Themeing compatibility changes tool[/title]
 
-On the Composr website you will find a [url="tool for showing all the changes made across Composr releases"]https://compo.sr/themeing-changes.htm[/url]. This is very useful as an alternative to you using the [tt].editfrom[/tt] files within your own diff tool.
+On the Composr website you will find a [url="tool for showing all the changes made across Composr releases"]https://composr.app/themeing-changes.htm[/url]. This is very useful as an alternative to you using the [tt].editfrom[/tt] files within your own diff tool.
 
 [title="2"]See also[/title]
 

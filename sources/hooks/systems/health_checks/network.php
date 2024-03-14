@@ -69,8 +69,8 @@ class Hook_health_check_network extends Hook_Health_Check
             return;
         }
 
-        $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=http_status_check&url=' . urlencode($this->get_page_url());
-        for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or compo.sr issue
+        $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/testing.php?type=http_status_check&url=' . urlencode($this->get_page_url());
+        for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or composr.app issue
             $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
 
             if ($data !== null) {
@@ -193,7 +193,7 @@ class Hook_health_check_network extends Hook_Health_Check
             return;
         }
 
-        if (get_base_url() == 'https://compo.sr') {
+        if (get_base_url() == 'https://composr.app') {
             return;
         }
 
@@ -207,10 +207,10 @@ class Hook_health_check_network extends Hook_Health_Check
         $ok = false;
         $megabits_per_second = null;
 
-        for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or compo.sr issue
+        for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or composr.app issue
             $time_before = microtime(true);
 
-            $data = http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=test_upload', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post_params]);
+            $data = http_get_contents('https://composr.app/uploads/website_specific/composr.app/scripts/testing.php?type=test_upload', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post_params]);
 
             if ($data === null) {
                 $ok = false;

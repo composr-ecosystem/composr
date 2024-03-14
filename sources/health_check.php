@@ -696,11 +696,11 @@ abstract class Hook_Health_Check
     }
 
     /*
-    COMPO.SR API
+    composr.app API
     */
 
     /**
-     * Call a compo.sr API function.
+     * Call a composr.app API function.
      *
      * @param  string $type API type
      * @param  array $params Map of parameters
@@ -708,7 +708,7 @@ abstract class Hook_Health_Check
      */
     protected function call_composr_homesite_api(string $type, array $params)
     {
-        $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/api.php?type=' . urlencode($type);
+        $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/api.php?type=' . urlencode($type);
         foreach ($params as $key => $_val) {
             switch (gettype($_val)) {
                 case 'boolean':

@@ -187,8 +187,8 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
         'organization' => 'ocproducts',
         'team' => 39268, // This is a hard-coded known value for the ocProducts organisation
         'fill_up_resources' => true,
-        'homepage' => 'https://compo.sr',
-        'trans_instructions' => 'See https://compo.sr/docs/tut_intl.htm',
+        'homepage' => 'https://composr.app',
+        'trans_instructions' => 'See https://composr.app/docs/tut_intl.htm',
     ];
     $_args = json_encode($args);
     $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');

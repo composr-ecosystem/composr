@@ -216,7 +216,7 @@ Or, a more practical example...
 [menu="my_menu"]
 -Sample pages
  Example Page = http://example.com
- Composr CMS = https://compo.sr
+ Composr CMS = https://composr.app
 +Computer companies
  Amazon = https://amazon.com
  Apple = https://apple.com

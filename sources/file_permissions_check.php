@@ -60,7 +60,7 @@ function scan_permissions(bool $live_output = false, bool $live_commands = false
         'exports/builds',
         'uploads/website_specific/cms',
         'uploads/website_specific/test',
-        'uploads/website_specific/compo.sr/demonstratr/servers',
+        'uploads/website_specific/composr.app/demonstratr/servers',
     ];
 
     $chmod_array = get_chmod_array();

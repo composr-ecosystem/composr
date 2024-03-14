@@ -29,7 +29,7 @@ Only do this if you have secure file permissions on the key file and are very co
 /*
 Testing params...
 
-keep_testing - set this to simulate any connection to compo.sr
+keep_testing - set this to simulate any connection to composr.app
 include_push_bugfix
 full_scan
 */
@@ -142,7 +142,7 @@ function push_bugfix_ui()
 
     $categories = get_tracker_categories();
     if ($categories === null) {
-        warn_exit('Failed to connect to compo.sr');
+        warn_exit('Failed to connect to composr.app');
     }
     $categories_list = '<option selected="selected"></option>';
     foreach ($categories as $category_id => $category_title) {
@@ -156,7 +156,7 @@ function push_bugfix_ui()
         7 => 'Composr documentation',
         5 => 'Composr downloadable themes',
         9 => 'Composr testing platform',
-        10 => 'Composr website (compo.sr)',
+        10 => 'Composr website (composr.app)',
         4 => 'Composr non-bundled addons',
     ];
     if (in_array(cms_version_branch_status(), [VERSION_ALPHA, VERSION_BETA])) {

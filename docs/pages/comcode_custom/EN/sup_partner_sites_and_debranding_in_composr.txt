@@ -3,7 +3,7 @@
 [media width="150" description="Setting debranding" float="right"]data_custom/images/docs/sup_partner_sites_and_debranding_in_composr/b174fee9dcdde94b06a8f869cca8422e.jpg[/media]
 In this tutorial I will talk about a feature that is useful to agencies deploying Composr on a large scale: rebranding the site software.
 
-Should you wish to remove almost every reference to Composr, you can do this through the de-branding options in Admin Zone > Style > Debranding. It is primarily designed if you need to give third party limited access to the Admin Zone and want to direct them to your website with queries rather than compo.sr.
+Should you wish to remove almost every reference to Composr, you can do this through the de-branding options in Admin Zone > Style > Debranding. It is primarily designed if you need to give third party limited access to the Admin Zone and want to direct them to your website with queries rather than composr.app.
 
 The first three options relate to the name of the product, name of the company and the URL where you wish to direct users. The next option is a space to write an admin guide which will appear for these users. The next option allows you to completely customise what appears on the Admin Zone homepage including links, blocks and the to-do list which normally appears.
 

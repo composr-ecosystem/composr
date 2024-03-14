@@ -219,7 +219,7 @@ function post_fields_relay() : string
  */
 function upgrader_link(string $url, string $text, bool $disabled = false, string $js = '') : string
 {
-    $hidden = (strpos($url, 'https://compo.sr') !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
+    $hidden = (strpos($url, 'https://composr.app') !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
     if (get_param_integer('keep_safe_mode', 0) == 1) {
         $url .= '&keep_safe_mode=1';
     }
@@ -381,7 +381,7 @@ function upgrader_output_header()
         <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 
         <title>{$upgrader_title}</title>
-        <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
 
         <style>/*<![CDATA[*/
 END;
@@ -473,7 +473,7 @@ function upgrader_menu_screen() : string
     $tar_url = '';
     if ($news_id !== null) {
         require_code('files');
-        $fetch_url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/fetch_release_details.php?format=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
+        $fetch_url = 'https://composr.app/uploads/website_specific/composr.app/scripts/fetch_release_details.php?format=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
         $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
         $details = json_decode($news, true);

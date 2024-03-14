@@ -152,7 +152,7 @@ class Block_twitter_feed
 
         // Check for Twitter Support addon dependency before we go any further
         if (!addon_installed('twitter_support', true)) {
-            $twitter_error = 'The Twitter Support addon is not installed. The Twitter Feed Integration Block will not work unless the Twitter Support addon is installed. Please download and install the appropriate version of the Twitter Support addon from compo.sr.<br />';
+            $twitter_error = 'The Twitter Support addon is not installed. The Twitter Feed Integration Block will not work unless the Twitter Support addon is installed. Please download and install the appropriate version of the Twitter Support addon from composr.app.<br />';
             return do_template('BLOCK_TWITTER_FEED', [
                 '_GUID' => 'f57e5a534a789819c5121271b935d2f3',
                 'TWITTER_TITLE' => $twitter_title,

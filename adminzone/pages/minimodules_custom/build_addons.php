@@ -49,7 +49,7 @@ if (strpos(PHP_OS, 'Darwin') !== false) {
 }
 $command_to_try .= ' ' . get_custom_file_base() . '/exports/addons/';
 
-echo '<p>This has built all the addons into <kbd><a href="#" onclick="fauxmodal_alert(\'&lt;kbd&gt;' . escape_html($command_to_try) . '&lt;/kbd&gt;\',null,\'Command to open folder\',true);"><kbd>exports/addons</kbd></a></kbd>. The <kbd>admin_make_release</kbd> page you probably came from gives details on how to get these live on compo.sr.</p>';
+echo '<p>This has built all the addons into <kbd><a href="#" onclick="fauxmodal_alert(\'&lt;kbd&gt;' . escape_html($command_to_try) . '&lt;/kbd&gt;\',null,\'Command to open folder\',true);"><kbd>exports/addons</kbd></a></kbd>. The <kbd>admin_make_release</kbd> page you probably came from gives details on how to get these live on composr.app.</p>';
 
 echo '<p>What follows is details if you are republishing addons and want to easily put out "This is updated" messages into the comment topics. It\'s not necessary because just uploading the TARs will make the inbuilt Composr check script see the addon is updated compared to when a user installed it. However, it is nice to keep users updated if you have time.</p>';
 

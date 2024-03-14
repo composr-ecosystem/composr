@@ -119,7 +119,7 @@ Reasoned bans may often be used to scare a spammer that you have researched but 
 
 Configure reasoned bans in XML from Admin Zone > Setup > Configuration > Configure advanced banning -- or by hand-editing [tt]data_custom/xml_config/advanced_banning.xml[/tt] based on the default [tt]data/xml_config/advanced_banning.xml[/tt].
 
-Here's an example based on some actual spam that was affecting the compo.sr forums:
+Here's an example based on some actual spam that was affecting the composr.app forums:
 [code="XML"]
 <advancedBans>
 	<automaticRule trigger="https://americanmadepro.com/" pages="topics" types="_new_topic" action_member_ban="true" action_reasoned_ban="pakistani_spammer" action_ip_ban="false" />

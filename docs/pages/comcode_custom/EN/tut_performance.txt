@@ -843,7 +843,7 @@ Some further tips:
 
 Staring at an Apache access log can be frustrating, especially if you have a lot of static file requests, or your server's traffic is split across different logs. You also can't graph a raw log.
 
-It may therefore be useful to use a custom script to visualise a log. Here is one I wrote for the compo.sr web server (which runs ISPConfig):
+It may therefore be useful to use a custom script to visualise a log. Here is one I wrote for the composr.app web server (which runs ISPConfig):
 [codebox="PHP"]
 <?php
 
@@ -852,7 +852,7 @@ $cutoff = time() - 60 * 60 * 5;
 $php_only = true;
 $filter_403 = true;
 $common_fast_urls = array(
-    'https://compo.sr/backend.php?type=rss&mode=news',
+    'https://composr.app/backend.php?type=rss&mode=news',
 );
 
 error_reporting(E_ALL);

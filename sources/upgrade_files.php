@@ -29,7 +29,7 @@ function upgrader_file_upgrade_screen() : string
     $out = '';
 
     require_code('version2');
-    $personal_upgrader_generation_url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/build_personal_upgrader.php?from=' . urlencode(get_version_dotted());
+    $personal_upgrader_generation_url = 'https://composr.app/uploads/website_specific/composr.app/scripts/build_personal_upgrader.php?from=' . urlencode(get_version_dotted());
     if (function_exists('gzopen')) {
         $personal_upgrader_generation_url .= '&supports_gzip=1';
     }
@@ -69,7 +69,7 @@ function upgrader_file_upgrade_screen() : string
     $out .= '<form title="' . do_lang('PROCEED') . '" enctype="multipart/form-data" action="upgrader.php?type=_file_upgrade" method="post">' . post_fields_relay();
     $out .= '<p><label for="url">' . do_lang('URL') . '</label> <input type="text" id="url" name="url" size="80" value="' . escape_html($upgrader_tar_url) . '" /></p>';
     $out .= '<p><label for="dry_run"><input type="checkbox" id="dry_run" name="dry_run" value="1" /> ' . do_lang('UPGRADER_DRY_RUN') . '</label></p>';
-    if ((get_base_url_hostname() == 'compo.sr') || ($GLOBALS['DEV_MODE'])) { // for the core team to use on own site, for testing
+    if ((get_base_url_hostname() == 'composr.app') || ($GLOBALS['DEV_MODE'])) { // for the core team to use on own site, for testing
         $out .= '<p><label for="upload">' . do_lang('ALT_FIELD', do_lang('UPLOAD')) . '</label> <input type="file" id="upload" name="upload" /></p>';
         $out .= '<script ' . csp_nonce_html() . '>var url=document.getElementById(\'url\'); url.addEventListener(\'change\', function() { document.getElementById(\'upload\').disabled=url.value!=\'\'; });</script>';
     }
@@ -109,7 +109,7 @@ function _upgrader_file_upgrade_screen() : string
 
     // Get file
     require_code('tar');
-    if ((post_param_string('url', '', INPUT_FILTER_URL_GENERAL) == '') && ((get_base_url_hostname() == 'compo.sr') || ($GLOBALS['DEV_MODE']))) {
+    if ((post_param_string('url', '', INPUT_FILTER_URL_GENERAL) == '') && ((get_base_url_hostname() == 'composr.app') || ($GLOBALS['DEV_MODE']))) {
         $upgrade_path = $_FILES['upload']['tmp_name'];
         $original_filename = $_FILES['upload']['name'];
         $retrieval_method = FILE_RETRIEVAL_UPLOAD;

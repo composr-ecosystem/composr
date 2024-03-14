@@ -7,21 +7,21 @@ There is a commercial opportunity for individuals or organisations that want to 
 Th process works like this:[list="1"]
 [*] Join the translation team on [url="Transifex"]https://explore.transifex.com/composr/[/url]
 [*] Ensure all urgent and high priority strings have been translated (this is a big job, it may take around 2 weeks of person hours)
-[*] [url="Send a partnership request"]https://compo.sr/tickets/ticket.htm?ticket_type=Partnership[/url] telling us:[list]
+[*] [url="Send a partnership request"]https://composr.app/tickets/ticket.htm?ticket_type=Partnership[/url] telling us:[list]
 [*] which language you've finished translating
 [*] your Transifex username
-[*] your compo.sr username (if you're not logged in)
+[*] your composr.app username (if you're not logged in)
 [*] that you'd like to take responsibility for support the language
 [*] provide a link to this tutorial, to clarify to us that you're going through this official process
 [/list]
 [*] We'll then:[list]
-[*] create a subforum of the [url="Translation forum"]https://compo.sr/forum/forumview/browse/internationalisation.htm[/url]
+[*] create a subforum of the [url="Translation forum"]https://composr.app/forum/forumview/browse/internationalisation.htm[/url]
 [*] make you a moderator of this forum
 [*] create a pinned topic on the forum saying who you are (you'll have access to edit it)
 [*] download the strings from Transifex, do some basic testing, and publish a translation addon
 [*] set up an offical [tt]composr.org[/tt] subdomain that points to your forum
 [/list]
-[*] List yourselves on the [url="partner directory"]https://compo.sr/partners.htm[/url] so people know what services you provide
+[*] List yourselves on the [url="partner directory"]https://composr.app/partners.htm[/url] so people know what services you provide
 [*] Optionally create your own support site, and tell us to point the subdomain to that instead
 [/list]
 

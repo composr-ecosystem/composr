@@ -20,1361 +20,1361 @@ This tutorial features an index of the Composr addons, with links to tutorials t
 
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/actionlog.svg" />Actionlog<br />(<kbd>actionlog</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/actionlog.svg" />Actionlog<br />(<kbd>actionlog</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Audit-trail functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-censor.htm">Dealing with annoying users</a></td>
+            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
             <td>audit</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=actionlog&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/aggregate_types.svg" />Aggregate Types<br />(<kbd>aggregate_types</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/aggregate_types.svg" />Aggregate Types<br />(<kbd>aggregate_types</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>commandr</kbd>, <kbd>import</kbd>
             </td>
             <td>Define complex aggregate types in XML, and spawn them.</td>
-            <td><a href="http://compo.sr/docs11/tut-aggregate-types.htm">Aggregate Content Types</a></td>
+            <td><a href="https://composr.app/docs11/tut-aggregate-types.htm">Aggregate Content Types</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=aggregate_types&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />All Icons<br />(<kbd>all_icons</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />All Icons<br />(<kbd>all_icons</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=all_icons&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Apache Config Files<br />(<kbd>apache_config_files</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Apache Config Files<br />(<kbd>apache_config_files</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Sample .htaccess files to help achieve optimal configuration on the Apache web server.</td>
-            <td><a href="http://compo.sr/docs11/tut-adv-configuration.htm">Advanced configuration</a></td>
+            <td><a href="https://composr.app/docs11/tut-adv-configuration.htm">Advanced configuration</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=apache_config_files&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/authors.svg" />Authors<br />(<kbd>authors</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/authors.svg" />Authors<br />(<kbd>authors</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Certain kinds of content can have authors instead of submitters (e.g. &#039;Core Development Team&#039;). The authors may be independently described and searched under.</td>
-            <td><a href="http://compo.sr/docs11/tut-authors.htm">Authors</a><br /><br /><a href="http://compo.sr/docs11/tut-users.htm">People in their roles</a></td>
+            <td><a href="https://composr.app/docs11/tut-authors.htm">Authors</a><br /><br /><a href="https://composr.app/docs11/tut-users.htm">People in their roles</a></td>
             <td>login<br /><br />log-in<br /><br />sign-in<br /><br />sign-on<br /><br />logon<br /><br />log-on<br /><br />authorize<br /><br />bio<br /><br />biography</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=authors&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/setup/awards.svg" />Awards<br />(<kbd>awards</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/awards.svg" />Awards<br />(<kbd>awards</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Pick out content for featuring.</td>
-            <td><a href="http://compo.sr/docs11/tut-featured.htm">Providing featured content</a></td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
             <td>highlight<br /><br />feature</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=awards&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/bulk_content_actions/backups.svg" />Backup<br />(<kbd>backup</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/bulk_content_actions/backups.svg" />Backup<br />(<kbd>backup</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Perform incremental or full backups of files and the database. Supports scheduling.</td>
-            <td><a href="http://compo.sr/docs11/tut-backup.htm">Backing up your site</a></td>
+            <td><a href="https://composr.app/docs11/tut-backup.htm">Backing up your site</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=backup&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/cms/banners.svg" />Banners<br />(<kbd>banners</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/cms/banners.svg" />Banners<br />(<kbd>banners</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>An advanced banner system, with support for multiple banner rotations, commercial banner campaigns, and webring-style systems. Support for graphical, text, and HTML banners. Hotword activation support.</td>
-            <td><a href="http://compo.sr/docs11/tut-banners.htm">Running advertisements (via the banner system)</a></td>
+            <td><a href="https://composr.app/docs11/tut-banners.htm">Running advertisements (via the banner system)</a></td>
             <td>advert<br /><br />advertising<br /><br />advertise<br /><br />ad</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=banners&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/breadcrumbs.svg" />Breadcrumbs<br />(<kbd>breadcrumbs</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/breadcrumbs.svg" />Breadcrumbs<br />(<kbd>breadcrumbs</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Advanced breadcrumb editing.</td>
-            <td><a href="http://compo.sr/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
+            <td><a href="https://composr.app/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="https://composr.app/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=breadcrumbs&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/calendar.svg" />Calendar<br />(<kbd>calendar</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/calendar.svg" />Calendar<br />(<kbd>calendar</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>An advanced community calendar.</td>
-            <td><a href="http://compo.sr/docs11/tut-calendar.htm">Running a calendar/diary</a></td>
+            <td><a href="https://composr.app/docs11/tut-calendar.htm">Running a calendar/diary</a></td>
             <td>event<br /><br />diary<br /><br />schedule</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=calendar&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />CAPTCHA<br />(<kbd>captcha</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />CAPTCHA<br />(<kbd>captcha</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Stop spam-bots from performing actions on the website.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=captcha&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/catalogues/catalogues.svg" />Catalogues<br />(<kbd>catalogues</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/catalogues/catalogues.svg" />Catalogues<br />(<kbd>catalogues</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard Composr features (e.g. ratings).</td>
-            <td><a href="http://compo.sr/docs11/tut-catalogues.htm">Custom structured content (via catalogues)</a><br /><br /><a href="http://compo.sr/docs11/tut-information.htm">Choosing how to publish</a><br /><br /><a href="http://compo.sr/docs11/tut-fields.htm">Custom fields</a></td>
+            <td><a href="https://composr.app/docs11/tut-catalogues.htm">Custom structured content (via catalogues)</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a><br /><br /><a href="https://composr.app/docs11/tut-fields.htm">Custom fields</a></td>
             <td>catalogue<br /><br />database<br /><br />classified<br /><br />catalog<br /><br />directory<br /><br />schema<br /><br />field</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=catalogues&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/social/chat/chat.svg" />Chat<br />(<kbd>chat</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/chat/chat.svg" />Chat<br />(<kbd>chat</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Chatrooms and instant messaging.</td>
-            <td><a href="http://compo.sr/docs11/tut-chat.htm">Running chatrooms (features and advice)</a></td>
+            <td><a href="https://composr.app/docs11/tut-chat.htm">Running chatrooms (features and advice)</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=chat&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Conversr Avatars<br />(<kbd>cns_avatars</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Conversr Avatars<br />(<kbd>cns_avatars</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>cns_member_avatars</kbd>
             </td>
             <td>A selection of avatars for Conversr</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_avatars&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Conversr Cartoon Avatars<br />(<kbd>cns_cartoon_avatars</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Conversr Cartoon Avatars<br />(<kbd>cns_cartoon_avatars</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>cns_member_avatars</kbd>
             </td>
             <td>A selection of avatars for Conversr (sketched characters)</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_cartoon_avatars&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/cms/clubs.svg" />Conversr Clubs<br />(<kbd>cns_clubs</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/cms/clubs.svg" />Conversr Clubs<br />(<kbd>cns_clubs</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Clubs for members, each of which comes with a forum.</td>
-            <td><a href="http://compo.sr/docs11/tut-subcom.htm">Tools for subsites and subcommunities</a></td>
+            <td><a href="https://composr.app/docs11/tut-subcom.htm">Tools for subsites and subcommunities</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_clubs&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/links/contact_member.svg" />Conversr Contact Member<br />(<kbd>cns_contact_member</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/links/contact_member.svg" />Conversr Contact Member<br />(<kbd>cns_contact_member</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Off-site e-mailing of members (more private, and may be used by guests).</td>
-            <td><a href="http://compo.sr/docs11/tut-correspondence.htm">Correspondence between members</a></td>
+            <td><a href="https://composr.app/docs11/tut-correspondence.htm">Correspondence between members</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_contact_member&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/users/custom_profile_fields.svg" />Conversr Custom Profile Fields<br />(<kbd>cns_cpfs</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/users/custom_profile_fields.svg" />Conversr Custom Profile Fields<br />(<kbd>cns_cpfs</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Custom Profile Fields, so members may save additional details. If this is uninstalled any existing Custom Profile Fields will remain in the system.</td>
-            <td><a href="http://compo.sr/docs11/tut-adv-members.htm">Advanced Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-adv-members.htm">Advanced Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_cpfs&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/social/forum/forums.svg" />Conversr Forum<br />(<kbd>cns_forum</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/forum/forums.svg" />Conversr Forum<br />(<kbd>cns_forum</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The Conversr forum- a modern advanced forum for members to interact on.</td>
-            <td><a href="http://compo.sr/docs11/tut-forums.htm">Discussion forums</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-forums.htm">Advanced forum settings</a><br /><br /><a href="http://compo.sr/docs11/tut-forum-tracking.htm">Keeping on track of busy forums</a><br /><br /><a href="http://compo.sr/docs11/tut-moderation.htm">Basic forum moderation</a><br /><br /><a href="http://compo.sr/docs11/tut-information.htm">Choosing how to publish</a></td>
+            <td><a href="https://composr.app/docs11/tut-forums.htm">Discussion forums</a><br /><br /><a href="https://composr.app/docs11/tut-adv-forums.htm">Advanced forum settings</a><br /><br /><a href="https://composr.app/docs11/tut-forum-tracking.htm">Keeping on track of busy forums</a><br /><br /><a href="https://composr.app/docs11/tut-moderation.htm">Basic forum moderation</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_forum&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/tabs/member_account/edit/avatar.svg" />Conversr Member Avatars<br />(<kbd>cns_member_avatars</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/tabs/member_account/edit/avatar.svg" />Conversr Member Avatars<br />(<kbd>cns_member_avatars</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Member avatars.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_member_avatars&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/tabs/member_account/edit/photo.svg" />Conversr Member Photos<br />(<kbd>cns_member_photos</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/tabs/member_account/edit/photo.svg" />Conversr Member Photos<br />(<kbd>cns_member_photos</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Member photos.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_member_photos&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/tabs/member_account/edit/title.svg" />Conversr Member Titles<br />(<kbd>cns_member_titles</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/tabs/member_account/edit/title.svg" />Conversr Member Titles<br />(<kbd>cns_member_titles</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Member titles.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_member_titles&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/forum/multi_moderations.svg" />Conversr Multi Moderations<br />(<kbd>cns_multi_moderations</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/forum/multi_moderations.svg" />Conversr Multi Moderations<br />(<kbd>cns_multi_moderations</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>cns_forum</kbd>
             </td>
             <td>Multi-moderations for the Conversr forum.</td>
-            <td><a href="http://compo.sr/docs11/tut-moderation.htm">Basic forum moderation</a></td>
+            <td><a href="https://composr.app/docs11/tut-moderation.htm">Basic forum moderation</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_multi_moderations&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/forum/post_templates.svg" />Conversr Post Templates<br />(<kbd>cns_post_templates</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/forum/post_templates.svg" />Conversr Post Templates<br />(<kbd>cns_post_templates</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>cns_forum</kbd>
             </td>
             <td>Post Templates for the Conversr forum.</td>
-            <td><a href="http://compo.sr/docs11/tut-support-desk.htm">Running a virtual support desk</a></td>
+            <td><a href="https://composr.app/docs11/tut-support-desk.htm">Running a virtual support desk</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_post_templates&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/tabs/member_account/edit/signature.svg" />Conversr Signatures<br />(<kbd>cns_signatures</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/tabs/member_account/edit/signature.svg" />Conversr Signatures<br />(<kbd>cns_signatures</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Member signatures.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_signatures&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Conversr Thematic Avatars<br />(<kbd>cns_thematic_avatars</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Conversr Thematic Avatars<br />(<kbd>cns_thematic_avatars</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>cns_member_avatars</kbd>
             </td>
             <td>A selection of avatars for Conversr</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_thematic_avatars&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/social/warnings.svg" />Conversr Warnings<br />(<kbd>cns_warnings</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/warnings.svg" />Conversr Warnings<br />(<kbd>cns_warnings</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Member warnings and punishment.</td>
-            <td><a href="http://compo.sr/docs11/tut-censor.htm">Dealing with annoying users</a><br /><br /><a href="http://compo.sr/docs11/tut-staff.htm">Coordination between staff and staff/members</a></td>
+            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a><br /><br /><a href="https://composr.app/docs11/tut-staff.htm">Coordination between staff and staff/members</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=cns_warnings&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/code_editor.svg" />Code Editor<br />(<kbd>code_editor</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/code_editor.svg" />Code Editor<br />(<kbd>code_editor</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>For programmers- A simple editor for editing Composr code files, with support for override support and saving via FTP.</td>
-            <td><a href="http://compo.sr/docs11/tut-framework.htm">The Composr programming framework</a></td>
+            <td><a href="https://composr.app/docs11/tut-framework.htm">The Composr programming framework</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=code_editor&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/commandr.svg" />Commandr<br />(<kbd>commandr</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/commandr.svg" />Commandr<br />(<kbd>commandr</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>import</kbd>
             </td>
             <td>A command-line environment for managing your website, designed for Linux/Unix lovers.</td>
-            <td><a href="http://compo.sr/docs11/tut-commandr.htm">Commandr</a><br /><br /><a href="http://compo.sr/docs11/tut-repository.htm">The Composr Enterprise Repository</a></td>
+            <td><a href="https://composr.app/docs11/tut-commandr.htm">Commandr</a><br /><br /><a href="https://composr.app/docs11/tut-repository.htm">The Composr Enterprise Repository</a></td>
             <td>console<br /><br />command prompt<br /><br />command line<br /><br />cle</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=commandr&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/pages/privacy_policy.svg" />Content Privacy<br />(<kbd>content_privacy</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/pages/privacy_policy.svg" />Content Privacy<br />(<kbd>content_privacy</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Allows users to specify privacy level for their content.</td>
-            <td><a href="http://compo.sr/docs11/tut-censor.htm">Dealing with annoying users</a></td>
+            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=content_privacy&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/tool.svg" />Content Reviews<br />(<kbd>content_reviews</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/tool.svg" />Content Reviews<br />(<kbd>content_reviews</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>validation</kbd>, <kbd>commandr</kbd>
             </td>
             <td>Regularly review content for accuracy.</td>
-            <td><a href="http://compo.sr/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
+            <td><a href="https://composr.app/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
             <td>content reviews<br /><br />audit</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=content_reviews&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core<br />(<kbd>core</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core<br />(<kbd>core</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>(Core Composr code)</td>
-            <td><a href="http://compo.sr/docs11/tut-do.htm">Dos and Do-nots of a (Composr) website</a><br /><br /><a href="http://compo.sr/docs11/tut-drinking.htm">Drinking from the feature pool</a><br /><br /><a href="http://compo.sr/docs11/tut-metadata.htm">Metadata</a><br /><br /><a href="http://compo.sr/docs11/tut-sql.htm">Manually editing your database with phpMyAdmin</a><br /><br /><a href="http://compo.sr/docs11/tut-url-schemes.htm">URL Schemes in Composr</a><br /><br /><a href="http://compo.sr/docs11/tut-seo.htm">Improving your search engine ranking</a><br /><br /><a href="http://compo.sr/docs11/tut-selectcode.htm">Filtering using Selectcode syntax</a><br /><br /><a href="http://compo.sr/docs11/tut-filtercode.htm">Filtering using Filtercode syntax</a><br /><br /><a href="http://compo.sr/docs11/tut-keymap.htm">Composr keyboard shortcuts</a><br /><br /><a href="http://compo.sr/docs11/tut-email.htm">Understanding and configuring e-mail</a><br /><br /><a href="http://compo.sr/docs11/tut-disaster.htm">Disaster recovery</a><br /><br /><a href="http://compo.sr/docs11/tut-antispam.htm">Anti-spam settings</a></td>
+            <td><a href="https://composr.app/docs11/tut-do.htm">Dos and Do-nots of a (Composr) website</a><br /><br /><a href="https://composr.app/docs11/tut-drinking.htm">Drinking from the feature pool</a><br /><br /><a href="https://composr.app/docs11/tut-metadata.htm">Metadata</a><br /><br /><a href="https://composr.app/docs11/tut-sql.htm">Manually editing your database with phpMyAdmin</a><br /><br /><a href="https://composr.app/docs11/tut-url-schemes.htm">URL Schemes in Composr</a><br /><br /><a href="https://composr.app/docs11/tut-seo.htm">Improving your search engine ranking</a><br /><br /><a href="https://composr.app/docs11/tut-selectcode.htm">Filtering using Selectcode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-filtercode.htm">Filtering using Filtercode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-keymap.htm">Composr keyboard shortcuts</a><br /><br /><a href="https://composr.app/docs11/tut-email.htm">Understanding and configuring e-mail</a><br /><br /><a href="https://composr.app/docs11/tut-disaster.htm">Disaster recovery</a><br /><br /><a href="https://composr.app/docs11/tut-antispam.htm">Anti-spam settings</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Abstract Components<br />(<kbd>core_abstract_components</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Abstract Components<br />(<kbd>core_abstract_components</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Core rendering functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_abstract_components&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Abstract Interfaces<br />(<kbd>core_abstract_interfaces</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Abstract Interfaces<br />(<kbd>core_abstract_interfaces</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Core rendering functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_abstract_interfaces&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/addons.svg" />Core Addon Management<br />(<kbd>core_addon_management</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/addons.svg" />Core Addon Management<br />(<kbd>core_addon_management</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Install or uninstall addons.</td>
-            <td><a href="http://compo.sr/docs11/tut-framework.htm">The Composr programming framework</a></td>
+            <td><a href="https://composr.app/docs11/tut-framework.htm">The Composr programming framework</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_addon_management&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Admin Zone Dashboard<br />(<kbd>core_adminzone_dashboard</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Admin Zone Dashboard<br />(<kbd>core_adminzone_dashboard</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The dashboard tools shown in the Admin Zone.</td>
-            <td><a href="http://compo.sr/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
+            <td><a href="https://composr.app/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_adminzone_dashboard&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/cleanup.svg" />Core Cleanup Tools<br />(<kbd>core_cleanup_tools</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/cleanup.svg" />Core Cleanup Tools<br />(<kbd>core_cleanup_tools</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Behind-the-scenes maintenance tasks.</td>
-            <td><a href="http://compo.sr/docs11/tut-website-health.htm">Website Health</a></td>
+            <td><a href="https://composr.app/docs11/tut-website-health.htm">Website Health</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_cleanup_tools&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/social/profile.svg" />Core Conversr<br />(<kbd>core_cns</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/profile.svg" />Core Conversr<br />(<kbd>core_cns</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The Composr member/usergroup system.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-members.htm">Advanced Composr member system</a><br /><br /><a href="http://compo.sr/docs11/tut-users.htm">People in their roles</a><br /><br /><a href="http://compo.sr/docs11/tut-httpauth.htm">Integrating Composr into a network via HTTP authentication</a><br /><br /><a href="http://compo.sr/docs11/tut-emoticons.htm">The Composr emoticon system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a><br /><br /><a href="https://composr.app/docs11/tut-adv-members.htm">Advanced Composr member system</a><br /><br /><a href="https://composr.app/docs11/tut-users.htm">People in their roles</a><br /><br /><a href="https://composr.app/docs11/tut-httpauth.htm">Integrating Composr into a network via HTTP authentication</a><br /><br /><a href="https://composr.app/docs11/tut-emoticons.htm">The Composr emoticon system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_cns&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/cms/comcode_page_edit.svg" />Core Comcode Pages<br />(<kbd>core_comcode_pages</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/cms/comcode_page_edit.svg" />Core Comcode Pages<br />(<kbd>core_comcode_pages</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Manage new pages on the website, known as Comcode pages.</td>
-            <td><a href="http://compo.sr/docs11/tut-comcode-pages.htm">Adding standalone pages of content (via Comcode)</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-comcode-pages.htm">Using blocks</a><br /><br /><a href="http://compo.sr/docs11/tut-information.htm">Choosing how to publish</a></td>
+            <td><a href="https://composr.app/docs11/tut-comcode-pages.htm">Adding standalone pages of content (via Comcode)</a><br /><br /><a href="https://composr.app/docs11/tut-adv-comcode-pages.htm">Using blocks</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_comcode_pages&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/setup/config/config.svg" />Core Configuration<br />(<kbd>core_configuration</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/config/config.svg" />Core Configuration<br />(<kbd>core_configuration</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Set configuration options.</td>
-            <td><a href="http://compo.sr/docs11/tut-configuration.htm">Basic configuration and getting started</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-configuration.htm">Advanced configuration</a><br /><br /><a href="http://compo.sr/docs11/tut-moving.htm">Moving sites</a></td>
+            <td><a href="https://composr.app/docs11/tut-configuration.htm">Basic configuration and getting started</a><br /><br /><a href="https://composr.app/docs11/tut-adv-configuration.htm">Advanced configuration</a><br /><br /><a href="https://composr.app/docs11/tut-moving.htm">Moving sites</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_configuration&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Database Drivers<br />(<kbd>core_database_drivers</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Database Drivers<br />(<kbd>core_database_drivers</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The code layer that binds the software to one of various different kinds of database software.</td>
-            <td><a href="http://compo.sr/docs11/tut-install.htm">Installation</a><br /><br /><a href="http://compo.sr/docs11/tut-install-linux.htm">Installation on Linux</a><br /><br /><a href="http://compo.sr/docs11/tut-webhosting.htm">Webhosting for Composr</a><br /><br /><a href="http://compo.sr/docs11/tut-sqlserver.htm">Using SQL Server with Composr</a><br /><br /><a href="http://compo.sr/docs11/tut-postgresql.htm">Using PostgreSQL with Composr</a><br /><br /><a href="http://compo.sr/docs11/tut-sql.htm">Manually editing your database with phpMyAdmin</a></td>
+            <td><a href="https://composr.app/docs11/tut-install.htm">Installation</a><br /><br /><a href="https://composr.app/docs11/tut-install-linux.htm">Installation on Linux</a><br /><br /><a href="https://composr.app/docs11/tut-webhosting.htm">Webhosting for Composr</a><br /><br /><a href="https://composr.app/docs11/tut-sqlserver.htm">Using SQL Server with Composr</a><br /><br /><a href="https://composr.app/docs11/tut-postgresql.htm">Using PostgreSQL with Composr</a><br /><br /><a href="https://composr.app/docs11/tut-sql.htm">Manually editing your database with phpMyAdmin</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_database_drivers&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/feedback/comment.svg" />Core Feedback Features<br />(<kbd>core_feedback_features</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/feedback/comment.svg" />Core Feedback Features<br />(<kbd>core_feedback_features</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Features for user interaction with content.</td>
-            <td><a href="http://compo.sr/docs11/tut-feedback.htm">Feedback and user interaction</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-news.htm">Advanced news</a></td>
+            <td><a href="https://composr.app/docs11/tut-feedback.htm">Feedback and user interaction</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_feedback_features&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Fields<br />(<kbd>core_fields</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Fields<br />(<kbd>core_fields</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>(Core fields API)</td>
-            <td><a href="http://compo.sr/docs11/tut-catalogues.htm">Custom structured content (via catalogues)</a><br /><br /><a href="http://compo.sr/docs11/tut-fields.htm">Custom fields</a></td>
+            <td><a href="https://composr.app/docs11/tut-catalogues.htm">Custom structured content (via catalogues)</a><br /><br /><a href="https://composr.app/docs11/tut-fields.htm">Custom fields</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_fields&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Form Interfaces<br />(<kbd>core_form_interfaces</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Form Interfaces<br />(<kbd>core_form_interfaces</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Core rendering functionality for forms.</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_form_interfaces&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Forum Drivers<br />(<kbd>core_forum_drivers</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Forum Drivers<br />(<kbd>core_forum_drivers</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The code layer that binds the software to one of various different forum/member systems.</td>
-            <td><a href="http://compo.sr/docs11/tut-nuances.htm">Nuances of forum integration</a><br /><br /><a href="http://compo.sr/docs11/codebook-1b.htm">Code Book, part 1b (Further back-end concepts)</a></td>
+            <td><a href="https://composr.app/docs11/tut-nuances.htm">Nuances of forum integration</a><br /><br /><a href="https://composr.app/docs11/codebook-1b.htm">Code Book, part 1b (Further back-end concepts)</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_forum_drivers&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Graphic Text<br />(<kbd>core_graphic_text</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Graphic Text<br />(<kbd>core_graphic_text</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Core rendering functionality for imagery.</td>
-            <td><a href="http://compo.sr/docs11/tut-fringe.htm">Supplementary web technologies (media, social networking, etc)</a></td>
+            <td><a href="https://composr.app/docs11/tut-fringe.htm">Supplementary web technologies (media, social networking, etc)</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_graphic_text&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core HTML Abstractions<br />(<kbd>core_html_abstractions</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core HTML Abstractions<br />(<kbd>core_html_abstractions</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Core rendering functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_html_abstractions&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/style/language/language.svg" />Core Language Editing<br />(<kbd>core_language_editing</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/style/language/language.svg" />Core Language Editing<br />(<kbd>core_language_editing</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Translate the software, or just change what it says for stylistic reasons.</td>
-            <td><a href="http://compo.sr/docs11/tut-intl.htm">Localisation and internationalisation</a><br /><br /><a href="http://compo.sr/docs11/tut-intl-users.htm">Changing the site language (for end users)</a><br /><br /><a href="http://compo.sr/docs11/tut-intl-content.htm">Translating Composr content</a><br /><br /><a href="http://compo.sr/docs11/tut-intl-code-philosophy.htm">Translations code philosophy</a><br /><br /><a href="http://compo.sr/docs11/tut-intl-maintenance.htm">International support communities</a></td>
+            <td><a href="https://composr.app/docs11/tut-intl.htm">Localisation and internationalisation</a><br /><br /><a href="https://composr.app/docs11/tut-intl-users.htm">Changing the site language (for end users)</a><br /><br /><a href="https://composr.app/docs11/tut-intl-content.htm">Translating Composr content</a><br /><br /><a href="https://composr.app/docs11/tut-intl-code-philosophy.htm">Translations code philosophy</a><br /><br /><a href="https://composr.app/docs11/tut-intl-maintenance.htm">International support communities</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_language_editing&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/menus.svg" />Core Menus<br />(<kbd>core_menus</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/menus.svg" />Core Menus<br />(<kbd>core_menus</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Edit menus.</td>
-            <td><a href="http://compo.sr/docs11/tut-menus.htm">Customising what&#039;s on the menus</a></td>
+            <td><a href="https://composr.app/docs11/tut-menus.htm">Customising what&#039;s on the menus</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_menus&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/tool_buttons/notifications2.svg" />Core Notifications<br />(<kbd>core_notifications</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/tool_buttons/notifications2.svg" />Core Notifications<br />(<kbd>core_notifications</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Sends out action-triggered notifications to members listening to them.</td>
-            <td><a href="http://compo.sr/docs11/tut-notifications.htm">Notifications</a></td>
+            <td><a href="https://composr.app/docs11/tut-notifications.htm">Notifications</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_notifications&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/security/permissions/privileges.svg" />Core Permission Management<br />(<kbd>core_permission_management</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/security/permissions/privileges.svg" />Core Permission Management<br />(<kbd>core_permission_management</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Manage permissions.</td>
-            <td><a href="http://compo.sr/docs11/tut-permissions.htm">Access control and privileges</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-permissions.htm">Advanced access control</a></td>
+            <td><a href="https://composr.app/docs11/tut-permissions.htm">Access control and privileges</a><br /><br /><a href="https://composr.app/docs11/tut-adv-permissions.htm">Advanced access control</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_permission_management&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Primary Layout<br />(<kbd>core_primary_layout</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Primary Layout<br />(<kbd>core_primary_layout</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Core rendering functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="http://compo.sr/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="https://composr.app/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_primary_layout&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Rich Media<br />(<kbd>core_rich_media</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Rich Media<br />(<kbd>core_rich_media</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Comcode and attachments.</td>
-            <td><a href="http://compo.sr/docs11/tut-comcode.htm">Comcode and the attachment system</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-comcode.htm">Advanced Comcode</a><br /><br /><a href="http://compo.sr/docs11/tut-wysiwyg.htm">WYSIWYG editing</a></td>
+            <td><a href="https://composr.app/docs11/tut-comcode.htm">Comcode and the attachment system</a><br /><br /><a href="https://composr.app/docs11/tut-adv-comcode.htm">Advanced Comcode</a><br /><br /><a href="https://composr.app/docs11/tut-wysiwyg.htm">WYSIWYG editing</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_rich_media&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/style/themes/themes.svg" />Core Themeing<br />(<kbd>core_themeing</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/style/themes/themes.svg" />Core Themeing<br />(<kbd>core_themeing</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Themeing the website, via CSS, HTML, and images.</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="http://compo.sr/docs11/tut-releasing-themes.htm">Releasing a theme</a><br /><br /><a href="http://compo.sr/docs11/tut-theme-lifecycle.htm">Theme Lifecycle</a><br /><br /><a href="http://compo.sr/docs11/tut-tempcode.htm">Tempcode programming</a><br /><br /><a href="http://compo.sr/docs11/tut-fixed-width.htm">Fixed-width layouts</a><br /><br /><a href="http://compo.sr/docs11/tut-design.htm">Introduction to web design</a><br /><br /><a href="http://compo.sr/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a><br /><br /><a href="http://compo.sr/docs11/tut-mobile.htm">Mobile design</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="https://composr.app/docs11/tut-releasing-themes.htm">Releasing a theme</a><br /><br /><a href="https://composr.app/docs11/tut-theme-lifecycle.htm">Theme Lifecycle</a><br /><br /><a href="https://composr.app/docs11/tut-tempcode.htm">Tempcode programming</a><br /><br /><a href="https://composr.app/docs11/tut-fixed-width.htm">Fixed-width layouts</a><br /><br /><a href="https://composr.app/docs11/tut-design.htm">Introduction to web design</a><br /><br /><a href="https://composr.app/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a><br /><br /><a href="https://composr.app/docs11/tut-mobile.htm">Mobile design</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_themeing&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/upgrade.svg" />Core Upgrader<br />(<kbd>core_upgrader</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/upgrade.svg" />Core Upgrader<br />(<kbd>core_upgrader</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The upgrader code.</td>
-            <td><a href="http://compo.sr/docs11/tut-upgrade.htm">Performing an upgrade</a></td>
+            <td><a href="https://composr.app/docs11/tut-upgrade.htm">Performing an upgrade</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_upgrader&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Core Webstandards<br />(<kbd>core_webstandards</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Webstandards<br />(<kbd>core_webstandards</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Web Standards checking tools.</td>
-            <td><a href="http://compo.sr/docs11/tut-accessibility.htm">Helping improve site accessibility for disabled users</a><br /><br /><a href="http://compo.sr/docs11/tut-markup.htm">Guide to web technologies (including HTML, CSS, and JavaScript)</a></td>
+            <td><a href="https://composr.app/docs11/tut-accessibility.htm">Helping improve site accessibility for disabled users</a><br /><br /><a href="https://composr.app/docs11/tut-markup.htm">Guide to web technologies (including HTML, CSS, and JavaScript)</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_webstandards&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/zones/zone_editor.svg" />Core Zone Editor<br />(<kbd>core_zone_editor</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/zones/zone_editor.svg" />Core Zone Editor<br />(<kbd>core_zone_editor</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Manage zones (sub-sites).</td>
-            <td><a href="http://compo.sr/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
+            <td><a href="https://composr.app/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="https://composr.app/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=core_zone_editor&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Counting Blocks<br />(<kbd>counting_blocks</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Counting Blocks<br />(<kbd>counting_blocks</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Blocks for hit counters, and count-downs.</td>
-            <td><a href="http://compo.sr/docs11/tut-featured.htm">Providing featured content</a></td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=counting_blocks&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/setup/custom_comcode.svg" />Custom Comcode<br />(<kbd>custom_comcode</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/custom_comcode.svg" />Custom Comcode<br />(<kbd>custom_comcode</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Create new Comcode tags.</td>
-            <td><a href="http://compo.sr/docs11/tut-adv-comcode.htm">Advanced Comcode</a></td>
+            <td><a href="https://composr.app/docs11/tut-adv-comcode.htm">Advanced Comcode</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=custom_comcode&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/style/debrand.svg" />Debrand<br />(<kbd>debrand</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/style/debrand.svg" />Debrand<br />(<kbd>debrand</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Allow easy debranding of the website software.</td>
-            <td><a href="http://compo.sr/docs11/codebook-3.htm">Code Book, part 3 (Miscellany)</a></td>
+            <td><a href="https://composr.app/docs11/codebook-3.htm">Code Book, part 3 (Miscellany)</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=debrand&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/downloads.svg" />Downloads<br />(<kbd>downloads</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/downloads.svg" />Downloads<br />(<kbd>downloads</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Host a downloads directory.</td>
-            <td><a href="http://compo.sr/docs11/tut-downloads.htm">Providing downloads</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-downloads.htm">Advanced provision of downloads</a><br /><br /><a href="http://compo.sr/docs11/tut-information.htm">Choosing how to publish</a></td>
+            <td><a href="https://composr.app/docs11/tut-downloads.htm">Providing downloads</a><br /><br /><a href="https://composr.app/docs11/tut-adv-downloads.htm">Advanced provision of downloads</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td>file<br /><br />document<br /><br />publication<br /><br />library</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=downloads&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/ecommerce/ecommerce.svg" />eCommerce<br />(<kbd>ecommerce</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/ecommerce/ecommerce.svg" />eCommerce<br />(<kbd>ecommerce</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-ecommerce.htm">eCommerce</a><br /><br /><a href="http://compo.sr/docs11/tut-points.htm">Creating an economy/reward-system for members via points</a></td>
+            <td><a href="https://composr.app/docs11/tut-ecommerce.htm">eCommerce</a><br /><br /><a href="https://composr.app/docs11/tut-points.htm">Creating an economy/reward-system for members via points</a></td>
             <td>shopping<br /><br />payment<br /><br />purchase<br /><br />products<br /><br />store<br /><br />buy<br /><br />bought<br /><br />checkout</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=ecommerce&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/errorlog.svg" />Errorlog<br />(<kbd>errorlog</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/errorlog.svg" />Errorlog<br />(<kbd>errorlog</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Log of errors that have happened on the website.</td>
-            <td><a href="http://compo.sr/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
+            <td><a href="https://composr.app/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=errorlog&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Failover<br />(<kbd>failover</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Failover<br />(<kbd>failover</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Advanced system to detect if the site goes down, and provide an automatic fallback.</td>
-            <td><a href="http://compo.sr/docs11/tut-performance.htm">Optimising Performance</a></td>
+            <td><a href="https://composr.app/docs11/tut-performance.htm">Optimising Performance</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=failover&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Filebased Persistent Caching<br />(<kbd>filebased_persistent_caching</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Filebased Persistent Caching<br />(<kbd>filebased_persistent_caching</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A persistent data cache, using disk files for data storage.</td>
-            <td><a href="http://compo.sr/docs11/tut-performance.htm">Optimising Performance</a></td>
+            <td><a href="https://composr.app/docs11/tut-performance.htm">Optimising Performance</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=filebased_persistent_caching&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/cms/filedump.svg" />Filedump<br />(<kbd>filedump</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/cms/filedump.svg" />Filedump<br />(<kbd>filedump</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>File/media library, for use in attachments or for general ad-hoc sharing.</td>
-            <td><a href="http://compo.sr/docs11/tut-collaboration.htm">Running a collaboration hub</a></td>
+            <td><a href="https://composr.app/docs11/tut-collaboration.htm">Running a collaboration hub</a></td>
             <td>library<br /><br />file manager<br /><br />asset</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=filedump&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Forum Blocks<br />(<kbd>forum_blocks</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Forum Blocks<br />(<kbd>forum_blocks</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>news_shared</kbd>
             </td>
             <td>Blocks to draw forum posts and topics into the main website.</td>
-            <td><a href="http://compo.sr/docs11/tut-featured.htm">Providing featured content</a></td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=forum_blocks&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/galleries.svg" />Galleries<br />(<kbd>galleries</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/galleries.svg" />Galleries<br />(<kbd>galleries</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Galleries, including support for video galleries, and member personal galleries.</td>
-            <td><a href="http://compo.sr/docs11/tut-galleries.htm">Providing galleries</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-galleries.htm">Advanced galleries</a></td>
+            <td><a href="https://composr.app/docs11/tut-galleries.htm">Providing galleries</a><br /><br /><a href="https://composr.app/docs11/tut-adv-galleries.htm">Advanced galleries</a></td>
             <td>gallery<br /><br />album<br /><br />podcast<br /><br />multimedia</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=galleries&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Google Appengine<br />(<kbd>google_appengine</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Google Appengine<br />(<kbd>google_appengine</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Support for deploying to Google App Engine (for developers).</td>
-            <td><a href="http://compo.sr/docs11/tut-google-appengine.htm">Installation on Google App Engine</a></td>
+            <td><a href="https://composr.app/docs11/tut-google-appengine.htm">Installation on Google App Engine</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=google_appengine&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/health_check.svg" />Health Check<br />(<kbd>health_check</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/health_check.svg" />Health Check<br />(<kbd>health_check</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The Health Check addon automatically finds problems on your website and server.</td>
-            <td><a href="http://compo.sr/docs11/tut-website-health.htm">Website Health</a></td>
+            <td><a href="https://composr.app/docs11/tut-website-health.htm">Website Health</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=health_check&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/help.svg" />Help Page<br />(<kbd>help_page</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/help.svg" />Help Page<br />(<kbd>help_page</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A simple website help page. Note that removing this will not remove the menu link automatically.</td>
-            <td><a href="http://compo.sr/docs11/tut-configuration.htm">Basic configuration and getting started</a></td>
+            <td><a href="https://composr.app/docs11/tut-configuration.htm">Basic configuration and getting started</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=help_page&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/import.svg" />Import<br />(<kbd>import</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/import.svg" />Import<br />(<kbd>import</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Switch to Composr from other software. This addon provides the architecture for importing, and a number of prewritten importers.</td>
-            <td><a href="http://compo.sr/docs11/tut-importer.htm">Importing data into Composr</a></td>
+            <td><a href="https://composr.app/docs11/tut-importer.htm">Importing data into Composr</a></td>
             <td>convert<br /><br />migrate<br /><br />interchange<br /><br />importance<br /><br />priority<br /><br />precedence<br /><br />level</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=import&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Installer<br />(<kbd>installer</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Installer<br />(<kbd>installer</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The installer files (can be removed immediately after installing; in fact Composr makes you remove install.php manually).</td>
-            <td><a href="http://compo.sr/docs11/tut-install.htm">Installation</a><br /><br /><a href="http://compo.sr/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="http://compo.sr/docs11/tut-install-linux.htm">Installation on Linux</a><br /><br /><a href="http://compo.sr/docs11/tut-install-windows-desktop.htm">Installation on a Windows desktop</a><br /><br /><a href="http://compo.sr/docs11/tut-install-windows-server.htm">Installation on a Windows server</a><br /><br /><a href="http://compo.sr/docs11/tut-webhosting.htm">Webhosting for Composr</a></td>
+            <td><a href="https://composr.app/docs11/tut-install.htm">Installation</a><br /><br /><a href="https://composr.app/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="https://composr.app/docs11/tut-install-linux.htm">Installation on Linux</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-desktop.htm">Installation on a Windows desktop</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-server.htm">Installation on a Windows server</a><br /><br /><a href="https://composr.app/docs11/tut-webhosting.htm">Webhosting for Composr</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=installer&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Language Block<br />(<kbd>language_block</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Language Block<br />(<kbd>language_block</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Blocks to allow visitors to choose their language.</td>
-            <td><a href="http://compo.sr/docs11/tut-intl.htm">Localisation and internationalisation</a><br /><br /><a href="http://compo.sr/docs11/tut-intl-users.htm">Changing the site language (for end users)</a><br /><br /><a href="http://compo.sr/docs11/tut-intl-maintenance.htm">International support communities</a></td>
+            <td><a href="https://composr.app/docs11/tut-intl.htm">Localisation and internationalisation</a><br /><br /><a href="https://composr.app/docs11/tut-intl-users.htm">Changing the site language (for end users)</a><br /><br /><a href="https://composr.app/docs11/tut-intl-maintenance.htm">International support communities</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=language_block&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/security/ldap.svg" />LDAP<br />(<kbd>ldap</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/security/ldap.svg" />LDAP<br />(<kbd>ldap</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Support for integrating Conversr with an LDAP server, so usergroup and members can be the same as those already on the network</td>
-            <td><a href="http://compo.sr/docs11/tut-ldap.htm">Integrating Composr into a corporate network via LDAP</a></td>
+            <td><a href="https://composr.app/docs11/tut-ldap.htm">Integrating Composr into a corporate network via LDAP</a></td>
             <td>active directory</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=ldap&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Linux Helper Scripts<br />(<kbd>linux_helper_scripts</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Linux Helper Scripts<br />(<kbd>linux_helper_scripts</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Bash shell scripts to help configure permissions on Linux/Unix servers.</td>
-            <td><a href="http://compo.sr/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="http://compo.sr/docs11/tut-install-linux.htm">Installation on Linux</a></td>
+            <td><a href="https://composr.app/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="https://composr.app/docs11/tut-install-linux.htm">Installation on Linux</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=linux_helper_scripts&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/security/permissions/match_keys.svg" />Match Key Permissions<br />(<kbd>match_key_permissions</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/security/permissions/match_keys.svg" />Match Key Permissions<br />(<kbd>match_key_permissions</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Match-key-permissions allow advanced setting of permissions on a screen-by-screen basis.</td>
-            <td><a href="http://compo.sr/docs11/tut-adv-permissions.htm">Advanced access control</a></td>
+            <td><a href="https://composr.app/docs11/tut-adv-permissions.htm">Advanced access control</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=match_key_permissions&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/multi_site_network.svg" />MSN<br />(<kbd>msn</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/multi_site_network.svg" />MSN<br />(<kbd>msn</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Features to support multi-site-networks (networks of linked sites that usually share a common member system).</td>
-            <td><a href="http://compo.sr/docs11/tut-msn.htm">Advanced techniques for multi-site-networks</a></td>
+            <td><a href="https://composr.app/docs11/tut-msn.htm">Advanced techniques for multi-site-networks</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=msn&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/news.svg" />News<br />(<kbd>news</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/news.svg" />News<br />(<kbd>news</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>news_shared</kbd>
             </td>
             <td>News and blogging.</td>
-            <td><a href="http://compo.sr/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-news.htm">Advanced news</a><br /><br /><a href="http://compo.sr/docs11/tut-information.htm">Choosing how to publish</a></td>
+            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td>blog<br /><br />weblog<br /><br />press release<br /><br />journal<br /><br />story<br /><br />stories<br /><br />article</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=news&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />News Shared<br />(<kbd>news_shared</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />News Shared<br />(<kbd>news_shared</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>(Common files needed for RSS and News addons)</td>
-            <td><a href="http://compo.sr/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-news.htm">Advanced news</a></td>
+            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=news_shared&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/site_meta/newsletters.svg" />Newsletter<br />(<kbd>newsletter</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/site_meta/newsletters.svg" />Newsletter<br />(<kbd>newsletter</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Support for users to join newsletters, and for the staff to send out newsletters to subscribers, and to specific usergroups.</td>
-            <td><a href="http://compo.sr/docs11/tut-newsletter.htm">Running a newsletter</a></td>
+            <td><a href="https://composr.app/docs11/tut-newsletter.htm">Running a newsletter</a></td>
             <td>mass-mail<br /><br />mass-mailing<br /><br />bulletin<br /><br />mail-merge<br /><br />announcement</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=newsletter&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/sitemap/sitemap_editor.svg" />Page Management<br />(<kbd>page_management</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/sitemap/sitemap_editor.svg" />Page Management<br />(<kbd>page_management</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Manage pages on the website.</td>
-            <td><a href="http://compo.sr/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
+            <td><a href="https://composr.app/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="https://composr.app/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=page_management&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/tools/phpinfo.svg" />PHP-Info<br />(<kbd>phpinfo</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/phpinfo.svg" />PHP-Info<br />(<kbd>phpinfo</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Access PHP configurational information from inside Composr.</td>
-            <td><a href="http://compo.sr/docs11/tut-website-health.htm">Website Health</a></td>
+            <td><a href="https://composr.app/docs11/tut-website-health.htm">Website Health</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=phpinfo&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/social/points.svg" />Points<br />(<kbd>points</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/points.svg" />Points<br />(<kbd>points</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.</td>
-            <td><a href="http://compo.sr/docs11/tut-points.htm">Creating an economy/reward-system for members via points</a></td>
+            <td><a href="https://composr.app/docs11/tut-points.htm">Creating an economy/reward-system for members via points</a></td>
             <td>karma</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=points&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/social/polls.svg" />Polls<br />(<kbd>polls</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/polls.svg" />Polls<br />(<kbd>polls</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A poll (voting) system.</td>
-            <td><a href="http://compo.sr/docs11/tut-feedback.htm">Feedback and user interaction</a></td>
+            <td><a href="https://composr.app/docs11/tut-feedback.htm">Feedback and user interaction</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=polls&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/links/print.svg" />Printer Friendly Block<br />(<kbd>printer_friendly_block</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/links/print.svg" />Printer Friendly Block<br />(<kbd>printer_friendly_block</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A block to provide a link for the current screen to be turned into it&#039;s printer-friendly equivalent.</td>
-            <td><a href="http://compo.sr/docs11/tut-browsers.htm">Browser version requirements</a></td>
+            <td><a href="https://composr.app/docs11/tut-browsers.htm">Browser version requirements</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=printer_friendly_block&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/quiz.svg" />Quizzes<br />(<kbd>quizzes</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/quiz.svg" />Quizzes<br />(<kbd>quizzes</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.</td>
-            <td><a href="http://compo.sr/docs11/tut-quizzes.htm">Quizzes</a></td>
+            <td><a href="https://composr.app/docs11/tut-quizzes.htm">Quizzes</a></td>
             <td>surveys<br /><br />tests<br /><br />competitions<br /><br />questionnaires<br /><br />prize-draw<br /><br />exam<br /><br />assessment</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=quizzes&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/style/quotes.svg" />Random Quotes<br />(<kbd>random_quotes</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/style/quotes.svg" />Random Quotes<br />(<kbd>random_quotes</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A block to display random quotes on your website, and an administrative tool to choose them.</td>
-            <td><a href="http://compo.sr/docs11/tut-featured.htm">Providing featured content</a></td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=random_quotes&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/realtime_rain.svg" />Realtime Rain<br />(<kbd>realtime_rain</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/realtime_rain.svg" />Realtime Rain<br />(<kbd>realtime_rain</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>stats</kbd>
             </td>
             <td>Real-time/historic display of website activity.</td>
-            <td><a href="http://compo.sr/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
+            <td><a href="https://composr.app/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=realtime_rain&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/site_meta/recommend.svg" />Recommend<br />(<kbd>recommend</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/site_meta/recommend.svg" />Recommend<br />(<kbd>recommend</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Allow members to easily recommend the website to others.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td>refer</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=recommend&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/structure/redirects.svg" />Redirects Editor<br />(<kbd>redirects_editor</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/redirects.svg" />Redirects Editor<br />(<kbd>redirects_editor</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Manage redirects between pages. On Apache servers this can also handle low-level redirects of any arbitrary URL to any other.</td>
-            <td><a href="http://compo.sr/docs11/tut-subcom.htm">Tools for subsites and subcommunities</a></td>
+            <td><a href="https://composr.app/docs11/tut-subcom.htm">Tools for subsites and subcommunities</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=redirects_editor&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Rootkit Detector<br />(<kbd>rootkit_detector</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Rootkit Detector<br />(<kbd>rootkit_detector</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A tool to help power-user webmasters identify if a &quot;rootkit&quot; has been placed on the server.</td>
-            <td><a href="http://compo.sr/docs11/tut-security.htm">Security</a></td>
+            <td><a href="https://composr.app/docs11/tut-security.htm">Security</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=rootkit_detector&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/statistics/search.svg" />Search<br />(<kbd>search</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/statistics/search.svg" />Search<br />(<kbd>search</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Multi-content search engine.</td>
-            <td><a href="http://compo.sr/docs11/tut-search.htm">Searching your website</a></td>
+            <td><a href="https://composr.app/docs11/tut-search.htm">Searching your website</a></td>
             <td>find<br /><br />filter</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=search&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/security_log.svg" />Securitylogging<br />(<kbd>securitylogging</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/security_log.svg" />Securitylogging<br />(<kbd>securitylogging</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Log/display security alerts.</td>
-            <td><a href="http://compo.sr/docs11/tut-security.htm">Security</a><br /><br /><a href="http://compo.sr/docs11/tut-trace.htm">Using IP addresses to trace users</a></td>
+            <td><a href="https://composr.app/docs11/tut-security.htm">Security</a><br /><br /><a href="https://composr.app/docs11/tut-trace.htm">Using IP addresses to trace users</a></td>
             <td>audit</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=securitylogging&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/setup/setupwizard.svg" />Setupwizard<br />(<kbd>setupwizard</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/setupwizard.svg" />Setupwizard<br />(<kbd>setupwizard</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Quick-start setup wizard.</td>
-            <td><a href="http://compo.sr/docs11/tut-configuration.htm">Basic configuration and getting started</a><br /><br /><a href="http://compo.sr/docs11/tut-drinking.htm">Drinking from the feature pool</a></td>
+            <td><a href="https://composr.app/docs11/tut-configuration.htm">Basic configuration and getting started</a><br /><br /><a href="https://composr.app/docs11/tut-drinking.htm">Drinking from the feature pool</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=setupwizard&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/ecommerce/shopping_cart.svg" />Shopping<br />(<kbd>shopping</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/ecommerce/shopping_cart.svg" />Shopping<br />(<kbd>shopping</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>ecommerce</kbd>, <kbd>catalogues</kbd>
             </td>
             <td>Shopping catalogue functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-ecommerce.htm">eCommerce</a></td>
+            <td><a href="https://composr.app/docs11/tut-ecommerce.htm">eCommerce</a></td>
             <td>ecommerce<br /><br />payment<br /><br />purchase<br /><br />products<br /><br />store<br /><br />buy<br /><br />bought<br /><br />checkout<br /><br />merchant retailer seller<br /><br />business<br /><br />company<br /><br />firm<br /><br />enterprise<br /><br />corporation<br /><br />store</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=shopping&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />SMS<br />(<kbd>sms</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />SMS<br />(<kbd>sms</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Provides an option for the software to send SMS messages, via the commercial Clickatell web service. By default this is only used by the notifications system.</td>
-            <td><a href="http://compo.sr/docs11/tut-notifications.htm">Notifications</a></td>
+            <td><a href="https://composr.app/docs11/tut-notifications.htm">Notifications</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=sms&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/security/ssl.svg" />SSL<br />(<kbd>ssl</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/security/ssl.svg" />SSL<br />(<kbd>ssl</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Choose which pages of your website run over HTTPS (SSL). Requires an SSL certificate to be installed on the webserver, and a dedicated IP address.</td>
-            <td><a href="http://compo.sr/docs11/tut-security.htm">Security</a></td>
+            <td><a href="https://composr.app/docs11/tut-security.htm">Security</a></td>
             <td>https</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=ssl&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/statistics/statistics.svg" />Stats<br />(<kbd>stats</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/statistics/statistics.svg" />Stats<br />(<kbd>stats</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Show advanced graphs (analytics) and dumps of raw data relating to your website activity.</td>
-            <td><a href="http://compo.sr/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
+            <td><a href="https://composr.app/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
             <td>engagement<br /><br />metric<br /><br />kpi<br /><br />analytics<br /><br />statistics<br /><br />hits</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=stats&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Stats Block<br />(<kbd>stats_block</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Stats Block<br />(<kbd>stats_block</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A block to show a selection of your website statistics to your visitors.</td>
-            <td><a href="http://compo.sr/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
+            <td><a href="https://composr.app/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=stats_block&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/links/rss.svg" />Syndication<br />(<kbd>syndication</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/links/rss.svg" />Syndication<br />(<kbd>syndication</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>syndication_blocks</kbd>
             </td>
             <td>Syndicate RSS/Atom feeds of your content.</td>
-            <td><a href="http://compo.sr/docs11/tut-integration.htm">Integration of Composr and other installed scripts/applications</a><br /><br /><a href="http://compo.sr/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-news.htm">Advanced news</a></td>
+            <td><a href="https://composr.app/docs11/tut-integration.htm">Integration of Composr and other installed scripts/applications</a><br /><br /><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
             <td>atom<br /><br />rss<br /><br />feed</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=syndication&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/links/rss.svg" />Syndication Blocks<br />(<kbd>syndication_blocks</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/links/rss.svg" />Syndication Blocks<br />(<kbd>syndication_blocks</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>news</kbd>
             </td>
             <td>Show RSS and Atom feeds from other websites.</td>
-            <td><a href="http://compo.sr/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="http://compo.sr/docs11/tut-adv-news.htm">Advanced news</a></td>
+            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=syndication_blocks&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/style/themes/themewizard.svg" />Themewizard<br />(<kbd>themewizard</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/style/themes/themewizard.svg" />Themewizard<br />(<kbd>themewizard</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Automatically generate your own colour schemes using the default theme as a base. Uses the sophisticated chromagraphic equations built into Composr.</td>
-            <td><a href="http://compo.sr/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="http://compo.sr/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a></td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="https://composr.app/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=themewizard&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/site_meta/tickets.svg" />Tickets<br />(<kbd>tickets</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/site_meta/tickets.svg" />Tickets<br />(<kbd>tickets</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A support ticket system. Also provides an integrated standalone contact block, and integrated content reporting functionality.</td>
-            <td><a href="http://compo.sr/docs11/tut-feedback.htm">Feedback and user interaction</a><br /><br /><a href="http://compo.sr/docs11/tut-support-desk.htm">Running a virtual support desk</a><br /><br /><a href="http://compo.sr/docs11/tut-staff.htm">Coordination between staff and staff/members</a></td>
+            <td><a href="https://composr.app/docs11/tut-feedback.htm">Feedback and user interaction</a><br /><br /><a href="https://composr.app/docs11/tut-support-desk.htm">Running a virtual support desk</a><br /><br /><a href="https://composr.app/docs11/tut-staff.htm">Coordination between staff and staff/members</a></td>
             <td>contact<br /><br />feedback<br /><br />message<br /><br />issue<br /><br />email<br /><br />e-mail<br /><br />support<br /><br />desk</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=tickets&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Uninstaller<br />(<kbd>uninstaller</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Uninstaller<br />(<kbd>uninstaller</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The uninstaller.</td>
-            <td><a href="http://compo.sr/docs11/tut-uninstall.htm">Uninstalling Composr from a server</a></td>
+            <td><a href="https://composr.app/docs11/tut-uninstall.htm">Uninstalling Composr from a server</a></td>
             <td>uninstall<br /><br />disable<br /><br />remove</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=uninstaller&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/audit/not_validated.svg" />Validation<br />(<kbd>validation</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/not_validated.svg" />Validation<br />(<kbd>validation</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Subject member&#039;s to validation (approval) of their content submissions, and enable/disable content.</td>
-            <td><a href="http://compo.sr/docs11/tut-censor.htm">Dealing with annoying users</a></td>
+            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
             <td>check-in<br /><br />workflow<br /><br />validation<br /><br />valid<br /><br />approve<br /><br />approval<br /><br />approved<br /><br />live<br /><br />accept<br /><br />posted<br /><br />online<br /><br />active<br /><br />activate<br /><br />activation<br /><br />visible<br /><br />verify<br /><br />publish</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=validation&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/social/users_online.svg" />Users Online Block<br />(<kbd>users_online_block</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/users_online.svg" />Users Online Block<br />(<kbd>users_online_block</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A block to show which users who are currently visiting the website, and birthdays.</td>
-            <td><a href="http://compo.sr/docs11/tut-members.htm">Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=users_online_block&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/setup/welcome_emails.svg" />Welcome E-mails<br />(<kbd>welcome_emails</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/welcome_emails.svg" />Welcome E-mails<br />(<kbd>welcome_emails</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Welcome e-mails for new members.</td>
-            <td><a href="http://compo.sr/docs11/tut-adv-members.htm">Advanced Composr member system</a></td>
+            <td><a href="https://composr.app/docs11/tut-adv-members.htm">Advanced Composr member system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=welcome_emails&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/rich_content/wiki.svg" />Wiki<br />(<kbd>wiki</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/rich_content/wiki.svg" />Wiki<br />(<kbd>wiki</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Collaborative/encyclopaedic database interface. A wiki-like community database with rich media capabilities.</td>
-            <td><a href="http://compo.sr/docs11/tut-wiki.htm">Custom structured content (via Wiki+)</a><br /><br /><a href="http://compo.sr/docs11/tut-information.htm">Choosing how to publish</a></td>
+            <td><a href="https://composr.app/docs11/tut-wiki.htm">Custom structured content (via Wiki+)</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td>knowledgebase</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=wiki&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Windows Helper Scripts<br />(<kbd>windows_helper_scripts</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Windows Helper Scripts<br />(<kbd>windows_helper_scripts</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>A .bat script to help configure permissions on Windows servers.</td>
-            <td><a href="http://compo.sr/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="http://compo.sr/docs11/tut-install-windows-desktop.htm">Installation on a Windows desktop</a><br /><br /><a href="http://compo.sr/docs11/tut-install-windows-server.htm">Installation on a Windows server</a></td>
+            <td><a href="https://composr.app/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-desktop.htm">Installation on a Windows desktop</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-server.htm">Installation on a Windows server</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=windows_helper_scripts&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/security/wordfilter.svg" />Wordfilter<br />(<kbd>wordfilter</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/security/wordfilter.svg" />Wordfilter<br />(<kbd>wordfilter</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Block rude/offensive/inappropriate words.</td>
-            <td><a href="http://compo.sr/docs11/tut-censor.htm">Dealing with annoying users</a></td>
+            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
             <td>word-filter<br /><br />swear<br /><br />curse</td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=wordfilter&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/menu/adminzone/setup/xml_fields.svg" />XML Fields<br />(<kbd>xml_fields</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/xml_fields.svg" />XML Fields<br />(<kbd>xml_fields</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Advanced form field filtering.</td>
-            <td><a href="http://compo.sr/docs11/tut-fields-filter.htm">The form field filter system</a></td>
+            <td><a href="https://composr.app/docs11/tut-fields-filter.htm">The form field filter system</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=xml_fields&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
             <td>
-                <img class="right" src="http://compo.sr/themes/default/images/icons/admin/component.svg" />Zone Logos<br />(<kbd>zone_logos</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Zone Logos<br />(<kbd>zone_logos</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Support for having different logos for individual zones.</td>
-            <td><a href="http://compo.sr/docs11/tut-configuration.htm">Basic configuration and getting started</a></td>
+            <td><a href="https://composr.app/docs11/tut-configuration.htm">Basic configuration and getting started</a></td>
             <td></td>
             <td><a href="https://compo.sr/tracker/search.php?project_id=1&amp;category=zone_logos&amp;status_id=10">Link</a></td>
         </tr>
     
 </table></div>
-[title="2"]Other tutorials[/title]<p>The following tutorials do not link into any specific addon:</p><ul><li><a href="http://compo.sr/docs11/tut-cookies.htm">Introduction to Cookies and sessions (and JavaScript)</a></li><li><a href="http://compo.sr/docs11/tut-javascript.htm">JavaScript Reference</a></li><li><a href="http://compo.sr/docs11/tut-legal.htm">Legal and social responsibilities</a></li><li><a href="http://compo.sr/docs11/tut-mobile-sdk.htm">Mobile apps via Composr Mobile SDK</a></li><li><a href="http://compo.sr/docs11/tut-programming.htm">Introduction to programming</a></li><li><a href="http://compo.sr/docs11/tut-software-feedback.htm">Problem and feedback reports, and development policies</a></li><li><a href="http://compo.sr/docs11/tut-staff-advice.htm">Advice for choosing and managing staff</a></li><li><a href="http://compo.sr/docs11/tut-webapp.htm">Web-applications, Composr, and PHP</a></li></ul>[/semihtml]
+[title="2"]Other tutorials[/title]<p>The following tutorials do not link into any specific addon:</p><ul><li><a href="https://composr.app/docs11/tut-cookies.htm">Introduction to Cookies and sessions (and JavaScript)</a></li><li><a href="https://composr.app/docs11/tut-javascript.htm">JavaScript Reference</a></li><li><a href="https://composr.app/docs11/tut-legal.htm">Legal and social responsibilities</a></li><li><a href="https://composr.app/docs11/tut-mobile-sdk.htm">Mobile apps via Composr Mobile SDK</a></li><li><a href="https://composr.app/docs11/tut-programming.htm">Introduction to programming</a></li><li><a href="https://composr.app/docs11/tut-software-feedback.htm">Problem and feedback reports, and development policies</a></li><li><a href="https://composr.app/docs11/tut-staff-advice.htm">Advice for choosing and managing staff</a></li><li><a href="https://composr.app/docs11/tut-webapp.htm">Web-applications, Composr, and PHP</a></li></ul>[/semihtml]
 
 {$SET,tutorial_tags,Addon,Introduction,novice}{$SET,tutorial_add_date,Oct 2013}{$SET,tutorial_summary,An index showing what addons are available, and linking to relevant tutorials.}[block]main_tutorial_rating[/block]

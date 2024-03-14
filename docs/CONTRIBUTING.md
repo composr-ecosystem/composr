@@ -1,6 +1,6 @@
 # Contributing to Composr CMS #
 
-Information about ways you can contribute to the Composr CMS project is on our [contributions page](https://compo.sr/contributions.htm).
+Information about ways you can contribute to the Composr CMS project is on our [contributions page](https://composr.app/contributions.htm).
 
 ## Contributing code ##
 
@@ -12,9 +12,9 @@ If contributing code then please run the automated tests before making your merg
 
 It is good if you can create your own automated tests, but it is not mandatory.
 
-Please try to follow the [coding standards](https://compo.sr/docs/codebook-standards.htm).
+Please try to follow the [coding standards](https://composr.app/docs/codebook-standards.htm).
 
-There is a lot of information about Composr coding in the [Code Book](https://compo.sr/docs/codebook.htm).
+There is a lot of information about Composr coding in the [Code Book](https://composr.app/docs/codebook.htm).
 
 ## Making suggestions ##
 

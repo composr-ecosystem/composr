@@ -83,7 +83,7 @@ class lang_spelling_test_set extends cms_test_case
 
         $path = get_file_base();
         $files = [
-            'uploads/website_specific/compo.sr/errorservice.csv',
+            'uploads/website_specific/composr.app/errorservice.csv',
             'data/maintenance_status.csv',
         ];
         foreach ($files as $_path) {

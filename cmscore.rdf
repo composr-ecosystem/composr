@@ -8,63 +8,63 @@
     <!ENTITY dcamns 'http://purl.org/dc/dcam/'>
     <!ENTITY skosns 'http://www.w3.org/2004/02/skos/core#'>
 ]>
-<rdf:RDF xmlns:dcam="http://purl.org/dc/dcam/" xmlns:cmscore="https://compo.sr/cmscore.rdf" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf">
-<cmscore:title xml:lang="en-US">DCMI Namespace for metadata terms in the https://compo.sr/cmscore.rdf namespace</cmscore:title>
+<rdf:RDF xmlns:dcam="http://purl.org/dc/dcam/" xmlns:cmscore="https://composr.app/cmscore.rdf" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+<rdf:Description rdf:about="https://composr.app/cmscore.rdf">
+<cmscore:title xml:lang="en-US">DCMI Namespace for metadata terms in the https://composr.app/cmscore.rdf namespace</cmscore:title>
 <rdfs:comment>To comment on this schema, please post on the Composr CMS forum.</rdfs:comment>
 <cmscore:publisher xml:lang="en-US">Christopher Graham</cmscore:publisher>
 <cmscore:modified>2009-01-19</cmscore:modified>
 </rdf:Description>
 
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf#rating">
+<rdf:Description rdf:about="https://composr.app/cmscore.rdf#rating">
 <rdfs:label xml:lang="en-US">Rating</rdfs:label>
 <cmscore:description xml:lang="en-US">A rating for the resource.</cmscore:description>
-<rdfs:isDefinedBy rdf:resource="https://compo.sr/cmscore.rdf"/>
+<rdfs:isDefinedBy rdf:resource="https://composr.app/cmscore.rdf"/>
 <cmscore:issued>2009-01-19</cmscore:issued>
 <cmscore:modified>2009-01-19</cmscore:modified>
 <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf#numcomments">
+<rdf:Description rdf:about="https://composr.app/cmscore.rdf#numcomments">
 <rdfs:label xml:lang="en-US">NumComments</rdfs:label>
 <cmscore:description xml:lang="en-US">The number of comments presented with the resource.</cmscore:description>
-<rdfs:isDefinedBy rdf:resource="https://compo.sr/cmscore.rdf"/>
+<rdfs:isDefinedBy rdf:resource="https://composr.app/cmscore.rdf"/>
 <cmscore:issued>2009-01-19</cmscore:issued>
 <cmscore:modified>2009-01-19</cmscore:modified>
 <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf#site_newestmember">
+<rdf:Description rdf:about="https://composr.app/cmscore.rdf#site_newestmember">
 <rdfs:label xml:lang="en-US">Site_NewestMember</rdfs:label>
 <cmscore:description xml:lang="en-US">The newest member account on the website.</cmscore:description>
-<rdfs:isDefinedBy rdf:resource="https://compo.sr/cmscore.rdf"/>
+<rdfs:isDefinedBy rdf:resource="https://composr.app/cmscore.rdf"/>
 <cmscore:issued>2009-01-19</cmscore:issued>
 <cmscore:modified>2009-01-19</cmscore:modified>
 <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf#site_nummembers">
+<rdf:Description rdf:about="https://composr.app/cmscore.rdf#site_nummembers">
 <rdfs:label xml:lang="en-US">Site_NumMembers</rdfs:label>
 <cmscore:description xml:lang="en-US">The number of users with accounts on the website.</cmscore:description>
-<rdfs:isDefinedBy rdf:resource="https://compo.sr/cmscore.rdf"/>
+<rdfs:isDefinedBy rdf:resource="https://composr.app/cmscore.rdf"/>
 <cmscore:issued>2009-01-19</cmscore:issued>
 <cmscore:modified>2009-01-19</cmscore:modified>
 <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf#forum_numtopics">
+<rdf:Description rdf:about="https://composr.app/cmscore.rdf#forum_numtopics">
 <rdfs:label xml:lang="en-US">Forum_NumTopics</rdfs:label>
 <cmscore:description xml:lang="en-US">The number of topics on the website's forum.</cmscore:description>
-<rdfs:isDefinedBy rdf:resource="https://compo.sr/cmscore.rdf"/>
+<rdfs:isDefinedBy rdf:resource="https://composr.app/cmscore.rdf"/>
 <cmscore:issued>2009-01-19</cmscore:issued>
 <cmscore:modified>2009-01-19</cmscore:modified>
 <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf#forum_numposts">
+<rdf:Description rdf:about="https://composr.app/cmscore.rdf#forum_numposts">
 <rdfs:label xml:lang="en-US">Forum_NumPosts</rdfs:label>
 <cmscore:description xml:lang="en-US">The number of posts on the website's forum.</cmscore:description>
-<rdfs:isDefinedBy rdf:resource="https://compo.sr/cmscore.rdf"/>
+<rdfs:isDefinedBy rdf:resource="https://composr.app/cmscore.rdf"/>
 <cmscore:issued>2009-01-19</cmscore:issued>
 <cmscore:modified>2009-01-19</cmscore:modified>
 <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>

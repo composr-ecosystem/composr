@@ -1818,7 +1818,7 @@ $s_cms_my_view_welcome_message = 'Welcome to the feature tracker, the tool used 
 $s_cms_not_logged_in_bad = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications, and if you reply we will not know for sure you are the original poster of the issue.';
 $s_cms_bug_report_guidance = 'This is the public tracker for features/bugs, not a private support system and not a discussion forum. Bug reporting guidance is in the <a href="%1$s">providing feedback tutorial</a>.';
 $s_cms_sourcecode_link = 'GitLab';
-$s_cms_home_link = 'compo.sr';
+$s_cms_home_link = 'composr.app';
 $s_cms_login_instruct = 'Login using your regular %1$s username and password.';
 $s_cms_hint_message = '<strong>Hint</strong>: To find bugs with no risks attach, do a search with the following tag filter&hellip; <samp>-Existing tags,-Breaks themes,-Breaks translations significantly,-Changes core website behaviour,-Core rearchitecting,-Creates Comcode incompatibility,-Database change,-Deprecates functionality,-General incompatibility,-Large database change,-Major rearchitecting,-Risk of breaking upgrade bootstraper,-Type: Cross-cutting feature</samp>';
 $s_cms_return_instruct = '<a class="back-to-login-link pull-left" href="%1$s">Return to the main %2$s website</a>.';

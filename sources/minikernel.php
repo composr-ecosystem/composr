@@ -599,7 +599,7 @@ function fatal_exit($text)
 }
 
 /**
- * Lookup error on compo.sr, to see if there is more information.
+ * Lookup error on composr.app, to see if there is more information.
  * (null implementation for minikernel)
  *
  * @param  mixed $error_message The error message (string or Tempcode)

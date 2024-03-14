@@ -44,7 +44,7 @@
 	<meta name="author" content="{$SITE_NAME*}" />
 {+END}
 {+START,COMMENT,Commented out by default to save bandwidth - schema.org and HTML5 semantics is probably the best default approach for most sites}
-	<link rel="schema.CMSCORE" href="https://compo.sr/cmscore.rdf" />
+	<link rel="schema.CMSCORE" href="https://composr.app/cmscore.rdf" />
 	{+START,IF_NON_EMPTY,{$METADATA,rating}}<meta name="CMSCORE.Rating" content="{$METADATA*,rating}" />{+END}
 	{+START,IF_NON_EMPTY,{$METADATA,numcomments}}<meta name="CMSCORE.NumComments" content="{$METADATA*,numcomments}" />{+END}
 	{+START,IF_NON_EMPTY,{$METADATA,site_newestmember}}<meta name="CMSCORE.Site_NewestMember" content="{$METADATA*,site_newestmember}" />{+END}

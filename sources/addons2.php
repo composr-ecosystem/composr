@@ -350,7 +350,7 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
 }
 
 /**
- * Find the non-bundled addons available on compo.sr.
+ * Find the non-bundled addons available on composr.app.
  *
  * @return array Map of addon ID to addon title
  */
@@ -360,7 +360,7 @@ function find_remote_addons() : array
     if (!empty($addons)) {
         return $addons; // Caching
     }
-    $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'https://compo.sr';
+    $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'https://composr.app';
     $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
     $url = $stub . '/data/ajax_tree.php?hook=choose_download&id=' . urlencode($v) . '&file_type=tar&full_depth=1';
     $contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
@@ -1107,7 +1107,7 @@ UPGRADING ADDONS
 */
 
 /**
- * Find updated addons via checking the compo.sr web service.
+ * Find updated addons via checking the composr.app web service.
  *
  * @return array List of addons updated
  */
@@ -1126,7 +1126,7 @@ function find_updated_addons() : array
         return [];
     }
 
-    $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/addon_manifest.php?version=' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
+    $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/addon_manifest.php?version=' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
     foreach (array_keys($addons) as $i => $addon_name) {
         $url .= '&addon_' . strval($i) . '=' . urlencode($addon_name);
     }

@@ -50,6 +50,6 @@ To install a new addon you need to follow this simple process:
 [*] Click Proceed
 [/list]
 
-There may be further instructions for each specific addon which can be found in the full addon description (which can be conveniently viewed on the [url="Composr addon directory"]https://compo.sr/downloads/browse/addons.htm[/url]).
+There may be further instructions for each specific addon which can be found in the full addon description (which can be conveniently viewed on the [url="Composr addon directory"]https://composr.app/downloads/browse/addons.htm[/url]).
 
 {$SET,tutorial_tags,Structure and navigation,Addon,novice}{$SET,tutorial_add_date,Apr 2013}{$SET,tutorial_summary,Some extra features have been kept as non-bundled addons so the core Composr software doesn't suffer from being bloated. This tutorial shows how to install them.}[block]main_tutorial_rating[/block]

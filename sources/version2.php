@@ -46,7 +46,7 @@ function get_future_version_information() : object
     require_lang('version');
 
     $version_dotted = get_param_string('keep_test_version', get_version_dotted()); // E.g. ?keep_test_version=10.RC29&keep_cache_blocks=0 to test
-    $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/version.php?version=' . urlencode($version_dotted) . '&lang=' . urlencode(user_lang());
+    $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/version.php?version=' . urlencode($version_dotted) . '&lang=' . urlencode(user_lang());
 
     static $http_result = null; // Cache
     if ($http_result === null) {

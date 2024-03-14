@@ -68,7 +68,7 @@ class _special_links_test_set extends cms_test_case
             return;
         }
 
-        $c = http_get_contents('https://whois.domaintools.com/compo.sr', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true, 'timeout' => 20.0]);
+        $c = http_get_contents('https://whois.domaintools.com/composr.app', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true, 'timeout' => 20.0]);
         $this->assertTrue(stripos($c, 'whois') !== false, 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
     }
 

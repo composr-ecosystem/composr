@@ -25,8 +25,8 @@ $SITE_INFO['mysql_demonstratr_password']='xxx';
 
 You also need:
  - wildcard DNS configured
- - uploads/website_specific/compo.sr/demonstratr/template.sql and uploads/website_specific/compo.sr/demonstratr/template.tar defined appropriately
- - an uploads/website_specific/compo.sr/demonstratr/sites/demonstratr directory for sites to be built into
+ - uploads/website_specific/composr.app/demonstratr/template.sql and uploads/website_specific/composr.app/demonstratr/template.tar defined appropriately
+ - an uploads/website_specific/composr.app/demonstratr/sites/demonstratr directory for sites to be built into
 */
 
 /**

@@ -1011,14 +1011,14 @@ function remove_ip_ban(string $ip)
 }
 
 /**
- * Lookup error on compo.sr, to see if there is more information.
+ * Lookup error on composr.app, to see if there is more information.
  *
  * @param  mixed $error_message The error message (string or Tempcode)
  * @return ?string The result from the web service (null: no result)
  */
 function get_webservice_result($error_message) : ?string
 {
-    if (in_array(get_base_url_hostname(), ['compo.sr', 'ocproducts.com'])) {
+    if (in_array(get_base_url_hostname(), ['composr.app', 'ocproducts.com'])) {
         return null;
     }
 
@@ -1078,7 +1078,7 @@ function get_webservice_result($error_message) : ?string
 
     require_code('version2');
     require_code('http');
-    $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
+    $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
     list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 24 * 31/*once a month*/);
 
     if (!is_object($http_result)) {

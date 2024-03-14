@@ -604,7 +604,7 @@ class Module_admin_setupwizard
             $addon_list_advanced_off_by_default[] = 'google_appengine';
         }
 
-        // Do we need to download any from compo.sr?
+        // Do we need to download any from composr.app?
         $GLOBALS['DEV_MODE'] = false;
         foreach (array_merge(($addon_list_on_by_default === null) ? [] : $addon_list_on_by_default, $addon_list_advanced_on_by_default, $addon_list_advanced_off_by_default) as $mentioned_addon) {
             if ((!array_key_exists($mentioned_addon, $addons_installed)) && (!array_key_exists($mentioned_addon, $addons_not_installed))) {
@@ -613,7 +613,7 @@ class Module_admin_setupwizard
                 if (array_key_exists($_mentioned_addon, $remote_addons)) {
                     $id = $remote_addons[$_mentioned_addon];
                     require_code('uploads');
-                    $_POST['url'] = 'https://compo.sr/site/dload.php?id=' . strval($id);
+                    $_POST['url'] = 'https://composr.app/site/dload.php?id=' . strval($id);
                     get_url('url', 'file', 'imports/addons', OBFUSCATE_NEVER, CMS_UPLOAD_ANYTHING, false, '', '', true); // Download it
                 }
             }

@@ -43,7 +43,7 @@ $extra_brief_details = [];
 if (is_guest()) {
     $extra_brief_details['job_role'] = [
         'label' => 'Your e-mail address',
-        'description' => 'You\'re not logged in to compo.sr so please enter your e-mail address so we can contact you.',
+        'description' => 'You\'re not logged in to composr.app so please enter your e-mail address so we can contact you.',
         'type' => 'short_text',
         'default' => $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()),
         'options' => '',
@@ -824,7 +824,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             ],
             'access_details' => [
                 'label' => 'Access details',
-                'description' => 'We may need access details to your hosting, such as FTP access, or control panel access (login URL, username, password). Provide what you have if you already have hosting and think we might need these details. If you saved your details into your [page="site:members:view" external="1"]compo.sr member profile[/page], you can just say that. Server access is subject to our [page="_SEARCH:server_access" external="1"]server access policy[/page].',
+                'description' => 'We may need access details to your hosting, such as FTP access, or control panel access (login URL, username, password). Provide what you have if you already have hosting and think we might need these details. If you saved your details into your [page="site:members:view" external="1"]composr.app member profile[/page], you can just say that. Server access is subject to our [page="_SEARCH:server_access" external="1"]server access policy[/page].',
                 'type' => 'long_text',
                 'default' => '(I do not yet have hosting, provide advice or hosting for me.)',
                 'comcode_prepend' => '',
@@ -1124,7 +1124,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             ],
             'access_details' => [
                 'label' => 'Access details',
-                'description' => 'We may need access details to your hosting, such as FTP access, or control panel access (login URL, username, password). Provide what you have if you think we might. If you saved your details into your [page="site:members:view" external="1"]compo.sr member profile[/page], you can just say that. Server access is subject to our [page="_SEARCH:server_access" external="1"]server access policy[/page].',
+                'description' => 'We may need access details to your hosting, such as FTP access, or control panel access (login URL, username, password). Provide what you have if you think we might. If you saved your details into your [page="site:members:view" external="1"]composr.app member profile[/page], you can just say that. Server access is subject to our [page="_SEARCH:server_access" external="1"]server access policy[/page].',
                 'type' => 'long_text',
                 'default' => '',
                 'comcode_prepend' => '',
@@ -1196,7 +1196,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             ],
             'access_details' => [
                 'label' => 'Access details',
-                'description' => 'We need access details to your hosting, such as FTP access, or control panel access (login URL, username, password). Provide what you have. If you saved your details into your [page="site:members:view" external="1"]compo.sr member profile[/page], you can just say that. Server access is subject to our [page="_SEARCH:server_access" external="1"]server access policy[/page].',
+                'description' => 'We need access details to your hosting, such as FTP access, or control panel access (login URL, username, password). Provide what you have. If you saved your details into your [page="site:members:view" external="1"]composr.app member profile[/page], you can just say that. Server access is subject to our [page="_SEARCH:server_access" external="1"]server access policy[/page].',
                 'type' => 'long_text',
                 'default' => '',
                 'comcode_prepend' => '',

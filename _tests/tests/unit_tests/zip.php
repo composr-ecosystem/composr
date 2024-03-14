@@ -55,7 +55,7 @@ class zip_test_set extends cms_test_case
             'mini/b.png' => 3293,
         ];
 
-        $path = get_file_base() . '/uploads/website_specific/compo.sr/banners.zip';
+        $path = get_file_base() . '/uploads/website_specific/composr.app/banners.zip';
         $zip_file = call_user_func($prefix . 'zip_open', $path);
         $files = [];
         if (!is_integer($zip_file)) {

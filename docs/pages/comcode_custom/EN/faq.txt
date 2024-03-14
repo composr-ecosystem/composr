@@ -61,7 +61,7 @@ The developers do not officially get involved in the translation of Composr. Ple
 
 [title="3"]What's with your funky domain name?[/title]
 
-We like that [tt]compo.sr[/tt] is short and catch, and we don't own any of the obvious [tt].com[/tt] variants. If you prefer you can access the site via [tt]composr.org[/tt].
+We like that [tt]composr.app[/tt] is short and catch, and we don't own any of the obvious [tt].com[/tt] variants. If you prefer you can access the site via [tt]composr.org[/tt].
 
 [title="2"]Licensing and costs[/title]
 

@@ -5,7 +5,7 @@ ocProducts is a highly-ethical organisation and we do not want to miss-sell our 
 
 The support ticket system was designed for users who are able to budget for professional web services, which usually is on a B2B basis. It is not designed for consumers on very limited budgets because the support fees do need to be able to pay for the upkeep of a company of professionals with world-class skills, as well as to subsidise Composr development and all associated sundry costs. If you are developing a personal site, or a non-profit site without a budget, you will most likely want to use some form of user to user support (such as the forum, or IRC room) or learn programming yourself.
 
-More information is in our "How to approach complex projects" tutorial (https://compo.sr/docs/sup-complex-projects.htm).
+More information is in our "How to approach complex projects" tutorial (https://composr.app/docs/sup-complex-projects.htm).
 
 Conditions
 ----------

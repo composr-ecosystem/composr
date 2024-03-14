@@ -69,7 +69,7 @@ if (!function_exists('mu_result')) {
     function mu_result($path)
     {
         // Shorten path to be more readable
-        $normal_bore = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/tars/';
+        $normal_bore = get_file_base() . '/uploads/website_specific/composr.app/upgrades/tars/';
         $shortened = get_file_base() . '/upgrades/';
         if (!file_exists($shortened)) {
             symlink($normal_bore, 'upgrades');
@@ -138,7 +138,7 @@ require_code('version2');
 $from_version_dotted = get_version_dotted__from_anything($from_long_dotted_number_with_qualifier); // Canonicalise
 
 require_code('composr_homesite');
-require_code('uploads/website_specific/compo.sr/upgrades/make_upgrader.php');
+require_code('uploads/website_specific/composr.app/upgrades/make_upgrader.php');
 $ret = make_upgrade_get_path($from_version_dotted, $to_version_dotted);
 
 if ($ret[1] !== null) {

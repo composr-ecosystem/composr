@@ -108,7 +108,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      */
     public function get_description() : string
     {
-        return 'The compo.sr support credits system, and issue tracker.';
+        return 'The composr.app support credits system, and issue tracker.';
     }
 
     /**

@@ -188,7 +188,7 @@ function get_brand_base_url() : string
 {
     $value = function_exists('get_value') ? get_value('rebrand_base_url') : null;
     if (empty($value)) {
-        $value = 'https://compo.sr';
+        $value = 'https://composr.app';
     }
     return $value;
 }
@@ -209,7 +209,7 @@ function get_tutorial_url(?string $tutorial) : string
 }
 
 /**
- * Get a URL to a compo.sr page.
+ * Get a URL to a composr.app page.
  *
  * @param  array $params URL map
  * @param  ID_TEXT $zone Zone

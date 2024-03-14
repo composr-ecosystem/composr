@@ -16,12 +16,12 @@ Composr lets you decide how your site will look and behave. Features are plentif
 
 ## See also ##
 
- - [Website](https://compo.sr)
- - [Full documentation](https://compo.sr/docs)
+ - [Website](https://www.composr.app)
+ - [Full documentation](https://composr.app/docs)
  - [Git commit log](https://gitlab.com/composr-foundation/composr/activity)
- - [News](https://compo.sr/news.htm)
- - [Composr Vision and Manifesto](https://compo.sr/vision.htm)
+ - [News](https://composr.app/news.htm)
+ - [Composr Vision and Manifesto](https://composr.app/vision.htm)
 
 ## Resources ##
 
- - [Official website](https://www.compo.sr)
+ - [Official website](https://composr.app)

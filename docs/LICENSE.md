@@ -202,7 +202,7 @@ Attribution Copyright Notice: Copyright (c) Christopher Graham
 
 Attribution Phrase (not exceeding 10 words): Built with the Composr Content Management System, derivative under license.
 
-Attribution URL: https://compo.sr/
+Attribution URL: https://composr.app/
 
 Graphic Image as provided in the Covered Code (Composr logo in the help panel of the Admin Zone).
 
@@ -210,7 +210,7 @@ Display of Attribution Information is required in any Larger Works that you dist
 
 ## Privacy Policy ##
 
-You should read the [privacy policy](https://compo.sr/privacy.htm) before using Composr CMS.
+You should read the [privacy policy](https://composr.app/privacy.htm) before using Composr CMS.
 
 ## Third Party Materials ##
 

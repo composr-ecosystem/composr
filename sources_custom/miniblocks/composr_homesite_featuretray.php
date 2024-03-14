@@ -38,7 +38,7 @@ $feature_tree = [
                 (get_forum_type() != 'cns') ? null : ['Post about Composr', 'If you see other CMSs compared on other websites, {$COMCODE,[page="forum:topicview:browse:{$FIND_ID_VIA_LABEL,topic,Composr evangelism}"]let us know about it[/page]}!'],
                 ['Tell a friend about Composr', '[page=":recommend"]Recommend Composr[/page] if a friend or your company is looking to make a website.'],
                 //['Recommend ocProducts', 'Mention the ocProducts developers to help them bring in an income.'],
-                ['Show our ad', 'You can advertise Composr via the [url="banner ad"]{$BRAND_BASE_URL}/uploads/website_specific/compo.sr/banners.zip[/url] we have created.'],
+                ['Show our ad', 'You can advertise Composr via the [url="banner ad"]{$BRAND_BASE_URL}/uploads/website_specific/composr.app/banners.zip[/url] we have created.'],
                 ['Self-initiatives', 'Find any opportunity to share Composr with someone. Write your own article and publish it. Talk about Composr at a conference. Be creative!'],
             ],
         ],
@@ -57,7 +57,7 @@ $feature_tree = [
         ],
 
         'our_site' => [
-            'On compo.sr',
+            'On composr.app',
             [
                 (get_forum_type() != 'cns') ? null : ['Reach out to other users', '{$COMCODE,[page="forum:forumview:browse:{$FIND_ID_VIA_LABEL,forum,Introduce yourself}"]Welcome new users[/page]} and help make sure people don\'t get lost.[html]<br />[/html]Also {$COMCODE,[page="forum:topicview:browse:{$FIND_ID_VIA_LABEL,topic,Post your location}"]put yourself on the map[/page]} so people near you can get in contact.'],
                 ['Help others on the forum', 'Where you can, answer other user\'s questions.'],
@@ -71,7 +71,7 @@ $feature_tree = [
             [
                 ['Reporting bugs', 'Big or tiny &ndash; we will be happy if you even report typos we make as bugs.'],
                 ['Reporting usability issues', 'We will be happy if you have any concrete suggestions for making reasonably common tasks even a little bit easier.'],
-                ['Write tutorials', 'Post them on the forum and [url="link them into the tutorial database"]https://compo.sr/forum/topicview/browse/posting-tutorials.htm[/url].'],
+                ['Write tutorials', 'Post them on the forum and [url="link them into the tutorial database"]https://composr.app/forum/topicview/browse/posting-tutorials.htm[/url].'],
             ],
         ],
 

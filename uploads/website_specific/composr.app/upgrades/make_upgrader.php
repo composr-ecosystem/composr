@@ -78,18 +78,18 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
     if ($addons_in_upgrader !== null) {
         $filename = md5(serialize($addons_in_upgrader)) . '-' . $filename;
     }
-    $build_path = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/tars/' . $filename;
-    $build_path_tmp = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/tars/tmp-' . $filename;
-    $_wip_path = 'uploads/website_specific/compo.sr/upgrades/tar_build/' . $filename;
+    $build_path = get_file_base() . '/uploads/website_specific/composr.app/upgrades/tars/' . $filename;
+    $build_path_tmp = get_file_base() . '/uploads/website_specific/composr.app/upgrades/tars/tmp-' . $filename;
+    $_wip_path = 'uploads/website_specific/composr.app/upgrades/tar_build/' . $filename;
     $wip_path = get_file_base() . '/' . $_wip_path;
 
     // Find out paths for the directories holding untarred full manual installers
     if ($from_version_dotted !== null) {
-        $old_base_path = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/full/' . $from_version_dotted;
+        $old_base_path = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $from_version_dotted;
     } else {
         $old_base_path = null;
     }
-    $new_base_path = get_file_base() . '/uploads/website_specific/compo.sr/upgrades/full/' . $to_version_dotted;
+    $new_base_path = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $to_version_dotted;
 
     // Find corresponding download rows
     $old_download_row = ($from_version_dotted === null) ? null : find_version_download($from_version_pretty);
@@ -202,7 +202,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
         @copy($old_base_path . '/data/files.bin', $wip_path . '/data/files_previous.bin');
         fix_permissions($wip_path . '/data/files_previous.bin');
     }
-    $log_file = cms_fopen_text_write(get_file_base() . '/uploads/website_specific/compo.sr/upgrades/build.log', true);
+    $log_file = cms_fopen_text_write(get_file_base() . '/uploads/website_specific/composr.app/upgrades/build.log', true);
     if (substr($filename, -3) == '.zip') {
         require_code('zip');
         $_file_array = get_directory_contents($wip_path, '', null);

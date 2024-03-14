@@ -22,7 +22,7 @@ You must have already run an untar:
  - Generate as normal, on the news release for the version you're upgrading
  - Run something like:
   - cd /home/cms/public_html/servers/composr.info
-  - wget -O upgrade.cms https://compo.sr/upgrades/7.1.2-9%20beta3.cms
+  - wget -O upgrade.cms https://composr.app/upgrades/7.1.2-9%20beta3.cms
   - tar xvf upgrade.cms
   - rm upgrade.cms
 Then run this script, http://shareddemo.composr.info/data_custom/demonstratr_upgrade.php
@@ -73,7 +73,7 @@ global $SITE_INFO;
 $SITE_INFO['no_extra_closed_file'] = '1';
 
 if (!is_file($FILE_BASE . '/sources/global.php')) {
-    exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/global.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+    exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/global.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
 }
 require($FILE_BASE . '/sources/global.php');
 
@@ -118,7 +118,7 @@ if ($u === null) {
 upgrade_sharedinstall_sites(get_param_integer('from', 1) - 1);
 
 // Save new SQL dump
-$out_path = dirname(get_file_base(), 2) . '/uploads/website_specific/compo.sr/demonstratr/template.sql';
+$out_path = dirname(get_file_base(), 2) . '/uploads/website_specific/composr.app/demonstratr/template.sql';
 if (!file_exists($out_path . '.tmp')) {
     $cmd = '/usr/local/bin/mysqldump';
     if (!is_file($cmd)) {

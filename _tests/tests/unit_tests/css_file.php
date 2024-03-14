@@ -1115,7 +1115,7 @@ class css_file_test_set extends cms_test_case
             'glide__bullets',
             'glide__slides--dragging',
             //
-            'notes_about', // Can come from a https://compo.sr call
+            'notes_about', // Can come from a https://composr.app call
             'lightbox',
             'horiz-field-sep-rightward',
             'media-audio-websafe',

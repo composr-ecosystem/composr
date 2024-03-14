@@ -72,7 +72,7 @@ function ce_do_header()
 <html lang="EN">
 <head>
     <title>Composr Installation Options editor</title>
-    <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="data/sheet.php?sheet=global" />
     <style>';
     echo '
