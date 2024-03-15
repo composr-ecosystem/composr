@@ -335,6 +335,8 @@ function add_wysiwyg_comcode_markup(string $tag, array $attributes, object $embe
  */
 function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_admin, ?string $pass_id, ?object $db, int $flags = 0, array $highlight_bits = [], ?int $on_behalf_of_member = null) : object
 {
+    raise_php_memory_limit();
+
     $comcode_parsing_hooks = find_all_hook_obs('systems', 'comcode_parsing', 'Hook_comcode_parsing_');
 
     init_valid_comcode_tags();

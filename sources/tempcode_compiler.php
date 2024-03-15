@@ -242,6 +242,8 @@ function substitute_comment_encapsulated_tempcode(string $data) : string
  */
 function compile_template(string $data, string $template_name, string $theme, string $lang, bool $tolerate_errors = false, ?array &$parameters = null, ?array &$parameters_used = null, ?string $suffix = null, ?string $directory = null) : array
 {
+    raise_php_memory_limit();
+
     if (strpos($data, '/*{$,parser hint: pure}*/') !== false) {
         return [['"' . php_addslashes(preg_replace('#\{\$,.*\}#U', '', str_replace('/*{$,parser hint: pure}*/', '/*no minify*/', $data))) . '"'], []];
     }

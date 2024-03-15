@@ -85,7 +85,7 @@ function init__global2()
         }
     }
 
-    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE, $CURRENTLY_LOGGING_IN;
+    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE, $CURRENTLY_LOGGING_IN, $DISABLED_MEMORY_LIMIT;;
 
     $CURRENTLY_LOGGING_IN = false;
 
@@ -123,6 +123,7 @@ function init__global2()
 
     // Initialise some globals
     $SUPPRESS_ERROR_DEATH = [false];
+    $DISABLED_MEMORY_LIMIT = false;
     $JAVASCRIPTS_DEFAULT = [
         'global' => true,
     ];
@@ -538,14 +539,7 @@ function init__global2()
     // Reduce down memory limit / raise if requested
     $default_memory_limit = get_value('memory_limit');
     if ((empty($default_memory_limit)) || ($default_memory_limit == '-1')) {
-        $default_memory_limit = '128M';
-
-        // Not necessary at this time to increase memory for these zones
-        /*
-        if ($GLOBALS['RELATIVE_PATH'] == 'adminzone' || $GLOBALS['RELATIVE_PATH'] == 'cms') {
-            $default_memory_limit = '128M';
-        }
-        */
+        $default_memory_limit = '64M';
     } else {
         if (substr($default_memory_limit, -2) == 'MB') {
             $default_memory_limit = substr($default_memory_limit, 0, strlen($default_memory_limit) - 1);
@@ -555,6 +549,9 @@ function init__global2()
         }
     }
     cms_ini_set('memory_limit', $default_memory_limit);
+    if ($GLOBALS['RELATIVE_PATH'] == 'adminzone' || $GLOBALS['RELATIVE_PATH'] == 'cms') {
+        raise_php_memory_limit();
+    }
     memory_limit_for_max_param('max');
     if (((isset($GLOBALS['FORUM_DRIVER'])) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) || ($GLOBALS['DEV_MODE'])) {
         if (get_param_integer('keep_memory_limit', null) === 0) {
@@ -1097,7 +1094,7 @@ function memory_limit_for_max_param(string $max_param)
         if (has_privilege(get_member(), 'remove_page_split')) {
             $shl = @ini_get('suhosin.memory_limit');
             if (($shl === false) || ($shl == '') || ($shl == '0')) {
-                cms_ini_set('memory_limit', '256M');
+                raise_php_memory_limit();
             }
         }
     }
@@ -1111,7 +1108,21 @@ function memory_limit_for_max_param(string $max_param)
 function has_low_memory() : bool
 {
     $ml = php_return_bytes(ini_get('memory_limit'));
-    return ($ml != -1) && ($ml < 128 * 1024 * 1024);
+    return ($ml != -1) && ($ml < 64 * 1024 * 1024);
+}
+
+/**
+ * Raise the PHP memory limit to the documented minimum.
+ * By default we keep the memory limit lower than that to mitigate the effect of crashes.
+ */
+function raise_php_memory_limit()
+{
+    global $DISABLED_MEMORY_LIMIT;
+    if ($DISABLED_MEMORY_LIMIT) {
+        return;
+    }
+
+    cms_ini_set('memory_limit', '128M');
 }
 
 /**
@@ -1124,12 +1135,15 @@ function disable_php_memory_limit()
         return;
     }
 
+    global $DISABLED_MEMORY_LIMIT;
+    $DISABLED_MEMORY_LIMIT = true;
+
     $shl = @ini_get('suhosin.memory_limit');
     if (($shl === false) || ($shl == '') || ($shl == '0')) {
         // Progressively relax more and more (some PHP installs may block at some point)
+        cms_ini_set('memory_limit', '128M');
         cms_ini_set('memory_limit', '256M');
         cms_ini_set('memory_limit', '512M');
-        cms_ini_set('memory_limit', '1G');
         //cms_ini_set('memory_limit', '-1');
     } else {
         if (is_numeric($shl)) {
