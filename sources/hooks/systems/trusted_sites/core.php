@@ -30,6 +30,7 @@ class Hook_trusted_sites_core
      */
     public function find_trusted_sites_1(array &$sites)
     {
+        $sites[] = str_replace('www.', '', cms_parse_url_safe(get_brand_base_url(), PHP_URL_HOST));
     }
 
     /**
