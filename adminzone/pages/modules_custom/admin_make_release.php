@@ -380,7 +380,7 @@ class Module_admin_make_release
                     $member_label = $handler;
                     $member_url = $base_member_url . '/' . $handler . '.htm';
                     $changes->attach("\n");
-                    $changes->attach(do_lang_tempcode('CHANGELOG_ITEM', comcode_escape(escape_html($member_url)), escape_html($member_label)));
+                    $changes->attach(do_lang_tempcode('CHANGELOG_ITEM', escape_html($member_url), comcode_escape(escape_html($member_label))));
                 }
                 $changes->attach("\n\n");
             }
@@ -391,7 +391,7 @@ class Module_admin_make_release
                     $member_label = $reporter;
                     $member_url = $base_member_url . '/' . $reporter . '.htm';
                     $changes->attach("\n");
-                    $changes->attach(do_lang_tempcode('CHANGELOG_ITEM', comcode_escape(escape_html($member_url)), escape_html($member_label)));
+                    $changes->attach(do_lang_tempcode('CHANGELOG_ITEM', escape_html($member_url), comcode_escape(escape_html($member_label))));
                 }
                 $changes->attach("\n\n");
             }
@@ -399,7 +399,7 @@ class Module_admin_make_release
                 $changes->attach(do_lang_tempcode('CHANGELOG_HEADER_GIT_CONTRIBUTORS'));
                 foreach ($git_authors as $author) {
                     $changes->attach("\n");
-                    $changes->attach(do_lang_tempcode('CHANGELOG_ITEM_NOURL', escape_html($author)));
+                    $changes->attach(do_lang_tempcode('CHANGELOG_ITEM_NOURL', comcode_escape(escape_html($author))));
                 }
             }
         } else {
@@ -453,7 +453,7 @@ class Module_admin_make_release
         // Release description and Changelog
         $changelog = $this->generate_changelog();
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP2_RELEASE_DESCRIPTION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_RELEASE_DESCRIPTION'), 'descrip', $release_description, true));
-        $fields->attach(form_input_text_comcode(do_lang_tempcode('MAKE_RELEASE_STEP2_CHANGELOG'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_CHANGELOG'), 'changes', $changelog, true, null, false, '', null, true, 25));
+        $fields->attach(form_input_text_comcode(do_lang_tempcode('MAKE_RELEASE_STEP2_CHANGELOG'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_CHANGELOG'), 'changes', $changelog, true, null, true, '', null, true, 25));
 
         // Upgrade necessity, criteria, and justification
         $radios = new Tempcode();

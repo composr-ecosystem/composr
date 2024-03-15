@@ -138,7 +138,18 @@ function init_potential_js_naughty_array()
  */
 function comcode_escape(string $in) : string
 {
-    return str_replace('{', '\\{', str_replace('[', '\\[', str_replace('"', '\\"', str_replace('\\', '\\\\', $in))));
+    $escape_list = [
+        '{',
+        '[',
+        '"',
+        '\\'
+    ];
+
+    $out = $in;
+    foreach ($escape_list as $escape_item) {
+        $out = str_replace($escape_item, '\\' . $escape_item, $out);
+    }
+    return $out;
 }
 
 /**
