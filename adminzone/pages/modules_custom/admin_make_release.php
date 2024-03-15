@@ -661,6 +661,7 @@ class Module_admin_make_release
             'IS_OLD_TREE' => $is_old_tree,
             'COMMAND_TO_TRY' => $command_to_try,
             'PUSH_URL' => $push_url,
+            'CHANGES' => post_param_string('changes', ''),
             'BRAND_DOMAIN' => cms_parse_url_safe(normalise_idn_url(get_brand_base_url()), PHP_URL_HOST),
             'TRACKER_URL' => post_param_string('tracker_url'),
             'PROJECT_ID' => post_param_string('project_id'),

@@ -102,12 +102,16 @@ foreach ($release_tree as $other_version_dotted => $download_row) { // As $relea
         continue; // Somehow the news post is missing, we'll consider the release pulled
     }
 
+    // We don't want changelogs
+    $nice_description_parts = explode("\n\n", $download_row['nice_description']);
+    $nice_description = $nice_description_parts[0];
+
     // We chain all the download descriptions together; each says why the version involved is out of date, so together it is like a "why upgrade" history. The news posts on the other hand says what a new version itself offers.
-    if (strlen($download_row['nice_description']) < 3000) { // If not too long
+    if (strlen($nice_description) < 3000) { // If not too long
         if ($description != '') {
             $description = "\n---\n" . $description;
         }
-        $description .= strip_download_description($download_row['nice_description']);
+        $description .= strip_download_description($nice_description);
     }
 
     $higher_versions[$differs_at] = [
@@ -123,11 +127,16 @@ $has_jump = ($higher_versions[0] !== null) || ($higher_versions[1] !== null) || 
 // Current version
 $our_version = null;
 $download_row = find_version_download($version_pretty, 'quick');
+
+// We don't want changelogs
+$nice_description_parts = explode("\n\n", $download_row['nice_description']);
+$nice_description = $nice_description_parts[0];
+
 if ($download_row !== null) {
     $our_version = [
         'version_pretty' => $version_pretty,
         'version_dotted' => $version_dotted,
-        'download_description' => strip_download_description($download_row['nice_description']),
+        'download_description' => strip_download_description($nice_description),
         'add_date' => $download_row['add_date'],
     ];
 }
