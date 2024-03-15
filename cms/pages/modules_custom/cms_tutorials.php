@@ -226,7 +226,7 @@ class Module_cms_tutorials extends Standard_crud_module
         if ($author == '') {
             $author = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
             if ($GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {
-                $author .= ', Core Developer Team';
+                $author .= ', Core Development Team';
             }
         }
 

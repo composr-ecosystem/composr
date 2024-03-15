@@ -179,9 +179,9 @@ if (get_param_integer('export_themes', 0) == 1) {
         }
 
         $name = get_theme_option('title', '', $theme);
-        $author = get_theme_option('author', 'Core Developer Team', $theme);
+        $author = get_theme_option('author', 'Core Development Team', $theme);
         if ($author == 'admin') {
-            $author = 'Core Developer Team';
+            $author = 'Core Development Team';
         }
         $organisation = get_theme_option('organisation', 'Composr', $theme);
         $version = get_theme_option('version', '1.0', $theme);

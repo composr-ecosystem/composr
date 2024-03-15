@@ -1146,7 +1146,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             '[*] Find the feature you want to sponsor on the tracker, which usually will have a number of hours filled in for it already. If the issue is not yet on the tracker, you\'ll need to add it, mention that you\'ll sponsor it, and wait for the hours field to be updated. If it is on the tracker already but has no hours set yet, similarly reply to say that you\'d like to sponsor it and wait.' . "\n\n" .
             '[*] Bring up your desire to sponsor as a note on the tracker issue.' . "\n\n" .
             '[/list]' . "\n\n" .
-            'A developer will then need to agree to accept sponsorship, after reviewing the accuracy of the issue and their own availability. The Composr Core Developer Team will then need to open the issue for sponsorship and assign the issue.' . "\n\n" .
+            'A developer will then need to agree to accept sponsorship, after reviewing the accuracy of the issue and their own availability. The Composr Core Development Team will then need to open the issue for sponsorship and assign the issue.' . "\n\n" .
             'Then:[list="1"]' . "\n\n" .
             '[*] Fill in the sponsor form on the tracker issue.' . "\n\n" .
             '[/list]' . "\n\n" .
