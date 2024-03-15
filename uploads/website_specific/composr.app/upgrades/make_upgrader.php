@@ -60,25 +60,35 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
         }
     }
 
-    $version_parts = explode('.', $to_version_dotted);
-    $a = intval($version_parts[0]);
+    $version_parts_b = explode('.', $to_version_dotted);
+    $b = intval($version_parts_b[0]);
 
-    // Sanity; version 10 and version 11 are on different sites
+    if ($from_version_dotted !== null) {
+        $version_parts_a = explode('.', $from_version_dotted);
+        $a = intval($version_parts_a[0]);
+
+        if (get_base_url() == 'https://composr.app' || get_base_url() == 'https://www.composr.app') {
+            if (($a == 10) && ($b >= 11)) { // TODO: remove when v11 is stable
+                attach_message('It is strongly recommended not to upgrade a version 10 site to version 11 until version 11 enters beta status. You will likely break your site! Proceed at your own risk and only if you are just testing and have taken proper backups.', 'warn');
+            }
+        }
+    }
+
     if (get_base_url() == 'https://compo.sr' || get_base_url() == 'https://www.compo.sr') {
-        if ($a > 10) {
+        if ($b > 10) {
             $url = hyperlink('https://composr.app', 'Composr.app', true, true);
-            $err = 'Version 11+ is available at ' . $url->evaluate();
+            $err = 'Compo.sr does not host version 11+. Instead, please go to ' . $url->evaluate();
             return [null, $err];
         }
     }
     if (get_base_url() == 'https://composr.app' || get_base_url() == 'https://www.composr.app') {
-        if ($a == 10) {
+        if ($b == 10) {
             $url = hyperlink('https://compo.sr', 'Compo.sr', true, true);
-            $err = 'Version 10 is available at ' . $url->evaluate();
+            $err = 'Composr.app does not host version 10. Instead, please go to ' . $url->evaluate();
             return [null, $err];
         }
     }
-    if ($a < 10) {
+    if ($b < 10) {
         $err = 'You cannot upgrade to a version prior to 10 as versions < 10 are no longer supported.';
         return [null, $err];
     }
