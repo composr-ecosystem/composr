@@ -29,39 +29,31 @@ if (!addon_installed('news')) {
 if (!function_exists('mu_ui')) {
     function mu_ui()
     {
-        $spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
-        $proceed_icon = do_template('ICON', ['_GUID' => '79e1ec738649822eaf1a8c25e7ffbfc8', 'NAME' => 'buttons/proceed']);
-        echo <<<END
-<p>
-    You can generate an upgrader from any version of Composr to any other version. If you access this upgrade post via the version information box on your Admin Zone dashboard then we'll automatically know what version you're running.
-    <br />
-    If you'd prefer though you can enter in your version number right here:
-</p>
-<form onsubmit="document.getElementById('make-upgrader-button').disabled = true;" action="#!" method="post">
-    {$spammer_blackhole}
+        require_code('form_templates');
 
-    <p style="margin: 4px 0">
-        <label style="width: 170px; float: left" for="from_version_a">Major version (e.g. <kbd>11</kbd>)</label>
-        <input size="2" maxlength="2" type="text" name="from_version_a" id="from_version_a" value="" />
-    </p>
-    <p style="margin: 4px 0">
-        <label style="width: 170px; float: left" for="from_version_b">Minor version (e.g. <kbd>0</kbd>)</label>
-        <input size="1" maxlength="2" type="text" name="from_version_b" id="from_version_b" value="" />
-    </p>
-    <p style="margin: 4px 0">
-        <label style="width: 170px; float: left" for="from_version_c">Patch version (e.g. <kbd>0</kbd>)</label>
-        <input size="2" maxlength="3" type="text" name="from_version_c" id="from_version_c" value="" />
-    </p>
-    <p style="margin: 4px 0; font-size: 0.8em">
-        <label style="width: 170px; float: left" for="from_version_d">Bleeding-edge version (e.g. alpha1)</label>
-        <input size="6" type="text" name="from_version_d" id="from_version_d" value="" /> (usually blank)
-    </p>
-    <p>(example above is for upgrading from 11.0.0 alpha1)</p>
-    <p>
-        <button class="btn btn-primary btn-scri buttons--proceed" id="make-upgrader-button" type="submit">{$proceed_icon} Generate</button>
-    </p>
-</form>
-END;
+        $form = new Tempcode();
+        $form->attach(form_input_integer('Major version', 'The major version you are currently running. In the example 11.0.19.alpha1, it is 11.', 'from_version_a', null, true));
+        $form->attach(form_input_integer('Minor version', 'The minor version you are currently running. Examples: It is 0 in 11.0.19.alpha1, it is 3 in 11.3.8, it is 2 in 11.2, it is 0 in 11.beta2 (not defined), and it is 0 in 11 (not defined).', 'from_version_b', null, true));
+        $form->attach(form_input_integer('Patch version', 'The patch version you are currently running. Examples: It is 19 in 11.0.19.alpha1, it is 8 in 11.3.8, it is 0 in 11.2 (not defined), it is 0 in 11.beta2 (not defined), and it is 0 in 11 (not defined).', 'from_version_c', null, true));
+        $form->attach(form_input_line('Bleeding-edge version', 'The bleeding-edge version you are currently running, if applicable. Examples: It is alpha1 in 11.0.19.alpha1, it is blank in 11.3.8 (not defined), it is blank in 11.2 (not defined), it is beta2 in 11.beta2, and it is blank in 11 (not defined).', 'from_version_d', '', false));
+
+        $hidden = new Tempcode();
+
+        $post_url = get_self_url();
+
+        $ret = do_template('FORM_SCREEN', [
+            'GET' => false,
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => $hidden,
+            'TITLE' => 'Make a Composr upgrader',
+            'TEXT' => paragraph('You can generate an upgrader from any version of Composr to any other version. If you access this upgrade post via the version information box on your Admin Zone dashboard then we\'ll automatically know what version you\'re running. If you\'d prefer though you can enter in your version number right here:'),
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'FIELDS' => $form,
+            'URL' => $post_url,
+        ]);
+
+        $ret->evaluate_echo();
     }
 }
 

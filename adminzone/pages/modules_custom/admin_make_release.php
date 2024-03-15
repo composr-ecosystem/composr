@@ -336,7 +336,7 @@ class Module_admin_make_release
             }
 
             // Start populating changes
-            if (count($tracker_issues) > 0) {
+            if (($tracker_issues !== null) && (count($tracker_issues) > 0)) {
                 $changes->attach(do_lang_tempcode('CHANGELOG_HEADER_TRACKER', escape_html($tracker_url), escape_html($previous_version)));
                 ksort($tracker_issues); // Sort by tracker ID (usually results in oldest to newest sorting)
                 foreach ($tracker_issues as $key => $data) {
