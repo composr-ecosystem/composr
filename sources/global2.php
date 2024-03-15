@@ -538,10 +538,14 @@ function init__global2()
     // Reduce down memory limit / raise if requested
     $default_memory_limit = get_value('memory_limit');
     if ((empty($default_memory_limit)) || ($default_memory_limit == '-1')) {
-        $default_memory_limit = '64M';
+        $default_memory_limit = '128M';
+
+        // Not necessary at this time to increase memory for these zones
+        /*
         if ($GLOBALS['RELATIVE_PATH'] == 'adminzone' || $GLOBALS['RELATIVE_PATH'] == 'cms') {
             $default_memory_limit = '128M';
         }
+        */
     } else {
         if (substr($default_memory_limit, -2) == 'MB') {
             $default_memory_limit = substr($default_memory_limit, 0, strlen($default_memory_limit) - 1);
@@ -1093,7 +1097,7 @@ function memory_limit_for_max_param(string $max_param)
         if (has_privilege(get_member(), 'remove_page_split')) {
             $shl = @ini_get('suhosin.memory_limit');
             if (($shl === false) || ($shl == '') || ($shl == '0')) {
-                cms_ini_set('memory_limit', '128M');
+                cms_ini_set('memory_limit', '256M');
             }
         }
     }
@@ -1107,7 +1111,7 @@ function memory_limit_for_max_param(string $max_param)
 function has_low_memory() : bool
 {
     $ml = php_return_bytes(ini_get('memory_limit'));
-    return ($ml != -1) && ($ml < 64 * 1024 * 1024);
+    return ($ml != -1) && ($ml < 128 * 1024 * 1024);
 }
 
 /**
@@ -1123,9 +1127,9 @@ function disable_php_memory_limit()
     $shl = @ini_get('suhosin.memory_limit');
     if (($shl === false) || ($shl == '') || ($shl == '0')) {
         // Progressively relax more and more (some PHP installs may block at some point)
-        cms_ini_set('memory_limit', '128M');
         cms_ini_set('memory_limit', '256M');
         cms_ini_set('memory_limit', '512M');
+        cms_ini_set('memory_limit', '1G');
         //cms_ini_set('memory_limit', '-1');
     } else {
         if (is_numeric($shl)) {

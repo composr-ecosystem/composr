@@ -124,7 +124,7 @@ No Composr user has ever reported that a webhost has reported excessive disk I/O
 [title="3"]Memory usage[/title]
 
 [media width="64" thumb="0" float="right" framed="0"]themes/default/images/icons/menu/cms/cms.svg[/media]
-Normally Composr requests are explicitly limited to a [i]maximum[/i] of 64MB, which is very small compared to the amount of RAM a server has (4GB is fairly typical nowadays). There are a very small number of one-off admin tasks where Composr raises or removes the limit, but its very unlikely to be a problem.
+Normally Composr requests are explicitly limited to a [i]maximum[/i] of 128MB, which is very small compared to the amount of RAM a server has (4GB is fairly typical nowadays). There are a very small number of one-off admin tasks where Composr raises or removes the limit, but its very unlikely to be a problem.
 
 If a webhost complains about memory usage they are probably looking at an aggregate figure.
 
