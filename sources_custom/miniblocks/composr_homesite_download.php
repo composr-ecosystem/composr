@@ -89,13 +89,13 @@ if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
     $latest_version_pretty = '1337';
 }
 $releases_tpl_map = [];
+$release_quick = null;
+$release_manual = null;
 if ($latest_version_pretty !== null) {
     $latest = $latest_version_pretty;
 
     $release_quick = do_release($latest, '', 'QUICK_');
     $release_manual = do_release($latest, 'manual', 'MANUAL_');
-    $release_bleedingquick = do_release(null, 'bleeding-edge', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
-    $release_bleedingmanual = do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
 
     if ($release_quick !== null) {
         $releases_tpl_map += $release_quick;
@@ -103,12 +103,16 @@ if ($latest_version_pretty !== null) {
     if ($release_manual !== null) {
         $releases_tpl_map += $release_manual;
     }
-    if ($release_bleedingquick !== null) {
-        $releases_tpl_map += $release_bleedingquick;
-    }
-    if ($release_bleedingmanual !== null) {
-        $releases_tpl_map += $release_bleedingmanual;
-    }
+}
+
+$release_bleedingquick = do_release(null, 'bleeding-edge', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
+$release_bleedingmanual = do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
+
+if ($release_bleedingquick !== null) {
+    $releases_tpl_map += $release_bleedingquick;
+}
+if ($release_bleedingmanual !== null) {
+    $releases_tpl_map += $release_bleedingmanual;
 }
 
 if (empty($releases_tpl_map)) {
