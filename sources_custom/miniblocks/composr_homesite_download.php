@@ -91,6 +91,7 @@ if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
 $releases_tpl_map = [];
 $release_quick = null;
 $release_manual = null;
+$latest = null;
 if ($latest_version_pretty !== null) {
     $latest = $latest_version_pretty;
 
