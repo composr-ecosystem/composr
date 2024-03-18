@@ -72,7 +72,7 @@ function diff_simple_text(string $old_contents, string $new_contents, bool $unif
  */
 function _diff_simple(array $old, array $new, bool $unified, bool $include_unchanged = true) : string
 {
-    $diff = new Text_Diff($old, $new);
+    $diff = new Text_Diff('auto', [$old, $new]);
     if ($unified) {
         $renderer = new Text_Diff_Renderer_unified();
         $diff_text = $renderer->render($diff);
