@@ -403,9 +403,33 @@ function server__public__relay_error_notification()
 
     // Decrypt our message
     require_code('encryption');
-    $data = decrypt_data_telemetry($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
+    $_data = decrypt_data_telemetry($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
+    $decrypted_data = @unserialize($_data);
+    if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('website_url', $decrypted_data) || !array_key_exists('error', $decrypted_data)) {
+        exit('Corrupt telemetry data');
+    }
 
-    // TODO: implement telemetry with our data
+    // See if this error was already reported by this site
+    $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count'], ['website_url' => $decrypted_data['website_url'], 'error' => $decrypted_data['error']]);
+    if (array_key_exists(0, $row)) { // It was reported; just update last report time, report count, and current version
+        $GLOBALS['SITE_DB']->query_update('relayed_errors', [
+            'last_date_and_time' => time(),
+            'error_count' => $row[0]['error_count'] + 1,
+            'e_version' => $decrypted_data['version'], // Possible they upgraded since the last error; we want to know that
+        ], [
+            'id' => $row[0]['id']
+        ]);
+    } else {
+        $GLOBALS['SITE_DB']->query_insert('relayed_errors', [
+            'first_date_and_time' => time(),
+            'last_date_and_time' => time(),
+            'website_url' => $decrypted_data['website_url'],
+            'e_version' => $decrypted_data['version'],
+            'error' => $decrypted_data['error'],
+            'error_count' => 1
+        ]);
+    }
+
 }
 
 // DEMONSTRATR

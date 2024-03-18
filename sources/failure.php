@@ -1131,10 +1131,11 @@ function relay_error_notification(string $text, bool $developers = true, string 
     }
 
     // Make sure we don't send too many error e-mails
+    $send_error_email = true;
     if ((function_exists('get_value')) && (!$GLOBALS['BOOTSTRAPPING']) && (array_key_exists('SITE_DB', $GLOBALS)) && ($GLOBALS['SITE_DB'] !== null)) {
         $num = intval(get_value('num_error_mails_' . date('Y-m-d'), null, true)) + 1;
         if ($num == 51) { // TODO: turn this into a value? #5399
-            return; // We've sent too many error e-mails today
+            $send_error_email = false; // We've sent too many error e-mails today, but we might still want to send this to developers as we use fsock instead
         }
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values_elective WHERE the_name LIKE \'' . db_encode_like('num\_error\_mails\_%') . '\'');
         persistent_cache_delete('VALUES');
@@ -1151,7 +1152,10 @@ function relay_error_notification(string $text, bool $developers = true, string 
     require_code('notifications');
     require_code('comcode');
     $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $developers ? '?' : get_ip_address(), get_site_default_lang());
-    dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
+    if ($send_error_email) {
+        dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
+    }
+
     if (
         ($mail !== null) &
         ($developers) &&
@@ -1231,25 +1235,38 @@ function relay_error_notification(string $text, bool $developers = true, string 
         ((strpos($text, 'No such file or directory') === false) || ((strpos($text, 'admin_setupwizard') === false))) &&
         (strpos($text, 'File(/tmp/) is not within the allowed path') === false)
     ) {
-        // Send the error securely to the core developers (telemetry)
+        // Send the error securely to the core developers (telemetry) using an encrypted raw fsock request
         require_code('encryption');
-        require_code('version');
-        $_payload = encrypt_data_telemetry($mail->evaluate());
-        $_payload['version'] = cms_version_number();
-        $payload = json_encode($_payload);
-        if ($payload === false) {
-            cms_error_log('Telemetry error: Failed to JSON encode the payload');
-        } else {
-            $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
-            $error_code = null;
-            $error_message = null;
-            $response = cms_fsock_request($payload, $url, $error_code, $error_message);
-            if (($response === false) || ($error_message !== null)) {
-                cms_error_log('Telemetry error: ' . $error_message . escape_html($response));
+
+        if (is_encryption_enabled_telemetry()) {
+            require_code('version');
+            require_code('version2');
+
+            $__payload = [
+                'website_url' => get_base_url(),
+                'error' => $mail->evaluate(),
+                'version' => get_version_dotted__from_anything(float_to_raw_string(cms_version_number()) . '.' . cms_version_minor()) // Encrypted and contains full version
+            ];
+            $_payload = encrypt_data_telemetry(serialize($__payload));
+            $_payload['version'] = cms_version_number(); // Decrypted major/minor for use in determining which key pair to use
+            $payload = json_encode($_payload);
+
+            if ($payload === false) {
+                cms_error_log('Telemetry error: Failed to JSON encode the payload');
+            } else {
+                $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
+                $error_code = null;
+                $error_message = null;
+                $response = cms_fsock_request($payload, $url, $error_code, $error_message);
+                if (($response === false) || ($error_message !== null)) {
+                    cms_error_log('Telemetry: Could not forward error to the developers. ' . $error_message . escape_html($response));
+                }
             }
+        } else {
+            cms_error_log('Telemetry: Could not forward error to the developers. PHP libsodium not available or data/keys/telemetry.pub does not exist.');
         }
     }
-    if (($developers) && (get_value('agency_email_address') !== null)) {
+    if (($developers) && (get_value('agency_email_address') !== null) && ($send_error_email)) {
         require_code('mail');
         $agency_email_address = get_value('agency_email_address');
         dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, [$agency_email_address], '', '', '', ['no_cc' => true, 'as_admin' => true]);

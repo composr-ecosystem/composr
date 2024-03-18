@@ -86,6 +86,18 @@ class Module_admin_cmsusers
             $GLOBALS['SITE_DB']->delete_table_field('logged', 'log_key');
             $GLOBALS['SITE_DB']->delete_table_field('logged', 'expire');
         }
+
+        if (($upgrade_from === null) || ($upgrade_from < 3)) {
+            $GLOBALS['SITE_DB']->create_table('relayed_errors', [
+                'id' => '*AUTO',
+                'first_date_and_time' => 'TIME',
+                'last_date_and_time' => 'TIME',
+                'website_url' => 'URLPATH',
+                'e_version' => 'ID_TEXT',
+                'error' => 'LONG_TEXT',
+                'error_count' => 'INTEGER'
+            ]);
+        }
     }
 
     /**
@@ -105,6 +117,7 @@ class Module_admin_cmsusers
 
         return [
             'browse' => ['CMS_SITES_INSTALLED', 'admin/tool'],
+            'errors' => ['CMS_SITE_ERRORS', 'admin/tool'],
         ];
     }
 

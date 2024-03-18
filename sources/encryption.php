@@ -21,7 +21,7 @@
  */
 
 /**
- * Determine whether the necessary PHP extensions to support encryption are available. For normal use, you should probably use is_encryption_enabled() instead.
+ * Determine whether the necessary PHP extensions to support OpenSSL encryption are available. For normal use, you should probably use is_encryption_enabled() instead.
  *
  * @return boolean Encryption available?
  */
@@ -31,7 +31,7 @@ function is_encryption_available() : bool
 }
 
 /**
- * Determine whether encryption support is available and enabled in the site's preferences, and the keys are in place.
+ * Determine whether OpenSSL encryption support is available and enabled in the site's preferences, and the keys are in place.
  *
  * @return boolean Encryption enabled?
  */
@@ -42,6 +42,22 @@ function is_encryption_enabled() : bool
         $public_key = str_replace('{file_base}', get_file_base(), get_option('encryption_key'));
         $private_key = str_replace('{file_base}', get_file_base(), get_option('decryption_key'));
         $enabled = ((function_exists('openssl_pkey_get_public')) && ($public_key != '') && ($private_key != '') && (file_exists($public_key)) && (file_exists($private_key)));
+    }
+    return $enabled;
+}
+
+/**
+ * Determine whether encryption support is available for telemetry, and the key is in place.
+ *
+ * @return boolean Encryption enabled?
+ */
+function is_encryption_enabled_telemetry() : bool
+{
+    static $enabled = null;
+    if ($enabled === null) {
+        $public_key_exists = file_exists(get_file_base() . '/data/keys/telemetry.pub');
+        $available = function_exists('sodium_crypto_box_seal');
+        $enabled = (($public_key_exists) && ($available));
     }
     return $enabled;
 }
