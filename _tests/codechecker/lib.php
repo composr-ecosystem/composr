@@ -334,7 +334,19 @@ function do_lang_tempcode($x, $a = null, $b = null, $c = null)
             }
         }
     }
-    $out = strip_tags(str_replace('{1}', $a, str_replace('{2}', $b, $PARSED[$x])));
+
+    if (!isset($PARSED[$x])) {
+        return null;
+    }
+
+    $out = $PARSED[$x];
+    if (is_string($a)) {
+        $out = str_replace('{1}', $a, $out);
+    }
+    if (is_string($b)) {
+        $out = str_replace('{2}', $b, $out);
+    }
+
     if (is_string($c)) {
         $out = str_replace('{3}', $c, $out);
     } else {
@@ -343,6 +355,8 @@ function do_lang_tempcode($x, $a = null, $b = null, $c = null)
         $out = @str_replace('{5}', $c[2], $out);
         $out = @str_replace('{6}', $c[3], $out);
     }
+    $out = strip_tags($out);
+
     return rtrim($out);
 }
 

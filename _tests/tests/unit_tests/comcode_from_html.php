@@ -37,7 +37,7 @@ class comcode_from_html_test_set extends cms_test_case
             $this->assertTrue($ok);
             if (!$ok) {
                 require_code('diff');
-                echo '<code style="white-space: pre">' . diff_simple_2(trim($got), trim($expected), true) . '</code>';
+                echo '<code style="white-space: pre">' . diff_simple_text(trim($got), trim($expected), true) . '</code>';
             }
         }
     }

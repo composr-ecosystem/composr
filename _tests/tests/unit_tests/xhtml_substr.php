@@ -206,7 +206,7 @@ class xhtml_substr_test_set extends cms_test_case
         require_code('diff');
         $this->assertTrue($ok);
         if (!$ok) {
-            echo '<p>Differences detected in MEDIA_IMAGE_WEBSAFE.</p><code style="white-space: pre">' . diff_simple_2(trim($expected), trim($after), true) . '</code>';
+            echo '<p>Differences detected in MEDIA_IMAGE_WEBSAFE.</p><code style="white-space: pre">' . diff_simple_text(trim($expected), trim($after), true) . '</code>';
         }
     }
 

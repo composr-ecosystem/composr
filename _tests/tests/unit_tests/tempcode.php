@@ -13,7 +13,7 @@
  * @package    testing_platform
  */
 
-/*EXTRA FUNCTIONS: diff_simple_2*/
+/*EXTRA FUNCTIONS: diff_simple_text*/
 
 /**
  * Composr test case class (unit testing).
@@ -440,7 +440,7 @@ bar
         $this->assertTrue($ok);
         if (!$ok) {
             require_code('diff');
-            echo '<code style="white-space: pre">' . diff_simple_2($got, $expected, true) . '</code>';
+            echo '<code style="white-space: pre">' . diff_simple_text($got, $expected, true) . '</code>';
         }
     }
 }

@@ -389,8 +389,8 @@ class RevisionEngineFiles
                     $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($revision['log_member_id']);
                 }
 
-                if (function_exists('diff_simple_2')) {
-                    $rendered_diff = diff_simple_2($revision['r_original_text'], $more_recent_text);
+                if (function_exists('diff_simple_text')) {
+                    $rendered_diff = diff_simple_text($revision['r_original_text'], $more_recent_text);
                     $diff_icon = do_template('REVISIONS_DIFF_ICON', array('_GUID' => '9ea39609ba90f5f756b53df5269d036d', 'RENDERED_DIFF' => $rendered_diff,
                     ));
                 } else {

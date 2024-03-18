@@ -106,7 +106,7 @@ bar
         $this->assertTrue($ok);
         if (!$ok) {
             require_code('diff');
-            echo '<p>Diff comparing what we expected to what we actually got:</p><code style="white-space: pre">' . diff_simple_2(trim($expected), trim($got), true) . '</code>';
+            echo '<p>Diff comparing what we expected to what we actually got:</p><code style="white-space: pre">' . diff_simple_text(trim($expected), trim($got), true) . '</code>';
         }
     }
 }

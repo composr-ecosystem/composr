@@ -353,7 +353,7 @@ class SimpleSignatureMap {
     function isMatch($parameters) {
         return ($this->_findFirstSlot($parameters) != null);
     }
-    
+
     /**
      *    Compares the incoming parameters with the
      *    internal expectation. Uses the incoming $test
@@ -397,7 +397,7 @@ class SimpleCallSchedule {
     var $_wildcard = MOCK_ANYTHING;
     var $_always;
     var $_at;
-    
+
     /**
      *    Sets up an empty response schedule.
      *    Creates an empty call map.
@@ -406,7 +406,7 @@ class SimpleCallSchedule {
         $this->_always = array();
         $this->_at = array();
     }
-    
+
     /**
      *    Stores an action against a signature that
      *    will always fire unless masked by a time
@@ -424,7 +424,7 @@ class SimpleCallSchedule {
         }
         $this->_always[$method]->add($args, $action);
     }
-    
+
     /**
      *    Stores an action against a signature that
      *    will fire at a specific time in the future.
@@ -446,7 +446,7 @@ class SimpleCallSchedule {
         }
         $this->_at[$method][$step]->add($args, $action);
     }
-    
+
     function expectArguments($method, $args, $message) {
         $args = $this->_replaceWildcards($args);
         $message .= Mock::getExpectationLine();
@@ -454,7 +454,7 @@ class SimpleCallSchedule {
                 new ParametersExpectation($args, $message);
 
     }
-    
+
     /**
      *    Actually carry out the action stored previously,
      *    if the parameters match.
@@ -484,7 +484,7 @@ class SimpleCallSchedule {
         $null = null;
         return $null;
     }
-    
+
     /**
      *    Replaces wildcard matches with wildcard
      *    expectations in the argument list.
@@ -514,7 +514,7 @@ class SimpleCallSchedule {
  */
 class SimpleByReference {
     var $_reference;
-    
+
     /**
      *    Stashes it for later.
      *    @param mixed $reference     Actual PHP4 style reference.
@@ -523,7 +523,7 @@ class SimpleByReference {
     function __construct(&$reference) {
         $this->_reference = &$reference;
     }
-    
+
     /**
      *    Returns the reference stored earlier.
      *    @return mixed    Whatever was stashed.
@@ -542,7 +542,7 @@ class SimpleByReference {
  */
 class SimpleByValue {
     var $_value;
-    
+
     /**
      *    Stashes it for later.
      *    @param mixed $value     You need to clone objects
@@ -553,7 +553,7 @@ class SimpleByValue {
     function __construct($value) {
         $this->_value = $value;
     }
-    
+
     /**
      *    Returns the value stored earlier.
      *    @return mixed    Whatever was stashed.
@@ -573,7 +573,7 @@ class SimpleByValue {
  */
 class SimpleThrower {
     var $_exception;
-    
+
     /**
      *    Stashes it for later.
      *    @param Exception $exception    The exception object to throw.
@@ -582,7 +582,7 @@ class SimpleThrower {
     function __construct($exception) {
         $this->_exception = $exception;
     }
-    
+
     /**
      *    Throws the exceptins stashed earlier.
      *    @access public
@@ -601,7 +601,7 @@ class SimpleThrower {
 class SimpleErrorThrower {
     var $_error;
     var $_severity;
-    
+
     /**
      *    Stashes an error to throw later.
      *    @param string $error      Error message.
@@ -612,7 +612,7 @@ class SimpleErrorThrower {
         $this->_error = $error;
         $this->_severity = $severity;
     }
-    
+
     /**
      *    Triggers the stashed error.
      *    @return null        The usual PHP4.4 shenanigans are needed here.
@@ -645,6 +645,7 @@ class SimpleMock {
     var $_max_counts;
     var $_expected_args;
     var $_expected_args_at;
+    var $_expectations;
 
     /**
      *    Creates an empty action list and expectation list.
@@ -662,7 +663,7 @@ class SimpleMock {
         $test = &$this->_getCurrentTestCase();
         $test->tell($this);
     }
-    
+
     /**
      *    Disables a name check when setting expectations.
      *    This hack is needed for the partial mocks.
@@ -674,7 +675,7 @@ class SimpleMock {
 
     /**
      *    Finds currently running test.
-     *    @return SimpeTestCase    Current test case.
+     *    @return SimpleTestCase    Current test case.
      *    @access protected
      */
     function &_getCurrentTestCase() {
@@ -707,7 +708,7 @@ class SimpleMock {
     function _dieOnNoMethod($method, $task) {
         if ($this->_is_strict && ! method_exists($this, $method)) {
             trigger_error(
-                    "Cannot $task as no ${method}() in class " . get_class($this),
+                    "Cannot $task as no {$method}() in class " . get_class($this),
                     E_USER_ERROR);
         }
     }
@@ -771,7 +772,8 @@ class SimpleMock {
      */
     function setReturnValue($method, $value, $args = false) {
         $this->_dieOnNoMethod($method, "set return value");
-        $this->_actions->register($method, $args, new SimpleByValue($value));
+        $simple_by_value = new SimpleByValue($value);
+        $this->_actions->register($method, $args, $simple_by_value);
     }
 
     /**
@@ -790,7 +792,8 @@ class SimpleMock {
      */
     function setReturnValueAt($timing, $method, $value, $args = false) {
         $this->_dieOnNoMethod($method, "set return value sequence");
-        $this->_actions->registerAt($timing, $method, $args, new SimpleByValue($value));
+        $simple_by_value = new SimpleByValue($value);
+        $this->_actions->registerAt($timing, $method, $args, $simple_by_value);
     }
 
     /**
@@ -804,7 +807,8 @@ class SimpleMock {
      */
     function setReturnReference($method, &$reference, $args = false) {
         $this->_dieOnNoMethod($method, "set return reference");
-        $this->_actions->register($method, $args, new SimpleByReference($reference));
+        $simple_by_reference = new SimpleByReference($reference);
+        $this->_actions->register($method, $args, $simple_by_reference);
     }
 
     /**
@@ -823,7 +827,8 @@ class SimpleMock {
      */
     function setReturnReferenceAt($timing, $method, &$reference, $args = false) {
         $this->_dieOnNoMethod($method, "set return reference sequence");
-        $this->_actions->registerAt($timing, $method, $args, new SimpleByReference($reference));
+        $simple_by_reference = new SimpleByReference($reference);
+        $this->_actions->registerAt($timing, $method, $args, $simple_by_reference);
     }
 
     /**
@@ -978,7 +983,7 @@ class SimpleMock {
             $this->expect($method, $args, $message);
         }
     }
-    
+
     /**
      *    Sets up a trigger to throw an exception upon the
      *    method call.
@@ -986,36 +991,40 @@ class SimpleMock {
      */
     function throwOn($method, $exception = false, $args = false) {
         $this->_dieOnNoMethod($method, "throw on");
+        $simple_thrower = new SimpleThrower($exception ? $exception : new Exception());
         $this->_actions->register($method, $args,
-                new SimpleThrower($exception ? $exception : new Exception()));
+                $simple_thrower);
     }
-    
+
     /**
      *    Sets up a trigger to throw an exception upon the
      *    method call.
      */
     function throwAt($timing, $method, $exception = false, $args = false) {
         $this->_dieOnNoMethod($method, "throw at");
+        $simple_thrower = new SimpleThrower($exception ? $exception : new Exception());
         $this->_actions->registerAt($timing, $method, $args,
-                new SimpleThrower($exception ? $exception : new Exception()));
+                $simple_thrower);
     }
-    
+
     /**
      *    Sets up a trigger to throw an error upon the
      *    method call.
      */
     function errorOn($method, $error = 'A mock error', $args = false, $severity = E_USER_ERROR) {
         $this->_dieOnNoMethod($method, "error on");
-        $this->_actions->register($method, $args, new SimpleErrorThrower($error, $severity));
+        $simple_error_thrower = new SimpleErrorThrower($error, $severity);
+        $this->_actions->register($method, $args, $simple_error_thrower);
     }
-    
+
     /**
      *    Sets up a trigger to throw an error upon the
      *    method call.
      */
     function errorAt($timing, $method, $error = 'A mock error', $args = false, $severity = E_USER_ERROR) {
         $this->_dieOnNoMethod($method, "error at");
-        $this->_actions->registerAt($timing, $method, $args, new SimpleErrorThrower($error, $severity));
+        $simple_error_thrower = new SimpleErrorThrower($error, $severity);
+        $this->_actions->registerAt($timing, $method, $args, $simple_error_thrower);
     }
 
     /**
@@ -1062,7 +1071,7 @@ class SimpleMock {
         $result = &$this->_emulateCall($method, $args, $step);
         return $result;
     }
-    
+
     /**
      *    Finds the return value matching the incoming
      *    arguments. If there is no matching value found
@@ -1227,7 +1236,7 @@ class MockGenerator {
         $code = $this->_createClassCode($methods ? $methods : array());
         return eval("$code return \$code;");
     }
-    
+
     /**
      *    Subclasses a class and overrides every method with a mock one
      *    that can have return values and expectations set. Chains
@@ -1529,7 +1538,7 @@ class MockGenerator {
         $code .= "    }\n";
         return $code;
     }
-    
+
     /**
      *    Adds code for chaining the throw methods.
      *    @return string           Code for chains.

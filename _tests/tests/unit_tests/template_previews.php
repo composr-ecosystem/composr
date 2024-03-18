@@ -13,7 +13,7 @@
  * @package    testing_platform
  */
 
-/*EXTRA FUNCTIONS: diff_simple_2*/
+/*EXTRA FUNCTIONS: diff_simple_text*/
 
 // Expect ~3014 files to appear in _tests/screens_tested
 
@@ -282,7 +282,7 @@ class template_previews_test_set extends cms_test_case
                 cms_file_put_contents_safe(get_file_base() . '/_tests/screens_tested/v2__' . '.tmp', $_out2, FILE_WRITE_FIX_PERMISSIONS);
 
                 require_code('diff');
-                var_dump(diff_simple_2($_out1, $_out2));
+                var_dump(diff_simple_text($_out1, $_out2));
 
                 exit('Error!');
             }

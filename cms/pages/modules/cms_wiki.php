@@ -18,7 +18,7 @@
  * @package    wiki
  */
 
-/*EXTRA FUNCTIONS: diff_simple_2*/
+/*EXTRA FUNCTIONS: diff_simple_text*/
 
 /**
  * Module page class.

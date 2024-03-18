@@ -51,11 +51,11 @@ function init__diff()
 function diff_simple_text($old_contents, $new_contents, $unified = false, $include_unchanged = true)
 {
     $before = ini_get('ocproducts.type_strictness');
-    cms_ini_set('ocproducts.type_strictness', '0');
+    ini_set('ocproducts.type_strictness', '0');
 
     $ret = _diff_simple(($old_contents == '') ? array() : explode("\n", $old_contents), ($new_contents == '') ? array() : explode("\n", $new_contents), $unified, $include_unchanged);
 
-    cms_ini_set('ocproducts.type_strictness', $before);
+    ini_set('ocproducts.type_strictness', $before);
 
     return $ret;
 }
@@ -72,7 +72,7 @@ function diff_simple_text($old_contents, $new_contents, $unified = false, $inclu
  */
 function _diff_simple($old, $new, $unified, $include_unchanged = true)
 {
-    $diff = new Text_Diff($old, $new);
+    $diff = new Text_Diff('auto', array($old, $new));
     if ($unified) {
         $renderer = new Text_Diff_Renderer_unified();
         $diff_text = $renderer->render($diff);
@@ -129,7 +129,7 @@ function diff_3way_text($text_1, $text_2, $text_3)
     require_code('diff/Diff/ThreeWay');
 
     $before = ini_get('ocproducts.type_strictness');
-    cms_ini_set('ocproducts.type_strictness', '0');
+    ini_set('ocproducts.type_strictness', '0');
 
     /* Load the lines of each file. */
     $lines_1 = explode("\n", $text_1);
@@ -159,7 +159,7 @@ function diff_3way_text($text_1, $text_2, $text_3)
         }
     }
 
-    cms_ini_set('ocproducts.type_strictness', $before);
+    ini_set('ocproducts.type_strictness', $before);
 
     return $new;
 }
