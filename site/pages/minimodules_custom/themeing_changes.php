@@ -235,7 +235,7 @@ foreach (array_keys($releases) as $version) {
                     if (preg_match('#([\x00-\x08\x0B-\x0C\x0E-\x1F])#', $contents_old) != 0) {
                         $diff = null;
                     } else {
-                        $diff = diff_simple_2($contents_old, $contents_new, true);
+                        $diff = diff_simple_text($contents_old, $contents_new, true);
                     }
                 } else {
                     $diff = '';
