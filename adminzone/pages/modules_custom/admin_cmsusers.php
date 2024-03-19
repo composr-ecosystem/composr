@@ -140,6 +140,10 @@ class Module_admin_cmsusers
 
         $type = get_param_string('type', 'browse');
 
+        if (($type == 'error') || ($type == 'resolve_error')) {
+            breadcrumb_set_parents([['_SELF:_SELF:errors', do_lang_tempcode('CMS_SITE_ERRORS')]]);
+        }
+
         require_lang('composr_homesite');
 
         $this->title = get_screen_title('CMS_SITES_INSTALLED');
@@ -167,8 +171,13 @@ class Module_admin_cmsusers
         }
         if ($type == 'error') {
             $id = get_param_integer('id');
-            $this->title = get_screen_title('CMS_SITE_ERROR', integer_format($id));
+            $this->title = get_screen_title('CMS_SITE_ERROR', true, [integer_format($id)]);
             return $this->error($id);
+        }
+        if ($type == 'resolve_error') {
+            $id = get_param_integer('id');
+            $this->title = get_screen_title('CMS_SITE_RESOLVE_ERROR', true, [integer_format($id)]);
+            return $this->resolve_error($id);
         }
         return new Tempcode();
     }
@@ -302,6 +311,7 @@ class Module_admin_cmsusers
         // Filter parameters
         $filter_website = get_param_string('filter_website', '');
         $filter_error_message = get_param_string('filter_error_message', '');
+        $filter_show_resolved = get_param_string('filter_show_resolved', 0);
         //$filter_from = post_param_date('filter_from', true);
         //$filter_to = post_param_date('filter_to', true);
 
@@ -313,6 +323,9 @@ class Module_admin_cmsusers
         }
         if ($filter_error_message != '') {
             $end .= ' AND website_message LIKE ' . db_encode_like('%' . $filter_error_message . '%');
+        }
+        if ($filter_show_resolved == 0) {
+            $where['resolved'] = 0;
         }
 
         // Query
@@ -354,7 +367,7 @@ class Module_admin_cmsusers
         $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         foreach ($rows as $myrow) {
-            $id = hyperlink(build_url(['page' => '_SELF', 'type' => 'error', 'id' => $myrow['id']], '_SELF'), '#' . integer_format($myrow['id']), false, true); // TODO
+            $id = hyperlink(build_url(['page' => '_SELF', 'type' => 'error', 'id' => $myrow['id']], '_SELF'), '#' . integer_format($myrow['id']), false, true);
             $website_url = hyperlink($myrow['website_url'], $myrow['website_url'], true, true);
             $summary = generate_tooltip_by_truncation($myrow['error_message'], 160);
             $first_date = get_timezoned_date_time($myrow['first_date_and_time'], false);
@@ -363,15 +376,15 @@ class Module_admin_cmsusers
             $actions = new Tempcode();
 
             if ($myrow['resolved'] == 0) {
-                $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF'); // TODO
+                $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $myrow['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '1e30e4f5fcc295e0320eaced5d18e03c',
                     'NAME' => '#' . strval($myrow['id']),
                     'URL' => $resolve_url,
-                    'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
+                    'HIDDEN' => new Tempcode(),
                     'ACTION_TITLE' => do_lang_tempcode('MARK_RESOLVED'),
                     'ICON' => 'buttons/close',
-                    'GET' => false,
+                    'GET' => true,
                 ]));
             }
 
@@ -452,10 +465,10 @@ class Module_admin_cmsusers
         $buttons = new Tempcode();
 
         if ($row['resolved'] == 0) {
-            $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+            $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
             $buttons->attach(do_template('BUTTON_SCREEN', [
                 'IMMEDIATE' => true,
-                'HIDDEN' => form_input_hidden('id', strval($row['id'])),
+                'HIDDEN' => new Tempcode(),
                 'URL' => $resolve_url,
                 'TITLE' => do_lang_tempcode('MARK_RESOLVED'),
                 'IMG' => 'buttons/close',
@@ -476,5 +489,40 @@ class Module_admin_cmsusers
         $title = get_screen_title('CMS_SITE_ERROR', true, [integer_format($id)]);
 
         return map_table_screen($title, $fields, true, null, $buttons, true);
+    }
+
+    /**
+     * The UI / actualiser for resolving an error message.
+     *
+     * @param  integer $id The ID of the error to resolve
+     * @return Tempcode the UI / results
+     */
+    public function resolve_error(int $id) : object
+    {
+        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['id' => $id], '', 1);
+        if (($_row === null) || (!array_key_exists(0, $_row))) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+
+        // Confirm?
+        if (get_param_integer('confirm', 0) == 0) {
+            $preview = do_lang_tempcode('CONFIRM_CMS_SITE_RESOLVE_ERROR', integer_format($id));
+            return do_template('CONFIRM_SCREEN', [
+                '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
+                'TITLE' => $this->title,
+                'PREVIEW' => $preview,
+                'URL' => get_self_url(false, false, ['confirm' => 1]),
+                'FIELDS' => build_keep_post_fields(),
+            ]);
+        }
+
+        // Actualiser
+        $GLOBALS['SITE_DB']->query_update('relayed_errors', ['resolved' => 1], ['id' => $id]);
+        $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
+        if ($url == '') {
+            $_url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
+            $url = $_url->evaluate();
+        }
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }
