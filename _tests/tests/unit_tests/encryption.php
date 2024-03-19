@@ -45,11 +45,11 @@ class encryption_test_set extends cms_test_case
     public function testEncryptionTelemetry()
     {
         require_code('version');
-        if (!file_exists(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string(cms_version_number()) . '.key')) {
+        if (!file_exists(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string(cms_version_number(), 2, true) . '.key')) {
             $this->assertTrue(false, 'Missing private key for this version of the software.');
             return;
         }
-        if (!file_exists(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string(cms_version_number()) . '.pub')) {
+        if (!file_exists(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string(cms_version_number(), 2, true) . '.pub')) {
             $this->assertTrue(false, 'Missing public key for this version of the software.');
             return;
         }

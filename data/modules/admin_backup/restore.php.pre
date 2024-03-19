@@ -176,7 +176,7 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
             exit('Failed on: ' . $sql_buildup);
         }
         $sql_buildup = '';
-        
+
         // Need to go to a new iteration? (Not ideal we wait until this long to check, but we have to considering how command build-ups work.)
         if (time() >= $time_max) {
             $refresh_url = 'restore.php?start_offset=' . strval($offset) . '&time_limit=' . strval($time_limit);
@@ -191,7 +191,7 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
 
     // Keep building up
     $sql_buildup .= $line . "\n";
-    
+
     // Offset
     $offset = ftell($data_file);
 }

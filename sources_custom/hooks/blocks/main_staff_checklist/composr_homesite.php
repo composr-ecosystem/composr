@@ -42,6 +42,7 @@ class Hook_checklist_composr_homesite
         $url = build_url(['page' => 'admin_cmsusers', 'type' => 'errors'], get_module_zone('admin_cmsusers'));
 
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
+            '_GUID' => '9caec63ef20ae396f8982f63a9c345bb',
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_CMS_SITE_ERRORS', escape_html_tempcode($url)),
@@ -66,4 +67,3 @@ class Hook_checklist_composr_homesite
         return [$sum, $sum2];
     }
 }
-

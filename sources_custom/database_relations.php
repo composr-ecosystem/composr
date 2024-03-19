@@ -58,8 +58,9 @@ function get_table_purpose_flags() : array
         'members_mentors' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'referees_qualified_for' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'referrer_override' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
+        'relayed_errors' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__MISC_NO_MERGE | TABLE_PURPOSE__FLUSHABLE,
         'reported_content' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under <content>*/,
-        'sites' => TABLE_PURPOSE__NORMAL,
+        'sites' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'sites_advert_pings' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'sites_deletion_codes' => TABLE_PURPOSE__NORMAL,
         'sites_email' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under sites*/,
@@ -129,23 +130,18 @@ function get_table_descriptions() : array
         'locations' => 'a database of geographical locations',
         'logged' => 'cms homesite logs',
         'mail_opt_sync_queue' => 'a log of newsletter opt statuses for members to be synced to SugarCRM',
-
-        // TODO: verify accuracy
         'may_feature' => 'URLs that have opted in to be featured on the Composr homesite',
-
         'members_diseases' => 'a log of diseases members caught',
         'members_gifts' => 'a log of virtual gifts exchanged with members',
         'members_mentors' => 'a log of members and their mentor',
         'referees_qualified_for' => 'qualified referrals',
         'referrer_override' => 'overrides for referrals',
+        'relayed_errors' => 'A log of error messages sent by installed sites to core developers',
         'reported_content' => 'a log of content that has been reported',
-
-        // TODO: verify accuracy
-        'sites' => 'a list of featured sites',
-        'sites_advert_pings' => 'a log of advertisement pings from sites',
-        'sites_deletion_codes' => 'a list of deletion codes for sites',
-        'sites_email' => 'a list of emails between sites',
-
+        'sites' => 'a list of Demonstratr sites',
+        'sites_advert_pings' => 'a log of advertisement pings from Demonstratr sites',
+        'sites_deletion_codes' => 'a list of deletion codes for Demonstratr sites',
+        'sites_email' => 'a list of emails between Demonstratr sites',
         'tutorials_external' => 'a list of external tutorials that have been submitted',
         'tutorials_external_tags' => 'tags for external tutorials',
         'tutorials_internal' => 'a list of tutorials written as an internal Comcode page',

@@ -988,6 +988,9 @@ We hope other users will appreciate your efforts and give you some points to rew
             'lang_custom/EN/phpdoc.ini',
             'sources_custom/continuous_integration.php',
             'sources_custom/hooks/systems/addon_registry/testing_platform.php',
+            'sources_custom/hooks/systems/continuous_integration/.htaccess',
+            'sources_custom/hooks/systems/continuous_integration/fresh_install.php',
+            'sources_custom/hooks/systems/continuous_integration/index.html',
             'sources_custom/phpdoc.php',
             'sources_custom/phpstub.php',
         ];

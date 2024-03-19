@@ -6,10 +6,10 @@
 		{+START,IF_PASSED,DEFAULT_PARSED}
 			<textarea aria-hidden="true" cols="1" rows="1" style="display: none" readonly="readonly" disabled="disabled" name="{NAME*}_parsed">{DEFAULT_PARSED*}</textarea>
 		{+END}
-	
+
 		{+START,IF_PASSED_AND_TRUE,RAW}<input type="hidden" name="pre_f_{NAME*}" value="1" />{+END}
 	{+END}
-	
+
 	{+START,IF_PASSED_AND_TRUE,DISPLAY_ONLY}
 		{$PARAGRAPH,{DEFAULT}}
 	{+END}

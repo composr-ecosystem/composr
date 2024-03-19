@@ -11939,6 +11939,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _POST_IN_TITLED
         PUNITIVE_ACTION
         _DATA_PURGE_TASK
+        CORRUPT_PRIVATE_KEY
+        CORRUPT_PUBLIC_KEY
+        INVALID_TELEMETRY_DATA
+        MISSING_PRIVATE_KEY
+        MISSING_PUBLIC_KEY
+        _CORRUPT_PUBLIC_KEY
+        _MISSING_PUBLIC_KEY
     ')));
 
     // Remove blank lines

@@ -25,7 +25,7 @@ class __backups_test_set extends cms_test_case
         if (!is_cli()) {
             warn_exit('This test should be run on the command line: php _tests/index.php __backups');
         }
-        
+
         if (get_db_type() == 'xml') {
             warn_exit('Cannot run on XML database driver');
         }

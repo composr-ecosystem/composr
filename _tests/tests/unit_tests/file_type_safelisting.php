@@ -171,6 +171,7 @@ class file_type_safelisting_test_set extends cms_test_case
                     'com',
                     'net',
                     'org',
+                    'app',
 
                     // LEGACY
                     'dat',

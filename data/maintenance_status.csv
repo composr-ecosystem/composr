@@ -78,7 +78,7 @@ platform_modsecurity,ModSecurity,Composr Core Development Team,,Not regularly te
 platform_suhosin,Suhosin,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,
 textmate,Textmate integration,Composr Core Development Team,,Needs to be separately tested. Needs a testing platform.,No,
 theme_mobile_mode,Mobile mode support,Composr Core Development Team,Composr Core Development Team,Needs to be separately tested. Liable to break due to cross-cutting complexity.,No,
-timezone_list,Timezone list,Composr Core Development Team,Composr Core Development Team,,No, 
+timezone_list,Timezone list,Composr Core Development Team,Composr Core Development Team,,No,
 detect_bot,"Bot detection (user-agent list, IP safelist, and DNS safelist)",Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by ua_detection automated test.
 detect_mobile,Mobile user agent detection,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by ua_detection automated test.
 standard_opengraph,Open Graph,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,

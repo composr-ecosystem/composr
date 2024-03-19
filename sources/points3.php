@@ -559,7 +559,7 @@ function transaction_reverse_screen(int $id, int $confirm, object $title) : ?obj
         $_recipient_id = (is_guest($recipient_id)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($recipient_id);
         $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount_points)), escape_html(integer_format($amount_gift_points)), [escape_html($_sender_id), escape_html($_recipient_id)]);
         return do_template('CONFIRM_SCREEN', [
-            '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
+            '_GUID' => '74f1a21b64dc67a9953a5823462bab38',
             'TITLE' => $title,
             'PREVIEW' => $preview,
             'URL' => get_self_url(false, false, ['confirm' => 1]),

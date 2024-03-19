@@ -467,6 +467,7 @@ class Module_admin_cmsusers
         if ($row['resolved'] == 0) {
             $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
             $buttons->attach(do_template('BUTTON_SCREEN', [
+                '_GUID' => '5721066370f5f9fbd8f43621a54628ed',
                 'IMMEDIATE' => true,
                 'HIDDEN' => new Tempcode(),
                 'URL' => $resolve_url,
@@ -506,7 +507,7 @@ class Module_admin_cmsusers
 
         // Confirm?
         if (get_param_integer('confirm', 0) == 0) {
-            $preview = do_lang_tempcode('CONFIRM_CMS_SITE_RESOLVE_ERROR', integer_format($id));
+            $preview = do_lang_tempcode('CONFIRM_CMS_SITE_RESOLVE_ERROR', escape_html(integer_format($id)));
             return do_template('CONFIRM_SCREEN', [
                 '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                 'TITLE' => $this->title,
