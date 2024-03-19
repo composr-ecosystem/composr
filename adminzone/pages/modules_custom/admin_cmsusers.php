@@ -165,6 +165,11 @@ class Module_admin_cmsusers
             $this->title = get_screen_title('CMS_SITE_ERRORS');
             return $this->errors();
         }
+        if ($type == 'error') {
+            $id = get_param_integer('id');
+            $this->title = get_screen_title('CMS_SITE_ERROR', integer_format($id));
+            return $this->error($id);
+        }
         return new Tempcode();
     }
 
@@ -334,6 +339,7 @@ class Module_admin_cmsusers
 
         require_code('templates_results_table');
         require_code('templates_tooltip');
+        require_code('temporal');
 
         $map = [
             do_lang_tempcode('IDENTIFIER'),
@@ -418,5 +424,57 @@ class Module_admin_cmsusers
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
+    }
+
+    /**
+     * Display a single relayed error message.
+     *
+     * @param  int $id The error message to display
+     * @return Tempcode The UI
+     */
+    public function error(int $id) : object
+    {
+        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['id' => $id], '', 1);
+        if (($_row === null) || (!array_key_exists(0, $_row))) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        $row = $_row[0];
+
+        require_code('templates_map_table');
+        require_code('temporal');
+
+        $formatted_id = '#' . integer_format($row['id']);
+        $website_url = hyperlink($row['website_url'], $row['website_url'], true, true);
+        $first_date = get_timezoned_date_time($row['first_date_and_time'], false);
+        $last_date = get_timezoned_date_time($row['last_date_and_time'], false);
+        $resolved = ($row['resolved'] == 1);
+
+        $buttons = new Tempcode();
+
+        if ($row['resolved'] == 0) {
+            $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+            $buttons->attach(do_template('BUTTON_SCREEN', [
+                'IMMEDIATE' => true,
+                'HIDDEN' => form_input_hidden('id', strval($row['id'])),
+                'URL' => $resolve_url,
+                'TITLE' => do_lang_tempcode('MARK_RESOLVED'),
+                'IMG' => 'buttons/close',
+            ]));
+        }
+
+        $fields = [
+            'IDENTIFIER' => $formatted_id,
+            'URL' => $website_url,
+            'ERROR_MESSAGE' => $row['error_message'],
+            'FIRST_REPORTED' => $first_date,
+            'LAST_REPORTED' => $last_date,
+            'VERSION' => $row['e_version'],
+            'TIMES_REPORTED' => integer_format($row['error_count']),
+            'RESOLVED' => $resolved ? do_lang('YES') : do_lang('NO')
+        ];
+
+        $title = get_screen_title('CMS_SITE_ERROR', true, [integer_format($id)]);
+
+        return map_table_screen($title, $fields, true, null, $buttons, true);
     }
 }
