@@ -129,10 +129,10 @@ $our_version = null;
 $download_row = find_version_download($version_pretty, 'quick');
 
 // We don't want changelogs
-$nice_description_parts = explode("\n\n", $download_row['nice_description']);
-$nice_description = $nice_description_parts[0];
-
 if ($download_row !== null) {
+    $nice_description_parts = explode("\n\n", $download_row['nice_description']);
+    $nice_description = $nice_description_parts[0];
+
     $our_version = [
         'version_pretty' => $version_pretty,
         'version_dotted' => $version_dotted,
