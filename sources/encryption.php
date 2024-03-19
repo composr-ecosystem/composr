@@ -47,6 +47,22 @@ function is_encryption_enabled() : bool
 }
 
 /**
+ * Determine whether encryption support is available for telemetry, and the key is in place.
+ *
+ * @return boolean Encryption enabled?
+ */
+function is_encryption_enabled_telemetry() : bool
+{
+    static $enabled = null;
+    if ($enabled === null) {
+        $public_key_exists = file_exists(get_file_base() . '/data/keys/telemetry.pub');
+        $available = function_exists('sodium_crypto_box_seal');
+        $enabled = (($public_key_exists) && ($available));
+    }
+    return $enabled;
+}
+
+/**
  * Encrypt some data using asymmetric encryption and the site's public key. This will return the original data if encryption is disabled. It will add a magic marker to the start of the returned string to show it's been encrypted.
  * A fatal error will occur if the public key cannot be found, or if encryption fails for whatever reason.
  * Note that this will blindly re-encrypt data which has already been encrypted. You should check data with is_data_encrypted() first.
@@ -216,7 +232,7 @@ function get_public_key_telemetry(float $version = null)
     if ($version === null) {
         return cms_file_get_contents_safe(get_file_base() . '/data/keys/telemetry.pub', FILE_READ_LOCK);
     }
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.pub', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', FILE_READ_LOCK);
 }
 
 /**
@@ -227,7 +243,7 @@ function get_public_key_telemetry(float $version = null)
  */
 function get_private_key_telemetry(float $version)
 {
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.key', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.key', FILE_READ_LOCK);
 }
 
 /**
