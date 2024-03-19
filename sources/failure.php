@@ -1244,7 +1244,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
             require_code('version');
             $__payload = [
                 'website_url' => get_base_url(),
-                'error_message' => strip_comcode($mail, false, [], true),
+                'error_message' => $mail,
                 'version' => cms_version_pretty(), // Encrypted and contains full version
             ];
             $_payload = encrypt_data_telemetry(serialize($__payload));
