@@ -559,7 +559,7 @@ class Module_admin_make_release
 
         $new_version = $this->get_new_version();
 
-        $is_bleeding_edge = (post_param_integer('bleeding_edge', 0) == 1);
+        $is_bleeding_edge = (post_param_string('bleeding_edge', '') != '');
         $is_substantial = is_substantial_release($new_version);
 
         // Show additional required tasks for major releases
@@ -568,9 +568,9 @@ class Module_admin_make_release
         }
 
         // Build the release
-        if (post_param_integer('skip', 0) == 0) {
+        if (post_param_string('skip', '') == '') {
             require_code('make_release');
-            $text = make_string_tempcode(make_installers(get_param_integer('keep_skip_file_grab', 0) == 1));
+            $text = make_string_tempcode(make_installers(get_param_string('keep_skip_file_grab', '') != ''));
         } else { // Just skip to step 4 if we are not building anything
             $this->title = get_screen_title('MAKE_RELEASE_TITLE', true, [escape_html('4')]);
             return $this->step4();

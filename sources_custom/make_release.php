@@ -80,7 +80,7 @@ function make_installers($skip_file_grab = false)
 
         // Generate key pair
         require_code('encryption');
-        generate_telemetry_key_pair($version, (post_param_integer('overwrite_key_pair', 0) == 1));
+        generate_telemetry_key_pair($version, (post_param_string('overwrite_key_pair', '') != ''));
 
         // Copy new public key to our static "telemetry" file
         @copy(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', get_file_base() . '/data/keys/telemetry.pub');
@@ -98,7 +98,7 @@ function make_installers($skip_file_grab = false)
         download_latest_data_files();
         make_files_manifest();
         make_database_manifest();
-        if (post_param_integer('rebuild_sql', 0) == 1) {
+        if (post_param_string('rebuild_sql', '') != '') {
             make_install_sql();
         }
     }
@@ -117,7 +117,7 @@ function make_installers($skip_file_grab = false)
     $make_manual = (get_param_integer('skip_manual', 0) == 0);
     $make_bundled = (get_param_integer('skip_bundled', 0) == 0);
     $make_aps = false; // We don't use it right now and need to speed this all up (get_param_integer('skip_aps', 0) == 0);
-    $make_omni_upgrader = (post_param_integer('make_omni_upgrader', 0) == 1);
+    $make_omni_upgrader = (post_param_string('make_omni_upgrader', '') != '');
     $force_local = (get_param_integer('force_local', 0) == 1) ? '--force-local ' : ''; // tar flag for Windows
 
     cms_disable_time_limit();
