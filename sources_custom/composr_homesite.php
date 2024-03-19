@@ -426,7 +426,8 @@ function server__public__relay_error_notification()
             'website_url' => $decrypted_data['website_url'],
             'e_version' => $decrypted_data['version'],
             'error_message' => $decrypted_data['error_message'],
-            'error_count' => 1
+            'error_count' => 1,
+            'resolved' => 0
         ]);
     }
 

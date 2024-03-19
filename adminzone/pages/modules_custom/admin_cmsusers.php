@@ -95,7 +95,8 @@ class Module_admin_cmsusers
                 'website_url' => 'URLPATH',
                 'e_version' => 'ID_TEXT',
                 'error_message' => 'LONG_TEXT',
-                'error_count' => 'INTEGER'
+                'error_count' => 'INTEGER',
+                'resolved' => 'BINARY'
             ]);
         }
     }
@@ -159,6 +160,10 @@ class Module_admin_cmsusers
         $type = get_param_string('type', 'browse');
         if ($type == 'browse') {
             return $this->users();
+        }
+        if ($type == 'errors') {
+            $this->title = get_screen_title('CMS_SITE_ERRORS');
+            return $this->errors();
         }
         return new Tempcode();
     }
@@ -277,5 +282,141 @@ class Module_admin_cmsusers
             'NUM_MEMBERS_DIR' => ($sort == 'num_members') ? $anti_dir : 'DESC',
             'NUM_HITS_PER_DAY_DIR' => ($sort == 'num_hits_per_day') ? $anti_dir : 'DESC',
         ]);
+    }
+
+    /**
+     * List of errors reported by telemetry.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function errors()
+    {
+        $start = get_param_integer('start', 0);
+        $max = get_param_integer('max', 50);
+
+        // Filter parameters
+        $filter_website = get_param_string('filter_website', '');
+        $filter_error_message = get_param_string('filter_error_message', '');
+        //$filter_from = post_param_date('filter_from', true);
+        //$filter_to = post_param_date('filter_to', true);
+
+        // Build WHERE query with filters
+        $where = [];
+        $end = '';
+        if ($filter_website != '') {
+            $end .= ' AND website_url LIKE ' . db_encode_like('%' . $filter_website . '%');
+        }
+        if ($filter_error_message != '') {
+            $end .= ' AND website_message LIKE ' . db_encode_like('%' . $filter_error_message . '%');
+        }
+
+        // Query
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('relayed_errors', 'COUNT(*)', $where, $end);
+        $sortables = [
+            'website_url' => do_lang_tempcode('URL'),
+            'first_date_and_time' => do_lang_tempcode('FIRST_REPORTED'),
+            'last_date_and_time' => do_lang_tempcode('LAST_REPORTED'),
+            'e_version' => do_lang_tempcode('VERSION'),
+            'error_count' => do_lang_tempcode('TIMES_REPORTED'),
+        ];
+        $test = explode(' ', get_param_string('sort', 'last_date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+        $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+
+        // Build results table
+        $result_entries = new Tempcode();
+
+        require_code('templates_results_table');
+        require_code('templates_tooltip');
+
+        $map = [
+            do_lang_tempcode('IDENTIFIER'),
+            do_lang_tempcode('URL'),
+            do_lang_tempcode('ERROR_SUMMARY'),
+            do_lang_tempcode('FIRST_REPORTED'),
+            do_lang_tempcode('LAST_REPORTED'),
+            do_lang_tempcode('VERSION'),
+            do_lang_tempcode('TIMES_REPORTED'),
+            do_lang_tempcode('ACTIONS'),
+        ];
+        $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
+
+        foreach ($rows as $myrow) {
+            $id = hyperlink(build_url(['page' => '_SELF', 'type' => 'error', 'id' => $myrow['id']], '_SELF'), '#' . integer_format($myrow['id']), false, true); // TODO
+            $website_url = hyperlink($myrow['website_url'], $myrow['website_url'], true, true);
+            $summary = generate_tooltip_by_truncation($myrow['error_message'], 160);
+            $first_date = get_timezoned_date_time($myrow['first_date_and_time'], false);
+            $last_date = get_timezoned_date_time($myrow['last_date_and_time'], false);
+
+            $actions = new Tempcode();
+
+            if ($myrow['resolved'] == 0) {
+                $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF'); // TODO
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '1e30e4f5fcc295e0320eaced5d18e03c',
+                    'NAME' => '#' . strval($myrow['id']),
+                    'URL' => $resolve_url,
+                    'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
+                    'ACTION_TITLE' => do_lang_tempcode('MARK_RESOLVED'),
+                    'ICON' => 'buttons/close',
+                    'GET' => false,
+                ]));
+            }
+
+            $map = [
+                $id,
+                $website_url,
+                $summary,
+                $first_date,
+                $last_date,
+                $myrow['e_version'],
+                integer_format($myrow['error_count']),
+                $actions
+            ];
+
+            $result_entries->attach(results_entry($map, true));
+        }
+
+        $results_table = results_table(do_lang_tempcode('CMS_SITE_ERRORS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('DESCRIPTION_CMS_SITE_ERRORS')));
+
+        // Start building fields for the filter box
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
+
+        $filters_row_a = [
+            [
+                'PARAM' => 'filter_website',
+                'LABEL' => do_lang_tempcode('URL'),
+                'FIELD' => form_input_line(do_lang_tempcode('URL'), new Tempcode(), 'filter_website', $filter_website, false),
+            ],
+            [
+                'PARAM' => 'filter_error_message',
+                'LABEL' => do_lang_tempcode('ERROR_SUMMARY'),
+                'FIELD' => form_input_line(do_lang_tempcode('ERROR_SUMMARY'), new Tempcode(), 'filter_error_message', $filter_error_message, false),
+            ],
+        ];
+
+        $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
+
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '358ae22e7f23a3f68eac4aa1e24df85b',
+            'TITLE' => $this->title,
+            'RESULTS_TABLE' => $results_table,
+            'FORM' => new Tempcode(),
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => new Tempcode(),
+            'URL' => $url,
+            'FILTERS_HIDDEN' => new Tempcode(),
+        ]);
+
+        pop_field_encapsulation();
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
     }
 }

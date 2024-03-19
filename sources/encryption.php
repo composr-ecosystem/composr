@@ -232,7 +232,7 @@ function get_public_key_telemetry(float $version = null)
     if ($version === null) {
         return cms_file_get_contents_safe(get_file_base() . '/data/keys/telemetry.pub', FILE_READ_LOCK);
     }
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.pub', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', FILE_READ_LOCK);
 }
 
 /**
@@ -243,7 +243,7 @@ function get_public_key_telemetry(float $version = null)
  */
 function get_private_key_telemetry(float $version)
 {
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.key', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.key', FILE_READ_LOCK);
 }
 
 /**
@@ -338,4 +338,37 @@ function decrypt_data_telemetry(string $nonce_base64, string $encrypted_data_bas
     }
 
     return $data;
+}
+
+/**
+ * Generate a public and private key pair for this version of the software and save it into the data_custom/keys directory.
+ * You should copy the public key to data/key.pub during the build process.
+ *
+ * @param  float $version The major.minor version for which we are generating a key pair
+ * @param  boolean $overwrite_existing Whether to overwrite an existing key pair
+ * @throws SodiumException
+ */
+function generate_telemetry_key_pair(float $version, bool $overwrite_existing = false)
+{
+    $key_path = get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true);
+
+    // Key already exists, so nothing to do
+    if (!$overwrite_existing && is_string(get_private_key_telemetry($version)) && is_string(get_public_key_telemetry($version))) {
+        return;
+    }
+
+    $key_pair = sodium_crypto_box_keypair();
+
+    // Extract the public and private keys
+    $public_key = sodium_crypto_box_publickey($key_pair);
+    $private_key = sodium_crypto_box_secretkey($key_pair);
+
+    // Convert keys to base64
+    $public_key_base64 = base64_encode($public_key);
+    $private_key_base64 = base64_encode($private_key);
+
+    // Save our keys
+    require_code('files2');
+    cms_file_put_contents_safe($key_path . '.pub', $public_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($key_path . '.key', $private_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }

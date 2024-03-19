@@ -42,6 +42,7 @@ if (!function_exists('mu_ui')) {
         $post_url = get_self_url();
 
         $ret = do_template('FORM_SCREEN', [
+            '_GUID' => '6ba4f8844a2a3954696071b65af0b12e',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,

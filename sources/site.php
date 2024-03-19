@@ -1191,7 +1191,7 @@ function do_site()
             require_code('version2');
             $num_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
             $num_hits_per_day = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
-            $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/user.php?url=' . urlencode(get_base_url()) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()) . '&num_members=' . urlencode(strval($num_members)) . '&num_hits_per_day=' . urlencode(strval($num_hits_per_day));
+            $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/user.php?url=' . urlencode(get_base_url()) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()) . '&num_members=' . urlencode(strval($num_members)) . '&num_hits_per_day=' . urlencode(strval($num_hits_per_day));
             require_code('http');
             cache_and_carry('cms_http_request', [$url, ['trigger_error' => false]], 60 * 24/*once a day*/);
             cms_ini_set('default_socket_timeout', $timeout_before);
