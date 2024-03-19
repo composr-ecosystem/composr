@@ -1244,7 +1244,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
 
             $__payload = [
                 'website_url' => get_base_url(),
-                'error' => $mail->evaluate(),
+                'error_message' => $mail->evaluate(),
                 'version' => get_version_dotted__from_anything(float_to_raw_string(cms_version_number()) . '.' . cms_version_minor()) // Encrypted and contains full version
             ];
             $_payload = encrypt_data_telemetry(serialize($__payload));

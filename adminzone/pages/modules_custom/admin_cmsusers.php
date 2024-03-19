@@ -94,7 +94,7 @@ class Module_admin_cmsusers
                 'last_date_and_time' => 'TIME',
                 'website_url' => 'URLPATH',
                 'e_version' => 'ID_TEXT',
-                'error' => 'LONG_TEXT',
+                'error_message' => 'LONG_TEXT',
                 'error_count' => 'INTEGER'
             ]);
         }

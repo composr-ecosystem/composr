@@ -110,6 +110,9 @@ function init__minikernel()
         require_code('debug_fs');
         enable_debug_fs();
     }
+
+    global $DISABLED_MEMORY_LIMIT;
+    $DISABLED_MEMORY_LIMIT = false;
 }
 
 /**
@@ -1524,4 +1527,18 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     // Just a wrapper for inform_exit
     warn_exit($message);
     return '';
+}
+
+/**
+ * Raise the PHP memory limit to the documented minimum.
+ * By default we keep the memory limit lower than that to mitigate the effect of crashes.
+ */
+function raise_php_memory_limit()
+{
+    global $DISABLED_MEMORY_LIMIT;
+    if ($DISABLED_MEMORY_LIMIT) {
+        return;
+    }
+
+    cms_ini_set('memory_limit', '128M');
 }
