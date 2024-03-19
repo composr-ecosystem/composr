@@ -1244,7 +1244,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
             require_code('version');
             $__payload = [
                 'website_url' => get_base_url(),
-                'error_message' => $mail,
+                'error_message' => strip_comcode($mail),
                 'version' => cms_version_pretty(), // Encrypted and contains full version
             ];
             $_payload = encrypt_data_telemetry(serialize($__payload));
@@ -1262,8 +1262,6 @@ function relay_error_notification(string $text, bool $developers = true, string 
                     cms_error_log('Telemetry: Could not forward error to the developers. ' . $error_message . escape_html($response));
                 }
             }
-        } else {
-            cms_error_log('Telemetry: Could not forward error to the developers. PHP libsodium not available or data/keys/telemetry.pub does not exist.');
         }
     }
     if (($developers) && (get_value('agency_email_address') !== null) && ($send_error_email)) {
