@@ -21,7 +21,7 @@
  */
 
 /**
- * Determine whether the necessary PHP extensions to support OpenSSL encryption are available. For normal use, you should probably use is_encryption_enabled() instead.
+ * Determine whether the necessary PHP extensions to support encryption are available. For normal use, you should probably use is_encryption_enabled() instead.
  *
  * @return boolean Encryption available?
  */
@@ -31,7 +31,7 @@ function is_encryption_available() : bool
 }
 
 /**
- * Determine whether OpenSSL encryption support is available and enabled in the site's preferences, and the keys are in place.
+ * Determine whether encryption support is available and enabled in the site's preferences, and the keys are in place.
  *
  * @return boolean Encryption enabled?
  */
@@ -42,22 +42,6 @@ function is_encryption_enabled() : bool
         $public_key = str_replace('{file_base}', get_file_base(), get_option('encryption_key'));
         $private_key = str_replace('{file_base}', get_file_base(), get_option('decryption_key'));
         $enabled = ((function_exists('openssl_pkey_get_public')) && ($public_key != '') && ($private_key != '') && (file_exists($public_key)) && (file_exists($private_key)));
-    }
-    return $enabled;
-}
-
-/**
- * Determine whether encryption support is available for telemetry, and the key is in place.
- *
- * @return boolean Encryption enabled?
- */
-function is_encryption_enabled_telemetry() : bool
-{
-    static $enabled = null;
-    if ($enabled === null) {
-        $public_key_exists = file_exists(get_file_base() . '/data/keys/telemetry.pub');
-        $available = function_exists('sodium_crypto_box_seal');
-        $enabled = (($public_key_exists) && ($available));
     }
     return $enabled;
 }
@@ -232,7 +216,7 @@ function get_public_key_telemetry(float $version = null)
     if ($version === null) {
         return cms_file_get_contents_safe(get_file_base() . '/data/keys/telemetry.pub', FILE_READ_LOCK);
     }
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.pub', FILE_READ_LOCK);
 }
 
 /**
@@ -243,7 +227,7 @@ function get_public_key_telemetry(float $version = null)
  */
 function get_private_key_telemetry(float $version)
 {
-    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.key', FILE_READ_LOCK);
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($version) . '.key', FILE_READ_LOCK);
 }
 
 /**
@@ -338,37 +322,4 @@ function decrypt_data_telemetry(string $nonce_base64, string $encrypted_data_bas
     }
 
     return $data;
-}
-
-/**
- * Generate a public and private key pair for this version of the software and save it into the data_custom/keys directory.
- * You should copy the public key to data/key.pub during the build process.
- *
- * @param  float $version The major.minor version for which we are generating a key pair
- * @param  boolean $overwrite_existing Whether to overwrite an existing key pair
- * @throws SodiumException
- */
-function generate_telemetry_key_pair(float $version, bool $overwrite_existing = false)
-{
-    $key_path = get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true);
-
-    // Key already exists, so nothing to do
-    if (!$overwrite_existing && is_string(get_private_key_telemetry($version)) && is_string(get_public_key_telemetry($version))) {
-        return;
-    }
-
-    $key_pair = sodium_crypto_box_keypair();
-
-    // Extract the public and private keys
-    $public_key = sodium_crypto_box_publickey($key_pair);
-    $private_key = sodium_crypto_box_secretkey($key_pair);
-
-    // Convert keys to base64
-    $public_key_base64 = base64_encode($public_key);
-    $private_key_base64 = base64_encode($private_key);
-
-    // Save our keys
-    require_code('files2');
-    cms_file_put_contents_safe($key_path . '.pub', $public_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-    cms_file_put_contents_safe($key_path . '.key', $private_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
