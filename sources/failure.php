@@ -461,7 +461,7 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
             $php_error_label .= ' [' . $_SERVER['REQUEST_METHOD'] . ']';
         }
 
-        $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5));
+        $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - (60 * 5)));
 
         if ($may_log_error) {
             if ((function_exists('syslog')) && (GOOGLE_APPENGINE)) {
@@ -1156,6 +1156,8 @@ function relay_error_notification(string $text, bool $developers = true, string 
         dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     }
 
+    $error_message = strip_html(explode("\n\n", $text)[0]);
+
     if (
         ($mail !== null) &
         ($developers) &&
@@ -1163,89 +1165,87 @@ function relay_error_notification(string $text, bool $developers = true, string 
         (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
         (!running_script('cron_bridge')) &&
         ($text != '!') &&
-        (strpos($text, '_custom/') === false) &&
-        (strpos($text, '_custom\\') === false) &&
-        (strpos($text, 'FTP server error') === false) && // LDAP error, misconfiguration
-        (strpos($text, 'Search: Operations error') === false) && // LDAP error, misconfiguration
-        (strpos($text, 'Can\'t contact LDAP server') === false) && // LDAP error, network issue
-        (strpos($text, 'Unknown: failed to open stream') === false) && // Comes up on some free webhosts
-        (strpos($text, 'failed with: Connection refused') === false) && // Memcache error
-        (strpos($text, 'data/commandr.php') === false) && // Could be a user input error
-        (strpos($text, '.less problem') === false) &&
-        (strpos($text, '/mini') === false) &&
-        (strpos($text, 'A transaction for the wrong IPN e-mail went through') === false) &&
-        (strpos($text, 'XCache var cache was not initialized properly') === false) && // Cache issue
-        (strpos($text, 'has been disabled for security reasons') === false) &&
-        (strpos($text, 'max_questions')/*mysql limit*/ === false) &&
-        (strpos($text, 'Error at offset') === false) &&
-        (strpos($text, 'expects parameter 1 to be a valid path, string given') === false) && // Misconfigured path or URL
-        (strpos($text, 'gd-png: fatal libpng error') === false) && // PHP extension error
-        (strpos($text, 'No word lists can be found for the language &quot;en&quot;') === false) && // EN is the default, so almost certainly a misconfiguration
-        (strpos($text, 'Unable to allocate memory for pool') === false) &&
-        (strpos($text, 'Out of memory') === false) &&
-        (strpos($text, 'Can\'t open file') === false) &&
-        (strpos($text, 'INSERT command denied to user') === false) && // Locked out database
-        (strpos($text, 'Disk is full writing') === false) &&
-        (strpos($text, 'Disk quota exceeded') === false) &&
-        (strpos($text, 'Lock wait timeout exceeded') === false) &&
-        (strpos($text, 'No space left on device') === false) &&
-        (strpos($text, 'from storage engine') === false) &&
-        (strpos($text, 'Lost connection to MySQL server') === false) &&
-        (strpos($text, 'The SELECT would examine more than MAX_JOIN_SIZE rows') === false) &&
-        (strpos($text, 'Unable to save result set') === false) &&
-        (strpos($text, 'Deadlock found when trying to get lock; try restarting transaction') === false) &&
-        (strpos($text, 'MySQL client ran out of memory') === false) &&
-        (strpos($text, 'Server shutdown in progress') === false) &&
-        (strpos($text, '.MAI') === false) && // MariaDB
-        (strpos($text, '.MAD') === false) && // MariaDB
-        (strpos($text, '.MYI') === false) && // MySQL
-        (strpos($text, '.MYD') === false) && // MySQL
-        (strpos($text, 'syntax error, unexpected') === false) && // MySQL full-text parsing error
-        (strpos($text, 'MySQL server has gone away') === false) &&
-        (strpos($text, 'Incorrect key file') === false) &&
-        (strpos($text, 'Too many connections') === false) &&
-        (strpos($text, 'duplicate key in table') === false) &&
-        (strpos($text, 'Incorrect string value') === false) &&
-        (strpos($text, 'Too many words in a FTS phrase or proximity search') === false) &&
-        (strpos($text, 'Can\'t create/write to file') === false) &&  // MySQL
-        (strpos($text, 'Error writing file') === false) && // E.g. cannot PHP create a temporary file
-        (strpos($text, 'possibly out of free disk space') === false) &&
-        (strpos($text, 'Illegal mix of collations') === false) &&
-        (strpos($text, 'Query execution was interrupted') === false) &&
-        (strpos($text, 'The MySQL server is running with the --read-only option so it cannot execute this statement') === false) &&
-        (strpos($text, 'marked as crashed and should be repaired') === false) && // Can be fixed with the database repair tool
-        (strpos($text, 'Can\'t find record in') === false) &&
-        (strpos($text, 'connect to') === false) &&
-        (strpos($text, 'Access denied for') === false) &&
-        (strpos($text, 'command denied for') === false) && // MySQL
-        (strpos($text, 'was deadlocked on lock resources with another process') === false) && // SQL Server
-        (strpos($text, 'Unknown database') === false) &&
-        (strpos($text, 'headers already sent') === false) &&
-        (strpos($text, 'Your TaxCloud API trial period has expired') === false) &&
-        (strpos($text, 'Resource temporarily unavailable') === false) &&
-        (strpos($text, 'Broken pipe') === false) &&
-        (strpos($text, 'Interrupted system call') === false) &&
-        (preg_match('#php\.net.*SSL3_GET_SERVER_CERTIFICATE:certificate #', $text) == 0) && // Missing certificates on server
-        (preg_match('#Maximum execution time of \d+ seconds#', $text) == 0) &&
-        (preg_match('#Out of memory \(allocated (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24)\d{6}\)#', $text) == 0) &&
-        (strpos($text, 'is marked as crashed and last') === false) &&
-        (strpos($text, 'failed to open stream: Permission denied') === false) &&
-        ((strpos($text, 'Maximum execution time') === false) || ((strpos($text, '/js_') === false) && (strpos($text, '/caches_filesystem.php') === false) && (strpos($text, '/files2.php') === false))) &&
-        ((strpos($text, 'doesn\'t exist') === false) || ((strpos($text, 'import') === false))) &&
-        ((strpos($text, 'No such file or directory') === false) || ((strpos($text, 'admin_setupwizard') === false))) &&
-        (strpos($text, 'File(/tmp/) is not within the allowed path') === false)
+        (strpos($error_message, '_custom/') === false) &&
+        (strpos($error_message, '_custom\\') === false) &&
+        (strpos($error_message, 'FTP server error') === false) && // LDAP error, misconfiguration
+        (strpos($error_message, 'Search: Operations error') === false) && // LDAP error, misconfiguration
+        (strpos($error_message, 'Can\'t contact LDAP server') === false) && // LDAP error, network issue
+        (strpos($error_message, 'Unknown: failed to open stream') === false) && // Comes up on some free webhosts
+        (strpos($error_message, 'failed with: Connection refused') === false) && // Memcache error
+        (strpos($error_message, 'data/commandr.php') === false) && // Could be a user input error
+        (strpos($error_message, '.less problem') === false) &&
+        (strpos($error_message, '/mini') === false) &&
+        (strpos($error_message, 'A transaction for the wrong IPN e-mail went through') === false) &&
+        (strpos($error_message, 'XCache var cache was not initialized properly') === false) && // Cache issue
+        (strpos($error_message, 'has been disabled for security reasons') === false) &&
+        (strpos($error_message, 'max_questions')/*mysql limit*/ === false) &&
+        (strpos($error_message, 'Error at offset') === false) &&
+        (strpos($error_message, 'expects parameter 1 to be a valid path, string given') === false) && // Misconfigured path or URL
+        (strpos($error_message, 'gd-png: fatal libpng error') === false) && // PHP extension error
+        (strpos($error_message, 'No word lists can be found for the language &quot;en&quot;') === false) && // EN is the default, so almost certainly a misconfiguration
+        (strpos($error_message, 'Unable to allocate memory for pool') === false) &&
+        (strpos($error_message, 'Out of memory') === false) &&
+        (strpos($error_message, 'Can\'t open file') === false) &&
+        (strpos($error_message, 'INSERT command denied to user') === false) && // Locked out database
+        (strpos($error_message, 'Disk is full writing') === false) &&
+        (strpos($error_message, 'Disk quota exceeded') === false) &&
+        (strpos($error_message, 'Lock wait timeout exceeded') === false) &&
+        (strpos($error_message, 'No space left on device') === false) &&
+        (strpos($error_message, 'from storage engine') === false) &&
+        (strpos($error_message, 'Lost connection to MySQL server') === false) &&
+        (strpos($error_message, 'The SELECT would examine more than MAX_JOIN_SIZE rows') === false) &&
+        (strpos($error_message, 'Unable to save result set') === false) &&
+        (strpos($error_message, 'Deadlock found when trying to get lock; try restarting transaction') === false) &&
+        (strpos($error_message, 'MySQL client ran out of memory') === false) &&
+        (strpos($error_message, 'Server shutdown in progress') === false) &&
+        (strpos($error_message, '.MAI') === false) && // MariaDB
+        (strpos($error_message, '.MAD') === false) && // MariaDB
+        (strpos($error_message, '.MYI') === false) && // MySQL
+        (strpos($error_message, '.MYD') === false) && // MySQL
+        (strpos($error_message, 'syntax error, unexpected') === false) && // MySQL full-text parsing error
+        (strpos($error_message, 'MySQL server has gone away') === false) &&
+        (strpos($error_message, 'Incorrect key file') === false) &&
+        (strpos($error_message, 'Too many connections') === false) &&
+        (strpos($error_message, 'duplicate key in table') === false) &&
+        (strpos($error_message, 'Incorrect string value') === false) &&
+        (strpos($error_message, 'Too many words in a FTS phrase or proximity search') === false) &&
+        (strpos($error_message, 'Can\'t create/write to file') === false) &&  // MySQL
+        (strpos($error_message, 'Error writing file') === false) && // E.g. cannot PHP create a temporary file
+        (strpos($error_message, 'possibly out of free disk space') === false) &&
+        (strpos($error_message, 'Illegal mix of collations') === false) &&
+        (strpos($error_message, 'Query execution was interrupted') === false) &&
+        (strpos($error_message, 'The MySQL server is running with the --read-only option so it cannot execute this statement') === false) &&
+        (strpos($error_message, 'marked as crashed and should be repaired') === false) && // Can be fixed with the database repair tool
+        (strpos($error_message, 'Can\'t find record in') === false) &&
+        (strpos($error_message, 'connect to') === false) &&
+        (strpos($error_message, 'Access denied for') === false) &&
+        (strpos($error_message, 'command denied for') === false) && // MySQL
+        (strpos($error_message, 'was deadlocked on lock resources with another process') === false) && // SQL Server
+        (strpos($error_message, 'Unknown database') === false) &&
+        (strpos($error_message, 'headers already sent') === false) &&
+        (strpos($error_message, 'Your TaxCloud API trial period has expired') === false) &&
+        (strpos($error_message, 'Resource temporarily unavailable') === false) &&
+        (strpos($error_message, 'Broken pipe') === false) &&
+        (strpos($error_message, 'Interrupted system call') === false) &&
+        (preg_match('#php\.net.*SSL3_GET_SERVER_CERTIFICATE:certificate #', $error_message) == 0) && // Missing certificates on server
+        (preg_match('#Maximum execution time of \d+ seconds#', $error_message) == 0) &&
+        (preg_match('#Out of memory \(allocated (1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24)\d{6}\)#', $error_message) == 0) &&
+        (strpos($error_message, 'is marked as crashed and last') === false) &&
+        (strpos($error_message, 'failed to open stream: Permission denied') === false) &&
+        ((strpos($error_message, 'Maximum execution time') === false) || ((strpos($error_message, '/js_') === false) && (strpos($error_message, '/caches_filesystem.php') === false) && (strpos($error_message, '/files2.php') === false))) &&
+        ((strpos($error_message, 'doesn\'t exist') === false) || ((strpos($error_message, 'import') === false))) &&
+        ((strpos($error_message, 'No such file or directory') === false) || ((strpos($error_message, 'admin_setupwizard') === false))) &&
+        (strpos($error_message, 'File(/tmp/) is not within the allowed path') === false)
     ) {
         // Send the error securely to the core developers (telemetry) using an encrypted raw fsock request
         require_code('encryption');
 
         if (is_encryption_enabled_telemetry()) {
             require_code('version');
-            require_code('version2');
-
             $__payload = [
                 'website_url' => get_base_url(),
-                'error_message' => $mail->evaluate(),
-                'version' => get_version_dotted__from_anything(float_to_raw_string(cms_version_number()) . '.' . cms_version_minor()) // Encrypted and contains full version
+                'error_message' => $mail,
+                'version' => cms_version_pretty(), // Encrypted and contains full version
             ];
             $_payload = encrypt_data_telemetry(serialize($__payload));
             $_payload['version'] = cms_version_number(); // Decrypted major/minor for use in determining which key pair to use
