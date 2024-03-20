@@ -154,3 +154,4 @@ email_integration,E-mail integration,Composr Core Development Team,,Not regularl
 http_proxy,HTTP proxy support,Composr Core Development Team,,Not regularly tested due to needing a testing platform.,No,
 ratings_structure,Ratings structure,,,Not regularly tested. Only available via custom programming / the custom_ratings addon.,Yes,
 ffmpeg_thumbs,FFMPEG thumbnail generation,,,Not regularly tested. Could potentially break due to third-party changes.,No,
+karma,Karma non-bundled addon,Composr Core Development Team,PDSTIG LLC,,Yes,
