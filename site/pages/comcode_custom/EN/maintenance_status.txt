@@ -20,9 +20,9 @@ We track functionality that has a moderate to high risk of breakage. This:
 5) Provides us a broad reminder of what needs on-going reappraisal
 Further discussion and justification may be found in and directed to the [url="original tracker issue"]https://compo.sr/tracker/view.php?id=2578[/url].
 
-Bugs may be reported for non-actively-maintained functionality, and it may be fixed quickly as normal, or may be left on the tracker indefinitely -- depending on developer availability, ease of fixing the issue, and our sense of priority. In most cases it will likely be resolved within a reasonable period of time regardless, it's just we can't [i]guarantee[/i] it.
+Bugs may be reported for non-actively-maintained functionality. However, the speed at which they will be fixed (or if they get fixed at all) will depend on developer availability and their sense of priority.
 
-[title="3"]Functionality table[/title]
+[title="3"]Maintenance status table[/title]
 
 [block]composr_maintenance_status[/block]
 
