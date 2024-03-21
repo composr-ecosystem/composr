@@ -82,13 +82,7 @@ function get_release_tree($type = 'manual')
     foreach ($DOWNLOAD_ROWS as $download_row) {
         $matches = [];
         if (preg_match('#^Composr Version (.*) \((.*)\)$#', $download_row['nice_title'], $matches) != 0) {
-            if ((strpos($matches[2], 'bleeding-edge') === false) && ($type == 'bleeding-edge')) {
-                continue;
-            }
-            if ((strpos($matches[2], 'manual') === false) && ($type == 'manual')) {
-                continue;
-            }
-            if ((strpos($matches[2], 'quick') === false) && ($type == 'quick')) {
+            if (strpos($matches[2], $type) === false) {
                 continue;
             }
             $version_dotted = get_version_dotted__from_anything($matches[1]);
