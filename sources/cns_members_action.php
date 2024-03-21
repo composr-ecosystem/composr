@@ -690,7 +690,7 @@ function build_cpf_indices(int $id, bool $index, string $type, string $db_type, 
                         $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id');
                     } else {
                         require_code('tasks');
-                        call_user_func_array__long_task(do_lang('CREATE_INDEX'), null, 'create_index', ['FORUM_DB', ['f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id']], false, $immediate);
+                        call_user_func_array__long_task(do_lang('CREATE_INDEX'), null, 'create_index', ['FORUM_DB', ['f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id']], false, $immediate, false);
                     }
                     if ($indexes_remaining !== null) {
                         $indexes_remaining--;
@@ -706,7 +706,7 @@ function build_cpf_indices(int $id, bool $index, string $type, string $db_type, 
                         $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', '#mcf_ft_' . strval($id), ['field_' . strval($id)]);
                     } else {
                         require_code('tasks');
-                        call_user_func_array__long_task(do_lang('CREATE_INDEX'), null, 'create_index', ['FORUM_DB', ['f_member_custom_fields', '#mcf_ft_' . strval($id), ['field_' . strval($id)], 'mf_member_id']], false, $immediate);
+                        call_user_func_array__long_task(do_lang('CREATE_INDEX'), null, 'create_index', ['FORUM_DB', ['f_member_custom_fields', '#mcf_ft_' . strval($id), ['field_' . strval($id)], 'mf_member_id']], false, $immediate, false);
                     }
                     if ($indexes_remaining !== null) {
                         $indexes_remaining--;

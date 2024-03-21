@@ -61,6 +61,6 @@ class Hook_cron_sitemap
         require_lang('menus'); // Contains GENERATE_SITEMAP string
 
         require_code('tasks');
-        call_user_func_array__long_task(do_lang('GENERATE_SITEMAP'), get_screen_title('GENERATE_SITEMAP'), 'sitemap', [], false, true, false);
+        call_user_func_array__long_task(do_lang('GENERATE_SITEMAP'), null, 'sitemap', [], false, true, false);
     }
 }

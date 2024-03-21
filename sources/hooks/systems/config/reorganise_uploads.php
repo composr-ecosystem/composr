@@ -55,13 +55,13 @@ class Hook_config_reorganise_uploads
     }
 
     /**
-     * Code to run after the option is saved.
+     * Code to run after the option is saved, if the value was changed or we are not formally setting it.
      *
      * @param  string $new_value The new value
      */
     public function postsave_handler(string $new_value)
     {
         require_code('tasks');
-        call_user_func_array__long_task(do_lang('config:REORGANISE_UPLOADS'), null, 'reorganise_uploads');
+        call_user_func_array__long_task(do_lang('config:REORGANISE_UPLOADS'), null, 'reorganise_uploads', [], false, false, false);
     }
 }

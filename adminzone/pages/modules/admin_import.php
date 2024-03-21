@@ -591,7 +591,7 @@ class Module_admin_import
                 list($task_hook, $task_label, $task_table, $task_max_row_count) = $task;
 
                 if ($GLOBALS['FORUM_DB']->query_select_value($task_table, 'COUNT(*)') <= $task_max_row_count) {
-                    call_user_func_array__long_task($task_label, null, $task_hook, [], false, true);
+                    call_user_func_array__long_task($task_label, null, $task_hook, [], false, true, false);
                 } else {
                     $done_all = false;
                 }

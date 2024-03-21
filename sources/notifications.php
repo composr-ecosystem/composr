@@ -217,7 +217,7 @@ function dispatch_notification(string $notification_code, ?string $code_category
 
         require_code('tasks');
         global $CSSS;
-        call_user_func_array__long_task(do_lang('_SEND_NOTIFICATION'), get_screen_title('_SEND_NOTIFICATION', true, [], null, [], false), 'dispatch_notification', [$dispatcher, array_keys($CSSS)], true, false, false);
+        call_user_func_array__long_task(do_lang('_SEND_NOTIFICATION'), null, 'dispatch_notification', [$dispatcher, array_keys($CSSS)], true, false, false);
     }
 
     global $LAST_NOTIFICATION_LANG_CALL;

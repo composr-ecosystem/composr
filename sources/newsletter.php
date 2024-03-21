@@ -508,7 +508,7 @@ function send_newsletter(string $message, string $subject, string $language, arr
 
     // Schedule the task
     require_code('tasks');
-    return call_user_func_array__long_task(do_lang('NEWSLETTER_SEND'), get_screen_title('NEWSLETTER_SEND'), 'send_newsletter', [$message_id, $message, $subject, $language, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $mail_template], false, get_param_integer('keep_send_immediately', 0) == 1, false);
+    return call_user_func_array__long_task(do_lang('NEWSLETTER_SEND'), get_screen_title('NEWSLETTER_SEND'), 'send_newsletter', [$message_id, $message, $subject, $language, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $mail_template], false, get_param_integer('keep_send_immediately', 0) == 1);
 }
 
 /**

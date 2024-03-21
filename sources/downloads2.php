@@ -977,7 +977,7 @@ function add_download(int $category_id, string $name, string $url, string $descr
 
     require_code('tasks');
     require_lang('downloads');
-    call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), get_screen_title('INDEX_DOWNLOAD', true, [], null, [], false), 'index_download', [$id, $url, $original_filename], false, false, false);
+    call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), null, 'index_download', [$id, $url, $original_filename], false, false, false);
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
@@ -1168,7 +1168,7 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
     if (!fractional_edit()) {
         require_code('tasks');
         require_lang('downloads');
-        call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), get_screen_title('INDEX_DOWNLOAD', true, [], null, [], false), 'index_download', [$id, $url, $original_filename], false, false, false);
+        call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), null, 'index_download', [$id, $url, $original_filename], false, false, false);
     }
 
     if (!addon_installed('validation')) {

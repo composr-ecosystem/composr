@@ -50,7 +50,7 @@ class Hook_cleanup_sitemap
     public function run() : object
     {
         require_code('tasks');
-        call_user_func_array__long_task(do_lang('REBUILD_SITEMAP'), get_screen_title('REBUILD_SITEMAP'), 'sitemap', [true], false, false, false);
+        call_user_func_array__long_task(do_lang('REBUILD_SITEMAP'), get_screen_title('REBUILD_SITEMAP'), 'sitemap', [true]);
 
         return new Tempcode();
     }

@@ -253,4 +253,70 @@ class _tasks_test_set extends cms_test_case
 
         $ob_import->run('', false, $results[1][1], 'test.csv');
     }
+
+    public function testUnnecessaryTaskNotifications()
+    {
+        $files = get_directory_contents(get_file_base(), get_file_base(), null, true, true, ['php']);
+        foreach ($files as $path) {
+            // Exceptions
+            if (in_array(basename($path), [
+                '_tasks.php' // Testing ourselves will result in a false positive
+            ])) {
+                continue;
+            }
+
+            $code = cms_file_get_contents_safe($path, FILE_READ_LOCK);
+            $task_calls = preg_grep('/call_user_func_array__long_task\(/', explode("\n", $code));
+            foreach ($task_calls as $line_number => $line) {
+                if (strpos($line, 'function call_user_func_array__long_task') !== false) {
+                    continue; // Skip the actual function definition
+                }
+
+                $params = $this->extract_parameters($line);
+                $title = strtolower($params[1]);
+                $send_notification = !isset($params[6]) || strtolower($params[6]) == 'true';
+
+                if (isset($params[6]) && ($params[6] == '$send_notification')) {
+                    continue; // No testing in cases where we use the $send_notification variable
+                }
+
+                $has_potential_return = ((strpos($line, '= call_user_func_array__long_task') !== false) || strpos($line, 'return call_user_func_array__long_task') !== false);
+
+                $this->assertTrue((($title != 'null') || (!$send_notification) || ($has_potential_return)), 'Sending notifications might not be necessary (or set a title) for call_user_func_array__long_task in ' . $path . ' on line ' . strval($line_number + 1));
+                $this->assertTrue(($send_notification || (($title == 'null') && !$has_potential_return)), 'Sending notifications might be necessary (or set title to null) for call_user_func_array__long_task in ' . $path . ' on line ' . strval($line_number + 1));
+            }
+        }
+    }
+
+    private function extract_parameters(string $line) : array
+    {
+        // Find the position of the opening parenthesis
+        $start_pos = strpos($line, '(');
+
+        // Find the position of the closing parenthesis
+        $end_pos = strrpos($line, ')');
+
+        // Extract the parameters part of the string
+        $params_string = substr($line, $start_pos + 1, $end_pos - $start_pos - 1);
+
+        // Parse parameters manually
+        $params = [];
+        $current_param = '';
+        $in_array = 0;
+        for ($i = 0; $i < strlen($params_string); $i++) {
+            $char = $params_string[$i];
+            if ($char == ',' && $in_array <= 0) {
+                $params[] = trim($current_param, ", '");
+                $current_param = '';
+            } elseif (($char == '[') || ($char == '(')) {
+                $in_array++;
+            } elseif (($char == ']') || ($char == ')')) {
+                $in_array--;
+            }
+            $current_param .= $char;
+        }
+        $params[] = trim($current_param, ", '"); // Add the last parameter
+
+        return $params;
+    }
 }

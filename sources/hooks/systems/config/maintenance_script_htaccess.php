@@ -63,7 +63,7 @@ class Hook_config_maintenance_script_htaccess
     }
 
     /**
-     * Code to run after the option is saved.
+     * Code to run after the option is saved, if the value was changed or we are not formally setting it.
      *
      * @param  string $new_value The new value
      */

@@ -419,10 +419,6 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
 {
     global $CONFIG_OPTIONS_CACHE;
 
-    if ($will_be_formally_set == 1) {
-        $previous_value = get_option($name);
-    }
-
     if ($ob === null) {
         require_code('hooks/systems/config/' . filter_naughty_harsh($name));
         $ob = object_factory('Hook_config_' . filter_naughty_harsh($name), true);
@@ -481,10 +477,25 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
         $CONFIG_OPTIONS_CACHE[$name] = $map + ['_cached_string_value' => $value] + $CONFIG_OPTIONS_CACHE[$name];
     }
 
-    // Log it
-    if ((function_exists('log_it')) && ($will_be_formally_set == 1) && ($previous_value != $value)) {
-        require_lang('config');
-        log_it('CONFIGURATION', $name, $value);
+    if ($will_be_formally_set == 1) {
+        $previous_value = get_option($name);
+        if (($previous_value != $value)) {
+            // Run the post-save handler on changed values
+            if (method_exists($ob, 'postsave_handler')) {
+                $ob->postsave_handler($value);
+            }
+
+            // Log changed values
+            if (function_exists('log_it')) {
+                require_lang('config');
+                log_it('CONFIGURATION', $name, $value);
+            }
+        }
+    } else {
+        // Since we are not checking if the value changed, always run the post-save handler
+        if (method_exists($ob, 'postsave_handler')) {
+            $ob->postsave_handler($value);
+        }
     }
 
     // Clear caches
@@ -493,11 +504,6 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
     }
     if (class_exists('Self_learning_cache')) {
         Self_learning_cache::erase_smart_cache();
-    }
-
-    // Run post-save code where it exists
-    if (method_exists($ob, 'postsave_handler')) {
-        $ob->postsave_handler($value);
     }
 }
 

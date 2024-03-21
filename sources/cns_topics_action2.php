@@ -512,7 +512,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
     cns_decache_cms_blocks($to, $forum_name);
 
     require_code('tasks');
-    call_user_func_array__long_task(do_lang('MOVE_TOPICS'), get_screen_title('MOVE_TOPICS'), 'notify_topics_moved', [$or_list, $forum_name], false, false, false);
+    call_user_func_array__long_task(do_lang('MOVE_TOPICS'), get_screen_title('MOVE_TOPICS'), 'notify_topics_moved', [$or_list, $forum_name]);
 }
 
 /**
