@@ -204,9 +204,38 @@ function _upgrader_file_upgrade_screen() : string
             }
         }
 
+        // Addon file. Check to see if we should extract this via if it exists on disk either through its current name or a past name (or is core_*).
+        $extract_addon = false;
+        if ((strpos($upgrade_file['path'], '/addon_registry/') !== false)) {
+            if (((file_exists(get_file_base() . '/' . $upgrade_file['path'])) || (strpos($upgrade_file['path'], '/core_') !== false))) {
+                $extract_addon = true;
+            } else {
+                require_code('global3');
+                $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
+                $matches = [];
+                if (cms_preg_match_all_safe("/'previously_in_addon'\s*=>\s*\[(.*?)\]/", $file_data['data'], $matches) !== false) {
+                    foreach ($matches[1] as $match) {
+                        $previous_names = explode(", ", $match);
+                        foreach ($previous_names as $previous_name) {
+                            if (file_exists(get_file_base() . '/' . dirname($upgrade_file['path']) . '/' . trim($previous_name, "'") . '.php')) {
+                                $extract_addon = true;
+
+                                // We need to update the database accordingly with the new name of the addon
+                                $GLOBALS['SITE_DB']->query_update('addons', [
+                                    'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                ], ['addon_name' => trim($previous_name, "'")], '', 1);
+
+                                $out .= do_lang('UPGRADER_RENAMED_ADDON_MESSAGE', escape_html(trim($previous_name, "'")), escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '<br />';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // What kind of file did we find?
-        if ((strpos($upgrade_file['path'], '/addon_registry/') !== false) && ((file_exists(get_file_base() . '/' . $upgrade_file['path'])) || (strpos($upgrade_file['path'], '/core_') !== false))) {
-            // Addon registry file, for installed addon...
+        if ($extract_addon) {
+            // Addon registry file, for installed addon, renamed installed addon, or core addon...
 
             if (!$is_directory) {
                 $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
@@ -240,7 +269,7 @@ function _upgrader_file_upgrade_screen() : string
             // Install if it's a file in an addon we have installed or for a core addon
             //  (if we couldn't find the addon for it we have to assume a corrupt upgrade TAR and must skip the file)
             $install_alien_files = false;
-            if ((($found !== null) || ($install_alien_files)) && (($found === null) || (file_exists(get_file_base() . '/sources/hooks/systems/addon_registry/' . $found . '.php')) || (substr($found, 0, 5) == 'core_'))) {
+            if ((($found !== null) || ($install_alien_files))) {
                 if ($is_directory) {
                     if (!$dry_run) {
                         afm_make_directory($upgrade_file['path'], false, true);
@@ -338,6 +367,21 @@ function _upgrader_file_upgrade_screen() : string
                 unlink(get_file_base() . '/imports/addons/' . $found . '.new.tar');
             }
             sync_file(get_file_base() . '/imports/addons/' . $found . '.tar');
+        }
+    }
+
+    // Immediately upgrade these as the secondary upgrader (iframe) depends on them
+    $immediately_upgrade = [
+        'data/upgrader2.php',
+        'sources/crypt_master.php',
+    ];
+    foreach ($immediately_upgrade as $path) {
+        $file_data = tar_get_file($upgrade_resource, $path);
+        if ($file_data !== null) {
+            if (!$dry_run) {
+                afm_make_file($path, $file_data['data'], ($file_data['mode'] & 0002) != 0);
+            }
+            $out .= do_lang('UPGRADER_EXTRACTING_MESSAGE', escape_html($path)) . '<br />';
         }
     }
 
