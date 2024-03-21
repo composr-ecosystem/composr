@@ -360,7 +360,7 @@ function find_remote_addons() : array
     if (!empty($addons)) {
         return $addons; // Caching
     }
-    $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'https://composr.app';
+    $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : get_brand_base_url();
     $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
     $url = $stub . '/data/ajax_tree.php?hook=choose_download&id=' . urlencode($v) . '&file_type=tar&full_depth=1';
     $contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
@@ -1049,6 +1049,14 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
     require_code('files2');
     require_all_core_cms_code();
 
+    $addon_info = read_addon_info($addon_name, false, null, $ini_info);
+
+    // Stop! Don't reinstall an addon if it is not compatible with this version of the website software
+    require_code('version');
+    if (($addon_info['min_cms_version'] == '') || (floatval($addon_info['min_cms_version']) > cms_version_number()) || ((!empty($addon_info['max_cms_version']) && (floatval($addon_info['max_cms_version']) < cms_version_number())))) {
+        warn_exit(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon_name)));
+    }
+
     $hook_path = 'hooks/systems/addon_registry/' . filter_naughty($addon_name);
     if (is_file(get_file_base() . '/sources/' . $hook_path . '.php') || is_file(get_file_base() . '/sources_custom/' . $hook_path . '.php')) {
         require_code($hook_path);
@@ -1061,8 +1069,6 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
             $ob->install();
         }
     }
-
-    $addon_info = read_addon_info($addon_name, false, null, $ini_info);
 
     $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon_name]);
     $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon_name]);
@@ -1126,7 +1132,7 @@ function find_updated_addons() : array
         return [];
     }
 
-    $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/addon_manifest.php?version=' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
+    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/addon_manifest.php?version=' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
     foreach (array_keys($addons) as $i => $addon_name) {
         $url .= '&addon_' . strval($i) . '=' . urlencode($addon_name);
     }
@@ -1201,7 +1207,7 @@ function find_addon_effective_mtime(string $addon_name, ?int $newer_than_ok = nu
  * Upgrade the specified addon.
  *
  * @param  ID_TEXT $addon_name The addon name
- * @return integer 0=No upgrade. -2=Not installed, 1=Upgrade
+ * @return integer 1=Upgrade, 0=No upgrade needed, -1=Not compatible with this software version, -2=Not installed
  */
 function upgrade_addon_soft(string $addon_name) : int
 {
@@ -1222,6 +1228,18 @@ function upgrade_addon_soft(string $addon_name) : int
     require_code($code_file);
     $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
 
+    require_code('version');
+
+    $min_cms_version = method_exists($ob, 'get_min_cms_version') ? $ob->get_min_cms_version() : null;
+    $max_cms_version = method_exists($ob, 'get_max_cms_version') ? $ob->get_max_cms_version() : null;
+
+    if (($min_cms_version === null) || ($min_cms_version > cms_version_number())) {
+        return (-1);
+    }
+    if (($max_cms_version !== null) && ($max_cms_version < cms_version_number())) {
+        return (-1);
+    }
+
     $disk_version = float_to_raw_string($ob->get_version(), 2, true);
 
     $ret = 0;
@@ -1233,8 +1251,6 @@ function upgrade_addon_soft(string $addon_name) : int
     }
 
     // We should always update the database because min / max cms version could change in the registry hook
-    $min_cms_version = $ob->get_min_cms_version();
-    $max_cms_version = $ob->get_max_cms_version();
     $GLOBALS['SITE_DB']->query_update('addons', [
         'addon_version' => $disk_version,
         'addon_min_cms_version' => strval($min_cms_version),

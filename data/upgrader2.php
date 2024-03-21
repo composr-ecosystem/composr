@@ -87,13 +87,22 @@ $metadata = unserialize(file_get_contents($tmp_metadata_path));
 $todo = $metadata['todo'];
 $per_cycle = 250;
 
+// List of files that must be done last
+$must_do_last = [
+    'data/upgrader2.php', // this file!
+
+    // Files on which this one depends
+    'sources/global.php',
+    'sources/crypt_master.php',
+];
+
 // Do the extraction
 foreach ($todo as $i => $_target_file) {
     list($target_file, , $offset, $length,) = $_target_file;
 
-    if ($target_file == 'data/upgrader2.php') {
+    if (in_array($target_file, $must_do_last)) {
         if ($file_offset + $per_cycle < count($todo)) {
-            continue; // Only extract on last step, to avoid possible transitory bugs between versions of this file (this is the file running and refreshing now, i.e this file!)
+            continue; // Do last files on the last step
         }
     } else {
         if ($i < $file_offset) {

@@ -552,6 +552,9 @@ function upgrade_modules(float $from_cms_version) : string
 
             $out .= '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
             echo "\n" . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>'); // TODO: debug
+        } elseif ($ret == -1) {
+            $out .= '<li>' . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            echo "\n" . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>'); // TODO: debug
         }
     }
 
