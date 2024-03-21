@@ -230,7 +230,11 @@ function load_version_news_rows()
             do {
                 $rows = $db->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], ' AND ' . $db->translate_field_ref('title') . ' LIKE \'' . db_encode_like('%released%') . '\' ORDER BY add_date', $max, $start);
                 foreach ($rows as $i => $row) {
-                    $NEWS_ROWS[$i]['nice_title'] = get_translated_text($row['title']);
+                    $NEWS_ROWS[$i] = [
+                        'id' => $row['id'],
+                        'nice_title' => get_translated_text($row['title']),
+                        'add_date' => $row['date_and_time'],
+                    ];
                 }
 
                 $start += $max;
