@@ -72,7 +72,6 @@ if (!function_exists('mu_result')) {
         }
 
         $base_url = get_base_url();
-        $base_url = preg_replace('#^https://#', 'http://', $base_url); // Some PHP installs have problem with HTTPS
         $url = $base_url . '/' . rawurldecode(substr($path, strlen(get_file_base()) + 1));
 
         require_code('files');
