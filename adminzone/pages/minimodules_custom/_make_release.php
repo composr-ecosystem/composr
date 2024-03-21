@@ -111,10 +111,26 @@ if ($aps_category_id === null) {
     set_privilege_access('downloads', $aps_category_id, 'submit_midrange_content', 0);
 }
 
+$major_release = '';
+$major_release_1 = '';
+$db_upgrade_1 = '';
+if ($is_substantial) {
+    $major_release = " As this is more than just a patch release it is crucial that you also choose to run a file integrity scan and a database upgrade.";
+    $major_release_1 = "Please [b]make sure you take a backup before uploading your new files![/b]";
+    $news_title = 'Composr ' . $version_pretty . ' released!';
+} else {
+    $news_title = 'Composr ' . $version_pretty . ' released';
+    if ($db_upgrade) {
+        $db_upgrade_1 = 'A database upgrade is required for this release. Be sure to run step 6 ("Do a database upgrade") in the upgrader after step 4 and, if applicable, step 5.';
+    }
+}
+
+$summary_line = "{$descrip}. Upgrading to this release is {$needed}{$criteria}{$justification}.";
+
 $all_downloads_to_add = [
     [
         'name' => "Composr Version {$version_pretty}{$bleeding1}",
-        'description' => "This is version {$version_pretty}.\n\n{$changes}",
+        'description' => "This is version {$version_pretty}. {$summary_line}\n\n{$changes}",
         'filename' => 'composr_quick_installer-' . $version_dotted . '.zip',
         'additional_details' => ($is_bleeding_edge || $is_old_tree) ? '' : 'This is the latest version.',
         'category_id' => $release_category_id,
@@ -123,7 +139,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr Version {$version_pretty} ({$bleeding2}manual)",
-        'description' => "Manual installer (as opposed to the regular quick installer). Please note this isn't documentation.\n\n{$changes}",
+        'description' => "This is the manual installer (as opposed to the regular quick installer) for version {$version_pretty}. {$summary_line}\n\n{$changes}",
         'filename' => 'composr_manualextraction_installer-' . $version_dotted . '.zip',
         'additional_details' => '',
         'category_id' => $release_category_id,
@@ -132,7 +148,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr {$version_pretty}",
-        'description' => "This archive is designed for webhosting control panels that integrate Composr. It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of Composr.\n\n{$changes}",
+        'description' => "This archive is designed for webhosting control panels that integrate Composr. It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of Composr. {$summary_line}\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.tar.gz',
         'additional_details' => '',
         'category_id' => $installatron_category_id,
@@ -141,7 +157,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr {$version_pretty}",
-        'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\n\nIt can be manually installed into Plesk using the Application Vault interface available to administrators.\n\n{$changes}",
+        'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\nIt can be manually installed into Plesk using the Application Vault interface available to administrators. {$summary_line}\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.app.zip',
         'additional_details' => '',
         'category_id' => $aps_category_id,
@@ -211,26 +227,12 @@ if ((!$is_bleeding_edge) && (!$is_old_tree)) {
 
 // News
 
-$major_release = '';
-$major_release_1 = '';
-$db_upgrade_1 = '';
-if ($is_substantial) {
-    $major_release = " As this is more than just a patch release it is crucial that you also choose to run a file integrity scan and a database upgrade.";
-    $major_release_1 = "Please [b]make sure you take a backup before uploading your new files![/b]";
-    $news_title = 'Composr ' . $version_pretty . ' released!';
-} else {
-    $news_title = 'Composr ' . $version_pretty . ' released';
-    if ($db_upgrade) {
-        $db_upgrade_1 = 'A database upgrade is required for this release. Be sure to run step 6 ("Do a database upgrade") in the upgrader after step 4 and, if applicable, step 5.';
-    }
-}
-
 require_code('news');
 require_code('news2');
 
 $summary = "{$version_pretty} released. Read the full article for more information, and upgrade information.";
 
-$article = "Version {$version_pretty} has now been released. {$descrip}. Upgrading to this release is {$needed}{$criteria}{$justification}.
+$article = "Version {$version_pretty} has now been released. {$summary_line}
 
 To upgrade follow the steps in your website's [tt]http://mybaseurl/upgrader.php[/tt] script. You will need to copy the URL of the attached file (created via the form below) during step 4.{$major_release}
 {$major_release_1}

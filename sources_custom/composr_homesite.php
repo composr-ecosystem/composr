@@ -182,8 +182,13 @@ function load_version_download_rows()
             $sql .= ' WHERE validated=1 AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('Composr Version %') . '\' ORDER BY add_date';
             $DOWNLOAD_ROWS = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, ['name' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
             foreach ($DOWNLOAD_ROWS as $i => $row) {
-                $DOWNLOAD_ROWS[$i]['nice_title'] = get_translated_text($row['name']);
-                $DOWNLOAD_ROWS[$i]['nice_description'] = get_translated_text($row['the_description']);
+                $DOWNLOAD_ROWS[$i] = [
+                    'id' => $row['id'],
+                    'nice_title' => get_translated_text($row['name']),
+                    'nice_description' => get_translated_text($row['the_description']),
+                    'url' => $row['url'],
+                    'add_date' => $row['add_date']
+                ];
             }
         }
     }
