@@ -165,19 +165,19 @@ function load_version_download_rows()
         if (get_param_integer('test_mode', 0) == 1) {
             // Test data
             $DOWNLOAD_ROWS = [
-                ['id' => 20, 'nice_title' => 'Composr Version 13 (manual)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/a.zip'],
-                ['id' => 30, 'nice_title' => 'Composr Version 13.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/b.zip'],
-                ['id' => 35, 'nice_title' => 'Composr Version 13.1.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/c.zip'],
-                ['id' => 40, 'nice_title' => 'Composr Version 13.2 beta1 (manual)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/d.zip'],
-                ['id' => 50, 'nice_title' => 'Composr Version 13.2 (manual)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/e.zip'],
-                ['id' => 60, 'nice_title' => 'Composr Version 14 (manual)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/f.zip'],
+                ['id' => 20, 'edit_date' => time() - 60 * 60 * 8, 'nice_title' => 'Composr Version 13 (manual)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/a.zip'],
+                ['id' => 30, 'edit_date' => time() - 60 * 60 * 5, 'nice_title' => 'Composr Version 13.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/b.zip'],
+                ['id' => 35, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.1.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/c.zip'],
+                ['id' => 40, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.2 beta1 (manual)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/d.zip'],
+                ['id' => 50, 'edit_date' => time() - 60 * 60 * 3, 'nice_title' => 'Composr Version 13.2 (manual)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/e.zip'],
+                ['id' => 60, 'edit_date' => time() - 60 * 60 * 1, 'nice_title' => 'Composr Version 14 (manual)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/f.zip'],
 
-                ['id' => 20, 'nice_title' => 'Composr Version 13 (quick)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => '[Test message] This is 3. Yo peeps. 3.1 is the biz.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/a.zip'],
-                ['id' => 30, 'nice_title' => 'Composr Version 13.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.1.1 is out dudes.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/b.zip'],
-                ['id' => 35, 'nice_title' => 'Composr Version 13.1.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.2 is out dudes.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/c.zip'],
-                ['id' => 40, 'nice_title' => 'Composr Version 13.2 beta1 (quick)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => '[Test message] This is 3.2 beta1. 3.2 beta2 is out.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/d.zip'],
-                ['id' => 50, 'nice_title' => 'Composr Version 13.2 (quick)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => '[Test message] This is 3.2. 4 is out.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/e.zip'],
-                ['id' => 60, 'nice_title' => 'Composr Version 14 (quick)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => '[Test message] This is the 4 and you can find bug reports somewhere.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/f.zip'],
+                ['id' => 20, 'edit_date' => time() - 60 * 60 * 8, 'nice_title' => 'Composr Version 13 (quick)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => '[Test message] This is 3. Yo peeps. 3.1 is the biz.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/a.zip'],
+                ['id' => 30, 'edit_date' => time() - 60 * 60 * 5, 'nice_title' => 'Composr Version 13.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.1.1 is out dudes.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/b.zip'],
+                ['id' => 35, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.1.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.2 is out dudes.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/c.zip'],
+                ['id' => 40, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.2 beta1 (quick)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => '[Test message] This is 3.2 beta1. 3.2 beta2 is out.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/d.zip'],
+                ['id' => 50, 'edit_date' => time() - 60 * 60 * 3, 'nice_title' => 'Composr Version 13.2 (quick)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => '[Test message] This is 3.2. 4 is out.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/e.zip'],
+                ['id' => 60, 'edit_date' => time() - 60 * 60 * 1, 'nice_title' => 'Composr Version 14 (quick)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => '[Test message] This is the 4 and you can find bug reports somewhere.', 'url' => 'uploads/website_specific/composr.app/upgrades/sample_data/f.zip'],
             ];
         } else {
             // Live data
@@ -185,13 +185,9 @@ function load_version_download_rows()
             $sql .= ' WHERE validated=1 AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('Composr Version %') . '\' ORDER BY add_date';
             $DOWNLOAD_ROWS = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, ['name' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
             foreach ($DOWNLOAD_ROWS as $i => $row) {
-                $DOWNLOAD_ROWS[$i] = [
-                    'id' => $row['id'],
-                    'nice_title' => get_translated_text($row['name']),
-                    'nice_description' => get_translated_text($row['the_description']),
-                    'url' => $row['url'],
-                    'add_date' => $row['add_date']
-                ];
+                $DOWNLOAD_ROWS[$i] = $row;
+                $DOWNLOAD_ROWS[$i]['nice_title'] = get_translated_text($row['name']);
+                $DOWNLOAD_ROWS[$i]['nice_description'] = get_translated_text($row['the_description']);
             }
         }
     }
@@ -238,11 +234,8 @@ function load_version_news_rows()
             do {
                 $rows = $db->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], ' AND ' . $db->translate_field_ref('title') . ' LIKE \'' . db_encode_like('%released%') . '\' ORDER BY add_date', $max, $start);
                 foreach ($rows as $i => $row) {
-                    $NEWS_ROWS[$i] = [
-                        'id' => $row['id'],
-                        'nice_title' => get_translated_text($row['title']),
-                        'add_date' => $row['date_and_time'],
-                    ];
+                    $NEWS_ROWS[$i] = $row;
+                    $NEWS_ROWS[$i]['nice_title'] = get_translated_text($row['title']);
                 }
 
                 $start += $max;
