@@ -85,7 +85,7 @@ $metadata = unserialize(file_get_contents($tmp_metadata_path));
 
 // Work out what we're doing
 $todo = $metadata['todo'];
-$per_cycle = 100;
+$per_cycle = 250;
 
 // Do the extraction
 foreach ($todo as $i => $_target_file) {
