@@ -129,7 +129,7 @@ $summary_line = "{$descrip}. Upgrading to this release is {$needed}{$criteria}{$
 
 $all_downloads_to_add = [
     [
-        'name' => "Composr Version {$version_pretty}{$bleeding1}",
+        'name' => "Composr Version {$version_pretty} ({$bleeding2}quick)",
         'description' => "This is version {$version_pretty}. {$summary_line}\n\n{$changes}",
         'filename' => 'composr_quick_installer-' . $version_dotted . '.zip',
         'additional_details' => ($is_bleeding_edge || $is_old_tree) ? '' : 'This is the latest version.',

@@ -133,12 +133,6 @@ a.top-left-toggle .icon {
 	margin-right: 1em;
 }
 
-.staff-new-versions .version-details {
-	margin-top: 0.61em; /* 0.61 to workaround weird bug where border for surrounding box was disappearing */
-	float: left;
-	width: 100%;
-}
-
 .staff-new-versions .red-alert {
 	margin-bottom: 1em;
 }

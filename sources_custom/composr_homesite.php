@@ -70,7 +70,7 @@ function get_latest_version_basis_number()
     return floatval($_latest_number);
 }
 
-function get_release_tree()
+function get_release_tree($type = 'manual')
 {
     require_code('version2');
 
@@ -81,7 +81,16 @@ function get_release_tree()
 
     foreach ($DOWNLOAD_ROWS as $download_row) {
         $matches = [];
-        if (preg_match('#^Composr Version (.*) \(.*manual\)$#', $download_row['nice_title'], $matches) != 0) {
+        if (preg_match('#^Composr Version (.*) \((.*)\)$#', $download_row['nice_title'], $matches) != 0) {
+            if ((strpos($matches[2], 'bleeding-edge') === false) && ($type == 'bleeding-edge')) {
+                continue;
+            }
+            if ((strpos($matches[2], 'manual') === false) && ($type == 'manual')) {
+                continue;
+            }
+            if ((strpos($matches[2], 'quick') === false) && ($type == 'quick')) {
+                continue;
+            }
             $version_dotted = get_version_dotted__from_anything($matches[1]);
             list(, $qualifier, $qualifier_number, $long_dotted_number, , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($version_dotted);
             $versions[$long_dotted_number_with_qualifier] = $download_row;

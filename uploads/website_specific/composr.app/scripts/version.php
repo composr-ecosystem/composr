@@ -69,7 +69,7 @@ $version_pretty = get_version_pretty__from_dotted($version_dotted);
 list(, $qualifier, $qualifier_number, $long_dotted_number, , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($version_dotted);
 
 // Work out upgrade paths
-$release_tree = get_release_tree();
+$release_tree = get_release_tree('quick');
 $higher_versions = [null, null, null, null];
 $description = '';
 foreach ($release_tree as $other_version_dotted => $download_row) { // As $release_tree is sorted we will keep updating recommendations with newer, so we end with the newest on each level
@@ -216,7 +216,7 @@ function display_version_upgrade_path($higher_version)
     ?>
     <div class="version vertical-alignment">
         <!-- Version number and notes -->
-        <span class="version-number"> <?= escape_html($higher_version['version_pretty']) ?></span>
+        <span class="version-number"> <?= escape_html($higher_version['version_pretty']) ?></span> (released <?= display_time_period(time() - $higher_version['add_date']) ?> ago)
         <span class="version-note"><?= $note ?></span>
         <!-- Output upgrader link -->
         <form style="display: inline" action="../<?= escape_html($upgrade_script) ?>" target="_blank" method="post">
@@ -226,8 +226,6 @@ function display_version_upgrade_path($higher_version)
         </form>
         <!-- Version News link -->
         <span class="version-news-link">[ <a onclick="window.open(this.href,null,'status=yes,toolbar=no,location=no,menubar=no,resizable=yes,scrollbars=yes,width=976,height=600'); return false;" target="_blank" title="<?= escape_html($higher_version['version_pretty']) ?> news post (this link will open in a new window)" href="<?= escape_html($upgrade_url) ?>">view news post</a> ]</span>
-        <!-- Details -->
-        <span class="version-details">(<?= escape_html($higher_version['version_pretty']) ?>, released <?= display_time_period(time() - $higher_version['add_date']) ?> ago)</span>
     </div>
     <?php
 }
