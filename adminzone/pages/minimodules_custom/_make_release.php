@@ -126,20 +126,28 @@ if ($is_substantial) {
 }
 
 $summary_line = "{$descrip}. Upgrading to this release is {$needed}{$criteria}{$justification}.";
+$additional_details = '';
+if (!$is_old_tree) {
+    if ($is_bleeding_edge) {
+        $additional_details = 'This is the latest bleeding-edge version.';
+    } else {
+        $additional_details = 'This is the latest version.';
+    }
+}
 
 $all_downloads_to_add = [
     [
         'name' => "Composr Version {$version_pretty} ({$bleeding2}quick)",
-        'description' => "This is version {$version_pretty}. {$summary_line}\n\n{$changes}",
+        'description' => "This is version {$version_pretty}. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr_quick_installer-' . $version_dotted . '.zip',
-        'additional_details' => ($is_bleeding_edge || $is_old_tree) ? '' : 'This is the latest version.',
+        'additional_details' => $additional_details,
         'category_id' => $release_category_id,
         'internal_name' => 'Quick installer',
     ],
 
     [
         'name' => "Composr Version {$version_pretty} ({$bleeding2}manual)",
-        'description' => "This is the manual installer (as opposed to the regular quick installer) for version {$version_pretty}. {$summary_line}\n\n{$changes}",
+        'description' => "This is the manual installer (as opposed to the regular quick installer) for version {$version_pretty}. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr_manualextraction_installer-' . $version_dotted . '.zip',
         'additional_details' => '',
         'category_id' => $release_category_id,
@@ -148,7 +156,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr {$version_pretty}",
-        'description' => "This archive is designed for webhosting control panels that integrate Composr. It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of Composr. {$summary_line}\n\n{$changes}",
+        'description' => "This archive is designed for webhosting control panels that integrate Composr. It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of Composr. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.tar.gz',
         'additional_details' => '',
         'category_id' => $installatron_category_id,
@@ -157,7 +165,7 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr {$version_pretty}",
-        'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\nIt can be manually installed into Plesk using the Application Vault interface available to administrators. {$summary_line}\n\n{$changes}",
+        'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\nIt can be manually installed into Plesk using the Application Vault interface available to administrators. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.app.zip',
         'additional_details' => '',
         'category_id' => $aps_category_id,
@@ -205,14 +213,16 @@ foreach ($all_downloads_to_add as $i => $d) {
 
 // Edit past download
 
-if ((!$is_bleeding_edge) && (!$is_old_tree) && (isset($all_downloads_to_add[0]['download_id']))) {
-    $last_version_str = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'additional_details', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
+if (($additional_details != '') && (isset($all_downloads_to_add[0]['download_id']))) {
+    $last_version_str = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'additional_details', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
     if ($last_version_str !== null) {
-        $last_version_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
-        $last_version_description = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', $GLOBALS['SITE_DB']->translate_field_ref('description'), [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
+        $last_version_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
+        $last_version_description = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', $GLOBALS['SITE_DB']->translate_field_ref('description'), [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
         if ($last_version_id != $all_downloads_to_add[0]['download_id']) {
-            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the Composr news archive\" target=\"_blank\"]https://composr.app/site/news.htm[/url].\n\n" . $last_version_description;
-            $GLOBALS['SITE_DB']->query_update('download_downloads', lang_remap_comcode('description', $last_version_str, $description), ['id' => $last_version_id], '', 1);
+            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the Composr news archive\" target=\"_blank\"]https://composr.app/site/news.htm[/url].\n\n---\n\n" . $last_version_description;
+            $map = lang_remap_comcode('description', $last_version_description, $description);
+            $map += lang_remap_comcode('additional_details', $last_version_str, '');
+            $GLOBALS['SITE_DB']->query_update('download_downloads', $map, ['id' => $last_version_id], '', 1);
         }
     }
 }
