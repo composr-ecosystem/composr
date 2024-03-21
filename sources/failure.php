@@ -1235,7 +1235,8 @@ function relay_error_notification(string $text, bool $developers = true, string 
         ((strpos($error_message, 'Maximum execution time') === false) || ((strpos($error_message, '/js_') === false) && (strpos($error_message, '/caches_filesystem.php') === false) && (strpos($error_message, '/files2.php') === false))) &&
         ((strpos($error_message, 'doesn\'t exist') === false) || ((strpos($error_message, 'import') === false))) &&
         ((strpos($error_message, 'No such file or directory') === false) || ((strpos($error_message, 'admin_setupwizard') === false))) &&
-        (strpos($error_message, 'File(/tmp/) is not within the allowed path') === false)
+        (strpos($error_message, 'File(/tmp/) is not within the allowed path') === false) &&
+        (preg_match('#Could not convert -?\d+(\.\d+)?#', $error_message) == 0) // Currency conversion; likely no API key was set up
     ) {
         // Send the error securely to the core developers (telemetry) using an encrypted raw fsock request
         require_code('encryption');
