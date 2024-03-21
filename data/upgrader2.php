@@ -118,11 +118,17 @@ $todo = $data['todo'];
 
 $per_cycle = 100;
 
+$must_do_last = array(
+    'data/upgrader2.php',
+    'sources/global.php',
+    'sources/crypt_master.php',
+);
+
 // Do the extraction
 foreach ($todo as $i => $_target_file) {
     list($target_file, , $offset, $length,) = $_target_file;
 
-    if ($target_file == 'data/upgrader2.php') {
+    if (in_array($target_file, $must_do_last)) {
         if ($file_offset + $per_cycle < count($todo)) {
             continue; // Only extract on last step, to avoid possible transitory bugs between versions of this file (this is the file running and refreshing now, i.e this file!)
         }
