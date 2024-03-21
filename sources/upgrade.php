@@ -473,7 +473,7 @@ function upgrader_menu_screen() : string
     $tar_url = '';
     if ($news_id !== null) {
         require_code('files');
-        $fetch_url = 'https://composr.app/uploads/website_specific/composr.app/scripts/fetch_release_details.php?format=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
+        $fetch_url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/fetch_release_details.php?mode=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
         $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
         $details = json_decode($news, true);
