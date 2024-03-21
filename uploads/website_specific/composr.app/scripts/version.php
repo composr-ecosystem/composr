@@ -214,20 +214,20 @@ function display_version_upgrade_path($higher_version)
         $upgrade_script .= '?news_id=' . strval($higher_version['news_id']) . '&from_version=' . urlencode($version_dotted);
     }
     ?>
-    <p class="version vertical-alignment">
-        <!-- Version number -->
+    <div class="version vertical-alignment">
+        <!-- Version number and notes -->
         <span class="version-number"> <?= escape_html($higher_version['version_pretty']) ?></span>
+        <span class="version-note"><?= $note ?></span>
         <!-- Output upgrader link -->
-        <span class="version-button" id="link-pos-<?= strval($i) ?>">
-            <form style="display: inline" action="../<?= escape_html($upgrade_script) ?>" target="_blank" method="post">
+        <form style="display: inline" action="../<?= escape_html($upgrade_script) ?>" target="_blank" method="post">
+            <span class="version-button" id="link-pos-<?= strval($i) ?>">
                 <button class="btn btn-primary btn-scri menu--adminzone--tools--upgrade" type="submit" title="Upgrade to <?= escape_html($higher_version['version_pretty']) ?>"><?= do_template('ICON', ['_GUID' => '083acd2905f7296c7a41e0db83e19cef', 'NAME' => 'menu/adminzone/tools/upgrade'])->evaluate() ?> Launch upgrader</button>
-            </form>
-        </span>
+            </span>
+        </form>
         <!-- Version News link -->
         <span class="version-news-link">[ <a onclick="window.open(this.href,null,'status=yes,toolbar=no,location=no,menubar=no,resizable=yes,scrollbars=yes,width=976,height=600'); return false;" target="_blank" title="<?= escape_html($higher_version['version_pretty']) ?> news post (this link will open in a new window)" href="<?= escape_html($upgrade_url) ?>">view news post</a> ]</span>
         <!-- Details -->
         <span class="version-details">(<?= escape_html($higher_version['version_pretty']) ?>, released <?= display_time_period(time() - $higher_version['add_date']) ?> ago)</span>
-        <span class="version-note"><?= $note ?></span>
-    </p>
+    </div>
     <?php
 }
