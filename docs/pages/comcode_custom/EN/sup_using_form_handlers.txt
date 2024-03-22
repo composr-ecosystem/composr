@@ -1,0 +1,73 @@
+[title sub="Written by Patrick Schmalstig"]Composr Supplementary: Using Form Handlers[/title]
+
+[contents]decimal,lower-alpha[/contents]
+
+Form handlers are hooks which can be used to provide additional post-processing of data from member registrations / profiles and catalogue entries. For example, you can use a form handler to transmit form data to an external system, such as a Customer Relation Management (CRM) software. Form handlers operate on their own and do not control the relevant action being performed. In other words, form handlers cannot manipulate form data for Composr itself nor prevent forms from being submitted (they are for 'post' processing). They can, however, manipulate data before sending it out to an external system or webhook (this is often necessary to conform to the data structures of external systems).
+
+Composr has support for building custom form handlers out of the box. While Composr does not bundle any form handlers by default, developers can make and release their own handlers through non-bundled addons.
+
+[title="2"]Form Handler Hooks[/title]
+Form handlers are managed through special hooks located under [tt]sources_custom/hooks/form_handlers/[/tt]. There are currently three types of hooks available: [tt]join[/tt] hooks (when a member registers), [tt]profile_edit[/tt] hooks (when a member edits their profile), and [tt]catalogue_entry[/tt] hooks (when catalogue entries get added, edited, or deleted; also includes custom fields used in other content types).
+
+[title="3"]Hooks: join[/title]
+These hooks are triggered when a member registers an account on your website (note that these are not triggered when a member is added manually; these are explicitly run on registration). These hooks support one method: run. The run method will take the following parameters:
+[list="1"]
+[*]MEMBER [b]$member_id[/b]
+The member ID assigned to the new member.
+[*]ID_TEXT [b]$username[/b]
+The username chosen by the member.
+[*]string [b]$email_address[/b]
+The provided e-mail address of the member.
+[*]?int [b]$dob_day, $dob_month, and $dob_year[/b]
+The member's provided birthday. Relevant values will be null if not specified.
+[*]array [b]$actual_custom_fields[/b]
+A map of custom profile fields filled in by the member, the key being the custom field ID and the value being the specified value by the member.
+[*]string [b]$timezone[/b]
+The time zone of the member.
+[*]BINARY [b]$validated[/b]
+Whether the member is validated (1) or not (0).
+[*]ID_TEXT [b]$language[/b]
+The language code of the member.
+[*]BINARY [b]$allow_emails[/b]
+Whether the member is allowing e-mails from other members (1) or not (0).
+[*]BINARY [b]$allow_emails_from_staff[/b]
+Whether the member is allowing mass e-mails from staff (1) or not (0).
+[*]IP [b]$ip_address[/b]
+The IP address of the member.
+[/list]
+
+[title="3"]Hooks: profile_edit[/title]
+These hooks are triggered when a member edits their profile (note these are not triggered when a member is manually edited; these are explicitly triggered when a member or staff edits their profile from the profile page). These hooks support one method: run. The run method will take the following parameters:
+[list="1"]
+[*]MEMBER [b]$member_id_of[/b]
+The ID of the member that was edited.
+[*]?ID_TEXT [b]$username[/b]
+The new username of the member (null: it is not being changed).
+[*]?string [b]$email_address[/b]
+The new e-mail address of the member (null: it is not being changed).
+[*]?int [b]$dob_day, $dob_month, and $dob_year[/b]
+The member's provided birthday. Null values should be treated as literal null, that-is the member removed it from their profile.
+[*]array [b]$actual_custom_fields[/b]
+A map of custom profile fields filled in by the member, the key being the custom field ID and the value being the specified value by the member. Custom profile fields which are not to be changed from their original value will not be included in the array.
+[*]?string [b]$timezone[/b]
+The time zone of the member (null: it is not to be changed).
+[*]?ID_TEXT [b]$language[/b]
+The language code of the member (null or STRING_MAGIC_NULL: it is not to be changed).
+[*]?BINARY [b]$allow_emails[/b]
+Whether the member is allowing e-mails from other members (1) or not (0) (null or STRING_MAGIC_NULL: it is not to be changed).
+[*]?BINARY [b]$allow_emails_from_staff[/b]
+Whether the member is allowing mass e-mails from staff (1) or not (0) (null or STRING_MAGIC_NULL: it is not to be changed).
+[*]BINARY [b]$validated[/b]
+Whether the member is validated (1) or not (0).
+[/list]
+
+[title="3"]Hooks: catalogue_entry[/title]
+These hooks are triggered when a catalogue entry is added, edited, or deleted. They are also triggered when a content type supporting custom fields is added, edited, or deleted (and the relevant custom fields are passed through). These hooks support three methods: [tt]add[/tt], [tt]edit[/tt], and [tt]delete[/tt], called when the relevant action is performed on an entry.
+
+[tt]WIP[/tt]
+
+[concepts
+ 0_key="Form handler"   0_value="A hook designed to post-process data from member registrations or catalogue entries. One example is to send the data through another software or webhook."
+]Concepts[/concepts]
+
+{$SET,tutorial_tags,Development,Third Party Integration,form_handlers,regular}{$SET,tutorial_add_date,Mar 2024}{$SET,tutorial_summary,This tutorial covers how you can implement form handlers to post-process member registrations and catalogue entries.}[block]main_tutorial_rating[/block]

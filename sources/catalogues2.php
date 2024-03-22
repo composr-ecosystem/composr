@@ -1205,6 +1205,15 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
         }
     }
 
+    // Run form handlers for catalogues
+    $hook_obs = find_all_hook_obs('form_handlers', 'catalogue_entry', 'Hook_form_handlers_catalogue_entry_');
+    foreach ($hook_obs as $hook => $ob) {
+        if (!method_exists($ob, 'add')) {
+            continue;
+        }
+        $ob->add($id, $category_id, $catalogue_name, $validated, $notes, $allow_comments, $allow_trackbacks, $map, $time, $submitter, $edit_date, $views, $meta_keywords, $meta_description);
+    }
+
     reorganise_uploads__catalogue_entries(['ce_id' => $id]);
 
     delete_cache_entry('main_cc_embed');
@@ -1396,6 +1405,15 @@ function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, 
         }
     }
 
+    // Run form handlers for catalogues
+    $hook_obs = find_all_hook_obs('form_handlers', 'catalogue_entry', 'Hook_form_handlers_catalogue_entry_');
+    foreach ($hook_obs as $hook => $ob) {
+        if (!method_exists($ob, 'edit')) {
+            continue;
+        }
+        $ob->edit($id, $category_id, $catalogue_name, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $meta_keywords, $meta_description, $edit_time, $add_time, $views, $submitter, $null_is_literal);
+    }
+
     reorganise_uploads__catalogue_entries(['ce_id' => $id]);
 
     require_code('feedback');
@@ -1495,6 +1513,15 @@ function actual_delete_catalogue_entry(int $id)
 
     if ($catalogue_name[0] != '_') {
         log_it('DELETE_CATALOGUE_ENTRY', strval($id), $title);
+    }
+
+    // Run form handlers for catalogues
+    $hook_obs = find_all_hook_obs('form_handlers', 'catalogue_entry', 'Hook_form_handlers_catalogue_entry_');
+    foreach ($hook_obs as $hook => $ob) {
+        if (!method_exists($ob, 'delete')) {
+            continue;
+        }
+        $ob->delete($id, $old_category_id, $catalogue_name);
     }
 
     if (addon_installed('search')) {
