@@ -415,6 +415,12 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
         dispatch_mail(do_lang('COPPA_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), [$email_address], $username);
     }
 
+    // Run form handlers for joining
+    $hook_obs = find_all_hook_obs('form_handlers', 'join', 'Hook_form_handlers_join_');
+    foreach ($hook_obs as $hook => $ob) {
+        $ob->run($member_id, $username, $email_address, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $validated, $language, $allow_emails, $allow_emails_from_staff, get_ip_address());
+    }
+
     // Send 'validate this member' notification
     if ($staff_validation) {
         require_code('notifications');

@@ -253,6 +253,12 @@ class Hook_profiles_tabs_edit_settings
                 $sensitive_change_alert // Email on sensitive changes
             );
 
+            // Run form handlers for editing profile
+            $hook_obs = find_all_hook_obs('form_handlers', 'profile_edit', 'Hook_form_handlers_profile_edit_');
+            foreach ($hook_obs as $hook => $ob) {
+                $ob->run($member_id_of, $username, $email_address, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, post_param_string('language', fractional_edit() ? STRING_MAGIC_NULL : null), post_param_integer('allow_emails', fractional_edit() ? INTEGER_MAGIC_NULL : 0), post_param_integer('allow_emails_from_staff', fractional_edit() ? INTEGER_MAGIC_NULL : 0), $validated);
+            }
+
             if (addon_installed('content_reviews')) {
                 require_code('content_reviews2');
                 content_review_set('member', strval($member_id_of));
