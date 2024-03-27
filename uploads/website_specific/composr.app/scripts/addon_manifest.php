@@ -79,7 +79,7 @@ foreach (array_keys($_GET) as $x) {
         $addon_name = get_param_string($x);
         $addon_name_titled = titleify($addon_name);
         $name_remap[$addon_name_titled] = $addon_name;
-        $query = 'SELECT d.id,url,name FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name_titled) . ' AND (' . $filter_sql . ')';
+        $query = 'SELECT d.id,url,name,edit_date,add_date FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name_titled) . ' AND (' . $filter_sql . ')';
         $result = $GLOBALS['SITE_DB']->query($query, null, 0, false, true, ['name' => 'SHORT_TRANS']);
 
         $addon_times[intval(substr($x, 6))] = [null, null, null, $addon_name];
@@ -91,6 +91,12 @@ foreach (array_keys($_GET) as $x) {
                 $last_date = @filemtime(get_custom_file_base() . '/' . rawurldecode($url));
             } else {
                 $last_date = @filemtime($url);
+            }
+            if ($last_date === false) {
+                $last_date = $result[0]['edit_date'] !== null ? intval($result[0]['edit_date']) : false;
+            }
+            if ($last_date === false) {
+                $last_date = $result[0]['add_date'] !== null ? intval($result[0]['add_date']) : false;
             }
             if ($last_date === false) {
                 continue;
