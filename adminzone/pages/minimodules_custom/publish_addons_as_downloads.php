@@ -154,7 +154,13 @@ function publish_addon($addon_name, $version_branch, $cat_id)
         if ($download_owner === null) {
             $download_owner = DOWNLOAD_OWNER;
         }
-        $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
+
+        $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $name]);
+        if ($download_id === null) {
+            $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
+        } else {
+            edit_download($download_id, $cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, '', '');
+        }
 
         $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon_name . '.png';
         if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
@@ -202,7 +208,12 @@ function publish_theme($file, $version_branch, $cat_id)
         if ($download_owner === null) {
             $download_owner = DOWNLOAD_OWNER;
         }
-        $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
+        $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $addon_name]);
+        if ($download_id === null) {
+            $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
+        } else {
+            edit_download($download_id, $cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, '', '');
+        }
 
         $screenshot_url = 'data_custom/images/addon_screenshots/' . urlencode(preg_replace('#^theme-#', 'theme__', preg_replace('#\d+$#', '', basename($file, '.tar'))) . '.png');
         if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
