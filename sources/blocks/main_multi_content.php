@@ -150,7 +150,7 @@ PHP;
 
         // Read selection parameters
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
-        $sort = empty($map['sort']) ? 'prominence' : $map['sort']; // recent|top|views|random|title or some manually typed sort order
+        $sort = empty($map['sort']) ? 'prominence DESC' : $map['sort']; // recent|top|views|random|title or some manually typed sort order
         $select = isset($map['select']) ? $map['select'] : '';
         $select_b = isset($map['select_b']) ? $map['select_b'] : '';
         if ($select == '*' || $select == '>' || $select_b == '*' || $select_b == '>') {
