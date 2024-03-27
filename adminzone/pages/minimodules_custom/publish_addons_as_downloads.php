@@ -164,7 +164,12 @@ function publish_addon($addon_name, $version_branch, $cat_id)
 
         $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon_name . '.png';
         if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
-            add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
+            $image_id = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'id', ['cat' => 'download_' . strval($download_id)]);
+            if ($image_id === null) {
+                add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
+            } else {
+                edit_image($image_id, '', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', '', '');
+            }
         }
     }
 }
@@ -217,7 +222,12 @@ function publish_theme($file, $version_branch, $cat_id)
 
         $screenshot_url = 'data_custom/images/addon_screenshots/' . urlencode(preg_replace('#^theme-#', 'theme__', preg_replace('#\d+$#', '', basename($file, '.tar'))) . '.png');
         if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
-            add_image('', 'download_' . strval($download_id), $screenshot_url, '', 1, 0, 0, 0, '', null, null, null, 0);
+            $image_id = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'id', ['cat' => 'download_' . strval($download_id)]);
+            if ($image_id === null) {
+                add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
+            } else {
+                edit_image($image_id, '', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', '', '');
+            }
         }
     }
 }
