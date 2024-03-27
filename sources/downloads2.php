@@ -1249,12 +1249,22 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
     }
 
     if (addon_installed('galleries')) {
-        // Change its gallery
+        // Change its gallery (or create it if it doesn't exist for some reason)
         require_code('galleries2');
         $download_gallery_root = get_option('download_gallery_root');
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => 'download_' . strval($id)]);
         if ($test !== null) {
             edit_gallery('download_' . strval($id), 'download_' . strval($id), do_lang('GALLERY_FOR_DOWNLOAD', $name), '', '', $download_gallery_root);
+        } else {
+            require_lang('downloads');
+            $download_gallery_root = get_option('download_gallery_root');
+            add_gallery('download_' . strval($id), do_lang('GALLERY_FOR_DOWNLOAD', $name), '', '', $download_gallery_root);
+            if ($submitter === null) {
+                $_submitter = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'submitter', ['id' => $id]);
+            } else {
+                $_submitter = $submitter;
+            }
+            set_download_gallery_permissions($id, $_submitter);
         }
     }
 
