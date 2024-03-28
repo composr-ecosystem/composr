@@ -31,3 +31,7 @@
 .status-orange, td.non_bundled {
 	color: {$GET,orange_highlight_text} !important;
 }
+
+.status-red, td.non_bundled {
+	color: {$GET,red_highlight_text} !important;
+}

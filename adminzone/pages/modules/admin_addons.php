@@ -394,14 +394,16 @@ class Module_admin_addons
             ],
         ];
 
-        $updated_addons_arr = find_updated_addons();
         $updated_addons = '';
+        $updated_addons_arr = find_updated_addons();
+        /* TODO: Tracker #5653
         foreach ($updated_addons_arr as $updated_addon) {
             if ($updated_addons != '') {
                 $updated_addons .= ',';
             }
             $updated_addons .= strval($updated_addon[0]);
         }
+        */
 
         $do_caching = has_caching_for('block', '_addon_installed_tpl');
 
