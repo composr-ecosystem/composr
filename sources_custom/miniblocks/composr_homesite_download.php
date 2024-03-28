@@ -95,7 +95,7 @@ $latest = null;
 if ($latest_version_pretty !== null) {
     $latest = $latest_version_pretty;
 
-    $release_quick = do_release($latest, '', 'QUICK_');
+    $release_quick = do_release($latest, 'quick', 'QUICK_');
     $release_manual = do_release($latest, 'manual', 'MANUAL_');
 
     if ($release_quick !== null) {
@@ -106,7 +106,7 @@ if ($latest_version_pretty !== null) {
     }
 }
 
-$release_bleedingquick = do_release(null, 'bleeding-edge', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
+$release_bleedingquick = do_release(null, 'bleeding-edge, quick', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
 $release_bleedingmanual = do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
 
 if ($release_bleedingquick !== null) {
