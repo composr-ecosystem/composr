@@ -88,11 +88,11 @@ class Hook_cron_privacy_purging
         foreach ($rows as $row) {
             switch ($table_action) {
                 case PRIVACY_METHOD__ANONYMISE:
-                    $hook_ob->anonymise($table_name, $row);
+                    $hook_ob->anonymise($table_name, $table_details, $row);
                     break;
 
                 case PRIVACY_METHOD__DELETE:
-                    $hook_ob->delete($table_name, $row);
+                    $hook_ob->delete($table_name, $table_details, $row);
                     break;
             }
         }
