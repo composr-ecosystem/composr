@@ -39,8 +39,12 @@ class Hook_ajax_tree_choose_download
             if (substr($id, 0, 8) == 'Version ') {
                 $id_float = floatval(substr($id, 8));
                 do {
-                    $str = 'Version ' . float_to_raw_string($id_float, 1, true);
-                    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => 3, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str]);
+                    $str = 'Version ' . float_to_raw_string($id_float, 2, true);
+                    $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons']);
+                    if ($parent === null) {
+                        break;
+                    }
+                    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $parent, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str]);
                     if ($_id === null) {
                         $id_float -= 0.1;
                     }
