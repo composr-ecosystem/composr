@@ -331,22 +331,22 @@ function get_upload_error_message(array $file_upload, bool $should_get_something
                 require_code('files2');
                 $max_size = get_max_file_size();
             }
-            return do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)));
+            return do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)), escape_html(_sanitise_error_msg($file_upload['name'])));
         }
 
         if ($file_upload['error'] == 2) {
-            return do_lang_tempcode('FILE_TOO_BIG_QUOTA', escape_html(integer_format($max_size)));
+            return do_lang_tempcode('FILE_TOO_BIG_QUOTA', escape_html(integer_format($max_size)), escape_html(_sanitise_error_msg($file_upload['name'])));
         }
 
         if (($file_upload['error'] == 3) || ($file_upload['error'] == 6) || ($file_upload['error'] == 7)) {
-            return do_lang_tempcode('ERROR_UPLOADING_' . strval($file_upload['error']));
+            return do_lang_tempcode('ERROR_UPLOADING_' . strval($file_upload['error']), escape_html(_sanitise_error_msg($file_upload['name'])));
         }
 
         if ($file_upload['error'] == 4) {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'), escape_html(_sanitise_error_msg($file_upload['name'])));
         }
 
-        return do_lang_tempcode('ERROR_UPLOADING');
+        return do_lang_tempcode('ERROR_UPLOADING', escape_html(_sanitise_error_msg($file_upload['name'])));
     }
 
     return null;
@@ -488,32 +488,36 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
         $is_image = is_image($filearrays[$attach_name]['name'], IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'), true);
     } elseif (post_param_string($specify_name, '') != '') { // If we specified
         $url = _get_specify_url($member_id, $specify_name, $upload_folder, $enforce_type, $accept_errors);
+        if ($url == ['', '']) { // Errors are attached by _get_specify_url
+            return ['', '', '', ''];
+        }
         $is_image = is_image($url[0], IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'));
         if ($url[0] != '') {
             if ($enforce_type == CMS_UPLOAD_IMAGE) {
                 $is_image = true; // Must be an image if it got to here. Maybe came from oEmbed and not having an image extension.
             }
         }
-        if ($url == ['', '']) {
-            return ['', '', '', ''];
-        }
         if (($copy_to_server) && (!url_is_local($url[0]))) {
             $path2 = cms_tempnam();
             $tmpfile = fopen($path2, 'wb');
 
-            $old_time_limit = cms_extend_time_limit(60);
-            $http_result = cms_http_request($url[0], ['byte_limit' => $max_size, 'write_to_file' => $tmpfile, 'timeout' => 60.0]);
+            $old_time_limit = cms_extend_time_limit(30);
+            $http_result = cms_http_request($url[0], ['byte_limit' => $max_size, 'write_to_file' => $tmpfile, 'timeout' => 30.0, 'trigger_error' => !$accept_errors]);
             @cms_set_time_limit($old_time_limit);
+            if ($http_result->message_b !== null) {
+                attach_message($http_result->message_b, 'warn');
+                return ['', '', '', ''];
+            }
 
             $file = $http_result->data;
             fclose($tmpfile);
             if ($file === null) {
                 @unlink($path2);
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('CANNOT_COPY_TO_SERVER'), 'warn', false, true);
+                    attach_message(do_lang_tempcode('CANNOT_COPY_TO_SERVER', escape_html(_sanitise_error_msg($url[0]))), 'warn', false, true);
                     return ['', '', '', ''];
                 } else {
-                    warn_exit(do_lang_tempcode('CANNOT_COPY_TO_SERVER'), false, true);
+                    warn_exit(do_lang_tempcode('CANNOT_COPY_TO_SERVER', escape_html(_sanitise_error_msg($url[0]))), false, true);
                 }
             }
             if ($http_result->filename === null) {
@@ -527,10 +531,10 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
             if (url_is_local($url[0])) {
                 unlink($path2);
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('CANNOT_COPY_TO_SERVER'), 'warn');
+                    attach_message(do_lang_tempcode('CANNOT_COPY_TO_SERVER', escape_html(_sanitise_error_msg($url[0]))), 'warn');
                     return ['', '', '', ''];
                 } else {
-                    warn_exit(do_lang_tempcode('CANNOT_COPY_TO_SERVER'), false, true);
+                    warn_exit(do_lang_tempcode('CANNOT_COPY_TO_SERVER', escape_html(_sanitise_error_msg($url[0]))), false, true);
                 }
             }
 
@@ -554,10 +558,10 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
                 $max_size = intval(get_option('max_download_size')) * 1024;
                 if (strlen($file) > $max_size) {
                     if ($accept_errors) {
-                        attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size))), 'warn');
+                        attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)), escape_html(_sanitise_error_msg($url[0]))), 'warn');
                         return ['', '', '', ''];
                     } else {
-                        warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size))));
+                        warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)), escape_html(_sanitise_error_msg($url[0]))));
                     }
                 }
             }
@@ -610,10 +614,10 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
         if ((array_key_exists($thumb_attach_name, $filearrays)) && ((is_uploaded_file($filearrays[$thumb_attach_name]['tmp_name'])) || ($plupload_uploaded_thumb))) { // If we uploaded
             if ($filearrays[$thumb_attach_name]['size'] > get_max_image_size(false)) {
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size(false)))), 'warn');
+                    attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size(false))), escape_html(_sanitise_error_msg($url[0]))), 'warn');
                     return ['', '', '', ''];
                 } else {
-                    warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size(false)))));
+                    warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size(false))), escape_html(_sanitise_error_msg($url[0]))));
                 }
             }
 
@@ -635,10 +639,10 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
         if ((array_key_exists($thumb_attach_name, $filearrays)) && ((is_uploaded_file($filearrays[$thumb_attach_name]['tmp_name'])) || ($plupload_uploaded_thumb))) { // If we uploaded
             if ($filearrays[$thumb_attach_name]['size'] > get_max_image_size(false)) {
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size()))), 'warn');
+                    attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size())), escape_html(_sanitise_error_msg($thumb_attach_name))), 'warn');
                     return ['', '', '', ''];
                 } else {
-                    warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size()))));
+                    warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format(get_max_image_size())), escape_html(_sanitise_error_msg($thumb_attach_name))));
                 }
             }
 
@@ -708,10 +712,10 @@ function _get_specify_url(int $member_id, string $specify_name, string $upload_f
         // Check the file exists
         if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($url[0]))) && (!$missing_ok)) {
             if ($accept_errors) {
-                attach_message(do_lang_tempcode('MISSING_FILE'), 'warn', false, true);
+                attach_message(do_lang_tempcode('MISSING_FILE', escape_html(_sanitise_error_msg(rawurldecode($url[0])))), 'warn', false, true);
                 return ['', ''];
             } else {
-                warn_exit(do_lang_tempcode('MISSING_FILE'), false, true);
+                warn_exit(do_lang_tempcode('MISSING_FILE', escape_html(_sanitise_error_msg(rawurldecode($url[0])))), false, true);
             }
         }
 
@@ -801,9 +805,9 @@ function _check_enforcement_of_type(int $member_id, string $file, int $enforce_t
         if (!is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'), true)) {
             if ($enforce_type == CMS_UPLOAD_IMAGE) {
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('NOT_IMAGE'), 'warn');
+                    attach_message(do_lang_tempcode('NOT_IMAGE', escape_html(_sanitise_error_msg($file))), 'warn');
                 } else {
-                    warn_exit(do_lang_tempcode('NOT_IMAGE'));
+                    warn_exit(do_lang_tempcode('NOT_IMAGE', escape_html(_sanitise_error_msg($file))));
                 }
                 return false;
             }
@@ -815,9 +819,9 @@ function _check_enforcement_of_type(int $member_id, string $file, int $enforce_t
         if (!is_video($file, has_privilege($member_id, 'comcode_dangerous'), false)) {
             if ($enforce_type == CMS_UPLOAD_VIDEO) {
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('NOT_VIDEO'), 'warn');
+                    attach_message(do_lang_tempcode('NOT_VIDEO', escape_html(_sanitise_error_msg($file))), 'warn');
                 } else {
-                    warn_exit(do_lang_tempcode('NOT_VIDEO'));
+                    warn_exit(do_lang_tempcode('NOT_VIDEO', escape_html(_sanitise_error_msg($file))));
                 }
                 return false;
             }
@@ -829,9 +833,9 @@ function _check_enforcement_of_type(int $member_id, string $file, int $enforce_t
         if (!is_audio($file, has_privilege($member_id, 'comcode_dangerous'))) {
             if ($enforce_type == CMS_UPLOAD_AUDIO) {
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('NOT_AUDIO'), 'warn');
+                    attach_message(do_lang_tempcode('NOT_AUDIO', escape_html(_sanitise_error_msg($file))), 'warn');
                 } else {
-                    warn_exit(do_lang_tempcode('NOT_AUDIO'));
+                    warn_exit(do_lang_tempcode('NOT_AUDIO', escape_html(_sanitise_error_msg($file))));
                 }
                 return false;
             }
@@ -841,9 +845,9 @@ function _check_enforcement_of_type(int $member_id, string $file, int $enforce_t
     }
     if (!$ok) {
         if ($accept_errors) {
-            attach_message(do_lang_tempcode('_NOT_FILE_TYPE'), 'warn');
+            attach_message(do_lang_tempcode('_NOT_FILE_TYPE', escape_html(_sanitise_error_msg($file))), 'warn');
         } else {
-            warn_exit(do_lang_tempcode('_NOT_FILE_TYPE'));
+            warn_exit(do_lang_tempcode('_NOT_FILE_TYPE', escape_html(_sanitise_error_msg($file))));
         }
         return false;
     }

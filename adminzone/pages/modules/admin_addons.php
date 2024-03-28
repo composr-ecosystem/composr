@@ -396,14 +396,12 @@ class Module_admin_addons
 
         $updated_addons = '';
         $updated_addons_arr = find_updated_addons();
-        /* TODO: Tracker #5653
         foreach ($updated_addons_arr as $updated_addon) {
             if ($updated_addons != '') {
                 $updated_addons .= ',';
             }
             $updated_addons .= strval($updated_addon[0]);
         }
-        */
 
         $do_caching = has_caching_for('block', '_addon_installed_tpl');
 
@@ -654,18 +652,26 @@ class Module_admin_addons
         $url_map = ['page' => '_SELF', 'type' => 'multi_action'];
 
         $__url = post_param_string('url', '', INPUT_FILTER_URL_GENERAL);
-        foreach (explode('%2C', $__url) as $i => $url) {
+        $_urls = explode('%2C', $__url);
+        foreach ($_urls as $i => $url) {
             if (is_numeric($url)) {
                 $_POST['url'] = get_brand_base_url() . '/site/dload.php?id=' . strval($url);
             } else {
                 $_POST['url'] = $url; // In case it was submitted in array form, which is possible on some UAs (based on an automated bug report)
             }
 
-            $urls = get_url('url', 'file', 'imports/addons', OBFUSCATE_NEVER, CMS_UPLOAD_ANYTHING, false, '', '', true);
+            $urls = get_url('url', 'file', 'imports/addons', OBFUSCATE_NEVER, CMS_UPLOAD_ANYTHING, false, '', '', true, count($_urls) > 1);
+            if ($urls == ['', '', '', '']) { // Errors would be attached by get_url
+                continue;
+            }
 
             $full = get_custom_file_base() . '/' . $urls[0];
             if (cms_strtolower_ascii(substr($full, -4)) != '.tar') {
-                return warn_screen(get_screen_title('ERROR_OCCURRED'), do_lang_tempcode('ADDON_NOT_TAR'));
+                if (count($_urls) < 2) { // Only actually exit if we are processing one addon
+                    return warn_screen(get_screen_title('ERROR_OCCURRED'), do_lang_tempcode('ADDON_NOT_TAR', escape_html($full)));
+                }
+                attach_message(do_lang_tempcode('ADDON_NOT_TAR', escape_html($full)), 'warn');
+                continue;
             }
 
             $url_map['install_' . strval($i)] = basename($urls[0]);
