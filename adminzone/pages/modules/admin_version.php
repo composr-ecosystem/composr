@@ -1231,7 +1231,7 @@ class Module_admin_version
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
-            // Keep it off for now 'browse' => ['PROJECT_SPONSORS', 'menu/adminzone/sponsors'],
+            'browse' => ['PROJECT_CONTRIBUTORS', 'menu/adminzone/sponsors'],
         ];
     }
 
@@ -1245,7 +1245,7 @@ class Module_admin_version
     public function pre_run() : ?object
     {
         require_lang('version');
-        $this->title = get_screen_title('PROJECT_SPONSORS');
+        $this->title = get_screen_title('PROJECT_CONTRIBUTORS');
 
         return null;
     }
@@ -1257,21 +1257,26 @@ class Module_admin_version
      */
     public function run() : object
     {
+        // Patreon
         $level = get_param_integer('level', 50);
-
-        $data = cms_http_request('https://composr.app/data_custom/patreon_patrons.php?level=' . strval($level), ['convert_to_internal_encoding' => true]);
-        $_patreon_patrons = json_decode($data->data);
-
         $patreon_patrons = [];
-        foreach ($_patreon_patrons as $patron) {
-            $patreon_patrons[] = [
-                'NAME' => $patron['name'],
-                'USERNAME' => $patron['username'],
-            ];
+        $data = cms_http_request('https://composr.app/data_custom/patreon_patrons.php?level=' . strval($level), ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+        if ($data->data !== null) {
+            $_patreon_patrons = json_decode($data->data);
+            foreach ($_patreon_patrons as $patron) {
+                $patreon_patrons[] = [
+                    'NAME' => $patron['name'],
+                    'USERNAME' => $patron['username'],
+                ];
+            }
         }
 
-        $sponsors = [
-            'ocProducts' => ['AREAS' => ['Primary sponsor']], // TODO: remove?
+        // Direct contributors
+        $contributors = [
+            'Patrick Schmalstig' => ['AREAS' => ['Lead developer', 'Composr Core Developer']],
+            'Christopher Graham' => ['AREAS' => ['Senior developer', 'Composr Core Developer']],
+            'Adam Edington' => ['AREAS' => ['Moderator of the Composr site']],
+            'PDSTIG LLC' => ['AREAS' => ['Web hosting for composr.app']],
         ];
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
@@ -1282,24 +1287,24 @@ class Module_admin_version
                 }
                 $sponsors[$row['Bug-fix sponsor']]['AREAS'][] = $row['Title'];
             }*/
-            if (!empty($row['Current active sponsor'])) {
-                if (!isset($sponsors[$row['Current active sponsor']])) {
-                    $sponsors[$row['Bug-fix sponsor']] = ['AREAS' => []];
+            if (!empty($row['Actively Maintained by'])) {
+                if (!isset($contributors[$row['Actively Maintained by']])) {
+                    $contributors[$row['Actively Maintained by']] = ['AREAS' => []];
                 }
-                $sponsors[$row['Current active sponsor']]['AREAS'][] = $row['Title'];
+                $contributors[$row['Actively Maintained by']]['AREAS'][] = $row['Title'];
             }
         }
         $sheet_reader->close();
-        foreach ($sponsors as $sponsor => &$areas) {
+        foreach ($contributors as $sponsor => &$areas) {
             $areas['AREAS'] = array_unique($areas['AREAS']);
             //cms_mb_sort($areas['AREAS'], SORT_NATURAL | SORT_FLAG_CASE); Actually order is meaningful
         }
 
-        return do_template('SPONSORS_SCREEN', [
+        return do_template('CONTRIBUTORS_SCREEN', [
             '_GUID' => '504a3975e168ac7d32ed78f3fadf2cbe',
             'TITLE' => $this->title,
             'PATREON_PATRONS' => $patreon_patrons,
-            'SPONSORS' => $sponsors,
+            'CONTRIBUTORS' => $contributors,
         ]);
     }
 }

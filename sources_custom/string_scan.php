@@ -1050,8 +1050,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_CURL_ON_SERVER
         PATREON_PATRONS_LABEL
         QUEUED_ITEMS
-        SPONSORS_LABEL
-        SPONSORS_NEEDED
+        CONTRIBUTORS_LABEL
+        CONTRIBUTORS_NEEDED
         STAFF_EMAIL_ADDRESSES
         TIME_BETWEEN_RUNS
         CONTRIBUTE_HEADING
@@ -1118,7 +1118,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COPY_TO_EDITABLE_MENU_PREFIX_AUTO_SET
         COPY_TO_EDITABLE_MENU_PREFIX_MISSING
         EXPLANATION_WITH_DEFAULT
-        PROJECT_SPONSORS
+        PROJECT_CONTRIBUTORS
         CONFIG_OPTION_complex_lists
         COMPLEX_LISTS
         HERE_SURVEY_RESULTS

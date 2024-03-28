@@ -21,7 +21,7 @@
 					<img width="400" height="140" src="{$IMG*,product_logo}" alt="" />
 				</p>
 
-				<p>{!SPONSORS_NEEDED,{$PAGE_LINK*,adminzone:admin_version}}</p>
+				<p>{!CONTRIBUTORS_NEEDED,{$PAGE_LINK*,adminzone:admin_version}}</p>
 			</div>
 		</div>
 	</div>

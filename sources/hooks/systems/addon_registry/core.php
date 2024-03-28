@@ -1949,7 +1949,7 @@ class Hook_addon_registry_core
             'themes/default/templates/QUERY_SCREEN.tpl',
             'themes/default/templates/REDIRECT_POST_METHOD_SCREEN.tpl',
             'themes/default/templates/RED_ALERT.tpl',
-            'themes/default/templates/SPONSORS_SCREEN.tpl',
+            'themes/default/templates/CONTRIBUTORS_SCREEN.tpl',
             'themes/default/templates/TRANSLATION_LINKS.tpl',
             'themes/default/templates/UPLOAD_SYNDICATION_SETUP_SCREEN.tpl',
             'themes/default/templates/index.html',
@@ -2035,7 +2035,7 @@ class Hook_addon_registry_core
             'templates/MASS_SELECT_FORM_BUTTONS.tpl' => 'mass_select_form_buttons',
             'templates/UPLOAD_SYNDICATION_SETUP_SCREEN.tpl' => 'upload_syndication_setup_screen',
             'templates/GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN.tpl' => 'group_member_timeout_manage_screen',
-            'templates/SPONSORS_SCREEN.tpl' => 'sponsors_screen',
+            'templates/CONTRIBUTORS_SCREEN.tpl' => 'contributors_screen',
             'templates/TRANSLATION_LINKS.tpl' => 'translation_links',
         ];
     }
@@ -2854,7 +2854,7 @@ class Hook_addon_registry_core
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__sponsors_screen() : object
+    public function tpl_preview__contributors_screen() : object
     {
         $patreon_patrons = [
             [
@@ -2863,14 +2863,14 @@ class Hook_addon_registry_core
                 'MONTHLY' => placeholder_number(),
             ],
         ];
-        $sponsors = [
+        $contributors = [
             lorem_word() => ['AREAS' => [lorem_word()]],
         ];
 
-        return lorem_globalise(do_lorem_template('SPONSORS_SCREEN', [
+        return lorem_globalise(do_lorem_template('CONTRIBUTORS_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'PATREON_PATRONS' => $patreon_patrons,
-            'SPONSORS' => $sponsors,
+            'CONTRIBUTORS' => $contributors,
         ]), null, '', true);
     }
 

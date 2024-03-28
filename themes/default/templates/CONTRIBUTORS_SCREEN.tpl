@@ -1,9 +1,9 @@
 {TITLE}
 
-{+START,IF_NON_EMPTY,{SPONSORS}}
-	<p class="lonely-label">{!SPONSORS_LABEL}</p>
+{+START,IF_NON_EMPTY,{CONTRIBUTORS}}
+	<p class="lonely-label">{!CONTRIBUTORS_LABEL}</p>
 	<ul>
-		{+START,LOOP,SPONSORS}
+		{+START,LOOP,CONTRIBUTORS}
 			<li>
 				{_loop_key*}:
 				<ul>
