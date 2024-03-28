@@ -1640,6 +1640,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'docs/pages/comcode_custom/EN/sup_taking_a_look_at_seo_on_composr.txt',
             'docs/pages/comcode_custom/EN/sup_taking_a_more_detailed_look_at_composr_catalogues_system.txt',
             'docs/pages/comcode_custom/EN/sup_updating_the_members_listing_in_composr.txt',
+            'docs/pages/comcode_custom/EN/sup_using_form_handlers.txt',
             'docs/pages/comcode_custom/EN/sup_using_the_if_in_group_tag_in_composr.txt',
             'docs/pages/comcode_custom/EN/sup_web_standards_in_composr.txt',
             'docs/pages/comcode_custom/EN/sup_youtube_channel_integration_block_addon_documentation.txt',

@@ -150,6 +150,7 @@ class Hook_addon_registry_banners
             'data/images/donate.png',
             'data/images/placeholder_leaderboard.jpg',
             'lang/EN/banners.ini',
+            'site/pages/comcode/EN/top_sites.txt',
             'site/pages/modules/banners.php',
             'sources/banners.php',
             'sources/banners2.php',

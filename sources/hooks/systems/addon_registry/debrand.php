@@ -128,6 +128,7 @@ class Hook_addon_registry_debrand
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/comcode/EN/website.txt',
             'adminzone/pages/modules/admin_debrand.php',
             'sources/hooks/systems/actionlog/debrand.php',
             'sources/hooks/systems/addon_registry/debrand.php',

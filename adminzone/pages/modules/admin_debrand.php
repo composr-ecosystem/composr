@@ -138,6 +138,8 @@ class Module_admin_debrand
         }
         if (file_exists(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/website.txt')) {
             $adminguide = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/website.txt', FILE_READ_LOCK | FILE_READ_BOM);
+        } elseif (file_exists(get_file_base() . '/adminzone/pages/comcode/' . get_site_default_lang() . '/website.txt')) {
+            $adminguide = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode/' . get_site_default_lang() . '/website.txt', FILE_READ_LOCK | FILE_READ_BOM);
         } else {
             $adminguide = do_lang('ADMINGUIDE_DEFAULT_TRAINING');
         }
