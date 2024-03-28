@@ -1133,12 +1133,13 @@ function find_updated_addons() : array
     }
 
     $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/addon_manifest.php?version=' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
+    $post = [];
     foreach (array_keys($addons) as $i => $addon_name) {
-        $url .= '&addon_' . strval($i) . '=' . urlencode($addon_name);
+        $post['addon_' . strval($i)] = urlencode($addon_name);
     }
 
     require_code('http');
-    list($addon_data) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 5/*5 minute cache*/);
+    list($addon_data) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 5/*5 minute cache*/);
     if (empty($addon_data)) {
         return [];
         //warn_exit(do_lang('INTERNAL_ERROR'));

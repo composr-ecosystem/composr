@@ -53,9 +53,14 @@ if (!addon_installed('news')) {
 $version = get_param_string('version'); // This is a 'pretty' version number, rather than a 'dotted' one
 
 $id_float = floatval($version);
+$_id = null;
 do {
-    $str = 'Version ' . /*preg_replace('#\.0$#', '', */float_to_raw_string($id_float, 1)/*)*/;
-    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => 3, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str]);
+    $str = 'Version ' . /*preg_replace('#\.0$#', '', */float_to_raw_string($id_float, 2, true)/*)*/;
+    $__id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons']);
+    if ($__id === null) {
+        break;
+    }
+    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $__id, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str]);
     if ($_id === null) {
         $id_float -= 0.1;
     }
@@ -74,9 +79,9 @@ $filter_sql = selectcode_to_sqlfragment(strval($_id) . '*', 'id', 'download_cate
 
 $name_remap = [];
 
-foreach (array_keys($_GET) as $x) {
+foreach (array_keys($_POST) as $x) {
     if (substr($x, 0, 6) == 'addon_') {
-        $addon_name = get_param_string($x);
+        $addon_name = post_param_string($x);
         $addon_name_titled = titleify($addon_name);
         $name_remap[$addon_name_titled] = $addon_name;
         $query = 'SELECT d.id,url,name,edit_date,add_date FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name_titled) . ' AND (' . $filter_sql . ')';
@@ -113,5 +118,4 @@ foreach (array_keys($_GET) as $x) {
     }
 }
 
-header('Content-Type: text/plain; charset=' . get_charset());
 echo serialize($addon_times);
