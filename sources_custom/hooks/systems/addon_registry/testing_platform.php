@@ -919,7 +919,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/privilege_existence.php',
             '_tests/tests/unit_tests/quizzes.php',
             '_tests/tests/unit_tests/rating.php',
-            '_tests/tests/unit_tests/resource_closing.php',
+            '_tests/tests/unit_tests/__resource_closing.php',
             '_tests/tests/unit_tests/rest.php',
             '_tests/tests/unit_tests/rootkit_detection.php',
             '_tests/tests/unit_tests/rss.php',

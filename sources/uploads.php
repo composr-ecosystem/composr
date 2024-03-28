@@ -472,10 +472,10 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
         if (!has_privilege($member_id, 'exceed_filesize_limit')) {
             if ($filearrays[$attach_name]['size'] > $max_size) {
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size))), 'warn');
+                    attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)), escape_html($filearrays[$attach_name]['name'])), 'warn');
                     return ['', '', '', ''];
                 } else {
-                    warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size))));
+                    warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)), escape_html($filearrays[$attach_name]['name'])));
                 }
             }
         }

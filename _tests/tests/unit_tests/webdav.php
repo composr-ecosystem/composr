@@ -73,7 +73,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue($result->data === null);
+        $this->assertTrue($result->data === null, 'Expected data from filedump root, got nothing. Use debug for more information.');
 
         // Test upload
         $file_data = file_get_contents(get_file_base() . '/_tests/assets/media/early_cinema.mp4');
@@ -88,7 +88,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(is_string($result->data));
+        $this->assertTrue(is_string($result->data), 'Expected mp4 upload data, but got nothing. Use debug for more information.');
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -108,7 +108,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue($result->data !== null && strpos($result->data, 'early_cinema.mp4') !== false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'early_cinema.mp4') !== false, 'Expected to find mp4 in folder listing but did not. Use debug for more information.');
 
         // Test file properties
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -127,7 +127,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue($result->data !== null && strpos($result->data, '191805') !== false || strpos($result->data, '259941') !== false); // May have higher file-size than actual file due to JSON encoding
+        $this->assertTrue($result->data !== null && (strpos($result->data, '191805') !== false || strpos($result->data, '259941') !== false), 'Incorrect file properties returned for mp4 file. Use debug for more information.'); // May have higher file-size than actual file due to JSON encoding
 
         // Test download
         $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -139,9 +139,13 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $_result = json_decode($result->data, true);
-        $__result = is_array($_result) ? base64_decode($_result['data']) : $result->data;
-        $this->assertTrue($__result === $file_data);
+        if ($result->data === null) {
+            $this->assertTrue(false, 'Failed to download mp4. Use debug for more information.');
+        } else {
+            $_result = json_decode($result->data, true);
+            $__result = is_array($_result) ? base64_decode($_result['data']) : $result->data;
+            $this->assertTrue($__result === $file_data, 'Failed to download mp4. Use debug for more information.');
+        }
 
         // Test edit
         $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -154,7 +158,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(is_string($result->data));
+        $this->assertTrue(is_string($result->data), 'Failed to edit mp4 file. Use debug for more information.');
 
         // Test file properties
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -173,7 +177,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue($result->data !== null && strpos($result->data, '12343') !== false || strpos($result->data, '16605') !== false); // May have higher file-size than actual file due to JSON encoding
+        $this->assertTrue($result->data !== null && (strpos($result->data, '12343') !== false || strpos($result->data, '16605') !== false), 'Invalid file properties returned for edited mp4 file. Use debug for more information.'); // May have higher file-size than actual file due to JSON encoding
 
         // Test delete
         $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -185,7 +189,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(is_string($result->data));
+        $this->assertTrue(is_string($result->data), 'Could not delete mp4 file. Use debug for more information.');
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -204,7 +208,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue($result->data !== null && strpos($result->data, 'early_cinema.mp4') === false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'early_cinema.mp4') === false, 'Found mp4 file when it should have been deleted. Use debug for more information.');
 
         deldir_contents(get_custom_file_base() . '/uploads/filedump/xxx123', false, true);
 
@@ -218,7 +222,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(is_string($result->data));
+        $this->assertTrue(is_string($result->data), 'Failed to create folder. Use debug for more information.');
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -237,7 +241,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue($result->data !== null && strpos($result->data, 'xxx123') !== false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'xxx123') !== false, 'Failed to locate created folder. Use debug for more information.');
 
         // Test delete folder
         $result = cms_http_request($webdav_filedump_base_url . '/xxx123/', [
@@ -249,7 +253,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(is_string($result->data));
+        $this->assertTrue(is_string($result->data), 'Failed to delete folder. Use debug for more information.');
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -268,6 +272,6 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue($result->data !== null && strpos($result->data, 'xxx123') === false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'xxx123') === false, 'Expected not to see deleted folder, but we did. Use debug for more information.');
     }
 }

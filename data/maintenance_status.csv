@@ -150,7 +150,7 @@ theme_wizard,Theme Wizard,Composr Core Development Team,Composr Core Development
 theme_wizard_extreme_seeds,Theme Wizard: Extreme seeds,Composr Core Development Team,,Using extremely bright seeds on a light theme or extremely dark seeds on a dark theme may result in elements which are hard to see.,No,
 dark_mode,Theme Wizard: Dark themes,Composr Core Development Team,Composr Core Development Team,It is easy for dark theme support to break if not tested after any CSS changes.,No,
 gravatar,Gravatar,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,
-email_integration,E-mail integration,Composr Core Development Team,,Not regularly tested for all e-mail environments and set-ups.,No,
+email_integration,E-mail integration,Composr Core Development Team,,Not regularly tested for all e-mail environments and setups.,No,
 http_proxy,HTTP proxy support,Composr Core Development Team,,Not regularly tested due to needing a testing platform.,No,
 ratings_structure,Ratings structure,,,Not regularly tested. Only available via custom programming / the custom_ratings addon.,Yes,
 ffmpeg_thumbs,FFMPEG thumbnail generation,,,Not regularly tested. Could potentially break due to third-party changes.,No,

@@ -15,6 +15,8 @@
  * @package    testing_platform
  */
 
+// php _tests/index.php __resource_closing
+
 /**
  * Composr test case class (unit testing).
  */
@@ -25,6 +27,10 @@ class resource_closing_test_set extends cms_test_case
     public function setUp()
     {
         parent::setUp();
+
+        if (!is_cli()) {
+            warn_exit('This test should be run on the command line: php _tests/index.php __resource_closing.');
+        }
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 

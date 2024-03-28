@@ -8466,6 +8466,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUNITIVE_ACTION_ALREADY_UNDONE
         DESCRIPTION_PUNITIVE_POINTS_TRANSACTIONS
         PUNITIVE_POINTS_TRANSACTIONS
+        UPGRADER_ADDON_INCOMPATIBLE
+        UPGRADER_RENAMED_ADDON_MESSAGE
     ')));
 
     $non_admin_files = [
