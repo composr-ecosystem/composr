@@ -644,14 +644,17 @@ class Module_admin_addons
     {
         appengine_live_guard();
 
+        disable_php_memory_limit();
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST); // get_url extends it further as needed
+
         require_code('uploads');
 
         $url_map = ['page' => '_SELF', 'type' => 'multi_action'];
 
         $__url = post_param_string('url', '', INPUT_FILTER_URL_GENERAL);
-        foreach (explode(',', $__url) as $i => $url) {
+        foreach (explode('%2C', $__url) as $i => $url) {
             if (is_numeric($url)) {
-                $_POST['url'] = 'https://composr.app/site/dload.php?id=' . $url;
+                $_POST['url'] = get_brand_base_url() . '/site/dload.php?id=' . strval($url);
             } else {
                 $_POST['url'] = $url; // In case it was submitted in array form, which is possible on some UAs (based on an automated bug report)
             }

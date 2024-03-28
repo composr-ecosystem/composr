@@ -501,7 +501,10 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
             $path2 = cms_tempnam();
             $tmpfile = fopen($path2, 'wb');
 
-            $http_result = cms_http_request($url[0], ['byte_limit' => $max_size, 'write_to_file' => $tmpfile]);
+            $old_time_limit = cms_extend_time_limit(60);
+            $http_result = cms_http_request($url[0], ['byte_limit' => $max_size, 'write_to_file' => $tmpfile, 'timeout' => 60.0]);
+            @cms_set_time_limit($old_time_limit);
+
             $file = $http_result->data;
             fclose($tmpfile);
             if ($file === null) {
