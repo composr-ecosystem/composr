@@ -189,50 +189,53 @@ class Module_admin_cmsusers
      */
     public function users() : object
     {
-        $_sort = get_param_string('sort', 'num_hits_per_day DESC');
-        list($sort, $dir) = explode(' ', $_sort);
-        $anti_dir = (($dir == 'ASC') ? 'DESC' : 'ASC');
+        require_code('templates_results_table');
+        require_code('form_templates');
 
-        $order_by = '';
-        switch ($sort) {
-            case 'website_name':
-                $order_by = ' ORDER BY website_name';
-                break;
+        $start = get_param_integer('start', 0);
+        $max = get_param_integer('max', 50);
 
-            case 'hittime':
-                $order_by = ' ORDER BY hittime';
-                break;
-
-            case 'l_version':
-                $order_by = ' ORDER BY l_version';
-                break;
-
-            case 'num_members':
-                $order_by = ' ORDER BY num_members';
-                break;
-
-            case 'num_hits_per_day':
-                $order_by = ' ORDER BY num_hits_per_day';
-                break;
-
-            default:
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        // Sortable validation
+        $sortables = [
+            'website_name' => do_lang_tempcode('CMS_WEBSITE_NAME'),
+            'hittime' => do_lang_tempcode('CMS_LAST_ADMIN_ACCESS'),
+            'l_version' => do_lang_tempcode('CMS_VERSION'),
+            'num_members' => do_lang_tempcode('CMS_COUNT_MEMBERS'),
+            'num_hits_per_day' => do_lang_tempcode('CMS_HITS_24_HRS'),
+        ];
+        $test = explode(' ', get_param_string('sort', 'hittime ASC', INPUT_FILTER_GET_COMPLEX), 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
         }
-        $order_by .= ' ' . $dir;
-
-        $max = 500;
+        list($sortable, $sort_order) = $test;
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+        $order_by = 'ORDER BY ' . $sortable . ' ' . $sort_order;
 
         $select = 'website_url,website_name,MAX(l_version) AS l_version,MAX(hittime) AS hittime,MAX(num_members) AS num_members,MAX(num_hits_per_day) AS num_hits_per_day';
-        $where = 'website_url NOT LIKE \'%.composr.info%\'';
+        $where = 'website_url NOT LIKE \'%.composr.info%\''; // LEGACY
         if (!$GLOBALS['DEV_MODE']) {
-            $where .= ' AND ' . db_string_not_equal_to('website_name', '') . ' AND ' . db_string_not_equal_to('website_name', '(unnamed)');
+            $where .= ' AND ' . db_string_not_equal_to('website_name', '') . ' AND ' . db_string_not_equal_to('website_name', 'localhost') . ' AND ' . db_string_not_equal_to('website_name', '(unnamed)');
         }
         $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ' GROUP BY website_url,website_name ' . $order_by;
-        $rows = $GLOBALS['SITE_DB']->query($sql, $max);
+        $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start);
+        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) AS num_sites FROM (SELECT DISTINCT website_name,website_url FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ') AS logged_sites');
+        $max_rows = $_max_rows[0]['num_sites'];
 
-        $seen_before = [];
+        $map = [
+            do_lang_tempcode('CMS_WEBSITE_NAME'),
+            do_lang_tempcode('CMS_LAST_ADMIN_ACCESS'),
+            do_lang_tempcode('CMS_STILL_INSTALLED'),
+            do_lang_tempcode('CMS_VERSION'),
+            do_lang_tempcode('CMS_PRIVACY'),
+            do_lang_tempcode('CMS_COUNT_MEMBERS'),
+            do_lang_tempcode('CMS_HITS_24_HRS'),
+        ];
+        $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
-        $_rows = [];
+        $result_entries = new Tempcode();
+
         foreach ($rows as $i => $r) {
             // Test that they give feature permission
             $url_parts = cms_parse_url_safe($r['website_url']);
@@ -246,20 +249,14 @@ class Module_admin_cmsusers
 
             $rt = [];
 
-            $rt['L_VERSION'] = $r['l_version'];
-
-            $rt['WEBSITE_URL'] = $r['website_url'];
-
-            $rt['WEBSITE_NAME'] = $r['website_name'];
-
             $rt['HITTIME'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60)));
             $rt['HITTIME_2'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60 / 24)));
 
             if ($i < 100) {
-                $active = get_value_newer_than('testing__' . $r['website_url'] . '/_config.php', time() - 60 * 60 * 10, true);
+                $active = get_value_newer_than('testing__' . $r['website_url'] . '/data/installed.php', time() - 60 * 60 * 10, true);
                 if ($active === null) {
-                    $test = cms_http_request($r['website_url'] . '/_config.php', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 0, 'ua' => 'Simple install stats', 'timeout' => 2.0]);
-                    if ($test->data !== null) {
+                    $test = cms_http_request($r['website_url'] . '/data/installed.php', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => (1024 * 4), 'ua' => get_brand_base_url() . ' install stats', 'timeout' => 3.0]);
+                    if ($test->data === 'Yes') {
                         $active = do_lang('YES');
                     } else {
                         $active = @strval($test->message);
@@ -269,7 +266,7 @@ class Module_admin_cmsusers
                             $active .= do_lang('CMS_WHEN_CHECKING');
                         }
                     }
-                    set_value('testing__' . $r['website_url'] . '/_config.php', $active, true);
+                    set_value('testing__' . $r['website_url'] . '/data/files.bin', $active, true);
                 }
                 $rt['CMS_ACTIVE'] = $active;
             } else {
@@ -282,20 +279,35 @@ class Module_admin_cmsusers
 
             $rt['NUM_HITS_PER_DAY'] = integer_format($r['num_hits_per_day']);
 
-            $_rows[] = $rt;
+            $current = $GLOBALS['SITE_DB']->query_select('logged', ['l_version', 'num_members', 'num_hits_per_day', 'hittime'], ['url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
+
+            $map = [
+                hyperlink($r['website_url'], $r['website_name'], true, true, $r['website_url']),
+                do_lang_tempcode(
+                    '_CMS_LAST_ADMIN_ACCESS',
+                    escape_html(do_lang('_AGO', do_lang('DAYS', integer_format($rt['HITTIME_2'])))),
+                    escape_html(do_lang('_AGO', do_lang('HOURS', integer_format($rt['HITTIME']))))
+                ),
+                $rt['CMS_ACTIVE'],
+                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html($current[0]['l_version']), escape_html($r['l_version'])),
+                $rt['NOTE'],
+                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['num_members'])), escape_html($rt['NUM_MEMBERS'])),
+                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['num_hits_per_day'])), escape_html($rt['NUM_HITS_PER_DAY'])),
+            ];
+
+            $result_entries->attach(results_entry($map, true));
         }
 
-        return do_template('CMS_SITES_SCREEN', [
-            '_GUID' => '7f4b56c730f2b613994a3fe6f00ed525',
-            'TITLE' => $this->title,
-            'ROWS' => $_rows,
+        $results_table = results_table(do_lang_tempcode('CMS_SITES_INSTALLED'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
-            'WEBSITE_NAME_DIR' => ($sort == 'website_name') ? $anti_dir : 'ASC',
-            'HITTIME_DIR' => ($sort == 'hittime') ? $anti_dir : 'DESC',
-            'L_VERSION_DIR' => ($sort == 'l_version') ? $anti_dir : 'ASC',
-            'NUM_MEMBERS_DIR' => ($sort == 'num_members') ? $anti_dir : 'DESC',
-            'NUM_HITS_PER_DAY_DIR' => ($sort == 'num_hits_per_day') ? $anti_dir : 'DESC',
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '869126427270bea53365b807dfbb6878',
+            'TITLE' => $this->title,
+            'RESULTS_TABLE' => $results_table,
         ]);
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
     }
 
     /**
