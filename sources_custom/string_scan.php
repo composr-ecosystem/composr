@@ -8468,6 +8468,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUNITIVE_POINTS_TRANSACTIONS
         UPGRADER_ADDON_INCOMPATIBLE
         UPGRADER_RENAMED_ADDON_MESSAGE
+        TOO_MANY_TASKS
     ')));
 
     $non_admin_files = [

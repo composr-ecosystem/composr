@@ -55,6 +55,11 @@ class Hook_cron_tasks
      */
     public function queued_details_tooltip() : object
     {
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)', []);
+        if ($max_rows >= 300) {
+            require_lang('tasks');
+            return do_lang_tempcode('TOO_MANY_TASKS');
+        }
         $rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['id', 't_title', 't_member_id', 't_locked', 't_add_time'], [], 'ORDER BY t_add_time');
 
         require_code('templates_columned_table');
