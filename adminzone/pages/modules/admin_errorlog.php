@@ -507,8 +507,15 @@ class Module_admin_errorlog
             }
 
             $locked = get_value('cron_currently_running__' . $hook, '0', true);
+            $locked_status = do_lang_tempcode('NO');
             if ($locked == '1') {
-                attach_message(do_lang_tempcode('LOCKED_HOOKS'), 'warn');
+                $probably_slow = get_value_newer_than('cron_currently_running__' . $hook, time() - 60, true);
+                if ($probably_slow === null) { // Do not warn if the hook was locked less than 60 seconds ago
+                    $locked_status = do_lang_tempcode('YES');
+                    attach_message(do_lang_tempcode('LOCKED_HOOKS'), 'warn');
+                } else {
+                    $locked_status = do_lang_tempcode('IS_LOCKED_RUNNING');
+                }
             }
 
             $_result_entries[$label] = [
@@ -519,7 +526,7 @@ class Module_admin_errorlog
                 ($last_execution_secs === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($last_execution_secs))),
                 ($last_error == '') ? do_lang_tempcode('NONE_EM') : make_string_tempcode(escape_html($last_error)),
                 do_lang_tempcode($enabled ? 'YES' : 'NO'),
-                do_lang_tempcode(($locked == '1') ? 'YES' : 'NO'),
+                $locked_status,
                 $actions,
             ];
         }

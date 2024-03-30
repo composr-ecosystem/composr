@@ -113,7 +113,7 @@ The menu editor is covered in the [page="_SEARCH:tut_menus"]Customising what's o
 
 [title="2"]The system scheduler[/title]
 
-In order for aspects of Composr that support scheduling to work it is necessary to set up a system level scheduling task to run the [tt]data/cron_bridge.php[/tt] file on an every-minute basis. By doing this, you tie in Composr's system scheduler with the server's scheduler.
+In order for aspects of Composr that support scheduling to work it is necessary to set up a system level scheduling task to run the [tt]data/cron_bridge.php[/tt] file at least every 10 minutes. By doing this, you tie in Composr's system scheduler with the server's scheduler.
 
 Examples of scheduling scripts:
  - Sending out calendar event notifications
@@ -125,6 +125,11 @@ Examples of scheduling scripts:
  - Sending out reminders for registration confirmation mails that were not ever actioned by the joining member
  - Sending out automatic newsletters
  - Sending newsletters (dripping out e-mails over a period of time, to stop resource spiking)
+ - Processing tasks that are in the queue (if the task queue is enabled)
+ - Running purges, such as logs, personal data (privacy), and cache
+ - Running the Health Check
+ - Processing statistics
+ - Updating the sitemap
 
 The [tt]data/cron_bridge.php[/tt] file can either be run by passing the PHP file through the PHP interpreter (common), or by calling the URL (see "Help -- my webhost does not support Cron!"). More details are in the following sections. Don't call up the URL by hand then never finish configuring it, because if you do then Composr will start assuming the system scheduler is working from then on which can make testing it a bit harder (once it is called once it is marked 'working' by the system -- applicable features will become available, and the todo item will be removed from the checklist on the front page of the Admin Zone).
 
@@ -226,6 +231,7 @@ A system scheduler management interface is provided at Admin Zone > Audit > Low-
  - Amount of time the script took to execute
  - Errors encountered
  - Whether it is enabled
+ - Whether it is locked (this either means it is running now or it suffered a critical error; in the latter case the hook will not run again for 24 hours unless manually run)
  - Action buttons to enable/disable scripts or to execute scripts on-demand individually
 
 [title="2"]Closed site, and opening[/title]

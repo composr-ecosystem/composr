@@ -480,7 +480,7 @@ function cron_bridge_script(string $caller)
             }
 
             // Run, with basic locking support
-            if ((get_value_newer_than('cron_currently_running__' . $hook, time() - 60 * 60 * 5/*huge 5 hour timeout in case a particular hook is badly broken and we do not want frequent trip ups*/, true) !== '1') || ($force)) {
+            if ((get_value_newer_than('cron_currently_running__' . $hook, time() - 60 * 60 * 24/*huge 24 hour timeout in case a particular hook is badly broken and we do not want frequent trip ups*/, true) !== '1') || ($force)) {
                 // Update log to say starting
                 $log_message = loggable_date() . '  STARTING ' . $hook . ' (' . $info['label'] . ')' . "\n";
                 if ($verbose) {
