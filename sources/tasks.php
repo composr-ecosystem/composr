@@ -130,6 +130,7 @@ function execute_task_background(array $task_row)
             'task_queue',
             [
                 't_locked' => 0,
+                't_add_time' => time(), // Act like we re-added this to the queue so it effectively goes to the bottom of processing order
             ],
             [
                 'id' => $task_row['id'],
