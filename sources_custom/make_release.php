@@ -1109,6 +1109,8 @@ function guid_scan_init()
     $FOUND_GUID = [];
     $GUID_LANDSCAPE = [];
 
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
     require_code('files');
 }
 
