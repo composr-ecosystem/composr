@@ -60,7 +60,7 @@ class Hook_cron_tasks
             require_lang('tasks');
             return do_lang_tempcode('TOO_MANY_TASKS');
         }
-        $rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['id', 't_title', 't_member_id', 't_locked', 't_add_time'], [], 'ORDER BY t_add_time');
+        $rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['id', 't_title', 't_member_id', 't_locked', 't_add_time'], [], 'ORDER BY t_add_time ASC');
 
         require_code('templates_columned_table');
         $header_row = columned_table_header_row([
@@ -92,7 +92,8 @@ class Hook_cron_tasks
      */
     public function run(?int $last_run)
     {
-        $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0]);
+        $max = 50; // TODO: Make a config option
+        $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0], ' ORDER BY t_add_time ASC', $max);
         if (!empty($task_rows)) {
             require_code('tasks');
             require_code('notifications'); // Needed as a task may require the notification object, and any class that has a deserialised reference needs to be loaded first to avoid being an 'incomplete object'
