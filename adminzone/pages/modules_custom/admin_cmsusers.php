@@ -242,7 +242,7 @@ class Module_admin_cmsusers
             if (!array_key_exists('host', $url_parts)) {
                 continue;
             }
-            $perm = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'id', ['url' => $url_parts['scheme'] . '://' . $url_parts['host']]);
+            $perm = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'id', ['website_url' => $url_parts['scheme'] . '://' . $url_parts['host']]);
             if (($perm === null) && (get_param_integer('no_feature', 0) == 1)) {
                 continue;
             }
@@ -279,7 +279,7 @@ class Module_admin_cmsusers
 
             $rt['NUM_HITS_PER_DAY'] = integer_format($r['num_hits_per_day']);
 
-            $current = $GLOBALS['SITE_DB']->query_select('logged', ['l_version', 'num_members', 'num_hits_per_day', 'hittime'], ['url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
+            $current = $GLOBALS['SITE_DB']->query_select('logged', ['l_version', 'num_members', 'num_hits_per_day', 'hittime'], ['website_url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
 
             $map = [
                 hyperlink($r['website_url'], $r['website_name'], true, true, $r['website_url']),
