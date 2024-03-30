@@ -507,6 +507,9 @@ class Module_admin_errorlog
             }
 
             $locked = get_value('cron_currently_running__' . $hook, '0', true);
+            if ($locked == '1') {
+                attach_message(do_lang_tempcode('LOCKED_HOOKS'), 'warn');
+            }
 
             $_result_entries[$label] = [
                 $_label,
