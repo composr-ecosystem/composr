@@ -266,7 +266,7 @@ class Module_admin_cmsusers
                             $active .= do_lang('CMS_WHEN_CHECKING');
                         }
                     }
-                    set_value('testing__' . $r['website_url'] . '/data/files.bin', $active, true);
+                    set_value('testing__' . $r['website_url'] . '/data/installed.php', $active, true);
                 }
                 $rt['CMS_ACTIVE'] = $active;
             } else {
