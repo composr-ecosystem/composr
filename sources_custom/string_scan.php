@@ -8470,6 +8470,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_RENAMED_ADDON_MESSAGE
         TOO_MANY_TASKS
         LOCKED
+        LOCKED_HOOKS
+        IS_LOCKED_RUNNING
     ')));
 
     $non_admin_files = [
