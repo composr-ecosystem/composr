@@ -8469,6 +8469,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_ADDON_INCOMPATIBLE
         UPGRADER_RENAMED_ADDON_MESSAGE
         TOO_MANY_TASKS
+        LOCKED
     ')));
 
     $non_admin_files = [

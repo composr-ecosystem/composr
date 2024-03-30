@@ -403,6 +403,14 @@ class Module_admin_errorlog
      */
     public function show_cron_progression_table() : object
     {
+        // Upgrade pending?
+        require_code('version');
+        $version_files = float_to_raw_string(cms_version_number(), 10, true);
+        $version_db = strval(cms_version_time_db());
+        if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files) || (get_value('db_version', '', true) != $version_db)) {
+            attach_message(do_lang_tempcode('CRON_UPGRADE_PENDING'), 'warn');
+        }
+
         require_code('templates_results_table');
         $_header_row = [
             do_lang_tempcode('LABEL'),
@@ -412,6 +420,7 @@ class Module_admin_errorlog
             do_lang_tempcode('TIME'),
             do_lang_tempcode('ERRORS'),
             do_lang_tempcode('ENABLED'),
+            do_lang_tempcode('LOCKED'),
             do_lang_tempcode('ACTIONS'),
         ];
         $header_row = results_header_row($_header_row);
@@ -497,6 +506,8 @@ class Module_admin_errorlog
                 }
             }
 
+            $locked = get_value('cron_currently_running__' . $hook, '0', true);
+
             $_result_entries[$label] = [
                 $_label,
                 $queue,
@@ -505,6 +516,7 @@ class Module_admin_errorlog
                 ($last_execution_secs === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($last_execution_secs))),
                 ($last_error == '') ? do_lang_tempcode('NONE_EM') : make_string_tempcode(escape_html($last_error)),
                 do_lang_tempcode($enabled ? 'YES' : 'NO'),
+                do_lang_tempcode(($locked == '1') ? 'YES' : 'NO'),
                 $actions,
             ];
         }
