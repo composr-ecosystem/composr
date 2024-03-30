@@ -242,7 +242,7 @@ class Module_admin_cmsusers
             if (!array_key_exists('host', $url_parts)) {
                 continue;
             }
-            $perm = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'id', ['website_url' => $url_parts['scheme'] . '://' . $url_parts['host']]);
+            $perm = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'id', ['url' => $url_parts['scheme'] . '://' . $url_parts['host']]);
             if (($perm === null) && (get_param_integer('no_feature', 0) == 1)) {
                 continue;
             }
