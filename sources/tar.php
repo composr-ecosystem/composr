@@ -147,7 +147,7 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
                 if ($tolerate_errors) {
                     return null;
                 }
-                warn_exit(do_lang_tempcode('CORRUPT_TAR'));
+                warn_exit(do_lang_tempcode('CORRUPT_TAR'), false, true);
             }
             $mode = octdec(trim($_mode));
             $size = octdec(rtrim(substr($header, 124, 12)));
