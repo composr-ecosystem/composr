@@ -44,8 +44,10 @@ class tar_test_set extends cms_test_case
         if ($_dir !== null) {
             $dir = array_values($_dir);
             $this->assertTrue(count($dir) == 1, 'Expected exactly 1 directory but got ' . strval(count($dir)));
-            $this->assertTrue($dir[0]['path'] == $file1, 'Expected path to match test but it did not.');
-            $this->assertTrue($dir[0]['size'] == strlen($to_write1), 'Expected directory size to be ' . strval(strlen($to_write1)) . ' but it was ' . strval($dir[0]['size']));
+            if (array_key_exists(0, $dir)) {
+                $this->assertTrue($dir[0]['path'] == $file1, 'Expected path to match test but it did not.');
+                $this->assertTrue($dir[0]['size'] == strlen($to_write1), 'Expected directory size to be ' . strval(strlen($to_write1)) . ' but it was ' . strval($dir[0]['size']));
+            }
         }
 
         $c = tar_get_file($myfile, $file1);
@@ -70,8 +72,10 @@ class tar_test_set extends cms_test_case
         if ($_dir !== null) {
             $dir = array_values($_dir);
             $this->assertTrue(count($dir) == 2, 'Expected exactly 2 directories but got ' . strval(count($dir)));
-            $this->assertTrue($dir[0]['path'] == $file2, 'Expected path to match sample.txt but it did not.');
-            $this->assertTrue($dir[0]['size'] == strlen($to_write2), 'Expected directory size to be ' . strval(strlen($to_write2)) . ' but it was ' . strval($dir[0]['size']));
+            if (array_key_exists(1, $dir)) {
+                $this->assertTrue($dir[1]['path'] == $file2, 'Expected path to match sample.txt but it did not.');
+                $this->assertTrue($dir[1]['size'] == strlen($to_write2), 'Expected directory size to be ' . strval(strlen($to_write2)) . ' but it was ' . strval($dir[0]['size']));
+            }
         }
 
         $c = tar_get_file($myfile, $file2);
@@ -96,8 +100,10 @@ class tar_test_set extends cms_test_case
         if ($_dir !== null) {
             $dir = array_values($_dir);
             $this->assertTrue(count($dir) == 3, 'Expected exactly 3 directories but got ' . strval(count($dir)));
-            $this->assertTrue($dir[0]['path'] == $file3, 'Expected path to match zero/bytes.txt but it did not.');
-            $this->assertTrue($dir[0]['size'] == strlen($to_write3), 'Expected directory size to be ' . strval(strlen($to_write3)) . ' but it was ' . strval($dir[0]['size']));
+            if (array_key_exists(2, $dir)) {
+                $this->assertTrue($dir[2]['path'] == $file3, 'Expected path to match zero/bytes.txt but it did not.');
+                $this->assertTrue($dir[2]['size'] == strlen($to_write3), 'Expected directory size to be ' . strval(strlen($to_write3)) . ' but it was ' . strval($dir[0]['size']));
+            }
         }
 
         $c = tar_get_file($myfile, $file3);
@@ -109,7 +115,7 @@ class tar_test_set extends cms_test_case
         @unlink($path);
     }
 
-    public function testZeroByteTar()
+    public function testEmptyTar()
     {
         $path = cms_tempnam();
 
@@ -137,6 +143,7 @@ class tar_test_set extends cms_test_case
         $path = cms_tempnam();
 
         $myfile = tar_open($path, 'wb');
+        tar_add_file($myfile, $file1, $to_write1);
         tar_close($myfile);
 
         $myfile = tar_open($path, 'rb');
@@ -146,8 +153,10 @@ class tar_test_set extends cms_test_case
         if ($_dir !== null) {
             $dir = array_values($_dir);
             $this->assertTrue(count($dir) == 1, 'Expected exactly 1 directory but got ' . strval(count($dir)));
-            $this->assertTrue($dir[0]['path'] == $file1, 'Expected path to match test but it did not.');
-            $this->assertTrue($dir[0]['size'] == strlen($to_write1), 'Expected directory size to be ' . strval(strlen($to_write1)) . ' but it was ' . strval($dir[0]['size']));
+            if (array_key_exists(0, $dir)) {
+                $this->assertTrue($dir[0]['path'] == $file1, 'Expected path to match test but it did not.');
+                $this->assertTrue($dir[0]['size'] == strlen($to_write1), 'Expected directory size to be ' . strval(strlen($to_write1)) . ' but it was ' . strval($dir[0]['size']));
+            }
         }
 
         $c = tar_get_file($myfile, $file1);
@@ -167,6 +176,7 @@ class tar_test_set extends cms_test_case
         $path = cms_tempnam();
 
         $myfile = tar_open($path, 'wb');
+        tar_add_file($myfile, $file1, $to_write1);
         tar_close($myfile);
 
         $myfile = tar_open($path, 'rb');
@@ -176,8 +186,10 @@ class tar_test_set extends cms_test_case
         if ($_dir !== null) {
             $dir = array_values($_dir);
             $this->assertTrue(count($dir) == 1, 'Expected exactly 1 directory but got ' . strval(count($dir)));
-            $this->assertTrue($dir[0]['path'] == $file1, 'Expected path to match test but it did not.');
-            $this->assertTrue($dir[0]['size'] == strlen($to_write1), 'Expected directory size to be ' . strval(strlen($to_write1)) . ' but it was ' . strval($dir[0]['size']));
+            if (array_key_exists(0, $dir)) {
+                $this->assertTrue($dir[0]['path'] == $file1, 'Expected path to match test but it did not.');
+                $this->assertTrue($dir[0]['size'] == strlen($to_write1), 'Expected directory size to be ' . strval(strlen($to_write1)) . ' but it was ' . strval($dir[0]['size']));
+            }
         }
 
         $c = tar_get_file($myfile, $file1);
