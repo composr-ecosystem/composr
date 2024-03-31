@@ -100,6 +100,9 @@ class Hook_cron_tasks
 
         $forced = get_param_integer('force', '0') == '1';
         $where = [];
+        if (!$forced) {
+            $where = ['t_locked' => 0];
+        }
 
         // Optimisation: Exit immediately if there is nothing to do
         $num_task_rows = $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)', $where);
@@ -114,9 +117,6 @@ class Hook_cron_tasks
         $_task_rows = [];
         do {
             // Load in tasks in batches of 100
-            if (!$forced) {
-                $where = ['t_locked' => 0];
-            }
             if (empty($_task_rows)) {
                 $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], $where, ' ORDER BY t_add_time ASC', 100);
             }
