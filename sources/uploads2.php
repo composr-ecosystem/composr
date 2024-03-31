@@ -39,8 +39,9 @@ function init__uploads2()
  * @param  boolean $append_content_type_to_upload_dir "$upload_directory" should become "$upload_directory/$content_type"
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  * @param  ?array $fake_cma_info A map of CMA info overriddes, for complicated cases (null: real info from $content_type)
+ * @return array A map of db_table:id to the new upload URL
  */
-function reorganise_uploads(string $content_type, string $upload_directory, string $upload_field, ?array $where = [], bool $append_content_type_to_upload_dir = false, bool $tolerate_errors = false, ?array $fake_cma_info = null)
+function reorganise_uploads(string $content_type, string $upload_directory, string $upload_field, ?array $where = [], bool $append_content_type_to_upload_dir = false, bool $tolerate_errors = false, ?array $fake_cma_info = null) : array
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
 
@@ -48,7 +49,7 @@ function reorganise_uploads(string $content_type, string $upload_directory, stri
 
     if (($reorganise_uploads === null) || ($reorganise_uploads == '0')) {
         $REORGANISE_UPLOADS_ERRORMSGS[] = 'NOTICE: reorganise_uploads option disabled';
-        return;
+        return [];
     }
     $flat = ($reorganise_uploads == '1');
 
@@ -57,7 +58,7 @@ function reorganise_uploads(string $content_type, string $upload_directory, stri
     if ($fake_cma_info === null) {
         $cma_info = $cma_ob->info();
         if ($cma_info === null) { // Possibly in process of reinstalling a module
-            return;
+            return [];
         }
         $table = $cma_info['table'];
         $table_extended = $table;
@@ -69,6 +70,8 @@ function reorganise_uploads(string $content_type, string $upload_directory, stri
 
     $select = [$upload_field];
     append_content_select_for_fields($select, $cma_info, ['id', 'title', 'parent_category']);
+
+    $ret = [];
 
     $start = 0;
     $max = 100;
@@ -108,6 +111,7 @@ function reorganise_uploads(string $content_type, string $upload_directory, stri
                 $_id_field = preg_replace('#^\w+\.#', '', $cma_info['id_field']);
                 $update_where = [$_id_field => $row[$_id_field]];
                 $cma_info['db']->query_update($table, $update, $update_where, '', 1);
+                $ret[$table_extended . ':' . strval($row[$_id_field])] = $new_upload_url;
             }
         }
         $start += $max;
@@ -117,6 +121,8 @@ function reorganise_uploads(string $content_type, string $upload_directory, stri
     if (empty($where)) {
         clean_empty_upload_directories($upload_directory);
     }
+
+    return $ret;
 }
 
 /**

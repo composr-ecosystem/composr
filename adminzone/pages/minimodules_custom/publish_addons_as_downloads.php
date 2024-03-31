@@ -70,6 +70,8 @@ $c_main_id = find_addon_category_download_category($target_cat);
 // Addons...
 
 if (get_param_integer('import_addons', 1) == 1) {
+    set_mass_import_mode(true);
+
     $addon_count = 0;
 
     $categories = find_addon_category_list();
@@ -82,6 +84,8 @@ if (get_param_integer('import_addons', 1) == 1) {
         }
     }
 
+    set_mass_import_mode(false);
+
     if ($addon_count == 0) {
         echo '<p>No addons to import.</p>';
     } else {
@@ -92,6 +96,8 @@ if (get_param_integer('import_addons', 1) == 1) {
 // Now themes...
 
 if (get_param_integer('import_themes', 1) == 1) {
+    set_mass_import_mode(true);
+
     $cat_id = find_addon_category_download_category('Themes', $c_main_id);
     $cat_id = find_addon_category_download_category('Professional Themes', $cat_id);
 
@@ -105,6 +111,8 @@ if (get_param_integer('import_themes', 1) == 1) {
         }
     }
     closedir($dh);
+
+    set_mass_import_mode(false);
 
     if ($theme_count == 0) {
         echo '<p>No themes to import.</p>';
