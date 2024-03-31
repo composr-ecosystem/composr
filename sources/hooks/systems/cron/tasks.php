@@ -92,6 +92,8 @@ class Hook_cron_tasks
      */
     public function run(?int $last_run)
     {
+        global $QUERY_COUNT;
+
         $start_time = microtime(true);
         $elapsed_time = 0.0;
         $max_time = 10.0; // TODO: Config option
@@ -110,7 +112,7 @@ class Hook_cron_tasks
         do {
             // Load in tasks in batches of 50
             if (empty($_task_rows)) {
-                $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0], ' ORDER BY t_add_time ASC', 50);
+                $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0], ' ORDER BY t_add_time ASC', 100);
             }
 
             // No more tasks to process
@@ -137,6 +139,6 @@ class Hook_cron_tasks
             execute_task_background($task_row);
 
             $elapsed_time = microtime(true) - $start_time;
-        } while ($elapsed_time < $max_time);
+        } while (($elapsed_time < $max_time) && ($QUERY_COUNT < (DEV_MODE_QUERY_LIMIT - 100))); // Also stop if we are approaching DEV_MODE_QUERY_LIMIT queries
     }
 }
