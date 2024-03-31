@@ -105,7 +105,7 @@ function execute_task_background(array $task_row)
     require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
     $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
     task_log_open();
-    task_log(null, 'Starting task ' . $hook);
+    task_log(null, 'Starting task ' . $hook . ' with args ' . $task_row['t_args']);
     $mim_before = get_mass_import_mode();
     $result = call_user_func_array([$ob, 'run'], $args);
     set_mass_import_mode($mim_before);
