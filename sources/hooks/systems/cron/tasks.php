@@ -92,30 +92,51 @@ class Hook_cron_tasks
      */
     public function run(?int $last_run)
     {
-        $max = 50; // TODO: Make a config option
-        $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0], ' ORDER BY t_add_time ASC', $max);
-        if (!empty($task_rows)) {
-            require_code('tasks');
-            require_code('notifications'); // Needed as a task may require the notification object, and any class that has a deserialised reference needs to be loaded first to avoid being an 'incomplete object'
+        $start_time = microtime(true);
+        $elapsed_time = 0.0;
+        $max_time = 10.0; // TODO: Config option
 
-            foreach ($task_rows as $task_row) {
-                $GLOBALS['SITE_DB']->query_update(
-                    'task_queue',
-                    [
-                        't_locked' => 1,
-                    ],
-                    [
-                        'id' => $task_row['id'],
-                    ],
-                    '',
-                    1
-                );
-
-                require_code('files');
-                //$url = find_script('tasks') . '?id=' . strval($task_row['id']) . '&secure_ref=' . urlencode($task_row['t_secure_ref']);
-                //http_get_contents($url);
-                execute_task_background($task_row);
-            }
+        // Optimisation: Exit immediately if there is nothing to do
+        $num_task_rows = $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)', ['t_locked' => 0]);
+        if ($num_task_rows == 0) {
+            return;
         }
+
+        require_code('tasks');
+        require_code('notifications'); // Needed as a task may require the notification object, and any class that has a deserialised reference needs to be loaded first to avoid being an 'incomplete object'
+        require_code('files');
+
+        $_task_rows = [];
+        do {
+            // Load in tasks in batches of 50
+            if (empty($_task_rows)) {
+                $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0], ' ORDER BY t_add_time ASC', 50);
+            }
+
+            // No more tasks to process
+            if (empty($_task_rows)) {
+                break;
+            }
+
+            $task_row = array_shift($_task_rows);
+
+            $GLOBALS['SITE_DB']->query_update(
+                'task_queue',
+                [
+                    't_locked' => 1,
+                ],
+                [
+                    'id' => $task_row['id'],
+                ],
+                '',
+                1
+            );
+
+            //$url = find_script('tasks') . '?id=' . strval($task_row['id']) . '&secure_ref=' . urlencode($task_row['t_secure_ref']);
+            //http_get_contents($url);
+            execute_task_background($task_row);
+
+            $elapsed_time = microtime(true) - $start_time;
+        } while ($elapsed_time < $max_time);
     }
 }
