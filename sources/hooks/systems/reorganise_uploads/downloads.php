@@ -33,7 +33,23 @@ class Hook_reorganise_uploads_downloads
         }
 
         require_code('downloads2');
+        require_code('tasks');
+        require_lang('downloads');
+
         reorganise_uploads__download_categories([], true);
-        reorganise_uploads__downloads([], true);
+
+        $reorganise_uploads = reorganise_uploads__downloads([], true);
+        foreach ($reorganise_uploads as $db_id => $new_url) {
+            if (strpos($db_id, 'download_downloads:') !== 0) {
+                continue;
+            }
+
+            $parts = explode(':', $db_id);
+            $id = intval($parts[1]);
+
+            $original_filename = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'original_filename', ['id' => $id]);
+
+            call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), null, 'index_download', [$id, $new_url, $original_filename], false, false, false);
+        }
     }
 }

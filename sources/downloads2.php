@@ -552,9 +552,12 @@ function create_data_mash(string $url, ?string $data = null, ?string $extension 
                     fclose($myfile);
                 } else {
                     $data = cms_file_get_contents_safe($actual_path, FILE_READ_LOCK);
+                    if ($data === false) {
+                        return '';
+                    }
                 }
             } else {
-                $data = '';
+                return '';
             }
         } else {
             switch ($extension) {
@@ -579,6 +582,11 @@ function create_data_mash(string $url, ?string $data = null, ?string $extension 
                 return '';
             }
         }
+    }
+
+    // Sanity check: if data is still not a string, or for optimisation if it is blank, then we should not proceed.
+    if (!is_string($data) || $data == '') {
+        return '';
     }
 
     $mash = '';
@@ -940,7 +948,7 @@ function add_download(int $category_id, string $name, string $url, string $descr
     }
 
     $map = [
-        'download_data_mash' => '',
+        'download_data_mash' => '', // Will be populated later
         'download_licence' => $licence,
         'rep_image' => '',
         'edit_date' => $edit_date,
@@ -975,9 +983,15 @@ function add_download(int $category_id, string $name, string $url, string $descr
         $id = $GLOBALS['SITE_DB']->query_insert('download_downloads', $map, true);
     }
 
+    $reorganise_uploads = reorganise_uploads__downloads(['id' => $id]);
+    $actual_url = $url;
+    if (array_key_exists('download_downloads:' . strval($id), $reorganise_uploads)) {
+        $actual_url = $reorganise_uploads['download_downloads:' . strval($id)];
+    }
+
     require_code('tasks');
     require_lang('downloads');
-    call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), null, 'index_download', [$id, $url, $original_filename], false, false, false);
+    call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), null, 'index_download', [$id, $actual_url, $original_filename], false, false, false);
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
@@ -1019,8 +1033,6 @@ function add_download(int $category_id, string $name, string $url, string $descr
         $mail = do_notification_lang('DOWNLOAD_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($name), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('download', strval($category_id), $subject, $mail, $privacy_limits);
     }
-
-    reorganise_uploads__downloads(['id' => $id]);
 
     log_it('ADD_DOWNLOAD', strval($id), $name);
 
@@ -1165,12 +1177,6 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
     require_code('files2');
     delete_upload('uploads/downloads', 'download_downloads', 'url', 'id', $id, $url);
 
-    if (!fractional_edit()) {
-        require_code('tasks');
-        require_lang('downloads');
-        call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), null, 'index_download', [$id, $url, $original_filename], false, false, false);
-    }
-
     if (!addon_installed('validation')) {
         $validated = 1;
     }
@@ -1239,7 +1245,18 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
         dispatch_notification('download', strval($category_id), $subject, $mail, $privacy_limits);
     }
 
-    reorganise_uploads__downloads(['id' => $id]);
+    $reorganise_uploads = reorganise_uploads__downloads(['id' => $id]);
+
+    if (!fractional_edit()) {
+        $actual_url = $url;
+        if (array_key_exists('download_downloads:' . strval($id), $reorganise_uploads)) {
+            $actual_url = $reorganise_uploads['download_downloads:' . strval($id)];
+        }
+
+        require_code('tasks');
+        require_lang('downloads');
+        call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), null, 'index_download', [$id, $actual_url, $original_filename], false, false, false);
+    }
 
     log_it('EDIT_DOWNLOAD', strval($id), get_translated_text($myrow['name']));
 
@@ -1467,9 +1484,10 @@ function reorganise_uploads__download_categories(array $where = [], bool $tolera
  *
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
+ * @return array Map of db_table:id to the new upload URL
  */
-function reorganise_uploads__downloads(array $where = [], bool $tolerate_errors = false)
+function reorganise_uploads__downloads(array $where = [], bool $tolerate_errors = false) : array
 {
     require_code('uploads2');
-    reorganise_uploads('download', 'uploads/downloads', 'url', $where, false, $tolerate_errors);
+    return reorganise_uploads('download', 'uploads/downloads', 'url', $where, false, $tolerate_errors);
 }
