@@ -590,9 +590,9 @@ function step_3() : object
     if ($email == do_lang('EMAIL_ADDRESS')) {
         $email = ''; // In case was left as the label
     }
-    if (($email != '') || ($advertise_on == 1)) {
+    if (($email != '') || ($advertise_on == 2)) {
         require_code('files');
-        http_get_contents('https://composr.app/uploads/website_specific/composr.app/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . strval($advertise_on) . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
+        http_get_contents('https://composr.app/uploads/website_specific/composr.app/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . (($advertise_on == 2) ? '1' : '0') . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
     }
 
     // Forum chooser
@@ -2501,6 +2501,7 @@ function step_7() : object
     }
 
     set_option('send_error_emails_developers', strval(post_param_integer('send_error_emails_developers', 0)));
+    set_option('call_home', (post_param_integer('advertise_on', 0) != 0) ? '1' : '0');
 
     require_code('addons2');
     $addons = find_all_hooks('systems', 'addon_registry');

@@ -147,8 +147,9 @@ textarea.mono-textbox {
 	padding: 0.5em;
 }
 
-#install-newsletter + p {
+#install-newsletter p {
 	margin-top: 0;
+	max-width: 640px;
 }
 
 /* Step 2 */
