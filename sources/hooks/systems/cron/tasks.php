@@ -67,7 +67,7 @@ class Hook_cron_tasks
             do_lang_tempcode('IDENTIFIER'),
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('MEMBER'),
-            do_lang_tempcode('CURRENT'),
+            do_lang_tempcode('LOCKED'),
             do_lang_tempcode('ADDED'),
         ]);
 
@@ -98,8 +98,11 @@ class Hook_cron_tasks
         $elapsed_time = 0.0;
         $max_time = 10.0; // TODO: Config option
 
+        $forced = get_param_integer('force', '0') == '1';
+        $where = [];
+
         // Optimisation: Exit immediately if there is nothing to do
-        $num_task_rows = $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)', ['t_locked' => 0]);
+        $num_task_rows = $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)', $where);
         if ($num_task_rows == 0) {
             return;
         }
@@ -110,9 +113,12 @@ class Hook_cron_tasks
 
         $_task_rows = [];
         do {
-            // Load in tasks in batches of 50
+            // Load in tasks in batches of 100
+            if (!$forced) {
+                $where = ['t_locked' => 0];
+            }
             if (empty($_task_rows)) {
-                $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0], ' ORDER BY t_add_time ASC', 100);
+                $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], $where, ' ORDER BY t_add_time ASC', 100);
             }
 
             // No more tasks to process
