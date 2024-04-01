@@ -150,6 +150,8 @@ class Hook_addon_registry_cns_member_photos
             'themes/default/templates/CNS_EDIT_PHOTO_TAB.tpl',
             'uploads/cns_photos/.htaccess',
             'uploads/cns_photos/index.html',
+            'uploads/cns_photos_thumbs/.htaccess',
+            'uploads/cns_photos_thumbs/index.html',
         ];
     }
 
