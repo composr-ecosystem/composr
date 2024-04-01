@@ -42,15 +42,17 @@ class Hook_task_privacy_download
 
         require_code('privacy');
         require_code('tar');
+        require_code('files');
         require_code('files2');
+        require_code('urls');
 
         require_code('database_relations');
         $table_descriptions = get_table_descriptions();
 
+        // Pre-fill member ID and username
         if (($username == '') && ($member_id !== null)) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         }
-
         if (($member_id === null) && ($username != '')) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         }
@@ -62,15 +64,18 @@ class Hook_task_privacy_download
 
         push_db_scope_check(false);
 
+        // Loop through every privacy hook
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook_ob) {
             $details = $hook_ob->info();
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
+                    // Skip tables we are not downloading
                     if (!isset($table_actions[$table_name]) || ($table_actions[$table_name] != PRIVACY_METHOD__DOWNLOAD)) {
                         continue;
                     }
 
+                    // Prepare JSON data
                     $description = do_lang('UNKNOWN');
                     if (isset($table_descriptions[$table_name])) {
                         $description = $table_descriptions[$table_name];
@@ -80,8 +85,10 @@ class Hook_task_privacy_download
                         'table_description' => $description,
                         'retention_days' => $table_details['retention_days'],
                         'matched_records' => [],
+                        'files_included' => [],
                     ];
 
+                    // Get and process the data in batches
                     $db = get_db_for($table_name);
                     $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, PRIVACY_METHOD__DOWNLOAD, false, $username, $ip_addresses, $member_id, $email_address, $others);
                     if ($selection_sql != '') {
@@ -91,19 +98,40 @@ class Hook_task_privacy_download
                             $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql, $max, $start);
                             foreach ($rows as $_row) {
                                 if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
-                                    // We do not want to leak data from other users out to this user
+                                    // For records the member does not own, anonymise data not belonging to them, and do not proceed further to getting files
                                     $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
                                     $data['matched_records'][] = $hook_ob->serialise($table_name, $row);
                                     continue;
                                 }
                                 $data['matched_records'][] = $hook_ob->serialise($table_name, $_row);
+
+                                // (for records which the member is owner) note any personal files that should later be included
+                                foreach ($table_details['file_fields'] as $field) {
+                                    $url = $_row[$field];
+                                    $actual_path = (get_custom_file_base() . '/' . rawurldecode($url));
+                                    if (!url_is_local($url)) {
+                                        continue;
+                                    }
+                                    if (substr($url, 0, 8) !== 'uploads/') { // Ignore files which are not uploads
+                                        continue;
+                                    }
+                                    if (@file_exists($actual_path) === true) {
+                                        $data['files_included'][] = $url;
+                                    }
+                                }
                             }
 
                             $start += $max;
                         } while (!empty($rows));
                     }
-
                     $this->create_json_file($table_name, $data, $data_file);
+
+                    // Now add files to the archive
+                    foreach ($data['files_included'] as $file) {
+                        $actual_path = (get_custom_file_base() . '/' . rawurldecode($file));
+                        $data = cms_file_get_contents_safe($actual_path, FILE_READ_LOCK);
+                        tar_add_file($data_file, rawurldecode($file), $data);
+                    }
                 }
             }
         }

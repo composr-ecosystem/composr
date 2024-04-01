@@ -53,6 +53,7 @@ class Hook_privacy_patreon extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => [],
+                    'file_fields' => [],
                     'additional_anonymise_fields' => ['p_name'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,

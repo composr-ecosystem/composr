@@ -62,6 +62,7 @@ class privacy_hooks_test_set extends cms_test_case
                 'ip_address_fields',
                 'email_fields',
                 'username_fields',
+                'file_fields',
                 'additional_anonymise_fields',
                 'extra_where',
                 'removal_default_handle_method',
@@ -97,6 +98,7 @@ class privacy_hooks_test_set extends cms_test_case
                 $this->assertTrue(is_array($details['ip_address_fields']), 'Invalid ip_address_fields field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue(is_array($details['email_fields']), 'Invalid email_fields field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue(is_array($details['username_fields']), 'Invalid username_fields field in ' . $table . ' in hook ' . $hook);
+                $this->assertTrue(is_array($details['file_fields']), 'Invalid file_fields field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue(is_array($details['additional_anonymise_fields']), 'Invalid additional_anonymise_fields field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue($details['extra_where'] === null || is_string($details['extra_where']), 'Invalid extra_where field in ' . $table . ' in hook ' . $hook);
                 $this->assertTrue(is_integer($details['removal_default_handle_method']), 'Invalid removal_default_handle_method setting in ' . $table . ' in hook ' . $hook);
@@ -131,13 +133,14 @@ class privacy_hooks_test_set extends cms_test_case
                 sort($details['ip_address_fields']);
                 sort($details['email_fields']);
                 sort($details['username_fields']);
+                sort($details['file_fields']);
                 sort($details['additional_anonymise_fields']);
                 $details['hook'] = $hook; // FUDGE
                 $info['database_records'][$table] = $details;
                 $found_tables[$table] = $details;
             }
 
-            $this->assertTrue(strpos(serialize($info), 'TODO') === false);
+            $this->assertTrue(strpos(serialize($info), 'TODO') === false, 'TODO found in info for hook ' . $hook);
 
             // We need to check to be sure we're specifying certain data cannot be purged on the member screen
             $lang = do_lang($info['description'], null, null, null, null, false);
@@ -161,6 +164,7 @@ class privacy_hooks_test_set extends cms_test_case
             $relevant_fields_email = [];
             $relevant_fields_username = [];
             $relevant_fields_time = [];
+            $relevant_fields_url = [];
             $fields_should_anonymise = [];
             $primary_key_fields = [];
             foreach ($all_fields as $name => $type) {
@@ -178,6 +182,9 @@ class privacy_hooks_test_set extends cms_test_case
                 }
                 if (preg_match('#^[\*\?]*(TIME)$#', $type) != 0) {
                     $relevant_fields_time[$name] = $type;
+                }
+                if (preg_match('#^[\*\?]*(URLPATH)$#', $type) != 0) {
+                    $relevant_fields_url[$name] = $type;
                 }
                 if (preg_match('#^\*#', $type) != 0) {
                     $primary_key_fields[$name] = $type;
@@ -266,6 +273,11 @@ class privacy_hooks_test_set extends cms_test_case
                 if (!in_array($table, $exceptions)) {
                     $this->assertTrue(array_keys($relevant_fields_username) == $found_tables[$table]['username_fields'], 'Username field mismatch for: ' . $table . ' in hook ' . $hook . ' (' . serialize($relevant_fields_username) . ')');
                 }
+                /*
+                if (!in_array($table, $exceptions)) {
+                    $this->assertTrue(array_keys($relevant_fields_url) == $found_tables[$table]['file_fields'], 'File field mismatch for: ' . $table . ' in hook ' . $hook . ' (' . serialize($relevant_fields_url) . ')');
+                }
+                */
 
                 foreach ($found_tables[$table]['additional_member_id_fields'] as $name) {
                     $this->assertTrue(isset($relevant_fields_member_id[$name]), 'Could not find ' . $name . ' additional_member_id_fields field in ' . $table . ' in hook ' . $hook);
@@ -287,6 +299,9 @@ class privacy_hooks_test_set extends cms_test_case
                     }
                 }
 
+                foreach ($found_tables[$table]['file_fields'] as $name) {
+                    $this->assertTrue(isset($relevant_fields_url[$name]), 'Could not find ' . $name . ' file_fields field in ' . $table . ' in hook ' . $hook);
+                }
                 foreach ($found_tables[$table]['additional_anonymise_fields'] as $name) {
                     $this->assertTrue(isset($all_fields[$name]), 'Could not find ' . $name . ' additional_anonymise_fields field in ' . $table . ' in hook ' . $hook);
                 }
@@ -349,6 +364,39 @@ class privacy_hooks_test_set extends cms_test_case
                     }
 
                     $this->assertTrue(false, 'Potentially sensitive field detected which should possibly be added to additional_anonymise_fields: ' . $name . ' in ' . $table . ' in hook ' . $hook);
+                }
+
+                // Exceptions are table => [fields]
+                $exceptions = [
+                    'authors' => ['url'],
+                    'banners' => ['site_url'],
+                    'download_downloads' => ['url_redirect'],
+                    'hackattack' => ['url'],
+                    'logged' => ['website_url'],
+                    'may_feature' => ['url'],
+                    'relayed_errors' => ['website_url'],
+                    'stats' => ['referer'],
+                    'stats_link_tracker' => ['c_url'],
+                    'tutorials_external' => ['t_url'],
+
+                ];
+                foreach ($relevant_fields_url as $name => $type) {
+                    if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {
+                        continue;
+                    }
+                    if (in_array($name, $found_tables[$table]['file_fields'])) {
+                        continue;
+                    }
+
+                    $this->assertTrue(false, 'Possible field may need to be added to file_fields if it might reference a file from the uploads/ directory: ' . $name . ' in ' . $table . ' in hook ' . $hook . '. Add this to the test exceptions if it will never reference a file from the uploads/ directory.');
+                }
+                foreach ($found_tables[$table]['file_fields'] as $name) {
+                    if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {
+                        $this->assertTrue(false, 'File field specified which is listed as an exception in this test: ' . $name . ' in ' . $table . ' in hook ' . $hook . '. Remove from exceptions if this field may reference an uploads/ file. Otherwise, remove from file_fields.');
+                        continue;
+                    }
+
+                    $this->assertTrue(array_key_exists($name, $relevant_fields_url), 'Specified file field is not a URLPATH: ' . $name . ' in ' . $table . ' in hook ' . $hook . '.');
                 }
             } else {
                 $exceptions = [
