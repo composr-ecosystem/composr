@@ -22,7 +22,7 @@ class http_test_set extends cms_test_case
     {
         parent::setUp();
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     }
 
     public function testProxyServer()
@@ -50,7 +50,10 @@ class http_test_set extends cms_test_case
             $options['trigger_error'] = false;
             $options['force_' . $implementation] = true;
             $result = cms_http_request('http://example.com', $options);
-            $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Failed on ' . $implementation);
+            $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Proxy failed on ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'ProxyServer HTTP object for implementation ' . $implementation);
+            }
         }
 
         set_option('proxy', '');
@@ -77,6 +80,9 @@ class http_test_set extends cms_test_case
             $options['force_' . $implementation] = true;
             $result = cms_http_request($url, $options);
             $this->assertTrue(is_string($result->data) && $result->data == '', 'Failed on ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'SimpleLocalForceImplementations HTTP object for implementation ' . $implementation);
+            }
         }
     }
 
@@ -86,8 +92,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('http://example.com/', ['trigger_error' => false]);
-        $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('http://example.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Did not get Example Domain content on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'Simple HTTP object');
+            }
+        }
     }
 
     public function testSimpleHttps()
@@ -96,8 +107,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('https://example.com/', ['trigger_error' => false]);
-        $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('https://example.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Did not get Example Domain content on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'SimpleHttps HTTP object');
+            }
+        }
     }
 
     public function testHead()
@@ -106,8 +122,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('http://example.com/', ['byte_limit' => 0, 'trigger_error' => false]);
-        $this->assertTrue($result->data !== null);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('http://example.com/', ['byte_limit' => 0, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data !== null, 'Data returned null when it should not, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'Head HTTP object');
+            }
+        }
     }
 
     public function testHeadHttps()
@@ -116,8 +137,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('https://example.com/', ['byte_limit' => 0, 'trigger_error' => false]);
-        $this->assertTrue($result->data !== null);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('https://example.com/', ['byte_limit' => 0, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data !== null, 'Data returned null when it should not, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'HeadHttps HTTP object');
+            }
+        }
     }
 
     public function testFail()
@@ -126,8 +152,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('http://fdsdsfdsjfdsfdgfdgdf.com/', ['trigger_error' => false]);
-        $this->assertTrue($result->data === null, 'Invalid domain producing a result; maybe your ISPs DNS mucks about and you need to disable that in their preferences somehow');
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('http://fdsdsfdsjfdsfdgfdgdf.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data === null, 'Invalid domain producing a result; maybe your ISPs DNS mucks about and you need to disable that in their preferences somehow, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'Fail HTTP object');
+            }
+        }
     }
 
     public function testFailHttps()
@@ -136,8 +167,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('https://fdsdsfdsjfdsfdgfdgdf.com/', ['trigger_error' => false]);
-        $this->assertTrue($result->data === null);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('https://fdsdsfdsjfdsfdgfdgdf.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data === null, 'Expected null data but instead got some, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'FailHttps HTTP object');
+            }
+        }
     }
 
     public function testRedirect()
@@ -146,8 +182,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
-        $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false, 'Expected Redirect test page but did not get it, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'Redirect HTTP object');
+            }
+        }
     }
 
     public function testRedirectHttps()
@@ -156,8 +197,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
-        $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false, 'Expected Redirect test page but did not get it, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'RedirectHttps HTTP object');
+            }
+        }
     }
 
     public function testRedirectDisabled()
@@ -166,8 +212,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'no_redirect' => true, 'trigger_error' => false]);
-        $this->assertTrue($result->data === null);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'no_redirect' => true, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data === null, 'Expected null data but got some, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'RedirectDisabled HTTP object');
+            }
+        }
     }
 
     public function testHttpAuth()
@@ -176,8 +227,13 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/Basic/', ['convert_to_internal_encoding' => true, 'auth' => ['guest', 'guest'], 'trigger_error' => false]);
-        $this->assertTrue($result->data !== null && strpos($result->data, 'Your browser made it!') !== false);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $result = cms_http_request('https://jigsaw.w3.org/HTTP/Basic/', ['convert_to_internal_encoding' => true, 'auth' => ['guest', 'guest'], 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $this->assertTrue($result->data !== null && strpos($result->data, 'Your browser made it!') !== false, 'Expected Http Auth to pass but it did not, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'HttpAuth HTTP object');
+            }
+        }
     }
 
     public function testWriteToFile()
@@ -186,12 +242,19 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $write_path = cms_tempnam();
-        $write = fopen($write_path, 'wb');
-        $result = cms_http_request('http://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false]);
-        $this->assertTrue(strpos(cms_file_get_contents_safe($write_path, FILE_READ_LOCK), 'Example Domain') !== false);
-        fclose($write);
-        unlink($write_path);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $write_path = cms_tempnam();
+            $write = fopen($write_path, 'wb');
+            $result = cms_http_request('http://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            fclose($write);
+            $data = cms_file_get_contents_safe($write_path, FILE_READ_LOCK);
+            $this->assertTrue(strpos($data, 'Example Domain') !== false, 'Expected file data to contain Example Domain but it did not, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'WriteToFile HTTP object');
+                $this->dump($data, 'WriteToFile File contents');
+            }
+            unlink($write_path);
+        }
     }
 
     public function testWriteToFileHttps()
@@ -200,12 +263,19 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        $write_path = cms_tempnam();
-        $write = fopen($write_path, 'wb');
-        $result = cms_http_request('https://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false]);
-        $this->assertTrue(strpos(cms_file_get_contents_safe($write_path, FILE_READ_LOCK), 'Example Domain') !== false);
-        fclose($write);
-        unlink($write_path);
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $write_path = cms_tempnam();
+            $write = fopen($write_path, 'wb');
+            $result = cms_http_request('https://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            fclose($write);
+            $data = cms_file_get_contents_safe($write_path, FILE_READ_LOCK);
+            $this->assertTrue(strpos($data, 'Example Domain') !== false, 'Expected file data to contain Example Domain but it did not, on implementation ' . $implementation);
+            if ($this->debug) {
+                $this->dump($result, 'WriteToFileHttps HTTP object');
+                $this->dump($data, 'WriteToFileHttps File contents');
+            }
+            unlink($write_path);
+        }
     }
 
     /*

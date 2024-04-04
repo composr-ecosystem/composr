@@ -8472,6 +8472,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOCKED
         LOCKED_HOOKS
         IS_LOCKED_RUNNING
+        DAYS_TO_KEEP__HTTP_LOG
+        CONFIG_OPTION_days_to_keep__http_log
     ')));
 
     $non_admin_files = [

@@ -239,14 +239,15 @@ function dload_script()
             if (substr($range, 0, 1) == '-') {
                 $range = strval($size - intval(substr($range, 1)) - 1) . $range;
             }
+            $range = str_replace('-1099511627775', '-', $range); // FUDGE: curl does this when specifying no end range
             if (substr($range, -1, 1) == '-') {
                 $range .= strval($size - 1);
             }
             $bits = explode('-', $range);
             if (count($bits) == 2) {
                 list($from, $to) = array_map('intval', $bits);
-                if (($to - $from != 0) || ($from == 0)) {
-                    $new_length = $to - $from + 1;
+                if ((min($to, $size) - $from != 0) || ($from == 0)) {
+                    $new_length = min($to, $size) - $from;
 
                     header('HTTP/1.1 206 Partial Content');
                     header('Content-Range: bytes ' . $range . '/' . strval($size));
