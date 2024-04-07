@@ -35,7 +35,7 @@ class Module_catalogues
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 10;
+        $info['version'] = 11;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -137,6 +137,7 @@ class Module_catalogues
                 'cf_order' => 'INTEGER',
                 'cf_defines_order' => 'SHORT_INTEGER', // 0, 1, or 2
                 'cf_visible' => 'BINARY',
+                'cf_sensitive' => 'BINARY',
                 'cf_default' => 'LONG_TEXT',
                 'cf_required' => 'BINARY',
                 'cf_put_in_category' => 'BINARY',
@@ -658,6 +659,10 @@ class Module_catalogues
                 'i_ngram',
                 'i_occurrence_rate', // For sorting
             ]);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) {
+            $GLOBALS['FORUM_DB']->add_table_field('catalogue_fields', 'cf_sensitive', 'BINARY');
         }
     }
 

@@ -185,10 +185,14 @@ class Hook_fields_member_multi
             }
             if (!cms_empty_safe($_value)) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_value);
-                if (($value != '') && is_null($member_id)) {
+                if ($member_id === null) {
+                    attach_message(do_lang_tempcode('javascript:NOT_USERNAME', escape_html($_value)), 'warn');
+                    continue; // Skip invalid members
+                }
+                if ($value != '') {
                     $value .= "\n";
                 }
-                $value .= ($member_id === null) ? '' : strval($member_id);
+                $value .= strval($member_id);
             }
             $i++;
         } while ($_value !== null);
@@ -207,5 +211,17 @@ class Hook_fields_member_multi
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
         return '';
+    }
+
+    /**
+     * Define what type of field this should be treated as in the privacy system if marked sensitive.
+     * This method should be defined on fields which should not be treated as "additional_anonymise_fields".
+     *
+     * @param  array $field The field details
+     * @return ID_TEXT The type of field to treat this
+     */
+    public function privacy_field_type(array $field) : string
+    {
+        return 'additional_member_id_fields';
     }
 }

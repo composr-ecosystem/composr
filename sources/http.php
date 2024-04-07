@@ -361,6 +361,8 @@ abstract class HttpDownloader
 
     // Output
     public $data = null; // ?string. The result returned from the last HTTP lookup.
+    public $content_size = 0; // integer. The number of bytes we downloaded so far.
+
     public $download_mime_type = null; // ?ID_TEXT. The mime type returned from the last HTTP lookup.
     public $download_size = null; // ?ID_TEXT. The download size returned from the last HTTP lookup.
     public $download_url = null; // ?ID_TEXT. The URL for the last HTTP lookup.
@@ -589,6 +591,41 @@ abstract class HttpDownloader
             $this->http_verb = ((($this->post_params === null) && (empty($this->files))) ? (($this->byte_limit === 0) ? 'HEAD' : 'GET') : 'POST');
         }
 
+        // Debugging
+        $_log_file = get_custom_file_base() . '/data_custom/http.log';
+        if (is_file($_log_file)) {
+            require_code('files');
+
+            $debug = [
+                'byte_limit' => $this->byte_limit,
+                'no_redirect' => $this->no_redirect,
+                'ua' => $this->ua,
+                'post_params' => $this->post_params,
+                'cookies' => $this->cookies,
+                'accept' => $this->accept,
+                'accept_charset' => $this->accept_charset,
+                'accept_language' => $this->accept_language,
+                'referer' => $this->referer,
+                'auth' => $this->auth,
+                'timeout' => $this->timeout,
+                'files' => $this->files,
+                'extra_headers' => $this->extra_headers,
+                'http_verb' => $this->http_verb,
+                'raw_content_type' => $this->raw_content_type,
+                'ignore_http_status' => $this->ignore_http_status,
+                'verifypeer_enabled' => $this->verifypeer_enabled,
+                'convert_to_internal_encoding' => $this->convert_to_internal_encoding,
+                'default_charset' => $this->default_charset,
+                'add_content_type_header_manually' => $this->add_content_type_header_manually,
+                'add_files_manually' => $this->add_files_manually,
+            ];
+            $log_message = loggable_date() . ' REQUEST (' . $url . '): ' . serialize($debug) . "\n";
+            $log_file = cms_fopen_text_write($_log_file, true, 'ab');
+            fwrite($log_file, $log_message);
+            flock($log_file, LOCK_UN);
+            fclose($log_file);
+        }
+
         // Call downloader method...
 
         $start_time = time();
@@ -611,6 +648,34 @@ abstract class HttpDownloader
                     $this->download_mime_type = $matches[1];
                 }
             }
+        }
+
+        // Debugging
+        $_log_file = get_custom_file_base() . '/data_custom/http.log';
+        if (is_file($_log_file)) {
+            require_code('files');
+
+            $debug = [
+                'data' => is_string($this->data) ? strlen($this->data) : $this->data,
+                'content_size' => $this->content_size,
+                'download_mime_type' => $this->download_mime_type,
+                'download_size' => $this->download_size,
+                'download_url' => $this->download_url,
+                'download_mtime' => $this->download_mtime,
+                'message' => $this->message,
+                'message_b' => $this->message_b,
+                'new_cookies' => $this->new_cookies,
+                'filename' => $this->filename,
+                'charset' => $this->charset,
+                'headers' => $this->headers,
+                'generation_time' => $this->generation_time,
+                'implementation_used' => $this->implementation_used,
+            ];
+            $log_message = loggable_date() . ' RESPONSE (' . $url . '): ' . serialize($debug) . "\n";
+            $log_file = cms_fopen_text_write($_log_file, true, 'ab');
+            fwrite($log_file, $log_message);
+            flock($log_file, LOCK_UN);
+            fclose($log_file);
         }
 
         // Done...
@@ -945,6 +1010,7 @@ class HttpDownloaderCurl extends HttpDownloader
     // Data collection
     protected $curl_headers = [];
     protected $curl_body = null;
+    protected $attempts_remaining = 3; // Used when CURL errors with a partial file
 
     /**
      * See if this class may run.
@@ -1082,7 +1148,12 @@ class HttpDownloaderCurl extends HttpDownloader
             curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
         }
         if ($this->byte_limit !== null) {
-            curl_setopt($ch, CURLOPT_RANGE, '0-' . strval(($this->byte_limit == 0) ? 0 : ($this->byte_limit - 1)));
+            curl_setopt($ch, CURLOPT_RANGE, strval($this->content_size) . '-' . strval(($this->byte_limit == 0) ? 0 : ($this->byte_limit - 1)));
+        } elseif ($this->content_size > 0) {
+            curl_setopt($ch, CURLOPT_RANGE, strval($this->content_size) . '-');
+        }
+        if ($this->write_to_file !== null) {
+            curl_setopt($ch, CURLOPT_FILE, $this->write_to_file);
         }
 
         // Proxy settings
@@ -1103,14 +1174,36 @@ class HttpDownloaderCurl extends HttpDownloader
 
         // Response
         $curl_result = curl_exec($ch);
+        $info = curl_getinfo($ch);
+
+        // Debug logging
+        $_log_file = get_custom_file_base() . '/data_custom/http.log';
+        $log_message = loggable_date() . 'curl_getinfo: ' . serialize($info) . "\n";
+        $log_message = loggable_date() . 'RESPONSE headers: ' . serialize($this->curl_headers) . "\n";
+        if (is_file($_log_file)) {
+            require_code('files');
+            $log_file = cms_fopen_text_write($_log_file, true, 'ab');
+            fwrite($log_file, $log_message);
+            flock($log_file, LOCK_UN);
+            fclose($log_file);
+        }
+
         /*if ((count($curl_headers)!=0) && (!empty($this->files))) { // Useful for debugging
             var_dump(curl_getinfo($ch,CURLINFO_HEADER_OUT));exit();
         }*/
+
         if (($curl_result === false) && ((curl_errno($ch) != CURLE_WRITE_ERROR) || ($this->byte_limit === null))) {
             // Error
             $error = curl_error($ch);
             $curl_errno = curl_errno($ch);
             curl_close($ch);
+
+            // Try again on a partial file error if we did not exceed our attempts remaining
+            if (($curl_errno == CURLE_PARTIAL_FILE) && ($this->attempts_remaining > 0)) {
+                sleep(2);
+                $this->attempts_remaining--;
+                return $this->_run($url, $options); // $this->content_size should be set to how many bytes we have so far
+            }
 
             $possible_internal_curl_errors = [1, 2, 4, 5, 16, 34, 35, 41, 43, 45, 48, 52, 53, 54, 55, 56, 58, 59, 60, 64, 66, 77, 80, 81, 82, 83, 89, 90, 91, 92];
             if (!in_array($curl_errno, $possible_internal_curl_errors)) {
@@ -1297,22 +1390,24 @@ class HttpDownloaderCurl extends HttpDownloader
         }
 
         if ($this->write_to_file !== null) {
-            fwrite($this->write_to_file, $str);
+            $_str = $str;
+
+            if (($this->byte_limit !== null) && ((($this->content_size + strlen($str)) > $this->byte_limit))) {
+                $_str = substr($_str, 0, ($this->byte_limit - $this->content_size));
+            }
+            fwrite($this->write_to_file, $_str);
+            $this->content_size += strlen($_str);
+            return strlen($_str);
         } else {
             $this->curl_body .= $str;
-        }
-
-        if ($this->byte_limit !== null) {
-            $current_len = strlen($this->curl_body);
-            $this_len = strlen($str);
-            $amount_over_limit = $current_len + $this_len - $this->byte_limit;
-            if ($amount_over_limit > 0) {
+            $this->content_size = strlen($this->curl_body);
+            if (($this->byte_limit !== null) && ($this->content_size > $this->byte_limit)) {
                 $this->curl_body = substr($this->curl_body, 0, $this->byte_limit);
-                return strlen($str) - $amount_over_limit;
+                $this->content_size = $this->byte_limit;
+                return strlen($str) - ($this->content_size - $this->byte_limit);
             }
+            return strlen($str);
         }
-
-        return strlen($str);
     }
 }
 
@@ -1530,6 +1625,7 @@ class HttpDownloaderSockets extends HttpDownloader
                             } else {
                                 ftruncate($this->write_to_file, 0);
                             }
+                            $this->content_size = 0;
                             $input_len = 0;
                             $buffer_unprocessed = '';
 
@@ -1562,14 +1658,27 @@ class HttpDownloaderSockets extends HttpDownloader
 
                     if ($this->write_to_file === null) {
                         $input .= $line;
+                        $this->content_size = $input_len;
+
+                        if (($this->byte_limit !== null) && ($this->content_size >= $this->byte_limit)) {
+                            $input = substr($input, 0, $this->byte_limit);
+                            $input_len = $this->byte_limit;
+                            $this->content_size = $this->byte_limit;
+                            break; // Termination case: Success, got all the input we need
+                        }
                     } else {
+                        if (($this->byte_limit !== null) && ($input_len >= $this->byte_limit)) {
+                            $_line = substr($line, 0, strlen($line) - ($input_len - $this->byte_limit));
+                            fwrite($this->write_to_file, $_line);
+                            $input_len = $this->byte_limit;
+                            $this->content_size = $this->byte_limit;
+                            break; // Termination case: Success, got all the input we need
+                        }
+
                         fwrite($this->write_to_file, $line);
+                        $this->content_size = $input_len;
                     }
 
-                    if (($this->byte_limit !== null) && ($input_len >= $this->byte_limit)) {
-                        $input = substr($input, 0, $this->byte_limit);
-                        break; // Termination case: Success, got all the input we need
-                    }
                 } elseif ($line != '') {
                     $old_line = $line;
                     $lines = explode("\r\n", $line);
@@ -1765,14 +1874,24 @@ class HttpDownloaderSockets extends HttpDownloader
             // Process any non-chunked extra buffer (chunked would have been handled in main loop)
             if (!$chunked) {
                 if ($buffer_unprocessed != '') {
+                    $input_len += strlen($buffer_unprocessed);
+                    $this->content_size = $input_len;
+
                     if ($this->write_to_file === null) {
                         $input .= $buffer_unprocessed;
+
+                        if (($this->byte_limit !== null) && ($this->content_size >= $this->byte_limit)) {
+                            $input = substr($input, 0, $this->byte_limit);
+                            $this->content_size = $this->byte_limit;
+                        }
                     } else {
-                        fwrite($this->write_to_file, $buffer_unprocessed);
-                    }
-                    $input_len += strlen($buffer_unprocessed);
-                    if (($this->byte_limit !== null) && ($input_len >= $this->byte_limit)) {
-                        $input = substr($input, 0, $this->byte_limit);
+                        $_buffer_unprocessed = $buffer_unprocessed;
+
+                        if (($this->byte_limit !== null) && ($this->content_size >= $this->byte_limit)) {
+                            $_buffer_unprocessed = substr($_buffer_unprocessed, 0, strlen($_buffer_unprocessed) - ($this->content_size - $this->byte_limit));
+                            $this->content_size = $this->byte_limit;
+                        }
+                        fwrite($this->write_to_file, $_buffer_unprocessed);
                     }
                 }
             }
@@ -1938,20 +2057,25 @@ class HttpDownloaderFileWrapper extends HttpDownloader
                 }
                 if ($_read_file !== false) {
                     $read_file = '';
-                    while ((!feof($_read_file)) && (($this->byte_limit === null) || (strlen($read_file) < $this->byte_limit))) {
-                        $read_file .= fread($_read_file, 1024);
-                        if ($this->write_to_file !== null) {
-                            fwrite($this->write_to_file, $read_file);
-                            $read_file = '';
+                    while ((!feof($_read_file)) && (($this->byte_limit === null) || ($this->content_size < $this->byte_limit))) {
+                        $data = fread($_read_file, 1024);
+                        if ($data !== false) {
+                            $this->content_size += strlen($data);
+                            if (($this->byte_limit !== null) && ($data != ''/*substr would fail with false*/) && ($this->content_size >= $this->byte_limit)) {
+                                $data = substr($data, 0, strlen($data) - ($this->content_size - $this->byte_limit));
+                                $this->content_size = $this->byte_limit;
+                            }
+
+                            $read_file .= $data;
+                            if ($this->write_to_file !== null) {
+                                fwrite($this->write_to_file, $data);
+                            }
                         }
                     }
                     fclose($_read_file);
                 } else {
                     $read_file = false;
                 }
-            }
-            if (($this->byte_limit !== null) && ($read_file !== false) && ($read_file != ''/*substr would fail with false*/)) {
-                $read_file = substr($read_file, 0, $this->byte_limit);
             }
 
             cms_ini_set('allow_url_fopen', '0');
@@ -1960,6 +2084,37 @@ class HttpDownloaderFileWrapper extends HttpDownloader
             if (isset($http_response_header)) {
                 foreach ($http_response_header as $header) {
                     $this->read_in_headers($header . "\r\n");
+
+                    if ($this->no_redirect) {
+                        $matches = [];
+                        if (preg_match("#^Refresh: (\d*);(.*)#i", $header, $matches) != 0) {
+                            if ($this->filename === null) {
+                                $this->filename = urldecode(basename($matches[1]));
+                            }
+
+                            if (strpos($matches[1], '://') === false) {
+                                $matches[1] = qualify_url($matches[1], $url, true);
+                            }
+
+                            $read_file = null;
+                            $this->download_url = $matches[2];
+                        }
+
+                        if (preg_match("#^Location: (.*)#i", $header, $matches) != 0) {
+                            if ($this->filename === null) {
+                                $this->filename = urldecode(basename($matches[1]));
+                            }
+
+                            if (strpos($matches[1], '://') === false) {
+                                $matches[1] = qualify_url($matches[1], $url, true);
+                            }
+
+                            if (($matches[1] != $url) && (isset($this->headers[0])) && (preg_match('#\s3\d\d\s#', $this->headers[0]) != 0)) {
+                                $read_file = null;
+                                $this->download_url = $matches[1];
+                            }
+                        }
+                    }
                 }
             }
 
@@ -2073,6 +2228,8 @@ class HttpDownloaderFilesystem extends HttpDownloader
         if ($this->byte_limit !== null) {
             $contents = substr($contents, 0, $this->byte_limit);
         }
+
+        $this->content_size = strlen($contents);
 
         if ($this->write_to_file !== null) {
             fwrite($this->write_to_file, $contents);

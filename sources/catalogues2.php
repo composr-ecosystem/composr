@@ -64,6 +64,7 @@ function create_ecommerce_catalogue(string $catalogue_name) : int
             $i, // $order
             $field[3], // $defines_order
             $field[5], // $visible
+            0, // $sensitive
             array_key_exists(7, $field) ? $field[7] : '', // $default
             $field[4], // $required
             $field[6],
@@ -231,6 +232,7 @@ function actual_add_catalogue(string $name, $title, $description, int $display_t
  * @param  ?integer $order The field order (the field order determines what order the fields are displayed within an entry) (null: next)
  * @param  BINARY $defines_order Whether this field defines the catalogue order
  * @param  BINARY $visible Whether this is a visible field
+ * @param  BINARY $sensitive Whether this field may contain sensitive or personal data
  * @param  LONG_TEXT $default The default value for the field
  * @param  BINARY $required Whether this field is required
  * @param  BINARY $is_sortable Whether the field is sortable
@@ -242,7 +244,7 @@ function actual_add_catalogue(string $name, $title, $description, int $display_t
  * @param  ?AUTO_LINK $id Force this ID (null: auto-increment as normal)
  * @return AUTO_LINK Field ID
  */
-function actual_add_catalogue_field(string $c_name, $name, $description = '', string $type = 'short_text', ?int $order = null, int $defines_order = 0, int $visible = 1, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '', ?int $id = null) : int
+function actual_add_catalogue_field(string $c_name, $name, $description = '', string $type = 'short_text', ?int $order = null, int $defines_order = 0, int $visible = 1, int $sensitive = 0, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '', ?int $id = null) : int
 {
     if ($order === null) {
         $order = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'MAX(cf_order)', ['c_name' => $c_name]);
@@ -259,6 +261,7 @@ function actual_add_catalogue_field(string $c_name, $name, $description = '', st
         'cf_order' => $order,
         'cf_defines_order' => $defines_order,
         'cf_visible' => $visible,
+        'cf_sensitive' => $sensitive,
         'cf_default' => $default,
         'cf_required' => $required,
         'cf_is_sortable' => $is_sortable,
@@ -517,6 +520,7 @@ function actual_delete_catalogue(string $name)
  * @param  integer $order The field order (the field order determines what order the fields are displayed within an entry)
  * @param  BINARY $defines_order Whether the field defines entry ordering
  * @param  BINARY $visible Whether the field is visible when an entry is viewed
+ * @param  BINARY $sensitive Whether this field contains sensitive or personal data
  * @param  LONG_TEXT $default The default value for the field
  * @param  BINARY $required Whether the field is required
  * @param  BINARY $is_sortable Whether the field is sortable
@@ -527,7 +531,7 @@ function actual_delete_catalogue(string $name)
  * @param  SHORT_TEXT $options Field options
  * @param  ?ID_TEXT $type The field type (null: do not change)
  */
-function actual_edit_catalogue_field(int $id, string $c_name, ?string $name, ?string $description, int $order, int $defines_order, int $visible, string $default, int $required, int $is_sortable, int $include_in_main_search, int $allow_template_search, int $put_in_category = 1, int $put_in_search = 1, string $options = '', ?string $type = null) // You cannot edit a field type
+function actual_edit_catalogue_field(int $id, string $c_name, ?string $name, ?string $description, int $order, int $defines_order, int $visible, int $sensitive, string $default, int $required, int $is_sortable, int $include_in_main_search, int $allow_template_search, int $put_in_category = 1, int $put_in_search = 1, string $options = '', ?string $type = null) // You cannot edit a field type
 {
     $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['cf_description', 'cf_name', 'cf_type'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -545,6 +549,7 @@ function actual_edit_catalogue_field(int $id, string $c_name, ?string $name, ?st
         'cf_visible' => $visible,
         'cf_default' => $default,
         'cf_required' => $required,
+        'cf_sensitive' => $sensitive,
         'cf_is_sortable' => $is_sortable,
         'cf_include_in_main_search' => $include_in_main_search,
         'cf_allow_template_search' => $allow_template_search,

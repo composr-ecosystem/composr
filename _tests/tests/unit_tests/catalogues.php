@@ -35,14 +35,14 @@ class catalogues_test_set extends cms_test_case
         actual_add_catalogue('test_catalogue', 'Catalogue Title', 'Catalogue Description', C_DT_FIELDMAPS, 0, '', 0);
 
         $this->field_ids = [];
-        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'short_text Title', 'short_text Description', 'short_text');
-        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'short_trans Title', 'short_trans Description', 'short_trans');
-        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'long_text Title', 'long_text Description', 'long_text');
-        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'long_trans Title', 'long_trans Description', 'long_trans');
-        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'integer Title', 'integer Description', 'integer');
-        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'float Title', 'float Description', 'float');
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'short_text Title', 'short_text Description', 'short_text', null, 0, 1, 0);
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'short_trans Title', 'short_trans Description', 'short_trans', null, 0, 1, 0);
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'long_text Title', 'long_text Description', 'long_text', null, 0, 1, 1);
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'long_trans Title', 'long_trans Description', 'long_trans', null, 0, 1, 1);
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'integer Title', 'integer Description', 'integer', null, 0, 1, 0);
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'float Title', 'float Description', 'float', null, 0, 1, 0);
 
-        actual_edit_catalogue_field($this->field_ids[0], 'test_catalogue', 'short_text Title', 'short_text Description', 1, 1, 1, '', 1, 0, 0, 0);
+        actual_edit_catalogue_field($this->field_ids[0], 'test_catalogue', 'short_text Title', 'short_text Description', 1, 1, 1, 0, '', '', 1, 0, 0, 0);
 
         actual_edit_catalogue('test_catalogue', 'test_catalogue', 'Catalogue Title', 'Catalogue Description', C_DT_FIELDMAPS, '', 0, 0, 'title ASC', 'never', null);
 

@@ -33,6 +33,7 @@ class Hook_logs_core
         return [
             'errorlog.php' => ['days_to_keep' => (get_option('days_to_keep__error_log') == '') ? null : intval(get_option('days_to_keep__error_log'))],
             'cron.log' => ['days_to_keep' => (get_option('days_to_keep__cron_log') == '') ? null : intval(get_option('days_to_keep__cron_log'))],
+            'http.log' => ['days_to_keep' => (get_option('days_to_keep__http_log') == '') ? null : intval(get_option('days_to_keep__http_log'))],
             'tasks.log' => ['days_to_keep' => (get_option('days_to_keep__tasks_log') == '') ? null : intval(get_option('days_to_keep__tasks_log'))],
             'permission_checks.log' => ['days_to_keep' => (get_option('days_to_keep__permission_checks_log') == '') ? null : intval(get_option('days_to_keep__permission_checks_log'))],
             'queries.log' => ['days_to_keep' => (get_option('days_to_keep__queries_log') == '') ? null : intval(get_option('days_to_keep__queries_log'))],

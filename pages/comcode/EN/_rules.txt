@@ -1,1 +1,1 @@
-[center][b](Remember: this is a default {$BRAND_NAME*} page the webmaster needs to edit.)[/b][/center]
+[center][b](Remember: this is a default {$BRAND_NAME*} page the webmaster needs to edit (the page name is :_rules).)[/b][/center]

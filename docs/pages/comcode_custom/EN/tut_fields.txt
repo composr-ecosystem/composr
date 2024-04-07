@@ -258,6 +258,50 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__email.png[/media]
 |}
 
+[title="3"]ip_address[/title]
+
+{| 15em wide
+! Type label
+| An IP address
+|-
+! Storage format (for programmer reference)
+| Up to 255 characters of text (IP address, or blank)
+|-
+! Special default values
+| [tt]![/tt]: Current member's IP address
+|-
+! Supported field options
+| [tt]allow_wildcards=yes|no[/tt]: whether wildcards are allowed in provided IP addresses (default is no)
+|-
+! Back-end UI
+| TODO
+|-
+! Front-end UI
+| TODO
+|}
+
+[title="3"]ip_address_multi[/title]
+
+{| 15em wide
+! Type label
+| Multiple IP addresses
+|-
+! Storage format (for programmer reference)
+| Text separated by linebreaks (no character limit) (linked through translate table)
+|-
+! Special default values
+| [i]None[/i]
+|-
+! Supported field options
+| [tt]allow_wildcards=yes|no[/tt]: whether wildcards are allowed in provided IP addresses (default is no)
+|-
+! Back-end UI
+| TODO
+|-
+! Front-end UI
+| TODO
+|}
+
 [title="2"]Numbers[/title]
 
 [title="3"]integer[/title]

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_fields_email
+class Hook_fields_ip_address_multi
 {
     // ==============
     // Module: search
@@ -61,16 +61,12 @@ class Hook_fields_email
      * @param  ?array $field The field details (null: new field)
      * @param  ?boolean $required Whether a default value cannot be blank (null: don't "lock in" a new default value) (may be passed as false also if we want to avoid "lock in" of a new default value, but in this case possible cleanup of $default may still happen where appropriate)
      * @param  ?string $default The given default value as a string (null: don't "lock in" a new default value) (blank: only "lock in" a new default value if $required is true)
+     * @param  ?object $db Database connector (null: main site database)
      * @return array Tuple of details (row-type,default-value-to-use,db row-type)
      */
-    public function get_field_value_row_bits(?array $field, ?bool $required = null, ?string $default = null) : array
+    public function get_field_value_row_bits(?array $field, ?bool $required = null, ?string $default = null, ?object $db = null) : array
     {
-        if ($required !== null) {
-            if (($required) && ($default == '')) {
-                $default = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-            }
-        }
-        return ['short_unescaped', $default, 'short'];
+        return ['long_text', $default, 'long'];
     }
 
     /**
@@ -91,10 +87,22 @@ class Hook_fields_email
      */
     public function render_field_value(array &$field, $ev, int $i, ?array $only_fields, ?string $table = null, ?int $id = null, ?string $id_field = null, ?string $field_id_field = null, ?string $url_field = null, ?int $submitter = null, $ev_pure = null)
     {
-        if ($ev == '') {
-            return '';
+        if (is_object($ev)) {
+            return $ev;
         }
-        return do_template('HYPERLINK_EMAIL', ['_GUID' => 'f074c9a299fb3b1836a5a76270378666', 'ADDRESS' => $ev, 'CAPTION' => $ev, 'TITLE' => '', 'SUBJECT' => '', 'BODY' => '']);
+
+        $exploded = ($ev == '') ? [] : explode("\n", $ev);
+        $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
+        if ($auto_sort == 'on') {
+            cms_mb_sort($exploded, SORT_NATURAL | SORT_FLAG_CASE);
+        }
+
+        $ret = new Tempcode();
+        foreach ($exploded as $ev) {
+            $ret->attach(paragraph(escape_html($ev), 'short_text_multi'));
+        }
+
+        return $ret;
     }
 
     // ======================
@@ -116,13 +124,13 @@ class Hook_fields_email
         if ($actual_value === null) {
             $actual_value = ''; // Plug anomaly due to unusual corruption
         }
-        $default = option_value_from_field_array($field, 'default', $field['cf_default']);
-        if (($default == '!') && ($actual_value == '')) {
-            $actual_value = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-        }
+
+        $num_required = max(0, intval(option_value_from_field_array($field, 'num_required', ($field['cf_required'] == 1) ? '1' : '0')));
+
+        $cms_type = option_value_from_field_array($field, 'cms_type', 'line');
+
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
-        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
-        return form_input_email($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, $autocomplete);
+        return form_input_line_multi($_cf_name, $_cf_description, $input_name, explode("\n", $actual_value), $num_required, null, $cms_type);
     }
 
     /**
@@ -137,12 +145,29 @@ class Hook_fields_email
     public function inputted_to_field_value(bool $editing, array $field, ?string $upload_dir = 'uploads/catalogues', ?array $old_value = null) : ?string
     {
         $id = $field['id'];
-        $tmp_name = 'field_' . strval($id);
-        require_code('type_sanitisation');
-        $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
-        if (($value != '') && ($value != STRING_MAGIC_NULL) && (!is_valid_email_address($value))) {
-            warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
-        }
+        $i = 0;
+        $value = '';
+        $allow_wildcards = option_value_from_field_array($field, 'allow_wildcards', '0') == '1';
+
+        do {
+            $tmp_name = 'field_' . strval($id) . '_' . strval($i);
+            $_value = post_param_string($tmp_name, null);
+            if (($_value === null) && ($i == 0)) {
+                return $editing ? STRING_MAGIC_NULL : '';
+            }
+            if (!cms_empty_safe($_value)) {
+                if (!is_valid_ip($value, $allow_wildcards)) {
+                    attach_message(do_lang_tempcode('javascript:NOT_VALID_IP', escape_html($value)), 'warn');
+                    continue; // Skip invalid IP addresses
+                }
+                if ($value != '') {
+                    $value .= "\n";
+                }
+                $value .= $_value;
+            }
+            $i++;
+        } while ($_value !== null);
+
         return $value;
     }
 
@@ -157,7 +182,7 @@ class Hook_fields_email
      */
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
-        return '';
+        return $val;
     }
 
     /**
@@ -169,6 +194,6 @@ class Hook_fields_email
      */
     public function privacy_field_type(array $field) : string
     {
-        return 'email_fields';
+        return 'ip_address_fields';
     }
 }

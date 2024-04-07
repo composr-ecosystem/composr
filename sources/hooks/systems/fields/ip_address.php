@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_fields_email
+class Hook_fields_ip_address
 {
     // ==============
     // Module: search
@@ -65,12 +65,7 @@ class Hook_fields_email
      */
     public function get_field_value_row_bits(?array $field, ?bool $required = null, ?string $default = null) : array
     {
-        if ($required !== null) {
-            if (($required) && ($default == '')) {
-                $default = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-            }
-        }
-        return ['short_unescaped', $default, 'short'];
+        return ['short_text', $default, 'short'];
     }
 
     /**
@@ -91,10 +86,10 @@ class Hook_fields_email
      */
     public function render_field_value(array &$field, $ev, int $i, ?array $only_fields, ?string $table = null, ?int $id = null, ?string $id_field = null, ?string $field_id_field = null, ?string $url_field = null, ?int $submitter = null, $ev_pure = null)
     {
-        if ($ev == '') {
-            return '';
+        if (is_object($ev)) {
+            return $ev;
         }
-        return do_template('HYPERLINK_EMAIL', ['_GUID' => 'f074c9a299fb3b1836a5a76270378666', 'ADDRESS' => $ev, 'CAPTION' => $ev, 'TITLE' => '', 'SUBJECT' => '', 'BODY' => '']);
+        return escape_html($ev);
     }
 
     // ======================
@@ -118,11 +113,18 @@ class Hook_fields_email
         }
         $default = option_value_from_field_array($field, 'default', $field['cf_default']);
         if (($default == '!') && ($actual_value == '')) {
-            $actual_value = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
+            $actual_value = get_ip_address();
         }
+
+        $type = 'text';
+
+        $_maxlength = option_value_from_field_array($field, 'maxlength', '');
+        $maxlength = ($_maxlength == '') ? null : intval($_maxlength);
+
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
-        return form_input_email($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, $autocomplete);
+
+        return form_input_line($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, $maxlength, $type, null, null, null, null, $autocomplete);
     }
 
     /**
@@ -138,11 +140,13 @@ class Hook_fields_email
     {
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
-        require_code('type_sanitisation');
         $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
-        if (($value != '') && ($value != STRING_MAGIC_NULL) && (!is_valid_email_address($value))) {
-            warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
+        $allow_wildcards = option_value_from_field_array($field, 'allow_wildcards', '0') == '1';
+
+        if (($value != STRING_MAGIC_NULL) && ($value != '') && (!is_valid_ip($value, $allow_wildcards))) {
+            warn_exit(do_lang_tempcode('javascript:NOT_VALID_IP', escape_html($value)));
         }
+
         return $value;
     }
 
@@ -157,7 +161,7 @@ class Hook_fields_email
      */
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
-        return '';
+        return ''; // IP addresses are sensitive information
     }
 
     /**
@@ -169,6 +173,6 @@ class Hook_fields_email
      */
     public function privacy_field_type(array $field) : string
     {
-        return 'email_fields';
+        return 'ip_address_fields';
     }
 }

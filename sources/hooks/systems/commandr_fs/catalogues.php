@@ -339,6 +339,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 $order = $field_data['order'];
                 $defines_order = $field_data['defines_order'];
                 $visible = $field_data['visible'];
+                $sensitive = $field_data['sensitive'];
                 $is_sortable = $field_data['is_sortable'];
                 $include_in_main_search = $field_data['include_in_main_search'];
                 $allow_template_search = $field_data['allow_template_search'];
@@ -359,10 +360,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                     $description = insert_lang('cf_description', $val, 2, null, false, $description, $lang);
                 }
 
-                actual_add_catalogue_field($name, $field_title, $description, $type, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
+                actual_add_catalogue_field($name, $field_title, $description, $type, $order, $defines_order, $visible, $sensitive, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
             }
         } else {
-            actual_add_catalogue_field($name, do_lang('TITLE'), '', 'short_text', 0, 1, 1, '', 1, 1, 1);
+            actual_add_catalogue_field($name, do_lang('TITLE'), '', 'short_text', 0, 1, 1, 0, '', 1, 1, 1);
         }
 
         $this->_resource_save_extend('catalogue', $name, $filename, $label, $properties);
@@ -427,6 +428,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 'order' => $_field['cf_order'],
                 'defines_order' => $_field['cf_defines_order'],
                 'visible' => $_field['cf_visible'],
+                'sensitive' => $_field['cf_sensitive'],
                 'is_sortable' => $_field['cf_is_sortable'],
                 'include_in_main_search' => $_field['cf_include_in_main_search'],
                 'allow_template_search' => $_field['cf_allow_template_search'],
@@ -499,6 +501,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                     $order = $field_data['order'];
                     $defines_order = $field_data['defines_order'];
                     $visible = $field_data['visible'];
+                    $sensitive = $field_data['sensitive'];
                     $is_sortable = $field_data['is_sortable'];
                     $include_in_main_search = $field_data['include_in_main_search'];
                     $allow_template_search = $field_data['allow_template_search'];
@@ -514,9 +517,9 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                     if (array_key_exists($i, $_fields)) {
                         $id = $_fields[$i]['id'];
 
-                        actual_edit_catalogue_field($id, $name, $field_title, $description, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options, $type);
+                        actual_edit_catalogue_field($id, $name, $field_title, $description, $order, $defines_order, $visible, $sensitive, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options, $type);
                     } else {
-                        actual_add_catalogue_field($name, $field_title, $description, $type, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
+                        actual_add_catalogue_field($name, $field_title, $description, $type, $order, $defines_order, $visible, $sensitive, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
                     }
                 }
             }

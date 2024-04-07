@@ -23,6 +23,24 @@
  */
 class Hook_fields_short_text_multi
 {
+    /**
+     * Find what field types this hook can serve. This method only needs to be defined if it is not serving a single field type with a name corresponding to the hook itself.
+     *
+     * @return array Map of field type to field type title
+     */
+    public function get_field_types() : array
+    {
+        $ret = [
+            'short_text_multi' => do_lang_tempcode('FIELD_TYPE_short_text_multi'),
+        ];
+
+        $ret += [
+            'username_multi' => do_lang_tempcode('FIELD_TYPE_username_multi'),
+        ];
+
+        return $ret;
+    }
+
     // ==============
     // Module: search
     // ==============
@@ -176,5 +194,21 @@ class Hook_fields_short_text_multi
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
         return $val;
+    }
+
+    /**
+     * Define what type of field this should be treated as in the privacy system if marked sensitive.
+     * This method should be defined on fields which should not be treated as "additional_anonymise_fields".
+     *
+     * @param  array $field The field details
+     * @return ID_TEXT The type of field to treat this
+     */
+    public function privacy_field_type(array $field) : string
+    {
+        if ($field['cf_type'] == 'username_multi') {
+            return 'username_fields';
+        }
+
+        return 'additional_anonymise_fields';
     }
 }

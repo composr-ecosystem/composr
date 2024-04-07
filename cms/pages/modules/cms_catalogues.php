@@ -1889,6 +1889,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ID_TEXT $type The field type
      * @param  BINARY $defines_order Whether the field defines entry ordering
      * @param  BINARY $visible Whether the field is visible when an entry is viewed
+     * @param  BINARY $sensitive Whether the field contains sensitive or personal data
      * @param  SHORT_TEXT $default Default value for the field
      * @param  BINARY $required Whether the field is required
      * @param  BINARY $is_sortable Whether the field is sortable
@@ -1899,7 +1900,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  SHORT_TEXT $options Field options
      * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
      */
-    public function get_field_fields(string $catalogue_name, bool $first_field, int $num_fields_to_show, string $prefix, int $order, string $name = '', string $description = '', string $type = 'short_text', int $defines_order = 0, int $visible = 1, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '') : array
+    public function get_field_fields(string $catalogue_name, bool $first_field, int $num_fields_to_show, string $prefix, int $order, string $name = '', string $description = '', string $type = 'short_text', int $defines_order = 0, int $visible = 1, int $sensitive = 0, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '') : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -1947,6 +1948,8 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $fields->attach(form_input_tick(do_lang_tempcode('VISIBLE'), do_lang_tempcode('DESCRIPTION_VISIBLE'), $prefix . 'visible', $visible == 1));
             $fields->attach(form_input_tick(do_lang_tempcode('REQUIRED'), do_lang_tempcode('DESCRIPTION_REQUIRED'), $prefix . 'required', $required == 1));
         }
+
+        $fields->attach(form_input_tick(do_lang_tempcode('SENSITIVE_FIELD'), do_lang_tempcode('DESCRIPTION_SENSITIVE_FIELD'), $prefix . 'sensitive', $sensitive == 1));
 
         if (substr($catalogue_name, 0, 1) != '_') {
             $fields->attach(form_input_tick(do_lang_tempcode('SORTABLE'), do_lang_tempcode('DESCRIPTION_SORTABLE'), $prefix . 'is_sortable', $is_sortable == 1));
@@ -2072,6 +2075,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             }
             $defines_order = array_key_exists('defines_order', $field) ? intval($field['defines_order']) : 0;
             $visible = array_key_exists('visible', $field) ? intval($field['visible']) : 0;
+            $sensitive = array_key_exists('sensitive', $field) ? intval($field['sensitive']) : 0;
             $required = array_key_exists('required', $field) ? intval($field['required']) : 0;
             $is_sortable = array_key_exists('is_sortable', $field) ? intval($field['is_sortable']) : 0;
             $include_in_main_search = array_key_exists('include_in_main_search', $field) ? intval($field['include_in_main_search']) : 0;
@@ -2080,7 +2084,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $put_in_search = array_key_exists('put_in_search', $field) ? intval($field['put_in_search']) : 0;
             $options = array_key_exists('options', $field) ? $field['options'] : '';
             if ($field['name'] != '') {
-                actual_add_catalogue_field($name, $field['name'], $field['description'], $field['type'], $field['order'], $defines_order, $visible, $field['default'], $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
+                actual_add_catalogue_field($name, $field['name'], $field['description'], $field['type'], $field['order'], $defines_order, $visible, $sensitive, $field['default'], $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
             }
         }
 
@@ -2287,6 +2291,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                 }
                 $defines_order = array_key_exists('defines_order', $field) ? intval($field['defines_order']) : 0;
                 $visible = array_key_exists('visible', $field) ? intval($field['visible']) : 0;
+                $sensitive = array_key_exists('sensitive', $field) ? intval($field['sensitive']) : 0;
                 $required = array_key_exists('required', $field) ? intval($field['required']) : 0;
                 $is_sortable = array_key_exists('is_sortable', $field) ? intval($field['is_sortable']) : 0;
                 $include_in_main_search = array_key_exists('include_in_main_search', $field) ? intval($field['include_in_main_search']) : 0;
@@ -2295,7 +2300,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                 $put_in_search = array_key_exists('put_in_search', $field) ? intval($field['put_in_search']) : 0;
                 $options = $field['options'];
                 if ($field['name'] != '') {
-                    actual_add_catalogue_field($name, $field['name'], $field['description'], $field['type'], $order, $defines_order, $visible, $field['default'], $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
+                    actual_add_catalogue_field($name, $field['name'], $field['description'], $field['type'], $order, $defines_order, $visible, $sensitive, $field['default'], $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
                 }
                 $o++;
             }
@@ -2313,6 +2318,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                     }
                     $defines_order = array_key_exists('defines_order', $field) ? intval($field['defines_order']) : 0;
                     $visible = array_key_exists('visible', $field) ? intval($field['visible']) : 0;
+                    $sensitive = array_key_exists('sensitive', $field) ? intval($field['sensitive']) : 0;
                     $is_sortable = array_key_exists('is_sortable', $field) ? intval($field['is_sortable']) : 0;
                     $include_in_main_search = array_key_exists('include_in_main_search', $field) ? intval($field['include_in_main_search']) : 0;
                     $allow_template_search = array_key_exists('allow_template_search', $field) ? intval($field['allow_template_search']) : 0;
@@ -2321,7 +2327,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                     $put_in_search = array_key_exists('put_in_search', $field) ? intval($field['put_in_search']) : 0;
                     $options = $field['options'];
                     $field_type = array_key_exists('type', $field) ? $field['type'] : null;
-                    actual_edit_catalogue_field($id, $name, $field['name'], $field['description'], $order, $defines_order, $visible, $field['default'], $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options, $field_type);
+                    actual_edit_catalogue_field($id, $name, $field['name'], $field['description'], $order, $defines_order, $visible, $sensitive, $field['default'], $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options, $field_type);
                 }
                 $o++;
             }
