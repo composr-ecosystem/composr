@@ -1477,14 +1477,22 @@ function cms_collator_create() : ?object
         return $collator;
     }
     if (function_exists('collator_create')) {
-        $locales = explode(',', do_lang('locale'));
-        foreach ($locales as $locale) {
-            $collator = collator_create($locale);
-            if ($collator !== null) {
-                if (collator_get_locale($collator, Locale::VALID_LOCALE) != 'root') {
-                    return $collator;
+        $locale_str = do_lang('locale');
+        if ($locale_str != '') {
+            $locale_sections = explode(';', $locale_str);
+            foreach ($locale_sections as $locale_section) {
+                $parts = explode(':', $locale_section, 2);
+                $locale = $parts[0];
+                if (count($parts) == 2) {
+                    $locale = $parts[1];
                 }
-                unset($collator);
+                $collator = collator_create($locale);
+                if ($collator !== null) {
+                    if (collator_get_locale($collator, Locale::VALID_LOCALE) != 'root') {
+                        return $collator;
+                    }
+                    unset($collator);
+                }
             }
         }
     }
