@@ -671,6 +671,7 @@ class Hook_addon_registry_core
             'data/images/index.html',
             'data/incoming_uploads.php',
             'data/index.html',
+            'data/installed.php',
             'data/keys/.htaccess',
             'data/keys/index.html',
             'data/keys/telemetry.pub',
@@ -1999,7 +2000,6 @@ class Hook_addon_registry_core
             'uploads/repimages/index.html',
             'uploads/website_specific/index.html',
             'web.config',
-            'data/installed.php',
         ];
     }
 

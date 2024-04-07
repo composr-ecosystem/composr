@@ -167,9 +167,9 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
         return [
             '_config.php.template',
             'adminzone/pages/minimodules_custom/plug_guid.php',
-            'adminzone/pages/minimodules_custom/push_bugfix.php',
             'adminzone/pages/modules_custom/admin_make_release.php',
             'adminzone/pages/modules_custom/admin_modularisation.php',
+            'adminzone/pages/modules_custom/admin_push_bugfix.php',
             'aps/.htaccess',
             'aps/APP-LIST.xml',
             'aps/APP-META.xml',
@@ -203,6 +203,8 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
             'sources_custom/make_release.php',
             'sources_custom/modularisation.php',
             'sources_custom/modularisation2.php',
+            'themes/admin/javascript_custom/push_bugfix.js',
+            'themes/admin/templates_custom/ADMIN_PUSH_BUGFIX_STEP2.tpl',
             'themes/default/templates_custom/MAKE_RELEASE_STEP4_SCREEN.tpl',
         ];
     }

@@ -175,7 +175,7 @@ class Module_admin_push_bugfix
         $fields = new Tempcode();
 
         // URLs
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_URLS')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c71105a3e00c55cb7ef29a3e23e43033', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_URLS')]));
         $fields->attach(form_input_url(do_lang_tempcode('PUSH_BUGFIX_REMOTE_BASE_URL'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_REMOTE_BASE_URL'), 'remote_base_url', $REMOTE_BASE_URL, true));
 
         $hidden = new Tempcode();
@@ -184,6 +184,7 @@ class Module_admin_push_bugfix
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => '6639e8eb46b0904f42f5f0dcee5ae155',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -262,7 +263,7 @@ class Module_admin_push_bugfix
         $fields = new Tempcode();
 
         // Description
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_DESCRIPTION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_DESCRIPTION')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '58ef93bddc7d2b92db5449855d706544', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_DESCRIPTION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_DESCRIPTION')]));
         $fields->attach(form_input_line(do_lang_tempcode('PUSH_BUGFIX_ISSUE_SUMMARY'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_SUMMARY'), 'title', null, true));
         $fields->attach(form_input_text(do_lang_tempcode('PUSH_BUGFIX_ISSUE_DESCRIPTION'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_DESCRIPTION'), 'notes', '', true));
         $fields->attach(form_input_line(do_lang_tempcode('PUSH_BUGFIX_ISSUE_AFFECTS'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_AFFECTS'), 'affects', null, false));
@@ -274,12 +275,12 @@ class Module_admin_push_bugfix
                 $git_dirty = isset($git_found[$path]);
                 $file_fields->attach(form_input_list_entry(escape_html($path), $git_dirty));
             }
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_FIX'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_FIX')]));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7af7c8c39cc5ab65909e42e54e9784ae', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_FIX'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_FIX')]));
             $fields->attach(form_input_multi_list(do_lang_tempcode('PUSH_BUGFIX_ISSUE_FILES'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_FILES'), 'fixed_files', $file_fields));
         }
 
         // Classification
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_CLASSIFICATION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_CLASSIFICATION')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '8b1fa487f622ec2aca46b7ee87119312', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_CLASSIFICATION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_CLASSIFICATION')]));
         $fields->attach(form_input_line(do_lang_tempcode('PUSH_BUGFIX_ISSUE_VERSION'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_VERSION'), 'version', $on_disk_version, true));
         $project_fields = new Tempcode();
         foreach ($projects as $project_id => $project_title) {
@@ -299,14 +300,14 @@ class Module_admin_push_bugfix
         $fields->attach(form_input_radio(do_lang_tempcode('PUSH_BUGFIX_ISSUE_SEVERITY'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_SEVERITY'), 'severity', $severity_fields, true));
 
         // Post to
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_POST_TO'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_POST_TO')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7a5c24f3b9478a83d42ccaa40bb1611a', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_POST_TO'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_POST_TO')]));
         $fields->attach(form_input_integer(do_lang_tempcode('PUSH_BUGFIX_ISSUE_TRACKER'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_TRACKER'), 'tracker_id', null, false));
         $fields->attach(form_input_tick(do_lang_tempcode('PUSH_BUGFIX_ISSUE_TRACKER_CLOSE'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_TRACKER_CLOSE'), 'close_issue', false));
         $fields->attach(form_input_line(do_lang_tempcode('PUSH_BUGFIX_ISSUE_GIT_COMMIT'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_GIT_COMMIT'), 'git_commit_id', null, cms_empty_safe($files)));
         $fields->attach(form_input_integer(do_lang_tempcode('PUSH_BUGFIX_ISSUE_FORUM_POST'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_FORUM_POST'), 'post_id', null, false));
 
         // Submission
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_SUBMISSION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_SUBMISSION')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '70d9a04e0e791d1eb14cf7a67efd1c73', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_SUBMISSION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_SUBMISSION')]));
         $submit_to_fields = new Tempcode();
         $submit_to_fields->attach(form_input_radio_entry('submit_to', 'test', true, do_lang_tempcode('PUSH_BUGFIX_SUBMIT_TO_TEST')));
         $submit_to_fields->attach(form_input_radio_entry('submit_to', 'live', false, do_lang_tempcode('PUSH_BUGFIX_SUBMIT_TO_LIVE')));
@@ -315,7 +316,7 @@ class Module_admin_push_bugfix
         $fields->attach(form_input_password(do_lang_tempcode('PUSH_BUGFIX_ISSUE_PASSWORD'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_PASSWORD'), 'password', true));
 
         // Confirmation
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_CONFIRMATION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_CONFIRMATION')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6cf847d883b093f78225685d6f2d38b3', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_CONFIRMATION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_CONFIRMATION')]));
         $fields->attach(form_input_tick(do_lang_tempcode('PUSH_BUGFIX_ISSUE_TESTED'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_TESTED'), 'tested', false));
         // TODO: validation for this tick
 
@@ -324,6 +325,7 @@ class Module_admin_push_bugfix
         $post_url = build_url(['page' => '_SELF', 'type' => 'step3'], '_SELF');
 
         return do_template('ADMIN_PUSH_BUGFIX_STEP2', [
+            '_GUID' => '19171b994773116d54ab5b6b8c80e827',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -434,7 +436,7 @@ class Module_admin_push_bugfix
             // Make tracker comment
             $tracker_comment_message = do_lang('PUSH_BUGFIX_TRACKER_COMMENT_MESSAGE', escape_html($tracker_title), escape_html($tracker_message), escape_html($tracker_additional));
             $tracker_post_id = $this->create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted, $tracker_severity, $tracker_category, $tracker_project);
-            if ($tracker_id !== null) {
+            if ($tracker_post_id !== null) {
                 $tracker_url = $REMOTE_BASE_URL . '/tracker/view.php?id=' . strval($tracker_id);
                 $done[do_lang('PUSH_BUGFIX_RESPONDED_TO_TRACKER_ISSUE')] = $tracker_url;
             } else {
@@ -539,7 +541,7 @@ class Module_admin_push_bugfix
         $fields = new Tempcode();
 
         // Add files
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_HOTFIX'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_HOTFIX')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '5cf81230cfa9e0e2aea4914a74740772', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_HOTFIX'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_HOTFIX')]));
         $file_fields = new Tempcode();
         foreach ($fixed_files as $fixed_file) {
             $selected = true;
@@ -570,6 +572,7 @@ class Module_admin_push_bugfix
         $fields = new Tempcode();
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => 'dd3e26c3820aa94146e3d71b804abf29',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
