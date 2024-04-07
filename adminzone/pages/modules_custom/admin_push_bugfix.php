@@ -458,7 +458,7 @@ class Module_admin_push_bugfix
                 if ($submit_to == 'live') {
                     $git_commit_id = $this->do_git_commit($git_commit_message, $fixed_files, $git_commit_command_data);
                     if ($git_commit_id !== null) {
-                        echo '<!-- ' . $git_commit_command_data . ' -->';
+                        $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
                         $done[do_lang('PUSH_BUGFIX_COMMITTED_TO_GIT')] = $git_url;
                     } else {
                         $done[do_lang('PUSH_BUGFIX_COMMITTED_TO_GIT_FAILED', escape_html($git_commit_command_data))] = null;
