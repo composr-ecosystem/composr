@@ -567,9 +567,7 @@ class Module_admin_push_bugfix
         $hidden->attach(form_input_hidden('password', $_password));
         $hidden->attach(form_input_hidden('tracker_id', $_tracker_id));
         $hidden->attach(form_input_hidden('submit_to', $submit_to));
-
-        // TODO: Fix compo.sr web API; it always denies access for uploading hotfix TARS and I have no idea why, so I disabled that feature for now
-        $fields = new Tempcode();
+        $hidden->attach(form_input_hidden('remote_base_url', $REMOTE_BASE_URL));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => 'dd3e26c3820aa94146e3d71b804abf29',
@@ -652,7 +650,7 @@ class Module_admin_push_bugfix
         foreach ($lines as $line) {
             $matches = [];
             if (preg_match('#\t(both modified|modified|new file|deleted):\s+(.*)$#', $line, $matches) != 0) {
-                if (($matches[2] != 'data/files.bin') && ((basename($matches[2]) != 'push_bugfix.php') || ($include_push_bugfix))) {
+                if (($matches[2] != 'data/files.bin') && ((basename($matches[2]) != 'admin_push_bugfix.php') || ($include_push_bugfix))) {
                     $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', ['filepath' => $matches[2]]);
                     if ($file_addon !== null) {
                         if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
