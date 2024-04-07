@@ -60,7 +60,7 @@ class Hook_preview_setupwizard_blocks
 
         $zone_structure = array_pop($page_structure);
 
-        $preview = do_template('SETUPWIZARD_BLOCK_PREVIEW', ['_GUID' => '77c2952691ead0a834a18fccfb6319d9', 'LEFT' => $zone_structure['left'], 'RIGHT' => $zone_structure['right'], 'START' => $zone_structure['start']]);
+        $preview = do_template('SETUPWIZARD_BLOCK_PREVIEW', ['_GUID' => '77c2952691ead0a834a18fccfb6319d9', 'LEFT' => $zone_structure['left'], 'RIGHT' => $zone_structure['right'], 'START' => $zone_structure[DEFAULT_ZONE_PAGE_NAME]]);
 
         return [$preview, null];
     }
