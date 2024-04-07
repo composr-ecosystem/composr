@@ -135,11 +135,11 @@ class Hook_addon_registry_composr_homesite_support_credits
                 'points',
                 'Conversr',
                 //'core_all_icons',
+                'composr_homesite',
             ],
             'recommends' => [
                 'stats',
                 'MySQL',
-                'composr_homesite',
                 'composr_release_build',
                 'composr_tutorials',
             ],

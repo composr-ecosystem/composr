@@ -37,7 +37,7 @@ class Hook_page_groupings_make_release
             ['tools', 'admin/tool', ['plug_guid', [], get_page_zone('plug_guid', false, 'adminzone', 'minimodules')], do_lang_tempcode('RELEASE_TOOLS_FIX_GUIDS')],
             ['tools', 'admin/tool', ['admin_make_release', [], get_page_zone('admin_make_release', false, 'adminzone', 'modules')], do_lang_tempcode('RELEASE_TOOLS_MAKE_RELEASE')],
             ['tools', 'admin/tool', ['admin_modularisation', [], get_page_zone('admin_modularisation', false, 'adminzone', 'modules')], do_lang_tempcode('RELEASE_TOOLS_MODULARISATION')],
-            ['tools', 'admin/tool', ['push_bugfix', [], get_page_zone('push_bugfix', false, 'adminzone', 'minimodules')], do_lang_tempcode('RELEASE_TOOLS_PUSH_BUGFIX')],
+            ['tools', 'admin/tool', ['admin_push_bugfix', [], get_page_zone('admin_push_bugfix', false, 'adminzone', 'modules')], do_lang_tempcode('RELEASE_TOOLS_PUSH_BUGFIX')],
             ['tools', 'admin/tool', ['doc_index_build', [], get_page_zone('doc_index_build', false, 'adminzone', 'minimodules')], do_lang_tempcode('DOC_TOOLS_ADDON_TUTORIAL_INDEX')],
         ];
     }
