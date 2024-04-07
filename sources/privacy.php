@@ -231,7 +231,7 @@ abstract class Hook_privacy_base
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      * @return string The stem of the SQL query (blank: do not run this search as there are no filters)
      */
-     public function get_selection_sql(string $table_name, array $table_details, int $table_action, bool $purge_retention = false, string $username = '', array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = []) : string
+    public function get_selection_sql(string $table_name, array $table_details, int $table_action, bool $purge_retention = false, string $username = '', array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = []) : string
     {
         $this->modify_table_details($table_name, $table_details, null, 'get_selection_sql');
 

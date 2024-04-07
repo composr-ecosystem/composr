@@ -343,7 +343,7 @@ class Hook_task_import_members
             unset($line[$email_address_key]);
             unset($line[$dob_key]);
             foreach ($line as $h => $f) { // New CPFs
-                $cf_id = cns_make_custom_field($h, 0, '', '', 0, 0, 0, 0, 'long_text');
+                $cf_id = cns_make_custom_field($h, 0, '', '', 0, 0, 0, 0, 'long_text', 0);
                 $_cpf_edit_url = build_url(['page' => 'admin_cns_customprofilefields', 'type' => '_edit', 'id' => $cf_id], get_module_zone('admin_cns_customprofilefields'));
                 $cpf_edit_url = $_cpf_edit_url->evaluate();
                 $outputted_messages->attach(do_lang_tempcode('MEMBER_IMPORT_CPF_ADDED', escape_html($h), escape_html($cpf_edit_url)));

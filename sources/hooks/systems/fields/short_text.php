@@ -38,6 +38,10 @@ class Hook_fields_short_text
             'tel' => do_lang_tempcode('FIELD_TYPE_tel'),
         ];
 
+        $ret += [
+            'username' => do_lang_tempcode('FIELD_TYPE_username'),
+        ];
+
         return $ret;
     }
 
@@ -176,5 +180,21 @@ class Hook_fields_short_text
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
         return $val;
+    }
+
+    /**
+     * Define what type of field this should be treated as in the privacy system if marked sensitive.
+     * This method should be defined on fields which should not be treated as "additional_anonymise_fields".
+     *
+     * @param  array $field The field details
+     * @return ID_TEXT The type of field to treat this
+     */
+    public function privacy_field_type(array $field) : string
+    {
+        if ($field['cf_type'] == 'username') {
+            return 'username_fields';
+        }
+
+        return 'additional_anonymise_fields';
     }
 }

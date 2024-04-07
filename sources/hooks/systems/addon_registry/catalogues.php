@@ -860,10 +860,10 @@ class Hook_addon_registry_catalogues
             require_code('lang3');
             actual_add_catalogue('projects', lang_code_to_default_content('c_title', 'DEFAULT_CATALOGUE_PROJECTS_TITLE', false, 2), '', C_DT_FIELDMAPS, 0, '', 30);
             $fields = [
-                ['NAME', 'DESCRIPTION_NAME', 'short_trans', 1, 1, ''],
-                ['MAINTAINER', 'DESCRIPTION_MAINTAINER', 'member', 0, 1, '!'],
-                ['DESCRIPTION', 'DESCRIPTION_DESCRIPTION', 'long_trans', 0, 1, ''],
-                ['PROJECT_PROGRESS', 'DESCRIPTION_PROJECT_PROGRESS', 'integer', 0, 1, '0'],
+                ['NAME', 'DESCRIPTION_NAME', 'short_trans', 1, 1, '', 0],
+                ['MAINTAINER', 'DESCRIPTION_MAINTAINER', 'member', 0, 1, '!', 1],
+                ['DESCRIPTION', 'DESCRIPTION_DESCRIPTION', 'long_trans', 0, 1, '', 0],
+                ['PROJECT_PROGRESS', 'DESCRIPTION_PROJECT_PROGRESS', 'integer', 0, 1, '0', 0],
             ];
             foreach ($fields as $i => $field) {
                 actual_add_catalogue_field(
@@ -874,6 +874,7 @@ class Hook_addon_registry_catalogues
                     $i, // $order
                     $field[3], // $defines_order
                     1, // $visible
+                    $field[6], // $sensitive
                     $field[5], // $default
                     $field[4], // $required
                     1, // $is_sortable
@@ -906,6 +907,7 @@ class Hook_addon_registry_catalogues
                     $i, // $order
                     $field[3], // $defines_order
                     $field[5], // $visible
+                    0, // $sensitive
                     '', // $default
                     $field[4], // $required
                     1,
@@ -942,6 +944,7 @@ class Hook_addon_registry_catalogues
                     $i, // $order
                     $field[3], // $defines_order
                     1, // $visible
+                    0, // $sensitive
                     '', // $default
                     $field[4], // $required
                     1,
@@ -962,18 +965,18 @@ class Hook_addon_registry_catalogues
             require_code('lang3');
             actual_add_catalogue('contacts', lang_code_to_default_content('c_title', 'CONTACTS', false, 2), lang_code_to_default_content('c_description', 'DEFAULT_CATALOGUE_CONTACTS_DESCRIPTION', true, 2), C_DT_FIELDMAPS, 0, '', 30);
             $fields = [
-                ['CONTACT_FIRST_NAME', '', 'short_text', 0, 1],
-                ['CONTACT_LAST_NAME', '', 'short_text', 1, 1],
-                ['EMAIL_ADDRESS', '', 'short_text', 0, 0],
-                ['CONTACT_COMPANY', '', 'short_text', 0, 0],
-                ['CONTACT_HOMEADDRESS', '', 'short_text', 0, 0],
-                ['CONTACT_CITY', '', 'short_text', 0, 0],
-                ['CONTACT_HOMEPHONE', '', 'short_text', 0, 0],
-                ['CONTACT_WORKPHONE', '', 'short_text', 0, 0],
-                ['CONTACT_HOMEPAGE', '', 'short_text', 0, 0],
-                ['CONTACT_IM', '', 'short_text', 0, 0],
-                ['NOTES', '', 'long_text', 0, 0],
-                ['CONTACT_PHOTO', '', 'picture', 0, 0],
+                ['CONTACT_FIRST_NAME', '', 'short_text', 0, 1, 1],
+                ['CONTACT_LAST_NAME', '', 'short_text', 1, 1, 1],
+                ['EMAIL_ADDRESS', '', 'short_text', 0, 0, 1],
+                ['CONTACT_COMPANY', '', 'short_text', 0, 0, 1],
+                ['CONTACT_HOMEADDRESS', '', 'short_text', 0, 0, 1],
+                ['CONTACT_CITY', '', 'short_text', 0, 0, 1],
+                ['CONTACT_HOMEPHONE', '', 'short_text', 0, 0, 1],
+                ['CONTACT_WORKPHONE', '', 'short_text', 0, 0, 1],
+                ['CONTACT_HOMEPAGE', '', 'short_text', 0, 0, 1],
+                ['CONTACT_IM', '', 'short_text', 0, 0, 1],
+                ['NOTES', '', 'long_text', 0, 0, 1],
+                ['CONTACT_PHOTO', '', 'picture', 0, 0, 1],
             ];
             foreach ($fields as $i => $field) {
                 actual_add_catalogue_field(
@@ -984,6 +987,7 @@ class Hook_addon_registry_catalogues
                     $i, // $order
                     $field[3], // $defines_order
                     1, // $visible
+                    $field[5], // $sensitive
                     '', // $default
                     $field[4], // $required
                     1,

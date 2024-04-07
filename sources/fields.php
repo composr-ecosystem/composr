@@ -232,6 +232,7 @@ function define_custom_field(string $name, string $description = '', int $order 
         'cf_allow_template_search' => 0,
         'cf_defines_order' => 0,
         'cf_visible' => 1,
+        'cf_sensitive' => 0,
         'cf_put_in_search' => 0,
         'cf_default' => '',
     ];
@@ -370,25 +371,38 @@ function get_fields_hook(string $type) : object
         return $fields_hook_cache[$type];
     }
 
-    $path = 'hooks/systems/fields/' . filter_naughty($type);
-    if ((!/*common ones we know have hooks*/in_array($type, ['author', 'codename', 'color', 'content_link', 'date_time', 'email', 'float', 'guid', 'integer', 'date', 'time', 'list', 'long_text', 'long_trans', 'page_link', 'password', 'picture', 'video', 'posting_field', 'reference', 'short_text', 'short_trans', 'theme_image', 'tick', 'upload', 'url', 'member'])) && (!is_file(get_file_base() . '/sources/' . $path . '.php')) && (!is_file(get_file_base() . '/sources_custom/' . $path . '.php'))) {
-        $hooks = find_all_hook_obs('systems', 'fields', 'Hook_fields_');
-        foreach ($hooks as $ob) {
-            if (method_exists($ob, 'get_field_types')) {
-                if (array_key_exists($type, $ob->get_field_types($type))) {
-                    $fields_hook_cache[$type] = $ob;
-                    return $ob;
-                }
+    // Try loading the field hook directly
+    $ob = get_hook_ob('systems', 'fields', filter_naughty($type), 'Hook_fields_', true);
+    if (is_object($ob)) {
+        $fields_hook_cache[$type] = $ob;
+        return $ob;
+    }
+
+    // Try finding the correct hook through get_field_types
+    $hooks = find_all_hook_obs('systems', 'fields', 'Hook_fields_');
+    foreach ($hooks as $ob) {
+        if (method_exists($ob, 'get_field_types')) {
+            if (array_key_exists($type, $ob->get_field_types($type))) {
+                $fields_hook_cache[$type] = $ob;
+                return $ob;
             }
         }
     }
+
+    // Try creating an object factory as a last resort
+    $path = 'hooks/systems/fields/' . filter_naughty($type);
     require_code($path);
     $ob = object_factory('Hook_fields_' . filter_naughty($type));
-    if ($ob === null) {
-        return get_fields_hook('short_text');
+    if (is_object($ob)) {
+        $fields_hook_cache[$type] = $ob;
+        return $ob;
     }
-    $fields_hook_cache[$type] = $ob;
-    return $ob;
+
+    // We got nothing; fall back to short_text
+    if ($type == 'short_text') { // Uh oh! We already tried short_text.
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+    return get_fields_hook('short_text');
 }
 
 /**

@@ -207,7 +207,8 @@ class Hook_fields_reference_multi
                 if ($value != '') {
                     list($title) = content_get_details('catalogue_entry', $_value);
                     if ($title === null) {
-                        continue;
+                        attach_message(do_lang_tempcode('MISSING_RESOURCE', 'catalogue_entry'), 'warn');
+                        continue; // Skip invalid references
                     }
 
                     $value .= "\n";

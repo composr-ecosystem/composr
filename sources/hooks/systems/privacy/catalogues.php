@@ -81,7 +81,6 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                     'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
-                // TODO: Smart searching within catalogue field values
             ],
         ];
     }
@@ -100,11 +99,143 @@ class Hook_privacy_catalogues extends Hook_privacy_base
         switch ($table_name) {
             case 'catalogue_entries':
                 require_code('catalogues');
-                $ret += get_catalogue_entry_field_values($row['c_name'], $row);
+                $ret['catalogue_entry_values'] = get_catalogue_entry_field_values($row['c_name'], $row);
                 break;
         }
 
         return $ret;
+    }
+
+    /**
+     * Anonymise a row.
+     *
+     * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
+     * @param  array $row Row raw from the database
+     * @param  ID_TEXT $username Only anonymise username fields containing this username (blank: do not filter by this)
+     * @param  array $ip_addresses Only anonymise IP fields containing one of these IP addresses (empty: do not filter by this)
+     * @param  ?MEMBER $member_id Only anonymise member fields containing this member ID (null: do not filter by this)
+     * @param  string $email_address Only anonymise e-mail fields containing this e-mail address (blank: do not filter by this)
+     * @param  array $others Only anonymise additional fields containing one of these strings (empty: do not filter by this)
+     * @param  boolean $reverse_logic_return Whether to anonymise on fields that do not match the provided criteria instead of those that do, and return a modified $row instead of modifying the database
+     * @return ?array Modified row, if $reverse_logic_return was true
+     */
+    public function anonymise(string $table_name, array $table_details, array $row, string $username = '', array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = [], bool $reverse_logic_return = false) : ?array
+    {
+        switch ($table_name) {
+            case 'catalogue_entries':
+                $ret = parent::anonymise($table_name, $table_details, $row, $username, $ip_addresses, $member_id, $email_address, $others, $reverse_logic_return);
+                if ($ret !== null) {
+                    return $ret;
+                }
+
+                // anonymise sensitive catalogue entry fields
+                require_code('fields');
+                require_code('catalogues');
+                require_code('catalogues2');
+
+                // Owner of a field is the same as owner of the entry
+                $is_owner = $this->is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
+
+                $fields = get_catalogue_entry_field_values($row['c_name'], $row);
+                $new_fields = [];
+                foreach ($fields as $i => $field) {
+                    // Load in current value
+                    if (isset($field['effective_value_pure'])) {
+                        $new_fields[$field['id']] = $field['effective_value_pure'];
+                    } else {
+                        $new_fields[$field['id']] = $field['effective_value'];
+                    }
+
+                    // Account for multi-line fields
+                    if (substr($field['cf_type'], -6, 6) == '_multi') {
+                        $value = explode("\n", $new_fields[$field['id']]);
+                    } else {
+                        $value = [$new_fields[$field['id']]];
+                    }
+
+                    // No need to anonymise this field if it is not marked sensitive
+                    if ($field['cf_sensitive'] == 0) {
+                        continue;
+                    }
+
+                    // Determine how we should treat / anonymise this field
+                    $treat_as = 'additional_anonymise_fields';
+                    $ob = get_fields_hook($field['cf_type']);
+                    if (method_exists($ob, 'privacy_field_type')) {
+                        $treat_as = $ob->privacy_field_type($field);
+                        if ($treat_as === null) {
+                            $treat_as = 'additional_anonymise_fields';
+                        }
+                    }
+
+                    // Anonymise the field value(s) depending on how we are supposed to treat it
+                    foreach ($value as &$_value) {
+                        switch ($treat_as) {
+                            case 'additional_member_id_fields':
+                                if (($is_owner) || (($member_id !== null) && ($_value === $member_id))) {
+                                    if ($field['cf_required'] == 1) {
+                                        $_value = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                                    } else {
+                                        $_value = '';
+                                    }
+                                }
+                                break;
+                            case 'ip_address_fields':
+                                if (($is_owner) || ((count($ip_addresses) > 0) && (in_array($_value, $ip_addresses)))) {
+                                    if ($field['cf_required'] == 1) {
+                                        $_value = '0.0.0.0';
+                                    } else {
+                                        $_value = '';
+                                    }
+                                }
+                                break;
+                            case 'email_fields':
+                                if (($is_owner) || (($email_address != '') && ($_value === $email_address))) {
+                                    if ($field['cf_required'] == 1) {
+                                        $_value = 'anonymous@example.com';
+                                    } else {
+                                        $_value = '';
+                                    }
+                                }
+                                break;
+                            case 'username_fields':
+                                if (($is_owner) || (($username != '') && ($_value === $username))) {
+                                    if ($field['cf_required'] == 1) {
+                                        $_value = do_lang('GUEST');
+                                    } else {
+                                        $_value = '';
+                                    }
+                                }
+                                break;
+                            default:
+                                if (($is_owner) || in_array($_value, $others)) {
+                                    if ($field['cf_required'] == 1) {
+                                        $_value = do_lang('UNKNOWN');
+                                    } else {
+                                        $_value = '';
+                                    }
+                                }
+                        }
+                    }
+                    $new_fields[$field['id']] = implode("\n", $value);
+                }
+
+                actual_edit_catalogue_entry(
+                    $row['id'],
+                    $row['cc_id'],
+                    $row['ce_validated'],
+                    $row['notes'],
+                    $row['allow_rating'],
+                    $row['allow_comments'],
+                    $row['allow_trackbacks'],
+                    $new_fields
+                );
+
+                return null;
+            default:
+                return parent::anonymise($table_name, $table_details, $row, $username, $ip_addresses, $member_id, $email_address, $others, $reverse_logic_return);
+        }
     }
 
     /**

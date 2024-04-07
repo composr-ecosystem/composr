@@ -96,11 +96,26 @@ class Hook_task_privacy_download
                         $max = 100;
                         do {
                             $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql, $max, $start);
+
                             foreach ($rows as $_row) {
                                 if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
                                     // For records the member does not own, anonymise data not belonging to them, and do not proceed further to getting files
                                     $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
-                                    $data['matched_records'][] = $hook_ob->serialise($table_name, $row);
+                                    $serialised = $hook_ob->serialise($table_name, $row);
+
+                                    // FUDGE: For records the member does not own, delete catalogue entry field values from results which are marked sensitive
+                                    if (($table_name == 'catalogue_entries') && array_key_exists('catalogue_entry_values', $serialised)) {
+                                        foreach ($serialised['catalogue_entry_values'] as $i => $field) {
+                                            if ($field['cf_sensitive'] == 0) {
+                                                continue;
+                                            }
+
+                                            unset($serialised['catalogue_entry_values'][$i]['effective_value']);
+                                            unset($serialised['catalogue_entry_values'][$i]['effective_value_pure']);
+                                        }
+                                    }
+
+                                    $data['matched_records'][] = $serialised;
                                     continue;
                                 }
                                 $data['matched_records'][] = $hook_ob->serialise($table_name, $_row);
