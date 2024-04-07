@@ -541,14 +541,14 @@ class Module_admin_push_bugfix
         // Add files
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('PUSH_BUGFIX_HOTFIX'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_HOTFIX')]));
         $file_fields = new Tempcode();
-        foreach ($_POST['fixed_files'] as $fixed_file) {
+        foreach ($fixed_files as $fixed_file) {
             $selected = true;
 
             // Exceptions
-            if (preg_match('#^docs/#', $file) != 0) {
+            if (preg_match('#^docs/#', $fixed_file) != 0) {
                 $selected = false;
             }
-            if (in_array($file, [
+            if (in_array($fixed_file, [
                 'sources_custom/string_scan.php',
                 'data_custom/functions.bin',
             ])) {
@@ -558,13 +558,16 @@ class Module_admin_push_bugfix
             $file_fields->attach(form_input_list_entry(escape_html($fixed_file), $selected));
         }
         $fields->attach(form_input_multi_list(do_lang_tempcode('PUSH_BUGFIX_ISSUE_FILES'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_FILES'), 'fixed_files', $file_fields, null, 5, true));
-
         $post_url = get_self_url(true, false, ['type' => 'step4']);
 
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('username', $_username));
         $hidden->attach(form_input_hidden('password', $_password));
         $hidden->attach(form_input_hidden('tracker_id', $_tracker_id));
+        $hidden->attach(form_input_hidden('submit_to', $submit_to));
+
+        // TODO: Fix compo.sr web API; it always denies access for uploading hotfix TARS and I have no idea why, so I disabled that feature for now
+        $fields = new Tempcode();
 
         return do_template('FORM_SCREEN', [
             'GET' => false,
@@ -587,6 +590,13 @@ class Module_admin_push_bugfix
     public function step4() : object
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
+        $_username = escape_html(post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER));
+        $_password = escape_html(post_param_string('password', false, INPUT_FILTER_PASSWORD));
+        $submit_to = post_param_string('submit_to');
+
+        global $REMOTE_BASE_URL;
+        $REMOTE_BASE_URL = ($submit_to == 'live') ? $REMOTE_BASE_URL : get_base_url();
 
         $tracker_id = post_param_integer('tracker_id');
 
