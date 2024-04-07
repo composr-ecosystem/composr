@@ -231,6 +231,13 @@ function ensure_version_exists_in_tracker($version)
 
 function upload_to_tracker_issue($tracker_id, $upload)
 {
+    $out = new Tempcode();
+    if (!addon_installed__messaged('composr_homesite', $out)) {
+        warn_exit($out);
+    }
+
+    require_code('composr_homesite');
+
     $disk_filename = md5(serialize($upload));
     $save_path = get_custom_file_base() . '/tracker/uploads/' . $disk_filename;
     move_uploaded_file($upload['tmp_name'], $save_path);
@@ -274,6 +281,13 @@ function upload_to_tracker_issue($tracker_id, $upload)
 
 function create_tracker_post($tracker_id, $tracker_comment_message)
 {
+    $out = new Tempcode();
+    if (!addon_installed__messaged('composr_homesite', $out)) {
+        warn_exit($out);
+    }
+
+    require_code('composr_homesite');
+
     $query = "
         INSERT INTO
         `mantis_bugnote_text_table`
