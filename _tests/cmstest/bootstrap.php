@@ -148,7 +148,7 @@ function unit_testing_run()
                             url_iframe.style.height = '768px';
                             document.body.appendChild(url_iframe);
                             if (name.includes('/_')) { // These tests must be run one at a time
-                                on_hold_iframes.push([url, url_iframe, name]);
+                                on_hold_iframes.push([url, url_iframe, name.replace('/', '__')]);
                             } else {
                                 test_urls.push([url, url_iframe, name.replace('/', '__')]);
                             }
@@ -168,7 +168,7 @@ function unit_testing_run()
                         } else {
                             existing_iframe.src = 'about:blank';
                             if (name.includes('/_')) { // These tests must be run one at a time
-                                on_hold_iframes.push([url, existing_iframe, name]);
+                                on_hold_iframes.push([url, existing_iframe, name.replace('/', '__')]);
                             } else {
                                 test_urls.push([url, existing_iframe, name.replace('/', '__')]);
                             }
