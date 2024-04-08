@@ -87,11 +87,15 @@ class lang_duplication_test_set extends cms_test_case
         $this->assertTrue($percentage_duplicated < 9.0, 'Overall heavy duplication'); // Ideally we'd lower it, but 6% is what it was when this test was written. We're testing it's not getting worse.
 
         // Find if there is any unnecessary underscoring
-        /*foreach (array_keys($all_keys) as $key) {     Was useful once, but there are reasonable cases remaining
+        $prefixes = [];
+        foreach (array_keys($all_keys) as $key) {
             if ((substr($key, 0, 1) == '_') && (cms_strtoupper_ascii($key) == $key) && (!isset($all_keys[substr($key, 1)]))) {
-                $this->assertTrue(false, 'Unnecessary prefixing of ' . $key);
+                $prefixes[] = $key;
             }
-        }*/
+        }
+        if (count($prefixes) > 0) {
+            $this->dump($prefixes, 'Possibly unnecessary underscore prefixing:'); // Don't make a failed test but just output as a dump
+        }
 
         // Find out what is duplicated
         foreach ($vals as $val => $multiple) {

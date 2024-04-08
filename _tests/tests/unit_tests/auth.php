@@ -22,6 +22,8 @@ class auth_test_set extends cms_test_case
     {
         parent::setUp();
 
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         require_code('users');
 
         $GLOBALS['SITE_DB']->query_delete('sessions');

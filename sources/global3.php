@@ -1477,14 +1477,22 @@ function cms_collator_create() : ?object
         return $collator;
     }
     if (function_exists('collator_create')) {
-        $locales = explode(',', do_lang('locale'));
-        foreach ($locales as $locale) {
-            $collator = collator_create($locale);
-            if ($collator !== null) {
-                if (collator_get_locale($collator, Locale::VALID_LOCALE) != 'root') {
-                    return $collator;
+        $locale_str = do_lang('locale');
+        if ($locale_str != '') {
+            $locale_sections = explode(';', $locale_str);
+            foreach ($locale_sections as $locale_section) {
+                $parts = explode(':', $locale_section, 2);
+                $locale = $parts[0];
+                if (count($parts) == 2) {
+                    $locale = $parts[1];
                 }
-                unset($collator);
+                $collator = collator_create($locale);
+                if ($collator !== null) {
+                    if (collator_get_locale($collator, Locale::VALID_LOCALE) != 'root') {
+                        return $collator;
+                    }
+                    unset($collator);
+                }
             }
         }
     }
@@ -4949,7 +4957,10 @@ function cms_gethostbyaddr(string $ip_address) : string
 
     if ((php_function_allowed('shell_exec')) && (function_exists('get_value')) && (get_value('slow_php_dns') === '1')) {
         if ($hostname == '') {
-            $hostname = trim(preg_replace('#^.* #', '', shell_exec('host ' . cms_escapeshellarg($ip_address))));
+            $results = shell_exec('host ' . cms_escapeshellarg($ip_address));
+            if (is_string($results)) {
+                $hostname = trim(preg_replace('#^.* #', '', $results));
+            }
         }
     }
 
@@ -4986,15 +4997,17 @@ function cms_gethostbyname(string $hostname) : string
         if ($ip_address == '') {
             $shell_result = shell_exec('host ' . cms_escapeshellarg($hostname));
 
-            $ip_address = preg_replace('#^.*has IPv6 address [\da-f:]+.*#s', '$1', $shell_result);
-            if (preg_match('#^[\da-f:]+$#', $ip_address) == 0) {
-                $ip_address = '';
-            }
-
-            if ($ip_address == '') {
-                $ip_address = preg_replace('#^.*has address (\d+\.\d+\.\d+\.\d+).*#s', '$1', $shell_result);
-                if (preg_match('#^[\d\.]+$#', $ip_address) == 0) {
+            if (is_string($shell_result)) {
+                $ip_address = preg_replace('#^.*has IPv6 address [\da-f:]+.*#s', '$1', $shell_result);
+                if (preg_match('#^[\da-f:]+$#', $ip_address) == 0) {
                     $ip_address = '';
+                }
+
+                if ($ip_address == '') {
+                    $ip_address = preg_replace('#^.*has address (\d+\.\d+\.\d+\.\d+).*#s', '$1', $shell_result);
+                    if (preg_match('#^[\d\.]+$#', $ip_address) == 0) {
+                        $ip_address = '';
+                    }
                 }
             }
         }

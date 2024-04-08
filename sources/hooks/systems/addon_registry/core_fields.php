@@ -147,6 +147,8 @@ class Hook_addon_registry_core_fields
             'sources/hooks/systems/fields/guid.php',
             'sources/hooks/systems/fields/index.html',
             'sources/hooks/systems/fields/integer.php',
+            'sources/hooks/systems/fields/ip_address.php',
+            'sources/hooks/systems/fields/ip_address_multi.php',
             'sources/hooks/systems/fields/isbn.php',
             'sources/hooks/systems/fields/list.php',
             'sources/hooks/systems/fields/list_multi.php',

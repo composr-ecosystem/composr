@@ -42,7 +42,7 @@
                 if (!filename.match(/^docs\//)) {
                     is_all_documentation = false;
                 }
-                if (!['sources_custom/make_release.php', 'adminzone/pages/modules_custom/admin_make_release.php', 'adminzone/pages/minimodules_custom/push_bugfix.php'].includes(filename)) {
+                if (!['sources_custom/make_release.php', 'adminzone/pages/modules_custom/admin_make_release.php', 'adminzone/pages/modules_custom/admin_push_bugfix.php'].includes(filename)) {
                     is_all_build_tools = false;
                 }
 

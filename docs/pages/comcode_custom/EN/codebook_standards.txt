@@ -295,7 +295,7 @@ Use short array syntax
 Align functions precisely in code
 | Modularity: So Composr code-overriding can work on it
 | Composr development +
-| Automated test ([tt]override_issues.php[/tt])
+| Automated test ([tt]_override_issues.php[/tt])
 | Functions must not be indented in code, and methods must be indented by exactly 4 spaces. There must be exactly one space after the [tt]function[/tt] keyword and no tabs. Braces must go on the next line with the same indentation as the function and the closing brace must match too. The contents of the function must be 4 spaces deeper.
 These rules are very standard, but if broken then code-overriding may not work correctly because Composr assumes them while doing efficient function-level overriding (there is no full PHP parser involved).
 |-
@@ -597,7 +597,7 @@ Don't write code that'll output PHP 'notice' errors
 Allow initialisation functions to run twice
 | Stability
 | Product development only
-| Automated test ([tt]override_issues.php[/tt])
+| Automated test ([tt]_override_issues.php[/tt])
 | If a developer overrides a [tt].php[/tt] file then the initialisation function of the original will also run. The person doing the override doesn't usually understand this and accommodate for it, so make sure you check that you are not doing anything that can't run twice. Usually this just involves guarding [tt]define[/tt] calls.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -958,7 +958,7 @@ Be type-strict
 Avoid complex SQL
 | Portability
 | Product development only
-| Automated test ([tt]__installer_xml_db.php[/tt], [tt]database_unsupported_sql.php[/tt])
+| Automated test ([tt]___installer_xml_db.php[/tt], [tt]database_unsupported_sql.php[/tt])
 | You cannot use SQL syntax that is not widely supported, unless the [tt]db_function[/tt] function supports it. Expressions on aggregate functions are not allowed.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -972,7 +972,7 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 ]Don't use ` symbols in your SQL and don't use keywords for table/field names
 | Portability: they are MySQL-specific
 | Product development only
-| Automated test ([tt]__installer_xml_db.php[/tt]), table creation code checks
+| Automated test ([tt]___installer_xml_db.php[/tt]), table creation code checks
 | You will have been forced to choose field names that don't require escaping anyway.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]

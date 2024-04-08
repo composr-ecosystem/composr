@@ -173,7 +173,7 @@ class Module_admin_make_release
         // Version
         $previous_version = $this->get_previous_version();
         $current_version = $this->get_new_version();
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '5a0eac4680a4063cb53e8bdedc1e82da', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_VERSION'), 'HELP' => do_lang_tempcode('DESCRIPTON_MAKE_RELEASE_STEP1_VERSION')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '5a0eac4680a4063cb53e8bdedc1e82da', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_VERSION'), 'HELP' => do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_VERSION')]));
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP1_OLD_VERSION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_OLD_VERSION'), 'previous_version', ($previous_version !== null) ? $previous_version : '', false));
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP1_NEW_VERSION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_NEW_VERSION'), 'version', $current_version, true));
         $fields->attach(form_input_tick(do_lang_tempcode('MAKE_RELEASE_STEP1_DB_UPGRADE'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_DB_UPGRADE'), 'db_upgrade', false));
@@ -184,7 +184,7 @@ class Module_admin_make_release
         $make_release_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release';
         $profile_url = get_brand_base_url() . '/members/view';
         $git_url = COMPOSR_REPOS_URL;
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6dc15cd17b0ca901ffe869ad91863ad4', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTON_MAKE_RELEASE_STEP1_URLS')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6dc15cd17b0ca901ffe869ad91863ad4', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_URLS')]));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_URL'), 'tracker_url', $tracker_url, true));
         $fields->attach(form_input_integer(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_PROJECT'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_PROJECT'), 'project_id', 1, true));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_WEBSERVICE_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_WEBSERVICE_URL'), 'web_service_url', $web_service_url, true));

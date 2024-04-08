@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// php _tests/index.php _setupwizard
-
 /**
  * Composr test case class (unit testing).
  */

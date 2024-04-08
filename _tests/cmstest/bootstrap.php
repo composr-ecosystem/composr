@@ -71,18 +71,17 @@ function unit_testing_run()
     <div>
         <p class=\"lonely-label\">Notes:</p>
         <ul>
-            <li>The one(s) starting <kbd>___</kbd> are either very slow or unreliable or expected to have some failures: generally do not run them unless you are doing targeted testing
-            <li>The ones starting <kbd>__</kbd> should be run individually because they conflict with other tests
-            <li>The ones starting <kbd>_</kbd> should be run occasionally with discretion, due to slowness, the expectation of false-positives, or the need for an API key file</li>
-            <li>Some need running on the command line, in which case a note will be included in the test's code</li>
+            <li>The one(s) starting <kbd>___</kbd> should only be run through the command line / PHP cli (the command is indicated in a comment in the file). These tests cannot be run with the concurrent tool.
+            <li>The ones starting <kbd>__</kbd> should be run occasionally with discretion, and one at a time, due to significant slowness, the expectation of false-positives, or the need for an API key file. These tests cannot be run with the concurrent tool.
+            <li>The ones starting <kbd>_</kbd> should be run one at a time due to slowness or conflicting with other tests</li>
             <li>Some support a 'debug' GET/CLI parameter, to dump out debug information</li>
-            <li>Many support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
+            <li>Some support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
         </ul>
     </div>";
 
     $cnt = 0;
     foreach ($sets as $set) {
-        if (strpos($set, '/_') === false) {
+        if (strpos($set, '/__') === false) {
             $cnt++;
         }
     }
@@ -91,7 +90,7 @@ function unit_testing_run()
         <p class="lonely-label">Running tests concurrently:</p>
         <select id="select-list" multiple="multiple" size="' . escape_html(integer_format($cnt)) . '">';
     foreach ($sets as $set) {
-        if (strpos($set, '/_') === false) {
+        if (strpos($set, '/__') === false) {
             echo '<option>' . escape_html($set) . '</option>' . "\n";
         }
     }
@@ -139,6 +138,7 @@ function unit_testing_run()
                         var name = list.options[i].value;
                         var url = 'index.php?id=' + name + '" . ((get_param_integer('keep_safe_mode', 0) == 1) ? '&keep_safe_mode=1' : '') . "';
                         var existing_iframe = document.getElementById('iframe-' + name.replace('/', '__'));
+                        var test_status = document.getElementById('status-' + name.replace('/', '__'));
                         if (existing_iframe == null) {
                             var url_iframe = document.createElement('iframe');
                             url_iframe.classList.add('js_test_iframe');
@@ -147,12 +147,32 @@ function unit_testing_run()
                             url_iframe.style.width = '100%';
                             url_iframe.style.height = '768px';
                             document.body.appendChild(url_iframe);
-                            test_urls.push([url, url_iframe, name.replace('/', '__')]);
+                            if (name.includes('/_')) { // These tests must be run one at a time
+                                on_hold_iframes.push([url, url_iframe, name]);
+                            } else {
+                                test_urls.push([url, url_iframe, name.replace('/', '__')]);
+                            }
+                            (function(url_iframe_b, test_status_b, url_b, name_b) {
+                                url_iframe.addEventListener('error', function(event) {
+                                    if (actual_max_slots > 1) {
+                                        test_status_b.innerHTML = '<span style=\"color: DarkRed;\">Error thrown by iframe; pending second attempt</span>';
+                                        on_hold_iframes.push([url_b, url_iframe_b, name_b]);
+
+                                        // Allow us to reload the source later
+                                        url_iframe_b.src = 'about:blank';
+                                    } else {
+                                        test_status_b.innerHTML = '<span style=\"color: Red;\">Error thrown by iframe! Will not try again.</span>';
+                                    }
+                                });
+                            })(url_iframe, test_status, url, name);
                         } else {
                             existing_iframe.src = 'about:blank';
-                            test_urls.push([url, existing_iframe, name.replace('/', '__')]);
+                            if (name.includes('/_')) { // These tests must be run one at a time
+                                on_hold_iframes.push([url, existing_iframe, name]);
+                            } else {
+                                test_urls.push([url, existing_iframe, name.replace('/', '__')]);
+                            }
                         }
-                        var test_status = document.getElementById('status-' + name.replace('/', '__'));
                         test_status.innerHTML = '<span style=\"color: DimGrey;\">Queued</span>';
                     }
                 }
@@ -172,7 +192,7 @@ function unit_testing_run()
                     var name = navigated_iframes[i][2];
                     var test_status = document.getElementById('status-' + name);
                     try {
-                        if (url_iframe && url_iframe.contentDocument && (url_iframe.contentDocument.readyState !== 'complete' || url_iframe.contentDocument.URL == 'about:blank' || url_iframe.contentDocument.URL == '')) {
+                        if (url_iframe && url_iframe.contentDocument && (url_iframe.contentDocument.readyState !== 'complete' || url_iframe.contentDocument.URL === 'about:blank' || url_iframe.contentDocument.URL === '')) {
                             navigated_iframes_cleaned.push([url, url_iframe, name]);
                             test_status.innerHTML = '<span style=\"color: BlueViolet;\">Running test...</span>';
                             active_iframes++;
@@ -219,20 +239,18 @@ function unit_testing_run()
                     test_status.innerHTML = '<span style=\"color: BlueViolet;\">Running test...</span>';
                 }
 
-                if (navigated_iframes.length == 0) {
-                    if (on_hold_iframes.length > 0) { // Process failed tests again, but one at a time
+                if (navigated_iframes.length === 0) {
+                    if (on_hold_iframes.length > 0) { // Tests queued to run one at a time and after concurrent ones
                         actual_max_slots = 1;
                         test_urls = on_hold_iframes;
 
-                        console.log('Finished testing; synchronously re-loading tests that failed to run');
+                        console.log('Finished testing; synchronously re-loading tests that failed to run, and running individual tests');
                     } else {
                         button.disabled = false;
                         window.clearInterval(process_urls_process);
 
                         console.log('Finished testing');
                     }
-                } else {
-                    console.log('(Sleeping for 1s)');
                 }
             }
         </script>
