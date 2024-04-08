@@ -37,7 +37,7 @@ class httpauth_test_set extends cms_test_case
 
         set_option('httpauth_is_enabled', '1');
 
-        $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'auth' => [$username, '']]);
+        $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'auth' => [$username, ''], 'trigger_error' => false]);
 
         set_option('httpauth_is_enabled', '0');
 
