@@ -20,6 +20,9 @@ class module_names_defined_test_set extends cms_test_case
 {
     public function testModuleNamesDefined()
     {
+        require_code('caches3');
+        erase_cached_language();
+
         require_all_lang();
 
         $zones = find_all_zones(true);

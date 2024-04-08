@@ -22,6 +22,8 @@ class env_vars_test_set extends cms_test_case
 
     public function __construct()
     {
+        parent::__construct();
+
         unset($_GET['keep_devtest']);
 
         // Test assumes data is correct on this server, and is in $_SERVER -- only weird servers don't comply, and we're making sure we can support those weird servers

@@ -1424,7 +1424,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADVANCED_BELOW
         ADVANCED_DATABASE_SETUP
         ADVERTISE_HERE
-        ADVERTISE_ON_COMPOSR
         AFA_NOTIFICATION_MAIL
         AFA_NOTIFICATION_MAIL_SUBJECT
         AGGREGATE_TYPE
@@ -8474,6 +8473,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         IS_LOCKED_RUNNING
         DAYS_TO_KEEP__HTTP_LOG
         CONFIG_OPTION_days_to_keep__http_log
+        ADVERTISE_ON_COMPOSR_0
+        ADVERTISE_ON_COMPOSR_1
+        ADVERTISE_ON_COMPOSR_2
+        CRON_UPGRADE_PENDING
+        DESCRIPTION_ADVERTISE_ON_COMPOSR
     ')));
 
     $non_admin_files = [
@@ -9421,7 +9425,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_POST_TEMPLATE
         DESCRIPTION_PREVIEW_POSTS
         DESCRIPTION_PRIVATE_TOPICS
-        DESCRIPTION_QUESTION
         DESCRIPTION_REASON
         DESCRIPTION_REDIRECT_TO_TOPIC
         DESCRIPTION_REVEAL_AGE
@@ -9442,7 +9445,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VISIBLE_TO_GUESTS
         DESCRIPTION_VISIBLE_TO_MEMBERS
         DESCRIPTION_WHISPER
-        DESCRIPTON_QUESTION
+        DESCRIPTION_QUESTION
         DESKTOP_NOTIFICATION_SUBJECT
         DESTINATION
         DETAILS
@@ -11954,6 +11957,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MISSING_PUBLIC_KEY
         _CORRUPT_PUBLIC_KEY
         _MISSING_PUBLIC_KEY
+        DESCRIPTION_SENSITIVE_FIELD
+        FIELD_TYPE_ip_address
+        FIELD_TYPE_ip_address_multi
+        FIELD_TYPE_username
+        FIELD_TYPE_username_multi
+        NOT_VALID_IP
+        SENSITIVE_FIELD
     ')));
 
     // Remove blank lines

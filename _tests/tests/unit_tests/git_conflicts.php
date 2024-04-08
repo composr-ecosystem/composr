@@ -29,9 +29,9 @@ class git_conflicts_test_set extends cms_test_case
         foreach ($files as $path) {
             // Exceptions
             if (in_array($path, [
-                'sources/diff/Diff3.php',
-                'sources/diff/Diff/ThreeWay.php',
-                'tracker/vendor/guzzlehttp/guzzle/src/MessageFormatter.php',
+                'sources/diff/Diff3.php', // because it does its own diffing of conflicts
+                'sources/diff/Diff/ThreeWay.php', // because it does its own diffing of conflicts
+                'tracker/vendor/guzzlehttp/guzzle/src/MessageFormatter.php', // Debug code
             ])) {
                 continue;
             }

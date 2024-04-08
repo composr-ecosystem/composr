@@ -119,7 +119,7 @@ function handle_failover_auto_switching(int $iteration = 0)
             do {
                 $time_before = microtime(true);
                 if (strpos($full_url, 'does-not-exist.bin') !== false) {
-                    // FUDGE: Some servers (e.g. Fedora 34) have an issue recursing too many HTTP calls, breaking the '___static_caching' test. We know this should fail.
+                    // FUDGE: Some servers (e.g. Fedora 34) have an issue recursing too many HTTP calls, breaking the '_static_caching' test. We know this should fail.
                     $data = false;
                     $done_retries = $max_retries;
                 } else {

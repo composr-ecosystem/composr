@@ -536,7 +536,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
         // check valid path
         $success = @file_exists(get_file_base() . '/' . $entry['path']); //@d due to possible bad file paths
         if ((!$success) && (strpos(cms_error_get_last(), 'be a valid path') !== false)) {
-            warn_exit(do_lang_tempcode('CORRUPT_TAR'), false, true);
+            warn_exit(do_lang_tempcode('CORRUPT_TAR', escape_html($entry['path'])), false, true);
         }
 
         // .php?

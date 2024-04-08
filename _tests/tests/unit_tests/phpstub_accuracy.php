@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// Use dev_check to find new PHP functions which might need to be added to phpstub; should be used when changing the PHP compat
+
 /**
  * Composr test case class (unit testing).
  */

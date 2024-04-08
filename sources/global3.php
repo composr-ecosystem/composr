@@ -4957,7 +4957,10 @@ function cms_gethostbyaddr(string $ip_address) : string
 
     if ((php_function_allowed('shell_exec')) && (function_exists('get_value')) && (get_value('slow_php_dns') === '1')) {
         if ($hostname == '') {
-            $hostname = trim(preg_replace('#^.* #', '', shell_exec('host ' . cms_escapeshellarg($ip_address))));
+            $results = shell_exec('host ' . cms_escapeshellarg($ip_address));
+            if (is_string($results)) {
+                $hostname = trim(preg_replace('#^.* #', '', $results));
+            }
         }
     }
 
@@ -4994,15 +4997,17 @@ function cms_gethostbyname(string $hostname) : string
         if ($ip_address == '') {
             $shell_result = shell_exec('host ' . cms_escapeshellarg($hostname));
 
-            $ip_address = preg_replace('#^.*has IPv6 address [\da-f:]+.*#s', '$1', $shell_result);
-            if (preg_match('#^[\da-f:]+$#', $ip_address) == 0) {
-                $ip_address = '';
-            }
-
-            if ($ip_address == '') {
-                $ip_address = preg_replace('#^.*has address (\d+\.\d+\.\d+\.\d+).*#s', '$1', $shell_result);
-                if (preg_match('#^[\d\.]+$#', $ip_address) == 0) {
+            if (is_string($shell_result)) {
+                $ip_address = preg_replace('#^.*has IPv6 address [\da-f:]+.*#s', '$1', $shell_result);
+                if (preg_match('#^[\da-f:]+$#', $ip_address) == 0) {
                     $ip_address = '';
+                }
+
+                if ($ip_address == '') {
+                    $ip_address = preg_replace('#^.*has address (\d+\.\d+\.\d+\.\d+).*#s', '$1', $shell_result);
+                    if (preg_match('#^[\d\.]+$#', $ip_address) == 0) {
+                        $ip_address = '';
+                    }
                 }
             }
         }

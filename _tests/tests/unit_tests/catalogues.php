@@ -42,7 +42,7 @@ class catalogues_test_set extends cms_test_case
         $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'integer Title', 'integer Description', 'integer', null, 0, 1, 0);
         $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'float Title', 'float Description', 'float', null, 0, 1, 0);
 
-        actual_edit_catalogue_field($this->field_ids[0], 'test_catalogue', 'short_text Title', 'short_text Description', 1, 1, 1, 0, '', '', 1, 0, 0, 0);
+        actual_edit_catalogue_field($this->field_ids[0], 'test_catalogue', 'short_text Title', 'short_text Description', 1, 1, 1, 0, '', 1, 0, 0, 0);
 
         actual_edit_catalogue('test_catalogue', 'test_catalogue', 'Catalogue Title', 'Catalogue Description', C_DT_FIELDMAPS, '', 0, 0, 'title ASC', 'never', null);
 

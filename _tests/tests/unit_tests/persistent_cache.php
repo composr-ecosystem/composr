@@ -33,7 +33,7 @@ class persistent_cache_test_set extends cms_test_case
         // Test value lifetimes
         // --------------------
 
-        $values = ['foobar', '', false, null, str_repeat('x', 1024 * 1024 * 10)];
+        $values = ['foobar', '', false, null, str_repeat('x', 1024 * 1024 * 10)]; // TODO: fails on 32MB max limit because we're copying to global and also making a serialised copy
         foreach ($values as $value) {
             // Set
             $cache->set('test', $value);

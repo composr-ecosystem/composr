@@ -20,6 +20,8 @@ class clean_reinstall_test_set extends cms_test_case
 {
     public function testOptions()
     {
+        return; // No sense running this test as all our assertions are commented out
+
         require_code('files2');
 
         disable_php_memory_limit();

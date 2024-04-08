@@ -13,7 +13,7 @@
  * @package    testing_platform
  */
 
-// This covers internal links. Also see _broken_links, which does scanning for external links.
+// This covers internal links. Also see _broken_links, which does scanning for external links. Use debug for further testing.
 
 /**
  * Composr test case class (unit testing).
@@ -90,7 +90,7 @@ class find_broken_screen_links_test_set extends cms_test_case
         }
     }
 
-    // This test is not necessarily required to pass, but it may hint at issues; best just to make it pass anyway (it does at the time at writing) - and add exceptions as needed
+    // This test is not necessarily required to pass, but it may hint at issues. Use debug to do further testing.
     public function testScreenLinks()
     {
         if (($this->only !== null) && ($this->only != 'testScreenLinks')) {
@@ -129,8 +129,9 @@ class find_broken_screen_links_test_set extends cms_test_case
                 if (!is_file($module_path)) {
                     $module_path = zone_black_magic_filterer((($zone == '') ? '' : (filter_naughty($zone) . '/')) . 'pages/modules_custom/' . filter_naughty_harsh($page) . '.php', true);
                 }
-                if (!is_file($module_path)) {
-                    //$this->assertTrue(false, 'Missing module ' . $zone . ':' . $page);    Maybe a forum module but CNS is not running, or a module in a non-installed zone
+                if (!is_file($module_path) && $this->debug) {
+                    // Only fail if in debug
+                    $this->assertTrue(false, 'Missing module ' . $zone . ':' . $page);    // Maybe a forum module but CNS is not running, or a module in a non-installed zone
                     continue;
                 }
                 $c2 = cms_file_get_contents_safe(get_file_base() . '/' . $module_path);

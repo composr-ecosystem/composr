@@ -24,6 +24,8 @@ class _feeds_and_podcasts_test_set extends cms_test_case
     {
         parent::setUp();
 
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         $this->establish_admin_session();
         $this->session_id = $this->establish_admin_callback_session();
 

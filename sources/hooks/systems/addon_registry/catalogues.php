@@ -894,7 +894,7 @@ class Hook_addon_registry_catalogues
             require_code('lang3');
             actual_add_catalogue('faqs', lang_code_to_default_content('c_title', 'DEFAULT_CATALOGUE_FAQS_TITLE', false, 2), '', C_DT_FIELDMAPS, 0, '', 0);
             $fields = [
-                ['QUESTION', 'DESCRIPTON_QUESTION', 'short_trans', 0, 1, 1, ''],
+                ['QUESTION', 'DESCRIPTION_QUESTION', 'short_trans', 0, 1, 1, ''],
                 ['ANSWER', '_DESCRIPTION_ANSWER', 'long_trans', 0, 1, 1, ''],
                 ['ORDER', 'DESCRIPTION_ORDER', 'integer', 1, 0, 0, 'default=AUTO_INCREMENT'],
             ];

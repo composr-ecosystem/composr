@@ -13,7 +13,7 @@
  * @package    testing_platform
  */
 
-// Also see _api_ecommerce_shipping
+// Also see __api_ecommerce_shipping
 
 /**
  * Composr test case class (unit testing).

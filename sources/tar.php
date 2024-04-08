@@ -105,7 +105,7 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
             if ($tolerate_errors) {
                 return null;
             }
-            warn_exit(do_lang_tempcode('CORRUPT_TAR'), false, true);
+            warn_exit(do_lang_tempcode('CORRUPT_TAR', escape_html($myfile)), false, true);
         }
 
         $offset = ftell($myfile);
@@ -115,7 +115,7 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
             if ($tolerate_errors) {
                 return null;
             }
-            warn_exit(do_lang_tempcode('CORRUPT_TAR'), false, true);
+            warn_exit(do_lang_tempcode('CORRUPT_TAR', escape_html($myfile)), false, true);
         }
         if ($header[0] == $chr_0) {
             $finished = true;
@@ -129,7 +129,7 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
                     if ($tolerate_errors) {
                         return null;
                     }
-                    warn_exit(do_lang_tempcode('CORRUPT_TAR'), false, true);
+                    warn_exit(do_lang_tempcode('CORRUPT_TAR', escape_html($myfile)), false, true);
                 }
                 $path = substr($header, 0, min(100, $end_of_string));
             }
@@ -147,7 +147,7 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
                 if ($tolerate_errors) {
                     return null;
                 }
-                warn_exit(do_lang_tempcode('CORRUPT_TAR'), false, true);
+                warn_exit(do_lang_tempcode('CORRUPT_TAR', escape_html($myfile)), false, true);
             }
             $mode = octdec(trim($_mode));
             $size = octdec(rtrim(substr($header, 124, 12)));
@@ -164,7 +164,7 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
                 if ($tolerate_errors) {
                     return null;
                 }
-                warn_exit(do_lang_tempcode('CORRUPT_TAR'), false, true);
+                warn_exit(do_lang_tempcode('CORRUPT_TAR', escape_html($myfile)), false, true);
             }
 
             //if ($is_ok) {
