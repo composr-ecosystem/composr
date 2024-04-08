@@ -40,7 +40,7 @@ class Hook_config_ssw
             'list_options' => '',
             'order_in_category_group' => 8,
             'required' => true,
-            'public' => true,
+            'public' => false,
             'addon' => 'core_configuration',
         ];
     }

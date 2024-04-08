@@ -8,7 +8,7 @@ Browser.php,,https://github.com/cbschuld/Browser.php,Yes,No,Re-sync regularly,14
 Chart.js,,https://github.com/chartjs/Chart.js/releases,Yes,No,Re-sync regularly,23rd Dec 2023,4.4.1,IE11+,N/A,N/A,chart.umd.js only; --> charts.js
 Chart.js datalabels plugin,,https://github.com/chartjs/chartjs-plugin-datalabels,Yes,Yes,Re-sync regularly,14th Feb 2024,2.2,IE11+,N/A,N/A,chartjs-plugin-datalabels.min.js only; append to the end of charts.js
 CKEditor,,https://ckeditor.com/,Yes,Yes,Re-sync regularly,28th Mar 2020,4.14.0,IE8+,N/A,N/A,"""Long-term support (LTS) until 2023"". Use composr_patch.sh to apply patch (read the echo statements before running). CKEditor 5 removes a lot of features. CKEditor 5 does support CSP which is a definite advantage."
-Cloudinary,cloudinary,https://github.com/cloudinary/cloudinary_php,Yes,No,Re-sync regularly,28th Mar 2020,1.16.0,PHP 5.4+,_api_cloudinary,Cloudinary,Just 'src' directory and autoload.php
+Cloudinary,cloudinary,https://github.com/cloudinary/cloudinary_php,Yes,No,Re-sync regularly,28th Mar 2020,1.16.0,PHP 5.4+,__api_cloudinary,Cloudinary,Just 'src' directory and autoload.php
 Columnizer,,https://github.com/adamwulf/Columnizer-jQuery-Plugin,No,No,Re-sync regularly,14th Feb 2024,1.6.2,IE9+,N/A,N/A,Keep code at top of columns.js. CSS is our own
 Confluence,confluence,,No,No,Re-sync if broken,N/A,N/A,Latest stable of any browser,N/A,N/A,"This is JavaScript and CSS code used for the proxying of content from Confluence within Composr. This is no longer supported as Atlassian is discontinuing server applications."
 cssmin,,https://code.google.com/archive/p/cssmin/,No,Yes,No action,N/A,1,PHP 5+,N/A,N/A,"Later versions are unreasonable complex, what we are using is just a few simple lines of code"

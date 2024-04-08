@@ -218,7 +218,6 @@ This addon does not contain the composr.app install code and the overall site an
             'themes/default/templates_custom/CMS_DOWNLOAD_BLOCK.tpl',
             'themes/default/templates_custom/CMS_DOWNLOAD_RELEASES.tpl',
             'themes/default/templates_custom/CMS_HOSTING_COPY_SUCCESS_SCREEN.tpl',
-            'themes/default/templates_custom/CMS_SITES_SCREEN.tpl',
             'uploads/website_specific/composr.app/.htaccess',
             'uploads/website_specific/composr.app/banners.zip',
             'uploads/website_specific/composr.app/demonstratr/servers/index.html',

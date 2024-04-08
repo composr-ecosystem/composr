@@ -45,7 +45,7 @@ class httpauth_test_set extends cms_test_case
             var_dump($data);
         }
 
-        $this->assertTrue((strpos($data, '<span class="fn nickname">' . $username . '</span>') !== false), 'Expected to see the ' . $username . ' profile, but did not.');
+        $this->assertTrue(is_string($data) && (strpos($data, '<span class="fn nickname">' . $username . '</span>') !== false), 'Expected to see the ' . $username . ' profile, but did not.');
 
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_pass_hash_salted' => $old_pwd, 'm_password_compat_scheme' => $old_scheme, 'm_email_address' => $old_email], ['m_username' => $username]);
     }

@@ -38,43 +38,43 @@ class _http_timeouts_test_set extends cms_test_case
             return;
         }
 
-        $timeout = 3.0;
+        $timeout = 5.0;
 
         // Test timeout not being hit for large file
-        $url = 'https://composr.app/docs/php-5.2.4-ocproducts.zip' /*TODO: change name of file*/; // Must be HTTP; some PHP clients do not have the https wrapper
+        $url = 'https://composr.app/docs/php-5.2.4-ocproducts.zip' /*TODO: change name of file*/;
         $expected_size = 28941943;
         if (($this->only === null) || ($this->only == 'big_curl')) {
             $r1 = $this->_testCurl($url, $timeout);
-            $this->assertTrue($r1[0]);
-            $this->assertTrue($r1[1] == $expected_size, 'Wrong download size @ ' . strval($r1[1]));
+            $this->assertTrue($r1[0], 'Got no results for CURL for file download');
+            $this->assertTrue($r1[1] == $expected_size, 'CURL wrong file download size @ ' . strval($r1[1]));
         }
         if (($this->only === null) || ($this->only == 'big_wrapper')) {
             $r2 = $this->_testURLWrappers($url, $timeout);
-            $this->assertTrue($r2[0]);
-            $this->assertTrue($r2[1] == $expected_size, 'Wrong download size @ ' . strval($r2[1]));
+            $this->assertTrue($r2[0], 'Got no results for URL wrappers for file download');
+            $this->assertTrue($r2[1] == $expected_size, 'URL wrappers wrong file download size @ ' . strval($r2[1]));
         }
-        if ((($this->only === null) || ($this->only == 'big_socket')) && (strpos($url, 'https://') === false)) {
+        if ((($this->only === null) || ($this->only == 'big_socket'))) {
             $r3 = $this->_testFSockOpen($url, $timeout);
-            $this->assertTrue($r3[0]);
-            $this->assertTrue($r3[1] >= $expected_size, 'Wrong download size @ ' . strval($r3[1]));
+            $this->assertTrue($r3[0], 'Got no results for FSockOpen for file download');
+            $this->assertTrue($r3[1] >= $expected_size, 'FSockOpen wrong file download size @ ' . strval($r3[1]));
         }
 
         // Test timeout being hit for something that really is timing out
         $url = get_base_url() . '/_tests/sleep.php?timeout=' . float_to_raw_string($timeout + 2);
         if (($this->only === null) || ($this->only == 'timeout_curl')) {
             $r1 = $this->_testCurl($url, $timeout);
-            $this->assertTrue(!$r1[0]);
-            $this->assertTrue($r1[1] == 0, 'Wrong download size @ ' . strval($r1[1]));
+            $this->assertTrue(!$r1[0], 'CURL should have timed out but did not');
+            $this->assertTrue($r1[1] == 0, 'CURL wrong timeout download size @ ' . strval($r1[1]));
         }
         if (($this->only === null) || ($this->only == 'timeout_wrapper')) {
             $r2 = $this->_testURLWrappers($url, $timeout);
-            $this->assertTrue(!$r2[0]);
-            $this->assertTrue($r2[1] == 0, 'Wrong download size @ ' . strval($r2[1]));
+            $this->assertTrue(!$r2[0], 'URl wrappers should have timed out but did not');
+            $this->assertTrue($r2[1] == 0, 'URL wrappers wrong timeout download size @ ' . strval($r2[1]));
         }
-        if ((($this->only === null) || ($this->only == 'timeout_socket')) && (strpos($url, 'https://') === false)) {
+        if ((($this->only === null) || ($this->only == 'timeout_socket'))) {
             $r3 = $this->_testFSockOpen($url, $timeout);
-            $this->assertTrue(!$r3[0]);
-            $this->assertTrue($r3[1] == 0, 'Wrong download size @ ' . strval($r3[1]));
+            $this->assertTrue(!$r3[0], 'FSockOpen should have timed out but did not');
+            $this->assertTrue($r3[1] == 0, 'FSockOpen wrong timeout download size @ ' . strval($r3[1]));
         }
     }
 
