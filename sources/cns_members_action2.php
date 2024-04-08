@@ -1596,7 +1596,6 @@ function cns_edit_custom_field(int $id, string $name, string $description, strin
         'cf_owner_view' => $owner_view,
         'cf_owner_set' => $owner_set,
         'cf_required' => $required,
-        'cf_sensitive' => 1, // Custom profile fields are always treated as sensitive / personal data
         'cf_show_in_posts' => $show_in_posts,
         'cf_show_in_post_previews' => $show_in_post_previews,
         'cf_order' => $order,

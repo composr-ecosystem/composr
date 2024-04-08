@@ -589,7 +589,6 @@ function cns_make_custom_field(string $name, int $locked = 0, string $descriptio
         'cf_owner_set' => $owner_set,
         'cf_type' => $type,
         'cf_required' => $required,
-        'cf_sensitive' => 1, // Custom profile fields are always treated as sensitive / personal data
         'cf_show_in_posts' => $show_in_posts,
         'cf_show_in_post_previews' => $show_in_post_previews,
         'cf_order' => $order,
