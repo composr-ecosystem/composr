@@ -829,11 +829,17 @@ function catalogue_entries_manual_sort(array $fields, array &$entries, string $o
                 if (!array_key_exists(2, $date_bits)) {
                     $date_bits[2] = date('Y');
                 }
-                $time_bits = explode(':', $bits[1], 3);
-                if (!array_key_exists(1, $time_bits)) {
+                if (array_key_exists(1, $bits)) { // Date-only fields will not have this index
+                    $time_bits = explode(':', $bits[1], 3);
+                    if (!array_key_exists(1, $time_bits)) {
+                        $time_bits[1] = '00';
+                    }
+                    if (!array_key_exists(2, $time_bits)) {
+                        $time_bits[2] = '00';
+                    }
+                } else {
+                    $time_bits[0] = '0';
                     $time_bits[1] = '00';
-                }
-                if (!array_key_exists(2, $time_bits)) {
                     $time_bits[2] = '00';
                 }
                 $time_a = mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
@@ -845,11 +851,17 @@ function catalogue_entries_manual_sort(array $fields, array &$entries, string $o
                 if (!array_key_exists(2, $date_bits)) {
                     $date_bits[2] = date('Y');
                 }
-                $time_bits = explode(':', $bits[1], 3);
-                if (!array_key_exists(1, $time_bits)) {
+                if (array_key_exists(1, $bits)) { // Date-only fields will not have this index
+                    $time_bits = explode(':', $bits[1], 3);
+                    if (!array_key_exists(1, $time_bits)) {
+                        $time_bits[1] = '00';
+                    }
+                    if (!array_key_exists(2, $time_bits)) {
+                        $time_bits[2] = '00';
+                    }
+                } else {
+                    $time_bits[0] = '0';
                     $time_bits[1] = '00';
-                }
-                if (!array_key_exists(2, $time_bits)) {
                     $time_bits[2] = '00';
                 }
                 $time_b = mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
