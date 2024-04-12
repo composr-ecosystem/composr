@@ -97,13 +97,15 @@ class Hook_cns_warnings_content
         define('POST_AS_TOPIC_FULL', 2);
         define('POST_AS_TOPIC_STARTER', 3);
 
+        require_code('comcode');
+        require_code('comcode_from_html');
+
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
         // Get form fields for actions on forum topics / posts
         $posts_deletable = [];
         if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
             $time_limit = time() - (60 * 60 * 24 * 7); // Limit to posts within the last 7 days
-            $max = 50; // Limit to the last 50 posts
             if (
                 (($GLOBALS['DEV_MODE']) || ($spam_mode)) && // i.e. we are dealing with this user as a spammer
                 ((!is_guest($member_id)) || ($ip_address !== null))
@@ -114,7 +116,7 @@ class Hook_cns_warnings_content
                 } else {
                     $where['p_poster'] = $member_id;
                 }
-                $sup = ' AND p_time<' . strval($time_limit) . ' ORDER BY p_time DESC';
+                $sup = ' AND p_time>' . strval($time_limit) . ' ORDER BY p_time DESC';
                 if (!has_privilege(get_member(), 'view_other_pt')) {
                     $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
                 }
@@ -139,7 +141,7 @@ class Hook_cns_warnings_content
                                     $spam_urls[$domain]['URLS'][$spam_url] = ['I' => strval(count($spam_urls[$domain]['URLS'])), 'URL' => $spam_url];
                                 }
                                 if (!isset($spam_urls[$domain]['POSTS'][$post['id']])) {
-                                    $spam_urls[$domain]['POSTS'][$post['id']] = ['I' => strval(count($spam_urls[$domain]['POSTS'])), 'POST_TITLE' => $post['p_title'], 'POST' => strip_html($post_text->evaluate())];
+                                    $spam_urls[$domain]['POSTS'][$post['id']] = ['I' => strval(count($spam_urls[$domain]['POSTS'])), 'POST_TITLE' => $post['p_title'], 'POST' => strip_comcode(semihtml_to_comcode($post_text->evaluate(), true), false, [], false)];
                                 }
                             }
                         }

@@ -500,10 +500,10 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
 
     // Optimisations
     $matches = [];
-    if (preg_match('#^\[semihtml\]([^\[\]<>]*)\[\/semihtml\]$#', $semihtml, $matches) != 0) {
+    if (preg_match('#^\[semihtml\]([^\[\]<>]*)\[\/semihtml\]$#', $semihtml, $matches) != 0) { // Already have semihtml tags
         return $matches[1];
     }
-    if (preg_match('#^([^\[\]<>\{\}&]*)$#', $semihtml) != 0) {
+    if (preg_match('#^([^\[\]<>\{\}&]*)$#', $semihtml) != 0) { // Plain-text
         return $semihtml;
     }
 
