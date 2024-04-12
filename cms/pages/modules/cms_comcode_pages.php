@@ -61,7 +61,6 @@ class Module_cms_comcode_pages
 
         $ret = [
             'browse' => ['COMCODE_PAGE_MANAGEMENT', 'menu/cms/comcode_page_edit'],
-            '_edit' => ['BLANK_COMCODE_PAGE', 'admin/add'],
             'generate_page_sitemap' => ['GENERATE_PAGE_SITEMAP', 'tool_buttons/sitemap'],
         ];
 
