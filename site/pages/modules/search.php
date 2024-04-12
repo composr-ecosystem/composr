@@ -164,14 +164,14 @@ class Module_search
                     $this->title = get_screen_title('_SEARCH_TITLE', true, [$info['lang']]);
 
                     breadcrumb_set_self($info['lang']);
+                } else {
+                    $this->title = null;
                 }
 
                 breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('SEARCH')]]);
 
                 $this->ob = $ob;
                 $this->info = $info;
-
-                $this->title = get_screen_title('_SEARCH_RESULTS', true, [$info['lang']]);
             } else {
                 $this->title = null;
             }
