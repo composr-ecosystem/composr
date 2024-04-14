@@ -85,7 +85,7 @@ The remainder of this section details Composr's requirements. If you have troubl
 [title="3"]General[/title]
 
 We require:
- - At least 180MB of disk space (plus your needs for space for downloads, images, etc).
+ - At least 250MB of disk space (plus your needs for space for downloads, images, etc).
  - No maximum file size limit under 25MB (some free webhosts will impose such a limit).
  - No file type safelists (some free webhosts will impose such a limit -- which explains why [tt]data.cms[/tt] might disappear when you try to upload it; sometimes you can work around that by renaming cms files as [tt]*.tar.gz[/tt], uploading it, then renaming it on the server back to [tt]*.cms[/tt]).
  - Certain file permissions are required as described in the [page="_SEARCH:tut_install_permissions"]File permissions[/page] tutorial.
@@ -228,7 +228,7 @@ Composr recommends:
   - Make sure your PHP version is updated with security fixes, even if you haven't updated to the latest major version.[media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
  - A PHP opcode cache: Zend OpCache (bundled by default), APC (available for PHP 5.6 or lower only), APCu, XCache, Nusphere PhpExpress, or Wincache.
  - A PHP environment with [tt]open_basedir[/tt] enabled.
- - At least 180MB of disk space.
+ - At least 250MB of disk space.
  - Generally, if you are using shared webhosting then we advise picking a host that does nightly backups that you have access to restore -- we've seen a lot of webhosts not take any responsibility for backup, and it does need doing at the server level to work effectively.
 
 [title="2"]Web server compatibility[/title]

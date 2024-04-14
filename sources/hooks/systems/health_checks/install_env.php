@@ -501,7 +501,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             require_code('files');
 
             $disk_space = @disk_free_space(get_file_base());
-            $min_disk_space = 180 * 1024 * 1024;
+            $min_disk_space = 250 * 1024 * 1024;
             $low_disk_space = ((is_integer($disk_space)) && ($disk_space < $min_disk_space));
             $this->assertTrue(!$low_disk_space, do_lang('WARNING_DISK_SPACE', clean_file_size($min_disk_space)));
         } else {
