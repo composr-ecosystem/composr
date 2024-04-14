@@ -39,7 +39,7 @@ sms,SMS notifications,,,Not regularly tested. Could potentially break due to thi
 google_translate,Google Translate integration,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,No,__api_translation automated test.
 bing_translator,Bing Translator integration,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,No,__api_translation automated test.
 ldap,LDAP,,,Not regularly tested due to the complexity of having multiple working LDAP test environments.,No,
-httpauth,HTTP authentication,,,Not regularly tested.,No,Partly tested by httpauth automated test.
+httpauth,HTTP authentication,,,Not regularly tested.,No,Partly tested by _httpauth automated test.
 cpf_encryption,CPF encryption,Composr Core Development Team,,Not regularly tested.,No,encryption automated test (back-end testing only).
 itunes,iTunes podcasts,,,Not regularly tested in iTunes.,No,Partially tested by _feeds_and_podcasts automated test.
 theme_rtl,Right-to-left support in default theme,,,Not regularly tested.,No,

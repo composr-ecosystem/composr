@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class httpauth_test_set extends cms_test_case
+class _httpauth_test_set extends cms_test_case
 {
     public function testHttpAuth()
     {

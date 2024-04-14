@@ -1007,7 +1007,7 @@
 
             funcName = strVal(func[0]);
             args = func.slice(1);
-            
+
             $util.log('$cms.executeJsFunctionCalls(): Calling ' + funcName);
 
             if (typeof $cms.functions[funcName] === 'function') {

@@ -96,7 +96,7 @@ Generally, we recommend the following security level depending on your use case:
  - Medium: Medium (5/10)
  - High: High (8/10)
  - Ultra high: Ultra high (10/10)
-*Password strength is determined by length, variation in letters, numbers, symbols, uppercase and lowercase, not using dictionary words, not using repeating characters, and not using text that is also present in usernames and e-mail addresses.
+*Password strength is determined by length, variation in letters, numbers, symbols, upper case and lower case, not using dictionary words, not using repeating characters, and not using text that is also present in usernames and e-mail addresses.
 
 [b]Login error secrecy[/b] (whether we just give a general login error message instead of disclosing the specific error):
  - Minimum: Off

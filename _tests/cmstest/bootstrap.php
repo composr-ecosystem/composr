@@ -73,7 +73,7 @@ function unit_testing_run()
         <ul>
             <li>The one(s) starting <kbd>___</kbd> should only be run through the command line / PHP cli (the command is indicated in a comment in the file). These tests cannot be run with the concurrent tool.
             <li>The ones starting <kbd>__</kbd> should be run occasionally with discretion, and one at a time, due to significant slowness, the expectation of false-positives, or the need for an API key file. These tests cannot be run with the concurrent tool.
-            <li>The ones starting <kbd>_</kbd> should be run one at a time due to slowness or conflicting with other tests</li>
+            <li>The ones starting <kbd>_</kbd> should be run one at a time due to slowness or conflicting with other tests. They will run one at a time after other tests finish in the concurrent tool.</li>
             <li>Some support a 'debug' GET/CLI parameter, to dump out debug information</li>
             <li>Some support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
         </ul>

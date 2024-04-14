@@ -401,7 +401,7 @@ class Module_admin_setupwizard
             $hidden .= static_evaluate_tempcode(form_input_hidden('include_cms_advert', '0'));
         }
 
-        $pass_length = get_option('minimum_password_length');
+        $pass_length = intval(get_option('minimum_password_length'));
         if ($pass_length >= 16) {
             $security_level = 'extreme';
         } elseif ($pass_length >= 12) {
