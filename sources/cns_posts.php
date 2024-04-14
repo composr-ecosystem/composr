@@ -88,6 +88,11 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
         $member_id = get_member();
     }
 
+    $show_messages = false;
+    if ($member_id == get_member()) {
+        $show_messages = true;
+    }
+
     if (!has_actual_page_access($member_id, 'topics')) {
         return false;
     }
@@ -97,14 +102,16 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
         return false;
     }
 
-    // TODO: Check if this will actually work considering these are timed
     $sql = 'SELECT p_warning_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings_punitive p RIGHT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings w ON w.id=p.p_warning_id WHERE ((' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_TOPIC') . ' AND ' . db_string_equal_to('p.p_param_a', strval($topic_id)) . ')';
     if ($forum_id !== null) {
         $sql .= ' OR (' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_FORUM') . ' AND ' . db_string_equal_to('p.p_param_a', strval($forum_id)) . ')';
     }
-    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id);
+    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id) . ' AND p.p_param_b>' . time();
     $test = $GLOBALS['FORUM_DB']->query_value_if_there($sql, false, true);
     if ($test !== null) {
+        if ($show_messages) {
+            attach_message(do_lang_tempcode('SILENCED_FROM_TOPIC'), 'warn');
+        }
         return false;
     }
 
