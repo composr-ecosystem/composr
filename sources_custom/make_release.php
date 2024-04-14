@@ -80,7 +80,7 @@ function make_installers($skip_file_grab = false)
 
         // Generate key pair
         require_code('encryption');
-        generate_telemetry_key_pair($version, (post_param_string('overwrite_key_pair', '') != ''));
+        generate_telemetry_key_pair($version, (post_param_integer('overwrite_key_pair', 0) == 1));
 
         // Copy new public key to our static "telemetry" file
         @copy(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', get_file_base() . '/data/keys/telemetry.pub');
