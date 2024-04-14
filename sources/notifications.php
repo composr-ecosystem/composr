@@ -860,7 +860,7 @@ function _find_member_statistical_notification_type(int $to_member_id, string $n
  * @param  boolean $reset_for_all_types Reset all notification codes, not just set for $setting
  * @return boolean Whether a change was actually made to the notification settings
  */
-function set_notifications(string $notification_code, ?string $notification_category, ?int $member_id = null, ?int $setting = null, bool $reset_for_all_types = true)
+function set_notifications(string $notification_code, ?string $notification_category, ?int $member_id = null, ?int $setting = null, bool $reset_for_all_types = true) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();

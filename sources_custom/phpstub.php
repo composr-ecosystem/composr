@@ -2049,22 +2049,6 @@ function mkdir(string $path, int $mode, bool $recursive = false, $context = null
 }
 
 /**
- * Get UNIX timestamp for a componentialised date.
- *
- * @param  integer $hour The hour
- * @param  ?integer $minute The minute (null: now)
- * @param  ?integer $second The second (null: now)
- * @param  ?integer $month The month (null: now)
- * @param  ?integer $day The day (null: now)
- * @param  ?integer $year The year (null: now)
- * @return TIME The timestamp
- */
-function mktime(int $hour, ?int $minute = null, ?int $second = null, ?int $month = null, ?int $day = null, ?int $year = null) : int
-{
-    return 0;
-}
-
-/**
  * Moves an uploaded file to a new location. {{creates-file}}
  *
  * @param  PATH $filename Filename to move (taken from tmpname element of $_FILES list entry)
@@ -3325,22 +3309,6 @@ function gethostbyname(string $hostname) : string
  * @return integer Largest possible random value
  */
 function getrandmax() : int
-{
-    return 0;
-}
-
-/**
- * Get UNIX timestamp for a GMT date.
- *
- * @param  integer $hour The hour
- * @param  integer $minute The minute
- * @param  integer $second The second
- * @param  integer $month The month
- * @param  integer $day The day
- * @param  integer $year The year
- * @return integer The timestamp
- */
-function gmmktime(int $hour, int $minute, int $second, int $month, int $day, int $year) : int
 {
     return 0;
 }

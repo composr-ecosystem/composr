@@ -236,6 +236,7 @@ function warnings_script()
  * @param  ?MEMBER $by The member doing the warning (null: current member)
  * @param  ?TIME $time The time of the warning (null: now)
  * @param  BINARY $is_warning Whether this counts as a formal warning
+ * @return AUTO_LINK The ID of the new warning
  */
 function cns_make_warning(int $member_id, string $explanation, ?int $by = null, ?int $time = null, int $is_warning = 1) : int
 {

@@ -394,7 +394,7 @@ function task_log_close()
  * @param  MEMBER $requester The member who executed the task
  * @param  ~?array $result The results of the task (null: task completed without output) (false: task failed)
  */
-function dispatch_task_notification(string $task_title, int $requester, ?array $result)
+function dispatch_task_notification(string $task_title, int $requester, $result)
 {
     $attachments = [];
 

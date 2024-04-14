@@ -67,9 +67,9 @@ class Hook_cns_warnings_ban_member
     /**
      * Render form fields for the warnings screen.
      *
-     * @param  Tempcode &$add_text Tempcode to be included on the intro paragraph of the warnings screen (passed by reference)
-     * @param  Tempcode &$fields The fields to be rendered (passed by reference)
-     * @param  Tempcode &$hidden The hidden fields to be included (passed by reference)
+     * @param  Tempcode $add_text Tempcode to be included on the intro paragraph of the warnings screen (passed by reference)
+     * @param  Tempcode $fields The fields to be rendered (passed by reference)
+     * @param  Tempcode $hidden The hidden fields to be included (passed by reference)
      * @param  boolean $new Whether it is a new warning/punishment record
      * @param  LONG_TEXT $explanation The explanation for the warning/punishment record
      * @param  BINARY $is_warning Whether to make this a formal warning
@@ -78,7 +78,7 @@ class Hook_cns_warnings_ban_member
      * @param  ?AUTO_LINK $post_id The ID of the forum post of which we clicked warn (null: we are not warning on a forum post)
      * @param  ?SHORT_TEXT $ip_address The IP address of the poster (null: we are not warning on a forum post)
      */
-    public function get_form_fields(&$add_text, &$fields, &$hidden, bool $new, string $explanation, int $is_warning, int $member_id, int $spam_mode, ?int $post_id, ?string $ip_address)
+    public function get_form_fields(object &$add_text, object &$fields, object &$hidden, bool $new, string $explanation, int $is_warning, int $member_id, int $spam_mode, ?int $post_id, ?string $ip_address)
     {
         if (!addon_installed('cns_warnings')) {
             return;
@@ -94,11 +94,11 @@ class Hook_cns_warnings_ban_member
             require_code('input_filter');
             list(, $reasoned_bans) = load_advanced_banning();
             if ((empty($reasoned_bans)) || ($already_banned)) {
-                $fields->attach(form_input_tick(do_lang_tempcode('BAN_MEMBER'), do_lang_tempcode('DESCRIPTION_BANNED_MEMBER'), 'banned_member', $spam_mode || $already_banned, null, '1', false, $already_banned));
+                $fields->attach(form_input_tick(do_lang_tempcode('BAN_MEMBER'), do_lang_tempcode('DESCRIPTION_BANNED_MEMBER'), 'banned_member', (($spam_mode == 1) || $already_banned), null, '1', false, $already_banned));
             } else {
                 $reasoned_bans_list = new Tempcode();
-                $reasoned_bans_list->attach(form_input_list_entry('0', !$spam_mode, do_lang_tempcode('NO')));
-                $reasoned_bans_list->attach(form_input_list_entry('1', $spam_mode, do_lang_tempcode('YES')));
+                $reasoned_bans_list->attach(form_input_list_entry('0', ($spam_mode != 1), do_lang_tempcode('NO')));
+                $reasoned_bans_list->attach(form_input_list_entry('1', ($spam_mode == 1), do_lang_tempcode('YES')));
                 foreach (array_keys($reasoned_bans) as $reasoned_ban) {
                     $reasoned_bans_list->attach(form_input_list_entry($reasoned_ban));
                 }
@@ -111,12 +111,12 @@ class Hook_cns_warnings_ban_member
      * Actualise punitive actions.
      * Note that this assumes action was applied through the warnings form, and that post parameters still exist.
      *
-     * @param array &$punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
-     * @param AUTO_LINK $warning_id The ID of the warning that was created for this punitive action
-     * @param MEMBER $member_id The member this warning is being applied to
-     * @param SHORT_TEXT $username The username of the member this warning is being applied to
-     * @param SHORT_TEXT $explanation The defined explanation for this warning
-     * @param LONG_TEXT &$message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
+     * @param  array $punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
+     * @param  AUTO_LINK $warning_id The ID of the warning that was created for this punitive action
+     * @param  MEMBER $member_id The member this warning is being applied to
+     * @param  SHORT_TEXT $username The username of the member this warning is being applied to
+     * @param  SHORT_TEXT $explanation The defined explanation for this warning
+     * @param  LONG_TEXT $message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
      */
     public function actualise_punitive_action(array &$punitive_messages, int $warning_id, int $member_id, string $username, string $explanation, string &$message)
     {

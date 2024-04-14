@@ -18,6 +18,10 @@
  * @package    cns_warnings
  */
 
+/**
+ * Hook class.
+ * Define additional tasks to run for point transactions.
+ */
 class Hook_points_transact__cns_warnings
 {
     /**

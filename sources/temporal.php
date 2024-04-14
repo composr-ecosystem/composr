@@ -264,7 +264,7 @@ function find_timezone_offset(int $time, string $zone) : int
  * @param  boolean $bypass_cache Whether to bypass the timezone cache
  * @return array Timezone (map between boring-style and human-readable name). Sorted in offset order then likelihood order.
  */
-function get_timezone_list($bypass_cache = false) : array
+function get_timezone_list(bool $bypass_cache = false) : array
 {
     if (!$bypass_cache) {
         require_code('caches');
@@ -484,4 +484,54 @@ function post_param_date(string $stub, bool $get_also = false, bool $do_timezone
 {
     require_code('temporal2');
     return _post_param_date($stub, $get_also, $do_timezone_conversion);
+}
+
+/**
+ * Get UNIX timestamp for a componentialised date.
+ * This function will gracefully return PHP_INT_MAX if the given time does not fit a PHP integer.
+ *
+ * @param  integer $hour The hour
+ * @param  ?integer $minute The minute (null: now)
+ * @param  ?integer $second The second (null: now)
+ * @param  ?integer $month The month (null: now)
+ * @param  ?integer $day The day (null: now)
+ * @param  ?integer $year The year (null: now)
+ * @return TIME The timestamp
+ */
+function cms_mktime(int $hour, ?int $minute = null, ?int $second = null, ?int $month = null, ?int $day = null, ?int $year = null) : int
+{
+    $test = mktime($hour, $minute, $second, $month, $day, $year);
+    if (($test === false) || ($test < 0)) { // TODO: #3046 in tracker
+        if (function_exists('attach_message')) {
+            attach_message(do_lang_tempcode('INTEGER_OVERFLOW_TIME'), 'warn');
+        }
+        return PHP_INT_MAX;
+    }
+
+    return $test;
+}
+
+/**
+ * Get UNIX timestamp for a GMT date.
+ * This function will gracefully return PHP_INT_MAX if the given time does not fit a PHP integer.
+ *
+ * @param  integer $hour The hour
+ * @param  integer $minute The minute
+ * @param  integer $second The second
+ * @param  integer $month The month
+ * @param  integer $day The day
+ * @param  integer $year The year
+ * @return TIME The timestamp
+ */
+function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day, int $year) : int
+{
+    $test = gmmktime($hour, $minute, $second, $month, $day, $year);
+    if (($test === false) || ($test < 0)) { // TODO: #3046 in tracker
+        if (function_exists('attach_message')) {
+            attach_message(do_lang_tempcode('INTEGER_OVERFLOW_TIME'), 'warn');
+        }
+        return PHP_INT_MAX;
+    }
+
+    return $test;
 }

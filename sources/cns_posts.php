@@ -106,7 +106,7 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
     if ($forum_id !== null) {
         $sql .= ' OR (' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_FORUM') . ' AND ' . db_string_equal_to('p.p_param_a', strval($forum_id)) . ')';
     }
-    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id) . ' AND p.p_param_b>' . time();
+    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id) . ' AND p.p_param_b>' . strval(time());
     $test = $GLOBALS['FORUM_DB']->query_value_if_there($sql, false, true);
     if ($test !== null) {
         if ($show_messages) {

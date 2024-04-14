@@ -84,9 +84,9 @@ class Hook_cns_warnings_silencing
     /**
      * Render form fields for the warnings screen.
      *
-     * @param  Tempcode &$add_text Tempcode to be included on the intro paragraph of the warnings screen (passed by reference)
-     * @param  Tempcode &$fields The fields to be rendered (passed by reference)
-     * @param  Tempcode &$hidden The hidden fields to be included (passed by reference)
+     * @param  Tempcode $add_text Tempcode to be included on the intro paragraph of the warnings screen (passed by reference)
+     * @param  Tempcode $fields The fields to be rendered (passed by reference)
+     * @param  Tempcode $hidden The hidden fields to be included (passed by reference)
      * @param  boolean $new Whether it is a new warning/punishment record
      * @param  LONG_TEXT $explanation The explanation for the warning/punishment record
      * @param  BINARY $is_warning Whether to make this a formal warning
@@ -95,7 +95,7 @@ class Hook_cns_warnings_silencing
      * @param  ?AUTO_LINK $post_id The ID of the forum post of which we clicked warn (null: we are not warning on a forum post)
      * @param  ?SHORT_TEXT $ip_address The IP address of the poster (null: we are not warning on a forum post)
      */
-    public function get_form_fields(&$add_text, &$fields, &$hidden, bool $new, string $explanation, int $is_warning, int $member_id, int $spam_mode, ?int $post_id, ?string $ip_address)
+    public function get_form_fields(object &$add_text, object &$fields, object &$hidden, bool $new, string $explanation, int $is_warning, int $member_id, int $spam_mode, ?int $post_id, ?string $ip_address)
     {
         if (!addon_installed('cns_warnings')) {
             return;
@@ -105,7 +105,7 @@ class Hook_cns_warnings_silencing
             return;
         }
 
-        if (($post_id !== null) && (!$spam_mode)) {
+        if (($post_id !== null) && ($spam_mode == 0)) {
             $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
             if ($topic_id !== null) {
                 $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
@@ -136,6 +136,9 @@ class Hook_cns_warnings_silencing
                 $fields->attach(form_input_date(do_lang_tempcode('SILENCE_FROM_TOPIC'), do_lang_tempcode('DESCRIPTION_SILENCE_FROM_TOPIC'), 'silence_from_topic', false, true, true, $silence_topic_time, 2));
                 $fields->attach(form_input_date(do_lang_tempcode('SILENCE_FROM_FORUM'), do_lang_tempcode('DESCRIPTION_SILENCE_FROM_FORUM'), 'silence_from_forum', false, true, true, $silence_forum_time, 2));
             }
+        } else {
+            $fields->attach(form_input_text(do_lang_tempcode('SILENCE_FROM_TOPIC'), do_lang_tempcode('DESCRIPTION_SILENCE_FROM_TOPIC'), 'silence_from_topic_disabled', do_lang('DESCRIPTION_SILENCE_FROM_TOPIC_DISABLED'), false, true));
+            $fields->attach(form_input_text(do_lang_tempcode('SILENCE_FROM_FORUM'), do_lang_tempcode('DESCRIPTION_SILENCE_FROM_FORUM'), 'silence_from_forum_disabled', do_lang('DESCRIPTION_SILENCE_FROM_FORUM_DISABLED'), false, true));
         }
     }
 
@@ -143,12 +146,12 @@ class Hook_cns_warnings_silencing
      * Actualise punitive actions.
      * Note that this assumes action was applied through the warnings form, and that post parameters still exist.
      *
-     * @param array &$punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
-     * @param AUTO_LINK $warning_id The ID of the warning that was created for this punitive action
-     * @param MEMBER $member_id The member this warning is being applied to
-     * @param SHORT_TEXT $username The username of the member this warning is being applied to
-     * @param SHORT_TEXT $explanation The defined explanation for this warning
-     * @param LONG_TEXT &$message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
+     * @param  array $punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
+     * @param  AUTO_LINK $warning_id The ID of the warning that was created for this punitive action
+     * @param  MEMBER $member_id The member this warning is being applied to
+     * @param  SHORT_TEXT $username The username of the member this warning is being applied to
+     * @param  SHORT_TEXT $explanation The defined explanation for this warning
+     * @param  LONG_TEXT $message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
      */
     public function actualise_punitive_action(array &$punitive_messages, int $warning_id, int $member_id, string $username, string $explanation, string &$message)
     {

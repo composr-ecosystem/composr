@@ -222,7 +222,7 @@ function cns_may_post_topic(?int $forum_id, ?int $member_id = null) : bool
     }
 
     $sql = 'SELECT p_warning_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings_punitive p RIGHT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings w ON w.id=p.p_warning_id WHERE ((' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_FORUM') . ' AND ' . db_string_equal_to('p.p_param_a', strval($forum_id)) . ')';
-    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id) . ' AND p.p_param_b>' . time();
+    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id) . ' AND p.p_param_b>' . strval(time());
     $test = $GLOBALS['FORUM_DB']->query_value_if_there($sql, false, true);
     if ($test !== null) {
         if ($show_messages) {

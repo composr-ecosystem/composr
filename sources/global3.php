@@ -511,7 +511,7 @@ function cms_http_request(string $url, array $options = []) : object
  * @param  float $timeout The timeout in seconds
  * @return ?string response from the fsock (null: error)
  */
-function cms_fsock_request(string $payload, string $url, int &$error_code = null, string &$error_message = null, float $timeout = 6.0) : ?string
+function cms_fsock_request(string $payload, string $url, ?int &$error_code = null, ?string &$error_message = null, float $timeout = 6.0) : ?string
 {
     cms_profile_start_for('cms_fsock_request');
 

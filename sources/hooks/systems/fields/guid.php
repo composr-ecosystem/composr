@@ -149,7 +149,6 @@ class Hook_fields_guid
             }
         }
         return $value;
-
     }
 
     /**

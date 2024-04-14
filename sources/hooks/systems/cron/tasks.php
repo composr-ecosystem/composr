@@ -98,7 +98,7 @@ class Hook_cron_tasks
         $elapsed_time = 0.0;
         $max_time = 10.0; // TODO: Config option
 
-        $forced = get_param_integer('force', '0') == '1';
+        $forced = get_param_integer('force', 0) == 1;
         $where = [];
         if (!$forced) {
             $where = ['t_locked' => 0];

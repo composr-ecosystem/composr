@@ -473,7 +473,7 @@ function check_stopforumspam(?string $username = null, ?string $email = null)
  * @param  string $user_ip Check this IP address
  * @param  ?string $username Check this particular username that has just been supplied (null: none)
  * @param  ?EMAIL $email Check this particular e-mail address that has just been supplied (null: none)
- * @return array: Listed for potential blocking as a ANTISPAM_RESPONSE_* constant, confidence level if attainable (0.0 to 1.0) (else null), array of criteria matched to relevant confidence level for each (0.0 to 1.0)
+ * @return array Listed for potential blocking as a ANTISPAM_RESPONSE_* constant, confidence level if attainable (0.0 to 1.0) (else null), array of criteria matched to relevant confidence level for each (0.0 to 1.0)
  * @ignore
  */
 function _check_stopforumspam(string $user_ip, ?string $username = null, ?string $email = null) : array

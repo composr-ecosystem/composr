@@ -223,7 +223,6 @@ class Hook_fields_content_link
         }
 
         return $input;
-
     }
 
     /**

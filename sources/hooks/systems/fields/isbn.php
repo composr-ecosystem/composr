@@ -164,10 +164,10 @@ class Hook_fields_isbn
      * @param  string $isbn The ISBN code to check
      * @return boolean Whether the ISBN code is valid
      */
-    protected function is_valid_isbn($isbn)
+    protected function is_valid_isbn(string $isbn) : bool
     {
         // Remove hyphens and spaces from the ISBN; we will not consider these in validation
-        $clean_isbn = str_replace(array('-', ' '), '', $isbn);
+        $clean_isbn = str_replace(['-', ' '], '', $isbn);
 
         // Check if the ISBN is 10 or 13 digits long
         if ((strlen($clean_isbn) == 10) || (strlen($clean_isbn) == 13)) {
@@ -178,7 +178,7 @@ class Hook_fields_isbn
                     $checksum += (10 - $i) * intval($clean_isbn[$i]);
                 }
 
-                $_last_digit = strtoupper($clean_isbn[9]);
+                $_last_digit = cms_mb_strtoupper($clean_isbn[9]);
                 $last_digit = ($_last_digit === 'X') ? 10 : intval($_last_digit);
 
                 return ($checksum + $last_digit) % 11 == 0;

@@ -468,7 +468,7 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
 
                     if ($is_exclusive === true) {
                         // Reset groups as we only want to return this one.
-                        $groups = array();
+                        $groups = [];
                         $groups[$group_id] = true;
 
                         $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit] = $groups;

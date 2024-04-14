@@ -133,7 +133,7 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
     {
         $headings = [];
 
-        // TODO
+        // TODO: Implement special keymap headings
 
         return $headings;
     }
@@ -148,7 +148,7 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
     {
         $keymap = [];
 
-        /*TODO
+        /*TODO: Implement special keymap headings
         require_code('catalogues');
         return render_catalogue_category_entry_buildup(null, $c_names[0], null, 'CATEGORY', '', null, 0, null, null, C_DT_TABULAR, false, $rows);
         */

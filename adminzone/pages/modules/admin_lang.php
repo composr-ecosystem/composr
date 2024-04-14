@@ -201,7 +201,7 @@ class Module_admin_lang
      * @param  ID_TEXT $param_name The name of the parameter for specifying language
      * @return Tempcode The UI
      */
-    public function choose_lang(object $title, bool $choose_lang_file = false, bool $add_lang = false, mixed $text = '', string $param_name = 'lang') : object
+    public function choose_lang(object $title, bool $choose_lang_file = false, bool $add_lang = false, $text = '', string $param_name = 'lang') : object
     {
         $langs = new Tempcode();
         $langs->attach(create_selection_list_langs(get_param_string('lang', null), $add_lang));
