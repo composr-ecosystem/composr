@@ -725,8 +725,9 @@ function get_schedule_code_event_time(string $hook, string $id) : ?array
     if ($past_event_id !== null) {
         $past_event = $GLOBALS['SITE_DB']->query_select('calendar_events', ['e_start_day', 'e_start_month', 'e_start_year', 'e_start_hour', 'e_start_minute'], ['id' => $past_event_id], '', 1);
         if (array_key_exists(0, $past_event)) {
+            require_code('temporal');
             $scheduled = [$past_event[0]['e_start_minute'], $past_event[0]['e_start_hour'], $past_event[0]['e_start_month'], $past_event[0]['e_start_day'], $past_event[0]['e_start_year']];
-            if (mktime($scheduled[1], $scheduled[0], 0, $scheduled[2], $scheduled[3], $scheduled[4]) < time()) {
+            if (cms_mktime($scheduled[1], $scheduled[0], 0, $scheduled[2], $scheduled[3], $scheduled[4]) < time()) {
                 $scheduled = null;
             }
         }

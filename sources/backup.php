@@ -160,6 +160,7 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $
             $data = $GLOBALS['SITE_DB']->query_select($table, ['*'], [], '', 100, $start);
             foreach ($data as $d) {
                 $list = '';
+                $value = mixed();
                 foreach ($d as $name => $value) {
                     if (multi_lang_content()) {
                         if (($table == 'translate') && ($name == 'text_parsed')) {
@@ -180,13 +181,18 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $
                     $list .= "'" . (is_string($name) ? $name : strval($name)) . "'=>";
                     if (is_integer($value)) {
                         $list .= strval($value);
-                    } elseif (is_float($value)) {
-                        $list .= float_to_raw_string($value);
-                    } elseif (is_string($value)) {
-                        $list .= '"' . php_addslashes($value) . '"';
-                    } else {
-                        $list .= '""'; // Should never get here
+                        continue;
                     }
+                    if (is_float($value)) {
+                        $list .= float_to_raw_string($value);
+                        continue;
+                    }
+                    if (is_string($value)) {
+                        $list .= '"' . php_addslashes($value) . '"';
+                        continue;
+                    }
+
+                    $list .= '""'; // Should never get here
                 }
 
                 fwrite($install_php_file, preg_replace('#^#m', '//', "    \$GLOBALS['SITE_DB']->query_insert('$table', [$list]);\n"));

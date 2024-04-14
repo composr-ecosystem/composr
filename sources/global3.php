@@ -511,7 +511,7 @@ function cms_http_request(string $url, array $options = []) : object
  * @param  float $timeout The timeout in seconds
  * @return ?string response from the fsock (null: error)
  */
-function cms_fsock_request(string $payload, string $url, int &$error_code = null, string &$error_message = null, float $timeout = 6.0) : ?string
+function cms_fsock_request(string $payload, string $url, ?int &$error_code = null, ?string &$error_message = null, float $timeout = 6.0) : ?string
 {
     cms_profile_start_for('cms_fsock_request');
 
@@ -540,7 +540,7 @@ function cms_fsock_request(string $payload, string $url, int &$error_code = null
         $request = 'POST ' . $path . ' HTTP/1.1' . "\r\n";
         $request .= 'Host: ' . $hostname . "\r\n";
         $request .= 'Content-Type: application/json' . "\r\n";
-        $request .= 'Content-Length: ' . strlen($payload) . "\r\n";
+        $request .= 'Content-Length: ' . strval(strlen($payload)) . "\r\n";
         $request .= 'Connection: close' . "\r\n\r\n";
         $request .= $payload . "\r\n\r\n";
     } else {
@@ -562,7 +562,7 @@ function cms_fsock_request(string $payload, string $url, int &$error_code = null
         $_response = fgets($fsock, 128);
         if ($_response === false) {
             cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
-            return false;
+            return null;
         }
         $response .= $_response;
     }

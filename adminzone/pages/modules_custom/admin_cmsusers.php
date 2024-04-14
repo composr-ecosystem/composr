@@ -304,6 +304,11 @@ class Module_admin_cmsusers
             '_GUID' => '869126427270bea53365b807dfbb6878',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
+
+            // TODO: get rid of the need for these in the Tempcode
+            'FILTERS_ROW_A' => new Tempcode(),
+            'FILTERS_ROW_B' => new Tempcode(),
+            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
         require_code('templates_internalise_screen');

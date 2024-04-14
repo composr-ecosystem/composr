@@ -10,7 +10,7 @@ forum_phpbb,phpBB forum driver,,,Not regularly tested. May become out-dated. Nee
 forum_smf,Simple Machine Forum forum driver,,,Not regularly tested. Out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_vb,vBulletin forum driver,,,Not regularly tested. Out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_wbb,Burning Board forum driver,,,Not regularly tested. Out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
-msn,Multi-site-networks,,,Not regularly tested. Liable to break due to cross-cutting complexity.,No,"Partly tested by db_correctness automated test, and run-time driver use detection. Partly tested by running of full test set."
+msn,Multi-site-networks,,,Not regularly tested. Liable to break due to cross-cutting complexity.,No,"Partly tested by _db_correctness automated test, and run-time driver use detection. Partly tested by running of full test set."
 demonstratr,Shared-installs, ,,Not regularly tested. Out-dated and needs re-built for version 11. Liable to break due to cross-cutting complexity.,No,Manual. Rebuilt when new major releases come out. Partly tested by running of full test set.
 database_ibm,IBM DB2 database driver,,,Not regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,Partly tested by database_misc automated test. Partly tested by running of full test set.
 database_oracle,Oracle database driver,,,Not regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,Partly tested by database_misc automated test. Partly tested by running of full test set.
@@ -39,7 +39,7 @@ sms,SMS notifications,,,Not regularly tested. Could potentially break due to thi
 google_translate,Google Translate integration,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,No,__api_translation automated test.
 bing_translator,Bing Translator integration,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,No,__api_translation automated test.
 ldap,LDAP,,,Not regularly tested due to the complexity of having multiple working LDAP test environments.,No,
-httpauth,HTTP authentication,,,Not regularly tested.,No,Partly tested by httpauth automated test.
+httpauth,HTTP authentication,,,Not regularly tested.,No,Partly tested by _httpauth automated test.
 cpf_encryption,CPF encryption,Composr Core Development Team,,Not regularly tested.,No,encryption automated test (back-end testing only).
 itunes,iTunes podcasts,,,Not regularly tested in iTunes.,No,Partially tested by _feeds_and_podcasts automated test.
 theme_rtl,Right-to-left support in default theme,,,Not regularly tested.,No,
@@ -70,7 +70,7 @@ popup_blockers,Aggressive pop-up blockers,Composr Core Development Team,,"Some p
 install_installatron,Installatron installer,Composr Core Development Team,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform.,No,
 install_aps,APS installer,,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform.,No,
 transifex,Transifex integration,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,Yes,__api_transifex automated test. Part of release process.
-rootkit_detector,Rootkit detector,Composr Core Development Team,,Not compatible with all systems. Intended for developers.,No,Partly tested by rootkit_detection automated test.
+rootkit_detector,Rootkit detector,Composr Core Development Team,,Not compatible with all systems. Intended for developers.,No,Partly tested by _rootkit_detection automated test.
 vimeo,Vimeo media,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,
 sitemap_submit,XML Sitemap auto-submit, ,,Out-dated as Google and Bing no longer have a method to auto-submit sitemaps.,No,sitemap_submit automated test.
 external_urls,"Recommended links on staff dashboard, and accuracy of external URLs in general",Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,___broken_links automated test.
@@ -79,8 +79,8 @@ platform_suhosin,Suhosin,Composr Core Development Team,,Not regularly tested. Co
 textmate,Textmate integration,Composr Core Development Team,,Needs to be separately tested. Needs a testing platform.,No,
 theme_mobile_mode,Mobile mode support,Composr Core Development Team,Composr Core Development Team,Needs to be separately tested. Liable to break due to cross-cutting complexity.,No,
 timezone_list,Timezone list,Composr Core Development Team,Composr Core Development Team,,No,
-detect_bot,"Bot detection (user-agent list, IP safelist, and DNS safelist)",Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by ua_detection automated test.
-detect_mobile,Mobile user agent detection,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by ua_detection automated test.
+detect_bot,"Bot detection (user-agent list, IP safelist, and DNS safelist)",Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by _ua_detection automated test.
+detect_mobile,Mobile user agent detection,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by _ua_detection automated test.
 standard_opengraph,Open Graph,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,
 browser_firefox,Firefox support,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,No,
 browser_safari,Safari support,Composr Core Development Team,,Could potentially break due to third-party changes.,No,
@@ -97,7 +97,7 @@ mysql,Maintain with new versions of MySQL,Composr Core Development Team,,Not reg
 mariadb,Maintain support for MariaDB,Composr Core Development Team,,"Not regularly tested with versions above 10.6. Could potentially break due to third-party changes, although they do claim MySQL-compatibility.",No,
 options_hidden,Hidden options,Composr Core Development Team,,Not regularly tested. Mostly intended for developers or very low-level configuration.,No,
 options_dev,Development options in config_editor.php,Composr Core Development Team,,Not regularly tested.,No,
-currency_codes,ISO currencies (internal list),Composr Core Development Team,,Could potentially break due to political changes.,No,_api_currency automated test.
+currency_codes,ISO currencies (internal list),Composr Core Development Team,,Could potentially break due to political changes.,No,__api_currency automated test.
 country_codes,ISO countries (internal list) and flag images,Composr Core Development Team,,Could potentially break due to political changes.,No,
 currency,Currency conversion,Composr Core Development Team,,Could potentially break due to third-party changes.,No,
 stop_forum_spam,Stop Forum Spam integration,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,No,antispam automated test.
@@ -141,9 +141,9 @@ pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP
 openweathermap,OpenWeatherMap,Composr Core Development Team,,,Yes,__api_weather automated test.
 composr_mobile_sdk_notifications,Composr Mobile SDK Android and iOS notifications handling,,,,Yes,
 sugarcrm,Sugar CRM integration,,,,Yes,SugarCRM Health Check
-cloudinary,Cloudinary integration,,,,Yes,_api_cloudinary automated test
+cloudinary,Cloudinary integration,,,,Yes,__api_cloudinary automated test
 aws_ses,AWS SES notifications,,,,Yes,aws_ses automated test
-confluence,Confluence integration,Composr Core Development Team,,Not regularly tested. Out-dated as Atlassian no longer supports self-hosted server instances.,Yes,_api_confluence automated test
+confluence,Confluence integration,PDSTIG LLC,,Not regularly tested. Out-dated as Atlassian no longer supports self-hosted server instances.,Yes,__api_confluence automated test
 youtube,YouTube media,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,
 theme_upgrader,Theme Upgrader,,,There is code to upgrade themes built into the upgrader but it manually needs writing out for between-version upgrades.,No,
 theme_wizard,Theme Wizard,Composr Core Development Team,Composr Core Development Team,It is easy for the Theme Wizard to break if not tested after CSS changes.,No,
@@ -154,4 +154,4 @@ email_integration,E-mail integration,Composr Core Development Team,,Not regularl
 http_proxy,HTTP proxy support,Composr Core Development Team,,Not regularly tested due to needing a testing platform.,No,
 ratings_structure,Ratings structure,,,Not regularly tested. Only available via custom programming / the custom_ratings addon.,Yes,
 ffmpeg_thumbs,FFMPEG thumbnail generation,,,Not regularly tested. Could potentially break due to third-party changes.,No,
-karma,Karma non-bundled addon,Composr Core Development Team,PDSTIG LLC,,Yes,
+karma,Karma non-bundled addon,PDSTIG LLC,PDSTIG LLC,,Yes,

@@ -61,7 +61,8 @@ function dispatch_sms(string $message, array $to_sms) : int
     //$callback = xmlentities(find_script('sms')); --- set on clickatell's site
     $callback = '0'; /* return nothing (for the moment); TODO: change to 3 (return all message statuses)   #376 on tracker */
 
-    $threshold = mktime(0, 0, 0, intval(date('m')), 0, intval(date('Y')));
+    require_code('temporal');
+    $threshold = cms_mktime(0, 0, 0, intval(date('m')), 0, intval(date('Y')));
 
     // TODO: $confirmed_numbers = collapse_2d_complexity('m_phone_number', 'm_member_id', $GLOBALS['SITE_DB']->query_select('confirmed_mobiles', ['m_phone_number', 'm_member_id'], ['m_confirm_code' => ''])); #376 on tracker
 

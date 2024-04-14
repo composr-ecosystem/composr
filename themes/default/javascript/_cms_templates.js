@@ -660,10 +660,18 @@
     $cms.functions.decisionTreeRender = function decisionTreeRender(parameter, value, notice, noticeTitle) {
         value = strVal(value);
         var els = document.getElementById('main-form').elements[parameter];
+        if (els === undefined) {
+            $util.fatal($util.format('$cms.functions.decisionTreeRender(): Could not find element {1} on form.', [parameter]));
+            return;
+        }
         if (els.length === undefined) {
             els = [els];
         }
+        var foundValue = false;
         $util.toArray(els).forEach(function (el) {
+            if ((el.value === value) || ((el.type === 'checkbox') && !el.checked && ('' === value))) {
+                foundValue = true;
+            }
             el.addEventListener('click', function () {
                 var selected = false;
                 if (el.type === 'checkbox') {
@@ -676,6 +684,9 @@
                 }
             });
         });
+        if (!foundValue) {
+            $util.warn($util.format('$cms.functions.decisionTreeRender(): Could not find a value of "{1}" on element {2}', [value, parameter]));
+        }
     };
 
     function prepareMassSelectMarker(set, type, id, checked) {

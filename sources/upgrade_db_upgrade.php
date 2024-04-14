@@ -496,7 +496,6 @@ function upgrade_modules(float $from_cms_version) : string
         $ret = upgrade_module($zone, $module);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>') . '</li>';
-            echo "\n" . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>'); // TODO: debug
         }
     }
 
@@ -516,11 +515,9 @@ function upgrade_modules(float $from_cms_version) : string
             $ret = upgrade_module($zone, $module);
             if ($ret == 1) {
                 $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
-                echo "\n" . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>'); // TODO: debug
             } elseif ($ret == -2) {
                 if (reinstall_module($zone, $module)) {
                     $out .= '<li>' . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
-                    echo "\n" . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . $module . '</kbd>'); // TODO: debug
                 }
             }
         }
@@ -531,11 +528,9 @@ function upgrade_modules(float $from_cms_version) : string
         $ret = upgrade_block($block);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
-            echo "\n" . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $block . '</kbd>'); // TODO: debug
         } elseif ($ret == -2) {
             if (reinstall_block($block)) {
                 $out .= '<li>' . do_lang('UPGRADER_INSTALLED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
-                echo "\n" . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . $block . '</kbd>'); // TODO: debug
             }
         }
     }
@@ -546,15 +541,12 @@ function upgrade_modules(float $from_cms_version) : string
         $ret = upgrade_addon_soft($addon_name);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
-            echo "\n" . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>'); // TODO: debug
         } elseif ($ret == -2) {
             reinstall_addon_soft($addon_name);
 
             $out .= '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
-            echo "\n" . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>'); // TODO: debug
         } elseif ($ret == -1) {
             $out .= '<li>' . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
-            echo "\n" . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>'); // TODO: debug
         }
     }
 

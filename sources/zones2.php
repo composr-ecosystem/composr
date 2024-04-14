@@ -437,7 +437,7 @@ function upgrade_module(string $zone, string $module) : int
                     escape_html(float_to_raw_string(cms_version_number())),
                     [
                         escape_html($info['addon']),
-                        escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                        protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
                     ]));
             }
 
@@ -535,7 +535,7 @@ function reinstall_module(string $zone, string $module) : bool
             escape_html(float_to_raw_string(cms_version_number())),
             [
                 escape_html($info['addon']),
-                escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
             ]));
     }
 
@@ -741,7 +741,7 @@ function upgrade_block(string $block) : int
                 escape_html(float_to_raw_string(cms_version_number())),
                 [
                     escape_html($info['addon']),
-                    escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                    protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
                 ]));
         }
 
@@ -799,7 +799,7 @@ function reinstall_block(string $block) : bool
             escape_html(float_to_raw_string(cms_version_number())),
             [
                 escape_html($info['addon']),
-                escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
             ]));
     }
 

@@ -53,6 +53,6 @@ class Hook_config_min_cms_version
     public function get_default() : ?string
     {
         require_code('version');
-        return strval(cms_version_number());
+        return float_to_raw_string(cms_version_number());
     }
 }

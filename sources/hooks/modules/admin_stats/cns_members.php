@@ -153,7 +153,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
 
                 if ($row['m_dob_year'] !== null) {
                     $age = intval(date('Y')) - $row['m_dob_year'];
-                    if (date('md', mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $row['m_dob_year'])) > date('md')) {
+                    if (date('md', cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $row['m_dob_year'])) > date('md')) {
                         $age--;
                     }
 

@@ -66,7 +66,7 @@ class _log_refs_test_set extends cms_test_case
         $logs_in_code = array_unique($logs_in_code);
 
         foreach ($logs_in_code as $log) {
-            $this->assertTrue(strpos($codebook, $log) !== false, 'Missing Codebook listing for ' . $log);
+            $this->assertTrue(strpos($codebook, $log) !== false, 'Missing Codebook 3 listing for ' . $log);
 
             $this->assertTrue(in_array(basename($log), $defined_logs), 'Missing logs hook reference for ' . $log);
 

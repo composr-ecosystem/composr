@@ -40,6 +40,8 @@ function ical_escape(string $in) : string
  */
 function output_ical(bool $headers_and_exit = true)
 {
+    require_code('temporal');
+
     cms_ini_set('ocproducts.xss_detect', '0');
 
     if ($headers_and_exit) {
@@ -193,14 +195,14 @@ function output_ical(bool $headers_and_exit = true)
             $_start_hour = ($event['e_start_hour'] === null) ? find_timezone_start_hour_in_utc($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type']) : $event['e_start_hour'];
             $_start_minute = ($event['e_start_minute'] === null) ? find_timezone_start_minute_in_utc($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type']) : $event['e_start_minute'];
             $start_day_of_month = find_concrete_day_of_month($event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type'], $_start_hour, $_start_minute, $event['e_timezone'], $event['e_do_timezone_conv'] == 1);
-            $time = mktime(($event['e_start_hour'] === null) ? 12 : $event['e_start_hour'], ($event['e_start_minute'] === null) ? 0 : $event['e_start_minute'], 0, $event['e_start_month'], $start_day_of_month, $event['e_start_year']);
+            $time = cms_mktime(($event['e_start_hour'] === null) ? 12 : $event['e_start_hour'], ($event['e_start_minute'] === null) ? 0 : $event['e_start_minute'], 0, $event['e_start_month'], $start_day_of_month, $event['e_start_year']);
             if (($event['e_end_year'] === null) || ($event['e_end_month'] === null) || ($event['e_end_day'] === null)) {
                 $time2 = null;
             } else {
                 $_end_hour = ($event['e_end_hour'] === null) ? find_timezone_end_hour_in_utc($event['e_timezone'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type']) : $event['e_end_hour'];
                 $_end_minute = ($event['e_end_minute'] === null) ? find_timezone_end_minute_in_utc($event['e_timezone'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type']) : $event['e_end_minute'];
                 $end_day_of_month = find_concrete_day_of_month($event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type'], $_end_hour, $_end_minute, $event['e_timezone'], $event['e_do_timezone_conv'] == 1);
-                $time2 = mktime(($event['e_end_hour'] === null) ? 12 : $event['e_end_hour'], ($event['e_end_minute'] === null) ? 0 : $event['e_end_minute'], 0, $event['e_end_month'], $end_day_of_month, $event['e_end_year']);
+                $time2 = cms_mktime(($event['e_end_hour'] === null) ? 12 : $event['e_end_hour'], ($event['e_end_minute'] === null) ? 0 : $event['e_end_minute'], 0, $event['e_end_month'], $end_day_of_month, $event['e_end_year']);
             }
             if ($event['e_recurrence'] != 'none') {
                 $parts = explode(' ', $event['e_recurrence']);
@@ -225,14 +227,14 @@ function output_ical(bool $headers_and_exit = true)
                                 }
                                 break;
                             case 'monthly':
-                                $days_in_month = intval(date('D', mktime(0, 0, 0, intval(date('m', $time)) + 1, 0, intval(date('Y', $time)))));
+                                $days_in_month = intval(date('D', cms_mktime(0, 0, 0, intval(date('m', $time)) + 1, 0, intval(date('Y', $time)))));
                                 $time += 60 * 60 * $days_in_month;
                                 if ($time2 !== null) {
                                     $time2 += 60 * 60 * $days_in_month;
                                 }
                                 break;
                             case 'yearly':
-                                $days_in_year = intval(date('Y', mktime(0, 0, 0, 0, 0, intval(date('Y', $time)) + 1)));
+                                $days_in_year = intval(date('Y', cms_mktime(0, 0, 0, 0, 0, intval(date('Y', $time)) + 1)));
                                 $time += 60 * 60 * 24 * $days_in_year;
                                 if ($time2 !== null) {
                                     $time2 += 60 * 60 * 24 * $days_in_year;
@@ -348,6 +350,8 @@ function output_ical(bool $headers_and_exit = true)
  */
 function ical_import(string $file_path)
 {
+    require_code('temporal');
+
     $data = cms_file_get_contents_safe($file_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
     $calendars = explode('BEGIN:VCALENDAR', $data);
@@ -428,6 +432,8 @@ function ical_import(string $file_path)
  */
 function get_event_data_ical(array $event_nodes) : array
 {
+    require_code('temporal');
+
     $url = '';
     $type = null; //default value
     $e_recurrence = 'none';
@@ -582,12 +588,12 @@ function get_event_data_ical(array $event_nodes) : array
         $start_hour = $all_day ? null : intval(date('H', $start));
         $start_minute = $all_day ? null : intval(date('i', $start));
         if ($all_day) {
-            $timestamp = mktime(0, 0, 0, $start_month, $start_day, $start_year);
+            $timestamp = cms_mktime(0, 0, 0, $start_month, $start_day, $start_year);
             $amount_forward = tz_time($timestamp, $timezone) - $timestamp;
             $timestamp = $timestamp + $amount_forward;
             list($start_year, $start_month, $start_day) = array_map('intval', explode('-', date('Y-m-d', $timestamp)));
         } else {
-            $timestamp = mktime($start_hour, $start_minute, 0, $start_month, $start_day, $start_year);
+            $timestamp = cms_mktime($start_hour, $start_minute, 0, $start_month, $start_day, $start_year);
             $amount_forward = tz_time($timestamp, $timezone) - $timestamp;
             $timestamp = $timestamp + $amount_forward;
             list($start_year, $start_month, $start_day, $start_hour, $start_minute) = array_map('intval', explode('-', date('Y-m-d-H-i-s', $timestamp)));
@@ -611,12 +617,12 @@ function get_event_data_ical(array $event_nodes) : array
         $end_minute = $all_day ? null : intval(date('i', $end));
 
         if ($all_day) {
-            $timestamp = mktime(0, 0, 0, $end_month, $end_day, $end_year);
+            $timestamp = cms_mktime(0, 0, 0, $end_month, $end_day, $end_year);
             $amount_forward = tz_time($timestamp, $timezone) - $timestamp;
             $timestamp = $timestamp - $amount_forward;
             list($end_year, $end_month, $end_day) = array_map('intval', explode('-', date('Y-m-d', $timestamp)));
         } else {
-            $timestamp = mktime($end_hour, $end_minute, 0, $end_month, $end_day, $end_year);
+            $timestamp = cms_mktime($end_hour, $end_minute, 0, $end_month, $end_day, $end_year);
             $amount_forward = tz_time($timestamp, $timezone) - $timestamp;
             $timestamp = $timestamp - $amount_forward;
             list($end_year, $end_month, $end_day, $end_hour, $end_minute) = array_map('intval', explode('-', date('Y-m-d-H-i-s', $timestamp)));

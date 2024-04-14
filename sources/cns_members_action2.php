@@ -567,7 +567,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     // DOB
     if (cns_field_editable('dob', $special_type)) {
         $can_edit_birthday = cns_can_edit_birthday($member_id);
-        $default_time = ($dob_month === null) ? null : usertime_to_utctime(mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
+        $default_time = ($dob_month === null) ? null : usertime_to_utctime(cms_mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
         if (get_option_with_overrides('dobs', $adjusted_config_options) >= (($member_id === null) ? '2' : '1')) {
             $dob_required = member_field_is_required($member_id, 'dob');
             $fields->attach(form_input_date(do_lang_tempcode($dob_required ? 'DATE_OF_BIRTH' : 'ENTER_YOUR_BIRTHDAY'), $can_edit_birthday ? '' : do_lang_tempcode('DATE_OF_BIRTH_NO_SELF_EDIT'), 'birthday', $dob_required, false, false, $default_time, -130, null, null, true, null, true, null, (($member_id !== null) && (!$can_edit_birthday))));
@@ -1009,7 +1009,8 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 
     // Check for valid username
     if ($username !== null && $check_correctness) {
-        cns_check_name_valid($username, $member_id, $password, $email_address, ($dob_year === null) ? null : mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
+        require_code('temporal');
+        cns_check_name_valid($username, $member_id, $password, $email_address, ($dob_year === null) ? null : cms_mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
 
         require_code('urls2');
         suggest_new_idmoniker_for('members', 'view', strval($member_id), '', $username);
@@ -1596,7 +1597,6 @@ function cns_edit_custom_field(int $id, string $name, string $description, strin
         'cf_owner_view' => $owner_view,
         'cf_owner_set' => $owner_set,
         'cf_required' => $required,
-        'cf_sensitive' => 1, // Custom profile fields are always treated as sensitive / personal data
         'cf_show_in_posts' => $show_in_posts,
         'cf_show_in_post_previews' => $show_in_post_previews,
         'cf_order' => $order,

@@ -236,7 +236,7 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             if ($title === null) {
                 $title = new Tempcode();
             }
-            dispatch_task_notification($title, get_member(), $result);
+            dispatch_task_notification($title->evaluate(), get_member(), $result);
 
             // Good to inform the member they will receive a notification even if the "task queue" is immediate
             return inform_screen($title, do_lang_tempcode('NEW_TASK_RUNNING'));
@@ -394,7 +394,7 @@ function task_log_close()
  * @param  MEMBER $requester The member who executed the task
  * @param  ~?array $result The results of the task (null: task completed without output) (false: task failed)
  */
-function dispatch_task_notification(string $task_title, int $requester, ?array $result)
+function dispatch_task_notification(string $task_title, int $requester, $result)
 {
     $attachments = [];
 

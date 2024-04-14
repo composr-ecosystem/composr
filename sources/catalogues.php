@@ -821,6 +821,8 @@ function catalogue_entries_manual_sort(array $fields, array &$entries, string $o
             }
 
             if ((isset($fields[$order_by])) && ($fields[$order_by]['cf_type'] == 'date')) { // Special case for dates
+                require_code('temporal');
+
                 $bits = explode(' ', $a, 2);
                 $date_bits = explode((strpos($bits[0], '-') !== false) ? '-' : '/', $bits[0], 3);
                 if (!array_key_exists(1, $date_bits)) {
@@ -829,14 +831,20 @@ function catalogue_entries_manual_sort(array $fields, array &$entries, string $o
                 if (!array_key_exists(2, $date_bits)) {
                     $date_bits[2] = date('Y');
                 }
-                $time_bits = explode(':', $bits[1], 3);
-                if (!array_key_exists(1, $time_bits)) {
+                if (array_key_exists(1, $bits)) { // Date-only fields will not have this index
+                    $time_bits = explode(':', $bits[1], 3);
+                    if (!array_key_exists(1, $time_bits)) {
+                        $time_bits[1] = '00';
+                    }
+                    if (!array_key_exists(2, $time_bits)) {
+                        $time_bits[2] = '00';
+                    }
+                } else {
+                    $time_bits[0] = '0';
                     $time_bits[1] = '00';
-                }
-                if (!array_key_exists(2, $time_bits)) {
                     $time_bits[2] = '00';
                 }
-                $time_a = mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
+                $time_a = cms_mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
                 $bits = explode(' ', $b, 2);
                 $date_bits = explode((strpos($bits[0], '-') !== false) ? '-' : '/', $bits[0], 3);
                 if (!array_key_exists(1, $date_bits)) {
@@ -845,14 +853,20 @@ function catalogue_entries_manual_sort(array $fields, array &$entries, string $o
                 if (!array_key_exists(2, $date_bits)) {
                     $date_bits[2] = date('Y');
                 }
-                $time_bits = explode(':', $bits[1], 3);
-                if (!array_key_exists(1, $time_bits)) {
+                if (array_key_exists(1, $bits)) { // Date-only fields will not have this index
+                    $time_bits = explode(':', $bits[1], 3);
+                    if (!array_key_exists(1, $time_bits)) {
+                        $time_bits[1] = '00';
+                    }
+                    if (!array_key_exists(2, $time_bits)) {
+                        $time_bits[2] = '00';
+                    }
+                } else {
+                    $time_bits[0] = '0';
                     $time_bits[1] = '00';
-                }
-                if (!array_key_exists(2, $time_bits)) {
                     $time_bits[2] = '00';
                 }
-                $time_b = mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
+                $time_b = cms_mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
 
                 $r = ($time_a < $time_b) ? -1 : (($time_a == $time_b) ? 0 : 1);
             } elseif ($order_by == 'distance') { // By distance

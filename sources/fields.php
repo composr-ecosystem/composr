@@ -70,7 +70,7 @@ function catalogue_file_script()
     $ev_checks = explode("\n", $_ev_check);
 
     // Check if the file exists in the field
-    $ev_path = false;
+    $ev_path = null;
     foreach ($ev_checks as $ev_item) {
         $ev_check = explode('::', $ev_item);
         if (basename($ev_check[0]) == $ev) {
@@ -78,7 +78,7 @@ function catalogue_file_script()
             break;
         }
     }
-    if ($ev_path === false) {
+    if ($ev_path === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('FILE')));
     }
 

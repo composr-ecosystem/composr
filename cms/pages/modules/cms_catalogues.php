@@ -817,7 +817,7 @@ class Module_cms_catalogues extends Standard_crud_module
         set_url_moniker('catalogue_entry', strval($id));
 
         require_code('content');
-        list($title,,,,, $url_safe) = content_get_details('catalogue_entry', strval($id));
+        list($title, , , , , $url_safe) = content_get_details('catalogue_entry', strval($id));
 
         // Award points here instead of from give_submit_points (submit.php) because catalogues have their own submit point options
         if ((!is_guest()) && (addon_installed('points'))) {

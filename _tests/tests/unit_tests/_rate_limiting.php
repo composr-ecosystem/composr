@@ -20,6 +20,7 @@ class _rate_limiting_test_set extends cms_test_case
 {
     public function testRateLimitingWorks()
     {
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
         file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['rate_limiting'] = '1';\n\$SITE_INFO['rate_limit_time_window'] = '60';\n\$SITE_INFO['rate_limit_hits_per_window'] = '3';");
@@ -30,7 +31,7 @@ class _rate_limiting_test_set extends cms_test_case
 
         $url = build_url(['page' => ''], '');
         for ($i = 0; $i < 4; $i++) {
-            $result = cms_http_request($url->evaluate(), ['trigger_error' => false, 'timeout' => 10.0]);
+            $result = cms_http_request($url->evaluate(), ['trigger_error' => false, 'timeout' => 8.0]);
             if ($i < 3) {
                 $this->assertTrue($result->data !== null, 'Iteration ' . strval($i) . ' expected data but did not get any.');
                 $this->assertTrue($result->message === '200', 'Iteration ' . strval($i) . ' expected status code 200 but got ' . $result->message . '.');

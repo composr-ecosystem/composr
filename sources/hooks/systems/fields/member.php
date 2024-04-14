@@ -173,7 +173,6 @@ class Hook_fields_member
             }
 
             $value = strval($member_id);
-
         }
         return $value;
     }

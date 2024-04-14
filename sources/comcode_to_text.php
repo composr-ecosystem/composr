@@ -233,7 +233,7 @@ function _strip_comcode(string $in, bool $for_extract = false, array $tags_to_pr
         'attachment',
         'attachment_safe',
     ], $tags_to_preserve);
-    if ($include_urls) {
+    if (!$include_urls) {
         $tags_to_strip_entirely[] = 'media';
         $tags_to_strip_entirely[] = 'url';
         $tags_to_strip_entirely[] = 'email';

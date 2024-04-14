@@ -208,4 +208,42 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
             'themes/default/templates_custom/MAKE_RELEASE_STEP4_SCREEN.tpl',
         ];
     }
+
+    /**
+     * Get mapping between template names and the method of this class that can render a preview of them.
+     *
+     * @return array The mapping
+     */
+    public function tpl_previews() : array
+    {
+        return [
+            'templates_custom/ADMIN_PUSH_BUGFIX_STEP2.tpl' => 'administrative__admin_push_bugfix_step2',
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__administrative__admin_push_bugfix_step2() : object
+    {
+        return lorem_globalise(do_lorem_template('ADMIN_PUSH_BUGFIX_STEP2', [
+            'GET' => false,
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => '',
+            'TITLE' => lorem_word(),
+            'TEXT' => lorem_paragraph_html(),
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'FIELDS' => placeholder_form(),
+            'URL' => placeholder_url(),
+
+            'REMOTE_BASE_URL' => placeholder_url(),
+            'GIT_FOUND' => placeholder_array(),
+            'DEFAULT_PROJECT_ID' => placeholder_number(),
+        ]), null, '', true);
+    }
 }

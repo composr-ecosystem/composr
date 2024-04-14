@@ -107,7 +107,7 @@ class Hook_privacy_points extends Hook_privacy_base
      * @param  ID_TEXT $table_name Table name
      * @param  array $table_details Details of the table from the info function, passed by reference
      * @param  ?array $row Row raw from the database (null: not applicable)
-     * @patam  ID_TEXT $method The name of the Hook_privacy_base method which called this function
+     * @param  ID_TEXT $method The name of the Hook_privacy_base method which called this function
      */
     protected function modify_table_details(string $table_name, array &$table_details, ?array $row, string $method)
     {

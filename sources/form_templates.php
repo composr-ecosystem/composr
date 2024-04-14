@@ -1822,7 +1822,7 @@ function form_input_upload_multi($pretty_name, $description, string $name, bool 
             // If first bit is not an image, sometimes the second bit will be (e.g. video thumbnails)
             if (($is_image === false) && array_key_exists(1, $file_bits)) {
                 list($image_url, $is_image) = make_previewable_url_absolute($file_bits[1]);
-            } else if ($is_image === true) {
+            } elseif ($is_image === true) {
                 $image_url = $_edit;
             }
 
@@ -2442,8 +2442,9 @@ function _form_input_date(string $name, bool $required, bool $null_default, bool
         if ($default_time[4] === null) {
             $default_time = null;
         } else {
+            require_code('temporal');
             list($default_minute, $default_hour, $default_month, $default_day, $default_year) = $default_time;
-            $default_time = mktime($default_hour, $default_minute, 0, $default_month, $default_day, $default_year);
+            $default_time = cms_mktime($default_hour, $default_minute, 0, $default_month, $default_day, $default_year);
         }
     }
 

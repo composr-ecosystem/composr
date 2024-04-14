@@ -32,8 +32,8 @@ class persistent_cache_test_set extends cms_test_case
 
         // Test value lifetimes
         // --------------------
-
-        $values = ['foobar', '', false, null, str_repeat('x', 1024 * 1024 * 10)]; // TODO: fails on 32MB max limit because we're copying to global and also making a serialised copy
+        raise_php_memory_limit();
+        $values = ['foobar', '', false, null, str_repeat('x', 1024 * 1024 * 10)]; // TODO: fails at standard 32MB memory. Is that a problem?
         foreach ($values as $value) {
             // Set
             $cache->set('test', $value);

@@ -23,6 +23,7 @@
  */
 function init__calendar()
 {
+    require_code('temporal');
     require_code('temporal2');
 
     if (!defined('DETECT_CONFLICT_SCOPE_NONE')) {
@@ -153,8 +154,8 @@ function date_from_week_of_year(int $year, int $week) : array
     $ssw = (get_option('ssw') == '1');
 
     $basis = strval($year) . '-' . str_pad(strval($week), 2, '0', STR_PAD_LEFT);
-    $time = mktime(12, 0, 0, 1, 1, $year);
-    $days_in_year = intval(date('z', mktime(0, 0, 0, 12, 31, $year))) + 1;
+    $time = cms_mktime(12, 0, 0, 1, 1, $year);
+    $days_in_year = intval(date('z', cms_mktime(0, 0, 0, 12, 31, $year))) + 1;
     for ($i = ($week == 52) ? 350/*conditional to stop it finding week as previous year overlap week of same number*/ : -7; $i < $days_in_year + 7; $i++) {
         $new_time = $time + 60 * 60 * 24 * $i;
         $w = intval(date('w', $new_time));
@@ -251,7 +252,7 @@ function find_periods_recurrence(string $timezone, int $do_timezone_conv, int $s
         }
     }
 
-    $start_timestamp = mktime($_start_hour, $_start_minute, 0, $start_month, $day_of_month, $start_year);
+    $start_timestamp = cms_mktime($_start_hour, $_start_minute, 0, $start_month, $day_of_month, $start_year);
     $dif = $period_start - utctime_to_usertime($start_timestamp);
     $start_day_of_month = $day_of_month;
     if ($recurrence != 'monthly') { // Defensiveness (this should be automatic)
@@ -309,7 +310,7 @@ function find_periods_recurrence(string $timezone, int $do_timezone_conv, int $s
         case 'yearly':
             $dif_year = 1;
             if (($dif > 60 * 60 * 24 * 365 * 10) && ($mask_len == 0) && ($optimise_recurrence_via_zoom)) {
-                $days_in_year = intval(date('z', mktime(0, 0, 0, 12, 31, $start_year))) + 1;
+                $days_in_year = intval(date('z', cms_mktime(0, 0, 0, 12, 31, $start_year))) + 1;
                 $zoom = $dif_year * intval(floor(floatval($dif) / (60.0 * 60.0 * 24.0 * floatval($days_in_year)))) - 1;
                 $start_year += $zoom;
                 if ($end_year !== null) {
@@ -492,8 +493,8 @@ function _compensate_for_dst_change(?int &$hour, ?int &$minute, int $day_of_mont
         return;
     }
 
-    $new_time_utc = mktime($hour, $minute, 0, $month, $day_of_month, $year);
-    $old_time_utc = mktime($hour, $minute, 0, $month - $dif_month, $day_of_month - $dif_day, $year - $dif_year);
+    $new_time_utc = cms_mktime($hour, $minute, 0, $month, $day_of_month, $year);
+    $old_time_utc = cms_mktime($hour, $minute, 0, $month - $dif_month, $day_of_month - $dif_day, $year - $dif_year);
     $second_dif_utc = ($new_time_utc - $old_time_utc);
 
     $new_time = tz_time($new_time_utc, $timezone);
@@ -520,8 +521,8 @@ function _compensate_for_dst_change(?int &$hour, ?int &$minute, int $day_of_mont
  */
 function get_days_between(int $initial_start_month, int $initial_start_day, int $initial_start_year, int $initial_end_month, int $initial_end_day, int $initial_end_year) : int
 {
-    $a_new = mktime(12, 0, 0, $initial_start_month, $initial_start_day, $initial_start_year);
-    $b_new = mktime(12, 0, 0, $initial_end_month, $initial_end_day, $initial_end_year);
+    $a_new = cms_mktime(12, 0, 0, $initial_start_month, $initial_start_day, $initial_start_year);
+    $b_new = cms_mktime(12, 0, 0, $initial_end_month, $initial_end_day, $initial_end_year);
     return intval(round(floatval($b_new - $a_new) / 86400.0));
 }
 
@@ -1091,7 +1092,7 @@ function find_timezone_start_hour_in_utc(string $timezone, int $year, int $month
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);
-    $t1 = mktime(0, 0, 0, $month, $day, $year);
+    $t1 = cms_mktime(0, 0, 0, $month, $day, $year);
     $t2 = tz_time($t1, $timezone);
     $t2 -= 2 * ($t2 - $t1);
     $ret = intval(date('H', $t2));
@@ -1114,7 +1115,7 @@ function find_timezone_start_minute_in_utc(string $timezone, int $year, int $mon
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);
-    $t1 = mktime(0, 0, 0, $month, $day, $year);
+    $t1 = cms_mktime(0, 0, 0, $month, $day, $year);
     $t2 = tz_time($t1, $timezone);
     $t2 -= 2 * ($t2 - $t1);
     $ret = intval(date('i', $t2));
@@ -1141,7 +1142,7 @@ function find_timezone_end_hour_in_utc(string $timezone, ?int $year, ?int $month
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);
-    $t1 = mktime(23, 59, 0, $month, $day, $year);
+    $t1 = cms_mktime(23, 59, 0, $month, $day, $year);
     $t2 = tz_time($t1, $timezone);
     $t2 -= 2 * ($t2 - $t1);
     $ret = intval(date('H', $t2));
@@ -1168,7 +1169,7 @@ function find_timezone_end_minute_in_utc(string $timezone, ?int $year, ?int $mon
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);
-    $t1 = mktime(23, 59, 0, $month, $day, $year);
+    $t1 = cms_mktime(23, 59, 0, $month, $day, $year);
     $t2 = tz_time($t1, $timezone);
     $t2 -= 2 * ($t2 - $t1);
     $ret = intval(date('i', $t2));
@@ -1176,7 +1177,7 @@ function find_timezone_end_minute_in_utc(string $timezone, ?int $year, ?int $mon
 }
 
 /**
- * For a time array that may have out-of-range components (in mktime order except without seconds), adjust them so they are in range by rolling other components over as appropriate.
+ * For a time array that may have out-of-range components (in cms_mktime order except without seconds), adjust them so they are in range by rolling other components over as appropriate.
  *
  * @param  array $arr Array of components
  * @param  ID_TEXT $zone The timezone the components are in (this is important as DST-rollovers will vary, so we need to know this to interpret things correctly)
@@ -1192,7 +1193,7 @@ function normalise_time_array(array $arr, string $zone) : array
 
     @date_default_timezone_set($zone);
 
-    $timestamp = mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year);
+    $timestamp = cms_mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year);
 
     if ($hour !== null) { // If time known
         $hour = intval(date('H', $timestamp));
@@ -1228,7 +1229,7 @@ function cal_get_start_utctime_for_event(string $timezone, int $year, int $month
     $_hour = ($hour === null) ? find_timezone_start_hour_in_utc($timezone, $year, $month, $day, $monthly_spec_type) : $hour;
     $_minute = ($minute === null) ? find_timezone_start_minute_in_utc($timezone, $year, $month, $day, $monthly_spec_type) : $minute;
 
-    $timestamp = mktime(
+    $timestamp = cms_mktime(
         $_hour,
         $_minute,
         0,
@@ -1265,7 +1266,7 @@ function cal_get_end_utctime_for_event(string $timezone, int $year, int $month, 
     $_hour = ($hour === null) ? find_timezone_end_hour_in_utc($timezone, $year, $month, $day, $monthly_spec_type) : $hour;
     $_minute = ($minute === null) ? find_timezone_end_minute_in_utc($timezone, $year, $month, $day, $monthly_spec_type) : $minute;
 
-    $timestamp = mktime(
+    $timestamp = cms_mktime(
         $_hour,
         $_minute,
         0,
@@ -1435,17 +1436,17 @@ function find_concrete_day_of_month(int $year, int $month, int $day, string $mon
     switch ($monthly_spec_type) {
         case 'day_of_month':
         default:
-            $day_of_month = intval(date('d', mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year)));
+            $day_of_month = intval(date('d', cms_mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year)));
             break;
         case 'day_of_month_backwards':
-            $day_of_month = intval(date('d', mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month + 1, 0, $year))) - $day + 1;
+            $day_of_month = intval(date('d', cms_mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month + 1, 0, $year))) - $day + 1;
             break;
         case 'dow_of_month':
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; // Used to set the repeating sequence $day is for (e.g. 0 means first Monday, 7 means second Monday, and so on)
             $nth = intval(1.0 + floatval($day) / 7.0);
 
-            $month_start = mktime(0, 0, 0, $month, 1, $year);
-            if (strtotime('+0 Tuesday', mktime(0, 0, 0, 1, 1, 2013)) != mktime(0, 0, 0, 1, 1, 2013)) {
+            $month_start = cms_mktime(0, 0, 0, $month, 1, $year);
+            if (strtotime('+0 Tuesday', cms_mktime(0, 0, 0, 1, 1, 2013)) != cms_mktime(0, 0, 0, 1, 1, 2013)) {
                 $month_start -= 1; // This "-1" is needed on SOME PHP versions, to set the window 1 second before where we're looking to make it find something right at the start of the actual window
             }
             date_default_timezone_set($timezone);
@@ -1460,7 +1461,7 @@ function find_concrete_day_of_month(int $year, int $month, int $day, string $mon
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             $nth = intval(1.0 + floatval($day) / 7.0);
 
-            $month_end = mktime(0, 0, 0, $month + 1, 0, $year);
+            $month_end = cms_mktime(0, 0, 0, $month + 1, 0, $year);
             date_default_timezone_set($timezone);
             $lookup = '-' . strval($nth) . ' ' . ($days[$day % 7]);
             $timestamp = strtotime($lookup, $month_end + 1);
@@ -1492,10 +1493,10 @@ function find_abstract_day(int $year, int $month, int $day_of_month, string $mon
             $day = $day_of_month;
             break;
         case 'day_of_month_backwards':
-            $day = intval(date('d', mktime(0, 0, 0, $month + 1, 0, $year))) - $day_of_month + 1;
+            $day = intval(date('d', cms_mktime(0, 0, 0, $month + 1, 0, $year))) - $day_of_month + 1;
             break;
         case 'dow_of_month':
-            $day_code = intval(date('w', mktime(0, 0, 0, $month, $day_of_month, $year)));
+            $day_code = intval(date('w', cms_mktime(0, 0, 0, $month, $day_of_month, $year)));
 
             // Monday is 0 in my mind, not Sunday
             $day_code--;
@@ -1506,7 +1507,7 @@ function find_abstract_day(int $year, int $month, int $day_of_month, string $mon
             $day = $day_code + 7 * intval(floatval($day_of_month - 1) / 7.0); // -1 is because we are counting from 0 in our new scale, while $day_of_month was counting from 1
             break;
         case 'dow_of_month_backwards':
-            $day_code = intval(date('w', mktime(0, 0, 0, $month, $day_of_month, $year)));
+            $day_code = intval(date('w', cms_mktime(0, 0, 0, $month, $day_of_month, $year)));
 
             // Monday is 0 in my mind, not Sunday
             $day_code--;
@@ -1514,7 +1515,7 @@ function find_abstract_day(int $year, int $month, int $day_of_month, string $mon
                 $day_code = 6;
             }
 
-            $month_end = mktime(0, 0, 0, $month + 1, 0, $year);
+            $month_end = cms_mktime(0, 0, 0, $month + 1, 0, $year);
             $days_in_month = intval(date('d', $month_end));
 
             $day = $day_code + 7 * intval(floatval($days_in_month - ($day_of_month - 1)) / 7.0);
@@ -1543,12 +1544,12 @@ function monthly_spec_type_chooser(int $day_of_month, int $month, int $year, str
 
     foreach (['day_of_month', 'day_of_month_backwards', 'dow_of_month', 'dow_of_month_backwards'] as $monthly_spec_type) {
         $day = find_abstract_day($year, $month, $day_of_month, $monthly_spec_type);
-        $timestamp = mktime(0, 0, 0, $month, $day_of_month, $year);
+        $timestamp = cms_mktime(0, 0, 0, $month, $day_of_month, $year);
 
         if (substr($monthly_spec_type, 0, 4) == 'dow_') {
-            $nth = cms_date(do_lang('calendar_day_of_month'), mktime(0, 0, 0, 1, intval(floatval($day) / 7.0) + 1, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
+            $nth = cms_date(do_lang('calendar_day_of_month'), cms_mktime(0, 0, 0, 1, intval(floatval($day) / 7.0) + 1, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
         } else {
-            $nth = cms_date(do_lang('calendar_day_of_month'), mktime(0, 0, 0, $month, $day, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
+            $nth = cms_date(do_lang('calendar_day_of_month'), cms_mktime(0, 0, 0, $month, $day, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
         }
         $dow = cms_date('D', $timestamp);
 
@@ -1594,12 +1595,12 @@ function adjust_event_dates_for_a_recurrence(string $day, array $event, string $
             $end_hour = null;
             $end_minute = null;
         }
-        //$first_timestamp = mktime($start_hour, $start_minute, 0, $orig_start_month, $orig_concrete_start_day, $orig_start_year); Wrong, DST could be issue
-        $incident_timestamp = mktime($start_hour, $start_minute, 0, $recurrence_start_month, $recurrence_start_day, $recurrence_start_year);
+        //$first_timestamp = cms_mktime($start_hour, $start_minute, 0, $orig_start_month, $orig_concrete_start_day, $orig_start_year); Wrong, DST could be issue
+        $incident_timestamp = cms_mktime($start_hour, $start_minute, 0, $recurrence_start_month, $recurrence_start_day, $recurrence_start_year);
         $shifted_incident_timestamp = tz_time($incident_timestamp, $timezone);
         $day_dif_due_to_timezone = intval(date('z', $incident_timestamp)) - intval(date('z', $shifted_incident_timestamp));
         if ($day_dif_due_to_timezone > 182) {
-            $days_in_year = intval(date('z', mktime(0, 0, 0, 12, 31, $recurrence_start_year))) + 1;
+            $days_in_year = intval(date('z', cms_mktime(0, 0, 0, 12, 31, $recurrence_start_year))) + 1;
             $day_dif_due_to_timezone = ($days_in_year - intval(date('L', $incident_timestamp))) - $day_dif_due_to_timezone;
         }
         $recurrence_start_day += $day_dif_due_to_timezone;
@@ -1632,7 +1633,7 @@ function adjust_event_dates_for_a_recurrence(string $day, array $event, string $
             $event['e_end_year'] += $recurrence_start_year - $orig_start_year;
 
             // Fix to be a proper calendar date (removes out of range values by carrying over)
-            $event_end_time = mktime(0, 0, 0, $event['e_end_month'], $event['e_end_day'], $event['e_end_year']);
+            $event_end_time = cms_mktime(0, 0, 0, $event['e_end_month'], $event['e_end_day'], $event['e_end_year']);
             $event['e_end_day'] = intval(date('d', $event_end_time));
             $event['e_end_month'] = intval(date('m', $event_end_time));
             $event['e_end_year'] = intval(date('Y', $event_end_time));
@@ -1662,8 +1663,8 @@ function adjust_event_dates_for_a_recurrence(string $day, array $event, string $
  */
 function dst_boundary_difference_for_recurrence(int $a_year, int $a_month, int $a_day, int $b_year, int $b_month, int $b_day, string $timezone) : array
 {
-    $dif_hours = intval(date('H', tz_time(mktime(0, 0, 0, $a_month, $a_day, $a_year), $timezone))) - intval(date('H', tz_time(mktime(0, 0, 0, $b_month, $b_day, $b_year), $timezone)));
-    $dif_minutes = intval(date('i', tz_time(mktime(0, 0, 0, $a_month, $a_day, $a_year), $timezone))) - intval(date('i', tz_time(mktime(0, 0, 0, $b_month, $b_day, $b_year), $timezone)));
+    $dif_hours = intval(date('H', tz_time(cms_mktime(0, 0, 0, $a_month, $a_day, $a_year), $timezone))) - intval(date('H', tz_time(cms_mktime(0, 0, 0, $b_month, $b_day, $b_year), $timezone)));
+    $dif_minutes = intval(date('i', tz_time(cms_mktime(0, 0, 0, $a_month, $a_day, $a_year), $timezone))) - intval(date('i', tz_time(cms_mktime(0, 0, 0, $b_month, $b_day, $b_year), $timezone)));
     return [$dif_hours, $dif_minutes];
 }
 

@@ -204,6 +204,11 @@ function cns_may_post_topic(?int $forum_id, ?int $member_id = null) : bool
         $member_id = get_member();
     }
 
+    $show_messages = false;
+    if ($member_id == get_member()) {
+        $show_messages = true;
+    }
+
     if ($forum_id === null) {
         return true;
     }
@@ -216,18 +221,14 @@ function cns_may_post_topic(?int $forum_id, ?int $member_id = null) : bool
         return false;
     }
 
-    // TODO: Check if this will actually work considering these are timed
-    $warning_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'id', ['w_member_id' => $member_id]);
-    if ($warning_id !== null) {
-        $punitive_action = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings_punitive', 'id', [
-            'p_warning_id' => $warning_id,
-            'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
-            'p_param_a' => strval($forum_id),
-            'p_reversed' => 0,
-        ]);
-        if ($punitive_action !== null) {
-            return false;
+    $sql = 'SELECT p_warning_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings_punitive p RIGHT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings w ON w.id=p.p_warning_id WHERE ((' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_FORUM') . ' AND ' . db_string_equal_to('p.p_param_a', strval($forum_id)) . ')';
+    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id) . ' AND p.p_param_b>' . strval(time());
+    $test = $GLOBALS['FORUM_DB']->query_value_if_there($sql, false, true);
+    if ($test !== null) {
+        if ($show_messages) {
+            attach_message(do_lang_tempcode('SILENCED_FROM_FORUM'), 'warn');
         }
+        return false;
     }
 
     return true;

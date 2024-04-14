@@ -118,7 +118,7 @@ class Hook_privacy_catalogues extends Hook_privacy_base
      * @param  string $email_address Only anonymise e-mail fields containing this e-mail address (blank: do not filter by this)
      * @param  array $others Only anonymise additional fields containing one of these strings (empty: do not filter by this)
      * @param  boolean $reverse_logic_return Whether to anonymise on fields that do not match the provided criteria instead of those that do, and return a modified $row instead of modifying the database
-     * @return ?array Modified row, if $reverse_logic_return was true
+     * @return ?array Modified row, if $reverse_logic_return was true (null: $reverse_logic_return was false)
      */
     public function anonymise(string $table_name, array $table_details, array $row, string $username = '', array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = [], bool $reverse_logic_return = false) : ?array
     {

@@ -58,7 +58,7 @@ class Hook_task_privacy_download
         }
 
         // Create temporary file to use as archive
-        $filename = preg_replace('#[^\w]#', '_', ($username != '' ? $username : do_lang('UNKNOWN'))) . '.tar.gz';
+        $filename = preg_replace('#[^\w]#', '_', (($username != '') ? $username : do_lang('UNKNOWN'))) . '.tar.gz';
         $file_path = cms_tempnam();
         $data_file = tar_open($file_path, 'wb');
 
@@ -144,8 +144,8 @@ class Hook_task_privacy_download
                     // Now add files to the archive
                     foreach ($data['files_included'] as $file) {
                         $actual_path = (get_custom_file_base() . '/' . rawurldecode($file));
-                        $data = cms_file_get_contents_safe($actual_path, FILE_READ_LOCK);
-                        tar_add_file($data_file, rawurldecode($file), $data);
+                        $_data = cms_file_get_contents_safe($actual_path, FILE_READ_LOCK);
+                        tar_add_file($data_file, rawurldecode($file), $_data);
                     }
                 }
             }
@@ -176,7 +176,7 @@ class Hook_task_privacy_download
     {
         // Don't create a JSON file if we have no data to put into it
         if (count($data['matched_records']) <= 0) {
-            return null;
+            return;
         }
 
         $filename = preg_replace('#[^\w]#', '_', $table_name) . '.json';

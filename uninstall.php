@@ -80,5 +80,5 @@ function uninstall_check_maintenance_password(?string $password_given) : bool
 
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
-    return check_maintenance_password($password_given, 'uninstall');
+    return check_maintenance_password($password_given);
 }

@@ -343,7 +343,7 @@ function get_upload_error_message(array $file_upload, bool $should_get_something
         }
 
         if ($file_upload['error'] == 4) {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'), escape_html(_sanitise_error_msg($file_upload['name'])));
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD', escape_html(_sanitise_error_msg($file_upload['name']))));
         }
 
         return do_lang_tempcode('ERROR_UPLOADING', escape_html(_sanitise_error_msg($file_upload['name'])));

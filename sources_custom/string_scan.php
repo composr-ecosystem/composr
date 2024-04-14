@@ -856,9 +856,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NON_MAINTAINED_STATUS
         SECURITY_LEVEL
         DESCRIPTION_SECURITY_LEVEL
+        SECURITY_LEVEL_minimum
         SECURITY_LEVEL_low
         SECURITY_LEVEL_medium
         SECURITY_LEVEL_high
+        SECURITY_LEVEL_extreme
         MAINTENANCE_SCRIPT_ACCESS
         CONFIG_OPTION_maintenance_script_htaccess
         CMD_OBFUSCATE_DIRECTORY_HELP
@@ -4840,6 +4842,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_SIGN_UP_REMINDER_GROUPS
         DESCRIPTION_SILENCE_FROM_FORUM
         DESCRIPTION_SILENCE_FROM_TOPIC
+        DESCRIPTION_SILENCE_FROM_FORUM_DISABLED
+        DESCRIPTION_SILENCE_FROM_TOPIC_DISABLED
         DESCRIPTION_SKILLS
         DESCRIPTION_SMART_TOPIC_NOTIFICATION
         DESCRIPTION_SOURCE
@@ -11964,6 +11968,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FIELD_TYPE_username_multi
         NOT_VALID_IP
         SENSITIVE_FIELD
+        SILENCED_FROM_TOPIC
+        SILENCED_FROM_FORUM
+        INTEGER_OVERFLOW_TIME
     ')));
 
     // Remove blank lines

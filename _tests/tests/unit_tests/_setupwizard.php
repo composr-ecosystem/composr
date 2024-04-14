@@ -25,6 +25,8 @@ class _setupwizard_test_set extends cms_test_case
             return;
         }
 
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         $session_id = $this->establish_admin_callback_session();
 
         $post_params = [
@@ -75,7 +77,7 @@ class _setupwizard_test_set extends cms_test_case
 
         $url = build_url(['page' => 'admin_setupwizard', 'type' => 'step10', 'keep_fatalistic' => 1], 'adminzone');
 
-        $http = cms_http_request($url->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'timeout' => 300.0, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => [get_session_cookie() => $session_id]]);
+        $http = cms_http_request($url->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'timeout' => 20.0, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => [get_session_cookie() => $session_id]]);
 
         $ok = ($http->message == '200');
 

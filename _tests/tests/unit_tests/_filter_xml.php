@@ -43,7 +43,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $test_xml = '
             <fieldRestrictions>
-                <filter members="100">
+                <filter members="1000000">
                     <qualify pages="cms_news" types="add,_add,_edit,__edit" fields="title">
                         <shun>test</shun>
                     </qualify>
@@ -68,7 +68,10 @@ class _filter_xml_test_set extends cms_test_case
         $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected no filtering but filtering happened.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
     }
 
     public function testFilter()
@@ -107,7 +110,10 @@ class _filter_xml_test_set extends cms_test_case
         $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result === null);
+        $this->assertTrue($result === null, 'Expected filtering but no filtering happened.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
     }
 
     public function testNonQualify()
@@ -141,7 +147,10 @@ class _filter_xml_test_set extends cms_test_case
         $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected no qualify but qualify happened.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
     }
 
     public function testQualify()
@@ -175,7 +184,10 @@ class _filter_xml_test_set extends cms_test_case
         $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result === null);
+        $this->assertTrue($result === null, 'Expected qualify but no qualify happened.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
     }
 
     public function testRemoveShout()
@@ -213,12 +225,15 @@ class _filter_xml_test_set extends cms_test_case
             sleep(1); // Need different timestamps because IDs are randomised
         }
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected results but got none.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         if (array_key_exists(0, $rows)) {
             $row = $rows[0];
-            $this->assertTrue(get_translated_text($row['title']) == 'Example' . $rnd);
+            $this->assertTrue(get_translated_text($row['title']) == 'Example' . $rnd, 'Expected no shouting but we got shouting.');
         }
     }
 
@@ -256,12 +271,15 @@ class _filter_xml_test_set extends cms_test_case
             sleep(1); // Need different timestamps because IDs are randomised
         }
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected results but we got none.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC'/*, 1*/);
         if (array_key_exists(0, $rows)) {
             $row = $rows[0];
-            $this->assertTrue(get_translated_text($row['title']) == 'This is a test');
+            $this->assertTrue(get_translated_text($row['title']) == 'This is a test', 'Expected sentence case but did not get it.');
         }
     }
 
@@ -299,12 +317,15 @@ class _filter_xml_test_set extends cms_test_case
             sleep(1); // Need different timestamps because IDs are randomised
         }
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected results but got none.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         if (array_key_exists(0, $rows)) {
             $row = $rows[0];
-            $this->assertTrue(get_translated_text($row['title']) == 'This Is A Test');
+            $this->assertTrue(get_translated_text($row['title']) == 'This Is A Test', 'Expected title case but did not get it.');
         }
     }
 
@@ -343,12 +364,15 @@ class _filter_xml_test_set extends cms_test_case
             sleep(1); // Need different timestamps because IDs are randomised
         }
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected results but did not get any.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         if (array_key_exists(0, $rows)) {
             $row = $rows[0];
-            $this->assertTrue(get_translated_text($row['title']) == 'foobarEXAMPLEfoobar');
+            $this->assertTrue(get_translated_text($row['title']) == 'foobarEXAMPLEfoobar', 'Expected prepend and append but did not get it.');
         }
     }
 
@@ -386,12 +410,15 @@ class _filter_xml_test_set extends cms_test_case
             sleep(1); // Need different timestamps because IDs are randomised
         }
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected results but did not get any.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         if (array_key_exists(0, $rows)) {
             $row = $rows[0];
-            $this->assertTrue(get_translated_text($row['title']) == 'foobar');
+            $this->assertTrue(get_translated_text($row['title']) == 'foobar', 'Expected replacement but did not get it.');
         }
     }
 
@@ -429,13 +456,16 @@ class _filter_xml_test_set extends cms_test_case
             sleep(1); // Need different timestamps because IDs are randomised
         }
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected results but did not get any.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         if (array_key_exists(0, $rows)) {
             $row = $rows[0];
             $_title = get_translated_text($row['title']);
-            $this->assertTrue($_title == 'blah', 'Got ' . $_title);
+            $this->assertTrue($_title == 'blah', 'Expected deep clean but got ' . $_title);
         }
     }
 
@@ -473,10 +503,13 @@ class _filter_xml_test_set extends cms_test_case
             sleep(1); // Need different timestamps because IDs are randomised
         }
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue($result !== null);
+        $this->assertTrue($result !== null, 'Expected results but did not get any.');
+        if ($this->debug) {
+            @var_dump($result);
+        }
 
         if ($result !== null) {
-            $this->assertTrue(substr_count($result, ' value="foobar"') == 1);
+            $this->assertTrue(substr_count($result, ' value="foobar"') == 1, 'Expected value replacement but did not get it.');
         }
     }
 
@@ -519,9 +552,12 @@ class _filter_xml_test_set extends cms_test_case
 
             $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
-                $this->assertTrue($result !== null);
+                $this->assertTrue($result !== null, 'Expected results on ' . $title . ' but got none.');
             } else {
-                $this->assertTrue($result === null);
+                $this->assertTrue($result === null, 'Did not expect results on ' . $title . ' but got it.');
+            }
+            if ($this->debug) {
+                @var_dump($result);
             }
         }
     }
@@ -562,9 +598,12 @@ class _filter_xml_test_set extends cms_test_case
 
             $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
-                $this->assertTrue($result !== null);
+                $this->assertTrue($result !== null, 'Expected results on ' . $title . ' but got none.');
             } else {
-                $this->assertTrue($result === null);
+                $this->assertTrue($result === null, 'Did not expect results on ' . $title . ' but got it.');
+            }
+            if ($this->debug) {
+                @var_dump($result);
             }
         }
     }
@@ -609,6 +648,9 @@ class _filter_xml_test_set extends cms_test_case
             } else {
                 $this->assertTrue($result === null, 'Got ' . gettype($result) . ' for ' . $title);
             }
+            if ($this->debug) {
+                @var_dump($result);
+            }
         }
     }
 
@@ -649,9 +691,12 @@ class _filter_xml_test_set extends cms_test_case
 
             $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
-                $this->assertTrue($result !== null);
+                $this->assertTrue($result !== null, 'Expected results on ' . $title . ' but got none.');
             } else {
-                $this->assertTrue($result === null);
+                $this->assertTrue($result === null, 'Did not expect results on ' . $title . ' but got it.');
+            }
+            if ($this->debug) {
+                @var_dump($result);
             }
         }
     }
@@ -692,9 +737,12 @@ class _filter_xml_test_set extends cms_test_case
 
             $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
-                $this->assertTrue($result !== null);
+                $this->assertTrue($result !== null, 'Expected results on ' . $title . ' but got none.');
             } else {
-                $this->assertTrue($result === null);
+                $this->assertTrue($result === null, 'Did not expect results on ' . $title . ' but got it.');
+            }
+            if ($this->debug) {
+                @var_dump($result);
             }
         }
     }
@@ -735,9 +783,12 @@ class _filter_xml_test_set extends cms_test_case
 
             $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
-                $this->assertTrue($result !== null);
+                $this->assertTrue($result !== null, 'Expected results on ' . $title . ' but got none.');
             } else {
-                $this->assertTrue($result === null);
+                $this->assertTrue($result === null, 'Did not expect results on ' . $title . ' but got it.');
+            }
+            if ($this->debug) {
+                @var_dump($result);
             }
         }
     }

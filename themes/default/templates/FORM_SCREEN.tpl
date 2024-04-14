@@ -1,7 +1,7 @@
 {$REQUIRE_JAVASCRIPT,checking}
 {$REQUIRE_JAVASCRIPT,core_form_interfaces}
 
-<div data-tpl="formScreen" data-tpl-params="{+START,PARAMS_JSON,URL,IFRAME_URL,SKIPPABLE}{_*}{+END}">
+<div data-tpl="formScreen" data-tpl-params="{+START,PARAMS_JSON,URL,IFRAME_URL,SKIPPABLE,JS_FUNCTION_CALLS}{_*}{+END}">
 	{TITLE}
 
 	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}

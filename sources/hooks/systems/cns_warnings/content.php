@@ -71,9 +71,9 @@ class Hook_cns_warnings_content
     /**
      * Render form fields for the warnings screen.
      *
-     * @param  Tempcode &$add_text Tempcode to be included on the intro paragraph of the warnings screen (passed by reference)
-     * @param  Tempcode &$fields The fields to be rendered (passed by reference)
-     * @param  Tempcode &$hidden The hidden fields to be included (passed by reference)
+     * @param  Tempcode $add_text Tempcode to be included on the intro paragraph of the warnings screen (passed by reference)
+     * @param  Tempcode $fields The fields to be rendered (passed by reference)
+     * @param  Tempcode $hidden The hidden fields to be included (passed by reference)
      * @param  boolean $new Whether it is a new warning/punishment record
      * @param  LONG_TEXT $explanation The explanation for the warning/punishment record
      * @param  BINARY $is_warning Whether to make this a formal warning
@@ -82,7 +82,7 @@ class Hook_cns_warnings_content
      * @param  ?AUTO_LINK $post_id The ID of the forum post of which we clicked warn (null: we are not warning on a forum post)
      * @param  ?SHORT_TEXT $ip_address The IP address of the poster (null: we are not warning on a forum post)
      */
-    public function get_form_fields(&$add_text, &$fields, &$hidden, bool $new, string $explanation, int $is_warning, int $member_id, int $spam_mode, ?int $post_id, ?string $ip_address)
+    public function get_form_fields(object &$add_text, object &$fields, object &$hidden, bool $new, string $explanation, int $is_warning, int $member_id, int $spam_mode, ?int $post_id, ?string $ip_address)
     {
         if (!addon_installed('cns_warnings')) {
             return;
@@ -97,24 +97,23 @@ class Hook_cns_warnings_content
         define('POST_AS_TOPIC_FULL', 2);
         define('POST_AS_TOPIC_STARTER', 3);
 
+        require_code('comcode');
+        require_code('comcode_from_html');
+
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
         // Get form fields for actions on forum topics / posts
         $posts_deletable = [];
         if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
-            $time_limit = time() - (60 * 60 * 24 * 7); // Limit to posts within the last 7 days
-            $max = 50; // Limit to the last 50 posts
-            if (
-                (($GLOBALS['DEV_MODE']) || ($spam_mode)) && // i.e. we are dealing with this user as a spammer
-                ((!is_guest($member_id)) || ($ip_address !== null))
-            ) {
+            $time_limit = time() - (60 * 60 * 24 * 7); // Limit to content within the last 7 days
+            if ((!is_guest($member_id)) || ($ip_address !== null)) {
                 $where = [];
                 if (is_guest($member_id)) {
                     $where['p_ip_address'] = $ip_address;
                 } else {
                     $where['p_poster'] = $member_id;
                 }
-                $sup = ' AND p_time<' . strval($time_limit) . ' ORDER BY p_time DESC';
+                $sup = ' AND p_time>' . strval($time_limit) . ' ORDER BY p_time DESC';
                 if (!has_privilege(get_member(), 'view_other_pt')) {
                     $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
                 }
@@ -139,7 +138,7 @@ class Hook_cns_warnings_content
                                     $spam_urls[$domain]['URLS'][$spam_url] = ['I' => strval(count($spam_urls[$domain]['URLS'])), 'URL' => $spam_url];
                                 }
                                 if (!isset($spam_urls[$domain]['POSTS'][$post['id']])) {
-                                    $spam_urls[$domain]['POSTS'][$post['id']] = ['I' => strval(count($spam_urls[$domain]['POSTS'])), 'POST_TITLE' => $post['p_title'], 'POST' => strip_html($post_text->evaluate())];
+                                    $spam_urls[$domain]['POSTS'][$post['id']] = ['I' => strval(count($spam_urls[$domain]['POSTS'])), 'POST_TITLE' => $post['p_title'], 'POST' => strip_comcode(semihtml_to_comcode($post_text->evaluate(), true), false, [], false)];
                                 }
                             }
                         }
@@ -175,29 +174,29 @@ class Hook_cns_warnings_content
             $post_url = $GLOBALS['FORUM_DRIVER']->post_url($_post_id, $forum_id, true);
 
             $list_options = new Tempcode();
-            $list_options->attach(form_input_list_entry('', !$spam_mode, do_lang_tempcode('HANDLE_POST__NOTHING')));
+            $list_options->attach(form_input_list_entry('', ($spam_mode == 0), do_lang_tempcode('HANDLE_POST__NOTHING')));
             switch ($post_context) {
                 case POST_STANDALONE_AT_END:
                     $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_AT_END', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())]);
-                    $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
+                    $list_options->attach(form_input_list_entry('delete_post', ($spam_mode == 1), do_lang_tempcode('HANDLE_POST__DELETE_POST', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
                     break;
 
                 case POST_STANDALONE_IN_MIDDLE:
                     $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
                     $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_IN_MIDDLE', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))]);
-                    $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST_WITH_GAP', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
+                    $list_options->attach(form_input_list_entry('delete_post', ($spam_mode == 1), do_lang_tempcode('HANDLE_POST__DELETE_POST_WITH_GAP', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
                     $list_options->attach(form_input_list_entry('delete_post_and_following', false, do_lang_tempcode('HANDLE_POST__DELETE_POST_AND_FOLLOWING', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(strval($num_replies))])));
                     break;
 
                 case POST_AS_TOPIC_FULL:
                     $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
                     $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_FULL', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))]);
-                    $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC_WITH_REPLIES', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
+                    $list_options->attach(form_input_list_entry('delete_post_and_following', ($spam_mode == 1), do_lang_tempcode('HANDLE_POST__DELETE_TOPIC_WITH_REPLIES', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
                     break;
 
                 case POST_AS_TOPIC_STARTER:
                     $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_STARTER', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())]);
-                    $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
+                    $list_options->attach(form_input_list_entry('delete_post_and_following', ($spam_mode == 1), do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
                     break;
             }
             $_fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
@@ -221,7 +220,7 @@ class Hook_cns_warnings_content
                     $content_url = $content_url->evaluate();
                 }
 
-                $list_options->attach(form_input_list_entry($content_type . '::' . $content_id, $spam_mode, do_lang_tempcode('CONTENT_IS_OF_TYPE', $content_type_title, escape_html($content_title))));
+                $list_options->attach(form_input_list_entry($content_type . '::' . $content_id, ($spam_mode == 1), do_lang_tempcode('CONTENT_IS_OF_TYPE', $content_type_title, escape_html($content_title))));
                 $content_deletable[] = $content_type . '::' . $content_id;
             }
             $_fields->attach(form_input_all_and_not(do_lang_tempcode('DELETE_CONTENT'), $description, 'delete_content', $list_options));
@@ -229,7 +228,7 @@ class Hook_cns_warnings_content
         }
 
         if (!$_fields->is_empty()) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE_CONTENT'), 'HELP' => $description, 'SECTION_HIDDEN' => !$spam_mode]));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE_CONTENT'), 'HELP' => $description, 'SECTION_HIDDEN' => ($spam_mode == 0)]));
             $fields->attach($_fields);
         }
     }
@@ -238,12 +237,12 @@ class Hook_cns_warnings_content
      * Actualise punitive actions.
      * Note that this assumes action was applied through the warnings form, and that post parameters still exist.
      *
-     * @param  array &$punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
+     * @param  array $punitive_messages Punitive action text to potentially be included in the PT automatically (passed by reference)
      * @param  AUTO_LINK $warning_id The ID of the warning that was created for this punitive action
      * @param  MEMBER $member_id The member this warning is being applied to
      * @param  SHORT_TEXT $username The username of the member this warning is being applied to
      * @param  SHORT_TEXT $explanation The defined explanation for this warning
-     * @param  LONG_TEXT &$message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
+     * @param  LONG_TEXT $message The message to be sent as a PT (passed by reference; you should generally use $punitive_text instead if you want to add PT text)
      */
     public function actualise_punitive_action(array &$punitive_messages, int $warning_id, int $member_id, string $username, string $explanation, string &$message)
     {
@@ -253,6 +252,7 @@ class Hook_cns_warnings_content
 
         // Post deletion
         $deleted_all = false;
+        $posts_already_deleted = [];
         if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
             $posts_deletable = post_param_string('available_posts_to_delete');
             foreach (explode("\n", $posts_deletable) as $_post_id) {

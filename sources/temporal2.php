@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: timezone_identifiers_list|date_create|*/
+
 /**
  * Turn a boring timezone name into the pretty shortened list of ones Microsoft uses and others now use too.
  *
@@ -72,7 +74,7 @@ function _get_timezone_list() : array
         $offset_text .= ')';
 
         // Add to array
-        $city = array_key_exists($timezone, $overrides) ? $overrides[$timezone] : ucwords(str_replace('_', ' ', preg_replace('#^.*/#', '', $timezone)));
+        $city = array_key_exists($timezone, $overrides) ? $overrides[$timezone] : cms_mb_ucwords(str_replace('_', ' ', preg_replace('#^.*/#', '', $timezone)));
         $ret[$timezone] = $city . $offset_text;
 
         // Free up memory
@@ -229,6 +231,8 @@ function post_param_date_components(string $stub, ?int $year = null, ?int $month
  */
 function _post_param_date(string $stub, bool $get_also = false, bool $do_timezone_conversion = true) : ?int
 {
+    require_code('temporal');
+
     $timezone = post_param_string('timezone', get_users_timezone());
 
     list($year, $month, $day, $hour, $minute, $seconds) = post_param_date_components($stub, null, null, null, $get_also);
@@ -236,14 +240,7 @@ function _post_param_date(string $stub, bool $get_also = false, bool $do_timezon
         return null;
     }
 
-    $time = @mktime($hour, $minute, $seconds, $month, $day, $year);
-    if ($time === false) { // TODO: #3046 in tracker
-        if ($year >= intval(date('Y'))) {
-            $time = 2147483647 - 60 * 60 * 24 * 2; // As close as reasonably possible to the maximum 32 bit timestamp (with space for timezone differences)
-        } else {
-            $time = 60 * 60 * 24 * 2; // As close as reasonably possible to the minimum 32 bit timestamp (with space for timezone differences)
-        }
-    }
+    $time = cms_mktime($hour, $minute, $seconds, $month, $day, $year);
     if ($do_timezone_conversion) {
         $time = $time * 2 - tz_time($time, $timezone);
     }

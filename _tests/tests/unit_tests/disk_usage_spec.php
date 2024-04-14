@@ -72,6 +72,6 @@ class disk_usage_spec_test_set extends cms_test_case
 
         $size += 5 * 1024 * 1024; // Some overhead for installer PHP code, etc
 
-        $this->assertTrue($size < 180 * 1024 * 1024, 'Install size is ' . integer_format($size) . ', which is above the defined system requirements; update requirements and this test');
+        $this->assertTrue($size < 250 * 1024 * 1024, 'Install size is ' . integer_format($size) . ', which is above the defined system requirements; update requirements (tut_webhosting, downloads page of the homesite, and install_env health check) and this test');
     }
 }

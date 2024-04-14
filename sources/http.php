@@ -1200,7 +1200,6 @@ class HttpDownloaderCurl extends HttpDownloader
 
             // Try again on a partial file error if we did not exceed our attempts remaining
             if (($curl_errno == CURLE_PARTIAL_FILE) && ($this->attempts_remaining > 0)) {
-                sleep(2);
                 $this->attempts_remaining--;
                 return $this->_run($url, $options); // $this->content_size should be set to how many bytes we have so far
             }
@@ -1398,16 +1397,16 @@ class HttpDownloaderCurl extends HttpDownloader
             fwrite($this->write_to_file, $_str);
             $this->content_size += strlen($_str);
             return strlen($_str);
-        } else {
-            $this->curl_body .= $str;
-            $this->content_size = strlen($this->curl_body);
-            if (($this->byte_limit !== null) && ($this->content_size > $this->byte_limit)) {
-                $this->curl_body = substr($this->curl_body, 0, $this->byte_limit);
-                $this->content_size = $this->byte_limit;
-                return strlen($str) - ($this->content_size - $this->byte_limit);
-            }
-            return strlen($str);
         }
+
+        $this->curl_body .= $str;
+        $this->content_size = strlen($this->curl_body);
+        if (($this->byte_limit !== null) && ($this->content_size > $this->byte_limit)) {
+            $this->curl_body = substr($this->curl_body, 0, $this->byte_limit);
+            $this->content_size = $this->byte_limit;
+            return strlen($str) - ($this->content_size - $this->byte_limit);
+        }
+        return strlen($str);
     }
 }
 
@@ -1678,7 +1677,6 @@ class HttpDownloaderSockets extends HttpDownloader
                         fwrite($this->write_to_file, $line);
                         $this->content_size = $input_len;
                     }
-
                 } elseif ($line != '') {
                     $old_line = $line;
                     $lines = explode("\r\n", $line);

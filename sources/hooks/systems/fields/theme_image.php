@@ -199,7 +199,6 @@ class Hook_fields_theme_image
         }
 
         return $value;
-
     }
 
     /**

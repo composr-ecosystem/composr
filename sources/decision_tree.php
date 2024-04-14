@@ -56,7 +56,8 @@ Each question details has:
  - comcode_prepend and comcode_append
 
 Other features
- - Actually 'inform'/'notice'/'warn' can take a 'next'-style array, in which case the messages are shown using JavaScript upon option selection
+ - Actually 'inform'/'notice'/'warn' can take a 'next'-style array, in which case the messages are shown using JavaScript upon option selection.
+  - In this case, the browser console will give a warning if you provide a value that does not exist, or an error if you provide an element (parameter) name that does not exist.
 */
 
 /**

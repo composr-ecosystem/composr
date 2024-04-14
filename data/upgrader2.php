@@ -248,5 +248,5 @@ function upgrader2_check_maintenance_password(string $password_given_hashed) : b
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
-    return check_maintenance_password_from_hash($password_given_hashed, 'upgrader2');
+    return check_maintenance_password_from_hash($password_given_hashed);
 }

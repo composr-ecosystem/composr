@@ -198,10 +198,12 @@ class _template_parameter_consistency_test_set extends cms_test_case
             'css' => 'css',
         ];
         foreach ($places as $subpath => $ext) {
-            foreach (['', '_custom'] as $suffix) {
-                $template_path = get_file_base() . '/themes/default/' . $subpath . $suffix . '/' . $template . '.' . $ext;
-                if (is_file($template_path)) {
-                    return $template_path;
+            foreach (['default', 'admin'] as $theme) {
+                foreach (['', '_custom'] as $suffix) {
+                    $template_path = get_file_base() . '/themes/' . $theme . '/' . $subpath . $suffix . '/' . $template . '.' . $ext;
+                    if (is_file($template_path)) {
+                        return $template_path;
+                    }
                 }
             }
         }

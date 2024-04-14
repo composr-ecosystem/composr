@@ -85,7 +85,7 @@ function init__global2()
         }
     }
 
-    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE, $CURRENTLY_LOGGING_IN, $DISABLED_MEMORY_LIMIT;;
+    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE, $CURRENTLY_LOGGING_IN, $DISABLED_MEMORY_LIMIT;
 
     $CURRENTLY_LOGGING_IN = false;
 
@@ -1967,7 +1967,7 @@ function get_complex_base_url(string $at) : string
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  * @return ?string The parameter value (null: missing)
  */
-function either_param_string(string $name, $default = false, int $filters = INPUT_FILTER_DEFAULT_GET) : ?string
+function either_param_string(string $name, $default = false, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
 {
     $ret = __param(array_merge($_POST, $_GET), $name, $default);
     if ($ret === null) {
@@ -1986,8 +1986,15 @@ function either_param_string(string $name, $default = false, int $filters = INPU
         $ret = cms_urldecode_post_process($ret);
     }
 
+    // GET is prioritised over POST, so change our filters accordingly
+    $is_get = isset($_GET[$name]);
+    if ($is_get) {
+        $filters &= ~INPUT_FILTER_DEFAULT_POST;
+        $filters &= INPUT_FILTER_DEFAULT_GET;
+    }
+
     require_code('input_filter');
-    check_input_field_string($name, $ret, true, $filters);
+    check_input_field_string($name, $ret, !$is_get, $filters);
 
     return $ret;
 }

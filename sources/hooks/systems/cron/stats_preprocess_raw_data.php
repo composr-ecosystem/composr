@@ -55,13 +55,13 @@ class Hook_cron_stats_preprocess_raw_data
             $start_time = 0;
         } else {
             list($year, $month, $day) = array_map('intval', explode('-', $last_day_processed));
-            $start_time = mktime(0, 0, 0, $month, $day, $year);
+            $start_time = cms_mktime(0, 0, 0, $month, $day, $year);
             $start_time = tz_time($start_time, $server_timezone);
         }
 
         $today = cms_date('Y-m-d');
         list($year, $month, $day) = array_map('intval', explode('-', $today));
-        $end_time = mktime(0, 0, 0, $month, $day, $year) - 1;
+        $end_time = cms_mktime(0, 0, 0, $month, $day, $year) - 1;
         $end_time = tz_time($end_time, $server_timezone);
 
         if ($end_time > $start_time) {

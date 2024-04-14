@@ -1641,13 +1641,13 @@ class Module_topics
         }
 
         $staff_help_url = null;
-        $username = false;
+        $username = null;
 
         // Breadcrumbs etc
         if ($private_topic) {
             breadcrumb_set_parents([['_SEARCH:forumview:pt', do_lang_tempcode('PRIVATE_TOPICS')]]);
 
-            $username = ($member_id == get_member()) ? false : $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_ERROR);
+            $username = ($member_id == get_member()) ? null : $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_ERROR);
         } else {
             if ($forum_id !== null) {
                 if (!has_category_access(get_member(), 'forums', strval($forum_id))) {
@@ -1871,7 +1871,7 @@ class Module_topics
             }
         }
         if ($private_topic) {
-            if ($username === false) {
+            if ($username === null) {
                 $title = do_lang_tempcode('_ADD_PRIVATE_TOPIC_UNKNOWN');
             } else {
                 $title = do_lang_tempcode('_ADD_PRIVATE_TOPIC', escape_html($username));
@@ -1964,7 +1964,8 @@ class Module_topics
         $parent_id = either_param_integer('parent_id', null);
         $intended_solely_for = get_param_integer('intended_solely_for', null);
         $_post = post_param_string('post', null); // Copy existing post into box (from quick reply 'more options' button)
-        $post = new Tempcode();
+        $__post = new Tempcode();
+        $post = '';
         if ($_post === null) {
             $quotes = [];
             $quote = get_param_integer('quote', null);
@@ -1973,11 +1974,13 @@ class Module_topics
             } else {
                 $quotes[] = $quote;
             }
-            $post = $this->attach_quotes($quotes);
+            $__post = $this->attach_quotes($quotes);
 
             if ((count($quotes) == 1) && ($parent_id === null)) {
                 $parent_id = $quotes[0];
             }
+        } else {
+            $post = $_post;
         }
 
         $__whisperer = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_poster', 'p_time'], ['p_topic_id' => $topic_id, 'p_intended_solely_for' => get_member()], 'ORDER BY p_time DESC', 1);
@@ -2071,7 +2074,7 @@ class Module_topics
         if ($forum_id !== null) {
             $post_templates = $this->post_templates($forum_id);
             $specialisation->attach($post_templates[0]);
-            if ($post->is_empty()) {
+            if ($__post->is_empty() && ($post == '')) {
                 $post = $post_templates[1];
             }
         }
@@ -2178,9 +2181,10 @@ class Module_topics
             $topic_posts = do_template('CNS_POSTING_SCREEN_POSTS', ['_GUID' => '3d3b14cf3a48b2a16eed5b1bd92b1187', 'POSTS' => $topic_posts]);
         }
 
-        if (is_object($post)) {
-            $post = $post->evaluate();
+        if (!$__post->is_empty() && ($post == '')) {
+            $post = $__post->evaluate();
         }
+
         $js_function_calls = $this->_post_javascript();
         $posting_form = get_posting_form(do_lang('REPLY'), 'buttons/new_reply', $post, $post_url, $hidden_fields, $specialisation, null, $topic_posts->evaluate(), $specialisation2, null, $js_function_calls);
 

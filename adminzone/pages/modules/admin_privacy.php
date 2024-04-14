@@ -187,8 +187,8 @@ class Module_admin_privacy
                             $_sql = $hook_ob->get_selection_sql($table_name, $table_details, PRIVACY_METHOD__DOWNLOAD, false, $username, $ip_addresses, $member_id, $email_address, $others);
                             if ($_sql != '') {
                                 push_db_scope_check(false);
-                                $sql = 'SELECT COUNT(*) AS search_rows FROM ' . $db->get_table_prefix() . $table_name . $_sql . ';';
-                                $rows = $db->query($sql);
+                                $__sql = 'SELECT COUNT(*) AS search_rows FROM ' . $db->get_table_prefix() . $table_name . $_sql . ';';
+                                $rows = $db->query($__sql);
                                 pop_db_scope_check();
                                 $pretty_name = do_lang('PRIVACY_PURGE_TABLE_RECORDS', $table_name, integer_format($rows[0]['search_rows']));
                             }
@@ -221,7 +221,6 @@ class Module_admin_privacy
                     if ($details !== null) {
                         foreach ($details['database_records'] as $table_name => $table_details) {
                             // TODO: Add record counts
-
                             $purge_options = new Tempcode();
                             $purge_options->attach(form_input_list_entry(strval(PRIVACY_METHOD__LEAVE), $table_details['removal_default_handle_method'] == PRIVACY_METHOD__LEAVE, do_lang_tempcode('PRIVACY_METHOD__LEAVE')));
                             if (($table_details['allowed_handle_methods'] & PRIVACY_METHOD__ANONYMISE) != 0) {

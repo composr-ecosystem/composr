@@ -859,6 +859,8 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      */
     protected function fill_data_by_date_pivots(string $pivot, int $start_month, int $end_month) : array
     {
+        require_code('temporal');
+
         $pivot_value = mixed();
 
         $data = [];
@@ -875,7 +877,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 for ($i = $start_month; $i <= $end_month; $i++) {
                     $year = 1970 + intval(floor(floatval($i) / 12.0));
                     $month = ($i % 12) + 1;
-                    $days_in_month = intval(date('t', mktime(0, 0, 0, $month, 1, $year)));
+                    $days_in_month = intval(date('t', cms_mktime(0, 0, 0, $month, 1, $year)));
                     for ($j = 1; $j <= $days_in_month; $j++) {
                         $pivot_value = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($j), 2, '0', STR_PAD_LEFT);
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
@@ -975,6 +977,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
         // If we reach this point, then $_range_value was invalid.
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        return [];
     }
 
     /**
@@ -990,7 +993,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
         switch ($pivot) {
             case 'hour_of_day':
-                return trim(cms_date('ga', mktime($pivot_value)));
+                return trim(cms_date('ga', cms_mktime($pivot_value)));
 
             case 'day_of_week':
                 $dows = [

@@ -401,20 +401,21 @@ class Module_admin_setupwizard
             $hidden .= static_evaluate_tempcode(form_input_hidden('include_cms_advert', '0'));
         }
 
-        switch (get_option('minimum_password_length')) {
-            case '10':
-                $security_level = 'high';
-                break;
-            case '5':
-                $security_level = 'low';
-                break;
-            case '8':
-            default:
-                $security_level = 'medium';
-                break;
+        $pass_length = intval(get_option('minimum_password_length'));
+        if ($pass_length >= 16) {
+            $security_level = 'extreme';
+        } elseif ($pass_length >= 12) {
+            $security_level = 'high';
+        } elseif ($pass_length >= 8) {
+            $security_level = 'medium';
+        } elseif ($pass_length >= 4) {
+            $security_level = 'low';
+        } else {
+            $security_level = 'minimum';
         }
+
         $security_levels = new Tempcode();
-        foreach (['low', 'medium', 'high'] as $_security_level) {
+        foreach (['minimum', 'low', 'medium', 'high', 'extreme'] as $_security_level) {
             $security_levels->attach(form_input_list_entry($_security_level, $_security_level == $security_level, do_lang_tempcode('SECURITY_LEVEL_' . $_security_level)));
         }
         $fields->attach(form_input_list(do_lang_tempcode('SECURITY_LEVEL'), do_lang_tempcode('DESCRIPTION_SECURITY_LEVEL'), 'security_level', $security_levels));
@@ -1177,89 +1178,123 @@ class Module_admin_setupwizard
             set_option('timezone', post_param_string('timezone'));
             set_option('google_analytics', post_param_string('google_analytics'));
 
-            // Security level...
+            // Security level (update tut_configuration if you change these)...
 
             $security_level = post_param_string('security_level');
-
             $security_level_options = [
                 'csp_enabled' => [
+                    'minimum' => '0',
                     'low' => '0',
                     'medium' => '1',
                     'high' => '1',
+                    'extreme' => '1',
                 ],
                 'session_expiry_time' => [
-                    'low' => '24',
+                    'minimum' => '24',
+                    'low' => '3',
                     'medium' => '1',
-                    'high' => '0.3',
+                    'high' => '0.5',
+                    'extreme' => '0.25',
                 ],
                 'password_reset_process' => [
-                    'low' => 'emailed',
+                    'minimum' => 'emailed',
+                    'low' => 'temporary',
                     'medium' => 'temporary',
                     'high' => 'ultra',
+                    'extreme' => 'ultra',
                 ],
                 'password_expiry_days' => [
+                    'minimum' => '0',
                     'low' => '0',
                     'medium' => '0',
-                    'high' => '31',
+                    'high' => '90',
+                    'extreme' => '30',
                 ],
                 'minimum_password_length' => [
+                    'minimum' => '0',
                     'low' => '4',
                     'medium' => '8',
                     'high' => '12',
+                    'extreme' => '16',
                 ],
                 'minimum_password_strength' => [
+                    'minimum' => '0',
                     'low' => '2',
                     'medium' => '5',
                     'high' => '8',
+                    'extreme' => '10',
                 ],
                 'login_error_secrecy' => [
+                    'minimum' => '0',
                     'low' => '0',
                     'medium' => '0',
                     'high' => '1',
+                    'extreme' => '1',
                 ],
                 'ip_strict_for_sessions' => [
-                    'low' => '1',
+                    'minimum' => '0',
+                    'low' => '0',
                     'medium' => '1',
                     'high' => '1',
+                    'extreme' => '1',
                 ],
-                'crypt_ratchet' => [
-                    'low' => '8',
-                    'medium' => '10',
-                    'high' => '12',
+                'crypt_ratchet' => [ // Special case: Array of target calculation time, minimum ratchet
+                    'minimum' => [0.025, 6],
+                    'low' => [0.05, 8],
+                    'medium' => [0.1, 10],
+                    'high' => [0.25, 12],
+                    'extreme' => [1.0, 14],
                 ],
                 'captcha_single_guess' => [
+                    'minimum' => '0',
                     'low' => '0',
                     'medium' => '1',
                     'high' => '1',
+                    'extreme' => '1',
                 ],
                 'captcha_noise' => [
+                    'minimum' => '0',
                     'low' => '0',
                     'medium' => '1',
                     'high' => '1',
+                    'extreme' => '1',
                 ],
                 'brute_force_threshold' => [
-                    'low' => '32',
-                    'medium' => '16',
-                    'high' => '8',
+                    'minimum' => '30',
+                    'low' => '15',
+                    'medium' => '10',
+                    'high' => '5',
+                    'extreme' => '3',
                 ],
                 'audio_captcha' => [
+                    'minimum' => '1',
                     'low' => '1',
                     'medium' => '1',
                     'high' => '0',
+                    'extreme' => '0',
                 ],
                 'url_monikers_enabled' => [
+                    'minimum' => '1',
                     'low' => '1',
                     'medium' => '1',
-                    'high' => '0',
+                    'high' => '1',
+                    'extreme' => '0',
                 ],
                 'maintenance_script_htaccess' => [
+                    'minimum' => '0',
                     'low' => '0',
                     'medium' => '0',
                     'high' => '1',
+                    'extreme' => '1',
                 ],
             ];
             foreach ($security_level_options as $security_level_option => $values) {
-                set_option($security_level_option, $values[$security_level]);
+                if ($security_level_option == 'crypt_ratchet') {
+                    require_code('crypt');
+                    set_option($security_level_option, strval(calculate_reasonable_ratchet($values[$security_level][0], $values[$security_level][1])));
+                } else {
+                    set_option($security_level_option, $values[$security_level]);
+                }
             }
 
             if (get_forum_type() == 'cns') {
@@ -1268,16 +1303,21 @@ class Module_admin_setupwizard
                 $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, true);
                 foreach (array_keys($groups) as $id) {
                     switch ($security_level) {
+                        // Do not enquire
+                        case 'minimum':
                         case 'low':
                             $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_enquire_on_new_ips' => 0], ['id' => $id], '', 1);
                             break;
 
+                        // Only enquire on admins
                         case 'medium':
                             $is_admin = in_array($id, $admin_groups);
                             $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_enquire_on_new_ips' => $is_admin ? 1 : 0], ['id' => $id], '', 1);
                             break;
 
+                        // Enquire on all staff
                         case 'high':
+                        case 'extreme':
                             $is_staff = in_array($id, $admin_groups) || in_array($id, $moderator_groups);
                             $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_enquire_on_new_ips' => $is_staff ? 1 : 0], ['id' => $id], '', 1);
                             break;

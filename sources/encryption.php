@@ -227,7 +227,7 @@ function decrypt_data(string $data, string $passphrase, ?string &$error_msg = nu
  * @param  ?float $version The version of the software of which to return the public key (null: return the key bundled with this version)
  * @return ~string File contents (false: error)
  */
-function get_public_key_telemetry(float $version = null)
+function get_public_key_telemetry(?float $version = null)
 {
     if ($version === null) {
         return cms_file_get_contents_safe(get_file_base() . '/data/keys/telemetry.pub', FILE_READ_LOCK);

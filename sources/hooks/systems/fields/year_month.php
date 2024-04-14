@@ -146,6 +146,36 @@ class Hook_fields_year_month
     // ======================
 
     /**
+     * Find a year range limiter part based on field options.
+     *
+     * @param  array $field The field details
+     * @param  string $type The limit type
+     * @set min_year max_year
+     * @return integer Year range part
+     */
+    protected function find_year_range_limiter(array $field, string $type) : int
+    {
+        $fo = option_value_from_field_array($field, $type, '');
+
+        $matches = [];
+        if (preg_match('#^Y([\-+]\d+)$#i', $fo, $matches) != 0) {
+            return intval(date('Y')) + intval($matches[1]);
+        }
+
+        if ($fo == '') {
+            switch ($type) {
+                case 'min_year':
+                    return 0;
+
+                case 'max_year':
+                    return 3000;
+            }
+        }
+
+        return intval($fo);
+    }
+
+    /**
      * Get form inputter.
      *
      * @param  string $_cf_name The field name

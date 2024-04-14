@@ -87,6 +87,7 @@ PHP;
         }
 
         require_code('calendar');
+        require_code('temporal');
         require_lang('calendar');
         require_lang('dates');
         require_css('calendar');
@@ -117,8 +118,8 @@ PHP;
         $type = empty($map['param']) ? 'listing' : $map['param'];
 
         if ($type != 'listing') {
-            $period_start = mktime(0, 0, 0, $month, 1, $year);
-            $period_end = mktime(23, 59, 0, $month + 1, 0, $year);
+            $period_start = cms_mktime(0, 0, 0, $month, 1, $year);
+            $period_end = cms_mktime(23, 59, 0, $month + 1, 0, $year);
 
             $happenings = calendar_matches($member_id, $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start, $period_end, $filter, true, $private, $check_perms);
 
@@ -154,7 +155,7 @@ PHP;
                     $test = date('d', $to);
                     $test2 = date('d', $from);
                     if (((intval($test) > intval($test2)) || (intval(date('m', $to)) != intval(date('m', $from))) || (intval(date('Y', $to)) != intval(date('Y', $from))))) {
-                        $ntime = mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
+                        $ntime = cms_mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
                         if ($ntime < $period_end) {
                             $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to];
                         }
@@ -162,8 +163,8 @@ PHP;
                 }
             }
 
-            $_period_start = mktime(0, 0, 0, $month, 1, $year);
-            $_period_end = mktime(0, 0, 0, $month + 1, 0, $year);
+            $_period_start = cms_mktime(0, 0, 0, $month, 1, $year);
+            $_period_end = cms_mktime(0, 0, 0, $month + 1, 0, $year);
             $_days = intval(round(floatval($_period_end - $_period_start) / floatval(60 * 60 * 24)));
 
             $_entries = new Tempcode();
@@ -180,7 +181,7 @@ PHP;
             }
             for ($j = 1; $j <= $_days + 1; $j++) {
                 $date = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($j), 2, '0', STR_PAD_LEFT);
-                $date_formatted = cms_date(do_lang('calendar_date'), mktime(0, 0, 0, $month, $j, $year));
+                $date_formatted = cms_date(do_lang('calendar_date'), cms_mktime(0, 0, 0, $month, $j, $year));
                 $map2 = $filter + ['page' => 'calendar', 'type' => 'browse', 'view' => 'day', 'id' => $date];
                 $day_url = build_url($map2, $zone);
 
@@ -236,7 +237,7 @@ PHP;
 
         // Listing mode
 
-        $period_start = mktime(0, 0, 0, $month, $day, $year);
+        $period_start = cms_mktime(0, 0, 0, $month, $day, $year);
         $num_days = array_key_exists('days', $map) ? intval($map['days']) : 30;
         $period_end = $period_start + 60 * 60 * 24 * $num_days;
 
@@ -265,7 +266,7 @@ PHP;
 
             $__day = date('Y-m-d', $from);
             $bits = explode('-', $__day);
-            $day_start = mktime(12, 0, 0, intval($bits[1]), intval($bits[2]), intval($bits[0]));
+            $day_start = cms_mktime(12, 0, 0, intval($bits[1]), intval($bits[2]), intval($bits[0]));
             if (!array_key_exists($day_start, $days)) {
                 $date_section = get_timezoned_date($day_start); // Must be rendered in user's timezone not GMT, as GMT day may be ahead of the user's timezoned day and hence render the wrong contextual date.
                 if (($from < $period_start) && ($date_section != do_lang('YESTERDAY'))) {
@@ -319,7 +320,7 @@ PHP;
                 $test = date('d', $to);
                 $test2 = date('d', $from);
                 if (((intval($test) > intval($test2)) || (intval(date('m', $to)) != intval(date('m', $from))) || (intval(date('Y', $to)) != intval(date('Y', $from))))) {
-                    $ntime = mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
+                    $ntime = cms_mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
                     if ($ntime < $period_end) {
                         $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to];
                     }

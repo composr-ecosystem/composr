@@ -1212,7 +1212,7 @@ class Module_admin_addons
             $copyright_attribution = '';
             $licence = '';
             $description = '';
-            $min_cms_version = strval(cms_version_number());
+            $min_cms_version = float_to_raw_string(cms_version_number());
             $max_cms_version = '';
             $dependencies = '';
             $incompatibilities = '';

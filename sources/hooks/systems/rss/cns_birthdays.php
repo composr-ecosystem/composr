@@ -51,6 +51,7 @@ class Hook_rss_cns_birthdays
         }
 
         require_lang('dates');
+        require_code('temporal');
 
         $filters_1 = selectcode_to_sqlfragment($_filters, 'd.gm_group_id', 'f_groups', null, 'd.gm_group_id', 'id', true, true, $GLOBALS['FORUM_DB']); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
         $filters_2 = selectcode_to_sqlfragment($_filters, 'p.m_primary_group', 'f_groups', null, 'p.m_primary_group', 'id', true, true, $GLOBALS['FORUM_DB']); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
@@ -79,20 +80,20 @@ class Hook_rss_cns_birthdays
         foreach ($rows as $i => &$row) {
             if ($method == 'happened') {
                 $cutoff_today = (time() + 60 * 60 * 24 * 1/*1 international time line*/);
-                $previous_birthday_time_this_year = mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year);
-                $previous_birthday_time_last_year = mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year - 1);
+                $previous_birthday_time_this_year = cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year);
+                $previous_birthday_time_last_year = cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year - 1);
                 $birthday_time = ($previous_birthday_time_this_year > $cutoff_today) ? $previous_birthday_time_last_year : $previous_birthday_time_this_year;
                 $display = ($birthday_time > $cutoff) && ($birthday_time < $cutoff_today) && ($birthday_time > time() - 60 * 60 * 24 * $days);
             } elseif ($method == 'happening') {
                 $cutoff_today = (time() - 60 * 60 * 24 * 1/*1 international time line*/);
-                $next_birthday_time_this_year = mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year);
-                $next_birthday_time_next_year = mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year + 1);
+                $next_birthday_time_this_year = cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year);
+                $next_birthday_time_next_year = cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year + 1);
                 $birthday_time = ($next_birthday_time_this_year < $cutoff_today) ? $next_birthday_time_next_year : $next_birthday_time_this_year;
                 $display = ($birthday_time < $cutoff) && ($birthday_time > $cutoff_today) && ($birthday_time < time() + 60 * 60 * 24 * $days);
             } else { // stream_in
                 $cutoff_today = (time() - 60 * 60 * 24 * 1/*1 international time line*/);
-                $next_birthday_time_this_year = mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year);
-                $next_birthday_time_next_year = mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year + 1);
+                $next_birthday_time_this_year = cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year);
+                $next_birthday_time_next_year = cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $year + 1);
                 $birthday_time = ($next_birthday_time_this_year < $cutoff_today) ? $next_birthday_time_next_year : $next_birthday_time_this_year;
                 $display = true;
             }
