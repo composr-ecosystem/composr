@@ -20,6 +20,9 @@ class _cqc_forumdrivers_test_set extends cms_test_case
 {
     public function testForumDrivers()
     {
+        $message = 'You may need to re-run _cqc_function_sigs after making changes to function signatures or PHPDocs.';
+        $this->dump($message, 'INFO:');
+
         cms_set_time_limit(120);
         $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=sources/forum';
         $url = $this->extend_cqc_call($url);

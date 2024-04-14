@@ -856,9 +856,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NON_MAINTAINED_STATUS
         SECURITY_LEVEL
         DESCRIPTION_SECURITY_LEVEL
+        SECURITY_LEVEL_minimum
         SECURITY_LEVEL_low
         SECURITY_LEVEL_medium
         SECURITY_LEVEL_high
+        SECURITY_LEVEL_extreme
         MAINTENANCE_SCRIPT_ACCESS
         CONFIG_OPTION_maintenance_script_htaccess
         CMD_OBFUSCATE_DIRECTORY_HELP

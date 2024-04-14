@@ -162,7 +162,7 @@ class Hook_fields_date_time
                 if (!array_key_exists(2, $time_bits)) {
                     $time_bits[2] = '00';
                 }
-                $time = mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), @intval($date_bits[0]));
+                $time = cms_mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), @intval($date_bits[0]));
             }
             $ev = get_timezoned_date_time($time, false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
         }

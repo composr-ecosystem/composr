@@ -800,6 +800,8 @@ class CMS_RSS
  */
 function cleanup_date(string $date) : array
 {
+    require_code('temporal');
+
     $remap_month = ['Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12];
     $matches = [];
     if (preg_match('#(\d*) (' . implode('|', array_keys($remap_month)) . ') (\d\d\d\d) (\d*):(\d\d):(\d\d) (GMT|UTC)?([+-]?\w*)#', $date, $matches) != 0) {
@@ -812,7 +814,7 @@ function cleanup_date(string $date) : array
             $day = 1;
         }
         $year = intval($matches[3]);
-        $timestamp = gmmktime($hour, $minute, $second, $month, $day, $year);
+        $timestamp = cms_gmmktime($hour, $minute, $second, $month, $day, $year);
         $their_dif = 0; // Assume GMT
         if (is_numeric($matches[8])) {
             $their_dif = intval($matches[8]);
@@ -832,7 +834,7 @@ function cleanup_date(string $date) : array
         $day = intval($matches[3]);
         $year = intval($matches[1]);
 
-        $timestamp = gmmktime($hour, $minute, $second, $month, $day, $year);
+        $timestamp = cms_gmmktime($hour, $minute, $second, $month, $day, $year);
         return [get_timezoned_date_time($timestamp), $timestamp];
     }
     if (preg_match('#(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)([\+\-]\d\d):(\d\d)#', $date, $matches) != 0) {
@@ -843,7 +845,7 @@ function cleanup_date(string $date) : array
         $day = intval($matches[3]);
         $year = intval($matches[1]);
 
-        $timestamp = gmmktime($hour, $minute, $second, $month, $day, $year);
+        $timestamp = cms_gmmktime($hour, $minute, $second, $month, $day, $year);
         $timestamp += intval($matches[7]) * 60 * 60 + intval($matches[8]) * 60;
         return [get_timezoned_date_time($timestamp), $timestamp];
     }
@@ -857,7 +859,7 @@ function cleanup_date(string $date) : array
         $day = intval($matches[1]);
         $year = intval($matches[3]);
 
-        $timestamp = gmmktime($hour, $minute, $second, $month, $day, $year);
+        $timestamp = cms_gmmktime($hour, $minute, $second, $month, $day, $year);
         $timestamp -= intval($matches[7]) * 60 * 60 + intval($matches[8]) * 60;
         return [get_timezoned_date_time($timestamp), $timestamp];
     }

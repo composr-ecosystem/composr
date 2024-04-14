@@ -143,7 +143,7 @@ class Hook_fields_time
                 if (!array_key_exists(2, $time_bits)) {
                     $time_bits[2] = '00';
                 }
-                $time = mktime(@intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]));
+                $time = cms_mktime(@intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]));
                 //$time = utctime_to_usertime($time);   No, as we have no idea what date it is for, so cannot do DST changes
             }
             $ev = get_timezoned_time($time, true, true);

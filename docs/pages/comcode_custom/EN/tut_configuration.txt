@@ -45,6 +45,132 @@ A very common mistake is to think of the Setup Wizard as a core part of Composr 
 For these reasons, we actually give out a warning if you re-run the Setup Wizard.
 [/box]
 
+[title="3"]Security level[/title]
+On step 3 of the Setup Wizard, one of the options available is [b]Security level[/b]. Depending on the selection, a number of security configuration options will be set. You can always change these under Admin Zone > Setup > Configuration at any time.
+
+Generally, we recommend the following security level depending on your use case:
+ - [b]Minimum[/b] should only ever be used for very basic websites which will not utilise social features or public registrations (e.g. informational only sites).
+ - [b]Low[/b] should only be used for websites using very basic social features and will not be handling much personal information. And any personal information handled will not involve children nor will be personally identifiable.
+ - [b]Medium[/b] is recommended for most websites who do not utilise eCommerce functionality or handle highly-sensitive personal information.
+ - [b]High[/b] is recommended for websites using eCommerce or will handle very sensitive personal information (e.g. sensitive custom profile fields or sites geared towards children).
+ - [b]Ultra high[/b] is recommended for websites handling extremely sensitive data or functions (e.g. banks, government departments, cyber-security sites).
+
+[b]Content Security Policy[/b]:
+ - Minimum: Off
+ - Low: Off
+ - Medium: On
+ - High: On
+ - Ultra high: On
+
+[b]Session expiry time[/b]:
+ - Minimum: 1 day
+ - Low: 3 hours
+ - Medium: 1 hour
+ - High: 30 minutes
+ - Ultra high: 15 minutes
+ 
+[b]Password reset process[/b]:
+ - Minimum: Reset link e-mailed
+ - Low: Temporary password e-mailed
+ - Medium: Temporary password e-mailed
+ - High: Vague reset e-mail sent
+ - Ultra high: Vague reset e-mail sent
+ 
+[b]Password expiry days[/b]:
+ - Minimum: Never
+ - Low: Never
+ - Medium: Never
+ - High: 90 days
+ - Ultra high: 30 days
+ 
+[b]Minimum password length[/b]:
+ - Minimum: No minimum
+ - Low: 4 characters
+ - Medium: 8 characters
+ - High: 12 characters
+ - Ultra high: 16 characters
+ 
+[b]Minimum password strength[/b]*:
+ - Minimum: None
+ - Low: Low (2/10)
+ - Medium: Medium (5/10)
+ - High: High (8/10)
+ - Ultra high: Ultra high (10/10)
+*Password strength is determined by length, variation in letters, numbers, symbols, uppercase and lowercase, not using dictionary words, not using repeating characters, and not using text that is also present in usernames and e-mail addresses.
+
+[b]Login error secrecy[/b] (whether we just give a general login error message instead of disclosing the specific error):
+ - Minimum: Off
+ - Low: Off
+ - Medium: Off
+ - High: On
+ - Ultra high: On
+ 
+[b]IP strict for sessions[/b]:
+ - Minimum: Off
+ - Low: Off
+ - Medium: On
+ - High: On
+ - Ultra high: On
+ 
+[b]Cryptographic ratchet[/b]* (how much computational power is required to hash / verify passwords):
+ - Minimum: 6, or whichever yields 0.025 seconds computing time (whichever is highest)
+ - Low: 8, or whichever yields 0.05 seconds computing time (whichever is highest)
+ - Medium: 10, or whichever yields 0.1 seconds computing time (whichever is highest)
+ - High: 12, or whichever yields 0.25 seconds computing time (whichever is highest)
+ - Ultra high: 14, or whichever yields 1 second computing time (whichever is highest)
+*Note that the ratchet for the maintenance password is always what yields 0.25 seconds computational time; it ignores this setting.
+
+[b]One guess per CAPTCHA[/b]:
+ - Minimum: No
+ - Low: No
+ - Medium: Yes
+ - High: Yes
+ - Ultra high: Yes
+ 
+[b]CAPTCHA noise[/b]:
+ - Minimum: Off
+ - Low: Off
+ - Medium: On
+ - High: On
+ - Ultra high: On
+ 
+[b]Brute force threshold[/b] before a hack attack is triggered:
+ - Minimum: 30 login failures
+ - Low: 15 login failures
+ - Medium: 10 login failures
+ - High: 5 login failures
+ - Ultra high: 3 login failures
+ 
+[b]Audio CAPTCHA[/b]*:
+ - Minimum: On
+ - Low: On
+ - Medium: On
+ - High: Off
+ - Ultra high: Off
+*Audio CAPTCHA is easier to solve by bots but may be necessary to have enabled if you serve members with visual impairments.
+
+[b]URL Monikers[/b]:
+ - Minimum: On
+ - Low: On
+ - Medium: On
+ - High: On
+ - Ultra high: Off
+ 
+[b].htaccess restrictions on maintenance scripts[/b]*:
+ - Minimum: No
+ - Low: No
+ - Medium: No
+ - High: Yes
+ - Ultra high: Yes
+*It is best to have this enabled regardless of security level, or at least to remove the maintenance password from _config.php, when you are not using maintenance scripts.
+
+[b]Enquire on new IP addresses[/b] (require e-mail verification when a member tries to log in from a new IP address):
+ - Minimum: No
+ - Low: No
+ - Medium: Administrators only
+ - High: Administrators and moderators
+ - Ultra high: Administrators and moderators
+
 [title="2"]Notifications[/title]
 
 Chances are that you'll want e-mailing whenever things happen on your site. You can do this through your personal notification settings. Go to your profile, choose the Edit tab, and choose the Notifications sub-tab.

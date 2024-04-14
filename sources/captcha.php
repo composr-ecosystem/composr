@@ -97,7 +97,7 @@ function captcha_script()
         }
         echo '<div style="width: ' . ($large_mode ? strval($width * 4) : strval($width)) . 'px; font-size: 0; line-height: 0">';
         if ($mode != 'large') {
-            echo '<a target="_blank" data-open-as-overlay="{}" rel="nofollow" href="' . find_script('captcha') . '?cache_break=' . time() . '&mode=large" title="' . do_lang('captcha:CAPTCHA_CLICK_LARGE') . '" aria-haspopup="dialog">';
+            echo '<a target="_blank" data-open-as-overlay="{}" rel="nofollow" href="' . find_script('captcha') . '?cache_break=' . strval(time()) . '&mode=large" title="' . do_lang('captcha:CAPTCHA_CLICK_LARGE') . '" aria-haspopup="dialog">';
         }
         for ($j = 0; $j < $height; $j++) {
             for ($i = 0; $i < $width; $i++) {

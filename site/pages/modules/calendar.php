@@ -568,9 +568,9 @@ class Module_calendar
 
         $private = get_param_integer('private', null);
 
-        $previous_timestamp = false;
-        $next_timestamp = false;
-        $timestamp = false;
+        $previous_timestamp = null;
+        $next_timestamp = null;
+        $timestamp = null;
         $previous = '';
         $next = '';
         $back_view = '';
@@ -592,12 +592,12 @@ class Module_calendar
                     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
                 $main = $this->view_calendar_view_day($id, $explode, $member_id, $filter);
-                $timestamp = mktime(0, 0, 0, intval($explode[1]), intval($explode[2]), intval($explode[0]));
+                $timestamp = cms_mktime(0, 0, 0, intval($explode[1]), intval($explode[2]), intval($explode[0]));
                 $back = get_week_number_for(utctime_to_usertime($timestamp));
                 $back_view = 'week';
-                $previous_timestamp = mktime(0, 0, 0, intval($explode[1]), intval($explode[2]), intval($explode[0])) - (60 * 60 * 24);
+                $previous_timestamp = cms_mktime(0, 0, 0, intval($explode[1]), intval($explode[2]), intval($explode[0])) - (60 * 60 * 24);
                 $previous = date('Y-m-d', $previous_timestamp);
-                $next_timestamp = mktime(0, 0, 0, intval($explode[1]), intval($explode[2]), intval($explode[0])) + (60 * 60 * 24);
+                $next_timestamp = cms_mktime(0, 0, 0, intval($explode[1]), intval($explode[2]), intval($explode[0])) + (60 * 60 * 24);
                 $next = date('Y-m-d', $next_timestamp);
 
                 $title_date = cms_date(do_lang('calendar_date_verbose'), $timestamp);
@@ -618,12 +618,12 @@ class Module_calendar
                 list($start_month, $start_day, $start_year) = date_from_week_of_year(intval($explode[0]), intval($explode[1]));
                 $date = strval($start_year) . '-' . strval($start_month) . '-01';
                 $main = $this->view_calendar_view_week($id, $date, $explode, $member_id, $filter);
-                $timestamp = mktime(0, 0, 0, $start_month, $start_day, $start_year);
+                $timestamp = cms_mktime(0, 0, 0, $start_month, $start_day, $start_year);
                 $back = $explode[0] . '-' . strval($start_month);
                 $back_view = 'month';
-                $previous_timestamp = mktime(0, 0, 0, $start_month, $start_day, $start_year) - (60 * 60 * 24 * 7);
+                $previous_timestamp = cms_mktime(0, 0, 0, $start_month, $start_day, $start_year) - (60 * 60 * 24 * 7);
                 $previous = get_week_number_for($previous_timestamp);
-                $next_timestamp = mktime(0, 0, 0, $start_month, $start_day, $start_year) + (60 * 60 * 24 * 7);
+                $next_timestamp = cms_mktime(0, 0, 0, $start_month, $start_day, $start_year) + (60 * 60 * 24 * 7);
                 $next = get_week_number_for($next_timestamp);
 
                 if ($private !== 1) {
@@ -642,7 +642,7 @@ class Module_calendar
                     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
                 $main = $this->view_calendar_view_month($id, $explode, $member_id, $filter);
-                $timestamp = mktime(0, 0, 0, intval($explode[1]), 1, intval($explode[0]));
+                $timestamp = cms_mktime(0, 0, 0, intval($explode[1]), 1, intval($explode[0]));
                 $back = $explode[0];
                 $back_view = 'year';
                 $previous_month = intval($explode[1]) - 1;
@@ -657,9 +657,9 @@ class Module_calendar
                     $next_month = 1;
                     $next_year = $next_year + 1;
                 }
-                $previous_timestamp = mktime(0, 0, 0, $previous_month, 1, $previous_year);
+                $previous_timestamp = cms_mktime(0, 0, 0, $previous_month, 1, $previous_year);
                 $previous = date('Y-m', $previous_timestamp);
-                $next_timestamp = mktime(0, 0, 0, $next_month, 1, $next_year);
+                $next_timestamp = cms_mktime(0, 0, 0, $next_month, 1, $next_year);
                 $next = date('Y-m', $next_timestamp);
 
                 $title_date = cms_date(do_lang('calendar_month_in_year_verbose'), $timestamp);
@@ -679,11 +679,11 @@ class Module_calendar
                     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
                 $main = $this->view_calendar_view_year($id, $explode, $member_id, $filter);
-                $timestamp = mktime(0, 0, 0, 1, 1, intval($id));
+                $timestamp = cms_mktime(0, 0, 0, 1, 1, intval($id));
                 $back_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
-                $previous_timestamp = mktime(0, 0, 0, 1, 1, intval($explode[0]) - 1);
+                $previous_timestamp = cms_mktime(0, 0, 0, 1, 1, intval($explode[0]) - 1);
                 $previous = date('Y', $previous_timestamp);
-                $next_timestamp = mktime(0, 0, 0, 1, 1, intval($explode[0]) + 1);
+                $next_timestamp = cms_mktime(0, 0, 0, 1, 1, intval($explode[0]) + 1);
                 $next = date('Y', $next_timestamp);
 
                 if ($private !== 1) {
@@ -857,13 +857,15 @@ class Module_calendar
      */
     public function view_calendar_view_day(string $view_id, array $explode, int $member_id, ?array $filter) : object
     {
+        require_code('temporal');
+
         $start_year = intval($explode[0]);
         $start_month = intval($explode[1]);
         $start_day = intval($explode[2]);
 
-        $period_start = mktime(0, 0, 0, $start_month, $start_day, $start_year);
+        $period_start = cms_mktime(0, 0, 0, $start_month, $start_day, $start_year);
 
-        $period_end = mktime(0, 0, 0, $start_month, $start_day + 1, $start_year);
+        $period_end = cms_mktime(0, 0, 0, $start_month, $start_day + 1, $start_year);
         $happenings = calendar_matches(get_member(), $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start, $period_end, $filter, true, get_param_integer('private', null));
 
         sort_maps_by($happenings, 0);
@@ -993,11 +995,13 @@ class Module_calendar
      */
     public function view_calendar_view_week(string $view_id, string $day, array $explode, int $member_id, ?array $filter) : object
     {
+        require_code('temporal');
+
         $start_year = intval($explode[0]);
         $start_week = intval($explode[1]);
         list($start_month, $start_day, $start_year) = date_from_week_of_year($start_year, $start_week);
 
-        $period_start = mktime(0, 0, 0, $start_month, $start_day, $start_year);
+        $period_start = cms_mktime(0, 0, 0, $start_month, $start_day, $start_year);
         $period_end = $period_start + (60 * 60 * 24 * 7);
         $happenings = calendar_matches(get_member(), $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start, $period_end, $filter, true, get_param_integer('private', null));
 
@@ -1043,9 +1047,9 @@ class Module_calendar
                         $icon = $event['t_logo'];
                         if ($to !== null) {
                             $date = date_range($real_from, $real_to, ($event['e_start_hour'] !== null));
-                            if ($to >= mktime(0, 0, 0, $start_month, $start_day + $j + 1, $start_year)) {
+                            if ($to >= cms_mktime(0, 0, 0, $start_month, $start_day + $j + 1, $start_year)) {
                                 $continuation = 24;
-                                $ntime = mktime(0, 0, 0, $start_month, $start_day + $j + 1, $start_year);
+                                $ntime = cms_mktime(0, 0, 0, $start_month, $start_day + $j + 1, $start_year);
                                 if ($ntime < $period_end) {
                                     $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to, $utc_real_from];
                                 }
@@ -1137,44 +1141,44 @@ class Module_calendar
         $sunday_date = '';
         $sunday_url = new Tempcode();
         if (get_option('ssw') == '1') {
-            $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+            $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
             $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
             $sunday_url = build_url($map, '_SELF');
             $sunday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
             $offset++;
         }
-        $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+        $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
         $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
         $monday_url = build_url($map, '_SELF');
         $monday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
         $offset++;
-        $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+        $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
         $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
         $tuesday_url = build_url($map, '_SELF');
         $tuesday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
         $offset++;
-        $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+        $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
         $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
         $wednesday_url = build_url($map, '_SELF');
         $wednesday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
         $offset++;
-        $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+        $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
         $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
         $thursday_url = build_url($map, '_SELF');
         $thursday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
         $offset++;
-        $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+        $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
         $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
         $friday_url = build_url($map, '_SELF');
         $friday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
         $offset++;
-        $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+        $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
         $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
         $saturday_url = build_url($map, '_SELF');
         $saturday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
         $offset++;
         if (get_option('ssw') == '0') {
-            $datex = date('Y-m-d', mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
+            $datex = date('Y-m-d', cms_mktime(0, 0, 0, $start_month, $start_day + $offset, intval($explode[0])));
             $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $datex]);
             $sunday_url = build_url($map, '_SELF');
             $sunday_date = cms_date(do_lang('calendar_day_of_month_verbose'), $period_start + ($offset * 60 * 60 * 24));
@@ -1213,8 +1217,10 @@ class Module_calendar
      */
     public function view_calendar_view_month(string $view_id, array $explode, int $member_id, ?array $filter) : object
     {
-        $period_start = mktime(0, 0, 0, intval($explode[1]), 1, intval($explode[0]));
-        $period_end = mktime(0, 0, 0, intval($explode[1]) + 1, 1, intval($explode[0]));
+        require_code('temporal');
+
+        $period_start = cms_mktime(0, 0, 0, intval($explode[1]), 1, intval($explode[0]));
+        $period_end = cms_mktime(0, 0, 0, intval($explode[1]) + 1, 1, intval($explode[0]));
         $_days = intval(round(floatval($period_end - $period_start) / floatval(60 * 60 * 24)));
         if ($_days == 0) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1305,7 +1311,7 @@ class Module_calendar
                         $test = date('d', $to);
                         $test2 = date('d', $from);
                         if (((intval($test) > intval($test2)) || (intval(date('m', $to)) != intval(date('m', $from))) || (intval(date('Y', $to)) != intval(date('Y', $from))))) {
-                            $ntime = mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
+                            $ntime = cms_mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
                             if ($ntime < $period_end) {
                                 $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to, $utc_real_from];
                             }
@@ -1345,8 +1351,10 @@ class Module_calendar
      */
     public function view_calendar_view_year(string $view_id, array $explode, int $member_id, ?array $filter) : object
     {
-        $period_start = mktime(0, 0, 0, 1, 1, intval($explode[0]));
-        $period_end = mktime(0, 0, 0, 1, 0, intval($explode[0]) + 1);
+        require_code('temporal');
+
+        $period_start = cms_mktime(0, 0, 0, 1, 1, intval($explode[0]));
+        $period_end = cms_mktime(0, 0, 0, 1, 0, intval($explode[0]) + 1);
 
         $happenings = calendar_matches(get_member(), $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start, $period_end, $filter, true, get_param_integer('private', null));
 
@@ -1412,7 +1420,7 @@ class Module_calendar
                             $_explode = explode('-', date('d-m', $to));
                             $continues = (intval($_explode[0]) != $_day) || (intval($_explode[1]) != $i);
                             if ($continues) {
-                                $_from = mktime(0, 0, 0, intval(date('m', $_from)), intval(date('d', $_from)) + 1, intval(date('Y', $_from)));
+                                $_from = cms_mktime(0, 0, 0, intval(date('m', $_from)), intval(date('d', $_from)) + 1, intval(date('Y', $_from)));
                                 if (intval(date('m', $_from)) != $i) {
                                     $continues = false; // Don't let it roll to another month
                                 }
@@ -1426,7 +1434,7 @@ class Module_calendar
                     if ($to !== null) {
                         $date2 = date('m', $to);
                         if (intval($date2) > $i) {
-                            $ntime = mktime(0, 0, 0, intval(date('m', $from)) + 1, 1, intval(date('Y', $from)));
+                            $ntime = cms_mktime(0, 0, 0, intval(date('m', $from)) + 1, 1, intval(date('Y', $from)));
                             $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to, $utc_real_from];
                         }
                     }
@@ -1435,8 +1443,8 @@ class Module_calendar
 
             // Days in month...
 
-            $_period_start = mktime(0, 0, 0, $i, 1, intval($explode[0]));
-            $_period_end = mktime(0, 0, 0, $i + 1, 0, intval($explode[0]));
+            $_period_start = cms_mktime(0, 0, 0, $i, 1, intval($explode[0]));
+            $_period_end = cms_mktime(0, 0, 0, $i + 1, 0, intval($explode[0]));
             $_days = intval(round(floatval($_period_end - $_period_start) / floatval(60 * 60 * 24)));
 
             $_entries = new Tempcode();
@@ -1453,7 +1461,7 @@ class Module_calendar
             }
             for ($j = 1; $j <= $_days + 1; $j++) {
                 $date = $explode[0] . '-' . str_pad(strval($i), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($j), 2, '0', STR_PAD_LEFT);
-                $date_formatted = cms_date(do_lang('calendar_date'), mktime(0, 0, 0, $i, $j, intval($explode[0])));
+                $date_formatted = cms_date(do_lang('calendar_date'), cms_mktime(0, 0, 0, $i, $j, intval($explode[0])));
                 $map = array_merge($filter, ['page' => '_SELF', 'type' => 'browse', 'view' => 'day', 'id' => $date]);
                 $day_url = build_url($map, '_SELF');
 

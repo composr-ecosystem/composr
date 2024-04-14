@@ -585,6 +585,7 @@ class Module_cms_calendar extends Standard_crud_module
         }
 
         // Recurrence
+        require_code('temporal');
         $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '313be8d71088bf12c9c5e5f67f28174a', 'SECTION_HIDDEN' => ($recurrence == 'none'), 'TITLE' => do_lang_tempcode('RECURRENCE')]));
         if (strpos($recurrence, ' ') === false) {
             $recurrence_main = $recurrence;
@@ -602,7 +603,7 @@ class Module_cms_calendar extends Standard_crud_module
         $fields2->attach(form_input_integer(do_lang_tempcode('RECURRENCES'), do_lang_tempcode('DESCRIPTION_RECURRENCES'), 'recurrences', $recurrences, false));
         $fields2->attach(form_input_tick(do_lang_tempcode('SEG_RECURRENCES'), do_lang_tempcode('DESCRIPTION_SEG_RECURRENCES'), 'seg_recurrences', $seg_recurrences == 1));
         $concrete_start_day = find_concrete_day_of_month($start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $timezone, $do_timezone_conv == 1);
-        $start_time = mktime(($start_hour === null) ? 12 : $start_hour, ($start_hour === null) ? 0 : $start_minute, 0, $start_month, $concrete_start_day, $start_year);
+        $start_time = cms_mktime(($start_hour === null) ? 12 : $start_hour, ($start_hour === null) ? 0 : $start_minute, 0, $start_month, $concrete_start_day, $start_year);
         $start_time = tz_time($start_time, get_users_timezone());
         $conv_month = intval(date('n', $start_time));
         $conv_day = intval(date('j', $start_time));
@@ -1079,8 +1080,10 @@ class Module_cms_calendar extends Standard_crud_module
 
         // Fixing past recurrences
         if (($delete_status == '3') && (!fractional_edit())) {
+            require_code('temporal');
+
             // Fix past recurrences
-            $past_times = find_periods_recurrence($event['e_timezone'], 1, $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type'], $event['e_start_hour'], $event['e_start_minute'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type'], $event['e_end_hour'], $event['e_end_minute'], $event['e_recurrence'], $event['e_recurrences'], utctime_to_usertime(mktime($event['e_start_hour'], $event['e_start_minute'], 0, $event['e_start_month'], $event['e_start_day'], $event['e_start_year'])), utctime_to_usertime(time()));
+            $past_times = find_periods_recurrence($event['e_timezone'], 1, $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type'], $event['e_start_hour'], $event['e_start_minute'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type'], $event['e_end_hour'], $event['e_end_minute'], $event['e_recurrence'], $event['e_recurrences'], utctime_to_usertime(cms_mktime($event['e_start_hour'], $event['e_start_minute'], 0, $event['e_start_month'], $event['e_start_day'], $event['e_start_year'])), utctime_to_usertime(time()));
             if (!empty($past_times)) {
                 foreach ($past_times as $past_time) {
                     list($start_year, $start_month, $start_day, $start_hour, $start_minute) = explode('-', date('Y-m-d-h-i', usertime_to_utctime($past_time[0])));

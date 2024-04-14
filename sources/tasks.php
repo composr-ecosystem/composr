@@ -236,7 +236,7 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             if ($title === null) {
                 $title = new Tempcode();
             }
-            dispatch_task_notification($title, get_member(), $result);
+            dispatch_task_notification($title->evaluate(), get_member(), $result);
 
             // Good to inform the member they will receive a notification even if the "task queue" is immediate
             return inform_screen($title, do_lang_tempcode('NEW_TASK_RUNNING'));

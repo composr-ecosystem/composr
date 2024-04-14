@@ -4935,6 +4935,102 @@ function ocp_mark_as_escaped(string $in)
     return;
 }
 
+/**
+ * Encrypt a message with a symmetric (shared) key.
+ *
+ * @param  string $message The plaintext message to encrypt
+ * @param  string $nonce A random 24-byte string to use only for this encryption
+ * @param  string $key The 256-bit encryption key to use
+ * @return string The encrypted text
+ */
+function sodium_crypto_secretbox(string $message, string $nonce, string $key) : string
+{
+    return '';
+}
+
+/**
+ * Encrypt a message such that only the recipient can decrypt it.
+ *
+ * @param  string $message The message to encrypt
+ * @param  string $public_key The public key that corresponds to the only key that can decrypt the message
+ * @return string A ciphertext string in the format of (one-time public key, encrypted message, authentication tag)
+ */
+function sodium_crypto_box_seal(string $message, string $public_key) : string
+{
+    return '';
+}
+
+/**
+ * Create a keypair from a private and public key.
+ *
+ * @param  string $secret_key The private key
+ * @param  string $public_key The public key
+ * @return string The keypair
+ */
+function sodium_crypto_box_keypair_from_secretkey_and_publickey(string $secret_key, string $public_key) : string
+{
+    return '';
+}
+
+/**
+ * Decrypt a message that was encrypted with sodium_crypto_box_seal().
+ *
+ * @param  string $ciphertext The encrypted message
+ * @param  string $key_pair The keypair of the recipient
+ * @return ~string The decrypted message (false: error)
+ */
+function sodium_crypto_box_seal_open(string $ciphertext, string $key_pair)
+{
+    return '';
+}
+
+/**
+ * Decrypt an encrypted message with a symmetric (shared) key.
+ * This should be used to decrypt text from sodium_crypto_secretbox().
+ *
+ * @param  string $ciphertext The encrypted text
+ * @param  string $nonce The nonce which was used
+ * @param  string $key The 256-bit encryption key used
+ * @return ~string The decrypted message (false: error)
+ */
+function sodium_crypto_secretbox_open(string $ciphertext, string $nonce, string $key)
+{
+    return '';
+}
+
+/**
+ * Generates a private key and a public key as one string.
+ * To get the secret key out of this unified keypair string, see sodium_crypto_box_secretkey(). To get the public key out of this unified keypair string, see sodium_crypto_box_publickey().
+ *
+ * @return string The keypair
+ */
+function sodium_crypto_box_keypair() : string
+{
+    return '';
+}
+
+/**
+ * Given a keypair, fetch only the public key.
+ *
+ * @param  string $key_pair The keypair
+ * @return string The public key
+ */
+function sodium_crypto_box_publickey(string $key_pair) : string
+{
+    return '';
+}
+
+/**
+ * Given a keypair, fetch only the private key.
+ *
+ * @param  string $key_pair The keypair
+ * @return string The private key
+ */
+function sodium_crypto_box_secretkey(string $key_pair) : string
+{
+    return '';
+}
+
 /*
 
 Various things are disabled for various reasons. You may use them, if you use php_function_allowed
@@ -4986,6 +5082,8 @@ str_rot13
 output_add_rewrite_var
 output_reset_rewrite_vars
 crypt
+mktime
+gmmktime
 
 Disabled due to multi-OS compatibility...
 
@@ -5349,7 +5447,6 @@ GD stuff that's not on by default...
 
 imagecreatefromwebp
 imagewebp
-
 
 
 // ---

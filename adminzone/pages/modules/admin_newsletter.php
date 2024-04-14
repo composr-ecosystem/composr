@@ -1149,6 +1149,8 @@ class Module_admin_newsletter extends Standard_crud_module
         // If we're making a periodic newsletter then we need to know when it
         // should be sent
         if ($periodic_action == 'make' || $periodic_action == 'replace') {
+            require_code('temporal');
+
             $hidden->attach(form_input_hidden('make_periodic', '1'));
             $hidden->attach(form_input_hidden('periodic_choice', post_param_string('periodic_choice')));
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '1e6e0f900f85aa4ed54318801a1810bb', 'TITLE' => do_lang('PERIODIC_WHEN'), 'HELP' => do_lang('PERIODIC_WHEN_HELP')]));
@@ -1197,7 +1199,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
             $month_days = new Tempcode();
             foreach (range(1, 28) as $this_day) {
-                $suffix = gmdate('S', gmmktime(0, 0, 0, 1, $this_day, 1990));
+                $suffix = gmdate('S', cms_gmmktime(0, 0, 0, 1, $this_day, 1990));
                 $month_days->attach(form_input_list_entry(strval($this_day), ($this_day == 1), strval($this_day) . $suffix, $current_day_of_month == $this_day));
             }
             $monthly_desc = new Tempcode();
@@ -1409,7 +1411,8 @@ class Module_admin_newsletter extends Standard_crud_module
             } elseif ($when == 'biweekly') {
                 $each = $week_days[$day];
             } else {
-                $suffix = gmdate('S', gmmktime(0, 0, 0, 1, $day, 1990));
+                require_code('temporal');
+                $suffix = gmdate('S', cms_gmmktime(0, 0, 0, 1, $day, 1990));
                 $each = strval($day) . $suffix;
             }
 

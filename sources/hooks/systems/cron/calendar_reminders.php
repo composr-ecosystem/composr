@@ -62,6 +62,7 @@ class Hook_cron_calendar_reminders
      */
     public function run(?int $last_run)
     {
+        require_code('temporal');
         require_code('calendar');
         require_lang('calendar');
         require_code('notifications');
@@ -113,7 +114,7 @@ class Hook_cron_calendar_reminders
                                     fatal_exit(cms_error_get_last());
                                 }
                             } else {
-                                $GLOBALS['_EVENT_TIMESTAMP'] = array_key_exists(0, $recurrences) ? usertime_to_utctime($recurrences[0][0]) : mktime($_start_hour, $_start_minute, 0, $job['e_start_month'], $start_day_of_month, $job['e_start_year']);
+                                $GLOBALS['_EVENT_TIMESTAMP'] = array_key_exists(0, $recurrences) ? usertime_to_utctime($recurrences[0][0]) : cms_mktime($_start_hour, $_start_minute, 0, $job['e_start_month'], $start_day_of_month, $job['e_start_year']);
 
                                 // Commandr code
                                 require_code('commandr');
@@ -133,7 +134,7 @@ class Hook_cron_calendar_reminders
                         continue;
                     }
                     $title = get_translated_text($job['e_title']);
-                    $timestamp = array_key_exists(0, $recurrences) ? usertime_to_utctime($recurrences[0][0]) : mktime($_start_hour, $_start_minute, 0, $job['e_start_month'], $start_day_of_month, $job['e_start_year']);
+                    $timestamp = array_key_exists(0, $recurrences) ? usertime_to_utctime($recurrences[0][0]) : cms_mktime($_start_hour, $_start_minute, 0, $job['e_start_month'], $start_day_of_month, $job['e_start_year']);
                     $date = get_timezoned_date_time($timestamp, true, false, $job['n_member_id']);
                     $_url = build_url(['page' => 'calendar', 'type' => 'view', 'id' => $job['j_event_id']], get_module_zone('calendar'), [], false, false, true);
                     $url = $_url->evaluate();

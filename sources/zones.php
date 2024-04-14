@@ -1887,7 +1887,7 @@ function _check_module_installation_status(object $object, string $codename)
                     escape_html(float_to_raw_string(cms_version_number())),
                     [
                         escape_html($addon),
-                        escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                        protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
                     ]
                     ));
             }
@@ -1948,7 +1948,7 @@ function _check_block_installation_status(object $object, string $codename) : ?o
                     escape_html(float_to_raw_string(cms_version_number())),
                     [
                         escape_html($addon),
-                        escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                        protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
                     ]
                     );
                 return do_template('RED_ALERT', ['_GUID' => 'lcdsdlkcnwsdoweirhf34u4f3iugfh', 'TEXT' => $error_msg]);

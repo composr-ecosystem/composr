@@ -478,8 +478,10 @@ function get_member_dob_details(int $member_id) : ?array
         return null;
     }
 
-    $_dob = mktime(12, 0, 0, $month, $day, $year);
-    $_dob_censored = mktime(12, 0, 0, $month, $day);
+    require_code('temporal');
+
+    $_dob = cms_mktime(12, 0, 0, $month, $day, $year);
+    $_dob_censored = cms_mktime(12, 0, 0, $month, $day);
     if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_reveal_age') == 1) {
         $dob = get_timezoned_date($_dob, false, true);
         $_dob_censored_if_needed = $_dob; // No censoring needed

@@ -151,7 +151,7 @@ class Hook_fields_date
                 if (!array_key_exists(2, $date_bits)) {
                     $date_bits[2] = date('Y');
                 }
-                $time = mktime(0, 0, 0, intval($date_bits[1]), intval($date_bits[2]), @intval($date_bits[0]));
+                $time = cms_mktime(0, 0, 0, intval($date_bits[1]), intval($date_bits[2]), @intval($date_bits[0]));
             }
             $ev = get_timezoned_date($time, false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
         }

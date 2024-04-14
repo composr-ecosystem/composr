@@ -204,7 +204,8 @@ function cns_make_member(string $username, string $password, string $email_addre
     if ($check_correctness) {
         if (!in_array($password_compatibility_scheme, ['ldap', 'httpauth'])) {
             require_code('cns_members_action2');
-            cns_check_name_valid($username, null, ($password_compatibility_scheme == '') ? $password : null, $email_address, ($dob_year === null) ? null : mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
+            require_code('temporal');
+            cns_check_name_valid($username, null, ($password_compatibility_scheme == '') ? $password : null, $email_address, ($dob_year === null) ? null : cms_mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
         }
         if ((!function_exists('has_actual_page_access')) || (!has_actual_page_access(get_member(), 'admin_cns_members'))) {
             require_code('type_sanitisation');

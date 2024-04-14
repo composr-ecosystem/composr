@@ -75,7 +75,7 @@ function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cos
             break;
         }
         $start = microtime(true);
-        password_hash('test', PASSWORD_BCRYPT, array('cost' => $cost));
+        password_hash('test', PASSWORD_BCRYPT, ['cost' => $cost]);
         $end = microtime(true);
         $elapsed_time = $end - $start;
     } while ($elapsed_time < $target_time);

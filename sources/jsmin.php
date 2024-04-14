@@ -214,8 +214,7 @@ class Minifier
         '@' => true
     ];
 
-
-    protected function echo ($char)
+    protected function echo_to_output($char)
     {
         $this->output .= $char;
         $this->last_char = $char[-1];
@@ -235,7 +234,7 @@ class Minifier
                 case "\n":
                     // if the next line is something that can't stand alone preserve the newline
                     if ($this->b !== false && isset($this->noNewLineCharacters[$this->b])) {
-                        $this->echo($this->a);
+                        $this->echo_to_output($this->a);
                         $this->saveString();
                         break;
                     }
@@ -251,7 +250,7 @@ class Minifier
                 // no break
                 case ' ':
                     if (static::isAlphaNumeric($this->b)) {
-                        $this->echo($this->a);
+                        $this->echo_to_output($this->a);
                     }
 
                     $this->saveString();
@@ -261,13 +260,13 @@ class Minifier
                     switch ($this->b) {
                         case "\r":
                         case "\n":
-                            if (strpos('}])+-"\'', $this->a) !== false) {
-                                $this->echo($this->a);
+                            if (in_array($this->a, ['}', ']', ')', '+', '-', '"', '\''])) {
+                                $this->echo_to_output($this->a);
                                 $this->saveString();
                                 break;
                             } else {
                                 if (static::isAlphaNumeric($this->a)) {
-                                    $this->echo($this->a);
+                                    $this->echo_to_output($this->a);
                                     $this->saveString();
                                 }
                             }
@@ -286,7 +285,7 @@ class Minifier
                                 continue 3;
                             }
 
-                            $this->echo($this->a);
+                            $this->echo_to_output($this->a);
                             $this->saveString();
                             break;
                     }
@@ -298,7 +297,7 @@ class Minifier
             if ($this->b == '/') {
                 $valid_tokens = "(,=:[!&|?\n";
 
-                # Find last "real" token, excluding spaces.
+                // Find last "real" token, excluding spaces.
                 $last_token = $this->a;
                 if ($last_token == " ") {
                     $last_token = $this->last_char;
@@ -347,7 +346,7 @@ class Minifier
             unset($this->c);
         } else {
             // Otherwise we start pulling from the input.
-            $char = $this->index < $this->len ? $this->input[$this->index] : false;
+            $char = ($this->index < $this->len) ? $this->input[$this->index] : false;
 
             // If the next character doesn't exist return false.
             if (isset($char) && $char === false) {
@@ -358,8 +357,8 @@ class Minifier
             $this->index++;
         }
 
-        # Convert all line endings to unix standard.
-        # `\r\n` converts to `\n\n` and is minified.
+        // Convert all line endings to unix standard.
+        // `\r\n` converts to `\n\n` and is minified.
         if ($char == "\r") {
             $char = "\n";
         }
@@ -387,8 +386,8 @@ class Minifier
         }
 
         $char = $this->input[$this->index];
-        # Convert all line endings to unix standard.
-        # `\r\n` converts to `\n\n` and is minified.
+        // Convert all line endings to unix standard.
+        // `\r\n` converts to `\n\n` and is minified.
         if ($char == "\r") {
             $char = "\n";
         }
@@ -399,7 +398,7 @@ class Minifier
             return ' ';
         }
 
-        # Return the next character but don't push the index.
+        // Return the next character but don't push the index.
         return $char;
     }
 
@@ -447,7 +446,7 @@ class Minifier
      */
     protected function processOneLineComments($startIndex)
     {
-        $thirdCommentString = $this->index < $this->len ? $this->input[$this->index] : false;
+        $thirdCommentString = ($this->index < $this->len) ? $this->input[$this->index] : false;
 
         // kill rest of line
         $this->getNext("\n");
@@ -497,17 +496,17 @@ class Minifier
                 // If conditional comments or flagged comments are not the first thing in the script
                 // we need to echo a and fill it with a space before moving on.
                 if ($startIndex > 0) {
-                    $this->echo($this->a);
+                    $this->echo_to_output($this->a);
                     $this->a = " ";
 
                     // If the comment started on a new line we let it stay on the new line
                     if ($this->input[($startIndex - 1)] === "\n") {
-                        $this->echo("\n");
+                        $this->echo_to_output("\n");
                     }
                 }
 
                 $endPoint = ($this->index - 1) - $startIndex;
-                $this->echo(substr($this->input, $startIndex, $endPoint));
+                $this->echo_to_output(substr($this->input, $startIndex, $endPoint));
 
                 $this->c = $char;
 
@@ -547,7 +546,7 @@ class Minifier
         $this->index = $pos;
 
         // Return the first character of that string.
-        return $this->index < $this->len ? $this->input[$this->index] : false;
+        return ($this->index < $this->len) ? $this->input[$this->index] : false;
     }
 
     /**
@@ -573,7 +572,7 @@ class Minifier
         $stringType = $this->a;
 
         // Echo out that starting quote
-        $this->echo($this->a);
+        $this->echo_to_output($this->a);
 
         // Loop until the string is done
         // Grab the very next character and load it into a
@@ -592,7 +591,7 @@ class Minifier
                 // block below.
                 case "\n":
                     if ($stringType === '`') {
-                        $this->echo($this->a);
+                        $this->echo_to_output($this->a);
                     } else {
                         throw new \RuntimeException('Unclosed string at position: ' . $startpos);
                     }
@@ -612,14 +611,14 @@ class Minifier
                     }
 
                     // echo out the escaped character and restart the loop.
-                    $this->echo($this->a . $this->b);
+                    $this->echo_to_output($this->a . $this->b);
                     break;
 
 
                 // Since we're not dealing with any special cases we simply
                 // output the character and continue our loop.
                 default:
-                    $this->echo($this->a);
+                    $this->echo_to_output($this->a);
             }
         }
     }
@@ -633,10 +632,10 @@ class Minifier
     protected function saveRegex()
     {
         if ($this->a != " ") {
-            $this->echo($this->a);
+            $this->echo_to_output($this->a);
         }
 
-        $this->echo($this->b);
+        $this->echo_to_output($this->b);
 
         while (($this->a = $this->getChar()) !== false) {
             if ($this->a === '/') {
@@ -644,7 +643,7 @@ class Minifier
             }
 
             if ($this->a === '\\') {
-                $this->echo($this->a);
+                $this->echo_to_output($this->a);
                 $this->a = $this->getChar();
             }
 
@@ -652,7 +651,7 @@ class Minifier
                 throw new \RuntimeException('Unclosed regex pattern at position: ' . $this->index);
             }
 
-            $this->echo($this->a);
+            $this->echo_to_output($this->a);
         }
         $this->b = $this->getReal();
     }
@@ -671,8 +670,8 @@ class Minifier
     protected function endsInKeyword()
     {
 
-        # When this function is called A is not yet assigned to output.
-        # Regular expression only needs to check final part of output for keyword.
+        // When this function is called A is not yet assigned to output.
+        // Regular expression only needs to check final part of output for keyword.
         $testOutput = substr($this->output . $this->a, -1 * ($this->max_keyword_len + 10));
 
         foreach (static::$keywords as $keyword) {

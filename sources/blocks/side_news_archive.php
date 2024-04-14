@@ -80,6 +80,7 @@ PHP;
             return do_template('RED_ALERT', ['_GUID' => 'jgoer1lzlefihrpu4tank2j9e7uwmf17', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
+        require_code('temporal');
         require_lang('news');
 
         $block_id = get_block_id($map);
@@ -120,8 +121,8 @@ PHP;
         $period_start = $first;
 
         while (true) {
-            $period_start = usertime_to_utctime(mktime(0, 0, 0, $current_month, 0, $current_year));
-            $period_end = usertime_to_utctime(mktime(0, 0, 0, $current_month + 1, 0, $current_year)) - 1;
+            $period_start = usertime_to_utctime(cms_mktime(0, 0, 0, $current_month, 0, $current_year));
+            $period_end = usertime_to_utctime(cms_mktime(0, 0, 0, $current_month + 1, 0, $current_year)) - 1;
 
             while ($rows[$offset]['date_and_time'] < $period_start) {
                 $offset++;

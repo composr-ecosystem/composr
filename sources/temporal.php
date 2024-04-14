@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: mktime|gmmktime*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -487,8 +489,7 @@ function post_param_date(string $stub, bool $get_also = false, bool $do_timezone
 }
 
 /**
- * Get UNIX timestamp for a componentialised date.
- * This function will gracefully return PHP_INT_MAX if the given time does not fit a PHP integer.
+ * Get UNIX timestamp for a componentialised date, with graceful error handling for integer overflows.
  *
  * @param  integer $hour The hour
  * @param  ?integer $minute The minute (null: now)
@@ -501,9 +502,12 @@ function post_param_date(string $stub, bool $get_also = false, bool $do_timezone
 function cms_mktime(int $hour, ?int $minute = null, ?int $second = null, ?int $month = null, ?int $day = null, ?int $year = null) : int
 {
     $test = mktime($hour, $minute, $second, $month, $day, $year);
-    if (($test === false) || ($test < 0)) { // TODO: #3046 in tracker
+    if ($test === false) {
         if (function_exists('attach_message')) {
             attach_message(do_lang_tempcode('INTEGER_OVERFLOW_TIME'), 'warn');
+        }
+        if ($year < 1970) {
+            return PHP_INT_MIN;
         }
         return PHP_INT_MAX;
     }
@@ -512,8 +516,7 @@ function cms_mktime(int $hour, ?int $minute = null, ?int $second = null, ?int $m
 }
 
 /**
- * Get UNIX timestamp for a GMT date.
- * This function will gracefully return PHP_INT_MAX if the given time does not fit a PHP integer.
+ * Get UNIX timestamp for a GMT date, with graceful error handling for integer overflows.
  *
  * @param  integer $hour The hour
  * @param  integer $minute The minute
@@ -526,9 +529,12 @@ function cms_mktime(int $hour, ?int $minute = null, ?int $second = null, ?int $m
 function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day, int $year) : int
 {
     $test = gmmktime($hour, $minute, $second, $month, $day, $year);
-    if (($test === false) || ($test < 0)) { // TODO: #3046 in tracker
+    if ($test === false) {
         if (function_exists('attach_message')) {
             attach_message(do_lang_tempcode('INTEGER_OVERFLOW_TIME'), 'warn');
+        }
+        if ($year < 1970) {
+            return PHP_INT_MIN;
         }
         return PHP_INT_MAX;
     }

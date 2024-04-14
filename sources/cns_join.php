@@ -321,11 +321,12 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
     }
 
     // Add member
-    $email_validation = (get_option_with_overrides('email_confirm_join', $adjusted_config_options) == '1');
     require_code('crypt');
+    require_code('temporal');
+    $email_validation = (get_option_with_overrides('email_confirm_join', $adjusted_config_options) == '1');
     $validated_email_confirm_code = $email_validation ? strval(get_secure_random_number()) : '';
     $staff_validation = (get_option_with_overrides('require_new_member_validation', $adjusted_config_options) == '1');
-    $coppa = (get_option_with_overrides('is_on_coppa', $adjusted_config_options) == '1') && ($dob_year !== null) && (intval(floor(utctime_to_usertime(time() - mktime(0, 0, 0, $dob_month, $dob_day, $dob_year)) / 31536000.0)) < intval(get_option('coppa_age')));
+    $coppa = (get_option_with_overrides('is_on_coppa', $adjusted_config_options) == '1') && ($dob_year !== null) && (intval(floor(utctime_to_usertime(time() - cms_mktime(0, 0, 0, $dob_month, $dob_day, $dob_year)) / 31536000.0)) < intval(get_option('coppa_age')));
     $validated = ($staff_validation || $coppa) ? 0 : 1;
     if ($member_id === null) {
         $member_id = cns_make_member(
