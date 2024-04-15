@@ -415,6 +415,8 @@ class Module_shopping
 
             $results_table = do_lang_tempcode('CART_EMPTY');
             $proceed_box = new Tempcode();
+
+            render_cart_payment_form(); // FUDGE: clean out orders tied to empty shopping cart
         }
 
         $ecom_catalogue_count = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'COUNT(*)', array('c_ecommerce' => 1));

@@ -154,6 +154,8 @@ function empty_cart($soft_delete = false)
     } else {
         $GLOBALS['SITE_DB']->query_delete('shopping_cart', $where);
     }
+
+    delete_pending_orders_for_current_user();
 }
 
 /**
@@ -267,36 +269,64 @@ function render_cart_payment_form()
 
     $tax_opt_out = get_order_tax_opt_out_status();
 
+    $where = array(
+        'order_status' => 'ORDER_STATUS_awaiting_payment',
+        'purchase_through' => 'cart',
+        'transaction_id' => '',
+    );
+    if (is_guest()) {
+        $where['session_id'] = get_session_id();
+    } else {
+        $where['c_member'] = get_member();
+    }
+    $order_id = $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_order', 'id', $where);
+
     if (count($cart_items) > 0) {
-        // Create new order...
+        // Create new order only if applicable...
+        if ($order_id === null) {
+            $insert = array(
+                'c_member' => get_member(),
+                'session_id' => get_session_id(),
+                'add_date' => time(),
+                'tot_price' => 0,
+                'order_status' => 'ORDER_STATUS_awaiting_payment',
+                'notes' => '',
+                'purchase_through' => 'cart',
+                'transaction_id' => '',
+                'tax_opted_out' => $tax_opt_out,
+            );
 
-        $insert = array(
-            'c_member' => get_member(),
-            'session_id' => get_session_id(),
-            'add_date' => time(),
-            'tot_price' => 0,
-            'order_status' => 'ORDER_STATUS_awaiting_payment',
-            'notes' => '',
-            'purchase_through' => 'cart',
-            'transaction_id' => '',
-            'tax_opted_out' => $tax_opt_out,
-        );
+            if (is_null($GLOBALS['SITE_DB']->query_select_value_if_there('shopping_order', 'id'))) {
+                $insert['id'] = hexdec(substr(md5(uniqid('', false)), 0, 5)); // Random start offset
+            }
 
-        if (is_null($GLOBALS['SITE_DB']->query_select_value_if_there('shopping_order', 'id'))) {
-            $insert['id'] = hexdec('1701D'); // Start offset
+            $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_order', $insert, true);
+
+            // Clear out any old previous unpaid & empty cart orders...
+            delete_pending_orders_for_current_user($order_id, 'cart');
         }
 
-        $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_order', $insert, true);
-
-        // Clear out any previous unpaid & empty cart orders...
-
-        delete_pending_orders_for_current_user($order_id, 'cart');
+        // Empty shopping cart from this order as we will be repopulating it
+        $GLOBALS['SITE_DB']->query_delete('shopping_order_details', array('order_id' => $order_id));
     } else {
+        // Cart is empty; let's delete or cancel the current order if applicable.
+        if ($order_id !== null) {
+            $notes = $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_order', 'notes', $where);
+            if ($notes == '') {
+                $GLOBALS['SITE_DB']->query_delete('shopping_order_details', array('order_id' => $order_id));
+                $GLOBALS['SITE_DB']->query_delete('shopping_order', array('id' => $order_id), '', 1);
+            } else {
+                // Set to cancelled, as there are some notes on this order to be preserved
+                $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('order_status' => 'ORDER_STATUS_cancelled'), array('order_id' => $order_id));
+                $GLOBALS['SITE_DB']->query_update('shopping_order', array('order_status' => 'ORDER_STATUS_cancelled'), array('id' => $order_id), '', 1);
+            }
+        }
+
         $order_id = null;
     }
 
+    // Update the order
     $total_price = 0;
-
     foreach ($cart_items as $item) {
         $type_code = $item['product_id'];
 
@@ -363,7 +393,9 @@ function render_cart_payment_form()
         $total_price += $price * $item['quantity'];
     }
 
-    $GLOBALS['SITE_DB']->query_update('shopping_order', array('tot_price' => $total_price), array('id' => $order_id), '', 1);
+    if (!is_null($order_id)) {
+        $GLOBALS['SITE_DB']->query_update('shopping_order', array('tot_price' => $total_price), array('id' => $order_id), '', 1);
+    }
 
     if (!perform_local_payment()) { // Pass through to the gateway's HTTP server
         $result = make_cart_payment_button($order_id, get_option('currency'));
@@ -372,12 +404,12 @@ function render_cart_payment_form()
             warn_exit(do_lang_tempcode('NO_SSL_SETUP'));
         }
 
-        $price = $GLOBALS['SITE_DB']->query_select_value('shopping_order', 'tot_price', array('id' => $order_id));
-        $item_name = do_lang('CART_ORDER', strval($order_id));
         if (is_null($order_id)) {
             $fields = new Tempcode();
             $hidden = new Tempcode();
         } else {
+            $price = $GLOBALS['SITE_DB']->query_select_value('shopping_order', 'tot_price', array('id' => $order_id));
+            $item_name = do_lang('CART_ORDER', strval($order_id));
             list($fields, $hidden) = get_transaction_form_fields(null, strval($order_id), $item_name, float_to_raw_string($price), get_option('currency'), null, '');
         }
 
