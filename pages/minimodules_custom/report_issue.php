@@ -34,6 +34,8 @@ $categories = array_unique($_categories);
 // Submit?
 $type = get_param_string('type', 'browse');
 if ($type == 'submit') {
+    require_code('version2');
+
     // Required
     $project = post_param_string('project');
     $_severity = explode(':', post_param_string('severity'));
@@ -44,7 +46,7 @@ if ($type == 'submit') {
     // Optional
     $_category = post_param_string('category', '[All Projects] General');
     $category_aux = post_param_string('category_aux', '');
-    $version = post_param_string('version', '');
+    $version = get_version_dotted__from_anything(post_param_string('version', ''));
     $steps_to_reproduce = post_param_string('steps_to_reproduce', '');
     $additional_information = post_param_string('additional_information', '');
     $search = post_param_integer('search', 0);
