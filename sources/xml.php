@@ -117,8 +117,9 @@ function convert_bad_entities($data, $charset = 'ISO-8859-1')
         $table = array_flip(get_html_translation_table(HTML_ENTITIES));
 
         if (strtolower($charset) == 'utf-8') {
+            require_code('character_sets');
             foreach ($table as $x => $y) {
-                $table[$x] = utf8_encode($y);
+                $table[$x] = convert_to_internal_encoding($y, 'ISO-8859-1', 'utf-8');
             }
         }
     }

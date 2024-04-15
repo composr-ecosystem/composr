@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: iconv\_.+*/
+/*EXTRA FUNCTIONS: iconv\_.+|utf8_encode|utf8_decode*/
 
 /**
  * Transliterate a string (convert it to latin script).
@@ -67,7 +67,7 @@ function _convert_data_encodings($known_utf8 = false)
     $done_something = false;
 
     // Conversion of parameters that might be in the wrong character encoding (e.g. JavaScript uses UTF to make requests regardless of document encoding, so the stuff needs converting)
-    //  If we don't have any PHP extensions (mbstring etc) that can perform the detection/conversion, our code will take this into account and use utf8_decode at points where it knows that it's being communicated with by JavaScript.
+    //  If we don't have any PHP extensions (mbstring etc) that can perform the detection/conversion, our code will take this into account and use mb_convert_encoding at points where it knows that it's being communicated with by JavaScript.
     if (@strlen(ini_get('unicode.runtime_encoding')) > 0) {
         safe_ini_set('default_charset', $charset);
         safe_ini_set('unicode.runtime_encoding', $charset);

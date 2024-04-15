@@ -413,6 +413,8 @@ class Module_recommend
         if ((get_option('enable_csv_recommend') == '1') && (!is_guest())) {
             if (array_key_exists('upload', $_FILES)) { // NB: We disabled plupload for this form so don't need to consider it
                 if (is_uploaded_file($_FILES['upload']['tmp_name']) && preg_match('#\.csv#', $_FILES['upload']['name']) != 0) {
+                    require_code('character_sets');
+
                     $possible_email_fields = array('E-mail', 'Email', 'E-mail address', 'Email address', 'Primary Email');
                     $possible_name_fields = array('Name', 'Forename', 'First Name', 'Display Name', 'First');
 
@@ -437,10 +439,10 @@ class Module_recommend
                     if (function_exists('mb_convert_encoding')) {
                         if ((function_exists('mb_detect_encoding')) && (strlen(mb_detect_encoding($csv_header_line_fields[0], "ASCII,UTF-8,UTF-16,UTF16")) == 0)) { // Apple mail weirdness
                             // Test string just for Apple mail detection
-                            $test_unicode = utf8_decode(mb_convert_encoding($csv_header_line_fields[0], "UTF-8", "UTF-16"));
+                            $test_unicode = convert_to_internal_encoding(mb_convert_encoding($csv_header_line_fields[0], "UTF-8", "UTF-16"), 'utf-8', 'ISO-8859-1');
                             if (preg_match('#\?\?ame#u', $test_unicode) != 0) {
                                 foreach ($csv_header_line_fields as $key => $value) {
-                                    $csv_header_line_fields[$key] = utf8_decode(mb_convert_encoding($csv_header_line_fields[$key], "UTF-8", "UTF-16"));
+                                    $csv_header_line_fields[$key] = convert_to_internal_encoding(mb_convert_encoding($csv_header_line_fields[$key], "UTF-8", "UTF-16"), 'utf-8', 'ISO-8859-1');
 
                                     $found_email_address = '';
                                     $found_name = '';
@@ -461,7 +463,7 @@ class Module_recommend
 
                                     while (($csv_line = fgetcsv($myfile, 10240, $del)) !== false) { // Reading a CSV record
                                         foreach ($csv_line as $key2 => $value2) {
-                                            $csv_line[$key2] = utf8_decode(mb_convert_encoding($value2, "UTF-8", "UTF-16"));
+                                            $csv_line[$key2] = convert_to_internal_encoding(mb_convert_encoding($value2, "UTF-8", "UTF-16"), 'utf-8', 'ISO-8859-1');
                                         }
 
                                         $found_email_address = (array_key_exists($email_index, $csv_line) && strlen($csv_line[$email_index]) > 0) ? $csv_line[$email_index] : '';
@@ -486,7 +488,7 @@ class Module_recommend
                     if (!$skip_next_process) {
                         // There is a strange symbol that appears at start of the Windows Mail file, so we need to convert the first file line to catch these
                         if ((function_exists('mb_check_encoding')) && (mb_check_encoding($csv_header_line_fields[0], 'UTF-8'))) {
-                            $csv_header_line_fields[0] = utf8_decode($csv_header_line_fields[0]);
+                            $csv_header_line_fields[0] = convert_to_internal_encoding($csv_header_line_fields[0], 'utf-8', 'ISO-8859-1');
                         }
 
                         // This means that we need to import from Windows mail (also for Outlook Express) export file, which is different from others csv export formats

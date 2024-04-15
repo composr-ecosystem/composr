@@ -55,7 +55,8 @@ function sms_wrap($message, $to_sms)
     $password = xmlentities(get_option('sms_password'));
     $site_name = xmlentities(substr(get_site_name(), 0, 11));
     if ((strtolower(get_charset()) != 'utf-8') && (strtolower(get_charset()) != 'utf8')) {
-        $site_name = utf8_encode($site_name);
+        require_code('character_sets');
+        $site_name = convert_to_internal_encoding($site_name, 'ISO-8859-1', 'utf-8');
     }
     //$callback = xmlentities(find_script('sms')); --- set on clickatell's site
     $callback = '0'; /* return nothing (for the moment); TODO: change to 3 (return all message statuses)   #376 on tracker */
@@ -88,7 +89,8 @@ function sms_wrap($message, $to_sms)
         // If just gone over quota, tell them instead of sending the real notification
         $_message = ($sent_in_month + 1 == $limit) ? do_lang('OVER_SMS_LIMIT') : xmlentities($message);
         if ((strtolower(get_charset()) != 'utf-8') && (strtolower(get_charset()) != 'utf8')) {
-            $_message = utf8_encode($_message);
+            require_code('character_sets');
+            $_message = convert_to_internal_encoding($_message, 'ISO-8859-1', 'utf-8');
         }
 
         // Let the super-admin trigger or receive longer messages

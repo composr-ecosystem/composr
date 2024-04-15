@@ -943,7 +943,8 @@ function fix_bad_unicode($input, $definitely_unicode = false)
         $test_string = preg_replace('#[\xF1-\xF3][\x80-\xBF]{3}#', '', $test_string); //  planes 4-15
         $test_string = preg_replace('#\xF4[\x80-\x8F][\x80-\xBF]{2}#', '', $test_string); // plane 16
         if ($test_string !== '') { // All ASCII/unicode characters stripped, so if anything is remaining it must be some kind of corruption
-            $input = utf8_encode($input);
+            require_code('character_sets');
+            $input = convert_to_internal_encoding($input, 'ISO-8859-1', 'utf-8');
         }
     }
     return $input;
