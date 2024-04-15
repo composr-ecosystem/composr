@@ -3449,28 +3449,6 @@ function usort(&$array, $cmp_function)
 }
 
 /**
- * Converts a string with ISO-8859-1 characters encoded with utf-8 to single-byte ISO-8859-1.
- *
- * @param  string $data Subject.
- * @return string Result.
- */
-function utf8_decode($data)
-{
-    return '';
-}
-
-/**
- * Encodes an ISO-8859-1 string to utf-8.
- *
- * @param  string $data Subject.
- * @return string Result.
- */
-function utf8_encode($data)
-{
-    return '';
-}
-
-/**
  * Wraps a string to a given number of characters using a string break character.
  *
  * @param  string $string Subject.
@@ -5699,6 +5677,8 @@ restore_include_path
 get_magic_quotes_gpc
 get_magic_quotes_runtime
 fgetss
+utf8_encode
+utf8_decode
 
 Disabled simply as we don't feel a need to use them (can enable if we find a use)...
 
