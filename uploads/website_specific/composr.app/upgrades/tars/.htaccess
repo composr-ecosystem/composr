@@ -19,4 +19,9 @@ Require all denied
 Header set X-Content-Type-Options "nosniff"
 Header set Content-Security-Policy "default-src 'none'"
 Header set X-XSS-Protection "1"
+	<IfModule mod_rewrite.c>
+		RewriteEngine On
+		RewriteRule ^(.*)$ - [E=FILENAME:$1]
+		Header set "Content-Disposition" "attachment; filename=\"%{FILENAME}e\""
+	</IfModule>
 </IfModule>

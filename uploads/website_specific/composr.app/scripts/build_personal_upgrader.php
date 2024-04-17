@@ -64,6 +64,7 @@ $from_version_dotted = get_param_string('from', null);
 
 // LEGACY
 $addon_name_remap = [
+    // 9 => 10
     'cedi' => 'wiki',
     'occle' => 'commandr',
     'ocf_avatars' => 'cns_avatars',
@@ -81,6 +82,9 @@ $addon_name_remap = [
     'ocf_signatures' => 'cns_signatures',
     'ocf_thematic_avatars' => 'cns_thematic_avatars',
     'ocf_warnings' => 'cns_warnings',
+
+    // 10 => 11
+    'unvalidated' => 'validation'
 ];
 
 $addons = [];
