@@ -712,8 +712,9 @@ abstract class Standard_crud_module
             unset($attributes['page']);
             $archive_url = array($page, $attributes, $zone, (!isset($this->archive_label)) ? null : do_lang_tempcode($this->archive_label));
         }
+
         $view_url = null;
-        if (!is_null($this->view_entry_point)) {
+        if (!is_null($this->view_entry_point) && (!is_null($id))) {
             list($zone, $attributes,) = page_link_decode(str_replace('_ID', $id, $this->view_entry_point));
             $page = $attributes['page'];
             unset($attributes['page']);
