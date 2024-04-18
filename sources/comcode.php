@@ -234,13 +234,13 @@ function strip_comcode($text, $for_extract = false, $tags_to_preserve = null)
         return $matches[2]; // Optimisation
     }
 
+    global $VALID_COMCODE_TAGS, $TEXTUAL_TAGS;
+
     $has_comcode_tags = (strpos($text, '[') !== false);
     if ($has_comcode_tags) {
         init_valid_comcode_tags();
 
         require_code('comcode_compiler');
-
-        global $VALID_COMCODE_TAGS, $TEXTUAL_TAGS;
 
         if ($for_extract) {
             $comcode_strip_contents_piped = implode('|', array_diff(array_keys($VALID_COMCODE_TAGS), array_keys($TEXTUAL_TAGS), $tags_to_preserve));
