@@ -1057,12 +1057,12 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
         return null;
     }
     if (!array_key_exists('host', $url_parts)) {
-        $url_parts['host'] = '127.0.0.1';
+        $url_parts['host'] = 'localhost';
     }
     $connect_to = $url_parts['host'];
     $base_url_parsed = parse_url(get_base_url());
     if (!array_key_exists('host', $base_url_parsed)) {
-        $base_url_parsed['host'] = '127.0.0.1';
+        $base_url_parsed['host'] = 'localhost';
     }
     $config_ip_forwarding = function_exists('get_option') ? get_option('ip_forwarding') : '';
     $do_ip_forwarding = (preg_replace('#^www\.#', '', $base_url_parsed['host']) == preg_replace('#^www\.#', '', $connect_to)) && ($config_ip_forwarding != '') && ($config_ip_forwarding != '0');
@@ -1070,7 +1070,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
         if ($config_ip_forwarding == '1') {
             $connect_to = cms_srv('SERVER_ADDR');
             if ($connect_to == '') {
-                $connect_to = '127.0.0.1'; // "localhost" can fail due to IP6
+                $connect_to = 'localhost';
             }
         } else {
             $protocol_end_pos = strpos($config_ip_forwarding, '://');
@@ -1444,7 +1444,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
 
                                                 // Proxy settings
                                                 $proxy = function_exists('get_option') ? get_option('proxy') : '';
-                                                if (($proxy != '') && ($url_parts['host'] != 'localhost') && ($url_parts['host'] != '127.0.0.1')) {
+                                                if (($proxy != '') && ($url_parts['host'] != 'localhost') && ($url_parts['host'] != '127.0.0.1') && ($url_parts['host'] != '0000:0000:0000:0000:0000:0000:0000:0001') && ($url_parts['host'] != '0:0:0:0:0:0:0:1') && ($url_parts['host'] != '::1')) {
                                                     $port = get_option('proxy_port');
                                                     curl_setopt($ch, CURLOPT_PROXY, $proxy . ':' . $port);
                                                     $proxy_user = get_option('proxy_user');
@@ -1637,7 +1637,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
         if ($proxy == '') {
             $proxy = null;
         }
-        if ((!is_null($proxy)) && ($connect_to != 'localhost') && ($connect_to != '127.0.0.1')) {
+        if ((!is_null($proxy)) && ($connect_to != 'localhost') && ($connect_to != '127.0.0.1') && ($connect_to != '0000:0000:0000:0000:0000:0000:0000:0001') && ($connect_to != '0:0:0:0:0:0:0:1') && ($connect_to != '::1')) {
             $proxy_port = get_option('proxy_port');
             $mysock = @fsockopen($proxy, intval($proxy_port), $errno, $errstr, $timeout);
         } else {
@@ -1666,7 +1666,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
             $url2 .= '?' . $url_parts['query'];
         }
 
-        if (($proxy != '') && ($connect_to != 'localhost') && ($connect_to != '127.0.0.1')) {
+        if (($proxy != '') && ($connect_to != 'localhost') && ($connect_to != '127.0.0.1') && ($connect_to != '0000:0000:0000:0000:0000:0000:0000:0001') && ($connect_to != '0:0:0:0:0:0:0:1') && ($connect_to != '::1')) {
             $out = '';
             $out .= $http_verb . ' ' . escape_header($url) . " HTTP/1.1\r\n";
             $proxy_user = get_option('proxy_user');

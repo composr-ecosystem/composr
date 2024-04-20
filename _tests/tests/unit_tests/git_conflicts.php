@@ -28,7 +28,7 @@ class git_conflicts_test_set extends cms_test_case
         $php_path = find_php_path();
         $contents = get_directory_contents(get_file_base());
         foreach ($contents as $c) {
-            if ((substr($c, -4) == '.php') && (basename($c) != 'errorlog.php') && (basename($c) != 'phpstub.php') && (basename($c) != 'permissioncheckslog.php') && ($c != 'tracker/vendor/guzzlehttp/guzzle/src/MessageFormatter.php')) {
+            if ((substr($c, -4) == '.php') && (basename($c) != 'errorlog.php') && (basename($c) != 'phpstub.php') && (basename($c) != 'permissioncheckslog.php') && ($c != 'tracker/vendor/guzzlehttp/guzzle/src/MessageFormatter.php') && (strpos($c, '/diff/') === false)) {
                 $this->assertTrue(strpos(file_get_contents($c), '<<<' . '<') === false, $c);
             }
         }

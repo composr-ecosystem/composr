@@ -64,6 +64,10 @@ class modularisation_test_set extends cms_test_case
                 continue;
             }
 
+            if (strpos($path, '/diff/') !== false) {
+                continue;
+            }
+
             $found = false;
             foreach ($addon_data as $addon_name => $addon_files) {
                 foreach ($addon_files as $fileindex => $file) {

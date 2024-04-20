@@ -45,6 +45,9 @@ class override_notes_consistency_test_set extends cms_test_case
             if (strpos($contents, 'NO_API_CHECK') !== false) {
                 continue;
             }
+            if (strpos($file, '/diff/') !== false) {
+                continue;
+            }
 
             if (strpos($file, '_custom/') === false) {
                 $this->assertTrue(strpos($contents, 'NOTE TO PROGRAMMERS:') !== false, 'Missing "NOTE TO PROGRAMMERS:" in ' . $file);

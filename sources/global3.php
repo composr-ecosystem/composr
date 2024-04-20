@@ -4004,6 +4004,7 @@ function cms_gethostbyname($hostname)
     if ((php_function_allowed('shell_exec')) && (function_exists('get_value')) && (get_value('slow_php_dns') === '1')) {
         $shell = shell_exec('host ' . escapeshellarg_wrap($hostname));
         if (is_string($shell)) {
+            $ip_address = preg_replace('#^.*has IPv6 address ([0-9a-fA-F:]+).*#s', '$1', $shell);
             $ip_address = preg_replace('#^.*has address (\d+\.\d+\.\d+).*#s', '$1', $shell);
         }
     }

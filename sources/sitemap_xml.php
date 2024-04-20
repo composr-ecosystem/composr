@@ -237,7 +237,7 @@ function ping_sitemap_xml($url, $trigger_error = false)
     if (get_option('auto_submit_sitemap') == '1') {
         $ping = true;
         $test_url = str_replace('https://', 'http://', $url);
-        $not_local = (substr($test_url, 0, 16) != 'http://localhost') && (substr($test_url, 0, 16) != 'http://127.0.0.1') && (substr($test_url, 0, 15) != 'http://192.168.') && (substr($test_url, 0, 10) != 'http://10.');
+        $not_local = (substr($test_url, 0, 16) != 'http://localhost') && (substr($test_url, 0, 16) != 'http://127.0.0.1') && (substr($test_url, 0, 15) != 'http://192.168.') && (substr($test_url, 0, 10) != 'http://10.') && (substr($test_url, 0, 12) != 'http://[::1]') && (substr($test_url, 0, 24) != 'http://[0:0:0:0:0:0:0:1]') && (substr($test_url, 0, 48) != 'http://[0000:0000:0000:0000:0000:0000:0000:0001]');
         if (($ping) && (get_option('site_closed') == '0') && ($not_local)) {
             // Submit to search engines
             $services = array(

@@ -51,6 +51,7 @@ class Hook_config_spam_check_exclusions
      */
     public function get_default()
     {
+        // Excluded ipv6 because almost every spam blacklist does not support it
         return '127.0.0.1,' . cms_srv('SERVER_ADDR') . '';
     }
 }

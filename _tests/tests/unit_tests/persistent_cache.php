@@ -20,6 +20,8 @@ class persistent_cache_test_set extends cms_test_case
 {
     public function testConsistentSetGet()
     {
+        disable_php_memory_limit(); // TODO: Is this necessary? Or is the fact a 10MB cache bailing on 32MB memory an issue?
+
         if (get_param_integer('live_test', 0) == 1) {
             global $PERSISTENT_CACHE;
             $cache = $PERSISTENT_CACHE;

@@ -7129,6 +7129,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INCOMPATIBLE_ADDON_REMEDIES
         PHP_VERSION_CHECK_ERROR
         PHP_VERSION_UNSUPPORTED
+        U_RENAMED_ADDON_MESSAGE
     ')));
 
     $non_admin_files = array(

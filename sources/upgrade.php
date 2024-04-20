@@ -358,7 +358,7 @@ function upgrade_script()
                             } else {
                                 require_code('global3');
                                 $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
-                                $matches = [];
+                                $matches = array();
                                 if (cms_preg_match_all_safe("/'previously_in_addon'\s*=>\s*\[(.*?)\]/", $file_data['data'], $matches) !== false) {
                                     foreach ($matches[1] as $match) {
                                         $previous_names = explode(", ", $match);
@@ -367,9 +367,9 @@ function upgrade_script()
                                                 $extract_addon = true;
 
                                                 // We need to update the database accordingly with the new name of the addon
-                                                $GLOBALS['SITE_DB']->query_update('addons', [
+                                                $GLOBALS['SITE_DB']->query_update('addons', array(
                                                     'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
-                                                ], ['addon_name' => trim($previous_name, "'")], '', 1);
+                                                ), array('addon_name' => trim($previous_name, "'")), '', 1);
 
                                                 echo '<p>' . do_lang('U_RENAMED_ADDON_MESSAGE', escape_html(trim($previous_name, "'")), escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '</p>';
                                             }
@@ -515,10 +515,10 @@ function upgrade_script()
                     }
 
                     // Immediately upgrade these as the secondary upgrader (iframe) depends on them
-                    $immediately_upgrade = [
+                    $immediately_upgrade = array(
                         'data/upgrader2.php',
                         'sources/crypt_master.php',
-                    ];
+                    );
                     foreach ($immediately_upgrade as $path) {
                         $file_data = tar_get_file($upgrade_resource, $path);
                         if ($file_data !== null) {
