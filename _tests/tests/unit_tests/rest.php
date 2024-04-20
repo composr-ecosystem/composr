@@ -41,7 +41,6 @@ class rest_test_set extends cms_test_case
         $raw_post = true;
         $http_verb = 'POST';
         $raw_content_type = 'application/json';
-        set_option('ip_forwarding', '');
         $result = http_download_file($url, null, true, false, 'Composr', $post_params, $cookies, null, null, null, null, null, null, 6.0, $raw_post, null, null, $http_verb, $raw_content_type);
         $_result = json_decode($result, true);
         $fail_message = 'Could not POST ' . $this->path;
