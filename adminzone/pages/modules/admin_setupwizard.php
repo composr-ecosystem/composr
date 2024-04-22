@@ -1110,7 +1110,7 @@ class Module_admin_setupwizard
         shuffle($default_backgrounds);
         $logo_theme_image = post_param_string('logo_theme_image', array_shift($default_logos));
         $background_theme_image = post_param_string('background_theme_image', array_shift($default_backgrounds));
-        $colour = get_theme_option('header_classic_text_colour');
+        $colour = post_param_string('seed_hex', get_theme_option('header_classic_text_colour'));
 
         set_option('header_classic_image', $background_theme_image);
 
