@@ -30,6 +30,8 @@
  */
 function cns_choose_default_avatar(string $email_address = '', string $algorithm = 'avoid_conflict') : string
 {
+    $avatar_url = '';
+
     if (get_option('random_avatars', true) === '1') {
         require_code('themes2');
         $codes = get_all_image_ids_type('cns_default_avatars/default_set', false, $GLOBALS['FORUM_DB']);
@@ -49,24 +51,27 @@ function cns_choose_default_avatar(string $email_address = '', string $algorithm
             }
             $results[$code] = $count;
         }
+        $avatar_id = null;
         if ($algorithm == 'avoid_conflict') {
             @asort($results); // @'d as type checker fails for some odd reason
             $found_avatars = array_keys($results);
             $avatar_id = array_shift($found_avatars);
         } else {
-            $found_avatars = array_keys($results);
-            $crc = crc32($email_address);
-            $avatar_id = $found_avatars[$crc % count($found_avatars)];
+            $_found_avatars = array_keys($results);
+            $found_avatars = count($_found_avatars);
+            if ($found_avatars > 0) {
+                $crc = crc32($email_address);
+                $avatar_id = $_found_avatars[$crc % $found_avatars];
+            }
         }
-        $avatar_url = find_theme_image($avatar_id, true, true);
+        if ($avatar_id !== null) {
+            $avatar_url = find_theme_image($avatar_id, true, true);
+        }
     }
 
-    if ($avatar_url === null) {
+    if ($avatar_url == '') {
         $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => 'cns_default_avatars/default', 'url' => '']); // In case failure cached, gets very confusing
         $avatar_url = find_theme_image('cns_default_avatars/default', true, true);
-        if ($avatar_url === null) {
-            $avatar_url = '';
-        }
     }
     return $avatar_url;
 }
