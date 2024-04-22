@@ -155,6 +155,25 @@ class Hook_fields_url
             if (($value == 'http://') || ($value == 'https://')) {
                 $value = '';
             }
+
+            // Check if the URL is broken
+            if (addon_installed('health_check') && ($value != '')) {
+                $message = '';
+                require_code('urls2');
+                require_lang('health_check');
+                $ok = check_url_exists($value, 60 * 60 * 24 * 1, true, 3, $message);
+                if ($message === null) {
+                    $message = 'UNKNOWN';
+                }
+                if (!$ok) {
+                    $message_text = do_lang('BROKEN_LINK_PROBLEM__' . str_replace('-', '_', $message), $value, $message, null, null, false); // Support custom messages for specific status codes
+                    if ($message_text === null) {
+                        $message_text = do_lang('BROKEN_LINK_PROBLEM', $value, $message);
+                    }
+                    require_code('comcode');
+                    attach_message(comcode_to_tempcode($message_text), 'warn');
+                }
+            }
         }
         return $value;
     }
