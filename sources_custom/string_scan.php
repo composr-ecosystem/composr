@@ -808,6 +808,23 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HTTPS_EMBED_PROBLEM
         HTTPS_LINKING_PROBLEM
         BROKEN_LINK_PROBLEM
+        BROKEN_LINK_PROBLEM__401
+        BROKEN_LINK_PROBLEM__403
+        BROKEN_LINK_PROBLEM__404
+        BROKEN_LINK_PROBLEM__408
+        BROKEN_LINK_PROBLEM__410
+        BROKEN_LINK_PROBLEM__429
+        BROKEN_LINK_PROBLEM__500
+        BROKEN_LINK_PROBLEM__503
+        BROKEN_LINK_PROBLEM__curl_error_1
+        BROKEN_LINK_PROBLEM__curl_error_6
+        BROKEN_LINK_PROBLEM__curl_error_7
+        BROKEN_LINK_PROBLEM__curl_error_8
+        BROKEN_LINK_PROBLEM__curl_error_23
+        BROKEN_LINK_PROBLEM__curl_error_28
+        BROKEN_LINK_PROBLEM__curl_error_33
+        BROKEN_LINK_PROBLEM__curl_error_47
+        BROKEN_LINK_PROBLEM__curl_error_61
         INCOMPLETE_CONTENT_PROBLEM
         LOCAL_LINKING_PROBLEM
         FORM_ELEMENT_PROBLEM
@@ -5804,6 +5821,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HTTP_DOWNLOAD_STATUS_NOT_FOUND
         HTTP_DOWNLOAD_STATUS_SERVER_ERROR
         HTTP_DOWNLOAD_STATUS_UNAUTHORIZED
+        HTTP_DOWNLOAD_STATUS_BAD_REQUEST
         HTTP_DOWNLOAD_STATUS_UNKNOWN
         HTTP_REDIRECT_PROBLEM
         IDE_LINKAGE

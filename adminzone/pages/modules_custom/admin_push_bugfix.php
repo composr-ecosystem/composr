@@ -229,7 +229,7 @@ class Module_admin_push_bugfix
             $files = array_keys($git_found);
         }
 
-        $projects = [
+        $projects = [ // TODO: might need changed when starting to use composr.app
             1 => 'Composr',
             10 => 'Composr alpha bug reports',
             8 => 'Composr build tools',
