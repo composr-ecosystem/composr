@@ -692,6 +692,7 @@ abstract class HttpDownloader
     protected function fix_non_standard_statuses(string $status) : string
     {
         $status = preg_replace('#^(\d\d\d)\.\d+$#', '$1', $status); // IIS
+        $status = preg_replace('#^(\d\d\d)\s.*$#', '$1', $status); // E.g. "200 OK"; we just care about the 200
         return $status;
     }
 
