@@ -1087,6 +1087,8 @@ function check_url_exists(string $url, ?int $test_freq_secs = null, bool $retry_
     $test1 = $GLOBALS['SITE_DB']->query_select('urls_checked', ['*'], ['url' => $url], 'ORDER BY url_check_time DESC', 1);
 
     if ((!isset($test1[0])) || ($test1[0]['url_check_time'] < time() - $test_freq_secs) || (($retry_on_failed) && ($test1[0]['url_exists'] == 0))) {
+        $old = cms_extend_time_limit($attempts * 6); // Provide a PHP time extension depending on how many attempts we're making
+
         for ($i = 0; $i < $attempts; $i++) {
             $test2 = cms_http_request($url, ['trigger_error' => false]);
             if (($test2 !== null) && (in_array($test2->message, ['400', '401', '403', '405', '416', '500', '501', '502', '503', '520']))) {
@@ -1097,6 +1099,8 @@ function check_url_exists(string $url, ?int $test_freq_secs = null, bool $retry_
                 break;
             }
         }
+
+        cms_set_time_limit($old);
 
         mark_if_url_exists($url, $exists, ($test2->message === null) ? '' : $test2->message);
         $message = $test2->message;

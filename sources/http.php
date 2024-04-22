@@ -367,8 +367,16 @@ abstract class HttpDownloader
     public $download_size = null; // ?ID_TEXT. The download size returned from the last HTTP lookup.
     public $download_url = null; // ?ID_TEXT. The URL for the last HTTP lookup.
     public $download_mtime = null; // ?ID_TEXT. The file modification time returned from the last HTTP lookup.
-    public $message = null; // string. The status code returned from the last HTTP lookup (e.g. "200" or "404").
-    public $message_b = null; // string. The status messagereturned from the last HTTP lookup.
+
+    /**
+     * The status code returned.
+     * This is usually the HTTP status. But if an error occurred prior to HTTP, it may be something different, like 'curl-error-#'.
+     *
+     * @var ?string The status code (null: no status code processed yet)
+     */
+    public $message = null;
+
+    public $message_b = null; // ?string. The status message returned from the last HTTP lookup.
     public $new_cookies = []; // ?ID_TEXT. The cookies returned from the last HTTP lookup.
     public $filename = null; // ?ID_TEXT. The filename returned from the last HTTP lookup.
     public $charset = null; // ?ID_TEXT. The character set returned from the last HTTP lookup.
@@ -1205,17 +1213,20 @@ class HttpDownloaderCurl extends HttpDownloader
                 return $this->_run($url, $options); // $this->content_size should be set to how many bytes we have so far
             }
 
-            $possible_internal_curl_errors = [1, 2, 4, 5, 16, 34, 35, 41, 43, 45, 48, 52, 53, 54, 55, 56, 58, 59, 60, 64, 66, 77, 80, 81, 82, 83, 89, 90, 91, 92];
-            if (!in_array($curl_errno, $possible_internal_curl_errors)) {
-                if ($this->trigger_error) {
-                    warn_exit(protect_from_escaping($error), false, true);
-                } else {
-                    $this->message_b = protect_from_escaping($error);
-                }
-                return null;
+            // If any of these error codes are returned, treat as an internal failure on the cURL end, thus we should use a different backend
+            $possible_internal_curl_errors = [1, 2, 4, 5, 16, 34, 35, 41, 43, 45, 48, 52, 53, 54, 55, 56, 58, 59, 60, 64, 66, 77, 80, 81, 82, 83, 89, 90, 91, 92, 95, 96, 97, 99, 101];
+            if (in_array($curl_errno, $possible_internal_curl_errors)) {
+                return false;
             }
 
-            return false; // Failed on this backend
+            // Probably a request/response error, not a cURL one
+            if ($this->trigger_error) {
+                warn_exit(protect_from_escaping($error), false, true);
+            } else {
+                $this->message = 'curl-error-' . protect_from_escaping(strval($curl_errno));
+                $this->message_b = protect_from_escaping($error);
+            }
+            return null;
         }
 
         // Response metadata that cURL lets us gather easily
@@ -1263,6 +1274,7 @@ class HttpDownloaderCurl extends HttpDownloader
                 break;
 
             case '404':
+            case '410':
                 if (!$this->ignore_http_status) {
                     if ($this->trigger_error) {
                         warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_STATUS_NOT_FOUND', escape_html($url)), false, true);
@@ -1274,7 +1286,19 @@ class HttpDownloaderCurl extends HttpDownloader
 
             case '400':
             case '429':
+                if (!$this->ignore_http_status) {
+                    if ($this->trigger_error) {
+                        warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_STATUS_BAD_REQUEST', escape_html($url)), false, true);
+                    } else {
+                        $this->message_b = do_lang_tempcode('HTTP_DOWNLOAD_STATUS_BAD_REQUEST', escape_html($url));
+                    }
+                }
+                break;
+
             case '500':
+            case '502':
+            case '503':
+            case '504':
                 if (!$this->ignore_http_status) {
                     if ($this->trigger_error) {
                         warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_STATUS_SERVER_ERROR', escape_html($url)), false, true);
@@ -1802,6 +1826,7 @@ class HttpDownloaderSockets extends HttpDownloader
                                     break;
 
                                 case '404':
+                                case '410':
                                     if (!$this->ignore_http_status) {
                                         @fclose($mysock);
 
@@ -1817,7 +1842,23 @@ class HttpDownloaderSockets extends HttpDownloader
 
                                 case '400':
                                 case '429':
+                                    if (!$this->ignore_http_status) {
+                                        @fclose($mysock);
+
+                                        if ($this->trigger_error) {
+                                            warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_STATUS_BAD_REQUEST', escape_html($url)), false, true);
+                                        } else {
+                                            $this->message_b = do_lang_tempcode('HTTP_DOWNLOAD_STATUS_BAD_REQUEST', escape_html($url));
+                                        }
+
+                                        return null;
+                                    }
+                                    break;
+
                                 case '500':
+                                case '502':
+                                case '503':
+                                case '504':
                                     if (!$this->ignore_http_status) {
                                         @fclose($mysock);
 

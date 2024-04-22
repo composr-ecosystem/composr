@@ -99,15 +99,17 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         $this->stateCheckManual('Do a [url="general check"]https://webhint.io/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
 
         $this->stateCheckManual('Test in Mozilla Firefox');
-        $this->stateCheckManual('Test in Google Chrome');
-        $this->stateCheckManual('Test in IE10');
-        $this->stateCheckManual('Test in IE11');
+        $this->stateCheckManual('Test in Mozilla Firefox (mobile)');
+        $this->stateCheckManual('Test in IE10'); // TODO: remove when we no longer support it
+        $this->stateCheckManual('Test in IE11'); // TODO: remove when we no longer support it
         $this->stateCheckManual('Test in Microsoft Edge');
-        $this->stateCheckManual('Test in Safari');
+        $this->stateCheckManual('Test in Google Chrome');
         $this->stateCheckManual('Test in Google Chrome (mobile)');
+        $this->stateCheckManual('Test in Safari');
         $this->stateCheckManual('Test in Safari (mobile)');
 
         $this->stateCheckManual('Check the website would look good if printed');
+        $this->stateCheckManual('Check the website would look good if generated as a PDF');
     }
 
     /**
@@ -220,7 +222,14 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             */
             $message = '';
             $ok = check_url_exists($url, 60 * 60 * 24 * 1, true, 3, $message);
-            $this->assertTrue($ok, do_lang('BROKEN_LINK_PROBLEM', $url, $message));
+            if ($message === null) {
+                $message = 'UNKNOWN';
+            }
+            $message_text = do_lang('BROKEN_LINK_PROBLEM__' . str_replace('-', '_', $message), $url, $message, null, null, false); // Support custom messages for specific status codes
+            if ($message_text === null) {
+                $message_text = do_lang('BROKEN_LINK_PROBLEM', $url, $message);
+            }
+            $this->assertTrue($ok, $message_text);
         }
     }
 
