@@ -352,7 +352,7 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
 /**
  * Find the non-bundled addons available on composr.app.
  *
- * @return array Map of addon ID to addon title
+ * @return array Map of addon ID to addon title, could be empty if an error occurred
  */
 function find_remote_addons() : array
 {
@@ -364,14 +364,18 @@ function find_remote_addons() : array
     $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
     $url = $stub . '/data/ajax_tree.php?hook=choose_download&id=' . urlencode($v) . '&file_type=tar&full_depth=1';
     $contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
-    $matches = [];
-    $num_matches = preg_match_all('#<entry id="(\d+)".* title="([^"]+)"#Us', $contents, $matches);
-    for ($i = 0; $i < $num_matches; $i++) {
-        $id = intval($matches[1][$i]);
-        $title = html_entity_decode($matches[2][$i], ENT_QUOTES);
-        if ((!array_key_exists($title, $addons)) || ($addons[$title] > $id)) { // We want the one with the lowest ID, as that will be the official one (uploaded via automated process, then maintained since then)
-            $addons[$title] = $id;
+    if ($contents !== null) {
+        $matches = [];
+        $num_matches = preg_match_all('#<entry id="(\d+)".* title="([^"]+)"#Us', $contents, $matches);
+        for ($i = 0; $i < $num_matches; $i++) {
+            $id = intval($matches[1][$i]);
+            $title = html_entity_decode($matches[2][$i], ENT_QUOTES);
+            if ((!array_key_exists($title, $addons)) || ($addons[$title] > $id)) { // We want the one with the lowest ID, as that will be the official one (uploaded via automated process, then maintained since then)
+                $addons[$title] = $id;
+            }
         }
+    } else { // Continue anyway but display error as attached and logged message
+        attach_message(do_lang_tempcode('addons:FIND_REMOTE_ADDONS_ERROR', escape_html($stub)), 'warn', false, true);
     }
     return $addons;
 }

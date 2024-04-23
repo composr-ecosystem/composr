@@ -8500,6 +8500,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADVERTISE_ON_COMPOSR_2
         CRON_UPGRADE_PENDING
         DESCRIPTION_ADVERTISE_ON_COMPOSR
+        FIND_REMOTE_ADDONS_ERROR
     ')));
 
     $non_admin_files = [
