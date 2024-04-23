@@ -1418,10 +1418,14 @@ function get_addon_uninstall_writable_paths(string $addon_name) : array
             }
         }
         foreach ($dirs as $dir => $dir_contents_being_deleted) {
-            $dir_contents = array_diff(scandir(get_file_base() . '/' . $dir), ['..', '.'], $dir_contents_being_deleted);
+            $dir_scan = [];
+            if (file_exists(get_file_base() . '/' . $dir)) {
+                $dir_scan = scandir(get_file_base() . '/' . $dir);
+            }
+            $dir_contents = array_diff($dir_scan, ['..', '.'], $dir_contents_being_deleted);
             if (empty($dir_contents)) {
                 if (!in_array($dir, $writable_paths)) {
-                    $writable_paths[] = $dir; // Directory is going to be empty
+                    $writable_paths[] = $dir; // Directory is going to be empty (or it does not exist)
                     $changes = true;
                 }
             }
