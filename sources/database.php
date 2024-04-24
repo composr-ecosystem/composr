@@ -1272,7 +1272,7 @@ abstract class DatabaseDriver
             syslog(LOG_ERR, $php_error_label);
         }
         if (php_function_allowed('error_log')) {
-            @error_log('Database: ' . $php_error_label, 0);
+            @error_log(brand_name() . ' database: ERROR ' . $php_error_label, 0);
         }
 
         $restricted = false;
@@ -2186,7 +2186,7 @@ class DatabaseConnector
 
             if (php_function_allowed('error_log')) {
                 require_code('urls');
-                @error_log('Profiling: Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), 0);
+                @error_log(brand_name() . ' profiling: INFO Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), 0);
             }
 
             if ($DEV_MODE) {

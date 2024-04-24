@@ -222,7 +222,7 @@ function _javascript_tempcode(string $j, object &$js, ?bool $_minify = null, ?bo
 
             if ((function_exists('debugging_static_cache')) && (debugging_static_cache())) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No static cache due to deferred JavaScript compilation, ' . $j);
+                    @error_log(brand_name() . ' static cache: DEBUG No static cache due to deferred JavaScript compilation, ' . $j);
                 }
             }
 
@@ -508,7 +508,7 @@ function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $
 
             if ((function_exists('debugging_static_cache')) && (debugging_static_cache())) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No static cache due to deferred CSS compilation, ' . $c);
+                    @error_log(brand_name() . ' static cache: DEBUG No static cache due to deferred CSS compilation, ' . $c);
                 }
             }
 

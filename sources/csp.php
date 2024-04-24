@@ -474,7 +474,7 @@ function csp_logging_script()
     set_http_status_code(204);
 
     require_code('failure');
-    cms_error_log('CSP violation: ' . $data);
+    cms_error_log(brand_name() . ': WARNING CSP violation ' . $data);
 }
 
 /**

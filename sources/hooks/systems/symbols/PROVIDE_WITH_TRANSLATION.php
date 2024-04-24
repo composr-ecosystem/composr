@@ -55,7 +55,7 @@ class Hook_symbol_PROVIDE_WITH_TRANSLATION
 
         if ($errormsg !== null) {
             require_code('failure');
-            cms_error_log($errormsg, 'error_occurred_api');
+            cms_error_log(brand_name() . ' translation: WARNING ' . $errormsg, 'error_occurred_api');
         }
 
         if ($text_translated === null) {

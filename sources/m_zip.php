@@ -499,7 +499,7 @@ function m_deldir(string $a_dir)
         rmdir($a_dir);
     } else {
         if (php_function_allowed('error_log')) {
-            error_log('Composr: m_deldir() -- <b>Warning!</b> Not a directory: ' . $a_dir);
+            error_log(brand_name() . ': WARNING m_deldir() Not a directory: ' . $a_dir);
         }
     }
 }

@@ -8502,6 +8502,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_ADVERTISE_ON_COMPOSR
         FIND_REMOTE_ADDONS_ERROR
         BACKUP_LOG_START
+        LOG_LEVEL
     ')));
 
     $non_admin_files = [

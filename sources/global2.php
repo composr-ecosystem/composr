@@ -18,8 +18,6 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: ucwords*/
-
 /*
     main bootstrapping and library code.
     NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
@@ -1020,7 +1018,7 @@ function monitor_slow_urls()
     if ($slow) {
         require_code('urls');
         if (php_function_allowed('error_log')) {
-            error_log('Profiling: Over time limit @ ' . get_self_url_easy(true) . "\t" . strval($time) . ' secs' . "\t" . date('Y-m-d H:i:s', time()), 0);
+            error_log(brand_name() . ' profiling: INFO request time above monitor_slow_urls @ ' . get_self_url_easy(true) . "\t" . strval($time) . ' secs' . "\t" . date('Y-m-d H:i:s', time()), 0);
         }
     }
 }
@@ -1033,7 +1031,7 @@ function memory_tracking()
     $memory_tracking = intval(get_value('memory_tracking'));
     if (memory_get_peak_usage() > 1024 * 1024 * $memory_tracking) {
         if (php_function_allowed('error_log')) {
-            error_log('Profiling: Memory usage above memory_tracking (' . strval($memory_tracking) . 'MB) @ ' . get_self_url_easy(true), 0);
+            error_log(brand_name() . ' profiling: INFO Memory usage above memory_tracking (' . strval($memory_tracking) . 'MB) @ ' . get_self_url_easy(true), 0);
         }
     }
 }
@@ -1379,6 +1377,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
                     set_throw_errors(false);
                 }
                 $type = 'error';
+                $_type = 'ERROR';
                 $syslog_type = LOG_ERR;
                 $handling_method = 'FATAL';
                 break;
@@ -1389,6 +1388,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
             case E_COMPILE_WARNING:
             case E_WARNING:
                 $type = 'warning';
+                $_type = 'WARNING';
                 $syslog_type = LOG_WARNING;
                 $handling_method = 'FATAL';
                 break;
@@ -1396,6 +1396,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
             case E_USER_NOTICE:
             case E_NOTICE:
                 $type = 'notice';
+                $_type = 'INFO';
                 $syslog_type = LOG_NOTICE;
                 $handling_method = 'ATTACH';
                 break;
@@ -1405,6 +1406,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
             case E_DEPRECATED:
             default:
                 $type = 'deprecated';
+                $_type = 'WARNING';
                 $syslog_type = LOG_INFO;
                 $handling_method = 'SKIP'; // We always skip these, as they should be fixed during the Composr development cycle and should not concern users. Often we cannot even deal with them until we remove support for an old version, so have to leave a transition period.
                 break;
@@ -1446,7 +1448,8 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
                     syslog($syslog_type, $php_error_label);
                 }
                 if (php_function_allowed('error_log')) {
-                    @error_log('PHP ' . (function_exists('cms_ucwords_ascii') ? cms_ucwords_ascii($type) : ucwords($type)) . ': ' . $php_error_label, 0);
+                    $_type = 'CRITICAL'; // Bailing out on a memory issue is a critical error
+                    @error_log('PHP: ' . $_type . ' ' . $php_error_label, 0);
                 }
 
                 critical_error('EMERGENCY', $errstr . escape_html(' [' . $errfile . ' at ' . strval($errline) . ']'));

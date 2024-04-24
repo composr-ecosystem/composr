@@ -62,7 +62,7 @@ class Hook_task_sugarcrm_sync_message
             $success = save_message_into_sugarcrm_as_configured(($subject == get_site_name()) ? '' : $subject, $body, $from_email, $from_name, $attachments, $body_parts, $_POST + $_GET + $_COOKIE);
         } catch (Exception $e) {
             require_code('failure');
-            cms_error_log('SugarCRM: ' . $e->getMessage(), 'error_occurred_api');
+            cms_error_log('SugarCRM: ERROR ' . $e->getMessage(), 'error_occurred_api');
             return false;
         }
 

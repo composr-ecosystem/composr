@@ -112,15 +112,15 @@ function _maintenance_password_check__init()
  */
 function _maintenance_password_check__result(bool $result)
 {
-    $msg = 'Composr administrative script ' . basename($_SERVER['SCRIPT_NAME']);
+    $msg = 'administrative script ' . basename($_SERVER['SCRIPT_NAME']);
     if (!empty($_SERVER['REMOTE_ADDR'])) {
         $msg .= ', by IP address ' . $_SERVER['REMOTE_ADDR'];
     }
     if (function_exists('syslog')) {
         if ($result) {
-            @syslog(LOG_NOTICE, 'Composr: Successfully logged into ' . $msg);
+            @syslog(LOG_NOTICE, brand_name() . ': Successfully logged into ' . $msg);
         } else {
-            @syslog(LOG_WARNING, 'Composr: Incorrect maintenance password given while logging into ' . $msg);
+            @syslog(LOG_WARNING, brand_name() . ': Incorrect maintenance password given while logging into ' . $msg);
         }
     }
 
@@ -128,7 +128,7 @@ function _maintenance_password_check__result(bool $result)
         global $FILE_BASE;
         @ini_set('error_log', $FILE_BASE . '/data_custom/errorlog.php');
         if (!$result) {
-            @error_log('Composr: Incorrect maintenance password given while logging into ' . $msg);
+            @error_log(brand_name() . ': WARNING Incorrect maintenance password given while logging into ' . $msg);
         }
     }
 

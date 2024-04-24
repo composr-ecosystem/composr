@@ -112,7 +112,7 @@ function activity_feed_syndicate_described_activity(string $language_string_code
                         $adapter->saveAtom($atom);
                     } catch (Exception $e) {
                         require_code('failure');
-                        cms_error_log($e->getMessage(), 'error_occurred_api');
+                        cms_error_log('Hybridauth: WARNING ' . $e->getMessage(), 'error_occurred_api');
                     }
                 }
 

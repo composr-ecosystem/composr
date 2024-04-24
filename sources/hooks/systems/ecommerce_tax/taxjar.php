@@ -172,7 +172,7 @@ class Hook_ecommerce_tax_taxjar
                 $response = @json_decode($_response, true);
 
                 if (!is_array($response) || array_key_exists('error', $response)) { // Those without a TaxJar professional API will get errors; just log them and move onward
-                    $errormsg = 'TaxJar: ' . $_response;
+                    $errormsg = 'TaxJar: ERROR ' . $_response;
                     require_code('failure');
                     cms_error_log($errormsg, 'error_occurred_api');
                 } else { // Found an address; use the first one returned
@@ -233,7 +233,7 @@ class Hook_ecommerce_tax_taxjar
 
             if (array_key_exists('error', $response)) {
                 require_code('failure');
-                cms_error_log('TaxJar: ' . $_response);
+                cms_error_log('TaxJar: WARNING ' . $_response);
 
                 warn_exit('TaxJar: ' . $_response);
             }

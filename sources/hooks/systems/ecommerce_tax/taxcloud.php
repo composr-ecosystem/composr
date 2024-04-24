@@ -152,7 +152,7 @@ class Hook_ecommerce_tax_taxcloud
             $response = @json_decode($_response->data, true);
 
             if (!is_array($response)) {
-                $errormsg = 'TaxCloud: ' . $_response->message;
+                $errormsg = 'TaxCloud: ERROR ' . $_response->message;
                 require_code('failure');
                 cms_error_log($errormsg, 'error_occurred_api');
             } else {
@@ -240,7 +240,7 @@ class Hook_ecommerce_tax_taxcloud
                 $errormsg = $_response->message;
 
                 require_code('failure');
-                cms_error_log('TaxCloud: ' . $errormsg);
+                cms_error_log('TaxCloud: WARNING ' . $errormsg);
 
                 warn_exit($errormsg);
             }
@@ -249,7 +249,7 @@ class Hook_ecommerce_tax_taxcloud
                 $errormsg = $response['Messages'][0]['Message'];
 
                 require_code('failure');
-                cms_error_log('TaxCloud: ' . $errormsg);
+                cms_error_log('TaxCloud: WARNING ' . $errormsg);
 
                 warn_exit($errormsg);
             }

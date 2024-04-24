@@ -152,7 +152,7 @@ class Hook_syndication_hybridauth_admin
                 }
             } catch (Exception $e) {
                 require_code('failure');
-                cms_error_log($e->getMessage(), 'error_occurred_api');
+                cms_error_log('Hybridauth: WARNING syndication -- ' . $e->getMessage(), 'error_occurred_api');
             }
         }
 
@@ -236,7 +236,7 @@ class Hook_syndication_hybridauth_admin
                 }
             } catch (Exception $e) {
                 require_code('failure');
-                cms_error_log($e->getMessage(), 'error_occurred_api');
+                cms_error_log('Hybridauth: WARNING syndication -- ' . $e->getMessage(), 'error_occurred_api');
             }
         }
 

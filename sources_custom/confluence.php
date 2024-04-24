@@ -427,7 +427,7 @@ function confluence_query($query, $trigger_error = true, &$http_message = null, 
         }
 
         require_code('failure');
-        cms_error_log('Confluence: ' . $json . ' @ ' . $url, 'error_occurred_api');
+        cms_error_log('Confluence: ERROR ' . $json . ' @ ' . $url, 'error_occurred_api');
 
         warn_exit('Internal error processing query ' . $url);
     }

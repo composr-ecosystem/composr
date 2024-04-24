@@ -1325,7 +1325,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 list($spam_report, $spam_score) = email_spam_check($mail_dispatcher->mime_data);
             } catch (Exception $e) {
                 require_code('failure');
-                cms_error_log('Postmark: ' . $e->getMessage(), 'error_occurred_api');
+                cms_error_log('Postmark: WARNING ' . $e->getMessage(), 'error_occurred_api');
             }
         }
 

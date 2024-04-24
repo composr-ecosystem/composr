@@ -947,9 +947,9 @@ function _transifex($call, $http_verb, $params = [], $trigger_error = true, $tex
         if ($trigger_error) {
             $arr = @json_decode($http_result->data, true);
             if (!empty($arr['errors'])) {
-                $errormsg = 'Transifex error: ' . $arr['errors'][0]['detail'];
+                $errormsg = 'Transifex: ERROR ' . $arr['errors'][0]['detail'];
             } else {
-                $errormsg = 'Transifex error: ' . $http_result->message;
+                $errormsg = 'Transifex: ERROR ' . $http_result->message;
             }
             require_code('failure');
             cms_error_log($errormsg, 'error_occurred_api');

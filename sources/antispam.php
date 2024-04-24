@@ -353,7 +353,7 @@ function rbl_resolve(string $ip, string $rbl_domain, bool $page_level) : ?array
             } else {
                 $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', $rbl_domain, $_result, $ip);
             }
-            cms_error_log($error, 'error_occurred_api');
+            cms_error_log(brand_name() . ': ERROR ' . $error, 'error_occurred_api');
         }
         return null;
     }
@@ -534,13 +534,13 @@ function _check_stopforumspam(string $user_ip, ?string $username = null, ?string
         } else {
             require_code('failure');
             $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $result['error'], $user_ip);
-            cms_error_log($error, 'error_occurred_api');
+            cms_error_log(brand_name() . ': ERROR ' . $error, 'error_occurred_api');
             return [ANTISPAM_RESPONSE_ERROR, $confidence_level, $confidence_by_criterion];
         }
     } else {
         require_code('failure');
         $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $_result->message, $user_ip);
-        cms_error_log($error, 'error_occurred_api');
+        cms_error_log(brand_name() . ': ERROR ' . $error, 'error_occurred_api');
         return [ANTISPAM_RESPONSE_ERROR, $confidence_level, $confidence_by_criterion];
     }
 

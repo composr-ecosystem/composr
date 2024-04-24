@@ -234,9 +234,10 @@ function results_footer_row(array $values, string $guid = 'e5df01c02d364a45b3cc5
  * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML (ignored for Tempcode values)
  * @param  ?string $tpl_set The template set to use (null: default)
  * @param  string $guid GUID to pass to template
+ * @param  string $td_class Additional classes to assign to the row other than zebra (blank: none)
  * @return Tempcode The generated entry
  */
-function results_entry(array $values, bool $auto_escape, ?string $tpl_set = null, string $guid = '9e340dd14173c7320b57243d607718ab') : object
+function results_entry(array $values, bool $auto_escape, ?string $tpl_set = null, string $guid = '9e340dd14173c7320b57243d607718ab', string $td_class = '') : object
 {
     $i = 0;
     $cells = new Tempcode();
@@ -277,6 +278,7 @@ function results_entry(array $values, bool $auto_escape, ?string $tpl_set = null
     return do_template($results_table_tpl, [
         '_GUID' => $guid,
         'VALUES' => $cells,
+        'TD_CLASS' => $td_class,
     ], null, false, 'RESULTS_TABLE_ENTRY');
 }
 

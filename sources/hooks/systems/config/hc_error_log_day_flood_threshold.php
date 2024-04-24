@@ -55,6 +55,6 @@ class Hook_config_hc_error_log_day_flood_threshold
             return null;
         }
 
-        return '50';
+        return '20';
     }
 }

@@ -176,7 +176,7 @@ class Module_admin_errorlog
         require_code('files');
         require_css('errorlog');
 
-        $maximum_size = 1024 * 32;
+        $maximum_size = 1024 * 16;
         $max_google_pages = 6;
         $default_max_per_page = 30;
 
@@ -207,10 +207,12 @@ class Module_admin_errorlog
 
                 if (($_line != '') && (strpos($_line, '<?php') === false)) {
                     $matches = [];
-                    if (preg_match('#^\[([^\[\]]+) ([^\[\]]+)\] (.{1,22}):  ?(.*)#', $_line, $matches) != 0) {
+                    if (preg_match('#^\[([^\]]*)\] ([^:]*): (CRITICAL|ERROR|WARNING|INFO|DEBUG|)[\s]?(.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], $matches[2], $matches[3], $matches[4]];
-                    } elseif (preg_match('#^\[([^\[\]]+) ([^\[\]]+)\] (.*)#', $_line, $matches) != 0) {
-                        $stuff[] = [$matches[1], $matches[2], 'N/A', $matches[3]];
+                    } elseif (preg_match('#^\[([^\]]*)\] (CRITICAL|ERROR|WARNING|INFO|DEBUG|)[\s]?(.*)#', $_line, $matches) != 0) {
+                        $stuff[] = [$matches[1], do_lang('NA'), $matches[2], $matches[3]];
+                    } elseif (count($stuff) > 0) { // Additional line from previous error, so append it
+                        $stuff[count($stuff) - 1][3] .= "\n" . $_line;
                     }
                 }
             }
@@ -233,20 +235,20 @@ class Module_admin_errorlog
                     $message = $app_log->getMessage();
 
                     $level = $app_log->getLevel();
-                    $_level = '';
+                    $_level = 'INFO';
                     if ($level == eval('return $log_service::LEVEL_WARNING;')) {
-                        $_level = 'notice';
+                        $_level = 'WARNING';
                     } elseif ($level == eval('return $log_service::LEVEL_ERROR;')) {
-                        $_level = 'warning';
+                        $_level = 'ERROR';
                     } elseif ($level == eval('return $log_service::LEVEL_CRITICAL;')) {
-                        $_level = 'error';
+                        $_level = 'CRITICAL';
                     } else {
                         continue;
                     }
 
                     $time = intval($app_log->getTimeUsec() / 1000000.0);
 
-                    $stuff[] = [date('D-M-Y', $time), date('H:i:s', $time), $_level, $message];
+                    $stuff[] = [date('D-M-Y', $time) . ' ' . date('H:i:s', $time), do_lang('NA'), $_level, $message];
                 }
             }
         }
@@ -266,22 +268,31 @@ class Module_admin_errorlog
         }
 
         require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('TYPE'), do_lang_tempcode('MESSAGE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('TYPE'), do_lang_tempcode('LOG_LEVEL'), do_lang_tempcode('MESSAGE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
         for ($i = $start; $i < $start + $max; $i++) {
             if (!array_key_exists($i, $stuff)) {
                 break;
             }
 
-            $message = str_replace(get_file_base(), '', $stuff[$i][3]);
+            list($log_date, $log_type, $log_level, $log_message) = $stuff[$i];
+
+            if ($log_level == '') {
+                $log_level = 'WARNING'; // Default to warning if a log does not contain a level
+            }
+
+            $message = str_replace(get_file_base(), '', $log_message);
+
+            $td_class = 'results_entry_errorlog_' . cms_mb_strtolower($log_level);
 
             $result_entries->attach(static_evaluate_tempcode(results_entry([
-                $stuff[$i][0] . ' ' . $stuff[$i][1],
-                $stuff[$i][2],
+                $log_date,
+                $log_type,
+                $log_level,
                 $message,
-            ], true)));
+            ], true, 'errorlog', '4469d055e697470a8cb58e8415debaaa', $td_class)));
         }
-        $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), ['180px', '110px']);
+        $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), ['180px', '180px', '90px'], 'errorlog');
 
         // Read in end of any other log files we find
         require_all_lang();

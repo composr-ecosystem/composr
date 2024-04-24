@@ -331,7 +331,7 @@ function find_user_metadata(bool $include_referer = true, ?int $member_id = null
         if (is_array($json)) {
             if (array_key_exists('error', $json)) {
                 require_code('failure');
-                cms_error_log('IP Stack: ' . $json['error']['info'], 'error_occurred_api');
+                cms_error_log('IP Stack: ERROR ' . $json['error']['info'], 'error_occurred_api');
             }
 
             $useful_fields = [
@@ -352,7 +352,7 @@ function find_user_metadata(bool $include_referer = true, ?int $member_id = null
             $got_geo_lookup = true;
         } else {
             require_code('failure');
-            cms_error_log('IP Stack: ' . $_json->message, 'error_occurred_api');
+            cms_error_log('IP Stack: ERROR ' . $_json->message, 'error_occurred_api');
         }
     }
     if (!$got_geo_lookup) {

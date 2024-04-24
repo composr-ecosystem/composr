@@ -53,7 +53,7 @@ function sugarcrm_initialise_connection()
         $SUGARCRM = null;
 
         require_code('failure');
-        cms_error_log('SugarCRM: ' . $e->getMessage(), 'error_occurred_api');
+        cms_error_log('SugarCRM: ERROR ' . $e->getMessage(), 'error_occurred_api');
 
         throw $e;
     }

@@ -143,7 +143,7 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
                 }
             } catch (Exception $e) {
                 require_code('failure');
-                cms_error_log($e->getMessage(), 'error_occurred_api');
+                cms_error_log('Hybridauth: WARNING media rendering -- ' . $e->getMessage(), 'error_occurred_api');
             }
         }
 

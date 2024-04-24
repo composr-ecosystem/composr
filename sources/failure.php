@@ -276,7 +276,7 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
             syslog($syslog_type, $php_error_label);
         }
         if (php_function_allowed('error_log')) {
-            @error_log('PHP ' . cms_ucwords_ascii($type) . ': ' . $php_error_label, 0);
+            @error_log('PHP: ' . cms_ucwords_ascii($type) . ' ' . $php_error_label, 0);
         }
 
         // Send a notification
@@ -468,7 +468,17 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
                 syslog(LOG_ERR, $php_error_label);
             }
             if (php_function_allowed('error_log')) {
-                @error_log('Composr: ' . $php_error_label, 0);
+                switch ($template) {
+                    case 'INFORM_SCREEN':
+                        @error_log(brand_name() . ': INFO ' . $php_error_label, 0);
+                        break;
+                    case 'WARN_SCREEN':
+                        @error_log(brand_name() . ': WARNING ' . $php_error_label, 0);
+                        break;
+                    case 'FATAL_SCREEN':
+                        @error_log(brand_name() . ': ERROR ' . $php_error_label, 0);
+                        break;
+                }
             }
 
             $trace = get_html_trace();
@@ -1253,14 +1263,14 @@ function relay_error_notification(string $text, bool $developers = true, string 
             $payload = json_encode($_payload);
 
             if ($payload === false) {
-                cms_error_log('Telemetry error: Failed to JSON encode the payload');
+                cms_error_log(brand_name() . ' telemetry: WARN Failed to JSON encode the error to send to the developers.');
             } else {
                 $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
                 $error_code = null;
                 $error_message = null;
                 $response = cms_fsock_request($payload, $url, $error_code, $error_message);
                 if (($response === false) || ($error_message !== null)) {
-                    cms_error_log('Telemetry: Could not forward error to the developers. ' . $error_message . escape_html($response));
+                    cms_error_log(brand_name() . ' telemetry: WARN Could not forward error to the developers. ' . $error_message . escape_html($response));
                 }
             }
         }
