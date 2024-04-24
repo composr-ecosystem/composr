@@ -605,7 +605,7 @@ class Module_admin_setupwizard
             $addon_list_advanced_off_by_default[] = 'google_appengine';
         }
 
-        // Do we need to download any from composr.app?
+        // Do we need to download any from the homesite?
         $GLOBALS['DEV_MODE'] = false;
         foreach (array_merge(($addon_list_on_by_default === null) ? [] : $addon_list_on_by_default, $addon_list_advanced_on_by_default, $addon_list_advanced_off_by_default) as $mentioned_addon) {
             if ((!array_key_exists($mentioned_addon, $addons_installed)) && (!array_key_exists($mentioned_addon, $addons_not_installed))) {
@@ -614,7 +614,7 @@ class Module_admin_setupwizard
                 if (array_key_exists($_mentioned_addon, $remote_addons)) {
                     $id = $remote_addons[$_mentioned_addon];
                     require_code('uploads');
-                    $_POST['url'] = 'https://composr.app/site/dload.php?id=' . strval($id);
+                    $_POST['url'] = get_brand_base_url() . '/site/dload.php?id=' . strval($id);
                     get_url('url', 'file', 'imports/addons', OBFUSCATE_NEVER, CMS_UPLOAD_ANYTHING, false, '', '', true); // Download it
                 }
             }
@@ -1173,7 +1173,7 @@ class Module_admin_setupwizard
             set_option('site_name', $name);
             set_option('description', post_param_string('description'));
             set_option('site_scope', post_param_string('site_scope'));
-            set_option('copyright', do_lang('COPYRIGHTED') . ' &copy; $CURRENT_YEAR=' . date('Y') . ' ' . $name . ', ' . do_lang('POWERED_BY', 'Composr CMS'));
+            set_option('copyright', do_lang('COPYRIGHTED') . ' &copy; $CURRENT_YEAR=' . date('Y') . ' ' . $name . ', ' . do_lang('POWERED_BY', brand_name()));
             set_option('keywords', post_param_string('keywords'));
             set_option('timezone', post_param_string('timezone'));
             set_option('google_analytics', post_param_string('google_analytics'));

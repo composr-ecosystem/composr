@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__scale_by_commonality
+class Hook_config_fast_custom_index__enable_for_filtered
 {
     /**
      * Gets the details relating to the config option.
@@ -31,13 +31,14 @@ class Hook_config_composr_fast_custom_index__scale_by_commonality
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__SCALE_BY_COMMONALITY',
+            'human_name' => 'FAST_CUSTOM_INDEX__ENABLE_FOR_FILTERED',
             'type' => 'tick',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__scale_by_commonality',
+            'group' => 'FAST_CUSTOM_INDEX_ENABLE',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__enable_for_filtered',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 3,
             'required' => true,
             'public' => false,
             'addon' => 'search',

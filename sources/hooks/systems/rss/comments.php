@@ -44,7 +44,7 @@ class Hook_rss_comments
 
         // Check permissions (this is HARD, we have to tunnel through content_meta_aware hooks)
         $parts = explode('_', $full_title, 2);
-        $hook = convert_composr_type_codes('feedback_type_code', $parts[0], 'content_type');
+        $hook = convert_software_type_codes('feedback_type_code', $parts[0], 'content_type');
         if ($hook != '') {
             require_code('content');
             $ob = get_content_object($hook);

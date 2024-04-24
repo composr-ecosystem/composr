@@ -50,7 +50,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
         return false;
     }
 
-    // E-mail is technically not required within Composr, but lost-password etc won't work without it, so we're not going to allow it to be left blank unless bypass_email_address_if_already_empty if there and it's already blank
+    // E-mail is technically not required within the software, but lost-password etc won't work without it, so we're not going to allow it to be left blank unless bypass_email_address_if_already_empty if there and it's already blank
 
     if ($editing_member === null) {
         $editing_member = get_member();
@@ -115,7 +115,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  boolean $check_correctness Whether to check details for correctness
  * @param  ?IP $ip_address The member's IP address (blank: unknown) (null: IP address of current user)
- * @param  ?ID_TEXT $password_compatibility_scheme The compatibility scheme that the password operates in (blank: none) (null: none [meaning normal Composr salted style] or plain, depending on whether passwords are encrypted)
+ * @param  ?ID_TEXT $password_compatibility_scheme The compatibility scheme that the password operates in (blank: none) (null: none [meaning normal bcrypt salted style] or plain, depending on whether passwords are encrypted)
  * @param  SHORT_TEXT $salt The password salt (blank: password compatibility scheme does not use a salt / auto-generate)
  * @param  ?TIME $join_time When the member joined (null: now)
  * @param  ?TIME $last_visit_time When the member last visited (null: now)

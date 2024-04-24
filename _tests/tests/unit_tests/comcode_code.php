@@ -72,8 +72,8 @@ class comcode_code_test_set extends cms_test_case
         $cases[5] = [$from, $to, $forced_html_to_comcode, $do_for_admin_too];
 
         // Complex WYSIWYG (exotic HTML within code tag carries through)
-        $from = '[semihtml][code]<composr-test>Food &amp; Drink</composr-test><br /><composr-test>On the house</composr-test>[/code][/semihtml]';
-        $to = '<div class="comcode-code-wrap"><div class="comcode-code"><h4>Code</h4><div class="webstandards-checker-off"><code class="comcode-code-inner"><composr-test>Food &amp; Drink</composr-test><br /><composr-test>On the house</composr-test></code></div></div></div>';
+        $from = '[semihtml][code]<parser-test>Food &amp; Drink</parser-test><br /><parser-test>On the house</parser-test>[/code][/semihtml]';
+        $to = '<div class="comcode-code-wrap"><div class="comcode-code"><h4>Code</h4><div class="webstandards-checker-off"><code class="comcode-code-inner"><parser-test>Food &amp; Drink</parser-test><br /><parser-test>On the house</parser-test></code></div></div></div>';
         $forced_html_to_comcode = false;
         $do_for_admin_too = true;
         $cases[6] = [$from, $to, $forced_html_to_comcode, $do_for_admin_too];

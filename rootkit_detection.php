@@ -18,7 +18,7 @@
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
-// Find Composr base directory, and chdir into it
+// Find base directory, and chdir into it
 global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
@@ -52,15 +52,15 @@ if (!function_exists('mysqli_connect')) {
 
 if ($type == '') {
     echo <<<END
-        <p>Be warned that this is a tool for experts, who wish to take active extra measures to make sure their website is not hacked against their knowledge. This is the most ominous security problem for many, because it means that their own website could be spreading customer information or compromised software downloads. When we say this script is for experts, we mean it &ndash; this script is strictly separated from any other Composr file and thus stands alone without access to our quality and standards frameworks.</p>
-        <p>This detector will provide you with a portion of text that identifies the state of the most critical areas of Composr. You can then take the text, and save it in a file on your computer. You then run this tool again at a later date and use a tool such as <a href="https://winmerge.sourceforge.net/">WinMerge</a> to compare the results &ndash; seeing what has changed.</p>
-        <p>This tool will not find out if areas of your site have been vandalised, because there is way too much information to scan and present for that to be viable. Instead, it focuses on compromised file systems, Composr permissions, and database-stored PHP/Commandr-Code. It only checks staff settings on the local Conversr, not on any other third-party forum.</p>
+        <p>Be warned that this is a tool for experts, who wish to take active extra measures to make sure their website is not hacked against their knowledge. This is the most ominous security problem for many, because it means that their own website could be spreading customer information or compromised software downloads. When we say this script is for experts, we mean it &ndash; this script is strictly separated from any other software file and thus stands alone without access to our quality and standards frameworks.</p>
+        <p>This detector will provide you with a portion of text that identifies the state of the most critical areas of the software. You can then take the text, and save it in a file on your computer. You then run this tool again at a later date and use a tool such as <a href="https://winmerge.sourceforge.net/">WinMerge</a> to compare the results &ndash; seeing what has changed.</p>
+        <p>This tool will not find out if areas of your site have been vandalised, because there is way too much information to scan and present for that to be viable. Instead, it focuses on compromised file systems, file permissions, and database-stored PHP/Commandr-Code. It only checks staff settings on the local Conversr, not on any other third-party forum.</p>
         <p>It is important that you upload a new copy of this script before you run it, in case this script itself has been compromised.</p>
         <p>This script may take some time to run, as it computes hashes over a large number of files. It requires the 'mysqli' extension for usage on a MySQL database. If a different database is being used, then custom changes will be required to this script.</p>
-        <p>This script cannot extract database access details from your config file because the config file itself (which is an executable file for Composr) may have been configured to give out fake details to this script. Therefore you will need to enter them here, and the config file will only be used for accessing the Composr password (which will be extracted using a non-executive method).</p>
+        <p>This script cannot extract database access details from your config file because the config file itself (which is an executable file) may have been configured to give out fake details to this script. Therefore you will need to enter them here, and the config file will only be used for accessing the maintenance password (which will be extracted using a non-executive method).</p>
 
         <div>
-            <p>Composr maintenance password: <input type="password" name="password" autocomplete="current-password" /></p>
+            <p>maintenance password: <input type="password" name="password" autocomplete="current-password" /></p>
             <p>Database host: <input type="text" name="db_host" value="localhost" /></p>
             <p>Database name: <input type="text" name="db_name" value="cms" /></p>
             <p>Database table prefix: <input type="text" name="db_prefix" value="cms_" /></p>
@@ -207,7 +207,7 @@ END;
         if (preg_match('#^data_custom/errorlog\.php$#', $path) != 0) {
             continue;
         }
-        if (preg_match('#^servers/composr.info/_config\.php$#', $path) != 0) {
+        if (preg_match('#^servers/composr.info/_config\.php$#', $path) != 0) { // LEGACY
             continue;
         }
 
@@ -276,8 +276,8 @@ function rd_do_header()
 <!DOCTYPE html>
 <html lang="EN">
 <head>
-    <title>Composr rootkit detector</title>
-    <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
+    <title>Rootkit detector</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="data/sheet.php?sheet=global" />
     <style>
 END;
@@ -288,7 +288,7 @@ END;
     <meta name="robots" content="noindex, nofollow" />
 </head>
 <body class="website-body" style="margin: 1em;"><div class="global-middle">
-    <h1 class="screen-title">Composr rootkit detector</h1>
+    <h1 class="screen-title">Rootkit detector</h1>
     <form title="Proceed" action="rootkit_detection.php?type=go" method="post">
 END;
 }

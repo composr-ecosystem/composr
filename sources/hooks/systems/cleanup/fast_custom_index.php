@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cleanup_composr_fast_custom_index
+class Hook_cleanup_fast_custom_index
 {
     /**
      * Find details about this cleanup hook.
@@ -37,8 +37,8 @@ class Hook_cleanup_composr_fast_custom_index
         require_lang('search');
 
         $info = [];
-        $info['title'] = do_lang_tempcode('COMPOSR_FAST_CUSTOM_INDEX');
-        $info['description'] = do_lang_tempcode('DESCRIPTION_CLEAR_COMPOSR_FAST_CUSTOM_INDEX');
+        $info['title'] = do_lang_tempcode('FAST_CUSTOM_INDEX');
+        $info['description'] = do_lang_tempcode('DESCRIPTION_CLEAR_FAST_CUSTOM_INDEX');
         $info['type'] = 'cache';
 
         return $info;

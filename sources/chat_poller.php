@@ -40,7 +40,7 @@ function chat_poller()
         /*
         We do let the main code to run this at CHAT_ACTIVITY_PRUNE intervals, so no need to run the commented code below
 
-        require_code('zones'); // Zone is needed because zones are where all Composr pages reside
+        require_code('zones'); // Zone is needed because zones are where all pages reside
         require_code('config'); // Config is needed for much active stuff
         require_code('users'); // Users are important due to permissions
 

@@ -82,7 +82,7 @@ function preload_all_addons_info()
 }
 
 /**
- * Get info about an addon, simulating an extended version of the traditional Composr-addon database row.
+ * Get info about an addon, simulating an extended version of the traditional addon database row.
  *
  * @param  string $addon_name The name of the addon
  * @param  boolean $get_dependencies_on_this Whether to search for dependencies on this

@@ -147,10 +147,10 @@ function opensearch_script()
  * @param  ?boolean $has_heavy_filtering Whether there is heavy filtering (which suggests to use Composr fast custom index) (null: unknown at this point)
  * @return boolean Whether we can
  */
-function can_use_composr_fast_custom_index(string $hook, ?object $db = null, ?string $index_table = null, ?string $search_query = null, ?bool $has_heavy_filtering = null) : bool
+function can_use_fast_custom_index(string $hook, ?object $db = null, ?string $index_table = null, ?string $search_query = null, ?bool $has_heavy_filtering = null) : bool
 {
     if ($search_query !== null) {
-        $tokeniser = Composr_fast_custom_index::get_tokeniser(user_lang());
+        $tokeniser = Fast_custom_index::get_tokeniser(user_lang());
         $ngrams = $tokeniser->query_to_search_tokens($search_query);
     }
 
@@ -160,7 +160,7 @@ function can_use_composr_fast_custom_index(string $hook, ?object $db = null, ?st
         return false; // Blank queries not supported
     }
 
-    if (($search_query !== null) && (Composr_fast_custom_index::max_ngram_size(user_lang()) <= 1)) {
+    if (($search_query !== null) && (Fast_custom_index::max_ngram_size(user_lang()) <= 1)) {
         if (array_unique(array_values($ngrams[0] + $ngrams[1] + $ngrams[2])) !== [true]) {
             return false; // Quoted text not supported in this configuration (because there are only singular ngrams being indexed)
         }
@@ -178,7 +178,7 @@ function can_use_composr_fast_custom_index(string $hook, ?object $db = null, ?st
 
     // Explicit interactive choice...
 
-    $by_url = get_param_integer('keep_composr_fast_custom_index', null);
+    $by_url = get_param_integer('keep_fast_custom_index', null);
     if ($by_url !== null) {
         return ($by_url == 1); // Explicitly specified by URL
     }
@@ -186,7 +186,7 @@ function can_use_composr_fast_custom_index(string $hook, ?object $db = null, ?st
     // Positive, should use for these reasons...
 
     if ($search_query !== null) {
-        $_trigger_ngrams = get_option('composr_fast_custom_index__enable_for_ngrams');
+        $_trigger_ngrams = get_option('fast_custom_index__enable_for_ngrams');
         $trigger_ngrams = ($_trigger_ngrams == '') ? [] : array_map('cms_mb_strtolower', array_map('trim', explode(',', $_trigger_ngrams)));
 
         if (!empty($trigger_ngrams)) {
@@ -196,35 +196,35 @@ function can_use_composr_fast_custom_index(string $hook, ?object $db = null, ?st
         }
     }
 
-    if (($has_heavy_filtering === true) && (get_option('composr_fast_custom_index__enable_for_filtered') == '1')) {
+    if (($has_heavy_filtering === true) && (get_option('fast_custom_index__enable_for_filtered') == '1')) {
         return true; // We will use Composr fast custom index if there's heavy filtering as there'll be a big speed boost
     }
 
-    if ((!$GLOBALS['SITE_DB']->has_full_text()) && (get_option('composr_fast_custom_index__enable_for_no_fulltext') == '1')) {
+    if ((!$GLOBALS['SITE_DB']->has_full_text()) && (get_option('fast_custom_index__enable_for_no_fulltext') == '1')) {
         return true; // No full-text support in database
     }
 
-    if (($search_query !== null) && (is_under_radar($search_query)) && (get_option('composr_fast_custom_index__enable_for_under_radar') == '1')) {
+    if (($search_query !== null) && (is_under_radar($search_query)) && (get_option('fast_custom_index__enable_for_under_radar') == '1')) {
         return true; // Query is very short
     }
 
-    if (($search_query !== null) && (count($ngrams) >= intval(get_option('composr_fast_custom_index__enable_for_minimum_ngram_count')))) {
+    if (($search_query !== null) && (count($ngrams) >= intval(get_option('fast_custom_index__enable_for_minimum_ngram_count')))) {
         return true; // Query is very long
     }
 
     // Explicit configured choice...
 
-    $default_choice = get_value('composr_fast_custom_index__enable_for__' . $hook, '');
+    $default_choice = get_value('fast_custom_index__enable_for__' . $hook, '');
     if ($default_choice != '') {
         return ($default_choice == '1'); // Explicitly specified by config for this hook
     }
 
-    $default_choice = get_value('composr_fast_custom_index__enable_for__' . user_lang(), '');
+    $default_choice = get_value('fast_custom_index__enable_for__' . user_lang(), '');
     if ($default_choice != '') {
         return ($default_choice == '1'); // Explicitly specified by config for current language
     }
 
-    return (get_option('composr_fast_custom_index__enable') == '1');
+    return (get_option('fast_custom_index__enable') == '1');
 }
 
 /**
@@ -232,7 +232,7 @@ function can_use_composr_fast_custom_index(string $hook, ?object $db = null, ?st
  *
  * @package search
  */
-class Composr_fast_custom_index
+class Fast_custom_index
 {
     // Querying...
 
@@ -274,20 +274,20 @@ class Composr_fast_custom_index
 
         // Load configuration
         global $SEARCH_CONFIG_OVERRIDE;
-        if (isset($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__allow_fuzzy_search'])) {
-            $allow_fuzzy_search = ($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__allow_fuzzy_search'] == '1');
+        if (isset($SEARCH_CONFIG_OVERRIDE['fast_custom_index__allow_fuzzy_search'])) {
+            $allow_fuzzy_search = ($SEARCH_CONFIG_OVERRIDE['fast_custom_index__allow_fuzzy_search'] == '1');
         } else {
-            $allow_fuzzy_search = (get_option('composr_fast_custom_index__allow_fuzzy_search') == '1');
+            $allow_fuzzy_search = (get_option('fast_custom_index__allow_fuzzy_search') == '1');
         }
-        if (isset($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__scale_by_commonality'])) {
-            $scale_by_commonality = ($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__scale_by_commonality'] == '1');
+        if (isset($SEARCH_CONFIG_OVERRIDE['fast_custom_index__scale_by_commonality'])) {
+            $scale_by_commonality = ($SEARCH_CONFIG_OVERRIDE['fast_custom_index__scale_by_commonality'] == '1');
         } else {
-            $scale_by_commonality = (get_option('composr_fast_custom_index__scale_by_commonality') == '1');
+            $scale_by_commonality = (get_option('fast_custom_index__scale_by_commonality') == '1');
         }
-        if (isset($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__use_imprecise_ordering'])) {
-            $use_imprecise_ordering = ($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__use_imprecise_ordering'] == '1');
+        if (isset($SEARCH_CONFIG_OVERRIDE['fast_custom_index__use_imprecise_ordering'])) {
+            $use_imprecise_ordering = ($SEARCH_CONFIG_OVERRIDE['fast_custom_index__use_imprecise_ordering'] == '1');
         } else {
-            $use_imprecise_ordering = (get_option('composr_fast_custom_index__use_imprecise_ordering') == '1');
+            $use_imprecise_ordering = (get_option('fast_custom_index__use_imprecise_ordering') == '1');
         }
 
         $lang = user_lang();
@@ -547,7 +547,7 @@ class Composr_fast_custom_index
         $t_rows = $db->query(remove_unneeded_joins_rough($t_rows_sql), $max, $start);
 
         $t_count_sql = '(SELECT COUNT(*) FROM (';
-        if (get_option('composr_fast_custom_index__count_estimate') == '1') {
+        if (get_option('fast_custom_index__count_estimate') == '1') {
             $t_count_sql .= 'SELECT 1 FROM ' . $count_table . ' WHERE 1=1' . $extra_where_clause . $count_extra_where_clause;
         } else {
             $t_count_sql .= 'SELECT 1 FROM ' . $join . ' WHERE 1=1' . $where_clause . $extra_where_clause;
@@ -818,7 +818,7 @@ class Composr_fast_custom_index
 
         static $max_ngram_size = null;
         if ($max_ngram_size === null) {
-            $max_ngram_size = Composr_fast_custom_index::max_ngram_size($lang);
+            $max_ngram_size = Fast_custom_index::max_ngram_size($lang);
         }
 
         $tokeniser = self::get_tokeniser($lang);
@@ -932,7 +932,7 @@ class Composr_fast_custom_index
      */
     public static function max_ngram_size(string $lang) : int
     {
-        return intval(get_value('composr_fast_custom_index__max_ngram_size__' . $lang, get_option('composr_fast_custom_index__max_ngram_size')));
+        return intval(get_value('fast_custom_index__max_ngram_size__' . $lang, get_option('fast_custom_index__max_ngram_size')));
     }
 
     /**
@@ -968,7 +968,7 @@ class Composr_fast_custom_index
         if (!array_key_exists($lang, $stemmer)) {
             $stemmer[$lang] = null;
             if (((is_file(get_file_base() . '/sources/lang_stemmer_' . $lang . '.php')) || (is_file(get_file_base() . '/sources_custom/lang_stemmer_' . $lang . '.php'))) && (!in_safe_mode())) {
-                if (get_option('composr_fast_custom_index__do_stemming') === '1') {
+                if (get_option('fast_custom_index__do_stemming') === '1') {
                     require_code('lang_stemmer_' . $lang);
                     $stemmer[$lang] = object_factory('Stemmer_' . $lang);
                 }
@@ -2994,7 +2994,7 @@ function build_search_results_interface(array $results, int $start, int $max, st
             continue; // This has been blanked out due to insufficient access permissions or some other reason
         }
 
-        $content_type = convert_composr_type_codes('search_hook', $result['type'], 'content_type');
+        $content_type = convert_software_type_codes('search_hook', $result['type'], 'content_type');
         $id = null;
         if ($content_type != '') {
             require_code('content');

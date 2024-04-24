@@ -65,20 +65,20 @@ function init__content()
  * @param  MEMBER $member_id User to check
  * @param  ID_TEXT $content_type Content type
  * @param  ID_TEXT $content_id Content ID
- * @param  ID_TEXT $type_has Content type type
+ * @param  ID_TEXT $type_has Content type
  * @return boolean Whether there is permission
  */
 function may_view_content_behind(int $member_id, string $content_type, string $content_id, string $type_has = 'content_type') : bool
 {
-    $permission_module = convert_composr_type_codes($type_has, $content_type, 'permission_module');
+    $permission_module = convert_software_type_codes($type_has, $content_type, 'permission_module');
 
-    $module = convert_composr_type_codes($type_has, $content_type, 'module');
+    $module = convert_software_type_codes($type_has, $content_type, 'module');
     if ($module == '') {
         $module = $content_id;
     }
 
     $category_id = null;
-    $real_content_type = convert_composr_type_codes($type_has, $content_type, 'content_type');
+    $real_content_type = convert_software_type_codes($type_has, $content_type, 'content_type');
     if ($real_content_type != '') {
         $content_type_ob = get_content_object($real_content_type);
         $info = $content_type_ob->info();
@@ -189,14 +189,14 @@ function get_content_object(string $content_type) : ?object
 /**
  * Find a different content type code from the one had.
  *
- * @param  ID_TEXT $type_has Content type type we know
+ * @param  ID_TEXT $type_has Content type we know
  * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permission_module module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @param  ID_TEXT $type_id Content type ID we know
  * @param  ID_TEXT $type_wanted Desired content type
  * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permission_module module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
- * @return mixed Corrected content type type (blank: could not find)
+ * @return mixed Corrected content type (blank: could not find)
  */
-function convert_composr_type_codes(string $type_has, string $type_id, string $type_wanted)
+function convert_software_type_codes(string $type_has, string $type_id, string $type_wanted)
 {
     $real_type_wanted = $type_wanted;
 
@@ -226,14 +226,14 @@ function convert_composr_type_codes(string $type_has, string $type_id, string $t
 }
 
 /**
- * Find content type info, for a particular content type type we know.
+ * Find content type info, for a particular content type we know.
  *
- * @param  ID_TEXT $type_has Content type type we know
+ * @param  ID_TEXT $type_has Content type we know
  * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permission_module module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @param  ID_TEXT $type_id Content type ID we know
  * @return array Content type info list (blank: could not find)
  */
-function convert_composr_type_codes_multiple(string $type_has, string $type_id) : array
+function convert_software_type_codes_multiple(string $type_has, string $type_id) : array
 {
     $type_id = preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $type_id);
 

@@ -348,7 +348,7 @@ function find_lang_content_names(array $lang_ids) : array
         }
         if ($or_list != '') {
             $info = null;
-            $cma_hook = convert_composr_type_codes('table', $field['m_table'], 'content_type');
+            $cma_hook = convert_software_type_codes('table', $field['m_table'], 'content_type');
             if ($cma_hook !== null) {
                 $ob = get_content_object($cma_hook);
                 if ($ob !== null) {

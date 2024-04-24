@@ -17,7 +17,7 @@
   Stop Forum Spam syndicates to Tornevall automatically and recommends checking the Tornevall blocklist first, using
   Stop Forum Spam as a fallback. This coupling of two services would make hook implementation complex as Tornevall would
   need to override Stop Forum Spam if it runs.
-  Furthermore, Tornevall acts as an RBL and uses the RBL option in Composr which is different from how we check
+  Furthermore, Tornevall acts as an RBL and uses the RBL option in the software which is different from how we check
   Stop Forum Spam. Therefore, the hooks would also need to specify RBL domain when applicable so antispam.php runs the hook
   checks for defined domains that exist in the hook, and then fallback to its basic implementation here otherwise.
   Finally, hooks must be able to define privacy policy information specific to its service which can be fetched in the
@@ -129,7 +129,7 @@ function check_rbls(bool $page_level = false, ?string $user_ip = null)
         return;
     }
 
-    // Check Composr bans / caching
+    // Check software bans / caching
     require_code('global4');
     $is_already_ip_banned = ip_banned($user_ip, true, true);
     if ($is_already_ip_banned === true) {

@@ -488,7 +488,7 @@ function wysiwygify_media_set(string $semihtml) : string
  *
  * @param  LONG_TEXT $semihtml The Semi-HTML to be converted
  * @param  boolean $force Whether to force full conversion regardless of settings
- * @param  boolean $quick Whether to trust the HTML is valid rather than cleaning it up (e.g. for Composr-generated HTML)
+ * @param  boolean $quick Whether to trust the HTML is valid rather than cleaning it up (e.g. for software-generated HTML)
  * @param  ?MEMBER $member_id Member to do as (null: current member)
  * @return LONG_TEXT The equivalent Comcode
  */
@@ -525,7 +525,7 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
 
     // Special clean up we always do regardless...
 
-    // Composr markers
+    // Software markers
     remove_wysiwyg_comcode_markup($semihtml);
 
     // Links should be kept from being base URL-specific

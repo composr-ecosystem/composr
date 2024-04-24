@@ -350,7 +350,7 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
 }
 
 /**
- * Find the non-bundled addons available on composr.app.
+ * Find the non-bundled addons available on the homesite.
  *
  * @return array Map of addon ID to addon title, could be empty if an error occurred
  */
@@ -395,7 +395,7 @@ function find_installed_addons(bool $just_non_bundled = false, bool $get_info = 
     $hooks = find_all_hooks('systems', 'addon_registry');
 
     if (!$just_non_bundled) {
-        // Find installed addons- file system method (for coded addons). Coded addons don't need to be in the DB, although they will be if they are (re)installed after the original Composr installation finished.
+        // Find installed addons- file system method (for coded addons). Coded addons don't need to be in the DB, although they will be if they are (re)installed after the original installation finished.
         foreach ($hooks as $addon_name => $hook_dir) {
             if (substr($addon_name, 0, 4) != 'core') {
                 $hook_path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name) . '.php';
@@ -433,9 +433,9 @@ function find_addon_dependencies_on(string $addon_name) : array
     $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 0], 'ORDER BY addon_name'));
 
     // From core addons
-    static $composr_addon_dep_cache = null;
-    if ($composr_addon_dep_cache === null) {
-        $composr_addon_dep_cache = [];
+    static $software_addon_dep_cache = null;
+    if ($software_addon_dep_cache === null) {
+        $software_addon_dep_cache = [];
         $hooks = find_all_hooks('systems', 'addon_registry');
         foreach (array_keys($hooks) as $hook) {
             $_found_hook = false;
@@ -457,11 +457,11 @@ function find_addon_dependencies_on(string $addon_name) : array
             } else {
                 $dep = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
             }
-            $composr_addon_dep_cache[$hook] = $dep['requires'];
+            $software_addon_dep_cache[$hook] = $dep['requires'];
         }
     }
     $list_b = [];
-    foreach ($composr_addon_dep_cache as $hook => $hook_requires) {
+    foreach ($software_addon_dep_cache as $hook => $hook_requires) {
         if (in_array($addon_name, $hook_requires)) {
             $list_b[] = $hook;
         }
@@ -736,7 +736,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
 }
 
 /**
- * Find whether a particular feature is available to Composr (e.g. it's an addon).
+ * Find whether a particular feature is available to the software (e.g. it's an addon).
  *
  * @param  ID_TEXT $dependency Feature name
  * @return boolean Whether it is
@@ -746,7 +746,8 @@ function has_feature(string $dependency) : bool
     // Normalise
     $dependency = str_replace(' ', '', cms_strtolower_ascii(preg_replace('# (enabled|needed|required)$#', '', $dependency)));
 
-    $remapping = [ // Useful for carrying legacy remappings, currently there are none
+    $remapping = [ // LEGACY: Useful for carrying legacy remappings
+        'unvalidated' => 'validation'
     ];
     if (array_key_exists($dependency, $remapping)) {
         $dependency = $remapping[$dependency];
@@ -1117,7 +1118,7 @@ UPGRADING ADDONS
 */
 
 /**
- * Find updated addons via checking the composr.app web service.
+ * Find updated addons via checking the homesite web service.
  *
  * @return array List of addons updated
  */

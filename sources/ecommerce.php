@@ -448,7 +448,7 @@ function get_product_details_url(string $type_code, bool $post_purchase_access_u
             if ($module != '') {
                 $category_id = $permission_product_rows[$permission_product_id]['p_category'];
 
-                $resource_type = convert_composr_type_codes('module', $module, 'content_type');
+                $resource_type = convert_software_type_codes('module', $module, 'content_type');
                 if ($resource_type != '') {
                     $content_type_ob = get_content_object($resource_type);
                     $cma_info = $content_type_ob->info();

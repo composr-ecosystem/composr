@@ -13,7 +13,7 @@
  * @package    composr_homesite_support_credits
  */
 
-function get_composr_support_timings_wrap($open, $topic_id, $ticket_type_name, $say_more = false)
+function get_homesite_support_timings_wrap($open, $topic_id, $ticket_type_name, $say_more = false)
 {
     if (get_forum_type() != 'cns') {
         return new Tempcode();

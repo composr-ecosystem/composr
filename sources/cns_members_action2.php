@@ -117,7 +117,8 @@ function member_get_spreadsheet_headings() : array
 }
 
 /**
- * If we are using human names for usernames, a conflict is likely. Store a suffixed variety. Maybe later Composr will strip these suffixes out in some contexts.
+ * If we are using human names for usernames, a conflict is likely. Store a suffixed variety.
+ * TODO: Maybe later the software will strip these suffixes out in some contexts.
  *
  * @param  SHORT_TEXT $username The desired human name for the member profile
  * @return SHORT_TEXT A unique username

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__enable
+class Hook_config_fast_custom_index__enable
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_composr_fast_custom_index__enable
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__ENABLE',
+            'human_name' => 'FAST_CUSTOM_INDEX__ENABLE',
             'type' => 'tick',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX_ENABLE',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__enable',
+            'group' => 'FAST_CUSTOM_INDEX_ENABLE',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__enable',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 1,

@@ -125,7 +125,7 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $
     // Get a list of tables
     $tables = $GLOBALS['SITE_DB']->query_select($db_meta, ['DISTINCT m_table AS m_table']);
 
-    // For each table, build up a Composr table creation command
+    // For each table, build up a site table creation command
     foreach ($tables as $_table) {
         $table = $_table['m_table'];
 
@@ -204,7 +204,7 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $
         fwrite($log_file, 'Backed up table ' . $table . "\n");
     }
 
-    // For each index, build up a Composr index creation command
+    // For each index, build up a site index creation command
     $indices = $GLOBALS['SITE_DB']->query_select($db_meta_indices, ['*']);
     foreach ($indices as $index) {
         if (fwrite($install_php_file, preg_replace('#^#m', '//', '    $GLOBALS[\'SITE_DB\']->create_index(\'' . $index['i_table'] . '\', \'' . $index['i_name'] . '\', [\'' . str_replace(',', '\', \'', $index['i_fields']) . '\'], null, true);' . "\n")) == 0) {
@@ -227,6 +227,7 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $
  */
 function make_backup(string $file, string $b_type = 'full', int $max_size = 100, $callback = null) : object // This is called as a shutdown function and thus cannot script-timeout
 {
+    require_lang('backups');
     cms_disable_time_limit();
 
     // Ensure directory is there...
@@ -244,7 +245,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
     cms_ini_set('log_errors', '1');
     cms_ini_set('error_log', $log_file_path);
 
-    fwrite($log_file, 'This is a log file for a Composr backup. The backup is not complete unless this log terminates with a completion message.' . "\n\n");
+    fwrite($log_file, do_lang('BACKUP_LOG_START') . "\n\n");
 
     // Open archive...
 
@@ -416,7 +417,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
 
 /**
  * Find which directories to backup.
- * We only backup directories that we know as Composr ones (users put all kinds of stuff in root directories that would not be feasible to include in the backup scope).
+ * We only backup directories that we know as software ones (users put all kinds of stuff in root directories that would not be feasible to include in the backup scope).
  *
  * @return array A list of directories to backup
  */

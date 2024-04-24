@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cron_composr_fast_custom_index
+class Hook_cron_fast_custom_index
 {
     /**
      * Get info from this hook.

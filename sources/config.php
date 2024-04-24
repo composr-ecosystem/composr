@@ -224,7 +224,7 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
             case 'language':
                 $default = '';
                 break;
-            case 'composr_version':
+            case 'software_version':
                 require_code('version2');
                 $default = get_version_dotted();
                 break;

@@ -410,9 +410,9 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
         require_code('database_search');
         foreach ($_postdetails as $post) {
             if ($forum_id === null) {
-                Composr_fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_pposts_fulltext_index', ['i_post_id' => $post['id']]);
+                Fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_pposts_fulltext_index', ['i_post_id' => $post['id']]);
             } else {
-                Composr_fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_posts_fulltext_index', ['i_post_id' => $post['id']]);
+                Fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_posts_fulltext_index', ['i_post_id' => $post['id']]);
             }
         }
     }

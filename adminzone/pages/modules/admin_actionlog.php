@@ -368,7 +368,6 @@ class Module_admin_actionlog
 
                 $mode = array_key_exists('l_reason', $myrow) ? 'cns' : 'cms';
                 $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode], '_SELF');
-                $mode_nice = ($mode == 'cms') ? 'Composr' : 'Conversr';
                 $date = hyperlink($url, get_timezoned_date_time($myrow['date_and_time']), false, true, '#' . strval($myrow['id']), null, null, null, '_top');
 
                 if ($myrow['param_a'] !== null) {

@@ -176,10 +176,10 @@ function find_search_suggestions(string $request, string $search_type = '') : ar
 
     if ($search_type != '') {
         require_code('content');
-        $seo_type = convert_composr_type_codes('search_hook', $search_type, 'seo_type_code');
+        $seo_type = convert_software_type_codes('search_hook', $search_type, 'seo_type_code');
 
         if ($seo_type != '') {
-            $content_type = convert_composr_type_codes('search_hook', $search_type, 'content_type');
+            $content_type = convert_software_type_codes('search_hook', $search_type, 'content_type');
 
             // Based on keywords
             if ((has_privilege(get_member(), 'autocomplete_keyword_' . $content_type)) && (count($suggestions) < MAXIMUM_AUTOCOMPLETE_SUGGESTIONS)) {

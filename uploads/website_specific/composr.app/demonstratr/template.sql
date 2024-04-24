@@ -2724,7 +2724,7 @@ insert into `cms_addons_files` values('core','themes/default/templates/LOOKUP_IP
  ('core_addon_management','imports/addons/.htaccess','2544'),
  ('core_addon_management','imports/addons/index.html','2545'),
  ('core_addon_management','lang/EN/addons.ini','2546'),
- ('core_addon_management','sources/hooks/systems/ajax_tree/choose_composr_homesite_addon.php','2547'),
+ ('core_addon_management','sources/hooks/systems/ajax_tree/choose_homesite_addon.php','2547'),
  ('core_addon_management','themes/default/images/icons/14x14/install.png','2548'),
  ('core_addon_management','themes/default/images/icons/14x14/reinstall.png','2549'),
  ('core_addon_management','themes/default/images/icons/14x14/upgrade.png','2550'),

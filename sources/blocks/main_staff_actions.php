@@ -230,7 +230,6 @@ PHP;
 
                 $mode = array_key_exists('l_reason', $myrow) ? 'cns' : 'cms';
                 $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode], get_module_zone('admin_actionlog'));
-                $mode_nice = ($mode == 'cms') ? 'Composr' : 'Conversr';
                 $date = hyperlink(
                     $url,
                     symbol_tempcode('MAKE_RELATIVE_DATE', [strval($myrow['date_and_time']), '1'], [ENTITY_ESCAPED]),

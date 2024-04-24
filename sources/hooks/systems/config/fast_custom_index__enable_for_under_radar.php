@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__max_ngram_size
+class Hook_config_fast_custom_index__enable_for_under_radar
 {
     /**
      * Gets the details relating to the config option.
@@ -31,13 +31,14 @@ class Hook_config_composr_fast_custom_index__max_ngram_size
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__MAX_NGRAM_SIZE',
-            'type' => 'integer',
+            'human_name' => 'FAST_CUSTOM_INDEX__ENABLE_FOR_UNDER_RADAR',
+            'type' => 'tick',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__max_ngram_size',
+            'group' => 'FAST_CUSTOM_INDEX_ENABLE',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__enable_for_under_radar',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 6,
             'required' => true,
             'public' => false,
             'addon' => 'search',

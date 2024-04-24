@@ -48,7 +48,7 @@ class Hook_commandr_command_clear_caches
             }
         }
 
-        $messages = static_evaluate_tempcode(composr_cleanup($_caches));
+        $messages = static_evaluate_tempcode(run_cleanup_tools($_caches));
         if ($messages == '') {
             $messages = do_lang('SUCCESS');
         }

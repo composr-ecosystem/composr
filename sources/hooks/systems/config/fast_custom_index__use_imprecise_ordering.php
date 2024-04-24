@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__enable_for_under_radar
+class Hook_config_fast_custom_index__use_imprecise_ordering
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,13 @@ class Hook_config_composr_fast_custom_index__enable_for_under_radar
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_UNDER_RADAR',
+            'human_name' => 'FAST_CUSTOM_INDEX__USE_IMPRECISE_ORDERING',
             'type' => 'tick',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX_ENABLE',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__enable_for_under_radar',
+            'group' => 'FAST_CUSTOM_INDEX',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__use_imprecise_ordering',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 6,
             'required' => true,
             'public' => false,
             'addon' => 'search',

@@ -122,7 +122,7 @@ function get_details_behind_feedback_code(string $content_type, string $content_
 
     $real_feedback_type = _real_feedback_type($content_type);
 
-    $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
+    $real_content_type = convert_software_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
     if ($real_content_type != '') {
         require_code('content');
         $cma_ob = get_content_object($real_content_type);
@@ -668,7 +668,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
                 $content_title = do_lang('POST_IN', $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($content_id)])]));
             }
 
-            $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
+            $real_content_type = convert_software_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
 
             if (($submitter !== null) && (!is_guest($submitter))) {
                 // Credit points
@@ -734,12 +734,12 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
                     $content_page_link = url_to_page_link($_safe_content_url);
                     require_code('syndication');
                     if ($content_title == '') {
-                        syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
+                        syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_software_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                     } else {
                         if ($content_type_title == $real_content_type) {
                             $activity_type .= '_UNTYPED';
                         }
-                        syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
+                        syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_software_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                     }
                 }
             }
@@ -990,7 +990,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
     }
 
     if ((!$private) && ($post != '')) {
-        $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
+        $real_content_type = convert_software_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
 
         $content_type_title = ($real_content_type == '') ? $real_feedback_type : $real_content_type;
         if ($cma_info !== null) {
@@ -1040,12 +1040,12 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
                 $content_page_link = url_to_page_link($_safe_content_url);
                 require_code('syndication');
                 if ($content_title == '') {
-                    syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
+                    syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_software_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                 } else {
                     if ($content_type_title == $real_content_type) {
                         $activity_type .= '_UNTYPED';
                     }
-                    syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
+                    syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_software_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                 }
             }
         }

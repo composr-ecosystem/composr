@@ -20,7 +20,7 @@
 
 /*
 This file is designed to be able to work as standalone, should you want to hook rewrite rules directly into it.
-This allows static cache to run even when Composr is itself not booting at all.
+This allows static cache to run even when the software is itself not booting at all.
 */
 
 require_once('../sources/static_cache.php');
@@ -28,7 +28,7 @@ require_once('../sources/static_cache.php');
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
-// Find Composr base directory, and chdir into it
+// Find base directory, and chdir into it
 global $FILE_BASE;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE, 2);

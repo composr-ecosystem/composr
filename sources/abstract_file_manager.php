@@ -426,7 +426,7 @@ function _access_string(int $access_int) : string
 }
 
 /**
- * Re-scope a Composr path to a path suitable for the AFM connection.
+ * Re-scope a software path to a path suitable for the AFM connection.
  *
  * @param  PATH $path Original path
  * @return PATH Re-scoped path

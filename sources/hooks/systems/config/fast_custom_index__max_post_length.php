@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__max_post_length
+class Hook_config_fast_custom_index__max_post_length
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_composr_fast_custom_index__max_post_length
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__MAX_POST_LENGTH',
+            'human_name' => 'FAST_CUSTOM_INDEX__MAX_POST_LENGTH',
             'type' => 'integer',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__max_post_length',
+            'group' => 'FAST_CUSTOM_INDEX',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__max_post_length',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

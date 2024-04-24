@@ -227,7 +227,7 @@ class __extra_logging_test_set extends cms_test_case
 
         clearstatcache();
         $size_before = filesize($path);
-        error_log('Testing');
+        error_log('Composr: [DEBUG] This is a test log');
         clearstatcache();
         $size_after = filesize($path);
         $this->assertTrue($size_after > $size_before);

@@ -159,7 +159,7 @@ function get_group_class() : string
 }
 
 /**
- * The LDAP group that maps to the default Composr group.
+ * The LDAP group that maps to the default software group.
  *
  * @return string The group
  */
@@ -169,7 +169,7 @@ function get_mapped_users_group() : string
 }
 
 /**
- * The LDAP group that maps to the first administrative group in Composr (db_get_first_id()+1).
+ * The LDAP group that maps to the first administrative group in the software (db_get_first_id()+1).
  *
  * @return string The group
  */
@@ -402,7 +402,7 @@ function cns_ldap_authorise_login(string $cn, ?string $password) : array
     if ($test !== false) { // Note, for Windows Active Directory the CN is the full username, not the login name. Therefore users log in with this.
         cns_ldap_bind(); // Rebind under normal name, so we're not stuck on this user's bind
 
-        // We only get here if we are authorised. As to not complicate Composr's authentication chain, we trick it by setting our db password to that of our given password, ONLY once LDAP login is confirmed.
+        // We only get here if we are authorised. As to not complicate the software's authentication chain, we trick it by setting our db password to that of our given password, ONLY once LDAP login is confirmed.
         return ['m_pass_hash_salted' => $password, 'm_password_compat_scheme' => 'md5']; // A bit of a hack: actually we are doing a plain text check, and the 'hashed' passwords were both never hashed: still works
     }
     if (get_param_integer('keep_ldap_debug', 0) == 1) {
@@ -421,10 +421,10 @@ function cns_ldap_authorise_login(string $cn, ?string $password) : array
 }
 
 /**
- * Find the Composr member-ID for an LDAP username.
+ * Find the site member-ID for an LDAP username.
  *
  * @param  string $cn The username
- * @return ?integer The Composr member-ID (null: none)
+ * @return ?MEMBER The site member-ID (null: none)
  */
 function cns_member_ldapcn_to_cnsid(string $cn) : ?int
 {
@@ -436,9 +436,9 @@ function cns_member_ldapcn_to_cnsid(string $cn) : ?int
 }
 
 /**
- * Find the LDAP username for a Composr member-ID.
+ * Find the LDAP username for a site member-ID.
  *
- * @param  integer $id The Composr member-ID
+ * @param  MEMBER $id The site member-ID
  * @return ?SHORT_TEXT The username (null: none)
  */
 function cns_member_cnsid_to_ldapcn(int $id) : ?string
@@ -490,10 +490,10 @@ function cns_get_all_ldap_groups() : array
 }
 
 /**
- * Find the Composr-ID for a named LDAP usergroup.
+ * Find the site ID for a named LDAP usergroup.
  *
  * @param  string $cn The usergroup
- * @return ?GROUP The Composr-ID (null: none)
+ * @return ?GROUP The site ID (null: none)
  */
 function cns_group_ldapcn_to_cnsid(string $cn) : ?int
 {
@@ -801,10 +801,10 @@ function cns_ldap_get_member_primary_group(int $member_id) : int
 }
 
 /**
- * Find the Composr-ID for an LDAP usergroup-ID. POSIX Only.
+ * Find the site ID for an LDAP usergroup-ID. POSIX Only.
  *
  * @param  integer $gid The LDAP ID
- * @return ?GROUP The Composr-ID (null: could not find)
+ * @return ?GROUP The site ID (null: could not find)
  */
 function cns_group_ldapgid_to_cnsid(int $gid) : ?int
 {

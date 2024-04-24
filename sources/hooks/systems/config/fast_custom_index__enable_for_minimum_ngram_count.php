@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__count_estimate
+class Hook_config_fast_custom_index__enable_for_minimum_ngram_count
 {
     /**
      * Gets the details relating to the config option.
@@ -31,13 +31,14 @@ class Hook_config_composr_fast_custom_index__count_estimate
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__COUNT_ESTIMATE',
-            'type' => 'tick',
+            'human_name' => 'FAST_CUSTOM_INDEX__ENABLE_FOR_MINIMUM_NGRAM_COUNT',
+            'type' => 'integer',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__count_estimate',
+            'group' => 'FAST_CUSTOM_INDEX_ENABLE',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__enable_for_minimum_ngram_count',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
             'addon' => 'search',
@@ -55,6 +56,6 @@ class Hook_config_composr_fast_custom_index__count_estimate
             return null;
         }
 
-        return '1';
+        return '10';
     }
 }

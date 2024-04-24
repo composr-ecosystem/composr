@@ -292,7 +292,7 @@ function cns_display_spacer_post(string $linked_type, string $linked_id) : array
     $new_post = null;
 
     require_code('content');
-    $linked_type = convert_composr_type_codes('feedback_type_code', $linked_type, 'content_type');
+    $linked_type = convert_software_type_codes('feedback_type_code', $linked_type, 'content_type');
     if ($linked_type != '') {
         require_code('content');
         $cma_ob = get_content_object($linked_type);

@@ -18,7 +18,7 @@
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
-// Find Composr base directory, and chdir into it
+// Find base directory, and chdir into it
 global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
@@ -79,8 +79,8 @@ function code_editor_do_header(string $type, string $target = '_top')
 <!DOCTYPE html>
 <html lang="EN">
 <head>
-    <title>Composr code editor</title>
-    <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
+    <title>Code editor</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="data/sheet.php?sheet=global" />
     <style>';
     echo '
@@ -169,7 +169,7 @@ function code_editor_do_login()
         $ftp_folder = $SITE_INFO['ftp_folder'];
     }
     echo <<<END
-    <h1 class="screen-title">Composr Code Editor</h1>
+    <h1 class="screen-title">Code Editor</h1>
 END;
     if (isset($_POST['given_password'])) {
         echo '<p><strong>Invalid password</strong></p>';
@@ -182,7 +182,7 @@ END;
         <label for="given_password">Maintenance Password: <input type="password" name="given_password" autocomplete="current-password" id="given_password" class="form-control" /></label>
     </p>
     <hr />
-    <p>If you need to edit original Composr files (rather than overriding or making custom ones), then you probably need to enter FTP details below. This will allow this editor to save via FTP, and if no username is given, it will try and save directly.</p>
+    <p>If you need to edit original software files (rather than overriding or making custom ones), then you probably need to enter FTP details below. This will allow this editor to save via FTP, and if no username is given, it will try and save directly.</p>
     <table>
         <tr><th>FTP Host</th><td><input size="50" type="text" name="ftp_domain" class="form-control" value="{$_ftp_domain}" /></td></tr>
         <tr><th>FTP Path</th><td><input size="50" type="text" name="ftp_folder" class="form-control" value="{$_ftp_folder}" /></td></tr>
@@ -266,7 +266,7 @@ function do_get_path(string $given_password)
 END;
     }
     echo <<<END
-    <h1 class="screen-title">Composr Code Editor</h1>
+    <h1 class="screen-title">Code Editor</h1>
     <p>
         New File: <input type="text" name="path_new" class="form-control" />
     </p>
@@ -406,7 +406,7 @@ function do_page(string $given_password, string $path)
         $line = (array_key_exists('line', $_POST) ? intval($_POST['line']) : (array_key_exists('line', $_POST) ? intval($_POST['line']) : 0));
         $_path = code_editor_escape_html($path);
         echo <<<END
-<h1 class="screen-title">Composr <a onclick="window.back(); return false;" href="code_editor.php">Code Editor</a>: Editing {$_path}</h1>
+<h1 class="screen-title"><a onclick="window.back(); return false;" href="code_editor.php">Code Editor</a>: Editing {$_path}</h1>
 <input type="hidden" name="path" value="{$_path}" />
 END;
         foreach ($_POST as $key => $val) {
