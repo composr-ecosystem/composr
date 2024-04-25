@@ -202,7 +202,6 @@ class Module_admin_cmsusers
 
         // Sortable validation
         $sortables = [
-            'website_name' => do_lang_tempcode('CMS_WEBSITE_NAME'),
             'hittime' => do_lang_tempcode('CMS_LAST_ADMIN_ACCESS'),
             'l_version' => do_lang_tempcode('CMS_VERSION'),
             'num_members' => do_lang_tempcode('CMS_COUNT_MEMBERS'),
@@ -218,14 +217,15 @@ class Module_admin_cmsusers
         }
         $order_by = 'ORDER BY ' . $sortable . ' ' . $sort_order;
 
-        $select = 'website_url,website_name,MAX(l_version) AS l_version,MAX(hittime) AS hittime,MAX(num_members) AS num_members,MAX(num_hits_per_day) AS num_hits_per_day';
+        $select = 'website_url,MAX(l_version) AS l_version,MAX(hittime) AS hittime,MAX(num_members) AS num_members,MAX(num_hits_per_day) AS num_hits_per_day';
         $where = 'website_url NOT LIKE \'%.composr.info%\''; // LEGACY
         if (!$GLOBALS['DEV_MODE']) {
-            $where .= ' AND ' . db_string_not_equal_to('website_name', '') . ' AND ' . db_string_not_equal_to('website_name', 'localhost') . ' AND ' . db_string_not_equal_to('website_name', '(unnamed)');
+            // Ignore local installs
+            $where .= ' AND ' . db_string_not_equal_to('website_url', '%://localhost%') . ' AND ' . db_string_not_equal_to('website_url', '%://127.0.0.1%') . ' AND ' . db_string_not_equal_to('website_url', '%://192.168.%') . ' AND ' . db_string_not_equal_to('website_url', '%://10.0.%');
         }
-        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ' GROUP BY website_url,website_name ' . $order_by;
+        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ' GROUP BY website_url ' . $order_by;
         $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start);
-        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) AS num_sites FROM (SELECT DISTINCT website_name,website_url FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ') AS logged_sites');
+        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) AS num_sites FROM (SELECT DISTINCT website_url FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ') AS logged_sites');
         $max_rows = $_max_rows[0]['num_sites'];
 
         $map = [
@@ -257,8 +257,8 @@ class Module_admin_cmsusers
             $rt['HITTIME'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60)));
             $rt['HITTIME_2'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60 / 24)));
 
-            if ($i < 100) {
-                $active = get_value_newer_than('testing__' . $r['website_url'] . '/data/installed.php', time() - 60 * 60 * 10, true);
+            if ($rt['HITTIME_2'] < 365) { // Do not check install status of sites inactive for more than a year; no use
+                $active = get_value_newer_than('testing__' . $r['website_url'] . '/data/installed.php', time() - 60 * 60 * 24, true);
                 if ($active === null) {
                     $test = cms_http_request($r['website_url'] . '/data/installed.php', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => (1024 * 4), 'ua' => get_brand_base_url() . ' install stats', 'timeout' => 3.0]);
                     if ($test->data === 'Yes') {
@@ -284,10 +284,10 @@ class Module_admin_cmsusers
 
             $rt['NUM_HITS_PER_DAY'] = integer_format($r['num_hits_per_day']);
 
-            $current = $GLOBALS['SITE_DB']->query_select('logged', ['l_version', 'num_members', 'num_hits_per_day', 'hittime'], ['website_url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
+            $current = $GLOBALS['SITE_DB']->query_select('logged', ['website_name', 'l_version', 'num_members', 'num_hits_per_day', 'hittime'], ['website_url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
 
             $map = [
-                hyperlink($r['website_url'], $r['website_name'], true, true, $r['website_url']),
+                hyperlink($r['website_url'], $current[0]['website_name'], true, true, $r['website_url']),
                 do_lang_tempcode(
                     '_CMS_LAST_ADMIN_ACCESS',
                     escape_html(do_lang('_AGO', do_lang('DAYS', integer_format($rt['HITTIME_2'])))),
@@ -300,7 +300,16 @@ class Module_admin_cmsusers
                 do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['num_hits_per_day'])), escape_html($rt['NUM_HITS_PER_DAY'])),
             ];
 
-            $result_entries->attach(results_entry($map, true));
+            $td_class = '';
+            if ($rt['CMS_ACTIVE'] == do_lang('CMS_CHECK_LIMIT')) {
+                $td_class = 'critical'; // Very likely no longer exists / is a dead site
+            } elseif (($rt['HITTIME_2'] >= 30) && ($rt['CMS_ACTIVE'] != do_lang('YES'))) {
+                $td_class = 'disabled'; // Probably uninstalled
+            } elseif ($rt['NOTE'] == do_lang('CMS_MAY_FEATURE')) {
+                $td_class = 'debug'; // Can be featured
+            }
+
+            $result_entries->attach(results_entry($map, true, null, '', $td_class));
         }
 
         $results_table = results_table(do_lang_tempcode('CMS_SITES_INSTALLED'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
