@@ -19,7 +19,7 @@
  */
 
 /*
- * This script is used by the Composr homesite's install statistics service. It simply tells Composr if a website is
+ * This script is used by the homesite's install statistics service. It simply tells the homesite if a website is
  * installed here based on the presence of _config.php. Since htaccess blocks _config.php, we must use an API like
  * this to determine an installation.
  */
@@ -28,7 +28,7 @@ header('X-Robots-Tag: noindex');
 header('Content-Type: text/plain; charset=utf-8');
 @header_remove('x-powered-by'); // Security
 
-// Find Composr base directory
+// Find base directory
 global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
@@ -49,8 +49,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
     }
 }
 
-// To prevent a DOS attack, we don't actually load in the Composr system; we don't need to do so.
-
+// To prevent a DOS attack, we don't actually load in the software API; we don't need to do so.
 if (is_file($FILE_BASE . '/_config.php')) {
     echo 'Yes';
 } else {

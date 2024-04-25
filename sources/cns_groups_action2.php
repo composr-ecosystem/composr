@@ -235,7 +235,7 @@ function cns_delete_group(int $group_id, ?int $target_group = null)
     $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_group_id' => $group_id]);
     $GLOBALS['FORUM_DB']->query_delete('f_groups', ['id' => $group_id], '', 1);
 
-    // No need to delete Composr permission stuff, as it could be on any MSN site, and Composr is coded with a tolerance due to the forum driver system. However, to be tidy...
+    // No need to delete permission stuff, as it could be on any MSN site, and the software is coded with a tolerance due to the forum driver system. However, to be tidy...
     $GLOBALS['SITE_DB']->query_delete('group_privileges', ['group_id' => $group_id]);
     if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
         $GLOBALS['FORUM_DB']->query_delete('group_privileges', ['group_id' => $group_id]);

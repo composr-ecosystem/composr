@@ -600,7 +600,7 @@ class Module_admin_addons
 
         $to_import = get_param_string('to_import', null);
 
-        $field_set->attach(form_input_tree_list(do_lang_tempcode('DOWNLOAD'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_COMPOSR_HOMESITE', escape_html(get_brand_page_url(['page' => 'community'], 'site'))), 'url', null, 'choose_composr_homesite_addon', [], false, $to_import, false, null, true));
+        $field_set->attach(form_input_tree_list(do_lang_tempcode('DOWNLOAD'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_ADDON_HOMESITE', escape_html(get_brand_page_url(['page' => 'community'], 'site'))), 'url', null, 'choose_homesite_addon', [], false, $to_import, false, null, true));
 
         $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD'), 'file', false, null, null, true, 'tar'));
 
@@ -1239,9 +1239,9 @@ class Module_admin_addons
             if ($language != '') {
                 $description_parts[] = do_lang('LANGUAGE') . ': ' . $language;
             }
-            $composr_version = get_theme_option('composr_version', '', $theme);
-            if ($composr_version != '') {
-                $description_parts[] = do_lang('THEME_COMPOSR_VERSION') . ': ' . $composr_version;
+            $cms_version = get_theme_option('cms_version', '', $theme);
+            if ($cms_version != '') {
+                $description_parts[] = do_lang('THEME_SOFTWARE_VERSION') . ': ' . $cms_version;
             }
             $capability_block_layouts = get_theme_option('capability_block_layouts', '', $theme);
             if ($capability_block_layouts == '0') {

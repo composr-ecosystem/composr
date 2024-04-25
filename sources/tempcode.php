@@ -2788,13 +2788,13 @@ function tempcode_error(object $e, string $code)
 {
     $error_message = $e->getMessage();
 
-    $error_label = 'Tempcode error - ' . $error_message . ' - ' . $code;
+    $error_label = $error_message . ' - ' . $code;
 
     if ((function_exists('syslog')) && (GOOGLE_APPENGINE)) {
         syslog(LOG_ERR, $error_label);
     }
     if (php_function_allowed('error_log')) {
-        @error_log('Composr: ' . $error_label, 0);
+        @error_log(brand_name() . ' Tempcode: ERROR ' . $error_label, 0);
     }
 
     fatal_exit($error_message);

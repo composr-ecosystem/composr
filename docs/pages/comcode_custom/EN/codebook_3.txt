@@ -266,7 +266,7 @@ A stack trace indicates the function call chain from the call of the script hand
 
 Lateral reasoning usually allows spotting of the source of a bug in a few seconds, although sometimes it can be more difficult. Often the bug is caused by unexpected parameters, and you can see them reflected in the stack trace and laterally work out why those parameters were passed and thus work out how to solve the problem.
 
-One confusing thing about stack traces is that the error chain is included within the trace. With time you'll learn to read past this and see where the error was actually triggered. Typically anything above the [tt]fatal_exit[/tt] or [tt]composr_error_handler[/tt] function calls relates to the error handling process itself.
+One confusing thing about stack traces is that the error chain is included within the trace. With time you'll learn to read past this and see where the error was actually triggered. Typically anything above the [tt]fatal_exit[/tt] or [tt]cms_error_handler[/tt] function calls relates to the error handling process itself.
 
 [box="Tip"]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/remember.png[/media]
@@ -650,10 +650,10 @@ Values are like hidden configuration options. They are either hidden because the
  - Low-level search tuning:
   - [tt]really_want_highlighting[/tt] -- set this to '1' if you want to force HTML to be converted to Comcode when searches happen, so keyword highlighting works better.
   - [tt]search_days__<search-hook>[/tt] -- set the default day search period for a search hook (e.g. 60, or blank for no limit). This may be set for reasons of user experience, or for performance -- searching without a day constraint is actually faster.
-  - [tt]composr_fast_custom_index__max_ngram_size__<language>[/tt] -- Overrides the maximum ngram size config option for a particular language
-  - [tt]composr_fast_custom_index__enable_for__<search-hook>[/tt] -- Enable the Composr fast custom index for a particular search hook (if you need more fidelity than the regular config allows)
-  - [tt]composr_fast_custom_index__enable_for__<language>[/tt] -- Enable the Composr fast custom index for a particular language (if you need more fidelity than the regular config allows)
-  - [tt]composr_fast_custom_index__startup_hack[/tt] -- Forces the forum post indexer to resume where it left off. Useful when debugging indexing problems.
+  - [tt]fast_custom_index__max_ngram_size__<language>[/tt] -- Overrides the maximum ngram size config option for a particular language
+  - [tt]fast_custom_index__enable_for__<search-hook>[/tt] -- Enable the Composr fast custom index for a particular search hook (if you need more fidelity than the regular config allows)
+  - [tt]fast_custom_index__enable_for__<language>[/tt] -- Enable the Composr fast custom index for a particular language (if you need more fidelity than the regular config allows)
+  - [tt]fast_custom_index__startup_hack[/tt] -- Forces the forum post indexer to resume where it left off. Useful when debugging indexing problems.
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]:
   - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup
@@ -773,7 +773,7 @@ The 'keep' parameters available are:
  - [tt]keep_translate_sort[/tt] -- set this to 'recent' to make the content translation interface show recent strings first; useful during debugging
  - [tt]keep_debug_fs[/tt] -- set this to '1', while in the installer, or logged in as an admin, for disk I/O to be slowed and file system case sensitivity to be checked. Or, to a higher number of milliseconds if you want to introduce fake I/O latency. It is for developer filesystem testing.
  - [tt]keep_manual_import_config[/tt] -- set this to '1' in the import module to disable automatic detection of the import target's database settings from its filesystem config file (if you don't have it, for example)
- - [tt]keep_composr_fast_custom_index[/tt] -- set this to '0' or '1' to override which search engine to use, where possible; 0 for the database's own full-text search, 1 for the Composr fast custom index
+ - [tt]keep_fast_custom_index[/tt] -- set this to '0' or '1' to override which search engine to use, where possible; 0 for the database's own full-text search, 1 for the Composr fast custom index
  - [tt]keep_check_backdoor_ip_dns[/tt] -- set this to '1' to check against hostnames in the [tt]backdoor_ip[/tt] setting
  - [tt]keep_timer_display[/tt] -- set this to '1' if you want quiz timers to show in the quiz module, even to users with the bypass_quiz_timer privilege
  - [tt]keep_expand_sitemap[/tt] -- set this to '1' for all nodes of a sitemap menu to be expanded, with no expand/contract icons (useful for mass-opening all pages on the Sitemap)

@@ -126,7 +126,7 @@ abstract class CSSCleanup
  *
  * This code is an approximation.
  * Even if we did it using a full CSS selector engine, it would still be an approximation.
- * So we have made the decision to hard-code it to Composr's default theme.
+ * So we have made the decision to hard-code it to the software's default theme.
  * Key assumptions made are mentioned within code comments.
  *
  * @package core_themeing
@@ -161,7 +161,7 @@ class DirSimplify extends CSSCleanup
  *
  * This code is an approximation.
  * Even if we did it using a full CSS selector engine, it would still be an approximation.
- * So we have made the decision to hard-code it to Composr's default theme.
+ * So we have made the decision to hard-code it to the software's default theme.
  * Key assumptions made are mentioned within code comments.
  *
  * @package core_themeing

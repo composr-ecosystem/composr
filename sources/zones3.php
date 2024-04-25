@@ -969,7 +969,7 @@ function delete_cms_page(string $zone, string $page, string $type = 'comcode_cus
 
             if (addon_installed('search')) {
                 require_code('database_search');
-                Composr_fast_custom_index::delete_from_index($GLOBALS['SITE_DB'], 'cpages_fulltext_index', ['i_zone_name' => $zone, 'i_page_name' => $page]);
+                Fast_custom_index::delete_from_index($GLOBALS['SITE_DB'], 'cpages_fulltext_index', ['i_zone_name' => $zone, 'i_page_name' => $page]);
             }
         }
 

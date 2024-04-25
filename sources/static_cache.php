@@ -73,7 +73,7 @@ function can_static_cache_request(bool $consider_failover_mode = false) : bool
     if (!web_client_may_use_static_cache(!function_exists('is_guest'), $mode, $reason, $consider_failover_mode)) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC: No, ' . $reason . ' on ' . $url);
+                @error_log(brand_name() . ' static cache: DEBUG No cache because ' . $reason . ' on ' . $url);
             }
         }
 
@@ -84,7 +84,7 @@ function can_static_cache_request(bool $consider_failover_mode = false) : bool
         if (preg_match('#' . $SITE_INFO['static_caching_exclusion_list'] . '#', $url) != 0) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No, pattern-matched URL to exclusion list on ' . $url);
+                    @error_log(brand_name() . ' static cache: DEBUG Pattern-matched URL to exclusion list on ' . $url);
                 }
             }
 
@@ -96,7 +96,7 @@ function can_static_cache_request(bool $consider_failover_mode = false) : bool
         if (preg_match('#' . $SITE_INFO['static_caching_inclusion_list'] . '#', $url) == 0) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No, non-pattern-matched URL to inclusion list on ' . $url);
+                    @error_log(brand_name() . ' static cache: DEBUG Non-pattern-matched URL to inclusion list on ' . $url);
                 }
             }
 
@@ -106,7 +106,7 @@ function can_static_cache_request(bool $consider_failover_mode = false) : bool
         if ((isset($RELATIVE_PATH)) && ($RELATIVE_PATH == '') && ((!isset($_GET['page'])) || ($_GET['page'] == 'home')) && (!empty(array_diff(array_keys($_GET), ['page', 'keep_session', 'keep_devtest', 'keep_failover'])))) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No, home page has spurious parameters, likely a bot probing');
+                    @error_log(brand_name() . ' static cache: DEBUG Home page has spurious parameters, likely a bot probing');
                 }
             }
 
@@ -119,7 +119,7 @@ function can_static_cache_request(bool $consider_failover_mode = false) : bool
                     if ($block_page_from_static_cache_if_present) {
                         if ($debugging) {
                             if (php_function_allowed('error_log')) {
-                                @error_log('SC: No, has ' . $param . ' on ' . $url);
+                                @error_log(brand_name() . ' static cache: DEBUG No cache because it has parameter ' . $param . ' on ' . $url);
                             }
                         }
 
@@ -132,7 +132,7 @@ function can_static_cache_request(bool $consider_failover_mode = false) : bool
 
     if ($debugging) {
         if (php_function_allowed('error_log')) {
-            @error_log('SC: Yes, on ' . $url);
+            @error_log(brand_name() . ' static cache: DEBUG Cached on ' . $url);
         }
     }
 

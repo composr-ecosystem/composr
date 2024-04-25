@@ -257,7 +257,7 @@ function _currency_convert__currency_conv_api($amount, string $from_currency, st
     if (is_array($data)) {
         if (isset($data['error'])) {
             require_code('failure');
-            cms_error_log('currconv.com: ' . $data['error'], 'error_occurred_api');
+            cms_error_log('currconv.com: ERROR ' . $data['error'], 'error_occurred_api');
         } else {
             if (isset($data[$rate_key]['val'])) {
                 $rate = $data[$rate_key]['val'];
@@ -271,7 +271,7 @@ function _currency_convert__currency_conv_api($amount, string $from_currency, st
         }
     } else {
         require_code('failure');
-        cms_error_log('currconv.com: ' . $result->message, 'error_occurred_api');
+        cms_error_log('currconv.com: ERROR ' . $result->message, 'error_occurred_api');
     }
     return null;
 }

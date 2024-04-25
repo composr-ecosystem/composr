@@ -2391,7 +2391,7 @@ p.red-alert,
 div.red-alert,
 p.red-alert {
 	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
-	background-color: {$GET,light_error_background};
+	background-color: {$GET,light_error_background_1};
 	overflow: hidden;
 	{$BETA_CSS_PROPERTY,display: flex;}
 }
@@ -2865,7 +2865,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 
 .box---message-warn {
 	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
-	background-color: {$GET,light_error_background};
+	background-color: {$GET,light_error_background_1};
 }
 
 /* Expanding and contracting, mostly for boxes but not necessarily always */
@@ -3426,6 +3426,40 @@ table.scrollable-inside {
 .results-table > tfoot > tr > td,
 .results-table > tfoot > tr > th {
 	border-bottom: 1px solid {$GET,standard_border};
+}
+
+.results-table .disabled td {
+	/*border-color: {$GET,locked_input_field} !important;*/
+	background-color: {$GET,main_2_background} !important;
+}
+.results-table .zebra-0.debug td {
+	/*border-color: {$GET,light_success_border} !important;*/
+	background-color: {$GET,light_success_background_1} !important;
+}
+.results-table .zebra-1.debug td {
+	/*border-color: {$GET,light_success_border} !important;*/
+	background-color: {$GET,light_success_background_2} !important;
+}
+.results-table .zebra-0.warning td {
+	/*border-color: {$GET,light_warning_border} !important;*/
+	background-color: {$GET,light_warning_background_1} !important;
+}
+.results-table .zebra-1.warning td {
+	/*border-color: {$GET,light_warning_border} !important;*/
+	background-color: {$GET,light_warning_background_2} !important;
+}
+.results-table .zebra-0.error td {
+	/*border-color: {$GET,light_error_border} !important;*/
+	background-color: {$GET,light_error_background_1} !important;
+}
+.results-table .zebra-1.error td {
+	/*border-color: {$GET,light_error_border} !important;*/
+	background-color: {$GET,light_error_background_2} !important;
+}
+.results-table .critical td {
+	/*border-color: {$GET,BW} !important;*/
+	background-color: {$GET,BW} !important;
+	color: {$GET,WB} !important;
 }
 
 table > * > .zebra-0 > th,
@@ -5460,7 +5494,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 input.magic-image-edit-link {
 	font-size: 13px;
 	border: 1px solid {$GET,light_error_border} !important;
-	background-color: {$GET,light_error_background} !important;
+	background-color: {$GET,light_error_background_1} !important;
 	color: {$GET,slightly_seeded_text} !important;
 	text-shadow: 0 0 0;
 }

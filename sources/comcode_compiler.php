@@ -445,7 +445,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
         '<h6>',
         '</h6>',
         '<img( alt="[^"<>]*")?( border="[^"<>]*")?( class="vertical-alignment")? src="[^"<>]*"( style="vertical-align: (top|middle|bottom|baseline)")?( title="[^"<>]*")?\s*/?' . '>',
-        '<a( class="[^"<>]*")? href="[^"<>]*"( rel="[^"<>]*")?( target="[^"<>]*")?( title="[^"<>]*")?( rel="[^"<>]*")?' . '>', // NB: Rel can be tacked on end by another part of Composr
+        '<a( class="[^"<>]*")? href="[^"<>]*"( rel="[^"<>]*")?( target="[^"<>]*")?( title="[^"<>]*")?( rel="[^"<>]*")?' . '>', // NB: Rel can be tacked on end by another part of the software
         '</a>',
         '<span>',
         '<span style="color:\s*\#[A-Fa-f0-9]+;?">',
@@ -455,9 +455,9 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
         '<code>',
         '</code>',
 
-        // Used for testing the Comcode parser
-        '<composr-test>',
-        '</composr-test>',
+        // Used for testing the software parser
+        '<parser-test>',
+        '</parser-test>',
     ];
     foreach ($comcode_parsing_hooks as $comcode_parsing_ob) {
         if (method_exists($comcode_parsing_ob, 'get_allowed_html_seqs')) {

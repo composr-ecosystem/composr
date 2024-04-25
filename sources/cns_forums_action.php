@@ -53,7 +53,7 @@ function cns_make_forum_grouping(string $title, string $description, int $expand
  * @param  SHORT_TEXT $name The name of the forum
  * @param  SHORT_TEXT $description The description for the forum
  * @param  ?AUTO_LINK $forum_grouping_id What forum grouping the forum will be filed with (null: this is the root forum)
- * @param  ?array $access_mapping Permission map (null: do it the standard way, outside of this function). This parameter is for import/compatibility only and works upon an emulation of 'access levels' (a la Composr 2.5/2.6), and it is recommended to use the normal crud_module functionality for permissions setting.
+ * @param  ?array $access_mapping Permission map (null: do it the standard way, outside of this function). This parameter is for import/compatibility only and works upon an emulation of 'access levels', and it is recommended to use the normal crud_module functionality for permissions setting.
  * @param  ?AUTO_LINK $parent_forum The ID of the parent forum (null: this is the root forum)
  * @param  integer $position The position of this forum relative to other forums viewable on the same screen (if parent forum hasn't specified automatic ordering)
  * @param  BINARY $post_count_increment Whether post counts will be incremented if members post in the forum

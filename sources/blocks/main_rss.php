@@ -106,7 +106,7 @@ class Block_main_rss
         if (($error !== null) && (empty($rss_feeds))) {
             $GLOBALS['DO_NOT_CACHE_THIS'] = true;
             require_code('failure');
-            cms_error_log(do_lang('rss:ERROR_HANDLING_RSS_FEED', $url, $error), 'error_occurred_rss');
+            cms_error_log(brand_name() . ': WARNING ' . do_lang('rss:ERROR_HANDLING_RSS_FEED', $url, $error), 'error_occurred_rss');
             if (cron_installed(true)) {
                 if (!$GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {
                     return new Tempcode();

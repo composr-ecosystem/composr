@@ -18,8 +18,6 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: ucwords*/
-
 /*
     main bootstrapping and library code.
     NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
@@ -227,7 +225,7 @@ function init__global2()
     // Initialise some error handling
     error_reporting(E_ALL);
     $HAS_SET_ERROR_HANDLER = false;
-    $DYING_BADLY = false; // If Composr is bailing out uncontrollably, setting this will make sure the error hander does not try and suppress
+    $DYING_BADLY = false; // If the software is bailing out uncontrollably, setting this will make sure the error hander does not try and suppress
 
     if (!function_exists('git_repos')) {
         /**
@@ -249,7 +247,7 @@ function init__global2()
 
     // Dev mode stuff
 
-    /** Whether Composr is running in development mode
+    /** Whether the software is running in development mode
      *
      * @global boolean $DEV_MODE
      */
@@ -259,7 +257,7 @@ function init__global2()
      * @global boolean $XSS_DETECT
      */
     $XSS_DETECT = function_exists('ocp_mark_as_escaped') && $DEV_MODE;
-    /** Whether Composr is running in a more limited development mode, which may make things a bit slower and more verbose, but won't run such severe standard enforcement tricks
+    /** Whether the software is running in a more limited development mode, which may make things a bit slower and more verbose, but won't run such severe standard enforcement tricks
      *
      * @global boolean $SEMI_DEV_MODE
      */
@@ -294,7 +292,7 @@ function init__global2()
     }
 
     // Load most basic config
-    /** Whether Composr is currently running from the 'minikernel' used during installation
+    /** Whether the software is currently running from the 'minikernel' used during installation
      *
      * @global boolean $IN_MINIKERNEL_VERSION
      */
@@ -313,7 +311,7 @@ function init__global2()
         @header('X-XSS-Protection: 1');
     }
     if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) {
-        // Marker that Composr running
+        // Marker of what we are running
         //@header('X-Powered-By: Composr ' . cms_version_pretty() . ' (PHP ' . phpversion() . ')');
         if (!headers_sent()) {
             header('X-Powered-By: Composr'); // Better to keep it vague, for security reasons
@@ -384,7 +382,7 @@ function init__global2()
             require_code('comcode'); // Much output goes through Comcode
         }
     }
-    require_code('zones'); // Zone is needed because zones are where all Composr pages reside
+    require_code('zones'); // Zone is needed because zones are where all pages reside
 
     if ((get_option('single_public_zone') == '1') && ($RELATIVE_PATH == 'site')) {
         get_base_url();/*force calculation first*/
@@ -424,7 +422,7 @@ function init__global2()
     }
 
     // At this point we can display errors nicely
-    set_error_handler('composr_error_handler');
+    set_error_handler('cms_error_handler');
     if (function_exists('register_shutdown_function')) {
         register_shutdown_function('catch_fatal_errors');
     }
@@ -484,7 +482,7 @@ function init__global2()
         modsecurity_workaround_enable();
     }
 
-    // Okay, we've loaded everything critical. Don't need to tell Composr to be paranoid now.
+    // Okay, we've loaded everything critical. Don't need to tell the software to be paranoid now.
     $BOOTSTRAPPING = false;
 
     if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
@@ -1020,7 +1018,7 @@ function monitor_slow_urls()
     if ($slow) {
         require_code('urls');
         if (php_function_allowed('error_log')) {
-            error_log('Profiling: Over time limit @ ' . get_self_url_easy(true) . "\t" . strval($time) . ' secs' . "\t" . date('Y-m-d H:i:s', time()), 0);
+            error_log(brand_name() . ' profiling: INFO request time above monitor_slow_urls @ ' . get_self_url_easy(true) . "\t" . strval($time) . ' secs' . "\t" . date('Y-m-d H:i:s', time()), 0);
         }
     }
 }
@@ -1033,7 +1031,7 @@ function memory_tracking()
     $memory_tracking = intval(get_value('memory_tracking'));
     if (memory_get_peak_usage() > 1024 * 1024 * $memory_tracking) {
         if (php_function_allowed('error_log')) {
-            error_log('Profiling: Memory usage above memory_tracking (' . strval($memory_tracking) . 'MB) @ ' . get_self_url_easy(true), 0);
+            error_log(brand_name() . ' profiling: INFO Memory usage above memory_tracking (' . strval($memory_tracking) . 'MB) @ ' . get_self_url_easy(true), 0);
         }
     }
 }
@@ -1305,7 +1303,7 @@ function peek_suppress_error_death() : bool
 }
 
 /**
- * Composr error catcher for fatal versions.
+ * Software error catcher for fatal versions.
  *
  * @ignore
  */
@@ -1343,16 +1341,16 @@ function catch_fatal_errors()
             case E_COMPILE_WARNING:
             case E_STRICT: // Not used much in PHP, as most of this has now been enforced in the language and E_DEPRECATED tends to be used now.
                 push_suppress_error_death(false); // We can't recover as we've lost our execution track. Force a nice death rather than trying to display a recoverable error.
-                $GLOBALS['DYING_BADLY'] = true; // Tells composr_error_handler to roll through, definitely an error.
+                $GLOBALS['DYING_BADLY'] = true; // Tells software_error_handler to roll through, definitely an error.
                 $GLOBALS['EXITING'] = 2; // Fudge to force a critical error, we're too desperate to show a Tempcode stack trace.
-                composr_error_handler($error['type'], $error['message'], $error['file'], $error['line']);
+                cms_error_handler($error['type'], $error['message'], $error['file'], $error['line']);
                 break;
         }
     }
 }
 
 /**
- * Composr error handler (hooked into PHP error system).
+ * Software error handler (hooked into PHP error system).
  *
  * @param  integer $errno The error type-number
  * @param  PATH $errstr The error message
@@ -1362,7 +1360,7 @@ function catch_fatal_errors()
  *
  * @ignore
  */
-function composr_error_handler(int $errno, string $errstr, string $errfile, int $errline) : bool
+function cms_error_handler(int $errno, string $errstr, string $errfile, int $errline) : bool
 {
     if (((error_reporting() & $errno) !== 0) && (strpos($errstr, 'Illegal length modifier specified')/*Weird random error in dev PHP version*/ === false) || ($GLOBALS['DYING_BADLY'])) {
         $GLOBALS['DYING_BADLY'] = false;
@@ -1379,6 +1377,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
                     set_throw_errors(false);
                 }
                 $type = 'error';
+                $_type = 'ERROR';
                 $syslog_type = LOG_ERR;
                 $handling_method = 'FATAL';
                 break;
@@ -1389,6 +1388,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
             case E_COMPILE_WARNING:
             case E_WARNING:
                 $type = 'warning';
+                $_type = 'WARNING';
                 $syslog_type = LOG_WARNING;
                 $handling_method = 'FATAL';
                 break;
@@ -1396,6 +1396,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
             case E_USER_NOTICE:
             case E_NOTICE:
                 $type = 'notice';
+                $_type = 'INFO';
                 $syslog_type = LOG_NOTICE;
                 $handling_method = 'ATTACH';
                 break;
@@ -1405,8 +1406,9 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
             case E_DEPRECATED:
             default:
                 $type = 'deprecated';
+                $_type = 'WARNING';
                 $syslog_type = LOG_INFO;
-                $handling_method = 'SKIP'; // We always skip these, as they should be fixed during the Composr development cycle and should not concern users. Often we cannot even deal with them until we remove support for an old version, so have to leave a transition period.
+                $handling_method = 'SKIP'; // We always skip these, as they should be fixed during the development cycle and should not concern users. Often we cannot even deal with them until we remove support for an old version, so have to leave a transition period.
                 break;
         }
         if (function_exists('get_option')) {
@@ -1446,7 +1448,8 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
                     syslog($syslog_type, $php_error_label);
                 }
                 if (php_function_allowed('error_log')) {
-                    @error_log('PHP ' . (function_exists('cms_ucwords_ascii') ? cms_ucwords_ascii($type) : ucwords($type)) . ': ' . $php_error_label, 0);
+                    $_type = 'CRITICAL'; // Bailing out on a memory issue is a critical error
+                    @error_log('PHP: ' . $_type . ' ' . $php_error_label, 0);
                 }
 
                 critical_error('EMERGENCY', $errstr . escape_html(' [' . $errfile . ' at ' . strval($errline) . ']'));
@@ -1455,7 +1458,7 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
 
         // Handle the error
         require_code('failure');
-        _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $syslog_type, $handling_method);
+        _cms_error_handler($type, $errno, $errstr, $errfile, $errline, $syslog_type, $handling_method);
         return true; // No bubbling back to PHP
     }
 
@@ -1489,7 +1492,7 @@ function is_browser_decaching() : bool
         return true;
     }
 
-    if (get_value('ran_once') === null) { // Track whether Composr has run at least once
+    if (get_value('ran_once') === null) { // Track whether the software has run at least once
         set_value('ran_once', '1');
         $browser_decaching_cache = true;
         return true;
@@ -1627,10 +1630,10 @@ function cms_version() : int
 }
 
 /**
- * Get the full string version of Composr that you are running, in 'pretty' format.
+ * Get the full string version of the software that you are running, in 'pretty' format.
  * This is (and must be kept) equivalent to get_version_pretty__from_dotted(get_version_dotted()).
  *
- * @return string The string saying the full Composr version number
+ * @return string The string saying the full software version number
  */
 function cms_version_pretty() : string
 {
@@ -1696,9 +1699,9 @@ function get_forum_base_url(bool $forum_base = false) : string
 }
 
 /**
- * Get the Composr cookie path.
+ * Get the site cookie path.
  *
- * @return ?string The Composr cookie path (null: no special path, global)
+ * @return ?string The site cookie path (null: no special path, global)
  */
 function get_cookie_path() : ?string
 {
@@ -1708,9 +1711,9 @@ function get_cookie_path() : ?string
 }
 
 /**
- * Get the Composr cookie domain.
+ * Get the site cookie domain.
  *
- * @return string The Composr cookie domain (blank: current domain)
+ * @return string The site cookie domain (blank: current domain)
  */
 function get_cookie_domain() : string
 {
@@ -1786,7 +1789,7 @@ function in_safe_mode() : bool
 
 /**
  * Find the URL to a certain entry point script, located in the root directory, top level of a zone directory, data directory, or data_custom directory.
- * Why this function? Because Composr allows these to be moved around between zone directories, to suit site .htaccess requirements).
+ * Why this function? Because the software allows these to be moved around between zone directories, to suit site .htaccess requirements).
  *
  * @param  string $name The codename of the needed script
  * @param  boolean $append_keep Whether to append keep variables
@@ -2167,7 +2170,7 @@ function __param(array $array, string $name, $default, bool $integer = false, ?b
 
     $val = $array[$name];
     if (is_array($val)) {
-        $val = @trim(implode(',', $val), ' ,'); // @ because it could be any complex arbitrary data structure (Composr does not do this, but bots may generate such URLs)
+        $val = @trim(implode(',', $val), ' ,'); // @ because it could be any complex arbitrary data structure (the software does not do this, but bots may generate such URLs)
     }
 
     return $val;
@@ -2293,7 +2296,7 @@ function post_param_integer(string $name, $default = false, int $filters = INPUT
  *
  * @param  ID_TEXT $name The name of the parameter to get
  * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined or the empty string (null: allow missing parameter) (false: give error on missing parameter)
- * @param  boolean $not_string_ok If a string is given, use the default parameter rather than giving an error (only use this if you are suffering from a parameter conflict situation between different parts of Composr)
+ * @param  boolean $not_string_ok If a string is given, use the default parameter rather than giving an error (only use this if you are suffering from a parameter conflict situation between different parts of the software)
  * @return ?integer The parameter value (null: not set, and null given as default)
  */
 function get_param_integer(string $name, $default = false, bool $not_string_ok = false) : ?int

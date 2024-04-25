@@ -131,8 +131,8 @@ diff -ur template.xml template.xml
      <transformation query="copy" writer="FileIo" source="images" artifact="img"/>
 -    <transformation query="copy" writer="FileIo" source="templates/responsive/img" artifact="img"/>
 -    <transformation query="copy" writer="FileIo" source="templates/responsive/css" artifact="css"/>
-+    <transformation query="copy" writer="FileIo" source="templates/composr-api-template/img" artifact="img"/>
-+    <transformation query="copy" writer="FileIo" source="templates/composr-api-template/css" artifact="css"/>
++    <transformation query="copy" writer="FileIo" source="templates/api-template/img" artifact="img"/>
++    <transformation query="copy" writer="FileIo" source="templates/api-template/css" artifact="css"/>
      <transformation query="copy" writer="FileIo" source="js" artifact="js"/>
 -    <transformation query="copy" writer="FileIo" source="templates/responsive/js" artifact="js"/>
 -    <transformation query="" writer="xsl" source="templates/responsive/index.xsl" artifact="index.html"/>
@@ -143,15 +143,15 @@ diff -ur template.xml template.xml
 -    <transformation query="" writer="xsl" source="templates/responsive/reports/errors.xsl" artifact="errors.html"/>
 -    <transformation query="" writer="xsl" source="templates/responsive/reports/deprecated.xsl" artifact="deprecated.html"/>
 -    <transformation query="" writer="xsl" source="templates/responsive/graphs/class.xsl" artifact="graph_class.html"/>
-+    <transformation query="copy" writer="FileIo" source="templates/composr-api-template/js" artifact="js"/>
-+    <transformation query="" writer="xsl" source="templates/composr-api-template/index.xsl" artifact="index.html"/>
-+    <transformation query="//namespace/@full_name" writer="xsl" source="templates/composr-api-template/namespaces.xsl" artifact="namespaces/{$full_name}"/>
-+    <transformation query="//package/@full_name" writer="xsl" source="templates/composr-api-template/packages.xsl" artifact="packages/{$full_name}"/>
-+    <transformation query="//class/full_name|//interface/full_name" writer="xsl" source="templates/composr-api-template/class.xsl" artifact="classes/{$full_name}"/>
-+    <transformation query="" writer="xsl" source="templates/composr-api-template/reports/markers.xsl" artifact="markers.html"/>
-+    <transformation query="" writer="xsl" source="templates/composr-api-template/reports/errors.xsl" artifact="errors.html"/>
-+    <transformation query="" writer="xsl" source="templates/composr-api-template/reports/deprecated.xsl" artifact="deprecated.html"/>
-+    <transformation query="" writer="xsl" source="templates/composr-api-template/graphs/class.xsl" artifact="graph_class.html"/>
++    <transformation query="copy" writer="FileIo" source="templates/api-template/js" artifact="js"/>
++    <transformation query="" writer="xsl" source="templates/api-template/index.xsl" artifact="index.html"/>
++    <transformation query="//namespace/@full_name" writer="xsl" source="templates/api-template/namespaces.xsl" artifact="namespaces/{$full_name}"/>
++    <transformation query="//package/@full_name" writer="xsl" source="templates/api-template/packages.xsl" artifact="packages/{$full_name}"/>
++    <transformation query="//class/full_name|//interface/full_name" writer="xsl" source="templates/api-template/class.xsl" artifact="classes/{$full_name}"/>
++    <transformation query="" writer="xsl" source="templates/api-template/reports/markers.xsl" artifact="markers.html"/>
++    <transformation query="" writer="xsl" source="templates/api-template/reports/errors.xsl" artifact="errors.html"/>
++    <transformation query="" writer="xsl" source="templates/api-template/reports/deprecated.xsl" artifact="deprecated.html"/>
++    <transformation query="" writer="xsl" source="templates/api-template/graphs/class.xsl" artifact="graph_class.html"/>
      <transformation query="" writer="Graph" source="Class" artifact="classes.svg" />
    </transformations>
  </template>

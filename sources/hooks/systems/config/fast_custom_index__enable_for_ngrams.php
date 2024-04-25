@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__enable_for_no_fulltext
+class Hook_config_fast_custom_index__enable_for_ngrams
 {
     /**
      * Gets the details relating to the config option.
@@ -31,15 +31,15 @@ class Hook_config_composr_fast_custom_index__enable_for_no_fulltext
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_NO_FULLTEXT',
-            'type' => 'tick',
+            'human_name' => 'FAST_CUSTOM_INDEX__ENABLE_FOR_NGRAMS',
+            'type' => 'line',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX_ENABLE',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__enable_for_no_fulltext',
+            'group' => 'FAST_CUSTOM_INDEX_ENABLE',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__enable_for_ngrams',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 4,
-            'required' => true,
+            'order_in_category_group' => 5,
+            'required' => false,
             'public' => false,
             'addon' => 'search',
         ];
@@ -56,6 +56,6 @@ class Hook_config_composr_fast_custom_index__enable_for_no_fulltext
             return null;
         }
 
-        return '1';
+        return '';
     }
 }

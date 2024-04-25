@@ -738,8 +738,8 @@ class Forum_driver_none extends Forum_driver_base
     }
 
     /**
-     * Try to find the theme that the logged-in/guest member is using, and map it to a Composr theme.
-     * The themes/map.ini file functions to provide this mapping between forum themes, and Composr themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the Composr theme name, while others made the humanly readable name.
+     * Try to find the theme that the logged-in/guest member is using, and map it to a site theme.
+     * The themes/map.ini file functions to provide this mapping between forum themes, and site themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the site theme name, while others made the humanly readable name.
      *
      * @param  boolean $skip_member_specific Whether to avoid member-specific lookup (i.e. find via what forum theme is currently configured as the default)
      * @param  ?MEMBER $member_id The member to find for (null: current member)

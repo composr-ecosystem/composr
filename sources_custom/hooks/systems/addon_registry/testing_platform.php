@@ -708,6 +708,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/__blob_slowdown.php',
             '_tests/tests/unit_tests/__copyright.php',
             '_tests/tests/unit_tests/__cqc_nonbundled.php',
+            '_tests/tests/unit_tests/__debrand_epic.php',
             '_tests/tests/unit_tests/__do_lang_tempcode_escaping.php',
             '_tests/tests/unit_tests/__email_spam_check.php',
             '_tests/tests/unit_tests/__extra_logging.php',

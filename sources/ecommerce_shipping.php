@@ -229,7 +229,7 @@ function calculate_shipping_cost(?array $details, ?float $shipping_cost, ?float 
     if (!is_array($response)) {
         $error_message = $response->message;
         require_code('failure');
-        cms_error_log('Shippo: ' . $error_message, 'error_occurred_api');
+        cms_error_log('Shippo: ERROR ' . $error_message, 'error_occurred_api');
         warn_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
     }
 
@@ -245,13 +245,13 @@ function calculate_shipping_cost(?array $details, ?float $shipping_cost, ?float 
     }
     if ($response['status'] == 'ERROR') {
         require_code('failure');
-        cms_error_log('Shippo: ' . $error_message, 'error_occurred_api');
+        cms_error_log('Shippo: ERROR ' . $error_message, 'error_occurred_api');
         warn_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
     }
     if (!isset($response['rates'][0])) {
         if ($error_message != '') {
             require_code('failure');
-            cms_error_log('Shippo: ' . $error_message, 'error_occurred_api');
+            cms_error_log('Shippo: ERROR ' . $error_message, 'error_occurred_api');
             warn_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
         }
 

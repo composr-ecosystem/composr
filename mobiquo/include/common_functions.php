@@ -37,7 +37,7 @@ if (!function_exists('apache_request_headers')) {
 }
 
 /**
- * Bootstrap Composr.
+ * Bootstrap the software.
  */
 function initialise_composr()
 {

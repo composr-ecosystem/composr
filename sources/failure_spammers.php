@@ -29,7 +29,7 @@ This code is not in failure.php due to the dynamic class declaration, triggering
  * @param  ID_TEXT $username Username address to report
  * @param  EMAIL $email Email address to report
  * @param  string $reason The reason for the report (blank: none)
- * @param  boolean $trigger_error Whether to emit a Composr error, on error. Should not be 'true' for automatic spammer reports, as the spammer should not see the submission process in action!
+ * @param  boolean $trigger_error Whether to emit a software error, on error. Should not be 'true' for automatic spammer reports, as the spammer should not see the submission process in action!
  * @return boolean Whether it was successful
  */
 function syndicate_spammer_report(string $ip_addr, string $username, string $email, string $reason, bool $trigger_error = false) : bool

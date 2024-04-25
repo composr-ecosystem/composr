@@ -527,7 +527,7 @@ class Notification_dispatcher
         // Send according to the listen setting...
 
         if (_notification_setting_available(A_INSTANT_SMS, $to_member_id)) {
-            if (($setting & A_INSTANT_SMS) != 0) {
+            if ((($setting & A_INSTANT_SMS) != 0) && addon_installed('sms')) {
                 $wrapped_message = do_lang('NOTIFICATION_SMS_COMPLETE_WRAP', $subject, $message_to_send); // Language string codename may be modified to include {2}, but would cost more. Default just has {1}.
 
                 require_code('sms');

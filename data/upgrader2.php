@@ -25,7 +25,7 @@
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
-// Find Composr base directory, and chdir into it
+// Find base directory, and chdir into it
 global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
@@ -62,7 +62,7 @@ $original_filename = isset($_GET['original_filename']) ? $_GET['original_filenam
 
 // Open TAR (or tarball) file
 $tmp_path = dirname(__DIR__) . '/data_custom/upgrader.cms.tmp';
-if (!is_file($tmp_path)) { // LEGACY. Some old ocPortal upgraders versions overwrite upgrader2.php early, so Composr needs to support the ocPortal temporary name
+if (!is_file($tmp_path)) { // LEGACY. Some old ocPortal upgraders versions overwrite upgrader2.php early, so the software needs to support the ocPortal temporary name
     $tmp_path = dirname(__DIR__) . '/data_custom/upgrader.tar.tmp';
 }
 if (!is_file($tmp_path)) {
@@ -211,7 +211,7 @@ function up2_do_header()
 <html lang="EN">
 <head>
     <title>Extracting files</title>
-    <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 END;
     echo <<<END
     <style>

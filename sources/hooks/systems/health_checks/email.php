@@ -546,7 +546,7 @@ class Hook_health_check_email extends Hook_Health_Check
         if ($error !== null) {
             if (running_script('cron_bridge')) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('Mailer error: ' . $error); // We log this, as Health Check is not going to be able to send an e-mail
+                    @error_log(brand_name() . ' mailer: ERROR ' . $error); // We log this, as Health Check is not going to be able to send an e-mail
                 }
             }
         }

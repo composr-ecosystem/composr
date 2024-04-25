@@ -1295,6 +1295,7 @@ class Module_cms_comcode_pages
         $path = save_comcode_page($zone, $new_file, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $metadata['add_time'], $metadata['edit_time'], $show_as_edit, $metadata['submitter'], $file, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
 
         // Some general CRUD maintenance that we don't do within the save_comcode_page function
+        // TODO: Should the access denied checks happen before save_comcode_page and the is_deleting block?
         $resource_owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', ['the_zone' => $zone, 'the_page' => $file]);
         if ($resource_owner === null) { // Add
             if (!has_add_comcode_page_permission($zone)) {

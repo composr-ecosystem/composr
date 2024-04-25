@@ -1039,17 +1039,18 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 #slider-homepage-hero .contrast-box {
 	display: table;
 	margin: 0 auto;
+	max-width: 728px;
 }
 
-#slider-homepage-hero .contrast-box.h1 {
-	margin-bottom: 0.5em;
+#slider-homepage-hero .contrast-box .h1 {
+	margin-bottom: 0.5em !important;
 }
 
-#slider-homepage-hero h3.contrast-box {
-	margin-bottom: 0.5em;
+#slider-homepage-hero .contrast-box .h3 {
+	margin-bottom: 1em !important;
 }
 
-#slider-homepage-hero .contrast-box.h5 {
+#slider-homepage-hero .contrast-box .h5 {
 	max-width: 660px;
 	line-height: 1.8;
 }

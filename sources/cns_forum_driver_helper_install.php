@@ -31,7 +31,7 @@
  * @param  BINARY $settable Whether the field is for setting
  * @param  BINARY $required Whether the field is required
  * @param  string $description Description
- * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+ * @param  string $type The field type (it's the same as the software field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
  * @param  BINARY $encrypted Whether the field is encrypted
  * @param  ?string $default Default field value (null: standard for field type)
  * @param  SHORT_TEXT $options Field options
@@ -74,7 +74,7 @@ function _helper_install_create_custom_field(object $this_ref, string $name, int
  * @param  BINARY $settable Whether the field is for setting
  * @param  BINARY $required Whether the field is required
  * @param  string $description Description
- * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+ * @param  string $type The field type (it's the same as the software field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
  * @param  BINARY $encrypted Whether the field is encrypted
  * @param  ?string $default Default field value (null: standard for field type)
  * @param  SHORT_TEXT $options Field options

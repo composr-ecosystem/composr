@@ -158,8 +158,8 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
 
     $_item_details = [];
 
-    // The composr tax hook should never be removed; error if it was
-    if (!hook_exists('systems', 'ecommerce_tax', 'composr')) {
+    // The software tax hook should never be removed; error if it was
+    if (!hook_exists('systems', 'ecommerce_tax', 'core')) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
@@ -199,7 +199,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
             if ($price == 0.00) {
                 $_item_details['_free'][$i] = $parts;
             } else {
-                $_item_details['composr'][$i] = $parts;
+                $_item_details['core'][$i] = $parts;
             }
         } else {
             $_item_details[$service_to_use][$i] = $parts;

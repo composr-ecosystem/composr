@@ -58,7 +58,7 @@ class Hook_task_sugarcrm_sync_member
             $contact_id = save_composr_account_into_sugarcrm_as_configured($member_id);
         } catch (Exception $e) {
             require_code('failure');
-            cms_error_log('SugarCRM: ' . $e->getMessage(), 'error_occurred_api');
+            cms_error_log('SugarCRM: ERROR ' . $e->getMessage(), 'error_occurred_api');
             return false;
         }
 

@@ -67,7 +67,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      */
     public function index_for_search(?int $since = null, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null)
     {
-        $engine = new Composr_fast_custom_index();
+        $engine = new Fast_custom_index();
 
         $index_table = 'cpages_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -193,8 +193,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         // Calculate and perform query
         $db = $GLOBALS['SITE_DB'];
         $index_table = 'cpages_fulltext_index';
-        $composr_fast_custom_index = can_use_composr_fast_custom_index('comcode_pages', $db, $index_table, $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
-        if ($composr_fast_custom_index) {
+        $fast_custom_index = can_use_fast_custom_index('comcode_pages', $db, $index_table, $search_query, Fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
+        if ($fast_custom_index) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             // Calculate our where clause (search)
@@ -248,9 +248,9 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
 
-            $engine = new Composr_fast_custom_index();
+            $engine = new Fast_custom_index();
 
-            if (Composr_fast_custom_index::active_search_has_special_filtering()) {
+            if (Fast_custom_index::active_search_has_special_filtering()) {
                 $trans_fields = [];
                 $nontrans_fields = [];
                 $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
@@ -326,7 +326,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             }
         }
 
-        if (($author == '') && (!$composr_fast_custom_index)) {
+        if (($author == '') && (!$fast_custom_index)) {
             // Make sure we record that for all cached Comcode pages, we know of them (only those not cached would not have been under the scope of the current search)
             $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_zone', 'the_page']);
             foreach ($all_pages as $row) {

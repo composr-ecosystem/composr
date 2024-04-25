@@ -27,7 +27,7 @@ function list_untouchable_third_party_directories()
         'data_custom/pdf_viewer',
         'data/polyfills',
         'docs/api',
-        'docs/composr-api-template',
+        'docs/api-template',
         'docs/jsdoc',
         'exports',
         'imports',

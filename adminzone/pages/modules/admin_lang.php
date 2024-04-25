@@ -880,7 +880,7 @@ class Module_admin_lang
         $descriptions = get_lang_file_section(fallback_lang(), $lang_file);
         $runtime_processing = get_lang_file_section(fallback_lang(), $lang_file, 'runtime_processing');
 
-        $no_default_file = (!file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $lang_file . '.ini')); // whole file is not in default Composr
+        $no_default_file = (!file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $lang_file . '.ini')); // whole file is not in core software
 
         $out = '';
         $one_changed_from_saved = false;
@@ -890,8 +890,8 @@ class Module_admin_lang
             $val = post_param_string('trans_' . $key, $_disk_val);
 
             $changed_from_saved = ($val != $_disk_val); // was already changed in language file
-            $not_a_default = (!array_key_exists($key, $for_base_lang_orig)); // not in default Composr
-            $changed_from_default = !$not_a_default && ($for_base_lang_orig[$key] != $val); // changed from default Composr
+            $not_a_default = (!array_key_exists($key, $for_base_lang_orig)); // not in core software
+            $changed_from_default = !$not_a_default && ($for_base_lang_orig[$key] != $val); // changed from default
 
             if ($changed_from_saved || $not_a_default || $changed_from_default || $no_default_file) {
                 $out .= $key . '=' . str_replace("\n", '\n', $val) . "\n";

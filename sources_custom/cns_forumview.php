@@ -61,7 +61,7 @@ function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = fals
             $ticket_type_name = get_translated_text($_ticket_type_name);
             $d->attach(div(make_string_tempcode(escape_html($ticket_type_name))));
 
-            $d->attach(get_composr_support_timings_wrap(!in_array('closed', $topic['modifiers']), $topic['id'], $ticket_type_name));
+            $d->attach(get_homesite_support_timings_wrap(!in_array('closed', $topic['modifiers']), $topic['id'], $ticket_type_name));
 
             $ret->singular_bind('DESCRIPTION', protect_from_escaping($d));
         }

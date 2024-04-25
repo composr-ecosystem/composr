@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__do_stemming
+class Hook_config_fast_custom_index__count_estimate
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_composr_fast_custom_index__do_stemming
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__DO_STEMMING',
+            'human_name' => 'FAST_CUSTOM_INDEX__COUNT_ESTIMATE',
             'type' => 'tick',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__do_stemming',
+            'group' => 'FAST_CUSTOM_INDEX',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__count_estimate',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

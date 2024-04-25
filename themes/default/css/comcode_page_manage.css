@@ -57,7 +57,7 @@
 	margin-left: 2em;
 	display: inline-block;
 	border: 1px solid {$GET,light_error_border};
-	background-color: {$GET,light_error_background};
+	background-color: {$GET,light_error_background_1};
 }
 
 .generate-page-sitemap-screen ul.page-structure ul.menu-links {

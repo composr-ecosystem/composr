@@ -571,7 +571,7 @@ class Module_admin_ecommerce_reports
         ]);
         store_shipping_address($txn_id);
 
-        $transaction_fee = 0.00; // Composr does not charge transaction fees ;)
+        $transaction_fee = 0.00; // The software does not charge transaction fees ;)
 
         handle_confirmed_transaction($txn_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $transaction_fee, $currency, false, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 

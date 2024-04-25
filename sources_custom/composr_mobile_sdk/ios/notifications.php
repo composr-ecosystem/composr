@@ -146,7 +146,7 @@ class IOSPushNotifications
                 }
             }
             foreach (array_keys($all_errors) as $error) {
-                cms_error_log($error);
+                cms_error_log(brand_name() . ' mobile SDK: ERROR ' . $error);
             }
         }
     }

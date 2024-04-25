@@ -144,7 +144,7 @@ if (!function_exists('critical_error')) {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official Composr installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.</div>';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_EMPTY':
@@ -156,14 +156,14 @@ if (!function_exists('critical_error')) {
                     $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official Composr installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.</div>';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_CORRUPTED':
                 $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) appears to be corrupt. Perhaps it was incorrectly uploaded, or a typo was made. It must be valid PHP code.</div>';
                 break;
             case 'CRIT_LANG':
-                $error = '<div>The most basic critical error language file (lang/' . fallback_lang() . '/critical_error.ini) is missing. It is likely that other files are also, for whatever reason, missing from this Composr installation.</div>';
+                $error = '<div>The most basic critical error language file (lang/' . fallback_lang() . '/critical_error.ini) is missing. It is likely that other files are also, for whatever reason, missing from this installation.</div>';
                 break;
         }
 
@@ -304,7 +304,7 @@ END;
 
         // Standard error logging
         if ((php_function_allowed('error_log')) && ($error_log == 'errorlog.php')) {
-            @error_log('Composr critical error: ' . str_replace("\n", '', $error), 0);
+            @error_log('Composr: CRITICAL ' . str_replace("\n", '', $error), 0);
         }
 
         // Custom error logging
@@ -313,7 +313,7 @@ END;
                 require_code('files');
                 $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/' . $error_log, true, 'ab');
                 fwrite($myfile, loggable_date() . "\n");
-                fwrite($myfile, 'Composr critical error: ' . "\n");
+                fwrite($myfile, 'Composr: CRITICAL ' . "\n");
                 fwrite($myfile, $error);
                 fwrite($myfile, "\n\n");
                 flock($myfile, LOCK_UN);

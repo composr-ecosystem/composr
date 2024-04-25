@@ -64,12 +64,12 @@ function auto_decache(bool $changed_base_url)
 }
 
 /**
- * Run the specified cleanup tools.
+ * Run the specified software cleanup tools.
  *
  * @param  ?array $cleanup_tools The cleanup tools to run (null: all)
  * @return Tempcode Any messages returned
  */
-function composr_cleanup(?array $cleanup_tools = null) : object
+function run_cleanup_tools(?array $cleanup_tools = null) : object
 {
     require_lang('cleanup');
 

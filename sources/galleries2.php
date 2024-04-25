@@ -1621,7 +1621,7 @@ function add_gallery(string $name, string $fullname, string $description, string
  */
 function edit_gallery(string $old_name, string $name, string $fullname, string $description, string $notes, ?string $parent_id = null, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?string $gallery_sort = null, ?string $media_sort = null, ?string $meta_keywords = null, ?string $meta_description = null, int $allow_rating = 1, int $allow_comments = 1, ?int $g_owner = null, ?int $add_time = null, bool $null_is_literal = false, bool $uniqify = false) : string
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $name], '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $old_name], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
     }

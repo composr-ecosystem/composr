@@ -111,27 +111,27 @@ function search_test_script()
             switch ($search_engine) {
                 case 0:
                     $search_engine_label = 'MySQL full-text natural';
-                    $_GET['keep_composr_fast_custom_index'] = '0';
+                    $_GET['keep_fast_custom_index'] = '0';
                     list($content_where) = build_content_where($search_query);
                     break;
 
                 case 1:
                     $search_engine_label = 'MySQL full-text boolean';
-                    $_GET['keep_composr_fast_custom_index'] = '0';
+                    $_GET['keep_fast_custom_index'] = '0';
                     list($content_where) = build_content_where(preg_replace('#(^| )#', '$1+', $search_query));
                     break;
 
                 case 2:
                     $search_engine_label = 'Composr full-text (fuzzy search enabled)';
-                    $SEARCH_CONFIG_OVERRIDE = ['composr_fast_custom_index__allow_fuzzy_search' => '1'];
-                    $_GET['keep_composr_fast_custom_index'] = '1';
+                    $SEARCH_CONFIG_OVERRIDE = ['fast_custom_index__allow_fuzzy_search' => '1'];
+                    $_GET['keep_fast_custom_index'] = '1';
                     list($content_where) = build_content_where($search_query);
                     continue 2; // Too slow actually
 
                 case 3:
                     $search_engine_label = 'Composr full-text (fuzzy search disabled)';
-                    $SEARCH_CONFIG_OVERRIDE = ['composr_fast_custom_index__allow_fuzzy_search' => '0'];
-                    $_GET['keep_composr_fast_custom_index'] = '1';
+                    $SEARCH_CONFIG_OVERRIDE = ['fast_custom_index__allow_fuzzy_search' => '0'];
+                    $_GET['keep_fast_custom_index'] = '1';
                     list($content_where) = build_content_where($search_query);
                     break;
             }

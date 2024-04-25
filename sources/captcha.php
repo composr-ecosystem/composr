@@ -434,7 +434,7 @@ function generate_captcha() : ?string
     $session = get_session_id(true);
     if ($session == '') {
         if (php_function_allowed('error_log')) {
-            error_log('CAPTCHA generated against blank session - static caching is misconfigured');
+            error_log(brand_name() . ': WARNING CAPTCHA generated against blank session - static caching is misconfigured');
         }
     }
 
@@ -552,7 +552,7 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
         $response = @json_decode($_response->data, true);
 
         if (!is_array($response)) {
-            $error_message = make_string_tempcode('reCAPTCHA: ' . $response->message);
+            $error_message = make_string_tempcode('reCAPTCHA: ERROR ' . $response->message);
             require_code('failure');
             cms_error_log($error_message->evaluate(), 'error_occurred_api');
         } else {
@@ -570,7 +570,7 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
                         case 'bad-request':
                             $error_message = do_lang_tempcode('RECAPTCHA_ERROR_' . str_replace('-', '_', $error_code));
                             require_code('failure');
-                            cms_error_log($error_message->evaluate(), 'error_occurred_api');
+                            cms_error_log('reCAPTCHA: ERROR ' . $error_message->evaluate(), 'error_occurred_api');
                             break;
                     }
                 }

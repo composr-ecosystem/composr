@@ -175,7 +175,7 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Tokenise a MySQL query (assumes a basic syntax Composr is using).
+     * Tokenise a MySQL query (assumes a basic syntax the software is using).
      *
      * @param  string $query Query
      * @return array The tokens
@@ -429,7 +429,7 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Get a map of Composr field types, to actual database types.
+     * Get a map of software field types, to actual database types.
      *
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
@@ -467,7 +467,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * Get SQL for creating a new table.
      *
      * @param  ID_TEXT $table_name The table name
-     * @param  array $fields A map of field names to Composr field types (with *#? encodings)
+     * @param  array $fields A map of field names to software field types (with *#? encodings)
      * @param  mixed $connection The DB connection to make on
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
@@ -840,7 +840,7 @@ abstract class Database_super_mysql extends DatabaseDriver
             return 'MATCH (?) AGAINST (\'' . $this->escape_string($content) . '\')';
         }
 
-        // These risk parse errors during full-text natural search and aren't supported for Composr searching
+        // These risk parse errors during full-text natural search and aren't supported for searching in the software
         $content = str_replace(['>', '<', '(', ')', '~', '?', '@'], ['', '', '', '', '', '', ''], $content); // Risks parse error and not supported
         $content = preg_replace('#([\-+*])[\-+*]+#', '$1', $content); // Parse error if repeated on some servers
         $content = cms_preg_replace_safe('#[\-+]($|\s)#', '$1', $content); // Parse error if on end on some servers

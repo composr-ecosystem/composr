@@ -16,7 +16,7 @@
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
-// Find Composr base directory, and chdir into it
+// Find base directory, and chdir into it
 global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
@@ -71,8 +71,8 @@ function ce_do_header()
 <!DOCTYPE html>
 <html lang="EN">
 <head>
-    <title>Composr Installation Options editor</title>
-    <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
+    <title>Installation Options editor</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="data/sheet.php?sheet=global" />
     <style>';
     echo '
@@ -100,8 +100,8 @@ function ce_do_header()
     echo '
 </head>
 <body class="website-body" style="margin: 1em"><div class="global-middle">
-    <h1 class="screen-title">Composr Installation Options editor</h1>
-    <p>This is an editor accessible to administrators of the website only. It is kept as simple as possible, to allow fixing of configuration problems when Composr is not in a workable state. It is provided in English only, and only modifies the configuration file, not the database.</p>
+    <h1 class="screen-title">Installation Options editor</h1>
+    <p>This is an editor accessible to administrators of the website only. It is kept as simple as possible, to allow fixing of configuration problems when the software is not in a workable state. It is provided in English only, and only modifies the configuration file, not the database.</p>
     <form action="config_editor.php" method="post">
 ';
 }
@@ -152,7 +152,7 @@ function ce_do_login()
 function do_access(string $given_password)
 {
     $settings = [
-        'admin_username' => 'The username used for the administrator when Composr is installed to not use a forum. On the vast majority of sites this setting does nothing.',
+        'admin_username' => 'The username used for the administrator when the software is installed to not use a forum. On the vast majority of sites this setting does nothing.',
         'maintenance_password' => 'If you wish the maintenance password to be changed, enter a new password here. Otherwise leave blank.',
 
         'base_url' => 'A critical option, that defines the URL of the site (no trailing slash). You can blank this out for auto-detection, but only do this during development -- if you do it live and somehow multiple domains can get to your site, random errors will occur due to caching problems.',
@@ -165,11 +165,11 @@ function do_access(string $given_password)
         'forum_base_url' => '<em>Forum:</em> This is the base URL for the forums. If it is not correct, various links, such as links to topics, will not function correctly.',
 
         'db_type' => '<em>Database:</em> The database driver to use (code of PHP file in sources[_custom]/database/). Only MySQL supported officially.',
-        'table_prefix' => '<em>Database:</em> The table prefix for Composr\'s database tables.',
-        'db_site' => '<em>Database:</em> The database name of the Composr database.',
-        'db_site_host' => '<em>Database:</em> The database hosting computer name (usually localhost) for the Composr database. You can also include a port name here if you\'re on a non-default port (<kbd>host:port</kbd>), but if doing so you must not use <kbd>localhost</kbd> as the host unless the local socket/pipe connects to the correct MySQL server.',
-        'db_site_user' => '<em>Database:</em> The database username for Composr to connect to the Composr database with.',
-        'db_site_password' => '<em>Database:</em> The password for the Composr database username.',
+        'table_prefix' => '<em>Database:</em> The table prefix for the software\'s database tables.',
+        'db_site' => '<em>Database:</em> The database name of the software database.',
+        'db_site_host' => '<em>Database:</em> The database hosting computer name (usually localhost) for the software database. You can also include a port name here if you\'re on a non-default port (<kbd>host:port</kbd>), but if doing so you must not use <kbd>localhost</kbd> as the host unless the local socket/pipe connects to the correct MySQL server.',
+        'db_site_user' => '<em>Database:</em> The database username to connect to the software database with.',
+        'db_site_password' => '<em>Database:</em> The password for the software database username.',
         'cns_table_prefix' => '<em>Database:</em> The table prefix for Conversr, if Conversr is being used.',
         'db_forums' => '<em>Database:</em> The database name for the forum driver to tie in to.',
         'db_forums_host' => '<em>Database:</em> The database hosting computer name for the forum driver to tie in to. See <kbd>db_site_host</kbd>.',
@@ -182,7 +182,7 @@ function do_access(string $given_password)
         'user_cookie' => '<em>Cookies:</em> The name of the cookie used to hold usernames/ids for each user. Depending on the forum system involved, and may use a special serialisation notation involving a colon (there is no special notation for Conversr).',
         'pass_cookie' => '<em>Cookies:</em> The name of the cookie used to hold passwords for each user.',
         'session_cookie' => '<em>Cookies:</em> The name of the cookie used to hold session IDs.',
-        'cookie_domain' => '<em>Cookies:</em> The domain name the cookies are tied to. Only URLs with this domain, or a subdomain there-of, may access the cookies. You probably want to leave it blank. Use blank if running Composr off the DNS system (e.g. localhost), or if you want the active-domain to be used (i.e. autodetection). <strong>It\'s best not to change this setting once your community is active, as it can cause logging-out problems.</strong>',
+        'cookie_domain' => '<em>Cookies:</em> The domain name the cookies are tied to. Only URLs with this domain, or a subdomain there-of, may access the cookies. You probably want to leave it blank. Use blank if running the software off the DNS system (e.g. localhost), or if you want the active-domain to be used (i.e. autodetection). <strong>It\'s best not to change this setting once your community is active, as it can cause logging-out problems.</strong>',
         'cookie_path' => '<em>Cookies:</em> The URL path the cookeis are tied to. Only URLs branching from this may access the cookies. Either set it to the path portion of the base URL, or a shortened path if cookies need to work with something elsewhere on the domain, or leave blank for auto-detection. <strong>It\'s best not to change this setting once your community is active, as it can cause logging-out problems.</strong>',
         'cookie_days' => '<em>Cookies:</em> The number of days to store login cookies for.',
 
@@ -192,9 +192,9 @@ function do_access(string $given_password)
         'static_caching_inclusion_list' => '<em>Performance:</em> A regular expresion determining what URLs are subject to the static cache. Does not need to match full URL unless you code your regexp to anchor itself. If not set all URLs will be cached that don\'t have special GET parameters (non-canonical parameters, or extra parameters to home page).',
         'static_caching_exclusion_list' => '<em>Performance:</em> A regular expresion determining what URLs not subject to the static cache. Does not need to match full URL unless you code your regexp to anchor itself. If not set there will be no exclusion list.',
         'self_learning_cache' => '<em>Performance:</em> Whether to allow pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront. Stores copies of some resources within the self-learning cache itself.',
-        'no_nosniff_header' => '<em>Performance:</em> If you can rely on your webserver configuration sending "X-Content-Type-Options: nosniff" enable this to stop Composr duplicating it.',
+        'no_nosniff_header' => '<em>Performance:</em> If you can rely on your webserver configuration sending "X-Content-Type-Options: nosniff" enable this to stop the software from duplicating it.',
 
-        'max_execution_time' => '<em>Performance:</em> The time in seconds to use for PHP\'s maximum execution time option. Composr defaults to 60 and raises it in known situations that require more time.',
+        'max_execution_time' => '<em>Performance:</em> The time in seconds to use for PHP\'s maximum execution time option. The software defaults to 60 and raises it in known situations that require more time.',
 
         'disable_smart_decaching' => '<em>Tuning/Disk performance:</em> Don\'t check file times to check caches aren\'t stale. If this is <kbd>1</kbd> then smart decaching is disabled unless you use <kbd>keep_smart_decaching=1</kbd> temporarily in the URL. You can also set it to a format <kbd>3600:/some/file/path</kbd> which will disable it if the given file has not been modified within the given number of seconds; you may point it to an FTP log file for example.',
         'no_disk_sanity_checks' => '<em>Tuning/Disk performance:</em> Whether to assume that there are no missing language directories, or other configured directories; things may crash horribly if they are missing and this is enabled.',
@@ -211,13 +211,13 @@ function do_access(string $given_password)
         'prefer_direct_code_call' => '<em>Tuning:</em> Whether to assume a good opcode cache is present, so load up full code files via this rather than trying to save RAM by loading up small parts of files on occasion.',
 
         'backdoor_ip' => '<em>Security:</em> Always allow users accessing from this IP address/CIDR/hostname in, automatically logged in as the oldest admin of the site. You can enter comma-separated addresses. Hostname checks only work if <kbd>keep_check_backdoor_ip_dns=1</kbd> is set in the URL, for performance reasons.',
-        'trusted_proxies' => '<em>Security:</em> Proxies to trust. For any incoming request by an IP covered in one of the comma-separated IPs (or IP CIDR ranges), "forwarded for" IP headers will be trusted to identify the real IP address. This improves security as Composr will be targeting the true IP of visitors rather than the proxy IP, so long as it is a real proxy and not a trick by a hacker trying to masquerade their IP by pretending they\'re just an innocent intermediary node. Defaults to all Cloudflare IP addresses.',
+        'trusted_proxies' => '<em>Security:</em> Proxies to trust. For any incoming request by an IP covered in one of the comma-separated IPs (or IP CIDR ranges), "forwarded for" IP headers will be trusted to identify the real IP address. This improves security as the software will be targeting the true IP of visitors rather than the proxy IP, so long as it is a real proxy and not a trick by a hacker trying to masquerade their IP by pretending they\'re just an innocent intermediary node. Defaults to all Cloudflare IP addresses.',
         'full_ips' => '<em>Security:</em> Whether to match sessions to the full IP addresses. Set this to 1 if you are sure users don\'t jump around IP addresses on the same 255.255.255.0 subnet (e.g. due to proxy server randomisation).',
         /*  Don't want this in here, we want it autodetected unless explicitly overridden
-        'dev_mode' => '<em>Development:</em> Whether development mode is enabled (<strong>intended only for core Composr programmers</strong>).',
+        'dev_mode' => '<em>Development:</em> Whether development mode is enabled (<strong>intended only for core developers</strong>).',
         */
-        'no_keep_params' => '<em>Development:</em> Whether to disable support for \'keep_\' params in Composr. You probably don\'t want to disable them!',
-        'safe_mode' => '<em>Development:</em> Whether Composr is to be forced into safe mode, meaning no custom files will load and most caching will be disabled.',
+        'no_keep_params' => '<em>Development:</em> Whether to disable support for \'keep_\' params. You probably don\'t want to disable them!',
+        'safe_mode' => '<em>Development:</em> Whether the software is to be forced into safe mode, meaning no custom files will load and most caching will be disabled.',
         'no_email_output' => '<em>Development:</em> Whether emails should never be sent.',
         'redirect_email_output' => '<em>Development:</em> Alternate e-mail address to route all e-mails.',
         'email_to' => '<em>Development:</em> If you have set up a customised critical error screen (via a <kbd>_critical_error.html</kbd> file and empty <kbd>critical_errors</kbd> directory), and a background e-mailing process, this defines where error e-mails will be sent.',
@@ -235,7 +235,7 @@ function do_access(string $given_password)
 
         'rate_limiting' => '<em>Rate limiting:</em> Whether to enable rate limiting for IPs. The data_custom/rate_limiter.php file must exist and be writeable (on a suExec-style server the file will auto-create, otherwise just make it as an empty file). IP addresses passed to PHP must be accurate (some front-end proxying systems break this).',
         'rate_limit_time_window' => '<em>Rate limiting:</em> The number of seconds hits are counted across. Defaults to <kbd>10</kbd>.',
-        'rate_limit_hits_per_window' => '<em>Rate limiting:</em> The number of hits per IP going back as far as the time window. Note that this is any URL hitting Composr CMS, not just pages (i.e. AJAX and banner frames would both count). Defaults to <kbd>5</kbd>.',
+        'rate_limit_hits_per_window' => '<em>Rate limiting:</em> The number of hits per IP going back as far as the time window. Note that this is any URL hitting the software as a whole, not just pages (i.e. AJAX and banner frames would both count). Defaults to <kbd>5</kbd>.',
 
         'gae_application' => '<em>Google App Engine:</em> Application name',
         'gae_bucket_name' => '<em>Google App Engine:</em> Cloud Storage bucket name',

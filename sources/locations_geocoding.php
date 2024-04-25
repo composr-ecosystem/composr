@@ -93,7 +93,7 @@ function geocode(string $location, ?object &$errormsg = null, ?string $service =
     $ret = $ob->geocode($location, $errormsg);
     if ($errormsg !== null) {
         require_code('failure');
-        cms_error_log($errormsg->evaluate(), 'error_occurred_api');
+        cms_error_log(brand_name() . ' geocode: ERROR ' . $errormsg->evaluate(), 'error_occurred_api');
     }
     return $ret;
 }
@@ -119,7 +119,7 @@ function reverse_geocode(float $latitude, float $longitude, ?object &$errormsg =
     $ret = $ob->reverse_geocode($latitude, $longitude, $errormsg);
     if ($errormsg !== null) {
         require_code('failure');
-        cms_error_log($errormsg->evaluate(), 'error_occurred_api');
+        cms_error_log(brand_name() . ' geocode: ERROR ' . $errormsg->evaluate(), 'error_occurred_api');
     }
     return $ret;
 }

@@ -70,7 +70,7 @@ class Hook_oembed_hybridauth_admin
                 }
             } catch (Exception $e) {
                 require_code('failure');
-                cms_error_log($e->getMessage(), 'error_occurred_api');
+                cms_error_log('Hybridauth: WARNING oEmbed -- ' . $e->getMessage(), 'error_occurred_api');
             }
         }
 

@@ -245,7 +245,7 @@ class Database_Static_postgresql extends DatabaseDriver
     }
 
     /**
-     * Get a map of Composr field types, to actual database types.
+     * Get a map of software field types, to actual database types.
      *
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
@@ -283,7 +283,7 @@ class Database_Static_postgresql extends DatabaseDriver
      * Get SQL for creating a new table.
      *
      * @param  ID_TEXT $table_name The table name
-     * @param  array $fields A map of field names to Composr field types (with *#? encodings)
+     * @param  array $fields A map of field names to software field types (with *#? encodings)
      * @param  mixed $connection The DB connection to make on
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue

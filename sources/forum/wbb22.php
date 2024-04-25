@@ -89,7 +89,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
      * @param  BINARY $settable Whether the field is for setting by the owner
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
-     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+     * @param  string $type The field type (it's the same as the software's field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
      * @param  BINARY $encrypted Whether the field is encrypted
      * @param  ?string $default Default field value (null: standard for field type)
      * @param  SHORT_TEXT $options Field options
@@ -109,7 +109,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
         if (!array_key_exists(0, $test)) {
             $this->db->query_insert('profilefields', ['title' => $name, 'description' =>'', 'required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'fieldsize' => $length]);
             $key = $this->db->query_select_value('profilefields', 'MAX(profilefieldid)');
-            list($db_type, $db_default) = $this->remap_composr_field_type_to_db_type($type, $default);
+            list($db_type, $db_default) = $this->remap_cms_field_type_to_db_type($type, $default);
             $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'userfields', 'field' . strval($key), $db_type, $db_default);
             $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
 
@@ -129,7 +129,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
      * @param  BINARY $settable Whether the field is for setting by the owner
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
-     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+     * @param  string $type The field type (it's the same as the software's field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
      * @param  BINARY $encrypted Whether the field is encrypted
      * @param  ?string $default Default field value (null: standard for field type)
      * @param  SHORT_TEXT $options Field options
@@ -1167,8 +1167,8 @@ class Forum_driver_wbb22 extends Forum_driver_base
     }
 
     /**
-     * Try to find the theme that the logged-in/guest member is using, and map it to a Composr theme.
-     * The themes/map.ini file functions to provide this mapping between forum themes, and Composr themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the Composr theme name, while others made the humanly readable name.
+     * Try to find the theme that the logged-in/guest member is using, and map it to a site theme.
+     * The themes/map.ini file functions to provide this mapping between forum themes, and site themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the site theme name, while others made the humanly readable name.
      *
      * @param  boolean $skip_member_specific Whether to avoid member-specific lookup (i.e. find via what forum theme is currently configured as the default)
      * @param  ?MEMBER $member_id The member to find for (null: current member)
@@ -1199,7 +1199,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
             }
         }
 
-        // Look for a skin according to our site name (we bother with this instead of 'default' because Composr itself likes to never choose a theme when forum-theme integration is on: all forum [via map] or all Composr seems cleaner, although it is complex)
+        // Look for a skin according to our site name (we bother with this instead of 'default' because the software itself likes to never choose a theme when forum-theme integration is on: all forum [via map] or all site seems cleaner, although it is complex)
         if ((!(strlen($def) > 0)) || (!file_exists(get_custom_file_base() . '/themes/' . $def))) {
             $bb = $this->db->query_select_value_if_there('styles', 'stylename', ['stylename' => get_site_name()]);
             if ($bb !== null) {

@@ -360,7 +360,7 @@ function cns_get_forum_tree(?int $member_id = null, ?int $base_forum = null, str
         }
     }
 
-    // Up to now we worked into an array, so we could benefit from how it would auto-sort into the grouping>forum-position ordering Composr uses. Now we need to unzip it
+    // Up to now we worked into an array, so we could benefit from how it would auto-sort into the grouping>forum-position ordering the software uses. Now we need to unzip it
     $real_out = [];
     foreach ($out as $arr) {
         $real_out = array_merge($real_out, $arr);

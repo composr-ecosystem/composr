@@ -223,7 +223,15 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
                 syslog(LOG_ERR, $php_error_label);
             }
             if (php_function_allowed('error_log')) {
-                @error_log('Composr: ' . $php_error_label, 0);
+                switch ($type) {
+                    case 'inform':
+                    case 'notice':
+                        @error_log(brand_name() . ': INFO ' . $php_error_label, 0);
+                        break;
+                    case 'warn':
+                        @error_log(brand_name() . ': WARNING ' . $php_error_label, 0);
+                        break;
+                }
             }
 
             require_code('failure');
@@ -1221,7 +1229,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
         if (preg_match('#^Location:#i', $header) != 0) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC save: redirect is present');
+                    @error_log(brand_name() . ' static cache: DEBUG redirect was present when trying to save');
                 }
             }
 
@@ -1233,7 +1241,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     if ($INVALIDATED_FAST_SPIDER_CACHE) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: caching explicitly blocked by $INVALIDATED_FAST_SPIDER_CACHE');
+                @error_log(brand_name() . ' static cache: DEBUG caching explicitly blocked by $INVALIDATED_FAST_SPIDER_CACHE');
             }
         }
 
@@ -1244,7 +1252,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     if (($HTTP_STATUS_CODE != 200) && ($mime_type != 'text/html')) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: HTTP status is ' . strval($HTTP_STATUS_CODE) . ' and non-HTML so no http-equiv');
+                @error_log(brand_name() . ' static cache: DEBUG HTTP status is ' . strval($HTTP_STATUS_CODE) . ' and non-HTML so no http-equiv');
             }
         }
 
@@ -1254,7 +1262,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     if (!can_static_cache_request(true)) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, static cache not available according to can_static_cache_request() on ' . $url);
+                @error_log(brand_name() . ' static cache: DEBUG Static cache not available according to can_static_cache_request() on ' . $url);
             }
         }
 
@@ -1275,7 +1283,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     if (!$GLOBALS['STATIC_CACHE_ENABLED']) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, internal signal to not cache from Tempcode on ' . $url);
+                @error_log(brand_name() . ' static cache: DEBUG Internal signal to not cache from Tempcode on ' . $url);
             }
         }
 
@@ -1289,7 +1297,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     // Log
     if ($debugging) {
         if (php_function_allowed('error_log')) {
-            @error_log('SC save: Yes, on ' . $url);
+            @error_log(brand_name() . ' static cache: DEBUG cached on ' . $url);
         }
     }
 

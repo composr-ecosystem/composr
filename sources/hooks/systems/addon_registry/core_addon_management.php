@@ -140,7 +140,7 @@ class Hook_addon_registry_core_addon_management
             'sources/addons.php',
             'sources/addons2.php',
             'sources/hooks/systems/addon_registry/core_addon_management.php',
-            'sources/hooks/systems/ajax_tree/choose_composr_homesite_addon.php',
+            'sources/hooks/systems/ajax_tree/choose_homesite_addon.php',
             'themes/default/css/addons_editor.css',
             'themes/default/images/icons/admin/component.svg',
             'themes/default/images/icons/admin/install.svg',

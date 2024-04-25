@@ -57,15 +57,15 @@ abstract class Forum_driver_base
     }
 
     /**
-     * Find the Composr database type for a Composr field type.
-     * Limited selection, and hard-coded (it does not actually use the real Composr field type system at all).
-     * The Conversr implementation actually uses Conversr CPFs which fully supports the actual Composr field type system.
+     * Find the database type for a software field type.
+     * Limited selection, and hard-coded (it does not actually use the real software field type system at all).
+     * The Conversr implementation actually uses Conversr CPFs which fully supports the actual software field type system.
      *
-     * @param  string $type The Composr field type
+     * @param  string $type The software field type
      * @param  ?mixed $default The default value for this field (null: use a default based on the field type)
-     * @return array Pair: The Composr database field type, and the default value
+     * @return array Pair: The database field type, and the default value
      */
-    protected function remap_composr_field_type_to_db_type(string $type, $default = null) : array
+    protected function remap_cms_field_type_to_db_type(string $type, $default = null) : array
     {
         switch ($type) {
             case 'text':
@@ -537,7 +537,7 @@ abstract class Forum_driver_base
             }
         }
 
-        // Try hardcoded in Composr zone settings
+        // Try hardcoded in the zone settings
         $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', ['zone_name' => $zone_for]) : $ZONE['zone_theme'];
         $default_theme = ((currently_logging_in()) && (get_option('root_zone_login_theme') == '1') && ($zone_for != '')) ? $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', ['zone_name' => '']) : $zone_theme;
         if (empty($default_theme)) { // Cleanup bad data
@@ -577,7 +577,7 @@ abstract class Forum_driver_base
                 return $this->get_theme(null, $GLOBALS['FORUM_DRIVER']->get_guest_id());
             }
 
-            // If even the guest setting is broken (and if nothing is hardcoded into Composr zone settings), return the software default
+            // If even the guest setting is broken (and if nothing is hardcoded into the zone settings), return the software default
             $theme = 'default';
         }
         if (($current_zone_requested) && ($is_current_member)) {

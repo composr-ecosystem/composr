@@ -175,7 +175,7 @@ function patreon_sync()
             }
         } catch (Exception $e) {
             require_code('failure');
-            cms_error_log($e->getMessage(), 'error_occurred_api');
+            cms_error_log('Hybridauth: ERROR Patreon -- ' . $e->getMessage(), 'error_occurred_api');
 
             return;
         } finally {
@@ -227,7 +227,7 @@ function patreon_sync_individual_member($user_id, $alternate_config)
 
     if (!$providers['Patreon']['enabled']) {
         require_code('failure');
-        cms_error_log('Patreon provider not enabled, during webhook response', 'error_occurred_api');
+        cms_error_log('Hybridauth: ERROR Patreon provider not enabled, during webhook response', 'error_occurred_api');
         return;
     }
 
@@ -235,7 +235,7 @@ function patreon_sync_individual_member($user_id, $alternate_config)
 
     if (!$adapter->isConnected()) {
         require_code('failure');
-        cms_error_log('Patreon provider not connected, during webhook response', 'error_occurred_api');
+        cms_error_log('Hybridauth: ERROR Patreon provider not connected, during webhook response', 'error_occurred_api');
         return;
     }
 
@@ -281,7 +281,7 @@ function patreon_sync_individual_member($user_id, $alternate_config)
         $email = $member->filter('attributes')->get('email');
     } catch (Exception $e) {
         require_code('failure');
-        cms_error_log($e->getMessage(), 'error_occurred_api');
+        cms_error_log('Hybridauth: ERROR ' . $e->getMessage(), 'error_occurred_api');
 
         return;
     } finally {

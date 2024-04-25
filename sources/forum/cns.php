@@ -69,7 +69,7 @@ class Forum_driver_cns extends Forum_driver_base
         $CNS_DRIVER = null;
         $GLOBALS['CNS_DRIVER'] = &$this; // Done like this to workaround that PHP can't put a reference in a global'd variable
 
-        // Initialise LDAP. To see if LDAP is running we check LDAP_CONNECTION for null. ldap_is_enabled is not good enough - we don't want Composr to bomb out under faulty LDAP settings, hence making it unfixable.
+        // Initialise LDAP. To see if LDAP is running we check LDAP_CONNECTION for null. ldap_is_enabled is not good enough - we don't want the software to bomb out under faulty LDAP settings, hence making it unfixable.
         if ((addon_installed('ldap')) && (function_exists('ldap_connect')) && (get_option('ldap_is_enabled', true) == '1')) {
             require_code('cns_members');
             require_code('cns_groups');
@@ -150,7 +150,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  BINARY $settable Whether the field is for setting by the owner
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
-     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+     * @param  string $type The field type (it's the same as the software's field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
      * @param  BINARY $encrypted Whether the field is encrypted
      * @param  ?string $default Default field value (null: standard for field type)
      * @param  SHORT_TEXT $options Field options
@@ -180,7 +180,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  BINARY $settable Whether the field is for setting by the owner
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
-     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+     * @param  string $type The field type (it's the same as the software's field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
      * @param  BINARY $encrypted Whether the field is encrypted
      * @param  ?string $default Default field value (null: standard for field type)
      * @param  SHORT_TEXT $options Field options
@@ -404,8 +404,8 @@ class Forum_driver_cns extends Forum_driver_base
     }
 
     /**
-     * Try to find the theme that the logged-in/guest member is using, and map it to a Composr theme.
-     * The themes/map.ini file functions to provide this mapping between forum themes, and Composr themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the Composr theme name, while others made the humanly readable name.
+     * Try to find the theme that the logged-in/guest member is using, and map it to a site theme.
+     * The themes/map.ini file functions to provide this mapping between forum themes, and site themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the site theme name, while others made the humanly readable name.
      *
      * @param  boolean $skip_member_specific Whether to avoid member-specific lookup (i.e. find via what forum theme is currently configured as the default)
      * @param  ?MEMBER $member_id The member to find for (null: current member)

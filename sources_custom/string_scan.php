@@ -143,14 +143,14 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WYSIWYG_SPELLCHECKER_DEFAULT
         CONFIG_OPTION_wysiwyg_spellchecker_default
         CREATE_INDEX
-        COMPOSR_FAST_CUSTOM_INDEX__COUNT_ESTIMATE
+        FAST_CUSTOM_INDEX__COUNT_ESTIMATE
         JAVASCRIPT_ERROR_ALERTS
         CONFIG_OPTION_javascript_error_alerts
-        CONFIG_OPTION_composr_fast_custom_index__count_estimate
+        CONFIG_OPTION_fast_custom_index__count_estimate
         CONFIG_OPTION_wysiwyg_VALUE_-1
         CONFIG_OPTION_wysiwyg_VALUE_0
         CONFIG_OPTION_wysiwyg_VALUE_1
-        DESCRIPTION_CLEAR_COMPOSR_FAST_CUSTOM_INDEX
+        DESCRIPTION_CLEAR_FAST_CUSTOM_INDEX
         LAUNCH_WITH_TEST_CONTENT
         LAUNCH_IN_BLANK_STATE
         STOCK_DEFAULT_BANNER_FALLBACK
@@ -178,8 +178,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THEME_CAPABILITY_block_layouts
         THEME_CAPABILITY_emails
         THEME_CAPABILITY_printing
-        THEME_COMPOSR_VERSION
-        THEME_DESCRIPTION_COMPOSR_VERSION
+        THEME_SOFTWARE_VERSION
+        THEME_DESCRIPTION_SOFTWARE_VERSION
         ZE_NO_BLOCK_LAYOUTS_IN_THEME
         DESCRIPTION_REBUILD_ALL_CPF_INDICES
         REBUILD_ALL_CPF_INDICES
@@ -194,33 +194,33 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLANK_COMCODE_PAGE
         BROKEN_URLS_SLOW_WITHOUT_TASK
         PASSWORD_RESET_PRIVACY
-        COMPOSR_FAST_CUSTOM_INDEX
-        COMPOSR_FAST_CUSTOM_INDEX_ENABLE
-        CONFIG_GROUP_DEFAULT_DESCRIP_COMPOSR_FAST_CUSTOM_INDEX_ENABLE
-        COMPOSR_FAST_CUSTOM_INDEX__MAX_POST_LENGTH
-        CONFIG_OPTION_composr_fast_custom_index__max_post_length
-        COMPOSR_FAST_CUSTOM_INDEX__ALLOW_FUZZY_SEARCH
-        CONFIG_OPTION_composr_fast_custom_index__allow_fuzzy_search
-        COMPOSR_FAST_CUSTOM_INDEX__SCALE_BY_COMMONALITY
-        CONFIG_OPTION_composr_fast_custom_index__scale_by_commonality
-        COMPOSR_FAST_CUSTOM_INDEX__USE_IMPRECISE_ORDERING
-        CONFIG_OPTION_composr_fast_custom_index__use_imprecise_ordering
-        COMPOSR_FAST_CUSTOM_INDEX__DO_STEMMING
-        CONFIG_OPTION_composr_fast_custom_index__do_stemming
-        COMPOSR_FAST_CUSTOM_INDEX__MAX_NGRAM_SIZE
-        CONFIG_OPTION_composr_fast_custom_index__max_ngram_size
-        COMPOSR_FAST_CUSTOM_INDEX__ENABLE
-        CONFIG_OPTION_composr_fast_custom_index__enable
-        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_NGRAMS
-        CONFIG_OPTION_composr_fast_custom_index__enable_for_ngrams
-        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_FILTERED
-        CONFIG_OPTION_composr_fast_custom_index__enable_for_filtered
-        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_NO_FULLTEXT
-        CONFIG_OPTION_composr_fast_custom_index__enable_for_no_fulltext
-        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_UNDER_RADAR
-        CONFIG_OPTION_composr_fast_custom_index__enable_for_under_radar
-        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_MINIMUM_NGRAM_COUNT
-        CONFIG_OPTION_composr_fast_custom_index__enable_for_minimum_ngram_count
+        FAST_CUSTOM_INDEX
+        FAST_CUSTOM_INDEX_ENABLE
+        CONFIG_GROUP_DEFAULT_DESCRIP_FAST_CUSTOM_INDEX_ENABLE
+        FAST_CUSTOM_INDEX__MAX_POST_LENGTH
+        CONFIG_OPTION_fast_custom_index__max_post_length
+        FAST_CUSTOM_INDEX__ALLOW_FUZZY_SEARCH
+        CONFIG_OPTION_fast_custom_index__allow_fuzzy_search
+        FAST_CUSTOM_INDEX__SCALE_BY_COMMONALITY
+        CONFIG_OPTION_fast_custom_index__scale_by_commonality
+        FAST_CUSTOM_INDEX__USE_IMPRECISE_ORDERING
+        CONFIG_OPTION_fast_custom_index__use_imprecise_ordering
+        FAST_CUSTOM_INDEX__DO_STEMMING
+        CONFIG_OPTION_fast_custom_index__do_stemming
+        FAST_CUSTOM_INDEX__MAX_NGRAM_SIZE
+        CONFIG_OPTION_fast_custom_index__max_ngram_size
+        FAST_CUSTOM_INDEX__ENABLE
+        CONFIG_OPTION_fast_custom_index__enable
+        FAST_CUSTOM_INDEX__ENABLE_FOR_NGRAMS
+        CONFIG_OPTION_fast_custom_index__enable_for_ngrams
+        FAST_CUSTOM_INDEX__ENABLE_FOR_FILTERED
+        CONFIG_OPTION_fast_custom_index__enable_for_filtered
+        FAST_CUSTOM_INDEX__ENABLE_FOR_NO_FULLTEXT
+        CONFIG_OPTION_fast_custom_index__enable_for_no_fulltext
+        FAST_CUSTOM_INDEX__ENABLE_FOR_UNDER_RADAR
+        CONFIG_OPTION_fast_custom_index__enable_for_under_radar
+        FAST_CUSTOM_INDEX__ENABLE_FOR_MINIMUM_NGRAM_COUNT
+        CONFIG_OPTION_fast_custom_index__enable_for_minimum_ngram_count
         SEARCH_MAXIMUM_RESULT_COUNT_POINT
         CONFIG_OPTION_search_maximum_result_count_point
         SEARCH_DO_DAYS_FALLBACK
@@ -808,6 +808,23 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HTTPS_EMBED_PROBLEM
         HTTPS_LINKING_PROBLEM
         BROKEN_LINK_PROBLEM
+        BROKEN_LINK_PROBLEM__401
+        BROKEN_LINK_PROBLEM__403
+        BROKEN_LINK_PROBLEM__404
+        BROKEN_LINK_PROBLEM__408
+        BROKEN_LINK_PROBLEM__410
+        BROKEN_LINK_PROBLEM__429
+        BROKEN_LINK_PROBLEM__500
+        BROKEN_LINK_PROBLEM__503
+        BROKEN_LINK_PROBLEM__curl_error_1
+        BROKEN_LINK_PROBLEM__curl_error_6
+        BROKEN_LINK_PROBLEM__curl_error_7
+        BROKEN_LINK_PROBLEM__curl_error_8
+        BROKEN_LINK_PROBLEM__curl_error_23
+        BROKEN_LINK_PROBLEM__curl_error_28
+        BROKEN_LINK_PROBLEM__curl_error_33
+        BROKEN_LINK_PROBLEM__curl_error_47
+        BROKEN_LINK_PROBLEM__curl_error_61
         INCOMPLETE_CONTENT_PROBLEM
         LOCAL_LINKING_PROBLEM
         FORM_ELEMENT_PROBLEM
@@ -4581,7 +4598,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_DISPLAY_REVIEW_STATUS
         DESCRIPTION_DISPLAY_TYPE
         DESCRIPTION_EXPORT_AS_SPREADSHEET
-        DESCRIPTION_DOWNLOAD_COMPOSR_HOMESITE
+        DESCRIPTION_DOWNLOAD_ADDON_HOMESITE
         DESCRIPTION_DOWNLOAD_COST
         DESCRIPTION_DOWNLOAD_IMAGES
         DESCRIPTION_DOWNLOAD_IMAGE_SHORTCUT
@@ -5804,6 +5821,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HTTP_DOWNLOAD_STATUS_NOT_FOUND
         HTTP_DOWNLOAD_STATUS_SERVER_ERROR
         HTTP_DOWNLOAD_STATUS_UNAUTHORIZED
+        HTTP_DOWNLOAD_STATUS_BAD_REQUEST
         HTTP_DOWNLOAD_STATUS_UNKNOWN
         HTTP_REDIRECT_PROBLEM
         IDE_LINKAGE
@@ -8482,6 +8500,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADVERTISE_ON_COMPOSR_2
         CRON_UPGRADE_PENDING
         DESCRIPTION_ADVERTISE_ON_COMPOSR
+        FIND_REMOTE_ADDONS_ERROR
+        BACKUP_LOG_START
+        LOG_LEVEL
     ')));
 
     $non_admin_files = [
@@ -10644,7 +10665,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RECOMMENDATION_MADE
         RECOMMENDING_TO_LINE
         RECOMMEND_AUTO_TEXT
-        RECOMMEND_COMPOSR
+        RECOMMEND_SOFTWARE
         RECOMMEND_LINK
         RECOMMEND_MEMBER_MESSAGE
         RECOMMEND_MEMBER_SUBJECT

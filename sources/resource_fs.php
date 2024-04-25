@@ -161,7 +161,7 @@ function get_resource_fs_record(string $resource_type, string $resource_id) : ?a
  */
 function get_resource_commandr_fs_object(string $resource_type) : ?object
 {
-    $fs_hook = convert_composr_type_codes('content_type', $resource_type, 'commandr_filesystem_hook');
+    $fs_hook = convert_cms_type_codes('content_type', $resource_type, 'commandr_filesystem_hook');
     if (empty($fs_hook)) {
         return null;
     }
@@ -958,13 +958,13 @@ function remap_foreign_key_as_portable(array $_table_referenced, $id)
 
     list($table_referenced, $field_referenced/*not actually used, we assume it's the primary key*/) = $_table_referenced;
 
-    $commandr_filesystem_hook = convert_composr_type_codes('table', $table_referenced, 'commandr_filesystem_hook');
+    $commandr_filesystem_hook = convert_cms_type_codes('table', $table_referenced, 'commandr_filesystem_hook');
 
     if ($commandr_filesystem_hook === null) {
         return $id; // No special Resource-fs to tie to, so we'll leave it alone
     }
 
-    $resource_type = convert_composr_type_codes('table', $table_referenced, 'content_type');
+    $resource_type = convert_cms_type_codes('table', $table_referenced, 'content_type');
 
     if (empty($resource_type)) {
         return $id;
@@ -988,7 +988,7 @@ function remap_portable_as_foreign_key(array $_table_referenced, $portable_data)
 
     list($table_referenced, $field_referenced/*not actually used, we assume it's the primary key*/) = $_table_referenced;
 
-    $resource_type = convert_composr_type_codes('table', $table_referenced, 'content_type');
+    $resource_type = convert_cms_type_codes('table', $table_referenced, 'content_type');
 
     if (empty($resource_type)) {
         return $portable_data['id'];

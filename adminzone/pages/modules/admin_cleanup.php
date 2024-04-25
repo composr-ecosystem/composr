@@ -244,7 +244,7 @@ class Module_admin_cleanup
                 $todo[] = $hook;
             }
         }
-        $messages = composr_cleanup($todo);
+        $messages = run_cleanup_tools($todo);
         $messages->attach(paragraph(do_lang_tempcode('SUCCESS')));
 
         log_it('CLEANUP_TOOLS', implode(', ', $todo));

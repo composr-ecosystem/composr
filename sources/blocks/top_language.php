@@ -118,7 +118,8 @@ PHP;
     {
         // Mappings between language and primary country, for those where the ISO codes differ
         //  This list is intentionally incomplete.
-        //  It is biased towards languages which have many native speakers, and are used by people likely to be accessing a multi-language Composr website.
+        //  It is biased towards languages which have many native speakers, and are used by people likely to be accessing a multi-language website.
+        // TODO: Automated test to check the accuracy of this?
         static $langs_to_countries = null;
         if ($langs_to_countries === null) {
             $langs_to_countries = [

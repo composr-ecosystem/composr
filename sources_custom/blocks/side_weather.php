@@ -119,7 +119,7 @@ PHP;
 
             $GLOBALS['DO_NOT_CACHE_THIS'] = true;
             require_code('failure');
-            cms_error_log($errormsg, 'error_occurred_api');
+            cms_error_log(brand_name() . ' weather: WARNING ' . $errormsg, 'error_occurred_api');
 
             if (cron_installed(true)) {
                 if (!$GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {

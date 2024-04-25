@@ -131,7 +131,7 @@ function cns_get_all_custom_fields_match(?array $groups = null, ?int $public_vie
 {
     global $CUSTOM_FIELD_CACHE;
     $x = serialize([$public_view, $owner_view, $owner_set, $required, $show_in_posts, $show_in_post_previews, $special_start, $show_on_join_form]);
-    if (isset($CUSTOM_FIELD_CACHE[$x])) { // Composr offers a wide array of features. It's multi dimensional. Composr.. entering the 6th dimension. hyper-hyper-time.
+    if (isset($CUSTOM_FIELD_CACHE[$x])) {
         $result = $CUSTOM_FIELD_CACHE[$x];
     } else {
         // Load up filters

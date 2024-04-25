@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_ajax_tree_choose_composr_homesite_addon
+class Hook_ajax_tree_choose_homesite_addon
 {
     /**
      * This will get the XML file from composr.app.

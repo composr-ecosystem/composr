@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__use_imprecise_ordering
+class Hook_config_fast_custom_index__scale_by_commonality
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_composr_fast_custom_index__use_imprecise_ordering
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__USE_IMPRECISE_ORDERING',
+            'human_name' => 'FAST_CUSTOM_INDEX__SCALE_BY_COMMONALITY',
             'type' => 'tick',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__use_imprecise_ordering',
+            'group' => 'FAST_CUSTOM_INDEX',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__scale_by_commonality',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

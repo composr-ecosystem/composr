@@ -118,8 +118,8 @@ class lang_spelling_test_set extends cms_test_case
                 (strpos($string, 'Composr') !== false) &&
 
                 (strpos($key, 'SETUPWIZARD') === false) &&
-                (strpos($key, 'composr_fast_custom_index') === false) &&
-                (strpos($key, 'COMPOSR_FAST_CUSTOM_INDEX') === false) &&
+                (strpos($key, 'FAST_CUSTOM_INDEX') === false) &&
+                (strpos($key, 'FAST_CUSTOM_INDEX') === false) &&
                 (!in_array($key, [
                     'NO_PHP_IN_TEMPLATES',
                     'FORUM_BASE_URL_INVALID',
@@ -145,8 +145,8 @@ class lang_spelling_test_set extends cms_test_case
                     'CONFIG_OPTION_keywords',
                     'DESCRIPTION_META_KEYWORDS',
                     'DEFAULT_SLIDE3_TEXT',
-                    'THEME_COMPOSR_VERSION',
-                    'THEME_DESCRIPTION_COMPOSR_VERSION',
+                    'THEME_SOFTWARE_VERSION',
+                    'THEME_DESCRIPTION_SOFTWARE_VERSION',
                     'CONFIG_OPTION_csrf_token_expire_new',
                     'CONFIG_OPTION_csrf_token_expire_fresh',
                 ])) &&

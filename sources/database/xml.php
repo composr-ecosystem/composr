@@ -22,8 +22,8 @@
 
 /*
     Known (intentional) issues in SQL support (we are targeting rough MySQL-4.3 parity, similar to SQL-92):
-        We support a few SQL/MySQL functions, the ones the Composr db_function outputs and the very basic operators. However we prefix with 'X_' so that we don't accidentally code in assumptions about MySQL.
-        We do not support SQL data types, we use Composr ones instead.
+        We support a few SQL/MySQL functions, the ones the software's db_function outputs and the very basic operators. However we prefix with 'X_' so that we don't accidentally code in assumptions about MySQL.
+        We do not support SQL data types, we use software ones instead.
         We do not have any special table/field naming escaping support-- so you need to use names that aren't awkward
         MySQL-style auto-increment is supported, but actually done as key randomisation, once install has finished
         Indexes are not supported
@@ -46,7 +46,7 @@
         Special foreign key support is not supported
         INTERSECT and EXCEPT and MINUS are not supported
         JOIN's are not supported in DELETE or UPDATE queries
-        Character set support is just whatever Composr is set to; there is no special supported
+        Character set support is just whatever the software is set to; there is no special supported
         SELECT INTO is not supported
         Default values for fields are not supported
         Field naming for things like COUNT(*) will not be consistent with MySQL
@@ -55,7 +55,7 @@
         Detection of missing field in SELECT wrt ORDER BY or GROUP BY is not 100% perfect when joining/aliasing tables
     The following is not implemented for technical reasons:
         Expressions using aggregate functions, like SUM(a)+SUM(b) or (SUM(a)+1) or SUM(a+b)
-    This database system is intended only for Composr, and not as a general purpose database. In Composr our philosophy is to write logic in PHP, not SQL, hence the subset supported.
+    This database system is intended only for this software, and not as a general purpose database. Our philosophy is to write logic in PHP, not SQL, hence the subset supported.
     Also as we have to target a database baseline across multiple vendors we can't implement some more sophisticated featured, in case programmers rely on them!
 */
 
@@ -191,7 +191,7 @@ class Database_Static_xml extends DatabaseDriver
     }
 
     /**
-     * Get a map of Composr field types, to actual database types.
+     * Get a map of software field types, to actual database types.
      *
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
@@ -297,7 +297,7 @@ class Database_Static_xml extends DatabaseDriver
      * Get SQL for creating a new table.
      *
      * @param  ID_TEXT $table_name The table name
-     * @param  array $fields A map of field names to Composr field types (with *#? encodings)
+     * @param  array $fields A map of field names to software field types (with *#? encodings)
      * @param  mixed $connection The DB connection to make on
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
@@ -352,7 +352,7 @@ class Database_Static_xml extends DatabaseDriver
      * Create a new table.
      *
      * @param  ID_TEXT $table_name The table name
-     * @param  array $fields A map of field names to Composr field types (with *#? encodings)
+     * @param  array $fields A map of field names to software field types (with *#? encodings)
      * @param  array $db The DB connection to make on
      * @param  boolean $if_not_exists Whether to only do it if it does not currently exist
      */
@@ -1208,7 +1208,7 @@ class Database_Static_xml extends DatabaseDriver
         }
         $_record = $ob->output;
         */
-        // This is much faster, even though it's a bit of a hack as it assumes all records are as Composr would write them
+        // This is much faster, even though it's a bit of a hack as it assumes all records are as the software would write them
         $bits = preg_split('#</?([^>]*)>#', $file_contents, -1, PREG_SPLIT_DELIM_CAPTURE);
         $_record = [];
         $bc = count($bits) - 2;
@@ -1219,7 +1219,7 @@ class Database_Static_xml extends DatabaseDriver
         if ((!isset($bits[$i])) || ($bits[$i] != 'composr')) {
             warn_exit('Unrecognised XML in ' . $path . ' (found ' . (isset($bits[$i]) ? $bits[$i] : '(end)') . ')');
         }
-        $i++; // Skip past "Composr"
+        $i++; // Skip past "composr"
         while (trim($bits[$i]) == '') {
             $i++; // Whitespace between tags
         }
@@ -1348,6 +1348,10 @@ class Database_Static_xml extends DatabaseDriver
 
         if ((strlen($path) > 255) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
             attach_message('File path too long on Windows (' . $path . ')', 'warn', false, true);
+            return;
+        }
+        if ((strlen(basename($path)) > 59) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
+            attach_message('File name too long on Windows (' . basename($path) . ')', 'warn', false, true);
             return;
         }
 
@@ -1636,7 +1640,7 @@ class Database_Static_xml extends DatabaseDriver
                         $SCHEMA_CACHE[$table_name][$column_name] = $data_type;
                     }
                 } elseif ($op == 'CHANGE') {
-                    // Actually we type-convert in real-time so no change actually needed. Composr would have updated the meta stuff separately
+                    // Actually we type-convert in real-time so no change actually needed. The software would have updated the meta stuff separately
                     if (array_key_exists($table_name, $SCHEMA_CACHE)) {
                         unset($SCHEMA_CACHE[$table_name][$column_name]);
                         $SCHEMA_CACHE[$table_name][$new_column_name] = $data_type;

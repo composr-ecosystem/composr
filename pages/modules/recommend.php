@@ -347,9 +347,9 @@ class Module_recommend
     {
         $subject = get_param_string('subject', do_lang('RECOMMEND_MEMBER_SUBJECT', get_site_name()), INPUT_FILTER_GET_COMPLEX);
 
-        // Recommend Composr-itself
+        // Recommend the software itself
         if (get_param_integer('cms', 0) == 1) {
-            $message = do_lang('RECOMMEND_COMPOSR', brand_name(), get_brand_base_url());
+            $message = do_lang('RECOMMEND_SOFTWARE', brand_name(), get_brand_base_url());
             return [$subject, $message];
         }
 

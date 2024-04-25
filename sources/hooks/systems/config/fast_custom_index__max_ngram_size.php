@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_composr_fast_custom_index__enable_for_minimum_ngram_count
+class Hook_config_fast_custom_index__max_ngram_size
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,13 @@ class Hook_config_composr_fast_custom_index__enable_for_minimum_ngram_count
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_MINIMUM_NGRAM_COUNT',
+            'human_name' => 'FAST_CUSTOM_INDEX__MAX_NGRAM_SIZE',
             'type' => 'integer',
             'category' => 'SEARCH',
-            'group' => 'COMPOSR_FAST_CUSTOM_INDEX_ENABLE',
-            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__enable_for_minimum_ngram_count',
+            'group' => 'FAST_CUSTOM_INDEX',
+            'explanation' => 'CONFIG_OPTION_fast_custom_index__max_ngram_size',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
             'addon' => 'search',
@@ -56,6 +55,6 @@ class Hook_config_composr_fast_custom_index__enable_for_minimum_ngram_count
             return null;
         }
 
-        return '10';
+        return '1';
     }
 }

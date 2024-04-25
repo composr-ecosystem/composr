@@ -659,7 +659,7 @@ function count_download_category_children(int $category_id) : array
 }
 
 /**
- * Generate a link to a Composr download.
+ * Generate a link to a site download.
  *
  * @param  AUTO_LINK $id The ID of the download to be downloaded
  * @param  boolean $use_gateway Whether to use the gateway script

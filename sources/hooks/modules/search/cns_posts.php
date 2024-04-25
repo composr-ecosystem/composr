@@ -64,7 +64,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         if ((has_privilege($member_id, 'see_not_validated')) && (addon_installed('validation'))) {
             $info['special_off']['not_validated'] = do_lang_tempcode('POST_SEARCH_NOT_VALIDATED');
         }
-        if (can_use_composr_fast_custom_index('cns_posts')) {
+        if (can_use_fast_custom_index('cns_posts')) {
             $info['special_on']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
         } else {
             $info['special_off']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
@@ -116,7 +116,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      */
     public function index_for_search(?int $since = null, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null)
     {
-        $engine = new Composr_fast_custom_index();
+        $engine = new Fast_custom_index();
 
         $index_table = 'f_posts_fulltext_index';
         $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -142,7 +142,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $db = $GLOBALS['FORUM_DB'];
 
         // A way to force-resume where we left off, if we're debugging our way through
-        if (get_value('composr_fast_custom_index__startup_hack', '0') == '1') {
+        if (get_value('fast_custom_index__startup_hack', '0') == '1') {
             $last_post_id = $db->query_select_value_if_there('f_posts_fulltext_index', 'MAX(i_post_id)');
             if ($last_post_id !== null) {
                 $_since = $db->query_select_value_if_there('f_posts', 'p_time', ['id' => $last_post_id]);
@@ -160,7 +160,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $since_clause = $engine->generate_since_where_clause($db, $index_table, ['p_time' => false, 'p_last_edit_time' => true], $since, $statistics_map);
         $sql .= $since_clause;
 
-        $max_post_length = intval(get_option('composr_fast_custom_index__max_post_length'));
+        $max_post_length = intval(get_option('fast_custom_index__max_post_length'));
         if ($max_post_length > 0) {
             $sql .= ' AND ' . db_function('LENGTH', [$GLOBALS['FORUM_DB']->translate_field_ref('p_post')]) . '<' . strval($max_post_length);
         }
@@ -259,7 +259,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $permissions_module = 'forums';
         $db = $GLOBALS['FORUM_DB'];
         $index_table = 'f_posts_fulltext_index';
-        if (can_use_composr_fast_custom_index('cns_posts', $db, $index_table, $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_posts_starter', 0) == 1)) {
+        if (can_use_fast_custom_index('cns_posts', $db, $index_table, $search_query, Fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_posts_starter', 0) == 1)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -332,9 +332,9 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $where_clause .= 'p_validated=1';
             }
 
-            $engine = new Composr_fast_custom_index();
+            $engine = new Fast_custom_index();
 
-            if (Composr_fast_custom_index::active_search_has_special_filtering()) {
+            if (Fast_custom_index::active_search_has_special_filtering()) {
                 $trans_fields = [];
                 $nontrans_fields = [];
                 $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);

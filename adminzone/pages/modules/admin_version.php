@@ -1260,7 +1260,7 @@ class Module_admin_version
         // Patreon
         $level = get_param_integer('level', 50);
         $patreon_patrons = [];
-        $data = cms_http_request('https://composr.app/data_custom/patreon_patrons.php?level=' . strval($level), ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+        $data = cms_http_request(get_brand_base_url() . '/data_custom/patreon_patrons.php?level=' . strval($level), ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
         if ($data->data !== null) {
             $_patreon_patrons = json_decode($data->data);
             foreach ($_patreon_patrons as $patron) {

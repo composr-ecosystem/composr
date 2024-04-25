@@ -229,18 +229,18 @@ class Module_admin_push_bugfix
             $files = array_keys($git_found);
         }
 
-        $projects = [
+        $projects = [ // TODO: might need changed when starting to use composr.app
             1 => 'Composr',
-            2 => 'Composr alpha bug reports',
+            10 => 'Composr alpha bug reports',
             8 => 'Composr build tools',
             7 => 'Composr documentation',
             5 => 'Composr downloadable themes',
             9 => 'Composr testing platform',
-            10 => 'Composr website (composr.app)',
+            3 => 'Composr website (composr.app)',
             4 => 'Composr non-bundled addons',
         ];
         if (in_array(cms_version_branch_status(), [VERSION_ALPHA, VERSION_BETA])) {
-            $default_project_id = 2;
+            $default_project_id = 10;
         } else {
             $default_project_id = 1;
         }

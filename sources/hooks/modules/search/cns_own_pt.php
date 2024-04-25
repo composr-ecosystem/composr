@@ -102,7 +102,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
      */
     public function index_for_search(?int $since = null, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null)
     {
-        $engine = new Composr_fast_custom_index();
+        $engine = new Fast_custom_index();
 
         $index_table = 'f_pposts_fulltext_index';
         $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -188,7 +188,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         // Calculate and perform query
         $db = $GLOBALS['FORUM_DB'];
         $index_table = 'f_pposts_fulltext_index';
-        if (can_use_composr_fast_custom_index('cns_own_pt', $db, $index_table, $search_query, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_own_pt_starter', 0) == 1)) {
+        if (can_use_fast_custom_index('cns_own_pt', $db, $index_table, $search_query, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_own_pt_starter', 0) == 1)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -220,7 +220,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= 'p_validated=1';
             }
 
-            $engine = new Composr_fast_custom_index();
+            $engine = new Fast_custom_index();
 
             $key_transfer_map = ['id' => 'i_post_id'];
             $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);

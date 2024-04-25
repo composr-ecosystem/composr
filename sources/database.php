@@ -265,7 +265,7 @@ function reload_lang_fields(bool $full = false, ?string $only_table = null, ?arr
 }
 
 /**
- * Find lang fields to load within a query. Usually used when JOINs are involved in a query and hence Composr cannot automatically determine what the fields will be.
+ * Find lang fields to load within a query. Usually used when JOINs are involved in a query and hence the software cannot automatically determine what the fields will be.
  *
  * @param  string $table Table name
  * @param  ?string $alias Table alias (null: none)
@@ -439,7 +439,7 @@ function is_on_multi_site_network() : bool
 
 /**
  * Find the correct database connection for a particular table. i.e. site connection or forum connection.
- * This only works with Composr/Conversr tables, not third-party forums.
+ * This only works with site/Conversr tables, not third-party forums.
  * If modifying this function, search for other cases in the code for 'f_welcome_emails', as similar logic is used elsewhere.
  * Also see: is_forum_db, is_on_multi_site_network.
  *
@@ -484,7 +484,7 @@ function get_db_type() : string
 }
 
 /**
- * Find Composr was installed to use persistent database connections or not.
+ * Find whether the software was installed to use persistent database connections or not.
  *
  * @return boolean Whether to use persistent database connections
  */
@@ -495,8 +495,8 @@ function get_use_persistent() : bool
 }
 
 /**
- * Get the table prefixes used for all Composr tables, commonly used when you are installing Composr in the same database as your forums.
- * The default table prefix is 'cms_'. Note that anything that might write to an arbitrary db, must ask that db for it's table prefix (if it needs it of course... the db abstracts away most needs for it).
+ * Get the table prefixes used for all software tables, commonly used when you are installing the software in the same database as your forums.
+ * The default table prefix is 'cms_'. Note that anything that might write to an arbitrary db, must ask that db for its table prefix (if it needs it of course... the db abstracts away most needs for it).
  *
  * @return string The table prefix
  */
@@ -690,7 +690,7 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Get a map of Composr field types, to actual database types.
+     * Get a map of software field types, to actual database types.
      *
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
@@ -698,7 +698,7 @@ abstract class DatabaseDriver
     abstract public function get_type_remap(bool $for_alter = false) : array;
 
     /**
-     * Get the implicit field default for a Composr field type.
+     * Get the implicit field default for a software field type.
      *
      * @param  string $type Field type
      * @return mixed The default
@@ -736,7 +736,7 @@ abstract class DatabaseDriver
             case 'LONG_TRANS__COMCODE':
             case 'SHORT_TRANS__COMCODE':
             case 'SHORT_TEXT':
-            case 'TEXT': // Do not explicitly use; mainly used for MySQL compatibility with third-party forum drivers (LONG_TEXT does not support default values; see https://bugs.mysql.com/bug.php?id=21532). Use LONG_TEXT instead; Composr will switch to TEXT when necessary.
+            case 'TEXT': // Do not explicitly use; mainly used for MySQL compatibility with third-party forum drivers (LONG_TEXT does not support default values; see https://bugs.mysql.com/bug.php?id=21532). Use LONG_TEXT instead; the software will switch to TEXT when necessary.
             case 'LONG_TEXT':
             case 'ID_TEXT':
             case 'MINIID_TEXT':
@@ -754,7 +754,7 @@ abstract class DatabaseDriver
      * Get SQL for creating a new table.
      *
      * @param  ID_TEXT $table_name The table name
-     * @param  array $fields A map of field names to Composr field types (with *#? encodings)
+     * @param  array $fields A map of field names to software field types (with *#? encodings)
      * @param  mixed $connection The DB connection to make on
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
@@ -1272,7 +1272,7 @@ abstract class DatabaseDriver
             syslog(LOG_ERR, $php_error_label);
         }
         if (php_function_allowed('error_log')) {
-            @error_log('Database: ' . $php_error_label, 0);
+            @error_log(brand_name() . ' database: ERROR ' . $php_error_label, 0);
         }
 
         $restricted = false;
@@ -1652,7 +1652,7 @@ class DatabaseConnector
     }
 
     /**
-     * Get the table prefixes used for all Composr tables, commonly used when you are installing Composr in the same database as your forums. The default table prefix is 'cms_'.
+     * Get the table prefixes used for all software tables, commonly used when you are installing the software in the same database as your forums. The default table prefix is 'cms_'.
      *
      * @return string The table prefix
      */
@@ -1935,7 +1935,7 @@ class DatabaseConnector
      * Assumes nothing looking like {example} is in the query already.
      * Also supports {prefix} for encoding the table prefix.
      * Lots of programmers like to do queries like this as it reduces the chance of accidentally forgetting to escape a parameter inserted directly/manually within a longer query.
-     * Usually in Composr we use APIs like query_select, which avoids the need for SQL all-together, but this doesn't work for all patterns of query.
+     * Usually we use APIs like query_select, which avoids the need for SQL all-together, but this doesn't work for all patterns of query.
      *
      * @param  string $query The complete parameter-ready SQL query
      * @param  array $parameters The query parameters (a map)
@@ -2186,7 +2186,7 @@ class DatabaseConnector
 
             if (php_function_allowed('error_log')) {
                 require_code('urls');
-                @error_log('Profiling: Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), 0);
+                @error_log(brand_name() . ' profiling: INFO Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), 0);
             }
 
             if ($DEV_MODE) {
@@ -2317,7 +2317,7 @@ class DatabaseConnector
             $out = ['time' => ($after - $before), 'text' => $text, 'rows' => is_array($ret) ? count($ret) : null];
             $QUERY_LIST[] = $out;
         }
-        /*  Generally one would use MySQL's own slow query log, which will impact Composr performance less
+        /*  Generally one would use MySQL's own slow query log, which will impact performance less
         if (microtime_diff($after, $before) > 1.0) {
             cms_profile_start_for('_query:SLOW_ALERT');
             cms_profile_end_for('_query:SLOW_ALERT', $query);
@@ -2620,7 +2620,7 @@ class DatabaseConnector
      * @param  string $end Something to tack onto the end of the statement
      * @param  ?integer $max The maximum number of rows to update (null: no limit)
      * @param  integer $start The starting row to update
-     * @param  boolean $num_touched Whether to get the number of touched rows. WARNING: Do not use in core Composr code as it does not work on all database drivers
+     * @param  boolean $num_touched Whether to get the number of touched rows. WARNING: Do not use in core code as it does not work on all database drivers
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      * @return ?integer The number of touched records (null: hasn't been asked / error / not supported)
      */
