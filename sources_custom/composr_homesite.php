@@ -400,9 +400,11 @@ function server__public__relay_error_notification()
 
     // Sanity checks
     if ($data === false) {
+        http_response_code(400);
         exit('Invalid telemetry data');
     }
     if (!array_key_exists('nonce', $data) || !array_key_exists('encrypted_data', $data) || !array_key_exists('encrypted_session_key', $data) || !array_key_exists('version', $data)) {
+        http_response_code(400);
         exit('Invalid telemetry data');
     }
 
@@ -411,6 +413,7 @@ function server__public__relay_error_notification()
     $_data = decrypt_data_telemetry($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
     $decrypted_data = @unserialize($_data);
     if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('website_url', $decrypted_data) || !array_key_exists('error_message', $decrypted_data)) {
+        http_response_code(400);
         exit('Corrupt telemetry data');
     }
 
@@ -421,7 +424,7 @@ function server__public__relay_error_notification()
         (strpos($error_message, 'Cannot write to ') !== false) ||
         (strpos($error_message, 'telemetry: ') !== false)
     ) {
-        return;
+        exit();
     }
 
     // Generate a hash from the error message but remove some possibly-unique identifiers (so we don't get a bunch of duplicates; not perfect but gets the job done)
@@ -446,8 +449,9 @@ function server__public__relay_error_notification()
         ], [
             'id' => $row[0]['id']
         ]);
+        exit('relayed_error_id=' . strval($row[0]['id']));
     } else {
-        $GLOBALS['SITE_DB']->query_insert('relayed_errors', [
+        $map = [
             'first_date_and_time' => time(),
             'last_date_and_time' => time(),
             'website_url' => $decrypted_data['website_url'],
@@ -455,8 +459,11 @@ function server__public__relay_error_notification()
             'error_message' => $decrypted_data['error_message'],
             'error_hash' => $error_hash,
             'error_count' => 1,
-            'resolved' => 0
-        ]);
+            'resolved' => 0,
+        ];
+        $map += insert_lang_comcode('note', '', 4);
+        $id = $GLOBALS['SITE_DB']->query_insert('relayed_errors', $map, true);
+        exit('relayed_error_id=' . strval($id));
     }
 }
 

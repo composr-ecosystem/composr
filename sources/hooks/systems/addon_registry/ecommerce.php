@@ -282,7 +282,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/ecommerce/wage.php',
             'sources/hooks/systems/ecommerce/work.php',
             'sources/hooks/systems/ecommerce_tax/.htaccess',
-            'sources/hooks/systems/ecommerce_tax/composr.php',
+            'sources/hooks/systems/ecommerce_tax/core.php',
             'sources/hooks/systems/ecommerce_tax/index.html',
             'sources/hooks/systems/ecommerce_tax/taxcloud.php',
             'sources/hooks/systems/ecommerce_tax/taxjar.php',

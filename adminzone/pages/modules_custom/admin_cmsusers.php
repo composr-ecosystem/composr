@@ -30,7 +30,7 @@ class Module_admin_cmsusers
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 4;
+        $info['version'] = 5;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -97,12 +97,16 @@ class Module_admin_cmsusers
                 'error_message' => 'LONG_TEXT',
                 'error_hash' => 'SHORT_TEXT',
                 'error_count' => 'INTEGER',
-                'resolved' => 'BINARY'
+                'resolved' => 'BINARY',
+                'note' => 'LONG_TRANS__COMCODE',
             ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'error_hash', 'SHORT_TEXT');
+        }
+        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'note', 'LONG_TRANS__COMCODE');
         }
     }
 
@@ -183,6 +187,11 @@ class Module_admin_cmsusers
             $id = get_param_integer('id');
             $this->title = get_screen_title('CMS_SITE_RESOLVE_ERROR', true, [integer_format($id)]);
             return $this->resolve_error($id);
+        }
+        if ($type == '_resolve_error') {
+            $id = get_param_integer('id');
+            $this->title = get_screen_title('CMS_SITE_RESOLVE_ERROR', true, [integer_format($id)]);
+            return $this->_resolve_error($id);
         }
         return new Tempcode();
     }
@@ -524,10 +533,10 @@ class Module_admin_cmsusers
     }
 
     /**
-     * The UI / actualiser for resolving an error message.
+     * The UI for resolving an error message.
      *
      * @param  integer $id The ID of the error to resolve
-     * @return Tempcode the UI / results
+     * @return Tempcode The UI
      */
     public function resolve_error(int $id) : object
     {
@@ -535,21 +544,52 @@ class Module_admin_cmsusers
         if (($_row === null) || (!array_key_exists(0, $_row))) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
+        $row = $_row[0];
 
-        // Confirm?
-        if (get_param_integer('confirm', 0) == 0) {
-            $preview = do_lang_tempcode('CONFIRM_CMS_SITE_RESOLVE_ERROR', escape_html(integer_format($id)));
-            return do_template('CONFIRM_SCREEN', [
-                '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
-                'TITLE' => $this->title,
-                'PREVIEW' => $preview,
-                'URL' => get_self_url(false, false, ['confirm' => 1]),
-                'FIELDS' => build_keep_post_fields(),
-            ]);
+        $note = get_translated_text($row['note']);
+
+        require_code('form_templates');
+
+        $fields = new Tempcode();
+
+        $fields->attach(form_input_tick(do_lang_tempcode('MARK_RESOLVED'), do_lang_tempcode('DESCRIPTION_MARK_RESOLVED'), 'resolved', false));
+        $fields->attach(form_input_text_comcode(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_RELAYED_ERROR_NOTES'), 'note', $note, false));
+
+        $resolve_url = build_url(['page' => '_SELF', 'type' => '_resolve_error', 'id' => $id, 'redirect' => protect_url_parameter('redirect')], '_SELF');
+
+        return do_template('FORM_SCREEN', [
+            '_GUID' => '904b2916eea66a19f6906842c81da308',
+            'HIDDEN' => new Tempcode(),
+            'TITLE' => $this->title,
+            'FIELDS' => $fields,
+            'TEXT' => '',
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'URL' => $resolve_url,
+        ]);
+    }
+
+    /**
+     * The actualiser for resolving an error message.
+     *
+     * @param  integer $id The ID of the error to resolve
+     * @return Tempcode The results
+     */
+    public function _resolve_error(int $id) : object
+    {
+        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['id' => $id], '', 1);
+        if (($_row === null) || (!array_key_exists(0, $_row))) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
+        $row = $_row[0];
+
+        $resolved = post_param_integer('resolved', 0);
+        $new_note = post_param_string('note');
 
         // Actualiser
-        $GLOBALS['SITE_DB']->query_update('relayed_errors', ['resolved' => 1], ['id' => $id]);
+        $map = ['resolved' => $resolved];
+        $map += lang_remap_comcode('note', $row['note'], $new_note);
+        $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $id]);
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
             $_url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');

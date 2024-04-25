@@ -276,13 +276,14 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
             syslog($syslog_type, $php_error_label);
         }
         if (php_function_allowed('error_log')) {
-            switch ($type) {
-                case 'error':
+            switch (cms_strtoupper_ascii($type)) {
+                case 'ERROR':
+                case 'FATAL ERROR':
                     @error_log('PHP: ' . ($fatal ? 'CRITICAL' : 'ERROR') . ' ' . $php_error_label, 0);
                     break;
-                case 'warning':
-                case 'notice':
-                case 'deprecated':
+                case 'WARNING':
+                case 'NOTICE':
+                case 'DEPRECATED':
                     @error_log('PHP: WARNING ' . $php_error_label, 0);
                     break;
             }
@@ -312,7 +313,7 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
 
     // Display in appropriate way
     if ($fatal) {
-        $error_str = 'PHP ' . cms_strtoupper_ascii($type) . ' [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline);
+        $error_str = 'PHP: ' . cms_strtoupper_ascii($type) . ' [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline);
 
         if (throwing_errors()) {
             throw new CMSException($error_str);
@@ -1278,10 +1279,16 @@ function relay_error_notification(string $text, bool $developers = true, string 
             } else {
                 $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
                 $error_code = null;
-                $error_message = null;
+                $error_message = '';
                 $response = cms_fsock_request($payload, $url, $error_code, $error_message);
-                if (($response === null) || ($error_message !== null)) {
+                if (($response === null) || ($error_message != '')) {
                     cms_error_log(brand_name() . ' telemetry: WARNING Could not forward error to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
+                }
+                $matches = [];
+                if (preg_match('#\srelayed_error_id=(\d*)\s#', $response, $matches) != 0) {
+                    if ((php_function_allowed('error_log')) && (file_exists(get_custom_file_base() . '/data_custom/errorlog.php')) && (cms_is_writable(get_custom_file_base() . '/data_custom/errorlog.php'))) {
+                        @error_log('TELEMETRY ' . strval($matches[1]) . "\n", 3, get_file_base() . '/data_custom/errorlog.php');
+                    }
                 }
             }
         }

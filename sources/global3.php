@@ -218,7 +218,36 @@ function get_tutorial_url(?string $tutorial) : string
 function get_brand_page_url(array $params, string $zone) : string
 {
     // Assumes brand site supports .htm URLs, which it should
-    return get_brand_base_url() . (($zone == '') ? '' : '/') . $zone . '/' . urlencode(str_replace('_', '-', $params['page'])) . '.htm';
+    $base = get_brand_base_url() . (($zone == '') ? '' : '/') . $zone . '/';
+    if (isset($params['page'])) {
+        $base .= urlencode(str_replace('_', '-', $params['page']));
+        if (isset($params['type'])) {
+            $base .= '/' . urlencode(str_replace('_', '-', $params['type']));
+            if (isset($params['id'])) {
+                $base .= '/' . urlencode(str_replace('_', '-', $params['id'])) . '.htm';
+                unset($params['id']);
+            } else {
+                $base .= '.htm';
+            }
+            unset($params['type']);
+        }
+        unset($params['page']);
+    } else {
+        $base .= '.htm';
+    }
+
+    $query_string = '';
+    foreach ($params as $k => $v) {
+        if ($query_string == '') {
+            $query_string .= '?';
+        } else {
+            $query_string .= '&';
+        }
+
+        $query_string .= $k . '=' . cms_urlencode($v);
+    }
+
+    return $base . $query_string;
 }
 
 /**
@@ -507,11 +536,11 @@ function cms_http_request(string $url, array $options = []) : object
  * @param  string $payload The payload to send (blank: make a GET request)
  * @param  URLPATH $url The URL to call including the path and port
  * @param  ?integer $error_code The error code returned (passed by reference) (null: No error)
- * @param  ?string $error_message The error message returned (passed by reference) (null: No error)
+ * @param  string $error_message The error message returned (passed by reference) (blank: No error)
  * @param  float $timeout The timeout in seconds
  * @return ?string response from the fsock (null: error)
  */
-function cms_fsock_request(string $payload, string $url, ?int &$error_code = null, ?string &$error_message = null, float $timeout = 6.0) : ?string
+function cms_fsock_request(string $payload, string $url, ?int &$error_code = null, ?string &$error_message = '', float $timeout = 6.0) : ?string
 {
     cms_profile_start_for('cms_fsock_request');
 
