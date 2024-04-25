@@ -414,13 +414,34 @@ function server__public__relay_error_notification()
         exit('Corrupt telemetry data');
     }
 
-    // See if this error was already reported by this site
-    $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count'], ['website_url' => $decrypted_data['website_url'], 'error_message' => $decrypted_data['error_message']]);
+    $error_message = $decrypted_data['error_message'];
+
+    // FUDGE: Ignore cases that might not yet be mainstream in the relay_error_notification function for the software
+    if (
+        (strpos($error_message, 'Cannot write to ') !== false)
+    ) {
+        return;
+    }
+
+    // Generate a hash from the error message but remove some possibly-unique identifiers (so we don't get a bunch of duplicates; not perfect but gets the job done)
+    $_error_hash = $error_message;
+    $_error_hash = preg_replace('/[a-fA-F0-9]{13,}/', '', $_error_hash); // MD5 hashes, uniqids, or GUIDs
+    $_error_hash = preg_replace('/\$\S{59,}/', '', $_error_hash); // bcrypt hashes
+    $_error_hash = preg_replace('/\d{8,}/', '', $_error_hash); // numbers with 8 or more digits... probably a timestamp
+    $_error_hash = preg_replace('/tcpfunc_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode
+    $_error_hash = preg_replace('/do_runtime_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode
+    $_error_hash = preg_replace('/string_attach_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode
+    $_error_hash = preg_replace('/\$(keep_)?tpl_funcs\[\'([^\'\]]*)\'\]/i', '', $_error_hash); // Tempcode
+    $error_hash = md5($_error_hash);
+
+    // See if this error was already reported by this site by checking the hash
+    $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count'], ['website_url' => $decrypted_data['website_url'], 'error_hash' => $error_hash]);
     if (array_key_exists(0, $row)) { // It was reported; just update last report time, report count, and current version
         $GLOBALS['SITE_DB']->query_update('relayed_errors', [
             'last_date_and_time' => time(),
             'error_count' => $row[0]['error_count'] + 1,
             'e_version' => $decrypted_data['version'], // Possible they upgraded since the last error; we want to know that
+            'resolved' => 0, // Possible a previously-resolved bug came back
         ], [
             'id' => $row[0]['id']
         ]);
@@ -431,11 +452,11 @@ function server__public__relay_error_notification()
             'website_url' => $decrypted_data['website_url'],
             'e_version' => $decrypted_data['version'],
             'error_message' => $decrypted_data['error_message'],
+            'error_hash' => $error_hash,
             'error_count' => 1,
             'resolved' => 0
         ]);
     }
-
 }
 
 // DEMONSTRATR

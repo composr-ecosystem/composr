@@ -68,7 +68,7 @@ class __debrand_epic_test_set extends cms_test_case
                 '/\$brand = \'Composr\';/i',
                 '/\$brand_name = \'Composr\';/i',
 
-                // Composr XML entity
+                // Composr XML entity; too risky to rename as this deals with the XML db
                 '/' . preg_quote('$bits[$i] != \'composr\'', '/') . '/i',
                 '/\<composr\>/',
                 '/\<\/composr\>/',
@@ -84,7 +84,7 @@ class __debrand_epic_test_set extends cms_test_case
 
                 // TODO: temporary exclusions
                 '/composr_homesite_web_service\.php/i', // Would be too complicated to rename / debrand at this time
-                '/composr_mobile_sdk/',
+                '/composr_mobile_sdk/', // Would be too complicated to rename / debrand at this time
                 '/X\-Powered\-By: Composr/i', // TODO: Should we explicitly leave this as Composr to indicate what even rebranded installs are running or were based off?
             ],
 

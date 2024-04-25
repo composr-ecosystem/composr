@@ -30,7 +30,7 @@ class Module_admin_cmsusers
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 3;
+        $info['version'] = 4;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -95,9 +95,14 @@ class Module_admin_cmsusers
                 'website_url' => 'URLPATH',
                 'e_version' => 'ID_TEXT',
                 'error_message' => 'LONG_TEXT',
+                'error_hash' => 'SHORT_TEXT',
                 'error_count' => 'INTEGER',
                 'resolved' => 'BINARY'
             ]);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'error_hash', 'SHORT_TEXT');
         }
     }
 
@@ -203,7 +208,7 @@ class Module_admin_cmsusers
             'num_members' => do_lang_tempcode('CMS_COUNT_MEMBERS'),
             'num_hits_per_day' => do_lang_tempcode('CMS_HITS_24_HRS'),
         ];
-        $test = explode(' ', get_param_string('sort', 'hittime ASC', INPUT_FILTER_GET_COMPLEX), 2);
+        $test = explode(' ', get_param_string('sort', 'hittime DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
         }
