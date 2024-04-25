@@ -276,13 +276,14 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
             syslog($syslog_type, $php_error_label);
         }
         if (php_function_allowed('error_log')) {
-            switch ($type) {
-                case 'error':
+            switch (cms_strtoupper_ascii($type)) {
+                case 'ERROR':
+                case 'FATAL ERROR':
                     @error_log('PHP: ' . ($fatal ? 'CRITICAL' : 'ERROR') . ' ' . $php_error_label, 0);
                     break;
-                case 'warning':
-                case 'notice':
-                case 'deprecated':
+                case 'WARNING':
+                case 'NOTICE':
+                case 'DEPRECATED':
                     @error_log('PHP: WARNING ' . $php_error_label, 0);
                     break;
             }
@@ -312,7 +313,7 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
 
     // Display in appropriate way
     if ($fatal) {
-        $error_str = 'PHP ' . cms_strtoupper_ascii($type) . ' [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline);
+        $error_str = 'PHP: ' . cms_strtoupper_ascii($type) . ' [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline);
 
         if (throwing_errors()) {
             throw new CMSException($error_str);
