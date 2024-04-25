@@ -1178,12 +1178,12 @@ function relay_error_notification(string $text, bool $developers = true, string 
     $error_message = strip_html(explode("\n\n", $text)[0]);
 
     if (
-        ($mail !== null) &&
-        ($developers) &&
-        (get_option('send_error_emails_developers') == '1') &&
-        (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
-        (!running_script('cron_bridge')) &&
-        ($text != '!') &&
+        //($mail !== null) &&
+        //($developers) &&
+        //(get_option('send_error_emails_developers') == '1') &&
+        //(!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
+        //(!running_script('cron_bridge')) &&
+        //($text != '!') &&
         (strpos($error_message, '_custom/') === false) &&
         (strpos($error_message, '_custom\\') === false) &&
         (strpos($error_message, 'FTP server error') === false) && // LDAP error, misconfiguration
@@ -1255,7 +1255,9 @@ function relay_error_notification(string $text, bool $developers = true, string 
         ((strpos($error_message, 'doesn\'t exist') === false) || ((strpos($error_message, 'import') === false))) &&
         ((strpos($error_message, 'No such file or directory') === false) || ((strpos($error_message, 'admin_setupwizard') === false))) &&
         (strpos($error_message, 'File(/tmp/) is not within the allowed path') === false) &&
-        (preg_match('#Could not convert -?\d+(\.\d+)?#', $error_message) == 0) // Currency conversion; likely no API key was set up
+        (preg_match('#Could not convert -?\d+(\.\d+)?#', $error_message) == 0) && // Currency conversion; likely no API key was set up
+        (strpos($error_message, 'Cannot write to ') === false) &&
+        (strpos($error_message, 'telemetry: ') === false)
     ) {
         // Send the error securely to the core developers (telemetry) using an encrypted raw fsock request
         require_code('encryption');
@@ -1272,14 +1274,14 @@ function relay_error_notification(string $text, bool $developers = true, string 
             $payload = json_encode($_payload);
 
             if ($payload === false) {
-                cms_error_log(brand_name() . ' telemetry: WARN Failed to JSON encode the error to send to the developers.');
+                cms_error_log(brand_name() . ' telemetry: WARNING Failed to JSON encode the error to send to the developers.');
             } else {
                 $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
                 $error_code = null;
                 $error_message = null;
                 $response = cms_fsock_request($payload, $url, $error_code, $error_message);
-                if (($response === false) || ($error_message !== null)) {
-                    cms_error_log(brand_name() . ' telemetry: WARN Could not forward error to the developers. ' . $error_message . escape_html($response));
+                if (($response === null) || ($error_message !== null)) {
+                    cms_error_log(brand_name() . ' telemetry: WARNING Could not forward error to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
                 }
             }
         }
