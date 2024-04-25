@@ -54,7 +54,12 @@ $advertise_on = get_param_integer('advertise_on', 0);
 $lang = user_lang__with__translation_override();
 
 if ($advertise_on == 1) {
-    $GLOBALS['SITE_DB']->query_insert('may_feature', ['url' => $url]);
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'url', ['url' => $url]);
+    if ($test === null) {
+        $GLOBALS['SITE_DB']->query_insert('may_feature', ['url' => $url]);
+    }
+} else { // Un-featuring
+    $GLOBALS['SITE_DB']->query_delete('may_feature', ['url' => $url]);
 }
 
 if (($email != 'dont_sign_me_up@composr.app') && ($email != '')) {
