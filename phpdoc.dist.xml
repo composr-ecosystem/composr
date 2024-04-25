@@ -29,7 +29,7 @@
 		</paths>
 	</logging>
 	<transformations>
-		<template name="composr-api-template" />
+		<template name="api-template" />
 	</transformations>
 	<files>
 		<directory>sources/</directory>

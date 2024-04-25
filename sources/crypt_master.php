@@ -19,7 +19,7 @@
  */
 
 /*
-IMPORTANT: This file is loaded outside Composr, so must work as standalone.
+    IMPORTANT: This file is loaded outside the core software, so must work as standalone and not use external APIs.
 */
 
 /**
@@ -118,9 +118,9 @@ function _maintenance_password_check__result(bool $result)
     }
     if (function_exists('syslog')) {
         if ($result) {
-            @syslog(LOG_NOTICE, brand_name() . ': Successfully logged into ' . $msg);
+            @syslog(LOG_NOTICE, 'Crypt master: Successfully logged into ' . $msg);
         } else {
-            @syslog(LOG_WARNING, brand_name() . ': Incorrect maintenance password given while logging into ' . $msg);
+            @syslog(LOG_WARNING, 'Crypt master: Incorrect maintenance password given while logging into ' . $msg);
         }
     }
 
@@ -128,7 +128,7 @@ function _maintenance_password_check__result(bool $result)
         global $FILE_BASE;
         @ini_set('error_log', $FILE_BASE . '/data_custom/errorlog.php');
         if (!$result) {
-            @error_log(brand_name() . ': WARNING Incorrect maintenance password given while logging into ' . $msg);
+            @error_log('Crypt master: WARNING Incorrect maintenance password given while logging into ' . $msg);
         }
     }
 

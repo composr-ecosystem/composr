@@ -119,7 +119,7 @@ class Hook_endpoint_content_commandr_fs
                 if ($id === null) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                 }
-                $fs_hook = convert_software_type_codes('content_type', $resource_type, 'commandr_filesystem_hook');
+                $fs_hook = convert_cms_type_codes('content_type', $resource_type, 'commandr_filesystem_hook');
                 $id = 'var/' . $fs_hook . '/' . $id;
                 $path_arr = $commandr_fs->_pwd_to_array('/' . $id);
                 $is_file = $commandr_fs->_is_file($path_arr);

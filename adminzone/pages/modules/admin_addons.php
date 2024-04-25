@@ -1239,9 +1239,9 @@ class Module_admin_addons
             if ($language != '') {
                 $description_parts[] = do_lang('LANGUAGE') . ': ' . $language;
             }
-            $software_version = get_theme_option('software_version', '', $theme);
-            if ($software_version != '') {
-                $description_parts[] = do_lang('THEME_SOFTWARE_VERSION') . ': ' . $software_version;
+            $cms_version = get_theme_option('cms_version', '', $theme);
+            if ($cms_version != '') {
+                $description_parts[] = do_lang('THEME_SOFTWARE_VERSION') . ': ' . $cms_version;
             }
             $capability_block_layouts = get_theme_option('capability_block_layouts', '', $theme);
             if ($capability_block_layouts == '0') {

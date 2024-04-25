@@ -103,7 +103,7 @@ class _config_options_test_set extends cms_test_case
                 'capability_block_layouts',
                 'capability_emails',
                 'capability_printing',
-                'software_version',
+                'cms_version',
                 'copyright_attribution',
                 'dependencies',
                 'enable_logowizard',

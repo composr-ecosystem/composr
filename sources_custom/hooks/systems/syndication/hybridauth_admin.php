@@ -258,7 +258,7 @@ class Hook_syndication_hybridauth_admin
         }
 
         require_code('content');
-        $addon_name = convert_software_type_codes('content_type', $content_type, 'addon_name');
+        $addon_name = convert_cms_type_codes('content_type', $content_type, 'addon_name');
 
         $fields = new Tempcode();
         $list_options = new Tempcode();

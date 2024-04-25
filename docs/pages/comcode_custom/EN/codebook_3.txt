@@ -266,7 +266,7 @@ A stack trace indicates the function call chain from the call of the script hand
 
 Lateral reasoning usually allows spotting of the source of a bug in a few seconds, although sometimes it can be more difficult. Often the bug is caused by unexpected parameters, and you can see them reflected in the stack trace and laterally work out why those parameters were passed and thus work out how to solve the problem.
 
-One confusing thing about stack traces is that the error chain is included within the trace. With time you'll learn to read past this and see where the error was actually triggered. Typically anything above the [tt]fatal_exit[/tt] or [tt]composr_error_handler[/tt] function calls relates to the error handling process itself.
+One confusing thing about stack traces is that the error chain is included within the trace. With time you'll learn to read past this and see where the error was actually triggered. Typically anything above the [tt]fatal_exit[/tt] or [tt]cms_error_handler[/tt] function calls relates to the error handling process itself.
 
 [box="Tip"]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/remember.png[/media]

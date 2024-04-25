@@ -69,21 +69,21 @@ function endpoint_script()
                 }
             }
 
-            // Convert from REST's use of standard HTTP verbs to Composr's standard $type names (also corresponds with CRUD)
+            // Convert from REST's use of standard HTTP verbs to the software's standard $type names (also corresponds with CRUD)
             switch (cms_strtoupper_ascii($_SERVER['REQUEST_METHOD'])) {
-                case 'POST': // REST POST = CRUD create = Composr add
+                case 'POST': // REST POST = CRUD create = software add
                     $type = 'add';
                     break;
 
-                case 'PUT': // REST PUT = CRUD update = Composr edit
+                case 'PUT': // REST PUT = CRUD update = software edit
                     $type = 'edit';
                     break;
 
-                case 'DELETE': // REST DELETE = CRUD delete = Composr delete
+                case 'DELETE': // REST DELETE = CRUD delete = software delete
                     $type = 'delete';
                     break;
 
-                case 'GET': // REST GET = N/A = Composr view
+                case 'GET': // REST GET = N/A = software view
                 default:
                     $type = 'view';
                     break;
@@ -109,6 +109,7 @@ function endpoint_script()
             'response_data' => array_diff_key($result, ['success' => true, 'error_details' => true]),
         ];
     } catch (Exception $e) {
+        // TODO: error log?
         $return_data = [
             'success' => false,
             'error_details' => strip_html($e->getMessage()),

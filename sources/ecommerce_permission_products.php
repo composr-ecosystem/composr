@@ -91,7 +91,7 @@ function permission_product_form(string $resource_type, ?string $category_id = n
 function _get_permission_product_save_map(string $resource_type, string $category_id) : array
 {
     require_code('content');
-    $module = convert_software_type_codes('content_type', $resource_type, 'module');
+    $module = convert_cms_type_codes('content_type', $resource_type, 'module');
 
     return [
         'p_enabled' => 1,

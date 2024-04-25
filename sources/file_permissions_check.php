@@ -20,7 +20,7 @@
 
 /*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|filegroup|get_current_user|is_executable|strtolower*/
 
-// Everything in this file can run without Composr having bootstrapped, although it will run better if it has
+// Everything in this file can run without the software having bootstrapped, although it will run better if it has
 
 /**
  * Execute a shell command, returning full output, with a guaranteed line break if not blank.
@@ -38,7 +38,7 @@ function execute_nicely(string $command) : string
 }
 
 /**
- * Scan permissions. Composr-specific wrapper for the CMSPermissionsScanner* classes.
+ * Scan permissions. Software-specific wrapper for the CMSPermissionsScanner* classes.
  *
  * @param  boolean $live_output Whether to produce live output of issues
  * @param  boolean $live_commands Whether to run commands live

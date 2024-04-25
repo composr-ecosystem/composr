@@ -543,8 +543,8 @@ class Module_admin_themes
         $fields->attach(form_input_multi_list(do_lang_tempcode('CAPABILITIES'), '', 'capabilities', $capabilities));
         $language = get_theme_option('language', null, $name);
         $fields->attach(form_input_line(do_lang_tempcode('LANGUAGE'), do_lang_tempcode('DESCRIPTION_THEME_LANGUAGE'), 'language', $language, false));
-        $software_version = get_theme_option('software_version', null, $name);
-        $fields->attach(form_input_line(do_lang_tempcode('THEME_SOFTWARE_VERSION'), do_lang_tempcode('THEME_DESCRIPTION_SOFTWARE_VERSION'), 'software_version', $software_version, !in_array($name, ['default', 'admin'])));
+        $cms_version = get_theme_option('cms_version', null, $name);
+        $fields->attach(form_input_line(do_lang_tempcode('THEME_SOFTWARE_VERSION'), do_lang_tempcode('THEME_DESCRIPTION_SOFTWARE_VERSION'), 'cms_version', $cms_version, !in_array($name, ['default', 'admin'])));
 
         // Option overrides
         $show_theme_option_overrides = false;

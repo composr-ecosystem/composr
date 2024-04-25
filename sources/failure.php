@@ -224,7 +224,7 @@ function improperly_filled_in_post(string $name)
 }
 
 /**
- * Called by 'composr_error_handler'. Composr error handler (hooked into PHP error system).
+ * Called by 'cms_error_handler'. Software error handler (hooked into PHP error system).
  *
  * @param  ID_TEXT $type Error type indicator (tiny human-readable text string)
  * @set error warning notice deprecated
@@ -237,7 +237,7 @@ function improperly_filled_in_post(string $name)
  * @set LOG ATTACH FATAL
  * @ignore
  */
-function _composr_error_handler(string $type, int $errno, string $errstr, string $errfile, int $errline, int $syslog_type, string $handling_method)
+function _cms_error_handler(string $type, int $errno, string $errstr, string $errfile, int $errline, int $syslog_type, string $handling_method)
 {
     $fatal = (!peek_suppress_error_death()) && ($handling_method == 'FATAL');
 
@@ -276,7 +276,16 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
             syslog($syslog_type, $php_error_label);
         }
         if (php_function_allowed('error_log')) {
-            @error_log('PHP: ' . cms_ucwords_ascii($type) . ' ' . $php_error_label, 0);
+            switch ($type) {
+                case 'error':
+                    @error_log('PHP: ' . ($fatal ? 'CRITICAL' : 'ERROR') . ' ' . $php_error_label, 0);
+                    break;
+                case 'warning':
+                case 'notice':
+                case 'deprecated':
+                    @error_log('PHP: WARNING ' . $php_error_label, 0);
+                    break;
+            }
         }
 
         // Send a notification
@@ -316,7 +325,7 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
         _generic_exit($error_str, 'FATAL_SCREEN', false, false, 500);
     } elseif ($handling_method == 'ATTACH') {
         require_code('site');
-        attach_message(protect_from_escaping($out), 'warn'/*any level of unexpected coding-level error is a 'warning' in Composr*/);
+        attach_message(protect_from_escaping($out), 'warn'/*any level of unexpected coding-level error is a 'warning' in the software*/);
     }
 }
 
@@ -950,7 +959,7 @@ function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bo
 }
 
 /**
- * Convert simple Composr wildcard syntax in IP addresses to Apache netmask syntax.
+ * Convert simple software wildcard syntax in IP addresses to Apache netmask syntax.
  *
  * @param  IP $ip The IP address (potentially encoded with *'s)
  * @return string The Apache-style IP
@@ -1021,15 +1030,15 @@ function remove_ip_ban(string $ip)
 }
 
 /**
- * Lookup error on composr.app, to see if there is more information.
+ * Lookup error on the homesite, to see if there is more information.
  *
  * @param  mixed $error_message The error message (string or Tempcode)
  * @return ?string The result from the web service (null: no result)
  */
 function get_webservice_result($error_message) : ?string
 {
-    if (in_array(get_base_url_hostname(), ['composr.app', 'ocproducts.com'])) {
-        return null;
+    if (get_base_url_hostname() == parse_url(get_brand_base_url(), PHP_URL_HOST)) {
+        return null; // Don't look up on itself if this is the homesite
     }
 
     if (is_local_machine()) {
@@ -1037,7 +1046,7 @@ function get_webservice_result($error_message) : ?string
     }
 
     if ((!function_exists('has_zone_access')) || (!has_zone_access(get_member(), 'adminzone'))) {
-        return null;
+        return null; // No permission
     }
 
     require_code('files');
@@ -1088,7 +1097,7 @@ function get_webservice_result($error_message) : ?string
 
     require_code('version2');
     require_code('http');
-    $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
+    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
     list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 24 * 31/*once a month*/);
 
     if (!is_object($http_result)) {
@@ -1415,7 +1424,7 @@ function get_html_trace() : object
     $trace = [];
     foreach ($_trace as $i => $stage) {
         $traces = [];
-        //if (in_array($stage['function'], ['get_html_trace', 'composr_error_handler', 'fatal_exit'])) continue;  Hinders more than helps
+        //if (in_array($stage['function'], ['get_html_trace', 'cms_error_handler', 'fatal_exit'])) continue;  Hinders more than helps
         $file = '';
         $line = '';
         $_value = mixed();
@@ -1669,7 +1678,7 @@ function banned_exit(?string $reasoned_ban = null)
 }
 
 /**
- * Specify if errors from PHP and Composr should all be thrown as exceptions rather than resulting in HTML exit screens.
+ * Specify if errors from PHP and the software should all be thrown as exceptions rather than resulting in HTML exit screens.
  *
  * @param  boolean $_throwing_errors Whether we should throw errors
  */
@@ -1691,7 +1700,7 @@ function throwing_errors() : bool
 }
 
 /**
- * A Composr  exception.
+ * A software exception.
  *
  * @package core
  */

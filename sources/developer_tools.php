@@ -21,7 +21,7 @@
 /*EXTRA FUNCTIONS: get_php_file_api|test_fail_php_type_check|get_resources|get_resource_type|stream_get_meta_data*/
 
 /*
-Some basic developer tools for Composr PHP development.
+Some basic developer tools for software PHP development.
 
 Also see:
  firephp
@@ -71,7 +71,7 @@ function semi_dev_mode_startup()
         ) {
             $_GET['keep_devtest'] = '1';
             require_code('site');
-            attach_message('URL not constructed properly: development mode in use but keep_devtest was not specified. This indicates that links have been made without build_url (in PHP) or $cms.keep() (in JavaScript). While not fatal this time, failure to use these functions can cause problems when your site goes live. See the Composr codebook for more details.', 'warn', false, true);
+            attach_message('URL not constructed properly: development mode in use but keep_devtest was not specified. This indicates that links have been made without build_url (in PHP) or $cms.keep() (in JavaScript). While not fatal this time, failure to use these functions can cause problems when your site goes live. See the codebook for more details.', 'warn', false, true);
         } else {
             $_GET['keep_devtest'] = '1';
         }
@@ -139,9 +139,9 @@ function semi_dev_mode_startup()
 }
 
 /**
- * Remove Composr's strictness, to help integration of third-party code.
+ * Remove strictness, to help integration of third-party code.
  *
- * @param  boolean $db_too Whether to destrictify database commands over the Composr database driver
+ * @param  boolean $db_too Whether to destrictify database commands over the software's database driver
  */
 function destrictify(bool $db_too = false)
 {
@@ -181,7 +181,7 @@ function destrictify(bool $db_too = false)
 }
 
 /**
- * Add Composr's strictness, after finishing with third-party code. To be run optionally at some point after destrictify().
+ * Add strictness, after finishing with third-party code. To be run optionally at some point after destrictify().
  */
 function restrictify()
 {
@@ -361,7 +361,7 @@ function show_memory_points()
 /**
  * Verify the parameters passed into the *calling* function match the PHPDoc specification for that function.
  * Useful when testing robustness of APIs where the CQC and ocProducts PHP are not suitable.
- * For example, when web APIs are plumbed into Composr APIs and you need to ensure the types are coming in correctly.
+ * For example, when web APIs are plumbed into the software's APIs and you need to ensure the types are coming in correctly.
  *
  * @param  boolean $dev_only Whether to only run the checks in dev-mode
  */
@@ -400,7 +400,7 @@ function cms_verify_parameters_phpdoc(bool $dev_only = false)
             if (isset($trace[1]['args'][$i])) {
                 $value = $trace[1]['args'][$i];
 
-                test_fail_php_type_check($type_expected, (isset($trace[1]['class']) ? ($class . '::') : '') . $function, $name, $value);
+                test_fail_php_type_check($type_expected, (isset($trace[1]['class']) ? ($class . '::') : '') . $function, $name, $value); // TODO: is this correct?
             }
         }
     }

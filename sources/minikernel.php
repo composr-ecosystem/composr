@@ -93,7 +93,7 @@ function init__minikernel()
     global $CSP_ENABLED;
     $CSP_ENABLED = false;
 
-    set_error_handler('composr_error_handler');
+    set_error_handler('cms_error_handler');
     if (function_exists('register_shutdown_function')) {
         register_shutdown_function('catch_fatal_errors');
     }
@@ -482,7 +482,7 @@ function get_html_trace()
     $trace = [];
     foreach ($_trace as $i => $stage) {
         $traces = [];
-        //if (in_array($stage['function'], ['get_html_trace', 'composr_error_handler', 'fatal_exit'])) continue;
+        //if (in_array($stage['function'], ['get_html_trace', 'cms_error_handler', 'fatal_exit'])) continue;
         $file = '';
         $line = '';
         $__value = mixed();
@@ -634,7 +634,7 @@ function catch_fatal_errors()
             case E_USER_ERROR:
                 push_suppress_error_death(false); // We can't recover as we've lost our execution track. Force a nice death rather than trying to display a recoverable error.
                 $GLOBALS['DYING_BADLY'] = true; // Does not actually work unfortunately. @'d calls never get here at all.
-                composr_error_handler($error['type'], $error['message'], $error['file'], $error['line']);
+                cms_error_handler($error['type'], $error['message'], $error['file'], $error['line']);
                 break;
         }
     }
@@ -649,7 +649,7 @@ function catch_fatal_errors()
  * @param  integer $errline The line the error occurred on
  * @return boolean Always false
  */
-function composr_error_handler($errno, $errstr, $errfile, $errline)
+function cms_error_handler($errno, $errstr, $errfile, $errline)
 {
     if (peek_suppress_error_death()) {
         return false;

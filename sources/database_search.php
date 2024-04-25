@@ -138,13 +138,13 @@ function opensearch_script()
 }
 
 /**
- * Find if we can use the Composr fast custom index.
+ * Find if we can use the fast custom index.
  *
  * @param  string $hook The hook it is for (assumption that this hook is at least capable in some situations)
  * @param  ?object $db Database connection (null: do not do indexed-already check)
  * @param  ?string $index_table Index table (null: do not do indexed-already check)
  * @param  ?string $search_query Search uery to run for (null: no query to check at this point)
- * @param  ?boolean $has_heavy_filtering Whether there is heavy filtering (which suggests to use Composr fast custom index) (null: unknown at this point)
+ * @param  ?boolean $has_heavy_filtering Whether there is heavy filtering (which suggests to use fast custom index) (null: unknown at this point)
  * @return boolean Whether we can
  */
 function can_use_fast_custom_index(string $hook, ?object $db = null, ?string $index_table = null, ?string $search_query = null, ?bool $has_heavy_filtering = null) : bool
@@ -191,13 +191,13 @@ function can_use_fast_custom_index(string $hook, ?object $db = null, ?string $in
 
         if (!empty($trigger_ngrams)) {
             if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_ngrams))) {
-                return true; // We will use Composr fast custom index if there's certain trigger ngrams
+                return true; // We will use the fast custom index if there's certain trigger ngrams
             }
         }
     }
 
     if (($has_heavy_filtering === true) && (get_option('fast_custom_index__enable_for_filtered') == '1')) {
-        return true; // We will use Composr fast custom index if there's heavy filtering as there'll be a big speed boost
+        return true; // We will use the fast custom index if there's heavy filtering as there'll be a big speed boost
     }
 
     if ((!$GLOBALS['SITE_DB']->has_full_text()) && (get_option('fast_custom_index__enable_for_no_fulltext') == '1')) {
@@ -228,7 +228,7 @@ function can_use_fast_custom_index(string $hook, ?object $db = null, ?string $in
 }
 
 /**
- * The Composr fast custom index search engine.
+ * The fast custom index search engine.
  *
  * @package search
  */
@@ -237,7 +237,7 @@ class Fast_custom_index
     // Querying...
 
     /**
-     * Get some rows, queried from the database according to the search parameters, using the Composr fast custom index.
+     * Get some rows, queried from the database according to the search parameters, using the fast custom index.
      *
      * @param  object $db Database connection
      * @param  string $index_table Table containing our custom index
@@ -269,7 +269,7 @@ class Fast_custom_index
         }
 
         if (preg_match('#_fulltext_index$#', $index_table) == 0) {
-            fatal_exit('By convention any Composr full-text index table must end with _fulltext_index');
+            fatal_exit('Attempted to use a non-fulltext database table (did not end in _fulltext_index) for fast custom index searching');
         }
 
         // Load configuration
@@ -2994,7 +2994,7 @@ function build_search_results_interface(array $results, int $start, int $max, st
             continue; // This has been blanked out due to insufficient access permissions or some other reason
         }
 
-        $content_type = convert_software_type_codes('search_hook', $result['type'], 'content_type');
+        $content_type = convert_cms_type_codes('search_hook', $result['type'], 'content_type');
         $id = null;
         if ($content_type != '') {
             require_code('content');

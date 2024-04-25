@@ -199,7 +199,7 @@ class BrokenURLScanner
         $edit_url = null;
         if (count($key_fields) == 1) {
             require_code('content');
-            $content_type = convert_software_type_codes('table', $table_name, 'content_type');
+            $content_type = convert_cms_type_codes('table', $table_name, 'content_type');
             if ($content_type != '') {
                 $cma_ob = get_content_object($content_type);
                 if (is_object($cma_ob)) {

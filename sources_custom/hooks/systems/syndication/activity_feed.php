@@ -74,7 +74,7 @@ class Hook_syndication_activity_feed
         if (addon_installed('hybridauth')) {
             if ($content_type !== null) {
                 require_code('content');
-                $addon_name = convert_software_type_codes('content_type', $content_type, 'addon_name');
+                $addon_name = convert_cms_type_codes('content_type', $content_type, 'addon_name');
             }
 
             require_code('hybridauth_admin');

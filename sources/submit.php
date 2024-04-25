@@ -79,7 +79,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
     require_code('notifications');
     require_lang('validation');
 
-    $content_type = convert_software_type_codes('table', $table, 'content_type');
+    $content_type = convert_cms_type_codes('table', $table, 'content_type');
     $cma_ob = get_content_object($content_type);
     if (!is_object($cma_ob)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

@@ -101,7 +101,7 @@ PHP;
             foreach (explode(',', $limit_to) as $l) {
                 $limit_to_arr[] = trim($l);
 
-                $l2 = convert_software_type_codes('seo_type_code', $l, 'search_hook');
+                $l2 = convert_cms_type_codes('seo_type_code', $l, 'search_hook');
                 $search_limiter['search_' . $l2] = 1;
             }
             $search_limiter['all_defaults'] = '0';

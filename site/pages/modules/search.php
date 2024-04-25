@@ -265,7 +265,7 @@ class Module_search
             $url = build_url($url_map, '_SELF', [], false, true);
 
             require_code('content');
-            $content_type = convert_software_type_codes('search_hook', $id, 'content_type');
+            $content_type = convert_cms_type_codes('search_hook', $id, 'content_type');
             if ($content_type != '') {
                 $cma_ob = get_content_object($content_type);
                 $cma_info = $cma_ob->info();

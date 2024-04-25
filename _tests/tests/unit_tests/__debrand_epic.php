@@ -54,26 +54,43 @@ class __debrand_epic_test_set extends cms_test_case
             'sources/blocks/main_staff_checklist.php', // Contains Composr-specific checklist items when brand name is Composr
 
             // TODO: temporary exclusions
-            'code_editor.php', // Hard-coded link to tutorial
+            'code_editor.php',
+            'sources/critical_errors.php',
         ]);
         $regex_exceptions = [
             '/composr[^\.]/i' => [
                 // Composr is allowed as an organisation for addons
                 '/\$info\[\'organisation\'\] = \'Composr\';/i',
                 '/\$organisation = \$is_orig \? \'Composr\' : \$defaults\[\'organisation\'\];/i',
+                '/\$organisation = \'Composr\';/i',
+
+                // Defaulting to Composr when no brand is defined
+                '/\$brand = \'Composr\';/i',
+                '/\$brand_name = \'Composr\';/i',
+
+                // Composr XML entity
+                '/' . preg_quote('$bits[$i] != \'composr\'', '/') . '/i',
+                '/\<composr\>/',
+                '/\<\/composr\>/',
+                '/' . preg_quote('// Skip past "composr"', '/') . '/i',
 
                 '/\s*composr[\r\n]\s*copyright \(c\)/i', // Acceptable to have Composr in the copyright comments
                 // '/data\/ace\/ace_composr\.js/i', // Ignore references to Ace Composr (actually already ignored by the no-dot assertion)
                 '/aceComposrLoader/i', // Ignore references to Ace Composr
                 '/composr_failover_test/', // User agent; we allow this
-                '/\$brand_name = \'Composr\';/i', // Defaulting to Composr when no brand is defined
                 '/brand_name\(\) [=|!]= \'Composr\'/i', // Checking if the brand is set to Composr
                 // '/servers\/composr\.info\//i', // LEGACY: Usually used as a condition against demonstratr (actually already ignored by the no-dot assertion)
                 '/' . preg_quote('PRODID:-//Christopher Graham/Composr//NONSGML v1.0//EN', '/') . '/i', // ical
+
+                // TODO: temporary exclusions
+                '/composr_homesite_web_service\.php/i', // Would be too complicated to rename / debrand at this time
+                '/composr_mobile_sdk/',
+                '/X\-Powered\-By: Composr/i', // TODO: Should we explicitly leave this as Composr to indicate what even rebranded installs are running or were based off?
             ],
 
             '/composr\.app/i' => [
                 '/website_specific\/composr\.app\//', // TODO: #5720
+                '/' . preg_quote('https://composr.app/tracker/view.php?id=3470', '/') . '/', // Tracker issue in a comment
             ],
         ];
 
