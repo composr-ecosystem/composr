@@ -1279,10 +1279,16 @@ function relay_error_notification(string $text, bool $developers = true, string 
             } else {
                 $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
                 $error_code = null;
-                $error_message = null;
+                $error_message = '';
                 $response = cms_fsock_request($payload, $url, $error_code, $error_message);
-                if (($response === null) || ($error_message !== null)) {
+                if (($response === null) || ($error_message != '')) {
                     cms_error_log(brand_name() . ' telemetry: WARNING Could not forward error to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
+                }
+                $matches = [];
+                if (preg_match('#\srelayed_error_id=(\d*)\s#', $response, $matches) != 0) {
+                    if ((php_function_allowed('error_log')) && (file_exists(get_custom_file_base() . '/data_custom/errorlog.php')) && (cms_is_writable(get_custom_file_base() . '/data_custom/errorlog.php'))) {
+                        @error_log('TELEMETRY ' . strval($matches[1]) . "\n", 3, get_file_base() . '/data_custom/errorlog.php');
+                    }
                 }
             }
         }
