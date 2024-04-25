@@ -186,6 +186,7 @@ This addon does not contain the composr.app install code and the overall site an
             'lang_custom/EN/sites.ini',
             'pages/minimodules_custom/contact.php',
             'pages/minimodules_custom/licence.php',
+            'pages/modules_custom/telemetry.php',
             'site/pages/comcode_custom/EN/maintenance_status.txt',
             'site/pages/minimodules_custom/themeing_changes.php',
             'site/pages/modules_custom/sites.php',

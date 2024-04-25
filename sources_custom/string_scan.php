@@ -8503,6 +8503,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FIND_REMOTE_ADDONS_ERROR
         BACKUP_LOG_START
         LOG_LEVEL
+        RELAYED
+        ERROR_LOG_TRUNCATED
     ')));
 
     $non_admin_files = [
