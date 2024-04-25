@@ -56,14 +56,14 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#cc3333,red_highlight_background,100% CC3333}
 {$THEMEWIZARD_COLOR,#e7981e,orange_highlight_text,100% E7981E}
 {$THEMEWIZARD_COLOR,#dc3545,light_error_border,100% danger_color}
-{$THEMEWIZARD_COLOR,#fdf5f5,light_error_background_1,95% WB + 5% danger_color}
-{$THEMEWIZARD_COLOR,#fcebed,light_error_background_2,90% WB + 10% danger_color}
+{$THEMEWIZARD_COLOR,#fcebed,light_error_background_1,90% WB + 10% danger_color}
+{$THEMEWIZARD_COLOR,#fae1e3,light_error_background_2,85% WB + 15% danger_color}
 {$THEMEWIZARD_COLOR,#ffc107,light_warning_border,100% warning_color}
-{$THEMEWIZARD_COLOR,#fffcf2,light_warning_background_1,95% WB + 5% warning_color}
-{$THEMEWIZARD_COLOR,#fff9e7,light_warning_background_2,90% WB + 10% warning_color}
+{$THEMEWIZARD_COLOR,#fff9e7,light_warning_background_1,90% WB + 10% warning_color}
+{$THEMEWIZARD_COLOR,#fff6da,light_warning_background_2,85% WB + 15% warning_color}
 {$THEMEWIZARD_COLOR,#28a745,light_success_border,100% success_color}
-{$THEMEWIZARD_COLOR,#f4faf5,light_success_background_1,95% WB + 5% success_color}
-{$THEMEWIZARD_COLOR,#eaf7ed,light_success_background_2,90% WB + 10% success_color}
+{$THEMEWIZARD_COLOR,#eaf7ed,light_success_background_1,90% WB + 10% success_color}
+{$THEMEWIZARD_COLOR,#dff2e3,light_success_background_2,85% WB + 15% success_color}
 {$THEMEWIZARD_COLOR,#cc0000,red_highlight_text,80% FF0000 + 20% 000000}
 {$THEMEWIZARD_COLOR,#007a00,green_highlight_text,100% 007A00}
 {$THEMEWIZARD_COLOR,#f3e0e4,required_background,60% (area_4_background hue_to 0) + 40% area_background}

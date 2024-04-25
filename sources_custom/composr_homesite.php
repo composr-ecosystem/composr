@@ -418,7 +418,8 @@ function server__public__relay_error_notification()
 
     // FUDGE: Ignore cases that might not yet be mainstream in the relay_error_notification function for the software
     if (
-        (strpos($error_message, 'Cannot write to ') !== false)
+        (strpos($error_message, 'Cannot write to ') !== false) ||
+        (strpos($error_message, 'telemetry: ') !== false)
     ) {
         return;
     }

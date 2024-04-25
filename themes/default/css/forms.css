@@ -98,7 +98,7 @@ div.comcode-supported {
 	display: block;
 	padding: 1em;
 	border: 1px solid {$GET,light_error_border};
-	background-color: {$GET,light_error_background};
+	background-color: {$GET,light_error_background_1};
 	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/

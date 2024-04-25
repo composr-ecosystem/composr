@@ -9,33 +9,3 @@
 	max-height: 400px;
 	white-space: pre;
 }
-
-.zebra-0.results_entry_errorlog_debug td {
-	/*border-color: {$GET,light_success_border} !important;*/
-	background-color: {$GET,light_success_background_1} !important;
-}
-.zebra-1.results_entry_errorlog_debug td {
-	/*border-color: {$GET,light_success_border} !important;*/
-	background-color: {$GET,light_success_background_2} !important;
-}
-.zebra-0.results_entry_errorlog_warning td {
-	/*border-color: {$GET,light_warning_border} !important;*/
-	background-color: {$GET,light_warning_background_1} !important;
-}
-.zebra-1.results_entry_errorlog_warning td {
-	/*border-color: {$GET,light_warning_border} !important;*/
-	background-color: {$GET,light_warning_background_2} !important;
-}
-.zebra-0.results_entry_errorlog_error td {
-	/*border-color: {$GET,light_error_border} !important;*/
-	background-color: {$GET,light_error_background_1} !important;
-}
-.zebra-1.results_entry_errorlog_error td {
-	/*border-color: {$GET,light_error_border} !important;*/
-	background-color: {$GET,light_error_background_2} !important;
-}
-.results_entry_errorlog_critical td {
-	/*border-color: {$GET,BW} !important;*/
-	background-color: {$GET,BW} !important;
-	color: {$GET,WB} !important;
-}

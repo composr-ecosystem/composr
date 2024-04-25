@@ -283,7 +283,7 @@ class Module_admin_errorlog
 
             $message = str_replace(get_file_base(), '', $log_message);
 
-            $td_class = 'results_entry_errorlog_' . cms_mb_strtolower($log_level);
+            $td_class = cms_mb_strtolower($log_level);
 
             $result_entries->attach(static_evaluate_tempcode(results_entry([
                 $log_date,
@@ -420,6 +420,12 @@ class Module_admin_errorlog
         $version_db = strval(cms_version_time_db());
         if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files) || (get_value('db_version', '', true) != $version_db)) {
             attach_message(do_lang_tempcode('CRON_UPGRADE_PENDING'), 'warn');
+        } else {
+            // Not configured or not running?
+            $last_cron = get_value('last_cron');
+            if (($last_cron === null) || (intval($last_cron) < time() - 60 * 60 * 24)) {
+                attach_message(do_lang_tempcode('CRON_NOT_RUNNING', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
+            }
         }
 
         require_code('templates_results_table');
@@ -546,7 +552,15 @@ class Module_admin_errorlog
 
         $result_entries = new Tempcode();
         foreach ($_result_entries as $label => $details) {
-            $result_entries->attach(results_entry($details, true));
+            $td_class = '';
+            if (strpos($details[0]->evaluate(), do_lang('UNAVAILABLE')) !== false) {
+                $td_class = 'disabled';
+            } elseif (strpos($details[6]->evaluate(), do_lang('NO')) !== false) {
+                $td_class = 'critical';
+            } elseif (strpos($details[7]->evaluate(), do_lang('UNAVAILABLE')) !== false) {
+                $td_class = 'error';
+            }
+            $result_entries->attach(results_entry($details, true, null, '392f1980c81e4083885cb177c911e619', $td_class));
         }
 
         $table = results_table(do_lang_tempcode('CRON_HOOKS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
@@ -609,7 +623,7 @@ class Module_admin_errorlog
             ]);
         }
 
-        $url = build_url(['page' => '_SELF'], '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'cron'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
