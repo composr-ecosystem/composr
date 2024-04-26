@@ -64,16 +64,13 @@ class __debrand_epic_test_set extends cms_test_case
                 '/\$organisation = \$is_orig \? \'Composr\' : \$defaults\[\'organisation\'\];/i',
                 '/\$organisation = \'Composr\';/i',
 
-                // Defaulting to Composr when no brand is defined
-                '/\$brand = \'Composr\';/i',
-                '/\$brand_name = \'Composr\';/i',
-
                 // Composr XML entity; too risky to rename as this deals with the XML db
                 '/' . preg_quote('$bits[$i] != \'composr\'', '/') . '/i',
                 '/\<composr\>/',
                 '/\<\/composr\>/',
                 '/' . preg_quote('// Skip past "composr"', '/') . '/i',
 
+                '/define\(\'DEFAULT_BRAND_NAME\'\, \'Composr\'\);/i', // Defining default brand
                 '/\s*composr[\r\n]\s*copyright \(c\)/i', // Acceptable to have Composr in the copyright comments
                 // '/data\/ace\/ace_composr\.js/i', // Ignore references to Ace Composr (actually already ignored by the no-dot assertion)
                 '/aceComposrLoader/i', // Ignore references to Ace Composr
@@ -89,6 +86,7 @@ class __debrand_epic_test_set extends cms_test_case
             ],
 
             '/composr\.app/i' => [
+                '/' . preg_quote('define(\'DEFAULT_BRAND_URL\', \'https://composr.app\');', '/') . '/i', // Defining default brand URL
                 '/website_specific\/composr\.app\//', // TODO: #5720
                 '/' . preg_quote('https://composr.app/tracker/view.php?id=3470', '/') . '/', // Tracker issue in a comment
             ],

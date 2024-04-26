@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__count_estimate
+class Hook_config_fast_custom_index__count_estimate // TODO: renamed; needs upgrader migration
 {
     /**
      * Gets the details relating to the config option.

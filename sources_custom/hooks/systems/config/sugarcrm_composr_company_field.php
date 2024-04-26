@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_composr_company_field
         return [
             'human_name' => 'SUGARCRM_COMPOSR_COMPANY_FIELD',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_composr_company_field',
             'shared_hosting_restricted' => '0',

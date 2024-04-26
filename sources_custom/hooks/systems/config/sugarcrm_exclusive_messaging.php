@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_exclusive_messaging
         return [
             'human_name' => 'SUGARCRM_EXCLUSIVE_MESSAGING',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_MESSAGING_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_exclusive_messaging',
             'shared_hosting_restricted' => '0',

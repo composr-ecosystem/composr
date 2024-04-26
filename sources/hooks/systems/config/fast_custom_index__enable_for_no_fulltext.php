@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__enable_for_no_fulltext
+class Hook_config_fast_custom_index__enable_for_no_fulltext // TODO: renamed; needs upgrader migration
 {
     /**
      * Gets the details relating to the config option.

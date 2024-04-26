@@ -28,7 +28,7 @@ class Hook_config_enable_notifications_instant_android
         return [
             'human_name' => 'NOTIFICATIONS_INSTANT_ANDROID',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'COMPOSR_MOBILE_SDK',
             'explanation' => 'CONFIG_OPTION_enable_notifications_instant_android',
             'shared_hosting_restricted' => '0',

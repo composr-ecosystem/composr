@@ -26,14 +26,19 @@
 class Hook_payment_gateway_authorize
 {
     // Requires:
-    //  the API login ID is the Composr "Gateway username" option
-    //  the signature key is the Composr "Callback password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
-    //  the API transaction key is the Composr "Gateway password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
-    //  the customer ID (Verified Merchant Seal) is the Composr "Gateway VPN username" option ; not applicable for a testing account
+    //  the API login ID is the "Gateway username" option
+    //  the signature key is the "Callback password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
+    //  the API transaction key is the "Gateway password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
+    //  the customer ID (Verified Merchant Seal) is the "Gateway VPN username" option ; not applicable for a testing account
     // The subscription button isn't great. The merchant needs to manually go into the Authorize.Net backend and configure the subscription details for the transaction. That's an API limitation. Probably best to use PayPal to be honest, or go through a full PCI compliance and do local payments (which works well).
 
     protected $api_parameters = null;
     protected $url = null;
+
+    // Note: Authorize.net does not tell us how much it charged for a transaction fee in the API. Set these values as appropriate for your plan.
+    // Note: Authorize.net charges an additional $25 monthly gateway fee which is not covered in the software (we only handle transaction fees).
+    protected $usd_flat_fee = 0.3;
+    protected $percentage_fee = 0.029;
 
     /**
      * Get a standardised config map.
@@ -57,15 +62,10 @@ class Hook_payment_gateway_authorize
      */
     public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // Note: Authorize.net does not tell us how much it charged for a transaction fee in the API. We assume all-in-one plan as a fallback.
-        // Note: Authorize.net charges an additional $25 monthly gateway fee which is not covered in Composr.
-        $usd_flat_fee = 0.3; // Flat fee: $0.30 USD
-        $percentage_fee = 0.029; // Percent fee: 2.9%
-
         require_code('currency');
-        $flat_fee = currency_convert($usd_flat_fee, 'USD', get_option('currency'));
+        $flat_fee = currency_convert($this->usd_flat_fee, 'USD', get_option('currency'));
 
-        return round((($percentage_fee * $amount) + $flat_fee), 2);
+        return round((($this->percentage_fee * $amount) + $flat_fee), 2);
     }
 
     /**

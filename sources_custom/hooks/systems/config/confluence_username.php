@@ -28,7 +28,7 @@ class Hook_config_confluence_username
         return [
             'human_name' => 'CONFLUENCE_USERNAME',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'CONFLUENCE',
             'explanation' => 'CONFIG_OPTION_confluence_username',
             'shared_hosting_restricted' => '0',

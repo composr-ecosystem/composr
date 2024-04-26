@@ -21,7 +21,7 @@ class Hook_config_twitterfeed_update_time
         return [
             'human_name' => 'TWITTER_FEED_UPDATE_TIME',
             'type' => 'integer',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TWITTER_FEED_INTEGRATION',
             'explanation' => 'CONFIG_OPTION_twitterfeed_update_time',
             'shared_hosting_restricted' => '0',

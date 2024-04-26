@@ -35,7 +35,7 @@ class Hook_addon_registry_code_editor
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -81,7 +81,7 @@ class Hook_addon_registry_code_editor
      */
     public function get_description() : string
     {
-        return 'For programmers- A simple editor for editing Composr code files, with support for override support and saving via FTP.';
+        return 'For programmers- A simple editor for editing ' . brand_name() . ' code files, with support for overrides and saving via FTP.';
     }
 
     /**

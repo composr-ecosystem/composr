@@ -28,7 +28,7 @@ class Hook_config_patreon_tiers
         return [
             'human_name' => 'PATREON_TIERS',
             'type' => 'text',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'PATREON',
             'explanation' => 'CONFIG_OPTION_patreon_tiers',
             'shared_hosting_restricted' => '0',

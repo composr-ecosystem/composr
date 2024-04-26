@@ -672,7 +672,7 @@ class Hook_addon_registry_language_{$lang}
     }
 
     /**
-     * Get the version of Composr this addon is for.
+     * Get the version of the software this addon is for.
      *
      * @return float Version number
      */
@@ -718,7 +718,7 @@ class Hook_addon_registry_language_{$lang}
      */
     public function get_licence() : string
     {
-        return 'Licensed on the same terms as Composr';
+        return 'Licensed on the same terms as ' . brand_name();
     }
 
     /**

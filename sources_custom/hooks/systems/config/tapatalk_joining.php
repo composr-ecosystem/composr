@@ -28,7 +28,7 @@ class Hook_config_tapatalk_joining
         return [
             'human_name' => 'TAPATALK_JOINING',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_tapatalk_joining',
             'shared_hosting_restricted' => '0',

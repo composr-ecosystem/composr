@@ -34,6 +34,12 @@ function init__global3()
     if (!defined('DEFAULT_ZONE_PAGE_NAME')) {
         define('DEFAULT_ZONE_PAGE_NAME', 'home'); // We try and make this a constant. However it is in some .txt and .xml files
     }
+    if (!defined('DEFAULT_BRAND_NAME')) {
+        define('DEFAULT_BRAND_NAME', 'Composr');
+    }
+    if (!defined('DEFAULT_BRAND_URL')) {
+        define('DEFAULT_BRAND_URL', 'https://composr.app');
+    }
 
     global $PAGE_NAME_CACHE;
     $PAGE_NAME_CACHE = null;
@@ -186,15 +192,15 @@ function init__global3()
  */
 function get_brand_base_url() : string
 {
-    $value = function_exists('get_value') ? get_value('rebrand_base_url') : null;
-    if (empty($value)) {
-        $value = 'https://composr.app';
+    $brand_url = function_exists('get_value') ? get_value('rebrand_base_url') : null;
+    if (empty($brand_url)) {
+        $brand_url = DEFAULT_BRAND_URL;
     }
-    return $value;
+    return $brand_url;
 }
 
 /**
- * Get a URL to a Composr tutorial.
+ * Get a URL to a software tutorial.
  *
  * @param  ?ID_TEXT $tutorial Name of a tutorial (null: don't include the page part)
  * @return URLPATH URL to a tutorial
@@ -209,7 +215,7 @@ function get_tutorial_url(?string $tutorial) : string
 }
 
 /**
- * Get a URL to a composr.app page.
+ * Get a URL to a homesite page.
  *
  * @param  array $params URL map
  * @param  ID_TEXT $zone Zone
@@ -257,11 +263,11 @@ function get_brand_page_url(array $params, string $zone) : string
  */
 function brand_name() : string
 {
-    $value = function_exists('get_value') ? get_value('rebrand_name') : null;
-    if ($value === null) {
-        $value = 'Composr';
+    $brand_name = function_exists('get_value') ? get_value('rebrand_name') : null;
+    if ($brand_name === null) {
+        $brand_name = DEFAULT_BRAND_NAME;
     }
-    return $value;
+    return $brand_name;
 }
 
 /**
@@ -2122,7 +2128,7 @@ function fix_id(string $param, bool $simplified = false) : string
 }
 
 /**
- * See if the current URL matches the given Composr match-keys.
+ * See if the current URL matches the given software match-keys.
  *
  * @param  mixed $match_keys Match keys (comma-separated list of match-keys, or array of)
  * @param  boolean $support_post Check against POSTed data too
@@ -2716,7 +2722,7 @@ function _cms_strip_tags_callback(array $matches) : string
 /**
  * Attempt to get the clean IP address of the current user.
  * Note we do not consider potential proxying because that can easily be forged, and even if not it could be some local IP that is not unique enough.
- *  Composr has support for deproxying in global.php, which will adjust REMOTE_ADDR well in advance of this function being called.
+ *  The software has support for deproxying in global.php, which will adjust REMOTE_ADDR well in advance of this function being called.
  *
  * @param  integer $amount The number of groups to include in the IP address (rest will be replaced with *'s). For IP6, this is doubled.
  * @set 1 2 3 4
@@ -3235,10 +3241,10 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
 }
 
 /**
- * Convert Apache netmask syntax in IP addresses to simple Composr wildcard syntax.
+ * Convert Apache netmask syntax in IP addresses to simple software wildcard syntax.
  *
  * @param  IP $ip The IP address (potentially encoded with netmask syntax)
- * @return string The Composr-style IP wildcard
+ * @return string The software-style IP wildcard
  */
 function ip_apache_to_wild(string $ip) : string
 {
@@ -3885,7 +3891,7 @@ function get_bot_type(?string $agent = null) : ?string
 
 /**
  * Determine whether the user's browser supports cookies or not.
- * Unfortunately this function will only return true once a user has been to the site more than once... Composr will set a cookie, and if it perseveres, that indicates cookies work.
+ * Unfortunately this function will only return true once a user has been to the site more than once... the software will set a cookie, and if it perseveres, that indicates cookies work.
  *
  * @return boolean Whether the user has definitely got cookies
  */
@@ -5446,7 +5452,7 @@ function statistical_update_model(string $table, int $view_count) : int
 }
 
 /**
- * Create a cookie, inside Composr's cookie environment.
+ * Create a cookie, inside the software's cookie environment.
  *
  * @param  string $name The name of the cookie
  * @param  string $value The value to store in the cookie

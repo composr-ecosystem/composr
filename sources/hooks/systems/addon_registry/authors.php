@@ -35,7 +35,7 @@ class Hook_addon_registry_authors
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -81,7 +81,7 @@ class Hook_addon_registry_authors
      */
     public function get_description() : string
     {
-        return 'Certain kinds of content can have authors instead of submitters (e.g. \'Composr\'). The authors may be independently described and searched under.';
+        return 'Certain kinds of content can have authors instead of submitters (e.g. \'Core Development Team\'). The authors may be independently described and searched under.';
     }
 
     /**

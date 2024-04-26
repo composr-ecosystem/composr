@@ -1021,7 +1021,7 @@ abstract class Mail_dispatcher_base
         $headers .= 'X-Priority: ' . strval($this->priority) . $this->line_term;
         $brand_name = get_value('rebrand_name');
         if ($brand_name === null) {
-            $brand_name = 'Composr';
+            $brand_name = DEFAULT_BRAND_NAME;
         }
         $headers .= 'X-Mailer: ' . $brand_name . $this->line_term;
         $list_unsubscribe_target = get_option('list_unsubscribe_target');

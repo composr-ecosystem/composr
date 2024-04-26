@@ -1093,7 +1093,7 @@ function get_webservice_result($error_message) : ?string
     // Talk to web service
     $brand = get_value('rebrand_name');
     if ($brand === null) {
-        $brand = 'Composr';
+        $brand = DEFAULT_BRAND_NAME;
     }
 
     require_code('version2');

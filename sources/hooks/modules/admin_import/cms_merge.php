@@ -19,7 +19,7 @@
  */
 
 /*
-In Composr we have cms_merge and we have Resource-fs.
+In the software we have cms_merge and we have Resource-fs.
 
 Resource-fs is intended for staging site functionality and backups, mainly.
 cms_merge is intended to merge disparate sites in a more complete way.
@@ -51,7 +51,7 @@ class Hook_import_cms_merge
 
         $info = [];
         $info['supports_advanced_import'] = true;
-        $info['product'] = do_lang('COMPOSR_SITE_MERGER');
+        $info['product'] = do_lang('CMS_SITE_MERGER');
         $info['prefix'] = 'cms_';
         $info['import'] = [
             'attachments',
@@ -176,7 +176,7 @@ class Hook_import_cms_merge
 
         $bad = false;
 
-        // Check actually is Composr DB (ERROR)
+        // Check actually is software DB (ERROR)
         $test = $db->query_select_value('zones', 'zone_name');
         if ($test === null) {
             return warn_screen($title, do_lang_tempcode('ERROR_NOT_CORRECT_DATABASE'));
@@ -189,7 +189,7 @@ class Hook_import_cms_merge
             $bad = true;
         }
 
-        // Check actually is Composr file path (ERROR)
+        // Check actually is software file path (ERROR)
         if (((!file_exists($file_base . '/_config.php')) && (!file_exists($file_base . '/info.php'))) || (!file_exists($file_base . '/sources_custom'))) {
             attach_message(do_lang_tempcode('ERROR_NOT_CORRECT_FILES'), 'warn');
             if ((is_on_multi_site_network()) && (!file_exists($file_base . '/_config.php')) && (!file_exists($file_base . '/info.php'))) {
@@ -1265,7 +1265,7 @@ class Hook_import_cms_merge
 
             // Who has voted in the poll?
             $votes = $db->query_select('poll_votes', ['*'], ['v_poll_id' => $row['id']], '', null, 0, true);
-            if ($votes === null) { // Old Composr-style
+            if ($votes === null) { // Old software-style
                 $voters = explode('-', $row['ip']);
                 $votes = [];
                 foreach ($voters as $voter) {

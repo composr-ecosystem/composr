@@ -57,6 +57,6 @@ class Hook_config_tax_api_service
             return null;
         }
 
-        return 'composr';
+        return 'core'; // TODO: renamed; need to implement a migration
     }
 }

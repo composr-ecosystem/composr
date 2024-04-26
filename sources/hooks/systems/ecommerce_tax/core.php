@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_ecommerce_tax_composr
+class Hook_ecommerce_tax_core // TODO: renamed; need an upgrader migration
 {
     // API URLs used by this tax service
     protected $urls = [
@@ -35,7 +35,7 @@ class Hook_ecommerce_tax_composr
      */
     public function get_tax_service_label() : string
     {
-        return do_lang('TAX_SERVICE_COMPOSR');
+        return do_lang('TAX_SERVICE_CORE');
     }
 
     /**
@@ -45,7 +45,7 @@ class Hook_ecommerce_tax_composr
      */
     public function health_check() : ?array
     {
-        // Nothing to check for Composr
+        // Nothing to check
         return null;
     }
 

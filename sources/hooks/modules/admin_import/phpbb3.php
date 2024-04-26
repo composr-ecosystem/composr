@@ -762,7 +762,7 @@ class Hook_import_phpbb3
     }
 
     /**
-     * Helper function to translate phpBB permissions to Composr permissions.
+     * Helper function to translate phpBB permissions to software permissions.
      *
      * @param  string $perm Old perm
      * @return ?string New perm (null: could not convert)
@@ -958,7 +958,7 @@ class Hook_import_phpbb3
     }
 
     /**
-     * Convert phpBB URLs pasted in text fields into Composr ones.
+     * Convert phpBB URLs pasted in text fields into software ones.
      *
      * @param  string $post The text field text (e.g. a post)
      * @param  string $uid Bbcode uid
@@ -1027,7 +1027,7 @@ class Hook_import_phpbb3
 
             $id_new = cns_make_poll($topic_id, _phpbb3_post_text_to_comcode($row['poll_title']), 0, $is_open ? 1 : 0, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
 
-            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from IPB vote number to Composr vote number
+            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from IPB vote number to a software vote number
 
             foreach ($rows2 as $row2) {
                 $member_id = $row2['vote_user_id'];
@@ -1134,10 +1134,10 @@ class Hook_import_phpbb3
     }
 
     /**
-     * Convert a phpBB topic icon code into a standard Composr theme image code (assumes the default ones).
+     * Convert a phpBB topic icon code into a standard software theme image code (assumes the default ones).
      *
      * @param  integer $iconid phpBB code
-     * @return ID_TEXT Composr code
+     * @return ID_TEXT Software code
      */
     public function convert_topic_emoticon(int $iconid) : string
     {

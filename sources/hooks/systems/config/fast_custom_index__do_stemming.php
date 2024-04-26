@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__do_stemming
+class Hook_config_fast_custom_index__do_stemming // TODO: renamed; needs upgrader migration
 {
     /**
      * Gets the details relating to the config option.

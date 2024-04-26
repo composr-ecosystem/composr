@@ -28,7 +28,7 @@ class Hook_config_tapatalk_api_key
         return [
             'human_name' => 'TAPATALK_API_KEY',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_tapatalk_api_key',
             'shared_hosting_restricted' => '0',

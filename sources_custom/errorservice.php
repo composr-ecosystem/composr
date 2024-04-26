@@ -56,11 +56,11 @@ function get_problem_match_nearest(string $error_message) : ?string
 
         // Possible rebranding
         $brand = get_param_string('product');
-        if (($brand != 'Composr') && ($brand != '')) {
+        if (($brand != DEFAULT_BRAND_NAME) && ($brand != '')) {
             $brand_base_url = get_param_string('product_site', '');
             if ($brand_base_url != '') {
-                $assembled = str_replace('Composr', $brand, $assembled);
-                $assembled = str_replace('ocProducts', 'Core Development Team', $assembled);
+                $assembled = str_replace(DEFAULT_BRAND_NAME, $brand, $assembled);
+                $assembled = str_replace('ocProducts', 'Core Development Team', $assembled); // LEGACY
                 $assembled = str_replace(get_brand_base_url(), $brand_base_url, $assembled);
             }
         }

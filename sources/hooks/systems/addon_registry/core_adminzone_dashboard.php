@@ -35,7 +35,7 @@ class Hook_addon_registry_core_adminzone_dashboard
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -145,7 +145,7 @@ class Hook_addon_registry_core_adminzone_dashboard
             'sources/hooks/systems/commandr_fs_extended_config/staff_links.php',
             'sources/hooks/systems/config/dashboard_actions.php',
             'sources/hooks/systems/config/dashboard_checklist.php',
-            'sources/hooks/systems/config/dashboard_composr_news.php',
+            'sources/hooks/systems/config/dashboard_homesite_news.php',
             'sources/hooks/systems/config/dashboard_db_notes.php',
             'sources/hooks/systems/config/dashboard_forum_topics.php',
             'sources/hooks/systems/config/dashboard_links.php',

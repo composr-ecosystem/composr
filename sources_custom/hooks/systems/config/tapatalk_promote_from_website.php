@@ -28,7 +28,7 @@ class Hook_config_tapatalk_promote_from_website
         return [
             'human_name' => 'TAPATALK_PROMOTE_FROM_WEBSITE',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_tapatalk_promote_from_website',
             'shared_hosting_restricted' => '0',

@@ -36,7 +36,7 @@ class Hook_task_send_newsletter
      * @param  string $from_name Override the name the mail is sent from (blank: site name)
      * @param  integer $priority The message priority (1=urgent, 3=normal, 5=low)
      * @range  1 5
-     * @param  array $spreadsheet_data Spreadsheet data of extra subscribers (blank: none). This is in the same Composr newsletter spreadsheet format that we export elsewhere.
+     * @param  array $spreadsheet_data Spreadsheet data of extra subscribers (blank: none). This is in the same newsletter spreadsheet format that we export elsewhere.
      * @param  ID_TEXT $mail_template The template used to show the e-mail
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */

@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_password
         return [
             'human_name' => 'SUGARCRM_PASSWORD',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_CONNECTION',
             'explanation' => 'CONFIG_OPTION_sugarcrm_password',
             'shared_hosting_restricted' => '0',

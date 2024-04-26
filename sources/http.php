@@ -324,7 +324,7 @@ abstract class HttpDownloader
     protected $byte_limit = null; // ?integer. The number of bytes to download. This is not a guarantee, it is a minimum (null: all bytes)
     protected $trigger_error = true; // boolean. Whether to throw a software error, on error
     protected $no_redirect = false; // boolean. Whether to block redirects (returns null when found)
-    protected $ua = 'Composr'; // ~?string. The user-agent to identify as (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
+    protected $ua = 'CMS'; // ~?string. The user-agent to identify as (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
     protected $post_params = null; // ?array or string. An optional array of POST parameters to send or a string of a request body; if this is null, a GET request is used for the default for http_verb (null: none)
     protected $cookies = []; // array. An optional array of cookies to send
     protected $accept = null; // ?string. 'accept' header value (null: don't pass one)
@@ -417,9 +417,9 @@ abstract class HttpDownloader
 
         if ((!empty($_SERVER['HTTP_USER_AGENT'])) && (is_string($this->ua))) {
             if ($_SERVER['HTTP_USER_AGENT'] == $this->ua) {
-                $this->ua = 'Composr-recurse';
+                $this->ua = 'CMS-recurse';
             }
-            if ($_SERVER['HTTP_USER_AGENT'] == 'Composr-recurse') {
+            if ($_SERVER['HTTP_USER_AGENT'] == 'CMS-recurse') {
                 return null;
             }
         }
@@ -1244,7 +1244,7 @@ class HttpDownloaderCurl extends HttpDownloader
         }
         $this->message = $this->fix_non_standard_statuses(strval(curl_getinfo($ch, CURLINFO_HTTP_CODE)));
         if ($this->message == '206') {
-            $this->message = '200'; // We don't care about partial-content return code, as Composr implementation gets ranges differently and we check '200' as a return result
+            $this->message = '200'; // We don't care about partial-content return code, as software implementation gets ranges differently and we check '200' as a return result
         }
         if (($this->download_mime_type !== null) && (strpos($this->download_mime_type, ';') !== false) && (strpos($this->download_mime_type, 'charset=') !== false)) {
             $this->charset = substr($this->download_mime_type, 8 + strpos($this->download_mime_type, 'charset='));

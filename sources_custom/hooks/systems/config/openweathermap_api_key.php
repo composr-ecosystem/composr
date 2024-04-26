@@ -28,7 +28,7 @@ class Hook_config_openweathermap_api_key
         return [
             'human_name' => 'OPENWEATHERMAP_API_KEY',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'WEATHER_REPORT',
             'explanation' => 'CONFIG_OPTION_openweathermap_api_key',
             'shared_hosting_restricted' => '0',

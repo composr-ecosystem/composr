@@ -35,7 +35,7 @@ class Hook_addon_registry_import
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -81,7 +81,7 @@ class Hook_addon_registry_import
      */
     public function get_description() : string
     {
-        return 'Switch to Composr from other software. This addon provides the architecture for importing, and a number of prewritten importers.';
+        return 'Switch to ' . brand_name() . ' from other software. This addon provides the architecture for importing, and a number of prewritten importers.';
     }
 
     /**

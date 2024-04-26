@@ -1,7 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: Searching your website[/title]
 
 As you add content to your website, it becomes increasingly important that your visitors are able to find your content when they need to. Composr includes a 'search' feature, which allows you to search your entire website for content.
-Under-the-hood this is implemented using either database [concept]full-text search[/concept] capabilities of the [concept]Composr fast custom index[/concept].
+Under-the-hood this is implemented using either database [concept]full-text search[/concept] capabilities of the [concept]fast custom index[/concept].
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -105,7 +105,7 @@ Ultimately, full-text search effectiveness resides in MySQL (or whatever databas
 
 MySQL [concept]LIKE search[/concept]es are much more accurate than full-text searches, but also much slower due to a lack of indexing. Composr will only do a 'LIKE' search if it thinks MySQL's full-text-based boolean search won't be able to handle the query itself (e.g. due to using short words). Programmers can alter this logic based on editing the [tt]is_under_radar[/tt] function.
 
-Many of these issues can be solved by enabling Composr's own search engine, the Composr fast custom index -- discussed later in this tutorial.
+Many of these issues can be solved by enabling Composr's own search engine, the fast custom index -- discussed later in this tutorial.
 
 [title="2"]OpenSearch (advanced)[/title]
 
@@ -137,11 +137,11 @@ We actually automatically set this on a session level when you do a search, so t
 
 Another workaround is to switch to InnoDB tables in MySQL. It won't stop slow queries, it'll just stop them locking the whole table and slowing other users down; your server will still suffer the load, but so long as your server is not overloaded that is likely not an issue.
 
-[title="3"]Actual solution: Use the Composr fast custom index[/title]
+[title="3"]Actual solution: Use the fast custom index[/title]
 
 Read on :).
 
-[title="2"]The Composr fast custom index[/title]
+[title="2"]The fast custom index[/title]
 
 When searching large amounts of content it is important for the content to be pre-indexed for search, as searching through all the bytes is too slow. As discussed in this tutorial, Composr uses of "full-text search" capabilities present in most database software, i.e. the database software's own search engine, and this handles all the indexing for you behind-the-scenes. For the sake of simplicity in this section of the tutorial we will assume all users are using MySQL.
 
@@ -154,9 +154,9 @@ And the worst is when these things combine. Let's say 40% of your forum posts co
 
 There's no real way around this with MySQL full-text search indexing.
 
-The Composr fast custom index takes a totally different approach that is much more efficient in cases where MySQL is inefficient.
+The fast custom index takes a totally different approach that is much more efficient in cases where MySQL is inefficient.
 
-The Composr fast custom index supports the same boolean syntax that is supported by MySQL full-text search, as well as being able to do natural searches.
+The fast custom index supports the same boolean syntax that is supported by MySQL full-text search, as well as being able to do natural searches.
 
 [title="3"]Technical explanation (advanced)[/title]
 
@@ -166,28 +166,28 @@ So basically a row in that search indexing table might be like (keyword=car, for
 
 Of course searches may have multiple keywords, so it revisits the table for each keyword, basically, and it has a ranking algorithm. There's a lot more to it than that, but I'm keeping it simple here. It basically ranks by how prevalent the most obscure word in the search query is in the forum post.
 
-In terms of performance, the end result is the Composr fast custom index search system is a bit slower for most "straight" searches (searches with no additional filtering), but immensely faster for searches with additional filtering.
+In terms of performance, the end result is the fast custom index search system is a bit slower for most "straight" searches (searches with no additional filtering), but immensely faster for searches with additional filtering.
 
 [title="3"]Pros and Cons[/title]
 
-There are a few minor downsides to the Composr fast custom index:
+There are a few minor downsides to the fast custom index:
  - You cannot do 'blank' searches.
  - There will be a short lag before new content is indexed.
  - Performance considerations:
-  - If you want to allow multi-word quoted phrases it will use a lot more disk space because it has to separately store each combination of adjacent keywords, up to the limit you configure. That's due to how Composr fast custom index is designed: it is not building a data structure for the keywords in a document, it's separately indexing each keyword against all possible search filters.
+  - If you want to allow multi-word quoted phrases it will use a lot more disk space because it has to separately store each combination of adjacent keywords, up to the limit you configure. That's due to how the fast custom index is designed: it is not building a data structure for the keywords in a document, it's separately indexing each keyword against all possible search filters.
   - [concept]Fuzzy search[/concept]ing for large databases (basically analogous to the 'natural' MySQL full-text search) is very slow. Without fuzzy searching every keyword in the search will either be ANDed, ignored ([concept]stop word[/concept]s like 'is'), or excluded (if preceded with '-'). i.e. it doesn't take individual words as suggestions for match ranking, they all have to be taken into account.
-  - Ranking accuracy isn't going to be as good, as the Composr fast custom index ranks based on just the most obscure keyword, not a blend of all keywords. This is necessary to avoid having to do cross-computation between each keyword, instead it can rank rows using direct indexing. Actually you can configure all-keyword ranking, but it is not recommended.
+  - Ranking accuracy isn't going to be as good, as the fast custom index ranks based on just the most obscure keyword, not a blend of all keywords. This is necessary to avoid having to do cross-computation between each keyword, instead it can rank rows using direct indexing. Actually you can configure all-keyword ranking, but it is not recommended.
 
 And some upsides:
- - Radically better performance for filtered queries, as discussed. While MySQL full-text performance [i]degrades[/i] as filters are added, the Composr fast custom index performance is radically [i]improved[/i] with additional filtering.
+ - Radically better performance for filtered queries, as discussed. While MySQL full-text performance [i]degrades[/i] as filters are added, the fast custom index performance is radically [i]improved[/i] with additional filtering.
  - Configurable [concept]stop word[/concept] list without requring server admin access.
  - Superior [concept]stemming[/concept]: MySQL will depluralise words but not much more, but Composr has a high-quality stemmer that will make words such as 'liking' and 'like' equivalent.
  - Can return results for tables with only 1 row in (unlike MySQL).
  - No minimum or maximum word sizes. So you can search for numbers, for example.
  - Great multilingual support.
- - Some database backends may not even provide full-text search of their own, so Composr fast custom index would fill the gap.
+ - Some database backends may not even provide full-text search of their own, so the fast custom index would fill the gap.
 
-Because there are both Pros and Cons, you can configure when the Composr fast custom index kicks in, and otherwise have MySQL full-text driving the majority of your search queries.
+Because there are both Pros and Cons, you can configure when the fast custom index kicks in, and otherwise have MySQL full-text driving the majority of your search queries.
 
 [title="3"]Stop words[/title]
 
@@ -210,7 +210,7 @@ The first time it runs it:
 2) Builds up a database table of ngram frequency (keyword frequency, basically) across all the supported searchable data (the [tt]<table-prefix>ft_index_commonality[/tt] table). This frequency data is used for ranking purposes.
 Subsequently it just adds indexing for new content created/changed since the last indexing run.
 
-If you want to reindex (perhaps you have changed some settings, or changed [concept]stop word[/concept]s, or want to regenerate commonality data to reflect the current status of your site), you need to run the Rebuild Composr fast custom index cleanup tool (Admin Zone > Tools > Cleanup tools).
+If you want to reindex (perhaps you have changed some settings, or changed [concept]stop word[/concept]s, or want to regenerate commonality data to reflect the current status of your site), you need to run the Rebuild the fast custom index cleanup tool (Admin Zone > Tools > Cleanup tools).
 
 [title="3"]Internationalisation[/title]
 
@@ -220,7 +220,7 @@ When translating content, you need to either edit the content in the language yo
 
 Programmers can add grammar rules for different languages a lot more easily than they can to MySQL. Look at [tt]sources/lang_stemmer_EN.php[/tt] and [tt]sources/lang_tokeniser_EN.php[/tt] and just make equivalent files for your language.
 
-Not all languages use words. For this reason the Composr fast custom index doesn't actually implement words under-the-hood, it actually uses "ngrams". For most languages an ngram is the same as a word and they are separated by spaces, but it is actually up to the tokeniser what to make an ngram and how to separate them. Chinese, for example, might have each Chinese character as its own ngram (there are no spaces). For Vietnamese you might have each syllable as an ngram (they looks like word in English but alone have no real meaning). For each case you would need to configure Composr to index multiple combinations of ngrams, rather than the default combination of 1, because nobody is going to search for a collection of disconnected ngrams in these example languages like they would in English.
+Not all languages use words. For this reason the fast custom index doesn't actually implement words under-the-hood, it actually uses "ngrams". For most languages an ngram is the same as a word and they are separated by spaces, but it is actually up to the tokeniser what to make an ngram and how to separate them. Chinese, for example, might have each Chinese character as its own ngram (there are no spaces). For Vietnamese you might have each syllable as an ngram (they looks like word in English but alone have no real meaning). For each case you would need to configure Composr to index multiple combinations of ngrams, rather than the default combination of 1, because nobody is going to search for a collection of disconnected ngrams in these example languages like they would in English.
 
 [title="3"]Special considerations[/title]
 
@@ -231,9 +231,9 @@ The PHP [tt]mbstring[/tt] extension is significantly faster than the iconv exten
  2_key="Boolean operator"          2_value="A +, - or &quot; symbol used to specify how exact matching will operate."
  3_key="Natural search"            3_value="A search where some words may not be matched and results are ordered by how well they match. The opposite of a boolean search."
  4_key="Full-text search"          4_value="A search that works using an index."
- 5_key="Composr fast custom index" 5_value="Composr's own search index that is in some ways significantly faster than MySQL's full-text search"
+ 5_key="fast custom index" 5_value="Composr's own search index that is in some ways significantly faster than MySQL's full-text search"
  6_key="LIKE search"               6_value="A search that works using wildcard matches and no index. Only used by Composr in very specific circumstances due to severe performance issues."
- 7_key="Fuzzy search"              7_value="The Composr fast custom index's equivalent to Natural search (in the Composr fast custom index boolean and natural searching can happen in the same query, so we refer to natural terms as fuzzy terms)."
+ 7_key="Fuzzy search"              7_value="The fast custom index's equivalent to Natural search (in the fast custom index boolean and natural searching can happen in the same query, so we refer to natural terms as fuzzy terms)."
  8_key="Stop word"                 8_value="A word that will not be indexed because it is so common and irrelevant. It would just add noise to the search index/process."
  9_key="Stemming"                  9_value="The process of normalising words by removing endings. For example, 'ending' and 'ender' would both reduce to 'end'. This is English-centric, but other languages may implement equivalent processes and we still refer to them as stemming."
  10_key="Keyword"                  10_value="A particular search term that is a part of a wider search query"

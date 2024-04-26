@@ -82,7 +82,6 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
                 get_base_url() . '/',
                 get_forum_base_url() . '/',
                 get_brand_base_url() . '/',
-                'https://composr.app/',
             ];
             $trusted_sites = get_trusted_sites(2);
             foreach ($trusted_sites as $allowed) {

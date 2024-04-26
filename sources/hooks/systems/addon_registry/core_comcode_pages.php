@@ -35,7 +35,7 @@ class Hook_addon_registry_core_comcode_pages
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -479,11 +479,11 @@ class Hook_addon_registry_core_comcode_pages
 
 [title="2"]shocker[/title]
 
-[shocker left_0="' . lorem_phrase() . '" right_0="Example Text" left_1="Composr CMS" right_1="Is awesome"][/shocker]
+[shocker left_0="' . lorem_phrase() . '" right_0="Example Text" left_1="' . brand_name() . '" right_1="Is awesome"][/shocker]
 
 [title="2"]jumping[/title]
 
-[jumping a="Composr CMS" b="Is awesome"][/jumping]
+[jumping a="' . brand_name() . '" b="Is awesome"][/jumping]
 
 [title="2"]hide[/title]
 
@@ -493,28 +493,28 @@ class Hook_addon_registry_core_comcode_pages
 
 [surround]
 [section="Example" default="1"]' . lorem_chunk() . '[/section]
-[section="Composr"]Composr CMS is awesome[/section]
-[section_controller]Example,Composr[/section_controller]
+[section="' . brand_name() . '"]' . brand_name() . ' is awesome[/section]
+[section_controller]Example,' . brand_name() . '[/section_controller]
 [/surround]
 
 [title="2"]tabs[/title]
 
-[tabs="Example,Composr"]
+[tabs="Example,' . brand_name() . '"]
 [tab="Example" default="1"]' . lorem_chunk() . '[/tab]
-[tab="Composr"]Composr CMS is awesome[/tab]
+[tab="' . brand_name() . '"]' . brand_name() . ' is awesome[/tab]
 [/tabs]
 
 [title="2"]big_tabs[/title]
 
 [surround]
-[big_tab_controller]Example,Composr[/big_tab_controller]
+[big_tab_controller]Example,' . brand_name() . '[/big_tab_controller]
 [big_tab="Example"]' . lorem_chunk() . '[/big_tab]
-[big_tab="Composr"]Composr CMS is awesome[/big_tab]
+[big_tab="' . brand_name() . '"]' . brand_name() . ' is awesome[/big_tab]
 [/surround]
 
 
 [concepts
-1_key="Composr" 1_value="[pulse]Awesome[/pulse] [tooltip=\"Content Management System\"]CMS[/tooltip]"
+1_key="' . brand_name() . '" 1_value="[pulse]Awesome[/pulse] [tooltip=\"Content Management System\"]CMS[/tooltip]"
 2_key="' . lorem_phrase() . '" 2_value="' . lorem_sentence() . '"
 ][/concepts]
 ';

@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_base_url
         return [
             'human_name' => 'SUGARCRM_BASE_URL',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_CONNECTION',
             'explanation' => 'CONFIG_OPTION_sugarcrm_base_url',
             'shared_hosting_restricted' => '0',

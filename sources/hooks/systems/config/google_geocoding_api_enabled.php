@@ -33,7 +33,7 @@ class Hook_config_google_geocoding_api_enabled
         return [
             'human_name' => 'GOOGLE_GEOCODE_API_ENABLED',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'GEOCODING',
             'explanation' => 'CONFIG_OPTION_google_geocoding_api_enabled',
             'shared_hosting_restricted' => '0',

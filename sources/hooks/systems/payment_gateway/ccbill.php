@@ -28,10 +28,16 @@ class Hook_payment_gateway_ccbill
     // Requires:
     //  you have to contact support to enable dynamic pricing and generate the encryption key for your account
     //  You must set the "Approval URL" and "Denial URL" in Sub-account basic info for BOTH sub-accounts (see tut_ecommerce documentation)
-    //  the "Account ID" (a 6-digit number given to you) is the Composr "Gateway username"
-    //  the two 4-digit "Subaccount IDs" are the Composr "Gateway VPN username" (comma-delimited with single transactions first, recurring transactions second).
-    //  your Salt key is the Composr "Gateway digest code".
+    //  the "Account ID" (a 6-digit number given to you) is the "Gateway username"
+    //  the two 4-digit "Subaccount IDs" are the "Gateway VPN username" (comma-delimited with single transactions first, recurring transactions second).
+    //  your Salt key is the "Gateway digest code".
     //  your Flexform ID is the "Special identifier". You can optionally enter two values separated by a comma; the first one will be used for simple transactions and the second for recurring transactions.
+
+    // CCBill rates depend on how high of risk a website's business is. You should probably set the correct rates as per https://ccbill.com/doc/pricing-and-fees .
+    // CCBill will typically return how much the merchant receives for a transaction which the software will therefore calculate the transaction fee
+    protected $usd_flat_fee = 0.55;
+    protected $percentage_fee = 0.039;
+    protected $percentage_subscription_fee = 0.02;
 
     protected $length_unit_to_days = [
         'd' => 1,
@@ -82,22 +88,15 @@ class Hook_payment_gateway_ccbill
      */
     public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // CCBill rates depend on how high of risk a website's business is. You should probably set the correct rates in the transaction fee configuration as per https://ccbill.com/doc/pricing-and-fees .
-        // Use low-risk rate as our default fallback; most users will probably not be making an "ocFans" website
-        // CCBill will typically return how much the merchant receives for a transaction which Composr will therefore calculate the transaction fee
-        $usd_flat_fee = 0.55; // $0.55 USD flat fee
-        $percentage_fee = 0.039; // 3.9%
-        $percentage_subscription_fee = 0.02; // Additional 2% fee for recurring transactions
-
         require_code('currency');
-        $flat_fee = currency_convert($usd_flat_fee, 'USD', get_option('currency'));
+        $flat_fee = currency_convert($this->usd_flat_fee, 'USD', get_option('currency'));
 
-        $transaction_fee = ($percentage_fee * $amount) + $flat_fee;
+        $transaction_fee = ($this->percentage_fee * $amount) + $flat_fee;
 
         // CCBill charges an additional 2% for recurring transactions (subscriptions)
         list($details, $product_object) = find_product_details($type_code);
         if ($details !== null && $details['type'] == PRODUCT_SUBSCRIPTION) {
-            $transaction_fee += ($amount * $percentage_subscription_fee);
+            $transaction_fee += ($amount * $this->percentage_subscription_fee);
         }
 
         return round($transaction_fee, 2);

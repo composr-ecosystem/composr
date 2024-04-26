@@ -52,7 +52,7 @@ class Hook_task_import_filesystem_downloads
             return [null, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($server_path))];
         }
 
-        /*  Needless because it's relative to Composr directory anyway
+        /*  Needless because it's relative to the software directory anyway
         // Failsafe check
         if ((file_exists($base_path . '/dev')) && (file_exists($base_path . '/etc')) && (file_exists($base_path . '/sbin'))) {
             return [null, do_lang_tempcode('POINTS_TO_ROOT_SCARY', escape_html($server_path]));

@@ -35,7 +35,7 @@ class Hook_addon_registry_core_configuration
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -428,7 +428,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config_categories/accessibility.php',
             'sources/hooks/systems/config_categories/admin.php',
             'sources/hooks/systems/config_categories/blocks.php',
-            'sources/hooks/systems/config_categories/composr_apis.php',
+            'sources/hooks/systems/config_categories/cms_apis.php',
             'sources/hooks/systems/config_categories/content_editing.php',
             'sources/hooks/systems/config_categories/feature.php',
             'sources/hooks/systems/config_categories/forums.php',

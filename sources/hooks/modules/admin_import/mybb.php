@@ -830,7 +830,7 @@ class Hook_import_mybb
     }
 
     /**
-     * Convert MyBB URLs pasted in text fields into Composr ones.
+     * Convert MyBB URLs pasted in text fields into software ones.
      *
      * @param  string $post The text field text (e.g. a post)
      * @param  object $db The database connector to import from
@@ -851,7 +851,7 @@ class Hook_import_mybb
     }
 
     /**
-     * Convert a MyBB database file to a Composr uploaded file (stored on disk).
+     * Convert a MyBB database file to a software uploaded file (stored on disk).
      *
      * @param  string $data The file data
      * @param  string $filename The optimal filename
@@ -1072,10 +1072,10 @@ class Hook_import_mybb
     }
 
     /**
-     * Convert a MyBB topic icon code into a standard Composr theme image code.
+     * Convert a MyBB topic icon code into a standard software theme image code.
      *
      * @param  integer $iconid VB code
-     * @return ID_TEXT Composr code
+     * @return ID_TEXT Software code
      */
     public function convert_topic_emoticon(int $iconid) : string
     {

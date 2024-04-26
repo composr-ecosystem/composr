@@ -33,7 +33,7 @@ class Hook_config_ipstack_api_key
         return [
             'human_name' => 'IPSTACK_API_KEY',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'GENERAL',
             'explanation' => 'CONFIG_OPTION_ipstack_api_key',
             'shared_hosting_restricted' => '0',

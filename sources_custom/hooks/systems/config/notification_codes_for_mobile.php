@@ -28,7 +28,7 @@ class Hook_config_notification_codes_for_mobile
         return [
             'human_name' => 'NOTIFICATION_CODES_FOR_MOBILE',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'COMPOSR_MOBILE_SDK',
             'explanation' => 'CONFIG_OPTION_notification_codes_for_mobile',
             'shared_hosting_restricted' => '0',

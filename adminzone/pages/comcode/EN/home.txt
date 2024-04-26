@@ -22,7 +22,7 @@
 	{+START,IF,{$CONFIG_OPTION,dashboard_tips}}
 		[block]main_staff_tips[/block]<br />
 	{+END}
-	{+START,IF,{$CONFIG_OPTION,dashboard_composr_news}}
+	{+START,IF,{$CONFIG_OPTION,dashboard_homesite_news}}
 		{+START,IF,{$ADDON_INSTALLED,syndication_blocks}}
 			{$BLOCK,block=side_rss,param={$BRAND_BASE_URL}/backend.php?mode=news&type=rss&select=1-12&days=90,title=Composr news,cache=1,defer=1}<br />
 		{+END}

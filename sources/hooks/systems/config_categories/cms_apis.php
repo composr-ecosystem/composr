@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_categories_composr_apis
+class Hook_config_categories_cms_apis
 {
     /**
      * Find if this config category is enabled.

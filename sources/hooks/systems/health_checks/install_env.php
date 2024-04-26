@@ -201,7 +201,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $test_url = static_evaluate_tempcode(build_url(['page' => ''], '', [], false, false, true)); // But this definitely must exist
         }
 
-        $test = cms_http_request($test_url, ['byte_limit' => 1, 'trigger_error' => false, 'no_redirect' => true]); // Should return a 200 blank, not an HTTP error or a redirect; actual data would be a Composr error
+        $test = cms_http_request($test_url, ['byte_limit' => 1, 'trigger_error' => false, 'no_redirect' => true]); // Should return a 200 blank, not an HTTP error or a redirect; actual data would be a software error
 
         $has_www = (strpos(get_base_url(), '://www.') !== false);
         $installing = ($check_context == CHECK_CONTEXT__INSTALL);

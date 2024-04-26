@@ -123,7 +123,7 @@ class Hook_cns_warnings_point_transactions
                 }
                 $description->attach('.');
 
-                $_fields->attach(form_input_list_entry($row['id'], false, $pretty_name, false, false)); // TODO: need to use proper Composr tooltips for description
+                $_fields->attach(form_input_list_entry($row['id'], false, $pretty_name, false, false)); // TODO: need to use proper software tooltips for description
             }
             if (!$_fields->is_empty()) {
                 $fields->attach(form_input_multi_list(do_lang_tempcode('PUNITIVE_POINTS_TRANSACTIONS'), do_lang_tempcode('DESCRIPTION_PUNITIVE_POINTS_TRANSACTIONS'), 'points_reverse', $_fields, null, 10));

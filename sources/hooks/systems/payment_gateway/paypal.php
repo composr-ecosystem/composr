@@ -26,6 +26,10 @@
  */
 class Hook_payment_gateway_paypal
 {
+    // PayPal usually returns the fee via mc_fee. You should probably use the correct fees according to your PayPal use.
+    protected $usd_flat_fee = 0.39;
+    protected $percentage_fee = 0.0349;
+
     /**
      * Get a standardised config map.
      *
@@ -48,14 +52,10 @@ class Hook_payment_gateway_paypal
      */
     public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // PayPal usually returns the fee via mc_fee. You should probably use the correct fees according to your PayPal use by defining them in the transaction fee configuration.
-        $usd_flat_fee = 0.39; // $0.39 USD flat fee
-        $percentage_fee = 0.0349; // 3.49% percentage fee
-
         require_code('currency');
-        $flat_fee = currency_convert($usd_flat_fee, 'USD', get_option('currency'));
+        $flat_fee = currency_convert($this->usd_flat_fee, 'USD', get_option('currency'));
 
-        return round((($percentage_fee * $amount) + $flat_fee), 2);
+        return round((($this->percentage_fee * $amount) + $flat_fee), 2);
     }
 
     /**
@@ -751,7 +751,7 @@ class Hook_payment_gateway_paypal
                         if ($silent_fail) {
                             return null;
                         }
-                        exit(); // We ignore cancel transactions as we don't want to process them immediately - we just let things run until the end-of-term (see below). Maybe ideally we would process these in Composr as a separate state, but it would over-complicate things
+                        exit(); // We ignore cancel transactions as we don't want to process them immediately - we just let things run until the end-of-term (see below). Maybe ideally we would process these in the software as a separate state, but it would over-complicate things
                         break;
 
                     case 'subscr_eot': // NB: An 'eot' means "end of *final* term" (i.e. if a payment fail / cancel / natural last term, has happened). PayPal's terminology is a little dodgy here.
@@ -784,7 +784,7 @@ class Hook_payment_gateway_paypal
                 if ($silent_fail) {
                     return null;
                 }
-                exit(); // Non-supported for IPN in Composr
+                exit(); // Non-supported for IPN in the software
                 break;
         }
 

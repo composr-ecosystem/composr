@@ -30,7 +30,7 @@ class Hook_addon_registry_karma
     }
 
     /**
-     * Get the version of Composr this addon is for.
+     * Get the version of the software this addon is for.
      *
      * @return float Version number
      */

@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_skip_string
         return [
             'human_name' => 'SUGARCRM_SKIP_STRING',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_MESSAGING_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_skip_string',
             'shared_hosting_restricted' => '0',

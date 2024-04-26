@@ -28,7 +28,7 @@ class Hook_config_twitter_api_secret
         return [
             'human_name' => 'TWITTER_API_SECRET',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TWITTER_OAUTH',
             'explanation' => 'CONFIG_OPTION_twitter_api_secret',
             'shared_hosting_restricted' => '0',

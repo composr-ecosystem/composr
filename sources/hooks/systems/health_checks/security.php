@@ -141,7 +141,7 @@ class Hook_health_check_security extends Hook_Health_Check
         require_code('version2');
         $data = [
             'client' => [
-                'clientId' => 'Composr',
+                'clientId' => brand_name(),
                 'clientVersion' => get_version_dotted(),
             ],
             'threatInfo' => [

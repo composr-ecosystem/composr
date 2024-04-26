@@ -696,19 +696,19 @@ abstract class Hook_Health_Check
     }
 
     /*
-    composr.app API
+        Homesite API
     */
 
     /**
-     * Call a composr.app API function.
+     * Call a homesite API function.
      *
      * @param  string $type API type
      * @param  array $params Map of parameters
      * @return mixed API result
      */
-    protected function call_composr_homesite_api(string $type, array $params)
+    protected function call_homesite_api(string $type, array $params)
     {
-        $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/api.php?type=' . urlencode($type);
+        $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/api.php?type=' . urlencode($type);
         foreach ($params as $key => $_val) {
             switch (gettype($_val)) {
                 case 'boolean':

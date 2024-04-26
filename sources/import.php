@@ -77,7 +77,7 @@ function cns_over_msn()
 /**
  * Returns the NEW ID of an imported old ID, for the specified importation type. Whether it returns null or gives an error message depends on $fail_ok.
  *
- * @param  ID_TEXT $type An importation type code, from those Composr has defined (E.g. 'download', 'news', ...)
+ * @param  ID_TEXT $type An importation type code, from those the software has defined (E.g. 'download', 'news', ...)
  * @param  string $id_old The source (old, original) ID of the mapping
  * @param  boolean $fail_ok If it is okay to fail to find a mapping
  * @return ?AUTO_LINK The new ID (null: not found)
@@ -103,7 +103,7 @@ function import_id_remap_get(string $type, string $id_old, bool $fail_ok = false
 /**
  * Check to see if the given ID of the given type has been imported (if it has a mapping).
  *
- * @param  ID_TEXT $type An importation type code, from those Composr has defined
+ * @param  ID_TEXT $type An importation type code, from those the software has defined
  * @param  string $id_old The source (old, original) ID of the mapping
  * @return boolean Whether it has been imported
  */
@@ -118,7 +118,7 @@ function import_check_if_imported(string $type, string $id_old) : bool
 /**
  * Set the NEW ID for an imported old ID, which also tacitly indicates completion of importing an item of some type of content. This mapping (old ID to new ID) may be used later for importing related content that requires the new identifier. import_id_remap_get is the inverse of this function.
  *
- * @param  ID_TEXT $type An importation type code, from those Composr has defined
+ * @param  ID_TEXT $type An importation type code, from those the software has defined
  * @param  string $id_old The source (old, original) ID of the mapping
  * @param  AUTO_LINK $id_new The destination (new) ID of the mapping
  */

@@ -82,7 +82,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
     }
 
     /**
-     * Empty the Composr fast custom index.
+     * Empty the fast custom index.
      */
     public function empty_index()
     {
@@ -90,7 +90,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
     }
 
     /**
-     * Perform indexing using the Composr fast custom index.
+     * Perform indexing using the fast custom index.
      *
      * @param  ?TIME $since Only index records newer than this (null: no limit)
      * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
@@ -259,7 +259,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $db = $GLOBALS['SITE_DB'];
         $index_table = 'ce_fulltext_index';
         if (can_use_fast_custom_index('catalogue_entries', $db, $index_table, $search_query, Fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
-            // This search hook implements the Composr fast custom index, which we use where possible...
+            // This search hook implements the fast custom index, which we use where possible...
 
             $table = 'catalogue_entries r';
 
