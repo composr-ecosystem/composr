@@ -219,7 +219,7 @@ function get_webpage_meta_details(string $url) : array
         }
 
         if (($result[1] == 'application/octet-stream') || ($result[1] == '')) {
-            // Generic, no real mime type - maybe the server is just not configured to know it - try and guess by using the file extension and our own Composr list
+            // Generic, no real mime type - maybe the server is just not configured to know it - try and guess by using the file extension and our own list
             require_code('mime_types');
             require_code('files');
             $meta_details['t_mime_type'] = get_mime_type(get_file_extension($url), true);
@@ -322,7 +322,7 @@ abstract class HttpDownloader
 
     // Input parameters, coming from $options map
     protected $byte_limit = null; // ?integer. The number of bytes to download. This is not a guarantee, it is a minimum (null: all bytes)
-    protected $trigger_error = true; // boolean. Whether to throw a Composr error, on error
+    protected $trigger_error = true; // boolean. Whether to throw a software error, on error
     protected $no_redirect = false; // boolean. Whether to block redirects (returns null when found)
     protected $ua = 'Composr'; // ~?string. The user-agent to identify as (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
     protected $post_params = null; // ?array or string. An optional array of POST parameters to send or a string of a request body; if this is null, a GET request is used for the default for http_verb (null: none)
@@ -417,7 +417,7 @@ abstract class HttpDownloader
 
         if ((!empty($_SERVER['HTTP_USER_AGENT'])) && (is_string($this->ua))) {
             if ($_SERVER['HTTP_USER_AGENT'] == $this->ua) {
-                $ua = 'Composr-recurse';
+                $this->ua = 'Composr-recurse';
             }
             if ($_SERVER['HTTP_USER_AGENT'] == 'Composr-recurse') {
                 return null;
