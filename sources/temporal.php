@@ -422,7 +422,7 @@ function get_timezoned_time(int $timestamp, bool $use_contextual_times = true, b
 }
 
 /**
- * Format a local time/date according to language pack. Uses 'date' syntax, with Composr's locale filter.
+ * Format a local time/date according to language pack. Uses 'date' syntax, with the software's locale filter.
  * Does not depend on actual locales, which are not thread-safe.
  *
  * @param  string $format The formatting string

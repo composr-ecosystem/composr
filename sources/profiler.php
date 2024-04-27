@@ -21,7 +21,7 @@
 /*EXTRA FUNCTIONS: shell_exec*/
 
 /*
-This is a basic profiler for Composr, for use on live servers where performance must be maintained yet we need live performance data gathering.
+This is a basic profiler for the software, for use on live servers where performance must be maintained yet we need live performance data gathering.
 It takes a targeted approach - you must block things out to be profiled that you suspect may be slow.
 
 Enable via the hidden 'enable_profiler' option (documented in the Code Book).
@@ -58,7 +58,7 @@ function init__profiler()
 }
 
 /**
- * Find whether profiling is enabled. This may be false due to Composr still starting up, in which case it will be enabled later.
+ * Find whether profiling is enabled. This may be false due to the software still starting up, in which case it will be enabled later.
  *
  * @return boolean Whether profiling is enabled
  */

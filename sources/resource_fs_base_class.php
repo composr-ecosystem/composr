@@ -328,7 +328,7 @@ abstract class Resource_fs_base
         if ([] == $this->can_accept_filetype(get_file_extension($filename))) {
             return false;
         }
-        return $this->file_load_json($filename, $path); // By default, only defer to the inbuilt Composr JSON implementation (hooks may override this with support for other kinds of interchange file formats)
+        return $this->file_load_json($filename, $path); // By default, only defer to the inbuilt JSON implementation (hooks may override this with support for other kinds of interchange file formats)
     }
 
     /**
@@ -346,7 +346,7 @@ abstract class Resource_fs_base
                 return false;
             }
         }
-        return $this->folder_load_json($filename, $path); // By default, only defer to the inbuilt Composr JSON implementation (hooks may override this with support for other kinds of interchange file formats)
+        return $this->folder_load_json($filename, $path); // By default, only defer to the inbuilt JSON implementation (hooks may override this with support for other kinds of interchange file formats)
     }
 
     /**
@@ -359,7 +359,7 @@ abstract class Resource_fs_base
      */
     public function file_save__flat(string $filename, string $path, string $data)
     {
-        // Files other stuff makes, we don't want auto-created junk files creating composr content
+        // Files other stuff makes, we don't want auto-created junk files creating site/software content
         $all_disallowed = [
             '__macosx',
             'thumbs.db:encryptable',
@@ -378,7 +378,7 @@ abstract class Resource_fs_base
         if ([] == $this->can_accept_filetype(get_file_extension($filename))) {
             return false;
         }
-        return $this->file_save_json($filename, $path, $data); // By default, only defer to the inbuilt Composr JSON implementation (hooks may override this with support for other kinds of interchange file formats)
+        return $this->file_save_json($filename, $path, $data); // By default, only defer to the inbuilt JSON implementation (hooks may override this with support for other kinds of interchange file formats)
     }
 
     /**
@@ -397,7 +397,7 @@ abstract class Resource_fs_base
                 return false;
             }
         }
-        return $this->folder_save_json($filename, $path, $data); // By default, only defer to the inbuilt Composr JSON implementation (hooks may override this with support for other kinds of interchange file formats)
+        return $this->folder_save_json($filename, $path, $data); // By default, only defer to the inbuilt JSON implementation (hooks may override this with support for other kinds of interchange file formats)
     }
 
     /**
@@ -940,7 +940,7 @@ abstract class Resource_fs_base
     }
 
     /*
-    ABSTRACT/AGNOSTIC RESOURCE-FS API FOR INTERNAL COMPOSR USE
+        ABSTRACT/AGNOSTIC RESOURCE-FS API FOR INTERNAL SOFTWARE USE
     */
 
     /**
@@ -1014,7 +1014,7 @@ abstract class Resource_fs_base
     }
 
     /**
-     * Convert a label to a filename, possibly with auto-creating if needed. This is useful for the Composr-side resource-agnostic API.
+     * Convert a label to a filename, possibly with auto-creating if needed. This is useful for the software-side resource-agnostic API.
      *
      * @param  LONG_TEXT $label Resource label
      * @param  string $subpath The path (blank: root / not applicable). It may end in "/*" if you want to look for a match under a certain directory
@@ -1034,7 +1034,7 @@ abstract class Resource_fs_base
     }
 
     /**
-     * Convert a label to an ID, possibly with auto-creating if needed. This is useful for the Composr-side resource-agnostic API.
+     * Convert a label to an ID, possibly with auto-creating if needed. This is useful for the software-side resource-agnostic API.
      *
      * @param  SHORT_TEXT $_label Resource label
      * @param  string $subpath The path (blank: root / not applicable). It may end in "/*" if you want to look for a match under a certain directory

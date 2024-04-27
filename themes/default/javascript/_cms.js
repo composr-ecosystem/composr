@@ -1,4 +1,4 @@
-/* This file contains Composr-specific utility functions */
+/* This file contains software-specific utility functions */
 
 (function ($cms, $util, $dom) {
     'use strict';
@@ -11,7 +11,7 @@
      */
     $cms.inMinikernelVersion = $util.constant(document.documentElement.classList.contains('in-minikernel-version'));
 
-    var symbols = (!$cms.inMinikernelVersion() ? JSON.parse(document.getElementById('composr-symbol-data').content) : {});
+    var symbols = (!$cms.inMinikernelVersion() ? JSON.parse(document.getElementById('cms-symbol-data').content) : {});
     /**
      * @memberof $cms
      * @method
@@ -171,6 +171,12 @@
      * @returns {string}
      */
     $cms.brandName = $util.constant(strVal('{$BRAND_NAME;}'));
+    /**
+     * @memberof $cms
+     * @method
+     * @returns {string}
+     */
+    $cms.getBrandBaseUrl = $util.constant(strVal('{$BRAND_BASE_URL;}'));
     /**
      * @memberof $cms
      * @method
@@ -870,10 +876,10 @@
      * Analytics platform tracking for events; will integrate with Google Analytics if configured
      * @memberof $cms
      * @param el
-     * @param category - This is the 'category' in GA, and combines with action (below) to form the 'event' in Composr inbuilt tracking
+     * @param category - This is the 'category' in GA, and combines with action (below) to form the 'event' in inbuilt software tracking
      * @param action
      * @param e - To call e.preventDefault() if the JS event is handled
-     * @param nativeTracking - Whether the inbuilt Composr tracking should register the event (normally we don't do this as we can register events without requiring JavaScript)
+     * @param nativeTracking - Whether the inbuilt software tracking should register the event (normally we don't do this as we can register events without requiring JavaScript)
      * @returns { Promise }
      */
     $cms.statsEventTrack = function statsEventTrack(el, category, action, label, e, nativeTracking) {
@@ -1024,7 +1030,7 @@
     };
 
     /**
-     * Find the main Composr window
+     * Find the main software window
      * @memberof $cms
      * @param anyLargeOk
      * @returns { Window }
@@ -1060,7 +1066,7 @@
     };
 
     /**
-     * Find if the user performed the Composr "magic keypress" to initiate some action
+     * Find if the user performed the software "magic keypress" to initiate some action
      * @memberof $cms
      * @param event
      * @returns {boolean}

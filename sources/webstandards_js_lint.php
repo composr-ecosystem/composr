@@ -128,7 +128,7 @@ function init__webstandards_js_lint()
         'TableRowArray' => ['Array', []],
         'WindowArray' => ['Array', []],
 
-        /* Composr-specific */
+        /* software-specific */
         '$cms' => ['Object', []],
         '$dom' => ['Object', []],
         'strVal' => ['function', []],
@@ -292,7 +292,7 @@ function js_check_function(array $function)
         js_add_variable_reference($p[1], $function['offset'], true);
     }
     js_add_variable_reference('arguments', $function['offset'], true);
-    js_set_composr_type('arguments', 'Array');
+    js_set_cms_type('arguments', 'Array');
     js_add_variable_reference('this', $function['offset'], true);
     js_add_variable_reference('event', $function['offset'], true);
 
@@ -406,7 +406,7 @@ function js_check_command(array $command, int $depth)
         switch ($c[0]) {
             case 'INNER_FUNCTION':
                 js_add_variable_reference($c[1]['name'], $c_pos, true);
-                js_set_composr_type($c[1]['name'], 'function');
+                js_set_cms_type($c[1]['name'], 'function');
                 break;
         }
     }
@@ -432,7 +432,7 @@ function js_check_command(array $command, int $depth)
             case 'RETURN':
                 $ret_type = js_check_expression($c[1]);
                 js_add_variable_reference('__return', $c_pos, false, true);
-                js_set_composr_type('__return', $ret_type);
+                js_set_cms_type('__return', $ret_type);
                 if (!isset($JS_LOCAL_VARIABLES['__return']['mentions'])) {
                     $JS_LOCAL_VARIABLES['__return']['mentions'] = [];
                 }
@@ -527,7 +527,7 @@ function js_check_command(array $command, int $depth)
                 break;
             case 'CATCH':
                 js_add_variable_reference($c[1], $c[3], true);
-                js_set_composr_type($c[1], 'Error');
+                js_set_cms_type($c[1], 'Error');
                 js_check_command($c[2], $depth + 1);
                 break;
             case 'FINALLY':
@@ -547,7 +547,7 @@ function js_check_command(array $command, int $depth)
                 foreach ($c[1] as $var) {
                     js_add_variable_reference($var[1], $c_pos, true);
                     if ($var[2] !== null) {
-                        js_set_composr_type($var[1], js_check_expression($var[2]));
+                        js_set_cms_type($var[1], js_check_expression($var[2]));
                     }
                 }
                 break;
@@ -599,7 +599,7 @@ function js_check_assignment(array $c, int $c_pos) : string
             }
 
             js_add_variable_reference($target[1], $c_pos, true, $e_type == 'Null');
-            js_set_composr_type($target[1], $e_type);
+            js_set_cms_type($target[1], $e_type);
         }
         $type = js_check_variable($target);
         return $type;
@@ -1033,7 +1033,7 @@ function js_get_variable_type(array $variable) : string
  * @param  string $identifier The variable name
  * @param  string $type The type
  */
-function js_set_composr_type(string $identifier, string $type)
+function js_set_cms_type(string $identifier, string $type)
 {
     global $JS_LOCAL_VARIABLES;
     $JS_LOCAL_VARIABLES[$identifier]['types'][] = $type;
@@ -1088,7 +1088,7 @@ function js_infer_expression_type_to_variable_type(string $type, array $expr)
     /* Not reliable enough, JS is very dynamic
     if (($expression[0] == 'VARIABLE') && (empty($expression[1][2]))) {
         $identifier = $expression[1][1];
-        js_set_composr_type($identifier, $type);
+        js_set_cms_type($identifier, $type);
     }
     */
 }

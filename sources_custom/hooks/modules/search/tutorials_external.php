@@ -37,7 +37,7 @@ class Hook_search_tutorials_external extends FieldsSearchHook
         if (!addon_installed('composr_homesite_support_credits')) {
             return null;
         }
-        if (!addon_installed('composr_release_build')) {
+        if (!addon_installed('cms_release_build')) {
             return null;
         }
 

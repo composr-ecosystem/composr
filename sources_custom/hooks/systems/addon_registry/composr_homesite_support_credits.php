@@ -140,7 +140,7 @@ class Hook_addon_registry_composr_homesite_support_credits
             'recommends' => [
                 'stats',
                 'MySQL',
-                'composr_release_build',
+                'cms_release_build',
                 'composr_tutorials',
             ],
             'conflicts_with' => [],

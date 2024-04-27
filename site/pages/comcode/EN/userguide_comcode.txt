@@ -2,7 +2,7 @@
 
 Comcode is used for formatting input data (the data marked as being Comcode).
 
-{+START,IF,{$IS_STAFF}}[highlight]For full Comcode help, see the [url="Composr Comcode tutorial"]{$TUTORIAL_URL*,tut_comcode}[/url] (only staff see this link).[/highlight]
+{+START,IF,{$IS_STAFF}}[highlight]For full Comcode help, see the [url="Comcode tutorial"]{$TUTORIAL_URL*,tut_comcode}[/url] (only staff see this link).[/highlight]
 {+END}
 The title for this page and smaller title below were generated using [tt][title]Comcode help[/title][/tt] and [tt][title="2"]Lists[/title][/tt].
 

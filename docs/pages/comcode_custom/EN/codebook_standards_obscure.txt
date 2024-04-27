@@ -506,7 +506,7 @@ When referencing keyboard key names, refer to them like Ctrl or Shift or Option 
 When in general trying to draw attention to a word/term/phrase that isn't part of any quotation, use bold.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Don't use Composr-specific terms on the main website[/color]
+[color="red"]Don't use software-specific terms on the main website[/color]
 | Consistent UI
 | Composr development +
 | Manually

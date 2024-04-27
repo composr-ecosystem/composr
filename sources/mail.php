@@ -876,7 +876,7 @@ abstract class Mail_dispatcher_base
         }
 
         // We use the boundary to separate message parts
-        $_boundary = uniqid('Composr', true);
+        $_boundary = uniqid('CMS', true);
         $boundary = $_boundary . '_1';
         $boundary2 = $_boundary . '_2';
         $boundary3 = $_boundary . '_3';
@@ -1284,7 +1284,7 @@ abstract class Mail_dispatcher_base
         }
         foreach ($to_names as &$_to_name) {
             if ($_to_name !== null) {
-                $_to_name = preg_replace('#@.*$#', '', $_to_name); // preg_replace is because some servers may reject sending names that look like e-mail addresses. Composr tries this from recommend module.
+                $_to_name = preg_replace('#@.*$#', '', $_to_name); // preg_replace is because some servers may reject sending names that look like e-mail addresses. The software tries this from recommend module.
                 escape_header($_to_name);
             }
         }

@@ -26,8 +26,8 @@ if (!addon_installed('composr_homesite')) {
 if (!addon_installed('composr_homesite_support_credits')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits')));
 }
-if (!addon_installed('composr_release_build')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_release_build')));
+if (!addon_installed('cms_release_build')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_release_build')));
 }
 
 if (post_param_integer('confirm', 0) == 0) {

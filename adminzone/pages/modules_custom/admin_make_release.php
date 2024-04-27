@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 /**
@@ -33,7 +33,7 @@ class Module_admin_make_release
         $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'composr_release_build';
+        $info['addon'] = 'cms_release_build';
         return $info;
     }
 
@@ -48,11 +48,11 @@ class Module_admin_make_release
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('composr_release_build')) {
+        if (!addon_installed('cms_release_build')) {
             return null;
         }
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
 
         return [
             'step1' => ['RELEASE_TOOLS_MAKE_RELEASE', 'admin/tool'],
@@ -71,13 +71,13 @@ class Module_admin_make_release
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('composr_release_build', $error_msg)) {
+        if (!addon_installed__messaged('cms_release_build', $error_msg)) {
             return $error_msg;
         }
 
         $type = get_param_string('type', 'step1');
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
 
         switch ($type) {
             case 'step1':
@@ -183,7 +183,7 @@ class Module_admin_make_release
         $web_service_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php';
         $make_release_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release';
         $profile_url = get_brand_base_url() . '/members/view';
-        $git_url = COMPOSR_REPOS_URL;
+        $git_url = CMS_REPOS_URL;
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6dc15cd17b0ca901ffe869ad91863ad4', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_URLS')]));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_URL'), 'tracker_url', $tracker_url, true));
         $fields->attach(form_input_integer(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_PROJECT'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_PROJECT'), 'project_id', 1, true));

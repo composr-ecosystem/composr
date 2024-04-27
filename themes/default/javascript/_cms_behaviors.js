@@ -74,7 +74,7 @@
                         anchor.title = anchor.title.replace('{!LINK_NEW_WINDOW;^}', '').trim();
                     }
 
-                    // Convert <a> title attributes into composr tooltips
+                    // Convert <a> title attributes into software tooltips
                     if (!anchor.classList.contains('no-tooltip')) {
                         convertTooltip(anchor);
                     }
@@ -103,9 +103,9 @@
                 // Remove tooltips from forms as they are for screen-reader accessibility only
                 form.title = '';
 
-                // Convert form element title attributes into composr tooltips
+                // Convert form element title attributes into software tooltips
                 if ($cms.configOption('js_overlays')) {
-                    // Convert title attributes into composr tooltips
+                    // Convert title attributes into software tooltips
                     var elements = $util.toArray(form.elements), j;
 
                     elements = elements.concat(form.querySelectorAll('input[type="image"]')); // JS DOM does not include input[type="image"] elements in form.elements
@@ -684,7 +684,7 @@
         }
     };
 
-    // Convert img title attributes into Composr tooltips
+    // Convert img title attributes into software tooltips
     $cms.behaviors.imageTooltips = {
         attach: function (context) {
             if (!$cms.configOption('js_overlays')) {
@@ -697,7 +697,7 @@
         }
     };
 
-    // Convert svg title elements into Composr tooltips
+    // Convert svg title elements into software tooltips
     $cms.behaviors.svgTooltips = {
         attach: function (context) {
             if (!$cms.configOption('js_overlays')) {
@@ -712,7 +712,7 @@
         }
     };
 
-    // Convert abbr title attributes into Composr tooltips
+    // Convert abbr title attributes into software tooltips
     $cms.behaviors.abbrTooltips = {
         attach: function (context) {
             if (!$cms.configOption('js_overlays')) {

@@ -1350,9 +1350,9 @@ class Hook_addon_registry_galleries
 HEADLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '
 SUBLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '
 TEXT=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
-LINK1_URL=' . do_lang('DEFAULT_LINK1_URL', null, null, null, $lang) . '
+LINK1_URL=' . do_lang('DEFAULT_LINK1_URL', escape_html(get_brand_base_url()), null, null, $lang) . '
 LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
-LINK2_URL=' . do_lang('DEFAULT_LINK2_URL', null, null, null, $lang) . '
+LINK2_URL=' . do_lang('DEFAULT_LINK2_URL', escape_html(get_brand_base_url()), null, null, $lang) . '
 LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
 {+END}
 {$,page hint: no_wysiwyg}

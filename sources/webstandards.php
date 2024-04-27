@@ -19,7 +19,7 @@
  */
 
 /*
-The webstandards checking is designed for a special blend between uber-modern-standards and cross-browser stability - to only allow XHTML5 and CSS3 that runs (or gracefully degrades) on the minimum Composr browser versions.
+The webstandards checking is designed for a special blend between uber-modern-standards and cross-browser stability - to only allow XHTML5 and CSS3 that runs (or gracefully degrades) on the minimum supported browser versions.
 
 Some comments are throughout the code on what we don't support.
 
@@ -669,7 +669,7 @@ function init__webstandards()
         'body' => ['html'],
         'head' => ['html'],
         'param' => ['script', 'object'],
-        //'link' => ['head', 'link'],  Composr will dynamically optimise things to tend towards correctness, so can't enable this rule
+        //'link' => ['head', 'link'],  The software will dynamically optimise things to tend towards correctness, so can't enable this rule
         //'style' => ['head'], "
         'li' => ['ul', 'ol', 'dd', 'menu', 'dt', 'dl', 'dir'],
         'tbody' => ['table'],

@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 /**
@@ -33,7 +33,7 @@ class Module_admin_modularisation
         $info['version'] = 1;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'composr_release_build';
+        $info['addon'] = 'cms_release_build';
         return $info;
     }
 
@@ -48,11 +48,11 @@ class Module_admin_modularisation
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('composr_release_build')) {
+        if (!addon_installed('cms_release_build')) {
             return null;
         }
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
 
         return [
             'browse' => ['RELEASE_TOOLS_MODULARISATION', 'admin/tool'],
@@ -71,13 +71,13 @@ class Module_admin_modularisation
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('composr_release_build', $error_msg)) {
+        if (!addon_installed__messaged('cms_release_build', $error_msg)) {
             return $error_msg;
         }
 
         $type = get_param_string('type', 'browse');
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
 
         switch ($type) {
             case 'browse':

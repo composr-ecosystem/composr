@@ -21,7 +21,7 @@
 // This file must work completely standalone, and should be API-locked even across versions.
 
 /*
-The version numbers here are not for interchange. sources/version2.php provides a way to turn these into the 'dotted' interchange format that the Composr platform recognises programmatically.
+    The version numbers here are not for interchange. sources/version2.php provides a way to turn these into the 'dotted' interchange format that the software platform recognises programmatically.
 */
 
 /**
@@ -31,8 +31,8 @@ The version numbers here are not for interchange. sources/version2.php provides 
  */
 function init__version()
 {
-    if (!defined('COMPOSR_REPOS_URL')) {
-        define('COMPOSR_REPOS_URL', 'https://gitlab.com/composr-foundation/composr');
+    if (!defined('CMS_REPOS_URL')) {
+        define('CMS_REPOS_URL', 'https://gitlab.com/composr-foundation/composr');
 
         define('VERSION_ALPHA', 'Alpha');
         define('VERSION_BETA', 'Beta');
@@ -74,9 +74,11 @@ function cms_version_time() : int
     return 1713129684;
 }
 
+// cms_version_time_major() was removed in v11. This was never used in v10 and was also not planned for any use in v11.
+
 /**
  * Get the timestamp at which a database / module change was last made.
- * This will dictate when the installer instructs the user to perform a database / module upgrade.
+ * This will dictate when the installer instructs the user to perform a database / module upgrade and will also lock out the system scheduler.
  *
  * @return integer The timestamp at which a database / module change was last made
  */

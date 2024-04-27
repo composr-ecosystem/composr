@@ -1069,7 +1069,7 @@ function step_4() : object
         $options->attach(make_tick(do_lang_tempcode('USE_PERSISTENT'), example('', 'USE_PERSISTENT_TEXT'), 'use_persistent', $use_persistent ? 1 : 0));
     }*/
 
-    $title = do_lang_tempcode((($forum_type == 'cns' || $forum_type == 'none') && $use_msn == 0) ? 'DATABASE_SETTINGS' : 'COMPOSR_SETTINGS');
+    $title = do_lang_tempcode((($forum_type == 'cns' || $forum_type == 'none') && $use_msn == 0) ? 'DATABASE_SETTINGS' : 'CMS_SETTINGS');
     if (GOOGLE_APPENGINE) {
         $title = do_lang_tempcode('DEV_DATABASE_SETTINGS');
         $text = do_lang_tempcode('DEV_DATABASE_SETTINGS_HELP');

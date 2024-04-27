@@ -146,7 +146,7 @@ This addon does not contain the composr.app install code and the overall site an
                 'newsletter',
                 'MySQL',
                 'composr_homesite_support_credits',
-                'composr_release_build',
+                'cms_release_build',
                 'composr_tutorials',
                 'hybridauth',
                 'patreon',

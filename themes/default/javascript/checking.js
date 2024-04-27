@@ -185,7 +185,7 @@
      * @param extraChecks
      * @returns { Promise<boolean> }
      */
-    $cms.form.doCheckingComposrFormSubmitChain = function doCheckingComposrFormSubmitChain(event, form, analyticEventCategory, extraChecks) {
+    $cms.form.doCheckingCMSFormSubmitChain = function doCheckingCMSFormSubmitChain(event, form, analyticEventCategory, extraChecks) {
         form.lastSubmitEvent = event;
 
         $util.inform('Running form validation');

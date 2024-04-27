@@ -76,8 +76,8 @@ PHP;
         if (!addon_installed('composr_homesite_support_credits')) {
             return do_template('RED_ALERT', ['_GUID' => 'vknpkcimw04ix5guh0s9q7ckk0zadjz7', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits'))]);
         }
-        if (!addon_installed('composr_release_build')) {
-            return do_template('RED_ALERT', ['_GUID' => 'q6ab12xk41unkypf88f8ktrp6pbavevi', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_release_build'))]);
+        if (!addon_installed('cms_release_build')) {
+            return do_template('RED_ALERT', ['_GUID' => 'q6ab12xk41unkypf88f8ktrp6pbavevi', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_release_build'))]);
         }
 
         $block_id = get_block_id($map);

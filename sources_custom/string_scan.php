@@ -3347,7 +3347,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COMPLEX_FIRST_PARAMETER
         COMPLEX_PRIVACY_OPTIONS
         COMPLEX_UPLOADER
-        COMPOSR_SETTINGS
+        CMS_SETTINGS
         CMS_SITE_MERGER
         COMPRESSING
         CONCEDED_MODE_LINK
@@ -8495,11 +8495,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         IS_LOCKED_RUNNING
         DAYS_TO_KEEP__HTTP_LOG
         CONFIG_OPTION_days_to_keep__http_log
-        ADVERTISE_ON_COMPOSR_0
-        ADVERTISE_ON_COMPOSR_1
-        ADVERTISE_ON_COMPOSR_2
+        ADVERTISE_ON_HOMESITE_0
+        ADVERTISE_ON_HOMESITE_1
+        ADVERTISE_ON_HOMESITE_2
         CRON_UPGRADE_PENDING
-        DESCRIPTION_ADVERTISE_ON_COMPOSR
+        DESCRIPTION_ADVERTISE_ON_HOMESITE
         FIND_REMOTE_ADDONS_ERROR
         BACKUP_LOG_START
         LOG_LEVEL

@@ -936,7 +936,7 @@ function get_page_type_file_extension(string $type) : string
 }
 
 /**
- * Delete a Composr page.
+ * Delete a software page.
  *
  * @param  ID_TEXT $zone The zone
  * @param  ID_TEXT $page The page

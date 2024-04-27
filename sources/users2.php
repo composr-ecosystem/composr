@@ -179,7 +179,7 @@ function member_blocked(int $member_id, ?int $member_blocker = null) : bool
 }
 
 /**
- * Get template-ready details of members viewing the specified Composr location.
+ * Get template-ready details of members viewing the specified software location.
  *
  * @param  ?ID_TEXT $page The page they need to be viewing (null: don't care)
  * @param  ?ID_TEXT $type The page-type they need to be viewing (null: don't care)
@@ -234,7 +234,7 @@ function get_members_viewing_wrap(?string $page = null, ?string $type = null, ?s
 }
 
 /**
- * Get a map of members viewing the specified Composr location.
+ * Get a map of members viewing the specified software location.
  *
  * @param  ?ID_TEXT $page The page they need to be viewing (null: environment current) (blank: don't care)
  * @param  ?ID_TEXT $type The page-type they need to be viewing (null: environment current) (blank: don't care)

@@ -26,7 +26,7 @@ XML or JSON?
 We generally prefer JSON when connecting to 3rd party backend services, where no human touches the data transferred.
 However in some cases particular standards do require XML, we do use XML for our own AJAX, and we generally tend to prefer XML for user-edited file formats.
 
-To use JSON in Composr, use standard PHP functions.
+To use JSON in the software, use standard PHP functions.
 */
 
 /**

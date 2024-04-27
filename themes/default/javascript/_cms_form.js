@@ -1,4 +1,4 @@
-/* This file contains Composr-specific form functionality which is CMS-wide (as opposed to core_form_interfaces.js and checking.js) */
+/* This file contains software-specific form functionality which is CMS-wide (as opposed to core_form_interfaces.js and checking.js) */
 
 (function () {
     'use strict';

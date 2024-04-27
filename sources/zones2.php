@@ -688,7 +688,7 @@ function get_standard_block_parameters() : array
 }
 
 /**
- * Upgrades a block to the latest version available on your Composr installation. [b]This function can only upgrade to the latest version put into the block directory.[/b] You should not need to use this function.
+ * Upgrades a block to the latest version available on your installation. [b]This function can only upgrade to the latest version put into the block directory.[/b] You should not need to use this function.
  *
  * @param  ID_TEXT $block The name of the block to upgrade
  * @return integer 0=No upgrade. -2=Not installed, 1=Upgrade

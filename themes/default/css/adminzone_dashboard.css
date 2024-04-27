@@ -109,7 +109,7 @@ a.top-left-toggle .icon {
 }
 
 .staff-new-versions .notes-about,
-.staff-new-versions .notes_about { /* .notes_about comes from the composr.app server */
+.staff-new-versions .notes_about { /* .notes_about comes from the homesite */
 	display: none;
 }
 

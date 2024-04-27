@@ -412,7 +412,7 @@ The specific ones relating to URL monikers are...
 There are a number of different functions we use for encoding/decoding URLs:
  - [tt]rawurlencode[/tt] / [tt]rawurldecode[/tt] -- PHP function for standardised URL encoding.
  - [tt]urlencode[/tt] / [tt]urldecode[/tt] -- PHP function for URL encoding specifically for GET parameters. It's the same as [tt]rawurlencode[/tt] except spaces become [tt]+[/tt] rather than [tt]%20[/tt].
- - [tt]cms_urlencode[/tt] / [tt]cms_rawurlencode[/tt] / [tt]cms_urldecode[/tt] -- A layer around [tt]urlencode[/tt] / [tt]rawurlencode[/tt] / [tt]urldecode[/tt] that provides Composr-specific encoding that stops Apache's [tt]mod_rewrite[/tt] from corrupting certain special characters during its "smart" processing.
+ - [tt]cms_urlencode[/tt] / [tt]cms_rawurlencode[/tt] / [tt]cms_urldecode[/tt] -- A layer around [tt]urlencode[/tt] / [tt]rawurlencode[/tt] / [tt]urldecode[/tt] that provides software-specific encoding that stops Apache's [tt]mod_rewrite[/tt] from corrupting certain special characters during its "smart" processing.
  - [tt]cms_rawurlrecode[/tt] -- Shortens URLs that are too long for the database (255 character limit) by intelligently cheating in our encoding. The URLs are technically non-compliant but will work.
  - [tt]HarmlessURLCoder[/tt] -- Simplifies/desimplifies URLs, trading human-readability for non-compliance, and handling Punycode (if the [tt]intl[/tt] PHP extension is available). Similar to what browsers do in their address bars. It is a non-destructive operation that doesn't allow for double encoding or double decoding. Non-latin characters in URLs encoded with HarmlessURLCoder are much easier to understand.
 

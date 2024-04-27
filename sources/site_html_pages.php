@@ -23,7 +23,7 @@
  * HTML isn't great... no dynamicness/reconfigurability at all.
  * We prefer Comcode with [html]HTML goes here[/html] usage.
  *
- * @param  PATH $string The relative (to Composr's base directory) path to the HTML page
+ * @param  PATH $string The relative (to the software's base directory) path to the HTML page
  * @param  ?PATH $file_base The file base to load from (null: standard)
  * @return string The page
  */
@@ -44,7 +44,7 @@ function load_html_page(string $string, ?string $file_base = null) : string
     if (stripos($html, '<html') !== false) {
         $matches = [];
 
-        // Fix links to anything in same dir, by assuming eithera Composr page in same zone -- or uploads/website_specific, or next to html files, or in root
+        // Fix links to anything in same dir, by assuming either a page in same zone -- or uploads/website_specific, or next to html files, or in root
         $link_attributes = ['src', 'href', 'action', 'data', 'codebase', 'background'];
         foreach ($link_attributes as $attribute) {
             $num_matches = preg_match_all('#<[^<>]* ' . $attribute . '="([^&"]+\.[^&"\.]+)"[^<>]*>#mis', $html, $matches);

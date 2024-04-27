@@ -1154,7 +1154,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]data_custom/build_rewrite_rules.php[/tt]
 | Rebuild all files containing rewrite rules.
-| [tt]composr_release_build[/tt]
+| [tt]cms_release_build[/tt]
 | Command-line via PHP interpreter
 |-
 | [tt]data_custom/transifex_pull.php[/tt]
@@ -1179,7 +1179,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]adminzone:plug_guid[/tt]
 | Insert GUIDs for all [tt]do_template[/tt] calls that don't currently have them.
-| [tt]composr_release_build[/tt]
+| [tt]cms_release_build[/tt]
 | Composr module
 |-
 | [tt]data_custom/stress_test_loader.php[/tt]
@@ -1247,7 +1247,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]adminzone:make_release[/tt]
 | Make a Composr release.
-| [tt]composr_release_build[/tt]
+| [tt]cms_release_build[/tt]
 | Composr module
 |-
 | [tt]adminzone:_make_release[/tt]
@@ -1257,7 +1257,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]adminzone:push_bugfix[/tt]
 | Push a bug fix to composr.app.
-| [tt]composr_release_build[/tt]
+| [tt]cms_release_build[/tt]
 | Composr module
 |}
 

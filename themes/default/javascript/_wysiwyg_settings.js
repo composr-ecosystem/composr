@@ -11,7 +11,7 @@ if (boolVal('{$VALUE_OPTION;,commercial_spellchecker}')) {
 }
 toolbar.push(toolbarEditActions);
 toolbar.push(['Undo', 'Redo', precisionEditing ? '-' : null, precisionEditing ? 'Find' : null, precisionEditing ? 'Replace' : null, ((document.body.spellcheck !== undefined) ? 'spellchecktoggle' : null), '-', precisionEditing ? 'SelectAll' : null, 'RemoveFormat']);
-toolbar.push(['Link', 'Unlink', 'Anchor', (precisionEditing ? 'composr_page' : null)]);
+toolbar.push(['Link', 'Unlink', 'Anchor', (precisionEditing ? 'cms_page' : null)]);
 toolbar.push(precisionEditing ? '/' : '-');
 var formatting = ['Bold', 'Italic', 'Strike', '-', precisionEditing ? 'Subscript' : null, (precisionEditing ? 'Superscript' : null)];
 toolbar.push(formatting);
@@ -19,7 +19,7 @@ toolbar.push(['NumberedList', 'BulletedList', precisionEditing ? '-' : null, pre
 if (precisionEditing) {
     toolbar.push(['JustifyLeft', 'JustifyCenter', 'JustifyRight', precisionEditing ? 'JustifyBlock' : null]);
 }
-toolbar.push([precisionEditing ? 'composr_image' : null, 'Table']);
+toolbar.push([precisionEditing ? 'cms_image' : null, 'Table']);
 if (precisionEditing) {
     toolbar.push(['HorizontalRule', 'SpecialChar']);
 }
@@ -31,16 +31,16 @@ toolbar.push(['TextColor', 'BGColor']);
 if (precisionEditing) {
     toolbar.push(['Maximize', 'ShowBlocks', 'autoFormat']);
 }
-var useComposrToolbar = true;
-if (useComposrToolbar) {
-    toolbar.push(['composr_block', 'composr_comcode', 'composr_quote', (precisionEditing ? 'composr_box' : null), 'composr_code']);
+var useCMSToolbar = true;
+if (useCMSToolbar) {
+    toolbar.push(['cms_block', 'cms_comcode', 'cms_quote', (precisionEditing ? 'cms_box' : null), 'cms_code']);
 }
 var editorSettings = {
     skin: 'kama',
     uiColor: wysiwygColor,
     ocpTheme: $cms.getTheme(),
     removePlugins: 'sourcearea',
-    extraPlugins: 'showcomcodeblocks,spellchecktoggle' + (useComposrToolbar ? ',composr' : ''),
+    extraPlugins: 'showcomcodeblocks,spellchecktoggle' + (useCMSToolbar ? ',cms' : ''),
     /*{+START,IF,{$NEQ,{$CKEDITOR_PATH},data_custom/ckeditor}}*/
     customConfig: '',
     /*{+END}*/

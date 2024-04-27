@@ -19,7 +19,7 @@
  */
 
 /**
- * Load up some news category rows. We do this here because these are consumed in many areas of Composr so need some run-time caching.
+ * Load up some news category rows. We do this here because these are consumed in many areas of the software so need some run-time caching.
  *
  * @param  string $sql SQL defining what rows to load
  * @return array List of all rows cached (not just the ones loaded now)

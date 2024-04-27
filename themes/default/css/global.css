@@ -4,7 +4,7 @@
 */
 
 /*
-This is Composr's main CSS file. It defines core styles for core functionality and common re-used styles.
+This is {$BRAND_NAME`}'s main CSS file. It defines core styles for core functionality and common re-used styles.
 See _base.css for responsive design breakpoints and some SET commands.
 See _colours.css for colours.
 
@@ -15,7 +15,7 @@ Most sizes are defined in 'em' units. 1em is roughly 10px, depending on font siz
 'em' units are great because they scale very well. If you reduce the font size, the spacings will reduce as well, in proportion.
 
 When editing theme CSS we recommend you comment out code you're removing and heavily comment your own changes - this will make it much easier for you to upgrade your theme to new versions.
-Composr minifies outputted CSS, so there is no performance penalty for doing this.
+{$BRAND_NAME`} minifies outputted CSS, so there is no performance penalty for doing this.
 
 You can also build your CSS by using a Tempcode INCLUDE to the original file but only implementing your changes in your file. This makes upgrading a LOT easier.
 CSS is expressive enough to let you undo things pretty well, if you need to undo core styles.
@@ -3058,7 +3058,7 @@ h3 .toggleable-tray-button .icon {
 =========================
 */
 
-/* These are short hand for defining very common layout patterns. They are quasi-semantic in that they tie into Composr's visual language. */
+/* These are short hand for defining very common layout patterns. They are quasi-semantic in that they tie into {$BRAND_NAME`}'s visual language. */
 
 .not-too-tall {
 	max-height: 30em;
@@ -4735,7 +4735,7 @@ A note about display of metadata...
 It may be displayed using:
  - meta-details-list (usually used on full screen views of content)
  - horizontal-meta-details (usually used on blocks where the meta details are important to encourage a click through)
- - a table (usually used where the content defines its own metadata beyond what all Composr content has, such as a length or resolution)
+ - a table (usually used where the content defines its own metadata beyond what all {$BRAND_NAME`} content has, such as a length or resolution)
  - a tooltip (good for tucking it away, although it's not touch friendly so should only be used if non-important)
 But it should always have role="note" on it (ARIA)
 */
@@ -7324,7 +7324,7 @@ a[rel="lightbox"] {
 		padding: 0 22px 5px 0;
 	}
 
-	body a.link-exempt, body .link-exempt-wrap a, body a[href*=".php"]:not(.force-filetype-icon).user-link, a[rel="lightbox"] { /* Turn off the "new window" icon for URLs containing ".php" because usually in Composr these are used for system pages that don't warrant these icons */
+	body a.link-exempt, body .link-exempt-wrap a, body a[href*=".php"]:not(.force-filetype-icon).user-link, a[rel="lightbox"] { /* Turn off the "new window" icon for URLs containing ".php" because usually in {$BRAND_NAME`} these are used for system pages that don't warrant these icons */
 		background-image: none !important;
 		padding: 0px !important;
 	}

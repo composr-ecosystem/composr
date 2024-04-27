@@ -68,7 +68,7 @@ function upgrade_script()
 
     // Handle shared site upgrading with no per-site UI
     global $SITE_INFO;
-    if (isset($SITE_INFO['custom_file_base_stub'])) { // This upgrader script must be called on a particular site with a real DB (e.g. shareddemo.composr.info), but will run for all sites on same install
+    if (isset($SITE_INFO['custom_file_base_stub'])) { // This upgrader script must be called on a particular site with a real DB, but will run for all sites on same install
         require_code('shared_installs');
         $u = current_share_user();
         if ($u !== null) {
@@ -219,7 +219,7 @@ function post_fields_relay() : string
  */
 function upgrader_link(string $url, string $text, bool $disabled = false, string $js = '') : string
 {
-    $hidden = (strpos($url, 'https://composr.app') !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
+    $hidden = (strpos($url, get_brand_base_url()) !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
     if (get_param_integer('keep_safe_mode', 0) == 1) {
         $url .= '&keep_safe_mode=1';
     }
@@ -381,7 +381,7 @@ function upgrader_output_header()
         <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 
         <title>{$upgrader_title}</title>
-        <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 
         <style>/*<![CDATA[*/
 END;

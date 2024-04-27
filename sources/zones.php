@@ -432,7 +432,7 @@ function load_redirect_cache()
  * @param  ID_TEXT $type The type of the page we are looking for
  * @param  ?string $dir2 The special subcategorisation of page we are looking for (e.g. 'EN' for a Comcode page) (null: none)
  * @param  string $ftype The file extension for the page type
- * @param  boolean $error Whether Composr should bomb out if the page was not found
+ * @param  boolean $error Whether the software should bomb out if the page was not found
  * @param  boolean $check_redirects Whether to check against redirects
  * @param  ?ID_TEXT $first_zone_to_check First zone to check (used for an optimisation) (null: current zone)
  * @return ?ID_TEXT The zone the page is in (null: not found)
@@ -564,7 +564,7 @@ function get_module_zone(string $module_name, string $type = 'modules', ?string 
  * Find the zone a Comcode page is in.
  *
  * @param  ID_TEXT $page_name The Comcode page name to find
- * @param  boolean $error Whether Composr should bomb out if the page was not found
+ * @param  boolean $error Whether the software should bomb out if the page was not found
  * @param  ?ID_TEXT $first_zone_to_check First zone to check (used for an optimisation) (null: current zone)
  * @return ?ID_TEXT The zone the Comcode page is in (null: missing)
  */
@@ -596,7 +596,7 @@ function get_comcode_zone(string $page_name, bool $error = true, ?string $first_
  * Find the zone a page is in.
  *
  * @param  ID_TEXT $page_name The page name to find
- * @param  boolean $error Whether Composr should bomb out if the page was not found
+ * @param  boolean $error Whether the software should bomb out if the page was not found
  * @param  ?ID_TEXT $first_zone_to_check First zone to check (used for an optimisation) (null: current zone)
  * @param  ?ID_TEXT $type Page type (null: check all)
  * @return ?ID_TEXT The zone the page is in (null: missing)
@@ -1366,7 +1366,7 @@ function apply_quick_caching(object $_cache) : object
     $has_escaping = (preg_match('#<a|&\w+;#', $cache) !== 0);
 
     $matches = [];
-    $num_matches = preg_match_all('#(((\?)|(&(amp;)?))keep_[^="\']*=[^\#&"\']*)+#', $cache, $matches, PREG_OFFSET_CAPTURE); // We assume that the keep_* parameters always come last, which holds true in Composr
+    $num_matches = preg_match_all('#(((\?)|(&(amp;)?))keep_[^="\']*=[^\#&"\']*)+#', $cache, $matches, PREG_OFFSET_CAPTURE); // We assume that the keep_* parameters always come last, which holds true in the software
     for ($i = 0; $i < $num_matches; $i++) {
         $new_offset = $matches[0][$i][1];
 

@@ -21,15 +21,15 @@
 /*EXTRA FUNCTIONS: strtoupper|strtolower|ucfirst*/
 
 /*
-    the equivalent of global2 for "Composr not yet installed" situations like the installer or backup restorer
+    the equivalent of global2 for "Software not yet installed" situations like the installer or backup restorer
 
-    Composr can install basically from the real final code, except for...
+    The software can install basically from the real final code, except for...
     -- global.php
     -- global2.php
     -- users.php
     --  things that depend on functionality of those that hasn't been emulated here
     This file emulates cut-down versions of the code in those files, for the most part.
-    Once Composr is installed, this file is never used.
+    Once the software is installed, this file is never used except by the upgrader.
 */
 
 /**
@@ -602,7 +602,7 @@ function fatal_exit($text)
 }
 
 /**
- * Lookup error on composr.app, to see if there is more information.
+ * Lookup error on the homesite, to see if there is more information.
  * (null implementation for minikernel)
  *
  * @param  mixed $error_message The error message (string or Tempcode)
@@ -614,7 +614,7 @@ function get_webservice_result($error_message)
 }
 
 /**
- * Composr error catcher for fatal versions.
+ * Software error catcher for fatal versions.
  */
 function catch_fatal_errors()
 {
@@ -641,7 +641,7 @@ function catch_fatal_errors()
 }
 
 /**
- * Composr error handler (hooked into PHP error system).
+ * Software error handler (hooked into PHP error system).
  *
  * @param  integer $errno The error code-number
  * @param  PATH $errstr The error message
@@ -862,9 +862,9 @@ function cms_version()
 }
 
 /**
- * Get the full string version of Composr that you are running.
+ * Get the full string version of the software that you are running.
  *
- * @return string The string saying the full Composr version number
+ * @return string The string saying the full software version number
  */
 function cms_version_pretty()
 {
@@ -1074,7 +1074,7 @@ function get_param_integer($name, $default = null)
 }
 
 /**
- * Get the file base for your installation of Composr.
+ * Get the file base for your installation of the software.
  *
  * @return PATH The file base, without a trailing slash
  */
@@ -1085,7 +1085,8 @@ function get_file_base()
 }
 
 /**
- * Get the file base for your installation of Composr.  For a shared install only, this is different to the base URL.
+ * Get the file base for your installation of the software.
+ * For a shared install only, this is different to the base URL.
  *
  * @return PATH The file base, without a trailing slash
  */
@@ -1097,7 +1098,7 @@ function get_custom_file_base()
 
 /**
  * Get the parameter put into it, with no changes. If it detects that the parameter is naughty (i.e malicious, and probably from a hacker), it will log the hack-attack and output an error message.
- * This function is designed to be called on parameters that will be embedded in a path, and defines malicious as trying to reach a parent directory using '..'. All file paths in Composr should be absolute
+ * This function is designed to be called on parameters that will be embedded in a path, and defines malicious as trying to reach a parent directory using '..'. All file paths in the software should be absolute
  *
  * @param  string $in String to test
  * @return string Same as input string
@@ -1278,9 +1279,9 @@ function cms_empty_safe($var)
 }
 
 /**
- * Get the Composr cookie path.
+ * Get the site cookie path.
  *
- * @return ?string The Composr cookie path (null: no special path, global)
+ * @return ?string The site cookie path (null: no special path, global)
  */
 function get_cookie_path()
 {
@@ -1290,9 +1291,9 @@ function get_cookie_path()
 }
 
 /**
- * Get the Composr cookie domain.
+ * Get the site cookie domain.
  *
- * @return string The Composr cookie domain (blank: current domain)
+ * @return string The site cookie domain (blank: current domain)
  */
 function get_cookie_domain()
 {

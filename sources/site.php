@@ -516,7 +516,7 @@ function set_helper_panel_text(?object $text, bool $append = true, bool $put_in_
  *
  * @sets_output_state
  *
- * @param  ?ID_TEXT $tutorial The page name of the tutorial (must be an existing one on the brand site, i.e. composr.app) (null: none)
+ * @param  ?ID_TEXT $tutorial The page name of the tutorial (must be an existing one on the brand site) (null: none)
  */
 function set_helper_panel_tutorial(?string $tutorial)
 {
@@ -1192,7 +1192,7 @@ function do_site()
             dispatch_notification('core_staff:adminzone_dashboard_accessed', null, $subject, $mail);
         }
 
-        // Track very basic details of what sites use Composr
+        // Tracks very basic details of what sites use the software
         if ((!is_local_machine()) && (get_option('call_home') == '1')) {
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
@@ -1327,7 +1327,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
 
         // Criteria:
         //  - likely supported under http-equiv
-        //  - actually set by Composr
+        //  - actually set by the software
         //  - has actual chance of being present during something statically cached
         //  - is not already represented in HTML output in some (other?) way already (e.g. unlike X-Robots-Tag)
         //  - is not set algorithmically by the static cache itself (e.g. unlike Content-Type, or caching, or Vary)
@@ -1950,7 +1950,7 @@ function _load_comcodes_page_from_cache(array $pages) : array
 /**
  * Get the parsed contents of a Comcode page.
  *
- * @param  PATH $string The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
+ * @param  PATH $string The relative (to the software's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @param  ID_TEXT $zone The zone the page is being loaded from
  * @param  ID_TEXT $codename The codename of the page
  * @param  ?PATH $file_base The file base to load from (null: standard)

@@ -141,7 +141,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'recommends' => [
                 'composr_homesite',
                 'composr_homesite_support_credits',
-                'composr_release_build',
+                'cms_release_build',
             ],
             'conflicts_with' => [],
         ];

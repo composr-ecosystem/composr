@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 /**
@@ -27,11 +27,11 @@ class Hook_page_groupings_make_release
      */
     public function run(?int $member_id = null, bool $extensive_docs = false) : array
     {
-        if (!addon_installed('composr_release_build')) {
+        if (!addon_installed('cms_release_build')) {
             return [];
         }
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
 
         return [
             ['tools', 'admin/tool', ['plug_guid', [], get_page_zone('plug_guid', false, 'adminzone', 'minimodules')], do_lang_tempcode('RELEASE_TOOLS_FIX_GUIDS')],

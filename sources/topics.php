@@ -20,7 +20,7 @@
 
 /*
 
-This is a Composr sub-system (not specifically Conversr!) for both threaded and non-threaded topic rendering.
+This is a software sub-system (not specifically Conversr!) for both threaded and non-threaded topic rendering.
 
 API interfaces with...
  Feedback system (calls 'render_as_comment_topic' method which knows about content types and content IDs)

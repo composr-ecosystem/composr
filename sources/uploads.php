@@ -265,7 +265,7 @@ function is_plupload(bool $fake_prepopulation = false) : bool
 }
 
 /**
- * Take an uploaded file and move it into Composr's temporary directory, for future processing outside this web request.
+ * Take an uploaded file and move it into the software's temporary directory, for future processing outside this web request.
  *
  * @param  string $attach_name Field name
  * @param  boolean $prepend_session_id Prepend the current session ID to the beginning of the filename without returning it in the path (security), 'sessioning'

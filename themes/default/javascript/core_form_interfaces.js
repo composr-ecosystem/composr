@@ -92,7 +92,7 @@
                 // These are connected
                 'submit': 'cancelNativeFormSubmit',
                 'click .js-click-do-form-preview': 'doStandardFormPreview',
-                'click .js-btn-main-submit-form': 'doComposrFormSubmitChain',
+                'click .js-btn-main-submit-form': 'doCMSFormSubmitChain',
             };
         },
 
@@ -109,7 +109,7 @@
         },
 
         cancelNativeFormSubmit: function (e) {
-            e.preventDefault(); // Stops native form submit, so that form submit event handlers can be called while doComposrFormSubmitChain remains in control of actual submission after all promises are met
+            e.preventDefault(); // Stops native form submit, so that form submit event handlers can be called while doCMSFormSubmitChain remains in control of actual submission after all promises are met
         },
 
         doStandardFormPreview: function (e) {
@@ -121,13 +121,13 @@
             $cms.form.doFormPreview(e, this.form, window.formPreviewUrl, window.separatePreview, this.form.extraChecks);
         },
 
-        doComposrFormSubmitChain: function (e) {
+        doCMSFormSubmitChain: function (e) {
             e.preventDefault();
 
             if (this.form.extraChecks === undefined) {
                 this.form.extraChecks = [];
             }
-            $cms.form.doCheckingComposrFormSubmitChain(e, this.form, this.analyticEventCategory, this.form.extraChecks);
+            $cms.form.doCheckingCMSFormSubmitChain(e, this.form, this.analyticEventCategory, this.form.extraChecks);
         },
 
         goBack: function (e, btn) {
