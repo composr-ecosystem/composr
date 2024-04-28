@@ -29,14 +29,15 @@
 					<input maxlength="150" size="23" id="send-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" value="{DEFAULT__SEND_REASON*}" />
 				</span>
 				<!--LAST-FIELD-->
-				<p>
+				<span class="send-fragment">
 					<button id="send-points-submit" class="btn btn-primary buttons--points js-points-check-form" type="submit">{!PROCEED_SHORT}</button>
 					{+START,IF,{$CONFIG_OPTION,enable_anonymous_transactions}}
 						<label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label>
 					{+END}
-				</p>
+				</span>
 			</div>
 		</form>
+		{!SEND_TEXT_DISCLAIMER}
 	{+END}
 
 	{+START,IF,{$HAS_PRIVILEGE,moderate_points}}
@@ -78,12 +79,12 @@
 					</label>
 				</span>
 				<!--LAST-FIELD-->
-				<p>
+				<span class="send-fragment">
 					<button id="send-points-submit" class="btn btn-primary buttons--points js-points-check-form" type="submit">{!PROCEED_SHORT}</button>
 					{+START,IF,{$CONFIG_OPTION,enable_anonymous_transactions}}
 						<span id="points-anon-span" style="display: none;"><label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label></span>
 					{+END}
-				</p>
+				</span>
 			</div>
 		</form>
 	{+END}
