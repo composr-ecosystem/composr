@@ -76,12 +76,10 @@ function get_news_category_image_url(string $nc_img) : string
 {
     if ($nc_img == '') {
         $image = '';
+    } elseif (url_is_local($nc_img)) {
+        $image = get_custom_base_url() . '/' . $nc_img;
     } elseif (looks_like_url($nc_img)) {
         $image = $nc_img;
-
-        if (url_is_local($image)) {
-            $image = get_custom_base_url() . '/' . $image;
-        }
     } else {
         $image = find_theme_image($nc_img, true);
         if ($image === null) {
