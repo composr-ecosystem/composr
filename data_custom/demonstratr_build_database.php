@@ -65,7 +65,7 @@ if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
 // Close site with message
 require_code('config2');
 set_option('closed', "This is a Composr demo.\n\nLog in using the details you put in when you set up the demo, or if this is the shared demo use the username 'admin' and the password 'demo123'.");
-set_option('site_closed', '1');
+set_option('site_closed', '2');
 
 // Checks
 if (!addon_installed('setupwizard')) {

@@ -74,7 +74,7 @@ if (get_option('show_inline_stats') == '1') {
     warn_exit('Inline stats must be disabled. It is now disabled - click the back icon, refresh, and click proceed again.');
 }
 
-if (get_option('site_closed') == '1') {
+if (get_option('site_closed') != '0') {
     set_option('site_closed', '0');
     warn_exit('Site must not be closed. It is now open - click the back icon, refresh, and click proceed again.');
 }

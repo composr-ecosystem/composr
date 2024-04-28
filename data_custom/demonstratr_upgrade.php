@@ -100,7 +100,7 @@ if (get_param_integer('integrity', 0) == 1) {
 
 // Close site
 set_option('closed', do_lang('UPGRADER_CLOSED_FOR_UPGRADES', get_site_name()));
-set_option('site_closed', '1');
+set_option('site_closed', '2');
 @rename(get_file_base() . '/closed.html.old', get_file_base() . '/closed.html');
 
 // Clear full cache
@@ -145,6 +145,6 @@ clear_caches_2();
 $integrity_check_output = preg_replace('#<input[^<>]*>#', '', run_integrity_check());
 
 // Done
-set_option('site_closed', '1');
+set_option('site_closed', '2');
 @rename(get_file_base() . '/closed.html', get_file_base() . '/closed.html.old');
 inform_exit(protect_from_escaping('Done! Now, on to the integrity check (action whatever you need to do manually)...<br /><br />' . $integrity_check_output));

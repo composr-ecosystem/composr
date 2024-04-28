@@ -8505,6 +8505,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOG_LEVEL
         RELAYED
         ERROR_LOG_TRUNCATED
+        CLOSED_HIDE_HERO
     ')));
 
     $non_admin_files = [
