@@ -2000,6 +2000,8 @@ class Hook_addon_registry_core
             'uploads/repimages/index.html',
             'uploads/website_specific/index.html',
             'web.config',
+            'sources/hooks/systems/site_html_pages/.htaccess',
+            'sources/hooks/systems/site_html_pages/index.html',
         ];
     }
 
