@@ -1010,7 +1010,7 @@ function check_form_field_image(string $name, string $val, ?string $delete_on_er
                 foreach ($_restrictions as $bits) {
                     list($restriction, $attributes) = $bits;
 
-                    if ((isset($attributes['error'])) && (substr($attributes['error'], 0, 1) == '!')) {
+                    if ((isset($attributes['error'])) && ($attributes['error'][0] == '!')) {
                         $attributes['error'] = do_lang(substr($attributes['error'], 1));
                     }
 
