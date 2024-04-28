@@ -35,11 +35,35 @@ class Module_members
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 2;
+        $info['version'] = 3;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'core_cns';
         return $info;
+    }
+
+    /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        $privileges = [
+            'view_banned_members'
+        ];
+        delete_privilege($privileges);
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        if (($upgrade_from === null) || ($upgrade_from < 3)) {
+            add_privilege('FORUMS_AND_MEMBERS', 'view_banned_members', false);
+        }
     }
 
     /**
@@ -134,6 +158,14 @@ class Module_members
 
             $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id_of);
 
+            // Check banned status if we do not have the privilege to view banned members
+            if (!has_privilege(get_member(), 'view_banned_members')) {
+                $is_perm_banned = $member_row['m_is_perm_banned'];
+                if ($is_perm_banned != '0') {
+                    warn_exit(do_lang_tempcode('_MEMBER_BANNED'), false, false, 404); // Treat as 404 so indexes remove the member
+                }
+            }
+
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:members:view:' . strval($member_id_of),
             ], $member_row, 'member', strval($member_id_of));
@@ -216,6 +248,7 @@ class Module_members
             unset($_GET['id']); // So self-URL links go without 'id', which is unneeded. oAuth may safelist what URLs may request linkage.
         }
 
+        // Show validation messages when applicable
         $validated = $GLOBALS['FORUM_DRIVER']->get_member_row_field($this->member_id_of, 'm_validated');
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
