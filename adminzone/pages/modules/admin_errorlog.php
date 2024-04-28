@@ -281,7 +281,7 @@ class Module_admin_errorlog
             list($log_date, $log_type, $log_level, $log_message, $telemetry_id) = $stuff[$i];
 
             if ($log_level == '') {
-                $log_level = 'WARNING'; // Default to warning if a log does not contain a level
+                $log_level = 'UNKNOWN';
             }
 
             $message = str_replace(get_file_base(), '', $log_message);
