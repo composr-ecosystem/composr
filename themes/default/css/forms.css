@@ -1074,36 +1074,36 @@ span.validated-checkbox + input[name="validated"].input-tick {
 
 /* Icons for our custom plugins (we specify ours this way for greatest flexibility) */
 
-.cke_button__cms_block_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_block.png') !important;
+.cke_button__composr_block_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_block.png') !important;
 	background-size: 16px !important;
 }
-.cke_button__cms_comcode_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_comcode.png') !important;
+.cke_button__composr_comcode_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_comcode.png') !important;
 	background-size: 16px !important;
 }
-.cke_button__cms_page_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_page.png') !important;
+.cke_button__composr_page_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_page.png') !important;
 	background-size: 16px !important;
 }
-.cke_button__cms_quote_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_quote.png') !important;
+.cke_button__composr_quote_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_quote.png') !important;
 	background-size: 16px !important;
 }
-.cke_button__cms_box_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_box.png') !important;
+.cke_button__composr_box_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_box.png') !important;
 	background-size: 16px !important;
 }
-.cke_button__cms_code_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_code.png') !important;
+.cke_button__composr_code_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_code.png') !important;
 	background-size: 16px !important;
 }
-.cke_button__cms_image_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_image.png') !important;
+.cke_button__composr_image_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_image.png') !important;
 	background-size: 16px !important;
 }
-.moono .cke_button__cms_image_icon {
-	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/cms_image__moono.png') !important;
+.moono .cke_button__composr_image_icon {
+	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/composr_image__moono.png') !important;
 }
 .cke_button__spellchecktoggle_icon {
 	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/spellchecktoggle/images/spellchecktoggle.png') !important;
@@ -1113,29 +1113,29 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/spellchecktoggle/images/spellchecktoggle__moono.png') !important;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
-	.cke_button__cms_block_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_block.png') !important;
+	.cke_button__composr_block_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_block.png') !important;
 	}
-	.cke_button__cms_comcode_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_comcode.png') !important;
+	.cke_button__composr_comcode_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_comcode.png') !important;
 	}
-	.cke_button__cms_page_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_page.png') !important;
+	.cke_button__composr_page_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_page.png') !important;
 	}
-	.cke_button__cms_quote_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_quote.png') !important;
+	.cke_button__composr_quote_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_quote.png') !important;
 	}
-	.cke_button__cms_box_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_box.png') !important;
+	.cke_button__composr_box_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_box.png') !important;
 	}
-	.cke_button__cms_code_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_code.png') !important;
+	.cke_button__composr_code_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_code.png') !important;
 	}
-	.cke_button__cms_image_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_image.png') !important;
+	.cke_button__composr_image_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_image.png') !important;
 	}
-	.moono .cke_button__cms_image_icon {
-		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/cms/images/hidpi/cms_image__moono.png') !important;
+	.moono .cke_button__composr_image_icon {
+		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/composr/images/hidpi/composr_image__moono.png') !important;
 	}
 	.cke_button__spellchecktoggle_icon {
 		background-image: url('{$BASE_URL;}/{$CKEDITOR_PATH;}/plugins/spellchecktoggle/images/hidpi/spellchecktoggle.png') !important;

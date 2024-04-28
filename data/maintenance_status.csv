@@ -155,3 +155,4 @@ http_proxy,HTTP proxy support,Composr Core Development Team,,Not regularly teste
 ratings_structure,Ratings structure,,,Not regularly tested. Only available via custom programming / the custom_ratings addon.,Yes,
 ffmpeg_thumbs,FFMPEG thumbnail generation,,,Not regularly tested. Could potentially break due to third-party changes.,No,
 karma,Karma non-bundled addon,PDSTIG LLC,PDSTIG LLC,,Yes,
+long_google_cookies,full Google Analytics cookies,Composr Core Development Team,Composr Core Development Team,Not regularly tested. Could potentially break due to third-party changes.,No,
