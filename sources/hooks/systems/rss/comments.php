@@ -24,6 +24,22 @@
 class Hook_rss_comments
 {
     /**
+     * Check if the given member has access to view this feed.
+     *
+     * @param  MEMBER $member_id The member trying to access this feed
+     * @return boolean Whether the member has access
+     */
+    public function has_access(int $member_id) : bool
+    {
+        // Permission checking is incredibly complex, so do that in the run function. Let's keep feed advertising simple and advertise just to members.
+        if (is_guest($member_id)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Run function for RSS hooks.
      *
      * @param  string $full_title A list of categories we accept from

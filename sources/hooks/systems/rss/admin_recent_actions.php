@@ -24,6 +24,25 @@
 class Hook_rss_admin_recent_actions
 {
     /**
+     * Check if the given member has access to view this feed.
+     *
+     * @param  MEMBER $member_id The member trying to access this feed
+     * @return boolean Whether the member has access
+     */
+    public function has_access(int $member_id) : bool
+    {
+        if (!addon_installed('actionlog')) {
+            return false;
+        }
+
+        if (!has_actual_page_access($member_id, 'admin_actionlog')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Run function for RSS hooks.
      *
      * @param  string $_filters A list of categories we accept from
@@ -36,11 +55,7 @@ class Hook_rss_admin_recent_actions
      */
     public function run(string $_filters, int $cutoff, string $prefix, string $date_string, int $max) : ?array
     {
-        if (!addon_installed('actionlog')) {
-            return null;
-        }
-
-        if (!has_actual_page_access(get_member(), 'admin_actionlog')) {
+        if (!$this->has_access(get_member())) {
             return null;
         }
 
