@@ -232,7 +232,7 @@ if ($type == 'go') {
     foreach ($addons['non_bundled'] + $addons['bundled'] as $addon_name => $files) {
         if (post_param_integer('addon_' . $addon_name, 0) == 1) {
             foreach ($files as $path) {
-                if (preg_match('#^_config.php$#', $path) == 0) {
+                if ($path != '_config.php') {
                     if (filemtime(get_file_base() . '/' . $path) > $cutoff_point) {
                         $old = @cms_file_get_contents_safe($probe_dir . '/' . $path, FILE_READ_LOCK | FILE_READ_BOM);
                         if ($old === false) {
