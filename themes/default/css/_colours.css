@@ -31,6 +31,9 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#e3f0fd,fixed_width_background,11% (seed sat_to 100) + 89% WB}
 {$THEMEWIZARD_COLOR,#78b6f5,fixed_width_border,61% seed + 39% WB}
 {$THEMEWIZARD_COLOR,#ffffff,main_background,100% WB}
+{$THEMEWIZARD_COLOR,#f4f9fe,main_background_95,95% WB + 5% seed}
+{$THEMEWIZARD_COLOR,#eaf4fe,main_background_90,90% WB + 10% seed}
+{$THEMEWIZARD_COLOR,#d3e7fc,main_background_80,80% WB + 20% seed}
 {$THEMEWIZARD_COLOR,#f2f2f2,main_2_background,95% WB + 5% BW}
 
 /* Colours to mirror UI conventions (i.e. non-thematic) */
