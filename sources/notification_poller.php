@@ -41,7 +41,7 @@ function notification_script()
     switch ($type) {
         case 'mark_all_read':
             notification_mark_all_read_script();
-            // no break
+            // no break (we also want to call poller)
         case 'poller':
             notification_poller_script();
             break;
@@ -56,8 +56,6 @@ function notification_script()
  */
 function notification_mark_all_read_script()
 {
-    prepare_backend_response('text/plain');
-
     $GLOBALS['SITE_DB']->query_update('digestives_tin', ['d_read' => 1], ['d_read' => 0, 'd_to_member_id' => get_member()]);
 
     delete_cache_entry('_get_notifications', null, get_member());
@@ -118,7 +116,7 @@ function notification_poller_script()
         }
 
         if ($max !== null) {
-            list($display, $unread) = get_web_notifications($max);
+            list($display, $unread) = get_web_notifications($max, 0, $forced_update);
             $xml .= '
                     <display_web_notifications>' . $display->evaluate() . '</display_web_notifications>
                     <unread_web_notifications>' . strval($unread) . '</unread_web_notifications>
@@ -180,15 +178,16 @@ function notification_poller_script()
  *
  * @param  ?integer $max Number of notifications to show (null: no limit)
  * @param  integer $start Start offset
+ * @param  boolean $skip_cache Whether to skip serving results from the cache
  * @return array A pair: Templating, Max rows
  */
-function get_web_notifications(?int $max = null, int $start = 0) : array
+function get_web_notifications(?int $max = null, int $start = 0, bool $skip_cache = false) : array
 {
     if (is_guest()) {
         return [new Tempcode(), 0];
     }
 
-    if ($start == 0) {
+    if (($start == 0) && !$skip_cache) {
         $test = get_cache_entry('_get_notifications', serialize([$max]), CACHE_AGAINST_MEMBER, 10000);
         if ($test !== null) {
             return $test;
