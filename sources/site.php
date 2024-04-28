@@ -1028,7 +1028,7 @@ function do_site()
 
     // Allow the site to be closed
     $site_closed = get_option('site_closed');
-    if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+    if (($site_closed != '0') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         require_code('site2');
         closed_site_exit();
     }
@@ -2305,7 +2305,7 @@ function log_stats(?string $page_link, int $pg_time)
         return;
     }
 
-    if ((get_option('site_closed') == '1') && (get_option('stats_when_closed') == '0')) {
+    if ((get_option('site_closed') != '0') && (get_option('stats_when_closed') == '0')) {
         return;
     }
 

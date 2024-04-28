@@ -462,7 +462,7 @@ function upgrader_menu_screen() : string
     // Open/close sections and links
     $oc = (get_option('site_closed') == '0') ? do_lang('OPEN') : do_lang('CLOSED');
     $l_fu_closedness = do_lang('UPGRADER_CLOSENESS', $oc);
-    $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') == '1');
+    $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') != '0');
     $l_open_site = upgrader_link('upgrader.php?type=open_site', do_lang('UPGRADER_OPEN_SITE'), get_option('site_closed') == '0');
     $closed = comcode_to_tempcode(get_option('closed'), null, true);
     $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group-CLOSED_SITE');
@@ -656,6 +656,6 @@ function upgrader_close_site_screen() : string
     log_it('UPGRADER_CLOSE_SITE');
 
     set_option('closed', do_lang('UPGRADER_CLOSED_FOR_UPGRADES', get_site_name()));
-    set_option('site_closed', '1');
+    set_option('site_closed', '2');
     return '<p>' . do_lang('SUCCESS') . '</p>';
 }

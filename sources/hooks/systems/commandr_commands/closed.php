@@ -36,17 +36,17 @@ class Hook_commandr_command_closed
         require_code('config2');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('closed', ['h', 'o', 'c'], [true]), '', ''];
+            return ['', do_command_help('closed', ['h', 'o', 'c', 'ch'], [true]), '', ''];
         }
 
         if ((array_key_exists('o', $options)) || (array_key_exists('open', $options))) {
             set_option('site_closed', '0');
         }
-        if ((array_key_exists('c', $options)) || (array_key_exists('close', $options))) {
+        if ((array_key_exists('c', $options)) || (array_key_exists('close', $options)) || (array_key_exists('ch', $options))) {
             if (!array_key_exists(0, $parameters)) {
                 return ['', '', '', do_lang('MISSING_PARAM', '1', 'closed')];
             }
-            set_option('site_closed', '1');
+            set_option('site_closed', (array_key_exists('ch', $options)) ? '2' : '1');
             set_option('closed', $parameters[0]);
         }
         return ['', '', do_lang('SUCCESS'), ''];

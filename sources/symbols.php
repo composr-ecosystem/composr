@@ -2684,7 +2684,7 @@ function ecv_MESSAGES_BOTTOM(string $lang, array $escaped, array $param) : strin
 {
     // Extra stuff we can tag on (like messages)
     $messages_bottom = new Tempcode();
-    if (get_option('site_closed') == '1') {
+    if (get_option('site_closed') != '0') {
         require_code('global4');
         attach_message_site_closed($messages_bottom);
     }

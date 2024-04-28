@@ -634,7 +634,7 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
     }
 
     // No more logging if site closed (possibly)
-    if ((get_option('site_closed') == '1') && (get_option('stats_when_closed') == '0')) {
+    if ((get_option('site_closed') != '0') && (get_option('stats_when_closed') == '0')) {
         return null;
     }
 
