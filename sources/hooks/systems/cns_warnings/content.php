@@ -256,6 +256,10 @@ class Hook_cns_warnings_content
         if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
             $posts_deletable = post_param_string('available_posts_to_delete');
             foreach (explode("\n", $posts_deletable) as $_post_id) {
+                if (!is_numeric($_post_id)) {
+                    continue;
+                }
+
                 $post_id = intval($_post_id);
 
                 if (isset($posts_already_deleted[$post_id])) {
@@ -340,6 +344,9 @@ class Hook_cns_warnings_content
             require_code('selectcode');
             if ((substr($multi_code, 0, 1) == '-') || (substr($multi_code, 0, 1) == '*')) {
                 foreach ($content_deletable as $key => $value) {
+                    if (strpos('::', $value) === false) {
+                        continue;
+                    }
                     $content_to_delete[$value] = true;
                 }
             }
