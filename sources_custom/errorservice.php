@@ -25,7 +25,8 @@ function get_problem_match_script()
     header('Content-Type: text/plain; charset=' . get_charset());
 
     $version = get_param_string('version');
-    $error_message = get_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);
+    $error_message = post_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);
+    $error_message = html_entity_decode($error_message);
 
     $output = get_problem_match_nearest($error_message);
     if ($output !== null) {
@@ -41,6 +42,8 @@ function get_problem_match_script()
  */
 function get_problem_match_nearest(string $error_message) : ?string
 {
+    define('DEFAULT_BRAND_NAME', 'Composr'); // TODO: This is a fudge
+
     require_code('files_spreadsheets_read');
 
     // Find matches. Stored in a spreadsheet file.

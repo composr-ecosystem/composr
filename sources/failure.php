@@ -1098,24 +1098,18 @@ function get_webservice_result($error_message) : ?string
 
     require_code('version2');
     require_code('http');
-    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
-    list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 24 * 31/*once a month*/);
+    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&product=' . urlencode($brand);
+    $post = ['error_message' => $error_message];
+    list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 60 * 24);
 
-    if (!is_object($http_result)) {
+    if ($http_result == '') {
         return null;
     }
 
-    if ($http_result->download_mime_type != 'text/plain') {
-        return null;
-    }
-
-    if ($http_result->data == '') {
-        return null;
-    }
     if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($http_result->data);
+        ocp_mark_as_escaped($http_result);
     }
-    return $http_result->data;
+    return $http_result;
 }
 
 /**
