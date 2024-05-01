@@ -386,7 +386,7 @@ class Module_cms_galleries extends Standard_crud_module
         $fields = new Tempcode();
         $supported = get_option('valid_images') . ',' . get_allowed_video_file_types();
         $fields->attach(form_input_upload_multi(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_ARCHIVE_MEDIA', escape_html(str_replace(',', ', ', $supported))), 'file', true, null, null, true, str_replace(' ', '', $supported)));
-        $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_GALLERY_IMPORT_TITLE'), 'set_title', '', get_option('gallery_media_title_required') == '2'));
+        $fields->attach(form_input_line(do_lang_tempcode('TITLE'), (get_option('gallery_media_title_required') == '2') ? do_lang_tempcode('DESCRIPTION_GALLERY_IMPORT_TITLE_REQUIRED') : do_lang_tempcode('DESCRIPTION_GALLERY_IMPORT_TITLE'), 'set_title', '', false/*When required, title can be left blank to auto-generate from file names or EXIF*/));
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
 
