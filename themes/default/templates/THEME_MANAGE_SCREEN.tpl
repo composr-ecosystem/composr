@@ -165,7 +165,7 @@
 		<p class="lonely-label">{!THEMES_AND_ZONES}</p>
 		<ul>
 			{+START,LOOP,ZONES}
-				<li>{1*} <span class="associated-link"><a title="edit: {!EDIT_ZONE}: {1*}" data-cms-confirm-click="{!SWITCH_MODULE_WARNING}" href="{$PAGE_LINK*,_SEARCH:admin_zones:_edit:{0}:redirect={$SELF_URL&}}">{!EDIT}</a></span></li>
+				<li>{_loop_key*} <span class="associated-link"><a title="edit: {!EDIT_ZONE}: {_loop_key*}" data-cms-confirm-click="{!SWITCH_MODULE_WARNING}" href="{$PAGE_LINK*,_SEARCH:admin_zones:_edit:{_loop_key}:redirect={$SELF_URL&}}">{!EDIT}</a></span></li>
 			{+END}
 		</ul>
 	{+END}
