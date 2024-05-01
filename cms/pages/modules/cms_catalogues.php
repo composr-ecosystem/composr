@@ -334,8 +334,9 @@ class Module_cms_catalogues extends Standard_crud_module
                 (!$has_categories) ? null : (has_privilege(get_member(), 'mass_import', 'cms_catalogues') ? ['admin/import_spreadsheet', ['_SELF', array_merge($extra_map, ['type' => 'import']), '_SELF'], do_lang('IMPORT_CATALOGUE_ENTRIES')] : null),
                 (!$has_categories) ? null : ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? ['admin/export_spreadsheet', ['_SELF', array_merge($extra_map, ['type' => 'export']), '_SELF'], do_lang('EXPORT_CATALOGUE_ENTRIES')] : null),
                 has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
+                ($catalogue_name == '') ? null : ['admin/view_this', ['catalogues', ['type' => 'category', 'catalogue_name' => $catalogue_name], get_module_zone('catalogues')], do_lang('VIEW_CATALOGUE')], // View this
             ], manage_custom_fields_donext_link('catalogue'), manage_custom_fields_donext_link('catalogue_category')),
-            ($catalogue_name != '') ? escape_html(get_translated_text($cat_title)) : do_lang('MANAGE_CATALOGUES')
+            ($catalogue_name != '') ? escape_html(get_translated_text($cat_title)) : do_lang('MANAGE_CATALOGUES'),
         );
     }
 
