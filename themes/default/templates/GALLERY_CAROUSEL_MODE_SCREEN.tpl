@@ -19,7 +19,7 @@
 
 		{$GET,children}
 
-		<h2 class="heading-images-and-videos">{!IMAGES_AND_VIDEOS_IN,{_TITLE}}</h2>
+		<h2 class="heading-gallery-entries-in">{!ENTRIES_IN,{_TITLE}}</h2>
 	{+END}
 
 	{CURRENT_ENTRY}

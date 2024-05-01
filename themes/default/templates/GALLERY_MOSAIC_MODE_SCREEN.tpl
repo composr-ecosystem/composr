@@ -20,7 +20,7 @@
 	{+END}
 
 	{+START,IF_NON_EMPTY,{$GET,children}}{+START,IF_NON_EMPTY,{$GET,entries}}
-		<h2 class="heading-images-and-videos">{!IMAGES_AND_VIDEOS_IN,{_TITLE}}</h2>
+		<h2 class="heading-gallery-entries-in">{!ENTRIES_IN,{_TITLE}}</h2>
 	{+END}{+END}
 
 	{+START,IF_NON_EMPTY,{$GET,entries}}
