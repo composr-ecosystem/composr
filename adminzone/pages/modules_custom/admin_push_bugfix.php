@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 /*
@@ -54,7 +54,7 @@ class Module_admin_push_bugfix
         $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'composr_release_build';
+        $info['addon'] = 'cms_release_build';
         return $info;
     }
 
@@ -69,11 +69,11 @@ class Module_admin_push_bugfix
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('composr_release_build')) {
+        if (!addon_installed('cms_release_build')) {
             return null;
         }
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
 
         return [
             'step1' => ['RELEASE_TOOLS_PUSH_BUGFIX', 'admin/tool'],
@@ -92,13 +92,13 @@ class Module_admin_push_bugfix
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('composr_release_build', $error_msg)) {
+        if (!addon_installed__messaged('cms_release_build', $error_msg)) {
             return $error_msg;
         }
 
         $type = get_param_string('type', 'step1');
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
         require_code('version');
         require_code('version2');
         require_code('files2');
@@ -447,7 +447,7 @@ class Module_admin_push_bugfix
 
         // A Git commit and push happens on the changed files, with the ID number of the tracker issue in it
         $git_commit_command_data = '';
-        $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
+        $git_url = CMS_REPOS_URL . '/commit/' . $git_commit_id;
         if ($git_commit_id == '') {
             if ($tracker_id !== null) {
                 if ($tracker_severity == 95) {
@@ -460,7 +460,7 @@ class Module_admin_push_bugfix
                 if ($submit_to == 'live') {
                     $git_commit_id = $this->do_git_commit($git_commit_message, $fixed_files, $git_commit_command_data);
                     if ($git_commit_id !== null) {
-                        $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
+                        $git_url = CMS_REPOS_URL . '/commit/' . $git_commit_id;
                         $done[do_lang('PUSH_BUGFIX_COMMITTED_TO_GIT')] = $git_url;
                     } else {
                         $done[do_lang('PUSH_BUGFIX_COMMITTED_TO_GIT_FAILED', escape_html($git_commit_command_data))] = null;

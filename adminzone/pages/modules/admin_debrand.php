@@ -125,12 +125,12 @@ class Module_admin_debrand
     {
         $rebrand_name = get_value('rebrand_name');
         if ($rebrand_name === null) {
-            $rebrand_name = 'Composr';
+            $rebrand_name = DEFAULT_BRAND_NAME;
         }
         $rebrand_base_url = get_brand_base_url();
         $company_name = get_value('company_name');
         if ($company_name === null) {
-            $company_name = 'ocProducts';
+            $company_name = ''; // Used to be ocProducts but was discontinued prior to v11; now there is no default company for Composr
         }
         $keyboard_map = file_exists(get_file_base() . '/pages/comcode/' . get_site_default_lang() . '/keymap.txt') ? cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . get_site_default_lang() . '/keymap.txt') : cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . fallback_lang() . '/keymap.txt', FILE_READ_LOCK | FILE_READ_BOM);
         if (file_exists(get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/keymap.txt')) {

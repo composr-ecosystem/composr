@@ -144,12 +144,12 @@ function redirect_exit($url, ?object $title = null, $text = null, bool $intermed
 /**
  * Assign a page refresh to the specified URL.
  * This is almost always used within the redirect_screen function.
- * It assumes Composr will output a full HTML screen. If you're not outputting HTML, use header('Location: ...');
+ * It assumes the software will output a full HTML screen. If you're not outputting HTML, use header('Location: ...');
  *
  * @sets_output_state
  *
  * @param  mixed $url Refresh to this URL (URLPATH or Tempcode URL)
- * @param  float $multiplier Take this many times longer than a 'standard Composr refresh' which is 2.5 seconds; will only apply if doing a meta refresh as approach to a redirect header
+ * @param  float $multiplier Take this many times longer than a 'standard software refresh' which is 2.5 seconds; will only apply if doing a meta refresh as approach to a redirect header
  */
 function assign_refresh($url, float $multiplier = 0.0)
 {
@@ -192,7 +192,7 @@ function assign_refresh($url, float $multiplier = 0.0)
     }
 
     if ((headers_sent()) || (($FORCE_META_REFRESH) && (running_script('index')))) {
-        // Redirect via meta tag in standard Composr output. This ties to the {$REFRESH} symbol used in HTML_HEAD.tpl
+        // Redirect via meta tag in standard site output. This ties to the {$REFRESH} symbol used in HTML_HEAD.tpl
         global $REFRESH_URL;
         $REFRESH_URL[0] = $url;
         $REFRESH_URL[1] = $refresh_time;
@@ -345,7 +345,7 @@ function page_not_found(string $page, string $zone) : object
 /**
  * Load Comcode page from disk, then cache it.
  *
- * @param  PATH $string The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
+ * @param  PATH $string The relative (to the software's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @param  ID_TEXT $zone The zone the page is being loaded from
  * @param  ID_TEXT $codename The codename of the page
  * @param  PATH $file_base The file base to load from
@@ -545,7 +545,7 @@ function apply_comcode_page_substitutions(string &$comcode)
 /**
  * Load Comcode page from disk.
  *
- * @param  PATH $string The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
+ * @param  PATH $string The relative (to the software's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @param  ID_TEXT $zone The zone the page is being loaded from
  * @param  ID_TEXT $codename The codename of the page
  * @param  PATH $file_base The file base to load from
@@ -607,7 +607,7 @@ function _load_comcode_page_cache_off(string $string, string $zone, string $code
 /**
  * Turn an HTML title, which could be complex with images, into a nice simple string we can use in <title> and ;.
  *
- * @param  string $title The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
+ * @param  string $title The relative (to the software's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @return string Fixed
  */
 function clean_html_title(string $title) : string

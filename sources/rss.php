@@ -442,7 +442,7 @@ class CMS_RSS
                                 } elseif ((preg_match('#&(?!amp;)#', $current_item['news_article']) == 0) && (preg_match('#&#', html_entity_decode($current_item['news_article'], ENT_QUOTES)) != 0)) { // Double escaped HTML
                                     $current_item['news_article'] = @html_entity_decode($current_item['news_article'], ENT_QUOTES);
                                 }
-                                if (preg_match('#^https://composr.app/#', $this->feed_url) == 0) {
+                                if (preg_match('#^' . preg_quote(get_brand_base_url(), '#') . '/#', $this->feed_url) == 0) {
                                     require_code('xhtml');
                                     $current_item['news_article'] = xhtmlise_html($current_item['news_article']);
                                 }

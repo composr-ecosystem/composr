@@ -427,30 +427,42 @@ function server__public__relay_error_notification()
         exit();
     }
 
-    // Generate a hash from the error message but remove some possibly-unique identifiers (so we don't get a bunch of duplicates; not perfect but gets the job done)
+    // For our error hash, start with the full error message
     $_error_hash = $error_message;
-    $_error_hash = preg_replace('/[a-fA-F0-9]{13,}/', '', $_error_hash); // MD5 hashes, uniqids, or GUIDs
-    $_error_hash = preg_replace('/\$\S{59,}/', '', $_error_hash); // bcrypt hashes
-    $_error_hash = preg_replace('/\d{8,}/', '', $_error_hash); // numbers with 8 or more digits... probably a timestamp
-    $_error_hash = preg_replace('/tcpfunc_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode
-    $_error_hash = preg_replace('/do_runtime_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode
-    $_error_hash = preg_replace('/string_attach_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode
-    $_error_hash = preg_replace('/\$(keep_)?tpl_funcs\[\'([^\'\]]*)\'\]/i', '', $_error_hash); // Tempcode
+
+    // Now we must remove unnecessary unique junk from the error message to improve duplicate checking capabilities
+    $_error_hash = preg_replace('/[a-fA-F0-9]{13,}/', '', $_error_hash); // Remove what might be MD5 hashes, uniqids, or GUIDs
+    $_error_hash = preg_replace('/\$\S{59,}/', '', $_error_hash); // Remove bcrypt hashes
+    $_error_hash = preg_replace('/\d{8,}/', '', $_error_hash); // Remove numbers with 8 or more digits... probably a timestamp or identifier
+    $_error_hash = preg_replace('/tcpfunc_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode uses unique IDs
+    $_error_hash = preg_replace('/do_runtime_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode uses unique IDs
+    $_error_hash = preg_replace('/string_attach_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode uses unique IDs
+    $_error_hash = preg_replace('/\$(keep_)?tpl_funcs\[\'([^\'\]]*)\'\]/i', '', $_error_hash); // Tempcode uses unique IDs
+    $_error_hash = preg_replace('/([\d,\.])* (second|seconds|minute|minutes|hour|hours|day|days|month|months|week|weeks|year|years) ago/i', '', $_error_hash); // Contextual dates
+
+    // Actual generate the hash with what we have left
     $error_hash = md5($_error_hash);
 
-    // See if this error was already reported by this site by checking the hash
-    $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count'], ['website_url' => $decrypted_data['website_url'], 'error_hash' => $error_hash]);
-    if (array_key_exists(0, $row)) { // It was reported; just update last report time, report count, and current version
+    // See if this error was already reported
+    $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count'], [
+        // Every relay is specific to a website; treat separate websites as separate relays
+        'website_url' => $decrypted_data['website_url'],
+
+        'error_hash' => $error_hash,
+
+        // We want to treat same errors from different versions as a new / separate telemetry relays (this indicates the error might still be present even after a fix was attempted)
+        'e_version' => $decrypted_data['version'],
+    ]);
+    if (array_key_exists(0, $row)) { // We have a match; just update the matched record
         $GLOBALS['SITE_DB']->query_update('relayed_errors', [
             'last_date_and_time' => time(),
             'error_count' => $row[0]['error_count'] + 1,
-            'e_version' => $decrypted_data['version'], // Possible they upgraded since the last error; we want to know that
-            'resolved' => 0, // Possible a previously-resolved bug came back
+            /*'resolved' => 0,*/ // Actually we do not want to un-resolve it; they might not have applied the relevant patch / fix yet.
         ], [
             'id' => $row[0]['id']
         ]);
         exit('relayed_error_id=' . strval($row[0]['id']));
-    } else {
+    } else { // No match; create a new relay
         $map = [
             'first_date_and_time' => time(),
             'last_date_and_time' => time(),

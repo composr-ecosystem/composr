@@ -28,7 +28,7 @@ class Hook_config_syndicate_site_activity_default
         return [
             'human_name' => 'SYNDICATE_SITE_ACTIVITY_DEFAULT',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'ACTIVITY',
             'explanation' => 'CONFIG_OPTION_syndicate_site_activity_default',
             'shared_hosting_restricted' => '0',

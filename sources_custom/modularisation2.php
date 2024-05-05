@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 // BE CAREFUL! After running all fix functions, you should call fix_modularisation_finished to finalise / save remaining changes.
@@ -18,11 +18,11 @@
 function init__modularisation2()
 {
     $error = new Tempcode();
-    if (!addon_installed__messaged('composr_release_build', $error)) {
+    if (!addon_installed__messaged('cms_release_build', $error)) {
         warn_exit($error);
     }
 
-    require_lang('composr_release_build');
+    require_lang('cms_release_build');
 
     global $MODULARISATION_ADDON_DATA;
     global $MODULARISATION_ISSUES_DATA;
@@ -53,7 +53,7 @@ function fix_modularisation(string $issue, string $file, string $addon, string $
     $output = new Tempcode();
     $output->attach($file . ': ');
 
-    if (!addon_installed('composr_release_build')) {
+    if (!addon_installed('cms_release_build')) {
         $output->attach(do_lang_tempcode('INTERNAL_ERROR'));
         return $output;
     }

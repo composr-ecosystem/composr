@@ -493,7 +493,7 @@ class Module_admin_themes
 
         $zones = find_all_zones(false, true);
 
-        if ((count($zones) < 10) && (!is_on_multi_site_network()) && ($free_choices == 0)) {
+        if ((count($zones) < 7) && (!is_on_multi_site_network()) && ($free_choices == 0)) {
             $theme_default_reason = new Tempcode(); // We don't need to know the reason really; don't over-complicate simple sites
         }
 

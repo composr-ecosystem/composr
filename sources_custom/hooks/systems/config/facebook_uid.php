@@ -28,7 +28,7 @@ class Hook_config_facebook_uid
         return [
             'human_name' => 'FACEBOOK_UID',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'FACEBOOK',
             'explanation' => 'CONFIG_OPTION_facebook_uid',
             'shared_hosting_restricted' => '0',

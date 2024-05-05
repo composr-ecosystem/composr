@@ -19,7 +19,7 @@
  */
 
 /*
-Composr has a very simple oAuth2 implementation.
+The software has a very simple oAuth2 implementation.
 oAuth2 is simpler than oAuth1, because SSL is used for encryption, rather than a complex native implementation.
 
 Our policy with oAuth is to use whatever oAuth is bundled with service APIs first, if there is one.
@@ -27,9 +27,9 @@ Our policy with oAuth is to use whatever oAuth is bundled with service APIs firs
 If a service provides no oAuth implementation and isn't a simple oAuth2, we would probably use a further
 third party library.
 The requirements of all these third party APIs and implementations need codifying within the description
-of whatever Composr addon uses them, as it will typically exceed Composr base requirements.
+of whatever addon uses them, as it will typically exceed software base requirements.
 
-Regardless of how the oAuth works, it can be connected through via a Composr oAuth hook.
+Regardless of how the oAuth works, it can be connected through via an oAuth hook.
 */
 
 /**
@@ -84,7 +84,7 @@ function get_oauth_refresh_token(string $service_name) : ?string
  * Gets the oAuth access token for a particular service by doing a refresh.
  *
  * @param  string $service_name The name of the service
- * @param  boolean $trigger_error Whether to throw a Composr error, on error
+ * @param  boolean $trigger_error Whether to throw a software error, on error
  * @return ?string Access token (null: none)
  */
 function refresh_oauth2_token(string $service_name, bool $trigger_error = true) : ?string

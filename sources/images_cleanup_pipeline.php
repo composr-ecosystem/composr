@@ -629,7 +629,7 @@ function png_compress(string $path, bool $lossy = false)
     // Produce JPEG version, if relevant
     $trying_jpeg = (!$has_alpha) && ($lossy) && (get_value('save_jpegs_as_png') === '1');
     if ($trying_jpeg) {
-        imagejpeg($img, $path . '.jpeg_tmp', intval(get_option('jpeg_quality'))); // We will ultimately save as a .png which is actually the JPEG. We rely on Composr, and browsers, doing their magic detection of images (not just relying on mime types)
+        imagejpeg($img, $path . '.jpeg_tmp', intval(get_option('jpeg_quality'))); // We will ultimately save as a .png which is actually the JPEG. We rely on the software, and browsers, doing their magic detection of images (not just relying on mime types)
         $jpeg_size = filesize($path . '.jpeg_tmp');
     }
 

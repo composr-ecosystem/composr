@@ -33,7 +33,7 @@ class Hook_config_moz_secret_key
         return [
             'human_name' => 'MOZ_SECRET_KEY',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'MOZ_API',
             'explanation' => 'CONFIG_OPTION_moz_secret_key',
             'shared_hosting_restricted' => '0',

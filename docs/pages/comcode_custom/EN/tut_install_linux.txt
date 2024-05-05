@@ -161,7 +161,7 @@ Specifically on Rackspace Cloud, you will need to set execution permissions of t
 
 [title="2"]Working out of Git (advanced)[/title]
 
-It is possible to run Composr direct from a [url="main Git repository"]{$COMPOSR_REPOS_URL}[/url] checkout.
+It is possible to run Composr direct from a [url="main Git repository"]{$CMS_REPOS_URL}[/url] checkout.
 
 However, be aware the main Git repository contains all non-bundled addons. It is used by developers who want to keep everything in the ecosystem in-harmony when developing new features.
 

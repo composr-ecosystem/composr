@@ -2159,7 +2159,7 @@ Be careful with global functions and variables
 | Framework
 | Composr development +
 | Manually
-| Composr may attach handlers to form submission to change how forms are submitted (e.g. submit via AJAX, or submit with the ModSecurity workaround), while validation is reserved for placing on buttons. Pressing enter on a form field activates the button as per normal JavaScript behaviour, so this is a reliable approach. Where appropriate use the [tt]doCheckingComposrFormSubmitChain[/tt] framework to do basic validation and tie in your own validation.
+| Composr may attach handlers to form submission to change how forms are submitted (e.g. submit via AJAX, or submit with the ModSecurity workaround), while validation is reserved for placing on buttons. Pressing enter on a form field activates the button as per normal JavaScript behaviour, so this is a reliable approach. Where appropriate use the [tt]doCheckingCMSFormSubmitChain[/tt] framework to do basic validation and tie in your own validation.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Access DOM structure using normal properties[/color]

@@ -315,7 +315,7 @@ class Hook_import_smf2
         foreach ($rows as $row) {
             // Cast this to string to be used in remap get function
             $old_id = strval($row['id_group']);
-            // Here we get the Composr ID of the group
+            // Here we get the software ID of the group
             $id_new = import_id_remap_get('group', $old_id, true);
             $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold], ['id' => $id_new]);
             // On the next run the promotion target will be this last updated group
@@ -755,7 +755,7 @@ class Hook_import_smf2
                             $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => 2147483647/*TODO: #3046 in tracker*/], ['id' => $uid]);
                         }
                     } else {
-                        // treat temporary bans as probation since Composr does not have temporary member bans
+                        // treat temporary bans as probation since the software does not have temporary member bans
                         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $ban_till], ['id' => $uid]);
                     }
                 }
@@ -915,7 +915,7 @@ class Hook_import_smf2
     }
 
     /**
-     * Fills the static_perm_arr with profile permissions for all Composr groups.
+     * Fills the static_perm_arr with profile permissions for all software groups.
      *
      * @param  integer $pid Profile ID to use
      * @param  integer $fid Forum ID to use
@@ -1101,7 +1101,7 @@ class Hook_import_smf2
     }
 
     /**
-     * Convert SMF URLs pasted in text fields into Composr ones.
+     * Convert SMF URLs pasted in text fields into software ones.
      *
      * @param  string $post The text field text (e.g. a post)
      * @param  object $db The database connector to import from
@@ -1124,7 +1124,7 @@ class Hook_import_smf2
     }
 
     /**
-     * Convert an SMF database file to a Composr uploaded file (stored on disk).
+     * Convert an SMF database file to a software uploaded file (stored on disk).
      *
      * @param  string $data The file data
      * @param  string $filename The optimal filename
@@ -1380,10 +1380,10 @@ class Hook_import_smf2
     }
 
     /**
-     * Convert a SMF topic icon code into a standard Composr theme image code.
+     * Convert a SMF topic icon code into a standard software theme image code.
      *
      * @param  string $icon smf icon
-     * @return ID_TEXT Composr code
+     * @return ID_TEXT Software code
      */
     public function convert_topic_emoticon(string $icon) : string
     {

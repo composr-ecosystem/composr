@@ -57,6 +57,7 @@ class Hook_task_import_gallery_media
 
         task_log($this, 'Processing ' . integer_format(count($files)) . ' files for importing into gallery ' . $cat);
 
+        $media_number = 0;
         foreach ($files as $path => $filename) {
             if ((is_image($path, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous'))) || (is_video($path, has_privilege($member_id, 'comcode_dangerous')))) {
                 list($new_path, $new_url, $new_filename) = find_unique_path('uploads/galleries', filter_naughty($filename), true);
@@ -78,10 +79,16 @@ class Hook_task_import_gallery_media
                     $new_url = $test;
                 }
 
+                $fallback_title = '';
+                if ($set_title == '') {
+                    $fallback_title = do_lang('MEDIA_FILE_FALLBACK_TITLE', $cat, ($media_number + 1));
+                }
+
                 // Add to database
-                $import_details = add_gallery_media_wrap($new_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $new_filename);
+                $import_details = add_gallery_media_wrap($new_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $new_filename, null, $fallback_title);
 
                 if ($import_details !== null) {
+                    $media_number++;
                     $media_imported[] = $import_details;
                 }
             } else {

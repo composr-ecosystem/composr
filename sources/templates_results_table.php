@@ -19,7 +19,7 @@
  */
 
 /*
-Results table = Built on top of columned table, with inbuilt integration of Composr pagination and column/<select>-based sorting
+Results table = Built on top of columned table, with inbuilt integration of software pagination and column/<select>-based sorting
 */
 
 /**

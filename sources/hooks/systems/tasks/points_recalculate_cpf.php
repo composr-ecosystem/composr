@@ -57,7 +57,12 @@ class Hook_task_points_recalculate_cpf
 
                 list(, $points_used, ) = $data['sent'];
 
-                $points_lifetime = @intval($points_received);
+                // Points charged from warnings should be considered a punishment against life-time points (as life-time points is used in ranks)
+                $_warning_points = points_ledger_calculate(LEDGER_TYPE_SPENT, $member_id, null, ' AND (' . db_string_equal_to('t_type', 'warning') . ') AND (' . db_string_equal_to('t_subtype', 'add') . ')');
+                list(, $t_points, $t_gift_points) = $_warning_points['spent'];
+                $warning_points = ($t_points + $t_gift_points);
+
+                $points_lifetime = @intval($points_received) - @intval($warning_points);
                 $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_lifetime', strval($points_lifetime));
 
                 $points_balance = @intval($points_received - $points_used);

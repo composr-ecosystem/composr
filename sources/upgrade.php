@@ -68,7 +68,7 @@ function upgrade_script()
 
     // Handle shared site upgrading with no per-site UI
     global $SITE_INFO;
-    if (isset($SITE_INFO['custom_file_base_stub'])) { // This upgrader script must be called on a particular site with a real DB (e.g. shareddemo.composr.info), but will run for all sites on same install
+    if (isset($SITE_INFO['custom_file_base_stub'])) { // This upgrader script must be called on a particular site with a real DB, but will run for all sites on same install
         require_code('shared_installs');
         $u = current_share_user();
         if ($u !== null) {
@@ -219,7 +219,7 @@ function post_fields_relay() : string
  */
 function upgrader_link(string $url, string $text, bool $disabled = false, string $js = '') : string
 {
-    $hidden = (strpos($url, 'https://composr.app') !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
+    $hidden = (strpos($url, get_brand_base_url()) !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
     if (get_param_integer('keep_safe_mode', 0) == 1) {
         $url .= '&keep_safe_mode=1';
     }
@@ -381,7 +381,7 @@ function upgrader_output_header()
         <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 
         <title>{$upgrader_title}</title>
-        <link rel="icon" href="https://composr.app/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 
         <style>/*<![CDATA[*/
 END;
@@ -462,7 +462,7 @@ function upgrader_menu_screen() : string
     // Open/close sections and links
     $oc = (get_option('site_closed') == '0') ? do_lang('OPEN') : do_lang('CLOSED');
     $l_fu_closedness = do_lang('UPGRADER_CLOSENESS', $oc);
-    $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') == '1');
+    $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') != '0');
     $l_open_site = upgrader_link('upgrader.php?type=open_site', do_lang('UPGRADER_OPEN_SITE'), get_option('site_closed') == '0');
     $closed = comcode_to_tempcode(get_option('closed'), null, true);
     $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group-CLOSED_SITE');
@@ -656,6 +656,6 @@ function upgrader_close_site_screen() : string
     log_it('UPGRADER_CLOSE_SITE');
 
     set_option('closed', do_lang('UPGRADER_CLOSED_FOR_UPGRADES', get_site_name()));
-    set_option('site_closed', '1');
+    set_option('site_closed', '2');
     return '<p>' . do_lang('SUCCESS') . '</p>';
 }

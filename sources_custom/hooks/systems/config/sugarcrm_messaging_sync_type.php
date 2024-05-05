@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_messaging_sync_type
         return [
             'human_name' => 'SUGARCRM_MESSAGING_SYNC_TYPE',
             'type' => 'list',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_MESSAGING_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_messaging_sync_type',
             'shared_hosting_restricted' => '0',

@@ -23,7 +23,7 @@
  * HTML isn't great... no dynamicness/reconfigurability at all.
  * We prefer Comcode with [html]HTML goes here[/html] usage.
  *
- * @param  PATH $string The relative (to Composr's base directory) path to the HTML page
+ * @param  PATH $string The relative (to the software's base directory) path to the HTML page
  * @param  ?PATH $file_base The file base to load from (null: standard)
  * @return string The page
  */
@@ -44,7 +44,7 @@ function load_html_page(string $string, ?string $file_base = null) : string
     if (stripos($html, '<html') !== false) {
         $matches = [];
 
-        // Fix links to anything in same dir, by assuming eithera Composr page in same zone -- or uploads/website_specific, or next to html files, or in root
+        // Fix links to anything in same dir, by assuming either a page in same zone -- or uploads/website_specific, or next to html files, or in root
         $link_attributes = ['src', 'href', 'action', 'data', 'codebase', 'background'];
         foreach ($link_attributes as $attribute) {
             $num_matches = preg_match_all('#<[^<>]* ' . $attribute . '="([^&"]+\.[^&"\.]+)"[^<>]*>#mis', $html, $matches);
@@ -73,18 +73,24 @@ function load_html_page(string $string, ?string $file_base = null) : string
                 } else {
                     $new_url = $old_url;
                     if (url_is_local($old_url)) {
+                        // Strip out query strings and fragments as this will cause is_file to fail
+                        $old_url_parts_a = explode('?', $old_url);
+                        $old_url_sanitised_a = $old_url_parts_a[0];
+                        $old_url_parts_b = explode('#', $old_url_sanitised_a);
+                        $old_url_sanitised_b = $old_url_parts_b[0];
+
                         if (is_file(get_custom_file_base() . '/' . dirname($string) . '/' . urldecode($old_url))) { // HTML pages dir
                             $dirname = dirname($string);
                             if ($dirname == '.') {
                                 $dirname = '';
                             }
-                            $new_url = get_base_url() . '/' . (($dirname == '') ? '' : ($dirname . '/')) . $old_url;
-                        } elseif (is_file(get_custom_file_base() . '/' . get_zone_name() . '/' . urldecode($old_url))) { // Zone dir
-                            $new_url = get_base_url() . '/' . ((get_zone_name() == '') ? '' : (get_zone_name() . '/')) . $old_url;
-                        } elseif (is_file(get_custom_file_base() . '/' . urldecode($old_url))) { // Root dir
-                            $new_url = get_base_url() . '/' . $old_url;
-                        } else {
-                            $new_url = get_base_url() . '/uploads/website_specific/' . $old_url; // uploads/website_specific
+                            $new_url = get_base_url() . '/' . (($dirname == '') ? '' : ($dirname . '/')) . $old_url_sanitised_b;
+                        } elseif (is_file(get_custom_file_base() . '/' . get_zone_name() . '/' . urldecode($old_url_sanitised_b))) { // Zone dir
+                            $new_url = get_base_url() . '/' . ((get_zone_name() == '') ? '' : (get_zone_name() . '/')) . $old_url_sanitised_b;
+                        } elseif (is_file(get_custom_file_base() . '/' . urldecode($old_url_sanitised_b))) { // Root dir
+                            $new_url = get_base_url() . '/' . $old_url_sanitised_b;
+                        } else { // uploads/website_specific
+                            $new_url = get_base_url() . '/uploads/website_specific/' . $old_url_sanitised_b;
                         }
                     }
                 }
@@ -124,6 +130,12 @@ function load_html_page(string $string, ?string $file_base = null) : string
         } else {
             $html = '';
         }
+    }
+
+    // Run hooks for modifying the HTML page
+    $hook_obs = find_all_hook_obs('systems', 'site_html_pages', 'Hook_site_html_pages_');
+    foreach ($hook_obs as $hook => $ob) {
+        $ob->run($html, $string, $file_base); // HTML is passed by reference
     }
 
     $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';

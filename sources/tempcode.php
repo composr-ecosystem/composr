@@ -792,7 +792,7 @@ function fill_template_preview_op_cache()
 }
 
 /**
- * Get a Tempcoded version of a Composr template. It is perhaps the most common Composr function to load up templates using do_template, and then attach them together either as parameters to each other, or via the Tempcode attach method.
+ * Get a Tempcoded version of a software template. It is perhaps the most common function to load up templates using do_template, and then attach them together either as parameters to each other, or via the Tempcode attach method.
  *
  * @param  ID_TEXT $codename The codename of the template being loaded
  * @param  array $parameters A map of parameters for the template (key to value); you can have any number of parameters of any name, there is no set standard; having a _GUID parameter of random value is a convention
@@ -1345,7 +1345,7 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
                 }
 
                 $REQUEST_BLOCK_NEST_LEVEL++;
-                if ($REQUEST_BLOCK_NEST_LEVEL > 40) { // 100 caused xdebug error, but Composr will have some overhead in both error handler and other code to get to here. We want xdebug error to not show, but of course to provide the same benefits as that error.
+                if ($REQUEST_BLOCK_NEST_LEVEL > 40) { // 100 caused xdebug error, but the software will have some overhead in both error handler and other code to get to here. We want xdebug error to not show, but of course to provide the same benefits as that error.
                     $REQUEST_BLOCK_NEST_LEVEL = 0;
                     $BLOCKS_CACHE[serialize($param)] = do_lang_tempcode('INTERNAL_ERROR');
                     attach_message(do_lang_tempcode('STOPPED_RECURSIVE_RESOURCE_INCLUDE', escape_html(is_string($param[0]) ? $param[0] : 'block'), escape_html(do_lang('BLOCK'))), 'warn', false, true);

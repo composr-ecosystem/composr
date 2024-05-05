@@ -28,7 +28,7 @@ class Hook_config_enable_guest_access
         return [
             'human_name' => 'TAPATALK_ENABLE_GUEST_ACCESS',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_enable_guest_access',
             'shared_hosting_restricted' => '0',

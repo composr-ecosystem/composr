@@ -51,7 +51,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
     }
 
     /**
-     * Empty the Composr fast custom index.
+     * Empty the fast custom index.
      */
     public function empty_index()
     {
@@ -59,7 +59,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
     }
 
     /**
-     * Perform indexing using the Composr fast custom index.
+     * Perform indexing using the fast custom index.
      *
      * @param  ?TIME $since Only index records newer than this (null: no limit)
      * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
@@ -195,7 +195,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         $index_table = 'cpages_fulltext_index';
         $fast_custom_index = can_use_fast_custom_index('comcode_pages', $db, $index_table, $search_query, Fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
         if ($fast_custom_index) {
-            // This search hook implements the Composr fast custom index, which we use where possible...
+            // This search hook implements the fast custom index, which we use where possible...
 
             // Calculate our where clause (search)
             $where_clause = '';

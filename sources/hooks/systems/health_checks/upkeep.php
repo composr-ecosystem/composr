@@ -40,7 +40,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
      */
     public function run(?array $sections_to_run, int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, bool $show_unusable_categories = false) : array
     {
-        $this->process_checks_section('testComposrVersion', brand_name() . ' version', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testCMSVersion', brand_name() . ' version', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testPHPVersion', 'PHP version', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         if ((php_function_allowed('shell_exec')) && (@strpos(shell_exec('which php'), 'php') !== false)) {
             $this->process_checks_section('testPHPVersionDistroSafe', 'PHP version (if not distro default)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -62,7 +62,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testComposrVersion(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
+    public function testCMSVersion(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $this->log('Skipped; we are running from installer.');
@@ -79,7 +79,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
 
         switch (get_option('hc_version_check')) {
             case 'deprecated':
-                $is_discontinued = $this->call_composr_homesite_api('is_release_discontinued', ['version' => cms_version_number()]);
+                $is_discontinued = $this->call_homesite_api('is_release_discontinued', ['version' => cms_version_number()]);
                 $this->assertTrue($is_discontinued !== true, 'The ' . brand_name() . ' version is discontinued');
                 break;
 

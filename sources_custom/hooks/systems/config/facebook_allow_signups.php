@@ -28,7 +28,7 @@ class Hook_config_facebook_allow_signups
         return [
             'human_name' => 'FACEBOOK_ALLOW_SIGNUPS',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'FACEBOOK',
             'explanation' => 'CONFIG_OPTION_facebook_allow_signups',
             'shared_hosting_restricted' => '0',

@@ -52,6 +52,6 @@ class Hook_config_copyright
      */
     public function get_default() : ?string
     {
-        return do_lang('COPYRIGHTED') . ' &copy; $CURRENT_YEAR=' . date('Y') . ' ' . get_site_name() . ', ' . do_lang('POWERED_BY', 'Composr CMS');
+        return do_lang('COPYRIGHTED') . ' &copy; $CURRENT_YEAR=' . date('Y') . ' ' . get_site_name() . ', ' . do_lang('POWERED_BY', brand_name());
     }
 }

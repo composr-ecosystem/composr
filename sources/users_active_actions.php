@@ -394,7 +394,7 @@ function set_invisibility(bool $make_invisible = true)
 }
 
 /**
- * Deletes a cookie (if it exists), from within Composr's cookie environment.
+ * Deletes a cookie (if it exists), from within the site's cookie environment.
  *
  * @param  string $name The name of the cookie
  * @return boolean The result of the PHP setcookie command

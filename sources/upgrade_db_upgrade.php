@@ -418,7 +418,7 @@ function version_specific() : bool
 
             // Delete bundled addons that no longer exist
             //  Note that any old tables etc should be removed from the upgrade code in admin_version
-            //  Note that any non-bundled addons are not handled by Composr's own upgrade code, and they should ideally be uninstalled manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
+            //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be uninstalled manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $deleted_addons = [
                 'bookmarks',
                 'cns_reported_posts',
@@ -442,7 +442,7 @@ function version_specific() : bool
             }
 
             // Renamed addons (old name => new name)
-            //  Note that any non-bundled addons are not handled by Composr's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
+            //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $renamed_addons = [
                 'unvalidated' => 'validation'
             ];
@@ -457,6 +457,7 @@ function version_specific() : bool
             $reps = [
                 '#main_activities#' => 'main_activity_feed',
                 '#main_activities_state#' => 'main_activity_feed_state',
+                '#ocProducts#' => 'Core Development Team',
             ];
             perform_search_replace($reps);
         }
@@ -474,7 +475,7 @@ function version_specific() : bool
 /**
  * Upgrade all modules and blocks.
  *
- * @param  float $from_cms_version From which version of the Composr software we are upgrading
+ * @param  float $from_cms_version From which version of the software we are upgrading
  * @return string List of upgraded/installed modules/blocks
  */
 function upgrade_modules(float $from_cms_version) : string

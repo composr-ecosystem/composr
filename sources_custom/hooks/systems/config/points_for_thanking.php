@@ -28,7 +28,7 @@ class Hook_config_points_for_thanking
         return [
             'human_name' => 'TAPATALK_POINTS_FOR_THANKING',
             'type' => 'integer',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_points_for_thanking',
             'shared_hosting_restricted' => '0',

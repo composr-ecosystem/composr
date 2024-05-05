@@ -165,12 +165,14 @@ function run_spellcheck__words(array $words, ?string $lang = null, bool $skip_kn
     }
     if ($skip_known_words_in_db) {
         $okay_words = [
-            // Some common Composr etc terms that should not be corrected
+            // Some common software terms that should not be corrected
             'comcode',
             'tempcode',
             'selectcode',
             'filtercode',
-            'composr',
+            cms_strtolower_ascii(brand_name()),
+
+            // Non-software terms that should not be corrected
             'jquery',
         ];
 
@@ -343,7 +345,7 @@ function spellcheck_initialise(?string $lang = null)
     if ($lang === null) {
         $lang = user_lang();
     }
-    $lang = function_exists('do_lang') ? do_lang('dictionary') : 'en_GB'; // Default to UK English (as per Composr)
+    $lang = function_exists('do_lang') ? do_lang('dictionary') : 'en_GB'; // Default to UK English
 
     global $SPELL_LINKS;
     if (isset($SPELL_LINKS[$lang])) {
@@ -514,7 +516,9 @@ function add_spellchecker_words_temp($spell_link, array $words)
             break;
 
         case 'mock':
-            $spell_link[] = cms_mb_strtolower($word);
+            foreach ($words as $word) {
+                $spell_link[] = cms_mb_strtolower($word);
+            }
             break;
     }
 }
@@ -549,7 +553,11 @@ function add_spellchecker_words(array $words)
         case 'enchant':
             list($broker, $dict, $personal_dict) = $spell_link;
             foreach ($words as $word) {
-                enchant_dict_add_to_personal($personal_dict, $word);
+                if (function_exists('enchant_dict_add')) {
+                    enchant_dict_add($personal_dict, $word);
+                } else {
+                    enchant_dict_add_to_personal($personal_dict, $word); // LEGACY
+                }
             }
             //enchant_broker_free($broker); Seems to crash on some PHP versions
 

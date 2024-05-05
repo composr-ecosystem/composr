@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_dashboard_composr_news
+class Hook_config_dashboard_homesite_news // TODO: renamed; needs upgrader migration
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_dashboard_composr_news
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'DASHBOARD_COMPOSR_NEWS',
+            'human_name' => 'DASHBOARD_HOMESITE_NEWS',
             'type' => 'tick',
             'category' => 'ADMIN',
             'group' => 'DASHBOARD',
-            'explanation' => 'CONFIG_OPTION_dashboard_composr_news',
+            'explanation' => 'CONFIG_OPTION_dashboard_homesite_news',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 4,

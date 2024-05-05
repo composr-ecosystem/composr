@@ -121,6 +121,10 @@ function image_get_defaults__post(bool $is_edit = false, string $url = '', ?stri
  */
 function image_get_default_metadata(string $url = '', ?string $filename = null, string $title = '', string $cat = '') : array
 {
+    if (($filename === null) && ($url != '')) {
+        $filename = rawurldecode(basename($url));
+    }
+
     if ($title == '') {
         if ($url != '') {
             $path = convert_url_to_path($url);
@@ -141,6 +145,7 @@ function image_get_default_metadata(string $url = '', ?string $filename = null, 
     return [
         $title,
         $cat,
+        /*$filename,*/
     ];
 }
 
@@ -1984,7 +1989,7 @@ function reorganise_uploads__gallery_videos(array $where = [], bool $tolerate_er
  * Intended for bulk operations, where many mixed media files are imported with common settings and other settings derived from metadata/defaults.
  *
  * @param  URLPATH $url The URL to the file (must be a URL relative to the base URL)
- * @param  ID_TEXT $cat The gallery to add to
+ * @param  ID_TEXT $_cat The gallery to add to
  * @param  MEMBER $member_id The ID of the member adding gallery media
  * @param  integer $allow_rating Post param indicating whether or not ratings should be allowed
  * @param  integer $allow_comments_reviews Post param combination indicating whether to allow comments or reviews
@@ -1995,9 +2000,10 @@ function reorganise_uploads__gallery_videos(array $where = [], bool $tolerate_er
  * @param  array $additional_access Array of additional members who should have access to this content
  * @param  ?string $filename The filename (null: derive from $url)
  * @param  ?TIME $time Timestamp to use (null: now)
+ * @param  string $fallback_title The fallback title to use if a title is required but we could not get one (blank: none)
  * @return ?array A pair: The media type, The media ID (null: error)
  */
-function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $allow_rating, int $allow_comments_reviews, int $allow_trackbacks, bool $watermark, string $notes, string $privacy_level, array $additional_access, ?string $filename = null, ?int $time = null) : ?array
+function add_gallery_media_wrap(string $url, string $_cat, int $member_id, int $allow_rating, int $allow_comments_reviews, int $allow_trackbacks, bool $watermark, string $notes, string $privacy_level, array $additional_access, ?string $filename = null, ?int $time = null, string $fallback_title = '') : ?array
 {
     require_code('exif');
 
@@ -2021,7 +2027,15 @@ function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $a
             $length,
             $title,
             $cat,
-        ) = video_get_default_metadata($url, '', $filename, null, null, null, '', $cat);
+        ) = video_get_default_metadata($url, '', $filename, null, null, null, '', $_cat);
+
+        if (($title == '') && (get_option('gallery_media_title_required') == '2')) {
+            if ($filename !== null) {
+                $title = pathinfo($filename, PATHINFO_FILENAME);
+            } else {
+                $title = $fallback_title;
+            }
+        }
 
         $thumb_url = video_get_default_thumb_url($url, '', $filename);
 
@@ -2062,7 +2076,7 @@ function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $a
         // Images cleanup pipeline
         $maximum_dimension = intval(get_option('maximum_image_size'));
         $watermark = (post_param_integer('watermark', 0) == 1);
-        $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
+        $watermarks = $watermark ? find_gallery_watermarks($_cat) : null;
         if (url_is_local($url)) {
             handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), null, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
         }
@@ -2070,7 +2084,15 @@ function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $a
         list(
             $title,
             $cat,
-        ) = image_get_default_metadata($url, $filename);
+        ) = image_get_default_metadata($url, $filename, '', $_cat);
+
+        if (($title == '') && (get_option('gallery_media_title_required') == '2')) {
+            if ($filename !== null) {
+                $title = pathinfo($filename, PATHINFO_FILENAME);
+            } else {
+                $title = $fallback_title;
+            }
+        }
 
         $id = add_image($title, $cat, '', $url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
         $path = convert_url_to_path($url);

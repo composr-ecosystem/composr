@@ -1485,7 +1485,7 @@ function has_geolocation_data() : bool
  */
 function log_stats_event(string $event)
 {
-    if ((get_option('site_closed') == '1') && (get_option('stats_when_closed') == '0')) {
+    if ((get_option('site_closed') != '0') && (get_option('stats_when_closed') == '0')) {
         return;
     }
 

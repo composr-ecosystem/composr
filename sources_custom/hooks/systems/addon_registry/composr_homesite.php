@@ -30,7 +30,7 @@ class Hook_addon_registry_composr_homesite
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -96,7 +96,7 @@ class Hook_addon_registry_composr_homesite
      */
     public function get_licence() : string
     {
-        return 'Licensed on the same terms as Composr';
+        return 'Licensed on the same terms as ' . brand_name();
     }
 
     /**
@@ -146,7 +146,7 @@ This addon does not contain the composr.app install code and the overall site an
                 'newsletter',
                 'MySQL',
                 'composr_homesite_support_credits',
-                'composr_release_build',
+                'cms_release_build',
                 'composr_tutorials',
                 'hybridauth',
                 'patreon',

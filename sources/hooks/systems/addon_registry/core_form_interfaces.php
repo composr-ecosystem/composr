@@ -35,7 +35,7 @@ class Hook_addon_registry_core_form_interfaces
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -133,7 +133,7 @@ class Hook_addon_registry_core_form_interfaces
             'data/ckeditor/LICENSE.md',
             'data/ckeditor/build-config.js',
             'data/ckeditor/ckeditor.js',
-            'data/ckeditor/composr_patch.sh',
+            'data/ckeditor/cms_patch.sh',
             'data/ckeditor/contents.css',
             'data/ckeditor/lang/af.js',
             'data/ckeditor/lang/ar.js',
@@ -377,10 +377,10 @@ class Hook_addon_registry_core_form_interfaces
             'data/ckeditor/plugins/composr/images/hidpi/composr_image__moono.png',
             'data/ckeditor/plugins/composr/images/hidpi/composr_page.png',
             'data/ckeditor/plugins/composr/images/hidpi/composr_quote.png',
-            'data/ckeditor/plugins/composr/images/hidpi/index.html',
-            'data/ckeditor/plugins/composr/images/index.html',
-            'data/ckeditor/plugins/composr/index.html',
-            'data/ckeditor/plugins/composr/plugin.js',
+            'data/ckeditor/plugins/cms/images/hidpi/index.html',
+            'data/ckeditor/plugins/cms/images/index.html',
+            'data/ckeditor/plugins/cms/index.html',
+            'data/ckeditor/plugins/cms/plugin.js',
             'data/ckeditor/plugins/dialog/dialogDefinition.js',
             'data/ckeditor/plugins/dialog/styles/dialog.css',
             'data/ckeditor/plugins/emojione/.bower.json',

@@ -33,7 +33,7 @@ class Hook_config_google_apis_api_key
         return [
             'human_name' => 'GOOGLE_APIS_API_KEY',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'GOOGLE_API',
             'explanation' => 'CONFIG_OPTION_google_apis_api_key',
             'shared_hosting_restricted' => '0',

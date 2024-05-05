@@ -35,7 +35,7 @@ class Hook_addon_registry_syndication
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -207,7 +207,7 @@ class Hook_addon_registry_syndication
             'TYPE' => 'news',
             'DOMAIN' => 'example.com',
             'PORT' => '80',
-            'PATH' => '/composr',
+            'PATH' => '/cms',
         ], null, false, null, '.xml', 'xml');
 
         return do_lorem_template('RSS_WRAPPER', [

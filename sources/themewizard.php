@@ -1353,11 +1353,11 @@ function themewizard_colours_to_css(string $contents, array $landscape, string $
     }
 
     if ($algorithm == 'hsv') {
-        list($composr_h, $composr_s, $composr_v) = rgb_to_hsv(find_theme_seed($source_theme));
+        list($cms_h, $cms_s, $cms_v) = rgb_to_hsv(find_theme_seed($source_theme));
         list($desired_h, $desired_s, $desired_v) = rgb_to_hsv($seed);
-        $hue_dif = $desired_h - $composr_h;
-        $sat_dif = 0;//$desired_s-$composr_s;     Actually causes weirdness
-        $val_dif = $desired_v - $composr_v;
+        $hue_dif = $desired_h - $cms_h;
+        $sat_dif = 0;//$desired_s-$cms_s;     Actually causes weirdness
+        $val_dif = $desired_v - $cms_v;
 
         $matches = [];
         $num_matches = preg_match_all('#\#([A-Fa-f0-9]{3,6})([^A-Fa-f0-9])#', $contents, $matches);
@@ -1467,11 +1467,11 @@ function generate_themewizard_image(string $seed, ?bool $dark, string $source_th
 function re_hue_image(string $path, string $seed, string $source_theme, bool $also_s_and_v = false, bool $invert = false)
 {
     require_code('themes2');
-    list($composr_h, $composr_s, $composr_v) = rgb_to_hsv(find_theme_seed($source_theme));
+    list($cms_h, $cms_s, $cms_v) = rgb_to_hsv(find_theme_seed($source_theme));
     list($seed_h, $seed_s, $seed_v) = rgb_to_hsv($seed);
-    $hue_dif = $seed_h - $composr_h;
-    $sat_dif = $seed_s - $composr_s;
-    $val_dif = $seed_v - $composr_v;
+    $hue_dif = $seed_h - $cms_h;
+    $sat_dif = $seed_s - $cms_s;
+    $val_dif = $seed_v - $cms_v;
 
     if (substr($path, -4) == '.svg') {
        return  _re_hue_image__svg($path, $seed_h, $seed_s, $seed_v, $hue_dif, $sat_dif, $val_dif, $also_s_and_v, $invert);

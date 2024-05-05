@@ -883,7 +883,7 @@ function _url_rewrite_params(string $zone_name, array $parameters) : ?string
 }
 
 /**
- * Find if the specified URL is local or not (actually, if it is relative). This is often used by code that wishes to use file system functions on URLs (Composr will store such relative local URLs for uploads, etc).
+ * Find if the specified URL is local or not (actually, if it is relative). This is often used by code that wishes to use file system functions on URLs (the software will store such relative local URLs for uploads, etc).
  *
  * @param  URLPATH $url The URL to check
  * @return boolean Whether the URL is local
@@ -909,7 +909,7 @@ function url_is_local(string $url) : bool
 }
 
 /**
- * Find if a value appears to be some kind of URL (possibly a Composrised Comcode one).
+ * Find if a value appears to be some kind of URL (possibly a Comcode one).
  *
  * @param  string $value The value to check
  * @param  boolean $lax Whether to be a bit lax in the check
@@ -1235,7 +1235,7 @@ function load_moniker_hooks()
 }
 
 /**
- * Find the textual moniker for a typical Composr URL path. This will be called from inside build_url, based on details learned from a moniker hook (only if a hook exists to hint how to make the requested link SEO friendly).
+ * Find the textual moniker for a typical software URL path. This will be called from inside build_url, based on details learned from a moniker hook (only if a hook exists to hint how to make the requested link SEO friendly).
  *
  * @param  array $url_parts The URL component map (must contain 'page', 'type', and 'id' if this function is to do anything)
  * @param  ID_TEXT $zone The URL zone name (only used for Comcode Page URL monikers)

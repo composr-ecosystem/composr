@@ -30,7 +30,7 @@ class Hook_addon_registry_composr_homesite_support_credits
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -140,7 +140,7 @@ class Hook_addon_registry_composr_homesite_support_credits
             'recommends' => [
                 'stats',
                 'MySQL',
-                'composr_release_build',
+                'cms_release_build',
                 'composr_tutorials',
             ],
             'conflicts_with' => [],

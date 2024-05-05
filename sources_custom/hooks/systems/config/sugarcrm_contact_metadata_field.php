@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_contact_metadata_field
         return [
             'human_name' => 'SUGARCRM_CONTACT_METADATA_FIELD',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_MEMBER_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_contact_metadata_field',
             'shared_hosting_restricted' => '0',

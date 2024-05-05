@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_member_mappings
         return [
             'human_name' => 'SUGARCRM_MEMBER_MAPPINGS',
             'type' => 'text',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_MEMBER_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_member_mappings',
             'shared_hosting_restricted' => '0',

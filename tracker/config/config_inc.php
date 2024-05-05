@@ -75,7 +75,7 @@ $g_rss_enabled = OFF;
 ini_set('error_log', __DIR__ . '/../../data_custom/errorlog.php');
 $g_log_destination = __DIR__ . '/../../data_custom/errorlog.php';
 
-// Composr-specific
+// software-specific
 $cms_sc_site_url = $SITE_INFO['base_url'];
 $cms_sc_site_name = 'composr.app';
 $g_default_home_page = 'my_view_page.php'; // Set to name of page to go to after login

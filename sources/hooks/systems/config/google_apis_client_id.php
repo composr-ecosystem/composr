@@ -33,7 +33,7 @@ class Hook_config_google_apis_client_id
         return [
             'human_name' => 'GOOGLE_APIS_CLIENT_ID',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'GOOGLE_API',
             'explanation' => 'CONFIG_OPTION_google_apis_client_id',
             'shared_hosting_restricted' => '0',

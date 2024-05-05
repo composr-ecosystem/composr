@@ -50,7 +50,7 @@ class Hook_addon_registry_catalogues
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -96,7 +96,7 @@ class Hook_addon_registry_catalogues
      */
     public function get_description() : string
     {
-        return 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard Composr features (e.g. ratings).';
+        return 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard CMS features (e.g. ratings).';
     }
 
     /**

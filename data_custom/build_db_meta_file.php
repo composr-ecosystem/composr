@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 // Fixup SCRIPT_FILENAME potentially being missing
@@ -47,8 +47,8 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-if (!addon_installed('composr_release_build')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_release_build')));
+if (!addon_installed('cms_release_build')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_release_build')));
 }
 
 if (!addon_installed('meta_toolkit')) {

@@ -99,7 +99,8 @@ function get_product_price_points(string $item) : int
 }
 
 /**
- * Get the total points a member has ever received (life-time points); some of these may have been used already.
+ * Get the total points a member has ever received (life-time points).
+ * Some of these points may have already been spent. Also, when a member is charged points for a warning, it will decrease this value as it is considered a de-ranking.
  *
  * @param  MEMBER $member_id The member
  * @param  ?TIME $timestamp Time to get for (null: now)
@@ -134,6 +135,11 @@ function points_lifetime(int $member_id, ?int $timestamp = null, bool $cache = t
     $_points = points_ledger_calculate(LEDGER_TYPE_RECEIVED, $member_id, null, $end);
     list(, $t_points, $t_gift_points) = $_points['received'];
     $points = ($t_points + $t_gift_points);
+
+    // Points charged from warnings should be considered a punishment against life-time points (as life-time points is used in ranks)
+    $_points = points_ledger_calculate(LEDGER_TYPE_SPENT, $member_id, null, ' AND (' . db_string_equal_to('t_type', 'warning') . ') AND (' . db_string_equal_to('t_subtype', 'add') . ')');
+    list(, $t_points, $t_gift_points) = $_points['spent'];
+    $points -= ($t_points + $t_gift_points);
 
     return intval($points);
 }

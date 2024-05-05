@@ -35,7 +35,7 @@ class Hook_ajax_tree_choose_download
     {
         require_code('downloads');
 
-        if ((!is_numeric($id)) && ($id != '')) { // This code is actually for composr.app, for the addon directory
+        if ((!is_numeric($id)) && ($id != '')) { // This code is actually for the homesite, for the addon directory
             if (substr($id, 0, 8) == 'Version ') {
                 $id_float = floatval(substr($id, 8));
                 do {

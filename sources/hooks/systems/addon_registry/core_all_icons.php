@@ -35,7 +35,7 @@ class Hook_addon_registry_core_all_icons
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -81,7 +81,7 @@ class Hook_addon_registry_core_all_icons
      */
     public function get_description() : string
     {
-        return 'The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)';
+        return 'The full ' . brand_name() . ' icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)';
     }
 
     /**

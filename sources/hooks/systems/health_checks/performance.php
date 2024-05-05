@@ -193,7 +193,7 @@ class Hook_health_check_performance extends Hook_Health_Check
             }
         }
 
-        // Composr cookies not set
+        // Site cookies not set
         $this->assertTrue($found_has_cookies_cookie, 'Cookies not being properly set');
     }
 
@@ -419,7 +419,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         }
 
         if (!addon_installed('stats')) {
-            $this->stateCheckSkipped('Composr [tt]stats[/tt] addon not installed');
+            $this->stateCheckSkipped('[tt]stats[/tt] addon not installed');
             return;
         }
 

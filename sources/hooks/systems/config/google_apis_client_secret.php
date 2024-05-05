@@ -33,7 +33,7 @@ class Hook_config_google_apis_client_secret
         return [
             'human_name' => 'GOOGLE_APIS_CLIENT_SECRET',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'GOOGLE_API',
             'explanation' => 'CONFIG_OPTION_google_apis_client_secret',
             'shared_hosting_restricted' => '0',

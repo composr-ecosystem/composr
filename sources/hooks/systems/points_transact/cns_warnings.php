@@ -25,6 +25,36 @@
 class Hook_points_transact__cns_warnings
 {
     /**
+     * Run post point transaction tasks.
+     *
+     * @param  ?AUTO_LINK $id The ID of the transaction that was created (null: No transaction was created)
+     * @param  MEMBER $sender_id The ID of the member sending the points
+     * @param  MEMBER $recipient_id The ID of the member receiving the points
+     * @param  SHORT_TEXT $reason The reason for this transaction in the logs
+     * @param  integer $total_points The total number of points to transact (includes gift points when applicable)
+     * @param  ?integer $amount_gift_points The strict number of $total_points which should come from the sender's gift points balance (null: use as many gift points the sender has available)
+     * @param  BINARY $anonymous Whether the sender should be hidden from those without the privilege to trace anonymous transactions
+     * @param  ?boolean $send_notifications Whether to send notifications for this transaction (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
+     * @param  BINARY $locked Whether this transaction is irreversible
+     * @param  ID_TEXT $t_type An identifier to relate this transaction with other transactions of the same $type (e.g. content type)
+     * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
+     * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
+     * @param  ?TIME $time The time this transaction occurred (null: now)
+     */
+    public function points_transact(?int $id, int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points, int $anonymous, ?bool $send_notifications, int $locked, string $t_type, string $t_subtype, string $t_type_id, ?int $time)
+    {
+        if ((!addon_installed('cns_warnings')) || (!addon_installed('points'))) {
+            return;
+        }
+
+        if (($t_type == 'warning') && ($t_subtype == 'add')) {
+            // Charged points from warnings should punish a member's life-time points as well since it is treated as a rank
+            require_code('points2');
+            _points_adjust_cpf($sender_id, 'points_lifetime', -($total_points - $amount_gift_points));
+        }
+    }
+
+    /**
      * Run post point refund tasks.
      *
      * @param  ?AUTO_LINK $id The ID of the transaction that was created (null: No transaction was created)
@@ -48,9 +78,13 @@ class Hook_points_transact__cns_warnings
             return;
         }
 
-        // If we are reversing a transaction regarding a warning (punitive action), we should mark the punitive action as reversed as well.
-        if (($linked_to !== null) && ($status == LEDGER_STATUS_REVERSING) && ($t_type == 'warning') && ($t_subtype == 'add')) {
-            $GLOBALS['FORUM_DB']->query_update('f_warnings_punitive', ['p_reversed' => 1], ['id' => intval($t_type_id)]);
+        if (($linked_to !== null) && ($status == LEDGER_STATUS_REVERSING) && ($linked_to['t_type'] == 'warning') && ($linked_to['t_subtype'] == 'add')) {
+            // If we are reversing a transaction regarding a warning (punitive action), we should mark the punitive action as reversed as well.
+            $GLOBALS['FORUM_DB']->query_update('f_warnings_punitive', ['p_reversed' => 1], ['id' => intval($linked_to['t_type_id'])]);
+
+            // If we are reversing a transaction regarding a warning (punitive action), we should reverse the lost life-time points as well.
+            require_code('points2');
+            _points_adjust_cpf($recipient_id, 'points_lifetime', ($total_points - $amount_gift_points));
         }
     }
 }

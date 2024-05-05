@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 // This inserts GUIDs throughout, and records them all to guids.bin (which the template editor uses).
@@ -25,7 +25,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 $error_msg = new Tempcode();
-if (!addon_installed__messaged('composr_release_build', $error_msg)) {
+if (!addon_installed__messaged('cms_release_build', $error_msg)) {
     return $error_msg;
 }
 

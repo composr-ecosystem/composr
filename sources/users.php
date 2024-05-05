@@ -39,7 +39,7 @@ function init__users()
     $USER_THEME_CACHE = null;
     global $IS_ACTUALLY;
     global $IS_ACTUALLY_ADMIN;
-    /** Find whether Composr is running in SU mode, and therefore the real user is an admin
+    /** Find whether the software is running in SU mode, and therefore the real user is an admin
      *
      * @global boolean $IS_ACTUALLY_ADMIN
      */
@@ -343,7 +343,7 @@ function enforce_temporary_passwords(int $member_id)
         return;
     }
 
-    // Only enforce passwords on Composr schemes
+    // Only enforce passwords on software schemes
     $scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
     if (!in_array($scheme, ['', 'temporary', 'expired'])) {
         return;

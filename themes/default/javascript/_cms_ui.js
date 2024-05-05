@@ -296,7 +296,7 @@
         }
 
         if (!haveLinks && $cms.browserMatches('touch_enabled')) {
-            return; // Too erratic
+            haveLinks = true; // Use click triggers for touch-enabled devices instead of mouse events.
         }
 
         if ($cms.ui.clearOutTooltips(el.tooltipId)) {
@@ -312,10 +312,12 @@
                     $cms.ui.deactivateTooltip(el);
                 }
             });
-
-            $dom.on(el, 'mousemove.cmsTooltip', function () {
-                $cms.ui.repositionTooltip(el, event, bottom, false, null, forceWidth, win);
-            });
+            
+            /* Actually do not move the tooltip with the cursor; it is not standard UI to do so especially if someone has a big cursor.
+                $dom.on(el, 'mousemove.cmsTooltip', function () {
+                    $cms.ui.repositionTooltip(el, event, bottom, false, null, forceWidth, win);
+                });
+            */
         } else {
             window.setTimeout(function () { // Stop mobile calling handler twice in some situations
                 $dom.on(window, 'click.cmsTooltip' + $util.uid(el), function (e) {

@@ -86,7 +86,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
     }
 
     /**
-     * Empty the Composr fast custom index.
+     * Empty the fast custom index.
      */
     public function empty_index()
     {
@@ -94,7 +94,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
     }
 
     /**
-     * Perform indexing using the Composr fast custom index.
+     * Perform indexing using the fast custom index.
      *
      * @param  ?TIME $since Only index records newer than this (null: no limit)
      * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
@@ -189,7 +189,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         $db = $GLOBALS['FORUM_DB'];
         $index_table = 'f_pposts_fulltext_index';
         if (can_use_fast_custom_index('cns_own_pt', $db, $index_table, $search_query, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_own_pt_starter', 0) == 1)) {
-            // This search hook implements the Composr fast custom index, which we use where possible...
+            // This search hook implements the fast custom index, which we use where possible...
 
             $table = 'f_posts r';
 

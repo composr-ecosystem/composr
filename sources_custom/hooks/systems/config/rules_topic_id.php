@@ -28,7 +28,7 @@ class Hook_config_rules_topic_id
         return [
             'human_name' => 'TAPATALK_RULES_TOPIC_ID',
             'type' => 'integer',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_rules_topic_id',
             'shared_hosting_restricted' => '0',

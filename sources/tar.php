@@ -270,7 +270,7 @@ function tar_add_folder_incremental(array &$resource, $log_file, string $path, i
                                 warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html('?')), false, true);
                             }
                         }
-                        /* We don't store all this stuff, it's not in Composr's remit
+                        /* We don't store all this stuff, it's not in the software's remit
                         $owner = fileowner($full);
                         $group = filegroup($full);
                         if (php_function_allowed('posix_getuid')) {
@@ -400,7 +400,7 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
 
     foreach ($directory as $file) {
         if (($file['path'] != 'addon.inf') && ($file['path'] != 'mod.inf'/*LEGACY*/) && ($file['path'] != 'addon_install_code.php') && (($files === null) || (in_array($file['path'], $files)))) {
-            // Special case for directories. Composr doesn't add directory records, but at least 7-zip does
+            // Special case for directories. The software doesn't add directory records, but at least 7-zip does
             if (substr($file['path'], -1) == '/') {
                 if (!$use_afm) {
                     @mkdir(get_custom_file_base() . '/' . $path . $file['path'], 0777, true);

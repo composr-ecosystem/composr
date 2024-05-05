@@ -37,7 +37,7 @@ class Hook_cron_fast_custom_index
         }
 
         return [
-            'label' => 'Index content for Composr fast custom index',
+            'label' => 'Index content for the fast custom index',
             'num_queued' => null,
             'minutes_between_runs' => 15,
         ];

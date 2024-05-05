@@ -729,7 +729,7 @@ function upgrader__addon_remove_screen() : string
     foreach ($addon_files as $addon_file) {
         afm_delete_file($addon_file);
     }
-    $out .= '<p>The files have been deleted. Now, you may want install TARs for any bundled addons that were removed, in <kbd>exports/addons</kbd>, so you can reinstall them when you want. To generate these from a development copy of Composr, go to <kbd>adminzone/index.php?page=build_addons&export_bundled_addons=1&export_addons=0</kbd> and then copy them over.</p>';
+    $out .= '<p>The files have been deleted. Now, you may want install TARs for any bundled addons that were removed, in <kbd>exports/addons</kbd>, so you can reinstall them when you want. To generate these from a development copy of the software, go to <kbd>adminzone/index.php?page=build_addons&export_bundled_addons=1&export_addons=0</kbd> and then copy them over.</p>';
 
     return $out;
 }

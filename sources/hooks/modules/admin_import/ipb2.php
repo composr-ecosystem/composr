@@ -1153,12 +1153,12 @@ class Hook_import_ipb2
 
             $id_new = cns_make_poll($topic_id, @html_entity_decode($row['poll_question'], ENT_QUOTES), 0, $is_open, 1, 1, 0, $answers, 0, 0, 1, 0, false);
 
-            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from IPB vote number to Composr vote number
+            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from IPB vote number to software vote number
             $vote_list = [];
             $j = 0;
             foreach ($_answers as $answer) {
                 for ($i = 0; $i < intval($answer[2]); $i++) { // For each vote of this answer
-                    array_push($vote_list, $answers[$j]); // Push the mapped Composr vote ID onto the list of votes
+                    array_push($vote_list, $answers[$j]); // Push the mapped software vote ID onto the list of votes
                 }
                 $j++;
             }

@@ -25,7 +25,8 @@ function get_problem_match_script()
     header('Content-Type: text/plain; charset=' . get_charset());
 
     $version = get_param_string('version');
-    $error_message = get_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);
+    $error_message = post_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);
+    $error_message = html_entity_decode($error_message);
 
     $output = get_problem_match_nearest($error_message);
     if ($output !== null) {
@@ -41,6 +42,8 @@ function get_problem_match_script()
  */
 function get_problem_match_nearest(string $error_message) : ?string
 {
+    define('DEFAULT_BRAND_NAME', 'Composr'); // TODO: This is a fudge
+
     require_code('files_spreadsheets_read');
 
     // Find matches. Stored in a spreadsheet file.
@@ -56,11 +59,11 @@ function get_problem_match_nearest(string $error_message) : ?string
 
         // Possible rebranding
         $brand = get_param_string('product');
-        if (($brand != 'Composr') && ($brand != '')) {
+        if (($brand != DEFAULT_BRAND_NAME) && ($brand != '')) {
             $brand_base_url = get_param_string('product_site', '');
             if ($brand_base_url != '') {
-                $assembled = str_replace('Composr', $brand, $assembled);
-                $assembled = str_replace('ocProducts', 'Core Development Team', $assembled);
+                $assembled = str_replace(DEFAULT_BRAND_NAME, $brand, $assembled);
+                $assembled = str_replace('ocProducts', 'Core Development Team', $assembled); // LEGACY
                 $assembled = str_replace(get_brand_base_url(), $brand_base_url, $assembled);
             }
         }

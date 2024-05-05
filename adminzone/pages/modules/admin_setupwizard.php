@@ -1025,7 +1025,7 @@ class Module_admin_setupwizard
         $hidden = static_evaluate_tempcode(build_keep_post_fields(['csrf_token_preserve']));
 
         $fields = new Tempcode();
-        $fields->attach(form_input_tick(do_lang_tempcode('CLOSED_SITE'), do_lang_tempcode('CONFIG_OPTION_site_closed'), 'site_closed', true));
+        $fields->attach(form_input_tick(do_lang_tempcode('CLOSED_SITE'), do_lang_tempcode('_CONFIG_OPTION_site_closed'), 'site_closed', true));
         $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('CONFIG_OPTION_closed'), 'closed', get_option('closed'), false, false));
 
         $js_function_calls = ['adminSetupWizardStep9'];

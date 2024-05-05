@@ -28,7 +28,7 @@ class Hook_config_mark_as_edited
         return [
             'human_name' => 'TAPATALK_MARK_AS_EDITED',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_mark_as_edited',
             'shared_hosting_restricted' => '0',

@@ -85,6 +85,6 @@ class Hook_config_oembed_manual_patterns
         //  embed.ly, you would do ".* = https://api.embed.ly/1/oembed?key=123456"
         //  Noembed, you would do ".* = https://noembed.com/embed"
         // iframely is interesting. It is self-hosted.
-        // Largely though, Composr contains equivalent features to these products.
+        // Largely though, the software contains equivalent features to these products.
     }
 }

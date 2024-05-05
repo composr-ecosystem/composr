@@ -335,7 +335,7 @@ function cron_bridge_script(string $caller)
         }
     }
 
-    // In query mode, Composr will just give advice on the system scheduler settings to use
+    // In query mode, the software will just give advice on the system scheduler settings to use
     if ($query_mode) {
         header('Content-Type: text/plain; charset=' . get_charset());
         cms_ini_set('ocproducts.xss_detect', '0');
@@ -632,7 +632,7 @@ function cron_bridge_script(string $caller)
                     flock($log_file, LOCK_UN);
                 }
 
-                // Composr has sent itself a signal that it needs to stop looping over Cron
+                // The software has sent itself a signal that it needs to stop looping over Cron
                 delete_value('kill_cron_looping');
                 break;
             }
@@ -698,7 +698,7 @@ function iframe_script()
 
     // Closed site
     $site_closed = get_option('site_closed');
-    if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+    if (($site_closed != '0') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
         header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));

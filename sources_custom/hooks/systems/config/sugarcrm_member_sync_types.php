@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_member_sync_types
         return [
             'human_name' => 'SUGARCRM_MEMBER_SYNC_TYPES',
             'type' => 'list',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_MEMBER_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_member_sync_types',
             'shared_hosting_restricted' => '0',

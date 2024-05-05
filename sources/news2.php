@@ -90,7 +90,7 @@ function edit_news_category(int $id, ?string $title, ?string $img, ?string $note
     require_code('urls2');
     suggest_new_idmoniker_for('news', 'browse', strval($id), '', $title);
 
-    // If enable_seo_fields is off (manual SEO keyword input), Composr uses news categories as an automatic SEO keyword for any news entries within that category.
+    // If enable_seo_fields is off (manual SEO keyword input), the software uses news categories as an automatic SEO keyword for any news entries within that category.
     // Therefore we need to remap to the newly updated title.
     if ((get_option('enable_seo_fields') === '0') && ($old_title != $title)) {
         $sql = 'SELECT * FROM ' . get_table_prefix() . 'seo_meta_keywords m WHERE ';
@@ -193,7 +193,7 @@ function delete_news_category(int $id)
 
     log_it('DELETE_NEWS_CATEGORY', strval($id), $old_title);
 
-    // If enable_seo_fields is off (manual SEO keyword input), Composr uses news categories as an automatic SEO keyword for any news entries within that category.
+    // If enable_seo_fields is off (manual SEO keyword input), the software uses news categories as an automatic SEO keyword for any news entries within that category.
     // Therefore we need to delete the news category's title from any SEO keywords, given the category is being deleted.
     if (get_option('enable_seo_fields') === '0') {
         $sql = 'SELECT m.* FROM ' . get_table_prefix() . 'seo_meta_keywords m WHERE ';
@@ -869,7 +869,7 @@ function import_foreign_news_html(string $html, bool $force_linebreaks = false) 
  *
  * @param  boolean $download_images Whether to download images to local
  * @param  string $data HTML (passed by reference)
- * @param  array $imported_news Imported items, in Composr's RSS-parsed format [list of maps containing full_url and import_id] (used to fix links)
+ * @param  array $imported_news Imported items, in the software's RSS-parsed format [list of maps containing full_url and import_id] (used to fix links)
  * @ignore
  */
 function _news_import_grab_images_and_fix_links(bool $download_images, string &$data, array $imported_news)

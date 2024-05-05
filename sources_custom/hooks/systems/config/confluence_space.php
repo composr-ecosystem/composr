@@ -28,7 +28,7 @@ class Hook_config_confluence_space
         return [
             'human_name' => 'CONFLUENCE_SPACE',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'CONFLUENCE',
             'explanation' => 'CONFIG_OPTION_confluence_space',
             'shared_hosting_restricted' => '0',

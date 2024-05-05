@@ -574,7 +574,7 @@ abstract class Hook_Health_Check
             $ob = cms_http_request($page_link_url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true]);
             $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = $ob;
             $error_message = 'The server cannot download from self-hosted page-link, [url="' . $page_link_url . '"][tt]' . $page_link . '[/tt][/url] (' . $ob->message . ')';
-            if (get_option('site_closed') == '1') {
+            if (get_option('site_closed') != '0') {
                 $error_message .= ' (the site is currently closed)';
             }
 
@@ -696,19 +696,19 @@ abstract class Hook_Health_Check
     }
 
     /*
-    composr.app API
+        Homesite API
     */
 
     /**
-     * Call a composr.app API function.
+     * Call a homesite API function.
      *
      * @param  string $type API type
      * @param  array $params Map of parameters
      * @return mixed API result
      */
-    protected function call_composr_homesite_api(string $type, array $params)
+    protected function call_homesite_api(string $type, array $params)
     {
-        $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/api.php?type=' . urlencode($type);
+        $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/api.php?type=' . urlencode($type);
         foreach ($params as $key => $_val) {
             switch (gettype($_val)) {
                 case 'boolean':
@@ -750,5 +750,5 @@ abstract class Hook_Health_Check
  */
 function health_check__is_test_site() : bool
 {
-    return (get_option('hc_is_test_site') == '1') || ((get_option('hc_is_test_site') == '-1') && (get_option('site_closed') == '1'));
+    return (get_option('hc_is_test_site') == '1') || ((get_option('hc_is_test_site') == '-1') && (get_option('site_closed') != '0'));
 }

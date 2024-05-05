@@ -24,7 +24,7 @@
 class Hook_ajax_tree_choose_homesite_addon
 {
     /**
-     * This will get the XML file from composr.app.
+     * This will get the XML file from the homesite.
      *
      * @param  ?ID_TEXT $id The ID to do under (null: root)
      * @param  ?ID_TEXT $default The ID to select by default (null: none)
@@ -83,7 +83,7 @@ class Hook_ajax_tree_choose_homesite_addon
 
         $num_matches = preg_match_all('#<entry id="(\d+)"[^<>]* title="([^"]+)"#', $file, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
-            $list->attach(form_input_list_entry('https://composr.app/site/dload.php?id=' . urlencode($matches[1][$i]), in_array($matches[1][$i], $it_exp), $prefix . $matches[2][$i]));
+            $list->attach(form_input_list_entry(get_brand_base_url() . '/site/dload.php?id=' . urlencode($matches[1][$i]), in_array($matches[1][$i], $it_exp), $prefix . $matches[2][$i]));
         }
 
         $num_matches = preg_match_all('#<category id="(\d+)" title="([^"]+)"#', $file, $matches);

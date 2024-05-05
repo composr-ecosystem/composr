@@ -48,7 +48,7 @@ function newsletter_get_category_choices(int $cutoff_time, string $lang) : strin
                 $cats = $cats->evaluate($lang);
             }
             $matches = [];
-            $num_matches = preg_match_all('#<option [^>]*value="([^"]*)"[^>]*>([^<]*)</option>#', $cats, $matches); // FUDGE: Reparsing HTML. Needs to do this as Composr's APIs are been used and they output HTML.
+            $num_matches = preg_match_all('#<option [^>]*value="([^"]*)"[^>]*>([^<]*)</option>#', $cats, $matches); // FUDGE: Reparsing HTML. Needs to do this as the software's APIs been used and they output HTML.
             if ($num_matches < 1500) { /*reasonable limit on how many categories to consider*/
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook_result = $object->run($cutoff_time, $lang, $matches[1][$i]);
@@ -478,7 +478,7 @@ function newsletter_preview(string $message_raw, string $subject, string $lang, 
  * @param  string $from_name Override the name the mail is sent from (blank: site name)
  * @param  integer $priority The message priority (1=urgent, 3=normal, 5=low)
  * @range  1 5
- * @param  array $spreadsheet_data Spreadsheet data of extra subscribers. This is in the same Composr newsletter spreadsheet format that we export elsewhere.
+ * @param  array $spreadsheet_data Spreadsheet data of extra subscribers. This is in the same software newsletter spreadsheet format that we export elsewhere.
  * @param  ID_TEXT $mail_template The template used to show the e-mail
  * @return Tempcode UI
  */

@@ -1003,7 +1003,9 @@ class Module_cms_downloads_cat extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), do_lang_tempcode('DESCRIPTION_NAME'), 'category', $category, true));
 
-        $fields->attach(form_input_tree_list(do_lang_tempcode('PARENT'), do_lang_tempcode('DESCRIPTION_PARENT', 'download_category'), 'parent_id', null, 'choose_download_category', [], true, strval($parent_id)));
+        if ($parent_id !== null) {
+            $fields->attach(form_input_tree_list(do_lang_tempcode('PARENT'), do_lang_tempcode('DESCRIPTION_PARENT', 'download_category'), 'parent_id', null, 'choose_download_category', [], true, strval($parent_id)));
+        }
 
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, false));
 

@@ -28,7 +28,7 @@ class Hook_config_sugarcrm_default_company
         return [
             'human_name' => 'SUGARCRM_DEFAULT_COMPANY',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'SUGARCRM_MESSAGING_SYNC',
             'explanation' => 'CONFIG_OPTION_sugarcrm_default_company',
             'shared_hosting_restricted' => '0',

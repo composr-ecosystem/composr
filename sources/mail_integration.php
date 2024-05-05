@@ -440,7 +440,7 @@ abstract class EmailIntegration
                         'data' => null,
                         'cid' => isset($structure->id) ? $structure->id : null,
                         'cid_referenced' => false,
-                        'composr_id' => null,
+                        'cms_id' => null,
                     ];
                     return null;
                 }
@@ -458,7 +458,7 @@ abstract class EmailIntegration
                     'data' => $data,
                     'cid' => isset($structure->id) ? trim($structure->id, '<>') : null,
                     'cid_referenced' => false,
-                    'composr_id' => null,
+                    'cms_id' => null,
                 ];
 
                 $attachment_size_total += $structure->bytes;
@@ -713,14 +713,14 @@ abstract class EmailIntegration
 
             $attachment['data'] = null; // Not needed anymore
 
-            $attachment['composr_id'] = $attachment_id;
+            $attachment['cms_id'] = $attachment_id;
         }
 
         $this->substitute_cid_attachments($attachments, $body);
 
         foreach ($attachments as $filename => &$attachment) {
-            if ((!$attachment['cid_referenced']) && ($attachment['composr_id'] !== null)) {
-                $body .= "\n\n" . '[attachment framed="1" thumb="1"]' . strval($attachment['composr_id']) . '[/attachment]';
+            if ((!$attachment['cid_referenced']) && ($attachment['cms_id'] !== null)) {
+                $body .= "\n\n" . '[attachment framed="1" thumb="1"]' . strval($attachment['cms_id']) . '[/attachment]';
             }
         }
 
@@ -730,7 +730,7 @@ abstract class EmailIntegration
     }
 
     /**
-     * Substitute CID references with Composr attachments.
+     * Substitute CID references with software attachments.
      *
      * @param  array $attachments Attachments
      * @param  string $body Comcode body (altered by reference)
@@ -745,8 +745,8 @@ abstract class EmailIntegration
             foreach ($attachments as $filename => &$attachment) {
                 if ($attachment['cid'] === $cid) {
                     $attachment['cid_referenced'] = true;
-                    if ($attachment['composr_id'] !== null) {
-                        $rep = '[attachment thumb="0" framed="0"]' . strval($attachment['composr_id']) . '[/attachment]';
+                    if ($attachment['cms_id'] !== null) {
+                        $rep = '[attachment thumb="0" framed="0"]' . strval($attachment['cms_id']) . '[/attachment]';
                         $body = str_replace($matches[0][$i], $rep, $body);
                     }
                     continue 2;
@@ -760,8 +760,8 @@ abstract class EmailIntegration
             foreach ($attachments as $filename => &$attachment) {
                 if ($attachment['cid'] === $cid) {
                     $attachment['cid_referenced'] = true;
-                    if ($attachment['composr_id'] !== null) {
-                        $rep = $matches[1][$i] . find_script('attachment') . '?id=' . strval($attachment['composr_id']) . $matches[3][$i];
+                    if ($attachment['cms_id'] !== null) {
+                        $rep = $matches[1][$i] . find_script('attachment') . '?id=' . strval($attachment['cms_id']) . $matches[3][$i];
                         $body = str_replace($matches[0][$i], $rep, $body);
                     }
                     continue 2;

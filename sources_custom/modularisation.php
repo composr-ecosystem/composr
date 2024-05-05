@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 // If you edit this code (especially scan_modularisation), you may need to edit the unit test as well.
@@ -18,11 +18,11 @@
 function init__modularisation()
 {
     $error = new Tempcode();
-    if (!addon_installed__messaged('composr_release_build', $error)) {
+    if (!addon_installed__messaged('cms_release_build', $error)) {
         warn_exit($error);
     }
 
-    require_lang('composr_release_build');
+    require_lang('cms_release_build');
 
     global $MODULARISATION_ADDON_DATA;
     global $MODULARISATION_ISSUES_DATA;

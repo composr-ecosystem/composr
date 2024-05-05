@@ -28,7 +28,7 @@ class Hook_config_android_icon_name
         return [
             'human_name' => 'ANDROID_ICON_NAME',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'COMPOSR_MOBILE_SDK',
             'explanation' => 'CONFIG_OPTION_android_icon_name',
             'shared_hosting_restricted' => '0',

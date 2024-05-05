@@ -60,7 +60,7 @@ function reprocess_url(string $url, string $operation_base_url) : string
     // Download the document
     $ua = $_SERVER['HTTP_USER_AGENT'];
     if ($ua == '') {
-        $ua = 'Composr-integrator';
+        $ua = 'CMS-integrator';
     }
     $accept = $_SERVER['HTTP_ACCEPT'];
     if ($accept == '') {
@@ -130,7 +130,7 @@ function reprocess_url(string $url, string $operation_base_url) : string
         $body = '<div>' . $document . '</div>';
     }
 
-    // Link filtering, so as to make non-external/non-new-window hyperlinks link through the Composr module
+    // Link filtering, so as to make non-external/non-new-window hyperlinks link through the module
     $_self_url = build_url(['page' => '_SELF'], '_SELF', [], false, true);
     $self_url = $_self_url->evaluate();
     $expressions = [
@@ -178,7 +178,7 @@ function reprocess_url(string $url, string $operation_base_url) : string
         }
     }
 
-    // Moving of CSS sheet imports, etc, into Composr's head section
+    // Moving of CSS sheet imports, etc, into the software's head section
     if (preg_match('#<head[^<>]*>(.*)</head>#is', $document, $matches) != 0) {
         $head = $matches[1];
 

@@ -28,7 +28,7 @@ class Hook_config_confluence_cache_time
         return [
             'human_name' => 'CONFLUENCE_CACHE_TIME',
             'type' => 'integer',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'CONFLUENCE',
             'explanation' => 'CONFIG_OPTION_confluence_cache_time',
             'shared_hosting_restricted' => '0',

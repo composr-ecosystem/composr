@@ -531,7 +531,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     $data_buckets['operating_systems__stripped'][$month][''][$country][$os_stripped]++;
                 }
 
-                if ($web_browser != 'Composr') {
+                if ($web_browser != brand_name()) {
                     if (!isset($data_buckets['web_browsers'][$month][''][$country][$web_browser])) {
                         $data_buckets['web_browsers'][$month][''][$country][$web_browser] = 0;
                     }

@@ -42,7 +42,7 @@ function reinit_output_compression()
 }
 
 /**
- * Enable output compression, as per Composr configuration.
+ * Enable output compression, as per configuration.
  */
 function enable_output_compression()
 {

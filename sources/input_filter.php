@@ -82,7 +82,6 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
                 get_base_url() . '/',
                 get_forum_base_url() . '/',
                 get_brand_base_url() . '/',
-                'https://composr.app/',
             ];
             $trusted_sites = get_trusted_sites(2);
             foreach ($trusted_sites as $allowed) {
@@ -479,7 +478,7 @@ function filter_form_field_default(string $name, ?string $val, bool $live = fals
                 foreach ($_restrictions as $bits) {
                     list($restriction, $attributes) = $bits;
 
-                    if ((isset($attributes['error'])) && (substr($attributes['error'], 0, 1) == '!')) {
+                    if ((isset($attributes['error'])) && ($attributes['error'][0] == '!')) {
                         $attributes['error'] = do_lang(substr($attributes['error'], 1));
                     }
 

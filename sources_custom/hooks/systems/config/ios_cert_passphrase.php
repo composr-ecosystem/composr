@@ -28,7 +28,7 @@ class Hook_config_ios_cert_passphrase
         return [
             'human_name' => 'IOS_CERT_PASSPHRASE',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'COMPOSR_MOBILE_SDK',
             'explanation' => 'CONFIG_OPTION_ios_cert_passphrase',
             'shared_hosting_restricted' => '0',

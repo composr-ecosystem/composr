@@ -25,7 +25,7 @@
  */
 function static_cache__get_self_url_easy() : string
 {
-    // May not be called from Composr, so can't rely on Composr's normal fixup_bad_php_env_vars function having being called
+    // May not be called from the software, so can't rely on the software's normal fixup_bad_php_env_vars function having being called
     $self_url = '';
     if ((!empty($_SERVER['HTTP_HOST'])) && (!@cms_empty_safe($_SERVER['REQUEST_URI']))) {
         $self_url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];

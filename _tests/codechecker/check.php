@@ -70,7 +70,7 @@ function check_class($class)
         }
     }
 
-    /*if (($class['name'] !== null) && (substr($class['name'], 1) != strtolower(substr($class['name'], 1)))) {     Too Composr-specific
+    /*if (($class['name'] !== null) && (substr($class['name'], 1) != strtolower(substr($class['name'], 1)))) {     Too software-specific
         log_warning('Class names should be lower case apart from the first letter, \'' . $class['name'] . '\'');
     }*/
 
@@ -311,7 +311,7 @@ function check_function($function, $is_closure = false, $inside_class = false)
             log_warning('Function \'' . $function['name'] . '\' is missing a return statement with a value', $function['offset']);
         }
         if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && (!empty($LOCAL_VARIABLES['__return']['types'])) && (array_unique($LOCAL_VARIABLES['__return']['types']) != ['void'])) {
-            if (strpos($function['name'], 'init__') === false/*Composr-specific*/) {
+            if (strpos($function['name'], 'init__') === false/*software-specific*/) {
                 log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function returns void', $LOCAL_VARIABLES['__return']['first_mention']);
             }
         }

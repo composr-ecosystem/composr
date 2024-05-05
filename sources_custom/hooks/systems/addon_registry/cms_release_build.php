@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_release_build
+ * @package    cms_release_build
  */
 
 /**
  * Hook class.
  */
-class Hook_addon_registry_composr_release_build
+class Hook_addon_registry_cms_release_build // TODO: renamed; do we need upgrade code?
 {
     /**
      * Get a list of file permissions to set.
@@ -30,7 +30,7 @@ class Hook_addon_registry_composr_release_build
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -96,7 +96,7 @@ class Hook_addon_registry_composr_release_build
      */
     public function get_licence() : string
     {
-        return 'Licensed on the same terms as Composr';
+        return 'Licensed on the same terms as ' . brand_name();
     }
 
     /**
@@ -144,6 +144,7 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
                 'composr_tutorials',
             ],
             'conflicts_with' => [],
+            'previously_in_addon' => ['composr_release_build'],
         ];
     }
 
@@ -197,8 +198,8 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
             'exports/builds/hotfixes/index.html',
             'exports/builds/index.html',
             'install.sql',
-            'lang_custom/EN/composr_release_build.ini',
-            'sources_custom/hooks/systems/addon_registry/composr_release_build.php',
+            'lang_custom/EN/cms_release_build.ini',
+            'sources_custom/hooks/systems/addon_registry/cms_release_build.php',
             'sources_custom/hooks/systems/page_groupings/make_release.php',
             'sources_custom/make_release.php',
             'sources_custom/modularisation.php',

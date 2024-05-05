@@ -236,6 +236,6 @@ class Hook_fields_content_link
      */
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
-        return ''; // Content link values are Composr specific and meaningless for SEO
+        return ''; // Content link values are software specific and meaningless for SEO
     }
 }

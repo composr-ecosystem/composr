@@ -69,7 +69,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'action' => do_lang_tempcode('PRIVACY_ACTION_shippo'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_shippo'),
                 ],
-                ($tax_service == 'composr') ? null : [
+                ($tax_service == 'core') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER_ECOMMERCE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_TAX', escape_html($tax_service_label)),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_TAX'),

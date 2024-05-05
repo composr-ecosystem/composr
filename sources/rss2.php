@@ -31,7 +31,7 @@ function backend_cloud_script()
 
     // Closed site
     $site_closed = get_option('site_closed');
-    if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+    if (($site_closed != '0') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
         header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
@@ -74,7 +74,7 @@ function rss_backend_script()
 
     // Closed site
     $site_closed = get_option('site_closed');
-    if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!is_our_server(get_ip_address())) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+    if (($site_closed != '0') && (!has_privilege(get_member(), 'access_closed_site')) && (!is_our_server(get_ip_address())) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
         header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
@@ -163,6 +163,12 @@ function rss_backend_script()
             if ((get_forum_type() != 'cns') && (substr($feed, 0, 4) == 'cns_')) {
                 continue;
             }
+
+            // Feeds we do not want to present to those without the correct privilege
+            if (!$object->has_access(get_member())) {
+                continue;
+            }
+
             $feed_title = titleify($feed);
 
             // Try and get a better feed title

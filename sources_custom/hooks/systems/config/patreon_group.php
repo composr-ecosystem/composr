@@ -28,7 +28,7 @@ class Hook_config_patreon_group
         return [
             'human_name' => 'PATREON_GROUP',
             'type' => 'usergroup_not_guest',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'PATREON',
             'explanation' => 'CONFIG_OPTION_patreon_group',
             'shared_hosting_restricted' => '0',

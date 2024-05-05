@@ -1027,7 +1027,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_allow_audio_videos_VALUE_2
         CONFIG_OPTION_dashboard_actions
         CONFIG_OPTION_dashboard_checklist
-        CONFIG_OPTION_dashboard_composr_news
+        CONFIG_OPTION_dashboard_homesite_news
         CONFIG_OPTION_dashboard_db_notes
         CONFIG_OPTION_dashboard_forum_topics
         CONFIG_OPTION_dashboard_links
@@ -1043,7 +1043,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CSS_UNKNOWN_AT_BLOCK_RULE
         DASHBOARD_ACTIONS
         DASHBOARD_CHECKLIST
-        DASHBOARD_COMPOSR_NEWS
+        DASHBOARD_HOMESITE_NEWS
         DASHBOARD_DB_NOTES
         DASHBOARD_FORUM_TOPICS
         DASHBOARD_LINKS
@@ -3347,8 +3347,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COMPLEX_FIRST_PARAMETER
         COMPLEX_PRIVACY_OPTIONS
         COMPLEX_UPLOADER
-        COMPOSR_SETTINGS
-        COMPOSR_SITE_MERGER
+        CMS_SETTINGS
+        CMS_SITE_MERGER
         COMPRESSING
         CONCEDED_MODE_LINK
         CONFIGURATION
@@ -3356,11 +3356,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_CATEGORY_ACCESSIBILITY
         CONFIG_CATEGORY_ADMIN
         CONFIG_CATEGORY_BLOCKS
-        CONFIG_CATEGORY_COMPOSR_APIS
+        CONFIG_CATEGORY_CMS_APIS
         CONFIG_CATEGORY_DESCRIPTION__ACCESSIBILITY
         CONFIG_CATEGORY_DESCRIPTION__ADMIN
         CONFIG_CATEGORY_DESCRIPTION__BLOCKS
-        CONFIG_CATEGORY_DESCRIPTION__COMPOSR_APIS
+        CONFIG_CATEGORY_DESCRIPTION__CMS_APIS
         CONFIG_CATEGORY_DESCRIPTION__ECOMMERCE
         CONFIG_CATEGORY_DESCRIPTION__FEATURE
         CONFIG_CATEGORY_DESCRIPTION__FORUMS
@@ -8430,7 +8430,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TAXJAR_API_SANDBOX
         TAXJAR_NOT_CONFIGURED
         TAX_API_SERVICE
-        TAX_SERVICE_COMPOSR
+        TAX_SERVICE_CORE
         TAX_SERVICE_TAXCLOUD
         TAX_SERVICE_TAXJAR
         TAX_TJ
@@ -8495,16 +8495,17 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         IS_LOCKED_RUNNING
         DAYS_TO_KEEP__HTTP_LOG
         CONFIG_OPTION_days_to_keep__http_log
-        ADVERTISE_ON_COMPOSR_0
-        ADVERTISE_ON_COMPOSR_1
-        ADVERTISE_ON_COMPOSR_2
+        ADVERTISE_ON_HOMESITE_0
+        ADVERTISE_ON_HOMESITE_1
+        ADVERTISE_ON_HOMESITE_2
         CRON_UPGRADE_PENDING
-        DESCRIPTION_ADVERTISE_ON_COMPOSR
+        DESCRIPTION_ADVERTISE_ON_HOMESITE
         FIND_REMOTE_ADDONS_ERROR
         BACKUP_LOG_START
         LOG_LEVEL
         RELAYED
         ERROR_LOG_TRUNCATED
+        CLOSED_HIDE_HERO
     ')));
 
     $non_admin_files = [
@@ -8531,7 +8532,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADD_BOX
         ADD_LINK
         COMMENTS_DISABLED
-        IMAGES_AND_VIDEOS_IN
+        ENTRIES_IN
         PLAY_OR_PAUSE
         TOGGLE_FULLSCREEN
         SUBGALLERIES

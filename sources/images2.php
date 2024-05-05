@@ -25,7 +25,7 @@
  *
  * @param  URLPATH $full_url The full URL to the image which will-be/is thumbnailed
  * @param  URLPATH $thumb_url The URL to the thumbnail (blank: no thumbnail yet)
- * @param  ID_TEXT $thumb_dir The directory, relative to the Composr install's uploads directory, where the thumbnails are stored. MINUS "_thumbs"
+ * @param  ID_TEXT $thumb_dir The directory, relative to the software install's uploads directory, where the thumbnails are stored. MINUS "_thumbs"
  * @param  ID_TEXT $table The name of the table that is storing what we are doing the thumbnail for
  * @param  AUTO_LINK $id The ID of the table record that is storing what we are doing the thumbnail for
  * @param  ID_TEXT $image_field_name The name of the table field where thumbnails are saved
@@ -279,7 +279,7 @@ function convert_image_plus(string $orig_url, ?string $dimensions = null, string
  * @param  ?integer $width The maximum width we want our new image to be (null: don't factor this in)
  * @param  ?integer $height The maximum height we want our new image to be (null: don't factor this in)
  * @param  ?integer $box_size This is only considered if both $width and $height are null. If set, it will fit the image to a box of this dimension (suited for resizing both landscape and portraits fairly) (null: use width or height)
- * @param  boolean $exit_on_error Whether to exit Composr if an error occurs
+ * @param  boolean $exit_on_error Whether to exit the software if an error occurs
  * @param  ?string $ext2 The file extension representing the file type to save with (null: same as our input file)
  * @param  boolean $using_path Whether $from was in fact a path, not a URL
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images). Parameter is ignored for some $thumb_options combinations.
@@ -711,7 +711,7 @@ function _image_path_to_url(string $to_path) : string
  * Check we can load the given file, given our memory limit.
  *
  * @param  PATH $file_path The file path we are trying to load
- * @param  boolean $exit_on_error Whether to exit Composr if an error occurs
+ * @param  boolean $exit_on_error Whether to exit the software if an error occurs
  * @return boolean Success status
  */
 function check_memory_limit_for(string $file_path, bool $exit_on_error = true) : bool
@@ -1010,7 +1010,7 @@ function check_form_field_image(string $name, string $val, ?string $delete_on_er
                 foreach ($_restrictions as $bits) {
                     list($restriction, $attributes) = $bits;
 
-                    if ((isset($attributes['error'])) && (substr($attributes['error'], 0, 1) == '!')) {
+                    if ((isset($attributes['error'])) && ($attributes['error'][0] == '!')) {
                         $attributes['error'] = do_lang(substr($attributes['error'], 1));
                     }
 

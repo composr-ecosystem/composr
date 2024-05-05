@@ -28,7 +28,7 @@ class Hook_config_enable_notifications_instant_ios
         return [
             'human_name' => 'NOTIFICATIONS_INSTANT_IOS',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'COMPOSR_MOBILE_SDK',
             'explanation' => 'CONFIG_OPTION_enable_notifications_instant_ios',
             'shared_hosting_restricted' => '0',

@@ -37,16 +37,16 @@ PHP: 10.3.0.beta4         (only used when interfacing with PHP, not our standard
 */
 
 /**
- * Get information about new versions of Composr (or more accurately, what's wrong with this version).
+ * Get information about new versions of the software (or more accurately, what's wrong with this version).
  *
- * @return Tempcode Information about the installed Composr version
+ * @return Tempcode Information about the installed software version
  */
 function get_future_version_information() : object
 {
     require_lang('version');
 
     $version_dotted = get_param_string('keep_test_version', get_version_dotted()); // E.g. ?keep_test_version=10.RC29&keep_cache_blocks=0 to test
-    $url = 'https://composr.app/uploads/website_specific/composr.app/scripts/version.php?version=' . urlencode($version_dotted) . '&lang=' . urlencode(user_lang());
+    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/version.php?version=' . urlencode($version_dotted) . '&lang=' . urlencode(user_lang());
 
     static $http_result = null; // Cache
     if ($http_result === null) {
@@ -75,7 +75,7 @@ function get_future_version_information() : object
 }
 
 /**
- * Get branch version number for a Composr version.
+ * Get branch version number for a software version.
  * This is not used for much, it's a very special case.
  *
  * @param  ?float $general General version number (null: on disk version)
@@ -91,7 +91,7 @@ function get_version_branch(?float $general = null) : string
 }
 
 /**
- * Get dotted version from given Composr-version-registry (version.php) supplied components.
+ * Get dotted version from given software-version-registry (version.php) supplied components.
  *
  * @param  ?integer $main Main version number (null: on disk version)
  * @param  ?string $minor Minor version number (null: on disk version)
@@ -110,7 +110,7 @@ function get_version_dotted(?int $main = null, ?string $minor = null) : string
 }
 
 /**
- * Gets any random way of writing a version number (in all of Composr's history) and makes it a dotted style like "3.2.beta2".
+ * Gets any random way of writing a version number (in all of the software's history) and makes it a dotted style like "3.2.beta2".
  * Note that the dotted format is not compatible with PHP's version_compare function directly but $long_dotted_number_with_qualifier from get_version_components__from_dotted() is.
  *
  * @param  string $any_format Any reasonable input
@@ -122,7 +122,7 @@ function get_version_dotted__from_anything(string $any_format) : string
 
     // Strip useless bits
     $dotted = preg_replace('#[-\s]*(final|gold)#i', '', $dotted);
-    $dotted = preg_replace('#(Composr |version )*#i', '', $dotted);
+    $dotted = preg_replace('#(' . preg_quote(brand_name(), '#') . ' |version )*#i', '', $dotted);
     $dotted = trim($dotted);
 
     // Change dashes and spaces to dots
@@ -132,7 +132,7 @@ function get_version_dotted__from_anything(string $any_format) : string
         $dotted = preg_replace('#\.?' . preg_quote($qualifier, '#') . '\.?#i', '.' . $qualifier, $dotted);
     }
 
-    // Canonical to not have extra .0's on end. Don't really care about what Composr stores as we clean this up in our server's version.php - it is crucial that news post and download names are canonical though so version.php works. NB: Latest recommended versions are done via download name and description labelling.
+    // Canonical to not have extra .0's on end. Don't really care about what the software stores as we clean this up in our server's version.php - it is crucial that news post and download names are canonical though so version.php works. NB: Latest recommended versions are done via download name and description labelling.
     $dotted = preg_replace('#(\.0)+($|\.alpha|\.beta|\.RC)#', '$2', $dotted);
 
     return $dotted;
@@ -182,8 +182,8 @@ function get_version_components__from_dotted(string $dotted) : array
 }
 
 /**
- * Get a pretty version number for a Composr version.
- * This pretty style is not used in Composr code per se, but is shown to users and hence Composr may need to recognise it when searching news posts, download databases, etc.
+ * Get a pretty version number for a software version.
+ * This pretty style is not used in the software code per se, but is shown to users and hence the software may need to recognise it when searching news posts, download databases, etc.
  *
  * @param  string $dotted Dotted version number (optionally in long-dotted format)
  * @return string Pretty version number

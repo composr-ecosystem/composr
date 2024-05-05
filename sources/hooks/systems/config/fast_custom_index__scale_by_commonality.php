@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__scale_by_commonality
+class Hook_config_fast_custom_index__scale_by_commonality // TODO: renamed; needs upgrader migration
 {
     /**
      * Gets the details relating to the config option.

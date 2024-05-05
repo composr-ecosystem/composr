@@ -31,8 +31,8 @@ toolbar.push(['TextColor', 'BGColor']);
 if (precisionEditing) {
     toolbar.push(['Maximize', 'ShowBlocks', 'autoFormat']);
 }
-var useComposrToolbar = true;
-if (useComposrToolbar) {
+var useCMSToolbar = true;
+if (useCMSToolbar) {
     toolbar.push(['composr_block', 'composr_comcode', 'composr_quote', (precisionEditing ? 'composr_box' : null), 'composr_code']);
 }
 var editorSettings = {
@@ -40,7 +40,7 @@ var editorSettings = {
     uiColor: wysiwygColor,
     ocpTheme: $cms.getTheme(),
     removePlugins: 'sourcearea',
-    extraPlugins: 'showcomcodeblocks,spellchecktoggle' + (useComposrToolbar ? ',composr' : ''),
+    extraPlugins: 'showcomcodeblocks,spellchecktoggle' + (useCMSToolbar ? ',composr' : ''),
     /*{+START,IF,{$NEQ,{$CKEDITOR_PATH},data_custom/ckeditor}}*/
     customConfig: '',
     /*{+END}*/

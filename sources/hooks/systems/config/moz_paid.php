@@ -33,7 +33,7 @@ class Hook_config_moz_paid
         return [
             'human_name' => 'MOZ_PAID',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'MOZ_API',
             'explanation' => 'CONFIG_OPTION_moz_paid',
             'shared_hosting_restricted' => '0',

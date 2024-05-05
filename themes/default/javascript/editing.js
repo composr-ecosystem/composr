@@ -447,7 +447,7 @@
                 wysiwygColor += (parseInt(matches[5]) + 4) + matches[6];
             }
 
-            // Composr CSS needs passing to CKEditor
+            // Software CSS needs passing to CKEditor
             var pageStylesheets = [];
             var linkedSheets = document.getElementsByTagName('link');
             for (var counter = 0; counter < linkedSheets.length; counter++) {

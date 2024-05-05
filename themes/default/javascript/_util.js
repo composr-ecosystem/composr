@@ -1,4 +1,4 @@
-/* This file contains various utility functions that are not Composr-specific */
+/* This file contains various utility functions that are not software-specific */
 
 (function ($util) {
     'use strict';

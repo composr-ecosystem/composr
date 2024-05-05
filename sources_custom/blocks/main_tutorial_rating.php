@@ -59,8 +59,8 @@ class Block_main_tutorial_rating
         if (!addon_installed('composr_homesite_support_credits')) {
             return do_template('RED_ALERT', ['_GUID' => 'dopmcgzft9wr03wark2ydpfkwdzalztg', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits'))]);
         }
-        if (!addon_installed('composr_release_build')) {
-            return do_template('RED_ALERT', ['_GUID' => 'mz0bowx3abdddomvv19ps29mpcnolnak', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_release_build'))]);
+        if (!addon_installed('cms_release_build')) {
+            return do_template('RED_ALERT', ['_GUID' => 'mz0bowx3abdddomvv19ps29mpcnolnak', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_release_build'))]);
         }
 
         $block_id = get_block_id($map);

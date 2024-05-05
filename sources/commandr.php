@@ -47,7 +47,7 @@ function commandr_script()
     // Closed site
     if (!is_cli()) {
         $site_closed = get_option('site_closed');
-        if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+        if (($site_closed != '0') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
             http_response_code(503);
             prepare_backend_response('text/plain');
             @exit(get_option('closed'));

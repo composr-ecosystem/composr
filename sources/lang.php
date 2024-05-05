@@ -42,7 +42,7 @@ function init__lang()
      * @global boolean $LANGS_REQUESTED
      */
     $LANGS_REQUESTED = [];
-    // Tracks what has already been require'd and not deferred. This will not track all require_lang calls, as Composr will try and use the page's own lang cache first.
+    // Tracks what has already been require'd and not deferred. This will not track all require_lang calls, as the software will try and use the page's own lang cache first.
     $LANG_LOADED_LANG = []; // By lang pack and lang file
     $LANG_LOADED = []; // Just by lang file
 
@@ -159,7 +159,7 @@ function lang_load_runtime_processing()
  * @param  ?mixed $parameter2 The second parameter [string or Tempcode] (replaces {2}) (null: none, and ignore $parameter3)
  * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @param  ?LANGUAGE_NAME $lang The language to use (null: user's language)
- * @param  boolean $require_result Whether to cause Composr to exit if the lookup does not succeed
+ * @param  boolean $require_result Whether to cause the software to exit if the lookup does not succeed
  * @return ?mixed The human-readable content (null: not found). The same type as $parameter1.
  */
 function do_lang(string $codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, ?string $lang = null, bool $require_result = true)
@@ -168,7 +168,7 @@ function do_lang(string $codename, $parameter1 = null, $parameter2 = null, $para
 }
 
 /**
- * This function is called when no other language works, and it will return the original default language - 'EN'. You may change this to another language, but this is not advised, as Composr is being shipped with the EN language complete and unabridged as standard - hence you cannot go wrong if you leave it as EN.
+ * This function is called when no other language works, and it will return the original default language - 'EN'. You may change this to another language, but this is not advised, as the software is being shipped with the EN language complete and unabridged as standard - hence you cannot go wrong if you leave it as EN.
  * In theory, this is the only hook to English that there is.
  *
  * @return LANGUAGE_NAME The fallback language
@@ -451,8 +451,8 @@ function get_lang_member(int $member_id) : ?string
             }
             $map = cms_parse_ini_file_fast($map_file_b);
             if (!array_key_exists($lang, $map)) {
-                //fatal_exit('The specified language (' . $lang . ') is missing. The language needs installing/creating in Composr, or the language map file needs updating (to map this language to a known Composr one), or both.');
-                $_lang = null; // Instead of the above, let's just fallback to default! So people's weird forum integration doesn't make Composr die
+                //fatal_exit('The specified language (' . $lang . ') is missing. The language needs installing/creating in the software, or the language map file needs updating (to map this language to a known software one), or both.');
+                $_lang = null; // Instead of the above, let's just fallback to default! So people's weird forum integration doesn't make the software die
             } else {
                 $_lang = $map[$lang];
                 if ((!is_dir(get_file_base() . '/lang/' . $_lang)) && (!is_dir(get_custom_file_base() . '/lang_custom/' . $_lang)) && (!is_dir(get_file_base() . '/lang_custom/' . $_lang))) {
@@ -727,7 +727,7 @@ function protect_from_escaping($in) : object
  * @param  ?mixed $parameter2 The second parameter [string or Tempcode] (replaces {2}) (null: none, and ignore $parameter3)
  * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @param  ?LANGUAGE_NAME $lang The language to use (null: user's language)
- * @param  boolean $require_result Whether to cause Composr to exit if the lookup does not succeed
+ * @param  boolean $require_result Whether to cause the software to exit if the lookup does not succeed
  * @return ?mixed The human-readable content (null: not found). The same type as $parameter1.
  *
  * @ignore
@@ -813,7 +813,7 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
                 global $USER_LANG_LOOP, $REQUIRE_LANG_LOOP;
                 //print_r(debug_backtrace());
                 if ($USER_LANG_LOOP) {
-                    critical_error('RELAY', 'Missing language string codename: ' . escape_html($codename) . '. This language string codename is required to produce error messages, and thus a critical error was prompted by the non-ability to show less-critical error messages. It is likely the source language files (lang/' . fallback_lang() . '/*.ini) for Composr on this website have been corrupted.');
+                    critical_error('RELAY', 'Missing language string codename: ' . escape_html($codename) . '. This language string codename is required to produce error messages, and thus an English critical error was prompted by the non-ability to show less-critical error messages. It is likely the source language files (lang/' . fallback_lang() . '/*.ini) on this website have been corrupted.');
                 }
                 if ($REQUIRE_LANG_LOOP >= 2) {
                     return ''; // Probably failing to load global.ini, so just output with some text missing

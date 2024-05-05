@@ -28,7 +28,7 @@ class Hook_config_hybridauth_sync_avatar
         return [
             'human_name' => 'HYBRIDAUTH_SYNC_AVATAR',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'HYBRIDAUTH',
             'explanation' => 'CONFIG_OPTION_hybridauth_sync_avatar',
             'shared_hosting_restricted' => '0',

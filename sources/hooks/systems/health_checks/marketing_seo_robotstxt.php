@@ -136,20 +136,20 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         Standard block:
         User-Agent: *
         Disallow: /
-        Allow: /composr
+        Allow: /cms
         (Disallow takes precedence due to order of rules)
 
         Google block:
         User-Agent: *
         Allow: /
-        Disallow: /composr
+        Disallow: /cms
         (Disallow takes precedence due to specificity)
 
         Consistent block:
         User-Agent: *
-        Disallow: /composr
+        Disallow: /cms
         Allow: /
-        (Disallow takes precedence both due due to order of rules and specificity)
+        (Disallow takes precedence both due to order of rules and specificity)
         */
     }
 

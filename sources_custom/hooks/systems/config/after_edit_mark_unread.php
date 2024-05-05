@@ -28,7 +28,7 @@ class Hook_config_after_edit_mark_unread
         return [
             'human_name' => 'TAPATALK_AFTER_EDIT_MARK_UNREAD',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TAPATALK',
             'explanation' => 'CONFIG_OPTION_after_edit_mark_unread',
             'shared_hosting_restricted' => '0',

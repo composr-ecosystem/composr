@@ -35,7 +35,7 @@ class Hook_oauth_screen_sup_twitter
         $api_secret = get_option('twitter_api_secret');
 
         $configured = ($api_key != '') && ($api_secret != '');
-        $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'COMPOSR_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_config'), [], false, false, false, 'group-TWITTER');
+        $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'CMS_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_config'), [], false, false, false, 'group-TWITTER');
         $connected = (get_value('twitter_oauth_token', null, true) !== null) && (get_value('twitter_oauth_token_secret', null, true) !== null);
         $url = get_self_url(false, false, ['oauth_step' => 1], false, true);
 

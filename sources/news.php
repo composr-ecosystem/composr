@@ -19,7 +19,7 @@
  */
 
 /**
- * Load up some news category rows. We do this here because these are consumed in many areas of Composr so need some run-time caching.
+ * Load up some news category rows. We do this here because these are consumed in many areas of the software so need some run-time caching.
  *
  * @param  string $sql SQL defining what rows to load
  * @return array List of all rows cached (not just the ones loaded now)
@@ -76,12 +76,10 @@ function get_news_category_image_url(string $nc_img) : string
 {
     if ($nc_img == '') {
         $image = '';
+    } elseif (url_is_local($nc_img)) {
+        $image = get_custom_base_url() . '/' . $nc_img;
     } elseif (looks_like_url($nc_img)) {
         $image = $nc_img;
-
-        if (url_is_local($image)) {
-            $image = get_custom_base_url() . '/' . $image;
-        }
     } else {
         $image = find_theme_image($nc_img, true);
         if ($image === null) {

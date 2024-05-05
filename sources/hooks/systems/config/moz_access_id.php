@@ -33,7 +33,7 @@ class Hook_config_moz_access_id
         return [
             'human_name' => 'MOZ_ACCESS_ID',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'MOZ_API',
             'explanation' => 'CONFIG_OPTION_moz_access_id',
             'shared_hosting_restricted' => '0',

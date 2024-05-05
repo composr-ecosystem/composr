@@ -17,6 +17,8 @@
         "ext-zlib": "*",
         "ext-mysqli": "*",
         "ext-ftp": "*",
-        "ext-sodium": "*"
+        "ext-sodium": "*",
+        "ext-pspell": "*",
+        "ext-enchant": "*"
     }
 }

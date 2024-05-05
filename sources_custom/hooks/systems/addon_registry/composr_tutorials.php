@@ -30,7 +30,7 @@ class Hook_addon_registry_composr_tutorials
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -96,7 +96,7 @@ class Hook_addon_registry_composr_tutorials
      */
     public function get_licence() : string
     {
-        return 'Licensed on the same terms as Composr';
+        return 'Licensed on the same terms as ' . brand_name();
     }
 
     /**
@@ -141,7 +141,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'recommends' => [
                 'composr_homesite',
                 'composr_homesite_support_credits',
-                'composr_release_build',
+                'cms_release_build',
             ],
             'conflicts_with' => [],
         ];

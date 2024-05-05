@@ -28,7 +28,7 @@ class Hook_config_patreon_webhook_secret
         return [
             'human_name' => 'PATREON_WEBHOOK_SECRET',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'PATREON',
             'explanation' => 'CONFIG_OPTION_patreon_webhook_secret',
             'shared_hosting_restricted' => '0',

@@ -209,7 +209,7 @@ Of course, with all things, a sense of balance is important. An instinct/habit f
 
 The documentation and tools on the Composr website may be out of date between Composr versions.
 For the latest resources, see our repositories and work tools:
- - [url="GitLab"]{$COMPOSR_REPOS_URL}[/url] (contains Composr, automated tests, all unbundled addons and support tools)
+ - [url="GitLab"]{$CMS_REPOS_URL}[/url] (contains Composr, automated tests, all unbundled addons and support tools)
  - [url="Tracker"]{$BRAND_BASE_URL}/tracker/my_view_page.php[/url]
 
 {$SET,tutorial_tags,Development,PHP,testing_platform,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Contents and Introduction.}[block]main_tutorial_rating[/block]

@@ -28,7 +28,7 @@ class Hook_config_google_allow_signups
         return [
             'human_name' => 'GOOGLE_ALLOW_SIGNUPS',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'GOOGLE_API',
             'explanation' => 'CONFIG_OPTION_google_allow_signups',
             'shared_hosting_restricted' => '0',

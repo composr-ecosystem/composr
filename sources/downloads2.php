@@ -79,7 +79,7 @@ function dload_script()
 
     // Closed site
     $site_closed = get_option('site_closed');
-    if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+    if (($site_closed != '0') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
         header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
@@ -371,15 +371,15 @@ function add_download_category(string $category, ?int $parent_id, string $descri
  *
  * @param  AUTO_LINK $category_id The ID of the category being edited
  * @param  SHORT_TEXT $category The name of the download category
- * @param  AUTO_LINK $parent_id The parent download category
+ * @param  ?AUTO_LINK $parent_id The parent download category (null: root)
  * @param  LONG_TEXT $description A description
  * @param  LONG_TEXT $notes Hidden notes pertaining to this download category
- * @param  URLPATH $rep_image The representative image for the category (blank: none)
+ * @param  ?URLPATH $rep_image The representative image for the category (blank: none) (null: do not edit)
  * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit)
  * @param  ?TIME $add_time Add time (null: do not change)
  */
-function edit_download_category(int $category_id, string $category, int $parent_id, string $description, string $notes, string $rep_image, ?string $meta_keywords, ?string $meta_description, ?int $add_time = null)
+function edit_download_category(int $category_id, string $category, ?int $parent_id, string $description, string $notes, ?string $rep_image, ?string $meta_keywords, ?string $meta_description, ?int $add_time = null)
 {
     $under_category_id = $parent_id;
     while (($under_category_id !== null) && ($under_category_id != INTEGER_MAGIC_NULL)) {

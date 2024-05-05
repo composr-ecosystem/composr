@@ -598,7 +598,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             // Stuff there by default
             'american',
             'cms',
-            'composr',
+            cms_strtolower_ascii(brand_name()),
             'ecommerce',
             'facebook',
             'firstname',

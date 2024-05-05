@@ -33,7 +33,7 @@ class Hook_config_mapquest_geocoding_api_key
         return [
             'human_name' => 'MAPQUEST_GEOCODE_API_KEY',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'GEOCODING',
             'explanation' => 'CONFIG_OPTION_mapquest_geocoding_api_key',
             'shared_hosting_restricted' => '0',

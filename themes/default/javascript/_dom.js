@@ -3017,7 +3017,7 @@
     };
 
     /**
-     * Automatic resizing to make frames seamless. Composr calls this automatically. Make sure id&name attributes are defined on your iframes!
+     * Automatic resizing to make frames seamless. The software calls this automatically. Make sure id&name attributes are defined on your iframes!
      * @memberof $dom
      * @deprecated
      * @param name

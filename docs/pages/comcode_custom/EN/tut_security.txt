@@ -598,7 +598,7 @@ line from [tt]_config.php[/tt].
 It is best to remove it completely, not comment it out. This prevents maintenance password based logins to tools such as the code editor and upgrader.
 
 It means:
-1) If someone found a vulnerability that allowed them to read the hashed maintenance password out of [tt]_config.php[/tt], they could not use Composr-specific rainbow tables to get the original password and therefore login.
+1) If someone found a vulnerability that allowed them to read the hashed maintenance password out of [tt]_config.php[/tt], they could not use software-specific rainbow tables to get the original password and therefore login.
 2) Bruce force login attempts cannot work.
 
 [title="3"]Maintenance scripts[/title]

@@ -28,7 +28,7 @@ class Hook_config_confluence_password
         return [
             'human_name' => 'CONFLUENCE_PASSWORD',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'CONFLUENCE',
             'explanation' => 'CONFIG_OPTION_confluence_password',
             'shared_hosting_restricted' => '0',

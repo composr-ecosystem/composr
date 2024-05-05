@@ -51,7 +51,7 @@ function get_config_func($raw_params)
 
     $brand_name = get_value('rebrand_name');
     if ($brand_name === null) {
-        $brand_name = 'Composr';
+        $brand_name = DEFAULT_BRAND_NAME;
     }
 
     require_code('database_search');

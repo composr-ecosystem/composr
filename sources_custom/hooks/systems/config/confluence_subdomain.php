@@ -28,7 +28,7 @@ class Hook_config_confluence_subdomain
         return [
             'human_name' => 'CONFLUENCE_SUBDOMAIN',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'CONFLUENCE',
             'explanation' => 'CONFIG_OPTION_confluence_subdomain',
             'shared_hosting_restricted' => '0',

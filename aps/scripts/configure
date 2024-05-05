@@ -189,5 +189,5 @@ function enable_app() {
 }
 
 function disable_app() {
-    set_option('site_closed', '1');
+    set_option('site_closed', '2');
 }

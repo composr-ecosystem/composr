@@ -28,7 +28,7 @@ class Hook_config_facebook_secret_code
         return [
             'human_name' => 'FACEBOOK_SECRET',
             'type' => 'line',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'FACEBOOK',
             'explanation' => 'CONFIG_OPTION_facebook_secret_code',
             'shared_hosting_restricted' => '0',

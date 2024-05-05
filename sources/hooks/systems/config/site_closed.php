@@ -70,6 +70,7 @@ class Hook_config_site_closed
         $list = '';
         $list .= static_evaluate_tempcode(form_input_radio_entry($config_field_name, '0', '0' == get_option($name), do_lang('OPEN')));
         $list .= static_evaluate_tempcode(form_input_radio_entry($config_field_name, '1', '1' == get_option($name), do_lang('CLOSED')));
+        $list .= static_evaluate_tempcode(form_input_radio_entry($config_field_name, '2', '2' == get_option($name), do_lang('CLOSED_HIDE_HERO')));
         return form_input_radio($human_name, $explanation, $config_field_name, make_string_tempcode($list), true);
     }
 }

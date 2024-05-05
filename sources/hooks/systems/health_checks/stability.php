@@ -75,7 +75,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
         $path = get_custom_file_base() . '/data_custom/errorlog.php';
         if (filesize($path) >= 25) {
-            $this->stateCheckManual('Check the Composr error log');
+            $this->stateCheckManual('Check the software error log');
         }
 
         $this->stateCheckManual('Check the web server error logs, e.g. for 404 errors you may want to serve via a redirect');

@@ -21,14 +21,14 @@
 /*
 Resource-fs serves the 'var' parts of Commandr-fs. It binds Commandr-fs to a property/JSON-based content model.
 
-A programmer can also directly talk to Resource-fs to do abstracted CRUD operations on just about any kind of Composr resource.
+A programmer can also directly talk to Resource-fs to do abstracted CRUD operations on just about any kind of resource.
 i.e. Perform generalised operations on resource types without needing to know their individual APIs.
 
-The user knows all of Commandr-fs as "The Composr Repository".
+The user knows all of Commandr-fs as "The Software Repository".
 */
 
 /*
-In Composr we have cms_merge and we have Resource-fs.
+In the software we have cms_merge and we have Resource-fs.
 
 Resource-fs is intended for staging site functionality and backups, mainly.
 cms_merge is intended to merge disparate sites in a more complete way.

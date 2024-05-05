@@ -269,7 +269,7 @@ function rebuild_sitemap_index()
  * Ping search engines with an updated sitemap.
  *
  * @param  URLPATH $url Sitemap URL
- * @param  boolean $trigger_error Whether to throw a Composr error, on error
+ * @param  boolean $trigger_error Whether to throw a software error, on error
  * @return string HTTP result output
  */
 function ping_sitemap_xml(string $url, bool $trigger_error = false) : string

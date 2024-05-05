@@ -28,22 +28,22 @@ class aaa_modularisation_test_set extends cms_test_case
     {
         parent::setUp();
 
-        if (!addon_installed('composr_release_build')) {
-            $this->assertTrue(false, 'This test requires the composr_release_build addon to be installed.');
+        if (!addon_installed('cms_release_build')) {
+            $this->assertTrue(false, 'This test requires the cms_release_build addon to be installed.');
             return;
         }
 
         $message = 'You can run the modularisation tool in the admin_modularisation module (under Admin Zone > Tools) to fix most of these issues automatically.';
         $this->dump($message, 'INFO:');
 
-        require_lang('composr_release_build');
+        require_lang('cms_release_build');
         require_code('modularisation');
     }
 
     public function testModularisation()
     {
-        if (!addon_installed('composr_release_build')) {
-            $this->assertTrue(false, 'This test requires the composr_release_build addon to be installed.');
+        if (!addon_installed('cms_release_build')) {
+            $this->assertTrue(false, 'This test requires the cms_release_build addon to be installed.');
             return;
         }
 

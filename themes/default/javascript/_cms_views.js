@@ -1278,17 +1278,17 @@
 
         /* Software Chat */
         loadSoftwareChat: function () {
-            var url = 'https://kiwiirc.com/client/irc.composr.app/?nick=';
+            var url = 'https://kiwiirc.com/client/irc.composr.app/?nick='; // TODO: add configuration option for this, possibly in rebrand
             if ($cms.getUsername() !== 'admin') {
                 url += encodeURIComponent($cms.getUsername().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
             } else {
                 url += encodeURIComponent($cms.getSiteName().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
             }
-            url += '#composrcms';
+            url += '#composrcms'; // TODO: add configuration option for this, possibly in rebrand
 
             var bi = document.getElementById('main-website-inner');
 
-            var SOFTWARE_CHAT_EXTRA = $util.format('{!SOFTWARE_CHAT_EXTRA;^}', [$cms.filter.html(window.location.href.replace($cms.getBaseUrl(), 'http://baseurl'))]);
+            var SOFTWARE_CHAT_EXTRA = $util.format('{!SOFTWARE_CHAT_EXTRA;^}', [$cms.filter.html($cms.getBrandBaseUrl())]);
             var html = /** @lang HTML */'' +
                 '<div class="software-chat">' +
                 '   <h2>{!CMS_COMMUNITY_HELP}</h2>' +

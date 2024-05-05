@@ -25,11 +25,11 @@ Notifications are one-off messages sent out in response to something happening o
 Notifications may optionally create a support ticket, in which case a ticket link will be auto-appended to anyone having access as a support ticket operator. This should be used sparingly - it should only be particularly eventful stuff that spawns this.
 People may get an RSS feed of notifications if they enable notifications via PT, as PTs have an RSS feed - that may then be connected to Growl, IM, or whatever service they may enjoy using (kind of quirky, but some power users enjoy this for the cool factor). It's good that we support the standards, without too much complexity.
 
-There is a separate Composr action log, called via log_it. This is not related to the notifications system, although staff may choose a notification when anything is added to the action log.
-Similarly, there is the Composr activities syndication system. This is not related either, but again notifications may be generated through this.
+There is a separate software action log, called via log_it or cms_mod_log_it. This is not related to the notifications system, although staff may choose a notification when anything is added to the action log.
+Similarly, there is the activities syndication system. This is not related either, but again notifications may be generated through this.
 The Admin Zone dashboard shows tasks. These are not the same thing as notifications, although notifications may have been sent when they were set up (specifically there is a notification for when custom tasks have been added).
 
-There are RSS feeds in Composr. These are completely unrelated to notifications, although can be used in a similar way (in that they'll change when the website content changes, so a polling RSS reader can detect new content).
+There are RSS feeds in the software. These are completely unrelated to notifications, although can be used in a similar way (in that they'll change when the website content changes, so a polling RSS reader can detect new content).
 Similarly, there is "realtime rain".
 There is "what's new" and the newsletter, where again are separate.
 
@@ -85,7 +85,7 @@ function init__notifications()
  * @param  ?mixed $parameter2 The second parameter [string or Tempcode] (replaces {2}) (null: none)
  * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @param  ?LANGUAGE_NAME $lang The language to use (null: user's language)
- * @param  boolean $require_result Whether to cause Composr to exit if the lookup does not succeed
+ * @param  boolean $require_result Whether to cause the software to exit if the lookup does not succeed
  * @return ?mixed The human-readable content (null: not found). The same type as $parameter1.
  */
 function do_notification_lang(string $codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, ?string $lang = null, bool $require_result = true)
@@ -131,7 +131,7 @@ function do_notification_template(string $codename, ?array $parameters = null, ?
 /**
  * Send out a notification to members enabled.
  *
- * @param  ID_TEXT $notification_code The notification code to use. May be prefixed with the filename for faster performance where the filename doesn't match the code (allows Composr to find the hook without scanning all notification hooks), i.e. filename:code.
+ * @param  ID_TEXT $notification_code The notification code to use. May be prefixed with the filename for faster performance where the filename doesn't match the code (allows the software to find the hook without scanning all notification hooks), i.e. filename:code.
  * @param  ?SHORT_TEXT $code_category The category within the notification code (null: none)
  * @param  SHORT_TEXT $subject Message subject (in Comcode)
  * @param  LONG_TEXT $message Message body (in Comcode)

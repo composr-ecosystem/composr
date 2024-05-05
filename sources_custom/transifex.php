@@ -183,7 +183,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
         'description' => 'Community translation for Composr CMS ' . strval(cms_version()),
         'private' => false,
         'license' => 'permissive_open_source',
-        'repository_url' => COMPOSR_REPOS_URL,
+        'repository_url' => CMS_REPOS_URL,
         'organization' => 'ocproducts',
         'team' => 39268, // This is a hard-coded known value for the ocProducts organisation
         'fill_up_resources' => true,
@@ -672,7 +672,7 @@ class Hook_addon_registry_language_{$lang}
     }
 
     /**
-     * Get the version of Composr this addon is for.
+     * Get the version of the software this addon is for.
      *
      * @return float Version number
      */
@@ -718,7 +718,7 @@ class Hook_addon_registry_language_{$lang}
      */
     public function get_licence() : string
     {
-        return 'Licensed on the same terms as Composr';
+        return 'Licensed on the same terms as ' . brand_name();
     }
 
     /**

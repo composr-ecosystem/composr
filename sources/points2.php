@@ -500,7 +500,7 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
 
 /**
  * Adjust a custom profile field for points and update the cache.
- * This API method should never be called outside _points_transact as doing so violates the tenets of the points system.
+ * This API method should normally never be called outside _points_transact as doing so violates the tenets of the points system.
  *
  * @param  MEMBER $member_id The member to adjust
  * @param  ID_TEXT $field_name The custom field to adjust

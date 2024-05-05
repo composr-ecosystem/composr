@@ -28,7 +28,7 @@ class Hook_config_twitter_allow_signups
         return [
             'human_name' => 'TWITTER_ALLOW_SIGNUPS',
             'type' => 'tick',
-            'category' => 'COMPOSR_APIS',
+            'category' => 'CMS_APIS',
             'group' => 'TWITTER_OAUTH',
             'explanation' => 'CONFIG_OPTION_twitter_allow_signups',
             'shared_hosting_restricted' => '0',

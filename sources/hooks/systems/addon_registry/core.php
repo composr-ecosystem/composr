@@ -35,7 +35,7 @@ class Hook_addon_registry_core
     }
 
     /**
-     * Get the version of Composr this addon is for (used in generating the TAR filename).
+     * Get the version of the software this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -81,7 +81,7 @@ class Hook_addon_registry_core
      */
     public function get_description() : string
     {
-        return '(Core Composr code)';
+        return '(Core ' . brand_name() . ' code)';
     }
 
     /**
@@ -2000,6 +2000,8 @@ class Hook_addon_registry_core
             'uploads/repimages/index.html',
             'uploads/website_specific/index.html',
             'web.config',
+            'sources/hooks/systems/site_html_pages/.htaccess',
+            'sources/hooks/systems/site_html_pages/index.html',
         ];
     }
 
