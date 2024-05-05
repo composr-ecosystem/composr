@@ -8532,7 +8532,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADD_BOX
         ADD_LINK
         COMMENTS_DISABLED
-        IMAGES_AND_VIDEOS_IN
+        ENTRIES_IN
         PLAY_OR_PAUSE
         TOGGLE_FULLSCREEN
         SUBGALLERIES
