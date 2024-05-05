@@ -438,7 +438,7 @@ function server__public__relay_error_notification()
     $_error_hash = preg_replace('/do_runtime_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode uses unique IDs
     $_error_hash = preg_replace('/string_attach_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode uses unique IDs
     $_error_hash = preg_replace('/\$(keep_)?tpl_funcs\[\'([^\'\]]*)\'\]/i', '', $_error_hash); // Tempcode uses unique IDs
-    $_error_hash = preg_replace('/([\d,\.]*) (second|seconds|minute|minutes|hour|hours|day|days|month|months|week|weeks|year|years) ago/i', '', $_error_hash); // Contextual dates
+    $_error_hash = preg_replace('/([\d,\.])* (second|seconds|minute|minutes|hour|hours|day|days|month|months|week|weeks|year|years) ago/i', '', $_error_hash); // Contextual dates
 
     // Actual generate the hash with what we have left
     $error_hash = md5($_error_hash);
