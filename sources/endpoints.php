@@ -91,15 +91,61 @@ function endpoint_script()
         }
 
         // GET params take priority
-        $hook_type = get_param_string('hook_type', $hook_type);
-        $hook = get_param_string('hook', $hook);
+        $hook_type = filter_naughty_harsh(get_param_string('hook_type', $hook_type), true);
+        $hook = filter_naughty_harsh(get_param_string('hook', $hook), true);
         $type = get_param_string('type', $type);
         $id = get_param_string('id', $id);
         $response_type = get_param_string('response_type', $response_type);
 
-        // Call appropriate hook to handle
-        require_code('hooks/endpoints/' . filter_naughty_harsh($hook_type, true) . '/' . filter_naughty_harsh($hook, true));
-        $ob = object_factory('Hook_endpoint_' . filter_naughty_harsh($hook_type, true) . '_' . filter_naughty_harsh($hook, true));
+        // Get hook info
+        $ob = get_hook_ob('endpoints', $hook_type, $hook, 'Hook_endpoint_' . $hook_type . '_');
+        $info = $ob->info($type, $id);
+
+        // Authorize if the endpoint requires it
+        if (isset($info['authorization']) && ($info['authorization'] !== false)) {
+            $authorized = false;
+            $member = null;
+
+            // Try member authorization
+            if (!empty(array_intersect(['member', 'staff', 'super_admin'], $info['authorization']))) {
+                if (!@cms_empty_safe($_SERVER['PHP_AUTH_USER']) && !@cms_empty_safe($_SERVER['PHP_AUTH_PW'])) {
+                    $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($_SERVER['PHP_AUTH_USER'], null, $_SERVER['PHP_AUTH_PW']);
+                    $member = $login_array['id'];
+                    if ($member !== null) {
+                        if (in_array('member', $info['authorization'])) {
+                            $authorized = true;
+                        } elseif (in_array('staff', $info['authorization'])) {
+                            $authorized = $GLOBALS['FORUM_DRIVER']->is_staff($member);
+                        } elseif (in_array('super_admin', $info['authorization'])) {
+                            $authorized = $GLOBALS['FORUM_DRIVER']->is_super_admin($member);
+                        }
+                    }
+                }
+            }
+
+            // Try maintenance password authorization (should be last as this may cause an exit on failure)
+            if ((!$authorized) && in_array('maintenance_password', $info['authorization']) && (preg_match('#^Basic #', $_SERVER['HTTP_AUTHORIZATION']) != 0)) {
+                $password_given = base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6));
+                if (strpos($password_given, STRING_MAGIC_NULL_BASE64) === 0) { // STRING_MAGIC_NULL is used to indicate no username
+                    $password_given = substr($password_given, strlen(STRING_MAGIC_NULL_BASE64));
+                }
+                require_code('crypt_master');
+                if (check_maintenance_password($password_given)) {
+                    $authorized = true;
+                    require_code('users_active_actions');
+                    $member = get_first_admin_user();
+                }
+            }
+
+            if (($authorized) && ($member !== null)) {
+                require_code('users_inactive_occasionals');
+                create_session($member);
+            } else {
+                access_denied();
+            }
+        }
+
+        // Run the endpoint
         $result = $ob->run($type, $id);
 
         // Process into output structure

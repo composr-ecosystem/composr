@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 function get_homesite_support_timings_wrap($open, $topic_id, $ticket_type_name, $say_more = false)

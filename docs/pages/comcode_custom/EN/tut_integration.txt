@@ -72,6 +72,8 @@ To clarify, the following linking situations confuse Composr:
  - page trees that go more than one level deep
  - links that go back up a page tree
 
+If you need advanced parsing functionality, whether to rewrite links/HTML in other ways or to do other processing, you can write hooks under [tt]sources_custom/hooks/systems/site_html_pages[/tt]. It accepts a run() method which receives the parameters $html (passed by reference, so you can modify the HTML output), $string (relative path to the page), and $file_base (base path used to access the page).
+
 [title="2"]Embedding into Composr[/title]
 
 If you wish for the other system to appear directly inside Composr, much like a Composr page, this is a lot more awkward.

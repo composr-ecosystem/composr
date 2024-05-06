@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('patreon')) {
-    return do_template('RED_ALERT', ['_GUID' => 'h0u9px8wh68nroz053xjgygly0aalnzi', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'h0u9px8wh68nroz053xjgygly0aalnzi', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
 }
 
 require_code('patreon');

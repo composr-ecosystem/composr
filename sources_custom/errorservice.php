@@ -10,29 +10,8 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
-
-/**
- * Handler for composr.app error message web service.
- */
-function get_problem_match_script()
-{
-    if (!addon_installed('composr_homesite')) {
-        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite')));
-    }
-
-    header('Content-Type: text/plain; charset=' . get_charset());
-
-    $version = get_param_string('version');
-    $error_message = post_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);
-    $error_message = html_entity_decode($error_message);
-
-    $output = get_problem_match_nearest($error_message);
-    if ($output !== null) {
-        echo $output;
-    }
-}
 
 /**
  * Find a match for a problem in the database.
@@ -48,7 +27,7 @@ function get_problem_match_nearest(string $error_message) : ?string
 
     // Find matches. Stored in a spreadsheet file.
     $matches = [];
-    $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/uploads/website_specific/composr.app/errorservice.csv');
+    $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/uploads/website_specific/cms_homesite/errorservice.csv');
     while (($row = $sheet_reader->read_row()) !== false) {
         $message = $row['Message'];
         $summary = $row['Summary'];

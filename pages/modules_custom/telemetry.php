@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
@@ -33,7 +33,7 @@ class Module_telemetry
         $info['version'] = 1;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'composr_homesite';
+        $info['addon'] = 'cms_homesite';
         return $info;
     }
 
@@ -63,13 +63,13 @@ class Module_telemetry
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('composr_homesite', $error_msg)) {
+        if (!addon_installed__messaged('cms_homesite', $error_msg)) {
             return $error_msg;
         }
 
         $id = get_param_integer('type');
 
-        require_lang('composr_homesite');
+        require_lang('cms_homesite');
 
         $this->title = get_screen_title('RELAYED_ERROR', true, [escape_html(integer_format($id))]);
 
@@ -83,7 +83,7 @@ class Module_telemetry
      */
     public function run() : object
     {
-        require_lang('composr_homesite');
+        require_lang('cms_homesite');
         return $this->view();
     }
 

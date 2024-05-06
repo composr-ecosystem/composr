@@ -10,19 +10,19 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 $error_msg = new Tempcode();
-if (!addon_installed__messaged('composr_homesite', $error_msg)) {
+if (!addon_installed__messaged('cms_homesite', $error_msg)) {
     return $error_msg;
 }
 
 // (Call with &test_mode=1 to use test data)
 
-require_code('composr_homesite');
+require_code('cms_homesite');
 require_code('files');
 require_code('files2');
 require_code('diff');
@@ -33,7 +33,7 @@ $releases = get_release_tree();
 // ==================
 
 foreach ($releases as $version => $release) {
-    $full_path = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $version;
+    $full_path = get_file_base() . '/uploads/website_specific/cms_homesite/upgrades/full/' . $version;
 
     if (file_exists($full_path)) {
         continue;
@@ -120,7 +120,7 @@ $all_files_processed = [];
 foreach ($special_file_types as $label => $_search) {
     list($search_path, $search_ext) = $_search;
 
-    $path = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $last_version;
+    $path = get_file_base() . '/uploads/website_specific/cms_homesite/upgrades/full/' . $last_version;
     $deep_path = $path . (($search_path == '') ? '' : ('/' . $search_path));
 
     $_files = get_directory_contents($deep_path);
@@ -219,7 +219,7 @@ foreach (array_keys($releases) as $version) {
         continue;
     }
 
-    $path_new = get_file_base() . '/uploads/website_specific/composr.app/upgrades/full/' . $version;
+    $path_new = get_file_base() . '/uploads/website_specific/cms_homesite/upgrades/full/' . $version;
     $version_new = $version;
 
     if ($path_old !== null) {

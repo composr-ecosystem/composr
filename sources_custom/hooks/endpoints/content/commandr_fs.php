@@ -19,6 +19,20 @@
 class Hook_endpoint_content_commandr_fs
 {
     /**
+     * Return information about this endpoint.
+     *
+     * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
+     * @param  ?string $id Standard ID parameter (null: not-set)
+     * @return array Info about the hook
+     */
+    public function info(?string $type, ?string $id) : array
+    {
+        return [
+            'authorization' => false,
+        ];
+    }
+
+    /**
      * Run an API endpoint.
      *
      * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)

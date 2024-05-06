@@ -58,7 +58,6 @@ class __debrand_epic_test_set extends cms_test_case
             // TODO: temporary exclusions
             'code_editor.php',
             'sources/critical_errors.php',
-            'uploads/website_specific/composr.app/upgrades/make_upgrader.php', // Has site-specific error messages for the time being
         ]);
         $regex_exceptions = [
             '/composr[^\.]/i' => [
@@ -84,7 +83,7 @@ class __debrand_epic_test_set extends cms_test_case
                 '/' . preg_quote('\'previously_in_addon\' => [', '/') . '[^\]*]composr[^\]*]\]/i', // Renamed addons
 
                 // TODO: temporary exclusions
-                '/composr_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
+                '/cms_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
                 '/composr_mobile_sdk/', // Would be too complicated to rename / debrand at this time
                 '/X\-Powered\-By: Composr/i', // TODO: Should we explicitly leave this as Composr to indicate what even rebranded installs are running or were based off?
                 '/You may not distribute a modified version of this file\, unless it is solely as a Composr modification/', // homesite copyright (should this be modified?)
@@ -147,7 +146,7 @@ class __debrand_epic_test_set extends cms_test_case
         $regex_exceptions = [
             '/composr[^\.]/i' => [
                 // TODO: temporary exclusions
-                '/composr_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
+                '/cms_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
             ],
 
             '/composr\.app/i' => [
@@ -196,7 +195,7 @@ class __debrand_epic_test_set extends cms_test_case
         $regex_exceptions = [
             '/composr[^\.]/i' => [
                 // TODO: temporary exclusions
-                '/composr_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
+                '/cms_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
                 '/aceComposrLoader/',
             ],
 
@@ -244,7 +243,7 @@ class __debrand_epic_test_set extends cms_test_case
         $regex_exceptions = [
             '/composr[^\.]/i' => [
                 // TODO: temporary exclusions
-                '/composr_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
+                '/cms_homesite/', // Would be too complicated to rename / debrand at this time (same for other homesite addons)
             ],
 
             '/composr\.app/i' => [

@@ -46,24 +46,25 @@ function get_future_version_information() : object
     require_lang('version');
 
     $version_dotted = get_param_string('keep_test_version', get_version_dotted()); // E.g. ?keep_test_version=10.RC29&keep_cache_blocks=0 to test
-    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/version.php?version=' . urlencode($version_dotted) . '&lang=' . urlencode(user_lang());
+    $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/version/' . urlencode($version_dotted) . '/?lang=' . urlencode(user_lang());
 
-    static $http_result = null; // Cache
+    static $_http_result = null; // Cache
+    $http_result = null;
     if ($http_result === null) {
         require_code('http');
-        $http_result = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0);
+        $_http_result = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0);
     }
+    $http_result = @json_decode($_http_result[0], true);
 
-    if (is_array($http_result) && isset($http_result[0])) {
-        $data = $http_result[0];
-        $data = str_replace('"../upgrader.php"', '"' . get_base_url() . '/upgrader.php"', $data);
+    if ($http_result && ($http_result['success'] === true)) {
+        $data = str_replace('"../upgrader.php"', '"' . get_base_url() . '/upgrader.php"', $http_result['response_data']['html']);
 
         if ($GLOBALS['XSS_DETECT']) {
             ocp_mark_as_escaped($data);
         }
 
         require_code('character_sets');
-        $data = convert_to_internal_encoding($data, $http_result[8]);
+        $data = convert_to_internal_encoding($data, $_http_result[8]);
 
         $table = make_string_tempcode($data);
     } else {

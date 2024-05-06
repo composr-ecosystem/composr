@@ -592,7 +592,7 @@ function step_3() : object
     }
     if (($email != '') || ($advertise_on == 2)) {
         require_code('files');
-        http_get_contents('https://composr.app/uploads/website_specific/composr.app/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . (($advertise_on == 2) ? '1' : '0') . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
+        http_get_contents('https://composr.app/data/endpoint.php/cms_homesite/newsletter/?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . (($advertise_on == 2) ? '1' : '0') . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
     }
 
     // Forum chooser

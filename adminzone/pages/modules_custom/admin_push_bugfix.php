@@ -730,16 +730,8 @@ class Module_admin_push_bugfix
      */
     protected function get_tracker_categories() : ?array
     {
-        $args = func_get_args();
-        $result = $this->make_call(__FUNCTION__, ['parameters' => $args]);
-        if (empty($result)) {
-            return null;
-        }
-        $ret = @json_decode($result, true);
-        if ($ret === false) {
-            return null;
-        }
-        return $ret;
+        $result = $this->make_call('tracker_categories', null);
+        return $result;
     }
 
     /**
@@ -760,12 +752,20 @@ class Module_admin_push_bugfix
             return 123;
         }
 
-        $args = func_get_args();
-        $result = $this->make_call(__FUNCTION__, ['parameters' => $args]);
+        $post = [
+            'version_dotted' => $version_dotted,
+            'tracker_title' => $tracker_title,
+            'tracker_message' => $tracker_message,
+            'tracker_additional' => $tracker_additional,
+            'tracker_severity' => $tracker_severity,
+            'tracker_category' => $tracker_category,
+            'tracker_project' => $tracker_project
+        ];
+        $result = $this->make_call('tracker_issues', $post);
         if (cms_empty_safe($result)) {
             return null;
         }
-        return intval($result);
+        return intval($result['id']);
     }
 
     /**
@@ -785,12 +785,19 @@ class Module_admin_push_bugfix
             return 123;
         }
 
-        $args = func_get_args();
-        $result = $this->make_call(__FUNCTION__, ['parameters' => $args]);
-        if (!is_numeric($result)) {
+        $post = [
+            'tracker_id' => $tracker_id,
+            'tracker_comment_message' => $tracker_comment_message,
+            'version_dotted' => $version_dotted,
+            'tracker_severity' => $tracker_severity,
+            'tracker_category' => $tracker_category,
+            'tracker_project' => $tracker_project
+        ];
+        $result = $this->make_call('tracker_posts', $post);
+        if (cms_empty_safe($result)) {
             return null;
         }
-        return intval($result);
+        return intval($result['id']);
     }
 
     /**
@@ -806,11 +813,18 @@ class Module_admin_push_bugfix
             return 123;
         }
 
-        $result = $this->make_call('upload_to_tracker_issue', ['parameters' => [$tracker_id]], $tar_path);
-        if (!is_numeric($result)) {
+        $put = [
+            'PUT_id' => $tracker_id,
+            // Upload will be filled in by make_call
+        ];
+        $result = $this->make_call('tracker_issues', $put, $tar_path);
+        if (cms_empty_safe($result)) {
             return null;
         }
-        return intval($result);
+        if (!isset($result['upload'])) {
+            return null;
+        }
+        return intval($result['upload']);
     }
 
     /**
@@ -825,9 +839,15 @@ class Module_admin_push_bugfix
             return true;
         }
 
-        $args = func_get_args();
-        $result = $this->make_call(__FUNCTION__, ['parameters' => $args]);
-        return ($result === '1');
+        $put = [
+            'PUT_id' => $tracker_id,
+            'close' => 1
+        ];
+        $result = $this->make_call('tracker_issues', $put);
+        if (cms_empty_safe($result)) {
+            return false;
+        }
+        return $result['success'];
     }
 
     /**
@@ -845,12 +865,17 @@ class Module_admin_push_bugfix
             return 123;
         }
 
-        $args = func_get_args();
-        $result = $this->make_call(__FUNCTION__, ['parameters' => $args]);
-        if (!is_numeric($result)) {
+        $post = [
+            'replying_to_post' => $replying_to_post,
+            'post_reply_title' => $post_reply_title,
+            'post_reply_message' => $post_reply_message,
+            'post_important' => $post_important,
+        ];
+        $result = $this->make_call('forum_posts', $post);
+        if (cms_empty_safe($result)) {
             return null;
         }
-        return intval($result);
+        return intval($result['id']);
     }
 
     /**
@@ -906,14 +931,26 @@ class Module_admin_push_bugfix
      * Make an API call to the software homesite.
      *
      * @param  ID_TEXT $call The function to call
-     * @param  ?array $post_params POST parameters to send with the request (null: none, and use a GET request)
+     * @param  ?array $post_params POST parameters to send with the request (PUT_id: use a PUT request) (null: none, and use a GET request)
      * @param  ?PATH $file The path to the file to upload with the request (null: do not upload a file)
-     * @return ?string The results of the call (null: error)
+     * @return ?array The results of the call (null: error)
      */
-    protected function make_call(string $call, ?array $post_params, ?string $file = null) : ?string
+    protected function make_call(string $call, ?array $post_params, ?string $file = null) : ?array
     {
+        $type = 'GET';
+        $id = null;
         if ($post_params !== null) {
+            $type = 'POST';
             foreach ($post_params as $key => $param) {
+                if ($key == 'PUT_id') {
+                    $type == 'PUT';
+                    $id = $param;
+                    unset($post_params['PUT_id']);
+                    if (count($post_params) == 0) {
+                        $post_params = null;
+                    }
+                    continue;
+                }
                 if (is_array($param)) {
                     foreach ($param as $i => $val) {
                         $post_params[$key . '[' . strval($i) . ']'] = @strval($val);
@@ -923,26 +960,38 @@ class Module_admin_push_bugfix
             }
         }
 
+
+        $auth = null;
         $_username = post_param_string('username', null, INPUT_FILTER_POST_IDENTIFIER);
-        if ($_username !== null) {
-            $_password = post_param_string('password', '', INPUT_FILTER_PASSWORD);
-            if ($post_params === null) {
-                $post_params = [];
-            }
-            $post_params['password'] = ($_username == '') ? $_password : ($_username . ':' . $_password);
+        $_password = post_param_string('password', '', INPUT_FILTER_PASSWORD);
+        if ($_username !== null) { // Member auth
+            $auth = [$_username, $_password];
+        } elseif ($_password != '') { // Master password auth
+            $auth = [STRING_MAGIC_NULL_BASE64, $_password];
         }
 
         global $REMOTE_BASE_URL;
-        $call_url = $REMOTE_BASE_URL . '/data_custom/composr_homesite_web_service.php?call=' . urlencode($call);
+        $call_url = $REMOTE_BASE_URL . '/data/endpoint.php/cms_homesite/' . urlencode($call);
+        if ($id !== null) {
+            $call_url .= '/' . urlencode(strval($id));
+        }
 
         $files = ($file === null) ? null : ['upload' => $file];
 
-        $result = cms_http_request($call_url, ['post_params' => $post_params, 'files' => $files, 'trigger_error' => false]);
+        $result = cms_http_request($call_url, ['http_verb' => $type, 'post_params' => $post_params, 'files' => $files, 'auth' => $auth, 'trigger_error' => false]);
         if (substr($result->message, 0, 1) !== '2') {
             return null;
         }
 
-        return $result->data;
+        $ret = @json_decode($result->data, true);
+        if ($ret === false) {
+            return null;
+        }
+        if ($ret['success'] === false) {
+            return null;
+        }
+
+        return $ret['response_data'];
     }
 
     /**

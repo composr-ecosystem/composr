@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 // Fixup SCRIPT_FILENAME potentially being missing
@@ -39,8 +39,8 @@ if (!file_exists($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-if (!addon_installed('composr_homesite_support_credits')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits')));
+if (!addon_installed('cms_homesite_tracker')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_tracker')));
 }
 
 $GLOBALS['SITE_INFO']['block_url_schemes'] = '1';

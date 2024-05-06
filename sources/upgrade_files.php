@@ -29,7 +29,7 @@ function upgrader_file_upgrade_screen() : string
     $out = '';
 
     require_code('version2');
-    $personal_upgrader_generation_url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/build_personal_upgrader.php?from=' . urlencode(get_version_dotted());
+    $personal_upgrader_generation_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/personal_upgrader/' . urlencode(get_version_dotted());
     if (function_exists('gzopen')) {
         $personal_upgrader_generation_url .= '&supports_gzip=1';
     }

@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
@@ -27,7 +27,7 @@ class Hook_cron_site_cleanup
      */
     public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return null;
         }
 
@@ -41,7 +41,7 @@ class Hook_cron_site_cleanup
         }
 
         if ($calculate_num_queued) {
-            require_code('composr_homesite');
+            require_code('cms_homesite');
 
             global $SITE_INFO;
             $num_queued = count(find_expired_sites()) + ((isset($SITE_INFO['mysql_root_password']) && isset($SITE_INFO['mysql_demonstratr_password'])) ? 1 : 0);

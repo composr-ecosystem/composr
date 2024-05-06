@@ -139,8 +139,8 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
                 'MySQL',
             ],
             'recommends' => [
-                'composr_homesite',
-                'composr_homesite_support_credits',
+                'cms_homesite',
+                'cms_homesite_tracker',
                 'composr_tutorials',
             ],
             'conflicts_with' => [],

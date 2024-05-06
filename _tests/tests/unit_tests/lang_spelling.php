@@ -53,7 +53,7 @@ class lang_spelling_test_set extends cms_test_case
             'site/pages/comcode/EN',
             'docs/pages/comcode_custom/EN',
         ];
-        if ((function_exists('git_repos')) && (git_repos() == 'composr_homesite')) {
+        if ((function_exists('git_repos')) && (git_repos() == 'cms_homesite_v11')) {
             $dirs = array_merge($dirs, [
                 'text_custom',
                 'text_custom/EN',
@@ -83,7 +83,7 @@ class lang_spelling_test_set extends cms_test_case
 
         $path = get_file_base();
         $files = [
-            'uploads/website_specific/composr.app/errorservice.csv',
+            'uploads/website_specific/cms_homesite/errorservice.csv',
             'data/maintenance_status.csv',
         ];
         foreach ($files as $_path) {

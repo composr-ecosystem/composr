@@ -703,13 +703,21 @@ abstract class Hook_Health_Check
      * Call a homesite API function.
      *
      * @param  string $type API type
-     * @param  array $params Map of parameters
+     * @param  string $id The RESTful ID (blank: none)
+     * @param  array $params Map of URL parameters
      * @return mixed API result
      */
-    protected function call_homesite_api(string $type, array $params)
+    protected function call_homesite_api(string $type, string $id = '', array $params = [])
     {
-        $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/api.php?type=' . urlencode($type);
+        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/' . urlencode($type) . '/';
+        if ($id != '') {
+            $url .= $id . '/';
+        }
+        $url .= '?';
         foreach ($params as $key => $_val) {
+            if (substr($url, -1, 1) != '?') {
+                $url .= '&';
+            }
             switch (gettype($_val)) {
                 case 'boolean':
                     $val = $_val ? '1' : '0';
@@ -737,9 +745,14 @@ abstract class Hook_Health_Check
                     break;
             }
 
-            $url .= '&' . $key . '=' . urlencode($val);
+            $url .= $key . '=' . urlencode($val);
         }
-        return @json_decode(http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]), true);
+        $results = @json_decode(http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]), true);
+        if (!$results) {
+            return null;
+        }
+
+        return $results;
     }
 }
 

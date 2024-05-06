@@ -1,4 +1,4 @@
-{$REQUIRE_JAVASCRIPT,composr_homesite_support_credits}
+{$REQUIRE_JAVASCRIPT,cms_homesite_tracker}
 
 {+START,IF_EMPTY,{ISSUES}}
 	<p class="nothing-here">

@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
@@ -26,7 +26,7 @@ class Hook_symbol_COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY
      */
     public function run($param)
     {
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return '';
         }
         if (!addon_installed('catalogues')) {

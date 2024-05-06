@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
  * Hook class.
  */
-class Hook_privacy_composr_homesite extends Hook_privacy_base
+class Hook_privacy_cms_homesite extends Hook_privacy_base
 {
     /**
      * Find privacy details.
@@ -25,14 +25,14 @@ class Hook_privacy_composr_homesite extends Hook_privacy_base
      */
     public function info() : ?array
     {
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return null;
         }
 
         return [
-            'label' => 'composr_homesite:CMS_SITES_INSTALLED',
+            'label' => 'cms_homesite:CMS_SITES_INSTALLED',
 
-            'description' => 'composr_homesite:DESCRIPTION_PRIVACY_CMS_SITES_INSTALLED',
+            'description' => 'cms_homesite:DESCRIPTION_PRIVACY_CMS_SITES_INSTALLED',
 
             'cookies' => [
             ],

@@ -77,7 +77,7 @@ class find_broken_screen_links_test_set extends cms_test_case
                 if (in_array($path, [
                     'site/pages/modules/search.php',
                     'sources/blocks/main_quotes.php',
-                    'sources_custom/miniblocks/composr_homesite_featuretray.php',
+                    'sources_custom/miniblocks/cms_homesite_featuretray.php',
                 ])) {
                     continue;
                 }

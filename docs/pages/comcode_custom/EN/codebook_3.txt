@@ -1252,7 +1252,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]adminzone:_make_release[/tt]
 | Publish a Composr release on the website the module runs on (not usually run directly, linked to from [tt]adminzone:make_release[/tt]).
-| [tt]composr_homesite[/tt]
+| [tt]cms_homesite[/tt]
 | Composr module
 |-
 | [tt]adminzone:push_bugfix[/tt]

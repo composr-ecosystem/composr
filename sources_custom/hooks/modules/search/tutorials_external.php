@@ -31,10 +31,10 @@ class Hook_search_tutorials_external extends FieldsSearchHook
             return null;
         }
 
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return null;
         }
-        if (!addon_installed('composr_homesite_support_credits')) {
+        if (!addon_installed('cms_homesite_tracker')) {
             return null;
         }
         if (!addon_installed('cms_release_build')) {

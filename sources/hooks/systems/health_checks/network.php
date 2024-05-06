@@ -69,10 +69,10 @@ class Hook_health_check_network extends Hook_Health_Check
             return;
         }
 
-        $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/testing.php?type=http_status_check&url=' . urlencode($this->get_page_url());
+        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/http_status_check/?url=' . urlencode($this->get_page_url());
+        $data = null;
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or homesite issue
             $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
-
             if ($data !== null) {
                 break;
             }
@@ -81,7 +81,7 @@ class Hook_health_check_network extends Hook_Health_Check
             }
         }
         $result = @json_decode($data, true);
-        $this->assertTrue($result === '200', 'Could not access website externally, got error code ' . $result);
+        $this->assertTrue($result['success'] === true, 'Could not access website externally, got error code ' . $result['response_data']['status']);
     }
 
     /**
@@ -210,7 +210,7 @@ class Hook_health_check_network extends Hook_Health_Check
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or homesite issue
             $time_before = microtime(true);
 
-            $data = http_get_contents(get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/testing.php?type=test_upload', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post_params]);
+            $data = http_get_contents(get_brand_base_url() . '/data/endpoint.php/cms_homesite/ping', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post_params]);
 
             if ($data === null) {
                 $ok = false;

@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /*
@@ -77,8 +77,8 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-if (!addon_installed('composr_homesite')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite')));
+if (!addon_installed('cms_homesite')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
 }
 
 header('X-Robots-Tag: noindex');
@@ -107,7 +107,7 @@ set_option('site_closed', '2');
 clear_caches_1();
 
 // Reset demo
-http_get_contents(get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=demo_reset');
+http_get_contents(get_brand_base_url() . '/data_custom/cms_homesite_web_service.php?call=demo_reset');
 
 // Run upgrade
 global $SITE_INFO;
@@ -118,7 +118,7 @@ if ($u === null) {
 upgrade_sharedinstall_sites(get_param_integer('from', 1) - 1);
 
 // Save new SQL dump
-$out_path = dirname(get_file_base(), 2) . '/uploads/website_specific/composr.app/demonstratr/template.sql';
+$out_path = dirname(get_file_base(), 2) . '/uploads/website_specific/cms_homesite/demonstratr/template.sql';
 if (!file_exists($out_path . '.tmp')) {
     $cmd = '/usr/local/bin/mysqldump';
     if (!is_file($cmd)) {

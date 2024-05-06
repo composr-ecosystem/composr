@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
@@ -26,7 +26,7 @@ class Hook_symbol_COMPOSR_HOMESITE_ID_LATEST_TRANSLATIONS
      */
     public function run(array $param) : string
     {
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return '';
         }
 
@@ -34,7 +34,7 @@ class Hook_symbol_COMPOSR_HOMESITE_ID_LATEST_TRANSLATIONS
             return '';
         }
 
-        require_code('composr_homesite');
+        require_code('cms_homesite');
         $version = get_latest_version_basis_number();
         if ($version === null) {
             return '1'; // No versions added yet

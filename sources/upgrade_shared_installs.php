@@ -46,7 +46,7 @@ function upgrader_sharedinstall_screen() : string
 
     global $SITE_INFO;
     $cmd = 'mysqldump -u' . cms_escapeshellarg($SITE_INFO['db_site_user'] . '_shareddemo') . ' -p' . cms_escapeshellarg($SITE_INFO['db_site_password']) . ' ' . cms_escapeshellarg($SITE_INFO['db_site']) . '_shareddemo';
-    $out .= '<p>Now regenerate <kbd>template.sql</kbd>, using something like <kbd>' . escape_html($cmd) . ' > ~/public_html/uploads/website_specific/composr.app/demonstratr/template.sql</kbd></p>';
+    $out .= '<p>Now regenerate <kbd>template.sql</kbd>, using something like <kbd>' . escape_html($cmd) . ' > ~/public_html/uploads/website_specific/cms_homesite/demonstratr/template.sql</kbd></p>';
 
     return $out;
 }

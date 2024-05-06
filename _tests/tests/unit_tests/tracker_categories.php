@@ -22,12 +22,12 @@ class tracker_categories_test_set extends cms_test_case
     {
         $brand_base_url = get_brand_base_url();
         $post = [];
-        $_categories = http_get_contents($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', ['convert_to_internal_encoding' => true, 'ua' => 'Composr Test Platform', 'post_params' => $post]);
+        $_categories = http_get_contents($brand_base_url . '/data/endpoint.php/cms_homesite/tracker_categories', ['convert_to_internal_encoding' => true, 'ua' => 'Composr Test Platform']);
         $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
         foreach ($addons as $addon_name => $place) {
             if ($place == 'sources') {
-                $this->assertTrue(in_array($addon_name, $categories), $addon_name);
+                $this->assertTrue(in_array($addon_name, $categories['response_data']), $addon_name);
             }
         }
     }
@@ -35,11 +35,10 @@ class tracker_categories_test_set extends cms_test_case
     public function testNoUnknownAddons()
     {
         $brand_base_url = get_brand_base_url();
-        $post = [];
-        $_categories = http_get_contents($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', ['convert_to_internal_encoding' => true, 'ua' => 'Composr Test Platform', 'post_params' => $post]);
+        $_categories = http_get_contents($brand_base_url . '/data/endpoint.php/cms_homesite/tracker_categories', ['convert_to_internal_encoding' => true, 'ua' => 'Composr Test Platform']);
         $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
-        foreach ($categories as $category) {
+        foreach ($categories['response_data'] as $category) {
             if (cms_strtolower_ascii($category) != $category) {
                 continue; // Only lower case must correspond to addons
             }

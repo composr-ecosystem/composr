@@ -8,7 +8,8 @@ file_put_contents('data_custom/modules/user_export/out.csv', '');
 
 // Branch-specific handling
 switch (git_repos()) {
-    case 'composr_homesite':
+    /* TODO: We do not want to do this yet on composr.app
+    case 'cms_homesite_v11':
         $issues = shell_exec('php delete_alien_files.php git_only');
 
         if ($issues != '') {
@@ -16,6 +17,7 @@ switch (git_repos()) {
            exit(1);
         }
         break;
+    */
 }
 
 exit(0);

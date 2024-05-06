@@ -473,17 +473,21 @@ function upgrader_menu_screen() : string
     $tar_url = '';
     if ($news_id !== null) {
         require_code('files');
-        $fetch_url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/fetch_release_details.php?mode=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
+        $fetch_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/release_details/' . strval($news_id) . '/&from_version=' . urlencode($from_version);
         $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
-        $details = json_decode($news, true);
-        if ($details[0] != '') {
-            $l_refer_release_notes = $details[0];
-            if ($details[2] != '') {
-                $l_refer_release_notes .= '<div style="overflow: auto; height: 150px">' . $details[2] . '</div>';
+        $_details = json_decode($news, true);
+        if ($_details && ($_details['success'])) {
+            $details = $_details['response_data'];
+
+            if ($details['notes'] != '') {
+                $l_refer_release_notes = $details['notes'];
+                if ($details['changes'] != '') {
+                    $l_refer_release_notes .= '<div style="overflow: auto; height: 150px">' . $details['changes'] . '</div>';
+                }
             }
+            $tar_url = $details['tar_url'];
         }
-        $tar_url = $details[1];
     }
     $l_download = upgrader_link('upgrader.php?type=file_upgrade&tar_url=' . urlencode(base64_encode($tar_url)), do_lang('UPGRADER_DOWNLOAD'));
 

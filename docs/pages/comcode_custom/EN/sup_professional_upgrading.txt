@@ -262,7 +262,7 @@ mysqldump client_<codename> > _temp/stage2.sql
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Consider replacing all the TAR files in [tt]addons/imports[/tt] so you're sure they're fresh
-| If you download a [url="custom upgrade package"]https://composr.app/uploads/website_specific/composr.app/scripts/build_personal_upgrader.php?from=10.0.0[/url] you can find all the TAR files in it (the [i]from[/i] version number in the URL is irrelevant)
+| If you download a [url="custom upgrade package"]https://composr.app/data/endpoint.php/cms_homesite/personal_upgrader/11.0.0[/url] you can find all the TAR files in it (the [i]from[/i] version number in the URL is irrelevant)
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Do a Git commit

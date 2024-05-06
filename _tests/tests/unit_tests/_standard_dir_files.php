@@ -67,7 +67,7 @@ class _standard_dir_files_test_set extends cms_test_case
             if ($path == '.htaccess') { // Root file
                 continue;
             }
-            if (preg_match('#^(data/ckeditor|_tests/simpletest|tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/composr.app/demonstratr/servers)/#', $path) != 0) { // Third party files
+            if (preg_match('#^(data/ckeditor|_tests/simpletest|tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/cms_homesite/demonstratr/servers)/#', $path) != 0) { // Third party files
                 continue;
             }
             if (preg_match('#^themes/(_unnamed_)/#', $path) != 0) {
@@ -91,7 +91,7 @@ class _standard_dir_files_test_set extends cms_test_case
         }*/
 
         $valid_hashes = [
-            '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/composr.app/.htaccess (Deny access to some important files on the composr.app site)
+            '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/cms_homesite/.htaccess (Deny access to some important files on the composr.app site)
             '8fbbec6b8fd8a4999a5b07f5ddcf5ea8' => true, // */pages/modules*/.htaccess (Allows access to module URLs, and then the recommended.htaccess rules will rewrite to correct URL - useful for IDE integration)
             '3184b8b93e2d9b02dea0c4ec3133ee9c' => true, // Many, */pages/html*/EN/.htaccess, */pages/comcode*/EN/.htaccess (Completely block all HTTP requests)
             'de9b5b7778090cf4376839b6aebb9f45' => true, // adminzone/.htaccess (Better help for Mod_Rewrite)
