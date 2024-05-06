@@ -36,7 +36,7 @@ function init__upgrade_db_upgrade()
  */
 function upgrader_db_upgrade_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_DATABASE_UPGRADE') . '</h2>';
 
     log_it('UPGRADER_DATABASE_UPGRADE');
 
@@ -91,7 +91,7 @@ function upgrader_db_upgrade_screen() : string
  */
 function upgrader_db_upgrade_cns_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_UPGRADE_CNS') . '</h2>';
     if (cns_upgrade()) {
         $out .= '<p>' . do_lang('SUCCESS') . '</p>';
     } else {

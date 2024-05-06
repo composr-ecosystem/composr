@@ -41,7 +41,7 @@ function upgrader_mysql_repair_screen() : string
     }
 
     require_code('database_repair');
-    return static_evaluate_tempcode(database_repair_inbuilt());
+    return '<h2>' . do_lang('MYSQL_REPAIR') . '</h2>' . static_evaluate_tempcode(database_repair_inbuilt());
 }
 
 /**
@@ -56,7 +56,8 @@ function upgrader_criticise_mysql_fields_screen() : string
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    $out = '<p>' . do_lang('DESCRIPTION_CORRECT_MYSQL_SCHEMA_ISSUES') . '</p>';
+    $out = '<h2>' . do_lang('CORRECT_MYSQL_SCHEMA_ISSUES') . '</h2>';
+    $out .= '<p>' . do_lang('DESCRIPTION_CORRECT_MYSQL_SCHEMA_ISSUES') . '</p>';
 
     require_code('database_repair');
     $out .= static_evaluate_tempcode(database_repair_wrap());

@@ -93,6 +93,7 @@ function upgrade_script()
             break;
 
         case 'check_perms':
+            echo '<h2>' . do_lang('UPGRADER_CHECK_PERMISSIONS') . '</h2>';
             require_code('file_permissions_check');
             list($messages) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
             if (empty($messages)) {
@@ -105,6 +106,7 @@ function upgrade_script()
             break;
 
         case 'fix_perms':
+            echo '<h2>' . do_lang('UPGRADER_FIX_PERMISSIONS') . '</h2>';
             require_code('file_permissions_check');
             list(, $commands) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
             if (empty($commands)) {
@@ -128,7 +130,6 @@ function upgrade_script()
             require_code('upgrade_files');
             appengine_live_guard();
             echo upgrader_file_upgrade_screen();
-            $show_more_link = false;
             break;
 
         case '_file_upgrade':
@@ -632,7 +633,7 @@ function upgrader_menu_screen() : string
 function upgrader_decache_screen() : string
 {
     clear_caches_2();
-    return '<p>' . do_lang('SUCCESS') . '</p>';
+    return '<h2>' . do_lang('UPGRADER_CLEAR_CACHES') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
 }
 
 /**
@@ -646,7 +647,7 @@ function upgrader_open_site_screen() : string
     log_it('UPGRADER_OPEN_SITE');
 
     set_option('site_closed', '0');
-    return '<p>' . do_lang('SUCCESS') . '</p>';
+    return '<h2>' . do_lang('UPGRADER_OPEN_SITE') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
 }
 
 /**
@@ -661,5 +662,5 @@ function upgrader_close_site_screen() : string
 
     set_option('closed', do_lang('UPGRADER_CLOSED_FOR_UPGRADES', get_site_name()));
     set_option('site_closed', '2');
-    return '<p>' . do_lang('SUCCESS') . '</p>';
+    return '<h2>' . do_lang('UPGRADER_CLOSE_SITE') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
 }

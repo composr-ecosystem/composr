@@ -26,7 +26,7 @@
  */
 function upgrader_file_upgrade_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_DOWNLOAD') . '</h2>';
 
     require_code('version2');
     $personal_upgrader_generation_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/personal_upgrader/' . urlencode(get_version_dotted());
@@ -88,7 +88,7 @@ function upgrader_file_upgrade_screen() : string
  */
 function _upgrader_file_upgrade_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_DOWNLOAD') . '</h2>';
 
     // Dry run?
     $dry_run = (post_param_integer('dry_run', 0) == 1);
@@ -126,10 +126,20 @@ function _upgrader_file_upgrade_screen() : string
             }
             $original_filename = basename($upgrade_path);
             $retrieval_method = FILE_RETRIEVAL_LOCAL;
+        } elseif (substr($url, 0, 1) == '/') {
+            $upgrade_path = get_file_base() . rawurldecode($url);
+            if (!is_file($upgrade_path)) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+            }
+            $original_filename = basename($upgrade_path);
+            $retrieval_method = FILE_RETRIEVAL_LOCAL;
         } else {
             $upgrade_path = cms_tempnam();
             $upgrade_path_handle = fopen($upgrade_path, 'wb');
             $request = cms_http_request($url, ['write_to_file' => $upgrade_path_handle, 'timeout' => 30.0]);
+            if (($request->message === null) || ($request->filename === null) || (substr($request->message, 0, 1) != '2')) {
+                warn_exit(do_lang_tempcode('_HTTP_DOWNLOAD_NO_SERVER', escape_html($url), ($request->message !== null) ? escape_html($request->message) : do_lang('UNKNOWN')));
+            }
             fclose($upgrade_path_handle);
             $original_filename = $request->filename;
             $retrieval_method = FILE_RETRIEVAL_HTTP;
@@ -172,6 +182,13 @@ function _upgrader_file_upgrade_screen() : string
         }
     }
     $files_for_tar_updating = [];
+
+    /*
+        All CMS release TARs will contain index.html in the source addon_registry hooks directory. Hotfixes will probably not.
+        Therefore, if this file does not exist, assume we want to apply a hotfix, and allow installing alien files.
+    */
+    $install_alien_files = (tar_get_file($upgrade_resource, 'sources/hooks/systems/addon_registry/index.html') === null);
+    var_dump($install_alien_files);
 
     // Process files
     $i = 0;
@@ -268,7 +285,6 @@ function _upgrader_file_upgrade_screen() : string
 
             // Install if it's a file in an addon we have installed or for a core addon
             //  (if we couldn't find the addon for it we have to assume a corrupt upgrade TAR and must skip the file)
-            $install_alien_files = false;
             if ((($found !== null) || ($install_alien_files))) {
                 if ($is_directory) {
                     if (!$dry_run) {
