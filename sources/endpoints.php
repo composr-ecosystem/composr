@@ -56,7 +56,7 @@ function endpoint_script()
             // Path-info is translated to $hook_type/$hook/$id
             $path_info = $_SERVER['PATH_INFO'];
             $matches = [];
-            if (preg_match('#^(/\w+)(/\w+)?(/.+)?#', $path_info, $matches) != 0) {
+            if (preg_match('#^(/\w+)(/\w+)?(/[^\?]+)?#', $path_info, $matches) != 0) {
                 $hook_type = ltrim($matches[1], '/');
                 $hook = isset($matches[2]) ? ltrim($matches[2], '/') : false;
                 $id = isset($matches[3]) ? ltrim($matches[3], '/') : null;
