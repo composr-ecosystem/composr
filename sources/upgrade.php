@@ -440,6 +440,7 @@ function upgrader_menu_screen() : string
     $l_action = do_lang('ACTION');
     $l_estimated_time = do_lang('UPGRADER_ESTIMATED_TIME');
     $l_not_for_patch = do_lang('UPGRADER_NOT_FOR_PATCH');
+    $l_not_for_hotfix = do_lang('UPGRADER_NOT_FOR_HOTFIX');
     $l_customisations = do_lang('UPGRADER_CUSTOMISATIONS');
     $l_error_correction = do_lang('UPGRADER_ERROR_CORRECTION');
 
@@ -548,48 +549,64 @@ function upgrader_menu_screen() : string
                 <tbody>
                     <tr><th>1</th><td>{$l_tutorial}<br />{$l_not_for_patch}</td><td>" . escape_html(display_time_period(60 * 120)) . "</td></tr>
     ";
+    // Backup
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_take_backup}</td><td>" . escape_html(display_time_period(60 * 120)) . "</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_take_backup}</td><td>" . escape_html(display_time_period(60 * 30)) . "</td></tr>
     ";
+
+    // Close site
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_close_site}  {$l_fu_closedness}<br /><q style=\"font-style: italic\">" . $closed->evaluate() . "</q> <span class=\"associated-link\"><a href=\"" . escape_html($closed_url->evaluate()) . "\" title=\"(this link will open in a new window)\" target=\"_blank\">" . do_lang('CHANGE') . "</a></span></td><td>" . escape_html(display_time_period(60)) . "</td></tr>
     ";
+
+    // Transfer files
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_download}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_download}</td><td>" . escape_html(display_time_period(60 * 10)) . "</td></tr>
     ";
+
+    // Integrity scan
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--><br />{$l_not_for_patch}</td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 10))) . "&nbsp;&dagger;</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--><br />{$l_not_for_patch}</td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 30))) . "&nbsp;&dagger;</td></tr>
     ";
+
+    // Database upgrade
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_db_upgrade}<br />{$l_up_info}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
     ";
+
+    // Theme upgrader
     if (is_maintained('theme_upgrader')) {
         $step_num++;
         $_step_num = strval($step_num);
         $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_not_for_patch} {$l_theme_upgrade}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_theme_upgrade}<br />{$l_not_for_patch}</td><td>" . escape_html(display_time_period(60 * 10)) . "</td></tr>
         ";
     }
+
+    // Clear caches
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_clear_caches}</td><td>1 minute</td></tr>
     ";
+
+    // Open site
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_open_site}  {$l_fu_closedness}</td><td>1 minute</td></tr>
     ";
+
     $out .= "
                 </tbody>
             </table>
