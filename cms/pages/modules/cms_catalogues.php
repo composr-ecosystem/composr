@@ -336,7 +336,7 @@ class Module_cms_catalogues extends Standard_crud_module
                 has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
                 ($catalogue_name == '') ? null : ['admin/view_this', ['catalogues', ['type' => 'category', 'catalogue_name' => $catalogue_name], get_module_zone('catalogues')], do_lang('VIEW_CATALOGUE')], // View this
             ], manage_custom_fields_donext_link('catalogue'), manage_custom_fields_donext_link('catalogue_category')),
-            ($catalogue_name != '') ? escape_html(get_translated_text($cat_title)) : do_lang('MANAGE_CATALOGUES'),
+            ($catalogue_name != '') ? escape_html(get_translated_text($cat_title)) : do_lang('MANAGE_CATALOGUES')
         );
     }
 

@@ -50,7 +50,7 @@ $sheet_reader->close();
 
 cms_mb_ksort($rows, SORT_NATURAL | SORT_FLAG_CASE);
 
-return do_template('BLOCK_COMPOSR_MAINTENANCE_STATUS', [
+return do_template('BLOCK_CMS_MAINTENANCE_STATUS', [
     '_GUID' => '8c7ba3e7a2c667e7eebf36b9fe067868',
     'HEADER_ROW' => array_values($header_row),
     'ROWS' => $rows,

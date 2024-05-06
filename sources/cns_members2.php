@@ -54,8 +54,8 @@ function cns_choose_default_avatar(string $email_address = '', string $algorithm
         $avatar_id = null;
         if ($algorithm == 'avoid_conflict') {
             @asort($results); // @'d as type checker fails for some odd reason
-            $found_avatars = array_keys($results);
-            $avatar_id = array_shift($found_avatars);
+            $_found_avatars = array_keys($results);
+            $avatar_id = array_shift($_found_avatars);
         } else {
             $_found_avatars = array_keys($results);
             $found_avatars = count($_found_avatars);

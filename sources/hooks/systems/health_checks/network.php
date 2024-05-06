@@ -81,7 +81,7 @@ class Hook_health_check_network extends Hook_Health_Check
             }
         }
         $result = @json_decode($data, true);
-        $this->assertTrue($result['success'] === true, 'Could not access website externally, got error code ' . $result['response_data']['status']);
+        $this->assertTrue(($result !== null) && ($result['success'] === true), 'Could not access website externally, got error code ' . $result['response_data']['status']);
     }
 
     /**

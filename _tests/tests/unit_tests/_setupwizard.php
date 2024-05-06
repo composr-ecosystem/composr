@@ -31,11 +31,12 @@ class _setupwizard_test_set extends cms_test_case
 
         $post_params = [
             'skip_9' => '0',
+            'theme_use_on_all' => '0', // Do not skip step 8 but also do not use the generated theme; we will probably delete it later
             'skip_8' => '0',
             'skip_7' => '0',
             'skip_6' => '0',
             'skip_5' => '0',
-            'skip_4' => '1',
+            'skip_4' => '1', // We want to keep all our addons
             'skip_3' => '0',
             'installprofile' => '',
             'site_name' => '(testing)',
@@ -60,6 +61,7 @@ class _setupwizard_test_set extends cms_test_case
             'block_SITE_side_stats' => 'PANEL_RIGHT',
             'block_SITE_side_users_online' => 'PANEL_RIGHT',
             'rules' => 'balanced',
+            'dark' => '1',
             'seed_hex' => '#784468',
             'label_for__site_closed' => 'Closed site',
             'site_closed' => '1',

@@ -10,17 +10,17 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
  * Hook class.
  */
-class Hook_startup_composr_homesite__for_outdated_version
+class Hook_startup_cms_homesite__for_outdated_version
 {
     public function run()
     {
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return;
         }
 
@@ -37,7 +37,7 @@ class Hook_startup_composr_homesite__for_outdated_version
         if (preg_match('#^docs(\d+)$#', $zone_name, $matches) != 0) {
             $docs_viewed_for_number = intval($matches[1]);
 
-            require_code('composr_homesite');
+            require_code('cms_homesite');
 
             $latest_number = intval(get_latest_version_basis_number());
             if (($latest_number !== null) && ($latest_number > $docs_viewed_for_number) && (file_exists(get_custom_file_base() . '/docs' . strval($latest_number)))) {
@@ -60,7 +60,7 @@ class Hook_startup_composr_homesite__for_outdated_version
                 $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => $id]);
             }
             if ($cat_id !== null) {
-                require_code('composr_homesite');
+                require_code('cms_homesite');
 
                 $in_bad_cat = false;
                 $latest_number = get_latest_version_basis_number();

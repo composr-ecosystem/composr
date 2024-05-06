@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
  * Hook class.
  */
-class Hook_page_groupings_composr_homesite
+class Hook_page_groupings_cms_homesite
 {
     /**
      * Run function for do_next_menu hooks. They find links to put on standard navigation menus of the system.
@@ -27,7 +27,7 @@ class Hook_page_groupings_composr_homesite
      */
     public function run(?int $member_id = null, bool $extensive_docs = false) : array
     {
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return [];
         }
 

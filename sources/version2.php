@@ -50,13 +50,13 @@ function get_future_version_information() : object
 
     static $_http_result = null; // Cache
     $http_result = null;
-    if ($http_result === null) {
+    if ($_http_result === null) {
         require_code('http');
         $_http_result = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0);
     }
     $http_result = @json_decode($_http_result[0], true);
 
-    if ($http_result && ($http_result['success'] === true)) {
+    if (($http_result !== null) && ($http_result['success'] === true)) {
         $data = str_replace('"../upgrader.php"', '"' . get_base_url() . '/upgrader.php"', $http_result['response_data']['html']);
 
         if ($GLOBALS['XSS_DETECT']) {

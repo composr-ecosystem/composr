@@ -65,7 +65,7 @@ function init__content()
  * @param  MEMBER $member_id User to check
  * @param  ID_TEXT $content_type Content type
  * @param  ID_TEXT $content_id Content ID
- * @param  ID_TEXT $type_has Content type
+ * @param  ID_TEXT $type_has Type of content type / ID
  * @return boolean Whether there is permission
  */
 function may_view_content_behind(int $member_id, string $content_type, string $content_id, string $type_has = 'content_type') : bool

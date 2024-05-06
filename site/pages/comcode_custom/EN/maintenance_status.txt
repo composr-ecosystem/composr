@@ -24,7 +24,7 @@ Bugs may be reported for non-actively-maintained functionality. However, the spe
 
 [title="3"]Maintenance status table[/title]
 
-[block]composr_maintenance_status[/block]
+[block]cms_maintenance_status[/block]
 
 [title="3"]Sponsorship[/title]
 

@@ -279,12 +279,16 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
             switch (cms_strtoupper_ascii($type)) {
                 case 'ERROR':
                 case 'FATAL ERROR':
-                    @error_log('PHP: ' . ($fatal ? 'CRITICAL' : 'ERROR') . ' ' . $php_error_label, 0);
+                    @error_log('PHP: CRITICAL ' . $php_error_label, 0);
                     break;
                 case 'WARNING':
+                    @error_log('PHP: ERROR ' . $php_error_label, 0);
+                    break;
                 case 'NOTICE':
-                case 'DEPRECATED':
                     @error_log('PHP: WARNING ' . $php_error_label, 0);
+                    break;
+                case 'DEPRECATED':
+                    @error_log('PHP: INFO ' . $php_error_label, 0);
                     break;
             }
         }
@@ -1102,7 +1106,7 @@ function get_webservice_result($error_message) : ?string
     $post = ['error_message' => $error_message];
     list($_http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 60 * 24);
     $http_result = @json_decode($_http_result, true);
-    if ((!$http_result) || ($http_result['success'] === false)) {
+    if (($http_result === null) || ($http_result['success'] === false)) {
         return null;
     }
 

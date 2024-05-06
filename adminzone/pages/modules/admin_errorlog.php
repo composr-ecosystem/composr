@@ -208,7 +208,22 @@ class Module_admin_errorlog
 
                 if (($_line != '') && (strpos($_line, '<?php') === false)) {
                     $matches = [];
-                    if (preg_match('#^\[([^\]]*)\] ([^:]*): (CRITICAL|ERROR|WARNING|INFO|DEBUG|)[\s]?(.*)#', $_line, $matches) != 0) {
+                    if (preg_match('#^\[([^\]]*)\] PHP (Fatal error|Warning|Notice|Deprecated): [\s]?(.*)#', $_line, $matches) != 0) { // Non-formatted PHP errors
+                        $error_level = 'UNKNOWN';
+                        if ($matches[2] == 'Fatal error') {
+                            $error_level = 'CRITICAL';
+                        }
+                        if ($matches[2] == 'Warning') {
+                            $error_level = 'ERROR';
+                        }
+                        if ($matches[2] == 'Notice') {
+                            $error_level = 'WARNING';
+                        }
+                        if ($matches[2] == 'Deprecated') {
+                            $error_level = 'INFO';
+                        }
+                        $stuff[] = [$matches[1], 'PHP', $error_level, $matches[3], ''];
+                    } elseif (preg_match('#^\[([^\]]*)\] ([^:]*): (CRITICAL|ERROR|WARNING|INFO|DEBUG|)[\s]?(.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], $matches[2], $matches[3], $matches[4], ''];
                     } elseif (preg_match('#^\[([^\]]*)\] (CRITICAL|ERROR|WARNING|INFO|DEBUG|)[\s]?(.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], do_lang('NA'), $matches[2], $matches[3], ''];

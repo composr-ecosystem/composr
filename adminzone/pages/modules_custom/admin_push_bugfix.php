@@ -984,7 +984,7 @@ class Module_admin_push_bugfix
         }
 
         $ret = @json_decode($result->data, true);
-        if ($ret === false) {
+        if ($ret === null) {
             return null;
         }
         if ($ret['success'] === false) {

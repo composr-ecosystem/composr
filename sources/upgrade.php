@@ -476,8 +476,8 @@ function upgrader_menu_screen() : string
         $fetch_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/release_details/' . strval($news_id) . '/&from_version=' . urlencode($from_version);
         $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
-        $_details = json_decode($news, true);
-        if ($_details && ($_details['success'])) {
+        $_details = @json_decode($news, true);
+        if (($_details !== null) && ($_details['success'])) {
             $details = $_details['response_data'];
 
             if ($details['notes'] != '') {
