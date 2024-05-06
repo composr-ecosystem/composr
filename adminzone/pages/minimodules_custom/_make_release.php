@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /*EXTRA FUNCTIONS: shell_exec*/
@@ -27,7 +27,7 @@ if (!addon_installed('news')) {
 }
 
 $error_msg = new Tempcode();
-if (!addon_installed__messaged('composr_homesite', $error_msg)) {
+if (!addon_installed__messaged('cms_homesite', $error_msg)) {
     return $error_msg;
 }
 
@@ -38,7 +38,7 @@ set_mass_import_mode(); // We will be adding multiple categories of the same nam
 
 restrictify();
 require_code('permissions2');
-require_code('composr_homesite');
+require_code('cms_homesite');
 
 // Version info / plan
 
@@ -80,7 +80,7 @@ if (!$is_bleeding_edge) {
 
 require_code('downloads2');
 $releases_category_id = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Composr Releases']);
-// ^ Result must return, composr_homesite_install.php added the category
+// ^ Result must return, cms_homesite_install.php added the category
 
 $release_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Version ' . strval(intval($version_dotted))]);
 if ($release_category_id === null) {
@@ -248,7 +248,7 @@ To upgrade follow the steps in your website's [tt]http://mybaseurl/upgrader.php[
 {$major_release_1}
 {$db_upgrade_1}
 
-[block=\"{$version_dotted}\"]composr_homesite_make_upgrader[/block]
+[block=\"{$version_dotted}\"]cms_homesite_make_upgrader[/block]
 
 {$changes}";
 

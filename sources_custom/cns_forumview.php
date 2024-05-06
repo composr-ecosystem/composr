@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /**
@@ -26,7 +26,7 @@ function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = fals
 {
     $ret = non_overridden__cns_render_topic($topic, $has_topic_marking, $pt, $show_forum);
 
-    if (!addon_installed('composr_homesite')) {
+    if (!addon_installed('cms_homesite')) {
         return $ret;
     }
 

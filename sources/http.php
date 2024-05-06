@@ -1221,10 +1221,10 @@ class HttpDownloaderCurl extends HttpDownloader
 
             // Probably a request/response error, not a cURL one
             if ($this->trigger_error) {
-                warn_exit(protect_from_escaping($error), false, true);
+                warn_exit(escape_html($error), false, true);
             } else {
-                $this->message = 'curl-error-' . protect_from_escaping(strval($curl_errno));
-                $this->message_b = protect_from_escaping($error);
+                $this->message = 'curl-error-' . escape_html(strval($curl_errno));
+                $this->message_b = escape_html($error);
             }
             return null;
         }

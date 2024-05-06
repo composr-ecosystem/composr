@@ -37,7 +37,7 @@ function init__upgrade_integrity_scan()
 function upgrader_integrity_scan_screen() : string
 {
     $allow_merging = either_param_integer('allow_merging', 0);
-    return run_integrity_check(false, $allow_merging == 1);
+    return '<h2>' . (($allow_merging == 1) ? do_lang('UPGRADER_INTEGRITY_SCAN') : do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE')) . '</h2>' . run_integrity_check(false, $allow_merging == 1);
 }
 
 /**
@@ -675,7 +675,7 @@ function upgrader__integrity_scan_screen() : string
         }
     }
 
-    return '<p>' . do_lang('SUCCESS') . '</p>';
+    return '<h2>' . do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
 }
 
 /**
@@ -686,7 +686,7 @@ function upgrader__integrity_scan_screen() : string
  */
 function upgrader_addon_remove_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_REMOVE_ADDON_FILES') . '</h2>';
 
     $out .= '<p>This addon removal tool remove all files from a given list of addons. It should only be used if you have placed files from addons (non-bundled or bundled) that are not actually installed/were uninstalled. Do not use it on addons that are installed (i.e. have tables and settings for them in the database already).</p>';
     $out .= '<p>';
@@ -712,7 +712,7 @@ function upgrader_addon_remove_screen() : string
  */
 function upgrader__addon_remove_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_REMOVE_ADDON_FILES') . '</h2>';
 
     $_addons = post_param_string('addons');
     $addons = explode("\n", $_addons);

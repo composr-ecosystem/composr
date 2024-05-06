@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
-if (!addon_installed('composr_homesite_support_credits')) {
-    return do_template('RED_ALERT', ['_GUID' => '4y9qesedhhw6peuc11wfmnu4eq5zioa1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits'))]);
+if (!addon_installed('cms_homesite_tracker')) {
+    return do_template('RED_ALERT', ['_GUID' => '4y9qesedhhw6peuc11wfmnu4eq5zioa1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_tracker'))]);
 }
 
 if (!addon_installed('tickets')) {

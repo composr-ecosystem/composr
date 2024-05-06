@@ -1,0 +1,122 @@
+<?php /*
+
+ Composr
+ Copyright (c) Christopher Graham, 2004-2024
+
+ See docs/LICENSE.md for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  Christopher Graham
+ * @package    cms_homesite
+ */
+
+/**
+ * Hook class.
+ */
+class Hook_endpoint_cms_homesite_personal_upgrader
+{
+    /**
+     * Return information about this endpoint.
+     *
+     * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
+     * @param  ?string $id Standard ID parameter (null: not-set)
+     * @return array Info about the hook
+     */
+    public function info(?string $type, ?string $id) : array
+    {
+        return [
+            'authorization' => false,
+        ];
+    }
+
+    /**
+     * Run an API endpoint.
+     *
+     * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
+     * @param  ?string $id Standard ID parameter (null: not-set)
+     * @return array Data structure that will be converted to correct response type
+     */
+    public function run(?string $type, ?string $id) : array
+    {
+        if (!addon_installed('cms_homesite')) {
+            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
+        }
+
+        if (!addon_installed('downloads')) {
+            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('downloads')));
+        }
+        if (!addon_installed('news')) {
+            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('news')));
+        }
+
+        require_code('version2');
+        require_code('cms_homesite');
+        require_code('cms_homesite_make_upgrader');
+
+        $to_version_dotted = get_param_string('to', null);
+        if ($to_version_dotted === null) {
+            $to_version_dotted = get_latest_version_dotted();
+        }
+
+        $from_version_dotted = get_param_string('from', $id); // From can be specified as ID
+
+        // LEGACY
+        $addon_name_remap = [
+            // 9 => 10
+            'cedi' => 'wiki',
+            'occle' => 'commandr',
+            'ocf_avatars' => 'cns_avatars',
+            'ocf_cartoon_avatars' => 'cns_cartoon_avatars',
+            'ocf_clubs' => 'cns_clubs',
+            'ocf_contactmember' => 'cns_contact_member',
+            'ocf_cpfs' => 'cns_cpfs',
+            'ocf_forum' => 'cns_forum',
+            'ocf_member_avatars' => 'cns_member_avatars',
+            'ocf_member_photos' => 'cns_member_photos',
+            'ocf_member_titles' => 'cns_member_titles',
+            'ocf_multi_moderations' => 'cns_multi_moderations',
+            'ocf_post_templates' => 'cns_post_templates',
+            'ocf_reported_posts' => 'cns_reported_posts',
+            'ocf_signatures' => 'cns_signatures',
+            'ocf_thematic_avatars' => 'cns_thematic_avatars',
+            'ocf_warnings' => 'cns_warnings',
+
+            // 10 => 11
+            'unvalidated' => 'validation',
+            'composr_homesite' => 'cms_homesite',
+            'composr_homesite_support_credits' => 'cms_homesite_support_credits',
+        ];
+
+        $addons = [];
+        foreach (array_keys($_GET) as $key) {
+            if (substr($key, 0, 6) == 'addon_') {
+                $addon_name = substr($key, 6);
+
+                if (isset($addon_name_remap[$addon_name])) {
+                    $addon_name = $addon_name_remap[$addon_name];
+                }
+
+                $addons[$addon_name] = true;
+            }
+        }
+        ksort($addons);
+
+        list($tar_path, $err) = make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons);
+        if ($tar_path === null) {
+            warn_exit(protect_from_escaping($err));
+        }
+
+        // Note by default wget ignores these Content-Disposition filenames. You can set a custom one with '-O', or use '--content-disposition' to make it respect the one here
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: inline; filename="' . escape_header(basename($tar_path), true) . '"');
+
+        cms_ob_end_clean();
+        readfile($tar_path);
+
+        // Custom output; we should exit to prevent traditional REST interface from continuing.
+        exit();
+    }
+}

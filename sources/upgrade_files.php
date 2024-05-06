@@ -26,10 +26,10 @@
  */
 function upgrader_file_upgrade_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_DOWNLOAD') . '</h2>';
 
     require_code('version2');
-    $personal_upgrader_generation_url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/build_personal_upgrader.php?from=' . urlencode(get_version_dotted());
+    $personal_upgrader_generation_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/personal_upgrader/' . urlencode(get_version_dotted());
     if (function_exists('gzopen')) {
         $personal_upgrader_generation_url .= '&supports_gzip=1';
     }
@@ -88,7 +88,7 @@ function upgrader_file_upgrade_screen() : string
  */
 function _upgrader_file_upgrade_screen() : string
 {
-    $out = '';
+    $out = '<h2>' . do_lang('UPGRADER_DOWNLOAD') . '</h2>';
 
     // Dry run?
     $dry_run = (post_param_integer('dry_run', 0) == 1);
@@ -126,10 +126,20 @@ function _upgrader_file_upgrade_screen() : string
             }
             $original_filename = basename($upgrade_path);
             $retrieval_method = FILE_RETRIEVAL_LOCAL;
+        } elseif (substr($url, 0, 1) == '/') {
+            $upgrade_path = get_file_base() . rawurldecode($url);
+            if (!is_file($upgrade_path)) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+            }
+            $original_filename = basename($upgrade_path);
+            $retrieval_method = FILE_RETRIEVAL_LOCAL;
         } else {
             $upgrade_path = cms_tempnam();
             $upgrade_path_handle = fopen($upgrade_path, 'wb');
             $request = cms_http_request($url, ['write_to_file' => $upgrade_path_handle, 'timeout' => 30.0]);
+            if (($request->message === null) || ($request->filename === null) || (substr($request->message, 0, 1) != '2')) {
+                warn_exit(do_lang_tempcode('_HTTP_DOWNLOAD_NO_SERVER', escape_html($url), ($request->message !== null) ? escape_html($request->message) : do_lang('UNKNOWN')));
+            }
             fclose($upgrade_path_handle);
             $original_filename = $request->filename;
             $retrieval_method = FILE_RETRIEVAL_HTTP;
@@ -157,13 +167,32 @@ function _upgrader_file_upgrade_screen() : string
     // Hopefully $popup_simple_extract will be true (i.e. suEXEC mode), as it is safer
     $popup_simple_extract = (_ftp_info() === false);
     if ($popup_simple_extract) {
-        $metadata = ['todo' => []];
+        $metadata = ['todo' => [], 'skip' => []];
     } else {
         $out .= '<p>' . do_lang('EXTRACTING_MESSAGE') . '</p>';
     }
 
-    // Find addons
     $addon_contents = [];
+
+    /*
+     * Full CMS release archives will contain the entire addon_registry directory including index.html; hotfixes will not.
+     * Therefore, if this file does not exist, assume we want to apply a hotfix, and thus allow installing alien files.
+    */
+    $is_hotfix = (tar_get_file($upgrade_resource, 'sources/hooks/systems/addon_registry/index.html') === null);
+    if ($is_hotfix) {
+        $out .= '<p>' . do_lang('HOTFIX_MESSAGE') . '</p>';
+
+        // Hotfixes do not contain the full addon registry. Load up what we have installed.
+        require_code('files2');
+        $d_directory = get_directory_contents(get_file_base() . '/sources/hooks/systems/addon_registry', 'sources/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']);
+        $d_directory = array_merge($d_directory, get_directory_contents(get_file_base() . '/sources_custom/hooks/systems/addon_registry', 'sources_custom/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']));
+        foreach ($d_directory as $upgrade_file2) {
+            $file_data = cms_file_get_contents_safe($upgrade_file2, FILE_READ_LOCK);
+            $addon_contents[basename($upgrade_file2, '.php')] = $file_data;
+        }
+    }
+
+    // Find addons within the TAR (should overwrite / take priority over what is on disk via is_hotfix)
     foreach ($directory as $upgrade_file2) {
         // See if we can find an addon registry file in our upgrade file
         if ((strpos($upgrade_file2['path'], '/addon_registry/') !== false) && (substr($upgrade_file2['path'], -4) == '.php')) {
@@ -197,9 +226,23 @@ function _upgrader_file_upgrade_screen() : string
             // See if we can skip the file, if the on-disk version is identical?
             if ((file_exists(get_file_base() . '/' . $upgrade_file['path'])) && (($is_directory) || (filesize(get_file_base() . '/' . $upgrade_file['path']) == $upgrade_file['size']))) {
                 $tar_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
-                if (cms_file_get_contents_safe(get_file_base() . '/' . $upgrade_file['path'], FILE_READ_LOCK) == $tar_data['data']) {
-                    $out .= do_lang('UPGRADER_SKIPPING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';
-                    continue;
+
+                /*
+                 * For hotfixes, do a simple mtime check. We do not want to overwrite files newer than in the hotfix.
+                 * For upgrades, we want to do an exact contents comparison.
+                 */
+                if ($is_hotfix) {
+                    if ($tar_data['mtime'] < filemtime(get_file_base() . '/' . $upgrade_file['path'])) {
+                        $out .= do_lang('UPGRADER_SKIPPING_MESSAGE_B', escape_html($upgrade_file['path'])) . '<br />';
+                        $metadata['skip'][] = do_lang('UPGRADER_SKIPPING_MESSAGE_B', escape_html($upgrade_file['path']));
+                        continue;
+                    }
+                } else {
+                    if (cms_file_get_contents_safe(get_file_base() . '/' . $upgrade_file['path'], FILE_READ_LOCK) == $tar_data['data']) {
+                        $out .= do_lang('UPGRADER_SKIPPING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';
+                        $metadata['skip'][] = do_lang('UPGRADER_SKIPPING_MESSAGE', escape_html($upgrade_file['path']));
+                        continue;
+                    }
                 }
             }
         }
@@ -236,7 +279,6 @@ function _upgrader_file_upgrade_screen() : string
         // What kind of file did we find?
         if ($extract_addon) {
             // Addon registry file, for installed addon, renamed installed addon, or core addon...
-
             if (!$is_directory) {
                 $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
 
@@ -250,7 +292,6 @@ function _upgrader_file_upgrade_screen() : string
             }
         } else {
             // Some other file...
-
             $found = null;
             if (!$is_directory) {
                 foreach ($addon_contents as $addon_name => $addon_data) {
@@ -267,9 +308,8 @@ function _upgrader_file_upgrade_screen() : string
             }
 
             // Install if it's a file in an addon we have installed or for a core addon
-            //  (if we couldn't find the addon for it we have to assume a corrupt upgrade TAR and must skip the file)
-            $install_alien_files = false;
-            if ((($found !== null) || ($install_alien_files))) {
+            // (if we couldn't find the addon for it we have to assume a corrupt upgrade TAR and must skip the file)
+            if ($found !== null) {
                 if ($is_directory) {
                     if (!$dry_run) {
                         afm_make_directory($upgrade_file['path'], false, true);
@@ -371,17 +411,17 @@ function _upgrader_file_upgrade_screen() : string
     }
 
     // Immediately upgrade these as the secondary upgrader (iframe) depends on them
-    $immediately_upgrade = [
-        'data/upgrader2.php',
-        'sources/crypt_master.php',
-    ];
-    foreach ($immediately_upgrade as $path) {
-        $file_data = tar_get_file($upgrade_resource, $path);
-        if ($file_data !== null) {
-            if (!$dry_run) {
+    if (!$dry_run) {
+        $immediately_upgrade = [
+            'data/upgrader2.php',
+            'sources/crypt_master.php',
+        ];
+        foreach ($immediately_upgrade as $path) {
+            $file_data = tar_get_file($upgrade_resource, $path);
+            if ($file_data !== null) {
                 afm_make_file($path, $file_data['data'], ($file_data['mode'] & 0002) != 0);
+                $out .= do_lang('UPGRADER_EXTRACTING_MESSAGE', escape_html($path)) . '<br />';
             }
-            $out .= do_lang('UPGRADER_EXTRACTING_MESSAGE', escape_html($path)) . '<br />';
         }
     }
 
@@ -439,6 +479,9 @@ function _upgrader_file_upgrade_screen() : string
             // Show the dry-run results
             $out .= '<p>' . do_lang('FILES') . ':</p>';
             $out .= '<ul>';
+            foreach ($metadata['skip'] as $file) {
+                $out .= '<li><kbd>' . escape_html($file) . '</kbd></li>';
+            }
             if (empty($metadata['todo'])) {
                 $out .= '<li><em>' . do_lang('NONE') . '</em></li>';
             } else {

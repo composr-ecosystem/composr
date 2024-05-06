@@ -93,6 +93,7 @@ function upgrade_script()
             break;
 
         case 'check_perms':
+            echo '<h2>' . do_lang('UPGRADER_CHECK_PERMISSIONS') . '</h2>';
             require_code('file_permissions_check');
             list($messages) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
             if (empty($messages)) {
@@ -105,6 +106,7 @@ function upgrade_script()
             break;
 
         case 'fix_perms':
+            echo '<h2>' . do_lang('UPGRADER_FIX_PERMISSIONS') . '</h2>';
             require_code('file_permissions_check');
             list(, $commands) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
             if (empty($commands)) {
@@ -128,7 +130,6 @@ function upgrade_script()
             require_code('upgrade_files');
             appengine_live_guard();
             echo upgrader_file_upgrade_screen();
-            $show_more_link = false;
             break;
 
         case '_file_upgrade':
@@ -439,6 +440,7 @@ function upgrader_menu_screen() : string
     $l_action = do_lang('ACTION');
     $l_estimated_time = do_lang('UPGRADER_ESTIMATED_TIME');
     $l_not_for_patch = do_lang('UPGRADER_NOT_FOR_PATCH');
+    $l_not_for_hotfix = do_lang('UPGRADER_NOT_FOR_HOTFIX');
     $l_customisations = do_lang('UPGRADER_CUSTOMISATIONS');
     $l_error_correction = do_lang('UPGRADER_ERROR_CORRECTION');
 
@@ -473,17 +475,21 @@ function upgrader_menu_screen() : string
     $tar_url = '';
     if ($news_id !== null) {
         require_code('files');
-        $fetch_url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/fetch_release_details.php?mode=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
+        $fetch_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/release_details/' . strval($news_id) . '/&from_version=' . urlencode($from_version);
         $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
-        $details = json_decode($news, true);
-        if ($details[0] != '') {
-            $l_refer_release_notes = $details[0];
-            if ($details[2] != '') {
-                $l_refer_release_notes .= '<div style="overflow: auto; height: 150px">' . $details[2] . '</div>';
+        $_details = @json_decode($news, true);
+        if (($_details !== null) && ($_details['success'])) {
+            $details = $_details['response_data'];
+
+            if ($details['notes'] != '') {
+                $l_refer_release_notes = $details['notes'];
+                if ($details['changes'] != '') {
+                    $l_refer_release_notes .= '<div style="overflow: auto; height: 150px">' . $details['changes'] . '</div>';
+                }
             }
+            $tar_url = $details['tar_url'];
         }
-        $tar_url = $details[1];
     }
     $l_download = upgrader_link('upgrader.php?type=file_upgrade&tar_url=' . urlencode(base64_encode($tar_url)), do_lang('UPGRADER_DOWNLOAD'));
 
@@ -543,48 +549,64 @@ function upgrader_menu_screen() : string
                 <tbody>
                     <tr><th>1</th><td>{$l_tutorial}<br />{$l_not_for_patch}</td><td>" . escape_html(display_time_period(60 * 120)) . "</td></tr>
     ";
+    // Backup
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_take_backup}</td><td>" . escape_html(display_time_period(60 * 120)) . "</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_take_backup}</td><td>" . escape_html(display_time_period(60 * 30)) . "</td></tr>
     ";
+
+    // Close site
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_close_site}  {$l_fu_closedness}<br /><q style=\"font-style: italic\">" . $closed->evaluate() . "</q> <span class=\"associated-link\"><a href=\"" . escape_html($closed_url->evaluate()) . "\" title=\"(this link will open in a new window)\" target=\"_blank\">" . do_lang('CHANGE') . "</a></span></td><td>" . escape_html(display_time_period(60)) . "</td></tr>
     ";
+
+    // Transfer files
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_download}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_download}</td><td>" . escape_html(display_time_period(60 * 10)) . "</td></tr>
     ";
+
+    // Integrity scan
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--><br />{$l_not_for_patch}</td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 10))) . "&nbsp;&dagger;</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--><br />{$l_not_for_patch}</td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 30))) . "&nbsp;&dagger;</td></tr>
     ";
+
+    // Database upgrade
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_db_upgrade}<br />{$l_up_info}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
     ";
+
+    // Theme upgrader
     if (is_maintained('theme_upgrader')) {
         $step_num++;
         $_step_num = strval($step_num);
         $out .= "
-                    <tr><th>{$_step_num}</th><td>{$l_not_for_patch} {$l_theme_upgrade}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
+                    <tr><th>{$_step_num}</th><td>{$l_theme_upgrade}<br />{$l_not_for_patch}</td><td>" . escape_html(display_time_period(60 * 10)) . "</td></tr>
         ";
     }
+
+    // Clear caches
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_clear_caches}</td><td>1 minute</td></tr>
     ";
+
+    // Open site
     $step_num++;
     $_step_num = strval($step_num);
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_open_site}  {$l_fu_closedness}</td><td>1 minute</td></tr>
     ";
+
     $out .= "
                 </tbody>
             </table>
@@ -628,7 +650,7 @@ function upgrader_menu_screen() : string
 function upgrader_decache_screen() : string
 {
     clear_caches_2();
-    return '<p>' . do_lang('SUCCESS') . '</p>';
+    return '<h2>' . do_lang('UPGRADER_CLEAR_CACHES') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
 }
 
 /**
@@ -642,7 +664,7 @@ function upgrader_open_site_screen() : string
     log_it('UPGRADER_OPEN_SITE');
 
     set_option('site_closed', '0');
-    return '<p>' . do_lang('SUCCESS') . '</p>';
+    return '<h2>' . do_lang('UPGRADER_OPEN_SITE') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
 }
 
 /**
@@ -657,5 +679,5 @@ function upgrader_close_site_screen() : string
 
     set_option('closed', do_lang('UPGRADER_CLOSED_FOR_UPGRADES', get_site_name()));
     set_option('site_closed', '2');
-    return '<p>' . do_lang('SUCCESS') . '</p>';
+    return '<h2>' . do_lang('UPGRADER_CLOSE_SITE') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
 }

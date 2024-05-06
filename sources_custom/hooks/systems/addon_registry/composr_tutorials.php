@@ -139,8 +139,8 @@ The documentation is primarily maintained on our website, and this archive is on
                 //'core_all_icons',
             ],
             'recommends' => [
-                'composr_homesite',
-                'composr_homesite_support_credits',
+                'cms_homesite',
+                'cms_homesite_tracker',
                 'cms_release_build',
             ],
             'conflicts_with' => [],

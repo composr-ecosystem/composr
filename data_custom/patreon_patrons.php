@@ -47,8 +47,8 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-if (!addon_installed('composr_homesite')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite')));
+if (!addon_installed('cms_homesite')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
 }
 
 header('X-Robots-Tag: noindex');

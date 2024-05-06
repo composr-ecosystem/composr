@@ -180,7 +180,7 @@ class Module_admin_make_release
 
         // URLs
         $tracker_url = get_brand_base_url() . '/tracker';
-        $web_service_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php';
+        $web_service_url = get_brand_base_url() . '/data_custom/cms_homesite_web_service.php';
         $make_release_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release';
         $profile_url = get_brand_base_url() . '/members/view';
         $git_url = CMS_REPOS_URL;
@@ -320,10 +320,16 @@ class Module_admin_make_release
                 }
             }
 
-            $api_url = post_param_string('web_service_url') . '?call=get_tracker_issues';
+            $api_url = post_param_string('web_service_url') . '/data/endpoint.php/cms_homesite/tracker_issues';
             $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
-            $_result = http_get_contents($api_url, ['post_params' => ['parameters' => [$_discovered_tracker_issues, $new_version, $dig_deep ? $previous_version : null]]]);
-            $tracker_issues = json_decode($_result, true);
+            $post = [
+                'discovered' => $_discovered_tracker_issues,
+                'new_version' => $new_version,
+                'previous_version' => $dig_deep ? $previous_version : null
+            ];
+            $_result = http_get_contents($api_url, ['post_params' => $post]);
+            $_tracker_issues = json_decode($_result, true);
+            $tracker_issues = $_tracker_issues['response_data'];
 
             $new_version_parts = explode('.', $new_version);
             $last = count($new_version_parts) - 1;

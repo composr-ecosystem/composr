@@ -63,6 +63,12 @@ function init__global3()
     if (!defined('STRING_MAGIC_NULL')) {
         define('STRING_MAGIC_NULL', '!--:)abcUNLIKELY');
     }
+
+    // This is similar but should only be used if symbols might have special meaning (such as : marking a delimiter).
+    if (!defined('STRING_MAGIC_NULL_BASE64')) {
+        define('STRING_MAGIC_NULL_BASE64', 'VpExk5ArsEwfSvcca01c5L8yw');
+    }
+
     // This is similar, but for integers. As before, it should only be used when null and -1 aren't appropriate OR as the "ignore this field" indicator.
     if (!defined('INTEGER_MAGIC_NULL')) {
         define('INTEGER_MAGIC_NULL', 1634817353); // VERY unlikely to occur, but is both a 32bit unsigned and a 32 bit signed number
@@ -546,7 +552,7 @@ function cms_http_request(string $url, array $options = []) : object
  * @param  float $timeout The timeout in seconds
  * @return ?string response from the fsock (null: error)
  */
-function cms_fsock_request(string $payload, string $url, ?int &$error_code = null, ?string &$error_message = '', float $timeout = 6.0) : ?string
+function cms_fsock_request(string $payload, string $url, ?int &$error_code = null, string &$error_message = '', float $timeout = 6.0) : ?string
 {
     cms_profile_start_for('cms_fsock_request');
 

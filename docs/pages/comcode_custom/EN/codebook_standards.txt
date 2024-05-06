@@ -2298,7 +2298,7 @@ If you make a Composr tutorial that doesn't meet the normal rules (e.g. a video 
 | Communication
 | Product development only
 | Manually
-| If you've added a non-trivial feature it will need to be added to the Composr website's feature-list eventually ([tt]composr_homesite_featuretray.php[/tt]), and also announced.
+| If you've added a non-trivial feature it will need to be added to the Composr website's feature-list eventually ([tt]cms_homesite_featuretray.php[/tt]), and also announced.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Provide addon screenshots

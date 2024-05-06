@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /*
@@ -52,8 +52,8 @@ require($FILE_BASE . '/sources/global.php');
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
-if (!addon_installed('composr_homesite')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite')));
+if (!addon_installed('cms_homesite')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
 }
 
 header('X-Robots-Tag: noindex');

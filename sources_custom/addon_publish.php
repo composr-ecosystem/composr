@@ -164,7 +164,7 @@ function find_addon_category_download_category($category_name, $parent_id = null
             fatal_exit('Could not find a theme image, ' . $theme_image);
         }
 
-        require_code('composr_homesite');
+        require_code('cms_homesite');
         $id = add_download_category($category_name, $parent_id, $description, '', $rep_image);
         require_code('permissions2');
         set_global_category_access('downloads', $id);

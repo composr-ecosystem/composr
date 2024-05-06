@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 /**
@@ -35,7 +35,7 @@ class Hook_config_points_support_credits
             'list_options' => '',
             'required' => true,
             'public' => false,
-            'addon' => 'composr_homesite_support_credits',
+            'addon' => 'cms_homesite_tracker',
         ];
     }
 
@@ -46,7 +46,7 @@ class Hook_config_points_support_credits
      */
     public function get_default() : ?string
     {
-        if (!addon_installed('composr_homesite_support_credits') || !addon_installed('points')) {
+        if (!addon_installed('cms_homesite_tracker') || !addon_installed('points')) {
             return null;
         }
 

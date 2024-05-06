@@ -1137,15 +1137,16 @@ function find_updated_addons() : array
         return [];
     }
 
-    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/addon_manifest.php?version=' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
+    $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/addon_manifest/' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
     $post = [];
     foreach (array_keys($addons) as $i => $addon_name) {
         $post['addon_' . strval($i)] = urlencode($addon_name);
     }
 
     require_code('http');
-    list($addon_data) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 5/*5 minute cache*/);
-    if (empty($addon_data)) {
+    list($_addon_data) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 5/*5 minute cache*/);
+    $addon_data = @json_decode($_addon_data, true);
+    if (($addon_data === null) || (!$addon_data['success'])) {
         return [];
         //warn_exit(do_lang('INTERNAL_ERROR'));
     }
@@ -1155,11 +1156,7 @@ function find_updated_addons() : array
     $available_addons = array_reverse($available_addons);
 
     $updated_addons = [];
-    $_addon_data = @unserialize($addon_data);
-    if ($_addon_data === false) {
-        return [];
-    }
-    foreach ($_addon_data as $i => $addon_bits) {
+    foreach ($addon_data['response_data'] as $i => $addon_bits) {
         $found = false;
 
         foreach ($available_addons as $available_addon) {

@@ -79,7 +79,9 @@ class Hook_health_check_upkeep extends Hook_Health_Check
 
         switch (get_option('hc_version_check')) {
             case 'deprecated':
-                $is_discontinued = $this->call_homesite_api('is_release_discontinued', ['version' => cms_version_number()]);
+                $_is_discontinued = $this->call_homesite_api('is_release_discontinued', cms_version_number());
+                $is_discontinued = ($_is_discontinued !== null) && ($_is_discontinued['success'] === true) && ($_is_discontinued['response_data']['discontinued'] === true);
+                
                 $this->assertTrue($is_discontinued !== true, 'The ' . brand_name() . ' version is discontinued');
                 break;
 

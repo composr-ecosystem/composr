@@ -132,8 +132,8 @@ class ___broken_links_test_set extends cms_test_case
             return;
         }
 
-        $tempcode = do_block('composr_homesite_featuretray');
-        $this->scan_html($tempcode->evaluate(), 'composr_homesite_featuretray');
+        $tempcode = do_block('cms_homesite_featuretray');
+        $this->scan_html($tempcode->evaluate(), 'cms_homesite_featuretray');
 
         $this->check_recorded_links();
     }

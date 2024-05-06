@@ -205,7 +205,7 @@ function _get_zone_pages(array $installprofileblocks, ?array $block_options, boo
         $comcode = '';
         $comcode .= $right;
         if (post_param_integer('include_cms_advert', 0) == 1) {
-            $comcode .= '[center][url="' . get_brand_base_url() . '/?from=logo"][img="Powered by ' . brand_name() . '"]' . get_brand_base_url() . '/uploads/website_specific/composr.app/logos/a.png[/img][/url][/center]';
+            $comcode .= '[center][url="' . get_brand_base_url() . '/?from=logo"][img="Powered by ' . brand_name() . '"]' . get_brand_base_url() . '/uploads/website_specific/cms_homesite/logos/a.png[/img][/url][/center]';
         }
         $page_structure[$zone]['right'] = $comcode;
     }

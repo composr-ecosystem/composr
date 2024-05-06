@@ -41,8 +41,8 @@ class zip_test_set extends cms_test_case
 
     protected function doPrefixedFunctionTest($prefix)
     {
-        if (!addon_installed('composr_homesite')) {
-            $this->assertTrue(false, 'The composr_homesite addon must be installed for this test to run'); // That's where our test ZIP file is from
+        if (!addon_installed('cms_homesite')) {
+            $this->assertTrue(false, 'The cms_homesite addon must be installed for this test to run'); // That's where our test ZIP file is from
             return;
         }
 
@@ -55,7 +55,7 @@ class zip_test_set extends cms_test_case
             'mini/b.png' => 3293,
         ];
 
-        $path = get_file_base() . '/uploads/website_specific/composr.app/banners.zip';
+        $path = get_file_base() . '/uploads/website_specific/cms_homesite/banners.zip';
         $zip_file = call_user_func($prefix . 'zip_open', $path);
         $files = [];
         if (!is_integer($zip_file)) {

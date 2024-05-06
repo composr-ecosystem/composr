@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 /**
@@ -20,7 +20,7 @@ class Hook_symbol_MANTIS_TOTAL
 {
     public function run($param)
     {
-        if (!addon_installed('composr_homesite_support_credits')) {
+        if (!addon_installed('cms_homesite_tracker')) {
             return '';
         }
 

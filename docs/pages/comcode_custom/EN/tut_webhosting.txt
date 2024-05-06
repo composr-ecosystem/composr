@@ -80,7 +80,7 @@ Keep making sure you have your own backups so that you are able to always make a
 [media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
 When choosing a webhost, you need to make sure that they meet all the requirements of Composr. Composr is intentionally designed to have very low requirements, so most [concept]PHP[/concept]/[concept]MySQL[/concept]-supporting webhosts should be compatible.
 
-The remainder of this section details Composr's requirements. If you have trouble ascertaining a webhosts compliance, you may wish to contact them with this information. These requirements only apply to bundled functionality; non-bundled addons may have their own requirements.[staff_note]Also update download.txt in composr_homesite branch[/staff_note]
+The remainder of this section details Composr's requirements. If you have trouble ascertaining a webhosts compliance, you may wish to contact them with this information. These requirements only apply to bundled functionality; non-bundled addons may have their own requirements.[staff_note]Also update download.txt in the homesite Git branch[/staff_note]
 
 [title="3"]General[/title]
 

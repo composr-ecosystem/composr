@@ -344,7 +344,7 @@ class Hook_cns_warnings_content
             require_code('selectcode');
             if ((substr($multi_code, 0, 1) == '-') || (substr($multi_code, 0, 1) == '*')) {
                 foreach ($content_deletable as $key => $value) {
-                    if (strpos('::', $value) === false) {
+                    if (strpos($value, '::') === false) {
                         continue;
                     }
                     $content_to_delete[$value] = true;

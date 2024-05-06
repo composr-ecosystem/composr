@@ -92,7 +92,6 @@ $must_do_last = [
     'data/upgrader2.php', // this file!
 
     // Files on which this one depends
-    'sources/global.php',
     'sources/crypt_master.php',
 ];
 
@@ -191,13 +190,13 @@ if ($next_offset_url != '') {
     echo '
     window.setTimeout(function() {
         window.location.href = \'' . $next_offset_url . '&scroll_time=\' + scrollTime + \'&scroll_pos=\' + scrollPos + \'#progress\';
-    }, 3000);
+    }, 5000);
     ';
 }
 echo '
 </script>';
 if ($next_offset_url != '') {
-    echo '<hr /><p>Continuing in 3 seconds. If the JavaScript refresh is not working, <a href="' . htmlentities($next_offset_url) . '">force continue</a>.</p>';
+    echo '<hr /><p>Continuing in 5 seconds. If the JavaScript refresh is not working, <a href="' . htmlentities($next_offset_url) . '">force continue</a>.</p>';
 }
 up2_do_footer();
 

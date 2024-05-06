@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 /**
@@ -25,7 +25,7 @@ class Hook_ecommerce_support_credits
      */
     public function get_product_category() : ?array
     {
-        if (!addon_installed('composr_homesite_support_credits')) {
+        if (!addon_installed('cms_homesite_tracker')) {
             return null;
         }
 
@@ -92,7 +92,7 @@ class Hook_ecommerce_support_credits
      */
     public function is_available(string $type_code, int $member_id, int $req_quantity = 1, bool $must_be_listed = false) : int
     {
-        if (!addon_installed('composr_homesite_support_credits')) {
+        if (!addon_installed('cms_homesite_tracker')) {
             return ECOMMERCE_PRODUCT_INTERNAL_ERROR;
         }
 

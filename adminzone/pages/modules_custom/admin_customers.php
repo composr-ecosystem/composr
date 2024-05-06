@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 /**
@@ -34,7 +34,7 @@ class Module_admin_customers
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'composr_homesite_support_credits';
+        $info['addon'] = 'cms_homesite_tracker';
         return $info;
     }
 
@@ -628,7 +628,7 @@ class Module_admin_customers
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('composr_homesite_support_credits')) {
+        if (!addon_installed('cms_homesite_tracker')) {
             return null;
         }
 
@@ -653,7 +653,7 @@ class Module_admin_customers
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('composr_homesite_support_credits', $error_msg)) {
+        if (!addon_installed__messaged('cms_homesite_tracker', $error_msg)) {
             return $error_msg;
         }
 

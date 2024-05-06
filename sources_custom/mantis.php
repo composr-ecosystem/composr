@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite_support_credits
+ * @package    cms_homesite_tracker
  */
 
 function get_tracker_issues($ids, $version = null, $previous_version = null)
@@ -232,11 +232,11 @@ function ensure_version_exists_in_tracker($version)
 function upload_to_tracker_issue($tracker_id, $upload)
 {
     $out = new Tempcode();
-    if (!addon_installed__messaged('composr_homesite', $out)) {
+    if (!addon_installed__messaged('cms_homesite', $out)) {
         warn_exit($out);
     }
 
-    require_code('composr_homesite');
+    require_code('cms_homesite');
 
     $disk_filename = md5(serialize($upload));
     $save_path = get_custom_file_base() . '/tracker/uploads/' . $disk_filename;
@@ -282,11 +282,11 @@ function upload_to_tracker_issue($tracker_id, $upload)
 function create_tracker_post($tracker_id, $tracker_comment_message)
 {
     $out = new Tempcode();
-    if (!addon_installed__messaged('composr_homesite', $out)) {
+    if (!addon_installed__messaged('cms_homesite', $out)) {
         warn_exit($out);
     }
 
-    require_code('composr_homesite');
+    require_code('cms_homesite');
 
     $query = "
         INSERT INTO

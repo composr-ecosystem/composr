@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 // Fixup SCRIPT_FILENAME potentially being missing
@@ -39,7 +39,7 @@ if (!file_exists($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-require_code('composr_homesite');
+require_code('cms_homesite');
 
 $version_pretty = get_latest_version_pretty();
 $type_wanted = get_param_string('type');

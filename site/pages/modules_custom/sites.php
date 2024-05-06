@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 /*EXTRA FUNCTIONS: ftp_.**/
@@ -25,8 +25,8 @@ $SITE_INFO['mysql_demonstratr_password']='xxx';
 
 You also need:
  - wildcard DNS configured
- - uploads/website_specific/composr.app/demonstratr/template.sql and uploads/website_specific/composr.app/demonstratr/template.tar defined appropriately
- - an uploads/website_specific/composr.app/demonstratr/sites/demonstratr directory for sites to be built into
+ - uploads/website_specific/cms_homesite/demonstratr/template.sql and uploads/website_specific/cms_homesite/demonstratr/template.tar defined appropriately
+ - an uploads/website_specific/cms_homesite/demonstratr/sites/demonstratr directory for sites to be built into
 */
 
 /**
@@ -49,7 +49,7 @@ class Module_sites
         $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'composr_homesite';
+        $info['addon'] = 'cms_homesite';
         return $info;
     }
 
@@ -126,7 +126,7 @@ class Module_sites
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('composr_homesite')) {
+        if (!addon_installed('cms_homesite')) {
             return null;
         }
 
@@ -155,13 +155,13 @@ class Module_sites
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('composr_homesite', $error_msg)) {
+        if (!addon_installed__messaged('cms_homesite', $error_msg)) {
             return $error_msg;
         }
 
         $type = get_param_string('type', 'browse');
 
-        require_lang('composr_homesite');
+        require_lang('cms_homesite');
 
         if ($type == 'hostingcopy_step1' || $type == 'hostingcopy_step2' || $type == 'hostingcopy_step3') {
             $this->title = get_screen_title('HOSTING_COPY');
@@ -183,7 +183,7 @@ class Module_sites
      */
     public function run() : object
     {
-        require_code('composr_homesite');
+        require_code('cms_homesite');
         require_lang('installer');
         require_lang('downloads');
         require_code('form_templates');

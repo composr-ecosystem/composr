@@ -656,7 +656,6 @@ class Hook_addon_registry_core
             'data/cron_bridge.sh',
             'data/csp_logging.php',
             'data/curl-ca-bundle.crt',
-            'data/db_meta.bin',
             'data/empty.php',
             'data/endpoint.php',
             'data/external_url_proxy.php',
@@ -1007,6 +1006,8 @@ class Hook_addon_registry_core
             'sources/hooks/systems/preview/index.html',
             'sources/hooks/systems/resource_meta_aware/.htaccess',
             'sources/hooks/systems/resource_meta_aware/index.html',
+            'sources/hooks/systems/site_html_pages/.htaccess',
+            'sources/hooks/systems/site_html_pages/index.html',
             'sources/hooks/systems/sitemap/.htaccess',
             'sources/hooks/systems/sitemap/entry_point.php',
             'sources/hooks/systems/sitemap/index.html',
@@ -2000,8 +2001,6 @@ class Hook_addon_registry_core
             'uploads/repimages/index.html',
             'uploads/website_specific/index.html',
             'web.config',
-            'sources/hooks/systems/site_html_pages/.htaccess',
-            'sources/hooks/systems/site_html_pages/index.html',
         ];
     }
 

@@ -279,12 +279,16 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
             switch (cms_strtoupper_ascii($type)) {
                 case 'ERROR':
                 case 'FATAL ERROR':
-                    @error_log('PHP: ' . ($fatal ? 'CRITICAL' : 'ERROR') . ' ' . $php_error_label, 0);
+                    @error_log('PHP: CRITICAL ' . $php_error_label, 0);
                     break;
                 case 'WARNING':
+                    @error_log('PHP: ERROR ' . $php_error_label, 0);
+                    break;
                 case 'NOTICE':
-                case 'DEPRECATED':
                     @error_log('PHP: WARNING ' . $php_error_label, 0);
+                    break;
+                case 'DEPRECATED':
+                    @error_log('PHP: INFO ' . $php_error_label, 0);
                     break;
             }
         }
@@ -1098,18 +1102,18 @@ function get_webservice_result($error_message) : ?string
 
     require_code('version2');
     require_code('http');
-    $url = get_brand_base_url() . '/uploads/website_specific/composr.app/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&product=' . urlencode($brand);
+    $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/errorservice/' . urlencode(get_version_dotted()) . '/?product=' . urlencode($brand);
     $post = ['error_message' => $error_message];
-    list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 60 * 24);
-
-    if ($http_result == '') {
+    list($_http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 60 * 24);
+    $http_result = @json_decode($_http_result, true);
+    if (($http_result === null) || ($http_result['success'] === false)) {
         return null;
     }
 
     if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($http_result);
+        ocp_mark_as_escaped($http_result['response_data']['matched_error']);
     }
-    return $http_result;
+    return $http_result['response_data']['matched_error'];
 }
 
 /**
@@ -1271,7 +1275,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
             if ($payload === false) {
                 cms_error_log(brand_name() . ' telemetry: WARNING Failed to JSON encode the error to send to the developers.');
             } else {
-                $url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=relay_error_notification';
+                $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry';
                 $error_code = null;
                 $error_message = '';
                 $response = cms_fsock_request($payload, $url, $error_code, $error_message);
@@ -1279,7 +1283,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
                     cms_error_log(brand_name() . ' telemetry: WARNING Could not forward error to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
                 }
                 $matches = [];
-                if (preg_match('#\srelayed_error_id=(\d*)\s#', $response, $matches) != 0) {
+                if (preg_match('#\s\'relayed_error_id\'\: (\d*)#', $response, $matches) != 0) {
                     if ((php_function_allowed('error_log')) && (file_exists(get_custom_file_base() . '/data_custom/errorlog.php')) && (cms_is_writable(get_custom_file_base() . '/data_custom/errorlog.php'))) {
                         @error_log('TELEMETRY ' . strval($matches[1]) . "\n", 3, get_file_base() . '/data_custom/errorlog.php');
                     }

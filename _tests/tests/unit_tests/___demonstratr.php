@@ -35,7 +35,7 @@ class ___demonstratr_test_set extends cms_test_case
         }
 
         if (strpos(get_db_type(), 'mysql') !== false) {
-            require_code('composr_homesite');
+            require_code('cms_homesite');
 
             global $SITE_INFO;
             if (!isset($SITE_INFO['mysql_root_password'])) {
