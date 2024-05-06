@@ -40,73 +40,86 @@ function endpoint_script()
     $response_type = 'json';
 
     require_code('failure');
-    set_throw_errors(true);
 
-    try {
-        // Restful
-        if (!@cms_empty_safe($_SERVER['PATH_INFO'])) {
-            // What response type is desired
-            if (!empty($_SERVER['HTTP_ACCEPT'])) {
-                if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
-                    $response_type = 'json';
-                }
-                // ... Currently we actually only support JSON anyway! No need for unnecessary complexity.
+    // Restful
+    if (!@cms_empty_safe($_SERVER['PATH_INFO'])) {
+        // What response type is desired
+        if (!empty($_SERVER['HTTP_ACCEPT'])) {
+            if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+                $response_type = 'json';
             }
+            // ... Currently we actually only support JSON anyway! No need for unnecessary complexity.
+        }
 
-            // Path-info is translated to $hook_type/$hook/$id
-            $path_info = $_SERVER['PATH_INFO'];
-            $matches = [];
-            if (preg_match('#^(/\w+)(/\w+)?(/[^\?]+)?#', $path_info, $matches) != 0) {
-                $hook_type = ltrim($matches[1], '/');
-                $hook = isset($matches[2]) ? ltrim($matches[2], '/') : false;
-                $id = isset($matches[3]) ? ltrim($matches[3], '/') : null;
-            }
+        // Path-info is translated to $hook_type/$hook/$id
+        $path_info = $_SERVER['PATH_INFO'];
+        $matches = [];
+        if (preg_match('#^(/\w+)(/\w+)?(/[^\?]+)?#', $path_info, $matches) != 0) {
+            $hook_type = ltrim($matches[1], '/');
+            $hook = isset($matches[2]) ? ltrim($matches[2], '/') : false;
+            $id = isset($matches[3]) ? ltrim($matches[3], '/') : null;
+        }
 
-            // POST data may need switching about
-            if (empty($_POST)) {
-                if ($_SERVER['REQUEST_METHOD'] != 'HEAD' && $_SERVER['REQUEST_METHOD'] != 'GET') { // i.e. not a simple CSRF case
-                    $_POST['data'] = @file_get_contents('php://input');
-                }
-            }
-
-            // Convert from REST's use of standard HTTP verbs to the software's standard $type names (also corresponds with CRUD)
-            switch (cms_strtoupper_ascii($_SERVER['REQUEST_METHOD'])) {
-                case 'POST': // REST POST = CRUD create = software add
-                    $type = 'add';
-                    break;
-
-                case 'PUT': // REST PUT = CRUD update = software edit
-                    $type = 'edit';
-                    break;
-
-                case 'DELETE': // REST DELETE = CRUD delete = software delete
-                    $type = 'delete';
-                    break;
-
-                case 'GET': // REST GET = N/A = software view
-                default:
-                    $type = 'view';
-                    break;
+        // If empty POST data but not a HEAD or GET request, data was probably transmitted via a stream
+        if (empty($_POST)) {
+            if ($_SERVER['REQUEST_METHOD'] != 'HEAD' && $_SERVER['REQUEST_METHOD'] != 'GET') { // i.e. not a simple CSRF case
+                $_POST['data'] = @file_get_contents('php://input');
             }
         }
 
-        // GET params take priority
-        $hook_type = filter_naughty_harsh(get_param_string('hook_type', $hook_type), true);
-        $hook = filter_naughty_harsh(get_param_string('hook', $hook), true);
-        $type = get_param_string('type', $type);
-        $id = get_param_string('id', $id);
-        $response_type = get_param_string('response_type', $response_type);
+        // Convert from REST's use of standard HTTP verbs to the software's standard $type names (also corresponds with CRUD)
+        switch (cms_strtoupper_ascii($_SERVER['REQUEST_METHOD'])) {
+            case 'POST': // REST POST = CRUD create = software add
+                $type = 'add';
+                break;
 
+            case 'PUT': // REST PUT = CRUD update = software edit
+                $type = 'edit';
+                break;
+
+            case 'DELETE': // REST DELETE = CRUD delete = software delete
+                $type = 'delete';
+                break;
+
+            case 'GET': // REST GET = N/A = software view
+            default:
+                $type = 'view';
+                break;
+        }
+    }
+
+    // GET params take priority
+    $hook_type = filter_naughty_harsh(get_param_string('hook_type', $hook_type), true);
+    $hook = filter_naughty_harsh(get_param_string('hook', $hook), true);
+    $type = get_param_string('type', $type);
+    $id = get_param_string('id', $id);
+    $response_type = get_param_string('response_type', $response_type);
+    $rest_path = $hook_type . '/' . $hook . (($id !== null) ? '/' . $id : '') . ' [' . $type . ']';
+
+    // Log initial hit
+    $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
+    if (is_file($_log_file)) {
+        require_code('files');
+        $log_message = loggable_date() . ' HIT to endpoint ' . $rest_path . ' by IP address ' . get_ip_address() . "\n";
+        $log_file = cms_fopen_text_write($_log_file, true, 'ab');
+        fwrite($log_file, $log_message);
+        flock($log_file, LOCK_UN);
+        fclose($log_file);
+    }
+
+    // Any errors from this point forth should be considered a REST error (rather than a general internal error) and communicated with the user / logged.
+    set_throw_errors(true);
+    try {
         // Get hook info
         $ob = get_hook_ob('endpoints', $hook_type, $hook, 'Hook_endpoint_' . $hook_type . '_');
         $info = $ob->info($type, $id);
 
-        // Authorize if the endpoint requires it
+        // Process authorization if the endpoint requires it
         if (isset($info['authorization']) && ($info['authorization'] !== false)) {
             $authorized = false;
             $member = null;
 
-            // Try member authorization
+            // Try member authorization (member, staff, or super_admin types)
             if (!empty(array_intersect(['member', 'staff', 'super_admin'], $info['authorization']))) {
                 if (!@cms_empty_safe($_SERVER['PHP_AUTH_USER']) && !@cms_empty_safe($_SERVER['PHP_AUTH_PW'])) {
                     $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($_SERVER['PHP_AUTH_USER'], null, $_SERVER['PHP_AUTH_PW']);
@@ -123,14 +136,14 @@ function endpoint_script()
                 }
             }
 
-            // Try maintenance password authorization (should be last as this may cause an exit on failure)
+            // Try maintenance password authorization (maintenance_password type)
             if ((!$authorized) && in_array('maintenance_password', $info['authorization']) && (preg_match('#^Basic #', $_SERVER['HTTP_AUTHORIZATION']) != 0)) {
                 $password_given = base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6));
-                if (strpos($password_given, STRING_MAGIC_NULL_BASE64) === 0) { // STRING_MAGIC_NULL is used to indicate no username
-                    $password_given = substr($password_given, strlen(STRING_MAGIC_NULL_BASE64));
+                if (strpos($password_given, STRING_MAGIC_NULL_BASE64) === 0) { // Strip STRING_MAGIC_NULL_BASE64 if it exists
+                    $password_given = substr($password_given, (strlen(STRING_MAGIC_NULL_BASE64) + 1)); //+1 because of the colon after STRING_MAGIC_NULL_BASE64
                 }
                 require_code('crypt_master');
-                if (check_maintenance_password($password_given)) {
+                if (check_maintenance_password($password_given, true)) {
                     $authorized = true;
                     require_code('users_active_actions');
                     $member = get_first_admin_user();
@@ -141,7 +154,18 @@ function endpoint_script()
                 require_code('users_inactive_occasionals');
                 create_session($member);
             } else {
-                access_denied();
+                // Log access denied
+                $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
+                if (is_file($_log_file)) {
+                    require_code('files');
+                    $log_message = loggable_date() . ' ACCESS DENIED to endpoint ' . $rest_path . ' by IP address ' . get_ip_address() . "\n";
+                    $log_file = cms_fopen_text_write($_log_file, true, 'ab');
+                    fwrite($log_file, $log_message);
+                    flock($log_file, LOCK_UN);
+                    fclose($log_file);
+                }
+
+                access_denied('ACCESS_DENIED', 'REST endpoint ' . $rest_path);
             }
         }
 
@@ -155,13 +179,26 @@ function endpoint_script()
             'response_data' => array_diff_key($result, ['success' => true, 'error_details' => true]),
         ];
     } catch (Exception $e) {
-        // TODO: error log?
+        // Log error
+        @error_log('Endpoints: ERROR ' . strip_html($e->getMessage()) . ' (' . $rest_path . ')');
+        $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
+        if (is_file($_log_file)) {
+            require_code('files');
+            $log_message = loggable_date() . ' INTERNAL ERROR on endpoint ' . $rest_path . ' by IP address ' . get_ip_address() . "\n";
+            $log_message .= strip_html($e->getMessage()) . "\n";
+            $log_file = cms_fopen_text_write($_log_file, true, 'ab');
+            fwrite($log_file, $log_message);
+            flock($log_file, LOCK_UN);
+            fclose($log_file);
+        }
+
         $return_data = [
             'success' => false,
             'error_details' => strip_html($e->getMessage()),
             'response_data' => [],
         ];
     }
+    set_throw_errors(false);
 
     // Output
     switch ($response_type) {

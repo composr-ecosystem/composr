@@ -33,13 +33,14 @@ class Hook_logs_core
         return [
             'errorlog.php' => ['days_to_keep' => (get_option('days_to_keep__error_log') == '') ? null : intval(get_option('days_to_keep__error_log'))],
             'cron.log' => ['days_to_keep' => (get_option('days_to_keep__cron_log') == '') ? null : intval(get_option('days_to_keep__cron_log'))],
-            'http.log' => ['days_to_keep' => (get_option('days_to_keep__http_log') == '') ? null : intval(get_option('days_to_keep__http_log'))],
             'tasks.log' => ['days_to_keep' => (get_option('days_to_keep__tasks_log') == '') ? null : intval(get_option('days_to_keep__tasks_log'))],
             'permission_checks.log' => ['days_to_keep' => (get_option('days_to_keep__permission_checks_log') == '') ? null : intval(get_option('days_to_keep__permission_checks_log'))],
             'queries.log' => ['days_to_keep' => (get_option('days_to_keep__queries_log') == '') ? null : intval(get_option('days_to_keep__queries_log'))],
             'mail_integration.log' => ['days_to_keep' => (get_option('days_to_keep__mail_integration_log') == '') ? null : intval(get_option('days_to_keep__mail_integration_log'))],
             'debug_fs.log' => ['days_to_keep' => (get_option('days_to_keep__debug_fs_log') == '') ? null : intval(get_option('days_to_keep__debug_fs_log'))],
             'require_code.log' => ['days_to_keep' => (get_option('days_to_keep__require_code_log') == '') ? null : intval(get_option('days_to_keep__require_code_log'))],
+            'http.log' => ['days_to_keep' => (get_option('days_to_keep__http_log') == '') ? null : intval(get_option('days_to_keep__http_log'))],
+            'endpoints.log' => ['days_to_keep' => (get_option('days_to_keep__endpoints_log') == '') ? null : intval(get_option('days_to_keep__endpoints_log'))],
             'banned_access.log' => ['days_to_keep' => (get_option('days_to_keep__banned_access_log') == '') ? null : intval(get_option('days_to_keep__banned_access_log'))],
         ];
     }

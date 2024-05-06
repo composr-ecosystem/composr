@@ -61,6 +61,17 @@ class Hook_endpoint_cms_homesite_tracker_issues
         $ids = post_param_string('discovered', null);
         if ($ids !== null) {
             $type = 'view';
+
+            // Log the change in type
+            $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
+            if (is_file($_log_file)) {
+                require_code('files');
+                $log_message = loggable_date() . ' INFO /cms_homesite/tracker_issues we are actually doing a view type request as discovered was POSTed.' . "\n";
+                $log_file = cms_fopen_text_write($_log_file, true, 'ab');
+                fwrite($log_file, $log_message);
+                flock($log_file, LOCK_UN);
+                fclose($log_file);
+            }
         }
 
         require_code('cms_homesite');

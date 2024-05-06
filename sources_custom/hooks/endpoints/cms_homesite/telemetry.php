@@ -55,9 +55,8 @@ class Hook_endpoint_cms_homesite_telemetry
 
         switch ($type) {
             case 'add':
-                // Retrieve the JSON payload sent by the client
-                $json_payload = file_get_contents('php://input');
-                $data = json_decode($json_payload, true);
+                // The JSON payload was coerced by the main endpoints script
+                $data = json_decode($_POST['data'], true);
 
                 // Sanity checks
                 if ($data === false) {

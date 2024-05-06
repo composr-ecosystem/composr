@@ -479,6 +479,7 @@ Useful Composr logs include:
  - Mail integration (debugging), if enabled (enable it via creating an empty writable [tt]data_custom/mail_integration.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Banned IP address access log, if enabled (useful for analyzing hits to the software by banned IP addresses) (enable it via creating an empty writable [tt]data_custom/banned_access.log[/tt] file; can view from Admin Zone > Audit > Low-level logging).
  - HTTP requests log, if enabled, to view requests made outbound by Composr (enable it via creating an empty writable [tt]data_custom/http.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
+ - REST endpoints log, if enabled, to view REST requests made to data/endpoint.php (enable it via creating an empty writable [tt]data_custom/endpoints.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - The mail log (view from Admin Zone > Audit > E-mail queue/log)
 Other very useful logs:
  - The web server's own access log; look carefully in it and you are likely to see things like HTTP response codes (e.g. 500 means Internal Server Error)

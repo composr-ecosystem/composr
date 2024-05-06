@@ -23,21 +23,25 @@
 */
 
 /**
- * Check the given maintenance password is valid.
+ * Check the given plain-text maintenance password is valid.
+ * This should be handled appropriately in an if guard if $silent_failure could be true.
  *
  * @param  SHORT_TEXT $password_given Given maintenance password
- * @return boolean Whether it is valid
+ * @param  boolean $silent_failure Whether to proceed without exiting if the password was wrong
+ * @return boolean Whether the password was valid
  */
-function check_maintenance_password(string $password_given) : bool
+function check_maintenance_password(string $password_given, bool $silent_failure = false) : bool
 {
-    _maintenance_password_check__init();
+    if (!_maintenance_password_check__init($silent_failure)) {
+        return false;
+    }
 
     global $SITE_INFO;
 
     $actual_password_hashed = $SITE_INFO['maintenance_password'];
     if (strpos($actual_password_hashed, '$') !== false) {
         $ret = password_verify($password_given, $actual_password_hashed);
-        _maintenance_password_check__result($ret);
+        _maintenance_password_check__result($ret, $silent_failure);
         return $ret;
     }
     $salt = '';
@@ -51,19 +55,23 @@ function check_maintenance_password(string $password_given) : bool
         }
     }
     $ret = (((strlen($password_given) != 32) && ($actual_password_hashed == $password_given)) || (hash_equals($actual_password_hashed, md5($password_given . $salt))));
-    _maintenance_password_check__result($ret);
+    _maintenance_password_check__result($ret, $silent_failure);
     return $ret;
 }
 
 /**
- * Check the given maintenance password is valid.
+ * Check the given hashed maintenance password is valid.
+ * This should be handled appropriately in an if guard if $silent_failure could be true.
  *
- * @param  SHORT_TEXT $password_given_hashed Given maintenance password
+ * @param  SHORT_TEXT $password_given_hashed Given hashed maintenance password
+ * @param  boolean $silent_failure Whether to proceed without exiting if the password was wrong
  * @return boolean Whether it is valid
  */
-function check_maintenance_password_from_hash(string $password_given_hashed) : bool
+function check_maintenance_password_from_hash(string $password_given_hashed, bool $silent_failure = false) : bool
 {
-    _maintenance_password_check__init();
+    if (!_maintenance_password_check__init($silent_failure)) {
+        return false;
+    }
 
     global $SITE_INFO;
 
@@ -71,19 +79,23 @@ function check_maintenance_password_from_hash(string $password_given_hashed) : b
 
     if ($password_given_hashed === md5($actual_password_hashed)) {
         $ret = true; // LEGACY: Upgrade from v7 where hashed input password given even if plain-text password is in use
-        _maintenance_password_check__result($ret);
+        _maintenance_password_check__result($ret, $silent_failure);
         return $ret;
     }
 
     $ret = hash_equals($password_given_hashed, $actual_password_hashed);
-    _maintenance_password_check__result($ret);
+    _maintenance_password_check__result($ret, $silent_failure);
     return $ret;
 }
 
 /**
  * Prepare for checking the maintenance password.
+ * This call should be done within an if condition and appropriately handled when this returns false (if $silent_failure could be true).
+ *
+ * @param  boolean $silent_failure Whether to proceed without exiting (false: instead of returning, we will exit if a maintenance password is not defined)
+ * @return boolean Whether a maintenance password is available (false: access should be denied everywhere requiring a maintenance password)
  */
-function _maintenance_password_check__init()
+function _maintenance_password_check__init(bool $silent_failure = false) : bool
 {
     if ((function_exists('php_function_allowed')) && (php_function_allowed('usleep'))) {
         @usleep(500000); // Wait for half a second, to reduce brute force potential
@@ -95,22 +107,28 @@ function _maintenance_password_check__init()
         $SITE_INFO['maintenance_password'] = $SITE_INFO['admin_password'];
         unset($SITE_INFO['admin_password']);
     }
-    if (isset($SITE_INFO['master_password'])) { // LEGACY
+    if (isset($SITE_INFO['master_password'])) { // LEGACY: (as of v11)
         $SITE_INFO['maintenance_password'] = $SITE_INFO['master_password'];
         unset($SITE_INFO['master_password']);
     }
 
     if (!array_key_exists('maintenance_password', $SITE_INFO)) {
+        if ($silent_failure) {
+            return false;
+        }
         exit('Access denied - a maintenance password is not defined in _config.php.');
     }
+
+    return true;
 }
 
 /**
- * Prepare for checking the maintenance password.
+ * Log the results of the maintenance password check and exit when applicable.
  *
  * @param  boolean $result Whether login is successful
+ * @param  boolean $silent_failure Whether to proceed without exiting if $result was false
  */
-function _maintenance_password_check__result(bool $result)
+function _maintenance_password_check__result(bool $result, bool $silent_failure = false)
 {
     $msg = 'administrative script ' . basename($_SERVER['SCRIPT_NAME']);
     if (!empty($_SERVER['REMOTE_ADDR'])) {
@@ -133,7 +151,7 @@ function _maintenance_password_check__result(bool $result)
     }
 
     // Actually we want to bail with a clear message to the member about their attempt being logged (to comply with data regulations)
-    if (!$result) {
-        exit('Access denied - Incorrect maintenance password. Your attempt has been logged with your IP address.');
+    if (!$result && !$silent_failure) {
+        exit('Access denied - Incorrect maintenance password. This attempt has been logged along with the IP address.');
     }
 }
