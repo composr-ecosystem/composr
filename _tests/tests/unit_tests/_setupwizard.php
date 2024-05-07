@@ -25,7 +25,7 @@ class _setupwizard_test_set extends cms_test_case
             return;
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $session_id = $this->establish_admin_callback_session();
 
@@ -39,7 +39,7 @@ class _setupwizard_test_set extends cms_test_case
             'skip_4' => '1', // We want to keep all our addons
             'skip_3' => '0',
             'installprofile' => '',
-            'site_name' => '(testing)',
+            'site_name' => uniqid(),
             'description' => '',
             'site_scope' => 'defaultness',
             'keywords' => 'default, defaultness, celebration, community',
