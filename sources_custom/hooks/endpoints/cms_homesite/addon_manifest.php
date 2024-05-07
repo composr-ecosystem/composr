@@ -120,6 +120,11 @@ class Hook_endpoint_cms_homesite_addon_manifest
             }
         }
 
+        if ($id === '_LEGACY_') { // LEGACY
+            echo serialize($addon_times);
+            exit;
+        }
+
         return $addon_times;
     }
 }

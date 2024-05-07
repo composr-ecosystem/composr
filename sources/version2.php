@@ -57,7 +57,7 @@ function get_future_version_information() : object
     $http_result = @json_decode($_http_result[0], true);
 
     if (($http_result !== null) && ($http_result['success'] === true)) {
-        $data = str_replace('"../upgrader.php"', '"' . get_base_url() . '/upgrader.php"', $http_result['response_data']['html']);
+        $data = str_replace('"../upgrader.php"', '"' . get_base_url() . '/upgrader.php"', $http_result['response_data']['HTML']);
 
         if ($GLOBALS['XSS_DETECT']) {
             ocp_mark_as_escaped($data);
