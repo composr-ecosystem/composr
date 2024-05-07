@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite_tracker
+ * @package    cms_homesite_support_credits
  */
 
 /**
  * Hook class.
  */
-class Hook_actionlog_cms_homesite_tracker extends Hook_actionlog
+class Hook_actionlog_cms_homesite_support_credits extends Hook_actionlog
 {
     /**
      * Get details of action log entry types handled by this hook.
@@ -25,7 +25,7 @@ class Hook_actionlog_cms_homesite_tracker extends Hook_actionlog
      */
     public function get_handlers() : array
     {
-        if (!addon_installed('cms_homesite_tracker')) {
+        if (!addon_installed('cms_homesite_support_credits')) {
             return [];
         }
 

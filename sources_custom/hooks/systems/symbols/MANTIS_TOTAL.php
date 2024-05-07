@@ -24,19 +24,6 @@ class Hook_symbol_MANTIS_TOTAL
             return '';
         }
 
-        if (!addon_installed('tickets')) {
-            return '';
-        }
-        if (!addon_installed('stats')) {
-            return '';
-        }
-        if (!addon_installed('ecommerce')) {
-            return '';
-        }
-        if (!addon_installed('points')) {
-            return '';
-        }
-
         if (get_forum_type() != 'cns') {
             return '';
         }

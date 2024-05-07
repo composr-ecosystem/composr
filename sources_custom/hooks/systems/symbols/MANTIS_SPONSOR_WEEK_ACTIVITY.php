@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite_tracker
+ * @package    cms_homesite_support_credits
  */
 
 /**
@@ -20,6 +20,9 @@ class Hook_symbol_MANTIS_SPONSOR_WEEK_ACTIVITY
 {
     public function run($param)
     {
+        if (!addon_installed('cms_homesite_support_credits')) {
+            return '';
+        }
         if (!addon_installed('cms_homesite_tracker')) {
             return '';
         }

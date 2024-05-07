@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite_tracker
+ * @package    cms_homesite_support_credits
  */
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 $error_msg = new Tempcode();
-if (!addon_installed__messaged('cms_homesite_tracker', $error_msg)) {
+if (!addon_installed__messaged('cms_homesite_support_credits', $error_msg)) {
     return $error_msg;
 }
 
@@ -51,7 +51,7 @@ if ($spreadsheet) {
     $start = 0;
 }
 require_code('cns_members');
-require_code('mantis');
+require_code('customers');
 require_lang('customers');
 $title = get_screen_title('UNSPENT_SUPPORT_CREDITS');
 
