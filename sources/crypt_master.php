@@ -93,7 +93,7 @@ function check_maintenance_password_from_hash(string $password_given_hashed, boo
  * This call should be done within an if condition and appropriately handled when this returns false (if $silent_failure could be true).
  *
  * @param  boolean $silent_failure Whether to proceed without exiting (false: instead of returning, we will exit if a maintenance password is not defined)
- * @return boolean Whether a maintenance password is available (false: access should be denied everywhere requiring a maintenance password)
+ * @return boolean Whether a maintenance password is available and access should be allowed
  */
 function _maintenance_password_check__init(bool $silent_failure = false) : bool
 {

@@ -187,8 +187,8 @@ function _upgrader_file_upgrade_screen() : string
         $d_directory = get_directory_contents(get_file_base() . '/sources/hooks/systems/addon_registry', 'sources/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']);
         $d_directory = array_merge($d_directory, get_directory_contents(get_file_base() . '/sources_custom/hooks/systems/addon_registry', 'sources_custom/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']));
         foreach ($d_directory as $upgrade_file2) {
-            $file_data = cms_file_get_contents_safe($upgrade_file2, FILE_READ_LOCK);
-            $addon_contents[basename($upgrade_file2, '.php')] = $file_data;
+            $_file_data = cms_file_get_contents_safe($upgrade_file2, FILE_READ_LOCK);
+            $addon_contents[basename($upgrade_file2, '.php')] = $_file_data;
         }
     }
 

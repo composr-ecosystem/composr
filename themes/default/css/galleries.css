@@ -1,4 +1,4 @@
-﻿/*
+/*
  {$BRAND_NAME`}
  Copyright (c) Christopher Graham, 2004-2024
 */
@@ -198,7 +198,7 @@
 	margin-bottom: 30px;
 }
 
-.gallery-mode-screen .heading-gallery-entries-in {
+.gallery-mode-screen .heading-images-and-videos {
 	margin-top: 40px;
 }
 
@@ -272,7 +272,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 }
 
 .gallery-slideshow-screen.is-bg-color-dark {
-	background: {$COLOR_LIGHTEN,{$GET,WB},13.5%};
+	background: {$COLOR_LIGHTEN,{$GET,BW},13.5%};
 }
 
 .gallery-slideshow-screen .slideshow-content {
@@ -287,8 +287,8 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	display: table;
 	margin: 0 auto;
 	padding: 5px 10px;
-	background: {$COLOR_LIGHTEN,{$GET,WB},20%};
-	color: {$GET,BW};
+	background: {$COLOR_LIGHTEN,{$GET,BW},20%};
+	color: white;
 	border-bottom-left-radius: {$GET,border_radius};
 	border-bottom-right-radius: {$GET,border_radius};
 }
@@ -363,7 +363,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	left: 0;
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
-	color: {$GET,BW};
+	color: {$GET,WB};
 	animation: cms-fade-in 0.3s ease-in-out;
 	pointer-events: none;
 	z-index: 10;
@@ -376,7 +376,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 
 .gallery-slideshow-screen .slideshow-details-overlay .title a,
 .gallery-slideshow-screen .slideshow-details-overlay .title a:hover {
-	color: {$GET,BW};
+	color: {$GET,WB};
 	text-decoration: none;
 }
 
@@ -397,7 +397,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 .gallery-slideshow-screen .slideshow-details-overlay-top,
 .gallery-slideshow-screen .slideshow-details-overlay-bottom {
 	pointer-events: auto;
-	background: {$COLOR_RGBA,{$GET,WB},0.6};
+	background: rgba(0, 0, 0, 0.6);
 }
 
 .gallery-slideshow-screen .btn-slider-control {
@@ -438,7 +438,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	/*flex-basis: 0;*/
 	height: 100px;
 	max-height: 100px;
-	background: {$COLOR_LIGHTEN,{$GET,WB},20%};
+	background: {$COLOR_LIGHTEN,{$GET,BW},20%};
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -479,7 +479,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	order: 2;
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
-	background: {$COLOR_LIGHTEN,{$GET,WB},20%};
+	background: {$COLOR_LIGHTEN,{$GET,BW},20%};
 }
 
 /*{+START,CSS_MODE,mobile}*/
@@ -736,7 +736,7 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 		right: -32px;
 		top: 0;
 		z-index: 1;
-		background: {$GET,BW};
+		background: {$GET,WB};
 	}
 
 	.gallery-mosaic-item:hover .mass-select-marker,
@@ -756,12 +756,12 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 	display: block;
 	width: 100%;
 	height: 100%;
-	color: {$GET,BW};
+	color: {$GET,WB};
 	overflow: hidden;
 }
 
 .gallery-mosaic-item-inner:hover {
-	color: {$GET,BW};
+	color: {$GET,WB};
 }
 
 .gallery-mosaic-item .img-thumb {
@@ -796,11 +796,11 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 	right: 0;
 	left: 0;
 	padding: 5px 10px;
-	background-image: linear-gradient(to bottom, {$COLOR_RGBA,{$GET,WB},0.8}, {$COLOR_RGBA,{$GET,WB},0.4});
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
 }
 
 .gallery-mosaic-item-overlay-top .rating-display-star {
-	color: {$GET,BW};
+	color: {$GET,WB};
 }
 
 .gallery-mosaic-item-overlay-top .views {
@@ -824,7 +824,7 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 	left: 0;
 	bottom: 0;
 	padding: 5px 10px;
-	background-image: linear-gradient(to bottom, {$COLOR_RGBA,{$GET,WB},0.4}, {$COLOR_RGBA,{$GET,WB},0.8});
+	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
 }
 
 .gallery-mosaic-item-overlay-bottom .title {
@@ -1039,18 +1039,17 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 #slider-homepage-hero .contrast-box {
 	display: table;
 	margin: 0 auto;
-	max-width: 728px;
 }
 
-#slider-homepage-hero .contrast-box .h1 {
-	margin-bottom: 0.5em !important;
+#slider-homepage-hero .contrast-box.h1 {
+	margin-bottom: 0.5em;
 }
 
-#slider-homepage-hero .contrast-box .h3 {
-	margin-bottom: 1em !important;
+#slider-homepage-hero h3.contrast-box {
+	margin-bottom: 0.5em;
 }
 
-#slider-homepage-hero .contrast-box .h5 {
+#slider-homepage-hero .contrast-box.h5 {
 	max-width: 660px;
 	line-height: 1.8;
 }

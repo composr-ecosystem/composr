@@ -312,7 +312,7 @@
                     $cms.ui.deactivateTooltip(el);
                 }
             });
-            
+
             /* Actually do not move the tooltip with the cursor; it is not standard UI to do so especially if someone has a big cursor.
                 $dom.on(el, 'mousemove.cmsTooltip', function () {
                     $cms.ui.repositionTooltip(el, event, bottom, false, null, forceWidth, win);

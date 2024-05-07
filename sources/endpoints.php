@@ -94,7 +94,7 @@ function endpoint_script()
     $type = get_param_string('type', $type);
     $id = get_param_string('id', $id);
     $response_type = get_param_string('response_type', $response_type);
-    $rest_path = $hook_type . '/' . $hook . (($id !== null) ? '/' . $id : '') . ' [' . $type . ']';
+    $rest_path = $hook_type . '/' . $hook . (($id !== null) ? ('/' . $id) : '') . ' [' . $type . ']';
 
     // Log initial hit
     $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
@@ -184,7 +184,7 @@ function endpoint_script()
         ];
     } catch (Exception $e) {
         // Log error
-        @error_log('Endpoints: ERROR ' . strip_html($e->getMessage()) . ' (' . $rest_path . ')');
+        cms_error_log('Endpoints: ERROR ' . strip_html($e->getMessage()) . ' (' . $rest_path . ')');
         $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
         if (is_file($_log_file)) {
             require_code('files');
