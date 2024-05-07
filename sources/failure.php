@@ -1177,12 +1177,12 @@ function relay_error_notification(string $text, bool $developers = true, string 
     $error_message = strip_html(explode("\n\n", $text)[0]);
 
     if (
-        ($mail !== null) &&
-        ($developers) &&
-        (get_option('send_error_emails_developers') == '1') &&
-        (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
-        (!running_script('cron_bridge')) &&
-        ($text != '!') &&
+        //($mail !== null) &&
+        //($developers) &&
+        //(get_option('send_error_emails_developers') == '1') &&
+        //(!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
+        //(!running_script('cron_bridge')) &&
+        //($text != '!') &&
         (strpos($error_message, '_custom/') === false) &&
         (strpos($error_message, '_custom\\') === false) &&
         (strpos($error_message, 'FTP server error') === false) && // LDAP error, misconfiguration
@@ -1283,7 +1283,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
                     cms_error_log(brand_name() . ' telemetry: WARNING Could not forward error to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
                 }
                 $matches = [];
-                if (preg_match('#\s\'relayed_error_id\'\: (\d*)#', $response, $matches) != 0) {
+                if (preg_match('#\{\"relayed_error_id\":(\d*)\}#', $response, $matches) != 0) {
                     if ((php_function_allowed('error_log')) && (file_exists(get_custom_file_base() . '/data_custom/errorlog.php')) && (cms_is_writable(get_custom_file_base() . '/data_custom/errorlog.php'))) {
                         @error_log('TELEMETRY ' . strval($matches[1]) . "\n", 3, get_file_base() . '/data_custom/errorlog.php');
                     }

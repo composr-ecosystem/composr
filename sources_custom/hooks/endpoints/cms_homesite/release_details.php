@@ -78,6 +78,11 @@ class Hook_endpoint_cms_homesite_release_details
             $news_html = str_replace('display: none', 'display: block', $news_html);
             $notes = $news_html;
 
+            if ($id === '_LEGACY_') { // LEGACY
+                echo json_encode([$notes, $tar_url, $changes]);
+                exit;
+            }
+
             return [
                 'notes' => $notes,
                 'tar_url' => $tar_url,

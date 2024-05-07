@@ -41,8 +41,8 @@ function endpoint_script()
 
     require_code('failure');
 
-    // Restful
-    if (!@cms_empty_safe($_SERVER['PATH_INFO'])) {
+    // Possibly RESTful?
+    if (!@cms_empty_safe($_SERVER['REQUEST_URI'])) {
         // What response type is desired
         if (!empty($_SERVER['HTTP_ACCEPT'])) {
             if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
@@ -52,9 +52,9 @@ function endpoint_script()
         }
 
         // Path-info is translated to $hook_type/$hook/$id
-        $path_info = $_SERVER['PATH_INFO'];
+        $path_info = $_SERVER['REQUEST_URI'];
         $matches = [];
-        if (preg_match('#^(/\w+)(/\w+)?(/[^\?]+)?#', $path_info, $matches) != 0) {
+        if (preg_match('#^/data/endpoint\.php(/\w+)(/\w+)?(/[^\/\?]+)?#', $path_info, $matches) != 0) {
             $hook_type = ltrim($matches[1], '/');
             $hook = isset($matches[2]) ? ltrim($matches[2], '/') : false;
             $id = isset($matches[3]) ? ltrim($matches[3], '/') : null;
@@ -173,6 +173,10 @@ function endpoint_script()
         $result = $ob->run($type, $id);
 
         // Process into output structure
+        if ($id === '_LEGACY_') { // LEGACY
+            echo $result;
+            return;
+        }
         $return_data = [
             'success' => isset($result['success']) ? $result['success'] : true,
             'error_details' => isset($result['error_details']) ? $result['error_details'] : null,
@@ -192,6 +196,10 @@ function endpoint_script()
             fclose($log_file);
         }
 
+        if ($id === '_LEGACY_') { // LEGACY
+            echo strip_html($e->getMessage());
+            return;
+        }
         $return_data = [
             'success' => false,
             'error_details' => strip_html($e->getMessage()),

@@ -163,6 +163,11 @@ class Hook_endpoint_cms_homesite_version
             }
         }
 
+        if ($id === '_LEGACY_') { // LEGACY
+            echo $output;
+            exit;
+        }
+
         return [
             'HTML' => $output,
         ];
