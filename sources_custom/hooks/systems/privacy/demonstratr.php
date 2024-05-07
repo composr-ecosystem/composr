@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite
+ * @package    demonstratr
  */
 
 /**
  * Hook class.
  */
-class Hook_privacy_cms_homesite extends Hook_privacy_base
+class Hook_privacy_demonstratr extends Hook_privacy_base
 {
     /**
      * Find privacy details.
@@ -25,14 +25,14 @@ class Hook_privacy_cms_homesite extends Hook_privacy_base
      */
     public function info() : ?array
     {
-        if (!addon_installed('cms_homesite')) {
+        if (!addon_installed('demonstratr')) {
             return null;
         }
 
         return [
-            'label' => 'cms_homesite:CMS_SITES_INSTALLED',
+            'label' => 'demonstratr:DEMONSTRATR_SITES_INSTALLED',
 
-            'description' => 'cms_homesite:DESCRIPTION_PRIVACY_CMS_SITES_INSTALLED',
+            'description' => 'demonstratr:DESCRIPTION_PRIVACY_DEMONSTRATR_SITES_INSTALLED',
 
             'cookies' => [
             ],
@@ -44,49 +44,33 @@ class Hook_privacy_cms_homesite extends Hook_privacy_base
             ],
 
             'database_records' => [
-                'relayed_errors' => [
-                    'timestamp_field' => 'last_date_and_time',
-                    'retention_days' => 90,
-                    'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'owner_id_field' => null,
-                    'additional_member_id_fields' => [],
-                    'ip_address_fields' => [],
-                    'email_fields' => [],
-                    'username_fields' => [],
-                    'file_fields' => [],
-                    'additional_anonymise_fields' => ['website_url', 'error_message'],
-                    'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
-                    'removal_default_handle_method_member_override' => null,
-                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
-                ],
-                'logged' => [
-                    'timestamp_field' => 'hittime',
+                'sites' => [
+                    'timestamp_field' => 's_add_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'owner_id_field' => null,
+                    'owner_id_field' => 's_member_id',
                     'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => [],
                     'file_fields' => [],
-                    'additional_anonymise_fields' => ['website_url', 'website_name'],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
-                'may_feature' => [
+                'sites_email' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
                     'owner_id_field' => null,
                     'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
-                    'email_fields' => [],
+                    'email_fields' => ['s_email_from', 's_email_to'],
                     'username_fields' => [],
                     'file_fields' => [],
-                    'additional_anonymise_fields' => ['url'],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'removal_default_handle_method_member_override' => null,

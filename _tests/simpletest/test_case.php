@@ -60,7 +60,7 @@ class SimpleTestCase
     /**
      * Will issue a message to the reporter and tell the test case to skip if the incoming flag is true.
      *
-     * @param string $should_skip Condition causing the tests to be skipped.
+     * @param boolean $should_skip Condition causing the tests to be skipped.
      * @param string $message     Text of skip condition.
      */
     public function skipIf($should_skip, $message = '%s')
@@ -73,7 +73,7 @@ class SimpleTestCase
     }
 
     /**
-     * Accessor for the private variable $_shoud_skip
+     * Accessor for $this->should_skip.
      */
     public function shouldSkip()
     {
@@ -83,7 +83,7 @@ class SimpleTestCase
     /**
      * Will issue a message to the reporter and tell the test case to skip if the incoming flag is false.
      *
-     * @param string $shouldnt_skip Condition causing the tests to be run.
+     * @param boolean $shouldnt_skip Condition causing the tests to be run.
      * @param string $message       Text of skip condition.
      */
     public function skipUnless($shouldnt_skip, $message = false)

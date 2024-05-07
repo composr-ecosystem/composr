@@ -168,7 +168,7 @@ class Module_sites
         }
 
         if ($type == 'demonstratr' || $type == '_demonstratr') {
-            require_lang('sites');
+            require_lang('demonstratr');
 
             $this->title = get_screen_title('CMS_ADD_SITE');
         }

@@ -37,16 +37,13 @@ function init__upgrade_shared_installs()
  */
 function upgrader_sharedinstall_screen() : string
 {
-    // We typically will never use this function (called from main upgrader UI).
-    // Instead we use demonstratr_upgrade.php, which steps things through better, and calls the same upgrade_sharedinstall_sites function.
-
     upgrade_sharedinstall_sites();
 
     $out = '';
 
     global $SITE_INFO;
     $cmd = 'mysqldump -u' . cms_escapeshellarg($SITE_INFO['db_site_user'] . '_shareddemo') . ' -p' . cms_escapeshellarg($SITE_INFO['db_site_password']) . ' ' . cms_escapeshellarg($SITE_INFO['db_site']) . '_shareddemo';
-    $out .= '<p>Now regenerate <kbd>template.sql</kbd>, using something like <kbd>' . escape_html($cmd) . ' > ~/public_html/uploads/website_specific/cms_homesite/demonstratr/template.sql</kbd></p>';
+    $out .= '<p>Now regenerate <kbd>template.sql</kbd>, using something like <kbd>' . escape_html($cmd) . ' > ~/public_html/uploads/website_specific/yoursite/demonstratr/template.sql</kbd></p>';
 
     return $out;
 }

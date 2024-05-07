@@ -1493,7 +1493,7 @@ class TestOfLiveAuthentication extends AcceptanceTest
 {
     public function skip()
     {
-        $this->skipIf('always',
+        $this->skipIf(true,
             'TestOfLiveAuthentication is skipped, because PHP\'s built in '
             . 'development server isn\'t capable of handling authentication.'
         );

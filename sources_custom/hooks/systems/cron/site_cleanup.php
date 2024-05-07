@@ -63,7 +63,7 @@ class Hook_cron_site_cleanup
      */
     public function run(?int $last_run)
     {
-        require_lang('sites');
+        require_lang('demonstratr');
         demonstratr_delete_old_sites();
 
         // Reset main demo

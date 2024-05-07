@@ -139,6 +139,7 @@ class Hook_addon_registry_core_privacy
             'sources/hooks/systems/config/days_to_keep__banned_access_log.php',
             'sources/hooks/systems/config/days_to_keep__cron_log.php',
             'sources/hooks/systems/config/days_to_keep__debug_fs_log.php',
+            'sources/hooks/systems/config/days_to_keep__endpoints_log.php',
             'sources/hooks/systems/config/days_to_keep__error_log.php',
             'sources/hooks/systems/config/days_to_keep__http_log.php',
             'sources/hooks/systems/config/days_to_keep__mail_integration_log.php',

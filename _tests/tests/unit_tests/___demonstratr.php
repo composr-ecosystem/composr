@@ -18,6 +18,12 @@
  */
 class ___demonstratr_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->skipIf(true, 'Demonstratr is an archived / non-maintained addon. This test has been skipped.');
+    }
     public function testIsMySQL()
     {
         $this->assertTrue(strpos(get_db_type(), 'mysql') !== false, 'Test can only run with MySQL');
