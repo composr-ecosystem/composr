@@ -145,39 +145,43 @@ function publish_addon($addon_name, $version_branch, $cat_id)
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $addon_url]);
     if ($test === null) {
-        $tar = tar_open($from, 'rb');
-        $info_file = tar_get_file($tar, 'addon.inf', true);
-        $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
-        tar_close($tar);
+        if (is_file($from)) {
+            $tar = tar_open($from, 'rb');
+            $info_file = tar_get_file($tar, 'addon.inf', true);
+            $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
+            tar_close($tar);
 
-        $addon_info = read_addon_info($addon_name, false, null, $ini_info);
+            $addon_info = read_addon_info($addon_name, false, null, $ini_info);
 
-        $name = titleify($addon_info['name']);
-        $author = $addon_info['author'];
-        $category = $addon_info['category'];
+            $name = titleify($addon_info['name']);
+            $author = $addon_info['author'];
+            $category = $addon_info['category'];
 
-        $description = generate_addon_description($addon_info);
+            $description = generate_addon_description($addon_info);
 
-        $download_owner = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
-        if ($download_owner === null) {
-            $download_owner = DOWNLOAD_OWNER;
-        }
-
-        $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $name]);
-        if ($download_id === null) {
-            $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
-        } else {
-            edit_download($download_id, $cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, '', '');
-        }
-
-        $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon_name . '.png';
-        if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
-            $image_id = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'id', ['cat' => 'download_' . strval($download_id)]);
-            if ($image_id === null) {
-                add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
-            } else {
-                edit_image($image_id, '', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', '', '');
+            $download_owner = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
+            if ($download_owner === null) {
+                $download_owner = DOWNLOAD_OWNER;
             }
+
+            $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $name]);
+            if ($download_id === null) {
+                $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
+            } else {
+                edit_download($download_id, $cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, '', '');
+            }
+
+            $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon_name . '.png';
+            if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
+                $image_id = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'id', ['cat' => 'download_' . strval($download_id)]);
+                if ($image_id === null) {
+                    add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
+                } else {
+                    edit_image($image_id, '', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', '', '');
+                }
+            }
+        } else {
+            attach_message(do_lang_tempcode('MISSING_ADDON', escape_html($addon_name)));
         }
     }
 }
@@ -207,35 +211,39 @@ function publish_theme($file, $version_branch, $cat_id)
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $addon_url]);
     if ($test === null) {
-        $tar = tar_open($from, 'rb');
-        $info_file = tar_get_file($tar, 'addon.inf', true);
-        $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
-        tar_close($tar);
+        if (is_file($from)) {
+            $tar = tar_open($from, 'rb');
+            $info_file = tar_get_file($tar, 'addon.inf', true);
+            $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
+            tar_close($tar);
 
-        $addon_info = read_addon_info($addon_name, false, null, $ini_info);
+            $addon_info = read_addon_info($addon_name, false, null, $ini_info);
 
-        $description = $addon_info['description'];
-        $author = $addon_info['author'];
+            $description = $addon_info['description'];
+            $author = $addon_info['author'];
 
-        $download_owner = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
-        if ($download_owner === null) {
-            $download_owner = DOWNLOAD_OWNER;
-        }
-        $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $addon_name]);
-        if ($download_id === null) {
-            $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
-        } else {
-            edit_download($download_id, $cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, '', '');
-        }
-
-        $screenshot_url = 'data_custom/images/addon_screenshots/' . urlencode(preg_replace('#^theme-#', 'theme__', preg_replace('#\d+$#', '', basename($file, '.tar'))) . '.png');
-        if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
-            $image_id = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'id', ['cat' => 'download_' . strval($download_id)]);
-            if ($image_id === null) {
-                add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
-            } else {
-                edit_image($image_id, '', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', '', '');
+            $download_owner = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
+            if ($download_owner === null) {
+                $download_owner = DOWNLOAD_OWNER;
             }
+            $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $addon_name]);
+            if ($download_id === null) {
+                $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
+            } else {
+                edit_download($download_id, $cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, '', '');
+            }
+
+            $screenshot_url = 'data_custom/images/addon_screenshots/' . urlencode(preg_replace('#^theme-#', 'theme__', preg_replace('#\d+$#', '', basename($file, '.tar'))) . '.png');
+            if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
+                $image_id = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'id', ['cat' => 'download_' . strval($download_id)]);
+                if ($image_id === null) {
+                    add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
+                } else {
+                    edit_image($image_id, '', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', '', '');
+                }
+            }
+        } else {
+            attach_message(do_lang_tempcode('MISSING_ADDON', escape_html($file)));
         }
     }
 }
