@@ -70,6 +70,10 @@ class Hook_endpoint_cms_homesite_addon_manifest
         } while (($_id === null) && ($id_float >= 0.0));
 
         if ($_id === null) {
+            if ($id === '_LEGACY_') { // LEGACY
+                echo serialize([]);
+                exit;
+            }
             return [];
         }
 

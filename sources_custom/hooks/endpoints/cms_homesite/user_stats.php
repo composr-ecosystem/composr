@@ -60,6 +60,11 @@ class Hook_endpoint_cms_homesite_user_stats
             'num_hits_per_day' => $num_hits_per_day,
         ]);
 
+        if ($id === '_LEGACY_') { // LEGACY
+            echo serialize([]);
+            exit;
+        }
+
         return [];
     }
 }
