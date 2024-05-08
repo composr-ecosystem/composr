@@ -439,8 +439,6 @@ class Module_admin_errorlog
      */
     public function show_cron_progression_table() : object
     {
-        fatal_exit('I am a teapot');
-
         // Upgrade pending?
         require_code('version');
         $version_files = float_to_raw_string(cms_version_number(), 10, true);
