@@ -49,6 +49,11 @@ class Hook_endpoint_cms_homesite_release_details
         }
 
         if (!is_numeric($id)) {
+            if ($id === '_LEGACY_') { // LEGACY
+                echo serialize(['', '', '']);
+                exit;
+            }
+
             return [
                 'success' => false,
                 'error_details' => 'You must provide the ID of the release news article.'
