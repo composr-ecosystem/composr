@@ -54,10 +54,10 @@ function endpoint_script()
         // Path-info is translated to $hook_type/$hook/$id
         $path_info = $_SERVER['REQUEST_URI'];
         $matches = [];
-        if (preg_match('#^/data/endpoint\.php(/\w+)(/\w+)?(/[^\/\?]+)?#', $path_info, $matches) != 0) {
-            $hook_type = ltrim($matches[1], '/');
-            $hook = isset($matches[2]) ? ltrim($matches[2], '/') : false;
-            $id = isset($matches[3]) ? ltrim($matches[3], '/') : null;
+        if (preg_match('#^(.*)?/data/endpoint\.php(/\w+)(/\w+)?(/[^\?]+)?#', $path_info, $matches) != 0) {
+            $hook_type = ltrim($matches[2], '/');
+            $hook = isset($matches[3]) ? ltrim($matches[3], '/') : false;
+            $id = isset($matches[4]) ? trim($matches[4], '/') : null;
         }
 
         // If empty POST data but not a HEAD or GET request, data was probably transmitted via a stream

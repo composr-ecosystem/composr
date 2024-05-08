@@ -8519,7 +8519,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_NOT_FOR_HOTFIX
         UPGRADER_SKIPPING_MESSAGE_B
         _CONFIG_OPTION_site_closed
-        MODULE_TRANS_NAME_tracker
     ')));
 
     $non_admin_files = [

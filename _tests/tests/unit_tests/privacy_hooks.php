@@ -354,6 +354,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'notifications_enabled' => ['l_code_category'],
                     'w_rooms' => ['password_fail_message'],
                     'device_token_details' => ['token_type'],
+                    'relayed_errors' => ['error_hash'],
                 ];
                 foreach ($fields_should_anonymise as $name => $type) {
                     if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {
