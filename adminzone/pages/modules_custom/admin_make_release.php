@@ -180,14 +180,14 @@ class Module_admin_make_release
 
         // URLs
         $tracker_url = get_brand_base_url() . '/tracker';
-        $web_service_url = get_brand_base_url() . '/data_custom/cms_homesite_web_service.php';
+        $web_service_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php'; // LEGACY: set to blank when no longer using compo.sr
         $make_release_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release';
         $profile_url = get_brand_base_url() . '/members/view';
         $git_url = CMS_REPOS_URL;
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6dc15cd17b0ca901ffe869ad91863ad4', 'TITLE' => do_lang_tempcode('MAKE_RELEASE_STEP1_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_URLS')]));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_URL'), 'tracker_url', $tracker_url, true));
         $fields->attach(form_input_integer(do_lang_tempcode('MAKE_RELEASE_STEP1_TRACKER_PROJECT'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_TRACKER_PROJECT'), 'project_id', 1, true));
-        $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_WEBSERVICE_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_WEBSERVICE_URL'), 'web_service_url', $web_service_url, true));
+        $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_WEBSERVICE_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_WEBSERVICE_URL'), 'web_service_url', $web_service_url, false));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_MAKE_RELEASE_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_MAKE_RELEASE_URL'), 'make_release_url', $make_release_url, true));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_GIT_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_GIT_URL'), 'git_url', $git_url, true));
         $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP1_PROFILE_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP1_PROFILE_URL'), 'profile_url', $profile_url, true));
@@ -286,6 +286,7 @@ class Module_admin_make_release
         $tracker_reporters = [];
         $tracker_handlers = [];
         $changes = new Tempcode();
+        $web_service_url = post_param_string('web_service_url', '');
         if ($previous_version !== null) {
             $_changes = shell_exec('git log --pretty=format:"%H :: %cn :: %s" HEAD...refs/tags/' . $previous_version);
             $discovered_tracker_issues = []; // List of issues referenced on Git to pull from Mantis
@@ -320,16 +321,24 @@ class Module_admin_make_release
                 }
             }
 
-            $api_url = post_param_string('web_service_url') . '/data/endpoint.php/cms_homesite/tracker_issues';
-            $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
-            $post = [
-                'discovered' => $_discovered_tracker_issues,
-                'new_version' => $new_version,
-                'previous_version' => $dig_deep ? $previous_version : null
-            ];
-            $_result = http_get_contents($api_url, ['post_params' => $post]);
-            $_tracker_issues = json_decode($_result, true);
-            $tracker_issues = $_tracker_issues['response_data'];
+            $api_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/tracker_issues';
+            if ($web_service_url != '') { // LEGACY
+                $api_url = $web_service_url . '?call=get_tracker_issues';
+                $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
+                $_result = http_get_contents($api_url, ['post_params' => ['parameters' => [$_discovered_tracker_issues, $new_version, $dig_deep ? $previous_version : null]]]);
+                $_tracker_issues = json_decode($_result, true);
+                $tracker_issues = $_tracker_issues;
+            } else {
+                $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
+                $post = [
+                    'discovered' => $_discovered_tracker_issues,
+                    'new_version' => $new_version,
+                    'previous_version' => $dig_deep ? $previous_version : null
+                ];
+                $_result = http_get_contents($api_url, ['post_params' => $post]);
+                $_tracker_issues = json_decode($_result, true);
+                $tracker_issues = $_tracker_issues['response_data'];
+            }
 
             $new_version_parts = explode('.', $new_version);
             $last = count($new_version_parts) - 1;
