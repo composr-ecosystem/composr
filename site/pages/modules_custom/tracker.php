@@ -635,6 +635,6 @@ class Module_tracker
         $content = do_block('main_mantis_tracker');
 
         // Display
-        return do_template('STANDALONE_HTML_WRAP', ['_GUID' => '9f623034340bd8efcb9352b27908bc92', 'FRAME' => true, 'NOINDEX' => true, 'TARGET' => '_blank', 'TITLE' => 'Tracker', 'CONTENT' => $content]);
+        return do_template('STANDALONE_HTML_WRAP', ['_GUID' => '11f8625ed8fc9cf4fa6f466f08b7be57', 'FRAME' => true, 'NOINDEX' => true, 'TARGET' => '_blank', 'TITLE' => 'Tracker', 'CONTENT' => $content]);
     }
 }

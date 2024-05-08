@@ -136,7 +136,6 @@ _meta_tree
 !/uploads/*/.htaccess
 !/uploads/website_specific/example.csv
 !/uploads/website_specific/*.sql
-!/uploads/website_specific/cms_website
 /uploads/website_specific/cms_homesite/private.pem
 /uploads/website_specific/cms_homesite/public.pem
 ; themes/[abcefghijklmnopqrstuvwxyz0123456789]*

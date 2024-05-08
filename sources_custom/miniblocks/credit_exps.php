@@ -20,7 +20,7 @@ if (!addon_installed('cms_homesite_support_credits')) {
 }
 
 if (!addon_installed('cms_homesite_tracker')) {
-    return do_template('RED_ALERT', ['_GUID' => '6i3v3cs3s5ia4gu7mqcegz643hqz5nb6', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_tracker'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'ce9dcb66775b5cc16da92f3ca43f209d', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_tracker'))]);
 }
 
 if (!addon_installed('tickets')) {

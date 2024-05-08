@@ -28,7 +28,7 @@ class Hook_endpoint_content_commandr_fs
     public function info(?string $type, ?string $id) : array
     {
         return [
-            'authorization' => false,
+            'authorization' => ['member'],
         ];
     }
 
