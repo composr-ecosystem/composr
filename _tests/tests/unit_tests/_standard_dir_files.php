@@ -67,9 +67,14 @@ class _standard_dir_files_test_set extends cms_test_case
             if ($path == '.htaccess') { // Root file
                 continue;
             }
-            if (preg_match('#^(data/ckeditor|_tests/simpletest|tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/cms_homesite/demonstratr/servers)/#', $path) != 0) { // Third party files
+            if (preg_match('#^(data/ckeditor|_tests/simpletest|tracker|exports/backups|exports/static|exports/builds)/#', $path) != 0) { // Third party files
                 continue;
             }
+            /* LEGACY: Demonstratr; no longer maintained
+            if (preg_match('#^uploads/website_specific/cms_homesite/demonstratr/servers/#', $path) != 0) { // Third party files
+                continue;
+            }
+            */
             if (preg_match('#^themes/(_unnamed_)/#', $path) != 0) {
                 continue;
             }

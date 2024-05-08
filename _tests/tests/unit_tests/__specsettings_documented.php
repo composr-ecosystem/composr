@@ -108,10 +108,14 @@ class __specsettings_documented_test_set extends cms_test_case
                 (/*string replace array*/$var != 'reps') &&
                 (/*AFM*/strpos($var, 'ftp_') === false) &&
                 (/*Testing Platform*/!in_array($var, ['ci_password', 'gitlab_personal_token'])) &&
-                (/*Demonstratr*/strpos($var, 'throttle_') === false) &&
-                (/*Demonstratr*/strpos($var, 'custom_') === false) &&
-                (/*Demonstratr*/$var != 'mysql_demonstratr_password') &&
-                (/*Demonstratr*/$var != 'mysql_root_password') &&
+
+                /* LEGACY: Demonstrator; no longer maintained
+                (strpos($var, 'throttle_') === false) &&
+                (strpos($var, 'custom_') === false) &&
+                ($var != 'mysql_demonstratr_password') &&
+                ($var != 'mysql_root_password') &&
+                */
+
                 (/*Custom domains*/strpos($var, 'ZONE_MAPPING') === false) &&
                 (/*Legacy password name*/$var != 'admin_password') &&
                 (/*Legacy password name*/$var != 'master_password') &&

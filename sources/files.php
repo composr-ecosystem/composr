@@ -803,9 +803,11 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         if (preg_match('#^tracker/uploads(/|$)#i', $path) != 0) {
             return true; // Mantis upload files
         }
-        if (preg_match('#^uploads/website_specific/cms_homesite/demonstratr/servers(/|$)#i', $path) != 0) {
-            return true; // Demonstratr site
+        /* LEGACY: demonstratr
+        if (preg_match('#^uploads/website_specific/([^/]*)/demonstratr/servers(/|$)#i', $path) != 0) {
+            return true;
         }
+        */
         if (preg_match('#^exports/(static|builds|backups)(/|$)#i', $path) != 0) {
             return true; // Huge exported stuff
         }
@@ -845,7 +847,6 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
 
             // Non-bundled addons inside the Git repository
             'upgrades' => '', // homesite
-            'sites' => '', // demonstratr
 
             // API docs
             'api' => 'docs',

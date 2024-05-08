@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite_tracker
+ * @package    cms_homesite_support_credits
  */
 
 /**
@@ -26,7 +26,7 @@ class Hook_members_customers
      */
     public function run(int $member_id) : array
     {
-        if (!addon_installed('cms_homesite_tracker')) {
+        if (!addon_installed('cms_homesite_support_credits')) {
             return [];
         }
 

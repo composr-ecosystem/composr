@@ -659,6 +659,7 @@ class Hook_addon_registry_core
             'data/empty.php',
             'data/endpoint.php',
             'data/external_url_proxy.php',
+            'data/db_meta.bin',
             'data/files.bin',
             'data/files_previous.bin',
             'data/generate_csrf_token.php',

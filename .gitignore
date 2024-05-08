@@ -115,7 +115,6 @@ _meta_tree
 /data_custom/keys/*.key
 
 ; The matched files should be blocked for the main Composr dev repository but not for Composr projects
-/uploads/website_specific/homesite/demonstratr/servers/
 /themes/_unnamed_/
 /themes/_testing_/
 /.gitconfig
@@ -136,7 +135,8 @@ _meta_tree
 !/uploads/*/.htaccess
 !/uploads/website_specific/example.csv
 !/uploads/website_specific/*.sql
-!/uploads/website_specific/cms_website
+!/uploads/website_specific/cms_homesite
+/uploads/website_specific/cms_homesite/demonstratr/servers/
 /uploads/website_specific/cms_homesite/private.pem
 /uploads/website_specific/cms_homesite/public.pem
 ; themes/[abcefghijklmnopqrstuvwxyz0123456789]*

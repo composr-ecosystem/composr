@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite_tracker
+ * @package    cms_homesite_support_credits
  */
 
 /**
@@ -36,7 +36,7 @@ class Hook_config_support_priority_regular_minutes
             'order_in_category_group' => 4,
             'required' => true,
             'public' => false,
-            'addon' => 'cms_homesite_tracker',
+            'addon' => 'cms_homesite_support_credits',
         ];
     }
 
@@ -47,7 +47,7 @@ class Hook_config_support_priority_regular_minutes
      */
     public function get_default() : ?string
     {
-        if (!addon_installed('cms_homesite_tracker')) {
+        if (!addon_installed('cms_homesite_support_credits')) {
             return null;
         }
 

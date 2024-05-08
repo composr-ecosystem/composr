@@ -40,7 +40,7 @@ class rest_test_set extends cms_test_case
         $fs->listing(['var', 'news']);
 
         if ($this->path === null) {
-            $this->path = '/var/news/general/hello' . substr(md5(uniqid('', true)), 0, 10) . '.cms';
+            $this->path = 'var/news/general/hello' . substr(md5(uniqid('', true)), 0, 10) . '.cms';
         }
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
@@ -52,7 +52,7 @@ class rest_test_set extends cms_test_case
             return;
         }
 
-        $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
+        $url = get_base_url() . '/data/endpoint.php/content/commandr_fs/' . $this->path;
         $post_params = json_encode(['summary' => 'test']);
         $cookies = [get_session_cookie() => $this->session_id];
         $http_verb = 'POST';
@@ -83,7 +83,7 @@ class rest_test_set extends cms_test_case
             return;
         }
 
-        $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
+        $url = get_base_url() . '/data/endpoint.php/content/commandr_fs/' . $this->path;
         $post_params = json_encode(['summary' => 'test']);
         $cookies = [get_session_cookie() => $this->session_id];
         $http_verb = 'PUT';
@@ -110,7 +110,7 @@ class rest_test_set extends cms_test_case
             return;
         }
 
-        $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
+        $url = get_base_url() . '/data/endpoint.php/content/commandr_fs/' . $this->path;
         $post_params = json_encode(['summary' => 'test']);
         $cookies = [get_session_cookie() => $this->session_id];
         $http_verb = 'DELETE';

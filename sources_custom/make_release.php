@@ -43,6 +43,14 @@ function make_installers($skip_file_grab = false)
 
     global $MAKE_INSTALLERS__FILE_ARRAY, $MAKE_INSTALLERS__DIR_ARRAY, $MAKE_INSTALLERS__TOTAL_DIRS, $MAKE_INSTALLERS__TOTAL_FILES;
 
+    // Integrity check: files_previous manifest
+    require_code('upgrade_integrity_scan');
+    $manifest = load_integrity_manifest(true);
+    if (cms_empty_safe($manifest)) {
+        warn_exit(do_lang_tempcode('MANIFEST_CORRUPT_FILES_PREVIOUS'));
+    }
+    unset($manifest);
+
     require_code('files');
 
     // Start output
@@ -80,7 +88,7 @@ function make_installers($skip_file_grab = false)
 
         // Generate key pair
         require_code('encryption');
-        generate_telemetry_key_pair($version, (post_param_integer('overwrite_key_pair', 0) == 1));
+        generate_telemetry_key_pair($version, (post_param_string('overwrite_key_pair', '') != ''));
 
         // Copy new public key to our static "telemetry" file
         @copy(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', get_file_base() . '/data/keys/telemetry.pub');
@@ -102,6 +110,14 @@ function make_installers($skip_file_grab = false)
             make_install_sql();
         }
     }
+
+    // Integrity check: files manifest
+    require_code('upgrade_integrity_scan');
+    $manifest = load_integrity_manifest();
+    if (cms_empty_safe($manifest)) {
+        warn_exit(do_lang_tempcode('MANIFEST_CORRUPT_FILES'));
+    }
+    unset($manifest);
 
     //header('Content-Type: text/plain; charset=' . get_charset());var_dump(array_keys($MAKE_INSTALLERS__FILE_ARRAY));exit(); Useful for testing quickly what files will be built
 
@@ -1095,7 +1111,7 @@ function _download_latest_data_no_banning()
 
     $data = '';
     foreach ($urls as $url) {
-        $data .= http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
+        $data .= http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
     }
 
     $data = trim($data) . "\n";

@@ -1,3 +1,5 @@
 [title]{$SITE_NAME*} Rules[/title]
 
 [include="_SEARCH"]_rules[/include]
+
+[staff_note]If you are trying to edit the contents of the rules, then you probably want to edit the _rules page instead.[/staff_note]

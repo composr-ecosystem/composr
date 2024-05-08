@@ -8506,6 +8506,19 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RELAYED
         ERROR_LOG_TRUNCATED
         CLOSED_HIDE_HERO
+        CLOSED_SITE_HIDE_HERO_OPTION
+        CMD_CLOSED_HELP_CH
+        CONFIG_OPTION_days_to_keep__endpoints_log
+        CRON_NOT_RUNNING
+        DAYS_TO_KEEP__ENDPOINTS_LOG
+        DESCRIPTION_GALLERY_IMPORT_TITLE_REQUIRED
+        HOTFIX_MESSAGE
+        MEDIA_FILE_FALLBACK_TITLE
+        PRIVILEGE_view_banned_members
+        SEND_TEXT_DISCLAIMER
+        UPGRADER_NOT_FOR_HOTFIX
+        UPGRADER_SKIPPING_MESSAGE_B
+        _CONFIG_OPTION_site_closed
     ')));
 
     $non_admin_files = [
@@ -11995,6 +12008,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SILENCED_FROM_TOPIC
         SILENCED_FROM_FORUM
         INTEGER_OVERFLOW_TIME
+        _MEMBER_BANNED
     ')));
 
     // Remove blank lines

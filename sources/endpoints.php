@@ -54,10 +54,10 @@ function endpoint_script()
         // Path-info is translated to $hook_type/$hook/$id
         $path_info = $_SERVER['REQUEST_URI'];
         $matches = [];
-        if (preg_match('#^/data/endpoint\.php(/\w+)(/\w+)?(/[^\/\?]+)?#', $path_info, $matches) != 0) {
-            $hook_type = ltrim($matches[1], '/');
-            $hook = isset($matches[2]) ? ltrim($matches[2], '/') : false;
-            $id = isset($matches[3]) ? ltrim($matches[3], '/') : null;
+        if (preg_match('#^(.*)?/data/endpoint\.php(/\w+)(/\w+)?(/[^\?]+)?#', $path_info, $matches) != 0) {
+            $hook_type = ltrim($matches[2], '/');
+            $hook = isset($matches[3]) ? ltrim($matches[3], '/') : false;
+            $id = isset($matches[4]) ? trim($matches[4], '/') : null;
         }
 
         // If empty POST data but not a HEAD or GET request, data was probably transmitted via a stream
@@ -94,7 +94,7 @@ function endpoint_script()
     $type = get_param_string('type', $type);
     $id = get_param_string('id', $id);
     $response_type = get_param_string('response_type', $response_type);
-    $rest_path = $hook_type . '/' . $hook . (($id !== null) ? '/' . $id : '') . ' [' . $type . ']';
+    $rest_path = $hook_type . '/' . $hook . (($id !== null) ? ('/' . $id) : '') . ' [' . $type . ']';
 
     // Log initial hit
     $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
@@ -184,7 +184,7 @@ function endpoint_script()
         ];
     } catch (Exception $e) {
         // Log error
-        @error_log('Endpoints: ERROR ' . strip_html($e->getMessage()) . ' (' . $rest_path . ')');
+        cms_error_log('Endpoints: ERROR ' . strip_html($e->getMessage()) . ' (' . $rest_path . ')');
         $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
         if (is_file($_log_file)) {
             require_code('files');

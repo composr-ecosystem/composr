@@ -1177,12 +1177,12 @@ function relay_error_notification(string $text, bool $developers = true, string 
     $error_message = strip_html(explode("\n\n", $text)[0]);
 
     if (
-        //($mail !== null) &&
-        //($developers) &&
-        //(get_option('send_error_emails_developers') == '1') &&
-        //(!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
-        //(!running_script('cron_bridge')) &&
-        //($text != '!') &&
+        ($mail !== null) &&
+        ($developers) &&
+        (get_option('send_error_emails_developers') == '1') &&
+        (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
+        (!running_script('cron_bridge')) &&
+        ($text != '!') &&
         (strpos($error_message, '_custom/') === false) &&
         (strpos($error_message, '_custom\\') === false) &&
         (strpos($error_message, 'FTP server error') === false) && // LDAP error, misconfiguration

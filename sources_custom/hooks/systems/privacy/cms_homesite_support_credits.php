@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite_tracker
+ * @package    cms_homesite_support_credits
  */
 
 /**
  * Hook class.
  */
-class Hook_privacy_cms_homesite_tracker extends Hook_privacy_base
+class Hook_privacy_cms_homesite_support_credits extends Hook_privacy_base
 {
     /**
      * Find privacy details.
@@ -25,7 +25,7 @@ class Hook_privacy_cms_homesite_tracker extends Hook_privacy_base
      */
     public function info() : ?array
     {
-        if (!addon_installed('cms_homesite_tracker')) {
+        if (!addon_installed('cms_homesite_support_credits')) {
             return null;
         }
 
