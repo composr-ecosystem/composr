@@ -158,7 +158,7 @@ class Hook_endpoint_cms_homesite_version
             $upgrade_type = ['major upgrade, may break compatibility of customisations', 'feature upgrade', 'easy patch upgrade'];
             for ($i = 0; $i <= 3; $i++) {
                 if ($higher_versions[$i] !== null) {
-                    $this->display_version_upgrade_path($output, $higher_versions[$i]);
+                    $this->display_version_upgrade_path($version_dotted, $output, $higher_versions[$i]);
                 }
             }
         }
@@ -199,10 +199,8 @@ class Hook_endpoint_cms_homesite_version
         return static_evaluate_tempcode(comcode_to_tempcode(preg_replace('#A new version, [\.\d\w]+ is available\. #', '', preg_replace('# There may have been other upgrades since .* - see .+\.#', '', $d))));
     }
 
-    protected function display_version_upgrade_path(&$output, $higher_version)
+    protected function display_version_upgrade_path($version_dotted, &$output, $higher_version)
     {
-        $version_dotted = get_param_string('version');
-
         static $i = 0;
         $i++;
 
