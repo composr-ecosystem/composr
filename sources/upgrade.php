@@ -475,7 +475,7 @@ function upgrader_menu_screen() : string
     $tar_url = '';
     if ($news_id !== null) {
         require_code('files');
-        $fetch_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/release_details/' . strval($news_id) . '/&from_version=' . urlencode($from_version);
+        $fetch_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/release_details/' . strval($news_id) . '/?from_version=' . urlencode($from_version);
         $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
         $_details = @json_decode($news, true);

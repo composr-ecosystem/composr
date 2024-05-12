@@ -29,19 +29,20 @@ function upgrader_file_upgrade_screen() : string
     $out = '<h2>' . do_lang('UPGRADER_DOWNLOAD') . '</h2>';
 
     require_code('version2');
-    $personal_upgrader_generation_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/personal_upgrader/' . urlencode(get_version_dotted());
+    $personal_upgrader_generation_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/personal_upgrader/' . urlencode(get_version_dotted()) . '/?';
     if (function_exists('gzopen')) {
-        $personal_upgrader_generation_url .= '&supports_gzip=1';
+        $personal_upgrader_generation_url .= 'supports_gzip=1&';
     }
     if ((function_exists('zip_open')) || (get_option('unzip_cmd') == '')) {
-        $personal_upgrader_generation_url .= '&supports_zip=1';
+        $personal_upgrader_generation_url .= 'supports_zip=1&';
     }
     $hooks = find_all_hooks('systems', 'addon_registry');
     foreach (array_keys($hooks) as $hook) {
         if (is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $hook . '.php')) {
-            $personal_upgrader_generation_url .= '&addon_' . $hook . '=1';
+            $personal_upgrader_generation_url .= 'addon_' . $hook . '=1&';
         }
     }
+    $personal_upgrader_generation_url = rtrim($personal_upgrader_generation_url, '&');
 
     require_code('files2');
     $found_upgraders = [];
