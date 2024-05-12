@@ -67,7 +67,7 @@ class Hook_endpoint_cms_homesite_release_details
             $news = static_evaluate_tempcode(comcode_to_tempcode(get_translated_text($news_rows[0]['news_article']), null, true));
 
             $matches = [];
-            preg_match('#"(https?://composr.app/upgrades/[^"]*\.cms)"#', $news_html, $matches);
+            preg_match('#"(https?://composr.app/uploads/website_specific/cms_homesite/upgrades/tars/[^"]*\.cms)"#', $news_html, $matches);
             $tar_url = array_key_exists(1, $matches) ? $matches[1] : '';
             $changes = '';
             if (preg_match('#<br />([^>]*the following.*:<br /><ul>)#U', $news_html, $matches) != 0) {
