@@ -1193,7 +1193,7 @@ function do_site()
         }
 
         // Tracks very basic details of what sites use the software
-        if ((!is_local_machine()) && (get_option('call_home') == '1')) {
+        if ((!is_local_machine()) && (get_option('call_home') == '1') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) !== null)) {
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
             require_code('version2');
@@ -1201,7 +1201,8 @@ function do_site()
             $num_hits_per_day = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
             $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/?url=' . urlencode(get_base_url()) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()) . '&num_members=' . urlencode(strval($num_members)) . '&num_hits_per_day=' . urlencode(strval($num_hits_per_day));
             require_code('http');
-            cache_and_carry('cms_http_request', [$url, ['trigger_error' => false]], 60 * 24/*once a day*/);
+            cms_http_request($url, ['trigger_error' => false]);
+            set_value('last_call_home', strval(time()));
             cms_ini_set('default_socket_timeout', $timeout_before);
         }
     }
