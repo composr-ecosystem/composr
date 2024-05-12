@@ -62,14 +62,17 @@ if (!function_exists('mu_result')) {
     function mu_result($path)
     {
         // Shorten path to be more readable
-        $normal_bore = get_file_base() . '/uploads/website_specific/cms_homesite/upgrades/tars/';
-        $shortened = get_file_base() . '/upgrades/';
-        if (!file_exists($shortened)) {
-            symlink($normal_bore, 'upgrades');
-        }
-        if (substr($path, 0, strlen($normal_bore)) == $normal_bore) {
-            $path = $shortened . substr($path, strlen($normal_bore));
-        }
+        // Actually let's not do that; some servers do not support symlinks and will throw an error
+        /*
+            $normal_bore = get_file_base() . '/uploads/website_specific/cms_homesite/upgrades/tars/';
+            $shortened = get_file_base() . '/upgrades/';
+            if (!file_exists($shortened)) {
+                symlink($normal_bore, 'upgrades');
+            }
+            if (substr($path, 0, strlen($normal_bore)) == $normal_bore) {
+                $path = $shortened . substr($path, strlen($normal_bore));
+            }
+        */
 
         $base_url = get_base_url();
         $url = $base_url . '/' . rawurldecode(substr($path, strlen(get_file_base()) + 1));

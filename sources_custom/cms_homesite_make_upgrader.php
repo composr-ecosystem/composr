@@ -289,6 +289,9 @@ function make_upgrader_do_dir($build_path, $new_base_path, $old_base_path, $addo
             if (($old_base_path === null) || (strpos($dir, '/addon_registry') !== false) || (!file_exists($old_base_path . '/' . $pretend_dir . '/' . $file)) || ($contents != cms_file_get_contents_safe($old_base_path . '/' . $pretend_dir . '/' . $file, FILE_READ_UNIXIFIED_TEXT))) {
                 if ($addons_in_upgrader !== null) {
                     $addon_name = find_file_addon($new_base_path, $dir . $file);
+                    if ($addon_name === null) {
+                        continue;
+                    }
                     if ((!isset($addons_in_upgrader[$addon_name])) && (substr($addon_name, 0, 5) != 'core_')) {
                         continue;
                     }
