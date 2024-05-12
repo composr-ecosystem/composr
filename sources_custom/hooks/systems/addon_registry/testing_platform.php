@@ -777,6 +777,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/_template_no_unused.php',
             '_tests/tests/unit_tests/_template_parameter_consistency.php',
             '_tests/tests/unit_tests/_ua_detection.php',
+            '_tests/tests/unit_tests/_upgrader.php',
             '_tests/tests/unit_tests/_webdav.php',
             '_tests/tests/unit_tests/aaa_modularisation.php',
             '_tests/tests/unit_tests/addon_dependency_naming.php',
