@@ -104,6 +104,10 @@ class Hook_admin_stats_links extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $country_code = geolocate_ip($link_row['c_ip_address']);
+                if ($country_code === null) {
+                    $country_code = '';
+                }
+
                 $url = $link_row['c_url'];
 
                 if (!isset($urls_seen[$url])) {

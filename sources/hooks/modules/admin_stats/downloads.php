@@ -82,6 +82,9 @@ class Hook_admin_stats_downloads extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $country_code = geolocate_ip($row['ip']);
+                if ($country_code === null) {
+                    $country_code = '';
+                }
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);

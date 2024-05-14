@@ -418,6 +418,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
                 $ip_address = $row['ip'];
                 $country = geolocate_ip($ip_address);
+                if ($country === null) {
+                    $country = '';
+                }
 
                 list($zone, $attributes) = page_link_decode($row['page_link']);
                 $page = isset($attributes['page']) ? $attributes['page'] : DEFAULT_ZONE_PAGE_NAME;
@@ -646,7 +649,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
             $total_views = 0;
 
             $month = null;
-            $country = null;
+            $country = '';
 
             $rows = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'date_and_time', 'ip'], ['session_id' => $session_id], 'ORDER BY date_and_time');
             foreach ($rows as $row) {
@@ -668,6 +671,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
                     $ip_address = $row['ip'];
                     $country = geolocate_ip($ip_address);
+                    if ($country === null) {
+                        $country = '';
+                    }
                 }
 
                 $last_page_link = $page_link;
