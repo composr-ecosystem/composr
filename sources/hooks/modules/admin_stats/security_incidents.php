@@ -230,7 +230,7 @@ class Hook_admin_stats_security_incidents extends CMSStatsProvider
                     'type' => null,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('COUNT_NEW'),
                 ];
 
             case 'security_incidents_countries':

@@ -195,7 +195,7 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
 
         $start = 0;
 
-        $query = 'SELECT p_cache_forum_id,p_intended_solely_for,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_votes WHERE ';
+        $query = 'SELECT pv_date_time,pv_revoked FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_votes WHERE ';
         $query .= 'pv_revoked=0 AND ';
         $query .= 'pv_date_time>=' . strval($start_time) . ' AND ';
         $query .= 'pv_date_time<=' . strval($end_time);
@@ -257,7 +257,7 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
             'type' => null,
             'data' => $data,
             'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-            'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+            'y_axis_label' => do_lang_tempcode('COUNT_NEW'),
         ];
     }
 }

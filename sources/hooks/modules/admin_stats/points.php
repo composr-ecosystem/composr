@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_admin_stats_point_transactions extends CMSStatsProvider
+class Hook_admin_stats_points extends CMSStatsProvider
 {
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
@@ -48,7 +48,7 @@ class Hook_admin_stats_point_transactions extends CMSStatsProvider
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
             'points_transacted' => [
-                'label' => do_lang_tempcode('POINT_TRANSACTIONS'),
+                'label' => do_lang_tempcode('POINTS_AGGREGATE_ROWS'),
                 'category' => 'economic_activity',
                 'filters' => [
                     'points_sent__month_range' => new CMSStatsDateMonthRangeFilter('points_transacted__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
@@ -195,11 +195,19 @@ class Hook_admin_stats_point_transactions extends CMSStatsProvider
             }
         }
 
+        switch($bucket) {
+            case 'gift_points_used':
+                $y_label = do_lang_tempcode('GIFT_POINTS');
+                break;
+            default:
+                $y_label = do_lang_tempcode('POINTS');
+        }
+
         return [
             'type' => null,
             'data' => $data,
             'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-            'y_axis_label' => do_lang_tempcode('COUNT_POINTS_SENT'),
+            'y_axis_label' => $y_label,
         ];
     }
 }

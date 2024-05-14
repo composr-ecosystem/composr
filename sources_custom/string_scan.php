@@ -8520,6 +8520,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_SKIPPING_MESSAGE_B
         _CONFIG_OPTION_site_closed
         GIFT_POINTS_USED
+        COUNT_NEW
+        EMAILS_SENT
     ')));
 
     $non_admin_files = [
