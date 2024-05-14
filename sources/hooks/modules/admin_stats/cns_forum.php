@@ -78,6 +78,15 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
                 'pivot' => new CMSStatsDatePivot('public_posts__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
+            'topic_poll_votes' => [
+                'label' => do_lang_tempcode('TOPIC_POLL_VOTES'),
+                'category' => 'forum', // TODO: Feedback and engagement?
+                'filters' => [
+                    'topic_poll_votes__month_range' => new CMSStatsDateMonthRangeFilter('topic_poll_votes__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                ],
+                'pivot' => new CMSStatsDatePivot('topic_poll_votes__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ],
             'private_topics' => [
                 'label' => do_lang_tempcode('PRIVATE_TOPICS'),
                 'category' => 'inter_member_engagement',
@@ -178,6 +187,34 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
                         }
                         $data_buckets['public_posts'][$month][$pivot][$pivot_value]++;
                     }
+                }
+            }
+
+            $start += $max;
+        } while (!empty($rows));
+
+        $start = 0;
+
+        $query = 'SELECT p_cache_forum_id,p_intended_solely_for,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_votes WHERE ';
+        $query .= 'pv_revoked=0 AND ';
+        $query .= 'pv_date_time>=' . strval($start_time) . ' AND ';
+        $query .= 'pv_date_time<=' . strval($end_time);
+        $query .= ' ORDER BY pv_date_time';
+        do {
+            $rows = $GLOBALS['FORUM_DB']->query($query, $max, $start);
+            foreach ($rows as $row) {
+                $timestamp = $row['pv_date_time'];
+                $timestamp = tz_time($timestamp, $server_timezone);
+
+                $month = get_stats_month_for_timestamp($timestamp);
+
+                foreach (array_keys($date_pivots) as $pivot) {
+                    $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
+
+                    if (!isset($data_buckets['topic_poll_votes'][$month][$pivot][$pivot_value])) {
+                        $data_buckets['topic_poll_votes'][$month][$pivot][$pivot_value] = 0;
+                    }
+                    $data_buckets['topic_poll_votes'][$month][$pivot][$pivot_value]++;
                 }
             }
 
