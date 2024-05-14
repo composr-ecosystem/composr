@@ -605,10 +605,12 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     }
                     $data_buckets['requested_languages'][$month][''][$language]++;
 
-                    if (!isset($data_buckets['countries'][$month][''][$country])) {
-                        $data_buckets['countries'][$month][''][$country] = 0;
+                    if (has_geolocation_data()) {
+                        if (!isset($data_buckets['countries'][$month][''][$country])) {
+                            $data_buckets['countries'][$month][''][$country] = 0;
+                        }
+                        $data_buckets['countries'][$month][''][$country]++;
                     }
-                    $data_buckets['countries'][$month][''][$country]++;
                 }
             }
 

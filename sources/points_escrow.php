@@ -373,7 +373,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
         $response[] = $refund;
         $response[] = $refund_gift_points;
 
-        // Also, edit the points amount on the escrow itself
+        // Also, edit the points amount on the escrow itself; we especially need to know this for accurate stats
         $GLOBALS['SITE_DB']->query_update('escrow', ['amount' => $amount], ['id' => $id], '', 1);
     }
 

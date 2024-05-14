@@ -39,38 +39,60 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
 
         // Possible selections for action type filter
         require_all_lang();
-        $_action_type_list = [];
+        $_action_type_list_growth = [];
+        $_action_type_list_activity = [];
         $rows1 = (get_forum_type() == 'cns') ? $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['DISTINCT l_the_type']) : [];
         $rows2 = $GLOBALS['SITE_DB']->query_select('actionlogs', ['DISTINCT the_type']);
         foreach ($rows1 as $row) {
-            if ($this->should_skip_type($row['l_the_type'])) {
+            if ($this->should_skip_type($row['l_the_type'], '')) {
                 continue;
             }
             $lang = do_lang($row['l_the_type'], null, null, null, null, false);
             if ($lang !== null) {
-                $_action_type_list[$row['l_the_type']] = $lang;
+                if ($this->should_skip_type($row['l_the_type'], 'actionlog_activity')) {
+                    $_action_type_list_activity[$row['l_the_type']] = $lang;
+                }
+                if (!$this->should_skip_type($row['l_the_type'], 'actionlog_growth')) {
+                    $_action_type_list_growth[$row['l_the_type']] = $lang;
+                }
             }
         }
         foreach ($rows2 as $row) {
-            if ($this->should_skip_type($row['the_type'])) {
+            if ($this->should_skip_type($row['the_type'], '')) {
                 continue;
             }
             $lang = do_lang($row['the_type'], null, null, null, null, false);
             if ($lang !== null) {
-                $_action_type_list[$row['the_type']] = $lang;
+                if ($this->should_skip_type($row['the_type'], 'actionlog_activity')) {
+                    $_action_type_list_activity[$row['the_type']] = $lang;
+                }
+                if (!$this->should_skip_type($row['the_type'], 'actionlog_growth')) {
+                    $_action_type_list_growth[$row['the_type']] = $lang;
+                }
             }
         }
-        asort($_action_type_list, SORT_NATURAL | SORT_FLAG_CASE);
+        asort($_action_type_list_activity, SORT_NATURAL | SORT_FLAG_CASE);
+        asort($_action_type_list_growth, SORT_NATURAL | SORT_FLAG_CASE);
 
         return [
             'actionlog_growth' => [
-                'label' => do_lang_tempcode('MODULE_TRANS_NAME_admin_actionlog'),
+                'label' => do_lang_tempcode('STATS_ACTIONLOG_GROWTH'),
                 'category' => 'content_growth',
                 'filters' => [
                     'actionlog_growth__month_range' => new CMSStatsDateMonthRangeFilter('actionlog_growth__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
-                    'actionlog_growth__the_type' => new CMSStatsListFilter('actionlog_growth__the_type', do_lang_tempcode('ACTION'), $_action_type_list),
+                    'actionlog_growth__the_type' => new CMSStatsListFilter('actionlog_growth__the_type', do_lang_tempcode('ACTION'), $_action_type_list_growth),
                 ],
                 'pivot' => new CMSStatsDatePivot('actionlog_growth__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ],
+            'actionlog_activity' => [
+                'label' => do_lang_tempcode('STATS_ACTIONLOG_ACTIVITY'),
+                'category' => 'feedback_and_engagement',
+                'filters' => [
+                    'actionlog_activity__month_range' => new CMSStatsDateMonthRangeFilter('actionlog_activity__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'actionlog_activity__the_type' => new CMSStatsListFilter('actionlog_activity__the_type', do_lang_tempcode('ACTION'), $_action_type_list_activity),
+                ],
+                'pivot' => new CMSStatsDatePivot('actionlog_activity__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
@@ -105,17 +127,63 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $type = $row['the_type'];
-                if ($this->should_skip_type($type)) {
+                if ($this->should_skip_type($type, '')) {
                     continue;
                 }
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                    if (!isset($data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type])) {
-                        $data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type] = 0;
+                    if (!$this->should_skip_type($row['the_type'], 'actionlog_activity')) {
+                        if (!isset($data_buckets['actionlog_activity'][$month][$pivot][$pivot_value][$type])) {
+                            $data_buckets['actionlog_activity'][$month][$pivot][$pivot_value][$type] = 0;
+                        }
+                        $data_buckets['actionlog_activity'][$month][$pivot][$pivot_value][$type]++;
                     }
-                    $data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type]++;
+                    if (!$this->should_skip_type($row['the_type'], 'actionlog_growth')) {
+                        if (!isset($data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type])) {
+                            $data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type] = 0;
+                        }
+                        $data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type]++;
+                    }
+                }
+            }
+
+            $start += $max;
+        } while (!empty($rows));
+
+        $query = 'SELECT * FROM ' . get_table_prefix() . 'f_moderator_logs WHERE ';
+        $query .= 'l_date_and_time>=' . strval($start_time) . ' AND ';
+        $query .= 'l_date_and_time<=' . strval($end_time);
+        $query .= ' ORDER BY l_date_and_time';
+        do {
+            $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
+            foreach ($rows as $row) {
+                $timestamp = $row['l_date_and_time'];
+                $timestamp = tz_time($timestamp, $server_timezone);
+
+                $month = get_stats_month_for_timestamp($timestamp);
+
+                $type = $row['l_the_type'];
+                if ($this->should_skip_type($type, '')) {
+                    continue;
+                }
+
+                foreach (array_keys($date_pivots) as $pivot) {
+                    $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
+
+                    if (!$this->should_skip_type($row['l_the_type'], 'actionlog_activity')) {
+                        if (!isset($data_buckets['actionlog_activity'][$month][$pivot][$pivot_value][$type])) {
+                            $data_buckets['actionlog_activity'][$month][$pivot][$pivot_value][$type] = 0;
+                        }
+                        $data_buckets['actionlog_activity'][$month][$pivot][$pivot_value][$type]++;
+                    }
+                    if (!$this->should_skip_type($row['l_the_type'], 'actionlog_growth')) {
+                        if (!isset($data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type])) {
+                            $data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type] = 0;
+                        }
+                        $data_buckets['actionlog_growth'][$month][$pivot][$pivot_value][$type]++;
+                    }
                 }
             }
 
@@ -175,20 +243,25 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
      * Determine whether we should skip the provided action log type in the stats module.
      *
      * @param  ID_TEXT $type The action log type
+     * @param  ID_TEXT $stat The statistic we are fetching (blank: skip only if the type would have been skipped by all statistics)
      * @return boolean Whether to skip it
      */
-    protected function should_skip_type(string $type) : bool
+    protected function should_skip_type(string $type, string $stat) : bool
     {
         require_code('actionlog');
 
         $flags = get_handler_flags($type);
 
-        // Do not count GDPR nor user action flagged logs towards the statistics
+        // Do not count GDPR towards the statistics regardless of stat
         if (($flags & ACTIONLOG_FLAG__GDPR) != 0) {
             return true;
         }
-        if (($flags & ACTIONLOG_FLAG__USER_ACTION) != 0) {
-            return true;
+
+        // Do not count user actions towards content growth
+        if ($stat == 'actionlog_growth') {
+            if (($flags & ACTIONLOG_FLAG__USER_ACTION) != 0) {
+                return true;
+            }
         }
 
         return false;

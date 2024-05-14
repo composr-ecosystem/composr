@@ -38,13 +38,49 @@ class Hook_admin_stats_point_transactions extends CMSStatsProvider
         require_lang('points');
 
         return [
-            'point_transactions' => [
-                'label' => do_lang_tempcode('POINT_TRANSACTIONS'),
+            'points_sent' => [
+                'label' => do_lang_tempcode('POINTS_SENT'),
                 'category' => 'inter_member_engagement',
                 'filters' => [
-                    'point_transactions__month_range' => new CMSStatsDateMonthRangeFilter('point_transactions__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'points_sent__month_range' => new CMSStatsDateMonthRangeFilter('points_sent__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
-                'pivot' => new CMSStatsDatePivot('point_transactions__pivot', $this->get_date_pivots(!$for_kpi)),
+                'pivot' => new CMSStatsDatePivot('points_sent__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ],
+            'points_transacted' => [
+                'label' => do_lang_tempcode('POINT_TRANSACTIONS'),
+                'category' => 'economic_activity',
+                'filters' => [
+                    'points_sent__month_range' => new CMSStatsDateMonthRangeFilter('points_transacted__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                ],
+                'pivot' => new CMSStatsDatePivot('points_transacted__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ],
+            'points_spent' => [
+                'label' => do_lang_tempcode('POINTS_SPENT'),
+                'category' => 'economic_activity',
+                'filters' => [
+                    'points_spent__month_range' => new CMSStatsDateMonthRangeFilter('points_spent__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                ],
+                'pivot' => new CMSStatsDatePivot('points_spent__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ],
+            'points_received' => [
+                'label' => do_lang_tempcode('POINTS_RECEIVED'),
+                'category' => 'economic_activity',
+                'filters' => [
+                    'points_received__month_range' => new CMSStatsDateMonthRangeFilter('points_received__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                ],
+                'pivot' => new CMSStatsDatePivot('points_received__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ],
+            'gift_points_used' => [
+                'label' => do_lang_tempcode('GIFT_POINTS_USED'),
+                'category' => 'economic_activity',
+                'filters' => [
+                    'gift_points_used__month_range' => new CMSStatsDateMonthRangeFilter('gift_points_used__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                ],
+                'pivot' => new CMSStatsDatePivot('gift_points_used__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
@@ -61,13 +97,15 @@ class Hook_admin_stats_point_transactions extends CMSStatsProvider
     {
         $server_timezone = get_server_timezone();
 
+        $date_pivots = $this->get_date_pivots();
+
+        // Ledger processes
+
         $max = 1000;
         $start = 0;
 
-        $date_pivots = $this->get_date_pivots();
-
         $query = 'SELECT * FROM ' . get_table_prefix() . 'points_ledger WHERE ';
-        $query .= 'sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ';
+        $query .= 'status=0 AND ';
         $query .= 'date_and_time>=' . strval($start_time) . ' AND ';
         $query .= 'date_and_time<=' . strval($end_time);
         $query .= ' ORDER BY date_and_time';
@@ -82,10 +120,43 @@ class Hook_admin_stats_point_transactions extends CMSStatsProvider
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                    if (!isset($data_buckets['point_transactions'][$month][$pivot][$pivot_value])) {
-                        $data_buckets['point_transactions'][$month][$pivot][$pivot_value] = 0;
+                    // All point transactions
+                    if (!isset($data_buckets['points_transacted'][$month][$pivot][$pivot_value])) {
+                        $data_buckets['points_transacted'][$month][$pivot][$pivot_value] = 0;
                     }
-                    $data_buckets['point_transactions'][$month][$pivot][$pivot_value] += ($row['amount_gift_points'] + $row['amount_points']);
+                    $data_buckets['points_transacted'][$month][$pivot][$pivot_value] += ($row['amount_gift_points'] + $row['amount_points']);
+
+                    // Points sent between members (including via escrow)
+                    if ((!is_guest($row['sender_id']) && !is_guest($row['recipient_id'])) || ($row['t_type'] == 'points_escrow')) {
+                        if (!isset($data_buckets['points_sent'][$month][$pivot][$pivot_value])) {
+                            $data_buckets['points_sent'][$month][$pivot][$pivot_value] = 0;
+                        }
+                        $data_buckets['points_sent'][$month][$pivot][$pivot_value] += ($row['amount_gift_points'] + $row['amount_points']);
+                    }
+
+                    // Points spent (except charged by warnings)
+                    if (is_guest($row['recipient_id']) && ($row['t_type'] != 'warning')) {
+                        if (!isset($data_buckets['points_spent'][$month][$pivot][$pivot_value])) {
+                            $data_buckets['points_spent'][$month][$pivot][$pivot_value] = 0;
+                        }
+                        $data_buckets['points_spent'][$month][$pivot][$pivot_value] += ($row['amount_gift_points'] + $row['amount_points']);
+                    }
+
+                    // Points received
+                    if (!is_guest($row['recipient_id'])) {
+                        if (!isset($data_buckets['points_received'][$month][$pivot][$pivot_value])) {
+                            $data_buckets['points_received'][$month][$pivot][$pivot_value] = 0;
+                        }
+                        $data_buckets['points_received'][$month][$pivot][$pivot_value] += ($row['amount_gift_points'] + $row['amount_points']);
+                    }
+
+                    // Gift points used
+                    if (!is_guest($row['sender_id'])) {
+                        if (!isset($data_buckets['gift_points_used'][$month][$pivot][$pivot_value])) {
+                            $data_buckets['gift_points_used'][$month][$pivot][$pivot_value] = 0;
+                        }
+                        $data_buckets['gift_points_used'][$month][$pivot][$pivot_value] += $row['amount_gift_points'];
+                    }
                 }
             }
 

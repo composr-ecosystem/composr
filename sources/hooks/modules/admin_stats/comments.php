@@ -80,7 +80,7 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                 'pivot' => new CMSStatsDatePivot('comments__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
-            'comments_tallies' => [
+            'comments_tallies' => [ // Tally by content
                 'label' => do_lang_tempcode('COMMENT_ENGAGEMENT'),
                 'category' => 'feedback_and_engagement',
                 'filters' => [

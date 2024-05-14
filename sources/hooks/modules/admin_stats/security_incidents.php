@@ -116,13 +116,16 @@ class Hook_admin_stats_security_incidents extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $country = geolocate_ip($row['ip']);
-
-                if (!isset($data_buckets['security_incidents_countries'][$month]['']['failedlogins'][$country])) {
-                    $data_buckets['security_incidents_countries'][$month]['']['failedlogins'][$country] = 0;
+                if ($country === null) {
+                    $country = '';
                 }
-                $data_buckets['security_incidents_countries'][$month]['']['failedlogins'][$country]++;
 
-                $username = $row['failed_account'];
+                if (has_geolocation_data()) {
+                    if (!isset($data_buckets['security_incidents_countries'][$month]['']['failedlogins'][$country])) {
+                        $data_buckets['security_incidents_countries'][$month]['']['failedlogins'][$country] = 0;
+                    }
+                    $data_buckets['security_incidents_countries'][$month]['']['failedlogins'][$country]++;
+                }
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
@@ -152,11 +155,16 @@ class Hook_admin_stats_security_incidents extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $country = geolocate_ip($row['ip']);
-
-                if (!isset($data_buckets['security_incidents_countries'][$month]['']['hackattacks'][$country])) {
-                    $data_buckets['security_incidents_countries'][$month]['']['hackattacks'][$country] = 0;
+                if ($country === null) {
+                    $country = '';
                 }
-                $data_buckets['security_incidents_countries'][$month]['']['hackattacks'][$country]++;
+
+                if (has_geolocation_data()) {
+                    if (!isset($data_buckets['security_incidents_countries'][$month]['']['hackattacks'][$country])) {
+                        $data_buckets['security_incidents_countries'][$month]['']['hackattacks'][$country] = 0;
+                    }
+                    $data_buckets['security_incidents_countries'][$month]['']['hackattacks'][$country]++;
+                }
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
