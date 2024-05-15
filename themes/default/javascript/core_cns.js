@@ -48,6 +48,29 @@
         });
     };
 
+    $cms.templates.cnsJoinReviewRulesScreen = function cnsJoinReviewRulesScreen(params, container) {
+        var agreeCheckbox = container.querySelector('.js-chb-click-toggle-proceed-btn');
+
+        if (agreeCheckbox) {
+            document.getElementById('proceed-button').disabled = !agreeCheckbox.checked;
+        }
+
+        $dom.on(container, 'click', '.js-chb-click-toggle-proceed-btn', function (e, checkbox) {
+            var checkBoxes = $dom.$$(checkbox.form, '.js-chb-click-toggle-proceed-btn');
+            var allChecked = true;
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (!checkBoxes[i].checked) {
+                    allChecked = false;
+                }
+            }
+            document.getElementById('proceed-button').disabled = !allChecked;
+        });
+
+        $dom.on(container, 'click', '.js-click-set-top-location', function (e, target) {
+            window.top.location = strVal(target.dataset.tpTopLocation);
+        });
+    };
+
     $cms.templates.joinForm = function (params) {
         var form = document.getElementById('username').form;
 

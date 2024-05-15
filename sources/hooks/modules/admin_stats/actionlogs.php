@@ -152,7 +152,7 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
             $start += $max;
         } while (!empty($rows));
 
-        $query = 'SELECT * FROM ' . get_table_prefix() . 'f_moderator_logs WHERE ';
+        $query = 'SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_moderator_logs WHERE ';
         $query .= 'l_date_and_time>=' . strval($start_time) . ' AND ';
         $query .= 'l_date_and_time<=' . strval($end_time);
         $query .= ' ORDER BY l_date_and_time';

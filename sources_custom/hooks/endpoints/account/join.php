@@ -51,7 +51,7 @@ class Hook_endpoint_account_join
 
         require_code('cns_join');
         cns_require_all_forum_stuff();
-        list($message, $member_id) = cns_join_actual(false);
+        list($message, $member_id) = cns_join_actual('', false); // TODO: GDPR Need a method to require declaration acceptance before an account is created
 
         $_message = $message->evaluate();
 

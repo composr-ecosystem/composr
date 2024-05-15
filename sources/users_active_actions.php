@@ -226,6 +226,7 @@ function handle_active_login(string $username)
         $MEMBER_CACHED = $member_id;
 
         enforce_temporary_passwords($member_id);
+        enforce_declarations($member_id);
     } else {
         $GLOBALS['SITE_DB']->query_insert('failedlogins', [
             'failed_account' => cms_mb_substr(post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES | INPUT_FILTER_TRIMMED), 0, 80),
@@ -314,6 +315,51 @@ function _enforce_temporary_passwords(int $member_id)
         require_lang('cns');
 
         redirect_exit($redirect_url, get_screen_title('LOGGED_IN'), $force_change_message, false, 'warn');
+    }
+}
+
+/**
+ * Actualiser for enforcing the member agreed to the latest declarations. Will redirect_exit if the member needs to re-accept declarations.
+ *
+ * @param  MEMBER $member_id The current member
+ *
+ * @ignore
+ */
+function _enforce_declarations(int $member_id)
+{
+    $force_message = null;
+    $redirect_url = null;
+
+    $configured_declarations = trim(preg_replace('#\n+#', "\n", get_option('join_declarations')));
+    $cpfs = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
+    if ($cpfs === null) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+    if (!isset($cpfs['agreed_declarations'])) {
+        $cpfs['agreed_declarations'] = '';
+    }
+    $agreed_declarations = trim(preg_replace('#\n+#', "\n", $cpfs['agreed_declarations']));
+
+    if ($agreed_declarations == '') {
+        require_lang('cns');
+        require_code('urls');
+        $force_message = do_lang_tempcode('DESCRIPTION_I_AGREE_RULES_USE');
+        $redirect_url = build_url(['page' => 'join', 'type' => 'review_rules'], get_module_zone('join'));
+    } elseif ($agreed_declarations != $configured_declarations) {
+        require_lang('cns');
+        require_code('urls');
+        $force_message = do_lang_tempcode('DESCRIPTION_I_AGREE_RULES_UPDATED');
+        $redirect_url = build_url(['page' => 'join', 'type' => 'review_rules'], get_module_zone('join'));
+    }
+
+    if ($force_message !== null) {
+        delete_cache_entry('side_users_online');
+
+        require_code('urls');
+        require_code('site2');
+        require_lang('cns');
+
+        redirect_exit($redirect_url, get_screen_title('_I_AGREE_RULES'), $force_message, false, 'warn');
     }
 }
 

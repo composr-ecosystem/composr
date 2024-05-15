@@ -23,7 +23,7 @@
 				{+START,IF,{$NEQ,{_loop_key},0}}
 					<br />
 				{+END}
-				<input type="checkbox" id="confirm_{_loop_key*}" name="confirm_{_loop_key*}" value="1" class="js-chb-click-toggle-proceed-btn" /><label for="confirm_{_loop_key*}">{_loop_var*}</label>
+				<input type="checkbox" id="confirm_{_loop_key*}" name="confirm_{_loop_key*}" value="{_loop_var*}" class="js-chb-click-toggle-proceed-btn" /><label for="confirm_{_loop_key*}">{_loop_var*}</label>
 			{+END}
 		</p>
 

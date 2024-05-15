@@ -132,7 +132,7 @@ class Hook_addon_registry_points
             'lang/EN/points.ini',
             'site/pages/modules/points.php',
             'sources/hooks/modules/admin_import_types/points.php',
-            'sources/hooks/modules/admin_stats/point_transactions.php',
+            'sources/hooks/modules/admin_stats/points.php',
             'sources/hooks/systems/actionlog/points.php',
             'sources/hooks/systems/addon_registry/points.php',
             'sources/hooks/systems/cleanup/points_recalculate_cpf.php',

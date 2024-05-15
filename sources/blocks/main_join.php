@@ -125,7 +125,8 @@ class Block_main_join
         if (post_param_integer('_joining', 0) == 1) {
             check_joining_allowed($adjusted_config_options);
 
-            list($message, , $ready) = cns_join_actual($captcha_if_enabled, false, true, true, null, null, null, null, $adjusted_config_options);
+            // TODO: GDPR Need a method to require declaration acceptance before an account is created
+            list($message, , $ready) = cns_join_actual('', $captcha_if_enabled, false, true, true, null, null, null, null);
 
             $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
 

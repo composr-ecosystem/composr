@@ -941,6 +941,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/sorting.php',
             '_tests/tests/unit_tests/spreadsheets.php',
             '_tests/tests/unit_tests/sql_compat.php',
+            '_tests/tests/unit_tests/stats.php',
             '_tests/tests/unit_tests/string_functions.php',
             '_tests/tests/unit_tests/strip_tags.php',
             '_tests/tests/unit_tests/suphp.php',
