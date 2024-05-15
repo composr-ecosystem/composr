@@ -138,7 +138,7 @@ class Module_admin_make_release
             $previous_version = $matches[1];
         }
 
-        return $previous_version;
+        return post_param_string('previous_version', $previous_version);
     }
 
     /**
