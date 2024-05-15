@@ -18,6 +18,8 @@
  */
 class stats_test_set extends cms_test_case
 {
+
+    protected $dummy_data_added = [];
     public function setUp()
     {
         parent::setUp();
@@ -33,12 +35,118 @@ class stats_test_set extends cms_test_case
         require_code('stats');
         require_code('temporal');
         require_lang('stats');
+        require_code('developer_tools');
+
+        $dummy_data = [
+            // 'table_name' => [array of forced field=>value maps; one row will be created for each array item],
+            'actionlogs' => [[]],
+            'f_moderator_logs' => [[]],
+            'banner_clicks' => [[]],
+            'f_topics' => [
+                ['_ALLOW_NULL_' => false],
+                ['_ALLOW_NULL_' => false, 't_forum_id' => null],
+            ],
+            'f_posts' => [
+                ['_ALLOW_NULL_' => false, 'p_intended_solely_for' => null],
+                ['p_intended_solely_for' => 2],
+            ],
+            'f_poll_votes' => [
+                ['pv_revoked' => 0],
+            ],
+            'f_members' => [
+                ['m_dob_year' => 2000, 'm_dob_month' => 1, 'm_dob_day' => 1],
+                ['m_cache_num_posts' => 10],
+            ],
+            'download_logging' => [[]],
+            'logged_mail_messages' => [[]],
+            'stats_known_events' => [[]],
+            'stats_known_tracking' => [[]],
+            'stats_events' => [[]],
+            'stats' => [
+                ['member_id' => 2],
+                ['browser' => 'Mozilla Firefox'],
+                ['referer' => 'https://example.com'],
+            ],
+            'f_invites' => [[]],
+            'stats_link_tracker' => [[]],
+            'stats_known_links' => [[]],
+            'newsletter_subscribers' => [
+                ['code_confirm' => 0],
+            ],
+            'points_ledger' => [[]],
+            'poll_votes' => [[]],
+            'rating' => [[]],
+            'searches_logged' => [[]],
+            'failedlogins' => [[]],
+            'hackattack' => [[]],
+            'sitemap_cache' => [
+                ['_ALLOW_NULL_' => false, 'page_link' => ':' . uniqid()],
+            ],
+            'ecom_subscriptions' => [[]],
+            'ecom_transactions' => [
+                ['t_status' => 'Completed'],
+            ],
+            'usersonline_track' => [[]],
+            'f_warnings' => [[]],
+
+            'authors' => [[]],
+            'banners' => [[]],
+            'banner_types' => [[]],
+            'calendar_types' => [[]],
+            'catalogues' => [[]],
+            'catalogue_categories' => [[]],
+            'catalogue_entries' => [[]],
+            'chat_rooms' => [[]],
+            'comcode_pages' => [[]],
+            'download_downloads' => [[]],
+            'download_categories' => [[]],
+            'calendar_events' => [[]],
+            'f_forums' => [[]],
+            'galleries' => [[]],
+            'f_groups' => [[]],
+            'images' => [[]],
+            'news' => [[]],
+            'news_categories' => [[]],
+            'poll' => [[]],
+            'quizzes' => [[]],
+            'videos' => [[]],
+            'wiki_pages' => [[]],
+            'wiki_posts' => [[]],
+        ];
+        if (addon_installed('tickets')) {
+            require_code('tickets');
+            $dummy_data['f_topics'][] = ['_ALLOW_NULL_' => false, 't_forum_id' => get_ticket_forum_id()];
+        }
+        if (addon_installed('points')) {
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'recipient_id' => 2];
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => 2, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => 3, 'recipient_id' => 2];
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => 3, 'recipient_id' => 2, 'amount_gift_points' => 1];
+
+            // FUDGE: so we can test top members by points (which uses CPF and not database)
+            $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_lifetime', 1000);
+        }
 
         // Remove old preprocessed stats so we can force pre-processing again
-        $p_month = get_stats_month_for_timestamp(time());
         $GLOBALS['SITE_DB']->query_delete('stats_preprocessed');
         $GLOBALS['SITE_DB']->query_delete('stats_preprocessed_flat');
 
+        // Generate dummy data so we can process stats on them
+        foreach ($dummy_data as $table => $rows) {
+            foreach ($rows as $forced_map) {
+                if (isset($forced_map['_ALLOW_NULL_'])) {
+                    $allow_null = $forced_map['_ALLOW_NULL_'];
+                } else {
+                    $allow_null = true;
+                }
+                if (!isset($this->dummy_data_added[$table])) {
+                    $this->dummy_data_added[$table] = [];
+                }
+                $this->dummy_data_added[$table][] = make_dummy_db_row($table, $allow_null, $forced_map);
+            }
+        }
+
+        $p_month = get_stats_month_for_timestamp(time());
         $server_timezone = get_server_timezone();
 
         $today = cms_date('Y-m-d');
@@ -60,7 +168,7 @@ class stats_test_set extends cms_test_case
             preprocess_raw_data_for($hook_name, $start_time, $end_time);
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_bucket'], ['p_month' => $p_month]);
+        $rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_bucket']);
         foreach ($rows as $row) {
             $buckets_existing[] = $row['p_bucket'];
         }
@@ -74,7 +182,7 @@ class stats_test_set extends cms_test_case
         $buckets_existing = array_unique($buckets_existing);
         $buckets_diff = array_diff($buckets, $buckets_existing);
 
-        $this->assertTrue(empty($buckets_diff), 'No statistics were found for these buckets (you may need to generate activity for these buckets and/or install test content and/or run the stress test loader, and then re-run the test): ' . implode(', ', $buckets_diff));
+        $this->assertTrue(empty($buckets_diff), 'Expected pre-processed statistical data on these buckets but got none (maybe you need to define in this test the db tables used so dummy data can be generated): ' . implode(', ', $buckets_diff));
     }
 
     public function testGenerateFinalData()
@@ -118,6 +226,25 @@ class stats_test_set extends cms_test_case
 
     public function tearDown()
     {
+        // Delete dummy data
+        foreach ($this->dummy_data_added as $table => $rows) {
+            $db = get_db_for($table);
+            foreach ($rows as $primary_map) {
+                if ($this->debug) {
+                    $rows = $db->query_select($table, ['*'], $primary_map);
+                    $this->dump($primary_map, $table . ' primary map');
+                    $this->dump($rows, $table . ' data');
+                }
+                $db->query_delete($table, $primary_map);
+            }
+        }
+
+        // FUDGE: We had to fudge points lifetime so re-calculate this
+        if (addon_installed('points')) {
+            require_code('tasks');
+            call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), null, 'points_recalculate_cpf', [], true, true, false);
+        }
+
         pop_query_limiting();
 
         parent::tearDown();
