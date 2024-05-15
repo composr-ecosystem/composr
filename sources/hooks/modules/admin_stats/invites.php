@@ -97,7 +97,7 @@ class Hook_admin_stats_invites extends CMSStatsProvider
                     }
                     $data_buckets['invites_sent'][$month][$pivot][$pivot_value]++;
 
-                    if ($row['i_taken'] == 1) {
+                    if (($row['i_taken'] == 1) && (get_option('is_on_invites') === '1') && (get_forum_type() == 'cns')) {
                         if (!isset($data_buckets['invites_taken'][$month][$pivot][$pivot_value])) {
                             $data_buckets['invites_taken'][$month][$pivot][$pivot_value] = 0;
                         }

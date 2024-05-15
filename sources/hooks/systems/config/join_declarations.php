@@ -53,6 +53,7 @@ class Hook_config_join_declarations
     public function get_default() : ?string
     {
         require_lang('cns_config');
-        return do_lang('I_AGREE_RULES') . "\n" . do_lang('I_AGREE_PRIVACY') . "\n" . do_lang('I_AGREE_UPDATES');
+        require_code('temporal');
+        return do_lang('I_AGREE_RULES') . "\n" . do_lang('I_AGREE_PRIVACY') . "\n" . do_lang('I_AGREE_UPDATES', escape_html(get_timezoned_date(time(), false)));
     }
 }

@@ -60,7 +60,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
         require_lang('cns_warnings');
         require_code('locations');
 
-        return [
+        $ret = [
             'recorded_punishments' => [
                 'label' => do_lang_tempcode('WARNINGS'),
                 'category' => 'moderation',
@@ -70,15 +70,19 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 ],
                 'pivot' => new CMSStatsDatePivot('moderation__pivot', $this->get_date_pivots(!$for_kpi)),
             ],
-            'recorded_punishment_countries' => [
+        ];
+        if (has_geolocation_data()) {
+            $ret['recorded_punishment_countries'] = [
                 'label' => do_lang_tempcode('_COUNTRIES', do_lang_tempcode('WARNINGS')),
                 'category' => 'moderation',
                 'filters' => [
                     'recorded_punishment_countries__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishment_countries__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
                 'pivot' => null,
-            ],
-        ];
+            ];
+        }
+
+        return $ret;
     }
 
     /**
@@ -110,6 +114,9 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $country = geolocate_ip($row['m_ip_address']);
+                if ($country === null) {
+                    $country = '';
+                }
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
@@ -120,10 +127,12 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                     $data_buckets['recorded_punishments'][$month][$pivot][$pivot_value][$country]++;
                 }
 
-                if (!isset($data_buckets['recorded_punishment_countries'][$month][''][$country])) {
-                    $data_buckets['recorded_punishment_countries'][$month][''][$country] = 0;
+                if (has_geolocation_data()) {
+                    if (!isset($data_buckets['recorded_punishment_countries'][$month][''][$country])) {
+                        $data_buckets['recorded_punishment_countries'][$month][''][$country] = 0;
+                    }
+                    $data_buckets['recorded_punishment_countries'][$month][''][$country]++;
                 }
-                $data_buckets['recorded_punishment_countries'][$month][''][$country]++;
             }
 
             $start += $max;
@@ -176,7 +185,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                     'type' => null,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('COUNT_NEW'),
                 ];
 
             case 'recorded_punishment_countries':

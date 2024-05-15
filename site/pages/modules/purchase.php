@@ -642,7 +642,8 @@ class Module_purchase
         $new_password = post_param_string('password', null, INPUT_FILTER_PASSWORD);
         if (($new_username !== null) && ($new_password !== null)) {
             require_code('cns_join');
-            list($messages) = cns_join_actual(true, false, false, true, null, null, null, null, ['email_validation_if_enabled' => '0', 'staff_validation_if_enabled' => '0', 'coppa_if_enabled' => '0']);
+            // TODO: GDPR Need a method to require declaration acceptance before an account is created
+            list($messages) = cns_join_actual('', true, false, false, true, null, null, null, null);
             if (is_guest()) {
                 if (!$messages->is_empty()) {
                     return inform_screen($this->title, $messages);

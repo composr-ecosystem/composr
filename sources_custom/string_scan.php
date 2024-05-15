@@ -8519,6 +8519,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_NOT_FOR_HOTFIX
         UPGRADER_SKIPPING_MESSAGE_B
         _CONFIG_OPTION_site_closed
+        GIFT_POINTS_USED
+        COUNT_NEW
+        EMAILS_SENT
+        STATS_ACTIONLOG_ACTIVITY
+        STATS_ACTIONLOG_GROWTH
     ')));
 
     $non_admin_files = [
@@ -12009,6 +12014,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SILENCED_FROM_FORUM
         INTEGER_OVERFLOW_TIME
         _MEMBER_BANNED
+        DESCRIPTION_I_AGREE_RULES_DECLINED
+        DESCRIPTION_I_AGREE_RULES_UPDATED
+        DESCRIPTION_I_AGREE_RULES_USE
+        _DESCRIPTION_I_AGREE_RULES
+        _I_AGREE_RULES
+
     ')));
 
     // Remove blank lines

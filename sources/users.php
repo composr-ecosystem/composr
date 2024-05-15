@@ -307,6 +307,7 @@ function get_member(bool $quick_only = false) : int
 
     if ($member_id !== null) {
         enforce_temporary_passwords($member_id);
+        enforce_declarations($member_id);
 
         if (get_forum_type() == 'cns') {
             $GLOBALS['FORUM_DRIVER']->cns_flood_control($member_id);
@@ -356,6 +357,47 @@ function enforce_temporary_passwords(int $member_id)
 
     require_code('users_active_actions');
     _enforce_temporary_passwords($member_id);
+}
+
+/**
+ * Make sure the current member has agreed to the current declarations.
+ *
+ * @param  MEMBER $member_id The current member
+ */
+function enforce_declarations(int $member_id)
+{
+    // No enforcement if using an external connection, such as Commandr or WebDAV
+    if (!running_script('index')) {
+        return;
+    }
+
+    // Guests should not have enforcement
+    if ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+        return;
+    }
+
+    // If we are SUed into another member, do not enforce declarations
+    if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_string('keep_su', null) !== null)) {
+        return;
+    }
+
+    // If the member is trying to accept declarations or is on the join form, allow this
+    if ((get_page_name() == 'join') || ((get_page_name() == 'members') && (get_param_string('id', '') == '') && (get_param_string('type', 'browse') == 'view'))) {
+        return;
+    }
+
+    // No need to enforce declarations if there aren't any configured
+    if (trim(preg_replace('#\n+#', "\n", get_option('join_declarations'))) == '') {
+        return;
+    }
+
+    // Also no need to enforce them if we are not requiring rule acceptance
+    if (get_option('show_first_join_page') == '0') {
+        return;
+    }
+
+    require_code('users_active_actions');
+    _enforce_declarations($member_id);
 }
 
 /**

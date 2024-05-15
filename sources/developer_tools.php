@@ -405,3 +405,169 @@ function cms_verify_parameters_phpdoc(bool $dev_only = false)
         }
     }
 }
+
+/**
+ * Generate a row of random dummy data into the database.
+ * Ideally, you should instead run the stress test loader, but this is useful for quick tests utilising specific tables in the database.
+ * You should immediately delete the rows after use.
+ *
+ * @param  ID_TEXT $table The name of the table to generate dummy data
+ * @param  boolean $allow_null Whether to randomly save null values in nullable columns (false: a value is always saved even if nullable unless explicitly defined in $forced_values)
+ * @param  array $forced_values A map of fields => values that should be used instead of randomness
+ * @return array Map of primary fields associated with the row created
+ */
+function make_dummy_db_row(string $table, bool $allow_null = true, array $forced_values = []) : array
+{
+    $primary_map = [];
+    $map = [];
+
+    // Get db metadata
+    $db = get_db_for($table);
+    $fields = $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]);
+    $metadata = collapse_2d_complexity('m_name', 'm_type', $fields);
+
+    $has_id_field = false;
+
+    foreach ($metadata as $field => $type) {
+        $nullable_field = false;
+        $primary_field = false;
+        if (strpos($type, '*') !== false) {
+            $primary_field = true;
+        }
+        if (strpos($type, '?') !== false) {
+            $nullable_field = true;
+        }
+
+        // Set forced values
+        if (array_key_exists($field, $forced_values)) {
+            $map[$field] = $forced_values[$field];
+            if ($primary_field === true) {
+                $primary_map[$field] = $forced_values[$field];
+            }
+            continue;
+        }
+
+        // We do not want to populate our own data on id fields
+        if ($type == '*AUTO') {
+            $has_id_field = true;
+            continue;
+        }
+
+        // Randomly assign null to nullable fields if we are allowed (not on TRANS though; too complicated to deal with null translations)
+        if (($nullable_field === true) && ($allow_null === true) && (mt_rand(0, 100) >= 50) && (strpos($type, '_TRANS') === false)) {
+            $map[$field] = null;
+            if ($primary_field === true) { // Should never happen but we added it just in case
+                $primary_map[$field] = null;
+            }
+            continue;
+        }
+
+        if (strpos($type, '_TRANS__COMCODE') !== false) {
+            $field = insert_lang_comcode($field, uniqid('', true), 4, $db);
+            $map += $field;
+            if ($primary_field === true) {
+                $primary_map += $field;
+            }
+        } elseif (strpos($type, '_TRANS') !== false) {
+            $field = insert_lang($field, uniqid('', true), 4, $db);
+            $map += $field;
+            if ($primary_field === true) {
+                $primary_map += $field;
+            }
+        } elseif (strpos($type, 'TIME') !== false) {
+            $value = mt_rand(time() - (60 * 60 * 24 * 365), time()); // Between 1 year ago and now
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'BINARY') !== false) {
+            $value = mt_rand(0, 1);
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'MEMBER') !== false) {
+            $value = mt_rand($GLOBALS['DB_DRIVER']->get_first_id(), $GLOBALS['FORUM_DRIVER']->get_num_members()); // Could generate an invalid / deleted member
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'GROUP') !== false) {
+            // We have no easy mechanism in forum drivers to do randomness with groups
+            $map[$field] = $GLOBALS['DB_DRIVER']->get_first_id();
+            if ($primary_field === true) {
+                $primary_map[$field] = $GLOBALS['DB_DRIVER']->get_first_id();
+            }
+        } elseif (strpos($type, 'AUTO_LINK') !== false) {
+            $value = mt_rand($GLOBALS['DB_DRIVER']->get_first_id(), $GLOBALS['DB_DRIVER']->get_first_id() + 65535);
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'IP') !== false) {
+            $value = '192.168.' . mt_rand(0, 255) . '.' . mt_rand(0, 255); // Ensure local IP with randomness
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'URLPATH') !== false) {
+            $value = 'https://example.com/' . uniqid(); // Probably will throw a 404
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'SHORT_INTEGER') !== false) {
+            $value = mt_rand(-128, 127);
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'UINTEGER') !== false) {
+            $value = mt_rand(0, 4294967295);
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'INTEGER') !== false) {
+            $value = random_int(-2147483648, 2147483647);
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'REAL') !== false) {
+            $value = (mt_rand() / 1000000);
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } elseif (strpos($type, 'LANGUAGE_NAME') !== false) {
+            $value = substr(str_shuffle('QWERTYUIOPASDFGHJKLZXCVBNM'), 0, 4);
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        } else {
+            $value = uniqid();
+            $map[$field] = $value;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value;
+            }
+        }
+    }
+
+    // Create the record
+    if ($has_id_field) {
+        $id = $db->query_insert($table, $map, true);
+        if ($id !== null) {
+            $primary_map['id'] = $id;
+        }
+    } else {
+        $db->query_insert($table, $map);
+    }
+
+    if (count($primary_map) == 0) { // Uh oh! This should never happen.
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    return $primary_map;
+}

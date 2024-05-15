@@ -1256,6 +1256,16 @@ class CMSStatsListFilter extends CMSStatsFilter
         }
         return form_input_list(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $list, null, false, false);
     }
+
+    /**
+     * Get the list values for this filter.
+     *
+     * @return array List values
+     */
+    public function get_list_values() : array
+    {
+        return $this->list;
+    }
 }
 
 /**
@@ -1466,6 +1476,16 @@ class CMSStatsDatePivot extends CMSStatsFilter
         }
         return form_input_list($this->label, new Tempcode(), $this->filter_name, $list);
     }
+
+    /**
+     * Get the pivot values set on this filter.
+     *
+     * @return array The pivot values
+     */
+    public function get_pivot_values() : array
+    {
+        return $this->pivot_values;
+    }
 }
 
 /**
@@ -1595,40 +1615,40 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
         }
     }
 
+    unset($data_buckets);
+
     // Now for flat data...
 
     // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
 
-    $data_buckets = [];
+    $data_buckets_flat = [];
     foreach (array_keys($info) as $bucket) {
-        $data_buckets[$bucket] = [];
-
         $p_data = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_preprocessed_flat', 'p_data', [
             'p_bucket' => $bucket,
         ]);
         if ($p_data !== null) {
-            $data_buckets[$bucket] = @unserialize($p_data);
-            if ($data_buckets[$bucket] === false) {
-                $data_buckets[$bucket] = [];
+            $data_buckets_flat[$bucket] = @unserialize($p_data);
+            if ($data_buckets_flat[$bucket] === false) {
+                $data_buckets_flat[$bucket] = [];
             }
-        } else {
-            $data_buckets[$bucket] = [];
         }
     }
 
     // Preprocess new data...
 
-    $hook_ob->preprocess_raw_data_flat($start_time, $end_time, $data_buckets);
+    $hook_ob->preprocess_raw_data_flat($start_time, $end_time, $data_buckets_flat);
 
     // Re-save into the database...
 
-    foreach ($data_buckets as $bucket => $data) {
+    foreach ($data_buckets_flat as $bucket => $data) {
         $GLOBALS['SITE_DB']->query_insert_or_replace('stats_preprocessed_flat', [
             'p_data' => serialize($data),
         ], [
             'p_bucket' => $bucket,
         ]);
     }
+
+    unset($data_buckets_flat);
 }
 
 /**

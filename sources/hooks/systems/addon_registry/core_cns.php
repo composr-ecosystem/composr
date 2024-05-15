@@ -491,6 +491,7 @@ class Hook_addon_registry_core_cns
             'themes/default/templates/CNS_EMOTICON_TABLE.tpl',
             'themes/default/templates/CNS_GROUP_DIRECTORY_SCREEN.tpl',
             'themes/default/templates/CNS_JOIN_FORM.tpl',
+            'themes/default/templates/CNS_JOIN_REVIEW_RULES_SCREEN.tpl',
             'themes/default/templates/CNS_JOIN_STEP1_SCREEN.tpl',
             'themes/default/templates/CNS_JOIN_STEP2_SCREEN.tpl',
             'themes/default/templates/CNS_MEMBER_ACTION.tpl',
@@ -530,6 +531,7 @@ class Hook_addon_registry_core_cns
             'templates/CNS_DELURK_CONFIRM_SCREEN.tpl' => 'administrative__cns_delurk_confirm_screen',
             'templates/CNS_JOIN_STEP1_SCREEN.tpl' => 'cns_join_step1_screen',
             'templates/CNS_JOIN_STEP2_SCREEN.tpl' => 'cns_join_step2_screen',
+            'templates/CNS_JOIN_REVIEW_RULES_SCREEN.tpl' => 'cns_join_review_rules_screen',
             'templates/CNS_USER_MEMBER.tpl' => 'cns_user_member',
             'templates/CNS_MEMBER_ACTION.tpl' => 'cns_member_profile_screen',
             'templates/CNS_EMOTICON_TABLE.tpl' => 'cns_emoticon_table',
@@ -734,6 +736,31 @@ class Hook_addon_registry_core_cns
         return lorem_globalise(do_lorem_template('CNS_JOIN_STEP2_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'FORM' => $form,
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__cns_join_review_rules_screen() : object
+    {
+        $group_select = new Tempcode();
+
+        foreach (placeholder_array() as $key => $value) {
+            $group_select->attach(form_input_list_entry(strval($key), false, $value));
+        }
+
+        return lorem_globalise(do_lorem_template('CNS_JOIN_REVIEW_RULES_SCREEN', [
+            'TITLE' => lorem_screen_title(),
+            'RULES' => lorem_chunk_html(),
+            'URL' => placeholder_url(),
+            'URL_DISAGREE' => placeholder_url(),
+            'HIDDEN' => '',
+            'DECLARATIONS' => [do_lang('I_AGREE')],
         ]), null, '', true);
     }
 

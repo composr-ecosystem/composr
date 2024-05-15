@@ -1708,6 +1708,7 @@ function cns_set_custom_field(int $member_id, int $field_id, $value, ?string $ty
         $type = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'cf_type', ['id' => $field_id]);
     }
 
+    require_code('cns_members');
     cns_get_custom_field_mappings($member_id); // This will do an auto-repair if CPF storage row is missing
 
     $db_fieldname = 'field_' . strval($field_id);

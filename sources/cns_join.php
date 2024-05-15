@@ -141,6 +141,7 @@ function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro
 /**
  * Actualise the join form.
  *
+ * @param  LONG_TEXT $declarations_made A list of declarations to which the member agreed separated by a newline (blank: member did not agree to any declarations yet)
  * @param  boolean $captcha_if_enabled Whether to handle CAPTCHA (if enabled at all)
  * @param  boolean $intro_message_if_enabled Whether to ask for intro messages (if enabled at all)
  * @param  boolean $invites_if_enabled Whether to check for invites (if enabled at all)
@@ -152,7 +153,7 @@ function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro
  * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A tuple: Messages to show, member ID of new member, whether the account is ready
  */
-function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, bool $instant_login = true, ?string $username = null, ?string $email_address = null, ?string $password = null, ?array $actual_custom_fields = null, array $adjusted_config_options = []) : array
+function cns_join_actual(string $declarations_made = '', bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, bool $instant_login = true, ?string $username = null, ?string $email_address = null, ?string $password = null, ?array $actual_custom_fields = null, array $adjusted_config_options = []) : array
 {
     cns_require_all_forum_stuff();
 
@@ -368,6 +369,9 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
     } else {
         attach_message(do_lang_tempcode('ALREADY_EXISTS', escape_html($username)), 'notice');
     }
+
+    // Save declarations
+    $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'agreed_declarations', $declarations_made);
 
     // Send confirm mail
     if ($email_validation) {

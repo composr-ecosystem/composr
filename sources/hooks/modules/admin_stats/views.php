@@ -418,6 +418,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
                 $ip_address = $row['ip'];
                 $country = geolocate_ip($ip_address);
+                if ($country === null) {
+                    $country = '';
+                }
 
                 list($zone, $attributes) = page_link_decode($row['page_link']);
                 $page = isset($attributes['page']) ? $attributes['page'] : DEFAULT_ZONE_PAGE_NAME;
@@ -605,10 +608,12 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     }
                     $data_buckets['requested_languages'][$month][''][$language]++;
 
-                    if (!isset($data_buckets['countries'][$month][''][$country])) {
-                        $data_buckets['countries'][$month][''][$country] = 0;
+                    if (has_geolocation_data()) {
+                        if (!isset($data_buckets['countries'][$month][''][$country])) {
+                            $data_buckets['countries'][$month][''][$country] = 0;
+                        }
+                        $data_buckets['countries'][$month][''][$country]++;
                     }
-                    $data_buckets['countries'][$month][''][$country]++;
                 }
             }
 
@@ -644,7 +649,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
             $total_views = 0;
 
             $month = null;
-            $country = null;
+            $country = '';
 
             $rows = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'date_and_time', 'ip'], ['session_id' => $session_id], 'ORDER BY date_and_time');
             foreach ($rows as $row) {
@@ -666,6 +671,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
                     $ip_address = $row['ip'];
                     $country = geolocate_ip($ip_address);
+                    if ($country === null) {
+                        $country = '';
+                    }
                 }
 
                 $last_page_link = $page_link;
@@ -991,7 +999,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'type' => self::GRAPH_BAR_CHART,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('ENTRIES'),
                 ];
 
             case 'user_agent_types':

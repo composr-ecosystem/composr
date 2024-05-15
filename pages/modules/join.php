@@ -35,11 +35,32 @@ class Module_join
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 2;
+        $info['version'] = 3;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'core_cns';
         return $info;
+    }
+
+    /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('agreed_declarations');
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        if (($upgrade_from === null) || ($upgrade_from < 3)) {
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('agreed_declarations', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'long_text');
+        }
     }
 
     /**
@@ -101,6 +122,18 @@ class Module_join
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
+        if ($type == 'review_rules') {
+            $this->title = get_screen_title('_I_AGREE_RULES', true);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_JOIN')]]);
+            breadcrumb_set_self(do_lang_tempcode('_I_AGREE_RULES'));
+        }
+
+        if ($type == '_review_rules') {
+            $this->title = get_screen_title('_I_AGREE_RULES', true);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_JOIN')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
         return null;
     }
 
@@ -130,12 +163,23 @@ class Module_join
         if ($type == 'step4') {
             return $this->step4();
         }
+        if ($type == 'review_rules') {
+            return $this->review_rules();
+        }
+        if ($type == '_review_rules') {
+            return $this->_review_rules();
+        }
+        if ($type == '_review_rules_disagree') {
+            require_code('urls');
+            $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, 'tab--edit--delete');
+            return redirect_screen(null, $url, do_lang_tempcode('DESCRIPTION_I_AGREE_RULES_DECLINED'), false, 'warn');
+        }
 
         return new Tempcode();
     }
 
     /**
-     * The UI to accept the rules of joining.
+     * The UI to accept the rules of joining (and selection of usergroup).
      *
      * @return Tempcode The UI
      */
@@ -231,7 +275,18 @@ class Module_join
             warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
         }
 
-        list($message) = cns_join_actual();
+        $declarations_made = '';
+        $declarations = $this->get_declarations();
+        foreach ($declarations as $i => $declaration) {
+            if (post_param_string('confirm_' . strval($i), '') == $declaration) {
+                if ($declarations_made != '') {
+                    $declarations_made .= "\n";
+                }
+                $declarations_made .= $declaration;
+            }
+        }
+
+        list($message) = cns_join_actual($declarations_made);
 
         return inform_screen($this->title, $message);
     }
@@ -255,7 +310,7 @@ class Module_join
     {
         $declarations = $this->get_declarations();
         foreach ($declarations as $i => $declaration) {
-            if (post_param_integer('confirm_' . strval($i), 0) == 0) {
+            if (post_param_string('confirm_' . strval($i), '') != $declaration) {
                 return false;
             }
         }
@@ -339,5 +394,73 @@ class Module_join
         }
         $url = build_url($map, get_module_zone('login'));
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESSFUL_CONFIRM'));
+    }
+
+    /**
+     * The UI for re-agreeing to the rules and declarations.
+     *
+     * @return Tempcode the UI
+     */
+    public function review_rules() : object
+    {
+        if (is_guest()) {
+            access_denied('NOT_AS_GUEST');
+        }
+
+        // Show rules
+        $rules = request_page('_rules', true, get_comcode_zone('_rules'), null, true);
+        $map = ['page' => '_SELF', 'type' => '_review_rules'];
+        $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
+            $map['redirect'] = $redirect;
+        }
+        $url = build_url($map, '_SELF');
+        $url_disagree = build_url(['page' => '_SELF', 'type' => '_review_rules_disagree']);
+
+        $hidden = new Tempcode();
+
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+
+        return do_template('CNS_JOIN_REVIEW_RULES_SCREEN', [
+            '_GUID' => 'cd7dad9d5fedc0f1ef93071e717c869c',
+            'TITLE' => $this->title,
+            'RULES' => $rules,
+            'URL' => $url,
+            'URL_DISAGREE' => $url_disagree,
+            'HIDDEN' => $hidden,
+            'DECLARATIONS' => $this->get_declarations(),
+        ]);
+    }
+
+    /**
+     * The actualiser for agreeing to the new rules.
+     *
+     * @return Tempcode the results
+     */
+    public function _review_rules() : object
+    {
+        if (is_guest()) {
+            access_denied('NOT_AS_GUEST');
+        }
+
+        if ((get_option('show_first_join_page') == '1') && (!$this->declarations_made())) {
+            warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
+        }
+
+        $declarations_made = '';
+        $declarations = $this->get_declarations();
+        foreach ($declarations as $i => $declaration) {
+            if (post_param_string('confirm_' . strval($i), '') == $declaration) {
+                if ($declarations_made != '') {
+                    $declarations_made .= "\n";
+                }
+                $declarations_made .= $declaration;
+            }
+        }
+
+        $GLOBALS['FORUM_DRIVER']->set_custom_field(get_member(), 'agreed_declarations', $declarations_made);
+
+        return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }
 }

@@ -204,6 +204,7 @@ class CMSAccountWrite
         require_code('cns_join');
         cns_require_all_forum_stuff();
         list($message, $member_id) = cns_join_actual(
+            '', // TODO: GDPR Need a method to require declaration acceptance before an account is created
             false,
             false,
             true,
@@ -211,8 +212,7 @@ class CMSAccountWrite
             $username,
             $email,
             $password,
-            $custom_fields,
-            ['email_confirm_join' => $confirm_if_enabled ? '2' : '0', 'is_on_coppa' => '0']
+            $custom_fields
         );
 
         if ($member_id === null) {

@@ -80,7 +80,7 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                 'pivot' => new CMSStatsDatePivot('comments__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
-            'comments_tallies' => [
+            'comments_tallies' => [ // Tally by content
                 'label' => do_lang_tempcode('COMMENT_ENGAGEMENT'),
                 'category' => 'feedback_and_engagement',
                 'filters' => [
@@ -212,7 +212,7 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                     'type' => null,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('COUNT_NEW'),
                 ];
 
             case 'comments_tallies':
@@ -246,7 +246,7 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                     'type' => self::GRAPH_BAR_CHART,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('COMMENTS'),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('ENTRIES'),
                 ];
         }
 

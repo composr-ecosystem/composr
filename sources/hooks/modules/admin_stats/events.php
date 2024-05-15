@@ -229,6 +229,9 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 $tracking_codes = array_unique($tracking_codes);
 
                 $country_code = geolocate_ip($ip);
+                if ($country_code === null) {
+                    $country_code = '';
+                }
 
                 // Each tracking code
                 foreach ($tracking_codes as $tracking_code) {

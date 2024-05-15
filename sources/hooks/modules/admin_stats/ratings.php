@@ -157,7 +157,7 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
                     'type' => self::GRAPH_BAR_CHART,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('RATING'),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('COUNT_NEW'),
                 ];
 
             case 'average_rating':

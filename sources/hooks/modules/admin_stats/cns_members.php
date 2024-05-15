@@ -141,6 +141,9 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $country = geolocate_ip($row['m_ip_address']);
+                if ($country === null) {
+                    $country = '';
+                }
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
@@ -266,7 +269,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                     'type' => null,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('NEW'),
                 ];
 
             case 'demographics':
@@ -310,7 +313,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                     'type' => self::GRAPH_BAR_CHART,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('AGE_RANGE'),
-                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                    'y_axis_label' => do_lang_tempcode('COUNT_MEMBERS'),
                 ];
 
             case 'top_members_by_visits':
@@ -340,6 +343,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                         break;
 
                     default:
+                        $y_axis_label = new Tempcode();
                         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
 
