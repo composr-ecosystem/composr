@@ -227,22 +227,24 @@ class stats_test_set extends cms_test_case
     public function tearDown()
     {
         // Delete dummy data
-        foreach ($this->dummy_data_added as $table => $rows) {
-            $db = get_db_for($table);
-            foreach ($rows as $primary_map) {
-                if ($this->debug) {
-                    $rows = $db->query_select($table, ['*'], $primary_map);
-                    $this->dump($primary_map, $table . ' primary map');
-                    $this->dump($rows, $table . ' data');
+        if (count($this->dummy_data_added) > 0) {
+            foreach ($this->dummy_data_added as $table => $rows) {
+                $db = get_db_for($table);
+                foreach ($rows as $primary_map) {
+                    if ($this->debug) {
+                        $rows = $db->query_select($table, ['*'], $primary_map);
+                        $this->dump($primary_map, $table . ' primary map');
+                        $this->dump($rows, $table . ' data');
+                    }
+                    $db->query_delete($table, $primary_map);
                 }
-                $db->query_delete($table, $primary_map);
             }
-        }
 
-        // FUDGE: We had to fudge points lifetime so re-calculate this
-        if (addon_installed('points')) {
-            require_code('tasks');
-            call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), null, 'points_recalculate_cpf', [], true, true, false);
+            // FUDGE: We had to fudge points lifetime so re-calculate this
+            if (addon_installed('points')) {
+                require_code('tasks');
+                call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), null, 'points_recalculate_cpf', [], true, true, false);
+            }
         }
 
         pop_query_limiting();
