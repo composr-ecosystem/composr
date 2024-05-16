@@ -48,9 +48,11 @@ class Hook_endpoint_cms_homesite_release_details
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('news')));
         }
 
+        $id = get_param_string('news_id', $id);
+
         if (!is_numeric($id)) {
             if ($id === '_LEGACY_') { // LEGACY
-                echo serialize(['', '', '']);
+                echo json_encode(['', '', '']);
                 exit;
             }
 
