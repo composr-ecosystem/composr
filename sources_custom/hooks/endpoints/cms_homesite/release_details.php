@@ -103,6 +103,11 @@ class Hook_endpoint_cms_homesite_release_details
             ];
         }
 
+        if ($legacy) { // LEGACY
+            echo json_encode(['', '', '']);
+            exit;
+        }
+
         return [
             'success' => false,
             'error_details' => 'The provided release news ID was not found.'
