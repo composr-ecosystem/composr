@@ -59,6 +59,11 @@ class Hook_cron_stats_preprocess_raw_data
             $start_time = tz_time($start_time, $server_timezone);
         }
 
+        // Consider stats over 31 days ago a lost cause. If we try to process too much, we will get freezes.
+        if ($start_time < time() - (60 * 60 * 24 * 31)) {
+            $start_time = time() - (60 * 60 * 24 * 31);
+        }
+
         $today = cms_date('Y-m-d');
         list($year, $month, $day) = array_map('intval', explode('-', $today));
         $end_time = cms_mktime(0, 0, 0, $month, $day, $year) - 1;
