@@ -416,7 +416,7 @@ class Module_admin_cmsusers
             $actions = new Tempcode();
 
             if ($myrow['resolved'] == 0) {
-                $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $myrow['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+                $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $myrow['id']], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '1e30e4f5fcc295e0320eaced5d18e03c',
                     'NAME' => '#' . strval($myrow['id']),
@@ -505,7 +505,7 @@ class Module_admin_cmsusers
         $buttons = new Tempcode();
 
         if ($row['resolved'] == 0) {
-            $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+            $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $id], '_SELF');
             $buttons->attach(do_template('BUTTON_SCREEN', [
                 '_GUID' => '5721066370f5f9fbd8f43621a54628ed',
                 'IMMEDIATE' => true,
@@ -555,7 +555,7 @@ class Module_admin_cmsusers
         $fields->attach(form_input_tick(do_lang_tempcode('MARK_RESOLVED'), do_lang_tempcode('DESCRIPTION_MARK_RESOLVED'), 'resolved', false));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_RELAYED_ERROR_NOTES'), 'note', $note, false));
 
-        $resolve_url = build_url(['page' => '_SELF', 'type' => '_resolve_error', 'id' => $id, 'redirect' => protect_url_parameter('redirect')], '_SELF');
+        $resolve_url = build_url(['page' => '_SELF', 'type' => '_resolve_error', 'id' => $id], '_SELF');
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '904b2916eea66a19f6906842c81da308',
@@ -590,11 +590,7 @@ class Module_admin_cmsusers
         $map = ['resolved' => $resolved];
         $map += lang_remap_comcode('note', $row['note'], $new_note);
         $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $id]);
-        $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($url == '') {
-            $_url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
-            $url = $_url->evaluate();
-        }
+        $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

@@ -103,6 +103,10 @@ class Hook_endpoint_cms_homesite_telemetry
                 // Actual generate the hash with what we have left
                 $error_hash = md5($_error_hash);
 
+                // Clear the checklist cache so we have an updated number
+                require_code('caches');
+                delete_cache_entry('main_staff_checklist');
+
                 // See if this error was already reported
                 $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count'], [
                     // Every relay is specific to a website; treat separate websites as separate relays

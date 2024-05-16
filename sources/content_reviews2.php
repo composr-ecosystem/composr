@@ -137,7 +137,7 @@ function content_review_get_fields(string $content_type, ?string $content_id = n
         if ($content_info['validated_field'] !== null) {
             $auto_actions[] = 'invalidate';
         }
-        /* TODO: Disabled to prevent critical errors as is broken right now
+        /* TODO: Disabled to prevent critical errors as is broken right now (#5763)
             if (($auto_action == 'delete') || ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || (($content_info['permission_module'] !== null) && (has_privilege(get_member(), 'delete_' . $content_info['permission_module'] . 'range_content', $content_info['module'])))) {
                 $auto_actions[] = 'delete';
             }
