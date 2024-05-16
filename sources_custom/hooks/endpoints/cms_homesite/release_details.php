@@ -48,10 +48,16 @@ class Hook_endpoint_cms_homesite_release_details
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('news')));
         }
 
+        // LEGACY
+        $legacy = false;
+        if ($id === '_LEGACY_') {
+            $legacy = true;
+        }
+
         $id = get_param_string('news_id', $id);
 
         if (!is_numeric($id)) {
-            if ($id === '_LEGACY_') { // LEGACY
+            if ($legacy) { // LEGACY
                 echo json_encode(['', '', '']);
                 exit;
             }
@@ -85,7 +91,7 @@ class Hook_endpoint_cms_homesite_release_details
             $news_html = str_replace('display: none', 'display: block', $news_html);
             $notes = $news_html;
 
-            if ($id === '_LEGACY_') { // LEGACY
+            if ($legacy) { // LEGACY
                 echo json_encode([$notes, $tar_url, $changes]);
                 exit;
             }
