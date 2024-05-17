@@ -882,7 +882,7 @@ class Module_tickets
                 null,
                 null,
                 true,
-                true
+                'uploads/tickets'
             );
             list(, $post, , , , , $attachments) = $details;
             if ($post == '') {

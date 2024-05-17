@@ -128,11 +128,11 @@ function form_to_email(?string $subject = null, string $subject_prefix = '', str
  * @param  ?array $fields A map of field names to field titles to transmit. (null: all POSTed fields, except certain standardised ones)
  * @param  ?EMAIL $to_email E-mail address to send to (null: look from POST environment [if allowed] / staff address)
  * @param  boolean $is_via_post Whether $fields refers to some POSTed fields, as opposed to a direct field->value map
- * @param  boolean $store_attachments Whether to execute get_url on provided attachments and return the output in the attachments array
+ * @param  ?URLPATH $store_attachments_to Relative path to store uploaded attachments (null: do not store, and only return filename in $attachments array)
  * @return array A tuple: subject, message, to e-mail, to name, from e-mail, from name, attachments, body parts (if calling code wants partials instead of a single $message)
  * @ignore
  */
-function _form_to_email(array $extra_boring_fields = [], ?string $subject = null, string $subject_prefix = '', string $subject_suffix = '', string $body_prefix = '', string $body_suffix = '', ?array $fields = null, ?string $to_email = null, bool $is_via_post = true, bool $store_attachments = false) : array
+function _form_to_email(array $extra_boring_fields = [], ?string $subject = null, string $subject_prefix = '', string $subject_suffix = '', string $body_prefix = '', string $body_suffix = '', ?array $fields = null, ?string $to_email = null, bool $is_via_post = true, ?string $store_attachments_to = null) : array
 {
     // Find subject...
 
@@ -247,8 +247,8 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
             continue;
         }
 
-        if ($store_attachments) {
-            $temp = get_url('', $param_name, 'uploads/tickets', OBFUSCATE_LEAVE_SUFFIX, CMS_UPLOAD_ANYTHING);
+        if ($store_attachments_to !== null) {
+            $temp = get_url('', $param_name, $store_attachments_to, OBFUSCATE_LEAVE_SUFFIX, CMS_UPLOAD_ANYTHING);
         } else {
             $temp = $file['name'];
         }
