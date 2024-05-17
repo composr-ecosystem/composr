@@ -236,8 +236,6 @@ class Hook_ecommerce_giftr
      */
     public function member_for(string $type_code, string $purchase_id) : ?int
     {
-        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
-        list($from_member_id) = json_decode($e_details);
-        return $from_member_id;
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_transactions', 't_member_id', ['t_type_code' => $type_code, 't_purchase_id' => intval($purchase_id)]);
     }
 }
