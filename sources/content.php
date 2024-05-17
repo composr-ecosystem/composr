@@ -615,7 +615,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
                 $extra_where .= get_zone_permission_where_clause($category_field_access, $member_id, $groups);
             } elseif ($content_type === 'comcode_page') {
                 $extra_where .= get_page_permission_where_clause($category_field_access, $category_field_select, $member_id, $groups);
-            } else {
+            } elseif ($permission_module_access !== null) {
                 $extra_where .= get_category_permission_where_clause($permission_module_access, $category_field_access, $member_id, $groups);
             }
         }
