@@ -872,10 +872,29 @@ class Module_tickets
         if ($post == '') {
             // Maybe we are relaying data into the ticket from elsewhere?
             require_code('mail_forms');
-            $details = _form_to_email(['title', 'ticket_type_id', 'ticket_type', 'staff_only', 'faq_searched', 'email', 'close']);
-            list(, $post) = $details;
+            $details = _form_to_email(
+                ['title', 'ticket_type_id', 'ticket_type', 'staff_only', 'faq_searched', 'email', 'close'],
+                null,
+                '',
+                '',
+                '',
+                '',
+                null,
+                null,
+                true,
+                true
+            );
+            list(, $post, , , , , $attachments) = $details;
             if ($post == '') {
                 warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'post'));
+            }
+            if (!empty($attachments)) {
+                $post .= '[semihtml]';
+                foreach ($attachments as $attachment) {
+                    list($url) = $attachment;
+                    $post .= '[media framed="1" thumb="1"]' . $url . '[/media]';
+                }
+                $post .= '[/semihtml]';
             }
         }
 
