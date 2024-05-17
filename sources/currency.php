@@ -141,7 +141,7 @@ function currency_convert($amount, ?string $from_currency = null, ?string $to_cu
     $map = get_currency_map();
 
     // Check from currency
-    if (!array_key_exists($from_currency, $map)) {
+    if (!array_key_exists($from_currency, $map) && (($from_currency != 'POINTS') || !addon_installed('points'))) {
         attach_message(do_lang_tempcode('UNKNOWN_CURRENCY', escape_html($from_currency)), 'warn', false, true);
 
         $from_currency = array_key_exists($to_currency, $map) ? $to_currency : 'USD';
@@ -149,9 +149,29 @@ function currency_convert($amount, ?string $from_currency = null, ?string $to_cu
 
     $new_amount = null;
 
+    // Case: Converting from points
+    if ((addon_installed('points')) && ($new_amount === null) && ($from_currency == 'POINTS')) {
+        $conversion_rate = floatval(get_option('points_per_currency_unit'));
+
+        // We actually reassign to the original amount because we want to proceed with further conversions
+        $amount /= $conversion_rate;
+        $from_currency = get_option('currency');
+    }
+
+    // Case: Converting to points
+    $to_points = false;
+    if ((addon_installed('points')) && ($new_amount === null) && ($to_currency == 'POINTS')) {
+        // We cannot reassign the amount yet because we need to first convert to the site currency
+        $to_points = true;
+        $to_currency = get_option('currency');
+    }
+
     // Case: No conversion needed
     if ($new_amount === null) {
         if (($from_currency == $to_currency) || ($amount == 0.0)) {
+            if ($to_points) {
+                $amount *= floatval(get_option('points_per_currency_unit'));
+            }
             $new_amount = $amount;
         }
     }
@@ -190,6 +210,11 @@ function currency_convert($amount, ?string $from_currency = null, ?string $to_cu
         $cleanup_sql = 'DELETE FROM ' . get_table_prefix() . 'values_elective WHERE the_name LIKE \'' . db_encode_like('currency\_%') . '\' AND date_and_time<' . strval($cache_cutoff);
         $GLOBALS['SITE_DB']->query($cleanup_sql);
         set_value($cache_key, float_to_raw_string($new_amount), true);
+    }
+
+    // Convert to points if we originally requested
+    if ($to_points) {
+        $new_amount *= floatval(get_option('points_per_currency_unit'));
     }
 
     // Convert if needed
