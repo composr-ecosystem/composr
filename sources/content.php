@@ -399,7 +399,6 @@ function append_content_select_for_fields(array &$select, array $cma_info, array
     }
     if (in_array('title', $fields)) { // We may need a fall-back
         $fields[] = 'id';
-        $fields[] = 'category';
     }
 
     foreach ($fields as $field) {
