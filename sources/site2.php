@@ -172,6 +172,8 @@ function assign_refresh($url, float $multiplier = 0.0)
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
     }
 
+    $url = str_replace('https-cms:', get_base_url() . '/', $url);
+
     $refresh_time = 2.5 * $multiplier;
     $must_show_message = ($multiplier != 0.0);
 
