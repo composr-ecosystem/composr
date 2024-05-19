@@ -563,9 +563,7 @@ class Module_newsletter
         }
         $subscriber = $_subscriber[0];
 
-        $needed_hash = get_unsubscribe_hash($subscriber['the_password']);
-
-        if ($hash != $needed_hash) {
+        if (!verify_unsunscribe_hash($hash, $subscriber['the_password'])) {
             warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
         }
 
