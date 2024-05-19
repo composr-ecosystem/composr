@@ -143,13 +143,13 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
     $check_outdated__handle_overrides_result = check_outdated__handle_overrides(get_file_base() . '/', '', $manifest, $hook_files, $allow_merging);
     list($outdated__outdated_original_and_override, $outdated__possibly_outdated_override, $outdated__missing_original_but_has_override, $outdated__uninstalled_addon_but_has_override) = $check_outdated__handle_overrides_result;
 
-    // Look for missing or outdated files files
+    // Look for missing or outdated files
     $outdated__outdated_original = '';
     $outdated__missing_file_entirely = '';
     $outdated__future_files = '';
     $files_determined_to_upload = [];
     foreach ($files_to_check as $file) {
-        if (($basic) && (time() - $_SERVER['REQUEST_TIME'] > 5)) {
+        if (($basic) && (time() - $_SERVER['REQUEST_TIME'] > 8)) {
             return ''; // Taking too long
         }
 
