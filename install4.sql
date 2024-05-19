@@ -1138,11 +1138,11 @@ CREATE TABLE cms_staff_checklist_cus_tasks (
     task_title longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, task_is_done) VALUES (1, 'Add your content', 1715802090, 0, '', NULL),
-(2, '[page=\"adminzone:admin_health_check\"]Run/schedule Health Checks[/page]', 1715802090, 0, '', NULL),
-(3, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1715802090, 0, '', NULL),
-(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://composr.app/uploads/website_specific/cms_homesite/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1715802090, 0, '', NULL),
-(5, '[page=\"adminzone:admin_version\"]Consider helping out with the Composr project[/page]', 1715802090, 0, '', NULL);
+INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, task_is_done) VALUES (1, 'Add your content', 1716144206, 0, '', NULL),
+(2, '[page=\"adminzone:admin_health_check\"]Run/schedule Health Checks[/page]', 1716144206, 0, '', NULL),
+(3, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1716144206, 0, '', NULL),
+(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://composr.app/uploads/website_specific/cms_homesite/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1716144206, 0, '', NULL),
+(5, '[page=\"adminzone:admin_version\"]Consider helping out with the Composr project[/page]', 1716144206, 0, '', NULL);
 
 DROP TABLE IF EXISTS cms_staff_links;
 CREATE TABLE cms_staff_links (
@@ -1459,11 +1459,11 @@ CREATE TABLE cms_values (
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_values ADD INDEX date_and_time (date_and_time);
-INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('cns_topic_count', '1', 1715802046),
-('cns_member_count', '1', 1715802046),
-('cns_post_count', '1', 1715802047),
-('version', '11.00', 1715802052),
-('cns_version', '11.00', 1715802052);
+INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('cns_topic_count', '1', 1716144170),
+('cns_member_count', '1', 1716144170),
+('cns_post_count', '1', 1716144170),
+('version', '11.00', 1716144174),
+('cns_version', '11.00', 1716144174);
 
 DROP TABLE IF EXISTS cms_values_elective;
 CREATE TABLE cms_values_elective (
@@ -1472,9 +1472,9 @@ CREATE TABLE cms_values_elective (
     the_value longtext NOT NULL,
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('call_home', '0', 1715802052),
-('setupwizard_completed', '0', 1715802056),
-('db_version', '1715801836', 1715802092);
+INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('call_home', '0', 1716144175),
+('setupwizard_completed', '0', 1716144178),
+('db_version', '1715801836', 1716144208);
 
 DROP TABLE IF EXISTS cms_video_transcoding;
 CREATE TABLE cms_video_transcoding (
@@ -1579,7 +1579,7 @@ ALTER TABLE cms_wiki_pages ADD INDEX sadd_date (add_date);
 ALTER TABLE cms_wiki_pages ADD INDEX sps (submitter);
 
 ALTER TABLE cms_wiki_pages ADD INDEX wiki_views (wiki_views);
-INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1715802087, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66450fd327f8d1.17272295_31\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66450fd327f8d1.17272295_31\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66450fd327f8d1.17272295_31\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1716144204, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_664a483c20f5e1.53558651_31\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_664a483c20f5e1.53558651_31\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_664a483c20f5e1.53558651_31\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_wiki_posts;
 CREATE TABLE cms_wiki_posts (
