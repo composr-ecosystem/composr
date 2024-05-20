@@ -33,7 +33,7 @@ class Hook_cron_decache_events
     public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
         return [
-            'label' => 'Event-triggered decaching',
+            'label' => 'Event-based decaching',
             'num_queued' => null,
             'minutes_between_runs' => 29, // So it runs before Health Check
         ];
@@ -47,10 +47,8 @@ class Hook_cron_decache_events
     public function run(?int $last_run)
     {
         // We cache the copyright symbol, but each year it needs replacing...
-
         $current_year = intval(date('Y', tz_time(time(), get_server_timezone())));
         $current_year_recently = intval(date('Y', tz_time(time() - 60 * 60, get_server_timezone())));
-
         if ($current_year != $current_year_recently) {
             require_code('caches3');
             erase_cached_templates(false, null, '\$COPYRIGHT');

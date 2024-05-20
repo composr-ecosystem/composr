@@ -976,7 +976,7 @@ class Hook_addon_registry_core
             'sources/hooks/systems/cron/mail_queue.php',
             'sources/hooks/systems/cron/missing_editfrom.php',
             'sources/hooks/systems/cron/sitemap.php',
-            'sources/hooks/systems/cron/static_cache_cleanup.php',
+            'sources/hooks/systems/cron/cache_cleanup.php',
             'sources/hooks/systems/cron/tasks.php',
             'sources/hooks/systems/directives/.htaccess',
             'sources/hooks/systems/directives/index.html',
