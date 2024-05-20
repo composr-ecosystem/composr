@@ -508,18 +508,18 @@ function erase_persistent_cache()
     }
     $done_once = true;
 
-    /* This is unsafe, the task queue may need something
+    // Only flush HTTP cache whose modification and access times are older than 7 days; the task queue may need newer ones
     $path = get_custom_file_base() . '/caches/http';
     if (is_dir($path)) {
         $d = opendir($path);
         while (($e = readdir($d)) !== false) {
-            if (substr($e, -4) == '.bin') {
+            $file_time = max(fileatime(get_custom_file_base() . '/caches/http/' . $e), filemtime(get_custom_file_base() . '/caches/http/' . $e));
+            if ((substr($e, -4) == '.bin') && ($file_time <= (time() - (60 * 60 * 24 * 7)))) {
                 @unlink(get_custom_file_base() . '/caches/http/' . $e);
             }
         }
         closedir($d);
     }
-    */
 
     $path = get_custom_file_base() . '/caches/persistent';
     if (is_dir($path)) {

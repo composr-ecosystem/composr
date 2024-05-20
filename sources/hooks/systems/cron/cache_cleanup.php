@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cron_static_cache_cleanup
+class Hook_cron_cache_cleanup
 {
     /**
      * Get info from this hook.
@@ -33,7 +33,7 @@ class Hook_cron_static_cache_cleanup
     public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
         return [
-            'label' => 'Clear stale pages from the static cache',
+            'label' => 'Purge stale caches',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
         ];
@@ -62,5 +62,47 @@ class Hook_cron_static_cache_cleanup
             }
         }
         closedir($dh);
+
+        require_code('files');
+        require_code('files2');
+
+        // Prevent other cache directories from getting too overpopulated as well
+        $directories = [
+            'caches/http',
+            'caches/persistent',
+            'caches/self_learning',
+        ];
+        foreach ($directories as $directory) {
+            $files = get_directory_contents(get_custom_file_base() . '/' . $directory, $directory, null, false, true, ['bin', 'gcd', 'lcd', 'tmp']);
+            if (count($files) >= 10000) { // Too excessive to iterate everything; just delete the whole directory contents
+                deldir_contents(get_custom_file_base() . '/' . $directory, true);
+            } elseif (count($files) >= 2000) { // After 2,000 files, start purging from the most stale files until we are down to 2,000 files
+                usort($files, [$this, 'compare_filetime']);
+                do {
+                    @unlink(get_custom_file_base() . '/' . array_shift($files));
+                } while (count($files) >= 2000);
+            }
+        }
+    }
+
+    /**
+     * Callback for sorting an array of file paths by filemtime and fileatime, whichever is newest.
+     * A newer filemtime represents a cache which has recently been made and likely to be used, thus not stale.
+     * And a newer fileatime represents a cache which has recently been used and thus also not yet stale.
+     *
+     * @param  URLPATH $a The relative path of file A
+     * @param  string $b The relative path of file B
+     * @return int The comparison order directive
+     */
+    protected function compare_filetime(string $a, string $b)
+    {
+        $time_a = max(fileatime(get_custom_file_base() . '/' . $a), filemtime(get_custom_file_base() . '/' . $a));
+        $time_b = max(fileatime(get_custom_file_base() . '/' . $b), filemtime(get_custom_file_base() . '/' . $b));
+
+        if ($time_a == $time_b) {
+            return 0;
+        }
+
+        return ($time_a > $time_b) ? -1 : 1;
     }
 }
