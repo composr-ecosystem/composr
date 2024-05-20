@@ -381,8 +381,10 @@ function cns_make_member(string $username, string $password, string $email_addre
     if (!$GLOBALS['IN_MINIKERNEL_VERSION']) {
         push_db_scope_check(false);
         $notification_settings = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['*'], ['l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => '']);
-        foreach ($notification_settings as $notification_setting) {
-            $GLOBALS['FORUM_DB']->query_insert('notifications_enabled', ['l_member_id' => $member_id] + $notification_settings);
+        foreach ($notification_settings as $notification_row) {
+            unset($notification_row['id']);
+            unset($notification_row['l_member_id']);
+            $GLOBALS['FORUM_DB']->query_insert('notifications_enabled', ['l_member_id' => $member_id] + $notification_row);
         }
         push_db_scope_check(true);
     }
