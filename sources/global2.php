@@ -1989,11 +1989,11 @@ function either_param_string(string $name, $default = false, int $filters = INPU
         $ret = cms_urldecode_post_process($ret);
     }
 
-    // GET is prioritised over POST, so change our filters accordingly
+    // GET is prioritised over POST, so change our filters accordingly if applicable
     $is_get = isset($_GET[$name]);
-    if ($is_get) {
+    if ($is_get && ($filters & INPUT_FILTER_DEFAULT_POST) != 0) {
         $filters &= ~INPUT_FILTER_DEFAULT_POST;
-        $filters &= INPUT_FILTER_DEFAULT_GET;
+        $filters |= INPUT_FILTER_DEFAULT_GET;
     }
 
     require_code('input_filter');

@@ -273,7 +273,7 @@ class Module_members
     public function newsletter_unsubscribe() : object
     {
         $id = get_param_integer('id');
-        $hash = get_param_string('hash');
+        $hash = urldecode(get_param_string('hash'));
 
         $_subscriber = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $_subscriber)) {
@@ -281,17 +281,16 @@ class Module_members
         }
         $subscriber = $_subscriber[0];
 
-        require_code('crypt');
-        $needed_hash = ratchet_hash($subscriber['m_pass_hash_salted'], 'xunsub');
+        require_code('newsletter');
 
-        if ($hash != $needed_hash) {
+        if ($hash != get_unsubscribe_hash($subscriber['m_pass_hash_salted'])) {
             warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
         }
 
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_allow_emails_from_staff' => 0], ['id' => $id], '', 1);
 
         if (addon_installed('newsletter')) {
-            $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['email' => $_subscriber['m_email_address']]);
+            $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['email' => $subscriber['m_email_address']]);
         }
 
         return inform_screen($this->title, do_lang_tempcode('newsletter:MEMBER_NEWSLETTER_UNSUBSCRIBED', escape_html(get_site_name())));

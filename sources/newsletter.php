@@ -348,13 +348,32 @@ function newsletter_variable_substitution(object $message, string &$subject, str
 /**
  * Get the unsubscription hash from a newsletter subscriber hash (salt is not involved).
  *
- * @param  string $hash Subscriber hash
+ * @param  string $hash Subscriber hash or password
  * @return string Unsubscription hash
  */
 function get_unsubscribe_hash(string $hash) : string
 {
-    require_code('crypt');
-    return ratchet_hash($hash, 'xunsub');
+    /* Actually we cannot use bcrypt because by design we cannot compare two bcrypt hashes
+        require_code('crypt');
+        return ratchet_hash($hash, 'xunsub');
+    */
+    return md5(('xunsub' . get_site_salt()) . md5($hash));
+}
+
+/**
+ * Verify the provided unsubscribe hash is valid.
+ *
+ * @param  string $provided_hash The hash provided
+ * @param  string $hash Subscriber hash or password
+ * @return boolean Whether the hash is valid
+ */
+function verify_unsunscribe_hash(string $provided_hash, string $hash) : bool
+{
+    /* Actually we cannot use bcrypt because by design we cannot compare two bcrypt hashes
+        require_code('crypt');
+        return ratchet_hash_verify($provided_hash, 'xunsub', $needed_hash);
+    */
+    return hash_equals($provided_hash, get_unsubscribe_hash($hash));
 }
 
 /**

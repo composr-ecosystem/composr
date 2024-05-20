@@ -8524,6 +8524,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EMAILS_SENT
         STATS_ACTIONLOG_ACTIVITY
         STATS_ACTIONLOG_GROWTH
+        UPGRADER_RESTART_REQUIRED
+        UPGRADER_RESTART_REQUIRED_NOT_HAPPENING
     ')));
 
     $non_admin_files = [

@@ -63,8 +63,8 @@ function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
         $lang = $member['language'];
 
         $send_id = 'n' . strval($member['id']);
-        require_code('crypt');
-        $hash = ratchet_hash($member['the_password'], 'xunsub');
+        require_code('newsletter');
+        $hash = get_unsubscribe_hash($member['the_password']);
     } else {
         $forename = '';
         $surname = '';
