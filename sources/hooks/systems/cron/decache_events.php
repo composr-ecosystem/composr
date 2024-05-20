@@ -36,6 +36,7 @@ class Hook_cron_decache_events
             'label' => 'Event-based decaching',
             'num_queued' => null,
             'minutes_between_runs' => 29, // So it runs before Health Check
+            'enabled_by_default' => true,
         ];
     }
 

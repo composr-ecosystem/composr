@@ -36,9 +36,10 @@ class Hook_cron_hybridauth_admin
         }
 
         return [
-            'label' => 'Hybridauth token maintenance',
+            'label' => 'Refresh Hybridauth tokens',
             'num_queued' => null,
             'minutes_between_runs' => 24 * 60 * 30,
+            'enabled_by_default' => true,
         ];
     }
 

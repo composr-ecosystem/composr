@@ -54,6 +54,7 @@ class Hook_cron_ip_address_sharing
             'label' => 'Detect IP address sharing',
             'num_queued' => null,
             'minutes_between_runs' => 7 * 24 * 60,
+            'enabled_by_default' => true,
         ];
     }
 

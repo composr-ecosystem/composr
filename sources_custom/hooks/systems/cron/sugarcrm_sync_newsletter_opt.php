@@ -45,6 +45,7 @@ class Hook_cron_sugarcrm_sync_newsletter_opt
             'label' => 'Send SugarCRM newsletter opt requests',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 1,
+            'enabled_by_default' => true,
         ];
     }
 

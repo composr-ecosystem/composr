@@ -128,6 +128,7 @@ class Hook_cron_cns_welcome_emails
             'label' => 'Send welcome e-mails',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60,
+            'enabled_by_default' => true,
         ];
     }
 

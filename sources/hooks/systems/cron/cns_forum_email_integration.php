@@ -50,6 +50,7 @@ class Hook_cron_cns_forum_email_integration
             'label' => 'Forum email integration',
             'num_queued' => null,
             'minutes_between_runs' => 1,
+            'enabled_by_default' => true,
         ];
     }
 

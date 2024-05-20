@@ -36,6 +36,7 @@ class Hook_cron_missing_editfrom
             'label' => 'Create missing .editfrom files',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
+            'enabled_by_default' => true,
         ];
     }
 

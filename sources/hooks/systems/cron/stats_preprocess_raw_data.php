@@ -23,6 +23,8 @@
  */
 class Hook_cron_stats_preprocess_raw_data
 {
+    protected const INITIAL_BACK_TIME = 24 * 60 * 60 * 31; // Don't calculate stats older than 31 days ago to prevent server freezes.
+
     /**
      * Get info from this hook.
      *
@@ -40,6 +42,7 @@ class Hook_cron_stats_preprocess_raw_data
             'label' => 'Stats preprocessing',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
+            'enabled_by_default' => true,
         ];
     }
 
@@ -59,9 +62,8 @@ class Hook_cron_stats_preprocess_raw_data
             $start_time = tz_time($start_time, $server_timezone);
         }
 
-        // Consider stats over 31 days ago a lost cause. If we try to process too much, we will get freezes.
-        if ($start_time < time() - (60 * 60 * 24 * 31)) {
-            $start_time = time() - (60 * 60 * 24 * 31);
+        if ($start_time < (time() - self::INITIAL_BACK_TIME)) {
+            $start_time = (time() - self::INITIAL_BACK_TIME);
         }
 
         $today = cms_date('Y-m-d');

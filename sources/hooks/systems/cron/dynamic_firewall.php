@@ -40,6 +40,7 @@ class Hook_cron_dynamic_firewall
             'label' => 'Update dynamic firewall',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 6,
+            'enabled_by_default' => true,
         ];
     }
 

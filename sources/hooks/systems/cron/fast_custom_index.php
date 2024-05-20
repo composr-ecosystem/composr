@@ -40,6 +40,7 @@ class Hook_cron_fast_custom_index
             'label' => 'Index content for the fast custom index',
             'num_queued' => null,
             'minutes_between_runs' => 15,
+            'enabled_by_default' => true,
         ];
     }
 

@@ -40,6 +40,7 @@ class Hook_cron_points_posts
             'label' => 'Credit forum post points',
             'num_queued' => null,
             'minutes_between_runs' => (60 * 24),
+            'enabled_by_default' => true,
         ];
     }
 

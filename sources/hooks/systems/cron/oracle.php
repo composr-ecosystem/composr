@@ -40,6 +40,7 @@ class Hook_cron_oracle
             'label' => 'Oracle index synchronisation',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 5,
+            'enabled_by_default' => true,
         ];
     }
 

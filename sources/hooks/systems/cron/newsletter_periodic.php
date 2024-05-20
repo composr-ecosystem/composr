@@ -58,7 +58,8 @@ class Hook_cron_newsletter_periodic
         return [
             'label' => 'Send periodic newsletters',
             'num_queued' => $num_queued,
-            'minutes_between_runs' => 60 * 24,
+            'minutes_between_runs' => 60,
+            'enabled_by_default' => true,
         ];
     }
 

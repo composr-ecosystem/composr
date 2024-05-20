@@ -36,6 +36,7 @@ class Hook_cron_log_purging
             'label' => 'Log purging',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
+            'enabled_by_default' => true,
         ];
     }
 

@@ -48,6 +48,7 @@ class Hook_cron_sitemap
             'label' => 'Update XML Sitemap',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 24, // Every day. Contrast to the news sitemap which is built and pinged instantly, so content needing instant promotion should go via news
+            'enabled_by_default' => true,
         ];
     }
 

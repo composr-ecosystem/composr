@@ -52,6 +52,7 @@ class Hook_cron_calendar_reminders
             'label' => 'Run calendar jobs and reminders',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 1,
+            'enabled_by_default' => true,
         ];
     }
 

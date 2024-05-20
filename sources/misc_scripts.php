@@ -465,6 +465,10 @@ function cron_bridge_script(string $caller)
                     unset($cron_hooks[$hook]);
                     continue;
                 }
+                if (!isset($cron_progression[$hook]) && ($info['enabled_by_default'] === false)) { // New hook must be manually enabled
+                    unset($cron_hooks[$hook]);
+                    continue;
+                }
                 $cron_hooks_info[$hook] = $info;
             }
 

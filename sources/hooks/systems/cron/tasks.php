@@ -23,6 +23,9 @@
  */
 class Hook_cron_tasks
 {
+    protected const MAX_TIME = 10.0; // Once tasks have exceeded this long in seconds, stop (and resume on the next Cron execution)
+    protected const MAX_QUERIES = 1000; // Once tasks have exceeded this many queries (calculated by query limiting), stop (and resume on the next Cron execution)
+
     /**
      * Get info from this hook.
      *
@@ -45,6 +48,7 @@ class Hook_cron_tasks
             'label' => 'Run queued background tasks',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)') : null,
             'minutes_between_runs' => 0,
+            'enabled_by_default' => true,
         ];
     }
 
@@ -96,7 +100,7 @@ class Hook_cron_tasks
 
         $start_time = microtime(true);
         $elapsed_time = 0.0;
-        $max_time = 10.0; // TODO: Config option
+        $starting_queries = $QUERY_COUNT;
 
         $forced = get_param_integer('force', 0) == 1;
         $where = [];
@@ -145,6 +149,6 @@ class Hook_cron_tasks
             execute_task_background($task_row);
 
             $elapsed_time = microtime(true) - $start_time;
-        } while (($elapsed_time < $max_time) && ($QUERY_COUNT < (DEV_MODE_QUERY_LIMIT - 100))); // Also stop if we are approaching DEV_MODE_QUERY_LIMIT queries
+        } while (($elapsed_time < self::MAX_TIME) && (($QUERY_COUNT - $starting_queries) < self::MAX_QUERIES));
     }
 }

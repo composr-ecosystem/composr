@@ -62,6 +62,7 @@ class Hook_cron_content_reviews
             'label' => 'Send content review notifications',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 24,
+            'enabled_by_default' => true,
         ];
     }
 

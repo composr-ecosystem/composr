@@ -40,6 +40,7 @@ class Hook_cron__health_check
             'label' => 'Health Check',
             'num_queued' => null,
             'minutes_between_runs' => intval(get_option('hc_cron_regularity')),
+            'enabled_by_default' => true,
         ];
     }
 

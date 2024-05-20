@@ -43,7 +43,8 @@ class Hook_cron_implicit_usergroup_sync
         return [
             'label' => 'Sync implicit usergroups',
             'num_queued' => null,
-            'minutes_between_runs' => 60,
+            'minutes_between_runs' => 5,
+            'enabled_by_default' => true,
         ];
     }
 

@@ -50,6 +50,7 @@ class Hook_cron_stealr
             'label' => 'Stealr Steal points',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 7 * 24,
+            'enabled_by_default' => true,
         ];
     }
 

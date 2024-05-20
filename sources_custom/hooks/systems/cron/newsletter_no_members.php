@@ -76,6 +76,7 @@ class Hook_cron_newsletter_no_members
             'label' => 'Delete newsletter users who are also members',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 0,
+            'enabled_by_default' => true,
         ];
     }
 
