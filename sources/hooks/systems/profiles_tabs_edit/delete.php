@@ -70,7 +70,7 @@ class Hook_profiles_tabs_edit_delete
             if (($purge_action == 'always') || (($purge_action == 'ask') && (get_param_integer('purge', 0) == 1))) {
                 $also_purge = true;
             }
-            call_user_func_array__long_task(do_lang('DELETE_MEMBER'), null, 'cns_delete_member', [$member_id_of, $also_purge], false, false, false); // No notification because the member will be deleted
+            call_user_func_array__long_task(do_lang('DELETE_MEMBER'), null, 'cns_delete_member', [$member_id_of, $also_purge], true, false, false); // No notification because the member will be deleted
 
             // Security: Invalidate the session and prevent the member from logging in
             require_code('users_active_actions');
