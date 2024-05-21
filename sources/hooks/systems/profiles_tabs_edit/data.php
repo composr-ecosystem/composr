@@ -32,7 +32,7 @@ class Hook_profiles_tabs_edit_data
      */
     public function is_active(int $member_id_of, int $member_id_viewing) : bool
     {
-        return  (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'assume_any_member')));
+        return (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'assume_any_member')));
     }
 
     /**

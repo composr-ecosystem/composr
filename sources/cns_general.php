@@ -356,7 +356,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
         foreach ($hook_objects as $hook_object) {
             $_temp = $hook_object->run($member_id);
             if (is_array($_temp)) {
-                $member_info['custom_data'] += $hook_object->run($member_id);
+                $member_info['custom_data'] += $_temp;
             }
         }
     }
