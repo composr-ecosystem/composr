@@ -82,9 +82,17 @@ class Hook_endpoint_cms_homesite_telemetry
                 // FUDGE: Ignore cases that might not yet be mainstream in the relay_error_notification function for the software
                 if (
                     (strpos($error_message, 'Cannot write to ') !== false) ||
-                    (strpos($error_message, 'telemetry: ') !== false)
+                    (strpos($error_message, 'telemetry: ') !== false) ||
+                    (strpos($error_message, 'CONFIG_CATEGORY_COMPOSR_APIS') !== false) // Fixed in 11.alpha4
                 ) {
                     return ['success' => true, 'error_details' => '(This relay was ignored)'];
+                }
+
+                // LEGACY: Issues fixed in 11.alpha4
+                if (
+                    (strpos($error_message, 'CONFIG_CATEGORY_COMPOSR_APIS') !== false)
+                ) {
+                    return ['success' => true, 'error_details' => 'That issue was resolved in 11.alpha4. Clear your language cache after upgrading.'];
                 }
 
                 // For our error hash, start with the full error message
