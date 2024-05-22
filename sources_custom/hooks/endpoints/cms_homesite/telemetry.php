@@ -118,7 +118,7 @@ class Hook_endpoint_cms_homesite_telemetry
                 $auto_resolve = null;
                 $ignore_rows = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['id', 'ignore_string'], []);
                 foreach ($ignore_rows as $ignore_row) {
-                    if (strpos($error_hash, $ignore_row['ignore_string']) !== false) {
+                    if (strpos($error_message, $ignore_row['ignore_string']) !== false) {
                         $_auto_resolve = $GLOBALS['SITE_DB']->query_select_value('relayed_errors_ignore', 'resolve_message', ['id' => $ignore_row['id']]);
                         $auto_resolve = get_translated_text($_auto_resolve);
                         break;
