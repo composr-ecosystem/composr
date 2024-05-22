@@ -47,7 +47,7 @@ function cns_create_login_cookie(int $member_id)
  * @param  ?MEMBER $member_id The member ID (null: use $username)
  * @param  string $password_mixed If $cookie_login is true then this is the value of the password cookie, otherwise it's the password the user tried to log in with
  * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
- * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
+ * @return array A map of 'id' (?MEMBER; member logged in), 'error' (?string; failed login), 'reasoned_ban' (?string; a ban message if banned with a reason), and 'failed_login' (boolean; whether the login should be logged as failed)
  */
 function cns_authorise_login(object $this_ref, ?string $username, ?int $member_id, string $password_mixed, bool $cookie_login = false) : array
 {
@@ -55,6 +55,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
 
     $out = [];
     $out['id'] = null;
+    $out['failed_login'] = true;
 
     require_code('cns_members');
     require_code('cns_groups');
@@ -65,6 +66,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
         require_code('tempcode');
     }
     if (!function_exists('require_lang')) {
+        $out['failed_login'] = false; // Internal error, not a failed login
+        $out['error'] = 'Internal Error';
         return $out; // Bootstrap got really mixed up, so we need to bomb out
     }
     require_lang('cns');
@@ -252,6 +255,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                         } else {
                             $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html(get_base_url() . '/index.php?page=lost_password'));
                         }
+                        $out['failed_login'] = false; // Internal error, not a failed login
                         return $out;
                     }
                     require_code('hooks/systems/cns_auth/' . filter_naughty_harsh($password_compatibility_scheme, true));
@@ -280,8 +284,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             cms_eatcookie(get_session_cookie());
             unset($_COOKIE[get_session_cookie()]);
 
+            $send_validation_email = true;
             if (!$SENT_OUT_VALIDATE_NOTICE) {
-                $send_validation_email = true;
                 $test3 = null;
                 if ($test2 !== null) {
                     $test3 = $this_ref->db->query_select_value('f_member_known_login_ips', 'i_time', ['i_member_id' => $row['id'], 'i_ip' => $ip]);
@@ -311,6 +315,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                 $SENT_OUT_VALIDATE_NOTICE = true;
             }
 
+            $out['failed_login'] = (!$send_validation_email); // Only count as failed login / brute forcing if we tried to log in again after already recently getting an IP validation requirement error
             $out['error'] = do_lang_tempcode('REQUIRES_IP_VALIDATION');
             return $out;
         }
@@ -320,5 +325,6 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
     $this_ref->cns_flood_control($row['id']);
 
     $out['id'] = $row['id'];
+    $out['failed_login'] = false;
     return $out;
 }
