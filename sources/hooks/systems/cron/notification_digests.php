@@ -23,6 +23,8 @@
  */
 class Hook_cron_notification_digests
 {
+    protected const MAXIMUM_DIGEST_LENGTH = 1024 * 256;
+
     /**
      * Get info from this hook.
      *
@@ -52,10 +54,6 @@ class Hook_cron_notification_digests
      */
     public function run(?int $last_run)
     {
-        if (!defined('MAXIMUM_DIGEST_LENGTH')) {
-            define('MAXIMUM_DIGEST_LENGTH', 1024 * 100); // 100KB
-        }
-
         require_code('notifications');
         foreach ([
             A_DAILY_EMAIL_DIGEST => 60 * 60 * 24,
@@ -95,7 +93,7 @@ class Hook_cron_notification_digests
                                 if ($_message != '') {
                                     $_message .= "\n";
                                 }
-                                if (strlen($_message) + strlen($message['d_message']) < MAXIMUM_DIGEST_LENGTH) {
+                                if (strlen($_message) + strlen($message['d_message']) < self::MAXIMUM_DIGEST_LENGTH) {
                                     $_message .= do_lang('DIGEST_EMAIL_INDIVIDUAL_MESSAGE_WRAP', comcode_escape($message['d_subject']), get_translated_text($message['d_message']), [comcode_escape(get_site_name()), get_timezoned_date_time($message['d_date_and_time'])]);
                                 } else {
                                     $_message .= do_lang('DIGEST_ITEM_OMITTED', comcode_escape($message['d_subject']), get_timezoned_date_time($message['d_date_and_time']), [comcode_escape(get_site_name())]);
