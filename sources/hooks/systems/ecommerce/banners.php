@@ -289,7 +289,7 @@ class Hook_ecommerce_banners
                 require_code('uploads');
                 require_code('banners');
 
-                $name = post_param_string('banner_codename', $from_admin ? '' : false);
+                $name = post_param_string('banner_codename', $from_admin ? false : ''); // We always expect a codename to be passed from the admin zone
                 if ($name == '') {
                     return ['', null]; // Default is blank
                 }
