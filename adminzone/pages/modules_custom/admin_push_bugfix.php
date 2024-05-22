@@ -473,15 +473,16 @@ class Module_admin_push_bugfix
         $tracker_comment_message = '';
         if ($git_commit_id !== null) {
             $tracker_comment_message .= do_lang('PUSH_BUGFIX_TRACKER_COMMENT_MESSAGE_GIT', escape_html($git_commit_id), escape_html($git_url));
-        }
-        if ($tracker_id !== null) {
-            $update_post_id = $this->create_tracker_post($tracker_id, $tracker_comment_message);
-            if ($update_post_id !== null) {
-                $done[do_lang('PUSH_BUGFIX_TRACKER_UPDATE_POST')] = null;
-            } else {
-                $done[do_lang('PUSH_BUGFIX_TRACKER_UPDATE_POST_FAILED')] = null;
+            if ($tracker_id !== null) {
+                $update_post_id = $this->create_tracker_post($tracker_id, $tracker_comment_message);
+                if ($update_post_id !== null) {
+                    $done[do_lang('PUSH_BUGFIX_TRACKER_UPDATE_POST')] = null;
+                } else {
+                    $done[do_lang('PUSH_BUGFIX_TRACKER_UPDATE_POST_FAILED')] = null;
+                }
             }
         }
+
         // The tracker issue gets closed
         $close_issue = (post_param_integer('close_issue', 0) == 1);
         if (($close_issue) && ($tracker_id !== null)) {
@@ -1024,7 +1025,16 @@ class Module_admin_push_bugfix
                 $post_params = ['parameters' => array_values($post_params)];
                 foreach ($post_params as $key => $param) {
                     if (is_array($param)) {
+                        $first_null_index = 0;
                         foreach ($param as $i => $val) {
+                            if ($val !== null) {
+                                $first_null_index = ($i + 1);
+                            }
+                        }
+                        foreach ($param as $i => $val) {
+                            if ($i >= $first_null_index) {
+                                break;
+                            }
                             $post_params[$key . '[' . strval($i) . ']'] = @strval($val);
                         }
                         unset($post_params[$key]);
