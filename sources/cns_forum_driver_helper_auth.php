@@ -161,6 +161,14 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
         $row = array_merge($row, cns_ldap_authorise_login($username, $password_mixed));
     }
 
+    // Check bans
+    $reasoned_ban = null;
+    if ($this_ref->is_banned($row['id'], $reasoned_ban)) { // All hands to the guns
+        $out['error'] = do_lang_tempcode('YOU_ARE_BANNED');
+        $out['reasoned_ban'] = $reasoned_ban;
+        return $out;
+    }
+
     // Check valid user
     if (addon_installed('validation')) {
         if ($row['m_validated'] == 0) {
@@ -170,12 +178,6 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
     }
     if ($row['m_validated_email_confirm_code'] != '') {
         $out['error'] = do_lang_tempcode('MEMBER_NOT_VALIDATED_EMAIL');
-        return $out;
-    }
-    $reasoned_ban = null;
-    if ($this_ref->is_banned($row['id'], $reasoned_ban)) { // All hands to the guns
-        $out['error'] = do_lang_tempcode('YOU_ARE_BANNED');
-        $out['reasoned_ban'] = $reasoned_ban;
         return $out;
     }
 
@@ -217,7 +219,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     }
                     break;
 
-                case 'plain': // No hashing (very bad idea)
+                case 'plain': // No hashing (extremely, horribly, terribly bad idea)
                     if (!hash_equals($row['m_pass_hash_salted'], $password_mixed)) {
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
@@ -269,24 +271,40 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
         global $SENT_OUT_VALIDATE_NOTICE, $IN_SELF_ROUTING_SCRIPT;
         $ip = get_ip_address(3);
         $test2 = $this_ref->db->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', ['i_member_id' => $row['id'], 'i_ip' => $ip]);
-        if ((($test2 === null) || ($test2 != '')) && (!compare_ip_address($ip, $row['m_ip_address']))) {
+        if ((($test2 === null) || ($test2 != '')) && (!compare_ip_address($ip, $row['m_ip_address']))) { // IP needs validation
+            // Eat login cookies; if IP validation is necessary, then the login is invalid
+            cms_eatcookie(get_member_cookie());
+            unset($_COOKIE[get_member_cookie()]);
+            cms_eatcookie(get_pass_cookie());
+            unset($_COOKIE[get_pass_cookie()]);
+            cms_eatcookie(get_session_cookie());
+            unset($_COOKIE[get_session_cookie()]);
+
             if (!$SENT_OUT_VALIDATE_NOTICE) {
-                if ($test2 !== null) { // Tidy up
-                    $this_ref->db->query_delete('f_member_known_login_ips', ['i_member_id' => $row['id'], 'i_ip' => $ip], '', 1);
+                $send_validation_email = true;
+                $test3 = null;
+                if ($test2 !== null) {
+                    $test3 = $this_ref->db->query_select_value('f_member_known_login_ips', 'i_time', ['i_member_id' => $row['id'], 'i_ip' => $ip]);
+                    if ($test3 > (time() - (60 * 60))) { // Prevent sending another verification e-mail if this IP record is less than an hour old
+                        $send_validation_email = false;
+                    }
+                    $this_ref->db->query_delete('f_member_known_login_ips', ['i_member_id' => $row['id'], 'i_ip' => $ip], '', 1); // Tidy up
                 }
 
                 require_code('crypt');
                 $code = ($test2 !== null) ? $test2 : get_secure_random_string();
-                $this_ref->db->query_insert('f_member_known_login_ips', ['i_val_code' => $code, 'i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => time()], false, true); // errors suppressed in case of race condition
-                $url = find_script('approve_ip') . '?code=' . urlencode($code);
-                $url_simple = find_script('approve_ip');
-                require_code('comcode');
-                $mail = do_lang('IP_VERIFY_MAIL', comcode_escape($url), comcode_escape(get_ip_address()), [$url_simple, $code], get_lang($row['id']));
-                $email_address = $row['m_email_address'];
-                if ($email_address == '') {
-                    $email_address = get_option('staff_address');
-                }
-                if ($IN_SELF_ROUTING_SCRIPT) {
+                $this_ref->db->query_insert('f_member_known_login_ips', ['i_val_code' => $code, 'i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => ($test3 !== null) ? $test3 : time()], false, true); // errors suppressed in case of race condition
+
+                if (($IN_SELF_ROUTING_SCRIPT) && ($send_validation_email)) {
+                    require_code('comcode');
+
+                    $url = find_script('approve_ip') . '?code=' . urlencode($code);
+                    $url_simple = find_script('approve_ip');
+                    $mail = do_lang('IP_VERIFY_MAIL', comcode_escape($url), comcode_escape(get_ip_address()), [$url_simple, $code], get_lang($row['id']));
+                    $email_address = $row['m_email_address'];
+                    if ($email_address == '') {
+                        $email_address = get_option('staff_address');
+                    }
                     dispatch_mail(do_lang('IP_VERIFY_MAIL_SUBJECT', null, null, null, get_lang($row['id'])), $mail, [$email_address], $row['m_username'], '', '', ['priority' => 1, 'require_recipient_valid_since' => $row['m_join_time']]);
                 }
 
@@ -296,7 +314,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             $out['error'] = do_lang_tempcode('REQUIRES_IP_VALIDATION');
             return $out;
         }
-        $this_ref->db->query_update('f_member_known_login_ips', ['i_time' => time()], ['i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => time()], '', 1);
+        $this_ref->db->query_update('f_member_known_login_ips', ['i_time' => time()], ['i_member_id' => $row['id'], 'i_ip' => $ip], '', 1);
     }
 
     $this_ref->cns_flood_control($row['id']);
