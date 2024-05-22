@@ -506,7 +506,7 @@ class Module_admin_make_release
             [
                 do_lang_tempcode('BUILD_OPTIONS_MAKE_OMNI_UPGRADER'),
                 'make_omni_upgrader',
-                '0',
+                ($new_version == $this->get_previous_version()) ? '1' : '0',
                 '',
                 false
             ],
