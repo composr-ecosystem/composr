@@ -41,6 +41,7 @@ class Hook_cron_user_export
             'label' => 'User export',
             'num_queued' => null,
             'minutes_between_runs' => USER_EXPORT_MINUTES,
+            'enabled_by_default' => true,
         ];
     }
 

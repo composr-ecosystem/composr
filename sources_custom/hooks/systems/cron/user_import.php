@@ -41,6 +41,7 @@ class Hook_cron_user_import
             'label' => 'User import',
             'num_queued' => null,
             'minutes_between_runs' => USER_IMPORT_MINUTES,
+            'enabled_by_default' => true,
         ];
     }
 

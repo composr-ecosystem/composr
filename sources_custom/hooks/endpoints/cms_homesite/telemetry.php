@@ -103,12 +103,8 @@ class Hook_endpoint_cms_homesite_telemetry
                 // Actual generate the hash with what we have left
                 $error_hash = md5($_error_hash);
 
-                // Clear the checklist cache so we have an updated number
-                require_code('caches');
-                delete_cache_entry('main_staff_checklist');
-
                 // See if this error was already reported
-                $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count'], [
+                $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count', 'note', 'resolved'], [
                     // Every relay is specific to a website; treat separate websites as separate relays
                     'website_url' => $decrypted_data['website_url'],
 
@@ -117,14 +113,35 @@ class Hook_endpoint_cms_homesite_telemetry
                     // We want to treat same errors from different versions as a new / separate telemetry relays (this indicates the error might still be present even after a fix was attempted)
                     'e_version' => $decrypted_data['version'],
                 ]);
+
+                // See if this error should be ignored (auto-resolved)
+                $auto_resolve = null;
+                $ignore_rows = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['id', 'ignore_string'], []);
+                foreach ($ignore_rows as $ignore_row) {
+                    if (strpos($error_hash, $ignore_row['ignore_string']) !== false) {
+                        $_auto_resolve = $GLOBALS['SITE_DB']->query_select_value('relayed_errors_ignore', 'resolve_message', ['id' => $ignore_row['id']]);
+                        $auto_resolve = get_translated_text($_auto_resolve);
+                        break;
+                    }
+                }
+
+                // Clear the checklist cache so we have an updated number
+                require_code('caches');
+                delete_cache_entry('main_staff_checklist');
+
                 if (array_key_exists(0, $row)) { // We have a match; just update the matched record
-                    $GLOBALS['SITE_DB']->query_update('relayed_errors', [
+                    $map = [
                         'last_date_and_time' => time(),
                         'error_count' => $row[0]['error_count'] + 1,
-                        /*'resolved' => 0,*/ // Actually we do not want to un-resolve it; they might not have applied the relevant patch / fix yet.
-                    ], [
-                        'id' => $row[0]['id']
-                    ]);
+                    ];
+                    $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row[0]['id']]);
+
+                    // Also auto-resolve it when necessary
+                    if (($auto_resolve !== null) && ($row[0]['resolved'] == 0)) {
+                        $map = ['resolved' => 1];
+                        $map += lang_remap_comcode('note', $row[0]['note'], $auto_resolve);
+                        $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row[0]['id']]);
+                    }
                     return ['success' => true, 'relayed_error_id' => $row[0]['id']];
                 } else { // No match; create a new relay
                     $map = [
@@ -137,7 +154,12 @@ class Hook_endpoint_cms_homesite_telemetry
                         'error_count' => 1,
                         'resolved' => 0,
                     ];
-                    $map += insert_lang_comcode('note', '', 4);
+                    if ($auto_resolve !== null) { // Auto-resolve it when necessary
+                        $map['resolved'] = 1;
+                        $map += insert_lang_comcode('note', $auto_resolve, 4);
+                    } else {
+                        $map += insert_lang_comcode('note', '', 4);
+                    }
                     $id = $GLOBALS['SITE_DB']->query_insert('relayed_errors', $map, true);
                     return ['success' => true, 'relayed_error_id' => $id];
                 }

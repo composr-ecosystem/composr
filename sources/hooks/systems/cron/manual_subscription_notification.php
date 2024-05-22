@@ -43,7 +43,8 @@ class Hook_cron_manual_subscription_notification
         return [
             'label' => 'Send subscription expiry notifications (for manual subscriptions)',
             'num_queued' => null, // Too time-consuming to calculate
-            'minutes_between_runs' => 60 * 24,
+            'minutes_between_runs' => 60,
+            'enabled_by_default' => true,
         ];
     }
 

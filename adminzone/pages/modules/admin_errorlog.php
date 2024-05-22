@@ -492,6 +492,9 @@ class Module_admin_errorlog
                 $label = $info['label'];
                 $num_queued = $info['num_queued'];
                 $minutes_between_runs = $info['minutes_between_runs'];
+                if (!isset($cron_progression[$hook])) {
+                    $enabled = ($info['enabled_by_default'] !== false);
+                }
             } else {
                 $available = false;
             }

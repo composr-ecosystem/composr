@@ -49,6 +49,7 @@ class Hook_cron_downloads_followup_email
             'label' => 'Send download follow-up e-mails',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT member_id) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_logging WHERE member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval($last_run)) : 0,
             'minutes_between_runs' => 60 * 24,
+            'enabled_by_default' => true,
         ];
     }
 

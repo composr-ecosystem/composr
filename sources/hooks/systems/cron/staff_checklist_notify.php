@@ -79,6 +79,7 @@ class Hook_cron_staff_checklist_notify
             'label' => 'Send staff checklist notifications',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 24 * 60 * 7, // Don't nag more than once a week
+            'enabled_by_default' => true,
         ];
     }
 

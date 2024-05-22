@@ -59,6 +59,7 @@ class Hook_cron_birthday_points
             'label' => 'Send Birthday Wishes (and Points, if applicable)',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60,
+            'enabled_by_default' => true,
         ];
     }
 

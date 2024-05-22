@@ -56,6 +56,7 @@ class Hook_cron_catalogue_entry_timeouts
             'label' => 'Catalogue entry expiry',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 6 * 60,
+            'enabled_by_default' => true,
         ];
     }
 

@@ -39,6 +39,7 @@ class Hook_cron_group_points
             'label' => 'Assign points for usergroup membership',
             'num_queued' => null,
             'minutes_between_runs' => 30,
+            'enabled_by_default' => true,
         ];
     }
 

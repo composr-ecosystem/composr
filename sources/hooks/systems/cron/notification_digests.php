@@ -41,6 +41,7 @@ class Hook_cron_notification_digests
             'label' => 'Send notification digests',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)') : null, // Not quite accurate, as not everything ready to send, but an indication
             'minutes_between_runs' => 60 * 12,
+            'enabled_by_default' => true,
         ];
     }
 

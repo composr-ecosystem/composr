@@ -40,6 +40,7 @@ class Hook_cron_sugarcrm_sync_lead_metadata
             'label' => 'Send SugarCRM lead metadata',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
+            'enabled_by_default' => true,
         ];
     }
 

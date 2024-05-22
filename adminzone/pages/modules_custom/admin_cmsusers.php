@@ -30,7 +30,7 @@ class Module_admin_cmsusers
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 5;
+        $info['version'] = 6;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -108,6 +108,14 @@ class Module_admin_cmsusers
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'note', 'LONG_TRANS__COMCODE');
         }
+
+        if (($upgrade_from === null) || ($upgrade_from < 6)) {
+            $GLOBALS['SITE_DB']->create_table('relayed_errors_ignore', [
+                'id' => '*AUTO',
+                'ignore_string' => 'SHORT_TEXT',
+                'resolve_message' => 'LONG_TRANS__COMCODE',
+            ]);
+        }
     }
 
     /**
@@ -153,6 +161,10 @@ class Module_admin_cmsusers
             breadcrumb_set_parents([['_SELF:_SELF:errors', do_lang_tempcode('CMS_SITE_ERRORS')]]);
         }
 
+        if (($type == 'ignore_errors') || ($type == 'ignore_error') || ($type == 'ignore_error_delete')) {
+            breadcrumb_set_parents([['_SELF:_SELF:ignore_errors', do_lang_tempcode('TELEMETRY_IGNORE_TITLE')]]);
+        }
+
         require_lang('cms_homesite');
 
         $this->title = get_screen_title('CMS_SITES_INSTALLED');
@@ -192,6 +204,25 @@ class Module_admin_cmsusers
             $id = get_param_integer('id');
             $this->title = get_screen_title('CMS_SITE_RESOLVE_ERROR', true, [integer_format($id)]);
             return $this->_resolve_error($id);
+        }
+        if ($type == 'ignore_errors') {
+            $this->title = get_screen_title('TELEMETRY_IGNORE_TITLE');
+            return $this->ignore_errors();
+        }
+        if ($type == 'ignore_error') {
+            $id = get_param_integer('id', null);
+            $this->title = get_screen_title('TELEMETRY_IGNORE_ITEM_TITLE');
+            return $this->ignore_error($id);
+        }
+        if ($type == '_ignore_error') {
+            $id = get_param_integer('id', null);
+            $this->title = get_screen_title('TELEMETRY_IGNORE_ITEM_TITLE');
+            return $this->_ignore_error($id);
+        }
+        if ($type == 'ignore_error_delete') {
+            $id = get_param_integer('id');
+            $this->title = get_screen_title('TELEMETRY_IGNORE_ITEM_DELETE_TITLE');
+            return $this->ignore_error_delete($id);
         }
         return new Tempcode();
     }
@@ -460,13 +491,17 @@ class Module_admin_cmsusers
             ],
         ];
 
+        $form = new Tempcode();
+        $button_url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
+        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('TELEMETRY_AUTORESOLVE'), 'IMG' => 'admin/delete2', 'HIDDEN' => new Tempcode()]));
+
         $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '358ae22e7f23a3f68eac4aa1e24df85b',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
-            'FORM' => new Tempcode(),
+            'FORM' => $form,
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => new Tempcode(),
             'URL' => $url,
@@ -591,6 +626,223 @@ class Module_admin_cmsusers
         $map += lang_remap_comcode('note', $row['note'], $new_note);
         $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $id]);
         $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * List of strings to ignore in relayed errors.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function ignore_errors()
+    {
+        $start = get_param_integer('start', 0);
+        $max = get_param_integer('max', 50);
+
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('relayed_errors_ignore', 'COUNT(*)');
+        $sortables = [
+            'id' => do_lang_tempcode('IDENTIFIER'),
+            'ignore_string' => do_lang_tempcode('TELEMETRY_IGNORE_STRING'),
+        ];
+        $test = explode(' ', get_param_string('sort', 'id DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+        $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], [], ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+
+        // Build results table
+        $result_entries = new Tempcode();
+
+        require_code('templates_results_table');
+
+        $map = [
+            do_lang_tempcode('IDENTIFIER'),
+            do_lang_tempcode('TELEMETRY_IGNORE_STRING'),
+            do_lang_tempcode('ACTIONS'),
+        ];
+        $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
+
+        foreach ($rows as $myrow) {
+            $actions = new Tempcode();
+
+            $edit_url = build_url(['page' => '_SELF', 'type' => 'ignore_error', 'id' => $myrow['id']], '_SELF');
+            $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                'NAME' => '#' . strval($myrow['id']),
+                'URL' => $edit_url,
+                'HIDDEN' => new Tempcode(),
+                'ACTION_TITLE' => do_lang_tempcode('EDIT'),
+                'ICON' => 'admin/edit',
+                'GET' => true,
+            ]));
+
+            $delete_url = build_url(['page' => '_SELF', 'type' => 'ignore_error_delete', 'id' => $myrow['id']], '_SELF');
+            $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                'NAME' => '#' . strval($myrow['id']),
+                'URL' => $delete_url,
+                'HIDDEN' => new Tempcode(),
+                'ACTION_TITLE' => do_lang_tempcode('DELETE'),
+                'ICON' => 'admin/delete',
+                'GET' => true,
+            ]));
+
+            $map = [
+                integer_format($myrow['id']),
+                $myrow['ignore_string'],
+                $actions
+            ];
+
+            $result_entries->attach(results_entry($map, true));
+        }
+
+        $results_table = results_table(do_lang_tempcode('TELEMETRY_IGNORE_TITLE'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('TELEMETRY_IGNORE_TEXT')));
+
+        $form = new Tempcode();
+        $button_url = build_url(['page' => '_SELF', 'type' => 'ignore_error'], '_SELF');
+        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('ADD'), 'IMG' => 'admin/add', 'HIDDEN' => new Tempcode()]));
+
+        $url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
+
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            'TITLE' => $this->title,
+            'RESULTS_TABLE' => $results_table,
+            'FORM' => $form,
+            'URL' => $url,
+            'FILTERS_HIDDEN' => new Tempcode(),
+        ]);
+
+        pop_field_encapsulation();
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
+    }
+
+    /**
+     * The UI for adding or editing an ignore into the database
+     *
+     * @param  ?AUTO_LINK $id The ID of the ignore error (null: adding a new one)
+     * @return Tempcode The UI
+     */
+    public function ignore_error(?int $id = null) : object
+    {
+        $line = '';
+        $resolve_message = '';
+        if ($id !== null) {
+            $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], ['id' => $id], '', 1);
+            if (($_row === null) || (!array_key_exists(0, $_row))) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+            }
+            $row = $_row[0];
+            $line = $row['ignore_string'];
+            $resolve_message = get_translated_text($row['resolve_message']);
+        }
+
+        require_code('form_templates');
+
+        $fields = new Tempcode();
+
+        $fields->attach(form_input_line(do_lang_tempcode('TELEMETRY_IGNORE_STRING'), do_lang_tempcode('DESCRIPTION_TELEMETRY_IGNORE_STRING'), 'ignore_string', $line, true));
+        $fields->attach(form_input_text_comcode(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_RELAYED_ERROR_NOTES'), 'resolve_message', $resolve_message, false));
+
+        $resolve_url = build_url(['page' => '_SELF', 'type' => '_ignore_error', 'id' => $id], '_SELF');
+
+        return do_template('FORM_SCREEN', [
+            '_GUID' => '904b2916eea66a19f6906842c81da308',
+            'HIDDEN' => new Tempcode(),
+            'TITLE' => $this->title,
+            'FIELDS' => $fields,
+            'TEXT' => '',
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'URL' => $resolve_url,
+        ]);
+    }
+
+    /**
+     * The actualizer for adding or editing an ignore error.
+     *
+     * @param  ?AUTO_LINK $id The ID of the ignore error to edit (null: we are adding one))
+     * @return Tempcode The results
+     */
+    public function _ignore_error(?int $id = null) : object
+    {
+        $ignore_string = post_param_string('ignore_string');
+        $resolve_message = post_param_string('resolve_message', '');
+
+        // Actualise the record
+        if ($id !== null) {
+            $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], ['id' => $id], '', 1);
+            if (($_row === null) || (!array_key_exists(0, $_row))) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+            }
+            $row = $_row[0];
+
+            $map = [
+                'ignore_string' => $ignore_string,
+            ];
+            $map += lang_remap_comcode('resolve_message', $row['resolve_message'], $resolve_message);
+            $GLOBALS['SITE_DB']->query_update('relayed_errors_ignore', $map, ['id' => $id]);
+        } else {
+            $map = [
+                'ignore_string' => $ignore_string,
+            ];
+            $map += insert_lang_comcode('resolve_message', $resolve_message, 4);
+            $GLOBALS['SITE_DB']->query_insert('relayed_errors_ignore', $map);
+        }
+
+        // Auto-resolve existing errors according to the specified criteria
+        $start = 0;
+        $max = 100;
+        $count = 0;
+        do {
+            $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_message', 'note'], ['resolved' => 0], '', $max, $start);
+            foreach ($rows as $row) {
+                if (strpos($row['error_message'], $ignore_string) !== false) {
+                    $count++;
+                    $map = ['resolved' => 1];
+                    $map += lang_remap_comcode('note', $row['note'], $resolve_message);
+                    $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row['id']]);
+                }
+            }
+
+            $start += $max;
+        } while (!empty($rows));
+
+        $url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
+        return redirect_screen($this->title, $url, do_lang_tempcode('TELEMETRY_IGNORE_ERRORS_SUCCESS', escape_html(integer_format($count))));
+    }
+
+    /**
+     * The UI or actualizer for deleting an ignore error.
+     *
+     * @param  AUTO_LINK $id The ID of the ignore error to delete
+     * @return Tempcode The results
+     */
+    public function ignore_error_delete(int $id) : object
+    {
+        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], ['id' => $id], '', 1);
+        if (($_row === null) || (!array_key_exists(0, $_row))) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        $row = $_row[0];
+
+        // Prompt for confirmation
+        if (get_param_integer('confirm', 0) == 0) {
+            $preview = do_lang_tempcode('ARE_YOU_SURE_DELETE_IGNORE_ERROR', escape_html($row['ignore_string']));
+            return do_template('CONFIRM_SCREEN', [
+                'TITLE' => $this->title,
+                'PREVIEW' => $preview,
+                'URL' => get_self_url(false, false, ['confirm' => 1]),
+                'FIELDS' => build_keep_post_fields(),
+            ]);
+        }
+
+        $GLOBALS['SITE_DB']->query_delete('relayed_errors_ignore', ['id' => $id]);
+
+        $url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

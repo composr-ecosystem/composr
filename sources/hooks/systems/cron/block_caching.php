@@ -41,6 +41,7 @@ class Hook_cron_block_caching
             'label' => 'Block cache population',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('cron_caching_requests', 'COUNT(*)') : 0,
             'minutes_between_runs' => 0,
+            'enabled_by_default' => true,
         ];
     }
 

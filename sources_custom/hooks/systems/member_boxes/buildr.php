@@ -22,9 +22,9 @@ class Hook_member_boxes_buildr
      * Find member box details.
      *
      * @param  MEMBER $member_id The ID of the member we are getting extra details for
-     * @return array Map of extra box details
+     * @return ?array Map of extra box details (null: disabled)
      */
-    public function run(int $member_id) : array
+    public function run(int $member_id) : ?array
     {
         if (!addon_installed('buildr')) {
             return null;

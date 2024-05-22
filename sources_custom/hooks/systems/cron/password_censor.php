@@ -35,6 +35,7 @@ class Hook_cron_password_censor
             'label' => 'Censor old written passwords',
             'num_queued' => null, // Too time-consuming to calculate
             'minutes_between_runs' => 60 * 12,
+            'enabled_by_default' => true,
         ];
     }
 

@@ -47,7 +47,8 @@ class Hook_cron_group_member_timeouts
         return [
             'label' => 'Expire temporary usergroup subscriptions',
             'num_queued' => $num_queued,
-            'minutes_between_runs' => 60,
+            'minutes_between_runs' => 5,
+            'enabled_by_default' => true,
         ];
     }
 

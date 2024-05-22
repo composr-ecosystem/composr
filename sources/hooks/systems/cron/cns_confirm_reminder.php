@@ -75,6 +75,7 @@ class Hook_cron_cns_confirm_reminder
             'label' => 'Send account confirmation reminders',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 24 * 60 * 2,
+            'enabled_by_default' => true,
         ];
     }
 

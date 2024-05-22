@@ -59,6 +59,7 @@ class Hook_cron_cns_birthdays
             'label' => 'Send Member Birthday Notifications',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60,
+            'enabled_by_default' => true,
         ];
     }
 
