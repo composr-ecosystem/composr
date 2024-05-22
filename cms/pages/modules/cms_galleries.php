@@ -1223,7 +1223,7 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
-        return $this->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id));
+        return $this->cat_crud_module->_do_next_manager($title, $description, $this->donext_type/*category*/, ($id === null) ? null : intval($id));
     }
 
     /**
@@ -1772,7 +1772,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      */
     public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
-        return $GLOBALS['MODULE_CMS_GALLERIES']->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id), true);
+        return $GLOBALS['MODULE_CMS_GALLERIES']->cat_crud_module->_do_next_manager($title, $description, $this->donext_type/*category*/, ($id === null) ? null : intval($id), true);
     }
 }
 

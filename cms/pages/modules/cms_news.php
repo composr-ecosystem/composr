@@ -831,7 +831,7 @@ class Module_cms_news extends Standard_crud_module
      */
     public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
-        return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type);
+    return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type/*category*/);
     }
 
     /**
