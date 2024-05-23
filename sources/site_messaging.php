@@ -48,122 +48,30 @@ function show_site_messages()
             continue;
         }
 
+        // Page-link checking
         $should_display = empty($row['pages']);
         foreach ($row['pages'] as $page_link) {
             if ($should_display) { // No need to go through the rest of the page link filters if one already passed
                 break;
             }
 
-            $current_page_link_bits = explode(':', get_current_page_link(false));
-            $filter_page_link_bits = explode(':', $page_link['page_link']);
-            if (count($filter_page_link_bits) < 2) { // Invalid page link filter; skip it
+            list($current_zone, $current_attributes, $current_hash) = page_link_decode(get_current_page_link(false));
+            list($filter_zone, $filter_attributes, $filter_hash) = page_link_decode($page_link['page_link']);
+
+            if (($filter_zone != '_WILD') && ($current_zone != $filter_zone)) { // Zones do not match; go to the next page-link
                 continue;
             }
-            $current_page_link = [];
-            $filter_page_link = [];
 
-            $i = -1;
-            do {
-                $i++;
+            if (($filter_hash != '') && ($current_hash != $filter_hash)) { // Hashes do not match; go to the next page-link
+                continue;
+            }
 
-                if (!array_key_exists($i, $current_page_link_bits) && !array_key_exists($i, $filter_page_link_bits)) { // Done, so bail
-                    break;
-                }
-
-                switch ($i) {
-                    case 0: // Zone
-                        if (!array_key_exists(0, $filter_page_link_bits)) { // Invalid page-link, so skip it
-                            continue 3;
-                        }
-                        if (($filter_page_link_bits[0] == '_WILD') || ($filter_page_link_bits[0] == '_SELF')) { // Wildcard; skip
-                            continue 2;
-                        }
-                        if ($filter_page_link_bits[0] == '_SEARCH') {
-                            $filter_page_link_bits[0] = get_page_zone($filter_page_link_bits[1], false);
-                            if ($filter_page_link_bits[0] === null) { // Invalid, so skip this bit / treat as a wildcard
-                                continue 2;
-                            }
-                        }
-                        if ($current_page_link_bits[0] != $filter_page_link_bits[0]) { // Bail to the next page-link filter if zone does not match
-                            continue 3;
-                        }
-                        break;
-                    case 1: // Page
-                        if (!array_key_exists(1, $filter_page_link_bits)) { // Invalid page-link, so skip it
-                            continue 3;
-                        }
-                        if (($filter_page_link_bits[1] == '_WILD') || ($filter_page_link_bits[1] == '_SELF')) { // Wildcard; skip
-                            continue 2;
-                        }
-                        if ($filter_page_link_bits[1] == '_SEARCH') { // Invalid for pages, so treat as wildcard
-                            continue 2;
-                        }
-
-                        // Users might put dashes in the page link if they follow monikers; change to underscores.
-                        $filter_page_link_bits[1] = str_replace('-', '_', $filter_page_link_bits[1]);
-                        $current_page_link_bits[1] = str_replace('-', '_', $current_page_link_bits[1]);
-
-                        if ($current_page_link_bits[1] != $filter_page_link_bits[1]) { // bail to the next page-link filter if page does not match
-                            continue 3;
-                        }
-                        break;
-                    case 2: // Type (or parameter)
-                        if (array_key_exists(2, $filter_page_link_bits)) {
-                            if (strpos($filter_page_link_bits[2], '=') !== false) {
-                                list($key, $value) = explode('=', $filter_page_link_bits[2]);
-                                $filter_page_link[$key] = $value;
-                                // Undefined type should be treated as match all types
-                            } else {
-                                $filter_page_link['type'] = $filter_page_link_bits[2];
-                            }
-                        }
-                        if (array_key_exists(2, $current_page_link_bits)) {
-                            if (strpos($current_page_link_bits[2], '=') !== false) {
-                                list($key, $value) = explode('=', $current_page_link_bits[2]);
-                                $current_page_link[$key] = $value;
-                                $current_page_link['type'] = 'browse';
-                            } else {
-                                $current_page_link['type'] = $current_page_link_bits[2];
-                            }
-                        }
-                        break;
-                    case 3: // ID (or parameter)
-                        if (array_key_exists(3, $filter_page_link_bits)) {
-                            if (strpos($filter_page_link_bits[3], '=') !== false) {
-                                list($key, $value) = explode('=', $filter_page_link_bits[3]);
-                                $filter_page_link[$key] = $value;
-                            } else {
-                                $filter_page_link['id'] = $filter_page_link_bits[3];
-                            }
-                        }
-                        if (array_key_exists(3, $current_page_link_bits)) {
-                            if (strpos($current_page_link_bits[3], '=') !== false) {
-                                list($key, $value) = explode('=', $current_page_link_bits[3]);
-                                $current_page_link[$key] = $value;
-                            } else {
-                                $current_page_link['id'] = $current_page_link_bits[3];
-                            }
-                        }
-                        break;
-                    default: // Additional parameters
-                        if (array_key_exists($i, $filter_page_link_bits)) {
-                            list($key, $value) = explode('=', $filter_page_link_bits[$i]);
-                            $filter_page_link[$key] = $value;
-                        }
-                        if (array_key_exists($i, $current_page_link_bits)) {
-                            list($key, $value) = explode('=', $current_page_link_bits[$i]);
-                            $current_page_link[$key] = $value;
-                        }
-                }
-            } while (true); // We have a break case inside the loop
-
-            // Compare our arrays of parameters to see if we should show this message
             $should_display = true;
-            foreach ($filter_page_link as $key => $value) {
+            foreach ($filter_attributes as $key => $value) {
                 if (in_array($value, ['_WILD', '_SELF', '_SEARCH'])) { // Matches everything for parameters, so skip them
                     continue;
                 }
-                if (!array_key_exists($key, $current_page_link) || ($current_page_link[$key] != $value)) {
+                if (!array_key_exists($key, $current_attributes) || ($current_attributes[$key] != $value)) { // We have an attribute that does not match; go to the next page-link.
                     $should_display = false;
                     break;
                 }
