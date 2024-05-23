@@ -220,12 +220,12 @@
 								</div>
 							</form>
 						{+END}{+END}{+END}
-						{!PAGE_LINK} {$SELF_PAGE_LINK*}
 						{$,extra_footer_left_goes_here}
 					{+END}
 					{+START,IF_NON_EMPTY,{$TRIM,{$GET,footer_left}}}
 						<div class="global-footer-left block-desktop">
 							{$GET,footer_left}
+							<div>{!PAGE_LINK} {$SELF_PAGE_LINK*}</div>
 						</div>
 					{+END}
 
