@@ -94,37 +94,14 @@ News entries may be in multiple news categories, but a user needs access to the 
 
 [title="3"]Site messaging[/title]
 
-You may pin messages at the top of your site. Do this from Admin Zone > Setup > Configuration > Messages > Site messaging.
+You may pin messages at the top of your site. Do this from Admin Zone > Setup > Site messaging.
 This is particularly useful in coordination with the news feature -- you'd add a news article then you'd link to it by placing a Comcode link in the Message, e.g.:
 [code="Comcode"]
 We have some scheduled down-time on Monday, see [url="our announcement"]http://example.com/site/news/view/3.htm[/url].
 [/code]
-You have a number of controls for site messaging including scheduling the message to automatically appear and disappear, and only showing to particular usergroups.
+You have a number of controls for site messaging including scheduling the message to start and/or expire on a certain date and time, limiting to particular usergroups, or limiting where it is shown based on page-links.
 
-[title="4"]Showing multiple messages[/title]
-
-If you need to show multiple messages then there is an advanced feature for this. You put some JSON in the Message field, for example:
-[code="JavaScript"]
-[
-	{
-		"site_message": "First message",
-		"site_message_start_datetime": "2017-04-23T18:25:43.511Z",
-		"site_message_end_datetime": "2017-04-24T18:25:43.511Z",
-		"site_message_status_level": "inform",
-		"site_message_usergroup_select": null
-	},
-	{
-		"site_message": "Second message",
-		"site_message_start_datetime": "2017-04-26T18:25:43.511Z",
-		"site_message_end_datetime": "2017-04-27T18:25:43.511Z",
-		"site_message_status_level": "inform",
-		"site_message_usergroup_select": null
-	}
-]
-[/code]
-You can define as many messages as you like, each with their own settings.
-
-If you do this all the other Site messaging fields will be ignored, as settings will only be taken from the JSON structure.
+For more information on how to use site messaging, please see the [page="_SEARCH:tut_site_messaging"]Pinning messages at the top of pages[/page] tutorial.
 
 [title="3"]Show RSS feeds[/title]
 
@@ -183,5 +160,6 @@ If you go back to edit some news and want to see what uploaded images is current
  - [page="_SEARCH:tut_adv_news"]Advanced news[/page]
  - [page="_SEARCH:tut_configuration"]Basic configuration and getting started[/page]
  - [page="_SEARCH:tut_newsletter"]Running a newsletter[/page]
+ - [page="_SEARCH:tut_site_messaging"]Pinning messages at the top of pages[/page]
 
 {$SET,tutorial_tags,News,syndication_blocks,syndication,news_shared,news,Content,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to use the news system for website news, press releases, blogs, or any other kind of article.}[block]main_tutorial_rating[/block]

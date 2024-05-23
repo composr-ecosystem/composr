@@ -246,6 +246,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'newsletter_periodic',
                     'revisions',
                     'w_members',
+                    'site_messages'
                 ];
                 if (!in_array($table, $exceptions)) {
                     $this->assertTrue($found_tables[$table]['timestamp_field'] !== null || empty($relevant_fields_time), 'Could have set a timestamp field for ' . $table . ' in hook ' . $hook . '[' . serialize($relevant_fields_time) . ']');

@@ -72,6 +72,7 @@ class _commandr_fs_test_set extends cms_test_case
             $path = ['var', 'banners', 'untitled', 'advertise_here.' . RESOURCE_FS_DEFAULT_EXTENSION];
             $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
             $data1 = $ob->read_file($path);
+            $this->assertTrue($data1, 'Expected data but got none for ' . serialize($path));
             $ob->write_file($path, $data1);
             $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
             $data2 = $ob->read_file($path);

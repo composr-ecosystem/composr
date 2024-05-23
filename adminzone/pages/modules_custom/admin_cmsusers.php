@@ -493,7 +493,7 @@ class Module_admin_cmsusers
 
         $form = new Tempcode();
         $button_url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
-        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('TELEMETRY_AUTORESOLVE'), 'IMG' => 'admin/delete2', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '318957ab73112a21637cd04627e2408d', 'IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('TELEMETRY_AUTORESOLVE'), 'IMG' => 'admin/delete2', 'HIDDEN' => new Tempcode()]));
 
         $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
 
@@ -671,6 +671,7 @@ class Module_admin_cmsusers
 
             $edit_url = build_url(['page' => '_SELF', 'type' => 'ignore_error', 'id' => $myrow['id']], '_SELF');
             $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                '_GUID' => '8e3bd4338b06b1d2d4d6a363cdbb77a2',
                 'NAME' => '#' . strval($myrow['id']),
                 'URL' => $edit_url,
                 'HIDDEN' => new Tempcode(),
@@ -681,6 +682,7 @@ class Module_admin_cmsusers
 
             $delete_url = build_url(['page' => '_SELF', 'type' => 'ignore_error_delete', 'id' => $myrow['id']], '_SELF');
             $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                '_GUID' => '7d190886d5eac455a3e99a9ba329e9df',
                 'NAME' => '#' . strval($myrow['id']),
                 'URL' => $delete_url,
                 'HIDDEN' => new Tempcode(),
@@ -702,15 +704,17 @@ class Module_admin_cmsusers
 
         $form = new Tempcode();
         $button_url = build_url(['page' => '_SELF', 'type' => 'ignore_error'], '_SELF');
-        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('ADD'), 'IMG' => 'admin/add', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'b503c11f8637a0e7ad7ed5c67c5c8c62', 'IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('ADD'), 'IMG' => 'admin/add', 'HIDDEN' => new Tempcode()]));
 
         $url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '2d1c505f5d7d49c53ca4dcb8febf14ab',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
             'URL' => $url,
+            'FILTERS_ROW_B' => new Tempcode(),
             'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
@@ -750,7 +754,7 @@ class Module_admin_cmsusers
         $resolve_url = build_url(['page' => '_SELF', 'type' => '_ignore_error', 'id' => $id], '_SELF');
 
         return do_template('FORM_SCREEN', [
-            '_GUID' => '904b2916eea66a19f6906842c81da308',
+            '_GUID' => '31899d61b3ddf63ea0efd35829519146',
             'HIDDEN' => new Tempcode(),
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -833,6 +837,7 @@ class Module_admin_cmsusers
         if (get_param_integer('confirm', 0) == 0) {
             $preview = do_lang_tempcode('ARE_YOU_SURE_DELETE_IGNORE_ERROR', escape_html($row['ignore_string']));
             return do_template('CONFIRM_SCREEN', [
+                '_GUID' => '40c66abcd60ac85ac70d58d2d5da307e',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),
