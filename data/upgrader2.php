@@ -260,8 +260,8 @@ function upgrader2_check_maintenance_password(string $password_given_hashed) : b
  *
  * @param  URLPATH $target_file The file to be copied
  * @param  mixed $tmp_path_handle The handler for the upgrader tmp file
- * @param  int $offset The offset at which to seek
- * @param  int $length The length which to seek
+ * @param  integer $offset The offset at which to seek
+ * @param  integer $length The length which to seek
  */
 function upgrader2_copy_in_file(string $target_file, $tmp_path_handle, int $offset, int $length)
 {

@@ -21,7 +21,9 @@
  */
 function get_problem_match_nearest(string $error_message) : ?string
 {
-    define('DEFAULT_BRAND_NAME', 'Composr'); // TODO: This is a fudge
+    if (!defined('DEFAULT_BRAND_NAME')) {
+        define('DEFAULT_BRAND_NAME', 'Composr'); // TODO: This is a fudge
+    }
 
     require_code('files_spreadsheets_read');
 

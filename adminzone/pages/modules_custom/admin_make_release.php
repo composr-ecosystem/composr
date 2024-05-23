@@ -228,7 +228,7 @@ class Module_admin_make_release
         list(, , , , $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($new_version);
 
         // Determine if a database / module upgrade is necessary, and update version times accordingly
-        if (post_param_integer('db_upgrade', '0') != 0) {
+        if (post_param_integer('db_upgrade', 0) != 0) {
             // cms_version_time() and cms_version_time_db()
             $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 2);
         } else {
@@ -506,14 +506,14 @@ class Module_admin_make_release
             [
                 do_lang_tempcode('BUILD_OPTIONS_MAKE_OMNI_UPGRADER'),
                 'make_omni_upgrader',
-                '0',
+                ($new_version === $this->get_previous_version()) ? '1' : '0',
                 '',
                 false
             ],
             [
                 do_lang_tempcode('BUILD_OPTIONS_REBUILD_SQL'),
                 'rebuild_sql',
-                '0',
+                (post_param_integer('db_upgrade', 0) != 0) ? '1' : '0',
                 '',
                 false
             ],

@@ -93,9 +93,9 @@ class Hook_cron_cache_cleanup
      *
      * @param  URLPATH $a The relative path of file A
      * @param  string $b The relative path of file B
-     * @return int The comparison order directive
+     * @return integer The comparison order directive
      */
-    protected function compare_filetime(string $a, string $b)
+    protected function compare_filetime(string $a, string $b) : int
     {
         $time_a = max(fileatime(get_custom_file_base() . '/' . $a), filemtime(get_custom_file_base() . '/' . $a));
         $time_b = max(fileatime(get_custom_file_base() . '/' . $b), filemtime(get_custom_file_base() . '/' . $b));

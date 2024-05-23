@@ -1051,43 +1051,9 @@ function do_site()
     }
 
     // Site message(s)
-    if (running_script('index')) {
-        $_site_message = get_option('site_message');
-        if (trim($_site_message) != '') {
-            $site_messages = @json_decode($_site_message, true);
-            if (isset($site_messages['messages'])) {
-                $site_messages = $site_messages['messages'];
-            }
-            if ($site_messages === null) {
-                $site_messages = ['messages' => []];
-                $site_messages['messages'][] = [
-                    'site_message' => $_site_message,
-                    'site_message_start_datetime' => get_option('site_message_start_datetime'),
-                    'site_message_end_datetime' => get_option('site_message_end_datetime'),
-                    'site_message_status_level' => get_option('site_message_status_level'),
-                    'site_message_usergroup_select' => get_option('site_message_usergroup_select'),
-                ];
-            }
-            foreach ($site_messages['messages'] as $site_message) {
-                if (!empty($site_message['site_message'])) {
-                    if ((empty($site_message['site_message_start_datetime'])) || ((!empty($site_message['site_message_start_datetime'])) && (((is_numeric($site_message['site_message_start_datetime'])) && (intval($site_message['site_message_start_datetime']) <= time())) || ((!is_numeric($site_message['site_message_start_datetime'])) && (strtotime($site_message['site_message_start_datetime']) <= time()))))) {
-                        if ((empty($site_message['site_message_end_datetime'])) || ((!empty($site_message['site_message_end_datetime'])) && (((is_numeric($site_message['site_message_end_datetime'])) && (intval($site_message['site_message_end_datetime']) > time())) || ((!is_numeric($site_message['site_message_end_datetime'])) && (strtotime($site_message['site_message_end_datetime']) > time()))))) {
-                            if (cms_empty_safe($site_message['site_message_usergroup_select'])) {
-                                $group_pass = true;
-                            } else {
-                                require_code('selectcode');
-                                $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member());
-                                $group_pass = (!empty(array_intersect(selectcode_to_idlist_using_memory($site_message['site_message_usergroup_select'], $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list)));
-                            }
-
-                            if ($group_pass) {
-                                attach_message(comcode_to_tempcode($site_message['site_message']), $site_message['site_message_status_level']);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    if (running_script('index') && addon_installed('site_messaging')) {
+        require_code('site_messaging');
+        show_site_messages();
     }
 
     // Warning if dev-mode is on

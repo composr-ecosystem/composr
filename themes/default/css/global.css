@@ -7368,9 +7368,16 @@ a[title="{!VIRTUAL_ROOT}"]:hover {
 	left: 0;
 }
 
+/*{+START,CSS_MODE,mobile}*/
+.cms-modal-overlay {
+	position: absolute;
+}
+/*{+END}*/
+/*{+START,CSS_MODE,desktop}*/
 .cms-modal-overlay {
 	position: fixed;
 }
+/*{+END}*/
 
 .overlay [role="toolbar"],
 .overlay .emoticon-chooser,

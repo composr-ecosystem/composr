@@ -95,6 +95,7 @@ class Hook_addon_registry_news
             'tut_news',
             'tut_adv_news',
             'tut_information',
+            'tut_site_messaging',
         ];
     }
 

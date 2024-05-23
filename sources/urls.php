@@ -1558,6 +1558,7 @@ function normalise_idn_url(string $url) : string
 
 /**
  * Find the page-link of the current screen.
+ * This does not URL-encode parameters.
  *
  * @param  boolean $include_keep_components Whether to include keep_* components in the URL
  * @param  ?integer $maxlength Maximum length (null: no limit)

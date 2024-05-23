@@ -973,7 +973,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      */
     public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
-        return $this->_do_next_manager($title, $description, null, $id);
+        return $this->_do_next_manager($title, $description, $id, $this->donext_type);
     }
 
     /**
@@ -982,10 +982,10 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
      * @param  ?ID_TEXT $id The ID of whatever was just handled (null: N/A)
-     * @param  ID_TEXT $type The type ID we were working in
+     * @param  ?ID_TEXT $type The type ID we were working in (null: N/A)
      * @return Tempcode The UI
      */
-    public function _do_next_manager(?object $title, object $description, ?string $id, string $type) : object
+    public function _do_next_manager(?object $title, object $description, ?string $id, ?string $type) : object
     {
         require_code('templates_donext');
 

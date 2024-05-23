@@ -1,0 +1,65 @@
+[title sub="Written by Patrick Schmalstig"]Composr Tutorial: Pinning messages at the top of pages[/title]
+
+{!site_messaging:DOC_SITE_MESSAGING}
+
+[contents]decimal,lower-alpha[/contents]
+
+[title="2"]Managing site messages[/title]
+[media width="150" description="The site messaging item is under Admin Zone > Setup > Site messaging." float="right"]data_custom/images/docs/tut_site_messaging/menu_location.png[/media]
+[media width="150" description="The simple do-next screen will assist you with managing your messages." float="right"]data_custom/images/docs/tut_site_messaging/donext.png[/media]
+[media width="150" description="This is an example of the display of a site message." float="right"]data_custom/images/docs/tut_site_messaging/example.png[/media]
+Clicking Admin Zone > Setup > Site messaging will take you to a simple do-next screen to assist you with setting up your site messages.
+
+[title="3"]Adding a site message[/title]
+[media width="150" description="There are several criteria you can define for a site message" float="right"]data_custom/images/docs/tut_site_messaging/add.png[/media]
+The screen for adding a site message gives you several options from which to choose. We will cover those in this section. Here are the basic options:
+ - [b]Title[/b]: This is just a label and is only used on the "Edit a site message" screen and the action log. It allows you to easily identify different site messages.
+ - [b]Message[/b]: This is the actual contents of the message to be displayed. The field allows Comcode, so you could for example specify a URL tag to create a link.
+ - [b]Type[/b]: This defines the level of importance for the message and thus how it is displayed on the site. Warnings show up in red.
+ - [b]Start[/b]: You can optionally specify a start date and time for the message. If left blank, it will start showing immediately.
+ - [b]Expiry date[/b]: You can optionally specify an expiry date and time for the message. If left blank, the message will continue showing until you manually edit or delete it.
+ - [b]Validated[/b]: If the validation addon is installed, you can hide certain messages while preserving all their settings by turning this to 'Off'.
+
+[title="3"]Advanced filtering[/title]
+There are two advanced criteria that can optionally be used to further filter who sees the message and where: usergroups and page-links.
+
+[title="4"]Advanced filtering: Usergroups[/title]
+If the "Usergroups" multi-list field is left blank, then the message will show for members of all usergroups. Otherwise, the member must be in one or more of the defined usergroups to see the message.
+
+[title="4"]Advanced filtering: Page-links[/title]
+[media width="150" description="If you need help getting the page-link of a current page, they are typically visible in the footer when viewing as an administrator." float="right"]data_custom/images/docs/tut_site_messaging/page_link_footer.png[/media]
+Page-link filtering is a very powerful tool which allows you to show specific messages on specific pages. For example, you may want to show a reminder message to staff to do something if they are on a specific page in the Admin Zone. Or you may want to indicate there is a known bug on a particular screen. The possibilities are endless.
+
+If the "Page-links" multi-line field is left blank, then the message will show everywhere. Otherwise, the message will only show if one or more of the specified page-link filters match the current page.
+
+At minimum, every page-link specified must contain a zone:page, and any that do not will be skipped automatically. The zone can be _SEARCH to specify that we should find the zone based on the given page (using _SEARCH as the page will be treated as _WILD). Or, you can use _WILD in any portion of the page-link which is treated as a catch-all (e.g. adminzone:_WILD will match all pages on the Admin Zone).
+
+You can also specify additional bits to further filter the message. You can specify zone:page:type (to also filter by type) or even zone:page:type:id (to also filter by type and ID). If you just want to filter by ID but not type, you will need to do zone:page:id=the_id, or you can do zone:page:_WILD:id. Other parameters are also supported, just add them in as :param=value.
+
+Here are some examples:
+ - [b]_WILD:_WILD[/b]: This will show everywhere; this has the same behaviour as not defining any page-links.
+ - [b]adminzone:_WILD[/b]: This will show on all pages in the Admin Zone.
+ - [b]:home[/b]: This will show on the home page of the welcome (unnamed) zone.
+ - [b]_WILD:home[/b]: This will show on the home pages of every zone (assuming every zone has defined "home" as its home page).
+ - [b]site:tickets[/b]: This will show on every screen in Support Tickets, but only if the Support Tickets module is in the site zone.
+ - [b]_SEARCH:tickets[/b] or [b]_WILD:tickets[/b]: You should use this syntax instead when dealing with modules; this will show on Support Tickets regardless what zone it is in.
+ - [b]_SEARCH:cms_news:add[/b]: This will show when adding a new news article.
+ - [b]_SEARCH:cms_news:_edit[/b]: This will show when editing any news article.
+ - [b]_SEARCH:cms_news:_edit:1[/b] or [b]_SEARCH:cms_news:_edit:id=1[/b]: This will show when editing the news article with an ID of 1.
+ - [b]_SEARCH:cms_news:_WILD:1[/b] or [b]_SEARCH:cms_news:id=1[/b]: This will show when dealing with any CMS action involving news article ID 1 (such as editing or deleting).
+ - [b]_SEARCH:news:view:1[/b]: This will show when viewing news article ID 1.
+ - [b]_SEARCH:members:view:test[/b]: This will show on test's member profile (you can also use a member ID instead of the username).
+ - [b]_SEARCH:report_content:content_type=member[/b]: This will show when reporting specifically a member profile via the "Report this" link.
+
+[concepts
+ 1_key="Site messaging"  1_value="The system / interface for setting up site messages."
+ 2_key="Site message"    2_value="A small pinned / global message that shows at the top of a page."
+]Concepts[/concepts]
+
+[title="2"]See also[/title]
+
+ - [page="_SEARCH:tut_news"]Releasing news & running a Blog[/page]
+ - [page="_SEARCH:tut_adv_news"]Advanced news[/page]
+ - [page="_SEARCH:tut_configuration"]Basic configuration and getting started[/page]
+
+{$SET,tutorial_tags,News,syndication_blocks,syndication,news_shared,news,site_messaging,Content,novice}{$SET,tutorial_add_date,May 2024}{$SET,tutorial_summary,How to pin messages at the top of site pages for critical information communication.}[block]main_tutorial_rating[/block]

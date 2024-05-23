@@ -80,7 +80,7 @@ class Hook_preview_banner
         }
 
         require_code('banners');
-        $preview = show_banner(post_param_string('banner_codename'), post_param_string('title_text', ''), comcode_to_tempcode(post_param_string('caption')), post_param_string('direct_code', ''), $img_url, '', post_param_string('site_url', false, INPUT_FILTER_URL_GENERAL), post_param_string('b_type'), get_member());
+        $preview = show_banner(post_param_string('banner_codename', ''), post_param_string('title_text', ''), comcode_to_tempcode(post_param_string('caption')), post_param_string('direct_code', ''), $img_url, '', post_param_string('site_url', false, INPUT_FILTER_URL_GENERAL), post_param_string('b_type'), get_member());
 
         return [$preview, null];
     }

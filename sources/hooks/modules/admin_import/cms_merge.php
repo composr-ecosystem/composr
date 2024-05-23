@@ -105,48 +105,50 @@ class Hook_import_cms_merge
             'feedback',
             'permissions', // including HTTPS
             'leader_boards',
+            'site_messages',
         ];
         $info['dependencies'] = [
             // This dependency tree is overdefined, but I wanted to make it clear what depends on what, rather than having a simplified version
-           'attachment_references' => ['attachments', 'cns_members', 'cns_posts', 'news_and_categories', 'wiki'],
-           'permissions' => array_diff($info['import'], ['feedback', 'attachment_references', 'permissions', 'stats']),
-           'feedback' => array_diff($info['import'], ['themes', 'cns_warnings', 'feedback', 'attachment_references', 'permissions', 'quizzes', 'stats']),
-           'authors' => ['cns_members', 'catalogues'],
-           'banners' => ['cns_members'],
-           'catalogues' => ['cns_members'],
-           'notifications' => ['cns_members'],
-           'chat_rooms' => ['cns_members', 'cns_groups'],
-           'downloads_and_categories' => ['cns_members', 'catalogues'],
-           'filedump' => ['cns_members'],
-           'images_and_galleries' => ['cns_members', 'catalogues'],
-           'news_and_categories' => ['cns_members', 'attachments', 'catalogues'],
-           'polls' => ['cns_members', 'catalogues'],
-           'wiki' => ['cns_members', 'attachments', 'catalogues'],
-           'useronline_tracking' => ['cns_members'],
-           'ip_bans' => ['cns_members'],
-           'point_transactions' => ['cns_members'],
-           'calendar' => ['cns_members', 'catalogues'],
-           'comcode_pages' => ['cns_members', 'catalogues'],
-           'match_key_messages' => [],
-           'menu_items' => [],
-           'cns_custom_profile_fields' => ['cns_groups'],
-           'cns_multi_moderations' => ['cns_forums'],
-           // 'cns_groups' => ['catalogues'], Cyclic dependency (catalogues depends on cns_members which depends on cns_groups)
-           'cns_members' => ['cns_groups', 'cns_custom_profile_fields', 'attachments'],
-           'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups', 'catalogues'],
-           'cns_topics' => ['cns_forums', 'cns_members', 'catalogues'],
-           'cns_polls_and_votes' => ['cns_topics', 'cns_posts', 'cns_members'],
-           'cns_posts' => ['custom_comcode', 'cns_topics', 'cns_members', 'attachments', 'catalogues'],
-           'cns_post_templates' => ['cns_forums'],
-           'cns_warnings' => ['cns_members', 'cns_groups', 'cns_topics', 'cns_forums', 'cns_posts'],
-           'newsletter_subscriptions' => ['attachments'],
-           'support_tickets' => ['cns_forums', 'cns_topics', 'cns_members'],
-           'awards' => ['calendar', 'wiki', 'news_and_categories', 'images_and_galleries', 'catalogues', 'authors', 'cns_topics', 'cns_posts', 'cns_forums', 'cns_groups', 'cns_members', 'downloads_and_categories'],
-           'ecommerce' => ['cns_groups', 'cns_members'],
-           'cns_welcome_emails' => ['cns_members'],
-           'quizzes' => ['cns_members', 'catalogues'],
-           'aggregate_type_instances' => [],
-           'leader_boards' => ['cns_members', 'cns_groups'],
+            'attachment_references' => ['attachments', 'cns_members', 'cns_posts', 'news_and_categories', 'wiki'],
+            'permissions' => array_diff($info['import'], ['feedback', 'attachment_references', 'permissions', 'stats']),
+            'feedback' => array_diff($info['import'], ['themes', 'cns_warnings', 'feedback', 'attachment_references', 'permissions', 'quizzes', 'stats']),
+            'authors' => ['cns_members', 'catalogues'],
+            'banners' => ['cns_members'],
+            'catalogues' => ['cns_members'],
+            'notifications' => ['cns_members'],
+            'chat_rooms' => ['cns_members', 'cns_groups'],
+            'downloads_and_categories' => ['cns_members', 'catalogues'],
+            'filedump' => ['cns_members'],
+            'images_and_galleries' => ['cns_members', 'catalogues'],
+            'news_and_categories' => ['cns_members', 'attachments', 'catalogues'],
+            'polls' => ['cns_members', 'catalogues'],
+            'wiki' => ['cns_members', 'attachments', 'catalogues'],
+            'useronline_tracking' => ['cns_members'],
+            'ip_bans' => ['cns_members'],
+            'point_transactions' => ['cns_members'],
+            'calendar' => ['cns_members', 'catalogues'],
+            'comcode_pages' => ['cns_members', 'catalogues'],
+            'match_key_messages' => [],
+            'menu_items' => [],
+            'cns_custom_profile_fields' => ['cns_groups'],
+            'cns_multi_moderations' => ['cns_forums'],
+            // 'cns_groups' => ['catalogues'], Cyclic dependency (catalogues depends on cns_members which depends on cns_groups)
+            'cns_members' => ['cns_groups', 'cns_custom_profile_fields', 'attachments'],
+            'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups', 'catalogues'],
+            'cns_topics' => ['cns_forums', 'cns_members', 'catalogues'],
+            'cns_polls_and_votes' => ['cns_topics', 'cns_posts', 'cns_members'],
+            'cns_posts' => ['custom_comcode', 'cns_topics', 'cns_members', 'attachments', 'catalogues'],
+            'cns_post_templates' => ['cns_forums'],
+            'cns_warnings' => ['cns_members', 'cns_groups', 'cns_topics', 'cns_forums', 'cns_posts'],
+            'newsletter_subscriptions' => ['attachments'],
+            'support_tickets' => ['cns_forums', 'cns_topics', 'cns_members'],
+            'awards' => ['calendar', 'wiki', 'news_and_categories', 'images_and_galleries', 'catalogues', 'authors', 'cns_topics', 'cns_posts', 'cns_forums', 'cns_groups', 'cns_members', 'downloads_and_categories'],
+            'ecommerce' => ['cns_groups', 'cns_members'],
+            'cns_welcome_emails' => ['cns_members'],
+            'quizzes' => ['cns_members', 'catalogues'],
+            'aggregate_type_instances' => [],
+            'leader_boards' => ['cns_members', 'cns_groups'],
+            'site_messages' => ['cns_groups', 'comcode_pages'],
         ];
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
@@ -4060,6 +4062,85 @@ class Hook_import_cms_merge
             unset($row['id']);
             $GLOBALS['SITE_DB']->query_insert('staff_links', $row);
         }
+    }
+
+    /**
+     * Standard import function.
+     *
+     * @param  object $db The database connector to import from
+     * @param  string $table_prefix The table prefix the target prefix is using
+     * @param  PATH $file_base The base directory we are importing from
+     */
+    public function import_site_messages(object $db, string $table_prefix, string $file_base)
+    {
+        $row_start = 0;
+        $rows = [];
+        do {
+            $rows = $db->query_select('site_messages', ['*'], [], 'ORDER BY id', 200, $row_start);
+            foreach ($rows as $row) {
+                if (import_check_if_imported('site_message', strval($row['id']))) {
+                    continue;
+                }
+
+                $row_copy = $row;
+                if (get_param_integer('keep_preserve_ids', 0) == 0) {
+                    unset($row_copy['id']);
+                }
+
+                $id_new = $GLOBALS['SITE_DB']->query_insert('site_messages', $row_copy, true);
+                import_id_remap_put('site_message', strval($row['id']), $id_new);
+
+                $pages = $db->query_select('site_messages_pages', ['*'], ['message_id' => $row['id']]);
+                foreach ($pages as $page) {
+                    if (import_check_if_imported('site_message_page', strval($page['id']))) {
+                        continue;
+                    }
+
+                    $page_copy = $page;
+                    if (get_param_integer('keep_preserve_ids', 0) == 0) {
+                        unset($page_copy['id']);
+                    }
+                    $page_copy['message_id'] = $id_new;
+
+                    $page_bits = explode(':', $page_copy['page_link']);
+                    if (!array_key_exists(1, $page_bits)) {
+                        continue;
+                    }
+                    $new_page = import_id_remap_get('comcode_page', $page_bits[0] . ':' . $page_bits[1], true);
+                    if ($new_page !== null) {
+                        $new_page_bits = explode(':', strval($new_page));
+                        $page_bits[0] = $new_page_bits[0];
+                        $page_bits[1] = $new_page_bits[1];
+                        $page_copy['page_link'] = implode(':', $page_bits);
+                    }
+
+                    $id_new_page = $GLOBALS['SITE_DB']->query_insert('site_messages_pages', $page_copy, true);
+                    import_id_remap_put('site_message_page', strval($page['id']), $id_new_page);
+                }
+
+                $groups = $db->query_select('site_messages_groups', ['*'], ['message_id' => $row['id']]);
+                foreach ($groups as $group) {
+                    if (import_check_if_imported('site_message_group', strval($group['id']))) {
+                        continue;
+                    }
+
+                    $group_copy = $group;
+                    if (get_param_integer('keep_preserve_ids', 0) == 0) {
+                        unset($group_copy['id']);
+                    }
+                    $group_copy['message_id'] = $id_new;
+
+                    $new_group = import_id_remap_get('group', strval($group['group_id']), true);
+                    if ($new_group !== null) {
+                        $page_copy['group_id'] = $new_group;
+                    }
+
+                    $id_new_group = $GLOBALS['SITE_DB']->query_insert('site_messages_groups', $group_copy, true);
+                    import_id_remap_put('site_message_group', strval($group['id']), $id_new_group);
+                }
+            }
+            $row_start += 200;
+        } while (!empty($rows));
     }
 
     /**

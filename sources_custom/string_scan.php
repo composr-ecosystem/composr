@@ -8526,6 +8526,25 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         STATS_ACTIONLOG_GROWTH
         UPGRADER_RESTART_REQUIRED
         UPGRADER_RESTART_REQUIRED_NOT_HAPPENING
+        ADD_SITE_MESSAGE
+        ARE_YOU_SURE_DELETE_SITE_MESSAGE
+        DELETE_SITE_MESSAGE
+        DESCRIPTION_SITE_MESSAGE_EXPIRY_DATE
+        DESCRIPTION_SITE_MESSAGE_MESSAGE
+        DESCRIPTION_SITE_MESSAGE_PAGE_LINKS
+        DESCRIPTION_SITE_MESSAGE_START
+        DESCRIPTION_SITE_MESSAGE_TITLE
+        DESCRIPTION_SITE_MESSAGE_TYPE
+        DESCRIPTION_SITE_MESSAGE_USERGROUPS
+        DOC_EDIT_SITE_MESSAGES
+        DOC_SITE_MESSAGING
+        EDIT_SITE_MESSAGE
+        EDIT_SITE_MESSAGES
+        MODULE_TRANS_NAME_admin_site_messaging
+        SITE_MESSAGE
+        VALIDATE_SITE_MESSAGE
+        _DELETE_SITE_MESSAGE
+        _EDIT_SITE_MESSAGE
     ')));
 
     $non_admin_files = [
@@ -12021,7 +12040,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_I_AGREE_RULES_USE
         _DESCRIPTION_I_AGREE_RULES
         _I_AGREE_RULES
-
+        PAGE_LINKS
+        DESCRIPTION_PRIVACY_SITE_MESSAGING
     ')));
 
     // Remove blank lines

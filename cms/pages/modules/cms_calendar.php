@@ -1648,7 +1648,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      */
     public function do_next_manager(?object $title, object $description, ?string $id = null) : object
     {
-        return $this->_do_next_manager($title, $description, null, ($id === null) ? null : intval($id), '');
+        return $this->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type, '');
     }
 
     /**

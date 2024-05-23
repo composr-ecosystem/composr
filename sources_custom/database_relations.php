@@ -59,6 +59,7 @@ function get_table_purpose_flags() : array
         'referees_qualified_for' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'referrer_override' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'relayed_errors' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__MISC_NO_MERGE | TABLE_PURPOSE__FLUSHABLE,
+        'relayed_errors_ignore' => TABLE_PURPOSE__NORMAL,
         'reported_content' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under <content>*/,
         'sites' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'sites_advert_pings' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
