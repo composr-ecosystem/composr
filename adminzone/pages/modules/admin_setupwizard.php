@@ -570,6 +570,7 @@ class Module_admin_setupwizard
             'filebased_persistent_caching',
             'robots_txt',
             'getid3', // this will be downloaded as it is not bundled, for licensing reasons
+            'site_messaging',
         ]);
         // ... unless the install profile really is shunning them
         foreach ($addon_list_override_to_off_by_default as $_to_find) {
