@@ -198,6 +198,7 @@
 							</div>
 						</form>
 					{+END}{+END}{+END}
+					{!PAGE_LINK} {$SELF_PAGE_LINK*}
 				</div>
 
 				<div class="global-footer-right">
