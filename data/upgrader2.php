@@ -88,19 +88,19 @@ $todo = $metadata['todo'];
 $per_cycle = 250;
 
 /*
-    Files that must be upgraded first and require re-running the upgrader if they were upgraded.
-    You should ensure this is identical to the one in sources/upgrade_files.php.
+    Files that must be upgraded first and through immediate extraction (if mapped to true, will also require re-running the upgrade step)
+    You should also check data/upgrader2.php when modifying this.
     Ideally you should update this array between each upgrade and only include files when absolutely necessary.
 */
 $upgrade_and_restart = [
-    'sources/upgrade_files.php',
+    'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
 ];
 $did_something = false;
 foreach ($todo as $i => $_target_file) {
     list($target_file, , $offset, $length,) = $_target_file;
-    if (in_array($target_file, $upgrade_and_restart)) {
+    if (isset($upgrade_and_restart[$target_file])) {
         upgrader2_copy_in_file($target_file, $tmp_path_handle, $offset, $length);
-        $did_something = true;
+        $requires_restart = $upgrade_and_restart[$target_file];
     }
 }
 if ($did_something) {

@@ -167,14 +167,17 @@ function _upgrader_file_upgrade_screen() : string
 
     /*
         Files that must be upgraded first and through immediate extraction (if mapped to true, will also require re-running the upgrade step)
-        You should ensure this is identical to the one in data/upgrader2.php.
+        You should also check data/upgrader2.php when modifying this.
         Ideally you should update this array between each upgrade and only include files when absolutely necessary.
     */
     $immediately_upgrade = [
-        'sources/upgrade_files.php' => true,
+        'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
         'lang/EN/upgrade.ini' => false,
         'data/upgrader2.php' => false,
         'sources/crypt_master.php' => false,
+
+        // TODO: Remove when v11 becomes stable; this is to force the installation of the new addon in an upgrade
+        'sources/hooks/systems/addon_registry/site_messaging.php' => false,
     ];
 
     // Hopefully $popup_simple_extract will be true (i.e. suEXEC mode), as it is safer
@@ -185,35 +188,7 @@ function _upgrader_file_upgrade_screen() : string
         $out .= '<p>' . do_lang('EXTRACTING_MESSAGE') . '</p>';
     }
 
-    $addon_contents = [];
-
-    /*
-     * Full CMS release archives will contain the entire addon_registry directory including index.html; hotfixes will not.
-     * Therefore, if this file does not exist, assume we want to apply a hotfix, and thus allow installing alien files.
-    */
     $is_hotfix = (tar_get_file($upgrade_resource, 'sources/hooks/systems/addon_registry/index.html') === null);
-    if ($is_hotfix) {
-        $out .= '<p>' . do_lang('HOTFIX_MESSAGE') . '</p>';
-
-        // Hotfixes do not contain the full addon registry. Load up what we have installed.
-        require_code('files2');
-        $d_directory = get_directory_contents(get_file_base() . '/sources/hooks/systems/addon_registry', 'sources/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']);
-        $d_directory = array_merge($d_directory, get_directory_contents(get_file_base() . '/sources_custom/hooks/systems/addon_registry', 'sources_custom/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']));
-        foreach ($d_directory as $upgrade_file2) {
-            $_file_data = cms_file_get_contents_safe($upgrade_file2, FILE_READ_LOCK);
-            $addon_contents[basename($upgrade_file2, '.php')] = $_file_data;
-        }
-    }
-
-    // Find addons within the TAR (should overwrite / take priority over what is on disk via is_hotfix)
-    foreach ($directory as $upgrade_file2) {
-        // See if we can find an addon registry file in our upgrade file
-        if ((strpos($upgrade_file2['path'], '/addon_registry/') !== false) && (substr($upgrade_file2['path'], -4) == '.php')) {
-            $file_data = tar_get_file($upgrade_resource, $upgrade_file2['path']);
-            $addon_contents[basename($upgrade_file2['path'], '.php')] = $file_data['data'];
-        }
-    }
-    $files_for_tar_updating = [];
 
     // Files that must be immediately upgraded if the upgrade archive contains them
     if (!$dry_run) {
@@ -264,6 +239,35 @@ function _upgrader_file_upgrade_screen() : string
             }
         }
     }
+
+    $addon_contents = [];
+
+    /*
+     * Full CMS release archives will contain the entire addon_registry directory including index.html; hotfixes will not.
+     * Therefore, if this file does not exist, assume we want to apply a hotfix, and thus allow installing alien files.
+    */
+    if ($is_hotfix) {
+        $out .= '<p>' . do_lang('HOTFIX_MESSAGE') . '</p>';
+
+        // Hotfixes do not contain the full addon registry. Load up what we have installed.
+        require_code('files2');
+        $d_directory = get_directory_contents(get_file_base() . '/sources/hooks/systems/addon_registry', 'sources/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']);
+        $d_directory = array_merge($d_directory, get_directory_contents(get_file_base() . '/sources_custom/hooks/systems/addon_registry', 'sources_custom/hooks/systems/addon_registry', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']));
+        foreach ($d_directory as $upgrade_file2) {
+            $_file_data = cms_file_get_contents_safe($upgrade_file2, FILE_READ_LOCK);
+            $addon_contents[basename($upgrade_file2, '.php')] = $_file_data;
+        }
+    }
+
+    // Find addons within the TAR (should overwrite / take priority over what is on disk via is_hotfix)
+    foreach ($directory as $upgrade_file2) {
+        // See if we can find an addon registry file in our upgrade file
+        if ((strpos($upgrade_file2['path'], '/addon_registry/') !== false) && (substr($upgrade_file2['path'], -4) == '.php')) {
+            $file_data = tar_get_file($upgrade_resource, $upgrade_file2['path']);
+            $addon_contents[basename($upgrade_file2['path'], '.php')] = $file_data['data'];
+        }
+    }
+    $files_for_tar_updating = [];
 
     // Process addon registry files first since we need to filter out what files we are extracting from the upgrader based on installed addons
     foreach ($directory as $offset => $upgrade_file) {
