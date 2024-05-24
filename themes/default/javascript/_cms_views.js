@@ -1876,6 +1876,9 @@
 
         // Hides sticky header when scrolling downwards on mobile, shows it again when scrolled upwards
         improveStickyForMobile: function () {
+            // Add CSS animation effect (TODO: this blocks out the background transitioning animation between see-through and not)
+            this.el.style.transition = 'margin-top 0.3s ease-in-out';
+            
             var lastScrollY = 0,
                 movement = 0,
                 lastDirection = 0,
@@ -1900,7 +1903,7 @@
                         if (lastDirection !== 1) {
                             movement = 0;
                         }
-                        margin = -Math.min(Math.abs(movement), headerHeight);
+                        margin = -headerHeight;
                         that.el.style.marginTop = margin + 'px';
 
                         lastDirection = 1;
@@ -1908,8 +1911,7 @@
                         if (lastDirection !== -1) {
                             movement = 0;
                         }
-                        margin = Math.min(Math.abs(movement), headerHeight) - headerHeight;
-                        that.el.style.marginTop = margin + 'px';
+                        that.el.style.marginTop = '0px';
 
                         lastDirection = -1;
                     }
