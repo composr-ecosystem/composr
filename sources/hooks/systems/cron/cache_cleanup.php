@@ -67,21 +67,23 @@ class Hook_cron_cache_cleanup
         require_code('files');
         require_code('files2');
 
-        // Prevent other cache directories from getting too overpopulated as well
+        // Prevent other cache directories from getting too overpopulated as well (mapped to array, count to start pruning, count to dump the entire directory)
         $directories = [
-            'caches/http',
-            'caches/persistent',
-            'caches/self_learning',
+            'caches/http' => [1000, 5000],
+            'caches/persistent' => [2000, 10000],
+            'caches/self_learning' => [1000, 5000],
+            'uploads/auto_thumbs' => [2000, 10000], // These can be re-built upon request
         ];
-        foreach ($directories as $directory) {
-            $files = get_directory_contents(get_custom_file_base() . '/' . $directory, $directory, null, false, true, ['bin', 'gcd', 'lcd', 'tmp']);
-            if (count($files) >= 10000) { // Too excessive to iterate everything; just delete the whole directory contents
+        foreach ($directories as $directory => $prune_rules) {
+            list($count_prune, $count_empty) = $prune_rules;
+            $files = get_directory_contents(get_custom_file_base() . '/' . $directory, $directory, null, false, true, ['bin', 'gcd', 'lcd', 'tmp', 'bmp', 'jpg', 'png', 'jpeg', 'gif', 'webp', 'tif', 'tiff', 'svg']);
+            if (count($files) >= $count_empty) {
                 deldir_contents(get_custom_file_base() . '/' . $directory, true);
-            } elseif (count($files) >= 2000) { // After 2,000 files, start purging from the most stale files until we are down to 2,000 files
+            } elseif (count($files) >= $count_prune) {
                 usort($files, [$this, 'compare_filetime']);
                 do {
                     @unlink(get_custom_file_base() . '/' . array_shift($files));
-                } while (count($files) >= 2000);
+                } while (count($files) >= $count_prune);
             }
         }
     }
