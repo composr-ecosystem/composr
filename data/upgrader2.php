@@ -95,7 +95,7 @@ $per_cycle = 250;
 $upgrade_and_restart = [
     'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
 ];
-$did_something = false;
+$requires_restart = false;
 foreach ($todo as $i => $_target_file) {
     list($target_file, , $offset, $length,) = $_target_file;
     if (isset($upgrade_and_restart[$target_file])) {
@@ -103,7 +103,7 @@ foreach ($todo as $i => $_target_file) {
         $requires_restart = $upgrade_and_restart[$target_file];
     }
 }
-if ($did_something) {
+if ($requires_restart) {
     header('Content-Type: text/plain; charset=utf-8');
     foreach ($upgrade_and_restart as $file) {
         echo $file . "\n";
