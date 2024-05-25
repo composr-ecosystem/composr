@@ -92,20 +92,20 @@ $per_cycle = 250;
     You should also check data/upgrader2.php when modifying this.
     Ideally you should update this array between each upgrade and only include files when absolutely necessary.
 */
-$upgrade_and_restart = [
+$upgrade_first = [
     'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
 ];
 $requires_restart = false;
 foreach ($todo as $i => $_target_file) {
     list($target_file, , $offset, $length,) = $_target_file;
-    if (isset($upgrade_and_restart[$target_file])) {
+    if (isset($upgrade_first[$target_file])) {
         upgrader2_copy_in_file($target_file, $tmp_path_handle, $offset, $length);
-        $requires_restart = $upgrade_and_restart[$target_file];
+        $requires_restart = $upgrade_first[$target_file];
     }
 }
 if ($requires_restart) {
     header('Content-Type: text/plain; charset=utf-8');
-    foreach ($upgrade_and_restart as $file) {
+    foreach ($upgrade_first as $file) {
         echo $file . "\n";
     }
     exit('Critical source files for the upgrader have just been updated. Please go back and re-run this step again to finish the transfer of upgrade files. You may need to re-enter the URL for the upgrade archive.');
