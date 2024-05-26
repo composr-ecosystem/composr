@@ -140,6 +140,11 @@ function currency_convert($amount, ?string $from_currency = null, ?string $to_cu
 
     $map = get_currency_map();
 
+    // TODO: We do not currently support point conversions, so just bail with the amount
+    if (($from_currency == 'POINTS') || ($to_currency == 'POINTS')) {
+        return $amount;
+    }
+
     // Check from currency
     if (!array_key_exists($from_currency, $map) && (($from_currency != 'POINTS') || !addon_installed('points'))) {
         attach_message(do_lang_tempcode('UNKNOWN_CURRENCY', escape_html($from_currency)), 'warn', false, true);

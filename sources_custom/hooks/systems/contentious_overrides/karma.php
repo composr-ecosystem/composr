@@ -226,5 +226,39 @@ class Hook_contentious_overrides_karma
                 "
             );
         }
+
+        // eCommerce purchases
+        if (($codename == 'ecommerce') && (strpos($path, 'sources_custom/') === false)) {
+            if ($code === null) {
+                $code = clean_php_file_for_eval(file_get_contents($path));
+            }
+
+            // Add karma when making a purchase
+            insert_code_before__by_command(
+                $code,
+                "handle_confirmed_transaction",
+                "return [\$type_code, \$member_id];",
+                "// Award karma
+                if ((\$status == 'Completed') && (addon_installed('karma'))) {
+                    require_code('karma');
+                    require_code('karma2');
+                    \$karma_rate = intval(get_option('karma_ecommerce'));
+                    if (\$karma_rate > 0) {
+                        \$karma_to_award = 0;
+                        if ((\$price_points > 0) && addon_installed('points')) {
+                            \$points_rate = intval(get_option('points_per_currency_unit'));
+                            if (\$points_rate > 0) {
+                                \$points_to_currency = floatval(\$price_points / \$points_rate);
+                                \$karma_to_award += intval(\$points_to_currency / \$karma_rate);
+                            }
+                        }
+                        \$karma_to_award += intval(\$price / \$karma_rate);
+
+                        add_karma('good', null, \$member_id, \$karma_to_award, 'Purchased ' . \$item_name, 'ecommerce', strval(\$txn_id));
+                    }
+                }
+                "
+            );
+        }
     }
 }
