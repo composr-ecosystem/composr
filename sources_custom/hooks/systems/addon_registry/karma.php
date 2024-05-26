@@ -214,6 +214,7 @@ Karma and its API can be further extended for additional functionality. For exam
             'sources_custom/karma2.php',
             'themes/default/css_custom/karma.css',
             'themes/default/templates_custom/BLOCK_MAIN_KARMA_GRAPH.tpl',
+            'sources_custom/hooks/systems/member_boxes/karma.php',
         ];
     }
 }
