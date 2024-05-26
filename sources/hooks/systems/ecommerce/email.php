@@ -288,6 +288,7 @@ class Hook_ecommerce_email
                     'price_points' => empty($price_points) ? null : (intval($price_points) * $amount),
                     'discount_points__num_points' => null,
                     'discount_points__price_reduction' => null,
+                    'discount_points__percentile' => null,
 
                     'tax_code' => tax_multiplier(get_option('quota_tax_code'), (float)$amount),
                     'shipping_cost' => 0.00,

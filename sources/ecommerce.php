@@ -119,30 +119,41 @@ function init__ecommerce()
 }
 
 /**
- * Automatically calculates a half-price points-based discount for a product.
+ * Automatically calculates a discount for a product based on points.
  *
  * @param  array $details The product details
  * @return array The amended product details
  */
 function automatic_discount_calculation(array $details) : array
 {
+    if (!addon_installed('points')) { // No discount if the points addon is not installed
+        $details['discount_points__num_points'] = null;
+        $details['discount_points__price_reduction'] = null;
+        return $details;
+    }
+
     if ($details['discount_points__num_points'] !== null) {
         // Already has discount
         return $details;
     }
 
     if ($details['price'] === null) {
-        // Only via money
-        return $details;
-    }
-
-    if ($details['price_points'] === null) {
         // Only via points
         return $details;
     }
 
-    $details['discount_points__num_points'] = intval(round(floatval($details['price_points']) / 2.0));
-    $details['discount_points__price_reduction'] = $details['price'] / 2.0;
+    if ($details['price_points'] === null) {
+        // Only via money
+        return $details;
+    }
+
+    // Default maximum discount is 50% if not otherwise specified
+    if (!isset($details['discount_points__percentile']) || $details['discount_points__percentile'] === null) {
+        $details['discount_points__percentile'] = 0.5;
+    }
+
+    $details['discount_points__num_points'] = intval(round(floatval($details['price_points']) * $details['discount_points__percentile']));
+    $details['discount_points__price_reduction'] = $details['price'] * $details['discount_points__percentile'];
 
     return $details;
 }
@@ -1667,7 +1678,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
             $expected_price_points = 0;
             if (!paid_amount_matches($price, $tax, $shipping, $expected_amount, $expected_tax, $expected_shipping)) {
                 // Maybe a discount then
-                list($discounted_price, $discounted_tax_code, $points_for_discount) = get_discounted_price($found, false, $member_id_paying);
+                list($discounted_price, $discounted_tax_code, $points_for_discount) = get_discounted_price($found, $member_id_paying);
                 if ($discounted_price !== null) {
                     $discount_tax_details = calculate_tax_due($found, $discounted_tax_code, $discounted_price, $expected_shipping, $member_id_paying);
                     if (paid_amount_matches($price, $tax, $shipping, $discounted_price, $discount_tax_details[1], $expected_shipping)) {
@@ -2017,12 +2028,12 @@ function fatal_ipn_exit(string $error, bool $dont_trigger = false)
  * Find the 'discounted' price for a product (check the return values carefully).
  *
  * @param  array $details Product details
- * @param  boolean $consider_free Consider the potential for a 0.00 price by paying entirely with points.
  * @param  ?MEMBER $member_id The member who this is for (null: current member)
  * @return array A tuple: Discounted price (null is no discount), Discounted price tax code, Points required to get discount (null is no discount), Whether this is a discount
  */
-function get_discounted_price(array $details, bool $consider_free = false, ?int $member_id = null) : array
+function get_discounted_price(array $details, ?int $member_id = null) : array
 {
+    // No discount for guests (because guests do not use points) or if points is not installed
     if ((!addon_installed('points')) || (is_guest())) {
         return [
             null,
@@ -2036,19 +2047,16 @@ function get_discounted_price(array $details, bool $consider_free = false, ?int 
         $member_id = get_member();
     }
 
-    if (($consider_free) && ($details['price_points'] !== null)) {
-        require_code('points');
-        if ((points_balance($member_id) >= $details['price_points']) || ($details['price'] === null/*has to be points as no monetary-price*/)) {
-            return [
-                0.00,
-                '0.00',
-                $details['price_points'],
-                false,
-            ];
-        }
+    if (($details['price'] === null/*has to be points as no monetary-price*/) || (($details['discount_points__price_reduction'] !== null) && (float_to_raw_string($details['discount_points__price_reduction'], 2) == float_to_raw_string($details['price'])))) {
+        return [
+            0.00,
+            '0.00',
+            $details['price_points'],
+            false,
+        ];
     }
 
-    if (($details['discount_points__num_points'] !== null) && ($details['discount_points__price_reduction'] !== null) && ($details['price'] !== null)) {
+    if (($details['discount_points__num_points'] !== null) && ($details['discount_points__price_reduction'] !== null)) {
         require_code('points');
         if ((points_balance($member_id) >= $details['discount_points__num_points'])) {
             $discounted_price = max(0.00, $details['price'] - $details['discount_points__price_reduction']);

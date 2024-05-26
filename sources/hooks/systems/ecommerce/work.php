@@ -48,6 +48,7 @@ class Hook_ecommerce_work
                 'price_points' => null,
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
+                'discount_points__percentile' => null,
 
                 'tax_code' => '0.0',
                 'shipping_cost' => 0.00,

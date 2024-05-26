@@ -50,6 +50,7 @@ class Hook_ecommerce_highlight_name
                 'price_points' => empty($price_points) ? null : intval($price_points),
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
+                'discount_points__percentile' => null,
 
                 'tax_code' => get_option('highlight_name_tax_code'),
                 'shipping_cost' => 0.00,

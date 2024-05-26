@@ -84,8 +84,9 @@ class Hook_ecommerce_cart_orders
                 'price' => $order['total_price'],
                 'currency' => get_option('currency'),
                 'price_points' => null,
-                'discount_points__num_points' => null, // TODO (#3026) - We don't currently support point discounts for cart purchases
+                'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
+                'discount_points__percentile' => 0.0, // TODO (#3026) - We don't currently support point discounts for cart purchases
 
                 'tax_code' => float_to_raw_string($order['total_tax']),
                 'tax_derivation' => json_decode($order['total_tax_derivation'], true),

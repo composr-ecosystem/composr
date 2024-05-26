@@ -242,6 +242,7 @@ class Hook_ecommerce_custom
                 'price_points' => addon_installed('points') ? $row['c_price_points'] : null,
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
+                'discount_points__percentile' => null,
 
                 'tax_code' => $row['c_tax_code'],
                 'shipping_cost' => $shipping_cost,

@@ -167,6 +167,7 @@ class Hook_ecommerce_catalogue_items
                     'price_points' => null,
                     'discount_points__num_points' => null,
                     'discount_points__price_reduction' => null,
+                    'discount_points__percentile' => 0.0,
 
                     'tax_code' => $tax_code,
                     'shipping_cost' => $shipping_cost,

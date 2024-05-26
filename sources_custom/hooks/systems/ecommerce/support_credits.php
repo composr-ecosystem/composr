@@ -67,6 +67,7 @@ class Hook_ecommerce_support_credits
                 'price_points' => null,
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
+                'discount_points__percentile' => null,
 
                 'tax_code' => get_option('support_credit_tax_code'),
                 'shipping_cost' => 0.00,
