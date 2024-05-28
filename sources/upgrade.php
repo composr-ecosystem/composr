@@ -42,7 +42,7 @@ function upgrade_script()
     }
 
     $given_password = post_param_string('given_password', false, INPUT_FILTER_PASSWORD);
-    require_code('crypt_master');
+    require_code('crypt_maintenance');
     if (!check_maintenance_password($given_password)) {
         upgrader_output_header();
         upgrader_output_login(do_lang((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD'));

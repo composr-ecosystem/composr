@@ -63,6 +63,8 @@ class Module_members
     {
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
             add_privilege('FORUMS_AND_MEMBERS', 'view_banned_members', false);
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('privacy_last_download', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('privacy_last_purge', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
         }
     }
 

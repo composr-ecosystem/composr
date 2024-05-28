@@ -87,6 +87,9 @@ function init__cns_install()
  */
 function uninstall_cns()
 {
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+    disable_php_memory_limit();
+
     global $CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS;
 
     delete_privilege(array_merge($CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS));
@@ -174,6 +177,9 @@ function uninstall_cns()
  */
 function install_cns(?float $upgrade_from = null)
 {
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+    disable_php_memory_limit();
+
     require_code('cns_members');
     require_code('cns_topics');
     require_code('cns_groups');
@@ -1602,9 +1608,6 @@ function install_cns(?float $upgrade_from = null)
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warningsid', ['p_warning_id']);
         $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warninghook', ['p_hook']);
-
-        $GLOBALS['FORUM_DRIVER']->install_create_custom_field('privacy_last_download', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
-        $GLOBALS['FORUM_DRIVER']->install_create_custom_field('privacy_last_purge', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
     }
 
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY

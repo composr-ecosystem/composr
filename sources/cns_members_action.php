@@ -607,7 +607,7 @@ function cns_make_custom_field(string $name, int $locked = 0, string $descriptio
     if (running_script('install') || intval($_version_database) >= 10) {
         $map['cf_options'] = $options;
     }
-    if (running_script('install') || intval($_version_database) >= 11) {
+    if (running_script('install') || running_script('upgrader') || intval($_version_database) >= 11) {
         $map += [
             'cf_include_in_main_search' => $include_in_main_search,
             'cf_allow_template_search' => $allow_template_search,

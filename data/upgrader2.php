@@ -12,7 +12,7 @@
 
 */
 
-/*EXTRA FUNCTIONS: strtolower*/
+/*EXTRA FUNCTIONS: strtolower|check_master_password_from_hash*/
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
@@ -85,6 +85,7 @@ $metadata = unserialize(file_get_contents($tmp_metadata_path));
 
 // Work out what we're doing
 $todo = $metadata['todo'];
+$from_version = isset($metadata['from_version']) ? floatval($metadata['from_version']) : 0.0;
 $per_cycle = 250;
 
 /*
@@ -95,6 +96,19 @@ $per_cycle = 250;
 $upgrade_first = [
     'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
 ];
+if ($from_version < 11.0) { // LEGACY
+    $upgrade_first['sources/upgrade_files.php'] = false; // cannot terminate upgrade process if upgrading from v10 because crypt_master will break upgrader.php
+
+    // Additional files that must be upgraded first so upgrader (hopefully) remains sane even if we encounter an error
+    $upgrade_first['upgrader.php'] = false;
+    $upgrade_first['sources/upgrade.php'] = false;
+    $upgrade_first['sources/upgrade_db_upgrade.php'] = false;
+    $upgrade_first['sources/upgrade_integrity_scan.php'] = false;
+    $upgrade_first['sources/upgrade_lib.php'] = false;
+    $upgrade_first['sources/upgrade_mysql.php'] = false;
+    $upgrade_first['sources/upgrade_shared_installs.php'] = false;
+    $upgrade_first['sources/upgrade_themes.php'] = false;
+}
 $requires_restart = false;
 foreach ($todo as $i => $_target_file) {
     list($target_file, , $offset, $length,) = $_target_file;
@@ -105,7 +119,7 @@ foreach ($todo as $i => $_target_file) {
 }
 if ($requires_restart) {
     header('Content-Type: text/plain; charset=utf-8');
-    foreach ($upgrade_first as $file) {
+    foreach ($upgrade_first as $file => $_requires_restart) {
         echo $file . "\n";
     }
     exit('Critical source files for the upgrader have just been updated. Please go back and re-run this step again to finish the transfer of upgrade files. You may need to re-enter the URL for the upgrade archive.');
@@ -116,7 +130,7 @@ $must_do_last = [
     'data/upgrader2.php', // this file!
 
     // Files on which this one depends
-    'sources/crypt_master.php',
+    'sources/crypt_maintenance.php',
 ];
 
 // Do the extraction
@@ -251,7 +265,14 @@ END;
 function upgrader2_check_maintenance_password(string $password_given_hashed) : bool
 {
     global $FILE_BASE;
-    require_once($FILE_BASE . '/sources/crypt_master.php');
+    if (!is_file($FILE_BASE . '/sources/crypt_maintenance.php')) { // LEGACY (v10 -> v11 upgrade)
+        require_once($FILE_BASE . '/sources/crypt_master.php');
+        if (function_exists('check_master_password_from_hash')) {
+            return check_master_password_from_hash($password_given_hashed);
+        }
+    }
+
+    require_once($FILE_BASE . '/sources/crypt_maintenance.php');
     return check_maintenance_password_from_hash($password_given_hashed);
 }
 

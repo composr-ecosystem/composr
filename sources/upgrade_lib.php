@@ -137,6 +137,9 @@ function perform_search_replace(array $reps)
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {
                     $path = $dir . '/' . $f;
+                    if (!is_file($path)) { // We might get directory results; skip those
+                        continue;
+                    }
                     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
                     $contents_orig = $contents;
                     $contents = preg_replace(array_keys($reps), array_values($reps), $contents);

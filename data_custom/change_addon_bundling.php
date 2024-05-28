@@ -66,7 +66,7 @@ $password = post_param_string('password', null, INPUT_FILTER_PASSWORD);
 if ($password === null) {
     @exit('<form action="#" method="post"><label>Maintenance password <input type="password" name="password" value="" /></label><button class="btn btn-danger btn-scr" type="submit">' . do_template('ICON', ['_GUID' => '7904bb84e51bd2ae7c3d9bd0e480406d', 'NAME' => 'admin/delete3'])->evaluate() . ' Delete programmed data</button></form>');
 }
-require_code('crypt_master');
+require_code('crypt_maintenance');
 if (!check_maintenance_password($password)) {
     warn_exit('Access denied - you must pass the maintenance password through correctly');
 }

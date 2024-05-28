@@ -976,7 +976,7 @@ class Forum_driver_none extends Forum_driver_base
                 return $out;
             }
         } else {
-            require_code('crypt_master');
+            require_code('crypt_maintenance');
             if (!check_maintenance_password($password_mixed)) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;

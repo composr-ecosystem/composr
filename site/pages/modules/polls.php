@@ -166,7 +166,7 @@ class Module_polls
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
-            for ($i = 1 ; $i <= 10; $i++) {
+            for ($i = 1; $i <= 10; $i++) {
                 $GLOBALS['SITE_DB']->alter_table_field('poll', 'option' . strval($i), 'SHORT_TRANS__COMCODE');
             }
 

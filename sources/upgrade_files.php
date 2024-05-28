@@ -173,21 +173,24 @@ function _upgrader_file_upgrade_screen() : string
     $immediately_upgrade = [
         'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
         'lang/EN/upgrade.ini' => false,
-        'data/upgrader2.php' => false,
-        'sources/crypt_master.php' => false,
 
-        // TODO: Remove when v11 becomes stable; this is to force the installation of the new addon in an upgrade
+        'data/upgrader2.php' => false,
+        'sources/crypt_maintenance.php' => false, // data/upgrader2.php depends on this
+
+        // TODO: Remove when v11 becomes stable; this is to force the installation of the new addon in an upgrade from a previous alpha
         'sources/hooks/systems/addon_registry/site_messaging.php' => false,
     ];
 
     // Hopefully $popup_simple_extract will be true (i.e. suEXEC mode), as it is safer
     $popup_simple_extract = (_ftp_info() === false);
     if ($popup_simple_extract) {
-        $metadata = ['todo' => [], 'skip' => []];
+        require_code('version');
+        $metadata = ['todo' => [], 'skip' => [], 'from_version' => cms_version_number()];
     } else {
         $out .= '<p>' . do_lang('EXTRACTING_MESSAGE') . '</p>';
     }
 
+    // Upgrades always contain the full addon_registry directory; hotfixes do not
     $is_hotfix = (tar_get_file($upgrade_resource, 'sources/hooks/systems/addon_registry/index.html') === null);
 
     // Files that must be immediately upgraded if the upgrade archive contains them
