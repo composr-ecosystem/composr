@@ -88,7 +88,6 @@ function init__cns_install()
 function uninstall_cns()
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
-    disable_php_memory_limit();
 
     global $CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS;
 
@@ -178,7 +177,6 @@ function uninstall_cns()
 function install_cns(?float $upgrade_from = null)
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
-    disable_php_memory_limit();
 
     require_code('cns_members');
     require_code('cns_topics');
@@ -419,8 +417,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_password_change_code_time', '?TIME');
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_login_key', 'ID_TEXT');
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
 
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
 
@@ -870,7 +866,7 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->create_table('f_poll_answers', [
             'id' => '*AUTO',
-            'pa_poll_id' => '*AUTO_LINK',
+            'pa_poll_id' => 'AUTO_LINK',
             'pa_answer' => 'SHORT_TEXT',
             'pa_cache_num_votes' => 'INTEGER',
             'pa_order' => 'INTEGER',
@@ -1439,18 +1435,20 @@ function install_cns(?float $upgrade_from = null)
             'i_post_id',
         ]);
 
-        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main', [
-            'i_lang',
-            'i_ngram',
-            'i_ac',
-            'i_add_time',
-            'i_forum_id',
-            'i_poster_id',
-            'i_open',
-            'i_pinned',
-            'i_starter',
-            'i_occurrence_rate', // For sorting
-        ]);
+        /* TODO: too long
+            $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main', [
+                'i_lang',
+                'i_ngram',
+                'i_ac',
+                'i_add_time',
+                'i_forum_id',
+                'i_poster_id',
+                'i_open',
+                'i_pinned',
+                'i_starter',
+                'i_occurrence_rate', // For sorting
+            ]);
+        */
 
         $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_2', [
             'i_lang',
@@ -1611,6 +1609,13 @@ function install_cns(?float $upgrade_from = null)
     }
 
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
+        delete_privilege('may_report_post'); // Combined into the enhanced report_content addon
+
+        // Database changes
+        $GLOBALS['FORUM_DB']->alter_table_field('f_forums', 'f_cache_last_username', 'ID_TEXT');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_answers', 'pa_poll_id', 'AUTO_LINK');
+        $GLOBALS['FORUM_DB']->create_index('f_poll_answers', 'pollid', ['pa_poll_id']);
+
         // Migrate old f_warnings columns to f_warnings_punitive rows. Then, delete the old columns.
         $start = 0;
             do {

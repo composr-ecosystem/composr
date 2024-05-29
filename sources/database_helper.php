@@ -719,7 +719,7 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
     $type_remap = $this_ref->driver->get_type_remap(true);
 
     // Handle renaming of special Comcode fields on non-multi-lang-content sites
-    if ((strpos($type, '__COMCODE') !== false) && ($new_name != $name) && (!multi_lang_content())) {
+    if ((strpos($type, '__COMCODE') !== false) && ($new_name !== null) && ($new_name != $name) && (!multi_lang_content())) {
         foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
             $sub_old_name = $name . '__' . $sub_name;
             $sub_new_name = $new_name . '__' . $sub_name;
@@ -749,6 +749,17 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
         $this_ref->_query($query);
     }
 
+    // Add or remove fulltext index when necessary
+    if ((strpos($type, '_TRANS') !== false) && (!multi_lang_content())) {
+        $indices_test = $this_ref->query_select_value_if_there('db_meta_indices', 'i_name', ['i_table' => $table_name, 'i_name' => '#' . (($new_name !== null) ? $new_name : $name)]);
+        if ($indices_test === null) {
+            $GLOBALS['SITE_DB']->create_index($table_name, '#' . (($new_name !== null) ? $new_name : $name), [(($new_name !== null) ? $new_name : $name)], null, false);
+        }
+    }
+    if ((strpos($type, '_TRANS') === false) || (($new_name !== null) && ($new_name != $name)) || (multi_lang_content())) {
+        $GLOBALS['SITE_DB']->delete_index_if_exists($table_name, '#' . $name);
+    }
+
     // Adjust meta database
     $update_map = ['m_type' => $type];
     if ($new_name !== null) {
@@ -776,6 +787,10 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
 
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('TABLE_LANG_FIELDS_CACHE');
+
+        $_fields = $this_ref->query_select('db_meta', ['*'], ['m_table' => $table_name]);
+        $fields = collapse_2d_complexity('m_name', 'm_type', $_fields);
+        reload_lang_fields(false, $table_name, $fields);
     }
 
     return ($is_autoincrement === null);

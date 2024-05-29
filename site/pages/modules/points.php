@@ -99,9 +99,6 @@ class Module_points
                 't_subtype' => 'ID_TEXT', // Content action or subcategory of transaction
                 't_type_id' => 'ID_TEXT', // Content or row ID of t_type
             ]);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'send_to', ['sender_id', 'recipient_id']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'receive_from', ['recipient_id', 'sender_id']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'points', ['amount_points', 'amount_gift_points']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_to', ['linked_to']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
@@ -120,57 +117,12 @@ class Module_points
             $GLOBALS['SITE_DB']->alter_table_field('chargelog', 'user_id', 'MEMBER', 'member_id');
         }
 
-        if (($upgrade_from === null) || ($upgrade_from < 9)) {
-            $GLOBALS['SITE_DB']->create_table('escrow', [
-                'id' => '*AUTO',
-                'date_and_time' => 'TIME',
-                'amount' => 'INTEGER',
-                'original_points_ledger_id' => 'AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
-                'sender_id' => 'MEMBER',
-                'recipient_id' => 'MEMBER',
-                'reason' => 'SHORT_TRANS__COMCODE',
-                'agreement' => 'LONG_TRANS__COMCODE',
-                'expiration' => '?TIME',
-                'sender_status' => 'BINARY', // 1 = sender marked satisfied
-                'recipient_status' => 'BINARY', // 1 = recipient marked satisfied
-                'status' => 'INTEGER', // See ESCROW_STATUS_* in points_escrow.php
-            ]);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'original_points_ledger_id', ['original_points_ledger_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'sender_id', ['sender_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_id', ['recipient_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'date_and_time', ['date_and_time']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'sender_status', ['sender_status']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_status', ['recipient_status']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'status', ['status']);
-
-            $GLOBALS['SITE_DB']->create_table('escrow_logs', [
-                'id' => '*AUTO',
-                'escrow_id' => 'AUTO_LINK',
-                'date_and_time' => 'TIME',
-                'log_type' => 'ID_TEXT', // Will be a language string from points.ini, one of LOG_ESCROW_*
-                'member_id' => '?MEMBER',
-                'information' => 'LONG_TRANS__COMCODE',
-            ]);
-            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'escrow_id', ['escrow_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'date_and_time', ['date_and_time']);
-            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'member_id', ['member_id']);
-
-            add_privilege('POINTS', 'send_points', true);
-            add_privilege('POINTS', 'use_points_escrow', true);
-            add_privilege('POINTS', 'moderate_points_escrow', false);
-            add_privilege('POINTS', 'moderate_points', false);
-            add_privilege('POINTS', 'amend_point_transactions', false);
-
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_lifetime', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
-        }
-
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
             $GLOBALS['SITE_DB']->rename_table('gifts', 'points_ledger');
 
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'amount_points', 'INTEGER');
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'linked_to', '?AUTO_LINK');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'status', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'status', 'INTEGER');
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'locked', 'BINARY');
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_type', 'ID_TEXT');
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_subtype', 'ID_TEXT');
@@ -192,7 +144,7 @@ class Module_points
             $GLOBALS['SITE_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => LEDGER_STATUS_NORMAL, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
 
             // Never allow negative points in our new ledger; update to the absolute value, swap sender and recipient, and mark as refund.
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sender_id=recipient_id, recipient_id=sender_id, status=refund WHERE amount_gift_points<0');
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sender_id=recipient_id, recipient_id=sender_id, status=' . strval(LEDGER_STATUS_REFUND) . ' WHERE amount_gift_points<0');
 
             // Migrate all charge-log entries to points_ledger, and delete the chargelog table
             $start = 0;
@@ -357,6 +309,55 @@ class Module_points
             foreach ($deprecated_fields as $field => $title) {
                 $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($field);
             }
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 9)) {
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'send_to', ['sender_id', 'recipient_id']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'receive_from', ['recipient_id', 'sender_id']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'points', ['amount_points', 'amount_gift_points']);
+
+            $GLOBALS['SITE_DB']->create_table('escrow', [
+                'id' => '*AUTO',
+                'date_and_time' => 'TIME',
+                'amount' => 'INTEGER',
+                'original_points_ledger_id' => 'AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
+                'sender_id' => 'MEMBER',
+                'recipient_id' => 'MEMBER',
+                'reason' => 'SHORT_TRANS__COMCODE',
+                'agreement' => 'LONG_TRANS__COMCODE',
+                'expiration' => '?TIME',
+                'sender_status' => 'BINARY', // 1 = sender marked satisfied
+                'recipient_status' => 'BINARY', // 1 = recipient marked satisfied
+                'status' => 'INTEGER', // See ESCROW_STATUS_* in points_escrow.php
+            ]);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'original_points_ledger_id', ['original_points_ledger_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'sender_id', ['sender_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_id', ['recipient_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'date_and_time', ['date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'sender_status', ['sender_status']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_status', ['recipient_status']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'status', ['status']);
+
+            $GLOBALS['SITE_DB']->create_table('escrow_logs', [
+                'id' => '*AUTO',
+                'escrow_id' => 'AUTO_LINK',
+                'date_and_time' => 'TIME',
+                'log_type' => 'ID_TEXT', // Will be a language string from points.ini, one of LOG_ESCROW_*
+                'member_id' => '?MEMBER',
+                'information' => 'LONG_TRANS__COMCODE',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'escrow_id', ['escrow_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'date_and_time', ['date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'member_id', ['member_id']);
+
+            add_privilege('POINTS', 'send_points', true);
+            add_privilege('POINTS', 'use_points_escrow', true);
+            add_privilege('POINTS', 'moderate_points_escrow', false);
+            add_privilege('POINTS', 'moderate_points', false);
+            add_privilege('POINTS', 'amend_point_transactions', false);
+
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_lifetime', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
         }
     }
 

@@ -97,7 +97,6 @@ function upgrader_db_upgrade_screen() : string
 function version_specific() : bool
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-    disable_php_memory_limit();
 
     // Version specific (rather than component specific) upgrading
     $version_files = cms_version_number();
@@ -375,6 +374,10 @@ function version_specific() : bool
         }
 
         if ($version_database < 11.0) {
+            // Database changes
+            $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
+
+            // Changes to support ticket forums
             if ((addon_installed('tickets')) && (get_forum_type() == 'cns')) {
                 require_code('tickets');
                 require_code('cns_forums_action2');
@@ -391,6 +394,7 @@ function version_specific() : bool
                 }
             }
 
+            // Changes to custom fields
             if (multi_lang_content()) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_type'));
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('text_original', 'cms_payment_card_expiry_date'));
@@ -399,6 +403,7 @@ function version_specific() : bool
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('cf_name', 'cms_payment_card_expiry_date'));
             }
 
+            // Renamed blocks
             $remap = [
                 'main_activities' => 'main_activity_feed',
                 'main_activities_state' => 'main_activity_feed_state',
@@ -485,7 +490,6 @@ function version_specific() : bool
 function upgrade_modules(float $from_cms_version) : string
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-    disable_php_memory_limit();
 
     $out = '';
 

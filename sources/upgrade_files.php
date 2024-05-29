@@ -243,6 +243,8 @@ function _upgrader_file_upgrade_screen() : string
         }
     }
 
+    // TODO: in v10, force the install of leader_board when upgrading to v11 and points is installed
+
     $addon_contents = [];
 
     /*
