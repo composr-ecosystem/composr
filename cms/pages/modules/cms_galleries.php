@@ -1893,7 +1893,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
             }
         }
         if ((get_option('manual_gallery_media_types') == '1') || ($accept_images == 0) || ($accept_videos == 0)) {
-            $fields->attach(form_input_various_ticks([[do_lang_tempcode('ACCEPT_IMAGES'), 'accept_images', $accept_images == 1, do_lang_tempcode('DESCRIPTION_ACCEPT_IMAGES')], [do_lang_tempcode('ACCEPT_VIDEOS'), 'accept_videos', $accept_videos == 1, do_lang_tempcode('DESCRIPTION_ACCEPT_VIDEOS')]], new Tempcode(), null, do_lang_tempcode('ACCEPTED_MEDIA_TYPES')));
+            $fields->attach(form_input_various_ticks([[do_lang_tempcode('ACCEPT_IMAGES'), 'accept_images', '1', do_lang_tempcode('DESCRIPTION_ACCEPT_IMAGES'), false, $accept_images == 1], [do_lang_tempcode('ACCEPT_VIDEOS'), 'accept_videos', '1', do_lang_tempcode('DESCRIPTION_ACCEPT_VIDEOS'), false, $accept_videos == 1]], new Tempcode(), null, do_lang_tempcode('ACCEPTED_MEDIA_TYPES')));
         } else {
             $hidden->attach(form_input_hidden('accept_images', '1'));
             $hidden->attach(form_input_hidden('accept_videos', '1'));
