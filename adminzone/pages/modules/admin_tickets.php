@@ -392,6 +392,7 @@ class Module_admin_tickets
         $reply_to = post_param_string('reply_to', false, INPUT_FILTER_EMAIL_ADDRESS);
         $ticket_type_id = $this->get_ticket_type_id();
         $skip_ticket = post_param_integer('skip_ticket', 0);
+        $ticket_message = $message;
 
         if ($skip_ticket == 0) { // create a support ticket
             @ignore_user_abort(true);
@@ -403,10 +404,10 @@ class Module_admin_tickets
             }
 
             // Wrap around e-mail address
-            $message = ticket_wrap_with_email_address($message, $to_email, false);
+            $ticket_message = ticket_wrap_with_email_address($ticket_message, $to_email, false);
 
             // Add post to ticket...
-            $ticket_url = ticket_add_post($ticket_id, $ticket_type_id, $title, $message, false);
+            $ticket_url = ticket_add_post($ticket_id, $ticket_type_id, $title, $ticket_message, false);
 
             // Auto-monitor...
             if ((has_privilege(get_member(), 'support_operator')) && (get_option('ticket_auto_assign') == '1')) {
@@ -416,6 +417,9 @@ class Module_admin_tickets
 
             // Update subject with the real ticket title
             list($title) = get_ticket_meta_details($ticket_id);
+
+            // Add ticket ID to subject
+            $title .= ' (ticket-ID: ' . $ticket_id . ')';
         }
 
         require_code('mail');
@@ -424,7 +428,7 @@ class Module_admin_tickets
         // Attach status
         if ($dispatcher->worked) {
             attach_message(do_lang_tempcode('SUCCESS'), 'inform');
-        } elseif ($dispatcher->error !== false) {
+        } elseif (($dispatcher->error !== null) && ($dispatcher->error !== false)) {
             attach_message($dispatcher->error, 'warn', false, true);
         } else {
             attach_message(do_lang_tempcode('INTERNAL_ERROR'), 'warn');

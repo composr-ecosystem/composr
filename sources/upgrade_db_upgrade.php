@@ -60,11 +60,13 @@ function upgrader_db_upgrade_screen() : string
 
     $something_done = false;
 
+    // Version-specific upgrade
     if (version_specific()) {
         $out .= do_lang('UPGRADER_UPGRADED_CORE_TABLES');
         $something_done = true;
     }
 
+    // Conversr upgrade
     if ($version_database_cns < $version_files) {
         $out = '<h2>' . do_lang('UPGRADER_UPGRADE_CNS') . '</h2>';
         if (cns_upgrade()) {
@@ -75,6 +77,7 @@ function upgrader_db_upgrade_screen() : string
         $something_done = true;
     }
 
+    // Modules upgrade
     $done = upgrade_modules($version_database_cns);
     if ($done != '') {
         $out .= do_lang('UPGRADER_UPGRADE_MODULES', $done);

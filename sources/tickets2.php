@@ -269,11 +269,15 @@ function ticket_wrap_with_email_address(string $post, string $email, bool $manda
 {
     // Do we need to tack on an e-mail address?
     if ($email != '') {
+        // TODO: #5785
+        /*
         $body = '> ' . str_replace("\n", "\n" . '> ', $post);
         if (substr($body, -2) == '> ') {
             $body = substr($body, 0, strlen($body) - 2);
         }
         $email_comcode = do_lang('GUEST_TICKET_REPLY_LINK', comcode_escape(post_param_string('title')), comcode_escape(get_site_name()), [comcode_escape($body), $email]);
+        */
+        $email_comcode = do_lang('GUEST_TICKET_REPLY_LINK', comcode_escape(post_param_string('title')), comcode_escape(get_site_name()), [comcode_escape(''), $email]);
         $new_post = '';
         $new_post .= $email_comcode;
         $new_post .= "\n";

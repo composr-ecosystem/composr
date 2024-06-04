@@ -164,11 +164,6 @@ function upgrade_script()
             $something_done = false;
             break;
 
-        case 'db_upgrade_cns': // Only to be launched as a consequent of db_upgrade
-            require_code('upgrade_db_upgrade');
-            echo upgrader_db_upgrade_cns_screen();
-            break;
-
         case 'theme_upgrade':
             require_code('upgrade_themes');
             appengine_live_guard();
