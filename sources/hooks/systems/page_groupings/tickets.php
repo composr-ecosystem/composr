@@ -38,6 +38,7 @@ class Hook_page_groupings_tickets
 
         return [
             ['setup', 'menu/site_meta/tickets', ['admin_tickets', ['type' => 'browse'], get_module_zone('admin_tickets')], do_lang_tempcode('tickets:SUPPORT_TICKETS'), 'tickets:DOC_TICKETS'],
+            ['tools', 'menu/site_meta/tickets', ['admin_tickets', ['type' => 'email'], get_module_zone('admin_tickets')], do_lang_tempcode('tickets:ADD_TICKET_EMAIL'), 'tickets:DOC_TICKETS'],
             ['site_meta', 'menu/site_meta/tickets', ['tickets', [], get_module_zone('tickets')], do_lang_tempcode('tickets:SUPPORT_TICKETS')],
         ];
     }

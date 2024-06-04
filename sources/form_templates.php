@@ -2747,6 +2747,56 @@ function form_input_timezone($pretty_name, $description, string $name, string $d
 }
 
 /**
+ * Create a list entry for a mail template.
+ * This will instead return a hidden field if only the default template exists.
+ *
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
+ * @param  ID_TEXT $name The name which this input field is for
+ * @param  ?string $default The selected value by default (null: the configured default template)
+ * @param  boolean $inline_list Whether this is an inline displayed list as opposed to a dropdown
+ * @param  boolean $required Whether this is required
+ * @return Tempcode The field
+ */
+function form_input_mail_template($pretty_name, $description, string $name, ?string $default, bool $inline_list = false, bool $required = true) : object
+{
+    if ($default === null) {
+        $default = get_value('default_newsletter_mail_template', 'MAIL');
+    }
+
+    // Which newsletter template?
+    $_template_choices = [];
+    $tpl_paths = [
+        get_custom_file_base() . '/themes/default/templates_custom',
+        get_file_base() . '/themes/default/templates_custom',
+        get_file_base() . '/themes/default/templates',
+    ];
+    foreach ($tpl_paths as $tpl_path) {
+        $dh = @opendir($tpl_path);
+        if ($dh !== false) {
+            while (($f = readdir($dh)) !== false) {
+                if (preg_match('#^MAIL.*\.tpl$#', $f) != 0) {
+                    $tpl = basename($f, '.tpl');
+                    $_template_choices[] = $tpl;
+                }
+            }
+            closedir($dh);
+        }
+    }
+    $_template_choices = array_unique($_template_choices);
+
+    if ($_template_choices == [$default]) {
+        return form_input_hidden($name, $default);
+    }
+
+    $template_choices = new Tempcode();
+    foreach ($_template_choices as $tpl) {
+        $template_choices->attach(form_input_list_entry($tpl, $default == $tpl, $tpl));
+    }
+    return form_input_list($pretty_name, $description, $name, $template_choices, null, $inline_list, $required);
+}
+
+/**
  * Start off a field set.
  *
  * IMPORTANT: Note that this function uses global state -- any fields generated between alternate_fields_set__start and alternate_fields_set__end will be rendered using field set templating.

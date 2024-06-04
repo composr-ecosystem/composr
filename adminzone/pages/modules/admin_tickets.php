@@ -63,6 +63,7 @@ class Module_admin_tickets
 
         return [
             'browse' => ['MANAGE_TICKET_TYPES', 'menu/site_meta/tickets'],
+            'email' => ['ADD_TICKET_EMAIL', 'buttons/add_ticket'],
         ];
     }
 
@@ -110,6 +111,10 @@ class Module_admin_tickets
             }
         }
 
+        if (($type == 'email') || ($type == '_email')) {
+            $this->title = get_screen_title('ADD_TICKET_EMAIL');
+        }
+
         return null;
     }
 
@@ -138,6 +143,12 @@ class Module_admin_tickets
         }
         if ($type == '_edit') {
             return $this->_edit_ticket_type();
+        }
+        if ($type == 'email') {
+            return $this->send_email_as_ticket();
+        }
+        if ($type == '_email') {
+            return $this->_send_email_as_ticket();
         }
 
         return new Tempcode();
@@ -316,5 +327,130 @@ class Module_admin_tickets
         // Show it worked / Refresh
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * The UI for sending an e-mail to any address as a Support Ticket.
+     *
+     * @return Tempcode The UI
+     */
+    public function send_email_as_ticket() : object
+    {
+        require_code('form_templates');
+        require_lang('email_log');
+
+        $fields = new Tempcode();
+        $hidden = new Tempcode();
+
+        $fields->attach(form_input_email(do_lang_tempcode('TO_EMAIL'), do_lang_tempcode('DESCRIPTION_TO_EMAIL_TICKET'), 'email', null, true));
+        $fields->attach(form_input_line(do_lang_tempcode('SUBJECT'), do_lang_tempcode('DESCRIPTION_SUBJECT_EMAIL_TICKET'), 'title', post_param_string('title', null), true));
+        $fields->attach(form_input_huge_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_MESSAGE_EMAIL_TICKET'), 'message', post_param_string('message', ''), true));
+        $fields->attach(form_input_mail_template(do_lang_tempcode('EMAIL_TEMPLATE'), do_lang_tempcode('DESCRIPTION_EMAIL_TEMPLATE_EMAIL_TICKET'), 'template', post_param_string('template', null), false, true));
+
+        if (get_option('ticket_mail_on') == '1') {
+            $reply_to = get_option('ticket_mail_email_address');
+        } else {
+            $reply_to = get_option('website_email');
+        }
+        $fields->attach(form_input_email(do_lang_tempcode('REPLY_TO'), do_lang_tempcode('DESCRIPTION_REPLY_TO_EMAIL_TICKET'), 'reply_to', post_param_string('reply_to', $reply_to), true));
+
+        $ticket_type_id = $this->get_ticket_type_id();
+        $types = build_types_list($ticket_type_id);
+        $entries = new Tempcode();
+        foreach ($types as $id => $type) {
+            $entries->attach(form_input_list_entry($type['TICKET_TYPE_ID'], $type['SELECTED'], $type['NAME']));
+        }
+        $fields->attach(form_input_list(do_lang_tempcode('TICKET_TYPE'), do_lang_tempcode('DESCRIPTION_TICKET_TYPE_EMAIL_TICKET'), 'ticket_type_id', $entries));
+
+        $fields->attach(form_input_tick(do_lang_tempcode('SKIP_TICKET_CREATION'), do_lang_tempcode('DESCRIPTION_SKIP_TICKET_CREATION'), 'skip_ticket', post_param_integer('skip_ticket', 0) == 1));
+
+        $url = build_url(['page' => '_SELF', 'type' => '_email'], '_SELF');
+
+        return do_template('FORM_SCREEN', [
+            'HIDDEN' => $hidden,
+            'TITLE' => $this->title,
+            'FIELDS' => $fields,
+            'TEXT' => do_lang_tempcode('DESCRIPTION_ADD_TICKET_EMAIL'),
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'URL' => $url,
+        ]);
+    }
+
+    /**
+     * The actualiser for sending an e-mail as a support ticket.
+     *
+     * @return Tempcode The UI for sending e-mail as ticket to another recipient
+     */
+    public function _send_email_as_ticket() : object
+    {
+        // Gather details
+        $to_email = post_param_string('email', false, INPUT_FILTER_EMAIL_ADDRESS);
+        $title = post_param_string('title');
+        $message = post_param_string('message');
+        $template = post_param_string('template');
+        $reply_to = post_param_string('reply_to', false, INPUT_FILTER_EMAIL_ADDRESS);
+        $ticket_type_id = $this->get_ticket_type_id();
+        $skip_ticket = post_param_integer('skip_ticket', 0);
+
+        if ($skip_ticket == 0) { // create a support ticket
+            @ignore_user_abort(true);
+            $ticket_id = ticket_generate_new_id($GLOBALS['FORUM_DRIVER']->get_guest_id());
+
+            // Check ticket type access
+            if (!has_category_access(get_member(), 'tickets', strval($ticket_type_id))) {
+                access_denied('I_ERROR');
+            }
+
+            // Wrap around e-mail address
+            $message = ticket_wrap_with_email_address($message, $to_email, false);
+
+            // Add post to ticket...
+            $ticket_url = ticket_add_post($ticket_id, $ticket_type_id, $title, $message, false);
+
+            // Auto-monitor...
+            if ((has_privilege(get_member(), 'support_operator')) && (get_option('ticket_auto_assign') == '1')) {
+                require_code('notifications');
+                set_notifications('ticket_assigned_staff', $ticket_id);
+            }
+
+            // Update subject with the real ticket title
+            list($title) = get_ticket_meta_details($ticket_id);
+        }
+
+        require_code('mail');
+        $dispatcher = dispatch_mail($title, $message, [$to_email], [$to_email], $reply_to, '', ['mail_template' => $template]);
+
+        // Attach status
+        if ($dispatcher->worked) {
+            attach_message(do_lang_tempcode('SUCCESS'), 'inform');
+        } elseif ($dispatcher->error !== false) {
+            attach_message($dispatcher->error, 'warn', false, true);
+        } else {
+            attach_message(do_lang_tempcode('INTERNAL_ERROR'), 'warn');
+        }
+
+        // Return the UI for sending the e-mail to another person
+        return $this->send_email_as_ticket();
+    }
+
+    /**
+     * Find the selected ticket type ID.
+     *
+     * @return ?AUTO_LINK The ticket type ID (null: none specified)
+     */
+    protected function get_ticket_type_id() : ?int
+    {
+        $default_ticket_type_id = either_param_integer('ticket_type_id', null);
+        if ($default_ticket_type_id === null) {
+            $_default_ticket_type = either_param_string('ticket_type', null);
+            if ($_default_ticket_type !== null) {
+                $default_ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => $_default_ticket_type]);
+                if ($default_ticket_type_id === null) {
+                    warn_exit(do_lang_tempcode('CAT_NOT_FOUND', escape_html($_default_ticket_type), 'ticket_type'));
+                }
+            }
+        }
+        return $default_ticket_type_id;
     }
 }
