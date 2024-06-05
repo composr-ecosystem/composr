@@ -659,9 +659,9 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
             } elseif (($pretend_dir . $file) == 'themes/map.ini') {
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = 'default=default' . "\n"; // Ensure theme maps are reset to defaults
             } elseif ($pretend_dir . $file == 'data_custom/errorlog.php') {
-                continue; // We'll add this back in later
+                continue; // We'll add this back in later as we want to reset its contents
             } elseif ($pretend_dir . $file == 'data_custom/execute_temp.php') {
-                continue; // We'll add this back in later
+                continue; // We'll add the bundle version in later
             } elseif ($pretend_dir . $file == 'sources/version.php') { // Update cms_version_time in version.php
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = preg_replace('/\d{10}/', strval(time()), cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file), 1);
             } else { // Everything else, copy as-is
@@ -676,7 +676,7 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
 
     // Write out files we otherwise skipped
     if ($pretend_dir == 'data_custom/') {
-        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/execute_temp.php.bundle', FILE_READ_LOCK);
+        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php.bundle'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/execute_temp.php.bundle', FILE_READ_LOCK);
         cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $pretend_dir . 'execute_temp.php', $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'], FILE_WRITE_FIX_PERMISSIONS);
 
         // TODO: not sure why this one is getting skipped; it should not be
