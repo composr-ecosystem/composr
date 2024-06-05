@@ -435,6 +435,7 @@ class Module_admin_make_release
         $this->edit_version();
 
         require_code('form_templates');
+        require_code('version');
 
         $text = do_lang_tempcode('MAKE_RELEASE_STEP2_TEXT');
 
@@ -506,14 +507,14 @@ class Module_admin_make_release
             [
                 do_lang_tempcode('BUILD_OPTIONS_MAKE_OMNI_UPGRADER'),
                 'make_omni_upgrader',
-                ($new_version === $this->get_previous_version()) ? '1' : '0',
+                ($new_version === $this->get_previous_version()) ? '1' : '0', // If prev and new versions match, we probably want an omni-upgrader
                 '',
                 false
             ],
             [
                 do_lang_tempcode('BUILD_OPTIONS_REBUILD_SQL'),
                 'rebuild_sql',
-                (post_param_integer('db_upgrade', 0) != 0) ? '1' : '0',
+                (post_param_integer('db_upgrade', 0) != 0) ? '1' : '0', // Ideally should rebuild SQL when database upgrade was marked required
                 '',
                 false
             ],
@@ -523,7 +524,14 @@ class Module_admin_make_release
                 '0',
                 '',
                 false
-            ]
+            ],
+            [
+                do_lang_tempcode('BUILD_OPTIONS_SKIP_DATA_FILES'),
+                'skip_data_files',
+                (cms_version_time() > (time() - (60 * 60 * 24))) ? '1' : '0', // Auto-tick if we made a build in the last 24 hours to prevent flooding the API
+                '',
+                false
+            ],
         ], do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_BUILD_OPTIONS'), null, do_lang_tempcode('MAKE_RELEASE_STEP2_BUILD_OPTIONS'), true));
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step3'], '_SELF');

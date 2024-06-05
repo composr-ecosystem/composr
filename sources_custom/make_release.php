@@ -103,7 +103,9 @@ function make_installers($skip_file_grab = false)
         generate_svg_sprite('default', false, false);
         generate_svg_sprite('default', true, false);
 
-        download_latest_data_files();
+        if (post_param_string('skip_data_files', '') == '') {
+            download_latest_data_files();
+        }
         make_files_manifest();
         make_database_manifest();
         if (post_param_string('rebuild_sql', '') != '') {
@@ -626,11 +628,6 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
     $version = cms_version_number();
     $version_branch = get_version_branch();
 
-    // Imply files into the root that we would have skipped
-    if ($pretend_dir == 'data_custom/') {
-        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/execute_temp.php.bundle', FILE_READ_LOCK);
-    }
-
     // Go over files in the directory
     $full_dir = get_file_base() . '/' . $dir;
     $dh = opendir($full_dir);
@@ -658,16 +655,16 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
         } else {
             // Reset volatile files to how they should be by default (see also list in install.php)
             if (($pretend_dir . $file) == '_config.php') {
-                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = '';
+                continue; // Actually we do not want _config.php in the build; its presence means we completed installation
             } elseif (($pretend_dir . $file) == 'themes/map.ini') {
-                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = 'default=default' . "\n";
+                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = 'default=default' . "\n"; // Ensure theme maps are reset to defaults
             } elseif ($pretend_dir . $file == 'data_custom/errorlog.php') {
-                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = "<" . "?php return; ?" . ">\n";
-            } elseif ($pretend_dir . $file == 'data_custom/execute_temp.php') { // So that code can't be executed
                 continue; // We'll add this back in later
-            } elseif ($pretend_dir . $file == 'sources/version.php') { // Update time of version in version.php
-                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = preg_replace('/\d{10}/', strval(time()), cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file), 1); // Copy file as-is
-            } else {
+            } elseif ($pretend_dir . $file == 'data_custom/execute_temp.php') {
+                continue; // We'll add this back in later
+            } elseif ($pretend_dir . $file == 'sources/version.php') { // Update cms_version_time in version.php
+                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = preg_replace('/\d{10}/', strval(time()), cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file), 1);
+            } else { // Everything else, copy as-is
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file);
             }
 
@@ -676,6 +673,19 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
         }
     }
     closedir($dh);
+
+    // Write out files we otherwise skipped
+    if ($pretend_dir == 'data_custom/') {
+        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/execute_temp.php.bundle', FILE_READ_LOCK);
+        cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $pretend_dir . 'execute_temp.php', $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'], FILE_WRITE_FIX_PERMISSIONS);
+
+        // TODO: not sure why this one is getting skipped; it should not be
+        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'firewall_rules.txt'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/firewall_rules.txt', FILE_READ_LOCK);
+        cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $pretend_dir . 'firewall_rules.txt', $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'firewall_rules.txt'], FILE_WRITE_FIX_PERMISSIONS);
+
+        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'errorlog.php'] = "<" . "?php return; ?" . ">\n";
+        cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $pretend_dir . 'errorlog.php', $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'errorlog.php'], FILE_WRITE_FIX_PERMISSIONS);
+    }
 
     $out .= do_build_directory_output($pretend_dir);
     return $out;
