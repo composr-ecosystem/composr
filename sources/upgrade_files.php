@@ -334,7 +334,7 @@ function _upgrader_file_upgrade_screen() : string
 
         if ($popup_simple_extract) {
             // See if we can skip the file, if the on-disk version is identical?
-            if ((file_exists(get_file_base() . '/' . $upgrade_file['path'])) && (($is_directory) || (filesize(get_file_base() . '/' . $upgrade_file['path']) == $upgrade_file['size']))) {
+            if ((is_file(get_file_base() . '/' . $upgrade_file['path'])) && (($is_directory) || (filesize(get_file_base() . '/' . $upgrade_file['path']) == $upgrade_file['size']))) {
                 $tar_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
 
                 /*
