@@ -677,7 +677,7 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
     // Write out files we otherwise skipped
     if ($pretend_dir == 'data_custom/') {
         $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php.bundle'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/execute_temp.php.bundle', FILE_READ_LOCK);
-        cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $pretend_dir . 'execute_temp.php', $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'], FILE_WRITE_FIX_PERMISSIONS);
+        cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $pretend_dir . 'execute_temp.php.bundle', $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php.bundle'], FILE_WRITE_FIX_PERMISSIONS);
 
         // TODO: not sure why this one is getting skipped; it should not be
         $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'firewall_rules.txt'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/firewall_rules.txt', FILE_READ_LOCK);
