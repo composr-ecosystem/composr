@@ -315,34 +315,10 @@ function upgrade_script()
                          Ideally you should update this array between each upgrade and only include files when absolutely necessary.
                     */
                     $immediately_upgrade = array(
-                        //'sources/upgrade.php' => true,
+                        'data/upgrader2.php' => false,
+                        'sources/crypt_master.php' => false,
+                        'sources/crypt_maintenance.php' => false, // FUDGE: v11
                     );
-
-                    // FUDGE: are we upgrading to v11? We have some core addons we must immediately extract and require a re-run of the step
-                    /*
-                    if (tar_get_file($upgrade_resource, 'sources/crypt_maintenance.php') !== null) {
-                        foreach ($directory as $upgrade_file) {
-                            if ((strpos($upgrade_file['path'], 'sources/hooks/systems/addon_registry/core_') === false) &&
-                                (strpos($upgrade_file['path'], 'sources/hooks/systems/addon_registry/core.php') === false) &&
-                                (strpos($upgrade_file['path'], 'sources/hooks/systems/addon_registry/themewizard.php') === false) // because of get_theme_seed moving
-                            ) {
-                                continue;
-                            }
-                            $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
-                            if ($file_data !== null) {
-                                $immediately_upgrade = array_merge($immediately_upgrade, array($upgrade_file['path'] => true));
-
-                                $matches = array();
-                                if (preg_match('#function get_file_list\(\)\s+:\s+array\s*\{([^\}]*)\}#', $file_data['data'], $matches) != 0) {
-                                    $files_to_check = eval($matches[1]);
-                                    foreach ($files_to_check as $file) {
-                                        $immediately_upgrade = array_merge($immediately_upgrade, array($file => true));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    */
 
                     $must_restart = false;
                     foreach ($immediately_upgrade as $path => $restart) {
