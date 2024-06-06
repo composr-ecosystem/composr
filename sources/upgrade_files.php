@@ -384,9 +384,9 @@ function _upgrader_file_upgrade_screen() : string
         $found = null;
         if (!$is_directory) {
             // See if this file belongs to an addon
-            foreach ($addon_contents as $addon_name => $addon_data) {
+            foreach ($addon_contents as $addon_name => $addon_files) {
                 $addon_file_path = $upgrade_file['path'];
-                if (strpos($addon_data, '\'' . addslashes($addon_file_path) . '\'') !== false) {
+                if (in_array($addon_file_path, $addon_files)) {
                     $found = $addon_name;
                     break;
                 }
