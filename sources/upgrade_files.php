@@ -183,6 +183,9 @@ function _upgrader_file_upgrade_screen() : string
      * Ideally you should update this array between each upgrade and only include files when absolutely necessary.
      */
     $immediately_upgrade = [
+        'sources/upgrade_files.php' => true,
+        'data/upgrader2.php' => false,
+        'sources/crypt_maintenance.php' => false,
     ];
     if (!$dry_run) {
         $must_restart = false;
