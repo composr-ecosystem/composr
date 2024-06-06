@@ -238,7 +238,7 @@ class Module_points
                     $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
                     $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
                 }
-                if ($row['gift_points_used'] !== $fields['gift_points']) {
+                if ($fields['gift_points_used'] !== $row['gift_points']) {
                     $difference = ($fields['gift_points_used'] - $row['gift_points']);
                     $map = [
                         'sender_id' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sender_id'],
