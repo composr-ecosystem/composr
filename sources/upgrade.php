@@ -309,6 +309,80 @@ function upgrade_script()
                         echo '<p>' . do_lang('EXTRACTING_MESSAGE') . '</p>';
                     }
 
+                    /*
+                         Files that must be upgraded first and through immediate extraction (if mapped to true, will also require re-running the upgrade step)
+                         You should also check data/upgrader2.php when modifying this.
+                         Ideally you should update this array between each upgrade and only include files when absolutely necessary.
+                    */
+                    $immediately_upgrade = array(
+                        'sources/upgrade.php' => true,
+                    );
+
+                    // FUDGE: are we upgrading to v11? We have some core addons we must immediately extract and require a re-run of the step
+                    if (tar_get_file($upgrade_resource, 'sources/crypt_maintenance.php') !== null) {
+                        foreach ($directory as $upgrade_file) {
+                            if ((strpos($upgrade_file['path'], 'sources/hooks/systems/addon_registry/core_') === false) &&
+                                (strpos($upgrade_file['path'], 'sources/hooks/systems/addon_registry/core.php') === false) &&
+                                (strpos($upgrade_file['path'], 'sources/hooks/systems/addon_registry/themewizard.php') === false) // because of get_theme_seed moving
+                            ) {
+                                continue;
+                            }
+                            $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
+                            if ($file_data !== null) {
+                                $immediately_upgrade = array_merge($immediately_upgrade, array($upgrade_file['path'] => true));
+
+                                $matches = array();
+                                if (preg_match('#function get_file_list\(\)\s+:\s+array\s*\{([^\}]*)\}#', $file_data['data'], $matches) != 0) {
+                                    $files_to_check = eval($matches[1]);
+                                    foreach ($files_to_check as $file) {
+                                        $immediately_upgrade = array_merge($immediately_upgrade, array($file => true));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    $must_restart = false;
+                    foreach ($immediately_upgrade as $path => $restart) {
+                        $file_data = tar_get_file($upgrade_resource, $path);
+                        if ($file_data !== null) {
+                            if ($popup_simple_extract) {
+                                if (is_file(get_file_base() . '/' . $path) && (cms_file_get_contents_safe(get_file_base() . '/' . $path) == $file_data['data'])) {
+                                    continue;
+                                }
+                            }
+
+                            afm_make_file($path, $file_data['data'], ($file_data['mode'] & 0002) != 0);
+                            echo do_lang('U_EXTRACTING_MESSAGE', escape_html($path)) . '<br />';
+                            if ($restart) {
+                                $must_restart = true;
+                            }
+                        }
+                    }
+                    if ($must_restart) {
+                        if ($popup_simple_extract) {
+                            // LEGACY
+                            $lang = do_lang('UPGRADER_RESTART_REQUIRED', null, null, null, null, false);
+                            if ($lang === null) {
+                                $lang = 'The upgrader has been upgraded. You must re-run this step to continue the transferring of files. You may need to re-enter the URL path to the upgrade file. You can find this on the software homesite news article about the release.';
+                            }
+
+                            echo $lang . '<br />';
+
+                            // Exit to require re-running this step.
+                            tar_close($upgrade_resource);
+                            break;
+                        } else {
+                            // LEGACY
+                            $lang = do_lang('UPGRADER_RESTART_REQUIRED_NOT_HAPPENING', null, null, null, null, false);
+                            if ($lang === null) {
+                                $lang = '<strong>Warning!</strong> The upgrader has been upgraded. This normally requires re-running this upgrader step. But because we cannot reliably determine which files were updated between runs, we are proceeding anyway. This is unsupported behaviour. And You may encounter issues after upgrading.';
+                            }
+
+                            echo $lang . '<br />';
+                        }
+                    }
+
                     // Find addons
                     $addon_contents = array();
                     foreach ($directory as $upgrade_file2) {
@@ -511,21 +585,6 @@ function upgrade_script()
                                 unlink(get_file_base() . '/imports/addons/' . $found . '.new.tar');
                             }
                             sync_file(get_file_base() . '/imports/addons/' . $found . '.tar');
-                        }
-                    }
-
-                    // Immediately upgrade these as the secondary upgrader (iframe) depends on them
-                    $immediately_upgrade = array(
-                        'data/upgrader2.php',
-                        'sources/crypt_master.php',
-                    );
-                    foreach ($immediately_upgrade as $path) {
-                        $file_data = tar_get_file($upgrade_resource, $path);
-                        if ($file_data !== null) {
-                            if (!$dry_run) {
-                                afm_make_file($path, $file_data['data'], ($file_data['mode'] & 0002) != 0);
-                            }
-                            echo '<p>' . do_lang('U_EXTRACTING_MESSAGE', escape_html($path)) . '</p>';
                         }
                     }
 

@@ -115,8 +115,33 @@ asort($data);
 
 // Work out what we're doing
 $todo = $data['todo'];
-
+$from_version = isset($metadata['from_version']) ? floatval($metadata['from_version']) : 0.0;
 $per_cycle = 100;
+
+/*
+    Files that must be upgraded first and through immediate extraction (if mapped to true, will also require re-running the upgrade step)
+    You should also check data/upgrader2.php when modifying this.
+    Ideally you should update this array between each upgrade and only include files when absolutely necessary.
+*/
+$upgrade_first = array(
+);
+$requires_restart = false;
+foreach ($todo as $i => $_target_file) {
+    list($target_file, , $offset, $length,) = $_target_file;
+    if (isset($upgrade_first[$target_file])) {
+        upgrader2_copy_in_file($target_file, $myfile, $offset, $length);
+        if (!$requires_restart) {
+            $requires_restart = $upgrade_first[$target_file];
+        }
+    }
+}
+if ($requires_restart) {
+    header('Content-Type: text/plain; charset=utf-8');
+    foreach ($upgrade_first as $file => $_requires_restart) {
+        echo $file . "\n";
+    }
+    exit('The upgrader has been upgraded. You must re-run this step to continue the transferring of files. You may need to re-enter the URL path to the upgrade file. You can find this on the software homesite news article about the release.');
+}
 
 $must_do_last = array(
     'data/upgrader2.php',
@@ -141,26 +166,7 @@ foreach ($todo as $i => $_target_file) {
         }
     }
 
-    // Make any needed directories
-    @mkdir($FILE_BASE . '/' . dirname($target_file), 0777, true);
-
-    // Copy in the data
-    fseek($myfile, $offset);
-    $myfile2 = @fopen($FILE_BASE . '/' . $target_file, 'wb');
-    if ($myfile2 === false) {
-        header('Content-type: text/plain');
-        exit('Filesystem permission error when trying to extract ' . $target_file . '. Maybe you needed to give FTP details when logging in?');
-    }
-    flock($myfile2, LOCK_EX);
-    while ($length > 0) {
-        $amount_to_read = min(1024, $length);
-        $data_read = fread($myfile, $amount_to_read);
-        fwrite($myfile2, $data_read);
-        $length -= $amount_to_read;
-    }
-    flock($myfile2, LOCK_UN);
-    fclose($myfile2);
-    @chmod($FILE_BASE . '/' . $target_file, 0644);
+    upgrader2_copy_in_file($target_file, $myfile, $offset, $length);
 }
 flock($myfile, LOCK_UN);
 fclose($myfile);
@@ -268,4 +274,38 @@ function upgrader2_check_master_password($password_given_hashed)
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
     return check_master_password_from_hash($password_given_hashed);
+}
+
+/**
+ * Copy a file from the upgrader into the installed software.
+ *
+ * @param  URLPATH $target_file The file to be copied
+ * @param  mixed $myfile The handler for the upgrader tmp file
+ * @param  integer $offset The offset at which to seek
+ * @param  integer $length The length which to seek
+ */
+function upgrader2_copy_in_file(string $target_file, $myfile, int $offset, int $length)
+{
+    global $FILE_BASE;
+
+    // Make any needed directories
+    @mkdir($FILE_BASE . '/' . dirname($target_file), 0777, true);
+
+    // Copy in the data
+    fseek($myfile, $offset);
+    $myfile2 = @fopen($FILE_BASE . '/' . $target_file, 'wb');
+    if ($myfile2 === false) {
+        header('Content-type: text/plain');
+        exit('Filesystem permission error when trying to extract ' . $target_file . '. Maybe you needed to give FTP details when logging in?');
+    }
+    flock($myfile2, LOCK_EX);
+    while ($length > 0) {
+        $amount_to_read = min(1024, $length);
+        $data_read = fread($myfile, $amount_to_read);
+        fwrite($myfile2, $data_read);
+        $length -= $amount_to_read;
+    }
+    flock($myfile2, LOCK_UN);
+    fclose($myfile2);
+    @chmod($FILE_BASE . '/' . $target_file, 0644);
 }
