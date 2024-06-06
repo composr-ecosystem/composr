@@ -165,22 +165,6 @@ function _upgrader_file_upgrade_screen() : string
     //tar_extract_to_folder($upgrade_resource, '', true);
     $directory = tar_get_directory($upgrade_resource); // Uses up to around 5MB of RAM
 
-    /*
-        Files that must be upgraded first and through immediate extraction (if mapped to true, will also require re-running the upgrade step)
-        You should also check data/upgrader2.php when modifying this.
-        Ideally you should update this array between each upgrade and only include files when absolutely necessary.
-    */
-    $immediately_upgrade = [
-        'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
-        'lang/EN/upgrade.ini' => false,
-
-        'data/upgrader2.php' => false,
-        'sources/crypt_maintenance.php' => false, // data/upgrader2.php depends on this
-
-        // TODO: Remove when v11 becomes stable; this is to force the installation of the new addon in an upgrade from a previous alpha
-        'sources/hooks/systems/addon_registry/site_messaging.php' => false,
-    ];
-
     // Hopefully $popup_simple_extract will be true (i.e. suEXEC mode), as it is safer
     $popup_simple_extract = (_ftp_info() === false);
     if ($popup_simple_extract) {
@@ -193,7 +177,13 @@ function _upgrader_file_upgrade_screen() : string
     // Upgrades always contain the full addon_registry directory; hotfixes do not
     $is_hotfix = (tar_get_file($upgrade_resource, 'sources/hooks/systems/addon_registry/index.html') === null);
 
-    // Files that must be immediately upgraded if the upgrade archive contains them
+    /*
+     * Files that must be upgraded first and through immediate extraction (if mapped to true, will also require re-running the upgrade step)
+     * You should also check data/upgrader2.php when modifying this.
+     * Ideally you should update this array between each upgrade and only include files when absolutely necessary.
+     */
+    $immediately_upgrade = [
+    ];
     if (!$dry_run) {
         $must_restart = false;
         foreach ($immediately_upgrade as $path => $restart) {
@@ -264,14 +254,62 @@ function _upgrader_file_upgrade_screen() : string
         }
     }
 
-    // Find addons within the TAR (should overwrite / take priority over what is on disk via is_hotfix)
-    foreach ($directory as $upgrade_file2) {
-        // See if we can find an addon registry file in our upgrade file
-        if ((strpos($upgrade_file2['path'], '/addon_registry/') !== false) && (substr($upgrade_file2['path'], -4) == '.php')) {
-            $file_data = tar_get_file($upgrade_resource, $upgrade_file2['path']);
-            $addon_contents[basename($upgrade_file2['path'], '.php')] = $file_data['data'];
+    // Find addons to extract (should take priority over what we loaded from disk)
+    $addon_contents = [];
+    foreach ($directory as $offset => $upgrade_file) {
+        $extract_addon = false;
+        if ((strpos($upgrade_file['path'], '/addon_registry/') !== false) && (substr($upgrade_file['path'], -4) == '.php')) {
+            require_code('global3');
+            $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
+
+            if (((file_exists(get_file_base() . '/' . $upgrade_file['path'])) || (strpos($upgrade_file['path'], '/core_') !== false))) {
+                $extract_addon = true;
+            } else {
+                $matches = array();
+                if (cms_preg_match_all_safe("/'previously_in_addon'\s*=>\s*\[(.*?)\]/", $file_data['data'], $matches) !== false) {
+                    if (empty($matches[1])) {
+                        $extract_addon = true; // New bundled addon we should probably install
+                        $out .= '<p>' . do_lang('UPGRADER_NEW_ADDON_EXTRACTED', escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '</p>';
+                    } else {
+                        foreach ($matches[1] as $match) {
+                            $previous_names = explode(", ", $match);
+                            foreach ($previous_names as $previous_name) {
+                                if (file_exists(get_file_base() . '/' . dirname($upgrade_file['path']) . '/' . trim($previous_name, "'") . '.php')) {
+                                    $extract_addon = true;
+
+                                    // We need to update the database accordingly with the new name of the addon
+                                    $GLOBALS['SITE_DB']->query_update('addons', [
+                                        'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                    ], ['addon_name' => trim($previous_name, "'")], '', 1);
+
+                                    $out .= '<p>' . do_lang('UPGRADER_RENAMED_ADDON_MESSAGE', escape_html(trim($previous_name, "'")), escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '</p>';
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $extract_addon = true; // New bundled addon we should probably install
+                    $out .= '<p>' . do_lang('UPGRADER_NEW_ADDON_EXTRACTED', escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '</p>';
+                }
+            }
+
+            if ($extract_addon) {
+                $addon_contents[basename($upgrade_file['path'], '.php')] = $file_data['data'];
+
+                if (substr($upgrade_file['path'], -1) != '/') {
+                    $metadata['todo'][] = array($upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0);
+
+                    if (!$popup_simple_extract) {
+                        if (!$dry_run) {
+                            afm_make_file($upgrade_file['path'], $file_data['data'], ($file_data['mode'] & 0002) != 0);
+                        }
+                        $out .= do_lang('U_EXTRACTING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';
+                    }
+                }
+            }
         }
     }
+
     $files_for_tar_updating = [];
 
     // Process addon registry files first since we need to filter out what files we are extracting from the upgrader based on installed addons
@@ -357,26 +395,11 @@ function _upgrader_file_upgrade_screen() : string
             }
         }
 
-        // What kind of file did we find?
-        if ((strpos($upgrade_file['path'], '/hooks/systems/addon_registry/') !== false) && isset($addon_contents[basename($upgrade_file['path'], '.php')])) {
-            // Addon registry file, for installed addon, renamed installed addon, or core addon...
-            if (!$is_directory) {
-                if (!$popup_simple_extract) {
-                    $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
-                    if (!$dry_run) {
-                        afm_make_file($upgrade_file['path'], $file_data['data'], ($file_data['mode'] & 0002) != 0);
-                    }
-                    $out .= do_lang('UPGRADER_EXTRACTING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';
-                } else {
-                    $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
-                }
-            }
-        } elseif ((strpos($upgrade_file['path'], '/hooks/systems/addon_registry/') === false)) {
-            // Some other file...
+        if ((strpos($upgrade_file['path'], '/hooks/systems/addon_registry/') === false) || (strpos($upgrade_file['path'], '.php') === false)) {
             $found = null;
             if (!$is_directory) {
+                // See if this file belongs to an addon
                 foreach ($addon_contents as $addon_name => $addon_data) {
-                    // See if this is the addon for the file
                     $addon_file_path = $upgrade_file['path'];
                     if (strpos($addon_data, '\'' . addslashes($addon_file_path) . '\'') !== false) {
                         $found = $addon_name;
@@ -438,6 +461,9 @@ function _upgrader_file_upgrade_screen() : string
 
     // Copy it into our archived addon so that addon is kept up-to-date
     foreach ($files_for_tar_updating as $found => $files) {
+        if (!is_file(get_file_base() . '/imports/addons/' . $found . '.tar')) { // We might be installing a new addon
+            continue;
+        }
         $old_addon_file = tar_open(get_file_base() . '/imports/addons/' . $found . '.tar', 'rb');
         $directory2 = tar_get_directory($old_addon_file, true);
         if ($directory2 !== null) {

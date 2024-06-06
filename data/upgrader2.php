@@ -96,25 +96,17 @@ $per_cycle = 250;
 $upgrade_first = [
     'sources/upgrade_files.php' => true, // Always leave this one so when upgrade_files.php array changes we can properly force a re-transfer.
 ];
-if ($from_version < 11.0) { // LEGACY
-    $upgrade_first['sources/upgrade_files.php'] = false; // cannot terminate upgrade process if upgrading from v10 because crypt_master will break upgrader.php
-
-    // Additional files that must be upgraded first so upgrader (hopefully) remains sane even if we encounter an error
-    $upgrade_first['upgrader.php'] = false;
-    $upgrade_first['sources/upgrade.php'] = false;
-    $upgrade_first['sources/upgrade_db_upgrade.php'] = false;
-    $upgrade_first['sources/upgrade_integrity_scan.php'] = false;
-    $upgrade_first['sources/upgrade_lib.php'] = false;
-    $upgrade_first['sources/upgrade_mysql.php'] = false;
-    $upgrade_first['sources/upgrade_shared_installs.php'] = false;
-    $upgrade_first['sources/upgrade_themes.php'] = false;
+if ($from_version < 11.0) { // LEGACY: cannot terminate upgrade process if upgrading from v10 because upgrader will break
+    $upgrade_first = [];
 }
 $requires_restart = false;
 foreach ($todo as $i => $_target_file) {
     list($target_file, , $offset, $length,) = $_target_file;
     if (isset($upgrade_first[$target_file])) {
         upgrader2_copy_in_file($target_file, $tmp_path_handle, $offset, $length);
-        $requires_restart = $upgrade_first[$target_file];
+        if (!$requires_restart) {
+            $requires_restart = $upgrade_first[$target_file];
+        }
     }
 }
 if ($requires_restart) {
