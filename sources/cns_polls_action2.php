@@ -532,14 +532,15 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
  * Calculate how much voting power a certain amount of points has.
  *
  * @param  integer $points The number of points from which to calculate the voting power
+ * @param  array $overrides Array of option overrides (empty: no overrides)
  * @return float The amount of voting power associated with the points
  */
-function cns_points_to_voting_power(int $points) : float
+function cns_points_to_voting_power(int $points, array $overrides = []) : float
 {
-    $ceiling = get_option('topic_polls_weighting_ceiling'); // Could be blank
-    $offset = intval(get_option('topic_polls_weighting_offset'));
-    $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
-    $base = abs(floatval(get_option('topic_polls_weighting_base')));
+    $ceiling = isset($overrides['topic_polls_weighting_ceiling']) ? $overrides['topic_polls_weighting_ceiling'] : get_option('topic_polls_weighting_ceiling'); // Could be blank
+    $offset = isset($overrides['topic_polls_weighting_offset']) ? intval($overrides['topic_polls_weighting_offset']) : intval(get_option('topic_polls_weighting_offset'));
+    $multiplier = isset($overrides['topic_polls_weighting_multiplier']) ? abs(floatval($overrides['topic_polls_weighting_multiplier'])) : abs(floatval(get_option('topic_polls_weighting_multiplier')));
+    $base = isset($overrides['topic_polls_weighting_base']) ? abs(floatval($overrides['topic_polls_weighting_base'])) : abs(floatval(get_option('topic_polls_weighting_base')));
 
     // Sanity check: If negative points, then member has no voting power. This avoids root of a negative number, which equals i.
     if ($points < 0) {
@@ -568,16 +569,17 @@ function cns_points_to_voting_power(int $points) : float
  * Calculate how much voting power a certain amount of points has and return text versions of the calculations.
  *
  * @param  integer $points The number of points from which to calculate the voting power
- * @return array Tuple; first item is a string of the equation itself, second item is a string with the numbers substituted into the equation, and third item is the final result
+ * @param  array $overrides Array of option overrides (empty: no overrides)
+ * @return array Tuple; first item is a Tempcode of the equation itself, second item is a Tempcode with the numbers substituted into the equation, and third item is the final result
  */
-function cns_calculate_poll_voting_power_text(int $points) : array
+function cns_calculate_poll_voting_power_text(int $points, array $overrides = []) : array
 {
     require_lang('cns_polls');
 
-    $ceiling = get_option('topic_polls_weighting_ceiling');
-    $offset = intval(get_option('topic_polls_weighting_offset'));
-    $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
-    $base = abs(floatval(get_option('topic_polls_weighting_base')));
+    $ceiling = isset($overrides['topic_polls_weighting_ceiling']) ? $overrides['topic_polls_weighting_ceiling'] : get_option('topic_polls_weighting_ceiling'); // Could be blank
+    $offset = isset($overrides['topic_polls_weighting_offset']) ? intval($overrides['topic_polls_weighting_offset']) : intval(get_option('topic_polls_weighting_offset'));
+    $multiplier = isset($overrides['topic_polls_weighting_multiplier']) ? abs(floatval($overrides['topic_polls_weighting_multiplier'])) : abs(floatval(get_option('topic_polls_weighting_multiplier')));
+    $base = isset($overrides['topic_polls_weighting_base']) ? abs(floatval($overrides['topic_polls_weighting_base'])) : abs(floatval(get_option('topic_polls_weighting_base')));
 
     // Give context for a blank ceiling in the equation text
     if ($ceiling === null || $ceiling == '') {
@@ -589,9 +591,9 @@ function cns_calculate_poll_voting_power_text(int $points) : array
         $base = 1.0;
     }
 
-    $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'Voting power maximum', 'Offset', ['Multiplier', 'life-time points', 'Root base']));
-    $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', escape_html($ceiling), escape_html(strval($offset)), [escape_html(float_to_raw_string($multiplier, 2, true)), escape_html(strval($points)), escape_html(float_to_raw_string($base, 2, true))]));
-    $calculation = cns_points_to_voting_power($points);
+    $equation = do_lang_tempcode('VOTING_POWER_EQUATION', 'Voting power maximum', 'Offset', ['Multiplier', 'life-time points', 'Root base']);
+    $equation_with_numbers = do_lang_tempcode('VOTING_POWER_EQUATION', escape_html($ceiling), escape_html(strval($offset)), [escape_html(float_to_raw_string($multiplier, 2, true)), escape_html(strval($points)), escape_html(float_to_raw_string($base, 2, true))]);
+    $calculation = cns_points_to_voting_power($points, $overrides);
 
     return [$equation, $equation_with_numbers, $calculation];
 }

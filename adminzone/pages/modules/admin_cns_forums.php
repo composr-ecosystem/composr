@@ -878,16 +878,16 @@ class Module_admin_cns_forums extends Standard_crud_module
     {
         $fields = new Tempcode();
 
-        $base = floatval(get_option('topic_polls_weighting_base'));
+        $base = floatval(post_param_string('base', get_option('topic_polls_weighting_base')));
         $fields->attach(form_input_float(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_BASE'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_base'), 'base', $base, true));
 
-        $multiplier = floatval(get_option('topic_polls_weighting_multiplier'));
+        $multiplier = floatval(post_param_string('multiplier', get_option('topic_polls_weighting_multiplier')));
         $fields->attach(form_input_float(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_MULTIPLIER'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_multiplier'), 'multiplier', $multiplier, true));
 
-        $offset = intval(get_option('topic_polls_weighting_offset'));
+        $offset = intval(post_param_string('offset', get_option('topic_polls_weighting_offset')));
         $fields->attach(form_input_integer(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_OFFSET'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_offset'), 'offset', $offset, true));
 
-        $_ceiling = get_option('topic_polls_weighting_ceiling');
+        $_ceiling = post_param_string('ceiling', get_option('topic_polls_weighting_ceiling'));
         if ($_ceiling !== null && $_ceiling != '') {
             $ceiling = intval($_ceiling);
         } else {
@@ -895,17 +895,55 @@ class Module_admin_cns_forums extends Standard_crud_module
         }
         $fields->attach(form_input_integer(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_CEILING'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_ceiling'), 'ceiling', $ceiling, false));
 
-        $submit_url = build_url(['page' => '_SELF', 'type' => '_calculate_voting_power'], '_SELF');
+        $submit_url = build_url(['page' => '_SELF', 'type' => 'calculate_voting_power'], '_SELF');
         $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'FORUMS'], get_module_zone('admin_config'));
+
+        $text = do_lang_tempcode('DESCRIPTION_VOTING_POWER_CALCULATOR', escape_html($config_url->evaluate()));
+
+        // Generate graph
+        require_code('graphs');
+        require_code('cns_polls_action2');
+
+        $overrides = [
+            'topic_polls_weighting_base' => $base,
+            'topic_polls_weighting_multiplier' => $multiplier,
+            'topic_polls_weighting_offset' => $offset,
+            'topic_polls_weighting_ceiling' => $_ceiling,
+        ];
+
+        $datasets = [];
+        $datasets[0] = [
+            'label' => 'Points to voting power',
+            'datapoints' => [],
+        ];
+        $x_labels = [];
+        for ($i = 0; $i < 10000; $i += 100) {
+            list(, $equation_values, $value) = cns_calculate_poll_voting_power_text($i, $overrides);
+            $datasets[0]['datapoints'][] = [
+                'value' => $value,
+                'tooltip' => $equation_values->evaluate(),
+            ];
+            $x_labels[] = integer_format($i);
+        }
+        for ($i = 10000; $i < 100000; $i += 1000) {
+            list(, $equation_values, $value) = cns_calculate_poll_voting_power_text($i, $overrides);
+            $datasets[0]['datapoints'][] = [
+                'value' => $value,
+                'tooltip' => $equation_values->evaluate(),
+            ];
+            $x_labels[] = integer_format($i);
+        }
+
+        $text->attach(graph_line_chart($datasets, $x_labels, 'life-time points', 'voting power', [], [], null, '300px'));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '1eadb98e94da438f95bddb9886f43cab',
             'HIDDEN' => new Tempcode(),
             'TITLE' => $this->title,
             'FIELDS' => $fields,
-            'TEXT' => do_lang_tempcode('DESCRIPTION_VOTING_POWER_CALCULATOR', escape_html($config_url->evaluate())),
-            'SUBMIT_ICON' => 'admin/export_spreadsheet',
-            'SUBMIT_NAME' => do_lang_tempcode('EXPORT'),
+            'TEXT' => $text,
+            'SUBMIT_ICON' => 'buttons/calculate',
+            'SUBMIT_NAME' => do_lang_tempcode('CALCULATE'),
             'URL' => $submit_url,
             'JS_FUNCTION_CALLS' => [],
         ]);
