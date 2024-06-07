@@ -287,7 +287,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     if ($GLOBALS['REFRESH_URL'][0] != '') {
         $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
             'r_session_id' => get_session_id(),
-            'r_message' => is_object($message) ? $message->evaluate() : escape_html($message),
+            'r_message' => is_object($message) ? _sanitise_error_msg($message->evaluate()) : escape_html(_sanitise_error_msg($message)),
             'r_type' => $type,
             'r_time' => time(),
         ]);

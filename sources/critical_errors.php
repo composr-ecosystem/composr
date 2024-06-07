@@ -74,7 +74,7 @@ if (!function_exists('critical_error')) {
         }
         ob_start();
 
-        if (($relay !== null) && (function_exists('_sanitise_error_msg'))) {
+        if ($relay !== null) {
             $relay = _sanitise_error_msg($relay);
         }
 

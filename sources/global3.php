@@ -5702,3 +5702,17 @@ function comma_list_str_to_arr(string $str, bool $block_symbol_style = false) : 
 
     return $map;
 }
+
+/**
+ * Strip privileged data from an error message.
+ *
+ * @param  string $text The error message
+ * @return string Sanitised error message
+ *
+ * @ignore
+ */
+function _sanitise_error_msg(string $text) : string
+{
+    // Strip paths, for security reasons
+    return str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $text);
+}

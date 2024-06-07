@@ -376,20 +376,6 @@ function _warn_screen(object $title, $text, bool $provide_back = true, bool $sup
 }
 
 /**
- * Strip privileged data from an error message.
- *
- * @param  string $text The error message
- * @return string Sanitised error message
- *
- * @ignore
- */
-function _sanitise_error_msg(string $text) : string
-{
-    // Strip paths, for security reasons
-    return str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $text);
-}
-
-/**
  * Do a terminal execution on a defined page type.
  *
  * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
