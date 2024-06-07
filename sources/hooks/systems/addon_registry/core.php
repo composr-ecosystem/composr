@@ -1435,6 +1435,10 @@ class Hook_addon_registry_core
             'sources_custom/hooks/form_handlers/join/index.html',
             'sources_custom/hooks/form_handlers/profile_edit/index.html',
 
+            // Additional html page processing - no actual hooks defined in core (or even bundled at time of writing), but may be added by other addons
+            'sources/hooks/systems/site_html_pages/.htaccess',
+            'sources/hooks/systems/site_html_pages/index.html',
+
             // Admin theme
             'themes/admin/css/index.html',
             'themes/admin/css/.htaccess',

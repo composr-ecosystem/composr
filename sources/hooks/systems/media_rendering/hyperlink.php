@@ -80,6 +80,24 @@ class Hook_media_rendering_hyperlink
         if (strpos($url, '://127.0.0.1:') !== false && strpos(get_base_url(), '://127.0.0.1:') === false) {
             return MEDIA_RECOG_PRECEDENCE_NONE;
         }
+        if (strpos($url, '://[0000:0000:0000:0000:0000:0000:0000:0001]/') !== false && strpos(get_base_url(), '://[0000:0000:0000:0000:0000:0000:0000:0001]/') === false) {
+            return MEDIA_RECOG_PRECEDENCE_NONE;
+        }
+        if (strpos($url, '://[0000:0000:0000:0000:0000:0000:0000:0001]:') !== false && strpos(get_base_url(), '://[0000:0000:0000:0000:0000:0000:0000:0001]:') === false) {
+            return MEDIA_RECOG_PRECEDENCE_NONE;
+        }
+        if (strpos($url, '://[::1]/') !== false && strpos(get_base_url(), '://[::1]/') === false) {
+            return MEDIA_RECOG_PRECEDENCE_NONE;
+        }
+        if (strpos($url, '://[::1]:') !== false && strpos(get_base_url(), '://[::1]:') === false) {
+            return MEDIA_RECOG_PRECEDENCE_NONE;
+        }
+        if (strpos($url, '://[0:0:0:0:0:0:0:1]/') !== false && strpos(get_base_url(), '://[0:0:0:0:0:0:0:1]/') === false) {
+            return MEDIA_RECOG_PRECEDENCE_NONE;
+        }
+        if (strpos($url, '://[0:0:0:0:0:0:0:1]:') !== false && strpos(get_base_url(), '://[0:0:0:0:0:0:0:1]:') === false) {
+            return MEDIA_RECOG_PRECEDENCE_NONE;
+        }
 
         return MEDIA_RECOG_PRECEDENCE_LOW;
     }

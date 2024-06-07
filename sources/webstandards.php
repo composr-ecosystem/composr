@@ -481,7 +481,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     $stack_size = 0;
     $to_find = array('html' => true, 'head' => true, 'title' => true/*, 'meta' => true*/);
     $only_one_of_stack = array();
-    $only_one_of_template = array('title' => 1, 'head' => true, '1' => 1, 'base' => 1, 'thead' => 1, 'tfoot' => 1);
+    $only_one_of_template = array('title' => 1, 'head' => 1, '1' => 1, 'base' => 1, 'thead' => 1, 'tfoot' => 1);
     $only_one_of = $only_one_of_template;
     $A_LINKS = array();
     $previous = '';

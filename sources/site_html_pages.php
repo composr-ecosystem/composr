@@ -45,7 +45,7 @@ function load_html_page($string, $file_base = null, &$out = null)
     if (strpos($html, '<html') !== false) {
         $matches = array();
 
-        // Fix links to anything in same dir, by assuming eithera Composr page in same zone -- or uploads/website_specific, or next to html files, or in root
+        // Fix links to anything in same dir, by assuming either a Composr page in same zone -- or uploads/website_specific, or next to html files, or in root
         $link_attributes = array('src', 'href', 'action', 'data', 'codebase', 'background');
         foreach ($link_attributes as $attribute) {
             $num_matches = preg_match_all('#<[^<>]* ' . $attribute . '="([^&"]+\.[^&"\.]+)"[^<>]*>#mis', $html, $matches);
@@ -74,18 +74,24 @@ function load_html_page($string, $file_base = null, &$out = null)
                 } else {
                     $new_link = $old_link;
                     if (url_is_local($old_link)) {
-                        if (is_file(get_custom_file_base() . '/' . dirname($string) . '/' . urldecode($old_link))) { // HTML pages dir
+                        // Strip out query strings and fragments as this will cause is_file to fail
+                        $old_link_parts_a = explode('?', $old_link);
+                        $old_link_sanitised_a = $old_link_parts_a[0];
+                        $old_link_parts_b = explode('#', $old_link_sanitised_a);
+                        $old_link_sanitised_b = $old_link_parts_b[0];
+
+                        if (is_file(get_custom_file_base() . '/' . dirname($string) . '/' . urldecode($old_link_sanitised_b))) { // HTML pages dir
                             $dirname = dirname($string);
                             if ($dirname == '.') {
                                 $dirname = '';
                             }
-                            $new_link = get_base_url() . '/' . (($dirname == '') ? '' : ($dirname . '/')) . $old_link;
-                        } elseif (is_file(get_custom_file_base() . '/' . get_zone_name() . '/' . urldecode($old_link))) { // Zone dir
-                            $new_link = get_base_url() . '/' . ((get_zone_name() == '') ? '' : (get_zone_name() . '/')) . $old_link;
-                        } elseif (is_file(get_custom_file_base() . '/' . urldecode($old_link))) { // Root dir
-                            $new_link = get_base_url() . '/' . $old_link;
-                        } else {
-                            $new_link = get_base_url() . '/uploads/website_specific/' . $old_link; // uploads/website_specific
+                            $new_link = get_base_url() . '/' . (($dirname == '') ? '' : ($dirname . '/')) . $old_link_sanitised_b;
+                        } elseif (is_file(get_custom_file_base() . '/' . get_zone_name() . '/' . urldecode($old_link_sanitised_b))) { // Zone dir
+                            $new_link = get_base_url() . '/' . ((get_zone_name() == '') ? '' : (get_zone_name() . '/')) . $old_link_sanitised_b;
+                        } elseif (is_file(get_custom_file_base() . '/' . urldecode($old_link_sanitised_b))) { // Root dir
+                            $new_link = get_base_url() . '/' . $old_link_sanitised_b;
+                        } else { // uploads/website_specific
+                            $new_link = get_base_url() . '/uploads/website_specific/' . $old_link_sanitised_b;
                         }
                     }
                 }
@@ -125,6 +131,14 @@ function load_html_page($string, $file_base = null, &$out = null)
         } else {
             $html = '';
         }
+    }
+
+    // Run hooks for modifying the HTML page
+    $hook_obs = find_all_hooks('systems', 'site_html_pages'); // TODO: find_all_hook_obs in v11
+    foreach (array_keys($hook_obs) as $hook) {
+        require_code('hooks/systems/site_html_pages/' . $hook);
+        $hook_ob = object_factory('Hook_site_html_pages_' . $hook);
+        $hook_ob->run($html, $string, $file_base, $out); // HTML and out is passed by reference
     }
 
     if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null)) {

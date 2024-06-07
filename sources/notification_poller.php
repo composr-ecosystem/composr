@@ -121,7 +121,7 @@ function notification_poller_script()
         }
 
         if (!is_null($max)) {
-            list($display, $unread) = get_web_notifications($max);
+            list($display, $unread) = get_web_notifications($max, 0, $forced_update);
             $xml .= '
                     <display_web_notifications>' . $display->evaluate() . '</display_web_notifications>
                     <unread_web_notifications>' . strval($unread) . '</unread_web_notifications>
@@ -177,15 +177,16 @@ function notification_poller_script()
  *
  * @param  ?integer $max Number of notifications to show (null: no limit)
  * @param  integer $start Start offset
+ * @param  boolean $skip_cache Whether to skip serving from the cache
  * @return array A pair: Templating, Max rows
  */
-function get_web_notifications($max = null, $start = 0)
+function get_web_notifications($max = null, $start = 0, $skip_cache = false)
 {
     if (is_guest()) {
         return array(new Tempcode(), 0);
     }
 
-    if ($start == 0) {
+    if (($start == 0) && (!$skip_cache)) {
         $test = get_cache_entry('_get_notifications', serialize(array($max)), CACHE_AGAINST_MEMBER, 10000);
         if ($test !== null) {
             return $test;

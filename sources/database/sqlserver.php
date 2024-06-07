@@ -68,7 +68,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
             critical_error('PASSON', $error);
         }
 
-        if ($db_host == '127.0.0.1' || $db_host == 'localhost') {
+        if ($db_host == '127.0.0.1' || $db_host == 'localhost' || $db_host == '0000:0000:0000:0000:0000:0000:0000:0001' || $db_host == '::1' || $db_host == '0:0:0:0:0:0:0:1') {
             $db_host = '(local)';
         }
         $db = sqlsrv_connect($db_host, ($db_user == '') ? array('Database' => $db_name) : array('UID' => $db_user, 'PWD' => $db_password, 'Database' => $db_name, 'CharacterSet' => 'UTF-8'));

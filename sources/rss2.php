@@ -170,6 +170,12 @@ function rss_backend_script()
             if ((get_forum_type() != 'cns') && (substr($feed, 0, 4) == 'cns_')) {
                 continue;
             }
+
+            // FUDGE: Feeds we do not want to present to guests
+            if (is_guest() && in_array($feed, array('admin_recent_actions', 'cns_private_topics', 'cns_unread_topics', 'tickets', 'web_notifications'))) {
+                continue;
+            }
+
             $feed_title = titleify($feed);
 
             // Try and get a better feed title

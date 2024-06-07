@@ -995,7 +995,7 @@ class Forum_driver_cns extends Forum_driver_base
             $sql .= ' AND (m_join_time>' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id>' . strval($member_id) . ')';
         }
         $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-        if (addon_installed('validation')) {
+        if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
         }
         $sql .= ' ORDER BY m_join_time ASC,id ASC';

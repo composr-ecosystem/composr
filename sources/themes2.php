@@ -63,7 +63,7 @@ function autoprobe_cdns()
     $server_ip = cms_srv('REMOTE_ADDR');
     $try = array(
         'cdn' . '.' . $domain_name,
-        ($server_ip == '127.0.0.1' || substr($server_ip, 0, 8) == '192.168.' || substr($server_ip, 0, 5) == '10.0.') ? null : $server_ip,
+        ($server_ip == '127.0.0.1' || substr($server_ip, 0, 8) == '192.168.' || substr($server_ip, 0, 5) == '10.0.' || substr($server_ip, 0, 3) == '::1' || substr($server_ip, 0, 15) == '0:0:0:0:0:0:0:1' || substr($server_ip, 0, 39) == '0000:0000:0000:0000:0000:0000:0000:0001') ? null : $server_ip,
         (substr($domain_name, 0, 4) == 'www.') ? preg_replace('#^www\.#', '', $domain_name) : ('www' . '.' . $domain_name),
         'ftp' . '.' . $domain_name,
         'mail' . '.' . $domain_name,
