@@ -115,7 +115,7 @@ asort($data);
 
 // Work out what we're doing
 $todo = $data['todo'];
-$from_version = isset($metadata['from_version']) ? floatval($metadata['from_version']) : 0.0;
+$from_version = isset($data['from_version']) ? floatval($data['from_version']) : 0.0;
 $per_cycle = 100;
 
 /*
@@ -284,7 +284,7 @@ function upgrader2_check_master_password($password_given_hashed)
  * @param  integer $offset The offset at which to seek
  * @param  integer $length The length which to seek
  */
-function upgrader2_copy_in_file(string $target_file, $myfile, int $offset, int $length)
+function upgrader2_copy_in_file($target_file, $myfile, $offset, $length)
 {
     global $FILE_BASE;
 

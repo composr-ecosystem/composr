@@ -338,11 +338,8 @@ function upgrade_script()
                     }
                     if ($must_restart) {
                         if ($popup_simple_extract) {
-                            // LEGACY
-                            $lang = do_lang('UPGRADER_RESTART_REQUIRED', null, null, null, null, false);
-                            if ($lang === null) {
-                                $lang = 'The upgrader has been upgraded. You must re-run this step to continue the transferring of files. You may need to re-enter the URL path to the upgrade file. You can find this on the software homesite news article about the release.';
-                            }
+                            // FUDGE
+                            $lang = 'The upgrader has been upgraded. You must re-run this step to continue the transferring of files. You may need to re-enter the URL path to the upgrade file. You can find this on the software homesite news article about the release.';
 
                             echo $lang . '<br />';
 
@@ -350,11 +347,8 @@ function upgrade_script()
                             tar_close($upgrade_resource);
                             break;
                         } else {
-                            // LEGACY
-                            $lang = do_lang('UPGRADER_RESTART_REQUIRED_NOT_HAPPENING', null, null, null, null, false);
-                            if ($lang === null) {
-                                $lang = '<strong>Warning!</strong> The upgrader has been upgraded. This normally requires re-running this upgrader step. But because we cannot reliably determine which files were updated between runs, we are proceeding anyway. This is unsupported behaviour. And You may encounter issues after upgrading.';
-                            }
+                            // FUDGE
+                            $lang = '<strong>Warning!</strong> The upgrader has been upgraded. This normally requires re-running this upgrader step. But because we cannot reliably determine which files were updated between runs, we are proceeding anyway. This is unsupported behaviour. And You may encounter issues after upgrading.';
 
                             echo $lang . '<br />';
                         }
