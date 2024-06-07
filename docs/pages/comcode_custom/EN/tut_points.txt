@@ -148,7 +148,7 @@ There exists an API method to [concept]refund[/concept] any amount of points (su
 
 [title="3"]Voting power in Topic Polls[/title]
 
-Site administrators can enable the ability to weigh poll votes on Conversr Topic Polls based on the number of points a voter had at the time of voting. This means members with more points have a greater effect / voting power on a poll's results when they vote. 
+Site administrators can enable the ability to weigh poll votes on Conversr Topic Polls based on the number of life-time points a voter had at the time of voting. This means members with more life-time points have a greater effect / voting power on a poll's results when they vote. 
 
 This is covered more in-depth on the [page="_SEARCH:tut_forums"]Forums page[/page].
 

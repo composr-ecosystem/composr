@@ -240,12 +240,16 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         access_denied('NOT_AS_GUEST');
     }
 
-    $points = addon_installed('points') ? points_balance($member_id) : 0;
-    $voting_power = cns_points_to_voting_power($points);
-    $total_voting_power_adjust = 0.0;
+    $points = 0;
+    $voting_power = 1.0; // If points addon is not installed, then everyone has a voting power of 1.
+    if (addon_installed('points')) {
+        $points = points_lifetime($member_id);
+        $voting_power = cns_points_to_voting_power($points);
+    }
 
     // Insert votes
     $answer = '';
+    $total_voting_power_adjust = 0.0;
     foreach ($votes as $vote) {
         if (!array_key_exists($vote, $answers)) {
             warn_exit(do_lang_tempcode('VOTE_CHEAT'));
@@ -585,7 +589,7 @@ function cns_calculate_poll_voting_power_text(int $points) : array
         $base = 1.0;
     }
 
-    $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'Voting power maximum', 'Offset', ['Multiplier', 'points balance', 'Root base']));
+    $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'Voting power maximum', 'Offset', ['Multiplier', 'life-time points', 'Root base']));
     $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', escape_html($ceiling), escape_html(strval($offset)), [escape_html(float_to_raw_string($multiplier, 2, true)), escape_html(strval($points)), escape_html(float_to_raw_string($base, 2, true))]));
     $calculation = cns_points_to_voting_power($points);
 
