@@ -651,9 +651,9 @@ function ecv2_COMMA_LIST_SET(string $lang, array $escaped, array $param) : strin
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv2_COPPA_ON(string $lang, array $escaped, array $param) : string
+function ecv2_PARENTAL_CONSENT_REQUIRED(string $lang, array $escaped, array $param) : string
 {
-    $value = ((get_option('is_on_coppa') == '1') && (get_option('dobs') == '1')) ? '1' : '0';
+    $value = ((get_option('is_on_parental_consent') == '1') && (get_option('dobs') == '1')) ? '1' : '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);

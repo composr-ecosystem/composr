@@ -171,7 +171,7 @@ Tapatalk does not support the following Composr forum features:
  - Marking posts as emphasised
  - Creating inline private posts ("whispers")
  - CAPTCHA for guests while joining or making topics/posts (we therefore have a separate Tapatalk option to disable guest access, to avoid potential spam)
- - COPPA
+ - Parental Consent
  - Inline creation of introduction message while joining the site
  - Categorisation of private topics (except the \'trash\' category, which is automatically used for deletion)
  - Browsing post-history

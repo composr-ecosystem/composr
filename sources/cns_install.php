@@ -1611,6 +1611,9 @@ function install_cns(?float $upgrade_from = null)
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
         delete_privilege('may_report_post'); // Combined into the enhanced report_content addon
 
+        rename_config_option('is_on_coppa', 'is_on_parental_consent');
+        rename_config_option('coppa_age', 'parental_consent_age');
+
         // Database changes
         $GLOBALS['FORUM_DB']->alter_table_field('f_forums', 'f_cache_last_username', 'ID_TEXT');
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_answers', 'pa_poll_id', 'AUTO_LINK');

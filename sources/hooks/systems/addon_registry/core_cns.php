@@ -225,7 +225,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/commandr_fs_extended_member/known_login_ips.php',
             'sources/hooks/systems/config/allow_alpha_search.php',
             'sources/hooks/systems/config/complex_privacy_options.php',
-            'sources/hooks/systems/config/coppa_age.php',
+            'sources/hooks/systems/config/parental_consent_age.php',
             'sources/hooks/systems/config/decryption_key.php',
             'sources/hooks/systems/config/display_name_generator.php',
             'sources/hooks/systems/config/dobs.php',
@@ -243,7 +243,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/config/important_groups_per_page.php',
             'sources/hooks/systems/config/invites_per_day.php',
             'sources/hooks/systems/config/is_on_automatic_mark_topic_read.php',
-            'sources/hooks/systems/config/is_on_coppa.php',
+            'sources/hooks/systems/config/is_on_parental_consent.php',
             'sources/hooks/systems/config/is_on_invisibility.php',
             'sources/hooks/systems/config/is_on_invites.php',
             'sources/hooks/systems/config/is_on_post_map.php',
@@ -516,7 +516,7 @@ class Hook_addon_registry_core_cns
             'themes/default/templates/CNS_VIEW_GROUP_MEMBER_SECONDARY.tpl',
             'themes/default/templates/CNS_VIEW_GROUP_SCREEN.tpl',
             'themes/default/templates/POSTING_FIELD.tpl',
-            'themes/default/text/COPPA_MAIL.txt',
+            'themes/default/text/PARENTAL_CONSENT_MAIL.txt',
         ];
     }
 
@@ -556,7 +556,7 @@ class Hook_addon_registry_core_cns
             'templates/BLOCK_MAIN_JOIN_DONE.tpl' => 'block_main_join_done',
             'templates/BLOCK_MAIN_JOIN.tpl' => 'block_main_join',
             'templates/CNS_JOIN_FORM.tpl' => 'cns_join_form',
-            'text/COPPA_MAIL.txt' => 'coppa_mail',
+            'text/PARENTAL_CONSENT_MAIL.txt' => 'parental_consent_mail',
         ];
     }
 
@@ -1591,17 +1591,18 @@ class Hook_addon_registry_core_cns
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__coppa_mail() : object
+    public function tpl_preview__parental_consent_mail() : object
     {
         $fields_done = [];
         $fields_done[] = ['LABEL' => lorem_phrase(), 'VALUE' => lorem_phrase()];
 
-        return lorem_globalise(do_lorem_template('COPPA_MAIL', [
+        return lorem_globalise(do_lorem_template('PARENTAL_CONSENT_MAIL', [
             'FAX' => lorem_phrase(),
             'POSTAL_ADDRESS' => lorem_phrase(),
             'EMAIL_ADDRESS' => lorem_phrase(),
             'FIELDS_DONE' => $fields_done,
             'PRIVACY_POLICY_URL' => placeholder_url(),
+            'RULES_URL' => placeholder_url(),
         ], null, false, null, '.txt', 'text'), null, '', true);
     }
 

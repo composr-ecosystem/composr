@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_coppa_age
+class Hook_config_is_on_parental_consent
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_coppa_age
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COPPA_AGE',
-            'type' => 'integer',
+            'human_name' => 'PARENTAL_CONSENT_REQUIRED',
+            'type' => 'tick',
             'category' => 'PRIVACY',
-            'group' => 'COPPA',
-            'explanation' => 'CONFIG_OPTION_coppa_age',
+            'group' => 'PARENTAL_CONSENT',
+            'explanation' => 'CONFIG_OPTION_is_on_parental_consent',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 2,
+            'order_in_category_group' => 1,
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
@@ -52,6 +52,6 @@ class Hook_config_coppa_age
      */
     public function get_default() : ?string
     {
-        return (get_forum_type() != 'cns') ? null : '13';
+        return (get_forum_type() != 'cns') ? null : '1';
     }
 }

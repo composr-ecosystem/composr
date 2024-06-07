@@ -34,7 +34,7 @@ class Hook_config_privacy_postal_address
             'human_name' => 'ADDRESS',
             'type' => 'text',
             'category' => 'PRIVACY',
-            'group' => 'COPPA',
+            'group' => 'PARENTAL_CONSENT',
             'explanation' => 'CONFIG_OPTION_privacy_postal_address',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

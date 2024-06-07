@@ -3491,9 +3491,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_complex_privacy_options
         CONFIG_OPTION_complex_uploader
         CONFIG_OPTION_cookie_notice
-        CONFIG_OPTION_coppa_age
+        CONFIG_OPTION_parental_consent
         CONFIG_OPTION_website_activity_store_time
-        COPPA_AGE
+        PARENTAL_CONSENT_AGE
         PRIVILEGE_avoid_captcha
         WEBSITE_ACTIVITY_STORE_TIME
         MEMBER_SEARCH
@@ -3676,9 +3676,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_is_on_comcode_page_cache
         CONFIG_OPTION_is_on_comcode_page_children
         CONFIG_OPTION_is_on_comments
-        CONFIG_OPTION_is_on_coppa
-        CNS_WAITING_CONFIRM_MAIL_COPPA
-        COPPA_JOIN_SUBJECT
+        CONFIG_OPTION_is_on_parental_consent
+        CNS_WAITING_CONFIRM_MAIL_PARENTAL_CONSENT
+        PARENTAL_CONSENT_JOIN_SUBJECT
         INCORRECT_CAPTCHA_QUESTION_ANSWER
         CONFIG_GROUP_DESCRIP_CAPTCHA_QUESTIONS
         CAPTCHA_QUESTIONS
@@ -4120,8 +4120,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_SETTINGS
         COOKIE_TEXT
         COOKIE_TEXT__CMS_PREFIX
-        COPPA
-        COPPA_ENABLED
+        PARENTAL_CONSENT
+        PARENTAL_CONSENT_REQUIRED
         MIN_CMS_VERSION
         DESCRIPTION_MIN_CMS_VERSION
         MAX_CMS_VERSION
@@ -11227,7 +11227,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_client_time
         COOKIE_font_size
         COOKIE_ga
-        PRIVACY_EXPLANATION_COPPA
+        PRIVACY_EXPLANATION_PARENTAL_CONSENT
         PRIVACY_EXPLANATION_COOKIES
         PRIVACY_EXPLANATION_NON_DISCLOSURE
         PRIVACY_ACTION_PROFILE_DISCLOSURE
