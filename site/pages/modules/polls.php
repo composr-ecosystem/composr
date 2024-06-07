@@ -154,10 +154,6 @@ class Module_polls
             $GLOBALS['SITE_DB']->delete_table_field('poll', 'ip');
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('poll_votes', 'v_vote_time', 'TIME', time());
-        }
-
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
             $GLOBALS['SITE_DB']->create_index('poll', '#poll_search__combined', ['question', 'option1', 'option2', 'option3', 'option4', 'option5']);
 
@@ -166,7 +162,9 @@ class Module_polls
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
-            for ($i = 1 ; $i <= 10; $i++) {
+            $GLOBALS['SITE_DB']->add_table_field('poll_votes', 'v_vote_time', 'TIME', time());
+
+            for ($i = 1; $i <= 10; $i++) {
                 $GLOBALS['SITE_DB']->alter_table_field('poll', 'option' . strval($i), 'SHORT_TRANS__COMCODE');
             }
 

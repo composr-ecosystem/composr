@@ -171,8 +171,6 @@ class Module_admin_stats extends Standard_crud_module
             $GLOBALS['SITE_DB']->delete_table_field('stats', 'the_page');
             $GLOBALS['SITE_DB']->delete_table_field('stats', 's_get');
 
-            $GLOBALS['SITE_DB']->delete_table_field('stats', 'title');
-
             $GLOBALS['SITE_DB']->add_table_field('stats', 'requested_language', 'LANGUAGE_NAME');
             $GLOBALS['SITE_DB']->add_table_field('stats', 'tracking_code', 'ID_TEXT');
         }

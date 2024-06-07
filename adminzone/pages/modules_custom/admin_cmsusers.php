@@ -294,8 +294,8 @@ class Module_admin_cmsusers
 
             $rt = [];
 
-            $rt['HITTIME'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60)));
-            $rt['HITTIME_2'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60 / 24)));
+            $rt['HITTIME'] = intval(round((time() - $r['hittime']) / 60 / 60));
+            $rt['HITTIME_2'] = intval(round((time() - $r['hittime']) / 60 / 60 / 24));
 
             if ($rt['HITTIME_2'] < 365) { // Do not check install status of sites inactive for more than a year; no use
                 $active = get_value_newer_than('testing__' . $r['website_url'] . '/data/installed.php', time() - 60 * 60 * 24, true);

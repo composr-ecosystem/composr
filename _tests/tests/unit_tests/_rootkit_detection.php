@@ -28,7 +28,7 @@ class _rootkit_detection_test_set extends cms_test_case
 
         // TODO: automatically modify _config.php for this test
 
-        require_code('crypt_master');
+        require_code('crypt_maintenance');
 
         if ($password == '') {
             $this->assertTrue(false, 'Cannot run test unless admin password is blank or defined as non-hashed');

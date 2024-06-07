@@ -81,24 +81,27 @@ PHP;
      */
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
-        $GLOBALS['SITE_DB']->create_table('actionlogs', [
-            'id' => '*AUTO',
-            'the_type' => 'ID_TEXT',
-            'param_a' => 'ID_TEXT',
-            'param_b' => 'SHORT_TEXT',
-            'member_id' => 'MEMBER',
-            'warning_id' => '?AUTO_LINK',
-            'ip' => 'IP',
-            'date_and_time' => 'TIME',
-        ]);
+        if ($upgrade_from === null) {
+            $GLOBALS['SITE_DB']->create_table('actionlogs', [
+                'id' => '*AUTO',
+                'the_type' => 'ID_TEXT',
+                'param_a' => 'ID_TEXT',
+                'param_b' => 'SHORT_TEXT',
+                'member_id' => 'MEMBER',
+                'warning_id' => '?AUTO_LINK',
+                'ip' => 'IP',
+                'date_and_time' => 'TIME',
+            ]);
 
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'xas', ['member_id']);
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'ts', ['date_and_time']);
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'aip', ['ip']);
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'athe_type', ['the_type']);
+            $GLOBALS['SITE_DB']->create_index('actionlogs', 'xas', ['member_id']);
+            $GLOBALS['SITE_DB']->create_index('actionlogs', 'ts', ['date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('actionlogs', 'aip', ['ip']);
+            $GLOBALS['SITE_DB']->create_index('actionlogs', 'athe_type', ['the_type']);
+        }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('actionlogs', 'warning_id', '?AUTO_LINK');
+            $GLOBALS['SITE_DB']->create_index('actionlogs', 'wid', ['warning_id']);
 
             $GLOBALS['SITE_DB']->query_update('actionlogs', ['the_type' => 'INVALIDATE_POST'], ['the_type' => 'UNVALIDATE_POST']);
         }

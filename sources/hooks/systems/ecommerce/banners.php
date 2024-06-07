@@ -69,6 +69,7 @@ class Hook_ecommerce_banners
             'price_points' => (get_option('banner_setup_price_points') == '') ? null : (intval(get_option('banner_setup_price_points'))),
             'discount_points__num_points' => null,
             'discount_points__price_reduction' => null,
+            'discount_points__percentile' => null,
 
             'tax_code' => get_option('banner_setup_tax_code'),
             'shipping_cost' => 0.00,

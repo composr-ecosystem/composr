@@ -164,31 +164,6 @@ class Module_newsletter
             $GLOBALS['SITE_DB']->alter_table_field('newsletter_subscribers', 'the_password', 'SHORT_TEXT');
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY
-            $GLOBALS['SITE_DB']->delete_index_if_exists('newsletter_drip_send', 'd_to_email');
-            $GLOBALS['SITE_DB']->delete_index_if_exists('newsletter_drip_send', 'd_inject_time');
-
-            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_subject');
-            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_from_email');
-            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_from_name');
-            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_priority');
-            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_template');
-            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_html_only');
-            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_message');
-            $GLOBALS['SITE_DB']->add_table_field('newsletter_drip_send', 'd_message_id', 'AUTO_LINK');
-            $GLOBALS['SITE_DB']->add_table_field('newsletter_drip_send', 'd_message_binding', 'LONG_TEXT');
-
-            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'from_email', 'SHORT_TEXT');
-            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'from_name', 'SHORT_TEXT');
-            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'priority', 'INTEGER');
-            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'template', 'ID_TEXT');
-            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'html_only', 'BINARY');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY
-            $GLOBALS['SITE_DB']->create_index('newsletter_drip_send', 'd_message_id', ['d_message_id']);
-        }
-
         if (($upgrade_from !== null) && ($upgrade_from < 13)) { // LEGACY
             // We've switched to JSON for spreadsheet data
             $GLOBALS['SITE_DB']->alter_table_field('newsletter_periodic', 'np_csv_data', 'LONG_TEXT', 'np_spreadsheet_data');
@@ -202,14 +177,34 @@ class Module_newsletter
             // We've dropped interest levels
             $GLOBALS['SITE_DB']->delete_table_field('newsletter_archive', 'importance_level');
             $GLOBALS['SITE_DB']->delete_table_field('newsletter_subscribe', 'the_level');
+
+            // These fields have been renamed and moved to newsletter_archive
+            $GLOBALS['SITE_DB']->delete_index_if_exists('newsletter_drip_send', 'd_to_email');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('newsletter_drip_send', 'd_inject_time');
+            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_subject');
+            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_from_email');
+            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_from_name');
+            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_priority');
+            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_template');
+            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_html_only');
+            $GLOBALS['SITE_DB']->delete_table_field('newsletter_drip_send', 'd_message');
+
+            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'from_email', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'from_name', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'priority', 'INTEGER');
+            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'template', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('newsletter_archive', 'html_only', 'BINARY');
+            $GLOBALS['SITE_DB']->add_table_field('newsletter_drip_send', 'd_message_id', 'AUTO_LINK');
+            $GLOBALS['SITE_DB']->add_table_field('newsletter_drip_send', 'd_message_binding', 'LONG_TEXT');
+
+            $GLOBALS['SITE_DB']->alter_table_field('newsletters', 'description', 'LONG_TRANS', 'the_description');
+            $GLOBALS['SITE_DB']->alter_table_field('newsletter_subscribers', 'pass_salt', 'SHORT_TEXT');
+
+            $GLOBALS['SITE_DB']->create_index('newsletter_drip_send', 'd_message_id', ['d_message_id']);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 12)) {
             $GLOBALS['SITE_DB']->create_index('newsletter_subscribers', 'email', ['email']);
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 13)) { // LEGACY
-            $GLOBALS['SITE_DB']->alter_table_field('newsletters', 'description', 'LONG_TRANS', 'the_description');
         }
     }
 

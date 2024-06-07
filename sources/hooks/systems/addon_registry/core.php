@@ -859,7 +859,7 @@ class Hook_addon_registry_core
             'sources/critical_errors.php',
             'sources/crud_module.php',
             'sources/crypt.php',
-            'sources/crypt_master.php',
+            'sources/crypt_maintenance.php',
             'sources/csp.php',
             'sources/csrf_filter.php',
             'sources/database.php',

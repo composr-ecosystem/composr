@@ -151,7 +151,6 @@ Karma and its API can be further extended for additional functionality. For exam
                 'points',
                 'giftr',
                 'idolisr',
-                'member_comments',
                 'ecommerce',
             ],
             'conflicts_with' => [],
@@ -202,7 +201,6 @@ Karma and its API can be further extended for additional functionality. For exam
             'sources_custom/hooks/systems/config/karma_influence_warnings.php',
             'sources_custom/hooks/systems/config/karma_influence_warnings_amount.php',
             'sources_custom/hooks/systems/config/karma_likes.php',
-            'sources_custom/hooks/systems/config/karma_member_comments.php',
             'sources_custom/hooks/systems/config/karma_points.php',
             'sources_custom/hooks/systems/config/karma_points_idolisr.php',
             'sources_custom/hooks/systems/config/karma_threshold.php',
@@ -216,6 +214,7 @@ Karma and its API can be further extended for additional functionality. For exam
             'sources_custom/karma2.php',
             'themes/default/css_custom/karma.css',
             'themes/default/templates_custom/BLOCK_MAIN_KARMA_GRAPH.tpl',
+            'sources_custom/hooks/systems/member_boxes/karma.php',
         ];
     }
 }

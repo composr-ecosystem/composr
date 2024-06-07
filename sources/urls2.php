@@ -244,14 +244,10 @@ function _url_to_filename(string $url_full) : string
         $new_name = str_replace($bad_char, $good_char, $new_name);
     }
 
-    if (strlen($new_name) <= 200/*technically 256 but something may get put on the start, so be cautious*/) {
-        return $new_name;
-    }
-
-    // Non correspondence, but at least we have something
     if (strpos($new_name, '.') === false) {
         return md5($new_name);
     }
+
     return md5($new_name) . '.' . get_file_extension($new_name);
 }
 

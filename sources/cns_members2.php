@@ -217,12 +217,12 @@ function render_member_box(int $member_id, bool $preview = false, bool $show_ava
         ]));
     }
 
-    foreach ($member_info['custom_data'] as $hook_result) {
+    foreach ($member_info['custom_data'] as $field_name => $field_value) {
         $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
             '_GUID' => ($guid != '') ? $guid : '630f049d3b3065df2d1b69270aa93490',
-            'NAME' => $hook_result[0],
-            'RAW' => $hook_result[1],
-            'VALUE' => $hook_result[1],
+            'NAME' => $field_name,
+            'RAW' => $field_value,
+            'VALUE' => $field_value,
             'MEMBER_ID' => strval($member_id),
         ]));
     }

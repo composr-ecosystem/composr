@@ -262,9 +262,7 @@ class Module_galleries
             } else {
                 set_option('galleries_sort_order', 'recent ASC');
             }
-        }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('galleries', 'layout_mode', 'ID_TEXT');
             $GLOBALS['SITE_DB']->add_table_field('videos', 'closed_captions_url', 'URLPATH');
 

@@ -87,7 +87,7 @@ function cleanup()
     if ($password === null) {
         @exit('<form action="#" method="post"><label>Maintenance password <input type="password" name="password" value="" /></label><button class="btn btn-danger btn-scr" type="submit">' . do_template('ICON', ['_GUID' => '57a3cb1a0e4ea819fdc934eb2f123c82', 'NAME' => 'admin/delete3'])->evaluate() . ' Delete programmed data</button></form>');
     }
-    require_code('crypt_master');
+    require_code('crypt_maintenance');
     if (!check_maintenance_password($password)) {
         warn_exit('Access denied - incorrect maintenance password. Your login attempt has been logged with your IP address.');
     }

@@ -895,11 +895,13 @@ class DatabaseRepair
 
         $create_key_query = $GLOBALS['SITE_DB']->driver->change_primary_key__sql(get_table_prefix(), $table_name, $key_fields);
         if (!$return_queries) {
-            $this->add_fixup_query($create_key_query);
+            foreach ($create_key_query as $_query) {
+                $this->add_fixup_query($_query);
+            }
         }
 
         if ($return_queries) {
-            return [$create_key_query];
+            return $create_key_query;
         }
         return null;
     }

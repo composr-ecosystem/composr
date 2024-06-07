@@ -142,7 +142,7 @@ function endpoint_script()
                 if (strpos($password_given, STRING_MAGIC_NULL_BASE64) === 0) { // Strip STRING_MAGIC_NULL_BASE64 if it exists
                     $password_given = substr($password_given, (strlen(STRING_MAGIC_NULL_BASE64) + 1)); //+1 because of the colon after STRING_MAGIC_NULL_BASE64
                 }
-                require_code('crypt_master');
+                require_code('crypt_maintenance');
                 if (check_maintenance_password($password_given, true)) {
                     $authorized = true;
                     require_code('users_active_actions');

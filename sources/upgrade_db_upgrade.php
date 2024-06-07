@@ -60,11 +60,24 @@ function upgrader_db_upgrade_screen() : string
 
     $something_done = false;
 
+    // Version-specific upgrade
     if (version_specific()) {
         $out .= do_lang('UPGRADER_UPGRADED_CORE_TABLES');
         $something_done = true;
     }
 
+    // Conversr upgrade
+    if ($version_database_cns < $version_files) {
+        $out = '<h2>' . do_lang('UPGRADER_UPGRADE_CNS') . '</h2>';
+        if (cns_upgrade()) {
+            $out .= '<p>' . do_lang('SUCCESS') . '</p>';
+        } else {
+            $out .= do_lang('UPGRADER_NO_CNS_UPGRADE');
+        }
+        $something_done = true;
+    }
+
+    // Modules upgrade
     $done = upgrade_modules($version_database_cns);
     if ($done != '') {
         $out .= do_lang('UPGRADER_UPGRADE_MODULES', $done);
@@ -74,29 +87,8 @@ function upgrader_db_upgrade_screen() : string
         $out .= do_lang('NO_UPGRADE_DONE');
     }
 
-    if ($version_database_cns < $version_files) {
-        $out .= do_lang('UPGRADER_MUST_UPGRADE_CNS', upgrader_link('upgrader.php?type=db_upgrade_cns', do_lang('UPGRADER_UPGRADE_CNS')));
-    }
-
     set_value('db_version', strval(cms_version_time_db()), true);
 
-    return $out;
-}
-
-/**
- * Do upgrader screen: Conversr database upgrade.
- *
- * @ignore
- * @return string Output messages
- */
-function upgrader_db_upgrade_cns_screen() : string
-{
-    $out = '<h2>' . do_lang('UPGRADER_UPGRADE_CNS') . '</h2>';
-    if (cns_upgrade()) {
-        $out .= '<p>' . do_lang('SUCCESS') . '</p>';
-    } else {
-        $out .= do_lang('UPGRADER_NO_CNS_UPGRADE');
-    }
     return $out;
 }
 
@@ -107,6 +99,8 @@ function upgrader_db_upgrade_cns_screen() : string
  */
 function version_specific() : bool
 {
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
     // Version specific (rather than component specific) upgrading
     $version_files = cms_version_number();
     $_version_database = get_value('version');
@@ -383,6 +377,10 @@ function version_specific() : bool
         }
 
         if ($version_database < 11.0) {
+            // Database changes
+            $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
+
+            // Changes to support ticket forums
             if ((addon_installed('tickets')) && (get_forum_type() == 'cns')) {
                 require_code('tickets');
                 require_code('cns_forums_action2');
@@ -399,6 +397,7 @@ function version_specific() : bool
                 }
             }
 
+            // Changes to custom fields
             if (multi_lang_content()) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_type'));
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('text_original', 'cms_payment_card_expiry_date'));
@@ -407,6 +406,7 @@ function version_specific() : bool
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('cf_name', 'cms_payment_card_expiry_date'));
             }
 
+            // Renamed blocks
             $remap = [
                 'main_activities' => 'main_activity_feed',
                 'main_activities_state' => 'main_activity_feed_state',
@@ -439,9 +439,14 @@ function version_specific() : bool
             foreach ($deleted_addons as $addon) {
                 $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon]);
                 @unlink(get_custom_file_base() . '/imports/addons/' . $addon . '.tar');
+
+                // Just in case the user did not process file integrity yet
+                @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
+                @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
             }
 
             // Renamed addons (old name => new name)
+            //  Note that any table modifications etc should be handled in the upgrade code for the NEW addon / module
             //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $renamed_addons = [
                 'unvalidated' => 'validation'
@@ -451,6 +456,10 @@ function version_specific() : bool
                 @copy(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar', get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @fix_permissions(get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @unlink(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar');
+
+                // Just in case the user did not process file integrity yet; new hook should have been extracted by the upgrader
+                @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $old_addon . '.php');
+                @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $old_addon . '.php');
             }
 
             // File replacements
@@ -460,6 +469,9 @@ function version_specific() : bool
                 '#ocProducts#' => 'Core Development Team',
             ];
             perform_search_replace($reps);
+
+            // Default zone page name change
+            $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_default_page' => 'start']);
         }
 
         // Note: When adding upgrade code for a new version it's a good idea to review old code to get an idea for what might need to be done
@@ -480,6 +492,8 @@ function version_specific() : bool
  */
 function upgrade_modules(float $from_cms_version) : string
 {
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
     $out = '';
 
     require_code('zones2');

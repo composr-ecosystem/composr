@@ -69,8 +69,6 @@ Members can be assigned good karma when another member sends them points. Additi
 Members can be assigned good karma when other members send them virtual gifts.
 [*][b]idolisr[/b]
 You can configure that members only receive good karma for receiving points from others if they received them for an Idolisr role.
-[*][b]member_comments[/b]
-Members can be assigned good karma when another member comments on their profile.
 [*][b]ecommerce[/b]
 Members can receive good karma based on how much they spend on your store. This can work for both points and currency.
 [/list]

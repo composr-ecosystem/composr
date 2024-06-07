@@ -242,6 +242,8 @@ function get_brand_page_url(array $params, string $zone) : string
                 $base .= '.htm';
             }
             unset($params['type']);
+        } else {
+            $base .= '.htm';
         }
         unset($params['page']);
     } else {

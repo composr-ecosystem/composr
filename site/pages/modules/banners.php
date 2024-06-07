@@ -109,7 +109,6 @@ class Module_banners
             ]);
 
             $GLOBALS['SITE_DB']->create_index('banners', 'banner_child_find', ['b_type']);
-            $GLOBALS['SITE_DB']->create_index('banners', 'deployment_agreement', ['deployment_agreement']);
             $GLOBALS['SITE_DB']->create_index('banners', 'expiry_date', ['expiry_date']);
             $GLOBALS['SITE_DB']->create_index('banners', 'badd_date', ['add_date']);
             $GLOBALS['SITE_DB']->create_index('banners', 'topsites', ['hits_from', 'hits_to']);
@@ -176,15 +175,16 @@ class Module_banners
             $GLOBALS['SITE_DB']->create_index('banner_clicks', 'c_banner_id', ['c_banner_id']);
         }
 
-        if (($upgrade_from === null) || ($upgrade_from < 8)) {
-            $GLOBALS['SITE_DB']->create_index('banner_clicks', 'member_id', ['c_member_id']);
-        }
-
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('banners', 'importance_modulus', 'INTEGER', 'display_likelihood');
             $GLOBALS['SITE_DB']->alter_table_field('banners', 'the_type', 'SHORT_INTEGER', 'deployment_agreement');
             $GLOBALS['SITE_DB']->alter_table_field('banners', 'b_title_text', 'SHORT_TEXT', 'title_text');
             $GLOBALS['SITE_DB']->alter_table_field('banners', 'b_direct_code', 'LONG_TEXT', 'direct_code');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 8)) {
+            $GLOBALS['SITE_DB']->create_index('banner_clicks', 'member_id', ['c_member_id']);
+            $GLOBALS['SITE_DB']->create_index('banners', 'deployment_agreement', ['deployment_agreement']);
         }
     }
 

@@ -314,6 +314,6 @@ END;
 function rk_check_maintenance_password(string $password_given) : bool
 {
     global $FILE_BASE;
-    require_once($FILE_BASE . '/sources/crypt_master.php');
+    require_once($FILE_BASE . '/sources/crypt_maintenance.php');
     return check_maintenance_password($password_given);
 }

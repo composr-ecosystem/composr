@@ -69,6 +69,7 @@ class Hook_ecommerce_community_billboard
                 'price_points' => ($price_points == '') ? null : (intval($price_points) * $days),
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
+                'discount_points__percentile' => null,
 
                 'tax_code' => tax_multiplier(get_option('community_billboard_tax_code'), (float)$days),
                 'shipping_cost' => 0.00,

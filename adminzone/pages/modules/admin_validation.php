@@ -36,10 +36,37 @@ class Module_admin_validation
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
-        $info['locked'] = false;
+        $info['locked'] = true; // TODO: temporarily locked; see install
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'validation';
         return $info;
+    }
+
+    /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        $privileges = [
+            'see_not_validated',
+            'jump_to_not_validated',
+        ];
+        delete_privilege($privileges);
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        if (($upgrade_from === null) || ($upgrade_from < 2)) { // LEGACY
+            // TODO: will probably cause an error on reinstall
+            rename_privilege('see_unvalidated', 'see_not_validated');
+            rename_privilege('jump_to_unvalidated', 'jump_to_not_validated');
+        }
     }
 
     /**

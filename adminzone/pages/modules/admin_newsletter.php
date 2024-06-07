@@ -1111,40 +1111,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         handle_max_file_size($hidden);
 
-        // Which newsletter template?
-        $_template_choices = [];
-        $tpl_paths = [
-            get_custom_file_base() . '/themes/default/templates_custom',
-            get_file_base() . '/themes/default/templates_custom',
-            get_file_base() . '/themes/default/templates',
-        ];
-        foreach ($tpl_paths as $tpl_path) {
-            $default_mail_template = post_param_string('template', null);
-            if ($default_mail_template === null) {
-                $default_mail_template = get_value('default_newsletter_mail_template', 'MAIL');
-            }
-
-            $dh = @opendir($tpl_path);
-            if ($dh !== false) {
-                while (($f = readdir($dh)) !== false) {
-                    if (preg_match('#^MAIL.*\.tpl$#', $f) != 0) {
-                        $tpl = basename($f, '.tpl');
-                        $_template_choices[] = $tpl;
-                    }
-                }
-                closedir($dh);
-            }
-        }
-        $_template_choices = array_unique($_template_choices);
-        if ($_template_choices == ['MAIL']) {
-            $hidden->attach(form_input_hidden('template', 'MAIL'));
-        } else {
-            $template_choices = new Tempcode();
-            foreach ($_template_choices as $tpl) {
-                $template_choices->attach(form_input_list_entry($tpl, $default_mail_template == $tpl, $tpl));
-            }
-            $fields->attach(form_input_list(do_lang_tempcode('NEWSLETTER_TEMPLATE'), do_lang_tempcode('DESCRIPTION_NEWSLETTER_TEMPLATE'), 'template', $template_choices, null, false, true));
-        }
+        $fields->attach(form_input_mail_template(do_lang_tempcode('NEWSLETTER_TEMPLATE'), do_lang_tempcode('DESCRIPTION_NEWSLETTER_TEMPLATE'), 'template', null, false, true));
 
         // If we're making a periodic newsletter then we need to know when it
         // should be sent

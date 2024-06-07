@@ -5,10 +5,12 @@
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Managing site messages[/title]
-[media width="150" description="The site messaging item is under Admin Zone > Setup > Site messaging." float="right"]data_custom/images/docs/tut_site_messaging/menu_location.png[/media]
-[media width="150" description="The simple do-next screen will assist you with managing your messages." float="right"]data_custom/images/docs/tut_site_messaging/donext.png[/media]
-[media width="150" description="This is an example of the display of a site message." float="right"]data_custom/images/docs/tut_site_messaging/example.png[/media]
 Clicking Admin Zone > Setup > Site messaging will take you to a simple do-next screen to assist you with setting up your site messages.
+[media_set]
+[media width="150" description="The site messaging item is under Admin Zone > Setup > Site messaging."]data_custom/images/docs/tut_site_messaging/menu_location.png[/media]
+[media width="150" description="The simple do-next screen will assist you with managing your messages."]data_custom/images/docs/tut_site_messaging/donext.png[/media]
+[media width="150" description="This is an example of the display of a site message."]data_custom/images/docs/tut_site_messaging/example.png[/media]
+[/media_set]
 
 [title="3"]Adding a site message[/title]
 [media width="150" description="There are several criteria you can define for a site message" float="right"]data_custom/images/docs/tut_site_messaging/add.png[/media]

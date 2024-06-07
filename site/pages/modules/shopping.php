@@ -123,7 +123,6 @@ class Module_shopping
                 'p_tax' => 'REAL', // Total tax of item (accounting for quantity);  We need this for accurate logging (we can't have it changing while looking at a past order); we use it for receipts
                 'p_dispatch_status' => 'SHORT_TEXT',
             ]);
-            $GLOBALS['SITE_DB']->create_index('shopping_order_details', 'type_code', ['p_type_code']);
             $GLOBALS['SITE_DB']->create_index('shopping_order_details', 'order_id', ['p_order_id']);
 
             $GLOBALS['SITE_DB']->create_table('shopping_logging', [
@@ -134,7 +133,6 @@ class Module_shopping
                 'l_last_action' => 'SHORT_TEXT',
                 'l_date_and_time' => 'TIME',
             ]);
-            $GLOBALS['SITE_DB']->create_index('shopping_logging', 'cart_log', ['l_date_and_time']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
@@ -214,6 +212,11 @@ class Module_shopping
 
             $GLOBALS['SITE_DB']->delete_index_if_exists('shopping_cart', 'product_id');
             $GLOBALS['SITE_DB']->create_index('shopping_cart', 'type_code', ['type_code']);
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 8)) {
+            $GLOBALS['SITE_DB']->create_index('shopping_order_details', 'type_code', ['p_type_code']);
+            $GLOBALS['SITE_DB']->create_index('shopping_logging', 'cart_log', ['l_date_and_time']);
         }
     }
 

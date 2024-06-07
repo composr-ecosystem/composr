@@ -270,7 +270,7 @@ class Module_calendar
             $GLOBALS['SITE_DB']->create_index('calendar_reminders', 'member_id', ['n_member_id']);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
+        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('calendar_events', 'e_previous_recurrence_time', '?TIME');
             $GLOBALS['SITE_DB']->add_table_field('calendar_events', 'e_next_recurrence_time', '?TIME');
 

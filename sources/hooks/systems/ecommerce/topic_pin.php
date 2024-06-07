@@ -72,6 +72,7 @@ class Hook_ecommerce_topic_pin
                 'price_points' => empty($price_points) ? null : (intval($price_points) * $days),
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
+                'discount_points__percentile' => null,
 
                 'tax_code' => get_option('topic_pin_tax_code'),
                 'shipping_cost' => 0.00,

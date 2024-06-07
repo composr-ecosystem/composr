@@ -206,6 +206,8 @@ class Module_admin_permissions
 
         if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY
             rename_privilege('see_stack_dump', 'see_stack_trace');
+
+            $GLOBALS['SITE_DB']->query_update('privilege_list', ['p_section' => 'GENERAL_SETTINGS', 'the_default' => 1], ['the_name' => 'see_php_errors'], '', 1);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 10)) {
