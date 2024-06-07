@@ -56,6 +56,6 @@ class Hook_config_separate_blogs
             return null;
         }
 
-        return '0';
+        return '1';
     }
 }
