@@ -1159,7 +1159,7 @@ function do_site()
         }
 
         // Tracks very basic details of what sites use the software
-        if ((!is_local_machine()) && (get_option('call_home') == '1') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) !== null)) {
+        if ((!is_local_machine()) && (get_option('call_home') == '1') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) === null)) {
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
             require_code('version2');
