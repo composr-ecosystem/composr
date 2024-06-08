@@ -113,7 +113,7 @@ class Hook_task_import_wordpress
                                 '', // pt_rules_text
                                 1, // validated
                                 '', // validated_email_confirm_code
-                                null, // on_probation_until
+                                null, // probation_expiration_time
                                 '0', // is_perm_banned
                                 false, // check_correctness
                                 '', // ip_address
@@ -389,7 +389,7 @@ class Hook_task_import_wordpress
                                     $GLOBALS['SITE_DB']->query_insert('trackbacks', [
                                         'trackback_for_type' => $trackback_for_type,
                                         'trackback_for_id' => strval($trackback_id),
-                                        'trackback_ip' => $comment['author_ip'],
+                                        'trackback_ip_address' => $comment['author_ip'],
                                         'trackback_time' => strtotime($comment['comment_date_gmt']),
                                         'trackback_url' => $comment_author_url,
                                         'trackback_title' => '',

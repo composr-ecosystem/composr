@@ -456,7 +456,7 @@ class Hook_import_phpbb3
                     '', // pt_rules_text
                     $validated, // validated
                     '', // validated_email_confirm_code
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     ($row['ban_id'] === null) ? '0' : '1', // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
@@ -495,7 +495,7 @@ class Hook_import_phpbb3
                 }
 
                 // Fix usergroup leadership
-                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => -$row['user_id']]);
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_lead_member' => $id_new], ['g_group_lead_member' => -$row['user_id']]);
 
                 import_id_remap_put('member', strval($row['user_id']), $id_new);
 
@@ -686,7 +686,7 @@ class Hook_import_phpbb3
                 list($cat_id, $parent_id) = $this->_find_parent_forum_and_category($rows, $row['parent_id']);
                 $parent_forum = ($parent_id === null) ? db_get_first_id() : import_id_remap_get('forum', strval($parent_id));
                 $cat = ($cat_id === null) ? db_get_first_id() : import_id_remap_get('forum', strval($cat_id));
-                $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_forum_grouping_id' => $cat, 'f_parent_forum' => $parent_forum], ['id' => $remapped], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_forum_grouping_id' => $cat, 'f_parent_forum_id' => $parent_forum], ['id' => $remapped], '', 1);
             }
         }
     }
@@ -894,7 +894,7 @@ class Hook_import_phpbb3
                     $attach_ids[$i] = $_attach_id;
                 }
 
-                $last_edit_by = null;
+                $last_edit_member = null;
                 $last_edit_time = $row['post_edit_time'];
 
                 if ($row['post_username'] == '') {
@@ -905,7 +905,7 @@ class Hook_import_phpbb3
                 require_code('forum/phpbb3');
                 $post = _phpbb3_post_text_to_comcode($post, $attach_ids);
 
-                $id_new = cns_make_post($topic_id, $title, $post, 0, $first_post, $row['post_visibility'], 0, $row['post_username'], $row['poster_ip'], $row['post_time'], $member_id, null, $last_edit_time, $last_edit_by, false, false, $forum_id, false);
+                $id_new = cns_make_post($topic_id, $title, $post, 0, $first_post, $row['post_visibility'], 0, $row['post_username'], $row['poster_ip'], $row['post_time'], $member_id, null, $last_edit_time, $last_edit_member, false, false, $forum_id, false);
 
                 foreach ($attach_ids as $i => $_attach_id) {
                     if ($_attach_id !== null) {
@@ -1037,7 +1037,7 @@ class Hook_import_phpbb3
                     } else {
                         $answer = $answers[$row2['poll_option_id'] - 1];
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['vote_user_ip'], 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_cache_points_at_voting_time' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip_address' => $row2['vote_user_ip'], 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_points_when_voted' => 0]);
                 }
             }
 
@@ -1116,13 +1116,13 @@ class Hook_import_phpbb3
                 $time = $_postdetails['message_time'];
                 $poster = $from_id;
                 $last_edit_time = $_postdetails['message_edit_time'];
-                $last_edit_by = ($_postdetails['message_edit_user'] == 0) ? null : import_id_remap_get('member', strval($_postdetails['message_edit_user']), true);
+                $last_edit_member = ($_postdetails['message_edit_user'] == 0) ? null : import_id_remap_get('member', strval($_postdetails['message_edit_user']), true);
 
                 $post = $this->fix_links($_postdetails['message_text'], $row['bbcode_uid'], $db, $table_prefix, $_postdetails['msg_id'], true);
                 require_code('forum/phpbb3');
                 $post = _phpbb3_post_text_to_comcode($post);
 
-                $post_id = cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
+                $post_id = cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_member, false, false, null, false);
 
                 $first_post = false;
 
@@ -1385,7 +1385,7 @@ class Hook_import_phpbb3
                 continue;
             }
 
-            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $row['ban_end']], ['id' => $member_id]);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_probation_expiration_time' => $row['ban_end']], ['id' => $member_id]);
         }
     }
 

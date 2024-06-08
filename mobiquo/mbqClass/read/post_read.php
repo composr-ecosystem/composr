@@ -49,7 +49,7 @@ class CMSPostRead
 
             $poster = $post_details[0]['p_poster_name_if_guest'];
             if ($poster == '') {
-                $poster = $GLOBALS['FORUM_DRIVER']->get_username($post_details[0]['p_poster']);
+                $poster = $GLOBALS['FORUM_DRIVER']->get_username($post_details[0]['p_posting_member']);
             }
 
             $quote_content .= '[quote="' . addslashes($poster) . '"]' . get_translated_text($post_details[0]['p_post'], $GLOBALS['FORUM_DB']) . "[/quote]\n";
@@ -93,7 +93,7 @@ class CMSPostRead
         return [
             'post_id' => $post_id,
             'post_title' => $post['p_title'],
-            'post_username' => $GLOBALS['FORUM_DRIVER']->get_username($post['p_poster']),
+            'post_username' => $GLOBALS['FORUM_DRIVER']->get_username($post['p_posting_member']),
             'post_content' => $content,
             'edit_reason' => $edit_reason,
             'attachments' => get_post_attachments($post_id),

@@ -434,12 +434,12 @@ class Module_admin_cns_groups extends Standard_crud_module
                 ($row['g_is_presented_at_install'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
                 ($row['g_is_default'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
                 //($row['g_is_private_club'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
-                //($row['g_group_leader'] === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode($GLOBALS['FORUM_DRIVER']->get_username($row['g_group_leader'])),
+                //($row['g_group_lead_member'] === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode($GLOBALS['FORUM_DRIVER']->get_username($row['g_group_lead_member'])),
                 ($row['g_open_membership'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
             ];
             if (addon_installed('points')) {
                 $fr = array_merge($fr, [
-                    ($row['g_promotion_target'] === null) ? do_lang_tempcode('NA_EM') : (make_string_tempcode(cns_get_group_name($row['g_promotion_target']) . ' (' . strval($row['g_promotion_threshold']) . ')')),
+                    ($row['g_promotion_target_group'] === null) ? do_lang_tempcode('NA_EM') : (make_string_tempcode(cns_get_group_name($row['g_promotion_target_group']) . ' (' . strval($row['g_promotion_threshold']) . ')')),
                 ]);
             }
             $fr = array_merge($fr, [
@@ -489,15 +489,15 @@ class Module_admin_cns_groups extends Standard_crud_module
         $fields = new Tempcode();
         $order = (get_param_integer('keep_id_order', 0) == 0) ? 'g_promotion_threshold,id' : 'id';
         $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_order', 'g_name', 'g_promotion_target'], ($group_count > 300) ? ['g_is_private_club' => 0] : [], 'ORDER BY ' . $order);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_order', 'g_name', 'g_promotion_target_group'], ($group_count > 300) ? ['g_is_private_club' => 0] : [], 'ORDER BY ' . $order);
         require_code('cns_groups2');
         foreach ($rows as $row) {
             $num_members = cns_get_group_members_raw_count($row['id'], true, false, true, true);
 
-            if ($row['g_promotion_target'] === null) {
+            if ($row['g_promotion_target_group'] === null) {
                 $text = do_lang_tempcode('EXTENDED_GROUP_TITLE_NORMAL', escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])), escape_html(strval($row['id'])), [escape_html(integer_format($row['g_order'] + 1)), escape_html(integer_format($num_members, 0))]);
             } else {
-                $text = do_lang_tempcode('EXTENDED_GROUP_TITLE_RANK', escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])), escape_html(strval($row['id'])), [strval($row['g_promotion_target']), escape_html(integer_format($row['g_order'] + 1)), escape_html(integer_format($num_members, 0))]);
+                $text = do_lang_tempcode('EXTENDED_GROUP_TITLE_RANK', escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])), escape_html(strval($row['id'])), [strval($row['g_promotion_target_group']), escape_html(integer_format($row['g_order'] + 1)), escape_html(integer_format($num_members, 0))]);
             }
             $fields->attach(form_input_list_entry(strval($row['id']), false, $text));
         }
@@ -530,13 +530,13 @@ class Module_admin_cns_groups extends Standard_crud_module
         }
         $myrow = $rows[0];
 
-        if ($myrow['g_group_leader'] === null) {
+        if ($myrow['g_group_lead_member'] === null) {
             $username = '';
         } else {
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($myrow['g_group_leader'], false, USERNAME_DEFAULT_BLANK);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($myrow['g_group_lead_member'], false, USERNAME_DEFAULT_BLANK);
         }
 
-        list($fields, $hidden) = $this->get_form_fields(intval($id), get_translated_text($myrow['g_name'], $GLOBALS['FORUM_DB']), $myrow['g_is_default'], $myrow['g_is_super_admin'], $myrow['g_is_super_moderator'], $username, get_translated_text($myrow['g_title'], $GLOBALS['FORUM_DB']), $myrow['g_rank_image'], $myrow['g_promotion_target'], $myrow['g_promotion_threshold'], $myrow['g_promotion_approval'], $myrow['g_flood_control_submit_secs'], $myrow['g_flood_control_access_secs'], $myrow['g_gift_points_base'], $myrow['g_gift_points_per_day'], $myrow['g_max_daily_upload_mb'], $myrow['g_max_attachments_per_post'], $myrow['g_max_avatar_width'], $myrow['g_max_avatar_height'], $myrow['g_max_post_length_comcode'], $myrow['g_max_sig_length_comcode'], $myrow['g_enquire_on_new_ips'], $myrow['g_is_presented_at_install'], $myrow['g_hidden'], $myrow['g_order'], $myrow['g_rank_image_pri_only'], $myrow['g_open_membership'], $myrow['g_is_private_club']);
+        list($fields, $hidden) = $this->get_form_fields(intval($id), get_translated_text($myrow['g_name'], $GLOBALS['FORUM_DB']), $myrow['g_is_default'], $myrow['g_is_super_admin'], $myrow['g_is_super_moderator'], $username, get_translated_text($myrow['g_title'], $GLOBALS['FORUM_DB']), $myrow['g_rank_image'], $myrow['g_promotion_target_group'], $myrow['g_promotion_threshold'], $myrow['g_promotion_approval'], $myrow['g_flood_control_submit_secs'], $myrow['g_flood_control_access_secs'], $myrow['g_gift_points_base'], $myrow['g_gift_points_per_day'], $myrow['g_max_daily_upload_mb'], $myrow['g_max_attachments_per_post'], $myrow['g_max_avatar_width'], $myrow['g_max_avatar_height'], $myrow['g_max_post_length_comcode'], $myrow['g_max_sig_length_comcode'], $myrow['g_enquire_on_new_ips'], $myrow['g_is_presented_at_install'], $myrow['g_hidden'], $myrow['g_order'], $myrow['g_rank_image_pri_only'], $myrow['g_open_membership'], $myrow['g_is_private_club']);
 
         $default_group = get_first_default_group();
 

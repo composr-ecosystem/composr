@@ -61,7 +61,7 @@ class Hook_content_meta_aware_topic extends Hook_CMA
             'category_field' => 't_forum_id', // For category permissions
             'permission_module' => 'forums', // For category permissions
             'parent_spec__table_name' => 'f_forums',
-            'parent_spec__parent_name' => 'f_parent_forum',
+            'parent_spec__parent_name' => 'f_parent_forum_id',
             'parent_spec__field_name' => 'id',
             'category_is_string' => false,
 

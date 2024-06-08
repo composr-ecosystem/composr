@@ -355,7 +355,7 @@ class Module_warnings extends Standard_crud_module
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_member_id'], '', false);
-            $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_by']);
+            $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_issuing_member']);
 
             $map = [
                 protect_from_escaping($username),
@@ -402,7 +402,7 @@ class Module_warnings extends Standard_crud_module
      */
     public function fill_in_edit_form(string $id)
     {
-        $warning = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['w_explanation', 'w_by', 'w_member_id', 'w_is_warning'], ['id' => intval($id)], '', 1);
+        $warning = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['w_explanation', 'w_issuing_member', 'w_member_id', 'w_is_warning'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $warning)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -533,11 +533,11 @@ class Module_warnings extends Standard_crud_module
      */
     public function get_submitter(string $id) : array
     {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['w_by', 'w_time'], ['id' => intval($id)], '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['w_issuing_member', 'w_time'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return [null, null];
         }
-        return [$rows[0]['w_by'], $rows[0]['w_time']];
+        return [$rows[0]['w_issuing_member'], $rows[0]['w_time']];
     }
 
     /**
@@ -596,7 +596,7 @@ class Module_warnings extends Standard_crud_module
         foreach ($rows as $row) {
             $date = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id'], 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF'), get_timezoned_date_time($row['w_time']), false, true, $row['w_explanation']);
             $member = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_member_id']);
-            $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_by']);
+            $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_issuing_member']);
 
             $is_warning = $row['w_is_warning'] ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
 
@@ -662,7 +662,7 @@ class Module_warnings extends Standard_crud_module
 
         // Basic info
         $fields['MEMBER'] = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_member_id']);
-        $fields['BY'] = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_by']);
+        $fields['BY'] = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_issuing_member']);
         $fields['DATE_TIME'] = get_timezoned_date_time($row['w_time'], false, false, get_member());
         $fields['IS_FORMAL_WARNING'] = ($row['w_is_warning'] == 0) ? do_lang('NO') : do_lang('YES');
         $fields['EXPLANATION'] = $row['w_explanation'];
@@ -686,7 +686,7 @@ class Module_warnings extends Standard_crud_module
 
             $view_actionlogs = [];
             $_rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['warning_id' => $id], ' ORDER BY date_and_time');
-            $_rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id], ' ORDER BY date_and_time');
+            $_rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by_member AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id], ' ORDER BY date_and_time');
             $rows = array_merge($_rows, $_rows2);
             sort_maps_by($rows, 'date_and_time');
 

@@ -2981,7 +2981,7 @@ class Hook_import_cms_merge
             if ($id_new === null) {
                 $title = $this->get_lang_string($db, $row['g_title']);
 
-                $id_new = cns_make_group($name, $row['g_is_default'], $row['g_is_super_admin'], $row['g_is_super_moderator'], $title, '', $row['g_promotion_target'], $row['g_promotion_threshold'], $row['g_promotion_approval'], ($row['g_group_leader'] !== null) ? -$row['g_group_leader'] : null, $row['g_flood_control_submit_secs'], $row['g_flood_control_access_secs'], $row['g_max_daily_upload_mb'], $row['g_max_attachments_per_post'], $row['g_max_avatar_width'], $row['g_max_avatar_height'], $row['g_max_post_length_comcode'], $row['g_max_sig_length_comcode'], $row['g_gift_points_base'], $row['g_gift_points_per_day'], $row['g_enquire_on_new_ips'], $row['g_is_presented_at_install'], $row['g_hidden'], $row['g_order'], $row['g_rank_image_pri_only'], $row['g_open_membership'], $row['g_is_private_club']);
+                $id_new = cns_make_group($name, $row['g_is_default'], $row['g_is_super_admin'], $row['g_is_super_moderator'], $title, '', $row['g_promotion_target_group'], $row['g_promotion_threshold'], $row['g_promotion_approval'], ($row['g_group_lead_member'] !== null) ? -$row['g_group_lead_member'] : null, $row['g_flood_control_submit_secs'], $row['g_flood_control_access_secs'], $row['g_max_daily_upload_mb'], $row['g_max_attachments_per_post'], $row['g_max_avatar_width'], $row['g_max_avatar_height'], $row['g_max_post_length_comcode'], $row['g_max_sig_length_comcode'], $row['g_gift_points_base'], $row['g_gift_points_per_day'], $row['g_enquire_on_new_ips'], $row['g_is_presented_at_install'], $row['g_hidden'], $row['g_order'], $row['g_rank_image_pri_only'], $row['g_open_membership'], $row['g_is_private_club']);
             }
 
             import_id_remap_put('group', strval($row['id']), $id_new);
@@ -2989,12 +2989,12 @@ class Hook_import_cms_merge
 
         // Now we must fix promotion
         foreach ($rows as $row) {
-            if ($row['g_promotion_target'] !== null) {
-                $row_promotion_target = import_id_remap_get('group', strval($row['g_promotion_target']), true);
+            if ($row['g_promotion_target_group'] !== null) {
+                $row_promotion_target = import_id_remap_get('group', strval($row['g_promotion_target_group']), true);
                 if ($row_promotion_target === null) {
                     continue;
                 }
-                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $row_promotion_target], ['id' => import_id_remap_get('group', strval($row['id']))], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target_group' => $row_promotion_target], ['id' => import_id_remap_get('group', strval($row['id']))], '', 1);
             }
         }
         $this->_import_content_reviews($db, $table_prefix, 'group', 'group');
@@ -3067,7 +3067,7 @@ class Hook_import_cms_merge
                         $this->get_lang_string($db, $row['m_pt_rules_text']), // pt_rules_text
                         $row['m_validated'], // validated
                         $row['m_validated_email_confirm_code'], // validated_email_confirm_code
-                        $row['m_on_probation_until'], // on_probation_until
+                        $row['m_probation_expiration_time'], // probation_expiration_time
                         $row['m_is_perm_banned'], // is_perm_banned
                         false, // check_correctness
                         $row['m_ip_address'], // ip_address
@@ -3104,7 +3104,7 @@ class Hook_import_cms_merge
                     }
 
                     // Fix some tricky dependencies that we shoved to one side
-                    $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => -$row['id']]);
+                    $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_lead_member' => $id_new], ['g_group_lead_member' => -$row['id']]);
                     $GLOBALS['SITE_DB']->query_update('attachments', ['a_member_id' => $id_new], ['a_member_id' => -$row['id']]);
                 }
 
@@ -3158,12 +3158,12 @@ class Hook_import_cms_merge
         $rows = $db->query_select('f_invites', ['*'], [], 'ORDER BY id', null, 0, true);
         if ($rows !== null) {
             foreach ($rows as $row) {
-                $i_inviter = import_id_remap_get('member', strval($row['i_inviter']), true);
-                if ($i_inviter === null) {
+                $i_invite_member = import_id_remap_get('member', strval($row['i_invite_member']), true);
+                if ($i_invite_member === null) {
                     continue;
                 }
 
-                $GLOBALS['FORUM_DB']->query_insert('f_invites', ['i_inviter' => $i_inviter, 'i_email_address' => $row['i_email_address'], 'i_time' => $row['i_time'], 'i_taken' => $row['i_taken']], false, true); // errors suppressed in case already there
+                $GLOBALS['FORUM_DB']->query_insert('f_invites', ['i_invite_member' => $i_invite_member, 'i_email_address' => $row['i_email_address'], 'i_time' => $row['i_time'], 'i_taken' => $row['i_taken']], false, true); // errors suppressed in case already there
             }
         }
     }
@@ -3329,14 +3329,14 @@ class Hook_import_cms_merge
 
         // Now we must fix parenting
         foreach ($rows as $row) {
-            if ($row['f_parent_forum'] === null) {
+            if ($row['f_parent_forum_id'] === null) {
                 continue;
             }
-            $parent_id = import_id_remap_get('forum', strval($row['f_parent_forum']), true);
+            $parent_id = import_id_remap_get('forum', strval($row['f_parent_forum_id']), true);
             if ($parent_id === null) {
                 $parent_id = db_get_first_id();
             }
-            $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum' => $parent_id], ['id' => import_id_remap_get('forum', strval($row['id']))], '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum_id' => $parent_id], ['id' => import_id_remap_get('forum', strval($row['id']))], '', 1);
         }
 
         $this->_import_content_reviews($db, $table_prefix, 'forum', 'forum');
@@ -3409,24 +3409,24 @@ class Hook_import_cms_merge
                 }
                 // NB: Spacer post not fixed up
 
-                $t_pt_to = $row['t_pt_to'];
-                $t_pt_from = $row['t_pt_from'];
-                if ($t_pt_to !== null) {
-                    $t_pt_to = import_id_remap_get('member', strval($t_pt_to), true);
-                    if ($t_pt_to === null) {
-                        $t_pt_to = db_get_first_id();
+                $t_pt_to_member = $row['t_pt_to_member'];
+                $t_pt_from_member = $row['t_pt_from_member'];
+                if ($t_pt_to_member !== null) {
+                    $t_pt_to_member = import_id_remap_get('member', strval($t_pt_to_member), true);
+                    if ($t_pt_to_member === null) {
+                        $t_pt_to_member = db_get_first_id();
                     }
                 }
-                if ($t_pt_from !== null) {
-                    $t_pt_from = import_id_remap_get('member', strval($t_pt_from), true);
-                    if ($t_pt_from === null) {
-                        $t_pt_from = db_get_first_id();
+                if ($t_pt_from_member !== null) {
+                    $t_pt_from_member = import_id_remap_get('member', strval($t_pt_from_member), true);
+                    if ($t_pt_from_member === null) {
+                        $t_pt_from_member = db_get_first_id();
                     }
                 }
 
                 $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
 
-                $id_new = cns_make_topic($forum_id, $row['t_description'], $row['t_emoticon'], $row['t_validated'], $row['t_is_open'], $row['t_pinned'], $row['t_cascading'], $t_pt_from, $t_pt_to, false, $row['t_num_views'], $id);
+                $id_new = cns_make_topic($forum_id, $row['t_description'], $row['t_emoticon'], $row['t_validated'], $row['t_is_open'], $row['t_pinned'], $row['t_cascading'], $t_pt_from_member, $t_pt_to_member, false, $row['t_num_views'], $id);
 
                 import_id_remap_put('topic', strval($row['id']), $id_new);
             }
@@ -3513,7 +3513,7 @@ class Hook_import_cms_merge
                     continue;
                 }
 
-                $member_id = import_id_remap_get('member', strval($row['p_poster']), true);
+                $member_id = import_id_remap_get('member', strval($row['p_posting_member']), true);
                 if ($member_id === null) {
                     $member_id = db_get_first_id();
                 }
@@ -3531,21 +3531,21 @@ class Hook_import_cms_merge
                     $TOPIC_FORUM_CACHE[$topic_id] = $forum_id;
                 }
 
-                $topic_is_pt = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_pt_from', ['id' => $topic_id]);
+                $topic_is_pt = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_pt_from_member', ['id' => $topic_id]);
 
-                $last_edit_by = $row['p_last_edit_by'];
-                if ($last_edit_by !== null) {
-                    $last_edit_by = import_id_remap_get('member', strval($last_edit_by), true);
+                $last_edit_member = $row['p_last_edit_member'];
+                if ($last_edit_member !== null) {
+                    $last_edit_member = import_id_remap_get('member', strval($last_edit_member), true);
                 }
-                $intended_solely_for = $row['p_intended_solely_for'];
-                if ($intended_solely_for !== null) {
-                    $intended_solely_for = import_id_remap_get('member', strval($intended_solely_for), true);
-                    if ($intended_solely_for === null) {
-                        $intended_solely_for = -1;
+                $whisper_to_member = $row['p_whisper_to_member'];
+                if ($whisper_to_member !== null) {
+                    $whisper_to_member = import_id_remap_get('member', strval($whisper_to_member), true);
+                    if ($whisper_to_member === null) {
+                        $whisper_to_member = -1;
                     }
                 }
                 $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
-                $id_new = cns_make_post($topic_id, $row['p_title'], $this->get_lang_string($db, $row['p_post']), 0, false, $row['p_validated'], $row['p_is_emphasised'], $row['p_poster_name_if_guest'], $row['p_ip_address'], $row['p_time'], $member_id, $intended_solely_for, $row['p_last_edit_time'], $last_edit_by, false, false, $forum_id, false, '', $id, false, false, ($topic_is_pt !== null), false, $row['p_parent_id'], false);
+                $id_new = cns_make_post($topic_id, $row['p_title'], $this->get_lang_string($db, $row['p_post']), 0, false, $row['p_validated'], $row['p_is_emphasised'], $row['p_poster_name_if_guest'], $row['p_ip_address'], $row['p_time'], $member_id, $whisper_to_member, $row['p_last_edit_time'], $last_edit_member, false, false, $forum_id, false, '', $id, false, false, ($topic_is_pt !== null), false, $row['p_parent_id'], false);
 
                 import_id_remap_put('post', strval($row['id']), $id_new);
             }
@@ -3610,7 +3610,7 @@ class Hook_import_cms_merge
                 if ($row2['pv_member_id'] === null) {
                     continue;
                 }
-                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $row2['pv_member_id'], 'pv_answer_id' => $answer, 'pv_ip' => $row2['pv_ip'], 'pv_revoked' => $row2['pv_revoked'], 'pv_date_time' => $row2['pv_date_time'], 'pv_cache_points_at_voting_time' => $row2['pv_cache_points_at_voting_time']]);
+                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $row2['pv_member_id'], 'pv_answer_id' => $answer, 'pv_ip_address' => $row2['pv_ip_address'], 'pv_revoked' => $row2['pv_revoked'], 'pv_date_time' => $row2['pv_date_time'], 'pv_points_when_voted' => $row2['pv_points_when_voted']]);
             }
 
             import_id_remap_put('f_poll', strval($row['id']), $id_new);
@@ -3777,7 +3777,7 @@ class Hook_import_cms_merge
             $name = $this->get_lang_string($db, $row['mm_name']);
             $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_multi_moderations', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('mm_name') => $name]);
             if ($test === null) {
-                $move_to = ($row['mm_move_to'] === null) ? null : import_id_remap_get('forum', strval($row['mm_move_to']), true);
+                $move_to = ($row['mm_move_to_forum_id'] === null) ? null : import_id_remap_get('forum', strval($row['mm_move_to_forum_id']), true);
                 $multi_code = $this->convert_multi_code($row['mm_forum_multi_code']);
                 cns_make_multi_moderation($name, $row['mm_post_text'], $move_to, $row['mm_pin_state'], $row['mm_open_state'], $multi_code, $row['mm_title_suffix']);
             }
@@ -3823,7 +3823,7 @@ class Hook_import_cms_merge
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
             $member_id = import_id_remap_get('member', strval($row['w_member_id']), true);
-            $by = import_id_remap_get('member', $row['w_by'], true);
+            $by = import_id_remap_get('member', $row['w_issuing_member'], true);
             if ($member_id === null) {
                 continue;
             }
@@ -4023,7 +4023,7 @@ class Hook_import_cms_merge
                 continue;
             }
 
-            $row['i_parent'] = ($row['i_parent'] === null) ? null : (-$row['i_parent']);
+            $row['i_parent_id'] = ($row['i_parent_id'] === null) ? null : (-$row['i_parent_id']);
 
             unset($row['i_caption__text_parsed']);
             unset($row['i_caption__source_user']);
@@ -4037,9 +4037,9 @@ class Hook_import_cms_merge
             import_id_remap_put('menu_item', $id_old, 1);
         }
 
-        $child_rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'menu_items WHERE i_parent<0');
+        $child_rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'menu_items WHERE i_parent_id<0');
         foreach ($child_rows as $row) {
-            $row['i_parent'] = import_id_remap_get('menu_item', strval(-$row['i_parent']), true);
+            $row['i_parent_id'] = import_id_remap_get('menu_item', strval(-$row['i_parent_id']), true);
             $GLOBALS['SITE_DB']->query_update('menu_items', $row, ['id' => $row['id']], '', 1);
         }
     }

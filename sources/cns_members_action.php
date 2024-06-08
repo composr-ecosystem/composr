@@ -111,7 +111,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
  * @param  LONG_TEXT $pt_rules_text Rules that other members must agree to before they may start a PT with the member
  * @param  BINARY $validated Whether the account has been validated
  * @param  SHORT_TEXT $validated_email_confirm_code The code required before the account becomes active (blank: already entered)
- * @param  ?TIME $on_probation_until When the member is on probation until (null: not on probation)
+ * @param  ?TIME $probation_expiration_time When the member is on probation until (null: not on probation)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  boolean $check_correctness Whether to check details for correctness
  * @param  ?IP $ip_address The member's IP address (blank: unknown) (null: IP address of current user)
@@ -125,7 +125,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of the new member
  */
-function cns_make_member(string $username, string $password, string $email_address = '', ?int $primary_group = null, ?array $secondary_groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, array $custom_fields = [], ?string $timezone = null, ?string $language = null, string $theme = '', string $title = '', string $photo_url = '', ?string $avatar_url = null, string $signature = '', ?int $preview_posts = null, int $reveal_age = 0, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, string $validated_email_confirm_code = '', ?int $on_probation_until = null, string $is_perm_banned = '0', bool $check_correctness = true, ?string $ip_address = null, ?string $password_compatibility_scheme = null, string $salt = '', ?int $join_time = null, ?int $last_visit_time = null, ?int $last_submit_time = null, int $profile_views = 0, int $total_sessions = 0, ?int $id = null) : int
+function cns_make_member(string $username, string $password, string $email_address = '', ?int $primary_group = null, ?array $secondary_groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, array $custom_fields = [], ?string $timezone = null, ?string $language = null, string $theme = '', string $title = '', string $photo_url = '', ?string $avatar_url = null, string $signature = '', ?int $preview_posts = null, int $reveal_age = 0, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, string $validated_email_confirm_code = '', ?int $probation_expiration_time = null, string $is_perm_banned = '0', bool $check_correctness = true, ?string $ip_address = null, ?string $password_compatibility_scheme = null, string $salt = '', ?int $join_time = null, ?int $last_visit_time = null, ?int $last_submit_time = null, int $profile_views = 0, int $total_sessions = 0, ?int $id = null) : int
 {
     require_code('form_templates');
     require_code('cns_members');
@@ -285,7 +285,7 @@ function cns_make_member(string $username, string $password, string $email_addre
         'm_pt_allow' => $pt_allow,
         'm_validated' => $validated,
         'm_validated_email_confirm_code' => $validated_email_confirm_code,
-        'm_on_probation_until' => $on_probation_until,
+        'm_probation_expiration_time' => $probation_expiration_time,
         'm_is_perm_banned' => $is_perm_banned,
         'm_ip_address' => $ip_address,
         'm_join_time' => $join_time,

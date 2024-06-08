@@ -223,7 +223,7 @@ Allows people to specify who referred them when they join your site or other con
 
             if (get_forum_type() == 'cns') {
                 // Populate from current invites
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_email_address', 'i_time', 'i_inviter'], ['i_taken' => 1]);
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_email_address', 'i_time', 'i_invite_member'], ['i_taken' => 1]);
                 foreach ($rows as $row) {
                     $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_email_address' => $row['i_email_address']]);
                     if ($member_id !== null) {
@@ -238,7 +238,7 @@ Allows people to specify who referred them when they join your site or other con
                         foreach (array_keys($ini_file) as $scheme_name) {
                             $GLOBALS['SITE_DB']->query_insert('referees_qualified_for', [
                                 'q_referee' => $member_id,
-                                'q_referrer' => $row['i_inviter'],
+                                'q_referrer' => $row['i_invite_member'],
                                 'q_scheme_name' => $scheme_name,
                                 'q_email_address' => $row['i_email_address'],
                                 'q_time' => $row['i_time'],

@@ -208,7 +208,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
     if (is_guest($member_id)) {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip_address' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
     } else {
         $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id, 'pv_revoked' => 0];
     }
@@ -261,10 +261,10 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
             'pv_poll_id' => $poll_id,
             'pv_member_id' => $member_id,
             'pv_answer_id' => $vote,
-            'pv_ip' => get_ip_address(),
+            'pv_ip_address' => get_ip_address(),
             'pv_revoked' => 0,
             'pv_date_time' => time(),
-            'pv_cache_points_at_voting_time' => $points,
+            'pv_points_when_voted' => $points,
             'pv_cache_voting_power' => $voting_power,
         ]);
 
@@ -374,7 +374,7 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
 
     // Revoke the votes in the database
     if (is_guest($member_id)) {
-        $map = ['pv_poll_id' => $poll_info['id'], 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+        $map = ['pv_poll_id' => $poll_info['id'], 'pv_ip_address' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
     } else {
         $map = ['pv_poll_id' => $poll_info['id'], 'pv_member_id' => $member_id];
     }
@@ -485,7 +485,7 @@ function cns_calculate_answer_voting_power(int $answer_id, bool $recalculate = f
 
     $voting_power = 0.0;
 
-    $votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_cache_points_at_voting_time', 'pv_cache_voting_power', 'pv_revoked'], ['pv_answer_id' => $answer_id, 'pv_revoked' => 0], '');
+    $votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_points_when_voted', 'pv_cache_voting_power', 'pv_revoked'], ['pv_answer_id' => $answer_id, 'pv_revoked' => 0], '');
     foreach ($votes as $vote) {
         $voting_power += cns_calculate_vote_voting_power($vote['id'], $recalculate, $vote);
     }
@@ -506,7 +506,7 @@ function cns_calculate_answer_voting_power(int $answer_id, bool $recalculate = f
 function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false, ?array $row = null) : float
 {
     if ($row === null) {
-        $_row = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_revoked', 'pv_cache_points_at_voting_time', 'pv_cache_voting_power'], ['id' => $vote_id], '', 1);
+        $_row = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_revoked', 'pv_points_when_voted', 'pv_cache_voting_power'], ['id' => $vote_id], '', 1);
         if ($_row === null || !array_key_exists(0, $_row)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -521,7 +521,7 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
         return $row['pv_cache_voting_power'];
     }
 
-    $voting_power = cns_points_to_voting_power($row['pv_cache_points_at_voting_time']);
+    $voting_power = cns_points_to_voting_power($row['pv_points_when_voted']);
 
     $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_cache_voting_power' => $voting_power], ['id' => $vote_id]);
 

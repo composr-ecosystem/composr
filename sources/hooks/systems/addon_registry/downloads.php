@@ -574,7 +574,7 @@ class Hook_addon_registry_downloads
         $GLOBALS['SITE_DB']->query_insert('trackbacks', [
             'trackback_for_type' => 'downloads',
             'trackback_for_id' => $content_id,
-            'trackback_ip' => '',
+            'trackback_ip_address' => '',
             'trackback_time' => time(),
             'trackback_url' => '',
             'trackback_title' => lorem_phrase(),
@@ -585,7 +585,7 @@ class Hook_addon_registry_downloads
             'rating_for_type' => 'downloads',
             'rating_for_id' => $content_id,
             'rating_member' => get_member(),
-            'rating_ip' => '',
+            'rating_ip_address' => '',
             'rating_time' => time(),
             'rating' => 3,
         ]);

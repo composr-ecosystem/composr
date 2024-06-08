@@ -115,7 +115,7 @@ class Hook_ajax_tree_choose_forum
                 } else {
                     $expansions[] = '<expand>' . strval($cat) . '</expand>';
                 }
-                $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $cat]);
+                $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum_id', ['id' => $cat]);
             }
             $expansions = array_reverse($expansions);
             $out .= implode('', $expansions);

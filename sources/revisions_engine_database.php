@@ -186,10 +186,10 @@ class RevisionEngineDatabase
 
             if ($member_id !== null) {
                 $where .= ' AND ';
-                $where .= 'l_by=' . strval($member_id);
+                $where .= 'l_by_member=' . strval($member_id);
             }
 
-            $select = 'r.id,\'database\' AS revision_type,l_the_type AS log_action,l_param_a AS log_param_a,l_param_b AS log_param_b,l_by AS log_member_id,\'\' AS log_ip,l_date_and_time AS log_time,l_reason AS log_reason';
+            $select = 'r.id,\'database\' AS revision_type,l_the_type AS log_action,l_param_a AS log_param_a,l_param_b AS log_param_b,l_by_member AS log_member_id,\'\' AS log_ip,l_date_and_time AS log_time,l_reason AS log_reason';
             if (!$limited_data) {
                 $select .= ',r.*';
             }

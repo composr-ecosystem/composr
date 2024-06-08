@@ -106,8 +106,8 @@ function cns_make_group(string $name, int $is_default = 0, int $is_super_admin =
         'g_is_presented_at_install' => $is_presented_at_install,
         'g_is_super_admin' => $is_super_admin,
         'g_is_super_moderator' => $is_super_moderator,
-        'g_group_leader' => $group_leader,
-        'g_promotion_target' => $promotion_target,
+        'g_group_lead_member' => $group_leader,
+        'g_promotion_target_group' => $promotion_target,
         'g_promotion_threshold' => $promotion_threshold,
         'g_promotion_approval' => $promotion_approval,
         'g_flood_control_submit_secs' => $flood_control_submit_secs,
@@ -243,7 +243,7 @@ function cns_make_rank_set(string $rank_set) : array
         $member_group_3 = array_shift($ladder_groups);
         $member_group_4 = array_shift($ladder_groups);
 
-        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => null]);
+        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target_group' => null]);
     }
 
     switch ($rank_set) {

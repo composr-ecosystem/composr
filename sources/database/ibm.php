@@ -154,6 +154,7 @@ class Database_Static_ibm extends DatabaseDriver
             'MINIID_TEXT' => 'varchar(40)',
             'IP' => 'varchar(40)',
             'LANGUAGE_NAME' => 'varchar(5)',
+            'TOKEN' => 'varchar(15)',
             'URLPATH' => 'varchar(255)',
         ];
         return $type_remap;

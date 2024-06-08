@@ -57,14 +57,14 @@ class Hook_content_meta_aware_forum extends Hook_CMA
             'table' => 'f_forums',
             'id_field' => 'id',
             'id_field_numeric' => true,
-            'parent_category_field' => 'f_parent_forum',
+            'parent_category_field' => 'f_parent_forum_id',
             'parent_category_meta_aware_type' => 'forum',
             'is_category' => true,
             'is_entry' => false,
             'category_field' => 'id', // For category permissions
             'permission_module' => 'forums', // For category permissions
             'parent_spec__table_name' => 'f_forums',
-            'parent_spec__parent_name' => 'f_parent_forum',
+            'parent_spec__parent_name' => 'f_parent_forum_id',
             'parent_spec__field_name' => 'id',
             'category_is_string' => false,
 

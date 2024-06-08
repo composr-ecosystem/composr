@@ -833,7 +833,7 @@ We also have some special cases coded up directly. These are often referenced be
  - [tt]topics[/tt]
   - [tt]new_post[/tt]
    - [tt]quote[/tt]
-   - [tt]intended_solely_for[/tt]
+   - [tt]whisper_to_member[/tt]
  - [tt]warnings[/tt]
   - [tt]add[/tt]
    - [tt]member_id[/tt]

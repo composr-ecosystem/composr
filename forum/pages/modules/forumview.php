@@ -144,7 +144,7 @@ class Module_forumview
             inject_feed_url('?mode=cns_forumview&select=' . strval($id), do_lang('FORUM'));
 
             require_code('cns_forums');
-            $breadcrumbs = cns_forum_breadcrumbs($id, $forum_name, $forum_info['f_parent_forum']);
+            $breadcrumbs = cns_forum_breadcrumbs($id, $forum_name, $forum_info['f_parent_forum_id']);
             breadcrumb_set_parents($breadcrumbs);
             $this->breadcrumbs = breadcrumb_segments_to_tempcode($breadcrumbs);
         }

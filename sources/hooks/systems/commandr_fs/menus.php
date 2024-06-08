@@ -271,9 +271,9 @@ class Hook_commandr_fs_menus extends Resource_fs_base
         $properties = [
             'label' => get_translated_text($row['i_caption']),
             'order' => $row['i_order'],
-            'parent' => $row['i_parent'],
+            'parent' => $row['i_parent_id'],
             'caption_long' => get_translated_text($row['i_caption_long']),
-            'url' => $row['i_url'],
+            'url' => $row['i_link'],
             'check_permissions' => $row['i_check_permissions'],
             'expanded' => $row['i_expanded'],
             'new_window' => $row['i_new_window'],

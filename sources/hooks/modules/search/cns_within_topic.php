@@ -140,7 +140,7 @@ class Hook_search_cns_within_topic extends FieldsSearchHook
         require_lang('cns');
 
         // Calculate our where clause (search)
-        $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
+        $sq = build_search_submitter_clauses('p_posting_member', $author_id, $author);
         if ($sq === null) {
             return [];
         } else {
@@ -153,7 +153,7 @@ class Hook_search_cns_within_topic extends FieldsSearchHook
             $where_clause .= 'p_validated=1';
         }
         $where_clause .= ' AND ';
-        $where_clause .= 't_forum_id=p_cache_forum_id AND t_forum_id IS NOT NULL AND p_intended_solely_for IS NULL';
+        $where_clause .= 't_forum_id=p_cache_forum_id AND t_forum_id IS NOT NULL AND p_whisper_to_member IS NULL';
 
         $table = 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id';
         $trans_fields = ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'];

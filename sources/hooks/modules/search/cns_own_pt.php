@@ -54,7 +54,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
             }
         }
 
-        if ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_pt_from=' . strval($member_id) . ' OR ' . 't_pt_to=' . strval($member_id)) == 0) {
+        if ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_pt_from_member=' . strval($member_id) . ' OR ' . 't_pt_to_member=' . strval($member_id)) == 0) {
             return null;
         }
 
@@ -116,13 +116,13 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         ];
         $filter_field_transfer_map = [
             'p_time' => 'i_add_time',
-            'p_poster' => 'i_poster_id',
+            'p_posting_member' => 'i_posting_member',
             'i_starter' => 'i_starter',
             'i_for' => 'i_for',
         ];
 
         $db = $GLOBALS['FORUM_DB'];
-        $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_poster,p.p_title,p.p_post,t_cache_first_post_id,t_pt_from,t_pt_to FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
+        $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_posting_member,p.p_title,p.p_post,t_cache_first_post_id,t_pt_from_member,t_pt_to_member FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
         $sql .= ' WHERE p_cache_forum_id IS NULL';
         $since_clause = $engine->generate_since_where_clause($db, $index_table, ['p_time' => false, 'p_last_edit_time' => true], $since, $statistics_map);
         $sql .= $since_clause;
@@ -133,7 +133,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
             foreach ($rows as $row) {
                 $content_fields = $row + ['i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0];
 
-                foreach (($row['t_pt_from'] == $row['t_pt_to']) ? ['t_pt_from'] : ['t_pt_from', 't_pt_to'] as $for_field) {
+                foreach (($row['t_pt_from_member'] == $row['t_pt_to_member']) ? ['t_pt_from_member'] : ['t_pt_from_member', 't_pt_to_member'] as $for_field) {
                     $key_transfer_map['i_for'] = 'i_for';
                     $content_fields['i_for'] = $row[$for_field];
                     $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
@@ -196,7 +196,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
             // Calculate our where clause (search)
             $where_clause = '';
             $extra_join_clause = '';
-            $sq = build_search_submitter_clauses('i_poster_id', $author_id, $author);
+            $sq = build_search_submitter_clauses('i_posting_member', $author_id, $author);
             if ($sq === null) {
                 return [];
             } else {
@@ -210,9 +210,9 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
 
             $extra_join_clause .= ' AND ixxx.i_for=' . strval(get_member());
             $where_clause .= ' AND ';
-            $where_clause .= '(p_intended_solely_for IS NULL';
+            $where_clause .= '(p_whisper_to_member IS NULL';
             if (!is_guest()) {
-                $where_clause .= ' OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member());
+                $where_clause .= ' OR p_whisper_to_member=' . strval(get_member()) . ' OR p_posting_member=' . strval(get_member());
             }
             $where_clause .= ')';
             if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
@@ -227,14 +227,14 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         } else {
             // Calculate our where clause (search)
             $where_clause .= ' AND ';
-            $where_clause .= 't_forum_id IS NULL AND (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ')';
+            $where_clause .= 't_forum_id IS NULL AND (t_pt_from_member=' . strval(get_member()) . ' OR t_pt_to_member=' . strval(get_member()) . ')';
             $where_clause .= ' AND ';
-            $where_clause .= '(r.p_intended_solely_for IS NULL';
+            $where_clause .= '(r.p_whisper_to_member IS NULL';
             if (!is_guest()) {
-                $where_clause .= ' OR r.p_intended_solely_for=' . strval(get_member()) . ' OR r.p_poster=' . strval(get_member());
+                $where_clause .= ' OR r.p_whisper_to_member=' . strval(get_member()) . ' OR r.p_posting_member=' . strval(get_member());
             }
             $where_clause .= ')';
-            $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
+            $sq = build_search_submitter_clauses('p_posting_member', $author_id, $author);
             if ($sq === null) {
                 return [];
             } else {

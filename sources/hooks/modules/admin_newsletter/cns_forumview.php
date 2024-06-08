@@ -64,7 +64,7 @@ class Hook_whatsnew_cns_forumview
 
         require_code('selectcode');
         $or_list = selectcode_to_sqlfragment($filter, 't_forum_id');
-        $rows = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_last_time>' . strval($cutoff_time) . ' AND t_validated=1 AND t_pt_to IS NULL AND t_pt_from IS NULL AND (' . $or_list . ') ORDER BY t_cache_last_time DESC', $max);
+        $rows = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_last_time>' . strval($cutoff_time) . ' AND t_validated=1 AND t_pt_to_member IS NULL AND t_pt_from_member IS NULL AND (' . $or_list . ') ORDER BY t_cache_last_time DESC', $max);
         if (count($rows) == $max) {
             return [];
         }

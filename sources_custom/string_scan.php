@@ -4767,7 +4767,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_NOTES
         DESCRIPTION_NUM_WINNERS
         DESCRIPTION_ONE_PER_MEMBER
-        DESCRIPTION_ON_PROBATION_UNTIL
+        DESCRIPTION_PROBATION_EXPIRATION_TIME
         DESCRIPTION_OPEN_STATE
         DESCRIPTION_OPEN_TIME
         DESCRIPTION_ORDER
@@ -10457,8 +10457,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ONLINE
         ONLINE_NOW
         ONLY_TITLES
-        ON_PROBATION_UNTIL
-        _ON_PROBATION_UNTIL
+        PROBATION_EXPIRATION_TIME
+        _PROBATION_EXPIRATION_TIME
         OPEN
         OPEN_CHATROOMS_IN_TABS
         OPEN_IM_POPUP

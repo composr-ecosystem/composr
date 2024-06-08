@@ -2194,7 +2194,7 @@ function step_5_core() : object
 
     // Privileges
     $GLOBALS['SITE_DB']->create_table('group_privileges', [
-        'group_id' => '*INTEGER',
+        'group_id' => '*GROUP',
         'privilege' => '*ID_TEXT',
         'the_page' => '*ID_TEXT',
         'module_the_name' => '*ID_TEXT', // The permission module (NOT the page module which is the_page)
@@ -2213,13 +2213,13 @@ function step_5_core() : object
         'id' => '*AUTO',
         'a_member_id' => 'MEMBER',
         'a_file_size' => '?INTEGER', // null means non-local. Doesn't count to quota
-        'a_url' => 'SHORT_TEXT',
+        'a_url' => 'URLPATH',
         'a_description' => 'SHORT_TEXT',
-        'a_thumb_url' => 'SHORT_TEXT',
+        'a_thumb_url' => 'URLPATH',
         'a_original_filename' => 'SHORT_TEXT',
         'a_num_downloads' => 'INTEGER',
-        'a_last_downloaded_time' => '?INTEGER',
-        'a_add_time' => 'INTEGER',
+        'a_last_downloaded_time' => '?TIME',
+        'a_add_time' => 'TIME',
     ]);
     $GLOBALS['SITE_DB']->create_index('attachments', 'ownedattachments', ['a_member_id']);
     $GLOBALS['SITE_DB']->create_index('attachments', 'attachmentlimitcheck', ['a_add_time']);
@@ -2310,7 +2310,7 @@ function step_5_core_2() : object
     $GLOBALS['SITE_DB']->drop_table_if_exists('sessions');
     $GLOBALS['SITE_DB']->create_table('sessions', [
         'the_session' => '*ID_TEXT',
-        'last_activity' => 'TIME',
+        'last_activity_time' => 'TIME',
         'member_id' => 'MEMBER',
         'ip' => 'IP',
         'session_confirmed' => 'BINARY',
@@ -2322,7 +2322,7 @@ function step_5_core_2() : object
         'the_id' => 'ID_TEXT',
         'the_title' => 'SHORT_TEXT',
     ]);
-    $GLOBALS['SITE_DB']->create_index('sessions', 'delete_old', ['last_activity']);
+    $GLOBALS['SITE_DB']->create_index('sessions', 'delete_old', ['last_activity_time']);
     $GLOBALS['SITE_DB']->create_index('sessions', 'member_id', ['member_id']);
     $GLOBALS['SITE_DB']->create_index('sessions', 'userat', ['the_zone', 'the_page', 'the_id']);
 

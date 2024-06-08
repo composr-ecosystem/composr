@@ -47,8 +47,8 @@ class stats_test_set extends cms_test_case
                 ['_ALLOW_NULL_' => false, 't_forum_id' => null],
             ],
             'f_posts' => [
-                ['_ALLOW_NULL_' => false, 'p_intended_solely_for' => null],
-                ['p_intended_solely_for' => 2],
+                ['_ALLOW_NULL_' => false, 'p_whisper_to_member' => null],
+                ['p_whisper_to_member' => 2],
             ],
             'f_poll_votes' => [
                 ['pv_revoked' => 0],

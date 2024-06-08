@@ -112,7 +112,7 @@ PHP;
         $forum_ids = [];
         if ((get_forum_type() == 'cns') && (preg_match('#^[\d\-\*,]*$#', $forum_name) != 0)) {
             require_code('selectcode');
-            $forum_names = selectcode_to_idlist_using_db($forum_name, 'id', 'f_forums', 'f_forums', 'f_parent_forum', 'f_parent_forum', 'id', true, true, $GLOBALS['FORUM_DB']);
+            $forum_names = selectcode_to_idlist_using_db($forum_name, 'id', 'f_forums', 'f_forums', 'f_parent_forum_id', 'f_parent_forum_id', 'id', true, true, $GLOBALS['FORUM_DB']);
         } else {
             $forum_names = explode(',', $forum_name);
         }

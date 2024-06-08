@@ -421,7 +421,7 @@ class Hook_import_mybb
                     '', // pt_rules_text
                     $validated, // validated
                     '', // validated_email_confirm_code
-                    $row['lifted'], // on_probation_until
+                    $row['lifted'], // probation_expiration_time
                     ($row['lifted'] > time()) ? '1' : '0', // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
@@ -432,7 +432,7 @@ class Hook_import_mybb
                 );
 
                 // Fix usergroup leadership
-                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => -$row['muid']]);
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_lead_member' => $id_new], ['g_group_lead_member' => -$row['muid']]);
 
                 import_id_remap_put('member', strval($row['muid']), $id_new);
 
@@ -771,12 +771,12 @@ class Hook_import_mybb
 
                 $post = $this->fix_links($row['message'], $db, $table_prefix);
 
-                $last_edit_by = null;
+                $last_edit_member = null;
                 $last_edit_time = $row['edittime'];
 
                 $post_username = $GLOBALS['CNS_DRIVER']->get_username($member_id);
 
-                $id_new = cns_make_post($topic_id, $title, $post, 0, $first_post, 1, 0, $post_username, $row['ipaddress'], $row['dateline'], $member_id, null, $last_edit_time, $last_edit_by, false, false, $forum_id, false);
+                $id_new = cns_make_post($topic_id, $title, $post, 0, $first_post, 1, 0, $post_username, $row['ipaddress'], $row['dateline'], $member_id, null, $last_edit_time, $last_edit_member, false, false, $forum_id, false);
 
                 import_id_remap_put('post', strval($row['pid']), $id_new);
             }
@@ -911,13 +911,13 @@ class Hook_import_mybb
 
                 $post_id = import_id_remap_get('post', strval($row['pid']));
 
-                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_poster', 'p_post'], ['id' => $post_id], '', 1);
+                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_posting_member', 'p_post'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $post_row)) {
                     import_id_remap_put('post_files', strval($row['aid']), 1);
                     continue; // Orphaned post
                 }
                 $post = get_translated_text($post_row[0]['p_post']);
-                $member_id = $post_row[0]['p_poster'];
+                $member_id = $post_row[0]['p_posting_member'];
 
                 $url = $this->data_to_disk('', $row['attachname'], 'attachments', $db, $table_prefix, $row['filename']);
                 $thumb_url = $this->data_to_disk('', $row['thumbnail'], 'attachments_thumbs', $db, $table_prefix, $row['filename']);
@@ -987,7 +987,7 @@ class Hook_import_mybb
                     } else {
                         $answer = $answers[$answer_map[$row2['voteoption']]];
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => $row2['dateline'], 'pv_cache_points_at_voting_time' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip_address' => '', 'pv_revoked' => 0, 'pv_date_time' => $row2['dateline'], 'pv_points_when_voted' => 0]);
                 }
             }
 
@@ -1061,9 +1061,9 @@ class Hook_import_mybb
                 $time = $_post['dateline'];
                 $poster = $from_id;
                 $last_edit_time = null;
-                $last_edit_by = null;
+                $last_edit_member = null;
 
-                cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
+                cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_member, false, false, null, false);
                 $first_post = false;
             }
 
@@ -1371,7 +1371,7 @@ class Hook_import_mybb
             $topic_options = unserialize($row['threadoptions']);
 
             $mm_open_state = ($topic_options['openthread'] == 'open') ? 1 : (($topic_options['openthread'] == 'close') ? 0 : null);
-            $mm_move_to = (!empty($topic_options['movethread'])) ? $topic_options['movethread'] : null;
+            $mm_move_to_forum_id = (!empty($topic_options['movethread'])) ? $topic_options['movethread'] : null;
 
             $mm_title_suffix = ($topic_options['newsubject'] != '{subject}') ? preg_replace('#\{username\}#', '', $topic_options['newsubject']) : '';
 
@@ -1380,7 +1380,7 @@ class Hook_import_mybb
             $map = [
                 'mm_forum_multi_code' => $mm_forum_multi_code,
                 'mm_open_state' => $mm_open_state,
-                'mm_move_to' => $mm_move_to,
+                'mm_move_to_forum_id' => $mm_move_to_forum_id,
                 'mm_title_suffix' => $mm_title_suffix,
                 'mm_post_text' => $mm_post_text,
             ];

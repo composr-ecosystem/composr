@@ -233,7 +233,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         $sql .= ' AND g_is_super_moderator=0';
         $sql .= ' AND g_is_presented_at_install=0';
         $sql .= ' AND g_is_default=0';
-        $sql .= ' AND g_promotion_target IS NULL';
+        $sql .= ' AND g_promotion_target_group IS NULL';
         $sql .= ' AND g_is_private_club=0';
         $sql .= ' AND g_open_membership=0';
         $probation_group = get_probation_group();

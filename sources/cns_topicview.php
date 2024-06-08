@@ -140,9 +140,9 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
 {
     $forum_id = $_postdetails['p_cache_forum_id'];
 
-    $primary_group = cns_get_member_primary_group($_postdetails['p_poster']);
+    $primary_group = cns_get_member_primary_group($_postdetails['p_posting_member']);
     if ($primary_group === null) {
-        $_postdetails['p_poster'] = db_get_first_id();
+        $_postdetails['p_posting_member'] = db_get_first_id();
         $primary_group = db_get_first_id();
     }
 
@@ -156,7 +156,7 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
         'validated' => $_postdetails['p_validated'],
         'is_emphasised' => $_postdetails['p_is_emphasised'],
         'poster_username' => $_postdetails['p_poster_name_if_guest'],
-        'poster' => $_postdetails['p_poster'],
+        'poster' => $_postdetails['p_posting_member'],
     ];
 
     $post['has_revisions'] = false;
@@ -173,17 +173,17 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
     }
 
     // Edited?
-    if ($_postdetails['p_last_edit_by'] !== null) {
-        $post['last_edit_by'] = $_postdetails['p_last_edit_by'];
+    if ($_postdetails['p_last_edit_member'] !== null) {
+        $post['last_edit_member'] = $_postdetails['p_last_edit_member'];
         $post['last_edit_time'] = $_postdetails['p_last_edit_time'];
         $post['last_edit_date'] = get_timezoned_date_time($_postdetails['p_last_edit_time']);
-        $post['last_edit_by_username'] = $GLOBALS['CNS_DRIVER']->get_username($_postdetails['p_last_edit_by']);
+        $post['last_edit_username'] = $GLOBALS['CNS_DRIVER']->get_username($_postdetails['p_last_edit_member']);
     }
 
-    $is_banned = ($GLOBALS['CNS_DRIVER']->get_member_row_field($_postdetails['p_poster'], 'm_is_perm_banned') != '0');
+    $is_banned = ($GLOBALS['CNS_DRIVER']->get_member_row_field($_postdetails['p_posting_member'], 'm_is_perm_banned') != '0');
 
     // Find title
-    $title = addon_installed('cns_member_titles') ? $GLOBALS['CNS_DRIVER']->get_member_row_field($_postdetails['p_poster'], 'm_title') : '';
+    $title = addon_installed('cns_member_titles') ? $GLOBALS['CNS_DRIVER']->get_member_row_field($_postdetails['p_posting_member'], 'm_title') : '';
     if ($title == '') {
         $title = get_translated_text(cns_get_group_property($primary_group, 'title'), $GLOBALS['FORUM_DB']);
     }
@@ -193,7 +193,7 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
     $post['poster_title'] = $title;
 
     // If this isn't guest posted, we can put some member details in
-    if (($_postdetails['p_poster'] !== null) && ($_postdetails['p_poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id())) {
+    if (($_postdetails['p_posting_member'] !== null) && ($_postdetails['p_posting_member'] != $GLOBALS['CNS_DRIVER']->get_guest_id())) {
         require_code('cns_general');
         $need = [
             'highlighted_name',
@@ -202,8 +202,8 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
             'ip_address',
             'signature',
         ];
-        $post += cns_read_in_member_profile($_postdetails['p_poster'], $need, false, false);
-    } elseif ($_postdetails['p_poster'] == $GLOBALS['CNS_DRIVER']->get_guest_id()) {
+        $post += cns_read_in_member_profile($_postdetails['p_posting_member'], $need, false, false);
+    } elseif ($_postdetails['p_posting_member'] == $GLOBALS['CNS_DRIVER']->get_guest_id()) {
         if ($_postdetails['p_poster_name_if_guest'] == do_lang('SYSTEM')) {
             $post['avatar'] = find_theme_image('cns_default_avatars/system', true);
             $post['poster_title'] = '';
@@ -213,12 +213,12 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
     // Do we have any special controls over this post?
     require_code('cns_posts');
     $reason = null;
-    $may_edit = cns_may_edit_post_by($_postdetails['id'], $_postdetails['p_time'], $_postdetails['p_poster'], $forum_id, get_member(), $topic_info['t_is_open'] == 0, $reason);
+    $may_edit = cns_may_edit_post_by($_postdetails['id'], $_postdetails['p_time'], $_postdetails['p_posting_member'], $forum_id, get_member(), $topic_info['t_is_open'] == 0, $reason);
     if ($may_edit || $reason !== null/*Interesting reason, let them find it out when they click*/) {
         $post['may_edit'] = true;
     }
     if (!$only_post) {
-        $may_delete = cns_may_delete_post_by($_postdetails['id'], $_postdetails['p_time'], $_postdetails['p_poster'], $forum_id, get_member(), $reason);
+        $may_delete = cns_may_delete_post_by($_postdetails['id'], $_postdetails['p_time'], $_postdetails['p_posting_member'], $forum_id, get_member(), $reason);
         if ($may_delete || $reason !== null/*Interesting reason, let them find it out when they click*/) {
             $post['may_delete'] = true;
         }
@@ -228,8 +228,8 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
     if (has_privilege(get_member(), 'see_ip')) {
         $post['ip_address'] = $_postdetails['p_ip_address'];
     }
-    if ($_postdetails['p_intended_solely_for'] !== null) {
-        $post['intended_solely_for'] = $_postdetails['p_intended_solely_for'];
+    if ($_postdetails['p_whisper_to_member'] !== null) {
+        $post['whisper_to_member'] = $_postdetails['p_whisper_to_member'];
     }
 
     return $post;
@@ -318,8 +318,8 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
             'first_post' => $topic_info['p_post'],
             'first_poster' => $topic_info['t_cache_first_member_id'],
             'first_post_id' => $topic_info['t_cache_first_post_id'],
-            'pt_from' => $topic_info['t_pt_from'],
-            'pt_to' => $topic_info['t_pt_to'],
+            'pt_from' => $topic_info['t_pt_from_member'],
+            'pt_to' => $topic_info['t_pt_to_member'],
             'is_open' => $topic_info['t_is_open'],
             'is_threaded' => $is_threaded,
             'is_really_threaded' => ($topic_info['f_is_threaded'] === null) ? 0 : $topic_info['f_is_threaded'],
@@ -336,7 +336,7 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
         if ($topic_info['t_poll_id'] !== null) {
             require_code('cns_polls');
             if (is_guest()) {
-                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
+                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_ip_address' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
             } else {
                 $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_member_id' => get_member(), 'pv_revoked' => 0];
             }
@@ -375,7 +375,7 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
         ];
 
         // Post query
-        $where = 'p_intended_solely_for=' . strval(get_member());
+        $where = 'p_whisper_to_member=' . strval(get_member());
         $query = 'SELECT p.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE ' . $where . ' ORDER BY p_time,p.id';
 
         $topic_info = [
@@ -399,7 +399,7 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
         // Precache member/group details in one fell swoop
         $members = [];
         foreach ($_postdetailss as $_postdetails) {
-            $members[$_postdetails['p_poster']] = 1;
+            $members[$_postdetails['p_posting_member']] = 1;
             if ($out['title'] == '') {
                 $out['title'] = $_postdetails['p_title'];
             }
@@ -673,8 +673,8 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         if ($topic_info['is_threaded'] == 0) {
             $map['quote'] = $_postdetails['id'];
         }
-        if (array_key_exists('intended_solely_for', $_postdetails)) {
-            $map['intended_solely_for'] = $_postdetails['poster'];
+        if (array_key_exists('whisper_to_member', $_postdetails)) {
+            $map['whisper_to_member'] = $_postdetails['poster'];
         }
         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
         if (($test !== null) && ($test !== '0')) {
@@ -689,7 +689,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         $onclick_call_functions = null;
         $onclick_call_functions_explicit_quote = null;
 
-        if ((array_key_exists('message_comcode', $_postdetails)) && ($_postdetails['message_comcode'] !== null) && (strlen($_postdetails['message_comcode']) < 1024 * 10/*10kb limit, for reasonable performance*/) && (array_key_exists('may_use_quick_reply', $topic_info)) && (!array_key_exists('intended_solely_for', $map))) {
+        if ((array_key_exists('message_comcode', $_postdetails)) && ($_postdetails['message_comcode'] !== null) && (strlen($_postdetails['message_comcode']) < 1024 * 10/*10kb limit, for reasonable performance*/) && (array_key_exists('may_use_quick_reply', $topic_info)) && (!array_key_exists('whisper_to_member', $map))) {
             require_code('comcode_cleanup');
             $replying_to_post = comcode_censored_raw_code_access($_postdetails['message_comcode']);
             $replying_to_post_plain = ($topic_info['is_threaded'] == 0) ? '' : strip_comcode($_postdetails['message_comcode']);
@@ -761,7 +761,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         (cns_may_whisper($_postdetails['poster'])) &&
         (get_option('overt_whisper_suggestion') == '1')
     ) {
-        $action_url = build_url(['page' => 'topics', 'type' => $whisper_type, 'id' => $_postdetails['topic_id'], 'quote' => $_postdetails['id'], 'intended_solely_for' => $_postdetails['poster']], get_module_zone('topics'));
+        $action_url = build_url(['page' => 'topics', 'type' => $whisper_type, 'id' => $_postdetails['topic_id'], 'quote' => $_postdetails['id'], 'whisper_to_member' => $_postdetails['poster']], get_module_zone('topics'));
         $_title = do_lang_tempcode('WHISPER');
         $_title_full = new Tempcode();
         $_title_full->attach($_title);
@@ -877,9 +877,9 @@ function cns_get_post_emphasis(array $_postdetails) : object
     $emphasis = new Tempcode();
     if ($_postdetails['is_emphasised']) {
         $emphasis = do_lang_tempcode('IMPORTANT');
-    } elseif (array_key_exists('intended_solely_for', $_postdetails)) {
-        $pp_to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['intended_solely_for'], true);
-        $pp_to_username = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['intended_solely_for']);
+    } elseif (array_key_exists('whisper_to_member', $_postdetails)) {
+        $pp_to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['whisper_to_member'], true);
+        $pp_to_username = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['whisper_to_member']);
         $emphasis = do_lang_tempcode('PP_TO', escape_html($pp_to_displayname), escape_html($pp_to_username));
     }
     return $emphasis;

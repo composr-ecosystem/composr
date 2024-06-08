@@ -91,11 +91,6 @@ function incoming_uploads_script()
     }
 
     if ($is_uploaded) {
-        // Fix names that are too common
-        if (in_array($name, ['image.jpg'/*iOS*/])) {
-            $name = uniqid('', true) . '.' . get_file_extension($name);
-        }
-
         $max_length = 255;
         $name = substr($name, max(0, strlen($name) - $max_length));
 
@@ -123,6 +118,12 @@ function incoming_uploads_script()
             require_code('exif');
             $outa += get_exif_data(get_custom_file_base() . '/' . $savename);
         }
+
+        // Fix names that are too common
+        if (in_array(cms_strtolower_ascii($name), ['image.', 'unknown.'])) {
+            $name = uniqid('', true) . '.' . get_file_extension($name);
+        }
+
         $outa['upload_id'] = strval($file_db_id);
         $outa['upload_name'] = $name;
         $outa['upload_savename'] = $savename;

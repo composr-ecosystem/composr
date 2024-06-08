@@ -173,6 +173,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
             'MINIID_TEXT' => 'nvarchar(40)',
             'IP' => 'nvarchar(40)',
             'LANGUAGE_NAME' => 'nvarchar(5)',
+            'TOKEN' => 'nvarchar(15)',
             'URLPATH' => 'nvarchar(255)',
         ];
         return $type_remap;

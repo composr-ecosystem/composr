@@ -521,7 +521,7 @@ function already_rated(array $rating_for_types, string $content_id, ?array &$pre
     static $ip_restrict = null;
     if ($ip_restrict === null) {
         if ((!$GLOBALS['IS_ACTUALLY_ADMIN']) && ((get_option('vote_member_ip_restrict') == '1') || (is_guest()))) {
-            $ip_restrict = db_string_equal_to('rating_ip', get_ip_address());
+            $ip_restrict = db_string_equal_to('rating_ip_address', get_ip_address());
         } else {
             $ip_restrict = '1=0';
         }
@@ -638,9 +638,9 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
     $past_rating = null;
     if ($rating !== null) {
         if ($already_rated) {
-            $past_rating = $GLOBALS['SITE_DB']->query_select_value_if_there('rating', 'rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()]);
+            $past_rating = $GLOBALS['SITE_DB']->query_select_value_if_there('rating', 'rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip_address' => get_ip_address()]);
             // Delete, in preparation for re-rating
-            $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()]);
+            $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip_address' => get_ip_address()]);
         }
     }
 
@@ -653,9 +653,9 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
     }
 
     if ($rating !== null) {
-        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address(), 'rating_time' => time(), 'rating' => $rating]);
+        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip_address' => get_ip_address(), 'rating_time' => time(), 'rating' => $rating]);
     } else {
-        $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()]);
+        $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip_address' => get_ip_address()]);
     }
 
     // Top rating / liked
@@ -1243,7 +1243,7 @@ function actualise_post_trackback(bool $allow_trackbacks, string $content_type, 
 
     $real_feedback_type = _real_feedback_type($content_type);
 
-    $GLOBALS['SITE_DB']->query_insert('trackbacks', ['trackback_for_type' => $real_feedback_type, 'trackback_for_id' => $content_id, 'trackback_ip' => get_ip_address(), 'trackback_time' => time(), 'trackback_url' => $url, 'trackback_title' => $title, 'trackback_excerpt' => $excerpt, 'trackback_name' => $name]);
+    $GLOBALS['SITE_DB']->query_insert('trackbacks', ['trackback_for_type' => $real_feedback_type, 'trackback_for_id' => $content_id, 'trackback_ip_address' => get_ip_address(), 'trackback_time' => time(), 'trackback_url' => $url, 'trackback_title' => $title, 'trackback_excerpt' => $excerpt, 'trackback_name' => $name]);
 
     return true;
 }

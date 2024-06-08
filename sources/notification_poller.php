@@ -353,21 +353,21 @@ function get_pts(?int $max = null, int $start = 0) : array
         $last_post_by_username = $topic['t_cache_last_username'];
         $last_post_by_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($topic['t_cache_last_member_id'], true);
 
-        $with_poster_id = ($topic['t_pt_from'] == get_member()) ? $topic['t_pt_to'] : $topic['t_pt_from'];
+        $with_poster_id = ($topic['t_pt_from_member'] == get_member()) ? $topic['t_pt_to_member'] : $topic['t_pt_from_member'];
         $with_username = $GLOBALS['FORUM_DRIVER']->get_username($with_poster_id, false, USERNAME_DEFAULT_NULL);
         if ($with_username === null) {
             $with_username = do_lang('UNKNOWN');
         }
         $with_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($with_poster_id, true);
 
-        $by_poster_id = $topic['t_pt_from'];
+        $by_poster_id = $topic['t_pt_from_member'];
         $by_username = $GLOBALS['FORUM_DRIVER']->get_username($by_poster_id, false, USERNAME_DEFAULT_NULL);
         if ($by_username === null) {
             $by_username = do_lang('UNKNOWN');
         }
         $by_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($by_poster_id, true);
 
-        $to_poster_id = $topic['t_pt_to'];
+        $to_poster_id = $topic['t_pt_to_member'];
         $to_username = $GLOBALS['FORUM_DRIVER']->get_username($to_poster_id, false, USERNAME_DEFAULT_NULL);
         if ($to_username === null) {
             $to_username = do_lang('UNKNOWN');
@@ -422,7 +422,7 @@ function get_pts(?int $max = null, int $start = 0) : array
  */
 function pt_to_xml(array $row) : string
 {
-    $member_id = $row['p_poster'];
+    $member_id = $row['p_posting_member'];
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
     $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
     $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);

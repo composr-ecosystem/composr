@@ -64,7 +64,7 @@ class Hook_rss_cns_forumview
 
         require_code('cns_topics');
 
-        $filters = selectcode_to_sqlfragment($_filters, 't_forum_id', 'f_forums', 'f_parent_forum', 't_forum_id', 'id', true, true, $GLOBALS['FORUM_DB']); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
+        $filters = selectcode_to_sqlfragment($_filters, 't_forum_id', 'f_forums', 'f_parent_forum_id', 't_forum_id', 'id', true, true, $GLOBALS['FORUM_DB']); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
 
         $sql = 'SELECT t.*';
         if (multi_lang_content()) {

@@ -1371,7 +1371,7 @@ CREATE TABLE cms_tickets (
 DROP TABLE IF EXISTS cms_trackbacks;
 CREATE TABLE cms_trackbacks (
     trackback_title varchar(255) NOT NULL,
-    trackback_ip varchar(40) NOT NULL,
+    trackback_ip_address varchar(40) NOT NULL,
     trackback_for_id varchar(80) NOT NULL,
     trackback_for_type varchar(80) NOT NULL,
     trackback_time integer unsigned NOT NULL,

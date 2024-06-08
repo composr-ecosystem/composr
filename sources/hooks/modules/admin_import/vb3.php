@@ -307,7 +307,7 @@ class Hook_import_vb3
         foreach ($rows as $row) {
             if ($row['joinusergroupid'] !== null) {
                 $row_promotion_target = $remap_id[$row['joinusergroupid']];
-                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $row_promotion_target], ['id' => $remap_id[$row['usergroupid']]], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target_group' => $row_promotion_target], ['id' => $remap_id[$row['usergroupid']]], '', 1);
             }
         }
     }
@@ -416,7 +416,7 @@ class Hook_import_vb3
                     '', // pt_rules_text
                     $validated, // validated
                     '', // validated_email_confirm_code
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     '0', // is_perm_banned
                     false, // check_correctness
                     null, // ip_address
@@ -428,7 +428,7 @@ class Hook_import_vb3
                 );
 
                 // Fix usergroup leadership
-                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => -$row['userid']]);
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_lead_member' => $id_new], ['g_group_lead_member' => -$row['userid']]);
 
                 import_id_remap_put('member', strval($row['userid']), $id_new);
 
@@ -670,7 +670,7 @@ class Hook_import_vb3
                 $r = $parents[($category_id === null) ? 1 : 2];
                 if ($r != -1) {
                     $parent_id = $remap_id[$r];
-                    $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum' => $parent_id], ['id' => $remap_id[$row['forumid']]], '', 1);
+                    $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum_id' => $parent_id], ['id' => $remap_id[$row['forumid']]], '', 1);
                 }
             }
         }
@@ -825,9 +825,9 @@ class Hook_import_vb3
 
                 $post = $this->fix_links($row['pagetext'], $db, $table_prefix);
 
-                $last_edit_by = null;
+                $last_edit_member = null;
 
-                $id_new = cns_make_post($topic_id, @html_entity_decode($title, ENT_QUOTES), $post, 0, $row['parentid'] == 0, $row['visible'], 0, $row['username'], $row['ipaddress'], $row['dateline'], $member_id, null, null, $last_edit_by, false, false, $forum_id, false);
+                $id_new = cns_make_post($topic_id, @html_entity_decode($title, ENT_QUOTES), $post, 0, $row['parentid'] == 0, $row['visible'], 0, $row['username'], $row['ipaddress'], $row['dateline'], $member_id, null, null, $last_edit_member, false, false, $forum_id, false);
 
                 import_id_remap_put('post', strval($row['postid']), $id_new);
             }
@@ -931,13 +931,13 @@ class Hook_import_vb3
                     continue;
                 }
 
-                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_poster', 'p_post'], ['id' => $post_id], '', 1);
+                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_posting_member', 'p_post'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $post_row)) {
                     import_id_remap_put('post_files', strval($row['attachmentid']), 1);
                     continue; // Orphaned post
                 }
                 $post = get_translated_text($post_row[0]['p_post']);
-                $member_id = $post_row[0]['p_poster'];
+                $member_id = $post_row[0]['p_posting_member'];
 
                 list($url, $thumb_url) = $this->data_to_disk($row['filedata'], $row['filename'], 'attachments', $row['thumbnail'], true);
                 $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $row['filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['counter'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['dateline'], 'a_description' => ''], true);
@@ -1042,7 +1042,7 @@ class Hook_import_vb3
                 $member_id = $row2['userid'];
                 if (!empty($member_id)) {
                     $answer = array_key_exists($row2['voteoption'] - 1, $answers) ? $answers[$row2['voteoption'] - 1] : -1;
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => $row2['votedate'], 'pv_cache_points_at_voting_time' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip_address' => '', 'pv_revoked' => 0, 'pv_date_time' => $row2['votedate'], 'pv_points_when_voted' => 0]);
                 }
             }
 
@@ -1212,9 +1212,9 @@ class Hook_import_vb3
                 $time = $_postdetails['dateline'];
                 $poster = $from_id;
                 $last_edit_time = null;
-                $last_edit_by = null;
+                $last_edit_member = null;
 
-                cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
+                cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_member, false, false, null, false);
                 $first_post = false;
             }
 

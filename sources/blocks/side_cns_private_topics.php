@@ -105,15 +105,15 @@ PHP;
             $last_post_by_username = $topic['t_cache_last_username'];
             $last_post_by_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($topic['t_cache_last_member_id'], true);
 
-            $with_poster_id = ($topic['t_pt_from'] == get_member()) ? $topic['t_pt_to'] : $topic['t_pt_from'];
+            $with_poster_id = ($topic['t_pt_from_member'] == get_member()) ? $topic['t_pt_to_member'] : $topic['t_pt_from_member'];
             $with_username = $GLOBALS['FORUM_DRIVER']->get_username($with_poster_id);
             $with_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($with_poster_id, true);
 
-            $by_poster_id = $topic['t_pt_from'];
+            $by_poster_id = $topic['t_pt_from_member'];
             $by_username = $GLOBALS['FORUM_DRIVER']->get_username($by_poster_id);
             $by_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($by_poster_id, true);
 
-            $to_poster_id = $topic['t_pt_to'];
+            $to_poster_id = $topic['t_pt_to_member'];
             $to_username = $GLOBALS['FORUM_DRIVER']->get_username($to_poster_id);
             $to_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($to_poster_id, true);
 

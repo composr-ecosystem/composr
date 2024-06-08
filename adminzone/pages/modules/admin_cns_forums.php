@@ -347,13 +347,13 @@ class Module_admin_cns_forums extends Standard_crud_module
         $forum_groupings = new Tempcode();
 
         if ($huge) {
-            $all_forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name', 'f_position', 'f_forum_grouping_id', 'f_order_sub_alpha', 'f_parent_forum'], ['f_parent_forum' => $id], 'ORDER BY f_parent_forum,f_position', intval(get_option('general_safety_listing_limit')));
+            $all_forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name', 'f_position', 'f_forum_grouping_id', 'f_order_sub_alpha', 'f_parent_forum_id'], ['f_parent_forum_id' => $id], 'ORDER BY f_parent_forum_id,f_position', intval(get_option('general_safety_listing_limit')));
             if (count($all_forums) == intval(get_option('general_safety_listing_limit'))) {
                 return do_template('RED_ALERT', ['_GUID' => 'tozu1if5yx6og9lmfx7jc0eczhnzahx1', 'TEXT' => do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM')]);
             }
         } else {
             if (empty($all_forums)) {
-                $all_forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name', 'f_position', 'f_forum_grouping_id', 'f_order_sub_alpha', 'f_parent_forum'], [], 'ORDER BY f_parent_forum,f_position');
+                $all_forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name', 'f_position', 'f_forum_grouping_id', 'f_order_sub_alpha', 'f_parent_forum_id'], [], 'ORDER BY f_parent_forum_id,f_position');
             }
         }
 
@@ -369,7 +369,7 @@ class Module_admin_cns_forums extends Standard_crud_module
 
         $_forum_groupings = [];
         foreach ($all_forums as $_forum) {
-            if ($_forum['f_parent_forum'] == $id) {
+            if ($_forum['f_parent_forum_id'] == $id) {
                 $_forum_groupings[$_forum['f_forum_grouping_id']] = 1;
             }
         }
@@ -378,7 +378,7 @@ class Module_admin_cns_forums extends Standard_crud_module
         $order = ($order_sub_alpha == 1) ? 'f_name' : 'f_position';
         $subforums = [];
         foreach ($all_forums as $_forum) {
-            if ($_forum['f_parent_forum'] == $id) {
+            if ($_forum['f_parent_forum_id'] == $id) {
                 $subforums[$_forum['id']] = $_forum;
             }
         }
@@ -508,23 +508,23 @@ class Module_admin_cns_forums extends Standard_crud_module
      */
     public function reorder() : object
     {
-        $all = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_parent_forum', 'f_forum_grouping_id']);
+        $all = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_parent_forum_id', 'f_forum_grouping_id']);
         $ordering = [];
         foreach ($all as $forum) {
-            $cat_order = post_param_integer('forum_grouping_order_' . (($forum['f_parent_forum'] === null) ? '' : strval($forum['f_parent_forum'])) . '_' . (($forum['f_forum_grouping_id'] === null) ? '' : strval($forum['f_forum_grouping_id'])), null);
+            $cat_order = post_param_integer('forum_grouping_order_' . (($forum['f_parent_forum_id'] === null) ? '' : strval($forum['f_parent_forum_id'])) . '_' . (($forum['f_forum_grouping_id'] === null) ? '' : strval($forum['f_forum_grouping_id'])), null);
             $order = post_param_integer('order_' . strval($forum['id']), null);
             if (($cat_order !== null) && ($order !== null)) { // Should only be null if since created
-                if (!array_key_exists($forum['f_parent_forum'], $ordering)) {
-                    $ordering[$forum['f_parent_forum']] = [];
+                if (!array_key_exists($forum['f_parent_forum_id'], $ordering)) {
+                    $ordering[$forum['f_parent_forum_id']] = [];
                 }
-                if (!array_key_exists($cat_order, $ordering[$forum['f_parent_forum']])) {
-                    $ordering[$forum['f_parent_forum']][$cat_order] = [];
+                if (!array_key_exists($cat_order, $ordering[$forum['f_parent_forum_id']])) {
+                    $ordering[$forum['f_parent_forum_id']][$cat_order] = [];
                 }
-                while (array_key_exists($order, $ordering[$forum['f_parent_forum']][$cat_order])) {
+                while (array_key_exists($order, $ordering[$forum['f_parent_forum_id']][$cat_order])) {
                     $order++;
                 }
 
-                $ordering[$forum['f_parent_forum']][$cat_order][$order] = $forum['id'];
+                $ordering[$forum['f_parent_forum_id']][$cat_order][$order] = $forum['id'];
             }
         }
 
@@ -613,12 +613,12 @@ class Module_admin_cns_forums extends Standard_crud_module
         }
         $r = $m[0];
 
-        $fields = $this->get_form_fields($r['id'], $r['f_name'], get_translated_text($r['f_description'], $GLOBALS['FORUM_DB']), $r['f_forum_grouping_id'], $r['f_parent_forum'], $r['f_position'], $r['f_post_count_increment'], $r['f_order_sub_alpha'], get_translated_text($r['f_intro_question'], $GLOBALS['FORUM_DB']), $r['f_intro_answer'], $r['f_redirection'], $r['f_order'], $r['f_is_threaded'], $r['f_allows_anonymous_posts'], $r['f_mail_email_address'], $r['f_mail_server_type'], $r['f_mail_server_host'], $r['f_mail_server_port'], $r['f_mail_folder'], $r['f_mail_username'], $r['f_mail_password'], $r['f_mail_nonmatch_policy'], $r['f_mail_unconfirmed_notice'], $r['f_poll_default_options_xml']);
+        $fields = $this->get_form_fields($r['id'], $r['f_name'], get_translated_text($r['f_description'], $GLOBALS['FORUM_DB']), $r['f_forum_grouping_id'], $r['f_parent_forum_id'], $r['f_position'], $r['f_post_count_increment'], $r['f_order_sub_alpha'], get_translated_text($r['f_intro_question'], $GLOBALS['FORUM_DB']), $r['f_intro_answer'], $r['f_redirection'], $r['f_order'], $r['f_is_threaded'], $r['f_allows_anonymous_posts'], $r['f_mail_email_address'], $r['f_mail_server_type'], $r['f_mail_server_host'], $r['f_mail_server_port'], $r['f_mail_folder'], $r['f_mail_username'], $r['f_mail_password'], $r['f_mail_nonmatch_policy'], $r['f_mail_unconfirmed_notice'], $r['f_poll_default_options_xml']);
 
         $delete_fields = new Tempcode();
         if (intval($id) != db_get_first_id()) {
-            $default_delete_forum_id = ($r['f_parent_forum'] === null) ? null : strval($r['f_parent_forum']);
-            $default_delete_forum_label = ($r['f_parent_forum'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $r['f_parent_forum']]);
+            $default_delete_forum_id = ($r['f_parent_forum_id'] === null) ? null : strval($r['f_parent_forum_id']);
+            $default_delete_forum_label = ($r['f_parent_forum_id'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $r['f_parent_forum_id']]);
             $delete_fields->attach(form_input_tree_list(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_TOPIC_MOVE_TARGET'), 'target_forum', null, 'choose_forum', [], true, $default_delete_forum_id, false, null, false, $default_delete_forum_label));
             $delete_fields->attach(form_input_tick(do_lang_tempcode('DELETE_TOPICS'), do_lang_tempcode('DESCRIPTION_DELETE_TOPICS'), 'delete_topics', false));
         }

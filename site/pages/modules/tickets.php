@@ -66,7 +66,7 @@ class Module_tickets
 
         if (get_forum_type() == 'cns') {
             require_lang('tickets');
-            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_parent_forum' => db_get_first_id(), 'f_name' => do_lang('TICKET_FORUM_NAME', null, null, null, get_site_default_lang())]);
+            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_parent_forum_id' => db_get_first_id(), 'f_name' => do_lang('TICKET_FORUM_NAME', null, null, null, get_site_default_lang())]);
             if ($forum_id !== null) {
                 require_code('cns_forums_action');
                 require_code('cns_forums_action2');

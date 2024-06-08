@@ -64,12 +64,12 @@ class Hook_rss_cns_topicview
 
         require_code('cns_topics');
 
-        $filters = selectcode_to_sqlfragment($_filters, 'p_topic_id', 'f_forums', 'f_parent_forum', 'p_cache_forum_id', 'id', true, true, $GLOBALS['FORUM_DB']);
+        $filters = selectcode_to_sqlfragment($_filters, 'p_topic_id', 'f_forums', 'f_parent_forum_id', 'p_cache_forum_id', 'id', true, true, $GLOBALS['FORUM_DB']);
 
         $cutoff = max($cutoff, time() - 60 * 60 * 24 * 60);
 
         if (!is_guest()) {
-            $filters .= ' AND (p_poster<>' . strval(get_member()) . ')';
+            $filters .= ' AND (p_posting_member<>' . strval(get_member()) . ')';
         }
 
         $rows = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? ' AND p_validated=1 ' : '') . ' AND ' . $filters . ' ORDER BY p_time DESC,id DESC', $max, 0, false, true);
@@ -81,7 +81,7 @@ class Hook_rss_cns_topicview
                 continue;
             }
             $category = $categories[$row['p_topic_id']]['t_cache_first_title'];
-            if ((cns_may_access_topic($row['p_topic_id'])) && (($row['p_intended_solely_for'] === null) || ($row['p_intended_solely_for'] == get_member()))) {
+            if ((cns_may_access_topic($row['p_topic_id'])) && (($row['p_whisper_to_member'] === null) || ($row['p_whisper_to_member'] == get_member()))) {
                 $id = strval($row['id']);
                 $author = $row['p_poster_name_if_guest'];
 

@@ -89,7 +89,7 @@ class CMSModerationRead
 
         $extra = '';
         if (!has_privilege(get_member(), 'view_other_pt')) {
-            $extra .= ' AND (p_intended_solely_for IS NULL OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member()) . ')';
+            $extra .= ' AND (p_whisper_to_member IS NULL OR p_whisper_to_member=' . strval(get_member()) . ' OR p_posting_member=' . strval(get_member()) . ')';
         }
         $extra .= ' ORDER BY p_time DESC,p.id DESC';
 

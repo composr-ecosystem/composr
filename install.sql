@@ -10481,7 +10481,7 @@ INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('f_members', 'm_passwo
 ('f_members', 'm_pt_rules_text', 'LONG_TRANS__COMCODE'),
 ('f_members', 'm_validated', 'BINARY'),
 ('f_members', 'm_validated_email_confirm_code', 'SHORT_TEXT'),
-('f_members', 'm_on_probation_until', '?TIME'),
+('f_members', 'm_probation_expiration_time', '?TIME'),
 ('f_members', 'm_is_perm_banned', 'ID_TEXT'),
 ('f_members', 'm_ip_address', 'IP'),
 ('f_members', 'm_join_time', 'TIME'),
@@ -10539,7 +10539,7 @@ INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('f_groups', 'g_max_ava
 ('f_forums', 'f_name', 'SHORT_TEXT'),
 ('f_forums', 'f_description', 'LONG_TRANS__COMCODE'),
 ('f_forums', 'f_forum_grouping_id', '?AUTO_LINK'),
-('f_forums', 'f_parent_forum', '?AUTO_LINK'),
+('f_forums', 'f_parent_forum_id', '?AUTO_LINK'),
 ('f_forums', 'f_position', 'INTEGER'),
 ('f_forums', 'f_order_sub_alpha', 'BINARY'),
 ('f_forums', 'f_post_count_increment', 'BINARY'),
@@ -10738,7 +10738,7 @@ INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('f_warnings_punitive',
 ('trackbacks', 'id', '*AUTO'),
 ('trackbacks', 'trackback_for_type', 'ID_TEXT'),
 ('trackbacks', 'trackback_for_id', 'ID_TEXT'),
-('trackbacks', 'trackback_ip', 'IP'),
+('trackbacks', 'trackback_ip_address', 'IP'),
 ('trackbacks', 'trackback_time', 'TIME'),
 ('trackbacks', 'trackback_url', 'SHORT_TEXT'),
 ('trackbacks', 'trackback_title', 'SHORT_TEXT'),
@@ -12102,7 +12102,7 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_members',
 ('f_forums', '#f_description', 'f_description'),
 ('f_forums', '#f_intro_question', 'f_intro_question'),
 ('f_forums', 'cache_num_posts', 'f_cache_num_posts'),
-('f_forums', 'subforum_parenting', 'f_parent_forum'),
+('f_forums', 'subforum_parenting', 'f_parent_forum_id'),
 ('f_forums', 'findnamedforum', 'f_name'),
 ('f_forums', 'f_position', 'f_position'),
 ('f_topics', '#t_cache_first_post', 't_cache_first_post'),
@@ -13264,7 +13264,7 @@ CREATE TABLE cms_f_forums (
     f_post_count_increment tinyint(1) NOT NULL,
     f_order_sub_alpha tinyint(1) NOT NULL,
     f_position integer NOT NULL,
-    f_parent_forum integer NULL,
+    f_parent_forum_id integer NULL,
     f_cache_last_member_id integer NULL,
     f_cache_last_forum_id integer NULL,
     f_mail_password varchar(255) NOT NULL,
@@ -13298,8 +13298,8 @@ ALTER TABLE cms_f_forums ADD INDEX f_position (f_position);
 
 ALTER TABLE cms_f_forums ADD INDEX findnamedforum (f_name(250));
 
-ALTER TABLE cms_f_forums ADD INDEX subforum_parenting (f_parent_forum);
-INSERT INTO cms_f_forums (id, f_name, f_description, f_forum_grouping_id, f_parent_forum, f_position, f_order_sub_alpha, f_post_count_increment, f_intro_question, f_intro_answer, f_cache_num_topics, f_cache_num_posts, f_cache_last_topic_id, f_cache_last_title, f_cache_last_time, f_cache_last_username, f_cache_last_member_id, f_cache_last_forum_id, f_redirection, f_order, f_is_threaded, f_allows_anonymous_posts, f_mail_email_address, f_mail_server_type, f_mail_server_host, f_mail_server_port, f_mail_folder, f_mail_username, f_mail_password, f_mail_nonmatch_policy, f_mail_unconfirmed_notice, f_poll_default_options_xml, f_description__text_parsed, f_description__source_user, f_intro_question__text_parsed, f_intro_question__source_user) VALUES (1, 'Forum home', '', NULL, NULL, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_1\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_1\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_2\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_2\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+ALTER TABLE cms_f_forums ADD INDEX subforum_parenting (f_parent_forum_id);
+INSERT INTO cms_f_forums (id, f_name, f_description, f_forum_grouping_id, f_parent_forum_id, f_position, f_order_sub_alpha, f_post_count_increment, f_intro_question, f_intro_answer, f_cache_num_topics, f_cache_num_posts, f_cache_last_topic_id, f_cache_last_title, f_cache_last_time, f_cache_last_username, f_cache_last_member_id, f_cache_last_forum_id, f_redirection, f_order, f_is_threaded, f_allows_anonymous_posts, f_mail_email_address, f_mail_server_type, f_mail_server_host, f_mail_server_port, f_mail_folder, f_mail_username, f_mail_password, f_mail_nonmatch_policy, f_mail_unconfirmed_notice, f_poll_default_options_xml, f_description__text_parsed, f_description__source_user, f_intro_question__text_parsed, f_intro_question__source_user) VALUES (1, 'Forum home', '', NULL, NULL, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_1\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_1\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_2\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_2\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
 (2, 'General chat', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_3\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_3\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_4\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_4\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
 (3, 'Trash', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_5\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_5\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_6\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_6\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
 (4, 'Website comment topics', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 1, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_7\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_7\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66565f5aa6c5e0.19923223_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66565f5aa6c5e0.19923223_8\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_8\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
@@ -13528,7 +13528,7 @@ CREATE TABLE cms_f_members (
     m_pt_rules_text longtext NOT NULL,
     m_validated tinyint(1) NOT NULL,
     m_validated_email_confirm_code varchar(255) NOT NULL,
-    m_on_probation_until integer unsigned NULL,
+    m_probation_expiration_time integer unsigned NULL,
     m_is_perm_banned varchar(80) NOT NULL,
     m_ip_address varchar(40) NOT NULL,
     m_join_time integer unsigned NOT NULL,
@@ -13596,7 +13596,7 @@ ALTER TABLE cms_f_members ADD INDEX sort_post_count (m_cache_num_posts);
 ALTER TABLE cms_f_members ADD INDEX user_list (m_username);
 
 ALTER TABLE cms_f_members ADD INDEX whos_validated (m_validated);
-INSERT INTO cms_f_members (id, m_username, m_email_address, m_primary_group, m_dob_day, m_dob_month, m_dob_year, m_pass_hash_salted, m_pass_salt, m_password_change_code, m_password_change_code_time, m_password_compat_scheme, m_login_key, m_timezone_offset, m_language, m_theme, m_title, m_photo_url, m_avatar_url, m_signature, m_preview_posts, m_reveal_age, m_views_signatures, m_auto_monitor_contrib_content, m_smart_topic_notification, m_mailing_list_style, m_auto_mark_read, m_sound_enabled, m_allow_emails, m_allow_emails_from_staff, m_highlighted_name, m_pt_allow, m_pt_rules_text, m_validated, m_validated_email_confirm_code, m_on_probation_until, m_is_perm_banned, m_ip_address, m_join_time, m_last_visit_time, m_last_submit_time, m_profile_views, m_total_sessions, m_cache_num_posts, m_cache_warnings, m_max_email_attach_size_mb, m_signature__text_parsed, m_signature__source_user, m_pt_rules_text__text_parsed, m_pt_rules_text__source_user) VALUES (1, 'Guest', '', 1, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1716936540, 1716936540, 1716936540, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_12\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_12\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+INSERT INTO cms_f_members (id, m_username, m_email_address, m_primary_group, m_dob_day, m_dob_month, m_dob_year, m_pass_hash_salted, m_pass_salt, m_password_change_code, m_password_change_code_time, m_password_compat_scheme, m_login_key, m_timezone_offset, m_language, m_theme, m_title, m_photo_url, m_avatar_url, m_signature, m_preview_posts, m_reveal_age, m_views_signatures, m_auto_monitor_contrib_content, m_smart_topic_notification, m_mailing_list_style, m_auto_mark_read, m_sound_enabled, m_allow_emails, m_allow_emails_from_staff, m_highlighted_name, m_pt_allow, m_pt_rules_text, m_validated, m_validated_email_confirm_code, m_probation_expiration_time, m_is_perm_banned, m_ip_address, m_join_time, m_last_visit_time, m_last_submit_time, m_profile_views, m_total_sessions, m_cache_num_posts, m_cache_warnings, m_max_email_attach_size_mb, m_signature__text_parsed, m_signature__source_user, m_pt_rules_text__text_parsed, m_pt_rules_text__source_user) VALUES (1, 'Guest', '', 1, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1716936540, 1716936540, 1716936540, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_12\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_12\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
 (2, 'admin', 'foo@example.com', 2, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', 'themes/default/images/cns_default_avatars/default.png', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1716936540, 1716936540, 1716936540, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_17\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_17\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
 (3, 'test', '', 8, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1716936540, 1716936540, 1716936540, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66565f5aa6c5e0.19923223_22\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66565f5aa6c5e0.19923223_22\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66565f5aa6c5e0.19923223_22\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
@@ -16814,7 +16814,7 @@ CREATE TABLE cms_tickets (
 DROP TABLE IF EXISTS cms_trackbacks;
 CREATE TABLE cms_trackbacks (
     trackback_title varchar(255) NOT NULL,
-    trackback_ip varchar(40) NOT NULL,
+    trackback_ip_address varchar(40) NOT NULL,
     trackback_for_id varchar(80) NOT NULL,
     trackback_for_type varchar(80) NOT NULL,
     trackback_time integer unsigned NOT NULL,

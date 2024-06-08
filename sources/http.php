@@ -108,8 +108,8 @@ function get_webpage_meta_details(string $url) : array
         't_description' => '',
         't_image_url' => '',
         't_mime_type' => '',
-        't_json_discovery' => '',
-        't_xml_discovery' => '',
+        't_discovery_url_json' => '',
+        't_discovery_url_xml' => '',
     ];
 
     if (url_is_local($url)) {
@@ -234,15 +234,15 @@ function get_webpage_meta_details(string $url) : array
             $matches2 = [];
             if ((preg_match('#\srel=["\']?alternate["\']?#i', $line) != 0) && (preg_match('#\shref=["\']?([^"\']+)["\']?#i', $line, $matches2) != 0)) {
                 if (preg_match('#\stype=["\']?application/json\+oembed["\']?#i', $line) != 0) {
-                    $meta_details['t_json_discovery'] = @html_entity_decode($matches2[1], ENT_QUOTES);
-                    if (strlen($meta_details['t_json_discovery']) > 255) {
-                        $meta_details['t_json_discovery'] = ''; // We can't deal with really long URLs here
+                    $meta_details['t_discovery_url_json'] = @html_entity_decode($matches2[1], ENT_QUOTES);
+                    if (strlen($meta_details['t_discovery_url_json']) > 255) {
+                        $meta_details['t_discovery_url_json'] = ''; // We can't deal with really long URLs here
                     }
                 }
                 if (preg_match('#\stype=["\']?text/xml\+oembed["\']?#i', $line) != 0) {
-                    $meta_details['t_xml_discovery'] = @html_entity_decode($matches2[1], ENT_QUOTES);
-                    if (strlen($meta_details['t_xml_discovery']) > 255) {
-                        $meta_details['t_xml_discovery'] = ''; // We can't deal with really long URLs here
+                    $meta_details['t_discovery_url_xml'] = @html_entity_decode($matches2[1], ENT_QUOTES);
+                    if (strlen($meta_details['t_discovery_url_xml']) > 255) {
+                        $meta_details['t_discovery_url_xml'] = ''; // We can't deal with really long URLs here
                     }
                 }
             }

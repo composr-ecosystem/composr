@@ -142,7 +142,7 @@ class CMSPmWrite
                 }
 
                 $post = get_translated_text($post_details[0]['p_post'], $GLOBALS['FORUM_DB']);
-                $poster = $GLOBALS['FORUM_DRIVER']->get_username($post_details[0]['p_poster']);
+                $poster = $GLOBALS['FORUM_DRIVER']->get_username($post_details[0]['p_posting_member']);
                 $quote_content = '[quote="' . addslashes($poster) . '"]' . $post . "[/quote]\n";
                 $_message = $quote_content . "\n\n" . $message;
 
@@ -208,7 +208,7 @@ class CMSPmWrite
             $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
             $sql = 'SELECT id FROM ' . $table_prefix . 'f_topics t';
             $sql .= ' WHERE t_forum_id IS NULL';
-            $sql .= ' AND (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
+            $sql .= ' AND (t_pt_from_member=' . strval(get_member()) . ' OR t_pt_to_member=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
             $rows = $GLOBALS['FORUM_DB']->query($sql);
             $topic_ids = collapse_1d_complexity('id', $rows);
             foreach ($topic_ids as $topic_id) {
@@ -239,7 +239,7 @@ class CMSPmWrite
             $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
             $sql = 'SELECT id FROM ' . $table_prefix . 'f_topics t';
             $sql .= ' WHERE t_forum_id IS NULL';
-            $sql .= ' AND (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
+            $sql .= ' AND (t_pt_from_member=' . strval(get_member()) . ' OR t_pt_to_member=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
             $rows = $GLOBALS['FORUM_DB']->query($sql);
             $topic_ids = collapse_1d_complexity('id', $rows);
             foreach ($topic_ids as $topic_id) {

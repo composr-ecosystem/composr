@@ -114,10 +114,12 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         'IP' => 15 + 1,
         'LANGUAGE_NAME' => 5 + 1,
         'URLPATH' => 255 + 1,
+        'TOKEN' => 15 + 1,
         'unicode_SHORT_TEXT' => $take_unicode_into_account * 255 + 1,
         'unicode_LONG_TEXT' => $take_unicode_into_account * 255 + 1,
         'unicode_ID_TEXT' => $take_unicode_into_account * 80 + 1,
         'unicode_IP' => $take_unicode_into_account * 15 + 1,
+        'unicode_TOKEN' => $take_unicode_into_account * 15 + 1,
         'unicode_LANGUAGE_NAME' => $take_unicode_into_account * 5 + 1,
         'unicode_URLPATH' => $take_unicode_into_account * 255 + 1,
         'unicode_MD5' => $take_unicode_into_account * 33 + 1,
@@ -158,7 +160,7 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         }
         $total_size_unicode += $data_sizes[(array_key_exists('unicode_' . $field, $data_sizes) ? 'unicode_' : '') . $field];
 
-        if (($null) && (!$skip_null_check) && (($field == 'LANGUAGE_NAME') || ($field == 'IP') || ($field == 'URLPATH') || ($field == 'TEXT') || (strpos($field, '_TEXT') !== false))) { // Needed for Oracle, really
+        if (($null) && (!$skip_null_check) && (($field == 'LANGUAGE_NAME') || ($field == 'IP') || ($field == 'URLPATH') || ($field == 'TEXT') || ($field == 'TOKEN') || (strpos($field, '_TEXT') !== false))) { // Needed for Oracle, really
             fatal_exit('You may not have a NULL string field');
         }
         /*if (($key) && (substr($id_name, 0, 1) != '#') && (!$size_restricted) && (($field == 'LONG_TEXT'))) {      We now size restrict using "(255)"
@@ -262,7 +264,7 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
         }
 
         if (($type == '*AUTO') && ($name != 'id')) {
-            fatal_exit('AUTO columns must always have a field name of \'id\''); // This is so the FUDGE done for sqlserver to switch identity columns can work
+            fatal_exit('AUTO columns must always have a field name of \'id\'');
         }
 
         if (($table_name != 'db_meta') && ($table_name != 'db_meta_indices')) {
@@ -704,6 +706,12 @@ function _helper_add_table_field(object $this_ref, string $table_name, string $n
  */
 function _helper_alter_table_field(object $this_ref, string $table_name, string $name, string $type, ?string $new_name = null) : bool
 {
+    if ($new_name !== null) {
+        $enforce_name = $new_name;
+    } else {
+        $enforce_name = $name;
+    }
+
     if (($type == 'AUTO') || ($type == '?AUTO')) {
         fatal_exit('AUTO fields must always be a key');
     }
@@ -712,7 +720,7 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
         fatal_exit('Fields cannot be both null and part of keys');
     }
 
-    if (($type == '*AUTO') && ($name != 'id')) {
+    if (($type == '*AUTO') && ($enforce_name != 'id')) {
         fatal_exit('AUTO columns must always have a field name of \'id\'');
     }
 

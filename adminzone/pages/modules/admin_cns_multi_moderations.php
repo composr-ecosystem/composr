@@ -227,7 +227,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
         $target_forum = read_multi_code('forum_multi_code');
 
-        $multi_mods = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id'], ['mm_move_to' => null, 'mm_pin_state' => null, 'mm_open_state' => null, 'mm_title_suffix' => '', 'mm_forum_multi_code' => $target_forum]);
+        $multi_mods = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id'], ['mm_move_to_forum_id' => null, 'mm_pin_state' => null, 'mm_open_state' => null, 'mm_title_suffix' => '', 'mm_forum_multi_code' => $target_forum]);
         require_code('cns_moderation_action2');
         foreach ($multi_mods as $multi_mod) {
             cns_delete_multi_moderation($multi_mod['id']);
@@ -455,7 +455,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                 }
             }
 
-            $destination = ($row['mm_move_to'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['mm_move_to']]);
+            $destination = ($row['mm_move_to_forum_id'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['mm_move_to_forum_id']]);
             if ($destination === null) {
                 $destination = do_lang_tempcode('NA_EM');
             }
@@ -498,7 +498,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         }
         $r = $m[0];
 
-        return $this->get_form_fields(get_translated_text($r['mm_name'], $GLOBALS['FORUM_DB']), $r['mm_post_text'], $r['mm_move_to'], $r['mm_pin_state'], $r['mm_open_state'], $r['mm_forum_multi_code'], $r['mm_title_suffix']);
+        return $this->get_form_fields(get_translated_text($r['mm_name'], $GLOBALS['FORUM_DB']), $r['mm_post_text'], $r['mm_move_to_forum_id'], $r['mm_pin_state'], $r['mm_open_state'], $r['mm_forum_multi_code'], $r['mm_title_suffix']);
     }
 
     /**

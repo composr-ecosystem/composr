@@ -243,10 +243,10 @@ function render_topic_to_tapatalk(int $topic_id, bool $return_html, ?int $start,
         $last_moderation_details = get_last_moderation_details('topic', strval($topic_id));
 
         if (!empty($moderation_details)) {
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($last_moderation_details['l_by']);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($last_moderation_details['l_by_member']);
 
             $arr += [
-                'moderated_by_id' => mobiquo_val(strval($last_moderation_details['l_by']), 'string'),
+                'moderated_by_id' => mobiquo_val(strval($last_moderation_details['l_by_member']), 'string'),
                 'moderated_by_name' => mobiquo_val($username, 'base64'),
                 'moderated_reason' => mobiquo_val($last_moderation_details['l_param_b'], 'base64'),
             ];
@@ -353,11 +353,11 @@ function render_topic_to_tapatalk(int $topic_id, bool $return_html, ?int $start,
  */
 function build_forum_breadcrumbs(int $forum_id) : array
 {
-    $forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_name', 'f_parent_forum'], ['id' => $forum_id], '', 1);
+    $forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_name', 'f_parent_forum_id'], ['id' => $forum_id], '', 1);
 
     $breadcrumbs = [];
-    if (($forum_details[0]['f_parent_forum'] !== null) && ($forum_details[0]['f_parent_forum'] != db_get_first_id())) {
-        $breadcrumbs = array_merge($breadcrumbs, build_forum_breadcrumbs($forum_details[0]['f_parent_forum']));
+    if (($forum_details[0]['f_parent_forum_id'] !== null) && ($forum_details[0]['f_parent_forum_id'] != db_get_first_id())) {
+        $breadcrumbs = array_merge($breadcrumbs, build_forum_breadcrumbs($forum_details[0]['f_parent_forum_id']));
     }
     $breadcrumbs[] = mobiquo_val([
         'forum_id' => mobiquo_val(strval($forum_id), 'string'),
@@ -386,7 +386,7 @@ function tapatalk_get_topic_where(int $topic_id, ?int $member_id = null) : strin
         $where .= ' AND p_validated=1';
     }
     if (!has_privilege(get_member(), 'view_other_pt')) {
-        $where .= ' AND (p_intended_solely_for IS NULL OR p_intended_solely_for=' . strval($member_id) . ' OR p_poster=' . strval($member_id) . ')';
+        $where .= ' AND (p_whisper_to_member IS NULL OR p_whisper_to_member=' . strval($member_id) . ' OR p_posting_member=' . strval($member_id) . ')';
     }
     return $where;
 }
@@ -406,12 +406,12 @@ function get_topic_participant_uids(int $topic_id, int $max, ?array $topic_detai
     $sql = '';
     $sql .= ' FROM ' . $table_prefix . 'f_posts p';
     $sql .= ' WHERE ' . tapatalk_get_topic_where($topic_id);
-    $sql .= ' GROUP BY p_poster ORDER BY cnt DESC';
-    $participants = $GLOBALS['FORUM_DB']->query('SELECT p_poster,COUNT(*) AS cnt' . $sql, $max);
-    $ret = collapse_1d_complexity('p_poster', $participants);
+    $sql .= ' GROUP BY p_posting_member ORDER BY cnt DESC';
+    $participants = $GLOBALS['FORUM_DB']->query('SELECT p_posting_member,COUNT(*) AS cnt' . $sql, $max);
+    $ret = collapse_1d_complexity('p_posting_member', $participants);
     if (($topic_details !== null) && ($topic_details['t_forum_id'] === null)) {
-        $ret[] = $topic_details['t_pt_from'];
-        $ret[] = $topic_details['t_pt_to'];
+        $ret[] = $topic_details['t_pt_from_member'];
+        $ret[] = $topic_details['t_pt_to_member'];
         $ret = array_merge($ret, collapse_1d_complexity('s_member_id', $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', ['s_member_id'], ['s_topic_id' => $topic_id])));
     }
     return array_unique($ret);
@@ -470,7 +470,7 @@ function render_post_to_tapatalk(int $post_id, bool $return_html, ?array $post_r
 
     $moderation_details = moderation_assessment_post($post_row, $member_id);
 
-    $post_author_id = $post_row['p_poster'];
+    $post_author_id = $post_row['p_posting_member'];
     $username = $GLOBALS['FORUM_DRIVER']->get_username($post_author_id);
 
     require_code('users2');
@@ -508,7 +508,7 @@ function render_post_to_tapatalk(int $post_id, bool $return_html, ?array $post_r
         'post_author_name' => mobiquo_val($username, 'base64'),
         'is_online' => mobiquo_val(member_is_online($post_author_id), 'boolean'),
         'can_edit' => mobiquo_val($moderation_details['can_edit'], 'boolean'),
-        'icon_url' => mobiquo_val($GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post_row['p_poster']), 'string'),
+        'icon_url' => mobiquo_val($GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post_row['p_posting_member']), 'string'),
         'post_time' => mobiquo_val($post_row['p_time'], 'dateTime.iso8601'),
         'timestamp' => mobiquo_val(strval($post_row['p_time']), 'string'),
         'allow_smilies' => mobiquo_val(true, 'boolean'),
@@ -579,16 +579,16 @@ function render_post_to_tapatalk(int $post_id, bool $return_html, ?array $post_r
         $moderation_details = get_last_moderation_details('post', strval($post_row['post_id']));
 
         if ($moderation_details !== null) {
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($moderation_details['l_by']);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($moderation_details['l_by_member']);
 
             $arr += [
-                'moderated_by_id' => mobiquo_val(strval($moderation_details['l_by']), 'string'),
+                'moderated_by_id' => mobiquo_val(strval($moderation_details['l_by_member']), 'string'),
                 'moderated_by_name' => mobiquo_val($username, 'base64'),
                 'moderated_reason' => mobiquo_val($moderation_details['l_param_b'], 'base64'),
             ];
         }
     } elseif ($post_row['p_last_edit_time'] !== null) {
-        $editor_name = $GLOBALS['FORUM_DRIVER']->get_username($post_row['p_last_edit_by']);
+        $editor_name = $GLOBALS['FORUM_DRIVER']->get_username($post_row['p_last_edit_member']);
 
         $edit_reason = '';
         if (has_actual_page_access($member_id, 'admin_actionlog')) {
@@ -599,7 +599,7 @@ function render_post_to_tapatalk(int $post_id, bool $return_html, ?array $post_r
         }
 
         $arr += [
-            'editor_id' => mobiquo_val(strval($post_row['p_last_edit_by']), 'string'),
+            'editor_id' => mobiquo_val(strval($post_row['p_last_edit_member']), 'string'),
             'editor_name' => mobiquo_val($editor_name, 'base64'),
             'edit_time' => mobiquo_val($post_row['p_last_edit_time'], 'int'),
             'edit_reason' => mobiquo_val($edit_reason, 'base64'),
@@ -629,7 +629,7 @@ function prepare_post_for_tapatalk(array $post, bool $return_html = false) : str
         if (isset($post_details[0])) {
             $poster = $post_details[0]['p_poster_name_if_guest'];
             if ($poster == '') {
-                $poster = $GLOBALS['FORUM_DRIVER']->get_username($post_details[0]['p_poster']);
+                $poster = $GLOBALS['FORUM_DRIVER']->get_username($post_details[0]['p_posting_member']);
             }
 
             $content .= '[quote="' . addslashes($poster) . '"]' . get_translated_text($post_details[0]['p_post'], $GLOBALS['FORUM_DB']) . "[/quote]\n\n";
@@ -644,8 +644,8 @@ function prepare_post_for_tapatalk(array $post, bool $return_html = false) : str
     }
 
     $whisper_username = null;
-    if ($post['p_intended_solely_for'] !== null) {
-        $whisper_username = $GLOBALS['FORUM_DRIVER']->get_username($post['p_intended_solely_for']);
+    if ($post['p_whisper_to_member'] !== null) {
+        $whisper_username = $GLOBALS['FORUM_DRIVER']->get_username($post['p_whisper_to_member']);
     }
 
     $content = static_evaluate_tempcode(do_template('TAPATALK_POST_WRAPPER', [
@@ -656,9 +656,9 @@ function prepare_post_for_tapatalk(array $post, bool $return_html = false) : str
         'POST_ID' => strval($post['id']),
         'POST_TITLE' => $post['p_title'],
         'POST_URL' => find_script('page_link_redirect') . '?id=' . get_page_zone('topicview') . ':topicview:findpost:' . strval($post['post_id']), // Redirect needed so not detected as a local URL
-        'POSTER_ID' => strval($post['p_poster']),
+        'POSTER_ID' => strval($post['p_posting_member']),
         'LAST_EDIT_TIME' => ($post['p_last_edit_time'] === null) ? null : strval($post['p_last_edit_time']),
-        'LAST_EDIT_BY' => ($post['p_last_edit_by'] === null) ? null : strval($post['p_last_edit_by']),
+        'LAST_EDIT_BY' => ($post['p_last_edit_member'] === null) ? null : strval($post['p_last_edit_member']),
         'IS_EMPHASISED' => ($post['p_is_emphasised'] == 1),
     ], null, false, null, '.txt', 'text'));
 
@@ -683,7 +683,7 @@ function prepare_post_for_tapatalk(array $post, bool $return_html = false) : str
         $emoticon_map = get_tapatalk_to_composr_emoticon_map('missing_from_composr');
         $content = str_replace(array_values($emoticon_map), array_keys($emoticon_map), $content); // Map Composr ones back to Tapatalk ones
 
-        $post_tempcode = comcode_to_tempcode($content, $post['p_poster'], false, null, $GLOBALS['FORUM_DB']);
+        $post_tempcode = comcode_to_tempcode($content, $post['p_posting_member'], false, null, $GLOBALS['FORUM_DB']);
 
         $GLOBALS['FORUM_DRIVER']->EMOTICON_CACHE = $bak;
 
@@ -857,7 +857,7 @@ function generate_shortened_post(array $post_row, bool $topic_description = fals
         $comcode = get_translated_text($post_row['p_post'], $GLOBALS['FORUM_DB']);
         $comcode = strip_attachments_from_comcode($comcode);
     }
-    $short_content = static_evaluate_tempcode(comcode_to_tempcode($comcode, $post_row['p_poster']));
+    $short_content = static_evaluate_tempcode(comcode_to_tempcode($comcode, $post_row['p_posting_member']));
 
     $short_content = xhtml_substr($short_content, 0, 200, false, true);
     $short_content = semihtml_to_comcode('[html]' . $short_content . '[/html]', true);

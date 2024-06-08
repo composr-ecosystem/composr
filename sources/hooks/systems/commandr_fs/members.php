@@ -51,7 +51,7 @@ class Hook_commandr_fs_members
         'pt_allow' => 'm_pt_allow',
         'pt_rules_text' => 'm_pt_rules_text',
         'validated' => 'm_validated',
-        'on_probation_until' => 'm_on_probation_until',
+        'probation_expiration_time' => 'm_probation_expiration_time',
         'banned' => 'm_is_perm_banned',
         'ip_address' => 'm_ip_address',
         'max_email_attach_size_mb' => 'm_max_email_attach_size_mb',
@@ -232,7 +232,7 @@ class Hook_commandr_fs_members
                 '', // pt_rules_text
                 1, // validated
                 '', // validated_email_confirm_code
-                null, // on_probation_until
+                null, // probation_expiration_time
                 '0', // is_perm_banned
                 false // check_correctness
             );
@@ -415,7 +415,7 @@ class Hook_commandr_fs_members
                     'last_visit_time',
                     'last_submit_time',
                     'highlighted_name',
-                    'on_probation_until',
+                    'probation_expiration_time',
                     'auto_mark_read',
                 ])) {
                     $val = intval($val);

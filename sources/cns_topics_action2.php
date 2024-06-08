@@ -149,8 +149,8 @@ function cns_edit_topic(?int $topic_id, ?string $description = null, ?string $em
         require_code('cns_posts_action');
         cns_decache_cms_blocks($forum_id);
     } else {
-        decache_private_topics($info[0]['t_pt_from']);
-        decache_private_topics($info[0]['t_pt_to']);
+        decache_private_topics($info[0]['t_pt_from_member']);
+        decache_private_topics($info[0]['t_pt_to_member']);
     }
 
     if ($forum_id !== null) {
@@ -236,7 +236,7 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
             if (addon_installed('validation')) {
                 $where['p_validated'] = 1;
             }
-            $_member_post_counts = collapse_1d_complexity('p_poster', $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_poster'], $where));
+            $_member_post_counts = collapse_1d_complexity('p_posting_member', $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_posting_member'], $where));
             $member_post_counts = array_count_values($_member_post_counts);
 
             foreach ($member_post_counts as $member_id => $member_post_count) {
@@ -316,8 +316,8 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
         require_code('cns_posts_action');
         cns_decache_cms_blocks($forum_id);
     } else {
-        decache_private_topics($info[0]['t_pt_from']);
-        decache_private_topics($info[0]['t_pt_to']);
+        decache_private_topics($info[0]['t_pt_from_member']);
+        decache_private_topics($info[0]['t_pt_to_member']);
     }
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -399,7 +399,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
             notify_sitemap_node_edit('_SEARCH:topicview:id=' . strval($topic_info['id']), has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'forums', strval($to)));
         }
     } elseif (count($topics) == 1) { // Just one
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_pt_from', 't_pt_to', 't_cache_first_title', 't_cache_num_posts', 't_validated'], ['id' => $topics[0]]);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_pt_from_member', 't_pt_to_member', 't_cache_first_title', 't_cache_num_posts', 't_validated'], ['id' => $topics[0]]);
         if (!array_key_exists(0, $topic_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
@@ -411,7 +411,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
         }
         $topic_title = $topic_info[0]['t_cache_first_title'];
         $post_count = $topic_info[0]['t_cache_num_posts'];
-        $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_pt_from' => null, 't_pt_to' => null, 't_forum_id' => $to], ['t_forum_id' => $from, 'id' => $topics[0]], '', 1); // Extra where constraint for added security
+        $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_pt_from_member' => null, 't_pt_to_member' => null, 't_forum_id' => $to], ['t_forum_id' => $from, 'id' => $topics[0]], '', 1); // Extra where constraint for added security
         log_it('MOVE_TOPICS', $topic_title, strval($topics[0]));
         $or_list = 'id=' . strval($topics[0]);
         $or_list_2 = 'p_topic_id=' . strval($topics[0]);
@@ -435,7 +435,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
             $or_list .= 'id=' . strval($topic_id);
 
             if ($from === null) {
-                $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id]);
+                $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to_member', 't_pt_from_member', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id]);
                 if (array_key_exists(0, $topic_info)) {
                     if ($topic_info[0]['t_validated'] == 1) {
                         $topic_count++;
@@ -450,7 +450,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
             }
         }
 
-        $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_forum_id=' . strval($to) . ',t_pt_from=NULL,t_pt_to=NULL WHERE t_forum_id' . (($from === null) ? ' IS NULL' : ('=' . strval($from))) . ' AND (' . $or_list . ')', null, 0, false, true);
+        $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_forum_id=' . strval($to) . ',t_pt_from_member=NULL,t_pt_to_member=NULL WHERE t_forum_id' . (($from === null) ? ' IS NULL' : ('=' . strval($from))) . ' AND (' . $or_list . ')', null, 0, false, true);
         log_it('MOVE_TOPICS', do_lang('MULTIPLE'), strval($topics[0]));
 
         $post_count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT SUM(t_cache_num_posts) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE ' . $or_list, false, true);
@@ -482,11 +482,11 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
         }
         require_code('cns_posts_action');
         if ($from_cnt != $to_cnt) {
-            $sql = 'SELECT p_poster FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list_2 . ')';
+            $sql = 'SELECT p_posting_member FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list_2 . ')';
             if (addon_installed('validation')) {
                 $sql .= ' AND p_validated=1';
             }
-            $_member_post_counts = collapse_1d_complexity('p_poster', $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true));
+            $_member_post_counts = collapse_1d_complexity('p_posting_member', $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true));
             $member_post_counts = array_count_values($_member_post_counts);
 
             foreach ($member_post_counts as $member_id => $member_post_count) {
@@ -503,8 +503,8 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
         cns_decache_cms_blocks($from);
     } else {
         if (count($topics) == 1) {
-            decache_private_topics($topic_info[0]['t_pt_from']);
-            decache_private_topics($topic_info[0]['t_pt_to']);
+            decache_private_topics($topic_info[0]['t_pt_from_member']);
+            decache_private_topics($topic_info[0]['t_pt_to_member']);
         } else {
             decache_private_topics();
         }
@@ -528,11 +528,11 @@ function cns_invite_to_pt(int $member_id, int $topic_id)
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
     }
 
-    if (($topic_info[0]['t_pt_from'] != get_member()) && ($topic_info[0]['t_pt_to'] != get_member()) && (!has_privilege(get_member(), 'view_other_pt'))) {
+    if (($topic_info[0]['t_pt_from_member'] != get_member()) && ($topic_info[0]['t_pt_to_member'] != get_member()) && (!has_privilege(get_member(), 'view_other_pt'))) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    if (($topic_info[0]['t_pt_from'] == $member_id) || ($topic_info[0]['t_pt_to'] == $member_id)) {
+    if (($topic_info[0]['t_pt_from_member'] == $member_id) || ($topic_info[0]['t_pt_to_member'] == $member_id)) {
         warn_exit(do_lang_tempcode('NO_INVITE_SENSE'));
     }
 

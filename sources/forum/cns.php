@@ -964,10 +964,10 @@ class Forum_driver_cns extends Forum_driver_base
     {
         if (strpos($ip, '*') !== false) {
             $a = $this->db->query('SELECT DISTINCT id FROM ' . $this->db->get_table_prefix() . 'f_members WHERE m_ip_address LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'');
-            $b = $this->db->query('SELECT DISTINCT p_poster AS id FROM ' . $this->db->get_table_prefix() . 'f_posts WHERE p_ip_address LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'');
+            $b = $this->db->query('SELECT DISTINCT p_posting_member AS id FROM ' . $this->db->get_table_prefix() . 'f_posts WHERE p_ip_address LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'');
         } else {
             $a = $this->db->query_select('f_members', ['DISTINCT id'], ['m_ip_address' => $ip]);
-            $b = $this->db->query_select('f_posts', ['DISTINCT p_poster AS id'], ['p_ip_address' => $ip]);
+            $b = $this->db->query_select('f_posts', ['DISTINCT p_posting_member AS id'], ['p_ip_address' => $ip]);
         }
         return array_merge($a, $b);
     }
@@ -1752,7 +1752,7 @@ class Forum_driver_cns extends Forum_driver_base
                     global $SESSION_CACHE;
                     $num_guests = 0;
                     foreach ($SESSION_CACHE as $c) {
-                        if (($c['last_activity'] > time() - 60 * 4) && (is_guest($c['member_id']))) {
+                        if (($c['last_activity_time'] > time() - 60 * 4) && (is_guest($c['member_id']))) {
                             $num_guests++;
                         }
                     }

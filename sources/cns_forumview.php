@@ -139,7 +139,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
                     if (!is_guest()) {
                         $GLOBALS['FORUM_DB']->query_insert('f_forum_intro_member', ['i_forum_id' => $id, 'i_member_id' => get_member()]);
                     } else {
-                        $GLOBALS['FORUM_DB']->query_insert('f_forum_intro_ip', ['i_forum_id' => $id, 'i_ip' => get_ip_address(3)]);
+                        $GLOBALS['FORUM_DB']->query_insert('f_forum_intro_ip', ['i_forum_id' => $id, 'i_ip_address' => get_ip_address(3)]);
                     }
                 } else { // They got it wrong
                     $url = get_self_url();
@@ -480,7 +480,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
         'BREADCRUMBS' => $breadcrumbs,
         'FORUM_GROUPINGS' => $forum_groupings,
         'MAIL_EMAIL_ADDRESS' => ($id === null || !cns_supports_mailing_list_style($forum_info)) ? null : $forum_info['f_mail_email_address'],
-        'PARENT_FORUM' => ($forum_info === null) ? '-1' : (($forum_info['f_parent_forum'] === null) ? '' : strval($forum_info['f_parent_forum'])),
+        'PARENT_FORUM' => ($forum_info === null) ? '-1' : (($forum_info['f_parent_forum_id'] === null) ? '' : strval($forum_info['f_parent_forum_id'])),
     ];
     $content = do_template('CNS_FORUM', $map);
 
@@ -780,12 +780,12 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
     if ($huge_forums) {
         $max_forum_inspect = intval(get_option('max_forum_inspect'));
 
-        $subforum_rows = $GLOBALS['FORUM_DB']->query('SELECT f.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums f WHERE f.id=' . strval($forum_id) . ' OR f_parent_forum=' . strval($forum_id) . ' ORDER BY f_parent_forum,' . $sort, $max_forum_inspect, 0, false, false, ['f_description' => 'LONG_TRANS__COMCODE', 'f_intro_question' => 'LONG_TRANS__COMCODE']);
+        $subforum_rows = $GLOBALS['FORUM_DB']->query('SELECT f.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums f WHERE f.id=' . strval($forum_id) . ' OR f_parent_forum_id=' . strval($forum_id) . ' ORDER BY f_parent_forum_id,' . $sort, $max_forum_inspect, 0, false, false, ['f_description' => 'LONG_TRANS__COMCODE', 'f_intro_question' => 'LONG_TRANS__COMCODE']);
         if (count($subforum_rows) == $max_forum_inspect) {
             $subforum_rows = []; // Will cause performance breakage
         }
     } else {
-        $subforum_rows = $GLOBALS['FORUM_DB']->query_select('f_forums f', ['f.*'], [], 'ORDER BY f_parent_forum,' . $sort, null, 0, false, ['f_description' => 'LONG_TRANS__COMCODE', 'f_intro_question' => 'LONG_TRANS__COMCODE']);
+        $subforum_rows = $GLOBALS['FORUM_DB']->query_select('f_forums f', ['f.*'], [], 'ORDER BY f_parent_forum_id,' . $sort, null, 0, false, ['f_description' => 'LONG_TRANS__COMCODE', 'f_intro_question' => 'LONG_TRANS__COMCODE']);
     }
     $unread_forums = [];
     if (($forum_id !== null) && (get_member() != $GLOBALS['CNS_DRIVER']->get_guest_id())) {
@@ -812,7 +812,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
     $forum_groupings = [];
     $or_list = '';
     foreach ($subforum_rows as $tmp_key => $subforum_row) {
-        if ($subforum_row['f_parent_forum'] != $forum_id) {
+        if ($subforum_row['f_parent_forum_id'] != $forum_id) {
             continue;
         }
 
@@ -845,7 +845,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
         $forum_groupings[null]['description'] = '';
         $forum_groupings[null]['expanded_by_default'] = true;
         foreach ($subforum_rows as $subforum_row) {
-            if ($subforum_row['f_parent_forum'] != $forum_id) {
+            if ($subforum_row['f_parent_forum_id'] != $forum_id) {
                 continue;
             }
 
@@ -892,7 +892,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
                 // Subsubforums
                 $subforum['children'] = [];
                 foreach ($subforum_rows as $tmp_key_2 => $subforum_row2) {
-                    if (($subforum_row2['f_parent_forum'] == $subforum_row['id']) && (has_category_access($member_id, 'forums', strval($subforum_row2['id'])))) {
+                    if (($subforum_row2['f_parent_forum_id'] == $subforum_row['id']) && (has_category_access($member_id, 'forums', strval($subforum_row2['id'])))) {
                         $subforum['children'][$subforum_row2['f_name'] . '__' . strval($subforum_row2['id'])] = ['id' => $subforum_row2['id'], 'name' => $subforum_row2['f_name'], 'redirection' => $subforum_row2['f_redirection']];
                     }
                 }
@@ -908,11 +908,11 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
     if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation')) && (!cns_may_moderate_forum($forum_id, $member_id))) {
         $extra = 't_validated=1 AND ';
     }
-    if (($forum_info['f_parent_forum'] === null) || ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', ['t_cascading' => 1]) == 0)) {
+    if (($forum_info['f_parent_forum_id'] === null) || ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', ['t_cascading' => 1]) == 0)) {
         $where = $extra . ' (t_forum_id=' . strval($forum_id) . ')';
     } else {
         $extra2 = '';
-        $parent_or_list = cns_get_forum_parent_or_list($forum_info['f_parent_forum']);
+        $parent_or_list = cns_get_forum_parent_or_list($forum_info['f_parent_forum_id']);
         if ($parent_or_list != '') {
             $extra2 = 'AND (' . $parent_or_list . ')';
         }
@@ -970,7 +970,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
         $or_list .= 'p_topic_id=' . strval($topic_row['id']);
     }
     if (($or_list != '') && (!is_guest())) {
-        $involved = $GLOBALS['FORUM_DB']->query('SELECT DISTINCT p_topic_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list . ') AND p_poster=' . strval(get_member()), null, 0, false, true);
+        $involved = $GLOBALS['FORUM_DB']->query('SELECT DISTINCT p_topic_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list . ') AND p_posting_member=' . strval(get_member()), null, 0, false, true);
         $involved = collapse_1d_complexity('p_topic_id', $involved);
     } else {
         $involved = [];
@@ -990,14 +990,14 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
         'topics' => $topics,
         'max_rows' => $max_rows,
         'order' => $sort,
-        'parent_forum' => $forum_info['f_parent_forum'],
+        'parent_forum' => $forum_info['f_parent_forum_id'],
     ];
 
     // Is there a question/answer situation?
     $question = get_translated_tempcode('f_forums', $forum_info, 'f_intro_question', $GLOBALS['FORUM_DB']);
     if (!$question->is_empty()) {
         $is_guest = ($member_id == $GLOBALS['CNS_DRIVER']->get_guest_id());
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_intro_ip', 'i_ip', ['i_forum_id' => $forum_id, 'i_ip' => get_ip_address(3)]);
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_intro_ip', 'i_ip_address', ['i_forum_id' => $forum_id, 'i_ip_address' => get_ip_address(3)]);
         if (($test === null) && (!$is_guest)) {
             $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_intro_member', 'i_member_id', ['i_forum_id' => $forum_id, 'i_member_id' => $member_id]);
         }

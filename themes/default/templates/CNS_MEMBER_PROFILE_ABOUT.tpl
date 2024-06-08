@@ -221,8 +221,8 @@
 
 					{+START,IF_PASSED,ON_PROBATION}{+START,IF_PASSED,PROBATION_GROUP}
 						<tr>
-							<th class="de-th">{!ON_PROBATION_UNTIL}</td>
-							<td>{!_ON_PROBATION_UNTIL,{PROBATION_GROUP*},{USERNAME*},{$DATE_TIME*,{ON_PROBATION},1}}</td>
+							<th class="de-th">{!PROBATION_EXPIRATION_TIME}</td>
+							<td>{!_PROBATION_EXPIRATION_TIME,{PROBATION_GROUP*},{USERNAME*},{$DATE_TIME*,{ON_PROBATION},1}}</td>
 						</tr>
 					{+END}{+END}
 

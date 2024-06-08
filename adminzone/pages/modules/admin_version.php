@@ -138,10 +138,10 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'i_menu' => 'ID_TEXT', // Foreign key in the future - currently it just binds together
                 'i_order' => 'INTEGER',
-                'i_parent' => '?AUTO_LINK',
+                'i_parent_id' => '?AUTO_LINK',
                 'i_caption' => 'SHORT_TRANS__COMCODE',
                 'i_caption_long' => 'SHORT_TRANS__COMCODE',
-                'i_url' => 'SHORT_TEXT', // Supports page-links
+                'i_link' => 'SHORT_TEXT', // Supports page-links or URLs
                 'i_check_permissions' => 'BINARY',
                 'i_expanded' => 'BINARY',
                 'i_new_window' => 'BINARY',
@@ -155,9 +155,9 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'trackback_for_type' => 'ID_TEXT',
                 'trackback_for_id' => 'ID_TEXT',
-                'trackback_ip' => 'IP',
+                'trackback_ip_address' => 'IP',
                 'trackback_time' => 'TIME',
-                'trackback_url' => 'SHORT_TEXT',
+                'trackback_url' => 'URLPATH',
                 'trackback_title' => 'SHORT_TEXT',
                 'trackback_excerpt' => 'LONG_TEXT',
                 'trackback_name' => 'SHORT_TEXT',
@@ -280,8 +280,8 @@ class Module_admin_version
                 't_image_url' => 'URLPATH',
                 't_mime_type' => 'ID_TEXT',
                 // oEmbed...
-                't_json_discovery' => 'URLPATH',
-                't_xml_discovery' => 'URLPATH',
+                't_discovery_url_json' => 'URLPATH',
+                't_discovery_url_xml' => 'URLPATH',
             ]);
             $GLOBALS['SITE_DB']->create_index('url_title_cache', 't_url', ['t_url']);
 
@@ -290,7 +290,7 @@ class Module_admin_version
                 'rating_for_type' => 'ID_TEXT',
                 'rating_for_id' => 'ID_TEXT',
                 'rating_member' => 'MEMBER',
-                'rating_ip' => 'IP',
+                'rating_ip_address' => 'IP',
                 'rating_time' => 'TIME',
                 'rating' => 'SHORT_INTEGER',
             ]);
@@ -375,7 +375,7 @@ class Module_admin_version
                 'm_priority' => 'SHORT_INTEGER',
                 'm_attachments' => 'LONG_TEXT',
                 'm_no_cc' => 'BINARY',
-                'm_as' => 'MEMBER',
+                'm_as_member' => 'MEMBER',
                 'm_as_admin' => 'BINARY',
                 'm_in_html' => 'BINARY',
                 'm_date_and_time' => 'TIME',
@@ -394,8 +394,8 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'i_submitter' => 'MEMBER',
                 'i_date_and_time' => 'TIME',
-                'i_orig_filename' => 'URLPATH',
-                'i_save_url' => 'SHORT_TEXT',
+                'i_orig_filename' => 'SHORT_TEXT',
+                'i_save_url' => 'URLPATH',
             ]);
         }
 
@@ -965,7 +965,7 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'url' => 'LONG_TEXT', // Support arbitrary length
                 'url_exists' => 'BINARY',
-                'url_message' => 'SHORT_TEXT',
+                'response_message' => 'SHORT_TEXT',
                 'url_destination_url' => 'URLPATH',
                 'url_check_time' => 'TIME',
             ]);
@@ -1013,7 +1013,7 @@ class Module_admin_version
         if (($upgrade_from === null) || ($upgrade_from < 19)) {
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'from_member_id', ['d_from_member_id']);
             $GLOBALS['SITE_DB']->create_index('cache', 'the_member', ['the_member']);
-            $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as', ['m_as']);
+            $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as_member', ['m_as_member']);
             $GLOBALS['SITE_DB']->create_index('rating', 'rating_member', ['rating_member']);
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences', ['r_referer_type', 'r_referer_id']);
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'who_has', ['l_notification_code', 'l_code_category(10)', 'l_setting']); // l_code_category is not enough as may be searched as ''
@@ -1149,6 +1149,19 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_name' => 'member_id', 'm_table' => 'member_privileges'], '', 1);
 
             $GLOBALS['SITE_DB']->add_table_field('seo_meta_keywords', 'sort_order', 'INTEGER');
+
+            // Consistency changes
+            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_parent', '?AUTO_LINK', 'i_parent_id');
+            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
+            $GLOBALS['SITE_DB']->alter_table_field('trackbacks', 'trackback_ip', 'IP', 'trackback_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('trackbacks', 'trackback_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('url_title_cache', 't_json_discovery', 'URLPATH', 't_discovery_url_json');
+            $GLOBALS['SITE_DB']->alter_table_field('url_title_cache', 't_xml_discovery', 'URLPATH', 't_discovery_url_xml');
+            $GLOBALS['SITE_DB']->alter_table_field('rating', 'rating_ip', 'IP', 'rating_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_as', 'MEMBER', 'm_as_member');
+            $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_orig_filename', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_save_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('urls_checked', 'url_message', 'SHORT_TEXT', 'response_message');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 19)) {

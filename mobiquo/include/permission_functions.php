@@ -127,7 +127,7 @@ function moderation_assessment_post(array $post_details, ?int $member_id = null)
 
     return [
         'can_ban' => can_ban_member($member_id),
-        'is_ban' => $GLOBALS['FORUM_DRIVER']->is_banned($post_details['p_poster']),
+        'is_ban' => $GLOBALS['FORUM_DRIVER']->is_banned($post_details['p_posting_member']),
         'can_edit' => can_edit('post', $post_details['post_id'], $member_id, $post_details),
         'can_delete' => can_delete('post', $post_details['post_id'], $member_id, $post_details),
         'is_deleted' => false,
@@ -197,7 +197,7 @@ function can_edit(string $type, int $id, ?int $member_id = null, ?array $details
             } else {
                 $post_details = $details;
             }
-            return cns_may_edit_post_by($id, $post_details['p_time'], $post_details['p_poster'], $post_details['p_cache_forum_id'], $member_id, $post_details['t_is_open'] == 0);
+            return cns_may_edit_post_by($id, $post_details['p_time'], $post_details['p_posting_member'], $post_details['p_cache_forum_id'], $member_id, $post_details['t_is_open'] == 0);
     }
 
     return false;
@@ -238,7 +238,7 @@ function can_delete(string $type, int $id, ?int $member_id = null, ?array $detai
             } else {
                 $post_details = $details;
             }
-            return cns_may_delete_post_by($id, $post_details['p_time'], $post_details['p_poster'], $post_details['p_cache_forum_id'], $member_id, $post_details['t_is_open'] == 0);
+            return cns_may_delete_post_by($id, $post_details['p_time'], $post_details['p_posting_member'], $post_details['p_cache_forum_id'], $member_id, $post_details['t_is_open'] == 0);
     }
 
     return false;
@@ -307,7 +307,7 @@ function can_approve(string $type, int $id, ?int $member_id = null, ?array $deta
             } else {
                 $post_details = $details;
             }
-            return (!is_guest($member_id) && ($post_details['p_poster'] == $member_id) && has_privilege($member_id, 'bypass_validation_lowrange_content', 'topics')) || can_moderate_topic($post_details['topic_id'], $member_id, $post_details);
+            return (!is_guest($member_id) && ($post_details['p_posting_member'] == $member_id) && has_privilege($member_id, 'bypass_validation_lowrange_content', 'topics')) || can_moderate_topic($post_details['topic_id'], $member_id, $post_details);
     }
 
     return false;
@@ -409,7 +409,7 @@ function can_rename_topic(int $topic_id, ?int $member_id = null, ?array $topic_d
 function can_merge_posts(int $topic_id, ?int $member_id = null) : bool
 {
     $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', ['*', 'p.id AS post_id'], ['p_topic_id' => $topic_id, 'p_poster' => $member_id], '', 2);
+    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', ['*', 'p.id AS post_id'], ['p_topic_id' => $topic_id, 'p_posting_member' => $member_id], '', 2);
     return (count($posts) >= 2) && (can_edit('post', $posts[0]['post_id'], $member_id, $posts[0]));
 }
 

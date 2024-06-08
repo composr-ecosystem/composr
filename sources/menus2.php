@@ -39,7 +39,7 @@ function init__menus2()
  */
 function export_menu_spreadsheet(?string $file_path = null)
 {
-    $sql = 'SELECT m.id, i_menu, i_order, i_parent, i_url, i_check_permissions, i_expanded, i_new_window, i_page_only, i_theme_img_code, i_caption, i_caption_long, i_include_sitemap FROM ' . get_table_prefix() . 'menu_items m';
+    $sql = 'SELECT m.id, i_menu, i_order, i_parent_id, i_link, i_check_permissions, i_expanded, i_new_window, i_page_only, i_theme_img_code, i_caption, i_caption_long, i_include_sitemap FROM ' . get_table_prefix() . 'menu_items m';
 
     $data = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true);
 
@@ -82,9 +82,9 @@ function import_menu_spreadsheet(?string $file_path = null, ?string $filename = 
         $id = ($record['id'] == '' || $record['id'] == 'NULL') ? null : intval($record['id']);
         $menu_id = $record['i_menu'];
         $order = intval($record['i_order']);
-        $parent = ($record['i_parent'] == '' || $record['i_parent'] == 'NULL') ? null : intval($record['i_parent']);
+        $parent = ($record['i_parent_id'] == '' || $record['i_parent_id'] == 'NULL') ? null : intval($record['i_parent_id']);
         $caption = $record['i_caption'];
-        $url = $record['i_url'];
+        $url = $record['i_link'];
         $check_permissions = intval($record['i_check_permissions']);
         $page_only = $record['i_page_only'];
         $expanded = intval($record['i_expanded']);
@@ -201,7 +201,7 @@ function menu_management_script()
     $changes['i_check_permissions'] = post_param_integer('check_perms_' . strval($id), 0);
     $changes['i_include_sitemap'] = post_param_integer('include_sitemap_' . strval($id), 0);
     $changes['i_expanded'] = 0;
-    $changes['i_parent'] = null;
+    $changes['i_parent_id'] = null;
 
     if ($row === null) {
         $GLOBALS['SITE_DB']->query_insert('menu_items', $changes);
@@ -232,10 +232,10 @@ function add_menu_item_simple(string $menu_id, $parent, string $caption, string 
     global $ADD_MENU_COUNTER;
 
     if (is_string($parent)) {
-        $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'id', ['i_url' => $parent, 'i_menu' => $menu_id]);
+        $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'id', ['i_link' => $parent, 'i_menu' => $menu_id]);
     }
 
-    $id = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'id', ['i_url' => $url, 'i_menu' => $menu_id, 'i_parent' => $parent]);
+    $id = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'id', ['i_link' => $url, 'i_menu' => $menu_id, 'i_parent_id' => $parent]);
     if ($id !== null) {
         return $id; // Already exists
     }
@@ -260,7 +260,7 @@ function add_menu_item_simple(string $menu_id, $parent, string $caption, string 
  */
 function delete_menu_item_simple(string $url)
 {
-    $_id = $GLOBALS['SITE_DB']->query_select('menu_items', ['id'], ['i_url' => $url]);
+    $_id = $GLOBALS['SITE_DB']->query_select('menu_items', ['id'], ['i_link' => $url]);
     foreach ($_id as $id) {
         delete_menu_item($id['id']);
     }
@@ -294,8 +294,8 @@ function add_menu_item(string $menu_id, int $order, ?int $parent, string $captio
     $map = [
         'i_menu' => $menu_id,
         'i_order' => $order,
-        'i_parent' => $parent,
-        'i_url' => $url,
+        'i_parent_id' => $parent,
+        'i_link' => $url,
         'i_check_permissions' => $check_permissions,
         'i_page_only' => $page_only,
         'i_include_sitemap' => $include_sitemap,
@@ -351,8 +351,8 @@ function edit_menu_item(int $id, string $menu_id, int $order, ?int $parent, stri
     $map = [
         'i_menu' => $menu_id,
         'i_order' => $order,
-        'i_parent' => $parent,
-        'i_url' => $url,
+        'i_parent_id' => $parent,
+        'i_link' => $url,
         'i_check_permissions' => $check_permissions,
         'i_page_only' => $page_only,
         'i_expanded' => $expanded,
@@ -578,8 +578,8 @@ function save_add_menu_item_from_post(string $menu_id, int $id, array &$ids, ?in
     $menu_save_map = [
         'i_menu' => $menu_id,
         'i_order' => $order,
-        'i_parent' => $parent,
-        'i_url' => $url,
+        'i_parent_id' => $parent,
+        'i_link' => $url,
         'i_check_permissions' => $check_permissions,
         'i_expanded' => $expanded,
         'i_new_window' => $new_window,

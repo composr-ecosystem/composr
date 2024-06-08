@@ -42,12 +42,12 @@ class Hook_symbol_SHOW_RATINGS
             $real_feedback_type = _real_feedback_type($rating_type);
 
             $ratings = [];
-            $_ratings = $GLOBALS['SITE_DB']->query_select('rating', ['rating_member', 'rating_ip', 'rating_time', 'rating'], ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $rating_id], 'ORDER BY rating_time DESC', $max);
+            $_ratings = $GLOBALS['SITE_DB']->query_select('rating', ['rating_member', 'rating_ip_address', 'rating_time', 'rating'], ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $rating_id], 'ORDER BY rating_time DESC', $max);
             foreach ($_ratings as $rating) {
                 $ratings[] = [
                     'RATING_MEMBER' => strval($rating['rating_member']),
                     'RATING_USERNAME' => is_guest($rating['rating_member']) ? '' : $GLOBALS['FORUM_DRIVER']->get_username($rating['rating_member'], false, USERNAME_DEFAULT_BLANK),
-                    'RATING_IP' => $rating['rating_ip'],
+                    'RATING_IP' => $rating['rating_ip_address'],
                     'RATING_TIME' => strval($rating['rating_time']),
                     'RATING_TIME_FORMATTED' => get_timezoned_date_time($rating['rating_time']),
                     'RATING' => strval($rating['rating']),

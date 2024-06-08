@@ -44,9 +44,9 @@ function cns_get_private_topics(int $start = 0, int $true_start = 0, ?int $max =
     }
 
     // Find topics
-    $where = '(t_pt_from=' . strval($member_id) . ' OR t_pt_to=' . strval($member_id) . ') AND t_forum_id IS NULL';
+    $where = '(t_pt_from_member=' . strval($member_id) . ' OR t_pt_to_member=' . strval($member_id) . ') AND t_forum_id IS NULL';
     $filter = get_param_string('category', '');
-    $where .= ' AND (' . db_string_equal_to('t_pt_from_category', $filter) . ' AND t_pt_from=' . strval($member_id) . ' OR ' . db_string_equal_to('t_pt_to_category', $filter) . ' AND t_pt_to=' . strval($member_id) . ')';
+    $where .= ' AND (' . db_string_equal_to('t_pt_from_category', $filter) . ' AND t_pt_from_member=' . strval($member_id) . ' OR ' . db_string_equal_to('t_pt_to_category', $filter) . ' AND t_pt_to_member=' . strval($member_id) . ')';
     $query = 'FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t' . $GLOBALS['FORUM_DB']->prefer_index('f_topics', 'in_forum', false);
     if (!multi_lang_content()) {
         $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id';
@@ -110,8 +110,8 @@ function cns_get_private_topics(int $start = 0, int $true_start = 0, ?int $max =
         $topic['last_member_id'] = $topic_row['t_cache_last_member_id'];
         $topic['emoticon'] = $topic_row['t_emoticon'];
         $topic['description'] = $topic_row['t_description'];
-        $topic['pt_from'] = $topic_row['t_pt_from'];
-        $topic['pt_to'] = $topic_row['t_pt_to'];
+        $topic['pt_from'] = $topic_row['t_pt_from_member'];
+        $topic['pt_to'] = $topic_row['t_pt_to_member'];
 
         // Modifiers
         $topic['modifiers'] = [];

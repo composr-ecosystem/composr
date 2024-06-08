@@ -98,7 +98,7 @@ class Block_main_cns_involved_topics
         }
         */
 
-        $sql = 'SELECT DISTINCT p_topic_id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval($member_id_of) . $where_more;
+        $sql = 'SELECT DISTINCT p_topic_id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_posting_member=' . strval($member_id_of) . $where_more;
         if (!$private_topics) {
             $sql .= ' AND p_cache_forum_id IS NOT NULL';
         }
@@ -106,7 +106,7 @@ class Block_main_cns_involved_topics
         $rows = $GLOBALS['FORUM_DB']->query($sql, $max, $start, false, true);
         if (!empty($rows)) {
             if (get_bot_type() === null) {
-                $sql_max_rows = 'SELECT COUNT(DISTINCT p_topic_id) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval($member_id_of) . $where_more;
+                $sql_max_rows = 'SELECT COUNT(DISTINCT p_topic_id) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_posting_member=' . strval($member_id_of) . $where_more;
                 if (!$private_topics) {
                     $sql_max_rows .= ' AND p_cache_forum_id IS NOT NULL';
                 }

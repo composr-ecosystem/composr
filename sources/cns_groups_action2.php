@@ -32,7 +32,7 @@ function cns_may_control_group(int $group_id, int $member_id, ?array $group_row 
         $leader = cns_get_group_property($group_id, 'group_leader');
         $is_super_admin = cns_get_group_property($group_id, 'is_super_admin');
     } else {
-        $leader = $group_row['g_group_leader'];
+        $leader = $group_row['g_group_lead_member'];
         $is_super_admin = $group_row['g_is_super_admin'];
     }
     return (($member_id === $leader) || ($GLOBALS['CNS_DRIVER']->is_super_admin($member_id)) || ((has_privilege($member_id, 'control_usergroups')) && ($is_super_admin == 0)));
@@ -110,12 +110,12 @@ function cns_edit_group(int $group_id, ?string $name, ?int $is_default, ?int $is
     if ($is_super_moderator !== null) {
         $map['g_is_super_moderator'] = $is_super_moderator;
     }
-    $map['g_group_leader'] = $group_leader;
+    $map['g_group_lead_member'] = $group_leader;
     if ($title !== null) {
         $map += lang_remap('g_title', $_title, $title, $GLOBALS['FORUM_DB']);
     }
     if (addon_installed('points')) {
-        $map['g_promotion_target'] = $promotion_target;
+        $map['g_promotion_target_group'] = $promotion_target;
         $map['g_promotion_threshold'] = $promotion_threshold;
         $map['g_promotion_approval'] = $promotion_approval;
     }
@@ -227,7 +227,7 @@ function cns_delete_group(int $group_id, ?int $target_group = null)
     delete_lang($_name, $GLOBALS['FORUM_DB']);
     delete_lang($_title, $GLOBALS['FORUM_DB']);
 
-    $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => null], ['g_promotion_target' => $group_id]);
+    $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target_group' => null], ['g_promotion_target_group' => $group_id]);
     $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $target_group], ['m_primary_group' => $group_id]);
     if ($orig_target_group !== null) {
         $GLOBALS['FORUM_DB']->query_update('f_group_members', ['gm_group_id' => $target_group], ['gm_group_id' => $group_id], '', null, 0, false, true); // Errors suppressed in case rows conflict with existing
@@ -295,7 +295,7 @@ function cns_member_ask_join_group(int $group_id, ?int $member_id = null)
 {
     require_code('notifications');
 
-    $group_info = $GLOBALS['FORUM_DB']->query_select('f_groups', ['g_name', 'g_group_leader'], ['id' => $group_id], '', 1);
+    $group_info = $GLOBALS['FORUM_DB']->query_select('f_groups', ['g_name', 'g_group_lead_member'], ['id' => $group_id], '', 1);
     if (!array_key_exists(0, $group_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'group'));
     }
@@ -346,7 +346,7 @@ function cns_member_ask_join_group(int $group_id, ?int $member_id = null)
         $_url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $group_id, 'approval_id' => $id], get_module_zone('groups'), [], false, false, true);
         $url = $_url->evaluate();
 
-        $leader_id = $group_info[0]['g_group_leader'];
+        $leader_id = $group_info[0]['g_group_lead_member'];
         if ($leader_id !== null) {
             $mail = do_notification_lang('GROUP_JOIN_REQUEST_MAIL', comcode_escape($their_username), comcode_escape($group_name), [$url], get_lang($leader_id));
             $subject = do_lang('GROUP_JOIN_REQUEST_MAIL_SUBJECT', null, null, null, get_lang($leader_id));
@@ -375,9 +375,9 @@ function cns_member_leave_secondary_group(int $group_id, ?int $member_id = null)
         return;
     }
 
-    $group_leader = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_group_leader', ['id' => $group_id]);
+    $group_leader = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_group_lead_member', ['id' => $group_id]);
     if ($group_leader == $member_id) {
-        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => null], ['id' => $group_id], '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_lead_member' => null], ['id' => $group_id], '', 1);
     }
 
     $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_group_id', ['gm_group_id' => $group_id, 'gm_member_id' => $member_id]);

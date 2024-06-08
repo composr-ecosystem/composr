@@ -109,7 +109,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
 
     // If lots of aging sessions, we will clean out
     reset($SESSION_CACHE);
-    $force_cleanup = ((count($SESSION_CACHE) > 50) && ($SESSION_CACHE[key($SESSION_CACHE)]['last_activity'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))));
+    $force_cleanup = ((count($SESSION_CACHE) > 50) && ($SESSION_CACHE[key($SESSION_CACHE)]['last_activity_time'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))));
 
     $new_session = null;
     $prior_session_row = null;
@@ -146,7 +146,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $new_session_row = [
             'the_session' => $new_session,
-            'last_activity' => time(),
+            'last_activity_time' => time(),
             'member_id' => $member_id,
             'ip' => get_ip_address(3, $ip_address),
             'session_confirmed' => $session_confirmed,
@@ -168,7 +168,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         }
 
         $SESSION_CACHE[$new_session] = $new_session_row;
-        sort_maps_by($SESSION_CACHE, '!last_activity');
+        sort_maps_by($SESSION_CACHE, '!last_activity_time');
 
         global $SESSION_IS_NEW;
         $SESSION_IS_NEW = true;
@@ -183,11 +183,11 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
             'the_page' => function_exists('get_page_name') ? get_page_name() : '',
             'the_type' => cms_mb_substr(get_param_string('type', ''), 0, 80),
             'the_id' => cms_mb_substr(get_param_string('id', ''), 0, 80),
-            'last_activity' => time(),
+            'last_activity_time' => time(),
             'ip' => get_ip_address(3, $ip_address),
             'session_confirmed' => $session_confirmed,
         ];
-        $big_change = ($prior_session_row['last_activity'] < time() - 10) || ($prior_session_row['session_confirmed'] != $session_confirmed) || ($prior_session_row['ip'] != $new_session_row['ip']);
+        $big_change = ($prior_session_row['last_activity_time'] < time() - 10) || ($prior_session_row['session_confirmed'] != $session_confirmed) || ($prior_session_row['ip'] != $new_session_row['ip']);
         if ($big_change) {
             $GLOBALS['SITE_DB']->query_update('sessions', $new_session_row, ['the_session' => $new_session], '', 1, 0, false, true); // Errors suppressed in case DB write access broken
         }
@@ -209,7 +209,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
     if (($member_id !== null) && (!is_guest($member_id))) {
         // See if this is the first visit today
         global $SESSION_CACHE;
-        $test = isset($prior_session_row['last_activity']) ? $prior_session_row['last_activity'] : null;
+        $test = isset($prior_session_row['last_activity_time']) ? $prior_session_row['last_activity_time'] : null;
         if ($test === null) {
             $test = $GLOBALS['SITE_DB']->query_select_value('daily_visits', 'MAX(d_date_and_time)', ['d_member_id' => $member_id]);
         }
@@ -380,7 +380,7 @@ function try_su_login(int $member_id) : int
             require_code('crypt');
             $new_session_row = [
                 'the_session' => get_secure_random_string(),
-                'last_activity' => time(),
+                'last_activity_time' => time(),
                 'member_id' => $member_id,
                 'ip' => get_ip_address(3),
                 'session_confirmed' => 0,

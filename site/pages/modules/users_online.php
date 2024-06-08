@@ -106,10 +106,10 @@ class Module_users_online
         }
 
         $rows = [];
-        sort_maps_by($members, 'last_activity');
+        sort_maps_by($members, 'last_activity_time');
         $members = array_reverse($members);
         foreach ($members as $row) {
-            $last_activity = $row['last_activity'];
+            $last_activity = $row['last_activity_time'];
             $member_id = $row['member_id'];
             //$username = $row['cache_username'];
             $location = $row['the_title'];

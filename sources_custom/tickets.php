@@ -19,10 +19,10 @@ function get_homesite_support_timings_wrap($open, $topic_id, $ticket_type_name, 
         return new Tempcode();
     }
 
-    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_poster', 'p_time'], ['p_topic_id' => $topic_id], 'ORDER BY p_time DESC,id DESC');
+    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_posting_member', 'p_time'], ['p_topic_id' => $topic_id], 'ORDER BY p_time DESC,id DESC');
     $most_recent_post = null;
     foreach ($posts as $post) {
-        if (!has_privilege($post['p_poster'], 'support_operator')) {
+        if (!has_privilege($post['p_posting_member'], 'support_operator')) {
             $most_recent_post = $post;
             // Don't break, their first unanswered query may be further back
         } else {
@@ -33,7 +33,7 @@ function get_homesite_support_timings_wrap($open, $topic_id, $ticket_type_name, 
         }
     }
 
-    $member_id = $most_recent_post['p_poster'];
+    $member_id = $most_recent_post['p_posting_member'];
     $last_time = $most_recent_post['p_time'];
     return get_composr_support_timings($open, $member_id, $ticket_type_name, $last_time, $say_more);
 }

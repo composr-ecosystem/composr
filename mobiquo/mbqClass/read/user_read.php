@@ -469,7 +469,7 @@ class CMSUserRead
 
         $select = ['*', 'p.id AS post_id', 'f.id AS forum_id', 't.id AS topic_id'];
 
-        $where = ['p_poster' => $user_id];
+        $where = ['p_posting_member' => $user_id];
         if (addon_installed('validation')) {
             $where['p_validated'] = 1;
         }

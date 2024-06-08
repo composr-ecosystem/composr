@@ -127,7 +127,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
 
                 if ($under == 'forum') {
                     return [
-                        'cat_field' => 'f_parent_forum',
+                        'cat_field' => 'f_parent_forum_id',
                         'linker_table' => 'f_forums',
                         'id_field' => 'id',
                         'id_field_linker' => 'id',
@@ -492,8 +492,8 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             'open' => $row['t_is_open'],
             'pinned' => $row['t_pinned'],
             'cascading' => $row['t_cascading'],
-            'pt_from' => remap_resource_id_as_portable('member', $row['t_pt_from']),
-            'pt_to' => remap_resource_id_as_portable('member', $row['t_pt_to']),
+            'pt_from' => remap_resource_id_as_portable('member', $row['t_pt_from_member']),
+            'pt_to' => remap_resource_id_as_portable('member', $row['t_pt_to_member']),
             'views' => $row['t_num_views'],
             'description_link' => $row['t_description_link'],
             'poll' => $poll_data,
@@ -673,14 +673,14 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         $ip_address = $this->_default_property_str_null($properties, 'ip_address');
         $time = $this->_default_property_time($properties, 'add_date');
         $poster = $this->_default_property_member($properties, 'poster');
-        $intended_solely_for = $this->_default_property_member_null($properties, 'intended_solely_for');
+        $whisper_to_member = $this->_default_property_member_null($properties, 'whisper_to_member');
         $last_edit_time = $this->_default_property_time_null($properties, 'edit_date');
-        $last_edit_by = $this->_default_property_member_null($properties, 'last_edit_by');
+        $last_edit_member = $this->_default_property_member_null($properties, 'last_edit_member');
         $parent_id = $this->_default_property_resource_id_null('post', $properties, 'parent_id');
         if (is_string($parent_id)) {
             $parent_id = intval($parent_id);
         }
-        $id = cns_make_post($topic_id, $label, $post, $skip_sig, null, $validated, $is_emphasised, $poster_name_if_guest, $ip_address, $time, $poster, $intended_solely_for, $last_edit_time, $last_edit_by, false, true, null, false, null, null, false, true, null, false, $parent_id);
+        $id = cns_make_post($topic_id, $label, $post, $skip_sig, null, $validated, $is_emphasised, $poster_name_if_guest, $ip_address, $time, $poster, $whisper_to_member, $last_edit_time, $last_edit_member, false, true, null, false, null, null, false, true, null, false, $parent_id);
 
         $this->_resource_save_extend($this->file_resource_type, strval($id), $filename, $label, $properties);
         return strval($id);
@@ -711,10 +711,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             'is_emphasised' => $row['p_is_emphasised'],
             'poster_name_if_guest' => $row['p_poster_name_if_guest'],
             'ip_address' => $row['p_ip_address'],
-            'intended_solely_for' => $row['p_intended_solely_for'],
+            'whisper_to_member' => $row['p_whisper_to_member'],
             'parent_id' => remap_resource_id_as_portable('post', $row['p_parent_id']),
-            'poster' => remap_resource_id_as_portable('member', $row['p_poster']),
-            'last_edit_by' => $row['p_last_edit_by'],
+            'poster' => remap_resource_id_as_portable('member', $row['p_posting_member']),
+            'last_edit_member' => $row['p_last_edit_member'],
             'add_date' => remap_time_as_portable($row['p_time']),
             'edit_date' => remap_time_as_portable($row['p_last_edit_time']),
         ];
@@ -760,15 +760,15 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         $ip_address = $this->_default_property_str_null($properties, 'ip_address');
         $add_time = $this->_default_property_time($properties, 'add_date');
         $poster = $this->_default_property_member($properties, 'poster');
-        $intended_solely_for = $this->_default_property_member_null($properties, 'intended_solely_for');
+        $whisper_to_member = $this->_default_property_member_null($properties, 'whisper_to_member');
         $last_edit_time = $this->_default_property_time($properties, 'edit_date');
-        $last_edit_by = $this->_default_property_member($properties, 'last_edit_by');
+        $last_edit_member = $this->_default_property_member($properties, 'last_edit_member');
         $parent_id = $this->_default_property_resource_id_null('post', $properties, 'parent_id');
         if (is_string($parent_id)) {
             $parent_id = intval($parent_id);
         }
 
-        cns_edit_post(intval($resource_id), $validated, $label, $post, $skip_sig, $is_emphasised, $intended_solely_for, true, false, '', false, $last_edit_time, $add_time, $poster, true, false);
+        cns_edit_post(intval($resource_id), $validated, $label, $post, $skip_sig, $is_emphasised, $whisper_to_member, true, false, '', false, $last_edit_time, $add_time, $poster, true, false);
 
         $this->_resource_save_extend($this->file_resource_type, $resource_id, $filename, $label, $properties);
 

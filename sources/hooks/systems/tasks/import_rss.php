@@ -377,7 +377,7 @@ class Hook_task_import_rss
                             $GLOBALS['SITE_DB']->query_insert('trackbacks', [
                                 'trackback_for_type' => $trackback_for_type,
                                 'trackback_for_id' => strval($trackback_id),
-                                'trackback_ip' => $author_ip,
+                                'trackback_ip_address' => $author_ip,
                                 'trackback_time' => $comment_add_date,
                                 'trackback_url' => $comment_author_url,
                                 'trackback_title' => '',

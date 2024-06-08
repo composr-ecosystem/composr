@@ -53,7 +53,7 @@ function has_post_access(int $post_id, ?int $member_id = null, ?array $post_deta
     }
 
     if (!has_privilege($member_id, 'view_other_pt')) {
-        if (($post_details['p_intended_solely_for'] !== null) && ($post_details['p_intended_solely_for'] != $member_id) && ($post_details['p_poster'] != $member_id)) {
+        if (($post_details['p_whisper_to_member'] !== null) && ($post_details['p_whisper_to_member'] != $member_id) && ($post_details['p_posting_member'] != $member_id)) {
             return false;
         }
     }
@@ -161,13 +161,13 @@ function cns_may_edit_post_by(int $post_id, ?int $post_time, ?int $resource_owne
     $reason = null;
 
     if ($post_time === null) {
-        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_poster', 'p_cache_forum_id', 't_is_open'], ['id' => $post_id], '', 1);
+        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_posting_member', 'p_cache_forum_id', 't_is_open'], ['id' => $post_id], '', 1);
         if (!array_key_exists(0, $posts)) {
             $reason = do_lang('INTERNAL_ERROR');
             return false;
         }
         $post_time = $posts[0]['p_time'];
-        $resource_owner = $posts[0]['p_poster'];
+        $resource_owner = $posts[0]['p_posting_member'];
         $forum_id = $posts[0]['p_cache_forum_id'];
         $topic_is_closed = ($posts[0]['t_is_open'] == 0);
     }
@@ -234,13 +234,13 @@ function cns_may_delete_post_by(int $post_id, ?int $post_time, ?int $resource_ow
     $reason = null;
 
     if ($post_time === null) {
-        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_poster', 'p_cache_forum_id', 't_is_open'], ['p.id' => $post_id], '', 1);
+        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_posting_member', 'p_cache_forum_id', 't_is_open'], ['p.id' => $post_id], '', 1);
         if (!array_key_exists(0, $posts)) {
             $reason = do_lang('INTERNAL_ERROR');
             return false;
         }
         $post_time = $posts[0]['p_time'];
-        $resource_owner = $posts[0]['p_poster'];
+        $resource_owner = $posts[0]['p_posting_member'];
         $forum_id = $posts[0]['p_cache_forum_id'];
         $topic_is_closed = ($posts[0]['t_is_open'] == 0);
     }

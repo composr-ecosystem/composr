@@ -41,7 +41,7 @@ class CMSSocialWrite
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
 
-        $user_id = $post_rows[0]['p_poster'];
+        $user_id = $post_rows[0]['p_posting_member'];
         if ($user_id == get_member()) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -135,7 +135,7 @@ class CMSSocialWrite
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
 
-        $user_id = $post_rows[0]['p_poster'];
+        $user_id = $post_rows[0]['p_posting_member'];
         if ($user_id == get_member()) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }

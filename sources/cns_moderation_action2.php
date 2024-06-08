@@ -40,7 +40,7 @@ function cns_edit_multi_moderation(int $id, string $name, string $post_text, ?in
 
     $map = [
         'mm_post_text' => $post_text,
-        'mm_move_to' => $move_to,
+        'mm_move_to_forum_id' => $move_to,
         'mm_pin_state' => $pin_state,
         'mm_open_state' => $open_state,
         'mm_forum_multi_code' => $forum_multi_code,
@@ -117,14 +117,14 @@ function cns_perform_multi_moderation(int $id, int $topic_id, string $reason, st
     }
 
     require_code('selectcode');
-    $idlist = selectcode_to_idlist_using_db($mm[0]['mm_forum_multi_code'], 'id', 'f_forums', 'f_forums', 'f_parent_forum', 'f_parent_forum', 'id', true, true, $GLOBALS['FORUM_DB']);
+    $idlist = selectcode_to_idlist_using_db($mm[0]['mm_forum_multi_code'], 'id', 'f_forums', 'f_forums', 'f_parent_forum_id', 'f_parent_forum_id', 'id', true, true, $GLOBALS['FORUM_DB']);
     if (!in_array($from, $idlist)) {
         warn_exit(do_lang_tempcode('MM_APPLY_TWICE'));
     }
 
     $pin_state = $mm[0]['mm_pin_state'];
     $open_state = $mm[0]['mm_open_state'];
-    $move_to = $mm[0]['mm_move_to'];
+    $move_to = $mm[0]['mm_move_to_forum_id'];
     $title_suffix = $mm[0]['mm_title_suffix'];
     //$post_text = $mm[0]['mm_post_text']; We'll allow user to specify the post_text, with this as a default
     $update_array = [];
@@ -263,7 +263,7 @@ function cns_make_warning(int $member_id, string $explanation, ?int $by = null, 
         'w_member_id' => $member_id,
         'w_time' => $time,
         'w_explanation' => $explanation,
-        'w_by' => $by,
+        'w_issuing_member' => $by,
         'w_is_warning' => $is_warning,
         'w_topic_id' => null,
     ];

@@ -273,7 +273,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
             case 'VALIDATE_POST':
             case 'INVALIDATE_POST':
             case 'MAKE_ANONYMOUS_POST':
-                $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', ['id' => intval($actionlog_row['param_a'])]);
+                $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_posting_member', ['id' => intval($actionlog_row['param_a'])]);
                 if ($member_id !== null) {
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
                     if ($username === null) {

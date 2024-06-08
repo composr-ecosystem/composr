@@ -260,7 +260,7 @@ function _helper_show_forum_topics(object $this_ref, $name, int $limit, int $sta
         }
     }
 
-    $post_query_select = 'p.p_title,t.id,p.p_poster,p.p_poster_name_if_guest,p.id AS p_id,p_post,p.p_time';
+    $post_query_select = 'p.p_title,t.id,p.p_posting_member,p.p_poster_name_if_guest,p.id AS p_id,p_post,p.p_time';
     if (!multi_lang_content()) {
         $post_query_select .= ',p_post__text_parsed,p_post__source_user';
     }
@@ -330,7 +330,7 @@ function _helper_show_forum_topics(object $this_ref, $name, int $limit, int $sta
             continue;
         }
         $out[$i]['firstusername'] = $fp_rows[0]['p_poster_name_if_guest'];
-        $out[$i]['firstmemberid'] = $fp_rows[0]['p_poster'];
+        $out[$i]['firstmemberid'] = $fp_rows[0]['p_posting_member'];
         $out[$i]['firsttitle'] = $fp_rows[0]['p_title'];
         if ($show_first_posts) {
             $post_row = db_map_restrict($fp_rows[0], ['id', 'p_post'], ['id' => 'p_id']);
@@ -425,7 +425,7 @@ function _helper_get_forum_topic_posts(object $this_ref, ?int $topic_id, ?int &$
     }
 
     if (($light_if_threaded) && ($is_threaded)) {
-        $select = 'p.id,p.p_time,p.p_parent_id,p.p_intended_solely_for,p.p_poster';
+        $select = 'p.id,p.p_time,p.p_parent_id,p.p_whisper_to_member,p.p_posting_member';
     } else {
         $select = 'p.*';
     }
@@ -446,7 +446,7 @@ function _helper_get_forum_topic_posts(object $this_ref, ?int $topic_id, ?int &$
 
     $out = [];
     foreach ($rows as $myrow) {
-        if (($myrow['p_intended_solely_for'] === null) || (($myrow['p_poster'] == get_member()) && (!is_guest($myrow['p_poster']))) || ($myrow['p_intended_solely_for'] == get_member()) || (($myrow['p_intended_solely_for'] == $this_ref->get_guest_id()) && (has_privilege(get_member(), 'view_other_pt')))) {
+        if (($myrow['p_whisper_to_member'] === null) || (($myrow['p_posting_member'] == get_member()) && (!is_guest($myrow['p_posting_member']))) || ($myrow['p_whisper_to_member'] == get_member()) || (($myrow['p_whisper_to_member'] == $this_ref->get_guest_id()) && (has_privilege(get_member(), 'view_other_pt')))) {
             $temp = $myrow; // Takes all Conversr properties
 
             // Then sanitised for normal forum driver API too (involves repetition)
@@ -456,12 +456,12 @@ function _helper_get_forum_topic_posts(object $this_ref, ?int $topic_id, ?int &$
                 $post_row = db_map_restrict($myrow, ['id', 'p_post']);
                 $temp['message'] = get_translated_tempcode('f_posts', $post_row, 'p_post', $this_ref->db);
                 $temp['message_comcode'] = get_translated_text($post_row['p_post'], $this_ref->db);
-                $temp['member'] = $myrow['p_poster'];
+                $temp['member'] = $myrow['p_posting_member'];
                 if ($myrow['p_poster_name_if_guest'] != '') {
                     $temp['username'] = $myrow['p_poster_name_if_guest'];
                 }
                 $temp['date'] = $myrow['p_time'];
-                $temp['staff_only'] = ($myrow['p_intended_solely_for'] !== null);
+                $temp['staff_only'] = ($myrow['p_whisper_to_member'] !== null);
                 $temp['skip_sig'] = $myrow['p_skip_sig'];
                 $temp['ip_address'] = $myrow['p_ip_address'];
             }

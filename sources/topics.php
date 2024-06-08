@@ -512,7 +512,7 @@ class CMS_Topic
             require_code('cns_topicview');
             $members = [];
             foreach ($posts as $_postdetails) {
-                $members[$_postdetails['p_poster']] = 1;
+                $members[$_postdetails['p_posting_member']] = 1;
             }
             cns_cache_member_details(array_keys($members));
         }
@@ -591,7 +591,7 @@ class CMS_Topic
         while ((count($posts) < $num_to_show_limit) && (!empty($queue))) {
             $next = reset($queue);
 
-            if ($next['p_poster'] == get_member()) {
+            if ($next['p_posting_member'] == get_member()) {
                 $this->replied = true;
             }
 
@@ -604,7 +604,7 @@ class CMS_Topic
             // Any posts by current member must be grabbed too (up to 3 root ones though - otherwise risks performance), and also first post
             $num_poster_grabbed = 0;
             foreach ($queue as $i => $q) {
-                if ((($q['p_poster'] == get_member()) && ($q['parent_id'] === null) && ($num_poster_grabbed < 3)) || ($q['id'] === $this->first_post_id)) {
+                if ((($q['p_posting_member'] == get_member()) && ($q['parent_id'] === null) && ($num_poster_grabbed < 3)) || ($q['id'] === $this->first_post_id)) {
                     $this->replied = true;
                     if ($q['id'] === $this->first_post_id) { // First post must go first
                         $posts_backup = $posts;
@@ -614,7 +614,7 @@ class CMS_Topic
                     } else {
                         $posts['post_' . strval($q['id'])] = $q;
                     }
-                    if ($q['p_poster'] == get_member()) {
+                    if ($q['p_posting_member'] == get_member()) {
                         $num_poster_grabbed++;
                     }
                     unset($queue[$i]);
@@ -843,8 +843,8 @@ class CMS_Topic
                         '_GUID' => '6301ad8d8f80948ad8270828f1bdaf33',
                         'LAST_EDIT_DATE_RAW' => ($post['last_edit_time'] === null) ? '' : strval($post['last_edit_time']),
                         'LAST_EDIT_DATE' => $post['last_edit_date'],
-                        'LAST_EDIT_PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($post['last_edit_by'], true),
-                        'LAST_EDIT_USERNAME' => $post['last_edit_by_username'],
+                        'LAST_EDIT_PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($post['last_edit_member'], true),
+                        'LAST_EDIT_USERNAME' => $post['last_edit_username'],
                     ]);
                     $last_edited_raw = (($post['last_edit_time'] === null) ? '' : strval($post['last_edit_time']));
                 }
@@ -947,7 +947,7 @@ class CMS_Topic
             }
 
             // Mark read
-            if (array_key_exists('intended_solely_for', $post)) {
+            if (array_key_exists('whisper_to_member', $post)) {
                 // Has now read
                 decache_private_topics(get_member());
             }
@@ -1040,7 +1040,7 @@ class CMS_Topic
         $poster_url = is_guest($post['member']) ? new Tempcode() : $GLOBALS['FORUM_DRIVER']->member_profile_url($post['member'], true);
         $poster_name = array_key_exists('username', $post) ? $post['username'] : $GLOBALS['FORUM_DRIVER']->get_username($post['member']);
         $is_unread = ($this->topic_last_read === null) || ($this->topic_last_read <= $post['date']) || (get_forum_type() == 'cns') && ($post['p_last_edit_time'] !== null) && ($this->topic_last_read <= $post['p_last_edit_time']);
-        if ($post['p_poster'] == get_member()) {
+        if ($post['p_posting_member'] == get_member()) {
             $is_unread = false;
         }
 

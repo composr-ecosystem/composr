@@ -210,7 +210,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
 
     if ($invites_if_enabled) { // code branch also triggers general tracking of referrals
         if (get_option_with_overrides('is_on_invites', $adjusted_config_options) == '1') {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address, 'i_taken' => 0]);
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_invite_member', ['i_email_address' => $email_address, 'i_taken' => 0]);
             if ($test === null) {
                 warn_exit(do_lang_tempcode('NO_INVITE'));
             }
@@ -362,7 +362,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
             '', // pt_rules_text
             $validated, // validated
             $validated_email_confirm_code, // validated_email_confirm_code
-            null, // on_probation_until
+            null, // probation_expiration_time
             '0', // is_perm_banned
             true // check_correctness
         );

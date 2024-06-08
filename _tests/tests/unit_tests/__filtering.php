@@ -185,8 +185,8 @@ class __filtering_test_set extends cms_test_case
         ] + insert_lang('t_short_trans', 'cxxxxx', 1));
 
         $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'temp_test']);
-        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => 'temp_test', 'rating_for_id' => '1', 'rating_member' => get_member(), 'rating_ip' => get_ip_address(), 'rating_time' => time(), 'rating' => 4]);
-        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => 'temp_test', 'rating_for_id' => '1', 'rating_member' => get_member(), 'rating_ip' => get_ip_address(), 'rating_time' => time(), 'rating' => 3]);
+        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => 'temp_test', 'rating_for_id' => '1', 'rating_member' => get_member(), 'rating_ip_address' => get_ip_address(), 'rating_time' => time(), 'rating' => 4]);
+        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => 'temp_test', 'rating_for_id' => '1', 'rating_member' => get_member(), 'rating_ip_address' => get_ip_address(), 'rating_time' => time(), 'rating' => 3]);
 
         require_code('content2');
         seo_meta_set_for_explicit('temp_test', '1', 'abc,def', 'abc');

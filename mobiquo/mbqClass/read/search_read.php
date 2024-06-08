@@ -187,17 +187,17 @@ class CMSSearchRead
             $sql .= ' AND p_validated=1';
         }
         if (!has_privilege(get_member(), 'view_other_pt')) {
-            $sql .= ' AND (p_intended_solely_for IS NULL OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member()) . ')';
+            $sql .= ' AND (p_whisper_to_member IS NULL OR p_whisper_to_member=' . strval(get_member()) . ' OR p_posting_member=' . strval(get_member()) . ')';
         }
 
         if ($userid !== null) {
-            $sql .= ' AND p_poster=' . strval($userid);
+            $sql .= ' AND p_posting_member=' . strval($userid);
         } elseif ($searchuser !== null) {
             $_userid = $GLOBALS['FORUM_DRIVER']->get_member_from_username($searchuser);
             if ($_userid === null) {
                 warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($searchuser)), false, false, 404);
             }
-            $sql .= ' AND p_poster=' . strval($_userid);
+            $sql .= ' AND p_posting_member=' . strval($_userid);
         }
 
         if ($forumid !== null) {

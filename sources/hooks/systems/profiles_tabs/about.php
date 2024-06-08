@@ -74,7 +74,7 @@ class Hook_profiles_tabs_about
             'points',
             'join_date',
             'signature',
-            'on_probation_until',
+            'probation_expiration_time',
             'primary_group',
             'secondary_groups_named',
             'email_address',
@@ -277,7 +277,7 @@ class Hook_profiles_tabs_about
                 }
 
                 $group_name = get_translated_text($club_row['g_name'], $GLOBALS['FORUM_DB']);
-                $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))];
+                $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum_id' => intval(get_option('club_forum_parent_forum'))];
                 $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);
 
                 $clubs[] = [
@@ -289,7 +289,7 @@ class Hook_profiles_tabs_about
         }
 
         // Find probation information
-        if (isset($member_info['on_probation_until']) !== null) {
+        if (isset($member_info['probation_expiration_time']) !== null) {
             $probation_group = get_option('probation_usergroup');
             if (is_numeric($probation_group)) {
                 $_probation_group = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => intval($probation_group)]);
@@ -357,7 +357,7 @@ class Hook_profiles_tabs_about
             'JOIN_DATE' => $member_info['join_date'],
             'JOIN_DATE_RAW' => strval($member_info['join_time']),
             'SIGNATURE' => isset($member_info['signature']) ? $member_info['signature'] : new Tempcode(),
-            'ON_PROBATION' => isset($member_info['on_probation_until']) ? strval($member_info['on_probation_until']) : null,
+            'ON_PROBATION' => isset($member_info['probation_expiration_time']) ? strval($member_info['probation_expiration_time']) : null,
             'PROBATION_GROUP' => $probation_group,
             'PRIMARY_GROUP' => cns_get_group_link($member_info['primary_group'], $member_id_of != $member_id_viewing),
             'PRIMARY_GROUP_ID' => strval($member_info['primary_group']),

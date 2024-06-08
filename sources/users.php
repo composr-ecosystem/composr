@@ -67,20 +67,20 @@ function init__users()
         $SESSION_CACHE = [];
         if (!$IN_MINIKERNEL_VERSION) {
             if (get_option('session_prudence') == '0') {
-                $where = 'last_activity>=' . strval(time() - 60 * 60 * max(1, intval(get_option('session_expiry_time'))));
+                $where = 'last_activity_time>=' . strval(time() - 60 * 60 * max(1, intval(get_option('session_expiry_time'))));
             } else {
                 $where = db_string_equal_to('the_session', get_session_id()) . ' OR ' . db_string_equal_to('ip', get_ip_address(3));
             }
             if ((get_forum_type() == 'cns') && (!is_on_multi_site_network())) {
                 push_db_scope_check(false);
-                $_s = $GLOBALS['SITE_DB']->query('SELECT s.*,m.m_primary_group FROM ' . get_table_prefix() . 'sessions s LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_members m ON m.id=s.member_id WHERE ' . $where . ' ORDER BY last_activity DESC', null, 0, true, true); // Suppress errors in case table does not exist yet
+                $_s = $GLOBALS['SITE_DB']->query('SELECT s.*,m.m_primary_group FROM ' . get_table_prefix() . 'sessions s LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_members m ON m.id=s.member_id WHERE ' . $where . ' ORDER BY last_activity_time DESC', null, 0, true, true); // Suppress errors in case table does not exist yet
                 if ($_s === null) {
                     $_s = [];
                 }
                 $SESSION_CACHE = list_to_map('the_session', $_s);
                 pop_db_scope_check();
             } else {
-                $SESSION_CACHE = list_to_map('the_session', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE ' . $where . ' ORDER BY last_activity DESC'));
+                $SESSION_CACHE = list_to_map('the_session', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE ' . $where . ' ORDER BY last_activity_time DESC'));
             }
             if (get_option('session_prudence') == '0' && function_exists('persistent_cache_set')) {
                 persistent_cache_set('SESSION_CACHE', $SESSION_CACHE);
@@ -205,7 +205,7 @@ function get_member(bool $quick_only = false) : int
                 ((is_guest($SESSION_CACHE[$session]['member_id'])) && ($allow_unbound_guest)) ||
                 (($SESSION_CACHE[$session]['session_confirmed'] == 0) && (!is_guest($SESSION_CACHE[$session]['member_id'])))
             ) &&
-            ($SESSION_CACHE[$session]['last_activity'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))
+            ($SESSION_CACHE[$session]['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))
         ) {
             $member_row = $SESSION_CACHE[$session];
         }
@@ -526,7 +526,7 @@ function delete_expired_sessions_or_recover(?int $member_id = null, bool $force_
     if (($force_cleanup) || (mt_rand(0, 100) == 1) || (intval(get_option('maximum_users')) > 0)) {
         cms_register_shutdown_function_safe(function () {
             if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
-                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE last_activity<' . strval(time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))), 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE last_activity_time<' . strval(time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))), 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
             }
         });
     }
@@ -543,7 +543,7 @@ function delete_expired_sessions_or_recover(?int $member_id = null, bool $force_
         }
 
         // Delete expiry from cache
-        if ($row['last_activity'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) {
+        if ($row['last_activity_time'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) {
             $dirty_session_cache = true;
             unset($SESSION_CACHE[$_session]);
             continue;
@@ -558,7 +558,7 @@ function delete_expired_sessions_or_recover(?int $member_id = null, bool $force_
 
         // Get back to prior session if there was one (NB: we don't turn guest sessions into member sessions, as that would increase risk of there being a session fixation vulnerability)
         if ($member_id !== null) {
-            if (($row['member_id'] == $member_id) && (((get_option('ip_strict_for_sessions') == '0') && (!$is_guest)) || ($row['ip'] == $ip)) && ($row['last_activity'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))) {
+            if (($row['member_id'] == $member_id) && (((get_option('ip_strict_for_sessions') == '0') && (!$is_guest)) || ($row['ip'] == $ip)) && ($row['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))) {
                 $new_session = $_session;
             }
         }

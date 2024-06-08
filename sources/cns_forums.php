@@ -138,7 +138,7 @@ function cns_organise_into_tree(array &$all_forums, int $forum_id) : array
     $children = [];
     $all_forums_copy = $all_forums;
     foreach ($all_forums_copy as $i => $forum) {
-        if ($forum['f_parent_forum'] == $forum_id) {
+        if ($forum['f_parent_forum_id'] == $forum_id) {
             $forum['children'] = cns_organise_into_tree($all_forums, $forum['id']);
             $children[$forum['id']] = $forum;
             unset($all_forums[$i]);
@@ -174,7 +174,7 @@ function cns_get_all_subordinate_forums(int $forum_id, ?string $create_or_list =
             if ($huge_forums) {
                 $max_forum_inspect = intval(get_option('max_forum_inspect'));
 
-                $all_descendant = $GLOBALS['FORUM_DB']->query('SELECT id,f_parent_forum FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($forum_id) . ' OR f_parent_forum=' . strval($forum_id), $max_forum_inspect);
+                $all_descendant = $GLOBALS['FORUM_DB']->query('SELECT id,f_parent_forum_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($forum_id) . ' OR f_parent_forum_id=' . strval($forum_id), $max_forum_inspect);
                 if (count($all_descendant) == $max_forum_inspect) { // Too many
                     if ($create_or_list === null) {
                         return [$forum_id];
@@ -267,7 +267,7 @@ function cns_get_forum_parent_or_list(int $forum_id, ?int $parent_id = -1) : str
     }
 
     if ($parent_id == -1) {
-        $parent_id = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_parent_forum', ['id' => $forum_id]);
+        $parent_id = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_parent_forum_id', ['id' => $forum_id]);
     }
 
     $out = 't_forum_id=' . strval($forum_id);
@@ -308,14 +308,14 @@ function cns_forum_breadcrumbs($end_point_forum, $this_name = null, ?int $parent
     }
 
     if ($this_name === null) {
-        $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_name', 'f_parent_forum'], ['id' => $end_point_forum], '', 1);
+        $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_name', 'f_parent_forum_id'], ['id' => $end_point_forum], '', 1);
         if (!array_key_exists(0, $_forum_details)) {
             //warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($end_point_forum)), 'forum'));
             return [];
         }
         $forum_details = $_forum_details[0];
         $this_name = $forum_details['f_name'];
-        $parent_forum = $forum_details['f_parent_forum'];
+        $parent_forum = $forum_details['f_parent_forum_id'];
     }
 
     $segments = [];

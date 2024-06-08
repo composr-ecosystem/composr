@@ -192,7 +192,7 @@ class Module_admin_cns_merge_members
         }
 
         // Reassign poster usernames
-        $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_poster_name_if_guest' => $to_username], ['p_poster' => $from_id]);
+        $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_poster_name_if_guest' => $to_username], ['p_posting_member' => $from_id]);
 
         // Merge in post count caching
         $new_post_count = $GLOBALS['FORUM_DRIVER']->get_member_row_field($from_id, 'm_cache_num_posts') + $GLOBALS['FORUM_DRIVER']->get_member_row_field($to_id, 'm_cache_num_posts');

@@ -76,7 +76,7 @@ class Hook_resource_meta_aware_warning extends Hook_CMA
 
             'views_field' => null,
             'order_field' => 'w_time',
-            'submitter_field' => 'w_by',
+            'submitter_field' => 'w_issuing_member',
             'author_field' => null,
             'add_time_field' => 'w_time',
             'edit_time_field' => null,

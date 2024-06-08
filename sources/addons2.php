@@ -1475,15 +1475,15 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
 
                         // Remove from menu too
                         $menu_sql = 'SELECT id FROM ' . get_table_prefix() . 'menu_items WHERE ';
-                        $menu_sql .= db_string_equal_to('i_url', $zone . ':' . $module);
+                        $menu_sql .= db_string_equal_to('i_link', $zone . ':' . $module);
                         $menu_sql .= ' OR ';
-                        $menu_sql .= 'i_url LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
+                        $menu_sql .= 'i_link LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
                         if (($zone == 'site') && (get_option('single_public_zone') == '1')) {
                             $zone = '';
                             $menu_sql .= ' OR ';
-                            $menu_sql .= db_string_equal_to('i_url', $zone . ':' . $module);
+                            $menu_sql .= db_string_equal_to('i_link', $zone . ':' . $module);
                             $menu_sql .= ' OR ';
-                            $menu_sql .= 'i_url LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
+                            $menu_sql .= 'i_link LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
                         }
                         $menu_items = $GLOBALS['SITE_DB']->query($menu_sql);
                         foreach ($menu_items as $menu_item) {

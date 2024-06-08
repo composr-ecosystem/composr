@@ -52,7 +52,7 @@ class Hook_commandr_scheduled_publish_topic
     {
         $id = intval($_id);
 
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id', ['t.*', 'p.p_poster'], ['t.id' => $id], '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id', ['t.*', 'p.p_posting_member'], ['t.id' => $id], '', 1);
         if (!array_key_exists(0, $topic_rows)) {
             return ['', '', do_lang('MISSING_RESOURCE'), ''];
         }
@@ -63,7 +63,7 @@ class Hook_commandr_scheduled_publish_topic
 
         $forum_id = $topic_row['t_forum_id'];
         $title = $topic_row['t_cache_first_title'];
-        $poster = $topic_row['p_poster'];
+        $poster = $topic_row['p_posting_member'];
 
         if ($forum_id !== null) {
             require_code('users2');

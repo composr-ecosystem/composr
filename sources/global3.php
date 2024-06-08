@@ -3458,8 +3458,8 @@ function find_session_tracking_codes(?string $email_address = null) : array
         // This is not strictly a tracking code (it won't come up in the stats system for example), but we roll it into this function for simplicity
         static $inviter = false;
         if ($inviter === false) {
-            $_inviter = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_inviter', 'i_time'], ['i_email_address' => $email_address], 'ORDER BY i_time DESC', 1);
-            $inviter = array_key_exists(0, $_inviter) ? $_inviter[0]['i_inviter'] : null;
+            $_inviter = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_invite_member', 'i_time'], ['i_email_address' => $email_address], 'ORDER BY i_time DESC', 1);
+            $inviter = array_key_exists(0, $_inviter) ? $_inviter[0]['i_invite_member'] : null;
         }
         if ($inviter !== null) {
             $tracking_codes[] = strval($inviter);

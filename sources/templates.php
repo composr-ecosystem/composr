@@ -130,7 +130,7 @@ function get_screen_title($title, bool $dereference_lang = true, array $params =
         if (get_value('disable_member_tracking') !== '1') {
             if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
                 $change_map = [
-                    'last_activity' => time(),
+                    'last_activity_time' => time(),
                     'the_title' => ($user_online_title === null) ? cms_mb_substr($_title->evaluate(), 0, 255) : $user_online_title->evaluate(),
                     'the_zone' => get_zone_name(),
                     'the_page' => cms_mb_substr(get_page_name(), 0, 80),
@@ -140,7 +140,7 @@ function get_screen_title($title, bool $dereference_lang = true, array $params =
 
                 $session_id = get_session_id();
                 global $SESSION_CACHE;
-                if ((get_value('disable_user_online_counting') !== '1') || (get_option('session_prudence') == '0') || (!isset($SESSION_CACHE[$session_id])) || ($SESSION_CACHE[$session_id]['last_activity'] < time() - 60 * 60 * 5)) {
+                if ((get_value('disable_user_online_counting') !== '1') || (get_option('session_prudence') == '0') || (!isset($SESSION_CACHE[$session_id])) || ($SESSION_CACHE[$session_id]['last_activity_time'] < time() - 60 * 60 * 5)) {
                     $GLOBALS['SITE_DB']->query_update('sessions', $change_map, ['the_session' => $session_id], '', 1, 0, false, true); // Errors suppressed in case DB write access broken
 
                     if (get_option('session_prudence') == '0' && isset($SESSION_CACHE[$session_id]/*if not logging out?*/)) {

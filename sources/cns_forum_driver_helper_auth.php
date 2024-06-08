@@ -274,7 +274,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
     if ((cns_get_best_group_property($this_ref->get_members_groups($row['id']), 'enquire_on_new_ips') == 1)) { // High security usergroup membership
         global $SENT_OUT_VALIDATE_NOTICE, $IN_SELF_ROUTING_SCRIPT;
         $ip = get_ip_address(3);
-        $test2 = $this_ref->db->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', ['i_member_id' => $row['id'], 'i_ip' => $ip]);
+        $test2 = $this_ref->db->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', ['i_member_id' => $row['id'], 'i_ip_address' => $ip]);
         if ((($test2 === null) || ($test2 != '')) && (!compare_ip_address($ip, $row['m_ip_address']))) { // IP needs validation
             // Eat login cookies; if IP validation is necessary, then the login is invalid
             cms_eatcookie(get_member_cookie());
@@ -288,16 +288,16 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             if (!$SENT_OUT_VALIDATE_NOTICE) {
                 $test3 = null;
                 if ($test2 !== null) {
-                    $test3 = $this_ref->db->query_select_value('f_member_known_login_ips', 'i_time', ['i_member_id' => $row['id'], 'i_ip' => $ip]);
+                    $test3 = $this_ref->db->query_select_value('f_member_known_login_ips', 'i_time', ['i_member_id' => $row['id'], 'i_ip_address' => $ip]);
                     if ($test3 > (time() - (60 * 60))) { // Prevent sending another verification e-mail if this IP record is less than an hour old
                         $send_validation_email = false;
                     }
-                    $this_ref->db->query_delete('f_member_known_login_ips', ['i_member_id' => $row['id'], 'i_ip' => $ip], '', 1); // Tidy up
+                    $this_ref->db->query_delete('f_member_known_login_ips', ['i_member_id' => $row['id'], 'i_ip_address' => $ip], '', 1); // Tidy up
                 }
 
                 require_code('crypt');
                 $code = ($test2 !== null) ? $test2 : get_secure_random_string();
-                $this_ref->db->query_insert('f_member_known_login_ips', ['i_val_code' => $code, 'i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => ($test3 !== null) ? $test3 : time()], false, true); // errors suppressed in case of race condition
+                $this_ref->db->query_insert('f_member_known_login_ips', ['i_val_code' => $code, 'i_member_id' => $row['id'], 'i_ip_address' => $ip, 'i_time' => ($test3 !== null) ? $test3 : time()], false, true); // errors suppressed in case of race condition
 
                 if (($IN_SELF_ROUTING_SCRIPT) && ($send_validation_email)) {
                     require_code('comcode');
@@ -319,7 +319,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             $out['error'] = do_lang_tempcode('REQUIRES_IP_VALIDATION');
             return $out;
         }
-        $this_ref->db->query_update('f_member_known_login_ips', ['i_time' => time()], ['i_member_id' => $row['id'], 'i_ip' => $ip], '', 1);
+        $this_ref->db->query_update('f_member_known_login_ips', ['i_time' => time()], ['i_member_id' => $row['id'], 'i_ip_address' => $ip], '', 1);
     }
 
     $this_ref->cns_flood_control($row['id']);

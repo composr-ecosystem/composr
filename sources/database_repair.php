@@ -1096,11 +1096,14 @@ class DatabaseRepair
      */
     private function db_type_to_cms_type(string $field_name, string $type_raw, bool $is_auto_increment, bool $is_primary, bool $null_ok) : string
     {
+        // Be sure to update _database_integrity automated test when changing this.
         $type = (strpos($type_raw, 'int') !== false) ? 'INTEGER' : 'SHORT_TEXT';
         switch ($type_raw) {
             case 'varchar(5)':
-                //$type = 'LANGUAGE_NAME';   Ideally, but we cannot assume
-                $type = 'ID_TEXT';
+                $type = 'LANGUAGE_NAME';
+                break;
+            case 'varchar(15)':
+                $type = 'TOKEN';
                 break;
             case 'varchar(40)':
                 if (strpos($field_name, 'ip_address') !== false) {
@@ -1129,7 +1132,7 @@ class DatabaseRepair
                 $type = 'SHORT_INTEGER';
                 break;
             case 'int(10) unsigned':
-                if ((strpos($field_name, 'date') !== false) || (strpos($field_name, 'time') !== false)) {
+                if ((strpos($field_name, 'date') !== false) || (strpos($field_name, 'time') !== false) || (strpos($field_name, 'until') !== false)) {
                     $type = 'TIME';
                 } else {
                     $type = $is_auto_increment ? 'AUTO' : 'LONG_TRANS'; // Also could be... SHORT_TRANS or UINTEGER... but we can't tell this at all
@@ -1141,7 +1144,7 @@ class DatabaseRepair
                 } else {
                     if (strpos($field_name, 'group') !== false) {
                         $type = 'GROUP';
-                    } elseif ((strpos($field_name, 'user') !== false) || (strpos($field_name, 'member') !== false)) {
+                    } elseif ((strpos($field_name, 'user') !== false) || (strpos($field_name, 'member') !== false) || (strpos($field_name, 'submitter') !== false)) {
                         $type = 'MEMBER';
                     } elseif (strpos($field_name, '_id') !== false) {
                         $type = 'AUTO_LINK';

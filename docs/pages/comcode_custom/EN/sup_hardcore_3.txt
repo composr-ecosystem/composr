@@ -117,7 +117,7 @@ function cns_wrapper($title, $content, $show_personal_bar = true, $show_stats = 
             $notifications = new Tempcode();
             $num_unread_pps = 0;
             foreach ($unread_pps as $unread_pp) {
-                $by = $GLOBALS['CNS_DRIVER']->get_username($unread_pp['p_poster']);
+                $by = $GLOBALS['CNS_DRIVER']->get_username($unread_pp['p_posting_member']);
                 if ($by === null) {
                     $by = do_lang('UNKNOWN');
                 }
@@ -131,7 +131,7 @@ function cns_wrapper($title, $content, $show_personal_bar = true, $show_stats = 
                     if ($unread_pp['p_title'] != '') {
                         $u_title = $unread_pp['p_title'];
                     }
-                    $reply_url = build_url(array('page' => 'topics', 'type' => 'new_post', 'id' => $unread_pp['p_topic_id'], 'quote' => $unread_pp['id'], 'intended_solely_for' => $unread_pp['p_poster']), get_module_zone('topics'));
+                    $reply_url = build_url(array('page' => 'topics', 'type' => 'new_post', 'id' => $unread_pp['p_topic_id'], 'quote' => $unread_pp['id'], 'whisper_to_member' => $unread_pp['p_posting_member']), get_module_zone('topics'));
                 }
                 $time_raw = $unread_pp['p_time'];
                 $date = do_timezoned_date_time($unread_pp['p_time']);
@@ -141,7 +141,7 @@ function cns_wrapper($title, $content, $show_personal_bar = true, $show_stats = 
                 if ($description != '') {
                     $description = ' (' . $description . ')';
                 }
-                $profile_url = $GLOBALS['CNS_DRIVER']->member_profile_url($unread_pp['p_poster']);
+                $profile_url = $GLOBALS['CNS_DRIVER']->member_profile_url($unread_pp['p_posting_member']);
                 $redirect_url = get_self_url(true, true);
                 $ignore_url = build_url(array('page' => 'topics', 'type' => 'mark_read_topic', 'id' => $unread_pp['p_topic_id'], 'redirect' => protect_url_parameter($redirect_url)), get_module_zone('topics'));
                 $notifications->attach(do_template('CNS_NOTIFICATION', array(

@@ -72,7 +72,7 @@ class members_test_set extends cms_test_case
             '', // pt_rules_text
             1, // validated
             '', // validated_email_confirm_code
-            null, // on_probation_until
+            null, // probation_expiration_time
             '0', // is_perm_banned
             true // check_correctness
         );

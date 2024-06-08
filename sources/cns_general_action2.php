@@ -325,7 +325,7 @@ function cns_mod_log_it(string $the_type, string $param_a = '', string $param_b 
         'l_param_b' => $param_b,
         'l_date_and_time' => $timestamp,
         'l_reason' => $reason,
-        'l_by' => $by,
+        'l_by_member' => $by,
         'l_warning_id' => $RELATED_WARNING_ID,
     ], true);
 }

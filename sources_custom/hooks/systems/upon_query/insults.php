@@ -102,7 +102,7 @@ class Hook_upon_query_insults
                     // Get PT
                     $pt = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
 
-                    $to_member = (isset($pt[0]['t_pt_to']) && $pt[0]['t_pt_to'] > 0) ? $pt[0]['t_pt_to'] : 0;
+                    $to_member = (isset($pt[0]['t_pt_to_member']) && $pt[0]['t_pt_to_member'] > 0) ? $pt[0]['t_pt_to_member'] : 0;
 
                     if ($to_member == $poster_id) {
                         // Start comparing insult reply and the post

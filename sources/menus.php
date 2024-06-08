@@ -168,11 +168,11 @@ function _build_stored_menu(string $menu_id) : array
         $root['content_id'] = $menu_id;
         foreach ($items as $item) {
             if ($parent_url === null) {
-                if ($item['i_parent'] === $parent_id) {
+                if ($item['i_parent_id'] === $parent_id) {
                     $root['children'] = array_merge($root['children'], _build_stored_menu_branch($item, $items));
                 }
             } else {
-                if ($item['i_url'] === $parent_url) {
+                if ($item['i_link'] === $parent_url) {
                     $sub = _build_stored_menu_branch($item, $items);
                     $root['children'] = array_merge($root['children'], $sub[0]['children']);
                 }
@@ -396,7 +396,7 @@ function _get_menu_root_wrapper() : array
  */
 function _build_stored_menu_branch(array $item, array $items) : array
 {
-    $is_page_link = !looks_like_url($item['i_url']);
+    $is_page_link = !looks_like_url($item['i_link']);
 
     $title = get_translated_tempcode('menu_items', $item, 'i_caption');
 
@@ -417,8 +417,8 @@ function _build_stored_menu_branch(array $item, array $items) : array
         'content_id' => null,
         'modifiers' => $modifiers,
         'only_on_page' => $item['i_page_only'],
-        'page_link' => $is_page_link ? (($item['i_include_sitemap'] == INCLUDE_SITEMAP_NO) ? $item['i_url'] : preg_replace('#,.*$#', '', $item['i_url'])) : null,
-        'url' => $is_page_link ? null : $item['i_url'],
+        'page_link' => $is_page_link ? (($item['i_include_sitemap'] == INCLUDE_SITEMAP_NO) ? $item['i_link'] : preg_replace('#,.*$#', '', $item['i_link'])) : null,
+        'url' => $is_page_link ? null : $item['i_link'],
         'extra_meta' => [
             'description' => get_translated_tempcode('menu_items', $item, 'i_caption_long'),
             'image' => ($item['i_theme_img_code'] == '') ? null : find_theme_image($item['i_theme_img_code']),
@@ -429,7 +429,7 @@ function _build_stored_menu_branch(array $item, array $items) : array
     ];
 
     foreach ($items as $_item) {
-        if (($_item['i_parent'] == $item['id']) && ($_item['id'] != $item['id']/*Don't let DB errors cause crashes*/)) {
+        if (($_item['i_parent_id'] == $item['id']) && ($_item['id'] != $item['id']/*Don't let DB errors cause crashes*/)) {
             $branch['children'] = array_merge($branch['children'], _build_stored_menu_branch($_item, $items));
         }
     }
@@ -440,14 +440,14 @@ function _build_stored_menu_branch(array $item, array $items) : array
         // TODO: Category permissions? #140 on tracker
 
         if ($item['i_include_sitemap'] != INCLUDE_SITEMAP_NO) {
-            $extra_branch = _build_sitemap_menu($item['i_url']);
+            $extra_branch = _build_sitemap_menu($item['i_link']);
 
             if (isset($extra_branch['children'])) {
                 $page_link_append = '';
-                if (strpos($item['i_url'], ':root') !== false) {
-                    $page_link_append .= substr($item['i_url'], strpos($item['i_url'], ':root'));
-                } elseif (strpos($item['i_url'], ':keep_') !== false) {
-                    $page_link_append .= substr($item['i_url'], strpos($item['i_url'], ':keep_'));
+                if (strpos($item['i_link'], ':root') !== false) {
+                    $page_link_append .= substr($item['i_link'], strpos($item['i_link'], ':root'));
+                } elseif (strpos($item['i_link'], ':keep_') !== false) {
+                    $page_link_append .= substr($item['i_link'], strpos($item['i_link'], ':keep_'));
                 }
                 if ($page_link_append != '') {
                     _append_to_page_links($extra_branch['children'], $page_link_append);

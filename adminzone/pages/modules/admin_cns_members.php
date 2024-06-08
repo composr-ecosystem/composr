@@ -446,7 +446,7 @@ class Module_admin_cns_members
             $pt_rules_text, // pt_rules_text
             $validated, // validated
             '', // validated_email_confirm_code
-            null, // on_probation_until
+            null, // probation_expiration_time
             '0', // is_perm_banned
             true, // check_correctness
             '', // ip_address

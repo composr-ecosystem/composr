@@ -145,11 +145,11 @@ class Module_admin_actionlog
         // Possible selections for member filter
         $_member_choice_list = [];
         if (get_forum_type() == 'cns') {
-            if ($GLOBALS['FORUM_DB']->query_select_value('f_moderator_logs', 'COUNT(DISTINCT l_by)') < 5000) {
-                $members = list_to_map('l_by', $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_by', 'COUNT(*) AS cnt'], [], 'GROUP BY l_by ORDER BY cnt DESC'));
+            if ($GLOBALS['FORUM_DB']->query_select_value('f_moderator_logs', 'COUNT(DISTINCT l_by_member)') < 5000) {
+                $members = list_to_map('l_by_member', $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_by_member', 'COUNT(*) AS cnt'], [], 'GROUP BY l_by_member ORDER BY cnt DESC'));
                 foreach ($members as $member) {
-                    $username = $GLOBALS['FORUM_DRIVER']->get_username($member['l_by'], false, USERNAME_DEFAULT_ID_RAW);
-                    $_member_choice_list[$member['l_by']] = [$username, $member['cnt']];
+                    $username = $GLOBALS['FORUM_DRIVER']->get_username($member['l_by_member'], false, USERNAME_DEFAULT_ID_RAW);
+                    $_member_choice_list[$member['l_by_member']] = [$username, $member['cnt']];
                 }
             }
         }
@@ -290,11 +290,11 @@ class Module_admin_actionlog
                 }
             }
             if ($id !== null) {
-                $where .= ' AND l_by=' . strval($id);
+                $where .= ' AND l_by_member=' . strval($id);
             }
 
             // Fetch
-            $rows1 = $GLOBALS['FORUM_DB']->query('SELECT l_reason,id,l_by AS member_id,l_date_and_time AS date_and_time,l_the_type AS the_type,l_param_a AS param_a,l_param_b AS param_b FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_moderator_logs WHERE ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max + $start, 0, false, true);
+            $rows1 = $GLOBALS['FORUM_DB']->query('SELECT l_reason,id,l_by_member AS member_id,l_date_and_time AS date_and_time,l_the_type AS the_type,l_param_a AS param_a,l_param_b AS param_b FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_moderator_logs WHERE ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max + $start, 0, false, true);
             $max_rows += $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_moderator_logs WHERE ' . $where, false, true);
         } else {
             $rows1 = [];
@@ -433,7 +433,7 @@ class Module_admin_actionlog
         $id = get_param_integer('id');
 
         if ($mode == 'cns') {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['id' => $id], '', 1);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by_member AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['id' => $id], '', 1);
         } else {
             $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['id', 'member_id', 'date_and_time', 'the_type', 'param_a', 'param_b', 'ip', 'warning_id'], ['id' => $id], '', 1);
         }

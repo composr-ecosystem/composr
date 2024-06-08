@@ -41,7 +41,7 @@ class Hook_realtime_rain_recommend
         if ((has_actual_page_access(get_member(), 'admin_cns_members')) && (get_forum_type() == 'cns')) {
             require_lang('recommend');
 
-            $rows = $GLOBALS['FORUM_DB']->query('SELECT i_email_address,i_inviter AS member_id,i_time AS timestamp FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_invites WHERE i_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+            $rows = $GLOBALS['FORUM_DB']->query('SELECT i_email_address,i_invite_member AS member_id,i_time AS timestamp FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_invites WHERE i_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
                 $timestamp = $row['timestamp'];

@@ -54,7 +54,7 @@ class Hook_commandr_scheduled_publish_post
 
         // Map out parameters to make them easier to understand since there are many of them
         //  This action is for a moderator reply, so there are a lot of parameters involved
-        list($forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, $poster, $ip_address) = $parameters;
+        list($forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $whisper_to_member, $topic_title, $anonymous, $poster, $ip_address) = $parameters;
 
         $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', ['id' => $topic_id]);
         if ($test === null) {
@@ -64,9 +64,9 @@ class Hook_commandr_scheduled_publish_post
         require_code('cns_posts_action2');
         require_code('cns_posts_action');
 
-        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, 1, $is_emphasised, $poster_name_if_guest, $ip_address, null, $poster, $intended_solely_for, null, null, false, true, null, true, $topic_title, null, $anonymous == 1);
+        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, 1, $is_emphasised, $poster_name_if_guest, $ip_address, null, $poster, $whisper_to_member, null, null, false, true, null, true, $topic_title, null, $anonymous == 1);
 
-        if (($forum_id !== null) && ($anonymous == 0) && ($intended_solely_for === null)) {
+        if (($forum_id !== null) && ($anonymous == 0) && ($whisper_to_member === null)) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'forumview')) && (has_category_access(get_modal_user(), 'forums', strval($forum_id)))) {
                 require_code('syndication');

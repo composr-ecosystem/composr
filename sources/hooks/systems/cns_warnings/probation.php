@@ -113,12 +113,12 @@ class Hook_cns_warnings_probation
         // Add probation time to the member if we requested and have the privilege
         if (has_privilege(get_member(), 'probate_members')) {
             if ($probation != 0) {
-                $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');
-                if (($on_probation_until === null) || ($on_probation_until < time())) {
-                    $on_probation_until = time();
+                $probation_expiration_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_probation_expiration_time');
+                if (($probation_expiration_time === null) || ($probation_expiration_time < time())) {
+                    $probation_expiration_time = time();
                 }
-                $on_probation_until += $probation * 60 * 60 * 24;
-                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $on_probation_until], ['id' => $member_id], '', 1);
+                $probation_expiration_time += $probation * 60 * 60 * 24;
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_probation_expiration_time' => $probation_expiration_time], ['id' => $member_id], '', 1);
 
                 require_code('cns_general_action2');
                 cns_mod_log_it('START_PROBATION', strval($member_id), $username, $explanation);
@@ -135,7 +135,7 @@ class Hook_cns_warnings_probation
                     'p_reversed' => 0,
                 ]);
 
-                $punitive_messages[] = do_lang('PUNITIVE_PROBATION', strval($probation), strval(get_timezoned_date_time($on_probation_until, false, false, $member_id)), null, null, false);
+                $punitive_messages[] = do_lang('PUNITIVE_PROBATION', strval($probation), strval(get_timezoned_date_time($probation_expiration_time, false, false, $member_id)), null, null, false);
             }
         }
     }
@@ -160,9 +160,9 @@ class Hook_cns_warnings_probation
         $member_id = intval($punitive_action['p_member_id']);
         $probation = intval($punitive_action['p_param_a']);
 
-        $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');
-        if ($on_probation_until !== null) {
-            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $on_probation_until - $probation * 60 * 60 * 24], ['id' => $member_id], '', 1);
+        $probation_expiration_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_probation_expiration_time');
+        if ($probation_expiration_time !== null) {
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_probation_expiration_time' => $probation_expiration_time - $probation * 60 * 60 * 24], ['id' => $member_id], '', 1);
         }
 
         require_code('cns_general_action2');

@@ -377,8 +377,15 @@ function version_specific() : bool
         }
 
         if ($version_database < 11.0) {
-            // Database changes
+            // Database changes (correcting previous errors in types)
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_thumb_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_last_downloaded_time', '?TIME');
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_add_time', 'TIME');
+            $GLOBALS['SITE_DB']->alter_table_field('group_privileges', 'group_id', '*GROUP');
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
+            //$GLOBALS['SITE_DB']->alter_table_field('sessions', 'ip', 'IP', 'ip_address');
 
             // Changes to support ticket forums
             if ((addon_installed('tickets')) && (get_forum_type() == 'cns')) {

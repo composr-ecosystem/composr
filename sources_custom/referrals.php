@@ -15,7 +15,7 @@
 
 function get_referral_scheme_stats_for($referrer, $scheme_name, $raw = false)
 {
-    $num_total_by_referrer = count($GLOBALS['FORUM_DB']->query_select('f_invites', ['DISTINCT i_email_address'], ['i_inviter' => $referrer]));
+    $num_total_by_referrer = count($GLOBALS['FORUM_DB']->query_select('f_invites', ['DISTINCT i_email_address'], ['i_invite_member' => $referrer]));
     $num_total_qualified_by_referrer = $GLOBALS['SITE_DB']->query_select_value('referees_qualified_for', 'COUNT(*)', ['q_referee' => $referrer, 'q_scheme_name' => $scheme_name]);
 
     if (!$raw) {
@@ -48,7 +48,7 @@ function assign_referral_awards($referee, $trigger)
     require_lang('referrals');
     require_code('notifications');
 
-    $referrer_rows = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_inviter', 'i_time'], ['i_email_address' => $referee_email], 'ORDER BY i_time', 1);
+    $referrer_rows = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_invite_member', 'i_time'], ['i_email_address' => $referee_email], 'ORDER BY i_time', 1);
     if (!array_key_exists(0, $referrer_rows)) { // Was not actually a referral, member joined site on own accord
         if ((isset($ini_file['global']['notify_if_join_but_no_referral'])) && ($ini_file['global']['notify_if_join_but_no_referral'] == '1')) {
             dispatch_notification(
@@ -71,7 +71,7 @@ function assign_referral_awards($referee, $trigger)
 
         return;
     }
-    $referrer = $referrer_rows[0]['i_inviter'];
+    $referrer = $referrer_rows[0]['i_invite_member'];
     $referrer_username = $GLOBALS['FORUM_DRIVER']->get_username($referrer, false, USERNAME_DEFAULT_NULL);
     if ($referrer_username === null) {
         return; // Deleted member
@@ -508,7 +508,7 @@ function referrer_report_script($ret = false)
 
     require_lang('referrals');
 
-    $where = db_string_not_equal_to('i_email_address', '') . ' AND i_inviter<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+    $where = db_string_not_equal_to('i_email_address', '') . ' AND i_invite_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
     if ($member_id !== null) {
         $where .= ' AND referrer.id=' . strval($member_id);
     }
@@ -535,7 +535,7 @@ function referrer_report_script($ret = false)
     }
 
     // Show records
-    $table = 'f_invites i LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members referrer ON referrer.id=i_inviter LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members referee ON referee.m_email_address=i_email_address';
+    $table = 'f_invites i LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members referrer ON referrer.id=i_invite_member LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members referee ON referee.m_email_address=i_email_address';
     $referrals = $GLOBALS['FORUM_DB']->query(
         'SELECT i_time AS time,referrer.id AS referrer_id,referrer.m_username AS referrer,referrer.m_email_address AS referrer_email,referee.id AS referee_id,referee.m_username AS referee,i_email_address AS referee_email,i_taken AS qualified
         FROM ' .
