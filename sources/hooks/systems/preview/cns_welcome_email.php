@@ -70,7 +70,7 @@ class Hook_preview_cns_welcome_email
         $name = post_param_string('welcome_email_name');
         $subject = post_param_string('subject');
         $text = post_param_string('text');
-        $send_time = post_param_integer('send_time');
+        $send_after_hours = post_param_integer('send_after_hours');
         $newsletter = post_param_integer('newsletter', null);
         $usergroup = post_param_integer('usergroup', null);
         $usergroup_type = post_param_string('usergroup_type', '');
@@ -79,8 +79,8 @@ class Hook_preview_cns_welcome_email
             'w_name' => $name,
             'w_subject' => $subject,
             'w_text' => $text,
-            'w_send_time' => $send_time,
-            'w_newsletter' => $newsletter,
+            'w_send_after_hours' => $send_after_hours,
+            'w_newsletter_id' => $newsletter,
             'w_usergroup' => $usergroup,
             'w_usergroup_type' => $usergroup_type,
         ];

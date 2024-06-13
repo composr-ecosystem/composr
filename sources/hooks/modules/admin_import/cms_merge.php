@@ -346,7 +346,7 @@ class Hook_import_cms_merge
                 continue;
             }
 
-            cns_make_welcome_email($row['w_name'], $this->get_lang_string($db, $row['w_subject']), $this->get_lang_string($db, $row['w_text']), $row['w_send_time'], $row['w_newsletter'], $row['w_usergroup'], $row['w_usergroup_type']);
+            cns_make_welcome_email($row['w_name'], $this->get_lang_string($db, $row['w_subject']), $this->get_lang_string($db, $row['w_text']), $row['w_send_after_hours'], $row['w_newsletter_id'], $row['w_usergroup'], $row['w_usergroup_type']);
 
             import_id_remap_put('welcome_email', $row['w_name'], 0);
         }

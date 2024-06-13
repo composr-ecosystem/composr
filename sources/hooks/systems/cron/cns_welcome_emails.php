@@ -65,18 +65,18 @@ class Hook_cron_cns_welcome_emails
 
             $mails = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['*']);
             foreach ($mails as $mail) {
-                $send_seconds_after_joining = $mail['w_send_time'] * 60 * 60;
+                $send_seconds_after_joining = $mail['w_send_after_hours'] * 60 * 60;
 
                 $members = [];
 
                 $newsletter_style = false;
 
                 // By newsletter
-                if (($mail['w_newsletter'] !== null) && (addon_installed('newsletter'))) {
+                if (($mail['w_newsletter_id'] !== null) && (addon_installed('newsletter'))) {
                     $newsletter_style = true;
 
                     // Think of it like this, m_join_time (members join time) must between $last_run and $this->time_now, but offset back by $send_seconds_after_joining
-                    $where = ' WHERE join_time>' . strval($last_run - $send_seconds_after_joining) . ' AND join_time<=' . strval($this->time_now - $send_seconds_after_joining) . ' AND (the_level=3 OR the_level=4) AND newsletter_id=' . strval($mail['w_newsletter']);
+                    $where = ' WHERE join_time>' . strval($last_run - $send_seconds_after_joining) . ' AND join_time<=' . strval($this->time_now - $send_seconds_after_joining) . ' AND (the_level=3 OR the_level=4) AND newsletter_id=' . strval($mail['w_newsletter_id']);
                     $members = array_merge($members, $GLOBALS['SITE_DB']->query('SELECT s.email AS m_email_address,the_password,n_forename,n_surname,n.id,join_time AS m_join_time FROM ' . get_table_prefix() . 'newsletter_subscribe s JOIN ' . get_table_prefix() . 'newsletter_subscribers n ON n.email=s.email ' . $where . ' GROUP BY s.email'));
                 } elseif (($mail['w_usergroup'] !== null) && (get_forum_type() == 'cns')) { // By usergroup
                     $where = ' WHERE join_time>' . strval($last_run - $send_seconds_after_joining) . ' AND join_time<=' . strval($this->time_now - $send_seconds_after_joining) . ' AND um.usergroup_id=' . strval($mail['w_usergroup']) . ' AND ' . db_string_not_equal_to('m_email_address', '');
@@ -99,7 +99,7 @@ class Hook_cron_cns_welcome_emails
                             $members[] = $member;
                         }
                     }
-                } elseif (($mail['w_newsletter'] === null) && ($mail['w_usergroup'] === null)) { // By general membership
+                } elseif (($mail['w_newsletter_id'] === null) && ($mail['w_usergroup'] === null)) { // By general membership
                     // Think of it like this, m_join_time (members join time) must between $last_run and $this->time_now, but offset back by $send_seconds_after_joining
                     $where = ' WHERE m_join_time>' . strval($last_run - $send_seconds_after_joining);
                     $where .= ' AND m_join_time<=' . strval($this->time_now - $send_seconds_after_joining);

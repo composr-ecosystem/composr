@@ -76,9 +76,9 @@ class Hook_resource_meta_aware_kpi
 
             'views_field' => null,
             'order_field' => null,
-            'submitter_field' => 'k_added_by',
+            'submitter_field' => 'k_submitter',
             'author_field' => null,
-            'add_time_field' => 'k_added',
+            'add_time_field' => 'k_added_time',
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,

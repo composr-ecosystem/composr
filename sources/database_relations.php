@@ -575,7 +575,7 @@ function get_relation_map() : array
         'f_usergroup_sub_mails.m_usergroup_sub_id' => 'f_usergroup_subs.id',
         'f_warnings.w_topic_id' => 'f_topics.id',
         'f_warnings_punitive.p_warning_id' => 'f_warnings.id',
-        'f_welcome_emails.w_newsletter' => 'newsletters.id',
+        'f_welcome_emails.w_newsletter_id' => 'newsletters.id',
         'f_welcome_emails.w_usergroup' => 'f_groups.id',
         'galleries.g_owner' => 'f_members.id',
         'galleries.parent_id' => 'galleries.name',

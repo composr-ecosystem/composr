@@ -45,7 +45,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 4;
+        $info['version'] = 5;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -75,9 +75,9 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
                 'w_name' => 'SHORT_TEXT',
                 'w_subject' => 'SHORT_TRANS',
                 'w_text' => 'LONG_TRANS',
-                'w_send_time' => 'INTEGER',
-                'w_newsletter' => '?AUTO_LINK',
-                'w_usergroup' => '?AUTO_LINK',
+                'w_send_after_hours' => 'INTEGER',
+                'w_newsletter_id' => '?AUTO_LINK',
+                'w_usergroup' => '?GROUP',
                 'w_usergroup_type' => 'ID_TEXT', // <blank>, primary, secondary
             ]);
         }
@@ -86,6 +86,13 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
             $GLOBALS['SITE_DB']->add_table_field('f_welcome_emails', 'w_usergroup', '?AUTO_LINK', null);
             $GLOBALS['SITE_DB']->add_table_field('f_welcome_emails', 'w_usergroup_type', 'ID_TEXT', '');
             $GLOBALS['SITE_DB']->alter_table_field('f_welcome_emails', 'w_newsletter', '?AUTO_LINK');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY: 11.beta1
+            // Database consistency changes
+            $GLOBALS['SITE_DB']->alter_table_field('f_welcome_emails', 'w_send_time', 'INTEGER', 'w_send_after_hours');
+            $GLOBALS['SITE_DB']->alter_table_field('f_welcome_emails', 'w_newsletter', '?AUTO_LINK', 'w_newsletter_id');
+            $GLOBALS['SITE_DB']->add_table_field('f_welcome_emails', 'w_usergroup', '?GROUP');
         }
     }
 
@@ -213,20 +220,20 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
      * @param  SHORT_TEXT $name A name for the Welcome E-mail
      * @param  SHORT_TEXT $subject The subject of the Welcome E-mail
      * @param  LONG_TEXT $text The message body of the Welcome E-mail
-     * @param  integer $send_time The number of hours before sending the e-mail
+     * @param  integer $send_after_hours The number of hours before sending the e-mail
      * @param  ?AUTO_LINK $newsletter What newsletter to send out to instead of members (null: none)
      * @param  ?AUTO_LINK $usergroup The usergroup to tie to (null: none)
      * @param  ID_TEXT $usergroup_type How to send regarding usergroups (blank: indiscriminately)
      * @set primary secondary ""
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(string $name = '', string $subject = '', string $text = '', int $send_time = 0, ?int $newsletter = null, ?int $usergroup = null, string $usergroup_type = '') : array
+    public function get_form_fields(string $name = '', string $subject = '', string $text = '', int $send_after_hours = 0, ?int $newsletter = null, ?int $usergroup = null, string $usergroup_type = '') : array
     {
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), do_lang_tempcode('DESCRIPTION_NAME_REFERENCE'), 'welcome_email_name', $name, true));
         $fields->attach(form_input_line(do_lang_tempcode('SUBJECT'), do_lang_tempcode('DESCRIPTION_WELCOME_EMAIL_SUBJECT'), 'subject', $subject, true));
         $fields->attach(form_input_huge_comcode(do_lang_tempcode('TEXT'), do_lang_tempcode('DESCRIPTION_WELCOME_EMAIL_TEXT'), 'text', $text, true));
-        $fields->attach(form_input_integer(do_lang_tempcode('SEND_TIME'), do_lang_tempcode('DESCRIPTION_SEND_TIME'), 'send_time', $send_time, true));
+        $fields->attach(form_input_integer(do_lang_tempcode('SEND_TIME'), do_lang_tempcode('DESCRIPTION_SEND_TIME'), 'send_after_hours', $send_after_hours, true));
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '3c9bf61e762eb8715a7fdde214b7eac2', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('SCOPE')]));
 
@@ -279,7 +286,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         $sortables = [
             'w_name' => do_lang_tempcode('NAME'),
             'w_subject' => do_lang_tempcode('SUBJECT'),
-            'w_send_time' => do_lang_tempcode('SEND_TIME'),
+            'w_send_after_hours' => do_lang_tempcode('SEND_TIME'),
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
@@ -298,7 +305,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $result_entries->attach(results_entry([$row['w_name'], get_translated_text($row['w_subject']), do_lang_tempcode('HOURS', escape_html(strval($row['w_send_time']))), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
+            $result_entries->attach(results_entry([$row['w_name'], get_translated_text($row['w_subject']), do_lang_tempcode('HOURS', escape_html(strval($row['w_send_after_hours']))), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
         return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
@@ -334,7 +341,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         }
         $r = $m[0];
 
-        return $this->get_form_fields($r['w_name'], get_translated_text($r['w_subject']), get_translated_text($r['w_text']), $r['w_send_time'], $r['w_newsletter'], $r['w_usergroup'], $r['w_usergroup_type']);
+        return $this->get_form_fields($r['w_name'], get_translated_text($r['w_subject']), get_translated_text($r['w_text']), $r['w_send_after_hours'], $r['w_newsletter_id'], $r['w_usergroup'], $r['w_usergroup_type']);
     }
 
     /**
@@ -347,12 +354,12 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         $name = post_param_string('welcome_email_name');
         $subject = post_param_string('subject');
         $text = post_param_string('text');
-        $send_time = post_param_integer('send_time');
+        $send_after_hours = post_param_integer('send_after_hours');
         $newsletter = post_param_integer('newsletter', null);
         $usergroup = post_param_integer('usergroup', null);
         $usergroup_type = post_param_string('usergroup_type', '');
 
-        $id = cns_make_welcome_email($name, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type);
+        $id = cns_make_welcome_email($name, $subject, $text, $send_after_hours, $newsletter, $usergroup, $usergroup_type);
 
         return [strval($id), null];
     }
@@ -368,12 +375,12 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         $name = post_param_string('welcome_email_name');
         $subject = post_param_string('subject');
         $text = post_param_string('text');
-        $send_time = post_param_integer('send_time');
+        $send_after_hours = post_param_integer('send_after_hours');
         $newsletter = post_param_integer('newsletter', null);
         $usergroup = post_param_integer('usergroup', null);
         $usergroup_type = post_param_string('usergroup_type', '');
 
-        cns_edit_welcome_email(intval($id), $name, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type);
+        cns_edit_welcome_email(intval($id), $name, $subject, $text, $send_after_hours, $newsletter, $usergroup, $usergroup_type);
 
         return null;
     }

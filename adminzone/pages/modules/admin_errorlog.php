@@ -481,7 +481,7 @@ class Module_admin_errorlog
             $enabled = true;
 
             if (isset($cron_progression[$hook])) {
-                $last_run = $cron_progression[$hook]['c_last_run'];
+                $last_run = $cron_progression[$hook]['c_last_run_time'];
                 $last_execution_secs = $cron_progression[$hook]['c_last_execution_secs'];
                 $last_error = $cron_progression[$hook]['c_last_error'];
                 $enabled = ($cron_progression[$hook]['c_enabled'] == 1);
@@ -644,7 +644,7 @@ class Module_admin_errorlog
         } else {
             $GLOBALS['SITE_DB']->query_insert('cron_progression', [
                 'c_hook' => $hook,
-                'c_last_run' => null,
+                'c_last_run_time' => null,
                 'c_last_execution_secs' => null,
                 'c_last_error' => '',
                 'c_enabled' => $enabled,

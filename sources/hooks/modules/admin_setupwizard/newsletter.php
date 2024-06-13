@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_sw_newsletter
+class Hook_sw_newsletter_id
 {
     /**
      * Run function for blocks in the setup wizard.

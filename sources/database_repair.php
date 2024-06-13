@@ -1086,6 +1086,7 @@ class DatabaseRepair
 
     /**
      * Convert raw database field type to software field type.
+     * Update _database_integrity automated test when changing this.
      *
      * @param  string $field_name Field name
      * @param  string $type_raw Field type (MySQL-style)
@@ -1096,13 +1097,12 @@ class DatabaseRepair
      */
     private function db_type_to_cms_type(string $field_name, string $type_raw, bool $is_auto_increment, bool $is_primary, bool $null_ok) : string
     {
-        // Be sure to update _database_integrity automated test when changing this.
         $type = (strpos($type_raw, 'int') !== false) ? 'INTEGER' : 'SHORT_TEXT';
         switch ($type_raw) {
             case 'varchar(5)':
                 $type = 'LANGUAGE_NAME';
                 break;
-            case 'varchar(15)':
+            case 'varchar(13)':
                 $type = 'TOKEN';
                 break;
             case 'varchar(40)':
@@ -1132,25 +1132,31 @@ class DatabaseRepair
                 $type = 'SHORT_INTEGER';
                 break;
             case 'int(10) unsigned':
-                if ((strpos($field_name, 'date') !== false) || (strpos($field_name, 'time') !== false) || (strpos($field_name, 'until') !== false)) {
-                    $type = 'TIME';
+                if (strpos($field_name, 'count') === false) {
+                    if ((strpos($field_name, 'date') !== false) || (strpos($field_name, 'time') !== false) || (strpos($field_name, 'until') !== false)) {
+                        $type = 'TIME';
+                    } else {
+                        $type = $is_auto_increment ? 'AUTO' : 'LONG_TRANS'; // Also could be... SHORT_TRANS or UINTEGER... but we can't tell this at all
+                    }
                 } else {
-                    $type = $is_auto_increment ? 'AUTO' : 'LONG_TRANS'; // Also could be... SHORT_TRANS or UINTEGER... but we can't tell this at all
+                    $type = 'UINTEGER'; // Count fields will never be LONG_TRANS / SHORT_TRANS / etc
                 }
                 break;
             case 'int(11)':
                 if ($is_auto_increment) {
                     $type = 'AUTO';
-                } else {
-                    if (strpos($field_name, 'group') !== false) {
+                } elseif (strpos($field_name, 'count') === false) {
+                    if ((strpos($field_name, 'group') !== false) && (strpos($field_name, 'grouping') === false)) {
                         $type = 'GROUP';
-                    } elseif ((strpos($field_name, 'user') !== false) || (strpos($field_name, 'member') !== false) || (strpos($field_name, 'submitter') !== false)) {
+                    } elseif ((strpos($field_name, 'user') !== false) || (strpos($field_name, 'member') !== false) || (strpos($field_name, 'submitter') !== false) || (strpos($field_name, 'owner') !== false)) {
                         $type = 'MEMBER';
                     } elseif (strpos($field_name, '_id') !== false) {
                         $type = 'AUTO_LINK';
                     } else {
                         $type = 'INTEGER';
                     }
+                } else {
+                    $type = 'INTEGER';
                 }
                 break;
             case 'real':

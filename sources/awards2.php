@@ -26,10 +26,10 @@
  * @param  integer $points How many points are given to the awardee
  * @param  ID_TEXT $content_type The content type the award type is for
  * @param  BINARY $show_awardee Whether to show the awardee when displaying this award
- * @param  integer $update_time_hours The approximate time in hours between awards (e.g. 168 for a week)
+ * @param  integer $update_interval_hours The approximate time in hours between awards (e.g. 168 for a week)
  * @return AUTO_LINK The ID
  */
-function add_award_type(string $title, string $description, int $points, string $content_type, int $show_awardee, int $update_time_hours) : int
+function add_award_type(string $title, string $description, int $points, string $content_type, int $show_awardee, int $update_interval_hours) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_AWARD_TYPE', null, $title);
@@ -38,7 +38,7 @@ function add_award_type(string $title, string $description, int $points, string 
         'a_points' => $points,
         'a_content_type' => filter_naughty_harsh($content_type),
         'a_show_awardee' => $show_awardee,
-        'a_update_time_hours' => $update_time_hours,
+        'a_update_interval_hours' => $update_interval_hours,
     ];
     $map += insert_lang('a_title', $title, 2);
     $map += insert_lang_comcode('a_description', $description, 2);
@@ -64,9 +64,9 @@ function add_award_type(string $title, string $description, int $points, string 
  * @param  integer $points How many points are given to the awardee
  * @param  ID_TEXT $content_type The content type the award type is for
  * @param  BINARY $show_awardee Whether to show the awardee when displaying this award
- * @param  integer $update_time_hours The approximate time in hours between awards (e.g. 168 for a week)
+ * @param  integer $update_interval_hours The approximate time in hours between awards (e.g. 168 for a week)
  */
-function edit_award_type(int $id, string $title, string $description, int $points, string $content_type, int $show_awardee, int $update_time_hours)
+function edit_award_type(int $id, string $title, string $description, int $points, string $content_type, int $show_awardee, int $update_interval_hours)
 {
     $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'a_title', ['id' => $id]);
     if ($_title === null) {
@@ -77,7 +77,7 @@ function edit_award_type(int $id, string $title, string $description, int $point
         'a_points' => $points,
         'a_content_type' => filter_naughty_harsh($content_type),
         'a_show_awardee' => $show_awardee,
-        'a_update_time_hours' => $update_time_hours,
+        'a_update_interval_hours' => $update_interval_hours,
     ];
     $map += lang_remap('a_title', $_title, $title);
     $map += lang_remap_comcode('a_description', $_description, $description);

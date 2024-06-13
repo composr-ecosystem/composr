@@ -30,7 +30,7 @@ class Module_admin_cmsusers
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 6;
+        $info['version'] = 7;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -70,7 +70,7 @@ class Module_admin_cmsusers
                 'website_name' => 'SHORT_TEXT',
                 'l_version' => 'ID_TEXT',
                 'hittime' => 'TIME',
-                'num_members' => 'INTEGER',
+                'count_members' => 'INTEGER',
                 'num_hits_per_day' => 'INTEGER',
             ]);
         }
@@ -115,6 +115,11 @@ class Module_admin_cmsusers
                 'ignore_string' => 'SHORT_TEXT',
                 'resolve_message' => 'LONG_TRANS__COMCODE',
             ]);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('logged', 'num_members', 'INTEGER', 'count_members');
         }
     }
 
@@ -244,7 +249,7 @@ class Module_admin_cmsusers
         $sortables = [
             'hittime' => do_lang_tempcode('CMS_LAST_ADMIN_ACCESS'),
             'l_version' => do_lang_tempcode('CMS_VERSION'),
-            'num_members' => do_lang_tempcode('CMS_COUNT_MEMBERS'),
+            'count_members' => do_lang_tempcode('CMS_COUNT_MEMBERS'),
             'num_hits_per_day' => do_lang_tempcode('CMS_HITS_24_HRS'),
         ];
         $test = explode(' ', get_param_string('sort', 'hittime DESC', INPUT_FILTER_GET_COMPLEX), 2);
@@ -257,7 +262,7 @@ class Module_admin_cmsusers
         }
         $order_by = 'ORDER BY ' . $sortable . ' ' . $sort_order;
 
-        $select = 'website_url,MAX(l_version) AS l_version,MAX(hittime) AS hittime,MAX(num_members) AS num_members,MAX(num_hits_per_day) AS num_hits_per_day';
+        $select = 'website_url,MAX(l_version) AS l_version,MAX(hittime) AS hittime,MAX(count_members) AS count_members,MAX(num_hits_per_day) AS num_hits_per_day';
         $where = 'website_url NOT LIKE \'%.composr.info%\''; // LEGACY
         if (!$GLOBALS['DEV_MODE']) {
             // Ignore local installs
@@ -320,11 +325,11 @@ class Module_admin_cmsusers
 
             $rt['NOTE'] = $perm ? do_lang('CMS_MAY_FEATURE') : do_lang('CMS_KEEP_PRIVATE');
 
-            $rt['NUM_MEMBERS'] = integer_format($r['num_members']);
+            $rt['NUM_MEMBERS'] = integer_format($r['count_members']);
 
             $rt['NUM_HITS_PER_DAY'] = integer_format($r['num_hits_per_day']);
 
-            $current = $GLOBALS['SITE_DB']->query_select('logged', ['website_name', 'l_version', 'num_members', 'num_hits_per_day', 'hittime'], ['website_url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
+            $current = $GLOBALS['SITE_DB']->query_select('logged', ['website_name', 'l_version', 'count_members', 'num_hits_per_day', 'hittime'], ['website_url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
 
             $map = [
                 hyperlink($r['website_url'], $current[0]['website_name'], true, true, $r['website_url']),
@@ -336,7 +341,7 @@ class Module_admin_cmsusers
                 $rt['CMS_ACTIVE'],
                 do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html($current[0]['l_version']), escape_html($r['l_version'])),
                 $rt['NOTE'],
-                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['num_members'])), escape_html($rt['NUM_MEMBERS'])),
+                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['count_members'])), escape_html($rt['NUM_MEMBERS'])),
                 do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['num_hits_per_day'])), escape_html($rt['NUM_HITS_PER_DAY'])),
             ];
 
