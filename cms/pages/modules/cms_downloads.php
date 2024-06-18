@@ -992,7 +992,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
      * @param  URLPATH $rep_image The rep-image for the download category
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $category = '', ?int $parent_id = null, string $description = '', string $notes = '', ?int $category_id = -1, string $rep_image = '') : array
+    public function get_form_fields(?int $id = null, string $category = '', ?int $parent_id = null, string $description = '', string $notes = '', ?int $category_id = null, string $rep_image = '') : array
     {
         if (($parent_id === null) && ($category_id === null)) {
             $parent_id = get_param_integer('parent_id', db_get_first_id());
@@ -1062,7 +1062,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
     {
         $category = post_param_string('category');
 
-        $parent_id = post_param_integer('parent_id');
+        $parent_id = post_param_integer('parent_id', null);
 
         $description = post_param_string('description');
 
