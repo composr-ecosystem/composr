@@ -298,7 +298,7 @@ function version_specific() : bool
             }
             if (addon_installed('news')) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news_categories SET nc_img=REPLACE(nc_img,\'/grepimages\',\'/repimages\')');
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news SET news_image=REPLACE(news_image,\'/grepimages\',\'/repimages\')');
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news SET news_image_url=REPLACE(news_image_url,\'/grepimages\',\'/repimages\')');
             }
             if (addon_installed('catalogues')) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'catalogue_categories SET rep_image=REPLACE(rep_image,\'/grepimages\',\'/repimages\')');

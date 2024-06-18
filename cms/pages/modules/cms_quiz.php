@@ -405,7 +405,7 @@ class Module_cms_quiz extends Standard_crud_module
         }
         $myrow = $rows[0];
 
-        $num_results = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz' => $id]);
+        $num_results = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz_id' => $id]);
         if ($num_results > 0) {
             attach_message(do_lang_tempcode('QUIZ_EDIT_SKEW_RESULTS', escape_html(integer_format($num_results))), 'warn');
         }
@@ -424,12 +424,12 @@ class Module_cms_quiz extends Standard_crud_module
             $myrow['q_open_time'],
             $myrow['q_close_time'],
             $myrow['q_num_winners'],
-            $myrow['q_redo_time'],
+            $myrow['q_reattempt_hours'],
             $myrow['q_type'],
             $myrow['q_validated'],
             $text,
             $myrow['q_points_for_passing'],
-            $myrow['q_tied_newsletter'],
+            $myrow['q_newsletter_id'],
             $myrow['q_reveal_answers'],
             $myrow['q_shuffle_questions'],
             $myrow['q_shuffle_answers']

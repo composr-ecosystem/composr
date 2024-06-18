@@ -35,7 +35,7 @@ class Module_news
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 8;
+        $info['version'] = 9;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -95,7 +95,7 @@ class Module_news
                 'edit_date' => '?TIME',
                 'news_category' => 'AUTO_LINK',
                 'news_views' => 'INTEGER',
-                'news_image' => 'URLPATH',
+                'news_image_url' => 'URLPATH',
             ]);
             $GLOBALS['SITE_DB']->create_index('news', 'news_views', ['news_views']);
             $GLOBALS['SITE_DB']->create_index('news', 'findnewscat', ['news_category']);
@@ -135,8 +135,8 @@ class Module_news
                 'rem_port' => 'INTEGER',
                 'rem_path' => 'SHORT_TEXT',
                 'rem_protocol' => 'ID_TEXT',
-                'rem_ip' => 'IP',
-                'watching_channel' => 'URLPATH',
+                'rem_ip_address' => 'IP',
+                'watch_channel_url' => 'URLPATH',
                 'register_time' => 'TIME',
             ]);
 
@@ -179,6 +179,13 @@ class Module_news
             foreach ($icons as $icon) {
                 $GLOBALS['SITE_DB']->query_update('news_categories', ['nc_img' => 'icons/news/' . $icon], ['nc_img' => 'newscats/' . $icon]);
             }
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('news', 'news_image', 'URLPATH', 'news_image_url');
+            $GLOBALS['SITE_DB']->alter_table_field('news_rss_cloud', 'rem_ip', 'IP', 'rem_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('news_rss_cloud', 'watching_channel', 'URLPATH', 'watch_channel_url');
         }
     }
 

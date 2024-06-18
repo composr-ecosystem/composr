@@ -1560,7 +1560,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
         }
         $r = $m[0];
 
-        $ret = $this->get_form_fields(intval($id), get_translated_text($r['t_title']), $r['t_logo'], $r['t_external_feed']);
+        $ret = $this->get_form_fields(intval($id), get_translated_text($r['t_title']), $r['t_logo'], $r['t_external_feed_url']);
 
         return $ret;
     }

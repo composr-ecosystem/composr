@@ -400,7 +400,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 'rep_image' => remap_urlpath_as_portable($row['rep_image']),
                 'move_days_lower' => $row['cc_move_days_lower'],
                 'move_days_higher' => $row['cc_move_days_higher'],
-                'move_target' => remap_resource_id_as_portable('catalogue_category', $row['cc_move_target']),
+                'move_target' => remap_resource_id_as_portable('catalogue_category', $row['cc_move_target_id']),
                 'meta_keywords' => $meta_keywords,
                 'meta_description' => $meta_description,
                 'add_date' => remap_time_as_portable($row['cc_add_date']),

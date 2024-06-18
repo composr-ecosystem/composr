@@ -35,7 +35,7 @@ class Module_quiz
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 7;
+        $info['version'] = 8;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -124,13 +124,13 @@ class Module_quiz
                 'q_open_time' => 'TIME',
                 'q_close_time' => '?TIME',
                 'q_num_winners' => 'INTEGER',
-                'q_redo_time' => '?INTEGER', // Number of hours between attempts. null implies it may never be re-attempted
+                'q_reattempt_hours' => '?INTEGER', // Number of hours between attempts. null implies it may never be re-attempted
                 'q_type' => 'ID_TEXT', // COMPETITION, TEST, SURVEY
                 'q_add_date' => 'TIME',
                 'q_validated' => 'BINARY',
                 'q_submitter' => 'MEMBER',
                 'q_points_for_passing' => 'INTEGER',
-                'q_tied_newsletter' => '?AUTO_LINK',
+                'q_newsletter_id' => '?AUTO_LINK',
                 'q_end_text_fail' => 'LONG_TRANS__COMCODE',
                 'q_reveal_answers' => 'BINARY',
                 'q_shuffle_questions' => 'BINARY',
@@ -141,7 +141,7 @@ class Module_quiz
             $GLOBALS['SITE_DB']->create_table('quiz_questions', [ // Note there is only a matching question_answer if it is not a free question. If there is just one answer, then it is not multiple-choice.
                 'id' => '*AUTO',
                 'q_type' => 'ID_TEXT',
-                'q_quiz' => 'AUTO_LINK',
+                'q_quiz_id' => 'AUTO_LINK',
                 'q_question_text' => 'LONG_TRANS__COMCODE',
                 'q_question_extra_text' => 'LONG_TRANS__COMCODE',
                 'q_order' => 'INTEGER',
@@ -151,7 +151,7 @@ class Module_quiz
 
             $GLOBALS['SITE_DB']->create_table('quiz_question_answers', [
                 'id' => '*AUTO',
-                'q_question' => 'AUTO_LINK',
+                'q_question_id' => 'AUTO_LINK',
                 'q_answer_text' => 'SHORT_TRANS__COMCODE',
                 'q_is_correct' => 'BINARY', // If this is the correct answer; only applies for quizzes
                 'q_order' => 'INTEGER',
@@ -159,8 +159,8 @@ class Module_quiz
             ]);
 
             $GLOBALS['SITE_DB']->create_table('quiz_winner', [
-                'q_quiz' => '*AUTO_LINK',
-                'q_entry' => '*AUTO_LINK',
+                'q_quiz_id' => '*AUTO_LINK',
+                'q_entry_id' => '*AUTO_LINK',
                 'q_winner_level' => 'INTEGER',
             ]);
 
@@ -168,14 +168,14 @@ class Module_quiz
                 'id' => '*AUTO',
                 'q_time' => 'TIME',
                 'q_member' => 'MEMBER',
-                'q_quiz' => 'AUTO_LINK',
+                'q_quiz_id' => 'AUTO_LINK',
                 'q_results' => 'INTEGER',
             ]);
 
             $GLOBALS['SITE_DB']->create_table('quiz_entry_answer', [
                 'id' => '*AUTO',
-                'q_entry' => 'AUTO_LINK',
-                'q_question' => 'AUTO_LINK',
+                'q_entry_id' => 'AUTO_LINK',
+                'q_question_id' => 'AUTO_LINK',
                 'q_answer' => 'LONG_TEXT', // Either an ID or a textual answer
             ]);
 
@@ -195,6 +195,19 @@ class Module_quiz
         if (($upgrade_from === null) || ($upgrade_from < 7)) {
             $GLOBALS['SITE_DB']->create_index('quiz_entries', 'q_member', ['q_member']);
             $GLOBALS['SITE_DB']->create_index('quiz_member_last_visit', 'member_id', ['v_member_id']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('quizzes', 'q_redo_time', '?INTEGER', 'q_reattempt_hours');
+            $GLOBALS['SITE_DB']->alter_table_field('quizzes', 'q_tied_newsletter', '?INTEGER', 'q_newsletter_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quiz_questions', 'q_quiz', 'AUTO_LINK', 'q_quiz_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quiz_question_answers', 'q_question', 'AUTO_LINK', 'q_question_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quiz_winner', 'q_quiz', '*AUTO_LINK', 'q_quiz_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quiz_winner', 'q_entry', '*AUTO_LINK', 'q_entry_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quiz_entries', 'q_quiz', 'AUTO_LINK', 'q_quiz_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quiz_entry_answer', 'q_entry', 'AUTO_LINK', 'q_entry_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quiz_entry_answer', 'q_question', 'AUTO_LINK', 'q_question_id');
         }
     }
 
@@ -416,13 +429,13 @@ class Module_quiz
     public function enforcement_checks(array $quiz)
     {
         // Check they are not a guest trying to do a quiz a guest could not do
-        if ((is_guest()) && (($quiz['q_points_for_passing'] != 0) || ($quiz['q_redo_time'] !== null) || ($quiz['q_num_winners'] != 0))) {
+        if ((is_guest()) && (($quiz['q_points_for_passing'] != 0) || ($quiz['q_reattempt_hours'] !== null) || ($quiz['q_num_winners'] != 0))) {
             access_denied('NOT_AS_GUEST');
         }
 
         // Check they are on the necessary newsletter, if appropriate
-        if (($quiz['q_tied_newsletter'] !== null) && (addon_installed('newsletter'))) {
-            $on = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribe', 'email', ['newsletter_id' => $quiz['q_tied_newsletter'], 'email' => $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member())]);
+        if (($quiz['q_newsletter_id'] !== null) && (addon_installed('newsletter'))) {
+            $on = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribe', 'email', ['newsletter_id' => $quiz['q_newsletter_id'], 'email' => $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member())]);
             if ($on === null) {
                 warn_exit(do_lang_tempcode('NOT_ON_NEWSLETTER'));
             }
@@ -434,10 +447,10 @@ class Module_quiz
         }
 
         // Check they are allowed to do this (if repeating)
-        if ((!has_privilege(get_member(), 'bypass_quiz_repeat_time_restriction')) && ($quiz['q_redo_time'] !== null)) {
-            $last_entry = $GLOBALS['SITE_DB']->query_select_value_if_there('quiz_entries', 'q_time', ['q_member' => get_member(), 'q_quiz' => $quiz['id']], 'ORDER BY q_time DESC');
-            if (($last_entry !== null) && ($last_entry + $quiz['q_redo_time'] * 60 * 60 > time()) && (($quiz['q_timeout'] === null) || (time() - $last_entry >= $quiz['q_timeout']))) { // If passed timeout and less than redo time, error
-                warn_exit(do_lang_tempcode('REPEATING_TOO_SOON', get_timezoned_date_time($last_entry + $quiz['q_redo_time'] * 60 * 60)));
+        if ((!has_privilege(get_member(), 'bypass_quiz_repeat_time_restriction')) && ($quiz['q_reattempt_hours'] !== null)) {
+            $last_entry = $GLOBALS['SITE_DB']->query_select_value_if_there('quiz_entries', 'q_time', ['q_member' => get_member(), 'q_quiz_id' => $quiz['id']], 'ORDER BY q_time DESC');
+            if (($last_entry !== null) && ($last_entry + $quiz['q_reattempt_hours'] * 60 * 60 > time()) && (($quiz['q_timeout'] === null) || (time() - $last_entry >= $quiz['q_timeout']))) { // If passed timeout and less than redo time, error
+                warn_exit(do_lang_tempcode('REPEATING_TOO_SOON', get_timezoned_date_time($last_entry + $quiz['q_reattempt_hours'] * 60 * 60)));
             }
         }
     }
@@ -484,7 +497,7 @@ class Module_quiz
 
         $all_required = true;
 
-        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $quiz_id], 'ORDER BY q_order');
+        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz_id' => $quiz_id], 'ORDER BY q_order');
         if ($quiz['q_shuffle_questions'] == 1) {
             shuffle($questions);
         }
@@ -493,7 +506,7 @@ class Module_quiz
                 $all_required = false;
             }
 
-            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $question['id']], 'ORDER BY q_order');
+            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question_id' => $question['id']], 'ORDER BY q_order');
             if ($quiz['q_shuffle_answers'] == 1) {
                 shuffle($answers);
             }
@@ -542,7 +555,7 @@ class Module_quiz
             '_POINTS' => strval($quiz['q_points_for_passing']),
             '_TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : display_time_period($quiz['q_timeout'] * 60 - $timer_offset),
             'TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : strval($quiz['q_timeout'] * 60 - $timer_offset),
-            'REDO_TIME' => (($quiz['q_redo_time'] === null) || ($quiz['q_redo_time'] == 0)) ? '' : display_time_period($quiz['q_redo_time'] * 60 * 60),
+            'REDO_TIME' => (($quiz['q_reattempt_hours'] === null) || ($quiz['q_reattempt_hours'] == 0)) ? '' : display_time_period($quiz['q_reattempt_hours'] * 60 * 60),
             'DATE' => get_timezoned_date_tempcode($quiz['q_add_date']),
             '_DATE' => strval($quiz['q_add_date']),
             'NAME' => get_translated_text($quiz['q_name']),
@@ -582,19 +595,19 @@ class Module_quiz
         $entry_id = $GLOBALS['SITE_DB']->query_insert('quiz_entries', [
             'q_time' => time(),
             'q_member' => get_member(),
-            'q_quiz' => $quiz_id,
+            'q_quiz_id' => $quiz_id,
             'q_results' => 0,
         ], true);
-        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $quiz_id], 'ORDER BY q_order');
+        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz_id' => $quiz_id], 'ORDER BY q_order');
         foreach ($questions as $i => $question) {
-            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $question['id']], 'ORDER BY q_order');
+            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question_id' => $question['id']], 'ORDER BY q_order');
             $questions[$i]['answers'] = $answers;
         }
         foreach ($questions as $i => $question) {
             if ($question['q_type'] == 'SHORT' || $question['q_type'] == 'SHORT_STRICT' || $question['q_type'] == 'LONG') { // Text box ("free question"). May be an actual answer, or may not be
                 $GLOBALS['SITE_DB']->query_insert('quiz_entry_answer', [
-                    'q_entry' => $entry_id,
-                    'q_question' => $question['id'],
+                    'q_entry_id' => $entry_id,
+                    'q_question_id' => $question['id'],
                     'q_answer' => post_param_string('q_' . strval($question['id']), ''),
                 ]);
             } elseif ($question['q_type'] == 'MULTIMULTIPLE') { // Check boxes
@@ -602,16 +615,16 @@ class Module_quiz
                 foreach ($question['answers'] as $a) {
                     if (post_param_integer('q_' . strval($question['id']) . '_' . strval($a['id']), 0) == 1) {
                         $GLOBALS['SITE_DB']->query_insert('quiz_entry_answer', [
-                            'q_entry' => $entry_id,
-                            'q_question' => $question['id'],
+                            'q_entry_id' => $entry_id,
+                            'q_question_id' => $question['id'],
                             'q_answer' => strval($a['id']),
                         ]);
                     }
                 }
             } elseif ($question['q_type'] == 'MULTIPLECHOICE') { // Radio buttons
                 $GLOBALS['SITE_DB']->query_insert('quiz_entry_answer', [
-                    'q_entry' => $entry_id,
-                    'q_question' => $question['id'],
+                    'q_entry_id' => $entry_id,
+                    'q_question_id' => $question['id'],
                     'q_answer' => post_param_string('q_' . strval($question['id']), ''),
                 ]);
             }
@@ -659,12 +672,12 @@ class Module_quiz
 
             $num_entries = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', [
                 'q_member' => get_member(),
-                'q_quiz' => $quiz_id,
+                'q_quiz_id' => $quiz_id,
             ]);
 
             if ($num_entries != 1) {
                 $num_point_events = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', [
-                    'recipient_id' => get_member(),
+                    'receiving_member' => get_member(),
                     'status' => LEDGER_STATUS_NORMAL,
                     't_type' => 'quiz',
                     't_subtype' => 'pass',

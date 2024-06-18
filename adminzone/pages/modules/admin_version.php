@@ -826,7 +826,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'datetimeadded', 'TIME', 'add_date');
             $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'recurinterval', 'INTEGER', 'recur_interval');
             $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'recurevery', 'ID_TEXT', 'recur_every');
-            $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'taskisdone', '?TIME', 'task_is_done');
+            $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'taskisdone', '?TIME', 'done_time');
 
             $GLOBALS['SITE_DB']->delete_index_if_exists('member_privileges', 'mspname');
             $GLOBALS['SITE_DB']->delete_index_if_exists('member_privileges', 'mspmember_id');

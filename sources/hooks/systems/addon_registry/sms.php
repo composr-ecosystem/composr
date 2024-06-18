@@ -175,7 +175,7 @@ class Hook_addon_registry_sms
                 'id' => '*AUTO',
                 's_member_id' => 'MEMBER',
                 's_time' => 'TIME',
-                's_trigger_ip' => 'IP',
+                's_trigger_ip_address' => 'IP',
             ]);
             $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_log_for', ['s_member_id', 's_time']);
             $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_trigger_ip', ['s_trigger_ip']);
@@ -192,6 +192,11 @@ class Hook_addon_registry_sms
             ]);
             */
             /*$GLOBALS['SITE_DB']->create_index('confirmed_mobiles', 'confirmed_numbers', ['m_confirm_code']);*/
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
+            // Database integrity fixes
+            $GLOBALS['SITE_DB']->alter_table_field('sms_log', 's_trigger_ip', 'IP', 's_trigger_ip_address');
         }
     }
 }

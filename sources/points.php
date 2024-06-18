@@ -395,41 +395,41 @@ function points_ledger_calculate(int $types, int $primary_member, ?int $secondar
     $case_when_refund = '';
     if (($types & LEDGER_TYPE_RECEIVED) != 0) {
         $ret['received'] = [0, 0, 0];
-        $case_when .= ' WHEN recipient_id=' . strval($primary_member);
-        $case_when_refund = ' WHEN sender_id=' . strval($primary_member);
+        $case_when .= ' WHEN receiving_member=' . strval($primary_member);
+        $case_when_refund = ' WHEN sending_member=' . strval($primary_member);
         if ($secondary_member !== null) {
-            $case_when .= ' AND sender_id=' . strval($secondary_member);
-            $case_when_refund .= ' AND recipient_id=' . strval($secondary_member);
+            $case_when .= ' AND sending_member=' . strval($secondary_member);
+            $case_when_refund .= ' AND receiving_member=' . strval($secondary_member);
         }
         $case_when .= ' THEN \'received\'';
         $case_when_refund .= ' THEN \'received\'';
     }
     if (($types & LEDGER_TYPE_SENT) != 0) {
         $ret['sent'] = [0, 0, 0];
-        $case_when .= ' WHEN sender_id=' . strval($primary_member);
-        $case_when_refund .= ' WHEN recipient_id=' . strval($primary_member);
+        $case_when .= ' WHEN sending_member=' . strval($primary_member);
+        $case_when_refund .= ' WHEN receiving_member=' . strval($primary_member);
         if ($secondary_member !== null) {
-            $case_when .= ' AND recipient_id=' . strval($secondary_member);
-            $case_when_refund .= ' AND sender_id=' . strval($secondary_member);
+            $case_when .= ' AND receiving_member=' . strval($secondary_member);
+            $case_when_refund .= ' AND sending_member=' . strval($secondary_member);
         } else {
-            $case_when .= ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-            $case_when_refund .= ' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $case_when .= ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $case_when_refund .= ' AND sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         }
         $case_when .= ' THEN \'sent\'';
         $case_when_refund .= ' THEN \'sent\'';
     }
     if (($types & LEDGER_TYPE_SPENT) != 0) {
         $ret['spent'] = [0, 0, 0];
-        $case_when .= ' WHEN sender_id=' . strval($primary_member);
-        $case_when .= ' AND recipient_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        $case_when .= ' WHEN sending_member=' . strval($primary_member);
+        $case_when .= ' AND receiving_member=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         $case_when .= ' THEN \'spent\'';
-        $case_when_refund .= ' WHEN recipient_id=' . strval($primary_member);
-        $case_when_refund .= ' AND sender_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        $case_when_refund .= ' WHEN receiving_member=' . strval($primary_member);
+        $case_when_refund .= ' AND sending_member=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         $case_when_refund .= ' THEN \'spent\'';
     }
-    $more_where = ' AND (recipient_id=' . strval($primary_member) . ' OR sender_id=' . strval($primary_member) . ')';
+    $more_where = ' AND (receiving_member=' . strval($primary_member) . ' OR sending_member=' . strval($primary_member) . ')';
     if ($secondary_member !== null) {
-        $more_where .= ' AND (recipient_id=' . strval($secondary_member) . ' OR sender_id=' . strval($secondary_member) . ')';
+        $more_where .= ' AND (receiving_member=' . strval($secondary_member) . ' OR sending_member=' . strval($secondary_member) . ')';
     }
 
     $cases .= $case_when . ' END AS transaction_type';

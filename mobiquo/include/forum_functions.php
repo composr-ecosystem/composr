@@ -529,7 +529,7 @@ function render_post_to_tapatalk(int $post_id, bool $return_html, ?array $post_r
 
     if (addon_installed('points')) {
         $where = ['status' => 'normal'];
-        $where['recipient_id'] = $post_author_id;
+        $where['receiving_member'] = $post_author_id;
         $where[$GLOBALS['SITE_DB']->translate_field_ref('reason')] = do_lang('TAPATALK_THANK_POST', strval($post_id));
         $thank_count = $GLOBALS['FORUM_DB']->query_select_value('points_ledger', 'COUNT(*)', $where);
         $arr['thank_count'] = mobiquo_val($thank_count, 'int');

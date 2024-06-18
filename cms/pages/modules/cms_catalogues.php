@@ -1472,7 +1472,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         }
         $myrow = $rows[0];
 
-        return $this->get_form_fields($catalogue_name, get_translated_text($myrow['cc_title']), get_translated_text($myrow['cc_description']), $myrow['cc_notes'], $myrow['cc_parent_id'], $category_id, $myrow['rep_image'], $myrow['cc_move_days_lower'], $myrow['cc_move_days_higher'], $myrow['cc_move_target']);
+        return $this->get_form_fields($catalogue_name, get_translated_text($myrow['cc_title']), get_translated_text($myrow['cc_description']), $myrow['cc_notes'], $myrow['cc_parent_id'], $category_id, $myrow['rep_image'], $myrow['cc_move_days_lower'], $myrow['cc_move_days_higher'], $myrow['cc_move_target_id']);
     }
 
     /**

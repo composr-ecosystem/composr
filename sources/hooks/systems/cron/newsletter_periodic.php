@@ -78,7 +78,7 @@ class Hook_cron_newsletter_periodic
         foreach ($periodic_rows as $periodic_row) {
             $last_sent = $this->newsletter_periodic_handle($periodic_row);
             if ($last_sent !== null) { // was sent, so update with new time
-                $GLOBALS['SITE_DB']->query_update('newsletter_periodic', ['np_last_sent' => $last_sent], ['id' => $periodic_row['id']], '', 1);
+                $GLOBALS['SITE_DB']->query_update('newsletter_periodic', ['np_last_sent_time' => $last_sent], ['id' => $periodic_row['id']], '', 1);
                 break; // Limited to 1 because we use global variables to store what we're sending, so can only do one per request
             }
         }
@@ -100,7 +100,7 @@ class Hook_cron_newsletter_periodic
         // sent.
 
         // We check here to see if we're scheduled to be sent out
-        $last_sent = $periodic_row['np_last_sent'];
+        $last_sent = $periodic_row['np_last_sent_time'];
 
         // At the moment we only support weekly or biweekly or monthly intervals. Thus we can
         // say for sure that if the last issue was sent in the past 4 days, we
@@ -141,7 +141,7 @@ class Hook_cron_newsletter_periodic
 
         // We include everything since the last "What's New" newsletter,
         // irregardless of whether it was automatically or manually generated.
-        $cutoff_time = $periodic_row['np_last_sent'];
+        $cutoff_time = $periodic_row['np_last_sent_time'];
 
         require_lang('newsletter');
         $lang = $periodic_row['np_lang'];

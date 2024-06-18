@@ -188,13 +188,16 @@ New users should then be assigned a mentor/friend who will receive an equal amou
             $GLOBALS['SITE_DB']->create_table('members_mentors', [
                 'id' => '*AUTO',
                 'member_id' => '*MEMBER',
-                'mentor_id' => '*MEMBER',
+                'mentor_member_id' => '*MEMBER',
                 'date_and_time' => 'TIME'
             ]);
         }
 
         if ($upgrade_from !== null && $upgrade_from < 11) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('members_mentors', 'date_and_time', 'TIME');
+
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('members_mentors', 'mentor_id', '*MEMBER', 'mentor_member_id');
         }
 
         if ($upgrade_from === null || $upgrade_from < 11) {

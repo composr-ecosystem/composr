@@ -145,7 +145,7 @@ class Module_downloads
                 'submitter' => 'MEMBER',
                 'original_filename' => 'SHORT_TEXT',
                 'rep_image' => 'URLPATH',
-                'download_licence' => '?AUTO_LINK',
+                'download_licence_id' => '?AUTO_LINK',
                 'download_data_mash' => 'LONG_TEXT',
                 'url_redirect' => 'URLPATH',
             ]);
@@ -155,7 +155,7 @@ class Module_downloads
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'top_downloads', ['num_downloads']);
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'downloadauthor', ['author']);
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'dds', ['submitter']);
-            $GLOBALS['SITE_DB']->create_index('download_downloads', 'ddl', ['download_licence']); // For when deleting a download license and for choosing the most common as the new default
+            $GLOBALS['SITE_DB']->create_index('download_downloads', 'ddl', ['download_licence_id']); // For when deleting a download license and for choosing the most common as the new default
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'dvalidated', ['validated']);
 
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'ftjoin_dname', ['name']);
@@ -167,7 +167,7 @@ class Module_downloads
             $GLOBALS['SITE_DB']->create_index('download_downloads', '#original_filename', ['original_filename']);
 
             $GLOBALS['SITE_DB']->create_table('download_logging', [
-                'id' => '*AUTO_LINK',
+                'id' => '*AUTO_LINK', // TODO: should be renamed to download_id
                 'member_id' => '*MEMBER',
                 'ip' => 'IP',
                 'date_and_time' => 'TIME',
@@ -210,6 +210,11 @@ class Module_downloads
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('download_categories', 'description', 'LONG_TRANS__COMCODE', 'the_description');
             $GLOBALS['SITE_DB']->alter_table_field('download_downloads', 'description', 'LONG_TRANS__COMCODE', 'the_description');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('download_downloads', 'download_licence', '?AUTO_LINK', 'download_licence_id');
         }
     }
 
@@ -765,7 +770,7 @@ class Module_downloads
         // Licence
         $licence_title = null;
         $licence_hyperlink = null;
-        $licence = $myrow['download_licence'];
+        $licence = $myrow['download_licence_id'];
         if ($licence !== null) {
             $licence_title = $GLOBALS['SITE_DB']->query_select_value_if_there('download_licences', 'l_title', ['id' => $licence]);
             if ($licence_title !== null) {

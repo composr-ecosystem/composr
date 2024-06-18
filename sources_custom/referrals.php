@@ -16,10 +16,10 @@
 function get_referral_scheme_stats_for($referrer, $scheme_name, $raw = false)
 {
     $num_total_by_referrer = count($GLOBALS['FORUM_DB']->query_select('f_invites', ['DISTINCT i_email_address'], ['i_invite_member' => $referrer]));
-    $num_total_qualified_by_referrer = $GLOBALS['SITE_DB']->query_select_value('referees_qualified_for', 'COUNT(*)', ['q_referee' => $referrer, 'q_scheme_name' => $scheme_name]);
+    $num_total_qualified_by_referrer = $GLOBALS['SITE_DB']->query_select_value('referees_qualified_for', 'COUNT(*)', ['q_referred_member' => $referrer, 'q_scheme_name' => $scheme_name]);
 
     if (!$raw) {
-        $dif = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_referrals_dif', ['o_referrer' => $referrer, 'o_scheme_name' => $scheme_name]);
+        $dif = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_referrals_dif', ['o_referring_member' => $referrer, 'o_scheme_name' => $scheme_name]);
         if ($dif !== null) {
             $num_total_qualified_by_referrer += $dif;
         }
@@ -87,7 +87,7 @@ function assign_referral_awards($referee, $trigger)
             $ini_file_section['name'] = $ini_file_section_name;
 
             list($num_total_qualified_by_referrer, $num_total_by_referrer) = get_referral_scheme_stats_for($referrer, $ini_file_section_name);
-            $one_trigger_already = ($GLOBALS['SITE_DB']->query_select_value_if_there('referees_qualified_for', 'q_referee', ['q_scheme_name' => $ini_file_section_name, 'q_referee' => $referee]) !== null);
+            $one_trigger_already = ($GLOBALS['SITE_DB']->query_select_value_if_there('referees_qualified_for', 'q_referred_member', ['q_scheme_name' => $ini_file_section_name, 'q_referred_member' => $referee]) !== null);
 
             $qualified_trigger = _assign_referral_awards(
                 $trigger,
@@ -149,8 +149,8 @@ function _assign_referral_awards(
 
         if ((!$one_trigger_per_referee) || (!$one_trigger_already)) {
             $GLOBALS['SITE_DB']->query_insert('referees_qualified_for', [
-                'q_referee' => $referee,
-                'q_referrer' => $referrer,
+                'q_referred_member' => $referee,
+                'q_referring_member' => $referrer,
                 'q_scheme_name' => $scheme_name,
                 'q_email_address' => $referee_email,
                 'q_time' => time(),
@@ -394,7 +394,7 @@ function referrer_is_qualified($scheme, $member_id)
         return false;
     }
 
-    $is_qualified_override = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_is_qualified', ['o_referrer' => $member_id, 'o_scheme_name' => $scheme['name']]);
+    $is_qualified_override = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_is_qualified', ['o_referring_member' => $member_id, 'o_scheme_name' => $scheme['name']]);
     if ($is_qualified_override !== null) {
         return ($is_qualified_override == 1);
     }
@@ -518,7 +518,7 @@ function referrer_report_script($ret = false)
     $max = get_param_integer('max', $spreadsheet ? 10000 : 30);
     $start = get_param_integer('start', 0);
 
-    $dif = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_referrals_dif', ['o_referrer' => $member_id, 'o_scheme_name' => $scheme_name]);
+    $dif = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_referrals_dif', ['o_referring_member' => $member_id, 'o_scheme_name' => $scheme_name]);
     if ($dif == 0) {
         $dif = null;
     }
@@ -546,7 +546,7 @@ function referrer_report_script($ret = false)
         $max,
         $start
     );
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('referees_qualified_for', 'COUNT(*)', ($member_id !== null) ? ['q_referrer' => $member_id] : []) * 2;
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('referees_qualified_for', 'COUNT(*)', ($member_id !== null) ? ['q_referring_member' => $member_id] : []) * 2;
     if ((empty($referrals)) && ($dif === null)) {
         inform_exit(do_lang_tempcode('NO_ENTRIES'), true);
     }
@@ -572,7 +572,7 @@ function referrer_report_script($ret = false)
 
         $qualifications = [];
         if (($ref['qualified'] == 1) && ($ref['referee_id'] !== null)) { // Clarify, are they really qualified?
-            $qualifications = $GLOBALS['SITE_DB']->query_select('referees_qualified_for', ['q_time', 'q_action'], ['q_referee' => $ref['referee_id'], 'q_scheme_name' => $scheme_name]);
+            $qualifications = $GLOBALS['SITE_DB']->query_select('referees_qualified_for', ['q_time', 'q_action'], ['q_referred_member' => $ref['referee_id'], 'q_scheme_name' => $scheme_name]);
             if (empty($qualifications)) {
                 $ref['qualified'] = 0; // Not actually qualified for this scheme
             }

@@ -95,7 +95,7 @@ class Hook_preview_download
 
         $map += [
             'download_data_mash' => '',
-            'download_licence' => $licence,
+            'download_licence_id' => $licence,
             'rep_image' => '',
             'edit_date' => ($id === null) ? null : time(),
             'download_submitter_gets_points' => $submitter_gets_points,

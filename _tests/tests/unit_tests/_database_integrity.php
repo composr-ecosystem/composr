@@ -52,7 +52,8 @@ class _database_integrity_test_set extends cms_test_case
     public function testCorrectNamingConventions()
     {
         /*
-         * These checks ensure database fields are consistent with how database repair determines if fields in the database are the wrong CMS type
+         * These checks ensure database fields are consistent with how database repair determines if fields in the database are the wrong CMS type.
+         * These checks use what is stored in the db_meta table rather than db_meta.bin.
          *
          * Specific notes on field names:
          *
@@ -64,7 +65,13 @@ class _database_integrity_test_set extends cms_test_case
          * submitter: Not contextually concise, but always refers to a MEMBER who submitted the content
          * author: Refers to the author addon and does *not* refer to a MEMBER
          * times: There is no exclusion for this and will check against the TIME type; we should be using the term "count" instead
-         * count: Overrides other types (including special types) and always expects INTEGER or UINTEGER
+         * count: Overrides other types (including special types) and always expects INTEGER or UINTEGER (exceptions written to account country / county)
+         * filename: Fields with this name usually refer to base names, not paths. Therefore, they are not acceptable for type URLPATH / should still contain "url" when using that type.
+         *
+         * Specific notes on field types:
+         *
+         * URLPATH: Should not be used for page-links or fields that support both page-links and urls. Instead, use SHORT_TEXT and do not use "url" in the name (use "link" instead).
+         * TIME: "timeout" is a name exclusion for this type as it often refers to an interval, not a timestamp
          */
 
         require_code('database_helper');
@@ -76,8 +83,8 @@ class _database_integrity_test_set extends cms_test_case
             $_type = str_replace(['*', '?', '#'], ['', '', ''], $row['m_type']);
             $name = $row['m_name'];
 
-            if (strpos($name, 'count') !== false) {
-                $this->assertTrue(($_type == 'INTEGER') || ($_type == 'UINTEGER'), $table . '/' . $name . ': Column is type ' . $type . ' but contains \'_count\' or \'count_\' in the name. You should fix the name or use type INTEGER or UINTEGER instead.');
+            if ((strpos($name, 'count_') === 0) || (strpos($name, '_count') === (strlen($name) - 6)) || (strpos($name, '_count_') !== false)) { // Specific checks necessary to filter out fields like county and country
+                $this->assertTrue(($_type == 'INTEGER') || ($_type == 'UINTEGER'), $table . '/' . $name . ': Column is type ' . $type . ' but contains \'count\' in the name. You should fix the name or use type INTEGER or UINTEGER instead.');
             } else {
                 switch ($_type) {
                     case 'IP':
@@ -89,7 +96,7 @@ class _database_integrity_test_set extends cms_test_case
                         $this->assertTrue($ok, $table . '/' . $name . ': Column is type ' . $type . ' but does not contain \'url\' in the name. You should fix the name or use type SHORT_TEXT instead.');
                         break;
                     case 'TIME':
-                        $ok = ((strpos($name, 'date') !== false) || (strpos($name, 'time') !== false) || (strpos($name, 'until') !== false));
+                        $ok = ((strpos($name, 'date') !== false) || ((strpos($name, 'time') !== false) && (strpos($name, 'timeout') === false)) || (strpos($name, 'until') !== false));
                         $this->assertTrue($ok, $table . '/' . $name . ': Column is type ' . $type . ' but does not contain \'date\', \'time\', or \'until\' in the name. You should fix the name or use an integer-based type instead.');
                         break;
                     case 'GROUP':
@@ -111,7 +118,7 @@ class _database_integrity_test_set extends cms_test_case
                         $this->assertTrue($ok, $table . '/' . $name . ': Column is type ' . $type . ' but contains \'member\', \'user\', \'owner\', or \'submitter\' in the name. You should fix the name or use type MEMBER instead.');
 
                         $ok = (strpos($name, '_id') !== false);
-                        $this->assertTrue($ok, $table . '/' . $name . ': Column is type ' . $type . ' but does not contain \'_id\' in the name. You should fix the name or use an integer-based type (ignore if changing to type MEMBER or GROUP).');
+                        $this->assertTrue($ok, $table . '/' . $name . ': Column is type ' . $type . ' but does not contain \'_id\' in the name. You should fix the name or use an integer-based type (prioritise MEMBER or GROUP if suggested).');
                         break;
                     case 'MINIID_TEXT':
                         $ok = (strpos($name, 'ip_address') === false);
@@ -138,7 +145,7 @@ class _database_integrity_test_set extends cms_test_case
                     case 'LONG_TRANS':
                     case 'SHORT_TRANS':
                     case 'UINTEGER':
-                        $ok = ((strpos($name, 'date') === false) && (strpos($name, 'time') === false) && (strpos($name, 'until') === false));
+                        $ok = ((strpos($name, 'date') === false) && ((strpos($name, 'time') === false) || (strpos($name, 'timeout') !== false)) && (strpos($name, 'until') === false));
                         $this->assertTrue($ok, $table . '/' . $name . ': Column is type ' . $type . ' but contains \'date\', \'time\', or \'until\' in the name. You should fix the name or use type TIME instead. If counting something, you should use \'count\' in the name.');
                         break;
                 }

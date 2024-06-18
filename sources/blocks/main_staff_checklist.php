@@ -35,7 +35,7 @@ class Block_main_staff_checklist
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 4;
+        $info['version'] = 5;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'core_adminzone_dashboard';
@@ -89,7 +89,7 @@ PHP;
                 'add_date' => 'TIME',
                 'recur_interval' => 'INTEGER',
                 'recur_every' => 'ID_TEXT',
-                'task_is_done' => '?TIME',
+                'done_time' => '?TIME',
             ]);
 
             require_lang('staff_checklist');
@@ -106,9 +106,14 @@ PHP;
                     'add_date' => time(),
                     'recur_interval' => 0,
                     'recur_every' => '',
-                    'task_is_done' => null,
+                    'done_time' => null,
                 ]);
             }
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'task_is_done', '?TIME', 'done_time');
         }
     }
 
@@ -131,7 +136,7 @@ PHP;
         $recur_interval = post_param_integer('recur_interval', 0);
         $recur_every = post_param_string('recur_every', null);
         if (($new_task !== null) && ($recur_interval !== null) && ($recur_every !== null)) {
-            $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', ['task_title' => $new_task, 'add_date' => time(), 'recur_interval' => $recur_interval, 'recur_every' => $recur_every, 'task_is_done' => null]);
+            $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', ['task_title' => $new_task, 'add_date' => time(), 'recur_interval' => $recur_interval, 'recur_every' => $recur_every, 'done_time' => null]);
             delete_cache_entry('main_staff_checklist');
         }
         $custom_tasks = new Tempcode();
@@ -159,7 +164,7 @@ PHP;
                 'ADD_TIME' => do_lang_tempcode('_AGO', do_lang_tempcode('DAYS', escape_html(integer_format(intval(round(floatval(time() - $r['add_date']) / 60.0 / 60.0 / 24.0)))))),
                 'RECUR_INTERVAL' => ($r['recur_interval'] == 0) ? '' : integer_format($r['recur_interval']),
                 'RECUR_EVERY' => $recur_every,
-                'TASK_DONE' => (($r['task_is_done'] !== null) && (($r['recur_interval'] == 0) || (($r['recur_every'] != 'mins') || (time() < $r['task_is_done'] + 60 * $r['recur_interval'])) && (($r['recur_every'] != 'hours') || (time() < $r['task_is_done'] + 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'days') || (time() < $r['task_is_done'] + 24 * 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'months') || (time() < $r['task_is_done'] + 31 * 24 * 60 * 60 * $r['recur_interval'])))) ? 'checklist_done' : 'checklist_todo',
+                'TASK_DONE' => (($r['done_time'] !== null) && (($r['recur_interval'] == 0) || (($r['recur_every'] != 'mins') || (time() < $r['done_time'] + 60 * $r['recur_interval'])) && (($r['recur_every'] != 'hours') || (time() < $r['done_time'] + 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'days') || (time() < $r['done_time'] + 24 * 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'months') || (time() < $r['done_time'] + 31 * 24 * 60 * 60 * $r['recur_interval'])))) ? 'checklist_done' : 'checklist_todo',
                 'ID' => strval($r['id']),
             ]));
         }

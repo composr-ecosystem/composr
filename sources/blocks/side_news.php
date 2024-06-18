@@ -236,8 +236,8 @@ PHP;
             $news_cat_row = get_news_cat_row($myrow['news_category']);
 
             $category = get_translated_text($news_cat_row['nc_title']);
-            if ($myrow['news_image'] != '') {
-                $rep_image_url = $myrow['news_image'];
+            if ($myrow['news_image_url'] != '') {
+                $rep_image_url = $myrow['news_image_url'];
                 if (url_is_local($rep_image_url)) {
                     $rep_image_url = $base_url . '/' . $rep_image_url;
                 }

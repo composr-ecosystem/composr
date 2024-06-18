@@ -35,7 +35,7 @@ class Module_catalogues
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 11;
+        $info['version'] = 12;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -120,11 +120,11 @@ class Module_catalogues
                 'cc_notes' => 'LONG_TEXT',
                 'cc_add_date' => 'TIME',
                 'cc_parent_id' => '?AUTO_LINK',
-                'cc_move_target' => '?AUTO_LINK',
+                'cc_move_target_id' => '?AUTO_LINK',
                 'cc_move_days_lower' => 'INTEGER',
                 'cc_move_days_higher' => 'INTEGER',
             ]);
-            $GLOBALS['SITE_DB']->create_index('catalogue_categories', 'catstoclean', ['cc_move_target']);
+            $GLOBALS['SITE_DB']->create_index('catalogue_categories', 'catstoclean', ['cc_move_target_id']);
             $GLOBALS['SITE_DB']->create_index('catalogue_categories', 'cataloguefind', ['c_name']);
             $GLOBALS['SITE_DB']->create_index('catalogue_categories', 'cc_parent_id', ['cc_parent_id']);
 
@@ -661,8 +661,13 @@ class Module_catalogues
             ]);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) {
-            $GLOBALS['FORUM_DB']->add_table_field('catalogue_fields', 'cf_sensitive', 'BINARY');
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('catalogue_fields', 'cf_sensitive', 'BINARY');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('catalogue_categories', 'cc_move_target', '?AUTO_LINK', 'cc_move_target_id');
         }
     }
 

@@ -35,7 +35,7 @@ class Module_chat
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 13;
+        $info['version'] = 14;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -95,7 +95,7 @@ class Module_chat
             $GLOBALS['SITE_DB']->create_table('chat_rooms', [
                 'id' => '*AUTO',
                 'room_name' => 'SHORT_TEXT',
-                'room_owner' => '?INTEGER',
+                'room_owner' => '?MEMBER',
                 'allow_list' => 'LONG_TEXT',
                 'allow_list_groups' => 'LONG_TEXT',
                 'disallow_list' => 'LONG_TEXT',
@@ -258,6 +258,10 @@ class Module_chat
 
         if (($upgrade_from === null) || ($upgrade_from < 13)) {
             $GLOBALS['SITE_DB']->create_index('chat_messages', 'member_id', ['member_id']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 14)) { // LEGACY: 11.beta1
+            $GLOBALS['SITE_DB']->alter_table_field('chat_rooms', 'room_owner', '?MEMBER');
         }
     }
 

@@ -147,13 +147,13 @@ class Module_calendar
                 'id' => '*AUTO',
                 't_title' => 'SHORT_TRANS__COMCODE',
                 't_logo' => 'SHORT_TEXT',
-                't_external_feed' => 'URLPATH',
+                't_external_feed_url' => 'URLPATH',
             ]);
             $default_types = ['system_command', 'general'];
             require_code('lang3');
             foreach ($default_types as $type) {
                 $map = [
-                    't_external_feed' => '',
+                    't_external_feed_url' => '',
                     't_logo' => 'icons/calendar/' . $type,
                 ];
                 $map += lang_code_to_default_content('t_title', 'DEFAULT_CALENDAR_TYPE__' . $type, true);
@@ -193,7 +193,7 @@ class Module_calendar
             $GLOBALS['SITE_DB']->alter_table_field('calendar_events', 'e_start_hour', '?INTEGER');
             $GLOBALS['SITE_DB']->alter_table_field('calendar_events', 'e_start_minute', '?INTEGER');
 
-            $GLOBALS['SITE_DB']->add_table_field('calendar_types', 't_external_feed', 'URLPATH');
+            $GLOBALS['SITE_DB']->add_table_field('calendar_types', 't_external_feed_url', 'URLPATH');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
@@ -284,13 +284,18 @@ class Module_calendar
                         $previous_recurrence_time = $next_recurrence_time;
                         $next_recurrence_time = null;
                     } else {
-                        $previous_recurrence_time = null; // Not quite right, but we don't have a way to calculate this at time of writing
+                        $previous_recurrence_time = null; // TODO: Not quite right, but we don't have a way to calculate this at time of writing
                     }
                     $GLOBALS['SITE_DB']->query_update('calendar_events', ['e_previous_recurrence_time' => $previous_recurrence_time, 'e_next_recurrence_time' => $next_recurrence_time], ['id' => $row['id']], '', 1);
                 }
 
                 $start += 100;
             } while (!empty($rows));
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('calendar_types', 't_external_feed', 'URLPATH', 't_external_feed_url');
         }
     }
 

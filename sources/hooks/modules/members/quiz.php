@@ -88,7 +88,7 @@ class Hook_members_quiz
         }
 
         $entries = $GLOBALS['SITE_DB']->query_select(
-            'quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz',
+            'quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz_id',
             ['e.id AS e_id', 'e.q_time', 'q.*'],
             ['q_member' => $member_id, 'q_type' => 'TEST', 'q_validated' => 1],
             'ORDER BY ' . $order,

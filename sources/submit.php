@@ -140,7 +140,7 @@ function give_submit_points(string $type, string $content_type, string $content_
         }
 
         require_code('points');
-        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => LEDGER_STATUS_NORMAL, 'recipient_id' => $member_id, 't_type' => $content_type, 't_subtype' => 'add', 't_type_id' => strval($content_id)]);
+        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => LEDGER_STATUS_NORMAL, 'receiving_member' => $member_id, 't_type' => $content_type, 't_subtype' => 'add', 't_type_id' => strval($content_id)]);
         if ($already_awarded === null) {
             require_code('content');
             require_code('points2');

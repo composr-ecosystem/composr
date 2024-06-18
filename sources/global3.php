@@ -2748,7 +2748,7 @@ function get_ip_address(int $amount = 4, ?string $ip = null) : string
     }
 
     global $SITE_INFO;
-    if (($amount == 3) && (!empty($SITE_INFO['full_ips']))) { // Extra configurable security
+    if (($amount == 3) && (!empty($SITE_INFO['full_ip_addresss']))) { // Extra configurable security
         $amount = 4;
     }
 

@@ -40,10 +40,10 @@ class Hook_task_rss_cloud_update
             do {
                 $listeners = $GLOBALS['SITE_DB']->query_select('news_rss_cloud', ['*'], [], '', 100, $start);
                 foreach ($listeners as $listener) {
-                    $data = $listener['watching_channel'];
+                    $data = $listener['watch_channel_url'];
                     if ($listener['rem_protocol'] == 'xml-rpc') {
                         require_code('xmlrpc');
-                        xml_rpc('http://' . $listener['rem_ip'] . ':' . strval($listener['rem_port']) . '/' . $listener['rem_path'], $listener['rem_procedure'], $data, true);
+                        xml_rpc('http://' . $listener['rem_ip_address'] . ':' . strval($listener['rem_port']) . '/' . $listener['rem_path'], $listener['rem_procedure'], $data, true);
                     }
                     // Other protocols not supported
                 }

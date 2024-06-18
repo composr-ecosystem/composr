@@ -950,7 +950,7 @@ function add_download(int $category_id, string $name, string $url, string $descr
 
     $map = [
         'download_data_mash' => '', // Will be populated later
-        'download_licence' => $licence,
+        'download_licence_id' => $licence,
         'rep_image' => '',
         'edit_date' => $edit_date,
         'download_submitter_gets_points' => $submitter_gets_points,
@@ -1191,7 +1191,7 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
     }
 
     $update_map = [
-        'download_licence' => $licence,
+        'download_licence_id' => $licence,
         'original_filename' => $original_filename,
         'download_submitter_gets_points' => $submitter_gets_points,
         'download_cost' => $cost,
@@ -1434,7 +1434,7 @@ function delete_download_licence(int $id)
 
     $GLOBALS['SITE_DB']->query_delete('download_licences', ['id' => $id], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('download_downloads', ['download_licence' => null], ['download_licence' => $id]);
+    $GLOBALS['SITE_DB']->query_update('download_downloads', ['download_licence_id' => null], ['download_licence_id' => $id]);
 
     log_it('DELETE_DOWNLOAD_LICENCE', strval($id), $myrow['l_title']);
 

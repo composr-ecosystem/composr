@@ -51,7 +51,7 @@ class Hook_snippet_checklist_task_manage
                     'add_date' => time(),
                     'recur_interval' => $recur_interval,
                     'recur_every' => post_param_string('recur_every'),
-                    'task_is_done' => null,
+                    'done_time' => null,
                 ], true);
 
                 require_code('notifications');
@@ -90,7 +90,7 @@ class Hook_snippet_checklist_task_manage
                 $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', ['id' => $id]);
 
                 if ($task_title !== null) {
-                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', ['task_is_done' => time()], ['id' => $id], '', 1);
+                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', ['done_time' => time()], ['id' => $id], '', 1);
 
                     log_it('CHECK_LIST_MARK_DONE', strval($id), $task_title);
                 }
@@ -102,7 +102,7 @@ class Hook_snippet_checklist_task_manage
                 $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', ['id' => $id]);
 
                 if ($task_title !== null) {
-                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', ['task_is_done' => null], ['id' => $id], '', 1);
+                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', ['done_time' => null], ['id' => $id], '', 1);
 
                     log_it('CHECK_LIST_MARK_UNDONE', strval($id), $task_title);
                 }

@@ -205,7 +205,7 @@ Allows people to specify who referred them when they join your site or other con
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('referrer_override', [
-                'o_referrer' => '*MEMBER',
+                'o_referring_member' => '*MEMBER',
                 'o_scheme_name' => '*ID_TEXT',
                 'o_referrals_dif' => 'INTEGER',
                 'o_is_qualified' => '?BINARY',
@@ -213,8 +213,8 @@ Allows people to specify who referred them when they join your site or other con
 
             $GLOBALS['SITE_DB']->create_table('referees_qualified_for', [
                 'id' => '*AUTO',
-                'q_referee' => 'MEMBER',
-                'q_referrer' => 'MEMBER',
+                'q_referred_member' => 'MEMBER',
+                'q_referring_member' => 'MEMBER',
                 'q_scheme_name' => 'ID_TEXT',
                 'q_email_address' => 'SHORT_TEXT',
                 'q_time' => 'TIME',
@@ -237,8 +237,8 @@ Allows people to specify who referred them when they join your site or other con
 
                         foreach (array_keys($ini_file) as $scheme_name) {
                             $GLOBALS['SITE_DB']->query_insert('referees_qualified_for', [
-                                'q_referee' => $member_id,
-                                'q_referrer' => $row['i_invite_member'],
+                                'q_referred_member' => $member_id,
+                                'q_referring_member' => $row['i_invite_member'],
                                 'q_scheme_name' => $scheme_name,
                                 'q_email_address' => $row['i_email_address'],
                                 'q_time' => $row['i_time'],
@@ -248,6 +248,13 @@ Allows people to specify who referred them when they join your site or other con
                     }
                 }
             }
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('referrer_override', 'o_referrer', '*MEMBER', 'o_referring_member');
+            $GLOBALS['SITE_DB']->alter_table_field('referees_qualified_for', 'q_referee', 'MEMBER', 'q_referred_member');
+            $GLOBALS['SITE_DB']->alter_table_field('referees_qualified_for', 'q_referrer', 'MEMBER', 'q_referring_member');
         }
     }
 }

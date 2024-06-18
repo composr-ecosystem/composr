@@ -52,7 +52,7 @@ function render_quiz_box(array $row, string $zone = '_SEARCH', bool $give_contex
         '_POINTS' => strval($row['q_points_for_passing']),
         'TIMEOUT' => ($row['q_timeout'] === null) ? '' : display_time_period($row['q_timeout'] * 60),
         '_TIMEOUT' => ($row['q_timeout'] === null) ? '' : strval($row['q_timeout'] * 60),
-        'REDO_TIME' => (($row['q_redo_time'] === null) || ($row['q_redo_time'] == 0)) ? '' : display_time_period($row['q_redo_time'] * 60 * 60),
+        'REDO_TIME' => (($row['q_reattempt_hours'] === null) || ($row['q_reattempt_hours'] == 0)) ? '' : display_time_period($row['q_reattempt_hours'] * 60 * 60),
         'DATE' => get_timezoned_date_time_tempcode($row['q_add_date']),
         '_DATE' => strval($row['q_add_date']),
         'URL' => $url,
@@ -137,7 +137,7 @@ function render_quiz(array $questions) : object
 function score_quiz(int $entry_id, ?int $quiz_id = null, ?array $quiz = null, ?array $questions = null, bool $reveal_all = false) : array
 {
     if ($quiz_id === null) {
-        $quiz_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_quiz', ['id' => $entry_id]);
+        $quiz_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_quiz_id', ['id' => $entry_id]);
     }
     if ($quiz_id === null) {
         $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $quiz_id], '', 1);
@@ -147,19 +147,19 @@ function score_quiz(int $entry_id, ?int $quiz_id = null, ?array $quiz = null, ?a
         $quiz = $quizzes[0];
     }
 
-    $__given_answers = $GLOBALS['SITE_DB']->query_select('quiz_entry_answer', ['q_question', 'q_answer'], ['q_entry' => $entry_id]);
+    $__given_answers = $GLOBALS['SITE_DB']->query_select('quiz_entry_answer', ['q_question_id', 'q_answer'], ['q_entry_id' => $entry_id]);
     $_given_answers = [];
     foreach ($__given_answers as $_given_answer) {
-        if (!isset($_given_answers[$_given_answer['q_question']])) {
-            $_given_answers[$_given_answer['q_question']] = [];
+        if (!isset($_given_answers[$_given_answer['q_question_id']])) {
+            $_given_answers[$_given_answer['q_question_id']] = [];
         }
-        $_given_answers[$_given_answer['q_question']][] = $_given_answer['q_answer'];
+        $_given_answers[$_given_answer['q_question_id']][] = $_given_answer['q_answer'];
     }
 
     if ($questions === null) {
-        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $quiz_id], 'ORDER BY q_order');
+        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz_id' => $quiz_id], 'ORDER BY q_order');
         foreach ($questions as $i => $question) {
-            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $question['id']], 'ORDER BY q_order');
+            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question_id' => $question['id']], 'ORDER BY q_order');
             $questions[$i]['answers'] = $answers;
         }
     }

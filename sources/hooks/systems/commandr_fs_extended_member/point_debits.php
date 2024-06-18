@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__point_debits
      */
     public function read_property(int $member_id)
     {
-        return table_to_portable_rows('points_ledger', ['id'], ['sender_id' => $member_id]);
+        return table_to_portable_rows('points_ledger', ['id'], ['sending_member' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__point_debits
      */
     public function write_property(int $member_id, $data)
     {
-        table_from_portable_rows('points_ledger', $data, ['sender_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('points_ledger', $data, ['sending_member' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

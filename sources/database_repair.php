@@ -1132,14 +1132,14 @@ class DatabaseRepair
                 $type = 'SHORT_INTEGER';
                 break;
             case 'int(10) unsigned':
-                if (strpos($field_name, 'count') === false) {
-                    if ((strpos($field_name, 'date') !== false) || (strpos($field_name, 'time') !== false) || (strpos($field_name, 'until') !== false)) {
+                if ((strpos($field_name, 'count_') === 0) || (strpos($field_name, '_count') === (strlen($field_name) - 6)) || (strpos($field_name, '_count_') !== false)) { // Specific checks necessary to filter out fields like county and country
+                    $type = 'UINTEGER'; // Count fields will never be LONG_TRANS / SHORT_TRANS / etc
+                } else {
+                    if ((strpos($field_name, 'date') !== false) || ((strpos($field_name, 'time') !== false) && (strpos($field_name, 'timeout') === false)) || (strpos($field_name, 'until') !== false)) {
                         $type = 'TIME';
                     } else {
                         $type = $is_auto_increment ? 'AUTO' : 'LONG_TRANS'; // Also could be... SHORT_TRANS or UINTEGER... but we can't tell this at all
                     }
-                } else {
-                    $type = 'UINTEGER'; // Count fields will never be LONG_TRANS / SHORT_TRANS / etc
                 }
                 break;
             case 'int(11)':

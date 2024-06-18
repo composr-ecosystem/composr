@@ -183,7 +183,7 @@ class Module_admin_referrals
         list($num_total_qualified_by_referrer) = get_referral_scheme_stats_for($member_id, $scheme);
 
         $referrals_count = $num_total_qualified_by_referrer;
-        $is_qualified = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_is_qualified', ['o_referrer' => $member_id, 'o_scheme_name' => $scheme]);
+        $is_qualified = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_is_qualified', ['o_referring_member' => $member_id, 'o_scheme_name' => $scheme]);
 
         $fields = new Tempcode();
         $fields->attach(form_input_integer(do_lang_tempcode('QUALIFIED_REFERRALS_COUNT'), '', 'referrals_count', $referrals_count, true));
@@ -226,11 +226,11 @@ class Module_admin_referrals
 
         // Save
         $GLOBALS['SITE_DB']->query_delete('referrer_override', [
-            'o_referrer' => $member_id,
+            'o_referring_member' => $member_id,
             'o_scheme_name' => $scheme,
         ]);
         $GLOBALS['SITE_DB']->query_insert('referrer_override', [
-            'o_referrer' => $member_id,
+            'o_referring_member' => $member_id,
             'o_scheme_name' => $scheme,
             'o_referrals_dif' => $referrals_dif,
             'o_is_qualified' => $is_qualified,

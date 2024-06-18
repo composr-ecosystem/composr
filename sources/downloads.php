@@ -155,7 +155,7 @@ function render_download_box(array $row, bool $pic = true, bool $include_breadcr
     $licence_title = null;
     $licence_url = null;
     $licence_hyperlink = null;
-    $licence = $row['download_licence'];
+    $licence = $row['download_licence_id'];
     if ($licence !== null) {
         $licence_title = $GLOBALS['SITE_DB']->query_select_value_if_there('download_licences', 'l_title', ['id' => $licence]);
         if ($licence_title !== null) {

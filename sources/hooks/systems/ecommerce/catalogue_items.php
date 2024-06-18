@@ -317,7 +317,7 @@ class Hook_ecommerce_catalogue_items
                 if (is_guest($member_id)) {
                     $where['session_id'] = get_session_id();
                 } else {
-                    $where['ordered_by'] = $member_id;
+                    $where['ordering_member'] = $member_id;
                 }
                 $_cart_item_count = $GLOBALS['SITE_DB']->query_select_value('shopping_cart', 'SUM(quantity)', $where);
                 $cart_item_count = @intval($_cart_item_count);

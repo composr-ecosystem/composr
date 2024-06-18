@@ -99,18 +99,18 @@ class Hook_cns_warnings_point_transactions
             $_fields = new Tempcode();
             foreach ($rows as $row) {
                 $reason = get_translated_tempcode('points_ledger', $row, 'reason');
-                if ($row['sender_id'] == $member_id) {
-                    if ($row['recipient_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+                if ($row['sending_member'] == $member_id) {
+                    if ($row['receiving_member'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
                         $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
-                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id']);
+                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member']);
                         $pretty_name = do_lang_tempcode('ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])), ['', '', '', '', escape_html($username)]);
                     }
-                } elseif ($row['recipient_id'] == $member_id) {
-                    if ($row['sender_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+                } elseif ($row['receiving_member'] == $member_id) {
+                    if ($row['sending_member'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
                         $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
-                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id']);
+                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member']);
                         $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])), ['', '', '', '', escape_html($username)]);
                     }
                 } else {
@@ -165,18 +165,18 @@ class Hook_cns_warnings_point_transactions
                 $row = $_row[0];
 
                 $reason = get_translated_tempcode('points_ledger', $row, 'reason');
-                if ($row['sender_id'] == $member_id) {
-                    if ($row['recipient_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+                if ($row['sending_member'] == $member_id) {
+                    if ($row['receiving_member'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
                         $pretty_name = do_lang_tempcode('_ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
-                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id']);
+                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member']);
                         $pretty_name = do_lang_tempcode('ACTIVITY_SEND_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])), ['', '', '', '', escape_html($username)]);
                     }
-                } elseif ($row['recipient_id'] == $member_id) {
-                    if ($row['sender_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+                } elseif ($row['receiving_member'] == $member_id) {
+                    if ($row['sending_member'] == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
                         $pretty_name = do_lang_tempcode('_ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])));
                     } else {
-                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id']);
+                        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member']);
                         $pretty_name = do_lang_tempcode('ACTIVITY_RECEIVE_POINTS', $reason, escape_html(integer_format($row['amount_points'] + $row['amount_gift_points'])), ['', '', '', '', escape_html($username)]);
                     }
                 } else {

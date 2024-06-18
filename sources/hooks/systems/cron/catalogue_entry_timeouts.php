@@ -44,7 +44,7 @@ class Hook_cron_catalogue_entry_timeouts
         if ($calculate_num_queued) {
             $num_queued = 0;
 
-            $catalogue_categories = $GLOBALS['SITE_DB']->query('SELECT id,cc_move_target,cc_move_days_lower,cc_move_days_higher FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_move_target IS NOT NULL');
+            $catalogue_categories = $GLOBALS['SITE_DB']->query('SELECT id,cc_move_target_id,cc_move_days_lower,cc_move_days_higher FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_move_target_id IS NOT NULL');
             foreach ($catalogue_categories as $row) {
                 $num_queued += $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['cc_id' => $row['id']]);
             }
@@ -69,7 +69,7 @@ class Hook_cron_catalogue_entry_timeouts
     {
         $time_now = time();
 
-        $catalogue_categories = $GLOBALS['SITE_DB']->query('SELECT id,cc_move_target,cc_move_days_lower,cc_move_days_higher FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_move_target IS NOT NULL');
+        $catalogue_categories = $GLOBALS['SITE_DB']->query('SELECT id,cc_move_target_id,cc_move_days_lower,cc_move_days_higher FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_move_target_id IS NOT NULL');
         foreach ($catalogue_categories as $row) {
             $changed = false;
 
@@ -83,7 +83,7 @@ class Hook_cron_catalogue_entry_timeouts
                     $time_diff = $time_now - $entry['ce_last_moved'];
                     $move_days = $higher ? $row['cc_move_days_higher'] : $row['cc_move_days_lower'];
                     if ($time_diff / (60 * 60 * 24) > $move_days) {
-                        $GLOBALS['SITE_DB']->query_update('catalogue_entries', ['ce_last_moved' => $time_now, 'cc_id' => $row['cc_move_target']], ['id' => $entry['id']], '', 1);
+                        $GLOBALS['SITE_DB']->query_update('catalogue_entries', ['ce_last_moved' => $time_now, 'cc_id' => $row['cc_move_target_id']], ['id' => $entry['id']], '', 1);
                         $changed = true;
                     }
                 }
@@ -94,7 +94,7 @@ class Hook_cron_catalogue_entry_timeouts
 
             if ($changed) {
                 require_code('catalogues2');
-                calculate_category_child_count_cache($row['cc_move_target']);
+                calculate_category_child_count_cache($row['cc_move_target_id']);
                 calculate_category_child_count_cache($row['id']);
             }
         }

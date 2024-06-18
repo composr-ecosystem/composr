@@ -58,7 +58,7 @@ class Hook_task_export_points_ledger
         do {
             // Grab our transactions
             if ($member_id !== null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], [], ' AND (recipient_id=' . strval($member_id) . ' OR sender_id=' . strval($member_id) . ') ORDER BY date_and_time DESC', $max, $start);
+                $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], [], ' AND (receiving_member=' . strval($member_id) . ' OR sending_member=' . strval($member_id) . ') ORDER BY date_and_time DESC', $max, $start);
             } else {
                 $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], [], ' ORDER BY date_and_time DESC', $max, $start);
             }
@@ -70,19 +70,19 @@ class Hook_task_export_points_ledger
                 $data_point[do_lang('DATE')] = get_timezoned_date_time($row['date_and_time'], false);
                 $data_point[do_lang('GIFT_POINTS')] = $row['amount_gift_points'];
                 $data_point[do_lang('POINTS')] = $row['amount_points'];
-                $data_point[do_lang('SENDER')] = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], ($member_id === null), USERNAME_DEFAULT_DELETED);
-                $data_point[do_lang('RECIPIENT')] = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], ($member_id === null), USERNAME_DEFAULT_DELETED);
+                $data_point[do_lang('SENDER')] = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], ($member_id === null), USERNAME_DEFAULT_DELETED);
+                $data_point[do_lang('RECIPIENT')] = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], ($member_id === null), USERNAME_DEFAULT_DELETED);
                 $data_point[do_lang('REASON')] = get_translated_text($row['reason']);
 
                 // Anonymous transactions
-                if (($member_id !== null) && ($row['anonymous'] == 1) && ($row['sender_id'] != $member_id) && (!has_privilege($member_id, 'trace_anonymous_points_transactions'))) {
+                if (($member_id !== null) && ($row['anonymous'] == 1) && ($row['sending_member'] != $member_id) && (!has_privilege($member_id, 'trace_anonymous_points_transactions'))) {
                     $data_point[do_lang('SENDER')] = do_lang('ANON');
                 }
 
                 if ($row['status'] == LEDGER_STATUS_NORMAL) {
                     $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_0');
-                } elseif (($row['linked_to'] !== null) && ($member_id === null)) { // Only show linked transaction identifiers if we are generating the full (admin) ledger
-                    $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_SHORT_' . strval($row['status']), strval($row['linked_to']));
+                } elseif (($row['linked_ledger_id'] !== null) && ($member_id === null)) { // Only show linked transaction identifiers if we are generating the full (admin) ledger
+                    $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_SHORT_' . strval($row['status']), strval($row['linked_ledger_id']));
                 } else {
                     $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_SHORT_B_' . strval($row['status']));
                 }

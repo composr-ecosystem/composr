@@ -254,7 +254,7 @@ class Module_admin_points
         if ($filter_username != '') {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
             if ($member_id !== null) {
-                $end .= ' AND (sender_id=' . strval($member_id) . ' OR recipient_id=' . strval($member_id) . ')';
+                $end .= ' AND (sending_member=' . strval($member_id) . ' OR receiving_member=' . strval($member_id) . ')';
             } else {
                 attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
             }
@@ -263,13 +263,13 @@ class Module_admin_points
             $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
             switch ($filter_type) {
                 case 'send':
-                    $end .= ' AND recipient_id<>' . strval($guest_id) . ' AND sender_id<>' . strval($guest_id);
+                    $end .= ' AND receiving_member<>' . strval($guest_id) . ' AND sending_member<>' . strval($guest_id);
                     break;
                 case 'credit':
-                    $where['sender_id'] = $guest_id;
+                    $where['sending_member'] = $guest_id;
                     break;
                 case 'debit':
-                    $where['recipient_id'] = $guest_id;
+                    $where['receiving_member'] = $guest_id;
                     break;
                 case 'reversal':
                     $end .= ' AND (status=' . strval(LEDGER_STATUS_REVERSED) . ' OR status=' . strval(LEDGER_STATUS_REVERSING) . ')';
@@ -336,18 +336,18 @@ class Module_admin_points
             $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
             $_date = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id']], '_SELF'), $date, false, true);
 
-            if (is_guest($myrow['recipient_id'])) {
+            if (is_guest($myrow['receiving_member'])) {
                 $to = do_lang_tempcode('USER_SYSTEM');
             } else {
-                $to_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['recipient_id'], false, USERNAME_DEFAULT_NULL);
-                $to_url = points_url($myrow['recipient_id']);
+                $to_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['receiving_member'], false, USERNAME_DEFAULT_NULL);
+                $to_url = points_url($myrow['receiving_member']);
                 $to = ($to_name === null) ? do_lang_tempcode('UNKNOWN_EM') : hyperlink($to_url, $to_name, false, true);
             }
-            if (is_guest($myrow['sender_id'])) {
+            if (is_guest($myrow['sending_member'])) {
                 $from = do_lang_tempcode('USER_SYSTEM');
             } else {
-                $from_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['sender_id'], false, USERNAME_DEFAULT_NULL);
-                $from_url = points_url($myrow['sender_id']);
+                $from_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['sending_member'], false, USERNAME_DEFAULT_NULL);
+                $from_url = points_url($myrow['sending_member']);
                 $from = ($from_name === null) ? do_lang_tempcode('UNKNOWN_EM') : hyperlink($from_url, $from_name, false, true);
 
                 // Mask sender if we do not have permission to trace anonymous transactions
@@ -394,8 +394,8 @@ class Module_admin_points
             }
             if ($myrow['status'] == LEDGER_STATUS_NORMAL) {
                 $status = do_lang_tempcode('LEDGER_STATUS_0');
-            } elseif ($myrow['linked_to'] !== null) {
-                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . strval($myrow['status']), escape_html(strval($myrow['linked_to'])));
+            } elseif ($myrow['linked_ledger_id'] !== null) {
+                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . strval($myrow['status']), escape_html(strval($myrow['linked_ledger_id'])));
             } else {
                 $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . strval($myrow['status']));
             }
@@ -586,25 +586,25 @@ class Module_admin_points
         switch ($row['status']) {
             case LEDGER_STATUS_REVERSING:
             case LEDGER_STATUS_REVERSED:
-                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to'], 'status' => ($row['status'] == LEDGER_STATUS_REVERSING) ? LEDGER_STATUS_REVERSED : LEDGER_STATUS_REVERSING], '', 1);
+                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_ledger_id'], 'status' => ($row['status'] == LEDGER_STATUS_REVERSING) ? LEDGER_STATUS_REVERSED : LEDGER_STATUS_REVERSING], '', 1);
                 if (empty($_row2)) {
                     $status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']) . '_UNLINKED');
                 } else {
                     $row2 = $_row2[0];
                     $date = get_timezoned_date_time($row2['date_and_time'], false);
-                    $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_to'])), escape_html($date));
-                    $status = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['linked_to']], '_SELF'), $_status, false, true);
+                    $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_ledger_id'])), escape_html($date));
+                    $status = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['linked_ledger_id']], '_SELF'), $_status, false, true);
                 }
                 break;
             case LEDGER_STATUS_REFUND:
-                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to']], '', 1);
+                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_ledger_id']], '', 1);
                 if (empty($_row2)) {
                     $status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']) . '_UNLINKED');
                 } else {
                     $row2 = $_row2[0];
                     $date = get_timezoned_date_time($row2['date_and_time'], false);
-                    $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_to'])), escape_html($date));
-                    $status = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['linked_to']], '_SELF'), $_status, false, true);
+                    $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_ledger_id'])), escape_html($date));
+                    $status = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['linked_ledger_id']], '_SELF'), $_status, false, true);
                 }
                 break;
             default:
@@ -612,10 +612,10 @@ class Module_admin_points
         }
 
         $date = get_timezoned_date_time($row['date_and_time'], false);
-        $from_name = is_guest($row['sender_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true);
-        $_from_name = (is_guest($row['sender_id'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($row['sender_id']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
-        $to_name = is_guest($row['recipient_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], true);
-        $_to_name = (is_guest($row['recipient_id'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['recipient_id']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $from_name = is_guest($row['sending_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], true);
+        $_from_name = (is_guest($row['sending_member'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($row['sending_member']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $to_name = is_guest($row['receiving_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true);
+        $_to_name = (is_guest($row['receiving_member'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         // Mask sender if we do not have permission to trace anonymous transactions
         if (($row['anonymous'] == 1) && (!has_privilege($member_id_viewing, 'trace_anonymous_points_transactions'))) {

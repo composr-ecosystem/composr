@@ -127,7 +127,7 @@ class Hook_admin_stats_points extends CMSStatsProvider
                     $data_buckets['points_transacted'][$month][$pivot][$pivot_value] += ($row['amount_gift_points'] + $row['amount_points']);
 
                     // Points sent between members (including via escrow)
-                    if ((!is_guest($row['sender_id']) && !is_guest($row['recipient_id'])) || ($row['t_type'] == 'points_escrow')) {
+                    if ((!is_guest($row['sending_member']) && !is_guest($row['receiving_member'])) || ($row['t_type'] == 'points_escrow')) {
                         if (!isset($data_buckets['points_sent'][$month][$pivot][$pivot_value])) {
                             $data_buckets['points_sent'][$month][$pivot][$pivot_value] = 0;
                         }
@@ -135,7 +135,7 @@ class Hook_admin_stats_points extends CMSStatsProvider
                     }
 
                     // Points spent (except charged by warnings)
-                    if (is_guest($row['recipient_id']) && ($row['t_type'] != 'warning')) {
+                    if (is_guest($row['receiving_member']) && ($row['t_type'] != 'warning')) {
                         if (!isset($data_buckets['points_spent'][$month][$pivot][$pivot_value])) {
                             $data_buckets['points_spent'][$month][$pivot][$pivot_value] = 0;
                         }
@@ -143,7 +143,7 @@ class Hook_admin_stats_points extends CMSStatsProvider
                     }
 
                     // Points received
-                    if (!is_guest($row['recipient_id'])) {
+                    if (!is_guest($row['receiving_member'])) {
                         if (!isset($data_buckets['points_received'][$month][$pivot][$pivot_value])) {
                             $data_buckets['points_received'][$month][$pivot][$pivot_value] = 0;
                         }
@@ -151,7 +151,7 @@ class Hook_admin_stats_points extends CMSStatsProvider
                     }
 
                     // Gift points used
-                    if (!is_guest($row['sender_id'])) {
+                    if (!is_guest($row['sending_member'])) {
                         if (!isset($data_buckets['gift_points_used'][$month][$pivot][$pivot_value])) {
                             $data_buckets['gift_points_used'][$month][$pivot][$pivot_value] = 0;
                         }

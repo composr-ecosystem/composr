@@ -118,10 +118,10 @@ class stats_test_set extends cms_test_case
             $dummy_data['f_topics'][] = ['_ALLOW_NULL_' => false, 't_forum_id' => get_ticket_forum_id()];
         }
         if (addon_installed('points')) {
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'recipient_id' => 2];
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => 2, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => 3, 'recipient_id' => 2];
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sender_id' => 3, 'recipient_id' => 2, 'amount_gift_points' => 1];
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'receiving_member' => 2];
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 2, 'receiving_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 3, 'receiving_member' => 2];
+            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 3, 'receiving_member' => 2, 'amount_gift_points' => 1];
 
             // FUDGE: so we can test top members by points (which uses CPF and not database)
             $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_lifetime', 1000);

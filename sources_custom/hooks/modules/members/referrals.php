@@ -137,7 +137,7 @@ class Hook_members_referrals
             if ($referrer !== null) {
                 $referrer_username = $GLOBALS['FORUM_DRIVER']->get_username($referrer, false, USERNAME_DEFAULT_DELETED);
                 $referrer_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($referrer, false);
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('referees_qualified_for', 'id', ['q_referee' => $member_id]);
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('referees_qualified_for', 'id', ['q_referred_member' => $member_id]);
                 $link = do_lang_tempcode(($test === null) ? 'MEMBER_REFERRED_BY_NONQUALIFIED' : 'MEMBER_REFERRED_BY_QUALIFIED', escape_html($username), escape_html($referrer_username), escape_html($referrer_url));
                 $ret[do_lang('TYPE_REFERRER')] = $link;
             } else {

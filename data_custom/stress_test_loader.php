@@ -464,8 +464,8 @@ function do_work()
 
         $GLOBALS['SITE_DB']->query_insert('poll_votes', [
             'v_poll_id' => $poll_id,
-            'v_voter_id' => 2,
-            'v_voter_ip' => $ip,
+            'v_voting_member' => 2,
+            'v_voting_ip_address' => $ip,
             'v_vote_for' => $cast,
             'v_vote_time' => time(),
         ]);
@@ -621,7 +621,7 @@ function do_work()
     for ($j = $GLOBALS['SITE_DB']->query_select_value('shopping_cart', 'COUNT(*)'); $j < $num_wanted; $j++) {
         $GLOBALS['SITE_DB']->query_insert('shopping_cart', [
             'session_id' => get_secure_random_string(),
-            'ordered_by' => mt_rand(db_get_first_id() + 1, $num_wanted - 1),
+            'ordering_member' => mt_rand(db_get_first_id() + 1, $num_wanted - 1),
             'type_code' => strval(db_get_first_id()),
             'purchase_id' => strval(get_member()),
             'quantity' => 1,

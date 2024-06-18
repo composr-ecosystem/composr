@@ -27,7 +27,7 @@ $block_id = get_block_id($map);
 
 $max = array_key_exists('max', $map) ? intval($map['max']) : 10;
 
-$sql = 'SELECT * FROM ' . get_table_prefix() . 'points_ledger g WHERE sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY g.id DESC';
+$sql = 'SELECT * FROM ' . get_table_prefix() . 'points_ledger g WHERE sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY g.id DESC';
 $rows = $GLOBALS['SITE_DB']->query($sql, $max, 0, false, false, ['reason' => 'SHORT_TRANS__COMCODE']);
 
 $_rows = [];
@@ -41,13 +41,13 @@ foreach ($rows as $row) {
         continue;
     }
 
-    $from_name = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true, USERNAME_DEFAULT_NULL);
-    $from_url = points_url($row['sender_id']);
+    $from_name = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], true, USERNAME_DEFAULT_NULL);
+    $from_url = points_url($row['sending_member']);
     $from_link = hyperlink($from_url, $from_name, false, true);
 
-    $to_name = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], true, USERNAME_DEFAULT_NULL);
-    $to_url = points_url($row['recipient_id']);
-    $to_link = do_template('MEMBER_TOOLTIP', ['_GUID' => '0cdd0adf612cf0f50a732daa79718d09', 'SUBMITTER' => strval($row['recipient_id'])]);//hyperlink($to_url, $to_name, false, true);
+    $to_name = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true, USERNAME_DEFAULT_NULL);
+    $to_url = points_url($row['receiving_member']);
+    $to_link = do_template('MEMBER_TOOLTIP', ['_GUID' => '0cdd0adf612cf0f50a732daa79718d09', 'SUBMITTER' => strval($row['receiving_member'])]);//hyperlink($to_url, $to_name, false, true);
 
     $reason = get_translated_text($row['reason']);
 
@@ -56,12 +56,12 @@ foreach ($rows as $row) {
         'AMOUNT' => integer_format($amount),
 
         'FROM_NAME' => $from_name,
-        'FROM_ID' => strval($row['sender_id']),
+        'FROM_ID' => strval($row['sending_member']),
         'FROM_URL' => $from_url,
         'FROM_LINK' => $from_link,
 
         'TO_NAME' => $to_name,
-        'TO_ID' => strval($row['recipient_id']),
+        'TO_ID' => strval($row['receiving_member']),
         'TO_URL' => $to_url,
         'TO_LINK' => $to_link,
 

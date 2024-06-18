@@ -563,8 +563,8 @@ PHP;
         $category = get_translated_text($news_cat_row['nc_title']);
         $category_url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $news_cat_row['id']], $zone);
 
-        if ($myrow['news_image'] != '') {
-            $rep_image_url = $myrow['news_image'];
+        if ($myrow['news_image_url'] != '') {
+            $rep_image_url = $myrow['news_image_url'];
             if (url_is_local($rep_image_url)) {
                 $rep_image_url = $base_url . '/' . $rep_image_url;
             }

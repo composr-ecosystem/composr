@@ -777,10 +777,10 @@ function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?
                 $feed_urls_todo[$feed_url] = null;
             }
         }
-        $_event_types = list_to_map('id', $GLOBALS['SITE_DB']->query_select('calendar_types', ['id', 't_title', 't_logo', 't_external_feed']));
+        $_event_types = list_to_map('id', $GLOBALS['SITE_DB']->query_select('calendar_types', ['id', 't_title', 't_logo', 't_external_feed_url']));
         foreach ($_event_types as $j => $_event_type) {
-            if (($_event_type['t_external_feed'] != '') && (($filter === null) || (!array_key_exists($_event_type['id'], $filter)) || ($filter[$_event_type['id']] == 1)) && ((!$check_perms) || (has_category_access(get_member(), 'calendar', strval($_event_type['id']))))) {
-                $feed_urls_todo[$_event_type['t_external_feed']] = $_event_type['id'];
+            if (($_event_type['t_external_feed_url'] != '') && (($filter === null) || (!array_key_exists($_event_type['id'], $filter)) || ($filter[$_event_type['id']] == 1)) && ((!$check_perms) || (has_category_access(get_member(), 'calendar', strval($_event_type['id']))))) {
+                $feed_urls_todo[$_event_type['t_external_feed_url']] = $_event_type['id'];
             }
 
             $_event_types[$j]['_title'] = get_translated_text($_event_type['t_title']);

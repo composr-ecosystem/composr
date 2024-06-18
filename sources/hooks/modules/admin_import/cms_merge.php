@@ -389,7 +389,7 @@ class Hook_import_cms_merge
                 'q_open_time' => $row['q_open_time'],
                 'q_close_time' => $row['q_close_time'],
                 'q_num_winners' => $row['q_num_winners'],
-                'q_redo_time' => $row['q_redo_time'],
+                'q_reattempt_hours' => $row['q_reattempt_hours'],
                 'q_type' => $row['q_type'],
                 'q_validated' => $row['q_validated'],
                 'q_submitter' => $row['q_submitter'],
@@ -418,7 +418,7 @@ class Hook_import_cms_merge
                 continue;
             }
 
-            $quiz = import_id_remap_get('quiz', strval($row['q_quiz']), true);
+            $quiz = import_id_remap_get('quiz', strval($row['q_quiz_id']), true);
             if ($quiz === null) {
                 continue;
             }
@@ -431,7 +431,7 @@ class Hook_import_cms_merge
             $map = [
                 'q_order' => $row['q_order'],
                 'q_type' => $row['q_type'],
-                'q_quiz' => $quiz,
+                'q_quiz_id' => $quiz,
                 'q_required' => $row['q_required'],
                 'q_marked' => $row['q_marked'],
             ];
@@ -445,7 +445,7 @@ class Hook_import_cms_merge
         $rows = $db->query_select('quiz_question_answers', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $i => $row) {
-            $question = import_id_remap_get('quiz_question', strval($row['q_question']), true);
+            $question = import_id_remap_get('quiz_question', strval($row['q_question_id']), true);
             if ($question === null) {
                 continue;
             }
@@ -455,7 +455,7 @@ class Hook_import_cms_merge
 
             $map = [
                 'q_order' => $row['q_order'],
-                'q_question' => $question,
+                'q_question_id' => $question,
                 'q_is_correct' => $row['q_is_correct'],
             ];
             $map += insert_lang_comcode('q_answer_text', $this->get_lang_string($db, $row['q_answer_text']), 2);
@@ -471,7 +471,7 @@ class Hook_import_cms_merge
                 continue;
             }
 
-            $quiz = import_id_remap_get('quiz', strval($row['q_quiz']), true);
+            $quiz = import_id_remap_get('quiz', strval($row['q_quiz_id']), true);
             if ($quiz === null) {
                 continue;
             }
@@ -483,7 +483,7 @@ class Hook_import_cms_merge
             $id_new = $GLOBALS['SITE_DB']->query_insert('quiz_entries', [
                 'q_time' => $row['q_time'],
                 'q_member' => $member_id,
-                'q_quiz' => $quiz,
+                'q_quiz_id' => $quiz,
                 'q_results' => $row['q_results'],
             ], true);
 
@@ -493,28 +493,28 @@ class Hook_import_cms_merge
         $rows = $db->query_select('quiz_entry_answer', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
-            $question = import_id_remap_get('quiz_question', strval($row['q_question']), true);
+            $question = import_id_remap_get('quiz_question', strval($row['q_question_id']), true);
             if ($question === null) {
                 continue;
             }
-            $entry = import_id_remap_get('quiz_entry', strval($row['q_entry']));
+            $entry = import_id_remap_get('quiz_entry', strval($row['q_entry_id']));
 
-            $GLOBALS['SITE_DB']->query_insert('quiz_entry_answer', ['q_entry' => $entry, 'q_question' => $question, 'q_answer' => $row['q_answer']]);
+            $GLOBALS['SITE_DB']->query_insert('quiz_entry_answer', ['q_entry_id' => $entry, 'q_question_id' => $question, 'q_answer' => $row['q_answer']]);
         }
 
         $rows = $db->query_select('quiz_winner', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
-            $quiz = import_id_remap_get('quiz', strval($row['q_quiz']), true);
+            $quiz = import_id_remap_get('quiz', strval($row['q_quiz_id']), true);
             if ($quiz === null) {
                 continue;
             }
-            $entry = import_id_remap_get('quiz_entry', strval($row['q_entry']), true);
+            $entry = import_id_remap_get('quiz_entry', strval($row['q_entry_id']), true);
             if ($entry === null) {
                 continue;
             }
 
-            $GLOBALS['SITE_DB']->query_insert('quiz_winner', ['q_quiz' => $quiz, 'q_entry' => $entry, 'q_winner_level' => $row['q_winner_level']]);
+            $GLOBALS['SITE_DB']->query_insert('quiz_winner', ['q_quiz_id' => $quiz, 'q_entry_id' => $entry, 'q_winner_level' => $row['q_winner_level']]);
         }
 
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'quiz', 'quiz');
@@ -1005,8 +1005,8 @@ class Hook_import_cms_merge
                 unset($row['reason__text_parsed']);
                 unset($row['reason__source_user']);
 
-                $viewer_member = $on_same_msn ? $row['sender_id'] : import_id_remap_get('member', strval($row['sender_id']), true);
-                $member_id = $on_same_msn ? $row['recipient_id'] : import_id_remap_get('member', strval($row['recipient_id']), true);
+                $viewer_member = $on_same_msn ? $row['sending_member'] : import_id_remap_get('member', strval($row['sending_member']), true);
+                $member_id = $on_same_msn ? $row['receiving_member'] : import_id_remap_get('member', strval($row['receiving_member']), true);
                 if ($viewer_member === null) {
                     $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                 }
@@ -1018,10 +1018,10 @@ class Hook_import_cms_merge
                     'date_and_time' => $row['date_and_time'],
                     'amount_gift_points' => $row['amount_gift_points'],
                     'amount_points' => $row['amount_points'],
-                    'sender_id' => $viewer_member,
-                    'recipient_id' => $member_id,
+                    'sending_member' => $viewer_member,
+                    'receiving_member' => $member_id,
                     'anonymous' => $row['anonymous'],
-                    'linked_to' => $row['linked_to'],
+                    'linked_ledger_id' => $row['linked_ledger_id'],
 
                     't_type' => $row['t_type'],
                     't_subtype' => $row['t_subtype'],
@@ -1035,11 +1035,11 @@ class Hook_import_cms_merge
                 import_id_remap_put('points_ledger', strval($row['id']), $id_new);
             }
 
-            // Update linked_to to new IDs
+            // Update linked_ledger_id to new IDs
             foreach ($rows as $row) {
                 $id_new = import_id_remap_get('points_ledger', strval($row['id']), true);
                 if ($id_new !== null) {
-                    $GLOBALS['SITE_DB']->query_update('points_ledger', ['linked_to' => $id_new], ['linked_to' => $row['id']]);
+                    $GLOBALS['SITE_DB']->query_update('points_ledger', ['linked_ledger_id' => $id_new], ['linked_ledger_id' => $row['id']]);
                 }
             }
 
@@ -1067,8 +1067,8 @@ class Hook_import_cms_merge
             $on_same_msn = ($this->on_same_msn($file_base));
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
-                $viewer_member = $on_same_msn ? $row['sender_id'] : import_id_remap_get('member', strval($row['sender_id']), true);
-                $member_id = $on_same_msn ? $row['recipient_id'] : import_id_remap_get('member', strval($row['recipient_id']), true);
+                $viewer_member = $on_same_msn ? $row['sending_member'] : import_id_remap_get('member', strval($row['sending_member']), true);
+                $member_id = $on_same_msn ? $row['receiving_member'] : import_id_remap_get('member', strval($row['receiving_member']), true);
                 if ($viewer_member === null) {
                     $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                 }
@@ -1084,9 +1084,9 @@ class Hook_import_cms_merge
                     'date_and_time' => $row['date_and_time'],
                     'amount' => $row['amount'],
                     'original_points_ledger_id' => $ledger_id_new,
-                    'sender_id' => $viewer_member,
-                    'recipient_id' => $member_id,
-                    'expiration' => $row['expiration'],
+                    'sending_member' => $viewer_member,
+                    'receiving_member' => $member_id,
+                    'expiration_time' => $row['expiration_time'],
                     'sender_status' => $row['sender_status'],
                     'recipient_status' => $row['recipient_status'],
                     'status' => $row['status'],
@@ -1273,8 +1273,8 @@ class Hook_import_cms_merge
                 foreach ($voters as $voter) {
                     $votes[] = [
                         'v_poll_id' => $row['id'],
-                        'v_voter_id' => is_numeric($voter) ? intval($voter) : null,
-                        'v_voter_ip' => is_numeric($voter) ? '' : $voter,
+                        'v_voting_member' => is_numeric($voter) ? intval($voter) : null,
+                        'v_voting_ip_address' => is_numeric($voter) ? '' : $voter,
                         'v_vote_for' => null,
                     ];
                 }
@@ -1282,8 +1282,8 @@ class Hook_import_cms_merge
             foreach ($votes as $vote) {
                 $GLOBALS['SITE_DB']->query_insert('poll_votes', [
                     'v_poll_id' => $id_new,
-                    'v_voter_id' => $vote['v_voter_id'],
-                    'v_voter_ip' => $vote['v_voter_ip'],
+                    'v_voting_member' => $vote['v_voting_member'],
+                    'v_voting_ip_address' => $vote['v_voting_ip_address'],
                     'v_vote_for' => $vote['v_vote_for'],
                     'v_vote_time' => $vote['v_vote_time'],
                 ]);
@@ -1356,7 +1356,7 @@ class Hook_import_cms_merge
 
             $regions = collapse_1d_complexity('region', $db->query_select('content_regions', ['region'], ['content_type' => 'news', 'content_id' => strval($row['id'])]));
 
-            $id_new = add_news($this->get_lang_string($db, $row['title']), $this->get_lang_string($db, $row['news']), $row['author'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $this->get_lang_string($db, $row['news_article']), $main_news_category, $news_category, $row['date_and_time'], $submitter, $row['news_views'], $row['edit_date'], $id, $row['news_image'], '', '', $regions);
+            $id_new = add_news($this->get_lang_string($db, $row['title']), $this->get_lang_string($db, $row['news']), $row['author'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $this->get_lang_string($db, $row['news_article']), $main_news_category, $news_category, $row['date_and_time'], $submitter, $row['news_views'], $row['edit_date'], $id, $row['news_image_url'], '', '', $regions);
 
             $this->_import_content_privacy($db, 'news', strval($row['id']), strval($id_new));
 
@@ -1486,7 +1486,7 @@ class Hook_import_cms_merge
                 $category_id = db_get_first_id();
             }
             $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
-            $id_new = add_download($category_id, $this->get_lang_string($db, $row['name']), $row['url'], $this->get_lang_string($db, $row['the_description']), $row['author'], $this->get_lang_string($db, $row['additional_details']), null, $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $row['original_filename'], $row['file_size'], $row['download_cost'], $row['download_submitter_gets_points'], $row['download_licence'], $row['add_date'], $row['num_downloads'], $row['download_views'], $submitter, $row['edit_date'], $id, '', '', $row['default_pic'], $row['url_redirect']);
+            $id_new = add_download($category_id, $this->get_lang_string($db, $row['name']), $row['url'], $this->get_lang_string($db, $row['the_description']), $row['author'], $this->get_lang_string($db, $row['additional_details']), null, $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $row['original_filename'], $row['file_size'], $row['download_cost'], $row['download_submitter_gets_points'], $row['download_licence_id'], $row['add_date'], $row['num_downloads'], $row['download_views'], $submitter, $row['edit_date'], $id, '', '', $row['default_pic'], $row['url_redirect']);
 
             $this->_import_content_privacy($db, 'download', strval($row['id']), strval($id_new));
 
@@ -1888,7 +1888,7 @@ class Hook_import_cms_merge
                 'add_date' => $row['add_date'],
                 'recur_interval' => $row['recur_interval'],
                 'recur_every' => $row['recur_every'],
-                'task_is_done' => $row['task_is_done'],
+                'done_time' => $row['done_time'],
             ]);
         }
     }
@@ -1940,7 +1940,7 @@ class Hook_import_cms_merge
                 continue;
             }
 
-            $id_new = add_event_type($this->get_lang_string($db, $row['t_title']), $row['t_logo'], $row['t_external_feed']);
+            $id_new = add_event_type($this->get_lang_string($db, $row['t_title']), $row['t_logo'], $row['t_external_feed_url']);
 
             import_id_remap_put('event_type', strval($row['id']), $id_new);
         }
@@ -2315,7 +2315,7 @@ class Hook_import_cms_merge
 
             $rep_image = $row['rep_image'];
 
-            $id_new = actual_add_catalogue_category($row['c_name'], $this->get_lang_string($db, $row['cc_title']), $this->get_lang_string($db, $row['cc_description']), $row['cc_notes'], ($row['cc_parent_id'] === null) ? null : -$row['cc_parent_id'], $rep_image, $row['cc_move_days_lower'], $row['cc_move_days_higher'], $row['cc_move_target'], $row['cc_add_date'], $id);
+            $id_new = actual_add_catalogue_category($row['c_name'], $this->get_lang_string($db, $row['cc_title']), $this->get_lang_string($db, $row['cc_description']), $row['cc_notes'], ($row['cc_parent_id'] === null) ? null : -$row['cc_parent_id'], $rep_image, $row['cc_move_days_lower'], $row['cc_move_days_higher'], $row['cc_move_target_id'], $row['cc_add_date'], $id);
 
             import_id_remap_put('catalogue_category', strval($row['id']), $id_new);
         }
