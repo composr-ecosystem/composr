@@ -239,7 +239,7 @@ class Hook_contentious_overrides_karma
                 "handle_confirmed_transaction",
                 "return [\$type_code, \$member_id];",
                 "// Award karma
-                if ((\$status == 'Completed') && (addon_installed('karma'))) {
+                if ((\$member_id !== null) && (\$status == 'Completed') && (addon_installed('karma'))) {
                     require_code('karma');
                     require_code('karma2');
                     \$karma_rate = intval(get_option('karma_ecommerce'));

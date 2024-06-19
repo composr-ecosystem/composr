@@ -67,7 +67,7 @@ function dispatch_sms(string $message, array $to_sms) : int
     // TODO: $confirmed_numbers = collapse_2d_complexity('m_phone_number', 'm_member_id', $GLOBALS['SITE_DB']->query_select('confirmed_mobiles', ['m_phone_number', 'm_member_id'], ['m_confirm_code' => ''])); #376 on tracker
 
     // Check current user has not trigered too many
-    $triggered_already = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'sms_log WHERE s_time>' . strval(time() - 60 * 60 * 24 * 31) . ' AND s_time<=' . strval(time()) . ' AND ' . db_string_equal_to('s_trigger_ip', get_ip_address(2)));
+    $triggered_already = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'sms_log WHERE s_time>' . strval(time() - 60 * 60 * 24 * 31) . ' AND s_time<=' . strval(time()) . ' AND ' . db_string_equal_to('s_trigger_ip_address', get_ip_address(2)));
     $trigger_limit = intval(get_option('sms_' . (has_privilege(get_member(), 'sms_higher_trigger_limit') ? 'high' : 'low') . '_trigger_limit'));
     if ($triggered_already + count($to_sms) > $trigger_limit) {
         return 0;
@@ -136,7 +136,7 @@ END;
 
         $num_sent++;
 
-        $GLOBALS['SITE_DB']->query_insert('sms_log', ['s_trigger_ip' => get_ip_address(2), 's_member_id' => $to_member, 's_time' => time()]);
+        $GLOBALS['SITE_DB']->query_insert('sms_log', ['s_trigger_ip_address' => get_ip_address(2), 's_member_id' => $to_member, 's_time' => time()]);
     }
 
     return $num_sent;

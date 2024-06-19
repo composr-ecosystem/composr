@@ -154,6 +154,22 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
+                'chat_rooms' => [
+                    'timestamp_field' => null,
+                    'retention_days' => null,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'owner_id_field' => 'room_owner',
+                    'additional_member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'username_fields' => [],
+                    'file_fields' => [],
+                    'additional_anonymise_fields' => ['allow_list', 'disallow_list'],
+                    'extra_where' => null,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method_member_override' => null,
+                    'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
+                ],
             ],
         ];
     }

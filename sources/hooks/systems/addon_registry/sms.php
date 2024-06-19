@@ -178,7 +178,7 @@ class Hook_addon_registry_sms
                 's_trigger_ip_address' => 'IP',
             ]);
             $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_log_for', ['s_member_id', 's_time']);
-            $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_trigger_ip', ['s_trigger_ip']);
+            $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_trigger_ip_address', ['s_trigger_ip_address']);
             add_privilege('GENERAL_SETTINGS', 'use_sms', false);
             add_privilege('GENERAL_SETTINGS', 'sms_higher_limit', false);
             add_privilege('GENERAL_SETTINGS', 'sms_higher_trigger_limit', false);
@@ -196,7 +196,7 @@ class Hook_addon_registry_sms
 
         if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
             // Database integrity fixes
-            $GLOBALS['SITE_DB']->alter_table_field('sms_log', 's_trigger_ip', 'IP', 's_trigger_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('sms_log', 's_trigger_ip_address', 'IP', 's_trigger_ip_address');
         }
     }
 }

@@ -473,7 +473,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     $found_sessions[$row['session_id']] = true;
                 }
 
-                $referrer_url = preg_replace('#\?.*$#', '', $row['referer']);
+                $referrer_url = preg_replace('#\?.*$#', '', $row['referer_url']);
                 $referrer_domain = @strval(cms_parse_url_safe($referrer_url, PHP_URL_HOST));
 
                 if ($referrer_url == '') {

@@ -3491,7 +3491,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_complex_privacy_options
         CONFIG_OPTION_complex_uploader
         CONFIG_OPTION_cookie_notice
-        CONFIG_OPTION_parental_consent
         CONFIG_OPTION_website_activity_store_time
         PARENTAL_CONSENT_AGE
         PRIVILEGE_avoid_captcha
@@ -8557,6 +8556,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EMAIL_TEMPLATE
         REPLY_TO
         SKIP_TICKET_CREATION
+        CONFIG_OPTION_parental_consent_age
+        UPGRADER_NEW_ADDON_EXTRACTED
     ')));
 
     $non_admin_files = [

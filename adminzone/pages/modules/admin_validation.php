@@ -62,8 +62,11 @@ class Module_admin_validation
      */
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
-        if (($upgrade_from === null) || ($upgrade_from < 2)) { // LEGACY
-            // TODO: will probably cause an error on reinstall
+        if ($upgrade_from === null) {
+            add_privilege('SUBMISSION', 'see_not_validated');
+            add_privilege('SUBMISSION', 'jump_to_not_validated', true);
+        }
+        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
             rename_privilege('see_unvalidated', 'see_not_validated');
             rename_privilege('jump_to_unvalidated', 'jump_to_not_validated');
         }

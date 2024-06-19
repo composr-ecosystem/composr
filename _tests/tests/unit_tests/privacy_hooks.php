@@ -377,10 +377,10 @@ class privacy_hooks_test_set extends cms_test_case
                     'logged' => ['website_url'],
                     'may_feature' => ['url'],
                     'relayed_errors' => ['website_url'],
-                    'stats' => ['referer'],
+                    'stats' => ['referer_url'],
                     'stats_link_tracker' => ['c_url'],
                     'tutorials_external' => ['t_url'],
-
+                    'trackbacks' => ['trackback_url']
                 ];
                 foreach ($relevant_fields_url as $name => $type) {
                     if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {

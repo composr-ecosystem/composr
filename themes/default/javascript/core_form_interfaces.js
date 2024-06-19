@@ -1957,7 +1957,7 @@
                 nextLabel.value = thisField.form.elements['label_for__' + nameStub + '0'].value + ' (' + (nextNum + 1) + ')';
                 nextLabel.name = 'label_for__' + nameStub + nextNum;
                 nextFieldWrap.appendChild(nextLabel);
-                
+
                 // Hidden label for accessibility
                 var nextLabelAccessibility = document.createElement('div');
                 nextLabelAccessibility.classList.add('accessibility-hidden');

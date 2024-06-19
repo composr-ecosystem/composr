@@ -167,7 +167,7 @@ The first command will generate a private key with a passphrase supplied when [t
 
 Once the key pair has been generated, they should be uploaded to your server, somewhere where they [b]cannot be accessed from the Internet[/b] (so not in your [tt]htdocs[/tt] directory). They should have their permissions set such that they can be read by your web server process, but nobody else.
 
-The final step is to configure Composr to use the key pair to encrypt data. Set the "Encryption key" configuration option (Admin Zone > Setup > Configuration > Privacy options > Advanced) to be the path and filename of the public key file ([tt]public.pem[/tt]), and the "Decryption key" configuration option to be the path and filename of the private key file ([tt]private.pem[/tt]). If these options are not visible, it's because your server does not have the OpenSSL PHP extension installed or configured correctly.
+The final step is to configure Composr to use the key pair to encrypt data. Set the "Encryption key" configuration option (Admin Zone > Setup > Configuration > Privacy / legal compliance options > Advanced) to be the path and filename of the public key file ([tt]public.pem[/tt]), and the "Decryption key" configuration option to be the path and filename of the private key file ([tt]private.pem[/tt]). If these options are not visible, it's because your server does not have the OpenSSL PHP extension installed or configured correctly.
 
 [title="4"]Using the functionality[/title]
 

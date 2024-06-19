@@ -307,7 +307,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'file_fields' => [],
+                    'file_fields' => ['a_thumb_url', 'a_url'],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
