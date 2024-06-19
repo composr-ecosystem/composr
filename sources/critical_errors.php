@@ -262,13 +262,13 @@ END;
 END;
         }
         echo '<h1 class="screen-title">Critical error &ndash; bailing out</h1>' . "\n" . '<div class="red-alert" role="error">' . $error . '</div>' . "\n";
-        if (($in_upgrader) && (strpos($error, 'Allowed memory') === false)) {
-            require_code('upgrade_integrity_scan');
-            echo '<div class="box guid-{_GUID}"><div class="box-inner"><h2>Integrity check</h2><p><strong>If you think this problem could be due to corruption caused by a failed upgrade (e.g. time-out during extraction), check the following integrity check&hellip;</strong></p>', run_integrity_check(true), '</div></div><br />';
-        }
         echo $extra, "\n";
         if ($may_show_footer) {
             echo '<p>Details here are intended only for the website/system-administrator, not for regular website users.<br />&raquo; <strong>If you are a regular website user, please let the website staff deal with this problem.</strong></p>' . "\n" . '<p class="associated-details">Depending on the error, and only if the website installation finished, you may need to edit the installation options (the <kbd>_config.php</kbd> file via the <kbd>config_editor.php</kbd> script).</p>' . "\n" . '<p class="associated-details">The core developers maintain full documentation for all procedures and tools (including <a href="https://composr.app/docs/tut-disaster.htm">disaster recovery</a>). These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p>' . "\n" . '<hr />' . "\n" . '<p style="font-size: 0.8em"><a href="https://composr.app/">Composr</a> is a <abbr title="Content Management System">CMS</abbr> for building websites, developed by Christopher Graham and others.</p>' . "\n";
+        }
+        if (($in_upgrader) && (strpos($error, 'Allowed memory') === false)) {
+            require_code('upgrade_integrity_scan');
+            echo '<div class="box guid-{_GUID}"><div class="box-inner"><h2>Integrity check</h2><p><strong>If you think this problem could be due to corruption caused by a failed upgrade (e.g. time-out during extraction), check the following integrity check&hellip;</strong></p>', run_integrity_check(true), '</div></div><br />';
         }
         echo '</div></body>' . "\n" . '</html>';
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
