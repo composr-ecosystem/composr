@@ -714,7 +714,8 @@ function is_guest($member_id = null)
  */
 function in_safe_mode()
 {
-    return get_param_integer('keep_safe_mode', 0) == 1;
+    // Force safe mode in the upgrader so corrupt non-bundled addon overrides do not break it
+    return (get_param_integer('keep_safe_mode', 0) == 1) || (running_script('upgrader'));
 }
 
 /**
