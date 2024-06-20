@@ -175,7 +175,7 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
         } elseif (isset($manifest[$file])) {
             // Hash checking...
 
-            if (@filesize(get_file_base() . '/' . $file) > 1024 * 1024) {
+            if (@filesize(get_file_base() . '/' . $file) > 1024 * 1024 * 8) {
                 continue; // Too big, so special exception
             }
 
@@ -184,7 +184,7 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
                 continue;
             }
             if (strpos($file, '/version.php') !== false) {
-                $file_contents = preg_replace('/\d{10}/', '', $file_contents); // Strip timestamp, too volatile
+                $file_contents = preg_replace('/\d{10}/', '', $file_contents); // Strip timestamps, too volatile
             }
             $true_hash = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', $file_contents)));
             if ($true_hash != $manifest[$file][0]) {
@@ -195,6 +195,7 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
                     $outdated__future_files .= '<li><kbd>' . escape_html($file) . '</kbd></li>';
                 }
             }
+            unset($file_contents); // Free up memory
         }
     }
 
@@ -344,7 +345,7 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
 }
 
 /**
- * Tell the user about any modules that need moving again (because the cms ones haven't moved).
+ * Tell the user about any bundled modules that need moving again (because the cms ones haven't moved).
  *
  * @return array Pair: HTML list of moved files, raw list
  */
@@ -612,7 +613,7 @@ function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $
     }
 
     if ($alien_count > 10000) { // Reasonable limit
-        $alien = '';
+        $alien = '<p>Too many to list</p>';
     }
 
     return [$alien, $addon];

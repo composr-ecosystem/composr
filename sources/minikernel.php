@@ -714,6 +714,11 @@ function is_guest($member_id = null)
  */
 function in_safe_mode()
 {
+    // Force safe mode in the upgrader so corrupt non-bundled addons (which are not supported by the upgrader) do not break it.
+    if (running_script('upgrader')) {
+        return true;
+    }
+
     return (get_param_integer('keep_safe_mode', 0) == 1);
 }
 
