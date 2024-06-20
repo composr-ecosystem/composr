@@ -32,7 +32,9 @@ class Hook_contentious_overrides_community_billboard
             '{$,extra_footer_right_goes_here}',
             "<ditto>
             {+START,INCLUDE,COMMUNITY_BILLBOARD_FOOTER}{+END}",
-            $data
+            $data,
+            1,
+            true
         );
     }
 }

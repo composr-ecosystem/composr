@@ -25,16 +25,19 @@ function init__site__pages__modules_custom__points($in)
         return $in;
     }
 
-    $in = override_str_replace_exactly(
+    require_code('override_api');
+
+    // Make sure we reason our transactions for Idolisr properly
+    insert_code_after__by_command(
+        $in,
+        'do_transact',
         "\$reason = post_param_string('reason');",
         "
-        <ditto>
         \$give_reason_pre = post_param_string('give_reason_pre', '');
         if (\$give_reason_pre != '') {
             \$reason = \$give_reason_pre . \": \" . \$reason;
         }
         ",
-        $in
     );
 
     return $in;

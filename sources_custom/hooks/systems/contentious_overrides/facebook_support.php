@@ -35,7 +35,9 @@ class Hook_contentious_overrides_facebook_support
                     '{$,extra_footer_right_goes_here}',
                     "<ditto>
                     {+START,INCLUDE,FACEBOOK_FOOTER}{+END}",
-                    $data
+                    $data,
+                    1,
+                    true
                 );
             }
 
@@ -44,7 +46,9 @@ class Hook_contentious_overrides_facebook_support
                     '{$,extra_footer_standalone_goes_here}',
                     "<ditto>
                     {+START,INCLUDE,FACEBOOK_FOOTER}{+END}",
-                    $data
+                    $data,
+                    1,
+                    true
                 );
             }
         }

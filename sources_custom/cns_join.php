@@ -37,24 +37,45 @@ function init__cns_join($in)
     } else {
         $extra_code = "\$hidden->attach(get_referrer_field(false));";
     }
-    $in = override_str_replace_exactly(
+
+    // Inject code, but do not cause full-on critical error if it is broken so members can still register.
+
+    require_code('override_api');
+
+    insert_code_after__by_command(
+        $in,
+        'cns_join_form',
         "/*PSEUDO-HOOK: cns_join_form special fields*/",
-        $extra_code,
-        $in
+        "
+        " . $extra_code . "
+        ",
+        1,
+        true
     );
 
     // Better referral detection, and proper qualification management
-    $in = override_str_replace_exactly(
+    insert_code_after__by_command(
+        $in,
+        'cns_join_form',
         "/*PSEUDO-HOOK: cns_join_actual referrals*/",
-        "set_from_referrer_field();",
-        $in
+        "
+        set_from_referrer_field();
+        ",
+        1,
+        true
     );
 
     // Handle signup referrals
-    $in = override_str_replace_exactly(
+    insert_code_after__by_command(
+        $in,
+        'cns_join_actual',
         "/*PSEUDO-HOOK: cns_join_actual ends*/",
-        "require_code('referrals'); assign_referral_awards(\$member_id, 'join');",
-        $in
+        "
+        require_code('referrals');
+        assign_referral_awards(\$member_id, 'join');
+        ",
+        1,
+        true
     );
 
     return $in;

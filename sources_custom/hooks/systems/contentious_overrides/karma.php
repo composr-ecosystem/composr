@@ -37,7 +37,9 @@ class Hook_contentious_overrides_karma
                 $data = override_str_replace_exactly(
                     "\t\t" . '{+START,IF_NON_EMPTY,{AVATAR_URL}}' . "\n\t\t\t" . '<div class="cns-member-profile-avatar">' . "\n\t\t\t\t" . '<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{AVATAR_URL}}" alt="{!AVATAR}" />' . "\n\t\t\t" . '</div>' . "\n\t\t" . '{+END}',
                     "<ditto>{\$BLOCK,block=main_karma_graph,param={MEMBER_ID}}",
-                    $data
+                    $data,
+                    1,
+                    true
                 );
                 break;
 
@@ -45,7 +47,9 @@ class Hook_contentious_overrides_karma
                 $data = override_str_replace_exactly(
                     '{POST_AVATAR}',
                     "<ditto>{\$BLOCK,block=main_karma_graph,param={POSTER_ID}}",
-                    $data
+                    $data,
+                    1,
+                    true
                 );
                 break;
         }
@@ -73,7 +77,9 @@ class Hook_contentious_overrides_karma
                     require_code('karma2');
                     add_karma('good', null, \$member_id, intval(get_option('karma_awards')), 'award', strval(\$award_id), \$content_id);
                 }
-                "
+                ",
+                1,
+                true
             );
         }
 
@@ -113,7 +119,9 @@ class Hook_contentious_overrides_karma
                         }
                     }
                 }
-                "
+                ",
+                1,
+                true
             );
         }
 
@@ -133,7 +141,9 @@ class Hook_contentious_overrides_karma
                     require_code('karma2');
                     reverse_karma(null, null, null, 'topic_poll', strval(\$poll_id));
                 }
-                "
+                ",
+                1,
+                true
             );
 
             // Reverse karma when a poll is deleted.
@@ -146,7 +156,9 @@ class Hook_contentious_overrides_karma
                     require_code('karma2');
                     reverse_karma(null, null, null, 'topic_poll', strval(\$poll_id));
                 }
-                "
+                ",
+                1,
+                true
             );
 
             // Add karma when voting
@@ -162,7 +174,9 @@ class Hook_contentious_overrides_karma
                         add_karma('good', null, \$member_id, \$karma_to_award, 'Voted on topic poll', 'topic_poll', strval(\$poll_id));
                     }
                 }
-                "
+                ",
+                1,
+                true
             );
 
             // Reverse karma when a member revokes their vote
@@ -175,7 +189,9 @@ class Hook_contentious_overrides_karma
                     require_code('karma2');
                     reverse_karma(null, null, \$member_id, 'topic_poll', strval(\$poll['id']));
                 }
-                "
+                ",
+                1,
+                true
             );
         }
 
@@ -198,7 +214,9 @@ class Hook_contentious_overrides_karma
                         add_karma('good', null, \$member_id, \$karma_to_award, 'Voted on website poll', 'poll', strval(\$poll_id));
                     }
                 }
-                "
+                ",
+                1,
+                true
             );
         }
 
@@ -223,7 +241,9 @@ class Hook_contentious_overrides_karma
                         add_karma('good', null, \$to_member_id, intval(\$karma_multiplier * \$influence), 'Received a gift', 'giftr', strval(\$gift_id));
                     }
                 }
-                "
+                ",
+                1,
+                true
             );
         }
 
@@ -257,7 +277,9 @@ class Hook_contentious_overrides_karma
                         add_karma('good', null, \$member_id, \$karma_to_award, 'Purchased ' . \$item_name, 'ecommerce', strval(\$txn_id));
                     }
                 }
-                "
+                ",
+                1,
+                true
             );
         }
     }

@@ -30,6 +30,8 @@ function init__hooks__systems__ecommerce__usergroup($in)
                 assign_referral_awards(\$member_id, 'usergroup_subscribe_' . strval(\$usergroup_subscription_id));
             }
         ",
-        $in
+        $in,
+        1,
+        true
     );
 }
