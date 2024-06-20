@@ -5714,5 +5714,5 @@ function comma_list_str_to_arr(string $str, bool $block_symbol_style = false) : 
 function _sanitise_error_msg(string $text) : string
 {
     // Strip paths, for security reasons
-    return str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $text);
+    return str_replace([get_custom_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '/', get_file_base() . '\\'], ['', '', '', ''], $text);
 }
