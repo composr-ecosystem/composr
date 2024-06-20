@@ -1767,10 +1767,10 @@ function in_safe_mode() : bool
     global $CHECKING_SAFEMODE, $REQUIRED_CODE;
     if (!$backdoor_ip) {
         if (!isset($REQUIRED_CODE['lang']) || !$REQUIRED_CODE['lang']) {
-            return false; // Too early. We can get in horrible problems when doing get_member() below if lang hasn't loaded yet
+            return ((isset($_GET['keep_safe_mode'])) && intval($_GET['keep_safe_mode']) == 1); // Too early. We can get in horrible problems when doing get_member() below if lang hasn't loaded yet
         }
         if ($CHECKING_SAFEMODE) {
-            return false; // Stops infinite loops (e.g. Check safe mode > Check access > Check usergroups > Check implicit usergroup hooks > Check whether to look at custom implicit usergroup hooks [i.e. if not in safe mode])
+            return ((isset($_GET['keep_safe_mode'])) && intval($_GET['keep_safe_mode']) == 1); // Stops infinite loops (e.g. Check safe mode > Check access > Check usergroups > Check implicit usergroup hooks > Check whether to look at custom implicit usergroup hooks [i.e. if not in safe mode])
         }
     }
     $CHECKING_SAFEMODE = true;
