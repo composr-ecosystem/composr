@@ -455,6 +455,11 @@ function override_str_replace_exactly($search, $replace, $subject, int $times = 
     $cnt = substr_count($subject, $search);
 
     if ($cnt != $times) {
+        // If in the upgrader, just bail by returning the original code. We do not want the upgrader breaking from corrupt non-bundled addons.
+        if (running_script('upgrader')) {
+            return $subject;
+        }
+
         $lines = debug_backtrace();
         critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
     }

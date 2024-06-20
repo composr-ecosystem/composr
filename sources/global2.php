@@ -1750,11 +1750,6 @@ function get_site_name() : string
  */
 function in_safe_mode() : bool
 {
-    // Force safe mode in the upgrader so corrupt non-bundled addon overrides do not break it
-    if (running_script('upgrader')) {
-        return true;
-    }
-
     global $SITE_INFO;
     if (!empty($SITE_INFO['safe_mode'])) {
         if (!isset($_GET['keep_safe_mode'])) {

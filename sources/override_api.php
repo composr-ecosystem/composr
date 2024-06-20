@@ -47,6 +47,11 @@ function get_function_hash(string $code, string $function) : string
  */
 function insert_code_before__by_linenum(string &$code, string $function, int $linenum, string $newcode, bool $fail_ok = false) : bool
 {
+    // Force $fail_ok in the upgrader so corrupt non-bundled addons do not break it.
+    if (running_script('upgrader')) {
+        $fail_ok = true;
+    }
+
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
         if ($fail_ok) {
@@ -101,6 +106,11 @@ function insert_code_after__by_linenum(string &$code, string $function, int $lin
  */
 function insert_code_before__by_command(string &$code, string $function, string $command, string $newcode, int $instance_of_command = 1, bool $fail_ok = false) : bool
 {
+    // Force $fail_ok in the upgrader so corrupt non-bundled addons do not break it.
+    if (running_script('upgrader')) {
+        $fail_ok = true;
+    }
+
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
         if ($fail_ok) {
@@ -140,6 +150,11 @@ function insert_code_before__by_command(string &$code, string $function, string 
  */
 function insert_code_after__by_command(string &$code, string $function, string $command, string $newcode, int $instance_of_command = 1, bool $fail_ok = false) : bool
 {
+    // Force $fail_ok in the upgrader so corrupt non-bundled addons do not break it.
+    if (running_script('upgrader')) {
+        $fail_ok = true;
+    }
+
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
         if ($fail_ok) {
@@ -178,6 +193,11 @@ function insert_code_after__by_command(string &$code, string $function, string $
  */
 function remove_code(string &$code, string $function, string $command, int $instance_of_command = 1, bool $fail_ok = false) : bool
 {
+    // Force $fail_ok in the upgrader so corrupt non-bundled addons do not break it.
+    if (running_script('upgrader')) {
+        $fail_ok = true;
+    }
+    
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
         if ($fail_ok) {
