@@ -614,6 +614,11 @@ function upgrade_modules(float $from_cms_version) : string
     require_code('addons2');
     $addons = find_all_hooks('systems', 'addon_registry');
     foreach ($addons as $addon_name => $type) {
+        if ($type == 'sources_custom') {
+            $out .= '<li>' . do_lang('UPGRADER_SKIPPED_NONBUNDLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            continue;
+        }
+
         $ret = upgrade_addon_soft($addon_name);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
