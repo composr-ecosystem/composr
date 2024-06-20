@@ -42,8 +42,8 @@ function get_function_hash(string $code, string $function) : string
  * @param  string $function Name of the function
  * @param  integer $linenum Line number relative to start of function
  * @param  string $newcode Code to insert
- * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
- * @return boolean Success status
+ * @param  boolean $fail_ok Whether a failure should attach a message (false: a failure should cause a critical error)
+ * @return boolean Success status if $fail_ok is true
  */
 function insert_code_before__by_linenum(string &$code, string $function, int $linenum, string $newcode, bool $fail_ok = false) : bool
 {
@@ -54,22 +54,16 @@ function insert_code_before__by_linenum(string &$code, string $function, int $li
 
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
-        if ($fail_ok) {
-            return false;
-        }
-        $lines = debug_backtrace();
-        critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+        _handle_corrupt_override($fail_ok);
+        return false;
     }
 
     $pos = strpos($code, "\n", $pos) + 1;
     for ($i = 0; $i < $linenum; $i++) {
         $next = strpos($code, "\n", $pos);
         if ($next === false) {
-            if ($fail_ok) {
-                return false;
-            }
-            $lines = debug_backtrace();
-            critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+            _handle_corrupt_override($fail_ok);
+            return false;
         }
         $pos = $next + 1;
     }
@@ -85,7 +79,7 @@ function insert_code_before__by_linenum(string &$code, string $function, int $li
  * @param  string $function Name of the function
  * @param  integer $linenum Line number relative to start of function
  * @param  string $newcode Code to insert
- * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
+ * @param  boolean $fail_ok Whether a failure should attach a message (false: a failure should cause a critical error)
  * @return boolean Success status
  */
 function insert_code_after__by_linenum(string &$code, string $function, int $linenum, string $newcode, bool $fail_ok = false) : bool
@@ -101,7 +95,7 @@ function insert_code_after__by_linenum(string &$code, string $function, int $lin
  * @param  string $command The command we're searching to insert by
  * @param  string $newcode Code to insert
  * @param  integer $instance_of_command We are inserting at this instance of the line (i.e. takes into account a literal line of code may exist in other places in a function).
- * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
+ * @param  boolean $fail_ok Whether a failure should attach a message (false: a failure should cause a critical error)
  * @return boolean Success status
  */
 function insert_code_before__by_command(string &$code, string $function, string $command, string $newcode, int $instance_of_command = 1, bool $fail_ok = false) : bool
@@ -113,21 +107,15 @@ function insert_code_before__by_command(string &$code, string $function, string 
 
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
-        if ($fail_ok) {
-            return false;
-        }
-        $lines = debug_backtrace();
-        critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+        _handle_corrupt_override($fail_ok);
+        return false;
     }
 
     for ($i = 0; $i < $instance_of_command; $i++) {
         $next = strpos($code, $command, $pos);
         if ($next === false) {
-            if ($fail_ok) {
-                return false;
-            }
-            $lines = debug_backtrace();
-            critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+            _handle_corrupt_override($fail_ok);
+            return false;
         }
         $pos = $next + 1;
     }
@@ -145,7 +133,7 @@ function insert_code_before__by_command(string &$code, string $function, string 
  * @param  string $command The command we're searching to insert by
  * @param  string $newcode Code to insert
  * @param  integer $instance_of_command We are inserting at this instance of the line (i.e. takes into account a literal line of code may exist in other places in a function).
- * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
+ * @param  boolean $fail_ok Whether a failure should attach a message (false: a failure should cause a critical error)
  * @return boolean Success status
  */
 function insert_code_after__by_command(string &$code, string $function, string $command, string $newcode, int $instance_of_command = 1, bool $fail_ok = false) : bool
@@ -157,21 +145,15 @@ function insert_code_after__by_command(string &$code, string $function, string $
 
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
-        if ($fail_ok) {
-            return false;
-        }
-        $lines = debug_backtrace();
-        critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+        _handle_corrupt_override($fail_ok);
+        return false;
     }
 
     for ($i = 0; $i < $instance_of_command; $i++) {
         $next = strpos($code, $command, $pos);
         if ($next === false) {
-            if ($fail_ok) {
-                return false;
-            }
-            $lines = debug_backtrace();
-            critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+            _handle_corrupt_override($fail_ok);
+            return false;
         }
         $pos = $next + 1;
     }
@@ -188,7 +170,7 @@ function insert_code_after__by_command(string &$code, string $function, string $
  * @param  string $function Name of the function
  * @param  string $command The command we're searching to insert by
  * @param  integer $instance_of_command We remove the nth instance of this command
- * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
+ * @param  boolean $fail_ok Whether a failure should attach a message (false: a failure should cause a critical error)
  * @return boolean Success status
  */
 function remove_code(string &$code, string $function, string $command, int $instance_of_command = 1, bool $fail_ok = false) : bool
@@ -197,24 +179,18 @@ function remove_code(string &$code, string $function, string $command, int $inst
     if (running_script('upgrader')) {
         $fail_ok = true;
     }
-    
+
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
-        if ($fail_ok) {
-            return false;
-        }
-        $lines = debug_backtrace();
-        critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+        _handle_corrupt_override($fail_ok);
+        return false;
     }
 
     for ($i = 0; $i < $instance_of_command; $i++) {
         $next = strpos($code, $command, $pos);
         if ($next === false) {
-            if ($fail_ok) {
-                return false;
-            }
-            $lines = debug_backtrace();
-            critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+            _handle_corrupt_override($fail_ok);
+            return false;
         }
         $pos = $next + 1;
     }
@@ -223,4 +199,22 @@ function remove_code(string &$code, string $function, string $command, int $inst
     $code = substr($code, 0, $pos) . "\n" . substr($code, $old_pos + 1);
 
     return true;
+}
+
+/**
+ * Error handler for a corrupt override.
+ *
+ * @param  boolean $fail_ok Whether a failure should attach a message (false: a failure should cause a critical error)
+ * @ignore
+ */
+
+function _handle_corrupt_override(bool $fail_ok)
+{
+    $lines = debug_backtrace();
+    $relay = _sanitise_error_msg(preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[1]['file']) . ':' . strval($lines[1]['line']));
+    if ($fail_ok) {
+        attach_message('An override seems to no longer be compatible, ' . htmlentities($relay), (running_script('upgrader') ? 'notice' : 'warn'), false, true);
+        return;
+    }
+    critical_error('CORRUPT_OVERRIDE', $relay);
 }
