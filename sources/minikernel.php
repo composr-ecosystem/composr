@@ -1530,8 +1530,11 @@ function loggable_date() : string
  */
 function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
 {
-    // Just a wrapper for inform_exit
-    warn_exit($message);
+    if ($type == 'warn') {
+        warn_exit($message);
+    } else {
+        echo $message . "<br />\n";
+    }
     return '';
 }
 
