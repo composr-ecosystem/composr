@@ -15,7 +15,7 @@ Composr will try and work around ModSecurity-style systems in common areas where
 
 Composr itself contains its own inbuilt firewall, which also blocks many malicious requests. Composr is also built with proper data management APIs and internal layers so that most vulnerabilities aren't possible. This said, as long as ModSecurity is configured right, it is a good thing to have both.
 
-It is not usually easy to know if ModSecurity is blocking you. You will usually see some kind of Apache error message, such as the very generic '500 Internal Server Error'/'402 Forbidden' message. ModSecurity does not explicitly state the problem so that hackers have less clues to why they are blocked. Apache error logs usually contain the full reason, however.
+It is not usually easy to know if ModSecurity is blocking you. You will usually see some kind of Apache error message, such as the very generic '500 Internal Server Error'/'403 Forbidden' message. ModSecurity does not explicitly state the problem so that hackers have less clues to why they are blocked. Apache error logs usually contain the full reason, however.
 
 ModSecurity works by a rule set, and rules are typically given a unique identifying number. There are various rule sets out there. An official one is maintained, but also some organisations maintain their own rule sets for 'value add' within their own firewall products based around ModSecurity. What follows is an explanation of common false-positives that Composr can trigger...
 
