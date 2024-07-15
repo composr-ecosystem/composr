@@ -287,27 +287,34 @@ function get_composr_branches()
 
 function recursive_unzip($zip_path, $unzip_path)
 {
-    $zip_handle = zip_open($zip_path);
-    while (($entry = (zip_read($zip_handle))) !== false) {
-        $entry_name = zip_entry_name($entry);
+    if (!class_exists('ZipArchive', false)) {
+        warn_exit(do_lang_tempcode('ZIP_NOT_ENABLED'));
+    }
+
+    $zip_archive = new ZipArchive;
+
+    $in_file = $zip_archive->open($zip_path);
+    if ($in_file !== true) {
+        require_code('failure');
+        warn_exit(zip_error($zip_path, $in_file), false, true);
+    }
+
+    for ($i = 0; $i < $zip_archive->numFiles; $i++) {
+        $entry_name = $zip_archive->getNameIndex($i);
         if (substr($entry_name, -1) != '/') {
-            $_entry = zip_entry_open($zip_handle, $entry);
-            if ($_entry !== false) {
-                @mkdir(dirname($unzip_path . '/' . $entry_name), 0777, true);
-                $out_file = fopen($unzip_path . '/' . $entry_name, 'wb');
-                flock($out_file, LOCK_EX);
-                while (true) {
-                    $it = zip_entry_read($entry, 1024);
-                    if (($it === false) || ($it == '')) {
-                        break;
-                    }
-                    fwrite($out_file, $it);
-                }
-                zip_entry_close($entry);
-                flock($out_file, LOCK_UN);
-                fclose($out_file);
+            @mkdir(dirname($unzip_path . '/' . $entry_name), 0777, true);
+            $out_file = fopen($unzip_path . '/' . $entry_name, 'wb');
+            flock($out_file, LOCK_EX);
+            $it = $zip_archive->getFromIndex($i);
+            if (($it === false) || ($it == '')) {
+                continue;
             }
+            fwrite($out_file, $it);
+            flock($out_file, LOCK_UN);
+            fclose($out_file);
         }
     }
-    zip_close($zip_handle);
+
+    $zip_archive->close();
+    unset($zip_archive);
 }

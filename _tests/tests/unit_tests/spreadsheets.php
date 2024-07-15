@@ -67,7 +67,7 @@ class spreadsheets_test_set extends cms_test_case
 
     public function testRead()
     {
-        if (!function_exists('zip_open') || !function_exists('xml_parser_create')) {
+        if (!class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
             $this->assertTrue(false, 'Zip and XML extensions needed for test');
             return;
         }
@@ -107,7 +107,7 @@ class spreadsheets_test_set extends cms_test_case
 
     public function testWrite()
     {
-        if (!function_exists('zip_open') || !function_exists('xml_parser_create')) {
+        if (!class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
             $this->assertTrue(false, 'Zip and XML extensions needed for test');
             return;
         }

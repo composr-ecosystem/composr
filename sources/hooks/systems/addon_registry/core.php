@@ -1093,7 +1093,6 @@ class Hook_addon_registry_core
             'sources/locations.php',
             'sources/locations_cpfs.php',
             'sources/locations_geocoding.php',
-            'sources/m_zip.php',
             'sources/mail.php',
             'sources/mail2.php',
             'sources/mail_dkim.php',

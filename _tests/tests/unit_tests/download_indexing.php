@@ -52,7 +52,7 @@ class download_indexing_test_set extends cms_test_case
 
     public function testZipIndexing()
     {
-        if ((!function_exists('zip_open')) && (get_option('unzip_cmd') == '')) {
+        if (!class_exists('ZipArchive', false)) {
             $this->assertTrue(false, 'Zip is not enabled on server, cannot run test');
             return;
         }
