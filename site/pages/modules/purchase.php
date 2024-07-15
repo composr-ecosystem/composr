@@ -174,6 +174,57 @@ class Module_purchase
                 't_member_id' => 'MEMBER', // Of the paying member
                 't_session_id' => 'ID_TEXT', // Of the paying user
             ]);
+
+            $GLOBALS['SITE_DB']->create_table('ecom_prods_prices', [
+                'name' => '*ID_TEXT',
+                'price' => '?REAL',
+                'tax_code' => 'ID_TEXT',
+                'price_points' => '?INTEGER',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_table('ecom_sales', [
+                'id' => '*AUTO',
+                'date_and_time' => 'TIME',
+                'member_id' => 'MEMBER',
+                'details' => 'SHORT_TEXT',
+                'details2' => 'SHORT_TEXT',
+                'txn_id' => 'ID_TEXT',
+            ]);
+
+            // Custom
+            $GLOBALS['SITE_DB']->create_table('ecom_prods_custom', [
+                'id' => '*AUTO',
+                'c_title' => 'SHORT_TRANS',
+                'c_description' => 'LONG_TRANS__COMCODE',
+                'c_image_url' => 'URLPATH',
+                'c_mail_subject' => 'SHORT_TRANS',
+                'c_mail_body' => 'LONG_TRANS',
+                'c_enabled' => 'BINARY',
+                'c_price' => '?REAL',
+                'c_tax_code' => 'ID_TEXT',
+                'c_shipping_cost' => 'REAL',
+                'c_price_points' => '?INTEGER',
+                'c_one_per_member' => 'BINARY',
+            ]);
+            // Permissions
+            $GLOBALS['SITE_DB']->create_table('ecom_prods_permissions', [
+                'id' => '*AUTO',
+                'p_title' => 'SHORT_TRANS',
+                'p_description' => 'LONG_TRANS__COMCODE',
+                'p_mail_subject' => 'SHORT_TRANS',
+                'p_mail_body' => 'LONG_TRANS',
+                'p_enabled' => 'BINARY',
+                'p_price' => '?REAL',
+                'p_tax_code' => 'ID_TEXT',
+                'p_price_points' => '?INTEGER',
+                'p_hours' => '?INTEGER',
+                'p_type' => 'ID_TEXT', // member_privileges,member_category_access,member_page_access,member_zone_access
+                'p_privilege' => 'ID_TEXT', // privilege only
+                'p_zone' => 'ID_TEXT', // zone and page only
+                'p_page' => 'ID_TEXT', // page and ?privilege only
+                'p_module' => 'ID_TEXT', // category and ?privilege only
+                'p_category' => 'ID_TEXT', // category and ?privilege only
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
