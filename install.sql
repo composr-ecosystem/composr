@@ -32,120 +32,120 @@ CREATE TABLE cms_addons (
     addon_copyright_attribution varchar(255) NOT NULL,
     PRIMARY KEY (addon_name)
 ) CHARACTER SET=utf8 engine=MyISAM;
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('actionlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Audit-trail functionality.', '11', '', 1718837140),
-('aggregate_types', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Define complex aggregate types in XML, and spawn them.', '11', '', 1718837140),
-('apache_config_files', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sample .htaccess files to help achieve optimal configuration on the Apache web server.', '11', '', 1718837140),
-('authors', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Certain kinds of content can have authors instead of submitters (e.g. \'Core Development Team\'). The authors may be independently described and searched under.', '11', '', 1718837140),
-('awards', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Pick out content for featuring.', '11', '', 1718837140),
-('backup', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Perform incremental or full backups of files and the database. Supports scheduling.', '11', '', 1718837140),
-('banners', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'An advanced banner system, with support for multiple banner rotations, commercial banner campaigns, and webring-style systems. Support for graphical, text, and HTML banners. Hotword activation support.', '11', '', 1718837140),
-('breadcrumbs', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced breadcrumb editing.', '11', '', 1718837140),
-('calendar', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'An advanced community calendar.', '11', '', 1718837140),
-('captcha', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Stop spam-bots from performing actions on the website.', '11', '', 1718837140),
-('catalogues', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard CMS features (e.g. ratings).', '11', '', 1718837140),
-('chat', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Chatrooms and instant messaging.', '11', '', 1718837140),
-('cns_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1718837140),
-('cns_cartoon_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr (sketched characters)', '11', '', 1718837140),
-('cns_clubs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Clubs for members, each of which comes with a forum.', '11', '', 1718837140),
-('cns_contact_member', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Off-site e-mailing of members (more private, and may be used by guests).', '11', '', 1718837140),
-('cns_cpfs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Custom Profile Fields, so members may save additional details. If this is uninstalled any existing Custom Profile Fields will remain in the system.', '11', '', 1718837140),
-('cns_forum', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'The Conversr forum- a modern advanced forum for members to interact on.', '11', '', 1718837140),
-('cns_member_avatars', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member avatars.', '11', '', 1718837140),
-('cns_member_photos', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member photos.', '11', '', 1718837140),
-('cns_member_titles', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member titles.', '11', '', 1718837141),
-('cns_multi_moderations', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Multi-moderations for the Conversr forum.', '11', '', 1718837141),
-('cns_post_templates', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Post Templates for the Conversr forum.', '11', '', 1718837141),
-('cns_signatures', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member signatures.', '11', '', 1718837141),
-('cns_thematic_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1718837141),
-('cns_warnings', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member warnings and punishment.', '11', '', 1718837141),
-('code_editor', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'For programmers- A simple editor for editing Composr code files, with support for overrides and saving via FTP.', '11', '', 1718837141),
-('commandr', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A command-line environment for managing your website, designed for Linux/Unix lovers.', '11', '', 1718837141),
-('content_privacy', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allows users to specify privacy level for their content.', '11', '', 1718837141),
-('content_reviews', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Regularly review content for accuracy.', '11', '', 1718837141),
-('core', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core Composr code)', '11', '', 1718837141),
-('core_abstract_components', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_abstract_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_addon_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Install or uninstall addons.', '11', '', 1718837141),
-('core_adminzone_dashboard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The dashboard tools shown in the Admin Zone.', '11', '', 1718837141),
-('core_all_icons', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)', '11', '', 1718837141),
-('core_cleanup_tools', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Behind-the-scenes maintenance tasks.', '11', '', 1718837141),
-('core_cns', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The Composr member/usergroup system.', '11', '', 1718837141),
-('core_comcode_pages', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage new pages on the website, known as Comcode pages.', '11', '', 1718837141),
-('core_configuration', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Set configuration options.', '11', '', 1718837141),
-('core_database_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different kinds of database software.', '11', '', 1718837141);
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('core_feedback_features', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Features for user interaction with content.', '11', '', 1718837141),
-('core_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core fields API)', '11', '', 1718837141),
-('core_form_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality for forms.', '11', '', 1718837141),
-('core_forum_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different forum/member systems.', '11', '', 1718837141),
-('core_graphic_text', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Core rendering functionality for imagery.', '11', '', 1718837141),
-('core_html_abstractions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_language_editing', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Translate the software, or just change what it says for stylistic reasons.', '11', '', 1718837141),
-('core_mediaelement', 'Chris Graham', 'Composr', '11', 'Graphical', 'John Dyer', 'MIT License', 'Embeds media using the MediaElement.js player.', '11', '', 1718837141),
-('core_menus', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Edit menus.', '11', '', 1718837141),
-('core_notifications', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sends out action-triggered notifications to members listening to them.', '11', '', 1718837141),
-('core_permission_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage permissions.', '11', '', 1718837141),
-('core_primary_layout', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_privacy', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Features relating to maintaining a privacy policy and complying with privacy regulations.', '11', '', 1718837142),
-('core_rich_media', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Comcode and attachments.', '11', '', 1718837142),
-('core_themeing', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Themeing the website, via CSS, HTML, and images.', '11', '', 1718837142),
-('core_upgrader', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The upgrader code.', '11', '', 1718837142),
-('core_webstandards', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Web Standards checking tools.', '11', '', 1718837142),
-('core_zone_editor', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage zones (sub-sites).', '11', '', 1718837142),
-('counting_blocks', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Blocks for hit counters, and count-downs.', '11', '', 1718837142),
-('custom_comcode', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Create new Comcode tags.', '11', '', 1718837142),
-('debrand', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Allow easy debranding of the website software.', '11', '', 1718837142),
-('downloads', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Host a downloads directory.', '11', '', 1718837142),
-('ecommerce', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.', '11', '', 1718837142),
-('errorlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log of errors that have happened on the website.', '11', '', 1718837142),
-('failover', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced system to detect if the site goes down, and provide an automatic fallback.', '11', '', 1718837142),
-('filebased_persistent_caching', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A persistent data cache, using disk files for data storage.', '11', '', 1718837142),
-('filedump', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'File/media library, for use in attachments or for general ad-hoc sharing.', '11', '', 1718837142),
-('forum_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Blocks to draw forum posts and topics into the main website.', '11', '', 1718837142),
-('galleries', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Galleries, including support for video galleries, and member personal galleries.', '11', '', 1718837142),
-('google_appengine', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for deploying to Google App Engine (for developers).', '11', '', 1718837142),
-('health_check', 'Chris Graham', 'Composr', '11', 'Admin Utilities', '', 'Licensed on the same terms as Composr', 'The Health Check addon automatically finds problems on your website and server.', '11', '', 1718837142),
-('help_page', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'A simple website help page. Note that removing this will not remove the menu link automatically.', '11', '', 1718837142),
-('helper_scripts', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Scripts to help maintain sites, mostly for Linux/Unix servers or Windows servers running Cygwin.', '11', '', 1718837142),
-('import', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Switch to Composr from other software. This addon provides the architecture for importing, and a number of prewritten importers.', '11', '', 1718837142),
-('installer', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The installer files (can be removed immediately after installing; in fact Composr makes you remove install.php manually).', '11', '', 1718837142),
-('language_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Blocks to allow visitors to choose their language.', '11', '', 1718837143),
-('ldap', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for integrating Conversr with an LDAP server, so usergroup and members can be the same as those already on the network', '11', '', 1718837143),
-('leader_board', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow website administrators to display leader-boards of members earning the most points.', '11', '', 1718837143),
-('match_key_permissions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Match-key-permissions allow advanced setting of permissions on a screen-by-screen basis.', '11', '', 1718837143),
-('news', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'News and blogging.', '11', '', 1718837143);
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('news_shared', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', '(Common files needed for RSS and News addons)', '11', '', 1718837143),
-('newsletter', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Support for users to join newsletters, and for the staff to send out newsletters to subscribers, and to specific usergroups.', '11', '', 1718837143),
-('page_management', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage pages on the website.', '11', '', 1718837143),
-('phpinfo', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Access PHP configurational information from inside Composr.', '11', '', 1718837143),
-('points', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.', '11', '', 1718837143),
-('polls', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A poll (voting) system.', '11', '', 1718837143),
-('printer_friendly_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A block to provide a link for the current screen to be turned into it\'s printer-friendly equivalent.', '11', '', 1718837143),
-('quizzes', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.', '11', '', 1718837143),
-('random_quotes', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to display random quotes on your website, and an administrative tool to choose them.', '11', '', 1718837143),
-('realtime_rain', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Real-time/historic display of website activity.', '11', '', 1718837143),
-('recommend', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allow members to easily recommend the website to others.', '11', '', 1718837143),
-('redirects_editor', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage redirects between pages. On Apache servers this can also handle low-level redirects of any arbitrary URL to any other.', '11', '', 1718837143),
-('robots_txt', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Configure robots.txt.', '11', '', 1718837143),
-('rootkit_detector', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A tool to help power-user webmasters identify if a \"rootkit\" has been placed on the server.', '11', '', 1718837143),
-('search', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Multi-content search engine.', '11', '', 1718837143),
-('securitylogging', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log/display security alerts.', '11', '', 1718837143),
-('setupwizard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Quick-start setup wizard.', '11', '', 1718837143),
-('shopping', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'Shopping catalogue functionality.', '11', '', 1718837143),
-('site_messaging', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Functionality to display site messages (such as announcements and maintenance windows) at the top of pages with optional criteria.', '11', '', 1718837144);
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('sms', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Provides an option for the software to send SMS messages, via the commercial Clickatell web service. By default this is only used by the notifications system.', '11', '', 1718837144),
-('stats', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Show advanced graphs (analytics) and dumps of raw data relating to your website activity.', '11', '', 1718837144),
-('stats_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show a selection of your website statistics to your visitors.', '11', '', 1718837144),
-('syndication', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Syndicate RSS/Atom feeds of your content.', '11', '', 1718837144),
-('syndication_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Show RSS and Atom feeds from other websites.', '11', '', 1718837144),
-('themewizard', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Automatically generate your own colour schemes using the default theme as a base. Uses the sophisticated chromagraphic equations built into Composr.', '11', '', 1718837144),
-('tickets', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'A support ticket system. Also provides an integrated standalone contact block, and integrated content reporting functionality.', '11', '', 1718837144),
-('uninstaller', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The uninstaller.', '11', '', 1718837144),
-('users_online_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show which users who are currently visiting the website, and birthdays.', '11', '', 1718837144),
-('validation', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Subject member\'s to validation (approval) of their content submissions, and enable/disable content.', '11', '', 1718837144),
-('welcome_emails', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Welcome e-mails for new members.', '11', '', 1718837144),
-('wiki', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Collaborative/encyclopaedic database interface. A wiki-like community database with rich media capabilities.', '11', '', 1718837144),
-('wordfilter', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Block rude/offensive/inappropriate words.', '11', '', 1718837144),
-('xml_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced form field filtering.', '11', '', 1718837144);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('actionlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Audit-trail functionality.', '11', '', 1721011831),
+('aggregate_types', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Define complex aggregate types in XML, and spawn them.', '11', '', 1721011831),
+('apache_config_files', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sample .htaccess files to help achieve optimal configuration on the Apache web server.', '11', '', 1721011831),
+('authors', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Certain kinds of content can have authors instead of submitters (e.g. \'Core Development Team\'). The authors may be independently described and searched under.', '11', '', 1721011831),
+('awards', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Pick out content for featuring.', '11', '', 1721011831),
+('backup', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Perform incremental or full backups of files and the database. Supports scheduling.', '11', '', 1721011831),
+('banners', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'An advanced banner system, with support for multiple banner rotations, commercial banner campaigns, and webring-style systems. Support for graphical, text, and HTML banners. Hotword activation support.', '11', '', 1721011831),
+('breadcrumbs', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced breadcrumb editing.', '11', '', 1721011831),
+('calendar', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'An advanced community calendar.', '11', '', 1721011831),
+('captcha', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Stop spam-bots from performing actions on the website.', '11', '', 1721011831),
+('catalogues', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard CMS features (e.g. ratings).', '11', '', 1721011831),
+('chat', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Chatrooms and instant messaging.', '11', '', 1721011831),
+('cns_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1721011831),
+('cns_cartoon_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr (sketched characters)', '11', '', 1721011831),
+('cns_clubs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Clubs for members, each of which comes with a forum.', '11', '', 1721011831),
+('cns_contact_member', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Off-site e-mailing of members (more private, and may be used by guests).', '11', '', 1721011831),
+('cns_cpfs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Custom Profile Fields, so members may save additional details. If this is uninstalled any existing Custom Profile Fields will remain in the system.', '11', '', 1721011831),
+('cns_forum', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'The Conversr forum- a modern advanced forum for members to interact on.', '11', '', 1721011831),
+('cns_member_avatars', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member avatars.', '11', '', 1721011831),
+('cns_member_photos', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member photos.', '11', '', 1721011832),
+('cns_member_titles', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member titles.', '11', '', 1721011832),
+('cns_multi_moderations', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Multi-moderations for the Conversr forum.', '11', '', 1721011832),
+('cns_post_templates', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Post Templates for the Conversr forum.', '11', '', 1721011832),
+('cns_signatures', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member signatures.', '11', '', 1721011832),
+('cns_thematic_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1721011832),
+('cns_warnings', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member warnings and punishment.', '11', '', 1721011832),
+('code_editor', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'For programmers- A simple editor for editing Composr code files, with support for overrides and saving via FTP.', '11', '', 1721011832),
+('commandr', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A command-line environment for managing your website, designed for Linux/Unix lovers.', '11', '', 1721011832),
+('content_privacy', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allows users to specify privacy level for their content.', '11', '', 1721011832),
+('content_reviews', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Regularly review content for accuracy.', '11', '', 1721011832),
+('core', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core Composr code)', '11', '', 1721011832),
+('core_abstract_components', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_abstract_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_addon_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Install or uninstall addons.', '11', '', 1721011832),
+('core_adminzone_dashboard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The dashboard tools shown in the Admin Zone.', '11', '', 1721011832),
+('core_all_icons', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)', '11', '', 1721011832),
+('core_cleanup_tools', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Behind-the-scenes maintenance tasks.', '11', '', 1721011832),
+('core_cns', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The Composr member/usergroup system.', '11', '', 1721011832),
+('core_comcode_pages', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage new pages on the website, known as Comcode pages.', '11', '', 1721011832),
+('core_configuration', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Set configuration options.', '11', '', 1721011832),
+('core_database_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different kinds of database software.', '11', '', 1721011832);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('core_feedback_features', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Features for user interaction with content.', '11', '', 1721011832),
+('core_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core fields API)', '11', '', 1721011832),
+('core_form_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality for forms.', '11', '', 1721011832),
+('core_forum_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different forum/member systems.', '11', '', 1721011832),
+('core_graphic_text', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Core rendering functionality for imagery.', '11', '', 1721011832),
+('core_html_abstractions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_language_editing', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Translate the software, or just change what it says for stylistic reasons.', '11', '', 1721011832),
+('core_mediaelement', 'Chris Graham', 'Composr', '11', 'Graphical', 'John Dyer', 'MIT License', 'Embeds media using the MediaElement.js player.', '11', '', 1721011832),
+('core_menus', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Edit menus.', '11', '', 1721011832),
+('core_notifications', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sends out action-triggered notifications to members listening to them.', '11', '', 1721011832),
+('core_permission_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage permissions.', '11', '', 1721011832),
+('core_primary_layout', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_privacy', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Features relating to maintaining a privacy policy and complying with privacy regulations.', '11', '', 1721011833),
+('core_rich_media', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Comcode and attachments.', '11', '', 1721011833),
+('core_themeing', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Themeing the website, via CSS, HTML, and images.', '11', '', 1721011833),
+('core_upgrader', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The upgrader code.', '11', '', 1721011833),
+('core_webstandards', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Web Standards checking tools.', '11', '', 1721011833),
+('core_zone_editor', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage zones (sub-sites).', '11', '', 1721011833),
+('counting_blocks', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Blocks for hit counters, and count-downs.', '11', '', 1721011833),
+('custom_comcode', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Create new Comcode tags.', '11', '', 1721011833),
+('debrand', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Allow easy debranding of the website software.', '11', '', 1721011833),
+('downloads', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Host a downloads directory.', '11', '', 1721011833),
+('ecommerce', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.', '11', '', 1721011833),
+('errorlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log of errors that have happened on the website.', '11', '', 1721011833),
+('failover', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced system to detect if the site goes down, and provide an automatic fallback.', '11', '', 1721011833),
+('filebased_persistent_caching', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A persistent data cache, using disk files for data storage.', '11', '', 1721011833),
+('filedump', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'File/media library, for use in attachments or for general ad-hoc sharing.', '11', '', 1721011833),
+('forum_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Blocks to draw forum posts and topics into the main website.', '11', '', 1721011833),
+('galleries', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Galleries, including support for video galleries, and member personal galleries.', '11', '', 1721011833),
+('google_appengine', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for deploying to Google App Engine (for developers).', '11', '', 1721011833),
+('health_check', 'Chris Graham', 'Composr', '11', 'Admin Utilities', '', 'Licensed on the same terms as Composr', 'The Health Check addon automatically finds problems on your website and server.', '11', '', 1721011833),
+('help_page', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'A simple website help page. Note that removing this will not remove the menu link automatically.', '11', '', 1721011833),
+('helper_scripts', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Scripts to help maintain sites, mostly for Linux/Unix servers or Windows servers running Cygwin.', '11', '', 1721011833),
+('import', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Switch to Composr from other software. This addon provides the architecture for importing, and a number of prewritten importers.', '11', '', 1721011833),
+('installer', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The installer files (can be removed immediately after installing; in fact Composr makes you remove install.php manually).', '11', '', 1721011834),
+('language_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Blocks to allow visitors to choose their language.', '11', '', 1721011834),
+('ldap', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for integrating Conversr with an LDAP server, so usergroup and members can be the same as those already on the network', '11', '', 1721011834),
+('leader_board', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow website administrators to display leader-boards of members earning the most points.', '11', '', 1721011834),
+('match_key_permissions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Match-key-permissions allow advanced setting of permissions on a screen-by-screen basis.', '11', '', 1721011834),
+('news', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'News and blogging.', '11', '', 1721011834);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('news_shared', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', '(Common files needed for RSS and News addons)', '11', '', 1721011834),
+('newsletter', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Support for users to join newsletters, and for the staff to send out newsletters to subscribers, and to specific usergroups.', '11', '', 1721011834),
+('page_management', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage pages on the website.', '11', '', 1721011834),
+('phpinfo', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Access PHP configurational information from inside Composr.', '11', '', 1721011834),
+('points', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.', '11', '', 1721011834),
+('polls', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A poll (voting) system.', '11', '', 1721011834),
+('printer_friendly_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A block to provide a link for the current screen to be turned into it\'s printer-friendly equivalent.', '11', '', 1721011834),
+('quizzes', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.', '11', '', 1721011834),
+('random_quotes', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to display random quotes on your website, and an administrative tool to choose them.', '11', '', 1721011834),
+('realtime_rain', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Real-time/historic display of website activity.', '11', '', 1721011834),
+('recommend', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allow members to easily recommend the website to others.', '11', '', 1721011834),
+('redirects_editor', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage redirects between pages. On Apache servers this can also handle low-level redirects of any arbitrary URL to any other.', '11', '', 1721011834),
+('robots_txt', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Configure robots.txt.', '11', '', 1721011834),
+('rootkit_detector', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A tool to help power-user webmasters identify if a \"rootkit\" has been placed on the server.', '11', '', 1721011834),
+('search', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Multi-content search engine.', '11', '', 1721011834),
+('securitylogging', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log/display security alerts.', '11', '', 1721011834),
+('setupwizard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Quick-start setup wizard.', '11', '', 1721011834),
+('shopping', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'Shopping catalogue functionality.', '11', '', 1721011835),
+('site_messaging', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Functionality to display site messages (such as announcements and maintenance windows) at the top of pages with optional criteria.', '11', '', 1721011835);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('sms', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Provides an option for the software to send SMS messages, via the commercial Clickatell web service. By default this is only used by the notifications system.', '11', '', 1721011835),
+('stats', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Show advanced graphs (analytics) and dumps of raw data relating to your website activity.', '11', '', 1721011835),
+('stats_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show a selection of your website statistics to your visitors.', '11', '', 1721011835),
+('syndication', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Syndicate RSS/Atom feeds of your content.', '11', '', 1721011835),
+('syndication_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Show RSS and Atom feeds from other websites.', '11', '', 1721011835),
+('themewizard', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Automatically generate your own colour schemes using the default theme as a base. Uses the sophisticated chromagraphic equations built into Composr.', '11', '', 1721011835),
+('tickets', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'A support ticket system. Also provides an integrated standalone contact block, and integrated content reporting functionality.', '11', '', 1721011835),
+('uninstaller', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The uninstaller.', '11', '', 1721011835),
+('users_online_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show which users who are currently visiting the website, and birthdays.', '11', '', 1721011835),
+('validation', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Subject member\'s to validation (approval) of their content submissions, and enable/disable content.', '11', '', 1721011835),
+('welcome_emails', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Welcome e-mails for new members.', '11', '', 1721011835),
+('wiki', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Collaborative/encyclopaedic database interface. A wiki-like community database with rich media capabilities.', '11', '', 1721011835),
+('wordfilter', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Block rude/offensive/inappropriate words.', '11', '', 1721011835),
+('xml_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced form field filtering.', '11', '', 1721011835);
 
 DROP TABLE IF EXISTS cms_addons_dependencies;
 CREATE TABLE cms_addons_dependencies (
@@ -9349,7 +9349,7 @@ CREATE TABLE cms_award_types (
 ALTER TABLE cms_award_types ADD FULLTEXT a_description (a_description);
 
 ALTER TABLE cms_award_types ADD FULLTEXT a_title (a_title);
-INSERT INTO cms_award_types (id, a_title, a_description, a_points, a_content_type, a_show_awardee, a_update_interval_hours, a_description__text_parsed, a_description__source_user) VALUES (1, 'Download of the week', 'The best downloads in the download system, chosen every week.', 0, 'download', 0, 168, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f91da5f46.55076352_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f91da5f46.55076352_1\\\";s:129:\\\"\\$tpl_funcs[\'string_attach_66735f91da5f46.55076352_1\']=\\\"echo \\\\\\\"The best downloads in the download system, chosen every week.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_award_types (id, a_title, a_description, a_points, a_content_type, a_show_awardee, a_update_interval_hours, a_description__text_parsed, a_description__source_user) VALUES (1, 'Download of the week', 'The best downloads in the download system, chosen every week.', 0, 'download', 0, 168, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7475d330.10173532_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7475d330.10173532_1\\\";s:129:\\\"\\$tpl_funcs[\'string_attach_66948e7475d330.10173532_1\']=\\\"echo \\\\\\\"The best downloads in the download system, chosen every week.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_banned_ip;
 CREATE TABLE cms_banned_ip (
@@ -9428,8 +9428,8 @@ ALTER TABLE cms_banners ADD INDEX deployment_agreement (deployment_agreement);
 ALTER TABLE cms_banners ADD INDEX expiry_date (expiry_date);
 
 ALTER TABLE cms_banners ADD INDEX topsites (hits_from,hits_to);
-INSERT INTO cms_banners (name, expiry_date, submitter, img_url, deployment_agreement, title_text, caption, direct_code, campaign_remaining, site_url, hits_from, views_from, hits_to, views_to, display_likelihood, notes, validated, add_date, edit_date, b_type, caption__text_parsed, caption__source_user) VALUES ('donate', NULL, 1, 'data/images/donate.png', 0, '', 'Please donate to keep this site alive', '', 0, 'http://localhost/composr/index.php?page=donate', 0, 0, 0, 0, 30, 'Provided as a default.', 1, 1718837145, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_1\\\";s:105:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_1\']=\\\"echo \\\\\\\"Please donate to keep this site alive\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('advertise_here', NULL, 1, 'data/images/advertise_here.png', 2, '', 'Advertise here!', '', 0, 'http://localhost/composr/index.php?page=advertise', 0, 0, 0, 0, 10, 'Provided as a default. This is a fallback banner (it shows when others are not available).', 1, 1718837145, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_2\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_2\']=\\\"echo \\\\\\\"Advertise here!\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_banners (name, expiry_date, submitter, img_url, deployment_agreement, title_text, caption, direct_code, campaign_remaining, site_url, hits_from, views_from, hits_to, views_to, display_likelihood, notes, validated, add_date, edit_date, b_type, caption__text_parsed, caption__source_user) VALUES ('donate', NULL, 1, 'data/images/donate.png', 0, '', 'Please donate to keep this site alive', '', 0, 'http://localhost/composr/index.php?page=donate', 0, 0, 0, 0, 30, 'Provided as a default.', 1, 1721011836, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_1\\\";s:105:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_1\']=\\\"echo \\\\\\\"Please donate to keep this site alive\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('advertise_here', NULL, 1, 'data/images/advertise_here.png', 2, '', 'Advertise here!', '', 0, 'http://localhost/composr/index.php?page=advertise', 0, 0, 0, 0, 10, 'Provided as a default. This is a fallback banner (it shows when others are not available).', 1, 1721011836, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_2\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_2\']=\\\"echo \\\\\\\"Advertise here!\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_banners_types;
 CREATE TABLE cms_banners_types (
@@ -9685,14 +9685,14 @@ CREATE TABLE cms_calendar_types (
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_calendar_types ADD FULLTEXT t_title (t_title);
-INSERT INTO cms_calendar_types (id, t_title, t_logo, t_external_feed_url, t_title__text_parsed, t_title__source_user) VALUES (1, '(System command)', 'icons/calendar/system_command', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_3\\\";s:84:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_3\']=\\\"echo \\\\\\\"(System command)\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'General', 'icons/calendar/general', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_4\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_4\']=\\\"echo \\\\\\\"General\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'Birthday', 'icons/calendar/birthday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_5\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_5\']=\\\"echo \\\\\\\"Birthday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(4, 'Public holiday', 'icons/calendar/public_holiday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_6\\\";s:82:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_6\']=\\\"echo \\\\\\\"Public holiday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(5, 'Vacation', 'icons/calendar/vacation', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_7\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_7\']=\\\"echo \\\\\\\"Vacation\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(6, 'Appointment', 'icons/calendar/appointment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_8\\\";s:79:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_8\']=\\\"echo \\\\\\\"Appointment\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(7, 'Task', 'icons/calendar/commitment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_9\\\";s:72:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_9\']=\\\"echo \\\\\\\"Task\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(8, 'Anniversary', 'icons/calendar/anniversary', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_10\\\";s:80:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_10\']=\\\"echo \\\\\\\"Anniversary\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_calendar_types (id, t_title, t_logo, t_external_feed_url, t_title__text_parsed, t_title__source_user) VALUES (1, '(System command)', 'icons/calendar/system_command', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_3\\\";s:84:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_3\']=\\\"echo \\\\\\\"(System command)\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'General', 'icons/calendar/general', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_4\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_4\']=\\\"echo \\\\\\\"General\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'Birthday', 'icons/calendar/birthday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_5\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_5\']=\\\"echo \\\\\\\"Birthday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(4, 'Public holiday', 'icons/calendar/public_holiday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_6\\\";s:82:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_6\']=\\\"echo \\\\\\\"Public holiday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(5, 'Vacation', 'icons/calendar/vacation', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_7\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_7\']=\\\"echo \\\\\\\"Vacation\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(6, 'Appointment', 'icons/calendar/appointment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_8\\\";s:79:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_8\']=\\\"echo \\\\\\\"Appointment\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(7, 'Task', 'icons/calendar/commitment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_9\\\";s:72:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_9\']=\\\"echo \\\\\\\"Task\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(8, 'Anniversary', 'icons/calendar/anniversary', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_10\\\";s:80:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_10\']=\\\"echo \\\\\\\"Anniversary\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_captchas;
 CREATE TABLE cms_captchas (
@@ -9741,11 +9741,11 @@ ALTER TABLE cms_catalogue_categories ADD INDEX cc_parent_id (cc_parent_id);
 ALTER TABLE cms_catalogue_categories ADD INDEX ftjoin_ccdescrip (cc_description(250));
 
 ALTER TABLE cms_catalogue_categories ADD INDEX ftjoin_cctitle (cc_title(250));
-INSERT INTO cms_catalogue_categories (id, c_name, cc_title, cc_description, rep_image, cc_notes, cc_add_date, cc_parent_id, cc_move_target_id, cc_move_days_lower, cc_move_days_higher, cc_description__text_parsed, cc_description__source_user) VALUES (1, 'projects', 'Projects', 'These are projects designed to: advertise project existence, detail current progress, and solicit help.', '', '', 1718837148, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_12\\\";s:172:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_12\']=\\\"echo \\\\\\\"These are projects designed to: advertise project existence, detail current progress, and solicit help.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'faqs', 'Frequently Asked Questions', 'If you have questions that are not covered in our FAQ, please post them in an appropriate forum.', '', '', 1718837148, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_14\\\";s:165:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_14\']=\\\"echo \\\\\\\"If you have questions that are not covered in our FAQ, please post them in an appropriate forum.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'links', 'Links home', '', '', '', 1718837149, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(4, 'contacts', 'Contacts', '', '', '', 1718837149, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(5, 'products', 'Products home', '', '', '', 1718837149, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_catalogue_categories (id, c_name, cc_title, cc_description, rep_image, cc_notes, cc_add_date, cc_parent_id, cc_move_target_id, cc_move_days_lower, cc_move_days_higher, cc_description__text_parsed, cc_description__source_user) VALUES (1, 'projects', 'Projects', 'These are projects designed to: advertise project existence, detail current progress, and solicit help.', '', '', 1721011839, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_12\\\";s:172:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_12\']=\\\"echo \\\\\\\"These are projects designed to: advertise project existence, detail current progress, and solicit help.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'faqs', 'Frequently Asked Questions', 'If you have questions that are not covered in our FAQ, please post them in an appropriate forum.', '', '', 1721011839, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_14\\\";s:165:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_14\']=\\\"echo \\\\\\\"If you have questions that are not covered in our FAQ, please post them in an appropriate forum.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'links', 'Links home', '', '', '', 1721011839, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(4, 'contacts', 'Contacts', '', '', '', 1721011840, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(5, 'products', 'Products home', '', '', '', 1721011840, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_catalogue_childcountcache;
 CREATE TABLE cms_catalogue_childcountcache (
@@ -9885,31 +9885,31 @@ ALTER TABLE cms_catalogue_entries ADD INDEX ce_views (ce_views);
 ALTER TABLE cms_catalogue_entries ADD INDEX ces (ce_submitter);
 DROP TABLE IF EXISTS cms_catalogue_entry_linkage;
 CREATE TABLE cms_catalogue_entry_linkage (
-    content_id varchar(80) NOT NULL,
     catalogue_entry_id integer NOT NULL,
     content_type varchar(80) NOT NULL,
+    content_id varchar(80) NOT NULL,
     PRIMARY KEY (catalogue_entry_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_catalogue_entry_linkage ADD INDEX custom_fields (content_type,content_id);
 DROP TABLE IF EXISTS cms_catalogue_fields;
 CREATE TABLE cms_catalogue_fields (
+    cf_options varchar(255) NOT NULL,
+    cf_is_sortable tinyint(1) NOT NULL,
+    cf_include_in_main_search tinyint(1) NOT NULL,
+    cf_allow_template_search tinyint(1) NOT NULL,
+    cf_defines_order tinyint NOT NULL,
+    cf_order integer NOT NULL,
     cf_type varchar(80) NOT NULL,
     cf_description longtext NOT NULL,
-    cf_required tinyint(1) NOT NULL,
+    cf_put_in_search tinyint(1) NOT NULL,
+    c_name varchar(80) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     cf_put_in_category tinyint(1) NOT NULL,
-    cf_name longtext NOT NULL,
-    c_name varchar(80) NOT NULL,
-    cf_order integer NOT NULL,
-    cf_defines_order tinyint NOT NULL,
-    cf_visible tinyint(1) NOT NULL,
-    cf_sensitive tinyint(1) NOT NULL,
+    cf_required tinyint(1) NOT NULL,
     cf_default longtext NOT NULL,
-    cf_allow_template_search tinyint(1) NOT NULL,
-    cf_include_in_main_search tinyint(1) NOT NULL,
-    cf_is_sortable tinyint(1) NOT NULL,
-    cf_options varchar(255) NOT NULL,
-    cf_put_in_search tinyint(1) NOT NULL,
+    cf_name longtext NOT NULL,
+    cf_sensitive tinyint(1) NOT NULL,
+    cf_visible tinyint(1) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_catalogue_fields ADD FULLTEXT cf_description (cf_description);
@@ -9953,18 +9953,18 @@ INSERT INTO cms_catalogue_fields (id, c_name, cf_name, cf_description, cf_type, 
 
 DROP TABLE IF EXISTS cms_catalogues;
 CREATE TABLE cms_catalogues (
+    c_is_tree tinyint(1) NOT NULL,
+    c_name varchar(80) NOT NULL,
+    c_notes longtext NOT NULL,
+    c_add_date integer unsigned NOT NULL,
+    c_submit_points integer NOT NULL,
+    c_ecommerce tinyint(1) NOT NULL,
     c_default_review_freq integer NULL,
+    c_send_view_reports varchar(80) NOT NULL,
+    c_categories_sort_order varchar(255) NOT NULL,
     c_title longtext NOT NULL,
     c_description longtext NOT NULL,
     c_display_type tinyint NOT NULL,
-    c_is_tree tinyint(1) NOT NULL,
-    c_notes longtext NOT NULL,
-    c_name varchar(80) NOT NULL,
-    c_submit_points integer NOT NULL,
-    c_ecommerce tinyint(1) NOT NULL,
-    c_add_date integer unsigned NOT NULL,
-    c_send_view_reports varchar(80) NOT NULL,
-    c_categories_sort_order varchar(255) NOT NULL,
     c_description__text_parsed longtext NOT NULL,
     c_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (c_name)
@@ -9972,24 +9972,24 @@ CREATE TABLE cms_catalogues (
 ALTER TABLE cms_catalogues ADD FULLTEXT c_description (c_description);
 
 ALTER TABLE cms_catalogues ADD FULLTEXT c_title (c_title);
-INSERT INTO cms_catalogues (c_name, c_title, c_description, c_display_type, c_is_tree, c_notes, c_add_date, c_submit_points, c_ecommerce, c_default_review_freq, c_send_view_reports, c_categories_sort_order, c_description__text_parsed, c_description__source_user) VALUES ('projects', 'Projects', '', 0, 0, '', 1718837148, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('faqs', 'Frequently Asked Questions', '', 0, 0, '', 1718837148, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('links', 'Links', 'Warning: these sites are outside our control.', 2, 1, '', 1718837149, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_15\\\";s:114:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_15\']=\\\"echo \\\\\\\"Warning: these sites are outside our control.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('contacts', 'Contacts', 'A contacts/address-book.', 0, 0, '', 1718837149, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_17\\\";s:93:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_17\']=\\\"echo \\\\\\\"A contacts/address-book.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('products', 'Products', 'These are products for sale from this website.', 3, 1, '', 1718837149, 0, 1, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_19\\\";s:115:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_19\']=\\\"echo \\\\\\\"These are products for sale from this website.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_catalogues (c_name, c_title, c_description, c_display_type, c_is_tree, c_notes, c_add_date, c_submit_points, c_ecommerce, c_default_review_freq, c_send_view_reports, c_categories_sort_order, c_description__text_parsed, c_description__source_user) VALUES ('projects', 'Projects', '', 0, 0, '', 1721011839, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('faqs', 'Frequently Asked Questions', '', 0, 0, '', 1721011839, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('links', 'Links', 'Warning: these sites are outside our control.', 2, 1, '', 1721011839, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_15\\\";s:114:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_15\']=\\\"echo \\\\\\\"Warning: these sites are outside our control.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('contacts', 'Contacts', 'A contacts/address-book.', 0, 0, '', 1721011839, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_17\\\";s:93:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_17\']=\\\"echo \\\\\\\"A contacts/address-book.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('products', 'Products', 'These are products for sale from this website.', 3, 1, '', 1721011840, 0, 1, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_19\\\";s:115:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_19\']=\\\"echo \\\\\\\"These are products for sale from this website.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_ce_fulltext_index;
 CREATE TABLE cms_ce_fulltext_index (
-    i_occurrence_rate real NOT NULL,
-    i_category_id integer NOT NULL,
-    i_add_time integer unsigned NOT NULL,
-    i_ac integer NOT NULL,
     i_submitter integer NOT NULL,
-    i_ngram integer NOT NULL,
+    i_ac integer NOT NULL,
     i_catalogue_entry_id integer NOT NULL,
     i_lang varchar(5) NOT NULL,
+    i_ngram integer NOT NULL,
+    i_occurrence_rate real NOT NULL,
+    i_add_time integer unsigned NOT NULL,
     i_c_name varchar(80) NOT NULL,
-    PRIMARY KEY (i_ac, i_ngram, i_catalogue_entry_id, i_lang)
+    i_category_id integer NOT NULL,
+    PRIMARY KEY (i_ac, i_catalogue_entry_id, i_lang, i_ngram)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_ce_fulltext_index ADD INDEX content_id (i_catalogue_entry_id);
 
@@ -10058,11 +10058,11 @@ ALTER TABLE cms_ce_fulltext_index ADD INDEX main_8 (i_lang,i_ngram,i_ac,i_c_name
 ALTER TABLE cms_ce_fulltext_index ADD INDEX main_9 (i_lang,i_ngram,i_ac,i_category_id,i_occurrence_rate);
 DROP TABLE IF EXISTS cms_chat_active;
 CREATE TABLE cms_chat_active (
-    member_id integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    ip varchar(40) NOT NULL,
     room_id integer NULL,
     date_and_time integer unsigned NOT NULL,
-    ip varchar(40) NOT NULL,
+    member_id integer NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_chat_active ADD INDEX active_ordering (date_and_time);
@@ -10072,39 +10072,39 @@ ALTER TABLE cms_chat_active ADD INDEX member_select (member_id);
 ALTER TABLE cms_chat_active ADD INDEX room_select (room_id);
 DROP TABLE IF EXISTS cms_chat_blocking;
 CREATE TABLE cms_chat_blocking (
-    member_blocker integer NOT NULL,
-    date_and_time integer unsigned NOT NULL,
     member_blocked integer NOT NULL,
-    PRIMARY KEY (member_blocker, member_blocked)
+    date_and_time integer unsigned NOT NULL,
+    member_blocker integer NOT NULL,
+    PRIMARY KEY (member_blocked, member_blocker)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_chat_events;
 CREATE TABLE cms_chat_events (
+    e_date_and_time integer unsigned NOT NULL,
     e_room_id integer NULL,
     e_member_id integer NOT NULL,
-    e_date_and_time integer unsigned NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     e_type_code varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_chat_events ADD INDEX event_ordering (e_date_and_time);
 DROP TABLE IF EXISTS cms_chat_friends;
 CREATE TABLE cms_chat_friends (
-    member_likes integer NOT NULL,
     member_liked integer NOT NULL,
+    member_likes integer NOT NULL,
     date_and_time integer unsigned NOT NULL,
-    PRIMARY KEY (member_likes, member_liked)
+    PRIMARY KEY (member_liked, member_likes)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_chat_messages;
 CREATE TABLE cms_chat_messages (
-    font_name varchar(255) NOT NULL,
     text_colour varchar(255) NOT NULL,
-    the_message longtext NOT NULL,
-    date_and_time integer unsigned NOT NULL,
-    room_id integer NOT NULL,
-    member_id integer NOT NULL,
-    ip_address varchar(40) NOT NULL,
     system_message tinyint(1) NOT NULL,
+    font_name varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    date_and_time integer unsigned NOT NULL,
+    the_message longtext NOT NULL,
+    ip_address varchar(40) NOT NULL,
+    member_id integer NOT NULL,
+    room_id integer NOT NULL,
     the_message__text_parsed longtext NOT NULL,
     the_message__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -10143,10 +10143,10 @@ INSERT INTO cms_chat_rooms (id, room_name, room_owner, allow_list, allow_list_gr
 
 DROP TABLE IF EXISTS cms_chat_sound_effects;
 CREATE TABLE cms_chat_sound_effects (
-    s_member integer NOT NULL,
     s_effect_id varchar(80) NOT NULL,
     s_url varchar(255) BINARY NOT NULL,
-    PRIMARY KEY (s_member, s_effect_id)
+    s_member integer NOT NULL,
+    PRIMARY KEY (s_effect_id, s_member)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_comcode_pages;
 CREATE TABLE cms_comcode_pages (
@@ -10169,11 +10169,11 @@ ALTER TABLE cms_comcode_pages ADD INDEX p_order (p_order);
 ALTER TABLE cms_comcode_pages ADD INDEX p_submitter (p_submitter);
 
 ALTER TABLE cms_comcode_pages ADD INDEX p_validated (p_validated);
-INSERT INTO cms_comcode_pages (the_zone, the_page, p_parent_page, p_validated, p_edit_date, p_add_date, p_submitter, p_show_as_edit, p_include_on_sitemap, p_order) VALUES ('site', 'userguide_comcode', 'help', 1, NULL, 1718837135, 2, 0, 0, 0),
-('', 'keymap', 'help', 1, NULL, 1718837135, 2, 0, 0, 0),
-('site', 'userguide_chatcode', 'help', 1, NULL, 1718837152, 2, 0, 0, 1),
-('site', 'popup_blockers', 'help', 1, NULL, 1718837152, 2, 0, 0, 2),
-('', 'recommend_help', 'recommend', 1, NULL, 1718837161, 2, 0, 0, 0);
+INSERT INTO cms_comcode_pages (the_zone, the_page, p_parent_page, p_validated, p_edit_date, p_add_date, p_submitter, p_show_as_edit, p_include_on_sitemap, p_order) VALUES ('site', 'userguide_comcode', 'help', 1, NULL, 1721011826, 2, 0, 0, 0),
+('', 'keymap', 'help', 1, NULL, 1721011826, 2, 0, 0, 0),
+('site', 'userguide_chatcode', 'help', 1, NULL, 1721011842, 2, 0, 0, 1),
+('site', 'popup_blockers', 'help', 1, NULL, 1721011842, 2, 0, 0, 2),
+('', 'recommend_help', 'recommend', 1, NULL, 1721011852, 2, 0, 0, 0);
 
 DROP TABLE IF EXISTS cms_config;
 CREATE TABLE cms_config (
@@ -11734,23 +11734,7 @@ INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('f_member_custom_field
 ('ecom_transactions', 't_invoicing_breakdown', 'LONG_TEXT'),
 ('ecom_transactions', 't_member_id', 'MEMBER'),
 ('ecom_transactions', 't_session_id', 'ID_TEXT'),
-('ecom_sales_expecting', 'id', '*AUTO'),
-('ecom_sales_expecting', 'e_details', 'LONG_TEXT'),
-('ecom_sales_expecting', 'e_time', 'TIME'),
-('ecom_trans_addresses', 'id', '*AUTO'),
-('ecom_trans_addresses', 'a_trans_expecting_id', 'ID_TEXT'),
-('ecom_trans_addresses', 'a_txn_id', 'ID_TEXT'),
-('ecom_trans_addresses', 'a_firstname', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_lastname', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_street_address', 'LONG_TEXT'),
-('ecom_trans_addresses', 'a_city', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_county', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_state', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_post_code', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_country', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_email', 'SHORT_TEXT'),
-('ecom_trans_addresses', 'a_phone', 'SHORT_TEXT');
-INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('ecom_prods_prices', 'name', '*ID_TEXT'),
+('ecom_prods_prices', 'name', '*ID_TEXT'),
 ('ecom_prods_prices', 'price', '?REAL'),
 ('ecom_prods_prices', 'tax_code', 'ID_TEXT'),
 ('ecom_prods_prices', 'price_points', '?INTEGER'),
@@ -11765,8 +11749,8 @@ INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('ecom_prods_prices', '
 ('ecom_prods_custom', 'c_description', 'LONG_TRANS__COMCODE'),
 ('ecom_prods_custom', 'c_image_url', 'URLPATH'),
 ('ecom_prods_custom', 'c_mail_subject', 'SHORT_TRANS'),
-('ecom_prods_custom', 'c_mail_body', 'LONG_TRANS'),
-('ecom_prods_custom', 'c_enabled', 'BINARY'),
+('ecom_prods_custom', 'c_mail_body', 'LONG_TRANS');
+INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('ecom_prods_custom', 'c_enabled', 'BINARY'),
 ('ecom_prods_custom', 'c_price', '?REAL'),
 ('ecom_prods_custom', 'c_tax_code', 'ID_TEXT'),
 ('ecom_prods_custom', 'c_shipping_cost', 'REAL'),
@@ -11788,6 +11772,22 @@ INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('ecom_prods_prices', '
 ('ecom_prods_permissions', 'p_page', 'ID_TEXT'),
 ('ecom_prods_permissions', 'p_module', 'ID_TEXT'),
 ('ecom_prods_permissions', 'p_category', 'ID_TEXT'),
+('ecom_sales_expecting', 'id', '*AUTO'),
+('ecom_sales_expecting', 'e_details', 'LONG_TEXT'),
+('ecom_sales_expecting', 'e_time', 'TIME'),
+('ecom_trans_addresses', 'id', '*AUTO'),
+('ecom_trans_addresses', 'a_trans_expecting_id', 'ID_TEXT'),
+('ecom_trans_addresses', 'a_txn_id', 'ID_TEXT'),
+('ecom_trans_addresses', 'a_firstname', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_lastname', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_street_address', 'LONG_TEXT'),
+('ecom_trans_addresses', 'a_city', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_county', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_state', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_post_code', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_country', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_email', 'SHORT_TEXT'),
+('ecom_trans_addresses', 'a_phone', 'SHORT_TEXT'),
 ('quiz_member_last_visit', 'id', '*AUTO'),
 ('quiz_member_last_visit', 'v_time', 'TIME');
 INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('quiz_member_last_visit', 'v_member_id', 'MEMBER'),
@@ -12591,8 +12591,6 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('poll', '#op
 ('poll_votes', 'v_voting_ip_address', 'v_voting_ip_address'),
 ('poll_votes', 'v_vote_for', 'v_vote_for'),
 ('poll', '#poll_search__combined', 'question,option1,option2,option3,option4,option5'),
-('ecom_trans_addresses', 'trans_expecting_id', 'a_trans_expecting_id'),
-('ecom_trans_addresses', 'txn_id', 'a_txn_id'),
 ('ecom_prods_custom', '#c_title', 'c_title'),
 ('ecom_prods_custom', '#c_description', 'c_description'),
 ('ecom_prods_custom', '#c_mail_subject', 'c_mail_subject'),
@@ -12601,6 +12599,8 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('poll', '#op
 ('ecom_prods_permissions', '#p_description', 'p_description'),
 ('ecom_prods_permissions', '#p_mail_subject', 'p_mail_subject'),
 ('ecom_prods_permissions', '#p_mail_body', 'p_mail_body'),
+('ecom_trans_addresses', 'trans_expecting_id', 'a_trans_expecting_id'),
+('ecom_trans_addresses', 'txn_id', 'a_txn_id'),
 ('ecom_transactions', 't_time', 't_time'),
 ('ecom_transactions', 't_type_code', 't_type_code'),
 ('ecom_sales', 'member_id', 'member_id'),
@@ -12706,13 +12706,13 @@ ALTER TABLE cms_digestives_tin ADD INDEX from_member_id (d_from_member_id);
 ALTER TABLE cms_digestives_tin ADD INDEX unread (d_to_member_id,d_read);
 DROP TABLE IF EXISTS cms_download_categories;
 CREATE TABLE cms_download_categories (
-    parent_id integer NULL,
     add_date integer unsigned NOT NULL,
-    the_description longtext NOT NULL,
-    notes longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    rep_image varchar(255) BINARY NOT NULL,
     category longtext NOT NULL,
+    parent_id integer NULL,
+    the_description longtext NOT NULL,
+    rep_image varchar(255) BINARY NOT NULL,
+    notes longtext NOT NULL,
     the_description__text_parsed longtext NOT NULL,
     the_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -12728,41 +12728,41 @@ ALTER TABLE cms_download_categories ADD INDEX child_find (parent_id);
 ALTER TABLE cms_download_categories ADD INDEX ftjoin_dccat (category(250));
 
 ALTER TABLE cms_download_categories ADD INDEX ftjoin_dcdescrip (the_description(250));
-INSERT INTO cms_download_categories (id, category, parent_id, add_date, notes, the_description, rep_image, the_description__text_parsed, the_description__source_user) VALUES (1, 'Downloads home', NULL, 1718837152, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_download_categories (id, category, parent_id, add_date, notes, the_description, rep_image, the_description__text_parsed, the_description__source_user) VALUES (1, 'Downloads home', NULL, 1721011843, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_download_downloads;
 CREATE TABLE cms_download_downloads (
-    download_data_mash longtext NOT NULL,
-    download_licence_id integer NULL,
-    rep_image varchar(255) BINARY NOT NULL,
-    original_filename varchar(255) NOT NULL,
-    submitter integer NOT NULL,
-    download_cost integer NOT NULL,
-    download_views integer NOT NULL,
-    notes longtext NOT NULL,
     allow_trackbacks tinyint(1) NOT NULL,
-    allow_comments tinyint NOT NULL,
-    allow_rating tinyint(1) NOT NULL,
-    file_size integer NULL,
-    default_pic integer NOT NULL,
-    validated tinyint(1) NOT NULL,
-    edit_date integer unsigned NULL,
-    add_date integer unsigned NOT NULL,
-    out_mode_id integer NULL,
-    num_downloads integer NOT NULL,
-    additional_details longtext NOT NULL,
-    author varchar(80) NOT NULL,
-    the_description longtext NOT NULL,
-    url varchar(255) BINARY NOT NULL,
-    name longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    category_id integer NOT NULL,
+    notes longtext NOT NULL,
+    download_views integer NOT NULL,
+    download_cost integer NOT NULL,
     download_submitter_gets_points tinyint(1) NOT NULL,
+    author varchar(80) NOT NULL,
+    submitter integer NOT NULL,
+    original_filename varchar(255) NOT NULL,
+    rep_image varchar(255) BINARY NOT NULL,
+    download_licence_id integer NULL,
+    id integer unsigned auto_increment NOT NULL,
+    download_data_mash longtext NOT NULL,
+    category_id integer NOT NULL,
+    name longtext NOT NULL,
+    url varchar(255) BINARY NOT NULL,
+    the_description longtext NOT NULL,
     url_redirect varchar(255) BINARY NOT NULL,
-    additional_details__text_parsed longtext NOT NULL,
-    additional_details__source_user integer DEFAULT 1 NOT NULL,
+    additional_details longtext NOT NULL,
+    num_downloads integer NOT NULL,
+    out_mode_id integer NULL,
+    add_date integer unsigned NOT NULL,
+    edit_date integer unsigned NULL,
+    validated tinyint(1) NOT NULL,
+    default_pic integer NOT NULL,
+    file_size integer NULL,
+    allow_rating tinyint(1) NOT NULL,
+    allow_comments tinyint NOT NULL,
     the_description__text_parsed longtext NOT NULL,
     the_description__source_user integer DEFAULT 1 NOT NULL,
+    additional_details__text_parsed longtext NOT NULL,
+    additional_details__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_download_downloads ADD FULLTEXT additional_details (additional_details);
@@ -12807,46 +12807,46 @@ CREATE TABLE cms_download_licences (
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_download_logging;
 CREATE TABLE cms_download_logging (
-    member_id integer NOT NULL,
     id integer NOT NULL,
+    member_id integer NOT NULL,
     ip varchar(40) NOT NULL,
     date_and_time integer unsigned NOT NULL,
-    PRIMARY KEY (member_id, id)
+    PRIMARY KEY (id, member_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_download_logging ADD INDEX calculate_bandwidth (date_and_time);
 DROP TABLE IF EXISTS cms_ecom_invoices;
 CREATE TABLE cms_ecom_invoices (
     i_state varchar(80) NOT NULL,
+    i_tax_tracking longtext NOT NULL,
+    i_currency varchar(80) NOT NULL,
+    i_processing_code varchar(255) NOT NULL,
+    i_type_code varchar(80) NOT NULL,
+    i_member_id integer NOT NULL,
+    i_time integer unsigned NOT NULL,
+    i_item_name varchar(255) NOT NULL,
+    i_note longtext NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    i_price real NOT NULL,
     i_tax_code varchar(80) NOT NULL,
     i_tax_derivation longtext NOT NULL,
     i_tax real NOT NULL,
-    i_tax_tracking longtext NOT NULL,
-    i_member_id integer NOT NULL,
-    i_processing_code varchar(255) NOT NULL,
-    i_note longtext NOT NULL,
-    i_price real NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    i_currency varchar(80) NOT NULL,
-    i_time integer unsigned NOT NULL,
-    i_type_code varchar(80) NOT NULL,
-    i_item_name varchar(255) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_ecom_invoices ADD INDEX i_member_id (i_member_id);
 DROP TABLE IF EXISTS cms_ecom_prods_custom;
 CREATE TABLE cms_ecom_prods_custom (
+    c_price real NULL,
+    c_mail_subject longtext NOT NULL,
+    c_image_url varchar(255) BINARY NOT NULL,
+    c_description longtext NOT NULL,
+    c_title longtext NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    c_mail_body longtext NOT NULL,
+    c_enabled tinyint(1) NOT NULL,
     c_tax_code varchar(80) NOT NULL,
     c_shipping_cost real NOT NULL,
     c_price_points integer NULL,
     c_one_per_member tinyint(1) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    c_enabled tinyint(1) NOT NULL,
-    c_title longtext NOT NULL,
-    c_description longtext NOT NULL,
-    c_image_url varchar(255) BINARY NOT NULL,
-    c_mail_subject longtext NOT NULL,
-    c_mail_body longtext NOT NULL,
-    c_price real NULL,
     c_description__text_parsed longtext NOT NULL,
     c_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -12860,10 +12860,9 @@ ALTER TABLE cms_ecom_prods_custom ADD FULLTEXT c_mail_subject (c_mail_subject);
 ALTER TABLE cms_ecom_prods_custom ADD FULLTEXT c_title (c_title);
 DROP TABLE IF EXISTS cms_ecom_prods_permissions;
 CREATE TABLE cms_ecom_prods_permissions (
-    p_category varchar(80) NOT NULL,
+    p_description longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     p_title longtext NOT NULL,
-    p_description longtext NOT NULL,
     p_mail_subject longtext NOT NULL,
     p_mail_body longtext NOT NULL,
     p_enabled tinyint(1) NOT NULL,
@@ -12876,6 +12875,7 @@ CREATE TABLE cms_ecom_prods_permissions (
     p_zone varchar(80) NOT NULL,
     p_page varchar(80) NOT NULL,
     p_module varchar(80) NOT NULL,
+    p_category varchar(80) NOT NULL,
     p_description__text_parsed longtext NOT NULL,
     p_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -12889,28 +12889,28 @@ ALTER TABLE cms_ecom_prods_permissions ADD FULLTEXT p_mail_subject (p_mail_subje
 ALTER TABLE cms_ecom_prods_permissions ADD FULLTEXT p_title (p_title);
 DROP TABLE IF EXISTS cms_ecom_prods_prices;
 CREATE TABLE cms_ecom_prods_prices (
-    price real NULL,
-    name varchar(80) NOT NULL,
-    tax_code varchar(80) NOT NULL,
     price_points integer NULL,
+    name varchar(80) NOT NULL,
+    price real NULL,
+    tax_code varchar(80) NOT NULL,
     PRIMARY KEY (name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_ecom_sales;
 CREATE TABLE cms_ecom_sales (
+    id integer unsigned auto_increment NOT NULL,
     date_and_time integer unsigned NOT NULL,
     member_id integer NOT NULL,
-    details varchar(255) NOT NULL,
-    txn_id varchar(80) NOT NULL,
     details2 varchar(255) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
+    txn_id varchar(80) NOT NULL,
+    details varchar(255) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_ecom_sales ADD INDEX member_id (member_id);
 DROP TABLE IF EXISTS cms_ecom_sales_expecting;
 CREATE TABLE cms_ecom_sales_expecting (
-    e_details longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     e_time integer unsigned NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    e_details longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_ecom_subscriptions;
@@ -12937,19 +12937,19 @@ CREATE TABLE cms_ecom_subscriptions (
 ALTER TABLE cms_ecom_subscriptions ADD INDEX s_member_id (s_member_id);
 DROP TABLE IF EXISTS cms_ecom_trans_addresses;
 CREATE TABLE cms_ecom_trans_addresses (
+    a_lastname varchar(255) NOT NULL,
+    a_firstname varchar(255) NOT NULL,
+    a_trans_expecting_id varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    a_email varchar(255) NOT NULL,
+    a_txn_id varchar(80) NOT NULL,
+    a_phone varchar(255) NOT NULL,
     a_street_address longtext NOT NULL,
     a_city varchar(255) NOT NULL,
     a_county varchar(255) NOT NULL,
-    a_lastname varchar(255) NOT NULL,
-    a_firstname varchar(255) NOT NULL,
-    a_txn_id varchar(80) NOT NULL,
     a_state varchar(255) NOT NULL,
-    a_trans_expecting_id varchar(80) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    a_phone varchar(255) NOT NULL,
-    a_email varchar(255) NOT NULL,
-    a_country varchar(255) NOT NULL,
     a_post_code varchar(255) NOT NULL,
+    a_country varchar(255) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_ecom_trans_addresses ADD INDEX trans_expecting_id (a_trans_expecting_id);
@@ -12957,10 +12957,7 @@ ALTER TABLE cms_ecom_trans_addresses ADD INDEX trans_expecting_id (a_trans_expec
 ALTER TABLE cms_ecom_trans_addresses ADD INDEX txn_id (a_txn_id);
 DROP TABLE IF EXISTS cms_ecom_trans_expecting;
 CREATE TABLE cms_ecom_trans_expecting (
-    e_member_id integer NOT NULL,
-    e_session_id varchar(80) NOT NULL,
     e_ip_address varchar(40) NOT NULL,
-    e_price real NOT NULL,
     e_tax_derivation longtext NOT NULL,
     e_tax real NOT NULL,
     e_tax_tracking longtext NOT NULL,
@@ -12969,38 +12966,41 @@ CREATE TABLE cms_ecom_trans_expecting (
     e_price_points integer NOT NULL,
     e_time integer unsigned NOT NULL,
     e_length integer NULL,
-    id varchar(80) NOT NULL,
     e_length_units varchar(80) NOT NULL,
-    e_invoicing_breakdown longtext NOT NULL,
     e_memo longtext NOT NULL,
+    e_invoicing_breakdown longtext NOT NULL,
     e_purchase_id varchar(80) NOT NULL,
+    e_price real NOT NULL,
+    id varchar(80) NOT NULL,
     e_type_code varchar(80) NOT NULL,
     e_item_name varchar(255) NOT NULL,
+    e_member_id integer NOT NULL,
+    e_session_id varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_ecom_transactions;
 CREATE TABLE cms_ecom_transactions (
-    t_session_id varchar(80) NOT NULL,
+    t_tax_tracking longtext NOT NULL,
     t_reason varchar(255) NOT NULL,
+    t_status varchar(255) NOT NULL,
+    t_session_id varchar(80) NOT NULL,
+    t_member_id integer NOT NULL,
+    t_invoicing_breakdown longtext NOT NULL,
+    t_payment_gateway varchar(80) NOT NULL,
+    t_memo longtext NOT NULL,
+    t_time integer unsigned NOT NULL,
+    t_parent_txn_id varchar(80) NOT NULL,
+    t_currency varchar(80) NOT NULL,
+    t_shipping real NOT NULL,
+    t_transaction_fee real NOT NULL,
+    t_pending_reason varchar(255) NOT NULL,
     t_price real NOT NULL,
     t_tax_derivation longtext NOT NULL,
     t_tax real NOT NULL,
-    t_shipping real NOT NULL,
-    id varchar(80) NOT NULL,
-    t_type_code varchar(80) NOT NULL,
     t_purchase_id varchar(80) NOT NULL,
-    t_tax_tracking longtext NOT NULL,
-    t_status varchar(255) NOT NULL,
-    t_transaction_fee real NOT NULL,
-    t_currency varchar(80) NOT NULL,
-    t_parent_txn_id varchar(80) NOT NULL,
-    t_time integer unsigned NOT NULL,
-    t_pending_reason varchar(255) NOT NULL,
-    t_memo longtext NOT NULL,
-    t_payment_gateway varchar(80) NOT NULL,
-    t_invoicing_breakdown longtext NOT NULL,
-    t_member_id integer NOT NULL,
-    PRIMARY KEY (id, t_time)
+    t_type_code varchar(80) NOT NULL,
+    id varchar(80) NOT NULL,
+    PRIMARY KEY (t_time, id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_ecom_transactions ADD INDEX t_time (t_time);
 
@@ -13030,22 +13030,22 @@ ALTER TABLE cms_email_bounces ADD INDEX b_email_address (b_email_address(250));
 ALTER TABLE cms_email_bounces ADD INDEX b_time (b_time);
 DROP TABLE IF EXISTS cms_escrow;
 CREATE TABLE cms_escrow (
-    original_points_ledger_id integer NOT NULL,
-    amount integer NOT NULL,
-    date_and_time integer unsigned NOT NULL,
+    sending_member integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    status integer NOT NULL,
+    original_points_ledger_id integer NOT NULL,
+    receiving_member integer NOT NULL,
+    reason longtext NOT NULL,
+    expiration_time integer unsigned NULL,
     sender_status tinyint(1) NOT NULL,
     recipient_status tinyint(1) NOT NULL,
-    expiration_time integer unsigned NULL,
+    status integer NOT NULL,
+    date_and_time integer unsigned NOT NULL,
+    amount integer NOT NULL,
     agreement longtext NOT NULL,
-    reason longtext NOT NULL,
-    sending_member integer NOT NULL,
-    receiving_member integer NOT NULL,
-    agreement__text_parsed longtext NOT NULL,
-    agreement__source_user integer DEFAULT 1 NOT NULL,
     reason__text_parsed longtext NOT NULL,
     reason__source_user integer DEFAULT 1 NOT NULL,
+    agreement__text_parsed longtext NOT NULL,
+    agreement__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_escrow ADD FULLTEXT agreement (agreement);
@@ -13070,8 +13070,8 @@ CREATE TABLE cms_escrow_logs (
     date_and_time integer unsigned NOT NULL,
     log_type varchar(80) NOT NULL,
     member_id integer NULL,
-    information longtext NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    information longtext NOT NULL,
     escrow_id integer NOT NULL,
     information__text_parsed longtext NOT NULL,
     information__source_user integer DEFAULT 1 NOT NULL,
@@ -13294,12 +13294,12 @@ ALTER TABLE cms_f_forums ADD INDEX f_position (f_position);
 ALTER TABLE cms_f_forums ADD INDEX findnamedforum (f_name(250));
 
 ALTER TABLE cms_f_forums ADD INDEX subforum_parenting (f_parent_forum_id);
-INSERT INTO cms_f_forums (id, f_name, f_description, f_forum_grouping_id, f_parent_forum_id, f_position, f_order_sub_alpha, f_post_count_increment, f_intro_question, f_intro_answer, f_cache_num_topics, f_cache_num_posts, f_cache_last_topic_id, f_cache_last_title, f_cache_last_time, f_cache_last_username, f_cache_last_member_id, f_cache_last_forum_id, f_redirection, f_order, f_is_threaded, f_allows_anonymous_posts, f_mail_email_address, f_mail_server_type, f_mail_server_host, f_mail_server_port, f_mail_folder, f_mail_username, f_mail_password, f_mail_nonmatch_policy, f_mail_unconfirmed_notice, f_poll_default_options_xml, f_description__text_parsed, f_description__source_user, f_intro_question__text_parsed, f_intro_question__source_user) VALUES (1, 'Forum home', '', NULL, NULL, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_1\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_1\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_2\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_2\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'General chat', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_3\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_3\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_4\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_4\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'Trash', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_5\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_5\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_6\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_6\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(4, 'Website comment topics', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 1, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_7\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_7\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_8\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_8\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(5, 'Staff', '', 2, 1, 1, 0, 1, '', '', 1, 1, 1, 'Welcome to the forums', 1718837129, 'System', 1, 5, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f87d920b6.47182564_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f87d920b6.47182564_9\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_9\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_10\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_10\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(6, 'Website support tickets', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_29\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_29\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_29\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_30\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_30\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_30\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_f_forums (id, f_name, f_description, f_forum_grouping_id, f_parent_forum_id, f_position, f_order_sub_alpha, f_post_count_increment, f_intro_question, f_intro_answer, f_cache_num_topics, f_cache_num_posts, f_cache_last_topic_id, f_cache_last_title, f_cache_last_time, f_cache_last_username, f_cache_last_member_id, f_cache_last_forum_id, f_redirection, f_order, f_is_threaded, f_allows_anonymous_posts, f_mail_email_address, f_mail_server_type, f_mail_server_host, f_mail_server_port, f_mail_folder, f_mail_username, f_mail_password, f_mail_nonmatch_policy, f_mail_unconfirmed_notice, f_poll_default_options_xml, f_description__text_parsed, f_description__source_user, f_intro_question__text_parsed, f_intro_question__source_user) VALUES (1, 'Forum home', '', NULL, NULL, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_1\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_1\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_2\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_2\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'General chat', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_3\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_3\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_4\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_4\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'Trash', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_5\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_5\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_6\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_6\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(4, 'Website comment topics', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 1, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_7\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_7\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_8\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_8\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(5, 'Staff', '', 2, 1, 1, 0, 1, '', '', 1, 1, 1, 'Welcome to the forums', 1721011820, 'System', 1, 5, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_9\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_9\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_10\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_10\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(6, 'Website support tickets', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_29\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_29\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_29\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_30\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_30\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_30\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_f_group_approvals;
 CREATE TABLE cms_f_group_approvals (
@@ -13457,17 +13457,17 @@ CREATE TABLE cms_f_member_custom_fields (
     field_4 longtext NOT NULL,
     field_5 longtext NOT NULL,
     mf_member_id integer NOT NULL,
-    field_11 longtext NOT NULL,
-    field_12 longtext NOT NULL,
     field_13 longtext NOT NULL,
-    field_14 longtext NOT NULL,
-    field_15 longtext NOT NULL,
-    field_16 longtext NOT NULL,
     field_6 longtext NOT NULL,
     field_7 integer NULL,
-    field_8 integer NULL,
-    field_9 integer NULL,
+    field_12 longtext NOT NULL,
+    field_11 longtext NOT NULL,
     field_10 integer NULL,
+    field_9 integer NULL,
+    field_8 integer NULL,
+    field_16 longtext NOT NULL,
+    field_15 longtext NOT NULL,
+    field_14 longtext NOT NULL,
     field_26 varchar(255) NOT NULL,
     field_27 varchar(255) NOT NULL,
     field_28 varchar(255) NOT NULL,
@@ -13496,9 +13496,9 @@ ALTER TABLE cms_f_member_custom_fields ADD FULLTEXT field_3 (field_3);
 ALTER TABLE cms_f_member_custom_fields ADD FULLTEXT field_4 (field_4);
 
 ALTER TABLE cms_f_member_custom_fields ADD FULLTEXT field_5 (field_5);
-INSERT INTO cms_f_member_custom_fields (mf_member_id, field_1, field_2, field_3, field_3__text_parsed, field_3__source_user, field_4, field_4__text_parsed, field_4__source_user, field_5, field_5__text_parsed, field_5__source_user, field_6, field_7, field_8, field_9, field_10, field_11, field_12, field_13, field_14, field_15, field_16, field_17, field_18, field_19, field_20, field_21, field_22, field_23, field_24, field_25, field_26, field_27, field_28, field_29, field_30, field_31) VALUES (1, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_14\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_14\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_15\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_15\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
-(2, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_19\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_19\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
-(3, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_23\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_23\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_23\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_24\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_24\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_24\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_25\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_25\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_25\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+INSERT INTO cms_f_member_custom_fields (mf_member_id, field_1, field_2, field_3, field_3__text_parsed, field_3__source_user, field_4, field_4__text_parsed, field_4__source_user, field_5, field_5__text_parsed, field_5__source_user, field_6, field_7, field_8, field_9, field_10, field_11, field_12, field_13, field_14, field_15, field_16, field_17, field_18, field_19, field_20, field_21, field_22, field_23, field_24, field_25, field_26, field_27, field_28, field_29, field_30, field_31) VALUES (1, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_14\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_14\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_15\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_15\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
+(2, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_19\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_19\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
+(3, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_23\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_23\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_23\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_24\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_24\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_24\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_25\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_25\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_25\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
 DROP TABLE IF EXISTS cms_f_member_known_login_ips;
 CREATE TABLE cms_f_member_known_login_ips (
@@ -13591,9 +13591,9 @@ ALTER TABLE cms_f_members ADD INDEX sort_post_count (m_cache_num_posts);
 ALTER TABLE cms_f_members ADD INDEX user_list (m_username);
 
 ALTER TABLE cms_f_members ADD INDEX whos_validated (m_validated);
-INSERT INTO cms_f_members (id, m_username, m_email_address, m_primary_group, m_dob_day, m_dob_month, m_dob_year, m_pass_hash_salted, m_pass_salt, m_password_change_code, m_password_change_code_time, m_password_compat_scheme, m_login_key, m_timezone_offset, m_language, m_theme, m_title, m_photo_url, m_avatar_url, m_signature, m_preview_posts, m_reveal_age, m_views_signatures, m_auto_monitor_contrib_content, m_smart_topic_notification, m_mailing_list_style, m_auto_mark_read, m_sound_enabled, m_allow_emails, m_allow_emails_from_staff, m_highlighted_name, m_pt_allow, m_pt_rules_text, m_validated, m_validated_email_confirm_code, m_probation_expiration_time, m_is_perm_banned, m_ip_address, m_join_time, m_last_visit_time, m_last_submit_time, m_profile_views, m_total_sessions, m_cache_num_posts, m_cache_warnings, m_max_email_attach_size_mb, m_signature__text_parsed, m_signature__source_user, m_pt_rules_text__text_parsed, m_pt_rules_text__source_user) VALUES (1, 'Guest', '', 1, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1718837129, 1718837129, 1718837129, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_12\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_12\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'admin', 'foo@example.com', 2, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', 'themes/default/images/cns_default_avatars/default.png', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1718837129, 1718837129, 1718837129, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_17\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_17\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'test', '', 8, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1718837129, 1718837129, 1718837129, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f87d920b6.47182564_22\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f87d920b6.47182564_22\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f87d920b6.47182564_22\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_f_members (id, m_username, m_email_address, m_primary_group, m_dob_day, m_dob_month, m_dob_year, m_pass_hash_salted, m_pass_salt, m_password_change_code, m_password_change_code_time, m_password_compat_scheme, m_login_key, m_timezone_offset, m_language, m_theme, m_title, m_photo_url, m_avatar_url, m_signature, m_preview_posts, m_reveal_age, m_views_signatures, m_auto_monitor_contrib_content, m_smart_topic_notification, m_mailing_list_style, m_auto_mark_read, m_sound_enabled, m_allow_emails, m_allow_emails_from_staff, m_highlighted_name, m_pt_allow, m_pt_rules_text, m_validated, m_validated_email_confirm_code, m_probation_expiration_time, m_is_perm_banned, m_ip_address, m_join_time, m_last_visit_time, m_last_submit_time, m_profile_views, m_total_sessions, m_cache_num_posts, m_cache_warnings, m_max_email_attach_size_mb, m_signature__text_parsed, m_signature__source_user, m_pt_rules_text__text_parsed, m_pt_rules_text__source_user) VALUES (1, 'Guest', '', 1, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721011820, 1721011820, 1721011820, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_12\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_12\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'admin', 'foo@example.com', 2, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', 'themes/default/images/cns_default_avatars/default.png', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721011820, 1721011820, 1721011820, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_17\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_17\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'test', '', 8, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721011820, 1721011820, 1721011820, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_22\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_22\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_22\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_f_moderator_logs;
 CREATE TABLE cms_f_moderator_logs (
@@ -13742,7 +13742,7 @@ ALTER TABLE cms_f_posts ADD INDEX posts_since (p_time,p_cache_forum_id);
 ALTER TABLE cms_f_posts ADD INDEX postsinforum (p_cache_forum_id);
 
 ALTER TABLE cms_f_posts ADD INDEX search_join (p_post(250));
-INSERT INTO cms_f_posts (id, p_title, p_post, p_time, p_ip_address, p_posting_member, p_whisper_to_member, p_poster_name_if_guest, p_validated, p_topic_id, p_cache_forum_id, p_last_edit_time, p_last_edit_member, p_is_emphasised, p_skip_sig, p_parent_id, p_post__text_parsed, p_post__source_user) VALUES (1, 'Welcome to the forums', 'This is the inbuilt forum system (known as Conversr).\n\nA forum system is a tool for communication between members; it consists of posts, organised into topics: each topic is a line of conversation.\n\nComposr provides support for a number of different forum systems, and each forum handles authentication of members: Conversr is the built-in forum, which provides seamless integration between the main website, the forums, and the inbuilt member accounts system.', 1718837129, '127.0.0.1', 1, NULL, 'System', 1, 1, 5, NULL, NULL, 0, 0, NULL, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:7:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f89677f70.32685426_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66735f89677f70.32685426_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:39:\\\"string_attach_66735f89677f70.32685426_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:3;a:5:{i:0;s:39:\\\"string_attach_66735f89677f70.32685426_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:4;a:5:{i:0;s:39:\\\"string_attach_66735f89677f70.32685426_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:5;a:5:{i:0;s:39:\\\"string_attach_66735f89677f70.32685426_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:6;a:5:{i:0;s:39:\\\"string_attach_66735f89677f70.32685426_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:7:{s:39:\\\"string_attach_66735f89677f70.32685426_1\\\";s:121:\\\"\\$tpl_funcs[\'string_attach_66735f89677f70.32685426_1\']=\\\"echo \\\\\\\"This is the inbuilt forum system (known as Conversr).\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66735f89677f70.32685426_2\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66735f89677f70.32685426_2\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66735f89677f70.32685426_3\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66735f89677f70.32685426_3\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66735f89677f70.32685426_4\\\";s:210:\\\"\\$tpl_funcs[\'string_attach_66735f89677f70.32685426_4\']=\\\"echo \\\\\\\"A forum system is a tool for communication between members; it consists of posts, organised into topics: each topic is a line of conversation.\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66735f89677f70.32685426_5\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66735f89677f70.32685426_5\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66735f89677f70.32685426_6\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66735f89677f70.32685426_6\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66735f89677f70.32685426_7\\\";s:329:\\\"\\$tpl_funcs[\'string_attach_66735f89677f70.32685426_7\']=\\\"echo \\\\\\\"Composr provides support for a number of different forum systems, and each forum handles authentication of members: Conversr is the built-in forum, which provides seamless integration between the main website, the forums, and the inbuilt member accounts system.\\\\\\\";\\\";\\n\\\";}}\");\n', 1);
+INSERT INTO cms_f_posts (id, p_title, p_post, p_time, p_ip_address, p_posting_member, p_whisper_to_member, p_poster_name_if_guest, p_validated, p_topic_id, p_cache_forum_id, p_last_edit_time, p_last_edit_member, p_is_emphasised, p_skip_sig, p_parent_id, p_post__text_parsed, p_post__source_user) VALUES (1, 'Welcome to the forums', 'This is the inbuilt forum system (known as Conversr).\n\nA forum system is a tool for communication between members; it consists of posts, organised into topics: each topic is a line of conversation.\n\nComposr provides support for a number of different forum systems, and each forum handles authentication of members: Conversr is the built-in forum, which provides seamless integration between the main website, the forums, and the inbuilt member accounts system.', 1721011820, '127.0.0.1', 1, NULL, 'System', 1, 1, 5, NULL, NULL, 0, 0, NULL, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:7:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6c916c40.33916990_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66948e6c916c40.33916990_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:39:\\\"string_attach_66948e6c916c40.33916990_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:3;a:5:{i:0;s:39:\\\"string_attach_66948e6c916c40.33916990_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:4;a:5:{i:0;s:39:\\\"string_attach_66948e6c916c40.33916990_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:5;a:5:{i:0;s:39:\\\"string_attach_66948e6c916c40.33916990_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:6;a:5:{i:0;s:39:\\\"string_attach_66948e6c916c40.33916990_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:7:{s:39:\\\"string_attach_66948e6c916c40.33916990_1\\\";s:121:\\\"\\$tpl_funcs[\'string_attach_66948e6c916c40.33916990_1\']=\\\"echo \\\\\\\"This is the inbuilt forum system (known as Conversr).\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66948e6c916c40.33916990_2\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66948e6c916c40.33916990_2\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66948e6c916c40.33916990_3\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66948e6c916c40.33916990_3\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66948e6c916c40.33916990_4\\\";s:210:\\\"\\$tpl_funcs[\'string_attach_66948e6c916c40.33916990_4\']=\\\"echo \\\\\\\"A forum system is a tool for communication between members; it consists of posts, organised into topics: each topic is a line of conversation.\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66948e6c916c40.33916990_5\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66948e6c916c40.33916990_5\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66948e6c916c40.33916990_6\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66948e6c916c40.33916990_6\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_66948e6c916c40.33916990_7\\\";s:329:\\\"\\$tpl_funcs[\'string_attach_66948e6c916c40.33916990_7\']=\\\"echo \\\\\\\"Composr provides support for a number of different forum systems, and each forum handles authentication of members: Conversr is the built-in forum, which provides seamless integration between the main website, the forums, and the inbuilt member accounts system.\\\\\\\";\\\";\\n\\\";}}\");\n', 1);
 
 DROP TABLE IF EXISTS cms_f_posts_fulltext_index;
 CREATE TABLE cms_f_posts_fulltext_index (
@@ -13972,7 +13972,7 @@ ALTER TABLE cms_f_topics ADD INDEX topic_order_time (t_cache_last_time);
 ALTER TABLE cms_f_topics ADD INDEX topic_order_time_2 (t_cache_first_time);
 
 ALTER TABLE cms_f_topics ADD INDEX unread_forums (t_forum_id,t_cache_last_time);
-INSERT INTO cms_f_topics (id, t_pinned, t_cascading, t_forum_id, t_pt_from_member, t_pt_to_member, t_pt_from_category, t_pt_to_category, t_description, t_description_link, t_emoticon, t_num_views, t_validated, t_is_open, t_poll_id, t_cache_first_post_id, t_cache_first_time, t_cache_first_title, t_cache_first_post, t_cache_first_username, t_cache_first_member_id, t_cache_last_post_id, t_cache_last_time, t_cache_last_title, t_cache_last_username, t_cache_last_member_id, t_cache_num_posts, t_cache_first_post__text_parsed, t_cache_first_post__source_user) VALUES (1, 0, 0, 5, NULL, NULL, '', '', '', '', '', 0, 1, 1, NULL, 1, 1718837129, 'Welcome to the forums', '', 'System', 1, 1, 1718837129, 'Welcome to the forums', 'System', 1, 1, '', 1);
+INSERT INTO cms_f_topics (id, t_pinned, t_cascading, t_forum_id, t_pt_from_member, t_pt_to_member, t_pt_from_category, t_pt_to_category, t_description, t_description_link, t_emoticon, t_num_views, t_validated, t_is_open, t_poll_id, t_cache_first_post_id, t_cache_first_time, t_cache_first_title, t_cache_first_post, t_cache_first_username, t_cache_first_member_id, t_cache_last_post_id, t_cache_last_time, t_cache_last_title, t_cache_last_username, t_cache_last_member_id, t_cache_num_posts, t_cache_first_post__text_parsed, t_cache_first_post__source_user) VALUES (1, 0, 0, 5, NULL, NULL, '', '', '', '', '', 0, 1, 1, NULL, 1, 1721011820, 'Welcome to the forums', '', 'System', 1, 1, 1721011820, 'Welcome to the forums', 'System', 1, 1, '', 1);
 
 DROP TABLE IF EXISTS cms_f_usergroup_sub_mails;
 CREATE TABLE cms_f_usergroup_sub_mails (
@@ -14063,9 +14063,9 @@ ALTER TABLE cms_f_welcome_emails ADD FULLTEXT w_text (w_text);
 DROP TABLE IF EXISTS cms_failedlogins;
 CREATE TABLE cms_failedlogins (
     id integer unsigned auto_increment NOT NULL,
+    failed_account varchar(80) NOT NULL,
     date_and_time integer unsigned NOT NULL,
     ip varchar(40) NOT NULL,
-    failed_account varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_failedlogins ADD INDEX failedlogins_by_ip (ip);
@@ -14100,26 +14100,26 @@ ALTER TABLE cms_ft_index_commonality ADD INDEX c_commonality (c_commonality);
 ALTER TABLE cms_ft_index_commonality ADD INDEX c_ngram (c_ngram(250));
 DROP TABLE IF EXISTS cms_galleries;
 CREATE TABLE cms_galleries (
-    watermark_top_right varchar(255) BINARY NOT NULL,
-    watermark_top_left varchar(255) BINARY NOT NULL,
-    gallery_views integer NOT NULL,
-    g_owner integer NULL,
-    gallery_sort varchar(80) NOT NULL,
-    rep_image varchar(255) BINARY NOT NULL,
-    media_sort varchar(80) NOT NULL,
+    layout_mode varchar(80) NOT NULL,
+    is_member_synched tinyint(1) NOT NULL,
     notes longtext NOT NULL,
-    parent_id varchar(80) NOT NULL,
     allow_rating tinyint(1) NOT NULL,
     accept_videos tinyint(1) NOT NULL,
-    accept_images tinyint(1) NOT NULL,
-    is_member_synched tinyint(1) NOT NULL,
     watermark_bottom_right varchar(255) BINARY NOT NULL,
-    name varchar(80) NOT NULL,
-    layout_mode varchar(80) NOT NULL,
+    media_sort varchar(80) NOT NULL,
     watermark_bottom_left varchar(255) BINARY NOT NULL,
+    watermark_top_right varchar(255) BINARY NOT NULL,
+    watermark_top_left varchar(255) BINARY NOT NULL,
+    accept_images tinyint(1) NOT NULL,
+    parent_id varchar(80) NOT NULL,
+    rep_image varchar(255) BINARY NOT NULL,
     add_date integer unsigned NOT NULL,
     fullname longtext NOT NULL,
     the_description longtext NOT NULL,
+    name varchar(80) NOT NULL,
+    gallery_sort varchar(80) NOT NULL,
+    g_owner integer NULL,
+    gallery_views integer NOT NULL,
     allow_comments tinyint NOT NULL,
     fullname__text_parsed longtext NOT NULL,
     fullname__source_user integer DEFAULT 1 NOT NULL,
@@ -14148,8 +14148,8 @@ ALTER TABLE cms_galleries ADD INDEX watermark_bottom_right (watermark_bottom_rig
 ALTER TABLE cms_galleries ADD INDEX watermark_top_left (watermark_top_left(250));
 
 ALTER TABLE cms_galleries ADD INDEX watermark_top_right (watermark_top_right(250));
-INSERT INTO cms_galleries (name, the_description, fullname, add_date, rep_image, parent_id, watermark_top_left, watermark_top_right, watermark_bottom_left, watermark_bottom_right, accept_images, accept_videos, allow_rating, allow_comments, notes, is_member_synched, layout_mode, gallery_views, g_owner, gallery_sort, media_sort, the_description__text_parsed, the_description__source_user, fullname__text_parsed, fullname__source_user) VALUES ('root', '', 'Galleries home', 1718837154, '', '', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_22\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_22\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_22\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_23\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_23\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_23\']=\\\"echo \\\\\\\"Galleries home\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('homepage_hero_slider', 'Slides for the homepage hero slider', 'Homepage Hero Slider', 1718837155, '', 'root', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_24\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_24\\\";s:104:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_24\']=\\\"echo \\\\\\\"Slides for the homepage hero slider\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_25\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_25\\\";s:89:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_25\']=\\\"echo \\\\\\\"Homepage Hero Slider\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_galleries (name, the_description, fullname, add_date, rep_image, parent_id, watermark_top_left, watermark_top_right, watermark_bottom_left, watermark_bottom_right, accept_images, accept_videos, allow_rating, allow_comments, notes, is_member_synched, layout_mode, gallery_views, g_owner, gallery_sort, media_sort, the_description__text_parsed, the_description__source_user, fullname__text_parsed, fullname__source_user) VALUES ('root', '', 'Galleries home', 1721011845, '', '', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_22\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_22\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_22\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_23\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_23\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_23\']=\\\"echo \\\\\\\"Galleries home\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('homepage_hero_slider', 'Slides for the homepage hero slider', 'Homepage Hero Slider', 1721011845, '', 'root', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_24\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_24\\\";s:104:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_24\']=\\\"echo \\\\\\\"Slides for the homepage hero slider\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_25\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_25\\\";s:89:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_25\']=\\\"echo \\\\\\\"Homepage Hero Slider\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_group_category_access;
 CREATE TABLE cms_group_category_access (
@@ -15280,9 +15280,9 @@ ALTER TABLE cms_images ADD INDEX iadd_date (add_date);
 ALTER TABLE cms_images ADD INDEX image_views (image_views);
 
 ALTER TABLE cms_images ADD INDEX xis (submitter);
-INSERT INTO cms_images (id, cat, url, the_description, allow_rating, allow_comments, allow_trackbacks, notes, submitter, validated, add_date, edit_date, image_views, title, the_description__text_parsed, the_description__source_user) VALUES (1, 'homepage_hero_slider', 'data/images/homepage_hero_slider/bastei_bridge.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Content Management System for Next-Gen Websites\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1718837155, NULL, 0, 'Slider 1', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_66735fa33b20d9.04574982_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_26\\\";s:501:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_26\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_26\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66735fa33b21f7.33444438_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_66735fa33b2424.02271937_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_66735fa33b20d9.04574982_1\\\";s:700:\\\"\\$tpl_funcs[\'tcpfunc_66735fa33b20d9.04574982_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66735fa33b20d9.04574982_1\']=recall_named_function(\'66735fa33b20f3.66565738\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_66735fa33b21f7.33444438_1\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66735fa33b21f7.33444438_1\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_66735fa33b2424.02271937_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_66735fa33b2424.02271937_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66735fa33b2424.02271937_1\']=recall_named_function(\'66735fa33b2439.63018314\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2),
-(2, 'homepage_hero_slider', 'data/images/homepage_hero_slider/rustic.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Leader In Design\nSUBLINE=Form and Function Revolutionised!\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1718837155, NULL, 0, 'Slider 2', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_66735fa345f296.53441195_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_27\\\";s:446:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_27\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_27\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66735fa33b21f7.33444438_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_66735fa345f658.61563178_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_66735fa345f296.53441195_1\\\";s:645:\\\"\\$tpl_funcs[\'tcpfunc_66735fa345f296.53441195_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66735fa345f296.53441195_1\']=recall_named_function(\'66735fa345f2a4.85240164\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_66735fa33b21f7.33444438_2\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66735fa33b21f7.33444438_2\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_66735fa345f658.61563178_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_66735fa345f658.61563178_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66735fa345f658.61563178_1\']=recall_named_function(\'66735fa345f669.07744693\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2),
-(3, 'homepage_hero_slider', 'data/images/homepage_hero_slider/waterfall.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Think Ahead\nSUBLINE=Boost your online business growth!\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1718837155, NULL, 0, 'Slider 3', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_66735fa359c6f1.30349770_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_28\\\";s:409:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_28\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_28\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66735fa33b21f7.33444438_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_66735fa359ca07.53819960_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_66735fa359c6f1.30349770_1\\\";s:608:\\\"\\$tpl_funcs[\'tcpfunc_66735fa359c6f1.30349770_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66735fa359c6f1.30349770_1\']=recall_named_function(\'66735fa359c716.96598816\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_66735fa33b21f7.33444438_3\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66735fa33b21f7.33444438_3\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_66735fa359ca07.53819960_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_66735fa359ca07.53819960_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66735fa359ca07.53819960_1\']=recall_named_function(\'66735fa359ca11.07153883\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2);
+INSERT INTO cms_images (id, cat, url, the_description, allow_rating, allow_comments, allow_trackbacks, notes, submitter, validated, add_date, edit_date, image_views, title, the_description__text_parsed, the_description__source_user) VALUES (1, 'homepage_hero_slider', 'data/images/homepage_hero_slider/bastei_bridge.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Content Management System for Next-Gen Websites\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1721011845, NULL, 0, 'Slider 1', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_66948e85d77061.96820851_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_26\\\";s:501:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_26\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_26\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66948e85d771e9.33688130_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_66948e85d774e7.81105756_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_66948e85d77061.96820851_1\\\";s:700:\\\"\\$tpl_funcs[\'tcpfunc_66948e85d77061.96820851_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66948e85d77061.96820851_1\']=recall_named_function(\'66948e85d77092.67107748\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_66948e85d771e9.33688130_1\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66948e85d771e9.33688130_1\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_66948e85d774e7.81105756_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_66948e85d774e7.81105756_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66948e85d774e7.81105756_1\']=recall_named_function(\'66948e85d77500.32391561\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2),
+(2, 'homepage_hero_slider', 'data/images/homepage_hero_slider/rustic.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Leader In Design\nSUBLINE=Form and Function Revolutionised!\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1721011845, NULL, 0, 'Slider 2', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_66948e85e25732.66252863_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_27\\\";s:446:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_27\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_27\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66948e85d771e9.33688130_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_66948e85e25b31.55877146_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_66948e85e25732.66252863_1\\\";s:645:\\\"\\$tpl_funcs[\'tcpfunc_66948e85e25732.66252863_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66948e85e25732.66252863_1\']=recall_named_function(\'66948e85e25762.10843854\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_66948e85d771e9.33688130_2\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66948e85d771e9.33688130_2\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_66948e85e25b31.55877146_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_66948e85e25b31.55877146_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66948e85e25b31.55877146_1\']=recall_named_function(\'66948e85e25b54.29207710\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2),
+(3, 'homepage_hero_slider', 'data/images/homepage_hero_slider/waterfall.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Think Ahead\nSUBLINE=Boost your online business growth!\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1721011845, NULL, 0, 'Slider 3', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_66948e85ec09f0.38839775_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_28\\\";s:409:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_28\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_28\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_66948e85d771e9.33688130_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_66948e85ec0d10.15711777_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_66948e85ec09f0.38839775_1\\\";s:608:\\\"\\$tpl_funcs[\'tcpfunc_66948e85ec09f0.38839775_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66948e85ec09f0.38839775_1\']=recall_named_function(\'66948e85ec0a18.53450977\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_66948e85d771e9.33688130_3\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_66948e85d771e9.33688130_3\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_66948e85ec0d10.15711777_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_66948e85ec0d10.15711777_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_66948e85ec0d10.15711777_1\']=recall_named_function(\'66948e85ec0d32.03558713\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_import_id_remap;
 CREATE TABLE cms_import_id_remap (
@@ -16607,11 +16607,11 @@ CREATE TABLE cms_staff_checklist_cus_tasks (
     recur_every varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, done_time) VALUES (1, 'Add your content', 1718837165, 0, '', NULL),
-(2, '[page=\"adminzone:admin_health_check\"]Run/schedule Health Checks[/page]', 1718837165, 0, '', NULL),
-(3, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1718837165, 0, '', NULL),
-(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://composr.app/uploads/website_specific/cms_homesite/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1718837165, 0, '', NULL),
-(5, '[page=\"adminzone:admin_version\"]Consider helping out with the Composr project[/page]', 1718837165, 0, '', NULL);
+INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, done_time) VALUES (1, 'Add your content', 1721011856, 0, '', NULL),
+(2, '[page=\"adminzone:admin_health_check\"]Run/schedule Health Checks[/page]', 1721011856, 0, '', NULL),
+(3, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1721011856, 0, '', NULL),
+(4, '[html]<p style=\"margin: 0\">Facebook user? Like Composr on Facebook:</p><iframe src=\"https://composr.app/uploads/website_specific/cms_homesite/facebook.html\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:330px; height:20px;\" allowTransparency=\"true\"></iframe>[/html]', 1721011856, 0, '', NULL),
+(5, '[page=\"adminzone:admin_version\"]Consider helping out with the Composr project[/page]', 1721011856, 0, '', NULL);
 
 DROP TABLE IF EXISTS cms_staff_links;
 CREATE TABLE cms_staff_links (
@@ -16928,11 +16928,11 @@ CREATE TABLE cms_values (
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_values ADD INDEX date_and_time (date_and_time);
-INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('cns_topic_count', '1', 1718837128),
-('cns_member_count', '1', 1718837129),
-('cns_post_count', '1', 1718837129),
-('version', '11.00', 1718837133),
-('cns_version', '11.00', 1718837133);
+INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('cns_topic_count', '1', 1721011819),
+('cns_member_count', '1', 1721011820),
+('cns_post_count', '1', 1721011820),
+('version', '11.00', 1721011824),
+('cns_version', '11.00', 1721011824);
 
 DROP TABLE IF EXISTS cms_values_elective;
 CREATE TABLE cms_values_elective (
@@ -16941,9 +16941,9 @@ CREATE TABLE cms_values_elective (
     the_name varchar(80) NOT NULL,
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('call_home', '0', 1718837133),
-('setupwizard_completed', '0', 1718837137),
-('db_version', '1718836948', 1718837166);
+INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('call_home', '0', 1721011824),
+('setupwizard_completed', '0', 1721011827),
+('db_version', '1716945351', 1721011857);
 
 DROP TABLE IF EXISTS cms_video_transcoding;
 CREATE TABLE cms_video_transcoding (
@@ -17048,7 +17048,7 @@ ALTER TABLE cms_wiki_pages ADD INDEX sadd_date (add_date);
 ALTER TABLE cms_wiki_pages ADD INDEX sps (submitter);
 
 ALTER TABLE cms_wiki_pages ADD INDEX wiki_views (wiki_views);
-INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1718837163, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_31\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_31\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_31\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1721011853, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_31\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_31\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_31\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_wiki_posts;
 CREATE TABLE cms_wiki_posts (

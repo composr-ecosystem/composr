@@ -32,120 +32,120 @@ CREATE TABLE cms_addons (
     addon_copyright_attribution varchar(255) NOT NULL,
     PRIMARY KEY (addon_name)
 ) CHARACTER SET=utf8 engine=MyISAM;
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('actionlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Audit-trail functionality.', '11', '', 1718837140),
-('aggregate_types', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Define complex aggregate types in XML, and spawn them.', '11', '', 1718837140),
-('apache_config_files', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sample .htaccess files to help achieve optimal configuration on the Apache web server.', '11', '', 1718837140),
-('authors', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Certain kinds of content can have authors instead of submitters (e.g. \'Core Development Team\'). The authors may be independently described and searched under.', '11', '', 1718837140),
-('awards', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Pick out content for featuring.', '11', '', 1718837140),
-('backup', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Perform incremental or full backups of files and the database. Supports scheduling.', '11', '', 1718837140),
-('banners', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'An advanced banner system, with support for multiple banner rotations, commercial banner campaigns, and webring-style systems. Support for graphical, text, and HTML banners. Hotword activation support.', '11', '', 1718837140),
-('breadcrumbs', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced breadcrumb editing.', '11', '', 1718837140),
-('calendar', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'An advanced community calendar.', '11', '', 1718837140),
-('captcha', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Stop spam-bots from performing actions on the website.', '11', '', 1718837140),
-('catalogues', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard CMS features (e.g. ratings).', '11', '', 1718837140),
-('chat', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Chatrooms and instant messaging.', '11', '', 1718837140),
-('cns_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1718837140),
-('cns_cartoon_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr (sketched characters)', '11', '', 1718837140),
-('cns_clubs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Clubs for members, each of which comes with a forum.', '11', '', 1718837140),
-('cns_contact_member', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Off-site e-mailing of members (more private, and may be used by guests).', '11', '', 1718837140),
-('cns_cpfs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Custom Profile Fields, so members may save additional details. If this is uninstalled any existing Custom Profile Fields will remain in the system.', '11', '', 1718837140),
-('cns_forum', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'The Conversr forum- a modern advanced forum for members to interact on.', '11', '', 1718837140),
-('cns_member_avatars', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member avatars.', '11', '', 1718837140),
-('cns_member_photos', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member photos.', '11', '', 1718837140),
-('cns_member_titles', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member titles.', '11', '', 1718837141),
-('cns_multi_moderations', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Multi-moderations for the Conversr forum.', '11', '', 1718837141),
-('cns_post_templates', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Post Templates for the Conversr forum.', '11', '', 1718837141),
-('cns_signatures', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member signatures.', '11', '', 1718837141),
-('cns_thematic_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1718837141),
-('cns_warnings', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member warnings and punishment.', '11', '', 1718837141),
-('code_editor', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'For programmers- A simple editor for editing Composr code files, with support for overrides and saving via FTP.', '11', '', 1718837141),
-('commandr', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A command-line environment for managing your website, designed for Linux/Unix lovers.', '11', '', 1718837141),
-('content_privacy', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allows users to specify privacy level for their content.', '11', '', 1718837141),
-('content_reviews', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Regularly review content for accuracy.', '11', '', 1718837141),
-('core', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core Composr code)', '11', '', 1718837141),
-('core_abstract_components', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_abstract_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_addon_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Install or uninstall addons.', '11', '', 1718837141),
-('core_adminzone_dashboard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The dashboard tools shown in the Admin Zone.', '11', '', 1718837141),
-('core_all_icons', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)', '11', '', 1718837141),
-('core_cleanup_tools', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Behind-the-scenes maintenance tasks.', '11', '', 1718837141),
-('core_cns', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The Composr member/usergroup system.', '11', '', 1718837141),
-('core_comcode_pages', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage new pages on the website, known as Comcode pages.', '11', '', 1718837141),
-('core_configuration', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Set configuration options.', '11', '', 1718837141),
-('core_database_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different kinds of database software.', '11', '', 1718837141);
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('core_feedback_features', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Features for user interaction with content.', '11', '', 1718837141),
-('core_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core fields API)', '11', '', 1718837141),
-('core_form_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality for forms.', '11', '', 1718837141),
-('core_forum_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different forum/member systems.', '11', '', 1718837141),
-('core_graphic_text', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Core rendering functionality for imagery.', '11', '', 1718837141),
-('core_html_abstractions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_language_editing', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Translate the software, or just change what it says for stylistic reasons.', '11', '', 1718837141),
-('core_mediaelement', 'Chris Graham', 'Composr', '11', 'Graphical', 'John Dyer', 'MIT License', 'Embeds media using the MediaElement.js player.', '11', '', 1718837141),
-('core_menus', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Edit menus.', '11', '', 1718837141),
-('core_notifications', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sends out action-triggered notifications to members listening to them.', '11', '', 1718837141),
-('core_permission_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage permissions.', '11', '', 1718837141),
-('core_primary_layout', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1718837141),
-('core_privacy', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Features relating to maintaining a privacy policy and complying with privacy regulations.', '11', '', 1718837142),
-('core_rich_media', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Comcode and attachments.', '11', '', 1718837142),
-('core_themeing', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Themeing the website, via CSS, HTML, and images.', '11', '', 1718837142),
-('core_upgrader', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The upgrader code.', '11', '', 1718837142),
-('core_webstandards', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Web Standards checking tools.', '11', '', 1718837142),
-('core_zone_editor', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage zones (sub-sites).', '11', '', 1718837142),
-('counting_blocks', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Blocks for hit counters, and count-downs.', '11', '', 1718837142),
-('custom_comcode', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Create new Comcode tags.', '11', '', 1718837142),
-('debrand', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Allow easy debranding of the website software.', '11', '', 1718837142),
-('downloads', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Host a downloads directory.', '11', '', 1718837142),
-('ecommerce', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.', '11', '', 1718837142),
-('errorlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log of errors that have happened on the website.', '11', '', 1718837142),
-('failover', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced system to detect if the site goes down, and provide an automatic fallback.', '11', '', 1718837142),
-('filebased_persistent_caching', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A persistent data cache, using disk files for data storage.', '11', '', 1718837142),
-('filedump', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'File/media library, for use in attachments or for general ad-hoc sharing.', '11', '', 1718837142),
-('forum_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Blocks to draw forum posts and topics into the main website.', '11', '', 1718837142),
-('galleries', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Galleries, including support for video galleries, and member personal galleries.', '11', '', 1718837142),
-('google_appengine', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for deploying to Google App Engine (for developers).', '11', '', 1718837142),
-('health_check', 'Chris Graham', 'Composr', '11', 'Admin Utilities', '', 'Licensed on the same terms as Composr', 'The Health Check addon automatically finds problems on your website and server.', '11', '', 1718837142),
-('help_page', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'A simple website help page. Note that removing this will not remove the menu link automatically.', '11', '', 1718837142),
-('helper_scripts', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Scripts to help maintain sites, mostly for Linux/Unix servers or Windows servers running Cygwin.', '11', '', 1718837142),
-('import', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Switch to Composr from other software. This addon provides the architecture for importing, and a number of prewritten importers.', '11', '', 1718837142),
-('installer', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The installer files (can be removed immediately after installing; in fact Composr makes you remove install.php manually).', '11', '', 1718837142),
-('language_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Blocks to allow visitors to choose their language.', '11', '', 1718837143),
-('ldap', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for integrating Conversr with an LDAP server, so usergroup and members can be the same as those already on the network', '11', '', 1718837143),
-('leader_board', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow website administrators to display leader-boards of members earning the most points.', '11', '', 1718837143),
-('match_key_permissions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Match-key-permissions allow advanced setting of permissions on a screen-by-screen basis.', '11', '', 1718837143),
-('news', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'News and blogging.', '11', '', 1718837143);
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('news_shared', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', '(Common files needed for RSS and News addons)', '11', '', 1718837143),
-('newsletter', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Support for users to join newsletters, and for the staff to send out newsletters to subscribers, and to specific usergroups.', '11', '', 1718837143),
-('page_management', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage pages on the website.', '11', '', 1718837143),
-('phpinfo', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Access PHP configurational information from inside Composr.', '11', '', 1718837143),
-('points', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.', '11', '', 1718837143),
-('polls', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A poll (voting) system.', '11', '', 1718837143),
-('printer_friendly_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A block to provide a link for the current screen to be turned into it\'s printer-friendly equivalent.', '11', '', 1718837143),
-('quizzes', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.', '11', '', 1718837143),
-('random_quotes', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to display random quotes on your website, and an administrative tool to choose them.', '11', '', 1718837143),
-('realtime_rain', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Real-time/historic display of website activity.', '11', '', 1718837143),
-('recommend', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allow members to easily recommend the website to others.', '11', '', 1718837143),
-('redirects_editor', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage redirects between pages. On Apache servers this can also handle low-level redirects of any arbitrary URL to any other.', '11', '', 1718837143),
-('robots_txt', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Configure robots.txt.', '11', '', 1718837143),
-('rootkit_detector', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A tool to help power-user webmasters identify if a \"rootkit\" has been placed on the server.', '11', '', 1718837143),
-('search', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Multi-content search engine.', '11', '', 1718837143),
-('securitylogging', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log/display security alerts.', '11', '', 1718837143),
-('setupwizard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Quick-start setup wizard.', '11', '', 1718837143),
-('shopping', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'Shopping catalogue functionality.', '11', '', 1718837143),
-('site_messaging', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Functionality to display site messages (such as announcements and maintenance windows) at the top of pages with optional criteria.', '11', '', 1718837144);
-INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('sms', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Provides an option for the software to send SMS messages, via the commercial Clickatell web service. By default this is only used by the notifications system.', '11', '', 1718837144),
-('stats', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Show advanced graphs (analytics) and dumps of raw data relating to your website activity.', '11', '', 1718837144),
-('stats_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show a selection of your website statistics to your visitors.', '11', '', 1718837144),
-('syndication', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Syndicate RSS/Atom feeds of your content.', '11', '', 1718837144),
-('syndication_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Show RSS and Atom feeds from other websites.', '11', '', 1718837144),
-('themewizard', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Automatically generate your own colour schemes using the default theme as a base. Uses the sophisticated chromagraphic equations built into Composr.', '11', '', 1718837144),
-('tickets', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'A support ticket system. Also provides an integrated standalone contact block, and integrated content reporting functionality.', '11', '', 1718837144),
-('uninstaller', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The uninstaller.', '11', '', 1718837144),
-('users_online_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show which users who are currently visiting the website, and birthdays.', '11', '', 1718837144),
-('validation', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Subject member\'s to validation (approval) of their content submissions, and enable/disable content.', '11', '', 1718837144),
-('welcome_emails', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Welcome e-mails for new members.', '11', '', 1718837144),
-('wiki', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Collaborative/encyclopaedic database interface. A wiki-like community database with rich media capabilities.', '11', '', 1718837144),
-('wordfilter', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Block rude/offensive/inappropriate words.', '11', '', 1718837144),
-('xml_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced form field filtering.', '11', '', 1718837144);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('actionlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Audit-trail functionality.', '11', '', 1721011831),
+('aggregate_types', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Define complex aggregate types in XML, and spawn them.', '11', '', 1721011831),
+('apache_config_files', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sample .htaccess files to help achieve optimal configuration on the Apache web server.', '11', '', 1721011831),
+('authors', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Certain kinds of content can have authors instead of submitters (e.g. \'Core Development Team\'). The authors may be independently described and searched under.', '11', '', 1721011831),
+('awards', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Pick out content for featuring.', '11', '', 1721011831),
+('backup', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Perform incremental or full backups of files and the database. Supports scheduling.', '11', '', 1721011831),
+('banners', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'An advanced banner system, with support for multiple banner rotations, commercial banner campaigns, and webring-style systems. Support for graphical, text, and HTML banners. Hotword activation support.', '11', '', 1721011831),
+('breadcrumbs', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced breadcrumb editing.', '11', '', 1721011831),
+('calendar', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'An advanced community calendar.', '11', '', 1721011831),
+('captcha', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Stop spam-bots from performing actions on the website.', '11', '', 1721011831),
+('catalogues', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard CMS features (e.g. ratings).', '11', '', 1721011831),
+('chat', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Chatrooms and instant messaging.', '11', '', 1721011831),
+('cns_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1721011831),
+('cns_cartoon_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr (sketched characters)', '11', '', 1721011831),
+('cns_clubs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Clubs for members, each of which comes with a forum.', '11', '', 1721011831),
+('cns_contact_member', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Off-site e-mailing of members (more private, and may be used by guests).', '11', '', 1721011831),
+('cns_cpfs', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Custom Profile Fields, so members may save additional details. If this is uninstalled any existing Custom Profile Fields will remain in the system.', '11', '', 1721011831),
+('cns_forum', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'The Conversr forum- a modern advanced forum for members to interact on.', '11', '', 1721011831),
+('cns_member_avatars', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member avatars.', '11', '', 1721011831),
+('cns_member_photos', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member photos.', '11', '', 1721011832),
+('cns_member_titles', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member titles.', '11', '', 1721011832),
+('cns_multi_moderations', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Multi-moderations for the Conversr forum.', '11', '', 1721011832),
+('cns_post_templates', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Post Templates for the Conversr forum.', '11', '', 1721011832),
+('cns_signatures', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member signatures.', '11', '', 1721011832),
+('cns_thematic_avatars', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'A selection of avatars for Conversr', '11', '', 1721011832),
+('cns_warnings', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Member warnings and punishment.', '11', '', 1721011832),
+('code_editor', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'For programmers- A simple editor for editing Composr code files, with support for overrides and saving via FTP.', '11', '', 1721011832),
+('commandr', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A command-line environment for managing your website, designed for Linux/Unix lovers.', '11', '', 1721011832),
+('content_privacy', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allows users to specify privacy level for their content.', '11', '', 1721011832),
+('content_reviews', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Regularly review content for accuracy.', '11', '', 1721011832),
+('core', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core Composr code)', '11', '', 1721011832),
+('core_abstract_components', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_abstract_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_addon_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Install or uninstall addons.', '11', '', 1721011832),
+('core_adminzone_dashboard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The dashboard tools shown in the Admin Zone.', '11', '', 1721011832),
+('core_all_icons', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)', '11', '', 1721011832),
+('core_cleanup_tools', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Behind-the-scenes maintenance tasks.', '11', '', 1721011832),
+('core_cns', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The Composr member/usergroup system.', '11', '', 1721011832),
+('core_comcode_pages', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage new pages on the website, known as Comcode pages.', '11', '', 1721011832),
+('core_configuration', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Set configuration options.', '11', '', 1721011832),
+('core_database_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different kinds of database software.', '11', '', 1721011832);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('core_feedback_features', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Features for user interaction with content.', '11', '', 1721011832),
+('core_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', '(Core fields API)', '11', '', 1721011832),
+('core_form_interfaces', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality for forms.', '11', '', 1721011832),
+('core_forum_drivers', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The code layer that binds the software to one of various different forum/member systems.', '11', '', 1721011832),
+('core_graphic_text', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Core rendering functionality for imagery.', '11', '', 1721011832),
+('core_html_abstractions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_language_editing', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Translate the software, or just change what it says for stylistic reasons.', '11', '', 1721011832),
+('core_mediaelement', 'Chris Graham', 'Composr', '11', 'Graphical', 'John Dyer', 'MIT License', 'Embeds media using the MediaElement.js player.', '11', '', 1721011832),
+('core_menus', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Edit menus.', '11', '', 1721011832),
+('core_notifications', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Sends out action-triggered notifications to members listening to them.', '11', '', 1721011832),
+('core_permission_management', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage permissions.', '11', '', 1721011832),
+('core_primary_layout', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Core rendering functionality.', '11', '', 1721011832),
+('core_privacy', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Features relating to maintaining a privacy policy and complying with privacy regulations.', '11', '', 1721011833),
+('core_rich_media', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Comcode and attachments.', '11', '', 1721011833),
+('core_themeing', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Themeing the website, via CSS, HTML, and images.', '11', '', 1721011833),
+('core_upgrader', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The upgrader code.', '11', '', 1721011833),
+('core_webstandards', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Web Standards checking tools.', '11', '', 1721011833),
+('core_zone_editor', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage zones (sub-sites).', '11', '', 1721011833),
+('counting_blocks', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Blocks for hit counters, and count-downs.', '11', '', 1721011833),
+('custom_comcode', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Create new Comcode tags.', '11', '', 1721011833),
+('debrand', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Allow easy debranding of the website software.', '11', '', 1721011833),
+('downloads', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Host a downloads directory.', '11', '', 1721011833),
+('ecommerce', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.', '11', '', 1721011833),
+('errorlog', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log of errors that have happened on the website.', '11', '', 1721011833),
+('failover', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced system to detect if the site goes down, and provide an automatic fallback.', '11', '', 1721011833),
+('filebased_persistent_caching', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A persistent data cache, using disk files for data storage.', '11', '', 1721011833),
+('filedump', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'File/media library, for use in attachments or for general ad-hoc sharing.', '11', '', 1721011833),
+('forum_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Blocks to draw forum posts and topics into the main website.', '11', '', 1721011833),
+('galleries', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Galleries, including support for video galleries, and member personal galleries.', '11', '', 1721011833),
+('google_appengine', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for deploying to Google App Engine (for developers).', '11', '', 1721011833),
+('health_check', 'Chris Graham', 'Composr', '11', 'Admin Utilities', '', 'Licensed on the same terms as Composr', 'The Health Check addon automatically finds problems on your website and server.', '11', '', 1721011833),
+('help_page', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'A simple website help page. Note that removing this will not remove the menu link automatically.', '11', '', 1721011833),
+('helper_scripts', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Scripts to help maintain sites, mostly for Linux/Unix servers or Windows servers running Cygwin.', '11', '', 1721011833),
+('import', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Switch to Composr from other software. This addon provides the architecture for importing, and a number of prewritten importers.', '11', '', 1721011833),
+('installer', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'The installer files (can be removed immediately after installing; in fact Composr makes you remove install.php manually).', '11', '', 1721011834),
+('language_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Blocks to allow visitors to choose their language.', '11', '', 1721011834),
+('ldap', 'Core Development Team', 'Composr', '11', 'Development', '', '(Unstated)', 'Support for integrating Conversr with an LDAP server, so usergroup and members can be the same as those already on the network', '11', '', 1721011834),
+('leader_board', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow website administrators to display leader-boards of members earning the most points.', '11', '', 1721011834),
+('match_key_permissions', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Match-key-permissions allow advanced setting of permissions on a screen-by-screen basis.', '11', '', 1721011834),
+('news', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'News and blogging.', '11', '', 1721011834);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('news_shared', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', '(Common files needed for RSS and News addons)', '11', '', 1721011834),
+('newsletter', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Support for users to join newsletters, and for the staff to send out newsletters to subscribers, and to specific usergroups.', '11', '', 1721011834),
+('page_management', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Manage pages on the website.', '11', '', 1721011834),
+('phpinfo', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Access PHP configurational information from inside Composr.', '11', '', 1721011834),
+('points', 'Core Development Team', 'Composr', '11', 'Fun and Games', '', '(Unstated)', 'Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.', '11', '', 1721011834),
+('polls', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A poll (voting) system.', '11', '', 1721011834),
+('printer_friendly_block', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'A block to provide a link for the current screen to be turned into it\'s printer-friendly equivalent.', '11', '', 1721011834),
+('quizzes', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.', '11', '', 1721011834),
+('random_quotes', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to display random quotes on your website, and an administrative tool to choose them.', '11', '', 1721011834),
+('realtime_rain', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Real-time/historic display of website activity.', '11', '', 1721011834),
+('recommend', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Allow members to easily recommend the website to others.', '11', '', 1721011834),
+('redirects_editor', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Manage redirects between pages. On Apache servers this can also handle low-level redirects of any arbitrary URL to any other.', '11', '', 1721011834),
+('robots_txt', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Configure robots.txt.', '11', '', 1721011834),
+('rootkit_detector', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'A tool to help power-user webmasters identify if a \"rootkit\" has been placed on the server.', '11', '', 1721011834),
+('search', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Multi-content search engine.', '11', '', 1721011834),
+('securitylogging', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Log/display security alerts.', '11', '', 1721011834),
+('setupwizard', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Quick-start setup wizard.', '11', '', 1721011834),
+('shopping', 'Core Development Team', 'Composr', '11', 'eCommerce', '', '(Unstated)', 'Shopping catalogue functionality.', '11', '', 1721011835),
+('site_messaging', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Functionality to display site messages (such as announcements and maintenance windows) at the top of pages with optional criteria.', '11', '', 1721011835);
+INSERT INTO cms_addons (addon_name, addon_author, addon_organisation, addon_version, addon_category, addon_copyright_attribution, addon_licence, addon_description, addon_min_cms_version, addon_max_cms_version, addon_install_time) VALUES ('sms', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Provides an option for the software to send SMS messages, via the commercial Clickatell web service. By default this is only used by the notifications system.', '11', '', 1721011835),
+('stats', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'Show advanced graphs (analytics) and dumps of raw data relating to your website activity.', '11', '', 1721011835),
+('stats_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show a selection of your website statistics to your visitors.', '11', '', 1721011835),
+('syndication', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Syndicate RSS/Atom feeds of your content.', '11', '', 1721011835),
+('syndication_blocks', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Show RSS and Atom feeds from other websites.', '11', '', 1721011835),
+('themewizard', 'Core Development Team', 'Composr', '11', 'Graphical', '', '(Unstated)', 'Automatically generate your own colour schemes using the default theme as a base. Uses the sophisticated chromagraphic equations built into Composr.', '11', '', 1721011835),
+('tickets', 'Core Development Team', 'Composr', '11', 'New Features', '', '(Unstated)', 'A support ticket system. Also provides an integrated standalone contact block, and integrated content reporting functionality.', '11', '', 1721011835),
+('uninstaller', 'Core Development Team', 'Composr', '11', 'Admin Utilities', '', '(Unstated)', 'The uninstaller.', '11', '', 1721011835),
+('users_online_block', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'A block to show which users who are currently visiting the website, and birthdays.', '11', '', 1721011835),
+('validation', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Subject member\'s to validation (approval) of their content submissions, and enable/disable content.', '11', '', 1721011835),
+('welcome_emails', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Welcome e-mails for new members.', '11', '', 1721011835),
+('wiki', 'Core Development Team', 'Composr', '11', 'Information Display', '', '(Unstated)', 'Collaborative/encyclopaedic database interface. A wiki-like community database with rich media capabilities.', '11', '', 1721011835),
+('wordfilter', 'Core Development Team', 'Composr', '11', 'Community', '', '(Unstated)', 'Block rude/offensive/inappropriate words.', '11', '', 1721011835),
+('xml_fields', 'Core Development Team', 'Composr', '11', 'Architecture', '', '(Unstated)', 'Advanced form field filtering.', '11', '', 1721011835);
 
 DROP TABLE IF EXISTS cms_addons_dependencies;
 CREATE TABLE cms_addons_dependencies (
@@ -9349,7 +9349,7 @@ CREATE TABLE cms_award_types (
 ALTER TABLE cms_award_types ADD FULLTEXT a_description (a_description);
 
 ALTER TABLE cms_award_types ADD FULLTEXT a_title (a_title);
-INSERT INTO cms_award_types (id, a_title, a_description, a_points, a_content_type, a_show_awardee, a_update_interval_hours, a_description__text_parsed, a_description__source_user) VALUES (1, 'Download of the week', 'The best downloads in the download system, chosen every week.', 0, 'download', 0, 168, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f91da5f46.55076352_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f91da5f46.55076352_1\\\";s:129:\\\"\\$tpl_funcs[\'string_attach_66735f91da5f46.55076352_1\']=\\\"echo \\\\\\\"The best downloads in the download system, chosen every week.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_award_types (id, a_title, a_description, a_points, a_content_type, a_show_awardee, a_update_interval_hours, a_description__text_parsed, a_description__source_user) VALUES (1, 'Download of the week', 'The best downloads in the download system, chosen every week.', 0, 'download', 0, 168, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7475d330.10173532_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7475d330.10173532_1\\\";s:129:\\\"\\$tpl_funcs[\'string_attach_66948e7475d330.10173532_1\']=\\\"echo \\\\\\\"The best downloads in the download system, chosen every week.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_banned_ip;
 CREATE TABLE cms_banned_ip (
@@ -9428,8 +9428,8 @@ ALTER TABLE cms_banners ADD INDEX deployment_agreement (deployment_agreement);
 ALTER TABLE cms_banners ADD INDEX expiry_date (expiry_date);
 
 ALTER TABLE cms_banners ADD INDEX topsites (hits_from,hits_to);
-INSERT INTO cms_banners (name, expiry_date, submitter, img_url, deployment_agreement, title_text, caption, direct_code, campaign_remaining, site_url, hits_from, views_from, hits_to, views_to, display_likelihood, notes, validated, add_date, edit_date, b_type, caption__text_parsed, caption__source_user) VALUES ('donate', NULL, 1, 'data/images/donate.png', 0, '', 'Please donate to keep this site alive', '', 0, 'http://localhost/composr/index.php?page=donate', 0, 0, 0, 0, 30, 'Provided as a default.', 1, 1718837145, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_1\\\";s:105:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_1\']=\\\"echo \\\\\\\"Please donate to keep this site alive\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('advertise_here', NULL, 1, 'data/images/advertise_here.png', 2, '', 'Advertise here!', '', 0, 'http://localhost/composr/index.php?page=advertise', 0, 0, 0, 0, 10, 'Provided as a default. This is a fallback banner (it shows when others are not available).', 1, 1718837145, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_2\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_2\']=\\\"echo \\\\\\\"Advertise here!\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_banners (name, expiry_date, submitter, img_url, deployment_agreement, title_text, caption, direct_code, campaign_remaining, site_url, hits_from, views_from, hits_to, views_to, display_likelihood, notes, validated, add_date, edit_date, b_type, caption__text_parsed, caption__source_user) VALUES ('donate', NULL, 1, 'data/images/donate.png', 0, '', 'Please donate to keep this site alive', '', 0, 'http://localhost/composr/index.php?page=donate', 0, 0, 0, 0, 30, 'Provided as a default.', 1, 1721011836, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_1\\\";s:105:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_1\']=\\\"echo \\\\\\\"Please donate to keep this site alive\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('advertise_here', NULL, 1, 'data/images/advertise_here.png', 2, '', 'Advertise here!', '', 0, 'http://localhost/composr/index.php?page=advertise', 0, 0, 0, 0, 10, 'Provided as a default. This is a fallback banner (it shows when others are not available).', 1, 1721011836, NULL, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_2\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_2\']=\\\"echo \\\\\\\"Advertise here!\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_banners_types;
 CREATE TABLE cms_banners_types (
@@ -9685,14 +9685,14 @@ CREATE TABLE cms_calendar_types (
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_calendar_types ADD FULLTEXT t_title (t_title);
-INSERT INTO cms_calendar_types (id, t_title, t_logo, t_external_feed_url, t_title__text_parsed, t_title__source_user) VALUES (1, '(System command)', 'icons/calendar/system_command', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_3\\\";s:84:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_3\']=\\\"echo \\\\\\\"(System command)\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'General', 'icons/calendar/general', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_4\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_4\']=\\\"echo \\\\\\\"General\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'Birthday', 'icons/calendar/birthday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_5\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_5\']=\\\"echo \\\\\\\"Birthday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(4, 'Public holiday', 'icons/calendar/public_holiday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_6\\\";s:82:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_6\']=\\\"echo \\\\\\\"Public holiday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(5, 'Vacation', 'icons/calendar/vacation', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_7\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_7\']=\\\"echo \\\\\\\"Vacation\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(6, 'Appointment', 'icons/calendar/appointment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_8\\\";s:79:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_8\']=\\\"echo \\\\\\\"Appointment\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(7, 'Task', 'icons/calendar/commitment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66735f999c2db6.57944170_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66735f999c2db6.57944170_9\\\";s:72:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_9\']=\\\"echo \\\\\\\"Task\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(8, 'Anniversary', 'icons/calendar/anniversary', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_10\\\";s:80:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_10\']=\\\"echo \\\\\\\"Anniversary\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_calendar_types (id, t_title, t_logo, t_external_feed_url, t_title__text_parsed, t_title__source_user) VALUES (1, '(System command)', 'icons/calendar/system_command', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_3\\\";s:84:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_3\']=\\\"echo \\\\\\\"(System command)\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'General', 'icons/calendar/general', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_4\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_4\']=\\\"echo \\\\\\\"General\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'Birthday', 'icons/calendar/birthday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_5\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_5\']=\\\"echo \\\\\\\"Birthday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(4, 'Public holiday', 'icons/calendar/public_holiday', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_6\\\";s:82:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_6\']=\\\"echo \\\\\\\"Public holiday\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(5, 'Vacation', 'icons/calendar/vacation', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_7\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_7\']=\\\"echo \\\\\\\"Vacation\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(6, 'Appointment', 'icons/calendar/appointment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_8\\\";s:79:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_8\']=\\\"echo \\\\\\\"Appointment\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(7, 'Task', 'icons/calendar/commitment', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e7c9ac7b1.13604045_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e7c9ac7b1.13604045_9\\\";s:72:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_9\']=\\\"echo \\\\\\\"Task\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(8, 'Anniversary', 'icons/calendar/anniversary', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_10\\\";s:80:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_10\']=\\\"echo \\\\\\\"Anniversary\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_captchas;
 CREATE TABLE cms_captchas (
@@ -9741,11 +9741,11 @@ ALTER TABLE cms_catalogue_categories ADD INDEX cc_parent_id (cc_parent_id);
 ALTER TABLE cms_catalogue_categories ADD INDEX ftjoin_ccdescrip (cc_description(250));
 
 ALTER TABLE cms_catalogue_categories ADD INDEX ftjoin_cctitle (cc_title(250));
-INSERT INTO cms_catalogue_categories (id, c_name, cc_title, cc_description, rep_image, cc_notes, cc_add_date, cc_parent_id, cc_move_target_id, cc_move_days_lower, cc_move_days_higher, cc_description__text_parsed, cc_description__source_user) VALUES (1, 'projects', 'Projects', 'These are projects designed to: advertise project existence, detail current progress, and solicit help.', '', '', 1718837148, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_12\\\";s:172:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_12\']=\\\"echo \\\\\\\"These are projects designed to: advertise project existence, detail current progress, and solicit help.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'faqs', 'Frequently Asked Questions', 'If you have questions that are not covered in our FAQ, please post them in an appropriate forum.', '', '', 1718837148, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_14\\\";s:165:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_14\']=\\\"echo \\\\\\\"If you have questions that are not covered in our FAQ, please post them in an appropriate forum.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'links', 'Links home', '', '', '', 1718837149, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(4, 'contacts', 'Contacts', '', '', '', 1718837149, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(5, 'products', 'Products home', '', '', '', 1718837149, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_catalogue_categories (id, c_name, cc_title, cc_description, rep_image, cc_notes, cc_add_date, cc_parent_id, cc_move_target_id, cc_move_days_lower, cc_move_days_higher, cc_description__text_parsed, cc_description__source_user) VALUES (1, 'projects', 'Projects', 'These are projects designed to: advertise project existence, detail current progress, and solicit help.', '', '', 1721011839, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_12\\\";s:172:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_12\']=\\\"echo \\\\\\\"These are projects designed to: advertise project existence, detail current progress, and solicit help.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'faqs', 'Frequently Asked Questions', 'If you have questions that are not covered in our FAQ, please post them in an appropriate forum.', '', '', 1721011839, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_14\\\";s:165:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_14\']=\\\"echo \\\\\\\"If you have questions that are not covered in our FAQ, please post them in an appropriate forum.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'links', 'Links home', '', '', '', 1721011839, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(4, 'contacts', 'Contacts', '', '', '', 1721011840, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(5, 'products', 'Products home', '', '', '', 1721011840, NULL, NULL, 30, 60, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_catalogue_childcountcache;
 CREATE TABLE cms_catalogue_childcountcache (
@@ -9885,31 +9885,31 @@ ALTER TABLE cms_catalogue_entries ADD INDEX ce_views (ce_views);
 ALTER TABLE cms_catalogue_entries ADD INDEX ces (ce_submitter);
 DROP TABLE IF EXISTS cms_catalogue_entry_linkage;
 CREATE TABLE cms_catalogue_entry_linkage (
-    content_id varchar(80) NOT NULL,
     catalogue_entry_id integer NOT NULL,
     content_type varchar(80) NOT NULL,
+    content_id varchar(80) NOT NULL,
     PRIMARY KEY (catalogue_entry_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_catalogue_entry_linkage ADD INDEX custom_fields (content_type,content_id);
 DROP TABLE IF EXISTS cms_catalogue_fields;
 CREATE TABLE cms_catalogue_fields (
+    cf_options varchar(255) NOT NULL,
+    cf_is_sortable tinyint(1) NOT NULL,
+    cf_include_in_main_search tinyint(1) NOT NULL,
+    cf_allow_template_search tinyint(1) NOT NULL,
+    cf_defines_order tinyint NOT NULL,
+    cf_order integer NOT NULL,
     cf_type varchar(80) NOT NULL,
     cf_description longtext NOT NULL,
-    cf_required tinyint(1) NOT NULL,
+    cf_put_in_search tinyint(1) NOT NULL,
+    c_name varchar(80) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     cf_put_in_category tinyint(1) NOT NULL,
-    cf_name longtext NOT NULL,
-    c_name varchar(80) NOT NULL,
-    cf_order integer NOT NULL,
-    cf_defines_order tinyint NOT NULL,
-    cf_visible tinyint(1) NOT NULL,
-    cf_sensitive tinyint(1) NOT NULL,
+    cf_required tinyint(1) NOT NULL,
     cf_default longtext NOT NULL,
-    cf_allow_template_search tinyint(1) NOT NULL,
-    cf_include_in_main_search tinyint(1) NOT NULL,
-    cf_is_sortable tinyint(1) NOT NULL,
-    cf_options varchar(255) NOT NULL,
-    cf_put_in_search tinyint(1) NOT NULL,
+    cf_name longtext NOT NULL,
+    cf_sensitive tinyint(1) NOT NULL,
+    cf_visible tinyint(1) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_catalogue_fields ADD FULLTEXT cf_description (cf_description);
@@ -9953,18 +9953,18 @@ INSERT INTO cms_catalogue_fields (id, c_name, cf_name, cf_description, cf_type, 
 
 DROP TABLE IF EXISTS cms_catalogues;
 CREATE TABLE cms_catalogues (
+    c_is_tree tinyint(1) NOT NULL,
+    c_name varchar(80) NOT NULL,
+    c_notes longtext NOT NULL,
+    c_add_date integer unsigned NOT NULL,
+    c_submit_points integer NOT NULL,
+    c_ecommerce tinyint(1) NOT NULL,
     c_default_review_freq integer NULL,
+    c_send_view_reports varchar(80) NOT NULL,
+    c_categories_sort_order varchar(255) NOT NULL,
     c_title longtext NOT NULL,
     c_description longtext NOT NULL,
     c_display_type tinyint NOT NULL,
-    c_is_tree tinyint(1) NOT NULL,
-    c_notes longtext NOT NULL,
-    c_name varchar(80) NOT NULL,
-    c_submit_points integer NOT NULL,
-    c_ecommerce tinyint(1) NOT NULL,
-    c_add_date integer unsigned NOT NULL,
-    c_send_view_reports varchar(80) NOT NULL,
-    c_categories_sort_order varchar(255) NOT NULL,
     c_description__text_parsed longtext NOT NULL,
     c_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (c_name)
@@ -9972,24 +9972,24 @@ CREATE TABLE cms_catalogues (
 ALTER TABLE cms_catalogues ADD FULLTEXT c_description (c_description);
 
 ALTER TABLE cms_catalogues ADD FULLTEXT c_title (c_title);
-INSERT INTO cms_catalogues (c_name, c_title, c_description, c_display_type, c_is_tree, c_notes, c_add_date, c_submit_points, c_ecommerce, c_default_review_freq, c_send_view_reports, c_categories_sort_order, c_description__text_parsed, c_description__source_user) VALUES ('projects', 'Projects', '', 0, 0, '', 1718837148, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('faqs', 'Frequently Asked Questions', '', 0, 0, '', 1718837148, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('links', 'Links', 'Warning: these sites are outside our control.', 2, 1, '', 1718837149, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_15\\\";s:114:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_15\']=\\\"echo \\\\\\\"Warning: these sites are outside our control.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('contacts', 'Contacts', 'A contacts/address-book.', 0, 0, '', 1718837149, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_17\\\";s:93:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_17\']=\\\"echo \\\\\\\"A contacts/address-book.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-('products', 'Products', 'These are products for sale from this website.', 3, 1, '', 1718837149, 0, 1, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66735f999c2db6.57944170_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66735f999c2db6.57944170_19\\\";s:115:\\\"\\$tpl_funcs[\'string_attach_66735f999c2db6.57944170_19\']=\\\"echo \\\\\\\"These are products for sale from this website.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_catalogues (c_name, c_title, c_description, c_display_type, c_is_tree, c_notes, c_add_date, c_submit_points, c_ecommerce, c_default_review_freq, c_send_view_reports, c_categories_sort_order, c_description__text_parsed, c_description__source_user) VALUES ('projects', 'Projects', '', 0, 0, '', 1721011839, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('faqs', 'Frequently Asked Questions', '', 0, 0, '', 1721011839, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('links', 'Links', 'Warning: these sites are outside our control.', 2, 1, '', 1721011839, 0, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_15\\\";s:114:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_15\']=\\\"echo \\\\\\\"Warning: these sites are outside our control.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('contacts', 'Contacts', 'A contacts/address-book.', 0, 0, '', 1721011839, 30, 0, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_17\\\";s:93:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_17\']=\\\"echo \\\\\\\"A contacts/address-book.\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('products', 'Products', 'These are products for sale from this website.', 3, 1, '', 1721011840, 0, 1, NULL, 'never', 'title ASC', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_19\\\";s:115:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_19\']=\\\"echo \\\\\\\"These are products for sale from this website.\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_ce_fulltext_index;
 CREATE TABLE cms_ce_fulltext_index (
-    i_occurrence_rate real NOT NULL,
-    i_category_id integer NOT NULL,
-    i_add_time integer unsigned NOT NULL,
-    i_ac integer NOT NULL,
     i_submitter integer NOT NULL,
-    i_ngram integer NOT NULL,
+    i_ac integer NOT NULL,
     i_catalogue_entry_id integer NOT NULL,
     i_lang varchar(5) NOT NULL,
+    i_ngram integer NOT NULL,
+    i_occurrence_rate real NOT NULL,
+    i_add_time integer unsigned NOT NULL,
     i_c_name varchar(80) NOT NULL,
-    PRIMARY KEY (i_ac, i_ngram, i_catalogue_entry_id, i_lang)
+    i_category_id integer NOT NULL,
+    PRIMARY KEY (i_ac, i_catalogue_entry_id, i_lang, i_ngram)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_ce_fulltext_index ADD INDEX content_id (i_catalogue_entry_id);
 
@@ -10058,11 +10058,11 @@ ALTER TABLE cms_ce_fulltext_index ADD INDEX main_8 (i_lang,i_ngram,i_ac,i_c_name
 ALTER TABLE cms_ce_fulltext_index ADD INDEX main_9 (i_lang,i_ngram,i_ac,i_category_id,i_occurrence_rate);
 DROP TABLE IF EXISTS cms_chat_active;
 CREATE TABLE cms_chat_active (
-    member_id integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    ip varchar(40) NOT NULL,
     room_id integer NULL,
     date_and_time integer unsigned NOT NULL,
-    ip varchar(40) NOT NULL,
+    member_id integer NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_chat_active ADD INDEX active_ordering (date_and_time);
@@ -10072,39 +10072,39 @@ ALTER TABLE cms_chat_active ADD INDEX member_select (member_id);
 ALTER TABLE cms_chat_active ADD INDEX room_select (room_id);
 DROP TABLE IF EXISTS cms_chat_blocking;
 CREATE TABLE cms_chat_blocking (
-    member_blocker integer NOT NULL,
-    date_and_time integer unsigned NOT NULL,
     member_blocked integer NOT NULL,
-    PRIMARY KEY (member_blocker, member_blocked)
+    date_and_time integer unsigned NOT NULL,
+    member_blocker integer NOT NULL,
+    PRIMARY KEY (member_blocked, member_blocker)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_chat_events;
 CREATE TABLE cms_chat_events (
+    e_date_and_time integer unsigned NOT NULL,
     e_room_id integer NULL,
     e_member_id integer NOT NULL,
-    e_date_and_time integer unsigned NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
     e_type_code varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_chat_events ADD INDEX event_ordering (e_date_and_time);
 DROP TABLE IF EXISTS cms_chat_friends;
 CREATE TABLE cms_chat_friends (
-    member_likes integer NOT NULL,
     member_liked integer NOT NULL,
+    member_likes integer NOT NULL,
     date_and_time integer unsigned NOT NULL,
-    PRIMARY KEY (member_likes, member_liked)
+    PRIMARY KEY (member_liked, member_likes)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_chat_messages;
 CREATE TABLE cms_chat_messages (
-    font_name varchar(255) NOT NULL,
     text_colour varchar(255) NOT NULL,
-    the_message longtext NOT NULL,
-    date_and_time integer unsigned NOT NULL,
-    room_id integer NOT NULL,
-    member_id integer NOT NULL,
-    ip_address varchar(40) NOT NULL,
     system_message tinyint(1) NOT NULL,
+    font_name varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    date_and_time integer unsigned NOT NULL,
+    the_message longtext NOT NULL,
+    ip_address varchar(40) NOT NULL,
+    member_id integer NOT NULL,
+    room_id integer NOT NULL,
     the_message__text_parsed longtext NOT NULL,
     the_message__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -10143,10 +10143,10 @@ INSERT INTO cms_chat_rooms (id, room_name, room_owner, allow_list, allow_list_gr
 
 DROP TABLE IF EXISTS cms_chat_sound_effects;
 CREATE TABLE cms_chat_sound_effects (
-    s_member integer NOT NULL,
     s_effect_id varchar(80) NOT NULL,
     s_url varchar(255) BINARY NOT NULL,
-    PRIMARY KEY (s_member, s_effect_id)
+    s_member integer NOT NULL,
+    PRIMARY KEY (s_effect_id, s_member)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_comcode_pages;
 CREATE TABLE cms_comcode_pages (
@@ -10169,11 +10169,11 @@ ALTER TABLE cms_comcode_pages ADD INDEX p_order (p_order);
 ALTER TABLE cms_comcode_pages ADD INDEX p_submitter (p_submitter);
 
 ALTER TABLE cms_comcode_pages ADD INDEX p_validated (p_validated);
-INSERT INTO cms_comcode_pages (the_zone, the_page, p_parent_page, p_validated, p_edit_date, p_add_date, p_submitter, p_show_as_edit, p_include_on_sitemap, p_order) VALUES ('site', 'userguide_comcode', 'help', 1, NULL, 1718837135, 2, 0, 0, 0),
-('', 'keymap', 'help', 1, NULL, 1718837135, 2, 0, 0, 0),
-('site', 'userguide_chatcode', 'help', 1, NULL, 1718837152, 2, 0, 0, 1),
-('site', 'popup_blockers', 'help', 1, NULL, 1718837152, 2, 0, 0, 2),
-('', 'recommend_help', 'recommend', 1, NULL, 1718837161, 2, 0, 0, 0);
+INSERT INTO cms_comcode_pages (the_zone, the_page, p_parent_page, p_validated, p_edit_date, p_add_date, p_submitter, p_show_as_edit, p_include_on_sitemap, p_order) VALUES ('site', 'userguide_comcode', 'help', 1, NULL, 1721011826, 2, 0, 0, 0),
+('', 'keymap', 'help', 1, NULL, 1721011826, 2, 0, 0, 0),
+('site', 'userguide_chatcode', 'help', 1, NULL, 1721011842, 2, 0, 0, 1),
+('site', 'popup_blockers', 'help', 1, NULL, 1721011842, 2, 0, 0, 2),
+('', 'recommend_help', 'recommend', 1, NULL, 1721011852, 2, 0, 0, 0);
 
 DROP TABLE IF EXISTS cms_config;
 CREATE TABLE cms_config (
