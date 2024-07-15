@@ -4011,8 +4011,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_topic_pin_tax_code
         CONFIG_OPTION_topic_pin_price_points
         CONFIG_OPTION_tree_lists
-        CONFIG_OPTION_unzip_cmd
-        CONFIG_OPTION_unzip_dir
         CONFIG_OPTION_url_monikers_enabled
         CONFIG_OPTION_url_scheme
         CONFIG_OPTION_url_scheme_VALUE_HTM
@@ -6612,8 +6610,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_SANDBOX
         NO_SELECTABLE_THEME_IMAGES_MSN
         NO_SESSION_SECURITY_CODE
-        NO_SHELL_ZIP_POSSIBLE
-        NO_SHELL_ZIP_POSSIBLE2
         NO_SUCH_CONTENT_TYPE
         NO_SUCH_RENDERER
         NO_SUCH_THEME_IMAGE
@@ -7860,8 +7856,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOT_VALIDATED_MAIL_C
         NOT_VALIDATED_PAGE_TEXT
         NOT_VALIDATED_RESOURCES
-        UNZIP_CMD
-        UNZIP_DIR
         UPDATE_HANDLING_DELETE
         UPDATE_HANDLING_FRESHEN
         UPDATE_HANDLING_OVERWRITE

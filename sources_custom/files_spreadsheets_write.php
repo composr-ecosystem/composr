@@ -21,7 +21,7 @@
  */
 function is_spreadsheet_writable(string $filename) : bool
 {
-    if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
+    if (!addon_installed('enhanced_spreadsheets') || !class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
         return non_overridden__is_spreadsheet_writable($filename);
     }
 
@@ -36,7 +36,7 @@ function is_spreadsheet_writable(string $filename) : bool
  */
 function spreadsheet_write_default() : string
 {
-    if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
+    if (!addon_installed('enhanced_spreadsheets') || !class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
         return non_overridden__spreadsheet_write_default();
     }
 
@@ -59,7 +59,7 @@ function spreadsheet_write_default() : string
  */
 function spreadsheet_open_write(?string &$path, ?string $filename = null, int $algorithm = 3, ?string $charset = '') : object
 {
-    if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
+    if (!addon_installed('enhanced_spreadsheets') || !class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
         return non_overridden__spreadsheet_open_write($path, $filename, $algorithm, $charset);
     }
 

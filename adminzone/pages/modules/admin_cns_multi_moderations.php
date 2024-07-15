@@ -176,7 +176,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         $fields = new Tempcode();
 
         $supported = 'tar';
-        if ((function_exists('zip_open')) || (get_option('unzip_cmd') != '')) {
+        if (class_exists('ZipArchive', false)) {
             $supported .= ', zip';
         }
         $fields->attach(form_input_upload_multi(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_ARCHIVE_TEXT_FILES', escape_html($supported), escape_html('txt')), 'file', true, null, null, true, 'txt,' . $supported));
@@ -249,47 +249,39 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
             switch (get_file_extension($file)) {
                 case 'zip':
-                    if ((!function_exists('zip_open')) && (get_option('unzip_cmd') == '')) {
+                    if (!class_exists('ZipArchive', false)) {
                         warn_exit(do_lang_tempcode('ZIP_NOT_ENABLED'));
                     }
-                    if (!function_exists('zip_open')) {
-                        require_code('m_zip');
-                        $mzip = true;
-                    } else {
-                        $mzip = false;
+
+                    $zip_archive = new ZipArchive;
+                    $myfile = $zip_archive->open($tmp_name);
+                    if ($myfile !== true) {
+                        require_code('failure');
+                        warn_exit(zip_error($tmp_name, $myfile));
                     }
-                    $myfile = zip_open($tmp_name);
-                    if (!is_integer($myfile)) {
-                        while (false !== ($entry = zip_read($myfile))) {
-                            // Load in file
-                            zip_entry_open($myfile, $entry);
 
-                            $filename = zip_entry_name($entry);
+                    for ($i = 0; $i < $zip_archive->numFiles; $i++) {
+                        $filename = $zip_archive->getNameIndex($i);
 
-                            if (!check_extension($filename, false, null, true)) {
-                                continue;
-                            }
-
-                            if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
-                                $data = '';
-                                do {
-                                    $more = zip_entry_read($entry);
-                                    if ($more !== false) {
-                                        $data .= $more;
-                                    }
-                                } while (($more !== false) && ($more != ''));
-
-                                $this->_import_stock_response($filename, $data, $target_forum);
-                            }
-
-                            zip_entry_close($entry);
+                        if (!check_extension($filename, false, null, true)) {
+                            continue;
                         }
 
-                        zip_close($myfile);
-                    } else {
-                        require_code('failure');
-                        warn_exit(zip_error($myfile, $mzip));
+                        if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
+                                $data = $zip_archive->getFromIndex($i);
+                                if ($data === false) { // Error reading
+                                    warn_exit(zip_error($tmp_name, ZipArchive::ER_READ), false, true);
+                                    break;
+                                }
+                                if ($data === '') { // No more to read
+                                    continue;
+                                }
+                                $this->_import_stock_response($filename, $data, $target_forum);
+                        }
                     }
+
+                    $zip_archive->close();
+                    unset($zip_archive);
                     break;
                 case 'tar':
                     require_code('tar');

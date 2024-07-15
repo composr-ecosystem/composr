@@ -33,7 +33,7 @@ function upgrader_file_upgrade_screen() : string
     if (function_exists('gzopen')) {
         $personal_upgrader_generation_url .= 'supports_gzip=1&';
     }
-    if ((function_exists('zip_open')) || (get_option('unzip_cmd') == '')) {
+    if (class_exists('ZipArchive', false)) {
         $personal_upgrader_generation_url .= 'supports_zip=1&';
     }
     $hooks = find_all_hooks('systems', 'addon_registry');

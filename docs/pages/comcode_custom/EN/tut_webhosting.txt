@@ -187,7 +187,7 @@ If you want to be able to generate custom graphics with quality TrueType text on
 
 If you want automatic image rotation correction, and image metadata import, you'll need the PHP [tt]exif[/tt] extension.
 
-For the most reliable unzipping support, you want the PHP [tt]zip[/tt] extension.
+If you want support for using ZIP files, you'll need the PHP [tt]zip[/tt] extension.
 
 To properly check permissions the [tt]posix[/tt] extension is needed.
 

@@ -597,38 +597,40 @@ function create_data_mash(string $url, ?string $data = null, ?string $extension 
         case 'odt':
         case 'odp':
         case 'docx':
-            require_code('m_zip');
+            if (!class_exists('ZipArchive', false)) {
+                break; // Don't error; just don't make a mash
+            }
+
             $tmp_file = cms_tempnam();
             file_put_contents($tmp_file, $data);
-            $myfile_zip = @zip_open($tmp_file);
-            if (!is_integer($myfile_zip)) {
-                while (($entry = (@zip_read($myfile_zip))) !== false) { // Temporary file may be cleaned up before this can complete, hence @
-                    $entry_name = @zip_entry_name($entry);
-                    $mash .= ' ' . $entry_name;
-                    if (substr($entry_name, -1) != '/') {
-                        $_entry = @zip_entry_open($myfile_zip, $entry);
-                        if ($_entry !== false) {
-                            $file_data = '';
-                            while (true) {
-                                $it = @zip_entry_read($entry, 1024);
-                                if (($it === false) || ($it == '')) {
-                                    break;
-                                }
-                                $file_data .= $it;
-                                if (strlen($file_data) >= 3 * 1024 * 1024) {
-                                    break; // 3MB is enough
-                                }
-                            }
-                            @zip_entry_close($entry);
-                            $mash .= ' ' . create_data_mash($entry_name, $file_data);
-                            if (strlen($mash) >= 3 * 1024 * 1024) {
-                                break; // 3MB is enough
-                            }
-                        }
+
+            $zip_archive = new ZipArchive;
+
+            $in_file = $zip_archive->open($tmp_file);
+            if ($in_file !== true) { // Just clean up and don't make a mash on error
+                @unlink($tmp_file);
+                break;
+            }
+
+            for ($i = 0; $i < $zip_archive->numFiles; $i++) {
+                $entry_name = $zip_archive->getNameIndex($i);
+                $mash .= ' ' . $entry_name;
+                if (substr($entry_name, -1) != '/') {
+                    $file_data = $zip_archive->getFromIndex($i);
+                    if (($file_data === false) || ($file_data == '')) {
+                        continue;
+                    }
+                    $file_data = substr($file_data, 0, (3 * 1024 * 1024));
+
+                    $mash .= ' ' . create_data_mash($entry_name, $file_data);
+                    if (strlen($mash) >= 3 * 1024 * 1024) {
+                        break; // 3MB is enough
                     }
                 }
-                @zip_close($myfile_zip);
             }
+
+            $zip_archive->close();
+            unset($zip_archive);
             @unlink($tmp_file);
             break;
 

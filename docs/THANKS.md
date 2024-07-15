@@ -47,7 +47,6 @@ This product includes:
  - Text_Diff (LGPL licence, Core Developement Team modifications also therefore are also licensed under the LGPL)
  - FirePHP (BSD-like licence)
  - SabreDAV (BSD-like licence)
- - m-zip (Francesco M. Munafo', liberal custom licence in sources/m_zip.php)
  - convert_to_html_encoding implementation (from php.net comment by silverbeat, Creative Commons Attribution License)
  - mergesort implementation (from php.net comment by sreid, Creative Commons Attribution License)
  - GUID implementation (from php.net comment by Andrew Moore, Creative Commons Attribution License)

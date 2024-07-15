@@ -792,7 +792,7 @@ function has_feature(string $dependency) : bool
     if ((cms_strtolower_ascii($dependency) == 'php xml extension') && (function_exists('xml_parser_create'))) {
         return true;
     }
-    if ((cms_strtolower_ascii($dependency) == 'php zip extension') && (function_exists('zip_open'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php zip extension') && (class_exists('ZipArchive', false))) {
         return true;
     }
     if ((cms_strtolower_ascii($dependency) == 'php pdo_mysql extension') && (defined('PDO::ATTR_DRIVER_NAME'))) {

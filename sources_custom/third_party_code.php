@@ -89,7 +89,6 @@ function list_untouchable_third_party_files()
         'sources_custom/sugar_crm_lib.php',
         'sources_custom/twitter.php',
         'sources/firephp.php',
-        //'sources/m_zip.php', We maintain this now
         //'sources/jsmin.php', We maintain this now
         //'sources/lang_stemmer_EN.php', We maintain this now
         'sources/mail_dkim.php',
