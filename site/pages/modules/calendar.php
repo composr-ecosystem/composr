@@ -293,7 +293,7 @@ class Module_calendar
             } while (!empty($rows));
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY: 11.beta1
+        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('calendar_types', 't_external_feed', 'URLPATH', 't_external_feed_url');
         }
