@@ -7949,6 +7949,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WARNING_OVERWRITE
         WARNING_DISK_SPACE
         WARNING_FILE_ADDON
+        WARNING_FILE_OUTDATED_ADDON
         WARNING_FILE_ALIEN
         WARNING_FILE_OVERRIDE_FROM_UNINSTALLED_ADDON
         WARNING_FILE_FUTURE_FILES

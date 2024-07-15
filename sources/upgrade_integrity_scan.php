@@ -60,7 +60,7 @@ function load_integrity_manifest(bool $previous = false) : array
  * Load up a list of files for the addons we have installed (addon_registry based ones only).
  *
  * @param  array $manifest Manifest of file checksums
- * @return array A pair: List of files, a list of hook files
+ * @return array A pair: List of files, a list of hooks
  */
 function load_files_list_of_installed_addons(array $manifest) : array
 {
@@ -81,7 +81,8 @@ function load_files_list_of_installed_addons(array $manifest) : array
             closedir($dh);
         }
     }
-    $hook_files = [];
+
+    $hook_info = [];
     foreach ($hooks as $hook => $hook_type) {
         if ($hook_type != 'sources_custom') {
             if (!isset($manifest['sources/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php'])) {
@@ -90,19 +91,25 @@ function load_files_list_of_installed_addons(array $manifest) : array
         }
 
         $path = get_file_base() . '/' . $hook_type . '/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
-        $hook_files[$hook] = $path;
+        $hook_info[$hook] = ['path' => $path, 'min_cms_version' => null, 'max_cms_version' => null];
     }
     $files_to_check = [];
-    foreach ($hook_files as $addon_name => $hook_path) {
-        $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
+    foreach ($hook_info as $addon_name => &$info) {
+        $hook_file = cms_file_get_contents_safe($info['path'], FILE_READ_LOCK);
         $matches = [];
         if (preg_match('#function get_file_list\(\)\s+:\s+array\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
-            $files_to_check = array_merge($files_to_check, cms_eval($matches[1], $hook_path));
+            $files_to_check = array_merge($files_to_check, cms_eval($matches[1], $info['path']));
+        }
+        if (preg_match('#function get_min_cms_version\(\)\s+:\s+float\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
+            $info['min_cms_version'] = cms_eval($matches[1], $info['path']);
+        }
+        if (preg_match('#function get_max_cms_version\(\)\s+:\s+float\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
+            $info['max_cms_version'] = cms_eval($matches[1], $info['path']);
         }
     }
     sort($files_to_check);
 
-    return [$files_to_check, $hook_files];
+    return [$files_to_check, $hook_info];
 }
 
 /**
@@ -120,6 +127,7 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
 
     require_code('files');
     require_code('upgrade');
+    require_code('version');
 
     disable_php_memory_limit();
 
@@ -143,13 +151,30 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
     $check_outdated__handle_overrides_result = check_outdated__handle_overrides(get_file_base() . '/', '', $manifest, $hook_files, $allow_merging);
     list($outdated__outdated_original_and_override, $outdated__possibly_outdated_override, $outdated__missing_original_but_has_override, $outdated__uninstalled_addon_but_has_override) = $check_outdated__handle_overrides_result;
 
+    // Check addon compatibility with the current version of the software
+    $outdated__addon = '';
+    foreach ($hook_files as $hook => $info) {
+        $outdated = false;
+
+        if (($info['min_cms_version'] === null) || ($info['min_cms_version'] > cms_version_number())) {
+            $outdated = true;
+        }
+        if (($info['max_cms_version'] !== null) && ($info['max_cms_version'] < cms_version_number())) {
+            $outdated = true;
+        }
+
+        if ($outdated) {
+            $outdated__addon .= '<li><kbd>' . escape_html($hook) . '</kbd></li>';
+        }
+    }
+
     // Look for missing or outdated files
     $outdated__outdated_original = '';
     $outdated__missing_file_entirely = '';
     $outdated__future_files = '';
     $files_determined_to_upload = [];
     foreach ($files_to_check as $file) {
-        if (($basic) && (time() - $_SERVER['REQUEST_TIME'] > 8)) {
+        if (($basic) && ((time() - $_SERVER['REQUEST_TIME']) > 8)) {
             return ''; // Taking too long
         }
 
@@ -200,9 +225,17 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
     }
 
     // Output integrity check results
+    if ($outdated__addon != '') {
+        if ($basic) {
+            $ret_str .= '<p>The following addons are not compatible with the current version of the software. You will likely need to run your site in safe mode after finishing the upgrade process and update or remove these addons. To update an addon, download the latest version from the homesite and import it under Admin Zone > Structure > Addon management. Sometimes, updated non-bundled addons can automatically be imported on that page.</p><ul>' . $outdated__addon . '</ul>';
+        } else {
+            $ret_str .= do_lang('WARNING_FILE_OUTDATED_ADDON', $outdated__addon);
+        }
+        $found_something = true;
+    }
     if ($outdated__possibly_outdated_override != '') {
         if ($basic) {
-            $ret_str .= '<p>The following files have been superseded by new versions, but you have overrides/customisations blocking the new versions. Look into this and consider reincorporating your changes into our new version. If this is not done, bugs (potentially security holes) may occur, or be left unfixed. If you edited using an inbuilt editor, the file on which you based it will be saved as <kbd>file.editfrom</kbd>: you may use a tool such as <a href="http://winmerge.sourceforge.net/" target="_blank">WinMerge</a> to compare the <kbd>editfrom</kbd> file to your own, and then apply those same changes to the latest version of the file.</p><ul>' . $outdated__possibly_outdated_override . '</ul>';
+            $ret_str .= '<p>These files which override/customise original files may need to be updated because the original files have been updated. If this is not done, bugs (potentially security holes) may occur, or be left unfixed. If you edited using an inbuilt editor, the file on which you based it will be saved as <kbd>file.editfrom</kbd>: you may use a tool such as <a href="http://winmerge.sourceforge.net/" target="_blank">WinMerge</a> to compare the <kbd>editfrom</kbd> file to your own, and then apply those same changes to the latest version of the file.</p><ul>' . $outdated__possibly_outdated_override . '</ul>';
         } else {
             $ret_str .= do_lang('WARNING_FILE_OUTDATED_OVERRIDE', $outdated__possibly_outdated_override);
         }
@@ -402,7 +435,7 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
     $dh = @opendir($dir);
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
-            if (should_ignore_file($rela . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_DIRS | IGNORE_UPLOADS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING)) {
+            if (should_ignore_file($rela . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_UPLOADS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING)) {
                 continue;
             }
 
@@ -420,42 +453,40 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
                     $equiv_file = get_file_base() . '/' . str_replace('_custom', '', preg_replace('#themes/[^/]*/#', 'themes/default/', $rela)) . $file;
                 }
                 if (file_exists($equiv_file)) {
-                    if ($allow_merging) {
-                        if (file_exists($dir . $file . '.editfrom')) { // If we edited-from, then we use that to do the compare
-                            $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file . '.editfrom', FILE_READ_LOCK))));
-                            $only_if_noncustom = false;
-                        } else {
-                            $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK))));
-                            $only_if_noncustom = true;
-                        }
-                        $_true_hash = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK))));
-                        if (array_key_exists($file, $manifest)) { // Get hash from perfection table
-                            $true_hash = $manifest[$rela . $file][0];
-                            if ($true_hash != $_true_hash) {
-                                $outdated__outdated_original_and_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
-                                unset($manifest[$rela . $file]);
-                                continue;
-                            }
-                        } else { // Get hash from non-overridden file (equiv file)
-                            if ($only_if_noncustom) {
-                                $true_hash = null; // Except we can't as we're not looking at the .editfrom and thus can't expect equality
-                            } else {
-                                $true_hash = $_true_hash;
-                            }
-                        }
-
-                        if (($true_hash !== null) && ($hash_on_disk != $true_hash)) {
-                            if ((function_exists('diff_3way_text')) && (substr($file, -4) == '.css') && ($true_hash !== 2) && (file_exists($dir . $file . '.editfrom')) && (cms_is_writable($dir . $file))) {
-                                $new = diff_3way_text(file_get_contents($equiv_file), file_get_contents($dir . $file . '.editfrom'), file_get_contents($dir . $file));
-                                cms_file_put_contents_safe($dir . $file . '.' . strval(time()), cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                                cms_file_put_contents_safe($dir . $file, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                                $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd> ' . do_lang('AUTO_MERGED') . '</li>';
-                                cms_file_put_contents_safe($dir . $file . '.editfrom', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                            } else {
-                                $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
-                            }
-                        }
+                    if (file_exists($dir . $file . '.editfrom')) { // If we edited-from, then we use that to do the compare
+                        $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file . '.editfrom', FILE_READ_LOCK))));
+                        $only_if_noncustom = false;
                     } else {
+                        $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK))));
+                        $only_if_noncustom = true;
+                    }
+                    $_true_hash = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK))));
+                    if (array_key_exists($file, $manifest)) { // Get hash from perfection table
+                        $true_hash = $manifest[$rela . $file][0];
+                        if ($true_hash != $_true_hash) {
+                            $outdated__outdated_original_and_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
+                            unset($manifest[$rela . $file]);
+                            continue;
+                        }
+                    } else { // Get hash from non-overridden file (equiv file)
+                        if ($only_if_noncustom) {
+                            $true_hash = null; // Except we can't as we're not looking at the .editfrom and thus can't expect equality
+                        } else {
+                            $true_hash = $_true_hash;
+                        }
+                    }
+
+                    if (($true_hash !== null) && ($hash_on_disk != $true_hash)) {
+                        if (($allow_merging) && (function_exists('diff_3way_text')) && (substr($file, -4) == '.css') && ($true_hash !== 2) && (file_exists($dir . $file . '.editfrom')) && (cms_is_writable($dir . $file))) {
+                            $new = diff_3way_text(file_get_contents($equiv_file), file_get_contents($dir . $file . '.editfrom'), file_get_contents($dir . $file));
+                            cms_file_put_contents_safe($dir . $file . '.' . strval(time()), cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                            cms_file_put_contents_safe($dir . $file, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                            $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd> ' . do_lang('AUTO_MERGED') . '</li>';
+                            cms_file_put_contents_safe($dir . $file . '.editfrom', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                        } else {
+                            $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
+                        }
+                    } elseif (filemtime($dir . $file) > cms_version_time()) {
                         $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
                     }
 
@@ -492,7 +523,7 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
  * @param  boolean $raw Whether to give raw output (no UI)
  * @param  ?array $addon_files List of files from non-bundled addons (a map: relative file paths as keys of map) (null: unknown, load them from addons_files table)
  * @param  ?array $old_files List of files from old version (a map: relative file paths as keys of map) (null: unknown, load them from files_previous.bin manifest)
- * @param  ?array $files List of verbatim files (a map: relative file paths as keys of map) (null: unknown, load them from files.day manifest)
+ * @param  ?array $files List of verbatim files (a map: relative file paths as keys of map) (null: unknown, load them from files.bin manifest)
  * @return array A pair: HTML list of alien files, HTML list of addon files
  */
 function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $addon_files = null, ?array $old_files = null, ?array $files = null) : array
@@ -543,7 +574,7 @@ function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $
         }
         sort($dir_files);
         foreach ($dir_files as $file) {
-            if (should_ignore_file($rela . $file, IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES | IGNORE_EDITFROM_FILES)) {
+            if (should_ignore_file($rela . $file, IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_FLOATING | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES | IGNORE_EDITFROM_FILES)) {
                 continue;
             }
 
