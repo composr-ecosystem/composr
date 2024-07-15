@@ -67,7 +67,7 @@ function upgrader_theme_upgrade_screen() : string
             $str .= '<p>' . do_lang('UPGRADER_THEME_ERRORS') . '</p>';
         }
 
-        $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade&live_run=1', do_lang('UPGRADER_THEME_UPGRADE_FINAL'));
+        $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade&live_run=1', do_lang('UPGRADER_THEME_UPGRADE_FINAL'), false);
         $str .= $l_theme_upgrade;
     }
 

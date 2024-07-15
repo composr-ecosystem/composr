@@ -182,7 +182,7 @@ function upgrade_script()
     }
 
     if ($show_more_link) {
-        echo '<hr class="spaced-rule" /><div>' . upgrader_link('upgrader.php?type=browse', do_lang('MORE_OPTIONS')) . '</div>';
+        echo '<hr class="spaced-rule" /><div>' . upgrader_link('upgrader.php?type=browse', do_lang('MORE_OPTIONS'), false) . '</div>';
     }
 
     upgrader_output_footer();
@@ -209,11 +209,12 @@ function post_fields_relay() : string
  *
  * @param  string $url The URL (something like 'upgrader.php?type=cns')
  * @param  string $text The URL caption text
+ * @param  boolean $is_get If the form should use the GET action instead of POST (true: POST fields including password will not be relayed)
  * @param  boolean $disabled Whether it is disabled
  * @param  string $js Extra JavaScript
  * @return string The form-based link
  */
-function upgrader_link(string $url, string $text, bool $disabled = false, string $js = '') : string
+function upgrader_link(string $url, string $text, bool $is_get = false, bool $disabled = false, string $js = '') : string
 {
     $hidden = (strpos($url, get_brand_base_url()) !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
     if (get_param_integer('keep_safe_mode', 0) == 1) {
@@ -226,12 +227,16 @@ function upgrader_link(string $url, string $text, bool $disabled = false, string
     if ($text == do_lang('MORE_OPTIONS')) {
         $_icon = 'buttons/back';
     }
-
-    $ret = '<form title="' . escape_html($text) . '" style="display: inline" action="' . escape_html($url) . '" method="post">';
-    $ret .= $hidden;
     $icon = do_template('ICON', ['_GUID' => '7a9a0914fc785d0c748f5f3497c4eb2e', 'NAME' => $_icon]);
-    $ret .= '<button ' . (empty($js) ? '' : ('onclick="return window.confirm(\'' . addslashes($js) . '\');" ')) . 'accesskey="c" ' . ($disabled ? 'disabled="disabled"' : '') . ' class="btn btn-primary btn-scri" type="submit">' . $icon->evaluate() . ' ' . escape_html($text) . '</button>';
-    $ret .= '</form>';
+
+    if (!$is_get) {
+        $ret = '<form title="' . escape_html($text) . '" style="display: inline" action="' . escape_html($url) . '" method="post">';
+        $ret .= $hidden;
+        $ret .= '<button ' . (empty($js) ? '' : ('onclick="return window.confirm(\'' . addslashes($js) . '\');" ')) . 'accesskey="c" ' . ($disabled ? 'disabled="disabled"' : '') . ' class="btn btn-primary btn-scri" type="submit">' . $icon->evaluate() . ' ' . escape_html($text) . '</button>';
+        $ret .= '</form>';
+    } else {
+        $ret = '<a class="btn btn-primary btn-scri" ' . (empty($js) ? '' : ('onclick="return window.confirm(\'' . addslashes($js) . '\');" ')) . ' accesskey="c" ' . ($disabled ? 'disabled="disabled"' : '') . ' title="' . escape_html($text) . '" style="display: inline-block" href="' . escape_html($url) . '">' . $icon->evaluate() . ' ' . escape_html($text) . '</a>';
+    }
     return $ret;
 }
 
@@ -448,10 +453,10 @@ function upgrader_menu_screen() : string
     $l_up_info = do_lang('UPGRADER_UP_INFO' . (($a == $b) ? '_1' : '_2'), $a, $b);
 
     // Clear cache link
-    $l_clear_caches = upgrader_link('upgrader.php?type=decache', do_lang('UPGRADER_CLEAR_CACHES'));
+    $l_clear_caches = upgrader_link('upgrader.php?type=decache', do_lang('UPGRADER_CLEAR_CACHES'), false);
 
     // Tutorial link
-    $l_tutorial = upgrader_link(get_tutorial_url('tut_upgrade'), do_lang('UPGRADER_TUTORIAL'));
+    $l_tutorial = upgrader_link(get_tutorial_url('tut_upgrade'), do_lang('UPGRADER_TUTORIAL'), false);
 
     // Backup link
     $l_take_backup = do_lang('UPGRADER_TAKE_BACKUP');
@@ -459,8 +464,8 @@ function upgrader_menu_screen() : string
     // Open/close sections and links
     $oc = (get_option('site_closed') == '0') ? do_lang('OPEN') : do_lang('CLOSED');
     $l_fu_closedness = do_lang('UPGRADER_CLOSENESS', $oc);
-    $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') != '0');
-    $l_open_site = upgrader_link('upgrader.php?type=open_site', do_lang('UPGRADER_OPEN_SITE'), get_option('site_closed') == '0');
+    $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), false, get_option('site_closed') != '0');
+    $l_open_site = upgrader_link('upgrader.php?type=open_site', do_lang('UPGRADER_OPEN_SITE'), false, get_option('site_closed') == '0');
     $closed = comcode_to_tempcode(get_option('closed'), null, true);
     $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group-CLOSED_SITE');
 
@@ -486,29 +491,29 @@ function upgrader_menu_screen() : string
             $tar_url = $details['tar_url'];
         }
     }
-    $l_download = upgrader_link('upgrader.php?type=file_upgrade&tar_url=' . urlencode(base64_encode($tar_url)), do_lang('UPGRADER_DOWNLOAD'));
+    $l_download = upgrader_link('upgrader.php?type=file_upgrade&tar_url=' . urlencode(base64_encode($tar_url)), do_lang('UPGRADER_DOWNLOAD'), false);
 
     // Integrity scan link
-    $l_integrity_scan = upgrader_link('upgrader.php?type=integrity_scan&allow_merging=1', do_lang('UPGRADER_INTEGRITY_SCAN'), false, do_lang('UPGRADER_WILL_MERGE'));
-    $l_integrity_scan_no_merging = upgrader_link('upgrader.php?type=integrity_scan', do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE'));
+    $l_integrity_scan = upgrader_link('upgrader.php?type=integrity_scan&allow_merging=1', do_lang('UPGRADER_INTEGRITY_SCAN'), false, false, do_lang('UPGRADER_WILL_MERGE'));
+    $l_integrity_scan_no_merging = upgrader_link('upgrader.php?type=integrity_scan', do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE'), false);
 
     // Database upgrade link
-    $l_db_upgrade = upgrader_link('upgrader.php?type=db_upgrade', do_lang('UPGRADER_DATABASE_UPGRADE'));
+    $l_db_upgrade = upgrader_link('upgrader.php?type=db_upgrade', do_lang('UPGRADER_DATABASE_UPGRADE'), false);
 
     // Theme upgrade link
-    $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade', do_lang('UPGRADER_THEME_UPGRADE'));
+    $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade', do_lang('UPGRADER_THEME_UPGRADE'), false);
 
     // Error correction links
-    $l_safe_mode = upgrader_link('index.php?keep_safe_mode=1', do_lang('UPGRADER_SAFE_MODE'));
+    $l_safe_mode = upgrader_link('index.php?keep_safe_mode=1', do_lang('UPGRADER_SAFE_MODE'), true);
     $num_addons = $GLOBALS['SITE_DB']->query_select_value('addons', 'COUNT(*)');
-    $l_addon_management = upgrader_link('adminzone/index.php?page=admin_addons&keep_safe_mode=1', do_lang('UPGRADER_ADDON_MANAGEMENT', integer_format($num_addons)), $num_addons == 0);
+    $l_addon_management = upgrader_link('adminzone/index.php?page=admin_addons&keep_safe_mode=1', do_lang('UPGRADER_ADDON_MANAGEMENT', integer_format($num_addons)), true, $num_addons == 0);
     $show_permission_buttons = (!GOOGLE_APPENGINE && !is_suexec_like() || $GLOBALS['DEV_MODE']);
-    $l_check_perms = upgrader_link('upgrader.php?type=check_perms', do_lang('UPGRADER_CHECK_PERMISSIONS'));
-    $l_fix_perms = upgrader_link('upgrader.php?type=fix_perms', do_lang('UPGRADER_FIX_PERMISSIONS'));
-    $l_addon_remove = upgrader_link('upgrader.php?type=addon_remove', do_lang('UPGRADER_REMOVE_ADDON_FILES'));
+    $l_check_perms = upgrader_link('upgrader.php?type=check_perms', do_lang('UPGRADER_CHECK_PERMISSIONS'), false);
+    $l_fix_perms = upgrader_link('upgrader.php?type=fix_perms', do_lang('UPGRADER_FIX_PERMISSIONS'), false);
+    $l_addon_remove = upgrader_link('upgrader.php?type=addon_remove', do_lang('UPGRADER_REMOVE_ADDON_FILES'), false);
     $show_mysql_buttons = (strpos(get_db_type(), 'mysql') !== false);
-    $l_mysql_repair = upgrader_link('upgrader.php?type=mysql_repair', do_lang('MYSQL_REPAIR'));
-    $l_criticise_mysql_fields = upgrader_link('upgrader.php?type=criticise_mysql_fields', do_lang('CORRECT_MYSQL_SCHEMA_ISSUES'));
+    $l_mysql_repair = upgrader_link('upgrader.php?type=mysql_repair', do_lang('MYSQL_REPAIR'), false);
+    $l_criticise_mysql_fields = upgrader_link('upgrader.php?type=criticise_mysql_fields', do_lang('CORRECT_MYSQL_SCHEMA_ISSUES'), false);
 
     $out = '';
 
