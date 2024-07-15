@@ -37,13 +37,14 @@ class _httpauth_test_set extends cms_test_case
 
         set_option('httpauth_is_enabled', '1');
 
-        $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'auth' => [$username, ''], 'trigger_error' => false]);
+        if ($this->debug) {
+            $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'auth' => [$username, ''], 'trigger_error' => true]);
+            var_dump($data);
+        } else {
+            $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'auth' => [$username, ''], 'trigger_error' => false]);
+        }
 
         set_option('httpauth_is_enabled', '0');
-
-        if ($this->debug) {
-            var_dump($data);
-        }
 
         $this->assertTrue(is_string($data) && (strpos($data, '<span class="fn nickname">' . $username . '</span>') !== false), 'Expected to see the ' . $username . ' profile, but did not.');
 

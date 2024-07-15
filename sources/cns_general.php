@@ -156,8 +156,8 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
         $member_info['last_submit_date'] = get_timezoned_date_time($row['m_last_submit_time']);
         $member_info['submit_days_ago'] = intval(floor(floatval(time() - $row['m_last_submit_time']) / 60.0 / 60.0 / 24.0));
     }
-    if (($row['m_on_probation_until'] !== null) && ($row['m_on_probation_until'] > time())) {
-        $member_info['on_probation_until'] = $row['m_on_probation_until'];
+    if (($row['m_probation_expiration_time'] !== null) && ($row['m_probation_expiration_time'] > time())) {
+        $member_info['on_probation_until'] = $row['m_probation_expiration_time'];
     }
 
     // Points
@@ -406,7 +406,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
         $best_yet_forum = 0; // Initialise to integer type
         $best_yet_forum = null;
         $_most_active_forum = null;
-        $_best_yet_forum = $GLOBALS['FORUM_DB']->query_select('f_posts', ['COUNT(*) as cnt', 'p_cache_forum_id'], ['p_poster' => $member_id], 'GROUP BY p_cache_forum_id ORDER BY cnt DESC', 1); // order by and limit have been added since original code, makes it run a bit faster
+        $_best_yet_forum = $GLOBALS['FORUM_DB']->query_select('f_posts', ['COUNT(*) as cnt', 'p_cache_forum_id'], ['p_posting_member' => $member_id], 'GROUP BY p_cache_forum_id ORDER BY cnt DESC', 1); // order by and limit have been added since original code, makes it run a bit faster
         $_best_yet_forum = collapse_2d_complexity('p_cache_forum_id', 'cnt', $_best_yet_forum);
         foreach ($forums as $forum) {
             if (((array_key_exists($forum['id'], $_best_yet_forum)) && (($best_yet_forum === null) || ($_best_yet_forum[$forum['id']] > $best_yet_forum)))) {

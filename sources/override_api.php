@@ -207,7 +207,6 @@ function remove_code(string &$code, string $function, string $command, int $inst
  * @param  boolean $fail_ok Whether a failure should attach a message (false: a failure should cause a critical error)
  * @ignore
  */
-
 function _handle_corrupt_override(bool $fail_ok)
 {
     $lines = debug_backtrace();

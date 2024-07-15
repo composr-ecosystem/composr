@@ -208,7 +208,7 @@ class Hook_cns_warnings_silencing
             $silence_from_topic_title = strval($silence_from_topic);
             if (get_forum_type() == 'cns') {
                 $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $silence_from_topic]);
-                $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => $row['p_param_a']]);
+                $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => $silence_from_topic]);
                 if ($forum_id !== null) {
                     $forum_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $forum_id]);
                     $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_TOPIC_FORUM', strval($silence_from_topic_title), $forum_name, [strval(do_lang('PUNITIVE_UNTIL', strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id))))], null, false);

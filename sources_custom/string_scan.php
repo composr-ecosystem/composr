@@ -12056,6 +12056,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _I_AGREE_RULES
         PAGE_LINKS
         DESCRIPTION_PRIVACY_SITE_MESSAGING
+        PUNITIVE_SILENCE_FROM_TOPIC_FORUM
+        _PUNITIVE_SILENCE_FROM_TOPIC_FORUM
     ')));
 
     // Remove blank lines
