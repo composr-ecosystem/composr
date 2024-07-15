@@ -71,7 +71,7 @@ function unit_testing_run()
     <div>
         <p class=\"lonely-label\">Notes:</p>
         <ul>
-            <li>The one(s) starting <kbd>___</kbd> should only be run through the command line / PHP cli (the command is indicated in a comment in the file). These tests cannot be run with the concurrent tool.
+            <li>The one(s) starting <kbd>___</kbd> should be run occasionally with discretion, should only be run through the command line / PHP cli (the command is indicated in a comment in the file), and are not always expected to pass. These tests cannot be run with the concurrent tool.
             <li>The ones starting <kbd>__</kbd> should be run occasionally with discretion, and one at a time, due to significant slowness, the expectation of false-positives, or the need for an API key file. These tests cannot be run with the concurrent tool.
             <li>The ones starting <kbd>_</kbd> should be run one at a time due to slowness or conflicting with other tests. They will run one at a time after other tests finish in the concurrent tool.</li>
             <li>Some support a 'debug' GET/CLI parameter, to dump out debug information</li>
