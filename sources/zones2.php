@@ -431,7 +431,7 @@ function upgrade_module(string $zone, string $module) : int
     if (($upgrade_from < $info['version']) || ($upgrade_from_hack < $info['hack_version'])) {
         if (($functions[1] !== null) && ((($upgrade_from < $info['version']) && (!empty($info['update_require_upgrade']))) || (($upgrade_from_hack < $info['hack_version']) && (!empty($info['hack_require_upgrade']))))) {
             // Version compatibility check
-            if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
+            if ((empty($info['min_cms_version'])) || ($info['min_cms_version'] > cms_version_number()) || ((!empty($info['max_cms_version']) && ($info['max_cms_version'] < cms_version_number())))) {
                 warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
                     escape_html($module),
                     escape_html(float_to_raw_string(cms_version_number())),
@@ -529,7 +529,7 @@ function reinstall_module(string $zone, string $module) : bool
     }
 
     // Version compatibility check
-    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
+    if ((empty($info['min_cms_version'])) || ($info['min_cms_version'] > cms_version_number()) || ((!empty($info['max_cms_version']) && ($info['max_cms_version'] < cms_version_number())))) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
             escape_html($module),
             escape_html(float_to_raw_string(cms_version_number())),
@@ -735,7 +735,7 @@ function upgrade_block(string $block) : int
         }
 
         // Version compatibility check
-        if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
+        if ((empty($info['min_cms_version'])) || ($info['min_cms_version'] > cms_version_number()) || ((!empty($info['max_cms_version']) && ($info['max_cms_version'] < cms_version_number())))) {
             warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
                 escape_html($block),
                 escape_html(float_to_raw_string(cms_version_number())),
@@ -793,7 +793,7 @@ function reinstall_block(string $block) : bool
     }
 
     // Version compatibility check
-    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
+    if ((empty($info['min_cms_version'])) || ($info['min_cms_version'] > cms_version_number()) || ((!empty($info['max_cms_version']) && ($info['max_cms_version'] < cms_version_number())))) {
         warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
             escape_html($block),
             escape_html(float_to_raw_string(cms_version_number())),
