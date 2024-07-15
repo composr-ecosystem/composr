@@ -222,8 +222,6 @@ There are friendly configuration options for setting up OAuth2 and enabling logi
 
 [title="3"]Twitter[/title]
 
-If you have the [tt]twitter_support[/tt] addon installed then there are friendly configuration options for setting up OAuth2 and enabling login. No XML attributes need setting.
-
 Twitter is using OAuth1 instead of OAuth2. Set XML like:
 [code="XML"]
 <hybridauth>
