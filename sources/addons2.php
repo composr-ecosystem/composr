@@ -1253,12 +1253,37 @@ function upgrade_addon_soft(string $addon_name) : int
         }
     }
 
-    // We should always update the database because min / max cms version could change in the registry hook
+    // Update the database
     $GLOBALS['SITE_DB']->query_update('addons', [
         'addon_version' => $disk_version,
         'addon_min_cms_version' => strval($min_cms_version),
         'addon_max_cms_version' => ($max_cms_version !== null) ? strval($max_cms_version) : '',
     ], ['addon_name' => $addon_name], '', 1);
+
+    $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon_name]);
+    $dependencies = $ob->get_dependencies();
+
+    $requires = array_key_exists('requires', $dependencies) ? $dependencies['requires'] : [];
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($requires), $addon_name),
+        'addon_name_dependant_upon' => array_map('trim', $requires),
+        'addon_name_incompatibility' => array_fill(0, count($requires), 0),
+    ]);
+
+    $incompatibilities = array_key_exists('conflicts_with', $dependencies) ? $dependencies['conflicts_with'] : [];
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($incompatibilities), $addon_name),
+        'addon_name_dependant_upon' => array_map('trim', $incompatibilities),
+        'addon_name_incompatibility' => array_fill(0, count($incompatibilities), 1),
+    ]);
+
+    $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon_name]);
+    $file_list = $ob->get_file_list();
+
+    $GLOBALS['SITE_DB']->query_insert('addons_files', [
+        'addon_name' => array_fill(0, count($file_list), $addon_name),
+        'filepath' => $file_list,
+    ]);
 
     return $ret;
 }
