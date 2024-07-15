@@ -295,6 +295,12 @@ function _upgrader_file_upgrade_screen() : string
                             $GLOBALS['SITE_DB']->query_update('addons', [
                                 'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
                             ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                            $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
+                                'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                            ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                            $GLOBALS['SITE_DB']->query_update('addons_files', [
+                                'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                            ], ['addon_name' => trim($previous_addon, "'")], '', 1);
 
                             echo '<p>' . do_lang('UPGRADER_RENAMED_ADDON_MESSAGE', escape_html(trim($previous_addon, "'")), escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '</p>';
                         }
