@@ -557,10 +557,14 @@ function delete_expired_sessions_or_recover(?int $member_id = null, bool $force_
         }
 
         // Get back to prior session if there was one (NB: we don't turn guest sessions into member sessions, as that would increase risk of there being a session fixation vulnerability)
-        if ($member_id !== null) {
-            if (($row['member_id'] == $member_id) && (((get_option('ip_strict_for_sessions') == '0') && (!$is_guest)) || ($row['ip'] == $ip)) && ($row['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))) {
-                $new_session = $_session;
-            }
+        if (
+            ($member_id !== null) &&
+            ($new_session === null) &&
+            ($row['member_id'] == $member_id) &&
+            (((get_option('ip_strict_for_sessions') == '0') && (!$is_guest)) || ($row['ip'] == $ip)) &&
+            ($row['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))
+        ) {
+            $new_session = $_session;
         }
     }
     if ($dirty_session_cache) {
