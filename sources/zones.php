@@ -1039,10 +1039,11 @@ function find_all_hooks(string $type, string $subtype, bool $check_custom = true
         }
     }
 
+    // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
     $doing_custom_scan = (!isset($GLOBALS['DOING_USERS_INIT'])) && ((!in_safe_mode()) || ((($GLOBALS['RELATIVE_PATH'] === '_tests') || running_script('upgrader')) && ($subtype === 'addon_registry')));
 
     if ($check_custom) {
-        if ($doing_custom_scan) { // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
+        if ($doing_custom_scan) {
             $dir = get_file_base() . '/sources_custom/hooks/' . $type . '/' . $subtype;
             $dh = is_dir($dir) ? scandir($dir) : false;
             if ($dh !== false) {

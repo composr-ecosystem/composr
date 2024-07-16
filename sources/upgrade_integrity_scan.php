@@ -122,6 +122,8 @@ function load_files_list_of_installed_addons(array $manifest) : array
  */
 function run_integrity_check(bool $basic = false, bool $allow_merging = true, bool $unix_help = false) : string
 {
+    global $FILE_BASE, $SITE_INFO;
+
     $ret_str = '';
     $found_something = false;
 
@@ -227,11 +229,23 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
     // Output integrity check results
     if ($outdated__addon != '') {
         if ($basic) {
-            $ret_str .= '<p>The following addons are not compatible with the current version of the software. You will likely need to run your site in safe mode after finishing the upgrade process and update or remove these addons. To update an addon, download the latest version from the homesite and import it under Admin Zone > Structure > Addon management. Sometimes, updated non-bundled addons can automatically be imported on that page.</p><ul>' . $outdated__addon . '</ul>';
+            $ret_str .= '<p>The following addons are not compatible with the current version of the software. To update an addon, download the latest version from the homesite and import it under Admin Zone > Structure > Addon management. Sometimes, updated non-bundled addons can automatically be imported on that page.</p><p><strong>Safe mode has been activated on your site</strong> to prevent critical errors. After upgrading these addons, remove or edit safe_mode in _config.php, or use the config_editor.php tool to do so.</p><ul>' . $outdated__addon . '</ul>';
         } else {
             $ret_str .= do_lang('WARNING_FILE_OUTDATED_ADDON', $outdated__addon);
         }
         $found_something = true;
+
+        // Also force safe mode on
+        $path = $FILE_BASE . '/_config.php';
+        $config_contents = file_get_contents($path);
+        $orig_config_contents = $config_contents;
+        $config_contents = preg_replace('#^(\$SITE_INFO\[\'safe_mode\'\]\s*=\s*\')[^\']+(\';)#m', '', $config_contents);
+        $config_contents .= '$SITE_INFO[\'safe_mode\'] = \'1\';' . "\n";
+
+        if ($orig_config_contents != $config_contents) { // No change needed
+            file_put_contents($path, $config_contents);
+            $SITE_INFO['safe_mode'] = '1';
+        }
     }
     if ($outdated__possibly_outdated_override != '') {
         if ($basic) {
