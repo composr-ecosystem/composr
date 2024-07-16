@@ -78,7 +78,7 @@ function upgrader_db_upgrade_screen() : string
     }
 
     // Modules upgrade
-    $done = upgrade_modules($version_database_cns);
+    $done = upgrade_addons($version_database_cns);
     if ($done != '') {
         $out .= do_lang('UPGRADER_UPGRADE_MODULES', $done);
         $something_done = true;
@@ -477,36 +477,44 @@ function version_specific() : bool
                 $GLOBALS['SITE_DB']->query_update('blocks', ['block_name' => $to], ['block_name' => $from], '', 1);
             }
 
-            // Delete bundled addons that no longer exist
+            // Delete bundled and non-bundled addons that no longer exist (addon => whether the addon is non-bundled)
             //  Note that any old tables etc should be removed from the upgrade code in admin_version
             //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be uninstalled manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $deleted_addons = [
-                'bookmarks',
-                'cns_reported_posts',
-                'collaboration_zone',
-                'hphp_buildkit',
-                'linux_helper_scripts',
-                'msn',
-                'pointstore',
-                'ssl',
-                'staff_messaging',
-                'staff',
-                'supermember_directory',
-                'textbased_persistent_caching',
-                'windows_helper_scripts',
-                'xml_fields',
-                'zone_logos',
+                'bookmarks' => false,
+                'cns_reported_posts' => false, // Merged into core
+                'collaboration_zone' => false,
+                'hphp_buildkit' => false,
+                'linux_helper_scripts' => false,
+                'msn' => false,
+                'pointstore' => false, // Merged into points / eCommerce
+                'ssl' => false,
+                'staff_messaging' => false,
+                'staff' => false,
+                'supermember_directory' => false,
+                'textbased_persistent_caching' => false,
+                'windows_helper_scripts' => false,
+                'xml_fields' => false,
+                'zone_logos' => false, // Themes / logo wizard now manage logos
+                'health_check' => true, // Now bundled
             ];
-            foreach ($deleted_addons as $addon) {
+            foreach ($deleted_addons as $addon => $is_nonbundled) {
+                // We are making an assumption that addons getting moved between bundled and non-bundled don't have critical upgrade code
                 $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon]);
+                $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon]);
+                $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon]);
+
                 @unlink(get_custom_file_base() . '/imports/addons/' . $addon . '.tar');
 
                 // Just in case the user did not process file integrity yet
-                @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
-                @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
+                if ($is_nonbundled) {
+                    @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
+                } else {
+                    @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
+                }
             }
 
-            // Renamed addons (old name => new name)
+            // Renamed addons (old name => new name), just in case the user did not process file integrity yet
             //  Note that any table modifications etc should be handled in the upgrade code for the NEW addon / module
             //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $renamed_addons = [
@@ -514,13 +522,47 @@ function version_specific() : bool
             ];
             foreach ($renamed_addons as $old_addon => $new_addon) {
                 $GLOBALS['SITE_DB']->query_update('addons', ['addon_name' => $new_addon], ['addon_name' => $old_addon]);
+                $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
+                    'addon_name' => $new_addon,
+                ], ['addon_name' => $old_addon], '', 1);
+                $GLOBALS['SITE_DB']->query_update('addons_files', [
+                    'addon_name' => $new_addon,
+                ], ['addon_name' => $old_addon], '', 1);
                 @copy(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar', get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @fix_permissions(get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @unlink(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar');
 
-                // Just in case the user did not process file integrity yet; new hook should have been extracted by the upgrader
+                // New hook should have been extracted by the upgrader
                 @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $old_addon . '.php');
                 @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $old_addon . '.php');
+            }
+
+            // Deleted modules
+            $deleted_modules = [
+                'admin_ecommerce_logs', // Renamed but has no install code
+                'admin_messaging',
+                'admin_orders',
+                'admin_pointstore',
+                'admin_ssl',
+                'admin_staff',
+                'bookmarks',
+                'pointstore',
+                'staff',
+                'supermembers'
+            ];
+            foreach ($deleted_modules as $module_name) {
+                $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $module_name]);
+            }
+
+            // Deleted blocks
+            $deleted_blocks = [
+                'main_only_if_match',
+                'main_pt_notifications',
+                'main_staff_website_monitoring',
+                'side_network'
+            ];
+            foreach ($deleted_blocks as $block_name) {
+                $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $block_name]);
             }
 
             // File replacements
@@ -546,12 +588,12 @@ function version_specific() : bool
 }
 
 /**
- * Upgrade all modules and blocks.
+ * Upgrade all addons, modules, and blocks.
  *
  * @param  float $from_cms_version From which version of the software we are upgrading
  * @return string List of upgraded/installed modules/blocks
  */
-function upgrade_modules(float $from_cms_version) : string
+function upgrade_addons(float $from_cms_version) : string
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
