@@ -1246,6 +1246,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_site_messaging/example.png',
             'data_custom/images/docs/tut_site_messaging/index.html',
             'data_custom/images/docs/tut_site_messaging/menu_location.png',
+            'data_custom/images/docs/tut_site_messaging/page_link_footer.png',
             'data_custom/images/docs/tut_software_feedback/482033_challenge.jpg',
             'data_custom/images/docs/tut_software_feedback/feature_workflow.png',
             'data_custom/images/docs/tut_software_feedback/feedback_general.png',
