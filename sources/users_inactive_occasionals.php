@@ -75,15 +75,15 @@ function _enforce_sessioned_url(string $url) : string
  * Set up a new session / Restore an existing one that was lost.
  *
  * @sets_output_state
- *
  * @param  MEMBER $member_id Logged in member
  * @param  BINARY $session_confirmed Whether the session should be considered confirmed
  * @param  boolean $invisible Whether the session should be invisible
  * @param  boolean $create_cookie Whether to create the cookie for the session
  * @param  ?IP $ip_address IP address for session (null: current user's IP address)
+ * @param  boolean $allow_shy_session Whether to allow shy sessions on cached guests; should be false when running from minikernel
  * @return ID_TEXT New session ID
  */
-function create_session(int $member_id, int $session_confirmed = 0, bool $invisible = false, bool $create_cookie = true, ?string $ip_address = null) : string
+function create_session(int $member_id, int $session_confirmed = 0, bool $invisible = false, bool $create_cookie = true, ?string $ip_address = null, bool $allow_shy_session = true) : string
 {
     if ($ip_address === null) {
         $ip_address = get_ip_address();
@@ -137,7 +137,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         require_code('crypt');
         $new_session = get_secure_random_string();
 
-        $shy_session = ((isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest($member_id)));
+        $shy_session = (($allow_shy_session) && (isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest($member_id)));
         if ($shy_session) {
             $new_session = '[' . $new_session . ']';
         }

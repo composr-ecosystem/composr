@@ -59,8 +59,6 @@ function upgrade_script()
     require_code('upgrade_lib');
     require_code('abstract_file_manager');
 
-    upgrader_output_header();
-
     if (post_param_string('ftp_username', '', INPUT_FILTER_POST_IDENTIFIER) != '') {
         $_POST['uses_ftp'] = '1';
         _ftp_info(true); // To give early error if there's a problem
@@ -72,11 +70,17 @@ function upgrade_script()
         require_code('shared_installs');
         $u = current_share_user();
         if ($u !== null) {
+            upgrader_output_header();
             require_code('upgrade_shared_installs');
             echo upgrader_sharedinstall_screen();
             upgrader_output_footer();
             return;
         }
+    }
+
+    // Cannot yet output headers for safe_mode as we may be creating a session cookie
+    if ($type != 'safe_mode') {
+        upgrader_output_header();
     }
 
     $show_more_link = true;
@@ -179,6 +183,25 @@ function upgrade_script()
             require_code('upgrade_mysql');
             echo upgrader_criticise_mysql_fields_screen();
             break;
+
+        case 'safe_mode';
+            if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) { // Need to establish a session
+                require_code('users_active_actions');
+                require_code('users_inactive_occasionals');
+                $ip_address = get_ip_address();
+                create_session(get_first_admin_user(), 1, false, true, $ip_address, false);
+                $username = $GLOBALS['FORUM_DRIVER']->get_username(get_first_admin_user());
+
+                upgrader_output_header();
+                echo '<h2>' . do_lang('UPGRADER_SAFE_MODE') . '</h2><p>' . do_lang('UPGRADER_SAFE_MODE_ADMIN', $username) . '</p>';
+                echo upgrader_link('adminzone/index.php?keep_safe_mode=1', do_lang('PROCEED'), true);
+            } else {
+                upgrader_output_header();
+                echo '<h2>' . do_lang('UPGRADER_SAFE_MODE') . '</h2><p>' . do_lang('_UPGRADER_SAFE_MODE_ADMIN') . '</p>';
+                echo '<meta http-equiv="refresh" content="5;url=' . get_base_url() . 'adminzone/index.php?keep_safe_mode=1">';
+                echo upgrader_link('adminzone/index.php?keep_safe_mode=1', do_lang('PROCEED'), true);
+            }
+            break;
     }
 
     if ($show_more_link) {
@@ -211,7 +234,7 @@ function post_fields_relay() : string
  * @param  string $text The URL caption text
  * @param  boolean $is_get If the form should use the GET action instead of POST (true: POST fields including password will not be relayed)
  * @param  boolean $disabled Whether it is disabled
- * @param  string $js Extra JavaScript
+ * @param  string $js Extra confirmation
  * @return string The form-based link
  */
 function upgrader_link(string $url, string $text, bool $is_get = false, bool $disabled = false, string $js = '') : string
@@ -504,7 +527,7 @@ function upgrader_menu_screen() : string
     $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade', do_lang('UPGRADER_THEME_UPGRADE'), false);
 
     // Error correction links
-    $l_safe_mode = upgrader_link('index.php?keep_safe_mode=1', do_lang('UPGRADER_SAFE_MODE'), true);
+    $l_safe_mode = upgrader_link('upgrader.php?type=safe_mode', do_lang('UPGRADER_SAFE_MODE'), false);
     $num_addons = $GLOBALS['SITE_DB']->query_select_value('addons', 'COUNT(*)');
     $l_addon_management = upgrader_link('adminzone/index.php?page=admin_addons&keep_safe_mode=1', do_lang('UPGRADER_ADDON_MANAGEMENT', integer_format($num_addons)), true, $num_addons == 0);
     $show_permission_buttons = (!GOOGLE_APPENGINE && !is_suexec_like() || $GLOBALS['DEV_MODE']);

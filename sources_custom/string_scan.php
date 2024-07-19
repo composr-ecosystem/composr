@@ -5665,6 +5665,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_RELEASE_NOTES
         UPGRADER_REMOVE_ADDON_FILES
         UPGRADER_SAFE_MODE
+        UPGRADER_SAFE_MODE_ADMIN
+        _UPGRADER_SAFE_MODE_ADMIN
         UPGRADER_STEP
         UPGRADER_TAKE_BACKUP
         UPGRADER_THEME_ERRORS
