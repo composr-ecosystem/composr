@@ -272,9 +272,11 @@ function install_cns(?float $upgrade_from = null)
             'cms_post_code' => ['postal-code'],
             'cms_country' => ['country'],
         ];
-
         foreach ($autofill_map as $cf_name => $arr) {
-            $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_autofill_type' => $arr[0], 'cf_autofill_hint' => isset($arr[1]) ? $arr[1] : ''], [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $cf_name]);
+            $field_id = $GLOBALS['SITE_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $cf_name]);
+            if ($field_id !== null) {
+                $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_autofill_type' => $arr[0], 'cf_autofill_hint' => isset($arr[1]) ? $arr[1] : ''], ['id' => $field_id]);
+            }
         }
 
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
@@ -453,6 +455,15 @@ function install_cns(?float $upgrade_from = null)
             $start += $max;
         } while (!empty($rows));
         $GLOBALS['FORUM_DB']->delete_table_field('f_members', 'm_photo_thumb_url');
+
+        // Changes to custom fields
+        if (multi_lang_content()) {
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_type'));
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('text_original', 'cms_payment_card_expiry_date'));
+        } else {
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_name=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_type'));
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('cf_name', 'cms_payment_card_expiry_date'));
+        }
     }
 
     // If we have the forum installed to this db already, leave
@@ -1090,8 +1101,6 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_member', ['s_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_topic', ['s_topic_id']);
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_member', ['p_last_edit_member']);
-        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_invite_member']);
         $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'member_id', ['pv_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time_2', ['m_last_visit_time']);
 
@@ -1634,8 +1643,8 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // LEGACY: 11.beta1; will fail for v10 upgrades (as expected)
+        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // LEGACY: 11.beta1; will fail for v10 upgrades (as expected)
 
         $GLOBALS['FORUM_DB']->create_index('f_poll_answers', 'pollid', ['pa_poll_id']);
 
@@ -1746,5 +1755,10 @@ function install_cns(?float $upgrade_from = null)
             $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_member');
             $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_from');
             $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_to');
+    }
+
+    if (($upgrade_from === null) || ($upgrade_from < 11.0)) {
+        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_invite_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_member', ['p_last_edit_member']);
     }
 }

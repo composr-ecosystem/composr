@@ -187,7 +187,7 @@ class Module_shopping
 
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'e_member_id', '*MEMBER', 'l_member_id');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'session_id', 'ID_TEXT', 'l_session_id');
-            $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'ip', 'IP', 'l_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'ip', 'IP', 'l_ip');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'last_action', 'SHORT_TEXT', 'l_last_action');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'date_and_time', 'TIME', 'l_date_and_time');
 

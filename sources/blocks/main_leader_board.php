@@ -123,7 +123,6 @@ class Block_main_leader_board
             $GLOBALS['SITE_DB']->change_primary_key('leader_board', ['lb_leader_board_id', 'lb_member', 'lb_date_and_time']);
 
             // Voting power support
-            $GLOBALS['SITE_DB']->add_table_field('leader_boards', 'lb_calculate_voting_power', 'BINARY', 0);
             $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_voting_power', '?REAL');
             $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_voting_control', '?REAL');
         }

@@ -367,7 +367,7 @@ class Module_points
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_lifetime', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta1
+        if (($upgrade_from !== null) && ($upgrade_from == 9)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('escrow', 'sender_id', 'MEMBER', 'sending_member');
             $GLOBALS['SITE_DB']->alter_table_field('escrow', 'recipient_id', 'MEMBER', 'receiving_member');

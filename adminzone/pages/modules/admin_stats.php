@@ -249,7 +249,7 @@ class Module_admin_stats extends Standard_crud_module
             $GLOBALS['SITE_DB']->create_index('ip_country', 'end_num', ['end_num']);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY: 11.beta1
+        if (($upgrade_from !== null) && ($upgrade_from == 10)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added', 'TIME', 'k_added_time');
             $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added_by', 'MEMBER', 'k_submitter');

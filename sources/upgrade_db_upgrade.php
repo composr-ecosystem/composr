@@ -391,6 +391,8 @@ function version_specific() : bool
 
         if ($version_database < 11.0) {
             // Database changes (correcting previous errors in types)
+            $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
+            $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
             $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_url', 'URLPATH');
             $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_thumb_url', 'URLPATH');
             $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_last_downloaded_time', '?TIME');
@@ -400,87 +402,7 @@ function version_specific() : bool
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
             //$GLOBALS['SITE_DB']->alter_table_field('sessions', 'ip', 'IP', 'ip_address');
 
-            // Part of eCommerce upgrade must be done here otherwise when we later delete the old reported posts forum, we will get an error
-            if ((addon_installed('ecommerce')) && !$GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) { // LEGACY: Used to be in pointstore addon, hence the unusual install pattern. Now is just a part of purchase addon
-                $GLOBALS['SITE_DB']->create_table('ecom_prods_prices', [
-                    'name' => '*ID_TEXT',
-                    'price' => '?REAL',
-                    'tax_code' => 'ID_TEXT',
-                    'price_points' => '?INTEGER',
-                ]);
-
-                $GLOBALS['SITE_DB']->create_table('ecom_sales', [
-                    'id' => '*AUTO',
-                    'date_and_time' => 'TIME',
-                    'member_id' => 'MEMBER',
-                    'details' => 'SHORT_TEXT',
-                    'details2' => 'SHORT_TEXT',
-                    'txn_id' => 'ID_TEXT',
-                ]);
-
-                // Custom
-                $GLOBALS['SITE_DB']->create_table('ecom_prods_custom', [
-                    'id' => '*AUTO',
-                    'c_title' => 'SHORT_TRANS',
-                    'c_description' => 'LONG_TRANS__COMCODE',
-                    'c_image_url' => 'URLPATH',
-                    'c_mail_subject' => 'SHORT_TRANS',
-                    'c_mail_body' => 'LONG_TRANS',
-                    'c_enabled' => 'BINARY',
-                    'c_price' => '?REAL',
-                    'c_tax_code' => 'ID_TEXT',
-                    'c_shipping_cost' => 'REAL',
-                    'c_price_points' => '?INTEGER',
-                    'c_one_per_member' => 'BINARY',
-                ]);
-                // Permissions
-                $GLOBALS['SITE_DB']->create_table('ecom_prods_permissions', [
-                    'id' => '*AUTO',
-                    'p_title' => 'SHORT_TRANS',
-                    'p_description' => 'LONG_TRANS__COMCODE',
-                    'p_mail_subject' => 'SHORT_TRANS',
-                    'p_mail_body' => 'LONG_TRANS',
-                    'p_enabled' => 'BINARY',
-                    'p_price' => '?REAL',
-                    'p_tax_code' => 'ID_TEXT',
-                    'p_price_points' => '?INTEGER',
-                    'p_hours' => '?INTEGER',
-                    'p_type' => 'ID_TEXT', // member_privileges,member_category_access,member_page_access,member_zone_access
-                    'p_privilege' => 'ID_TEXT', // privilege only
-                    'p_zone' => 'ID_TEXT', // zone and page only
-                    'p_page' => 'ID_TEXT', // page and ?privilege only
-                    'p_module' => 'ID_TEXT', // category and ?privilege only
-                    'p_category' => 'ID_TEXT', // category and ?privilege only
-                ]);
-            }
             echo do_lang('UPGRADER_UPGRADED_CORE_TABLES', '11');
-
-            // Changes to support ticket forums
-            if ((addon_installed('tickets')) && (get_forum_type() == 'cns')) {
-                require_code('tickets');
-                require_code('cns_forums_action2');
-                $target_forum_id = get_ticket_forum_id(null, false, true);
-                if ($target_forum_id !== null) {
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Reported posts forum']);
-                    if ($forum_id !== null) {
-                        cns_delete_forum($forum_id, $target_forum_id);
-                    }
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Website "Contact Us" messages']);
-                    if ($forum_id !== null) {
-                        cns_delete_forum($forum_id, $target_forum_id);
-                    }
-                    echo do_lang('UPGRADER_UPGRADED_CUSTOM', '11', 'removed legacy reported posts forum and website contact us messages support ticket forums');
-                }
-            }
-
-            // Changes to custom fields
-            if (multi_lang_content()) {
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_type'));
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('text_original', 'cms_payment_card_expiry_date'));
-            } else {
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_name=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_type'));
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('cf_name', 'cms_payment_card_expiry_date'));
-            }
 
             // Renamed blocks
             $remap = [
@@ -605,6 +527,9 @@ function version_specific() : bool
             ];
             perform_search_replace($reps);
             echo do_lang('UPGRADER_UPGRADED_FILE_REPLACEMENTS', '11');
+
+            // Must do this so we can delete collaboration zone
+            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
 
             // Delete removed collaboration zone
             require_code('zones3');

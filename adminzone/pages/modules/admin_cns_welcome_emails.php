@@ -92,7 +92,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
             // Database consistency changes
             $GLOBALS['SITE_DB']->alter_table_field('f_welcome_emails', 'w_send_time', 'INTEGER', 'w_send_after_hours');
             $GLOBALS['SITE_DB']->alter_table_field('f_welcome_emails', 'w_newsletter', '?AUTO_LINK', 'w_newsletter_id');
-            $GLOBALS['SITE_DB']->add_table_field('f_welcome_emails', 'w_usergroup', '?GROUP');
+            $GLOBALS['SITE_DB']->alter_table_field('f_welcome_emails', 'w_usergroup', '?GROUP');
         }
     }
 
