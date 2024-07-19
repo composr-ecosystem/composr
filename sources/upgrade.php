@@ -164,7 +164,7 @@ function upgrade_script()
 
         case 'db_upgrade':
             require_code('upgrade_db_upgrade');
-            echo upgrader_db_upgrade_screen();
+            upgrader_db_upgrade_screen(); // Already echoed to help with error tracking
             $something_done = false;
             break;
 
