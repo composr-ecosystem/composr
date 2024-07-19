@@ -394,13 +394,15 @@ function find_installed_addons(bool $just_non_bundled = false, bool $get_info = 
 
     $hooks = find_all_hooks('systems', 'addon_registry');
 
-    if (!$just_non_bundled) {
-        // Find installed addons- file system method (for coded addons). Coded addons don't need to be in the DB, although they will be if they are (re)installed after the original installation finished.
-        foreach ($hooks as $addon_name => $hook_dir) {
-            if (substr($addon_name, 0, 4) != 'core') {
-                $hook_path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name) . '.php';
-                $addons_installed[$addon_name] = $get_info ? read_addon_info($addon_name, $get_dependencies, null, null, $hook_path) : null;
-            }
+    // Find installed addons- file system method (for coded addons). Coded addons don't need to be in the DB, although they will be if they are (re)installed after the original installation finished.
+    foreach ($hooks as $addon_name => $hook_dir) {
+        if (($just_non_bundled) && ($hook_dir == 'sources')) {
+            continue;
+        }
+
+        if (substr($addon_name, 0, 4) != 'core') {
+            $hook_path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name) . '.php';
+            $addons_installed[$addon_name] = $get_info ? read_addon_info($addon_name, $get_dependencies, null, null, $hook_path) : null;
         }
     }
 

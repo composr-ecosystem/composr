@@ -1755,15 +1755,18 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
         return $ADDON_INSTALLED_CACHE[$addon_name][$check_hookless][$deep_scan][$disabled_scan];
     }
 
+    $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
+    $check_custom = ((!in_safe_mode()) || ($page == 'admin-addons')); // We must load non-bundled addon hooks on admin-addons to allow upgrading
+
     // Check addon_registry hook
     $addon_name = filter_naughty($addon_name, true);
     $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
-    if ((!$answer) && (!in_safe_mode())) {
+    if ((!$answer) && ($check_custom)) {
         $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
     }
 
     // Check addons table
-    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!in_safe_mode()) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
+    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($check_custom) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
         require_code('database');
 
         if ((!$answer) && ($check_hookless)) {
