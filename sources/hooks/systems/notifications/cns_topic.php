@@ -188,7 +188,7 @@ class Hook_notification_cns_topic extends Hook_Notification
         }
 
         if (is_numeric($only_if_enabled_on__category)) { // Also merge in people monitoring forum
-            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => intval($only_if_enabled_on__category)]);
+            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to_member', 't_pt_from_member', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => intval($only_if_enabled_on__category)]);
             $forum_id = $topic_details[0]['t_forum_id'];
 
             if ($forum_id === null) {
@@ -226,7 +226,7 @@ class Hook_notification_cns_topic extends Hook_Notification
         list($members, $maybe_more) = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
 
         if (is_numeric($category)) { // This is a topic. Also merge in people monitoring forum
-            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => intval($category)]);
+            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to_member', 't_pt_from_member', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => intval($category)]);
             if (!array_key_exists(0, $topic_details)) {
                 return [[], false]; // Topic deleted already?
             }
@@ -283,7 +283,7 @@ class Hook_notification_cns_topic extends Hook_Notification
                 if ($smart_topic_notification_enabled) { // Maybe we don't send, based on identifying whether they have received a notification already since last reading the topic
                     $read_log_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => $member_id, 'l_topic_id' => intval($category)]);
                     if ($read_log_time !== null) { // Has been visited at some point
-                        $num_posts_since = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_intended_solely_for IS NULL AND p_topic_id=' . strval(intval($category)) . ' AND p_time>' . strval($read_log_time));
+                        $num_posts_since = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_whisper_to_member IS NULL AND p_topic_id=' . strval(intval($category)) . ' AND p_time>' . strval($read_log_time));
                         if ($num_posts_since <= 1) { // Ah, just this one new post, so we can notify
                             $members_new[$member_id] = $setting;
                         }

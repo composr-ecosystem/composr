@@ -360,7 +360,7 @@ function report_post(int $post_id, string $report_post, int $anonymous = 0, int 
 
     $topic_title = $post_info['t_cache_first_title'];
 
-    $content_member_id = $post_info['p_poster'];
+    $content_member_id = $post_info['p_posting_member'];
     $content_member = report_content_member_link($content_member_id, $post_info['p_poster_name_if_guest']);
 
     $ticket_id = ticket_generate_new_id($member_id, 'post' . '_' . strval($post_id));

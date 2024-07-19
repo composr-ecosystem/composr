@@ -66,7 +66,7 @@ class Hook_checklist_awards
                 }
 
                 $seconds_ago = null;
-                $limit_hours = $award['a_update_time_hours'];
+                $limit_hours = $award['a_update_interval_hours'];
                 if ($date !== null) {
                     $seconds_ago = time() - $date;
                     $status = ($seconds_ago > $limit_hours * 60 * 60) ? 0 : 1;

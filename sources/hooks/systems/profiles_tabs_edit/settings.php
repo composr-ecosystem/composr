@@ -87,7 +87,7 @@ class Hook_profiles_tabs_edit_settings
             $pt_allow = null;
             $pt_rules_text = null;
             $validated = null;
-            $on_probation_until = null;
+            $probation_expiration_time = null;
 
             if ((has_actual_page_access($member_id_viewing, 'admin_cns_members')) || (has_privilege($member_id_of, 'rename_self'))) {
                 $username = ($is_ldap) ? null : post_param_string('edit_username', null/*May not be passed if username not editable for member type*/, INPUT_FILTER_POST_IDENTIFIER);
@@ -180,17 +180,17 @@ class Hook_profiles_tabs_edit_settings
                 $validated = post_param_integer('validated', 0);
 
                 if (has_privilege($member_id_viewing, 'probate_members')) {
-                    $on_probation_until = post_param_date('on_probation_until');
+                    $probation_expiration_time = post_param_date('probation_expiration_time');
 
                     require_code('cns_general_action2');
-                    $current__on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_on_probation_until');
-                    if ((($on_probation_until === null) || ($on_probation_until <= time())) && ($current__on_probation_until > time())) {
+                    $current__probation_expiration_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_probation_expiration_time');
+                    if ((($probation_expiration_time === null) || ($probation_expiration_time <= time())) && ($current__probation_expiration_time > time())) {
                         cns_mod_log_it('STOP_PROBATION', strval($member_id_of), $GLOBALS['FORUM_DRIVER']->get_username($member_id_of));
-                    } elseif (($on_probation_until !== null) && ($on_probation_until > time()) && ($current__on_probation_until <= time())) {
+                    } elseif (($probation_expiration_time !== null) && ($probation_expiration_time > time()) && ($current__probation_expiration_time <= time())) {
                         cns_mod_log_it('START_PROBATION', strval($member_id_of), $GLOBALS['FORUM_DRIVER']->get_username($member_id_of));
-                    } elseif (($on_probation_until !== null) && ($current__on_probation_until > $on_probation_until) && ($on_probation_until > time()) && ($current__on_probation_until > time())) {
+                    } elseif (($probation_expiration_time !== null) && ($current__probation_expiration_time > $probation_expiration_time) && ($probation_expiration_time > time()) && ($current__probation_expiration_time > time())) {
                         cns_mod_log_it('REDUCE_PROBATION', strval($member_id_of), $GLOBALS['FORUM_DRIVER']->get_username($member_id_of));
-                    } elseif (($on_probation_until !== null) && ($current__on_probation_until < $on_probation_until) && ($on_probation_until > time()) && ($current__on_probation_until > time())) {
+                    } elseif (($probation_expiration_time !== null) && ($current__probation_expiration_time < $probation_expiration_time) && ($probation_expiration_time > time()) && ($current__probation_expiration_time > time())) {
                         cns_mod_log_it('EXTEND_PROBATION', strval($member_id_of), $GLOBALS['FORUM_DRIVER']->get_username($member_id_of));
                     }
                 }
@@ -244,7 +244,7 @@ class Hook_profiles_tabs_edit_settings
                 $pt_allow, // pt_allow
                 $pt_rules_text, // pt_rules_text
                 $validated, // validated
-                $on_probation_until, // on_probation_until
+                $probation_expiration_time, // probation_expiration_time
                 null, // is perm_banned
                 true, // Check correctness
                 null, // Password scheme
@@ -399,7 +399,7 @@ class Hook_profiles_tabs_edit_settings
             $myrow['m_pt_allow'],
             get_translated_text($myrow['m_pt_rules_text'], $GLOBALS['FORUM_DB']),
             $myrow['m_validated'],
-            $myrow['m_on_probation_until'],
+            $myrow['m_probation_expiration_time'],
             $myrow['m_is_perm_banned']
         );
 

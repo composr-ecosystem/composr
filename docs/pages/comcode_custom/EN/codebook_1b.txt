@@ -200,7 +200,6 @@ The following are the core Composr APIs (green is used to indicate the most impo
 | Archiving and compression
 | [tt]sources/tar.php[/tt]
 [tt]sources/zip.php[/tt]
-[tt]sources/m_zip.php[/tt] (use the PHP API, this implements that if the PHP ZIP extension is not available)
 | Needs [tt]require_code[/tt].
 |-
 | [color]Templating (Tempcode engine)[/color]

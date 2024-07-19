@@ -157,7 +157,7 @@ PHP;
 
             $title = get_translated_tempcode('news', $just_news_row, 'title');
 
-            $image_url = $row['news_image'];
+            $image_url = $row['news_image_url'];
             if ($image_url == '') {
                 $article = get_translated_text($row['news_article']);
                 $matches = [];

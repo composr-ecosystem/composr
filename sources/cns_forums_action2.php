@@ -129,7 +129,7 @@ function cns_edit_forum(int $forum_id, string $name, string $description, int $f
     if (!array_key_exists(0, $forum_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'forum'));
     }
-    $old_parent = $forum_info[0]['f_parent_forum'];
+    $old_parent = $forum_info[0]['f_parent_forum_id'];
     $old_name = $forum_info[0]['f_name'];
 
     $under_forum = $new_parent;
@@ -137,7 +137,7 @@ function cns_edit_forum(int $forum_id, string $name, string $description, int $f
         if ($forum_id === $under_forum) {
             warn_exit(do_lang_tempcode('FORUM_CANNOT_BE_OWN_PARENT'));
         }
-        $under_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $under_forum]);
+        $under_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum_id', ['id' => $under_forum]);
     }
 
     if ($poll_default_options_xml !== STRING_MAGIC_NULL) {
@@ -155,7 +155,7 @@ function cns_edit_forum(int $forum_id, string $name, string $description, int $f
     $map = [
         'f_name' => $name,
         'f_forum_grouping_id' => $forum_grouping_id,
-        'f_parent_forum' => $new_parent,
+        'f_parent_forum_id' => $new_parent,
         'f_position' => $position,
         'f_order_sub_alpha' => $order_sub_alpha,
         'f_intro_answer' => $intro_answer,
@@ -247,8 +247,8 @@ function cns_delete_forum(int $forum_id, ?int $target_forum_id = null, int $dele
     delete_lang($forum_info[0]['f_intro_question'], $GLOBALS['FORUM_DB']);
 
     $name = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => $forum_id]);
-    $GLOBALS['FORUM_DB']->query_update('f_multi_moderations', ['mm_move_to' => null], ['mm_move_to' => $forum_id]);
-    $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum' => db_get_first_id()], ['f_parent_forum' => $forum_id]);
+    $GLOBALS['FORUM_DB']->query_update('f_multi_moderations', ['mm_move_to_forum_id' => null], ['mm_move_to_forum_id' => $forum_id]);
+    $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum_id' => db_get_first_id()], ['f_parent_forum_id' => $forum_id]);
     $GLOBALS['FORUM_DB']->query_delete('f_forums', ['id' => $forum_id], '', 1);
     $GLOBALS['FORUM_DB']->query_delete('group_category_access', ['module_the_name' => 'forums', 'category_name' => strval($forum_id)]);
     $GLOBALS['FORUM_DB']->query_delete('group_privileges', ['module_the_name' => 'forums', 'category_name' => strval($forum_id)]);

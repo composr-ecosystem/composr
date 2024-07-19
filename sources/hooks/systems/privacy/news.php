@@ -58,7 +58,7 @@ class Hook_privacy_news extends Hook_privacy_base
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'username_fields' => [],
-                    'file_fields' => ['news_image'],
+                    'file_fields' => ['news_image_url'],
                     'additional_anonymise_fields' => ['author'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,

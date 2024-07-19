@@ -71,7 +71,7 @@ class Hook_preview_warnings
         $_post_date = time();
         $post_date = get_timezoned_date_time($_post_date);
         $post_title = do_lang('NEW_WARNING_TO_YOU');
-        $intended_solely_for = post_param_integer('member_id');
+        $whisper_to_member = post_param_integer('member_id');
         $emphasis = do_lang_tempcode('IMPORTANT');
         $class = 'cns-post-emphasis';
 

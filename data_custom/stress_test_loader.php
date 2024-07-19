@@ -147,7 +147,7 @@ function do_work()
             '', // pt_rules_text
             1, // validated
             '', // validated_email_confirm_code
-            null, // on_probation_until
+            null, // probation_expiration_time
             '0', // is_perm_banned
             false // check_correctness
         );
@@ -330,10 +330,10 @@ function do_work()
     echo 'STARTING: Trackbacks / Ratings / Comment topics' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('trackbacks', 'COUNT(*)'); $j < $num_wanted; $j++) {
         // trackbacks
-        $GLOBALS['SITE_DB']->query_insert('trackbacks', ['trackback_for_type' => 'download', 'trackback_for_id' => strval($content_id), 'trackback_ip' => '', 'trackback_time' => time(), 'trackback_url' => '', 'trackback_title' => random_line(), 'trackback_excerpt' => random_text(), 'trackback_name' => random_line()]);
+        $GLOBALS['SITE_DB']->query_insert('trackbacks', ['trackback_for_type' => 'download', 'trackback_for_id' => strval($content_id), 'trackback_ip_address' => '', 'trackback_time' => time(), 'trackback_url' => '', 'trackback_title' => random_line(), 'trackback_excerpt' => random_text(), 'trackback_name' => random_line()]);
 
         // ratings
-        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => 'download', 'rating_for_id' => strval($content_id), 'rating_member' => $j + 1, 'rating_ip' => '', 'rating_time' => time(), 'rating' => 3]);
+        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => 'download', 'rating_for_id' => strval($content_id), 'rating_member' => $j + 1, 'rating_ip_address' => '', 'rating_time' => time(), 'rating' => 3]);
 
         // posts in a comment topic
         $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
@@ -464,8 +464,8 @@ function do_work()
 
         $GLOBALS['SITE_DB']->query_insert('poll_votes', [
             'v_poll_id' => $poll_id,
-            'v_voter_id' => 2,
-            'v_voter_ip' => $ip,
+            'v_voting_member' => 2,
+            'v_voting_ip_address' => $ip,
             'v_vote_for' => $cast,
             'v_vote_time' => time(),
         ]);
@@ -621,7 +621,7 @@ function do_work()
     for ($j = $GLOBALS['SITE_DB']->query_select_value('shopping_cart', 'COUNT(*)'); $j < $num_wanted; $j++) {
         $GLOBALS['SITE_DB']->query_insert('shopping_cart', [
             'session_id' => get_secure_random_string(),
-            'ordered_by' => mt_rand(db_get_first_id() + 1, $num_wanted - 1),
+            'ordering_member' => mt_rand(db_get_first_id() + 1, $num_wanted - 1),
             'type_code' => strval(db_get_first_id()),
             'purchase_id' => strval(get_member()),
             'quantity' => 1,

@@ -82,7 +82,7 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
 
         $subject = $this->_default_property_str($properties, 'subject');
         $text = $this->_default_property_str($properties, 'text');
-        $send_time = $this->_default_property_int($properties, 'send_time');
+        $send_after_hours = $this->_default_property_int($properties, 'send_after_hours');
         $newsletter = $this->_default_property_resource_id_null('newsletter', $properties, 'newsletter');
         if (is_string($newsletter)) {
             $newsletter = intval($newsletter);
@@ -90,7 +90,7 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
         $usergroup = $this->_default_property_group_null($properties, 'usergroup');
         $usergroup_type = $this->_default_property_str($properties, 'usergroup_type');
 
-        $id = cns_make_welcome_email($label, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type);
+        $id = cns_make_welcome_email($label, $subject, $text, $send_after_hours, $newsletter, $usergroup, $usergroup_type);
 
         $this->_resource_save_extend($this->file_resource_type, strval($id), $filename, $label, $properties);
 
@@ -118,8 +118,8 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
             'label' => $row['w_name'],
             'subject' => get_translated_text($row['w_subject']),
             'text' => get_translated_text($row['w_text']),
-            'send_time' => $row['w_send_time'],
-            'newsletter' => remap_resource_id_as_portable('newsletter', $row['w_newsletter']),
+            'send_after_hours' => $row['w_send_after_hours'],
+            'newsletter' => remap_resource_id_as_portable('newsletter', $row['w_newsletter_id']),
             'usergroup' => remap_resource_id_as_portable('group', $row['w_usergroup']),
             'usergroup_type' => $row['w_usergroup_type'],
         ];
@@ -150,7 +150,7 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
         $label = $this->_default_property_str($properties, 'label');
         $subject = $this->_default_property_str($properties, 'subject');
         $text = $this->_default_property_str($properties, 'text');
-        $send_time = $this->_default_property_int($properties, 'send_time');
+        $send_after_hours = $this->_default_property_int($properties, 'send_after_hours');
         $newsletter = $this->_default_property_resource_id_null('newsletter', $properties, 'newsletter');
         if (is_string($newsletter)) {
             $newsletter = intval($newsletter);
@@ -158,7 +158,7 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
         $usergroup = $this->_default_property_group_null($properties, 'usergroup');
         $usergroup_type = $this->_default_property_str($properties, 'usergroup_type');
 
-        cns_edit_welcome_email(intval($resource_id), $label, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type);
+        cns_edit_welcome_email(intval($resource_id), $label, $subject, $text, $send_after_hours, $newsletter, $usergroup, $usergroup_type);
 
         $this->_resource_save_extend($this->file_resource_type, $resource_id, $filename, $label, $properties);
 

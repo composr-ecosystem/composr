@@ -199,7 +199,7 @@ function get_canonical_url() : string
 }
 
 /**
- * Encode a URL component in such a way that it won't get nuked by Apache %2F blocking security and URL encoded '&' mangling. The get_param_string function will map it back. Hackerish but necessary.
+ * Encode a URL component in such a way that it won't get nuked by Apache %2F blocking security, URL encoded '&' mangling, and common ModSecurity blocks. The get_param_string function will map it back. Hackerish but necessary.
  *
  * @param  URLPATH $url_part The URL to encode
  * @param  ?boolean $can_try_url_schemes Whether we have to consider URL Schemes (null: don't know, look up)
@@ -220,12 +220,15 @@ function cms_urlencode(string $url_part, ?bool $can_try_url_schemes = null) : st
         //$url_part = str_replace(':', '(colon)', $url_part); We'll ignore theoretical problem here- we won't expect there to be a need for encodings within redirect URL paths (params is fine, handles naturally)
         $url_part = str_replace(['/', '&', '#', '+'], [':slash:', ':amp:', ':uhash:', ':plus:'], $url_part); // horrible but mod_rewrite does it so we need to
     }
+    if (get_value('disable_modsecurity_workaround') !== '1') {
+        $url_part = str_replace(['?', '='], [':ques:', ':equals:'], $url_part); // These commonly get blocked by ModSecurity
+    }
     $url_part = urlencode($url_part);
     return $url_part;
 }
 
 /**
- * Encode a URL component, as per cms_urlencode but without slashes being encoded.
+ * Encode a URL component, as per cms_urlencode but without slashes and common ModSecurity blocks being encoded.
  * Only used if URL monikers are enabled.
  *
  * @param  URLPATH $url_part The URL to encode
@@ -252,16 +255,21 @@ function cms_rawurlencode(string $url_part, ?bool $can_try_url_schemes = null) :
 }
 
 /**
- * Decode a URL component that was encoded with hackerish_url_encode.
+ * Decode a URL component that was encoded with cms_urlencode.
  *
  * @param  URLPATH $url_part The URL to encode
  * @return URLPATH The encoded result
  */
 function cms_urldecode_post_process(string $url_part) : string
 {
-    if ((strpos($url_part, ':') !== false) && (can_try_url_schemes())) {
-        $url_part = str_replace([':uhash:', ':amp:', ':slash:', ':plus:'], ['#', '&', '/', '+'], $url_part);
-        //$url_part = str_replace('(colon)', ':', $url_part);
+    if (strpos($url_part, ':') !== false) {
+        if (can_try_url_schemes()) {
+            $url_part = str_replace([':uhash:', ':amp:', ':slash:', ':plus:'], ['#', '&', '/', '+'], $url_part);
+            //$url_part = str_replace('(colon)', ':', $url_part);
+        }
+        if (get_value('disable_modsecurity_workaround') !== '1') {
+            $url_part = str_replace([':ques:', ':equals:'], ['?', '='], $url_part);
+        }
     }
     return $url_part;
 }

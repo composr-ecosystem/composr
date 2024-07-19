@@ -1279,8 +1279,8 @@ where:
 			<td>The brand URL, defaults to https://composr.app</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$COPPA_ON}</td>
-			<td>Whether COPPA is configured to be on</td>
+			<td>{$PARENTAL_CONSENT_REQUIRED}</td>
+			<td>Whether parental consent is configured to be required</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$TAX_LABEL}</td>

@@ -131,10 +131,10 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
     $usergroups = collapse_1d_complexity('lb_group', $usergroups);
 
     // Calculate points earned within the range (accounting for refunds), grouping by member
-    $_points_earned = $GLOBALS['SITE_DB']->query_select('points_ledger', ['recipient_id', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_NORMAL], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY recipient_id');
-    $points_earned = list_to_map('recipient_id', $_points_earned);
-    $_points_refunded = $GLOBALS['SITE_DB']->query_select('points_ledger', ['sender_id', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_REFUND], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY sender_id');
-    $points_refunded = list_to_map('sender_id', $_points_refunded);
+    $_points_earned = $GLOBALS['SITE_DB']->query_select('points_ledger', ['receiving_member', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_NORMAL], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY receiving_member');
+    $points_earned = list_to_map('receiving_member', $_points_earned);
+    $_points_refunded = $GLOBALS['SITE_DB']->query_select('points_ledger', ['sending_member', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_REFUND], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY sending_member');
+    $points_refunded = list_to_map('sending_member', $_points_refunded);
     foreach ($points_earned as $member_id => $prow) {
         $points_earned[$member_id]['total_points'] = (@intval($prow['points']) + @intval($prow['gift_points']));
         if (isset($points_refunded[$member_id])) {

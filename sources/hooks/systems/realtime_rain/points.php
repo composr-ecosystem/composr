@@ -43,84 +43,84 @@ class Hook_realtime_rain_points
             require_code('points');
 
             // point debits
-            $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,date_and_time AS timestamp,sender_id,recipient_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE recipient_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+            $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,date_and_time AS timestamp,sending_member,receiving_member FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE receiving_member=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
                 $timestamp = $row['timestamp'];
-                $sender_id = $row['sender_id'];
+                $sending_member = $row['sending_member'];
 
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'point_debits',
-                    'FROM_MEMBER_ID' => strval($sender_id),
+                    'FROM_MEMBER_ID' => strval($sending_member),
                     'TO_MEMBER_ID' => null,
                     'TITLE' => do_lang('MEMBER_SPENT_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
-                    'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($sender_id),
+                    'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($sending_member),
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => points_url($sender_id),
+                    'URL' => points_url($sending_member),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => true,
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
-                    'FROM_ID' => 'member_' . strval($sender_id),
+                    'FROM_ID' => 'member_' . strval($sending_member),
                     'TO_ID' => false,
                     'GROUP_ID' => false,
                 ];
             }
 
             // Point credits
-            $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,sender_id AS member_id,recipient_id,date_and_time AS timestamp,anonymous FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE sender_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+            $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,sending_member AS member_id,receiving_member,date_and_time AS timestamp,anonymous FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE sending_member=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
-                $recipient_id = $row['recipient_id'];
+                $receiving_member = $row['receiving_member'];
 
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'point_credits',
                     'FROM_MEMBER_ID' => ($row['anonymous'] == 1) ? null : strval($member_id),
-                    'TO_MEMBER_ID' => strval($recipient_id),
+                    'TO_MEMBER_ID' => strval($receiving_member),
                     'TITLE' => do_lang('MEMBER_SENT_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
-                    'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($recipient_id),
+                    'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($receiving_member),
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => points_url($recipient_id),
+                    'URL' => points_url($receiving_member),
                     'IS_POSITIVE' => true,
                     'IS_NEGATIVE' => false,
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                     'FROM_ID' => ($row['anonymous'] == 1) ? null : ('member_' . strval($member_id)),
-                    'TO_ID' => 'member_' . strval($recipient_id),
+                    'TO_ID' => 'member_' . strval($receiving_member),
                     'GROUP_ID' => null,
                 ];
             }
 
             // Point transactions
-            $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,sender_id AS member_id,recipient_id,date_and_time AS timestamp,anonymous FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+            $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,sending_member AS member_id,receiving_member,date_and_time AS timestamp,anonymous FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
-                $recipient_id = $row['recipient_id'];
+                $receiving_member = $row['receiving_member'];
 
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'point_transactions',
                     'FROM_MEMBER_ID' => ($row['anonymous'] == 1) ? null : strval($member_id),
-                    'TO_MEMBER_ID' => strval($recipient_id),
+                    'TO_MEMBER_ID' => strval($receiving_member),
                     'TITLE' => do_lang('MEMBER_SENT_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
-                    'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($recipient_id),
+                    'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($receiving_member),
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => points_url($recipient_id),
+                    'URL' => points_url($receiving_member),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                     'FROM_ID' => ($row['anonymous'] == 1) ? null : ('member_' . strval($member_id)),
-                    'TO_ID' => 'member_' . strval($recipient_id),
+                    'TO_ID' => 'member_' . strval($receiving_member),
                     'GROUP_ID' => null,
                 ];
             }

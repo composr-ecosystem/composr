@@ -96,7 +96,7 @@ class Hook_cron_mail_queue
                         'priority' => $row['m_priority'],
                         'attachments' => unserialize($row['m_attachments']),
                         'no_cc' => ($row['m_no_cc'] == 1),
-                        'as' => $row['m_as'],
+                        'as' => $row['m_as_member'],
                         'as_admin' => ($row['m_as_admin'] == 1),
                         'in_html' => ($row['m_in_html'] == 1),
                         'coming_out_of_queue' => true,

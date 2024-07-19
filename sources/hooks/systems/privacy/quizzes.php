@@ -122,7 +122,7 @@ class Hook_privacy_quizzes extends Hook_privacy_base
                 }
                 break;
             case 'quiz_entries':
-                $name = $GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_name', ['id' => $row['q_quiz']]);
+                $name = $GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_name', ['id' => $row['q_quiz_id']]);
                 if ($name !== null) {
                     require_code('quiz');
                     require_lang('quiz');
@@ -156,7 +156,7 @@ class Hook_privacy_quizzes extends Hook_privacy_base
                 break;
 
             case 'quiz_entries':
-                $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', ['q_entry' => $row['id']]);
+                $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', ['q_entry_id' => $row['id']]);
                 parent::delete($table_name, $table_details, $row);
                 break;
 

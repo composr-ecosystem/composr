@@ -79,7 +79,7 @@ class Hook_whatsnew_news
             $extra_where .= sql_region_filter('news', 'r.id');
         }
 
-        $rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT title,news,news_article,id,date_and_time,submitter,news_image FROM ' . get_table_prefix() . 'news r LEFT JOIN ' . get_table_prefix() . 'news_category_entries ON news_entry=id' . $extra_join . ' WHERE validated=1 AND date_and_time>' . strval($cutoff_time) . ' AND ((' . $or_list . ') OR (' . $or_list_2 . '))' . $extra_where . ' ORDER BY date_and_time DESC', $max);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT title,news,news_article,id,date_and_time,submitter,news_image_url FROM ' . get_table_prefix() . 'news r LEFT JOIN ' . get_table_prefix() . 'news_category_entries ON news_entry=id' . $extra_join . ' WHERE validated=1 AND date_and_time>' . strval($cutoff_time) . ' AND ((' . $or_list . ') OR (' . $or_list_2 . '))' . $extra_where . ' ORDER BY date_and_time DESC', $max);
 
         if (count($rows) == $max) {
             return [];
@@ -95,7 +95,7 @@ class Hook_whatsnew_news
                 $description = get_translated_text($row[($in_full == 1) ? 'news' : 'news_article'], null, $lang);
             }
             $member_id = (is_guest($row['submitter'])) ? null : strval($row['submitter']);
-            $image_url = $row['news_image'];
+            $image_url = $row['news_image_url'];
             if ($image_url != '') {
                 if (url_is_local($image_url)) {
                     $image_url = get_custom_base_url() . '/' . $image_url;

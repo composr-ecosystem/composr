@@ -743,6 +743,7 @@ abstract class DatabaseDriver
             case 'IP':
             case 'LANGUAGE_NAME':
             case 'URLPATH':
+            case 'TOKEN':
                 $default = '';
                 break;
         }

@@ -18,31 +18,15 @@
  */
 class zip_test_set extends cms_test_case
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        require_code('m_zip');
-    }
-
-    public function testMZip()
-    {
-        // Test m-ZIP is working
-        if (@file_exists('/usr/bin/unzip')) {
-            $this->doPrefixedFunctionTest('m_');
-        }
-    }
-
     public function testZip()
-    {
-        // Test PHP's internal ZIP extension, or m-ZIP again if that's not available (but via standard PHP function names)
-        $this->doPrefixedFunctionTest('');
-    }
-
-    protected function doPrefixedFunctionTest($prefix)
     {
         if (!addon_installed('cms_homesite')) {
             $this->assertTrue(false, 'The cms_homesite addon must be installed for this test to run'); // That's where our test ZIP file is from
+            return;
+        }
+
+        if (!class_exists('ZipArchive', false)) {
+            $this->assertTrue(false, 'The PHP ZipArchive class is not available on this server');
             return;
         }
 
@@ -56,18 +40,67 @@ class zip_test_set extends cms_test_case
         ];
 
         $path = get_file_base() . '/uploads/website_specific/cms_homesite/banners.zip';
-        $zip_file = call_user_func($prefix . 'zip_open', $path);
-        $files = [];
-        if (!is_integer($zip_file)) {
-            while (($f = call_user_func($prefix . 'zip_read', $zip_file)) !== false) {
-                $filename = call_user_func($prefix . 'zip_entry_name', $f);
-                if (substr($filename, -1) != '/') {
-                    $files[$filename] = call_user_func($prefix . 'zip_entry_filesize', $f);
-                }
-            }
-            call_user_func($prefix . 'zip_close', $zip_file);
+
+        $zip_archive = new ZipArchive();
+
+        $in_file = $zip_archive->open($path);
+        if ($in_file !== true) {
+            $this->assertTrue(false, zip_error($path, $in_file)->evaluate());
+            return;
         }
+
+        $files = [];
+        for ($i = 0; $i < $zip_archive->numFiles; $i++) {
+            $filename = $zip_archive->getNameIndex($i);
+            if ($filename === false) {
+                $this->assertTrue(false, 'Failed to get entry filename');
+                return;
+            }
+            if (substr($filename, -1) != '/') {
+                $zip_stats = $zip_archive->statIndex($i);
+                if ($zip_stats === false) {
+                    $this->assertTrue(false, 'Failed to get the stats of ' . $filename);
+                    return;
+                }
+                $files[$filename] = $zip_stats['size'];
+            }
+        }
+
+        $zip_archive->close();
+        unset($zip_archive);
+
+        // Test expected filesize
+
         ksort($files);
-        $this->assertTrue($files == $expected);
+        $this->assertTrue($files == $expected, 'ZIP files do not match what was expected');
+        if ($files != $expected) {
+            $this->dump($files, 'EXPECTED');
+            $this->dump($files, 'GOT');
+        }
+
+        // Test ZIP to TAR
+
+        require_code('tar2');
+
+        $files = [];
+        $out_path = null;
+        convert_zip_to_tar($path, $out_path);
+        $out_file = tar_open($out_path, 'rb');
+        $directory = tar_get_directory($out_file, true);
+        if ($directory === false) {
+            $this->assertTrue(false, 'Failed to read the TAR directories');
+            return;
+        }
+        $directories = $out_file['directory'];
+        foreach ($directories as $offset => $stuff) {
+            $files[$stuff['path']] = $stuff['size'];
+        }
+        tar_close($out_file);
+        ksort($files);
+        $this->assertTrue($files == $expected, 'TAR files in ' . $out_path . ' do not match what was expected');
+        if ($files != $expected) {
+            $this->dump($files, 'EXPECTED');
+            $this->dump($files, 'GOT');
+        }
     }
 }

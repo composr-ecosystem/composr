@@ -48,7 +48,7 @@ class Hook_privacy_mentorr extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'owner_id_field' => 'mentor_id',
+                    'owner_id_field' => 'mentor_member_id',
                     'additional_member_id_fields' => ['member_id'],
                     'ip_address_fields' => [],
                     'email_fields' => [],

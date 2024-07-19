@@ -451,7 +451,7 @@ function cron_bridge_script(string $caller)
                     continue;
                 }
 
-                $last_run = $cron_progression[$hook]['c_last_run'];
+                $last_run = $cron_progression[$hook]['c_last_run_time'];
             } else {
                 $last_run = null;
             }
@@ -521,14 +521,14 @@ function cron_bridge_script(string $caller)
 
                 // Update cron_progression table
                 if (isset($cron_progression[$hook])) {
-                    $cron_progression[$hook]['c_last_run'] = time();
+                    $cron_progression[$hook]['c_last_run_time'] = time();
                     $cron_progression[$hook]['c_last_execution_secs'] = $time_after - $time_before;
                     $cron_progression[$hook]['c_last_error'] = $last_error;
 
                     $GLOBALS['SITE_DB']->query_update(
                         'cron_progression',
                         [
-                            'c_last_run' => time(),
+                            'c_last_run_time' => time(),
                             'c_last_execution_secs' => $time_after - $time_before,
                             'c_last_error' => $last_error,
                         ],
@@ -541,7 +541,7 @@ function cron_bridge_script(string $caller)
                 } else {
                     $cron_progression[$hook] = [
                         'c_hook' => $hook,
-                        'c_last_run' => time(),
+                        'c_last_run_time' => time(),
                         'c_last_execution_secs' => $time_after - $time_before,
                         'c_last_error' => $last_error,
                         'c_enabled' => 1,

@@ -35,9 +35,9 @@ class Hook_admin_stats_links extends CMSStatsProvider
             return $urls;
         }
         $urls = [];
-        $url_rows = $GLOBALS['SITE_DB']->query_select('stats_known_links', ['*'], [], 'ORDER BY l_times_seen DESC', 50);
+        $url_rows = $GLOBALS['SITE_DB']->query_select('stats_known_links', ['*'], [], 'ORDER BY l_count_logged DESC', 50);
         foreach ($url_rows as $url_row) {
-            $urls[$url_row['l_url']] = $url_row['l_url'] . ' (' . integer_format($url_row['l_times_seen']) . ')';
+            $urls[$url_row['l_url']] = $url_row['l_url'] . ' (' . integer_format($url_row['l_count_logged']) . ')';
         }
         asort($urls);
         return $urls;
@@ -129,15 +129,15 @@ class Hook_admin_stats_links extends CMSStatsProvider
         } while (!empty($rows));
 
         foreach ($urls_seen as $url => $times_seen) {
-            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_links', 'l_times_seen', ['l_url' => $url]);
+            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_links', 'l_count_logged', ['l_url' => $url]);
             if ($times_seen_before === null) {
                 $GLOBALS['SITE_DB']->query_insert('stats_known_links', [
                     'l_url' => $url,
-                    'l_times_seen' => $times_seen,
+                    'l_count_logged' => $times_seen,
                 ]);
             } else {
                 $GLOBALS['SITE_DB']->query_update('stats_known_links', [
-                    'l_times_seen' => $times_seen + $times_seen_before,
+                    'l_count_logged' => $times_seen + $times_seen_before,
                 ], [
                     'l_url' => $url,
                 ], '', 1);

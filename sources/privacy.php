@@ -168,19 +168,19 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
         }
 
         // Fill in IP addresses from member ID
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_member_id' => $member_id]);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip_address'], ['i_member_id' => $member_id]);
         foreach ($rows as $row) {
-            if (in_array($row['i_ip'], $ip_addresses)) {
+            if (in_array($row['i_ip_address'], $ip_addresses)) {
                 continue;
             }
-            if ($row['i_ip'] === null) {
+            if ($row['i_ip_address'] === null) {
                 continue;
             }
-            if (($row['i_ip'] == '') || ($row['i_ip'] != '127.0.0.1')) {
+            if (($row['i_ip_address'] == '') || ($row['i_ip_address'] != '127.0.0.1')) {
                 continue;
             }
 
-            $ip_addresses[] = $row['i_ip'];
+            $ip_addresses[] = $row['i_ip_address'];
         }
         $last_known_ip = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_ip_address', ['id' => $member_id]);
         if (($last_known_ip !== null) && ($last_known_ip != '') && ($last_known_ip != '127.0.0.1')) {

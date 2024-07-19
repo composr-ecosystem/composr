@@ -268,7 +268,7 @@ class Module_admin_menus
         ]);
 
         $order = 0;
-        $menu_items = $GLOBALS['SITE_DB']->query_select('menu_items', ['*'], ['i_menu' => $id], 'ORDER BY i_parent,i_order');
+        $menu_items = $GLOBALS['SITE_DB']->query_select('menu_items', ['*'], ['i_menu' => $id], 'ORDER BY i_parent_id,i_order');
         $child_branches = $this->menu_branch($id, null, $order, $clickable_sections, $menu_items);
 
         $root_branch = do_template('MENU_EDITOR_BRANCH', [
@@ -363,9 +363,9 @@ class Module_admin_menus
     {
         $child_branches = new Tempcode();
         foreach ($menu_items as $menu_item) {
-            if ($menu_item['i_parent'] === $branch) {
+            if ($menu_item['i_parent_id'] === $branch) {
                 $caption = get_translated_text($menu_item['i_caption']);
-                $url = $menu_item['i_url'];
+                $url = $menu_item['i_link'];
                 $page_only = $menu_item['i_page_only'];
                 $theme_img_code = $menu_item['i_theme_img_code'];
                 $new_window = $menu_item['i_new_window'];
@@ -374,7 +374,7 @@ class Module_admin_menus
                 $caption_long = get_translated_text($menu_item['i_caption_long']);
                 $branch_type = 0;
                 foreach ($menu_items as $_menu_item) {
-                    if ($_menu_item['i_parent'] == $menu_item['id']) {
+                    if ($_menu_item['i_parent_id'] == $menu_item['id']) {
                         $branch_type = ($menu_item['i_expanded'] == 1) ? 2 : 1;
                         break;
                     }

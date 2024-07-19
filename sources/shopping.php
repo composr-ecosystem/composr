@@ -160,7 +160,7 @@ function find_products_in_cart() : array
     if (is_guest()) {
         $where['session_id'] = get_session_id();
     } else {
-        $where['ordered_by'] = get_member();
+        $where['ordering_member'] = get_member();
     }
     return $GLOBALS['SITE_DB']->query_select('shopping_cart', ['*'], $where, 'ORDER BY add_time');
 }
@@ -189,14 +189,14 @@ function add_to_cart(string $type_code, string $purchase_id = '', int $quantity 
     if (is_guest()) {
         $where['session_id'] = get_session_id();
     } else {
-        $where['ordered_by'] = get_member();
+        $where['ordering_member'] = get_member();
     }
     $existing_rows = $GLOBALS['SITE_DB']->query_select('shopping_cart', ['id', 'quantity'], $where, '', 1);
 
     if (!array_key_exists(0, $existing_rows)) {
         $cart_map = [
             'session_id' => get_session_id(),
-            'ordered_by' => get_member(),
+            'ordering_member' => get_member(),
             'type_code' => $type_code,
             'purchase_id' => $purchase_id,
             'quantity' => $quantity,
@@ -222,7 +222,7 @@ function update_cart(array $products_in_cart)
         if (is_guest()) {
             $where['session_id'] = get_session_id();
         } else {
-            $where['ordered_by'] = get_member();
+            $where['ordering_member'] = get_member();
         }
 
         if ($quantity > 0) {
@@ -247,9 +247,9 @@ function remove_from_cart(array $products_to_remove, ?int $member_id = null, ?st
 
         if (($member_id !== null) || (($session_id === null) && (!is_guest()))) {
             if ($member_id !== null) {
-                $where['ordered_by'] = $member_id;
+                $where['ordering_member'] = $member_id;
             } else {
-                $where['ordered_by'] = get_member();
+                $where['ordering_member'] = get_member();
             }
         } else {
             if ($session_id !== null) {
@@ -272,7 +272,7 @@ function empty_cart()
     if (is_guest()) {
         $where['session_id'] = get_session_id();
     } else {
-        $where['ordered_by'] = get_member();
+        $where['ordering_member'] = get_member();
     }
 
     $GLOBALS['SITE_DB']->query_delete('shopping_cart', $where);
@@ -288,7 +288,7 @@ function log_cart_actions(string $action)
     $GLOBALS['SITE_DB']->query_insert('shopping_logging', [
         'l_member_id' => get_member(),
         'l_session_id' => get_session_id(),
-        'l_ip' => get_ip_address(),
+        'l_ip_address' => get_ip_address(),
         'l_last_action' => $action,
         'l_date_and_time' => time(),
     ]);

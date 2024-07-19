@@ -223,7 +223,7 @@ class Hook_addon_registry_awards
             'a_points' => 0,
             'a_content_type' => 'download',
             'a_show_awardee' => 0,
-            'a_update_time_hours' => 168,
+            'a_update_interval_hours' => 168,
         ];
         $installed = ($GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'id', $map) !== null);
 
@@ -250,7 +250,7 @@ class Hook_addon_registry_awards
                 'a_points' => 0,
                 'a_content_type' => 'download',
                 'a_show_awardee' => 0,
-                'a_update_time_hours' => 168,
+                'a_update_interval_hours' => 168,
             ];
             $map += lang_code_to_default_content('a_title', 'DOTW');
             $map += lang_code_to_default_content('a_description', 'DESCRIPTION_DOTW', true);
@@ -270,7 +270,7 @@ class Hook_addon_registry_awards
                 'a_points' => 0,
                 'a_content_type' => 'download',
                 'a_show_awardee' => 0,
-                'a_update_time_hours' => 168,
+                'a_update_interval_hours' => 168,
             ];
             require_lang('awards');
             require_code('awards2');

@@ -313,7 +313,7 @@ function cns_member_external_linker(string $type, string $username, string $pass
         '', // pt_rules_text
         $validated, // validated
         '', // validated_email_confirm_code
-        null, // on_probation_until
+        null, // probation_expiration_time
         '0', // is_perm_banned
         false, // check_correctness
         null, // ip_address
@@ -392,17 +392,17 @@ function cns_read_in_custom_fields(array $custom_fields, ?int $member_id = null)
  * @param  SHORT_TEXT $pt_allow Usergroups that may PT the member
  * @param  LONG_TEXT $pt_rules_text Rules that other members must agree to before they may start a PT with the member
  * @param  BINARY $validated Whether the account has been validated
- * @param  ?TIME $on_probation_until When the member is on probation until (null: just finished probation / or effectively was never on it)
+ * @param  ?TIME $probation_expiration_time When the member is on probation until (null: just finished probation / or effectively was never on it)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A tuple: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, int $preview_posts = 0, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
+function cns_get_member_fields(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, int $preview_posts = 0, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
 {
     $fields = new Tempcode();
     $hidden = new Tempcode();
 
-    list($_fields, $_hidden, $added_section_1) = cns_get_member_fields_settings($mini_mode, $special_type, $member_id, $username, $email_address, $primary_group, $groups, $dob_day, $dob_month, $dob_year, $timezone, $language, $theme, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $on_probation_until, $is_perm_banned, $adjusted_config_options);
+    list($_fields, $_hidden, $added_section_1) = cns_get_member_fields_settings($mini_mode, $special_type, $member_id, $username, $email_address, $primary_group, $groups, $dob_day, $dob_month, $dob_year, $timezone, $language, $theme, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $probation_expiration_time, $is_perm_banned, $adjusted_config_options);
     $fields->attach($_fields);
     $hidden->attach($_hidden);
 
@@ -452,12 +452,12 @@ function cns_get_member_fields(bool $mini_mode = true, string $special_type = ''
  * @param  SHORT_TEXT $pt_allow Usergroups that may PT the member
  * @param  LONG_TEXT $pt_rules_text Rules that other members must agree to before they may start a PT with the member
  * @param  BINARY $validated Whether the account has been validated
- * @param  ?TIME $on_probation_until When the member is on probation until (null: just finished probation / or effectively was never on it)
+ * @param  ?TIME $probation_expiration_time When the member is on probation until (null: just finished probation / or effectively was never on it)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A pair: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
+function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
 {
     require_code('form_templates');
     require_code('cns_members_action');
@@ -707,7 +707,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
             // Probation
             if (has_privilege(get_member(), 'probate_members')) {
                 if (($member_id !== null) && ($member_id != get_member())) { // Can't put someone new on probation, and can't put yourself on probation
-                    $fields->attach(form_input_date(do_lang_tempcode('ON_PROBATION_UNTIL'), do_lang_tempcode('DESCRIPTION_ON_PROBATION_UNTIL'), 'on_probation_until', false, ($on_probation_until === null) || $on_probation_until <= time(), true, $on_probation_until, 2));
+                    $fields->attach(form_input_date(do_lang_tempcode('PROBATION_EXPIRATION_TIME'), do_lang_tempcode('DESCRIPTION_PROBATION_EXPIRATION_TIME'), 'probation_expiration_time', false, ($probation_expiration_time === null) || $probation_expiration_time <= time(), true, $probation_expiration_time, 2));
                 }
             }
 
@@ -972,7 +972,7 @@ function _cpfs_internal_use_only() : array
  * @param  ?SHORT_TEXT $pt_allow Usergroups that may PT the member (null: don't change)
  * @param  ?LONG_TEXT $pt_rules_text Rules that other members must agree to before they may start a PT with the member (null: don't change)
  * @param  ?BINARY $validated Whether the account has been validated (null: do not change this) (null: don't change)
- * @param  ?TIME $on_probation_until When the member is on probation until (null: don't change)
+ * @param  ?TIME $probation_expiration_time When the member is on probation until (null: don't change)
  * @param  ?ID_TEXT $is_perm_banned Banned status (null: don't change)
  * @param  boolean $check_correctness Whether to check details for correctness and do most of the change-triggered e-mails
  * @param  ?ID_TEXT $password_compatibility_scheme Password compatibility scheme (null: don't change)
@@ -980,7 +980,7 @@ function _cpfs_internal_use_only() : array
  * @param  ?TIME $join_time When the member joined (null: don't change)
  * @param  ?boolean $sensitive_change_alert Whether to send an alert to the member that their login information has changed, if applicable (null: use the value of $check_correctness)
  */
-function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $on_probation_until = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compatibility_scheme = null, ?string $salt = null, ?int $join_time = null, ?bool $sensitive_change_alert = null)
+function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $probation_expiration_time = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compatibility_scheme = null, ?string $salt = null, ?int $join_time = null, ?bool $sensitive_change_alert = null)
 {
     if ($sensitive_change_alert === null) {
         $sensitive_change_alert = $check_correctness;
@@ -1193,7 +1193,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $update += lang_remap_comcode('m_pt_rules_text', $_pt_rules_text, $pt_rules_text, $GLOBALS['FORUM_DB']);
     }
     if ((!$check_correctness) || (has_privilege(get_member(), 'probate_members'))) {
-        $update['m_on_probation_until'] = $on_probation_until;
+        $update['m_probation_expiration_time'] = $probation_expiration_time;
     }
     if ($is_perm_banned !== null) {
         $update['m_is_perm_banned'] = $is_perm_banned;
@@ -1405,7 +1405,7 @@ function cns_delete_member(int $member_id)
     delete_lang_comcode_attachments($signature, 'signature', strval($member_id), $GLOBALS['FORUM_DB']);
     $GLOBALS['FORUM_DB']->query_delete('f_members', ['id' => $member_id], '', 1);
     $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id]);
-    $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => get_member()], ['g_group_leader' => $member_id]);
+    $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_lead_member' => get_member()], ['g_group_lead_member' => $member_id]);
     require_code('users_active_actions');
     delete_session_by_member_id($member_id);
 
@@ -2222,7 +2222,7 @@ function update_member_username_caching(int $member_id, string $username)
     // Fix caching for usernames
     $to_fix = [
         'f_forums/f_cache_last_username/f_cache_last_member_id',
-        'f_posts/p_poster_name_if_guest/p_poster',
+        'f_posts/p_poster_name_if_guest/p_posting_member',
         'f_topics/t_cache_first_username/t_cache_first_member_id',
         'f_topics/t_cache_last_username/t_cache_last_member_id',
         'sessions/cache_username/member_id',

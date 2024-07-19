@@ -182,7 +182,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
 
         $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters))) ? $request_voters[1] : 'pv_date_time DESC';
 
-        $vote_rows_select = ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cache_points_at_voting_time'];
+        $vote_rows_select = ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_points_when_voted'];
         $vote_rows_where = ['pv_poll_id' => $poll_id, 'pv_revoked' => 0];
         if ($answer_id !== null) {
             $vote_rows_where['pv_answer_id'] = $answer_id;
@@ -199,8 +199,8 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
             $voting_power = 1.0;
             $voting_equation = ['', '', 1.0];
             if ($point_weighting) {
-                $voting_power = cns_points_to_voting_power($vote['pv_cache_points_at_voting_time']);
-                $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_cache_points_at_voting_time']);
+                $voting_power = cns_points_to_voting_power($vote['pv_points_when_voted']);
+                $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_points_when_voted']);
 
                 // Add voting power to the total for the poll
                 $total_voting_power += $voting_power;
@@ -236,7 +236,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
 
     if ($request_results) {
         if (is_guest()) {
-            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip_address' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
         } else {
             $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_revoked' => 0];
         }
@@ -255,10 +255,10 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                         'pv_poll_id' => $poll_id,
                         'pv_member_id' => get_member(),
                         'pv_answer_id' => null,
-                        'pv_ip' => get_ip_address(),
+                        'pv_ip_address' => get_ip_address(),
                         'pv_revoked' => 0,
                         'pv_date_time' => time(),
-                        'pv_cache_points_at_voting_time' => 0, // We do not need to know a member's points for forfeits.
+                        'pv_points_when_voted' => 0, // We do not need to know a member's points for forfeits.
                     ]);
                 }
             }

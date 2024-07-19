@@ -324,8 +324,8 @@ function use_captcha() : bool
     if (!empty($posts)) {
         $post_count = $GLOBALS['FORUM_DRIVER']->get_post_count(get_member());
         if (get_forum_type() == 'cns') {
-            $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval(get_member());
-            $sql .= ' AND (p_cache_forum_id IS NULL OR p_intended_solely_for IS NOT NULL OR p_time>' . strval(time() - 60 * 60 * 24) . ')';
+            $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_posting_member=' . strval(get_member());
+            $sql .= ' AND (p_cache_forum_id IS NULL OR p_whisper_to_member IS NOT NULL OR p_time>' . strval(time() - 60 * 60 * 24) . ')';
             $post_count -= $GLOBALS['FORUM_DB']->query_value_if_there($sql);
         }
         if ($post_count < intval($posts)) {

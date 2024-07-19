@@ -96,22 +96,22 @@ function cns_make_emoticon(string $code, string $theme_img_code, int $relevance_
  * @param  SHORT_TEXT $name A name for the Welcome E-mail
  * @param  SHORT_TEXT $subject The subject of the Welcome E-mail
  * @param  LONG_TEXT $text The message body of the Welcome E-mail
- * @param  integer $send_time The number of hours before sending the e-mail
+ * @param  integer $send_after_hours The number of hours before sending the e-mail
  * @param  ?AUTO_LINK $newsletter What newsletter to send out to instead of members (null: none)
  * @param  ?AUTO_LINK $usergroup The usergroup to tie to (null: none)
  * @param  ID_TEXT $usergroup_type How to send regarding usergroups (blank: indiscriminately)
  * @set primary secondary ""
  * @return AUTO_LINK The ID
  */
-function cns_make_welcome_email(string $name, string $subject, string $text, int $send_time, ?int $newsletter = null, ?int $usergroup = null, string $usergroup_type = '') : int
+function cns_make_welcome_email(string $name, string $subject, string $text, int $send_after_hours, ?int $newsletter = null, ?int $usergroup = null, string $usergroup_type = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_WELCOME_EMAIL', null, $subject);
 
     $map = [
         'w_name' => $name,
-        'w_newsletter' => $newsletter,
-        'w_send_time' => $send_time,
+        'w_newsletter_id' => $newsletter,
+        'w_send_after_hours' => $send_after_hours,
         'w_usergroup' => $usergroup,
         'w_usergroup_type' => $usergroup_type,
     ];

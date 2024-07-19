@@ -147,7 +147,7 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
         $properties = [
             'label' => $row['t_title'],
             'logo' => $row['t_logo'],
-            'external_feed' => $row['t_external_feed'],
+            'external_feed' => $row['t_external_feed_url'],
         ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;

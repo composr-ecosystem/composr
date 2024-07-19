@@ -64,7 +64,7 @@ class Hook_privacy_workflows extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'owner_id_field' => 'approved_by',
+                    'owner_id_field' => 'approved_by_member',
                     'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],

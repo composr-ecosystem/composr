@@ -41,7 +41,7 @@ function cns_make_multi_moderation(string $name, string $post_text, ?int $move_t
 
     $map = [
         'mm_post_text' => $post_text,
-        'mm_move_to' => $move_to,
+        'mm_move_to_forum_id' => $move_to,
         'mm_pin_state' => $pin_state,
         'mm_open_state' => $open_state,
         'mm_forum_multi_code' => $forum_multi_code,

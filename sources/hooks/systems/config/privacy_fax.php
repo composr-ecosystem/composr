@@ -34,7 +34,7 @@ class Hook_config_privacy_fax
             'human_name' => 'FAX_NUMBER',
             'type' => 'line',
             'category' => 'PRIVACY',
-            'group' => 'COPPA',
+            'group' => 'PARENTAL_CONSENT',
             'explanation' => 'CONFIG_OPTION_privacy_fax',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

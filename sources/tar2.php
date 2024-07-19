@@ -23,8 +23,8 @@
 /**
  * Convert a ZIP file to a TAR file.
  *
- * @param  PATH $in_path The path of the TAR file to convert
- * @param  ?PATH $out_path The path of the ZIP file to save to (null: make up a temporary path)
+ * @param  PATH $in_path The path of the ZIP file to convert
+ * @param  ?PATH $out_path The path of the TAR file to save to (null: make up a temporary path)
  */
 function convert_zip_to_tar(string $in_path, ?string &$out_path = null)
 {
@@ -34,20 +34,16 @@ function convert_zip_to_tar(string $in_path, ?string &$out_path = null)
     require_code('files');
     require_lang('dearchive');
 
-    if ((!function_exists('zip_open')) && (get_option('unzip_cmd') == '')) {
+    if (!class_exists('ZipArchive', false)) {
         warn_exit(do_lang_tempcode('ZIP_NOT_ENABLED'));
     }
-    if (!function_exists('zip_open')) {
-        require_code('m_zip');
-        $mzip = true;
-    } else {
-        $mzip = false;
-    }
 
-    $in_file = zip_open($in_path);
-    if (is_integer($in_file)) {
+    $zip_archive = new ZipArchive();
+
+    $in_file = $zip_archive->open($in_path);
+    if ($in_file !== true) {
         require_code('failure');
-        warn_exit(zip_error($in_file, $mzip), false, true);
+        warn_exit(zip_error($in_path, $in_file), false, true);
     }
 
     if ($out_path === null) {
@@ -55,32 +51,34 @@ function convert_zip_to_tar(string $in_path, ?string &$out_path = null)
     }
     $out_file = tar_open($out_path, 'wb');
 
-    while (false !== ($entry = zip_read($in_file))) {
-        // Load in file
-        zip_entry_open($in_file, $entry);
-
-        $_file = zip_entry_name($entry);
+    for ($i = 0; $i < $zip_archive->numFiles; $i++) {
+        $_file = $zip_archive->getNameIndex($i);
 
         $temp_path = cms_tempnam();
         $temp_file = @fopen($temp_path, 'wb') or intelligent_write_error($temp_path);
-        $more = null;
-        do {
-            $more = zip_entry_read($entry);
-            if (fwrite($temp_file, $more) < strlen($more)) {
-                warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($out_path)), false, true);
-            }
-        } while (($more !== false) && ($more != ''));
+        $more = $zip_archive->getFromIndex($i);
+        if ($more === false) { // Error reading
+            warn_exit(zip_error($in_path, ZipArchive::ER_READ), false, true);
+            break;
+        }
+        if ($more === '') { // No more to read
+            continue;
+        }
+        if (fwrite($temp_file, $more) < strlen($more)) {
+            warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($out_path)), false, true);
+            break;
+        }
         fclose($temp_file);
 
         tar_add_file($out_file, $_file, $temp_path, 0644, null, true, false, true);
 
         @unlink($temp_path);
-
-        zip_entry_close($entry);
     }
 
-    zip_close($in_file);
+    $zip_archive->close();
     tar_close($out_file);
+
+    unset($zip_archive);
 
     cms_set_time_limit($old_limit);
 }

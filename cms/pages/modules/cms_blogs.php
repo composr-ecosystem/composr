@@ -446,7 +446,7 @@ class Module_cms_blogs extends Standard_crud_module
             $scheduled = null;
         }
 
-        $ret = $this->get_form_fields($id, $cat, $categories, get_translated_text($myrow['title']), get_translated_text($myrow['news']), $myrow['author'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], 0, $myrow['notes'], $myrow['news_image'], $scheduled);
+        $ret = $this->get_form_fields($id, $cat, $categories, get_translated_text($myrow['title']), get_translated_text($myrow['news']), $myrow['author'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], 0, $myrow['notes'], $myrow['news_image_url'], $scheduled);
         $ret[2] = new Tempcode();
         $ret[3] = '';
         $ret[4] = false;

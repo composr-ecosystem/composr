@@ -166,7 +166,7 @@ class TapatalkPush extends TapatalkBasePush
 
         cms_ini_set('ocproducts.type_strictness', '0');
 
-        $member_ids = array($post_row['p_poster']);
+        $member_ids = array($post_row['p_posting_member']);
 
         $data = $this->build_data('like', $post_row, $member_ids);
         if ($data !== null) {
@@ -183,8 +183,8 @@ class TapatalkPush extends TapatalkBasePush
     {
         $member_ids = array();
 
-        $member_ids[] = $post_row['t_pt_to'];
-        $member_ids[] = $post_row['t_pt_from'];
+        $member_ids[] = $post_row['t_pt_to_member'];
+        $member_ids[] = $post_row['t_pt_from_member'];
 
         $access = $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', array('s_member_id'), array('s_topic_id' => $post_row['topic_id']));
         $member_ids = array_merge($member_ids, collapse_1d_complexity('s_member_id', $access));

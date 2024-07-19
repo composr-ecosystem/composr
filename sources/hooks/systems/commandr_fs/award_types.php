@@ -100,9 +100,9 @@ class Hook_commandr_fs_award_types extends Resource_fs_base
             $resource_type = 'download';
         }
         $show_awardee = $this->_default_property_int($properties, 'show_awardee');
-        $update_time_hours = $this->_default_property_int($properties, 'update_time_hours');
+        $update_interval_hours = $this->_default_property_int($properties, 'update_interval_hours');
 
-        $id = add_award_type($label, $description, $points, $resource_type, $show_awardee, $update_time_hours);
+        $id = add_award_type($label, $description, $points, $resource_type, $show_awardee, $update_interval_hours);
 
         if (isset($properties['archive'])) {
             table_from_portable_rows('award_archive', $properties['archive'], ['a_type_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
@@ -136,7 +136,7 @@ class Hook_commandr_fs_award_types extends Resource_fs_base
             'points' => $row['a_points'],
             'resource_type' => $row['a_content_type'],
             'show_awardee' => $row['a_show_awardee'],
-            'update_time_hours' => $row['a_update_time_hours'],
+            'update_interval_hours' => $row['a_update_interval_hours'],
             'archive' => table_to_portable_rows('award_archive', /*skip*/[], ['a_type_id' => intval($resource_id)]),
         ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
@@ -171,9 +171,9 @@ class Hook_commandr_fs_award_types extends Resource_fs_base
             $resource_type = 'download';
         }
         $show_awardee = $this->_default_property_int($properties, 'show_awardee');
-        $update_time_hours = $this->_default_property_int($properties, 'update_time_hours');
+        $update_interval_hours = $this->_default_property_int($properties, 'update_interval_hours');
 
-        edit_award_type(intval($resource_id), $label, $description, $points, $resource_type, $show_awardee, $update_time_hours);
+        edit_award_type(intval($resource_id), $label, $description, $points, $resource_type, $show_awardee, $update_interval_hours);
 
         if (isset($properties['archive'])) {
             table_from_portable_rows('award_archive', $properties['archive'], ['a_type_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);

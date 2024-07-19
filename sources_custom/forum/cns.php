@@ -23,7 +23,9 @@ if (!function_exists('init__forum__cns')) {
         $in = override_str_replace_exactly(
             "return \$this->get_member_row_field(\$member_id, 'm_username');",
             "return jestr_name_filter(\$this->get_member_row_field(\$member_id, 'm_username'));",
-            $in
+            $in,
+            1,
+            true
         );
 
         $in = override_str_replace_exactly(
@@ -42,7 +44,9 @@ if (!function_exists('init__forum__cns')) {
                 <ditto>
             }
             ",
-            $in
+            $in,
+            1,
+            true
         );
 
         return $in;

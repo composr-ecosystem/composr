@@ -74,7 +74,7 @@ function cns_get_group_members_raw_count(int $group_id, bool $include_primaries 
     if ($include_secondaries) {
         $probation_group = get_probation_group();
         if ($probation_group === $group_id) {
-            $d = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_on_probation_until>' . strval(time()));
+            $d = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_probation_expiration_time>' . strval(time()));
         }
     }
 
@@ -148,7 +148,7 @@ function cns_get_group_members_raw(int $group_id, bool $include_primaries = true
     if ($include_secondaries) {
         $probation_group = get_probation_group();
         if ($probation_group === $group_id) {
-            $d = $GLOBALS['FORUM_DB']->query('SELECT id,m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_on_probation_until>' . strval(time()), $max);
+            $d = $GLOBALS['FORUM_DB']->query('SELECT id,m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_probation_expiration_time>' . strval(time()), $max);
             foreach ($d as $member_row) {
                 $member_id = $member_row['id'];
                 $members[] = $non_validated ? ['gm_member_id' => $member_id, 'validated' => true, 'm_username' => $member_row['m_username'], 'implicit' => false] : $member_id;
@@ -170,7 +170,7 @@ function get_default_rank_ladder_groups() : array
     $group = get_first_default_group();
     do {
         $groups[] = $group;
-        $group = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_promotion_target', ['id' => $group]);
+        $group = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_promotion_target_group', ['id' => $group]);
     } while ($group !== null);
     return $groups;
 }

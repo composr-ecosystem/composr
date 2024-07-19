@@ -47,7 +47,7 @@ class Module_admin_stats extends Standard_crud_module
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 10;
+        $info['version'] = 11;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -90,7 +90,7 @@ class Module_admin_stats extends Standard_crud_module
                 'date_and_time' => 'TIME',
                 'page_link' => 'SHORT_TEXT',
                 'post' => 'LONG_TEXT',
-                'referer' => 'URLPATH',
+                'referer_url' => 'URLPATH',
                 'ip' => 'IP',
                 'member_id' => 'MEMBER',
                 'session_id' => 'ID_TEXT', // May not be a literal session, as we don't always assign sessions to users (when operating from static caching) - might be an IP address for example
@@ -205,8 +205,8 @@ class Module_admin_stats extends Standard_crud_module
                 'k_filters' => 'LONG_TEXT',
                 'k_target' => '?REAL',
                 'k_title' => 'SHORT_TEXT',
-                'k_added' => 'TIME',
-                'k_added_by' => 'MEMBER',
+                'k_added_time' => 'TIME',
+                'k_submitter' => 'MEMBER',
                 'k_notes' => 'LONG_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('stats_kpis', 'k_graph_name', ['k_graph_name']);
@@ -225,28 +225,37 @@ class Module_admin_stats extends Standard_crud_module
 
             $GLOBALS['SITE_DB']->create_table('stats_known_events', [
                 'e_event' => '*ID_TEXT',
-                'e_times_seen' => 'INTEGER',
+                'e_count_logged' => 'INTEGER',
             ]);
-            $GLOBALS['SITE_DB']->create_index('stats_known_events', 'e_times_seen', ['e_times_seen']);
+            $GLOBALS['SITE_DB']->create_index('stats_known_events', 'e_count_logged', ['e_count_logged']);
 
             $GLOBALS['SITE_DB']->create_table('stats_known_tracking', [
                 't_tracking_code' => '*ID_TEXT',
-                't_times_seen' => 'INTEGER',
+                't_count_logged' => 'INTEGER',
             ]);
-            $GLOBALS['SITE_DB']->create_index('stats_known_tracking', 't_times_seen', ['t_times_seen']);
+            $GLOBALS['SITE_DB']->create_index('stats_known_tracking', 't_count_logged', ['t_count_logged']);
 
             $GLOBALS['SITE_DB']->create_table('stats_known_links', [
                 'id' => '*AUTO',
                 'l_url' => 'URLPATH',
-                'l_times_seen' => 'INTEGER',
+                'l_count_logged' => 'INTEGER',
             ]);
             $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_url', ['l_url']);
-            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_times_seen', ['l_times_seen']);
+            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_count_logged', ['l_count_logged']);
 
             $GLOBALS['SITE_DB']->create_index('stats', 'session_id', ['session_id']);
 
             $GLOBALS['SITE_DB']->create_index('ip_country', 'begin_num', ['begin_num']);
             $GLOBALS['SITE_DB']->create_index('ip_country', 'end_num', ['end_num']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from == 10)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added', 'TIME', 'k_added_time');
+            $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added_by', 'MEMBER', 'k_submitter');
+            $GLOBALS['SITE_DB']->alter_table_field('stats_known_events', 'e_times_seen', 'INTEGER', 'e_count_logged');
+            $GLOBALS['SITE_DB']->alter_table_field('stats_known_tracking', 't_times_seen', 'INTEGER', 't_count_logged');
+            $GLOBALS['SITE_DB']->alter_table_field('stats_known_links', 'l_times_seen', 'INTEGER', 'l_count_logged');
         }
     }
 
@@ -614,7 +623,7 @@ class Module_admin_stats extends Standard_crud_module
 
             $graphs[] = $this->templatify_graph($kpi_row['k_graph_name'], $hook_ob, $graph_details, $graph_final_details, $filters, $pivot, false, true);
 
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_submitter'], true);
 
             $kpi = [
                 'TITLE' => $kpi_row['k_title'],
@@ -624,7 +633,7 @@ class Module_admin_stats extends Standard_crud_module
                 'KPI_EDIT_URL' => $edit_url,
                 'GRAPH_NAME' => $kpi_row['k_graph_name'],
                 'USERNAME' => $username,
-                'ADDED' => get_timezoned_date($kpi_row['k_added']),
+                'ADDED' => get_timezoned_date($kpi_row['k_added_time']),
                 'NOTES' => $kpi_row['k_notes'],
             ];
             $kpis[] = $kpi;
@@ -670,13 +679,13 @@ class Module_admin_stats extends Standard_crud_module
         foreach ($_kpis as $_kpi) {
             list($kpi_row, , , , , , $edit_url, , , , ) = $_kpi;
 
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_submitter'], true);
 
             $fr = [
                 $kpi_row['k_title'],
                 $kpi_row['k_graph_name'],
                 $username,
-                get_timezoned_date($kpi_row['k_added']),
+                get_timezoned_date($kpi_row['k_added_time']),
                 ($kpi_row['k_target'] === null) ? do_lang_tempcode('NONE_EM') : protect_from_escaping(escape_html(float_format($kpi_row['k_target'], 4, true))),
                 protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, $kpi_row['k_title'])),
             ];
@@ -761,11 +770,11 @@ class Module_admin_stats extends Standard_crud_module
      */
     public function get_submitter(string $id) : array
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['k_added_by', 'k_added'], ['id' => intval($id)], '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['k_submitter', 'k_added_time'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return [null, null];
         }
-        return [$rows[0]['k_added_by'], $rows[0]['k_added']];
+        return [$rows[0]['k_submitter'], $rows[0]['k_added_time']];
     }
 
     /**
@@ -811,8 +820,8 @@ class Module_admin_stats extends Standard_crud_module
             'k_filters' => json_encode($filters),
             'k_target' => $target,
             'k_title' => $title,
-            'k_added' => time(),
-            'k_added_by' => get_member(),
+            'k_added_time' => time(),
+            'k_submitter' => get_member(),
             'k_notes' => $notes,
         ], true);
 

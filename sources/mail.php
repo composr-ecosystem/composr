@@ -1376,7 +1376,7 @@ abstract class Mail_dispatcher_base
             'm_priority' => $this->priority,
             'm_attachments' => serialize($this->attachments),
             'm_no_cc' => $this->no_cc ? 1 : 0,
-            'm_as' => $this->as,
+            'm_as_member' => $this->as,
             'm_as_admin' => $this->as_admin ? 1 : 0,
             'm_in_html' => $this->in_html ? 1 : 0,
             'm_date_and_time' => time(),

@@ -82,11 +82,11 @@ function suggest_fatalistic()
 /**
  * Terminate with an error caused by unzipping.
  *
+ * @param  PATH $filename The file we attempted to load
  * @param  integer $errno The ZIP error number
- * @param  boolean $mzip Whether mzip was used
  * @return Tempcode Error message
  */
-function zip_error(int $errno, bool $mzip = false) : object
+function zip_error(string $filename, int $errno) : object
 {
     $zip_file_function_errors = [
         // Based on comment from php.net
@@ -120,7 +120,7 @@ function zip_error(int $errno, bool $mzip = false) : object
             $errmsg = $error_message;
         }
     }
-    return do_lang_tempcode($mzip ? 'ZIP_ERROR_MZIP' : 'ZIP_ERROR', $errmsg);
+    return do_lang_tempcode('ZIP_ERROR', _sanitise_error_msg($filename), $errmsg);
 }
 
 /**
@@ -373,20 +373,6 @@ function _warn_screen(object $title, $text, bool $provide_back = true, bool $sup
         'TEXT' => $text,
         'PROVIDE_BACK' => $provide_back,
     ]);
-}
-
-/**
- * Strip privileged data from an error message.
- *
- * @param  string $text The error message
- * @return string Sanitised error message
- *
- * @ignore
- */
-function _sanitise_error_msg(string $text) : string
-{
-    // Strip paths, for security reasons
-    return str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $text);
 }
 
 /**

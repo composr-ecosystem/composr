@@ -36,8 +36,8 @@ class Hook_task_export_quiz
             return null;
         }
 
-        $questions_rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $quiz_id], 'ORDER BY q_order'));
-        $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers a JOIN ' . get_table_prefix() . 'quiz_questions q ON q.id=a.q_question', ['q_answer_text', 'q_question', 'a.id'], ['q_quiz' => $quiz_id], 'ORDER BY q.q_order,a.q_order');
+        $questions_rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz_id' => $quiz_id], 'ORDER BY q_order'));
+        $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers a JOIN ' . get_table_prefix() . 'quiz_questions q ON q.id=a.q_question_id', ['q_answer_text', 'q_question_id', 'a.id'], ['q_quiz_id' => $quiz_id], 'ORDER BY q.q_order,a.q_order');
 
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
@@ -50,10 +50,10 @@ class Hook_task_export_quiz
         $max = 500;
         $start = 0;
 
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz' => $quiz_id]);
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz_id' => $quiz_id]);
 
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', ['*'], ['q_quiz' => $quiz_id], 'ORDER BY q_time', $max, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', ['*'], ['q_quiz_id' => $quiz_id], 'ORDER BY q_time', $max, $start);
 
             foreach ($rows as $i => $row) {
                 task_log($this, 'Processing quiz row', $i, $max_rows);
@@ -62,7 +62,7 @@ class Hook_task_export_quiz
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
                 $member_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
 
-                $member_answer_rows = collapse_2d_complexity('q_question', 'q_answer', $GLOBALS['SITE_DB']->query_select('quiz_entry_answer a JOIN ' . get_table_prefix() . 'quiz_questions q ON q.id=a.q_question', ['a.q_question', 'a.q_answer'], ['q_quiz' => $quiz_id]));
+                $member_answer_rows = collapse_2d_complexity('q_question_id', 'q_answer', $GLOBALS['SITE_DB']->query_select('quiz_entry_answer a JOIN ' . get_table_prefix() . 'quiz_questions q ON q.id=a.q_question_id', ['a.q_question_id', 'a.q_answer'], ['q_quiz_id' => $quiz_id]));
 
                 $quiz_entry = [];
 
@@ -76,7 +76,7 @@ class Hook_task_export_quiz
                     $member_answer = array_key_exists($question_row['id'], $member_answer_rows) ? $member_answer_rows[$question_row['id']] : '';
                     if (($question_row['q_type'] == 'MULTIPLECHOICE') && (is_numeric($member_answer))) {
                         foreach ($answer_rows as $question_answer_row) {
-                            if (($question_answer_row['id'] == intval($member_answer)) && ($question_answer_row['q_question'] == $question_row['id'])) {
+                            if (($question_answer_row['id'] == intval($member_answer)) && ($question_answer_row['q_question_id'] == $question_row['id'])) {
                                 $member_answer = get_translated_text($question_answer_row['q_answer_text']);
                                 break;
                             }

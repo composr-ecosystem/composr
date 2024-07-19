@@ -184,7 +184,7 @@ function actual_add_catalogue(string $name, $title, $description, int $display_t
         $map = [
             'cc_move_days_lower' => 30,
             'cc_move_days_higher' => 60,
-            'cc_move_target' => null,
+            'cc_move_target_id' => null,
             'rep_image' => '',
             'c_name' => $name,
             'cc_notes' => '',
@@ -663,7 +663,7 @@ function actual_add_catalogue_category(string $catalogue_name, $title, $descript
     $map = [
         'cc_move_days_lower' => $move_days_lower,
         'cc_move_days_higher' => $move_days_higher,
-        'cc_move_target' => $move_target,
+        'cc_move_target_id' => $move_target,
         'rep_image' => $rep_image,
         'cc_add_date' => $add_date,
         'c_name' => $catalogue_name,
@@ -872,7 +872,7 @@ function actual_edit_catalogue_category(int $id, string $title, string $descript
     $update_map = [
         'cc_move_days_lower' => $move_days_lower,
         'cc_move_days_higher' => $move_days_higher,
-        'cc_move_target' => $move_target,
+        'cc_move_target_id' => $move_target,
         'cc_notes' => $notes,
         'cc_parent_id' => $parent_id,
     ];
@@ -988,7 +988,7 @@ function actual_delete_catalogue_category(int $id, bool $deleting_all = false)
             } while (!empty($entries));
         }
 
-        $GLOBALS['SITE_DB']->query_update('catalogue_categories', ['cc_move_target' => null], ['cc_move_target' => $id]);
+        $GLOBALS['SITE_DB']->query_update('catalogue_categories', ['cc_move_target_id' => null], ['cc_move_target_id' => $id]);
     }
 
     update_catalogue_content_ref('catalogue_category', strval($id), '');

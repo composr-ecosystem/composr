@@ -422,7 +422,7 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
     }
 
     if (($handle_probation) && ((!$GLOBALS['IS_VIA_BACKDOOR']) || ($member_id != get_member()))) {
-        $opt = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');
+        $opt = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_probation_expiration_time');
         if (($opt !== null) && ($opt > time())) {
             $probation_group = get_probation_group();
             if ($probation_group !== null) {

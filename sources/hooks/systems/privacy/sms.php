@@ -55,7 +55,7 @@ class Hook_privacy_sms extends Hook_privacy_base
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
                     'owner_id_field' => 's_member_id',
                     'additional_member_id_fields' => [],
-                    'ip_address_fields' => ['s_trigger_ip'],
+                    'ip_address_fields' => ['s_trigger_ip_address'],
                     'email_fields' => [],
                     'username_fields' => [],
                     'file_fields' => [],

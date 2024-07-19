@@ -50,7 +50,7 @@ class Hook_content_meta_aware_post extends Hook_CMA
             'content_type_universal_label' => 'Forum post',
 
             'db' => get_db_for('f_posts'),
-            'extra_where_sql' => 'p_intended_solely_for IS NULL',
+            'extra_where_sql' => 'p_whisper_to_member IS NULL',
             'table' => 'f_posts',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -61,7 +61,7 @@ class Hook_content_meta_aware_post extends Hook_CMA
             'category_field' => 'p_cache_forum_id', // For category permissions
             'permission_module' => 'forums', // For category permissions
             'parent_spec__table_name' => 'f_forums',
-            'parent_spec__parent_name' => 'f_parent_forum',
+            'parent_spec__parent_name' => 'f_parent_forum_id',
             'parent_spec__field_name' => 'id',
             'category_is_string' => false,
 
@@ -84,7 +84,7 @@ class Hook_content_meta_aware_post extends Hook_CMA
 
             'views_field' => null,
             'order_field' => null,
-            'submitter_field' => 'p_poster',
+            'submitter_field' => 'p_posting_member',
             'author_field' => null,
             'add_time_field' => 'p_time',
             'edit_time_field' => 'p_last_edit_time',

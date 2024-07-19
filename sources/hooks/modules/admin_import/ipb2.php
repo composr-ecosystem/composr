@@ -257,7 +257,7 @@ class Hook_import_ipb2
         foreach ($rows as $row) {
             if ($row['parent_id'] !== null) {
                 $parent_id = $remap_id[$row['parent_id']];
-                $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum' => $parent_id], ['id' => $remap_id[$row['id']]], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum_id' => $parent_id], ['id' => $remap_id[$row['id']]], '', 1);
             }
         }
     }
@@ -392,9 +392,9 @@ class Hook_import_ipb2
                 $time = $_postdetails['mt_date'];
                 $poster = $from_id;
                 $last_edit_time = null;
-                $last_edit_by = null;
+                $last_edit_member = null;
 
-                cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
+                cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_member, false, false, null, false);
                 $first_post = false;
             }
 
@@ -706,7 +706,7 @@ class Hook_import_ipb2
                     '', // pt_rules_text
                     $validated, // validated
                     '', // validated_email_confirm_code
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     '0', // is_perm_banned
                     false, // check_correctness
                     $row['ip_address'], // ip_address
@@ -1009,9 +1009,9 @@ class Hook_import_ipb2
                 $post = html_to_comcode($this->clean_ipb_post_2($row['post']));
                 cns_over_local();
 
-                $last_edit_by = null;
+                $last_edit_member = null;
                 if ($row['edit_name'] !== null) {
-                    $last_edit_by = $GLOBALS['CNS_DRIVER']->get_member_from_username(@html_entity_decode($row['edit_name'], ENT_QUOTES));
+                    $last_edit_member = $GLOBALS['CNS_DRIVER']->get_member_from_username(@html_entity_decode($row['edit_name'], ENT_QUOTES));
                 }
 
                 $post = str_replace('style_emoticons/<#EMO_DIR#>', '[/html]{$BASE_URL}[html]/data/legacy_emoticons', $post);
@@ -1032,7 +1032,7 @@ class Hook_import_ipb2
                     $post = substr($post, 0, $pos) . $comcode . substr($post, $end);
                 }
 
-                $id_new = cns_make_post($topic_id, $title, $post, 0, $row['new_topic'] == 1, 1 - $row['queued'], 0, @html_entity_decode($row['author_name'], ENT_QUOTES), $row['ip_address'], $row['post_date'], $member_id, null, $row['edit_time'], $last_edit_by, false, false, $forum_id, false);
+                $id_new = cns_make_post($topic_id, $title, $post, 0, $row['new_topic'] == 1, 1 - $row['queued'], 0, @html_entity_decode($row['author_name'], ENT_QUOTES), $row['ip_address'], $row['post_date'], $member_id, null, $row['edit_time'], $last_edit_member, false, false, $forum_id, false);
 
                 import_id_remap_put('post', strval($row['pid']), $id_new);
             }
@@ -1070,14 +1070,14 @@ class Hook_import_ipb2
                     continue;
                 }
 
-                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_poster', 'p_post'], ['id' => $post_id], '', 1);
+                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_posting_member', 'p_post'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $post_row)) {
                     import_id_remap_put('post_files', strval($row['pid']), 1);
                     continue; // Orphaned post
                 }
                 $post = get_translated_text($post_row[0]['p_post']);
                 $lang_id = $post_row[0]['p_post'];
-                $member_id = import_id_remap_get('member', $post_row[0]['p_poster']);
+                $member_id = import_id_remap_get('member', $post_row[0]['p_posting_member']);
                 $post_date = $post_row[0]['p_time'];
 
                 $attachments = $db->query_select('attachments', ['*'], ['attach_rel_id' => $row['pid'], 'attach_rel_module' => 'post']);
@@ -1174,7 +1174,7 @@ class Hook_import_ipb2
                     if ($answer === null) {
                         $answer = -1;
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['ip_address'], 'pv_revoked' => 0, 'pv_date_time' => $row2['vote_date'], 'pv_cache_points_at_voting_time' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip_address' => $row2['ip_address'], 'pv_revoked' => 0, 'pv_date_time' => $row2['vote_date'], 'pv_points_when_voted' => 0]);
                 }
             }
 

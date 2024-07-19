@@ -32,7 +32,7 @@ class Module_points
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 9;
+        $info['version'] = 10;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -85,13 +85,13 @@ class Module_points
                 'date_and_time' => 'TIME',
                 'amount_gift_points' => 'INTEGER',
                 'amount_points' => 'INTEGER',
-                'sender_id' => 'MEMBER',
-                'recipient_id' => 'MEMBER',
+                'sending_member' => 'MEMBER',
+                'receiving_member' => 'MEMBER',
                 'reason' => 'SHORT_TRANS__COMCODE',
                 'anonymous' => 'BINARY',
 
                 'status' => 'INTEGER', // See LEDGER_STATUS_* in points.php
-                'linked_to' => '?AUTO_LINK',
+                'linked_ledger_id' => '?AUTO_LINK',
                 'locked' => 'BINARY', // 1 = status cannot be changed
 
                 // FUDGE: These fields are not preserved in cms_merge at this time (e.g. auto-reversing from content deletion will not work)
@@ -100,7 +100,7 @@ class Module_points
                 't_type_id' => 'ID_TEXT', // Content or row ID of t_type
             ]);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_to', ['linked_to']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_ledger_id', ['linked_ledger_id']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
 
             // t_* searching indexes; t_subtype and t_type_id require t_type for context and so are not indexed independently
@@ -117,11 +117,18 @@ class Module_points
             $GLOBALS['SITE_DB']->alter_table_field('chargelog', 'user_id', 'MEMBER', 'member_id');
         }
 
+        if (($upgrade_from !== null) && ($upgrade_from == 9/*upgrade conflict if we do < 10*/)) { // LEGACY: 11.beta1 from 11.alpha
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'sender_id', 'MEMBER', 'sending_member');
+            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'recipient_id', 'MEMBER', 'receiving_member');
+            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'linked_to', '?AUTO_LINK', 'linked_ledger_id');
+        }
+
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
             $GLOBALS['SITE_DB']->rename_table('gifts', 'points_ledger');
 
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'amount_points', 'INTEGER');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'linked_to', '?AUTO_LINK');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'linked_ledger_id', '?AUTO_LINK');
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'status', 'INTEGER');
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'locked', 'BINARY');
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_type', 'ID_TEXT');
@@ -129,10 +136,10 @@ class Module_points
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_type_id', 'ID_TEXT');
 
             $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'amount', 'INTEGER', 'amount_gift_points');
-            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'gift_from', 'MEMBER', 'sender_id');
-            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'gift_to', 'MEMBER', 'recipient_id');
+            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'gift_from', 'MEMBER', 'sending_member');
+            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'gift_to', 'MEMBER', 'receiving_member');
 
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_to', ['linked_to']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_ledger_id', ['linked_ledger_id']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
 
@@ -144,7 +151,7 @@ class Module_points
             $GLOBALS['SITE_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => LEDGER_STATUS_NORMAL, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
 
             // Never allow negative points in our new ledger; update to the absolute value, swap sender and recipient, and mark as refund.
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sender_id=recipient_id, recipient_id=sender_id, status=' . strval(LEDGER_STATUS_REFUND) . ' WHERE amount_gift_points<0');
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sending_member=receiving_member, receiving_member=sending_member, status=' . strval(LEDGER_STATUS_REFUND) . ' WHERE amount_gift_points<0');
 
             // Migrate all charge-log entries to points_ledger, and delete the chargelog table
             $start = 0;
@@ -152,23 +159,23 @@ class Module_points
                 $chargelogs = $GLOBALS['SITE_DB']->query_select('chargelog', ['*'], [], '', 500, $start);
                 foreach ($chargelogs as $i => $chargelog) {
                     if ($chargelog['amount'] < 0) { // For negative amounts, it is a credit; reverse sender and recipient (we do absolute value in the query_insert)
-                        $sender_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-                        $recipient_id = $chargelog['member_id'];
+                        $sending_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                        $receiving_member = $chargelog['member_id'];
                         $status = LEDGER_STATUS_REFUND;
                     } else {
-                        $recipient_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-                        $sender_id = $chargelog['member_id'];
+                        $receiving_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                        $sending_member = $chargelog['member_id'];
                         $status = LEDGER_STATUS_NORMAL;
                     }
                     $GLOBALS['SITE_DB']->query_insert('points_ledger', [
                         'date_and_time' => $chargelog['date_and_time'],
                         'amount_gift_points' => 0,
                         'amount_points' => abs($chargelog['amount']),
-                        'sender_id' => $sender_id,
-                        'recipient_id' => $recipient_id,
+                        'sending_member' => $sending_member,
+                        'receiving_member' => $receiving_member,
                         'reason' => $chargelog['reason'],
                         'anonymous' => 0,
-                        'linked_to' => null,
+                        'linked_ledger_id' => null,
                         't_type' => 'legacy',
                         't_subtype' => '',
                         't_type_id' => 'chargelog',
@@ -189,20 +196,20 @@ class Module_points
             rename_privilege('trace_anonymous_gifts', 'trace_anonymous_points_transactions');
 
             // Delete the points_gained_given field but not before checking if we need to add a legacy record to the ledger.
-            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'recipient_id'], [], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY recipient_id');
+            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'receiving_member'], [], ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY receiving_member');
             foreach ($rows as $row) {
-                $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['recipient_id']);
+                $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['receiving_member']);
                 $amount = ($row['points'] + $row['gift_points']);
                 if ($amount !== $fields['points_gained_given']) {
                     $difference = ($fields['points_gained_given'] - $amount);
                     $map = [
-                        'sender_id' => ($difference < 0) ? $row['recipient_id'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                        'recipient_id' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['recipient_id'],
+                        'sending_member' => ($difference < 0) ? $row['receiving_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                        'receiving_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['receiving_member'],
                         'amount_gift_points' => 0,
                         'amount_points' => abs($difference),
                         'date_and_time' => time(),
                         'anonymous' => 0,
-                        'linked_to' => null,
+                        'linked_ledger_id' => null,
                         't_type' => 'legacy',
                         't_subtype' => 'upgrader',
                         't_type_id' => 'points_gained_given',
@@ -216,19 +223,19 @@ class Module_points
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_given');
 
             // Delete the points_used and gift_points_used fields but not before checking if we need to add a legacy record to the ledger.
-            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'sender_id'], [], ' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY sender_id');
+            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'sending_member'], [], ' AND sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY sending_member');
             foreach ($rows as $row) {
-                $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['sender_id']);
+                $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['sending_member']);
                 if ($row['points'] !== $fields['points_used']) {
                     $difference = ($fields['points_used'] - $row['points']);
                     $map = [
-                        'sender_id' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sender_id'],
-                        'recipient_id' => ($difference < 0) ? $row['sender_id'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                        'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
+                        'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                         'amount_gift_points' => 0,
                         'amount_points' => abs($difference),
                         'date_and_time' => time(),
                         'anonymous' => 0,
-                        'linked_to' => null,
+                        'linked_ledger_id' => null,
                         't_type' => 'legacy',
                         't_subtype' => 'upgrader',
                         't_type_id' => 'points_used',
@@ -241,13 +248,13 @@ class Module_points
                 if ($fields['gift_points_used'] !== $row['gift_points']) {
                     $difference = ($fields['gift_points_used'] - $row['gift_points']);
                     $map = [
-                        'sender_id' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sender_id'],
-                        'recipient_id' => ($difference < 0) ? $row['sender_id'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                        'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
+                        'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                         'amount_gift_points' => abs($difference),
                         'amount_points' => 0,
                         'date_and_time' => time(),
                         'anonymous' => 0,
-                        'linked_to' => null,
+                        'linked_ledger_id' => null,
                         't_type' => 'legacy',
                         't_subtype' => 'upgrader',
                         't_type_id' => 'gift_points_used',
@@ -279,13 +286,13 @@ class Module_points
                     foreach ($deprecated_fields as $field => $title) {
                         if (array_key_exists($title, $fields)) {
                             $map = [
-                                'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                                'recipient_id' => $member_id,
+                                'sending_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                                'receiving_member' => $member_id,
                                 'amount_gift_points' => 0,
                                 'amount_points' => $fields[$field],
                                 'date_and_time' => time(),
                                 'anonymous' => 0,
-                                'linked_to' => null,
+                                'linked_ledger_id' => null,
                                 't_type' => 'legacy',
                                 't_subtype' => 'upgrader',
                                 't_type_id' => $field,
@@ -293,10 +300,10 @@ class Module_points
                                 'locked' => 0,
                             ];
                             if ($fields[$field] < 0) { // Never have negative points
-                                $sender_id = $map['sender_id'];
-                                $recipient_id = $map['recipient_id'];
-                                $map['sender_id'] = $recipient_id;
-                                $map['recipient_id'] = $sender_id;
+                                $sending_member = $map['sending_member'];
+                                $receiving_member = $map['receiving_member'];
+                                $map['sending_member'] = $receiving_member;
+                                $map['receiving_member'] = $sending_member;
                                 $map['amount_points'] = abs($fields[$field]);
                                 $map['status'] = LEDGER_STATUS_REFUND; // Refunding earned points back to the system
                             }
@@ -312,8 +319,8 @@ class Module_points
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 9)) {
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'send_to', ['sender_id', 'recipient_id']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'receive_from', ['recipient_id', 'sender_id']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'send_to', ['sending_member', 'receiving_member']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'receive_from', ['receiving_member', 'sending_member']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'points', ['amount_points', 'amount_gift_points']);
 
             $GLOBALS['SITE_DB']->create_table('escrow', [
@@ -321,18 +328,18 @@ class Module_points
                 'date_and_time' => 'TIME',
                 'amount' => 'INTEGER',
                 'original_points_ledger_id' => 'AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
-                'sender_id' => 'MEMBER',
-                'recipient_id' => 'MEMBER',
+                'sending_member' => 'MEMBER',
+                'receiving_member' => 'MEMBER',
                 'reason' => 'SHORT_TRANS__COMCODE',
                 'agreement' => 'LONG_TRANS__COMCODE',
-                'expiration' => '?TIME',
+                'expiration_time' => '?TIME',
                 'sender_status' => 'BINARY', // 1 = sender marked satisfied
                 'recipient_status' => 'BINARY', // 1 = recipient marked satisfied
                 'status' => 'INTEGER', // See ESCROW_STATUS_* in points_escrow.php
             ]);
             $GLOBALS['SITE_DB']->create_index('escrow', 'original_points_ledger_id', ['original_points_ledger_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'sender_id', ['sender_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_id', ['recipient_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'sending_member', ['sending_member']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'receiving_member', ['receiving_member']);
             $GLOBALS['SITE_DB']->create_index('escrow', 'date_and_time', ['date_and_time']);
             $GLOBALS['SITE_DB']->create_index('escrow', 'sender_status', ['sender_status']);
             $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_status', ['recipient_status']);
@@ -358,6 +365,13 @@ class Module_points
 
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_lifetime', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from == 9)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'sender_id', 'MEMBER', 'sending_member');
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'recipient_id', 'MEMBER', 'receiving_member');
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'expiration', '?TIME', 'expiration_time');
         }
     }
 
@@ -463,16 +477,16 @@ class Module_points
             // Set breadcrumbs
             if ($member_id_of === null) {
                 $member_id_viewing = get_member();
-                $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['id', 'sender_id', 'recipient_id'], ['id' => $id], '', 1);
+                $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['id', 'sending_member', 'receiving_member'], ['id' => $id], '', 1);
                 if (($_row === null) || !array_key_exists(0, $_row)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                 }
                 $row = $_row[0];
 
-                if ($member_id_viewing == $row['recipient_id']) {
-                    $member_id_of = $row['recipient_id'];
+                if ($member_id_viewing == $row['receiving_member']) {
+                    $member_id_of = $row['receiving_member'];
                 } else {
-                    $member_id_of = $row['sender_id'];
+                    $member_id_of = $row['sending_member'];
                 }
             }
             $map = [['_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')], ['_SELF:_SELF:member:' . strval($member_id_of), do_lang_tempcode('_POINTS', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true)))]];
@@ -968,18 +982,18 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to access an escrow we do not have the privilege to access?
-        if (($row['sender_id'] != $member_id_viewing) && ($row['recipient_id'] != $member_id_viewing) && !has_privilege($member_id_viewing, 'moderate_points_escrow')) {
+        if (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] != $member_id_viewing) && !has_privilege($member_id_viewing, 'moderate_points_escrow')) {
             access_denied('PRIVILEGE', 'moderate_points_escrow');
         }
 
         $reason = get_translated_tempcode('escrow', $row, 'reason');
 
         $date = get_timezoned_date_time($row['date_and_time']);
-        $expiry = ($row['expiration'] !== null) ? get_timezoned_date_time($row['expiration']) : do_lang_tempcode('NA_EM');
-        $from_name = is_guest($row['sender_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true);
-        $_from_name = (is_guest($row['sender_id'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($row['sender_id']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
-        $to_name = is_guest($row['recipient_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], true);
-        $_to_name = (is_guest($row['recipient_id'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['recipient_id']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $expiry = ($row['expiration_time'] !== null) ? get_timezoned_date_time($row['expiration_time']) : do_lang_tempcode('NA_EM');
+        $from_name = is_guest($row['sending_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], true);
+        $_from_name = (is_guest($row['sending_member'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($row['sending_member']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $to_name = is_guest($row['receiving_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true);
+        $_to_name = (is_guest($row['receiving_member'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         $buttons = new Tempcode();
         $status = new Tempcode();
@@ -992,7 +1006,7 @@ class Module_points
                 $status = do_lang_tempcode('ESCROW_STATUS__COMPLETED');
                 break;
             default: // ESCROW_STATUS_PENDING and ESCROW_STATUS_DISPUTED
-                $involved = ($member_id_viewing == $row['sender_id']) || ($member_id_viewing == $row['recipient_id']);
+                $involved = ($member_id_viewing == $row['sending_member']) || ($member_id_viewing == $row['receiving_member']);
 
                 // Dispute button
                 if ($involved) {
@@ -1002,7 +1016,7 @@ class Module_points
                 }
 
                 // Satisfy escrow buttons; not shown / allowed if an escrow is disputed
-                if (($row['status'] == ESCROW_STATUS_PENDING) && ((($member_id_viewing == $row['sender_id']) && ($row['sender_status'] == 0)) || (($member_id_viewing == $row['recipient_id']) && ($row['recipient_status'] == 0)))) {
+                if (($row['status'] == ESCROW_STATUS_PENDING) && ((($member_id_viewing == $row['sending_member']) && ($row['sender_status'] == 0)) || (($member_id_viewing == $row['receiving_member']) && ($row['recipient_status'] == 0)))) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'satisfy_escrow', 'id' => $row['id']]);
                     $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '4090ee4d36dd4006ef9e4ba5262fe786', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
@@ -1081,7 +1095,7 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to satisfy an escrow we do not have the privilege to access?
-        if (($row['sender_id'] != $member_id_viewing) && ($row['recipient_id'] != $member_id_viewing)) {
+        if (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] != $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 
@@ -1091,7 +1105,7 @@ class Module_points
         }
 
         // Member already marked escrow as satisfied
-        if ((($member_id_viewing == $row['sender_id']) && ($row['sender_status'] == 1)) || (($member_id_viewing == $row['recipient_id']) && ($row['recipient_status'] == 1))) {
+        if ((($member_id_viewing == $row['sending_member']) && ($row['sender_status'] == 1)) || (($member_id_viewing == $row['receiving_member']) && ($row['recipient_status'] == 1))) {
             return warn_screen($this->title, do_lang_tempcode('E_ESCROW_ALREADY_SATISFIED'));
         }
 
@@ -1099,10 +1113,10 @@ class Module_points
 
         // Confirmation screen
         if ($confirm == 0) {
-            if ($member_id_viewing == $row['sender_id']) {
-                $other_member = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], true);
+            if ($member_id_viewing == $row['sending_member']) {
+                $other_member = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true);
             } else {
-                $other_member = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true);
+                $other_member = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], true);
             }
             $preview = do_lang_tempcode('ARE_YOU_SURE_ESCROW_SATISFY', escape_html($other_member), $escrow);
             return do_template('CONFIRM_SCREEN', [
@@ -1147,7 +1161,7 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to access an escrow we do not have the privilege to access?
-        if (($row['sender_id'] != $member_id_viewing) && ($row['recipient_id'] != $member_id_viewing)) {
+        if (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] != $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 
@@ -1221,7 +1235,7 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to moderate an escrow in which we are involved?
-        if (($row['sender_id'] == $member_id_viewing) || ($row['recipient_id'] == $member_id_viewing)) {
+        if (($row['sending_member'] == $member_id_viewing) || ($row['receiving_member'] == $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 

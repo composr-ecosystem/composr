@@ -270,7 +270,7 @@ function actual_edit_zone(string $zone, string $title, string $default_page, str
     if ($new_zone != $zone) {
         actual_rename_zone_lite($zone, $new_zone, true);
 
-        $GLOBALS['SITE_DB']->query_update('menu_items', ['i_url' => $new_zone], ['i_url' => $zone], '', 1);
+        $GLOBALS['SITE_DB']->query_update('menu_items', ['i_link' => $new_zone], ['i_link' => $zone], '', 1);
     }
 
     // If we're in this zone, update the theme
@@ -413,7 +413,7 @@ function actual_delete_zone_lite(string $zone)
         $GLOBALS['SITE_DB']->query_delete('redirects', ['r_from_zone' => $zone]);
         $GLOBALS['SITE_DB']->query_delete('redirects', ['r_to_zone' => $zone]);
     }
-    $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_url' => $zone . ':']);
+    $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_link' => $zone . ':']);
 
     $zone_header_text = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
     if ($zone_header_text === null) {
@@ -950,7 +950,7 @@ function delete_cms_page(string $zone, string $page, string $type = 'comcode_cus
     $_page = $page . '.' . get_page_type_file_extension($type);
 
     if ($only_lang === null) {
-        $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_url' => $zone . ':' . $page]);
+        $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_link' => $zone . ':' . $page]);
         delete_cache_entry('menu');
     }
 

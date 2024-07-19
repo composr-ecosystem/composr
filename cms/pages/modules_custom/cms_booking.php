@@ -1207,7 +1207,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
                     '', // pt_rules_text
                     1, // validated
                     '', // validated_email_confirm_code
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     '0', // is_perm_banned
                     false // check_correctness
                 );

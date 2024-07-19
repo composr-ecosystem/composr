@@ -261,7 +261,7 @@ function user_sync__inbound($since = null)
                     '', // pt_rules_text
                     $validated, // validated
                     '', // validated_email_confirm_code
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     $is_perm_banned, // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
@@ -317,7 +317,7 @@ function user_sync__inbound($since = null)
                     '*', // pt_allow
                     '', // pt_rules_text
                     $validated, // validated
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     $is_perm_banned, // is_perm_banned
                     false, // check_correctness
                     $password_compatibility_scheme, // password_compatibility_scheme

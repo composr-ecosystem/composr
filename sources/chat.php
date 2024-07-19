@@ -972,7 +972,7 @@ function chat_post_message(int $room_id, string $message, string $font_name, str
                 for ($i = 2; $i < count($members); $i++) {
                     $table .= ' JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_special_pt_access a' . strval($i) . ' ON a' . strval($i) . '.s_topic_id=t.id AND a' . strval($i) . '.s_member_id=' . strval($members[$i]);
                 }
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there($table, 'id', ['t_cache_first_title' => do_lang('INSTANT_MESSAGING_CONVO'), 't_pt_from' => $members[0], 't_pt_to' => $members[1]]);
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there($table, 'id', ['t_cache_first_title' => do_lang('INSTANT_MESSAGING_CONVO'), 't_pt_from_member' => $members[0], 't_pt_to_member' => $members[1]]);
                 if ($topic_id === null) {
                     require_code('cns_topics_action');
                     $topic_id = cns_make_topic(null, '', '', 1, 0, 0, 0, $members[0], $members[1], false);

@@ -36,7 +36,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
     if ($topic_id === null) {
         $topic_id = $post_info[0]['p_topic_id'];
         $forum_id = $post_info[0]['p_cache_forum_id'];
-        $poster = $post_info[0]['p_poster'];
+        $poster = $post_info[0]['p_posting_member'];
         $post = get_translated_text($post_info[0]['p_post'], $GLOBALS['FORUM_DB']);
     }
 
@@ -44,7 +44,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
         access_denied('I_ERROR');
     }
 
-    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from', 't_cache_first_title'], ['id' => $topic_id], '', 1);
+    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from_member', 't_cache_first_title'], ['id' => $topic_id], '', 1);
     $topic_title = $topic_info['t_cache_first_title'];
 
     $GLOBALS['FORUM_DB']->query_update('f_posts', [
@@ -73,7 +73,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
         }
 
         // Award points when necessary and if not already awarded
-        if (($post_counts === 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_poster'])) && ($post_info[0]['p_intended_solely_for'] === null) && ($topic_info[0]['t_pt_from'] === null)) {
+        if (($post_counts === 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_posting_member'])) && ($post_info[0]['p_whisper_to_member'] === null) && ($topic_info[0]['t_pt_from_member'] === null)) {
             $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
             if ($already_awarded === null) {
                 $post_points = intval(get_option('points_posting'));
@@ -87,7 +87,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
 
     send_content_validated_notification('post', strval($post_id), $post_points);
 
-    cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $poster, $is_starter, $post, $topic_info[0]['t_cache_first_title'], null, ($topic_info[0]['t_pt_from'] !== null), null, null, $post_info[0]['p_poster_name_if_guest']);
+    cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $poster, $is_starter, $post, $topic_info[0]['t_cache_first_title'], null, ($topic_info[0]['t_pt_from_member'] !== null), null, null, $post_info[0]['p_poster_name_if_guest']);
 
     if ($forum_id !== null) {
         cns_force_update_forum_caching($forum_id, 0, 1);
@@ -107,7 +107,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
  * @param  LONG_TEXT $post The post
  * @param  BINARY $skip_sig Whether to skip showing the posters signature in the post
  * @param  BINARY $is_emphasised Whether the post is marked emphasised
- * @param  ?MEMBER $intended_solely_for The member that this post is intended solely for (null: none)
+ * @param  ?MEMBER $whisper_to_member The member that this post is intended solely for (null: none)
  * @param  boolean $show_as_edited Whether to show the post as edited
  * @param  boolean $mark_as_unread Whether to mark the topic as unread by those previous having read this post
  * @param  LONG_TEXT $reason The reason for this action
@@ -120,7 +120,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
  * @param  ?string $poster_name_if_guest The name of the person making the post (null: no change)
  * @return AUTO_LINK The ID of the topic (while this could be known without calling this function, as we've gone to effort and grabbed it from the DB, it might turn out useful for something)
  */
-function cns_edit_post(int $post_id, ?int $validated, string $title, string $post, int $skip_sig, int $is_emphasised, ?int $intended_solely_for, bool $show_as_edited, bool $mark_as_unread, string $reason, bool $check_perms = true, ?int $edit_time = null, ?int $add_time = null, ?int $submitter = null, bool $null_is_literal = false, bool $run_checks = true, ?string $poster_name_if_guest = null) : int
+function cns_edit_post(int $post_id, ?int $validated, string $title, string $post, int $skip_sig, int $is_emphasised, ?int $whisper_to_member, bool $show_as_edited, bool $mark_as_unread, string $reason, bool $check_perms = true, ?int $edit_time = null, ?int $add_time = null, ?int $submitter = null, bool $null_is_literal = false, bool $run_checks = true, ?string $poster_name_if_guest = null) : int
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -132,11 +132,11 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
     }
     $_title = $post_info[0]['p_title'];
     $_post = $post_info[0]['p_post'];
-    $post_owner = $post_info[0]['p_poster'];
+    $post_owner = $post_info[0]['p_posting_member'];
     $forum_id = $post_info[0]['p_cache_forum_id'];
     $topic_id = $post_info[0]['p_topic_id'];
 
-    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from', 't_cache_first_title'], ['id' => $topic_id], '', 1);
+    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from_member', 't_cache_first_title'], ['id' => $topic_id], '', 1);
 
     require_code('cns_posts_action');
     require_code('cns_posts');
@@ -201,7 +201,7 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
     $update_map += [
         'p_title' => $title,
         'p_is_emphasised' => $is_emphasised,
-        'p_intended_solely_for' => $intended_solely_for,
+        'p_whisper_to_member' => $whisper_to_member,
         'p_validated' => $validated,
         'p_skip_sig' => $skip_sig,
     ];
@@ -212,17 +212,17 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
 
     if ($show_as_edited) {
         $update_map['p_last_edit_time'] = $edit_time;
-        $update_map['p_last_edit_by'] = get_member();
+        $update_map['p_last_edit_member'] = get_member();
     } else {
         $update_map['p_last_edit_time'] = null;
-        $update_map['p_last_edit_by'] = null;
+        $update_map['p_last_edit_member'] = null;
     }
 
     if ($add_time !== null) {
         $update_map['p_time'] = $add_time;
     }
     if ($submitter !== null) {
-        $update_map['p_poster'] = $submitter;
+        $update_map['p_posting_member'] = $submitter;
     }
 
     $GLOBALS['FORUM_DB']->query_update('f_posts', $update_map, ['id' => $post_id], '', 1);
@@ -242,7 +242,7 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
     }
 
     // Award points when necessary and if not already awarded
-    if (($validated == 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_poster'])) && ($post_info[0]['p_intended_solely_for'] === null) && ($topic_info[0]['t_pt_from'] === null)) {
+    if (($validated == 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_posting_member'])) && ($post_info[0]['p_whisper_to_member'] === null) && ($topic_info[0]['t_pt_from_member'] === null)) {
         $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
         if ($already_awarded === null) {
             $post_points = intval(get_option('points_posting'));
@@ -280,7 +280,7 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
     }
 
     // Info about source
-    $info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_pt_from', 't_pt_to'], ['id' => $topic_id], '', 1);
+    $info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_pt_from_member', 't_pt_to_member'], ['id' => $topic_id], '', 1);
     if (!array_key_exists(0, $info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
     }
@@ -306,10 +306,10 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
         $_postdetails = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . $or_list, $max, $start, false, true);
         $num_posts_counted = 0;
         foreach ($_postdetails as $post) {
-            if (($post['p_intended_solely_for'] === null) && ($post['p_validated'] == 1)) {
+            if (($post['p_whisper_to_member'] === null) && ($post['p_validated'] == 1)) {
                 $num_posts_counted++;
             }
-            $post_owner = $post['p_poster'];
+            $post_owner = $post['p_posting_member'];
             if ($check_perms) {
                 if (!cns_may_delete_post_by($post['id'], $post['p_time'], $post_owner, $forum_id)) {
                     access_denied('I_ERROR');
@@ -337,7 +337,7 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
                 strval($topic_id),
                 $post['p_title'],
                 get_translated_text($post['p_post'], $GLOBALS['FORUM_DB']),
-                $post['p_poster'],
+                $post['p_posting_member'],
                 $post['p_time'],
                 $moderatorlog_id
             );
@@ -354,14 +354,14 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
         }
     }
     if ($post_counts == 1) {
-        $sql = 'SELECT p_poster FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list . ')';
+        $sql = 'SELECT p_posting_member FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list . ')';
         if (addon_installed('validation')) {
             $sql .= ' AND p_validated=1';
         }
         $_member_post_counts = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true);
         $member_post_counts = [];
         foreach ($_member_post_counts as $_member_post_count) {
-            $_member = $_member_post_count['p_poster'];
+            $_member = $_member_post_count['p_posting_member'];
             if (!array_key_exists($_member, $member_post_counts)) {
                 $member_post_counts[$_member] = 0;
             }
@@ -429,8 +429,8 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
     if ($forum_id !== null) {
         cns_decache_cms_blocks($forum_id);
     } else {
-        decache_private_topics($info[0]['t_pt_from']);
-        decache_private_topics($info[0]['t_pt_to']);
+        decache_private_topics($info[0]['t_pt_from_member']);
+        decache_private_topics($info[0]['t_pt_to_member']);
     }
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -477,10 +477,10 @@ function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, str
     if (!cns_may_moderate_forum($from_forum_id)) {
         access_denied('I_ERROR');
     }
-    $_postdetails = $GLOBALS['FORUM_DB']->query('SELECT p_cache_forum_id,p_intended_solely_for,p_validated FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . $or_list, null, 0, false, true);
+    $_postdetails = $GLOBALS['FORUM_DB']->query('SELECT p_cache_forum_id,p_whisper_to_member,p_validated FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . $or_list, null, 0, false, true);
     $num_posts_counted = 0;
     foreach ($_postdetails as $post) {
-        if (($post['p_intended_solely_for'] === null) && ($post['p_validated'] == 1)) {
+        if (($post['p_whisper_to_member'] === null) && ($post['p_validated'] == 1)) {
             $num_posts_counted++;
         }
         if ($post['p_cache_forum_id'] != $from_forum_id) {
@@ -509,7 +509,7 @@ function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, str
             require_code('tickets2');
             $member_id = get_member();
             foreach ($posts as $post) {
-                $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_poster', ['id' => $posts[0]]);
+                $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_posting_member', ['id' => $posts[0]]);
                 if ($member_id != get_member()) {
                     break;
                 }
@@ -569,11 +569,11 @@ function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, str
                 $to = $post_count_info[0]['f_post_count_increment'];
             }
             if ($from != $to) {
-                $sql = 'SELECT p_poster FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list . ')';
+                $sql = 'SELECT p_posting_member FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE (' . $or_list . ')';
                 if (addon_installed('validation')) {
                     $sql .= ' AND p_validated=1';
                 }
-                $_member_post_counts = collapse_1d_complexity('p_poster', $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true));
+                $_member_post_counts = collapse_1d_complexity('p_posting_member', $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true));
                 $member_post_counts = array_count_values($_member_post_counts);
 
                 foreach ($member_post_counts as $member_id => $member_post_count) {

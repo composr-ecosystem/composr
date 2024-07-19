@@ -572,7 +572,7 @@ class Module_cms_news extends Standard_crud_module
 
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'news', 'content_id' => strval($id)]));
 
-        $ret = $this->get_form_fields($id, $cat, $categories, get_translated_text($myrow['title']), get_translated_text($myrow['news']), $myrow['author'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], 0, $myrow['notes'], $myrow['news_image'], $scheduled, $regions);
+        $ret = $this->get_form_fields($id, $cat, $categories, get_translated_text($myrow['title']), get_translated_text($myrow['news']), $myrow['author'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], 0, $myrow['notes'], $myrow['news_image_url'], $scheduled, $regions);
 
         $ret[2] = new Tempcode();
         $ret[3] = '';

@@ -51,7 +51,7 @@ function member_is_online(int $member_id) : bool
     }
 
     $users_online_time_seconds = intval(get_option('users_online_time')) * 60;
-    $sql = 'SELECT last_activity FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval(time() - $users_online_time_seconds) . ' AND member_id=' . strval($member_id);
+    $sql = 'SELECT last_activity_time FROM ' . get_table_prefix() . 'sessions WHERE last_activity_time>' . strval(time() - $users_online_time_seconds) . ' AND member_id=' . strval($member_id);
     $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
     $ret = $result !== null;
 
@@ -83,9 +83,9 @@ function get_users_online(bool $longer_time, ?int $filter, int &$count) : ?array
 
     if (get_option('session_prudence') == '1') {
         // If we have multiple servers this many not be accurate as we probably turned replication off for the sessions table. The site design should be updated to not show this kind of info
-        $count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval($cutoff)); // Written in by reference
+        $count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'sessions WHERE last_activity_time>' . strval($cutoff)); // Written in by reference
         if ($filter !== null) {
-            return $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval($cutoff) . ' AND member_id=' . strval($filter), 1);
+            return $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE last_activity_time>' . strval($cutoff) . ' AND member_id=' . strval($filter), 1);
         }
         if (count($SESSION_CACHE) > $max_to_show) {
             return null;
@@ -100,7 +100,7 @@ function get_users_online(bool $longer_time, ?int $filter, int &$count) : ?array
     $guests_online = 0;
     $members_online = 0;
     foreach ($sessions as $row) {
-        if (($row['last_activity'] > $cutoff) && ($row['session_invisible'] == 0)) {
+        if (($row['last_activity_time'] > $cutoff) && ($row['session_invisible'] == 0)) {
             if ($row['member_id'] == $guest_id) {
                 if ($count < $max_to_show) {
                     $guests[] = $row;
@@ -124,7 +124,7 @@ function get_users_online(bool $longer_time, ?int $filter, int &$count) : ?array
         }
 
         if (($count >= $max_to_show) && ($filter !== null)) {
-            return $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval($cutoff) . ' AND member_id=' . strval($filter), 1);
+            return $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE last_activity_time>' . strval($cutoff) . ' AND member_id=' . strval($filter), 1);
         }
     }
 

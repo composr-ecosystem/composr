@@ -394,8 +394,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/tree_lists.php',
             'sources/hooks/systems/config/trusted_sites_1.php',
             'sources/hooks/systems/config/trusted_sites_2.php',
-            'sources/hooks/systems/config/unzip_cmd.php',
-            'sources/hooks/systems/config/unzip_dir.php',
             'sources/hooks/systems/config/url_monikers_enabled.php',
             'sources/hooks/systems/config/url_scheme.php',
             'sources/hooks/systems/config/url_scheme_omit_default_zone_pages.php',

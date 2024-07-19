@@ -109,7 +109,7 @@ class auth_test_set extends cms_test_case
 
             $new_session_row = [
                 'the_session' => $fake_session_id,
-                'last_activity' => time(),
+                'last_activity_time' => time(),
                 'member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id() + 1,
                 'ip' => $ip,
                 'session_confirmed' => 1,

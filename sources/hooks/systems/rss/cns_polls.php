@@ -73,7 +73,7 @@ class Hook_rss_cns_polls
         // $_filters = '24'; // Anything under particular topic ID
 
         require_code('selectcode');
-        $filters = selectcode_to_sqlfragment($_filters, 't.id', 'f_forums', 'f_parent_forum', 't_forum_id', 't.id', true, true, $GLOBALS['FORUM_DB']);
+        $filters = selectcode_to_sqlfragment($_filters, 't.id', 'f_forums', 'f_parent_forum_id', 't_forum_id', 't.id', true, true, $GLOBALS['FORUM_DB']);
 
         $sql = 'SELECT *,pv.id AS pv_id,t.id AS t_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_votes pv';
         $sql .= ' JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls po ON po.id=pv.pv_poll_id';
@@ -117,7 +117,7 @@ class Hook_rss_cns_polls
                 $_category_author = $GLOBALS['FORUM_DRIVER']->get_displayname($row['t_cache_first_username']);
 
                 $_voting_power = $row['pv_cache_voting_power'];
-                $_points = $row['pv_cache_points_at_voting_time'];
+                $_points = $row['pv_points_when_voted'];
 
                 $vote_metadata = [];
                 $vote_metadata[] = do_lang_tempcode('POLL_RSS_SUMMARY_CONTENT_1', $author, $news_title, [$category, $_category_author, $news_date]);

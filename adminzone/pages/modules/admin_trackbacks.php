@@ -156,14 +156,14 @@ class Module_admin_trackbacks
                 switch ($val) {
                     case '2':
                         if (addon_installed('securitylogging')) {
-                            $trackback_ip = $GLOBALS['SITE_DB']->query_select_value_if_there('trackbacks', 'trackback_ip', ['id' => $id]);
-                            if ($trackback_ip === null) {
+                            $trackback_ip_address = $GLOBALS['SITE_DB']->query_select_value_if_there('trackbacks', 'trackback_ip_address', ['id' => $id]);
+                            if ($trackback_ip_address === null) {
                                 break;
                             }
                             require_code('failure');
                             require_code('failure_spammers');
-                            add_ip_ban($trackback_ip, do_lang('TRACKBACK_SPAM'));
-                            syndicate_spammer_report($trackback_ip, '', '', do_lang('TRACKBACK_SPAM'), false);
+                            add_ip_ban($trackback_ip_address, do_lang('TRACKBACK_SPAM'));
+                            syndicate_spammer_report($trackback_ip_address, '', '', do_lang('TRACKBACK_SPAM'), false);
                         }
                         // no break
                     case '1':

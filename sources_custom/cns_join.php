@@ -37,24 +37,45 @@ function init__cns_join($in)
     } else {
         $extra_code = "\$hidden->attach(get_referrer_field(false));";
     }
-    $in = override_str_replace_exactly(
+
+    // Inject code, but do not cause full-on critical error if it is broken so members can still register.
+
+    require_code('override_api');
+
+    insert_code_after__by_command(
+        $in,
+        'cns_join_form',
         "/*PSEUDO-HOOK: cns_join_form special fields*/",
-        $extra_code,
-        $in
+        "
+        " . $extra_code . "
+        ",
+        1,
+        true
     );
 
     // Better referral detection, and proper qualification management
-    $in = override_str_replace_exactly(
+    insert_code_after__by_command(
+        $in,
+        'cns_join_form',
         "/*PSEUDO-HOOK: cns_join_actual referrals*/",
-        "set_from_referrer_field();",
-        $in
+        "
+        set_from_referrer_field();
+        ",
+        1,
+        true
     );
 
     // Handle signup referrals
-    $in = override_str_replace_exactly(
+    insert_code_after__by_command(
+        $in,
+        'cns_join_actual',
         "/*PSEUDO-HOOK: cns_join_actual ends*/",
-        "require_code('referrals'); assign_referral_awards(\$member_id, 'join');",
-        $in
+        "
+        require_code('referrals');
+        assign_referral_awards(\$member_id, 'join');
+        ",
+        1,
+        true
     );
 
     return $in;
@@ -93,13 +114,13 @@ function set_from_referrer_field()
     $referrer_member = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_equal_to('m_username', $referrer) . ' OR ' . db_string_equal_to('m_email_address', $referrer));
     if ($referrer_member !== null) {
         $GLOBALS['FORUM_DB']->query_delete('f_invites', [
-            'i_inviter' => $referrer_member,
+            'i_invite_member' => $referrer_member,
             'i_email_address' => post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS),
         ]);
         $GLOBALS['FORUM_DB']->query_insert('f_invites', [
             'i_time' => time(),
             'i_taken' => 1,
-            'i_inviter' => $referrer_member,
+            'i_invite_member' => $referrer_member,
             'i_email_address' => post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS),
         ]);
     }

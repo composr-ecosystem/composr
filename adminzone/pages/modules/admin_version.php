@@ -35,7 +35,7 @@ class Module_admin_version
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 19;
+        $info['version'] = 20;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -138,10 +138,10 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'i_menu' => 'ID_TEXT', // Foreign key in the future - currently it just binds together
                 'i_order' => 'INTEGER',
-                'i_parent' => '?AUTO_LINK',
+                'i_parent_id' => '?AUTO_LINK',
                 'i_caption' => 'SHORT_TRANS__COMCODE',
                 'i_caption_long' => 'SHORT_TRANS__COMCODE',
-                'i_url' => 'SHORT_TEXT', // Supports page-links
+                'i_link' => 'SHORT_TEXT', // Supports page-links or URLs
                 'i_check_permissions' => 'BINARY',
                 'i_expanded' => 'BINARY',
                 'i_new_window' => 'BINARY',
@@ -155,9 +155,9 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'trackback_for_type' => 'ID_TEXT',
                 'trackback_for_id' => 'ID_TEXT',
-                'trackback_ip' => 'IP',
+                'trackback_ip_address' => 'IP',
                 'trackback_time' => 'TIME',
-                'trackback_url' => 'SHORT_TEXT',
+                'trackback_url' => 'URLPATH',
                 'trackback_title' => 'SHORT_TEXT',
                 'trackback_excerpt' => 'LONG_TEXT',
                 'trackback_name' => 'SHORT_TEXT',
@@ -280,8 +280,8 @@ class Module_admin_version
                 't_image_url' => 'URLPATH',
                 't_mime_type' => 'ID_TEXT',
                 // oEmbed...
-                't_json_discovery' => 'URLPATH',
-                't_xml_discovery' => 'URLPATH',
+                't_discovery_url_json' => 'URLPATH',
+                't_discovery_url_xml' => 'URLPATH',
             ]);
             $GLOBALS['SITE_DB']->create_index('url_title_cache', 't_url', ['t_url']);
 
@@ -290,7 +290,7 @@ class Module_admin_version
                 'rating_for_type' => 'ID_TEXT',
                 'rating_for_id' => 'ID_TEXT',
                 'rating_member' => 'MEMBER',
-                'rating_ip' => 'IP',
+                'rating_ip_address' => 'IP',
                 'rating_time' => 'TIME',
                 'rating' => 'SHORT_INTEGER',
             ]);
@@ -337,6 +337,13 @@ class Module_admin_version
 
         // A lot of core upgrade is also here. When absolutely necessary it is put in upgrade.php.
 
+        if (($upgrade_from !== null) && ($upgrade_from < 20)) { // LEGACY: 11.beta1 (later upgrade code depends on this)
+            // Consistency changes which must occur first
+            if ($upgrade_from == 19) {
+                $GLOBALS['SITE_DB']->alter_table_field('cron_progression', 'c_last_run', '?TIME', 'c_last_run_time');
+            }
+        }
+
         if (($upgrade_from < 10) || ($upgrade_from === null)) {
             $GLOBALS['SITE_DB']->create_table('url_id_monikers', [
                 'id' => '*AUTO',
@@ -375,7 +382,7 @@ class Module_admin_version
                 'm_priority' => 'SHORT_INTEGER',
                 'm_attachments' => 'LONG_TEXT',
                 'm_no_cc' => 'BINARY',
-                'm_as' => 'MEMBER',
+                'm_as_member' => 'MEMBER',
                 'm_as_admin' => 'BINARY',
                 'm_in_html' => 'BINARY',
                 'm_date_and_time' => 'TIME',
@@ -394,8 +401,8 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'i_submitter' => 'MEMBER',
                 'i_date_and_time' => 'TIME',
-                'i_orig_filename' => 'URLPATH',
-                'i_save_url' => 'SHORT_TEXT',
+                'i_orig_filename' => 'SHORT_TEXT',
+                'i_save_url' => 'URLPATH',
             ]);
         }
 
@@ -821,7 +828,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'datetimeadded', 'TIME', 'add_date');
             $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'recurinterval', 'INTEGER', 'recur_interval');
             $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'recurevery', 'ID_TEXT', 'recur_every');
-            $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'taskisdone', '?TIME', 'task_is_done');
+            $GLOBALS['SITE_DB']->alter_table_field('staff_checklist_cus_tasks', 'taskisdone', '?TIME', 'done_time');
 
             $GLOBALS['SITE_DB']->delete_index_if_exists('member_privileges', 'mspname');
             $GLOBALS['SITE_DB']->delete_index_if_exists('member_privileges', 'mspmember_id');
@@ -965,7 +972,7 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'url' => 'LONG_TEXT', // Support arbitrary length
                 'url_exists' => 'BINARY',
-                'url_message' => 'SHORT_TEXT',
+                'response_message' => 'SHORT_TEXT',
                 'url_destination_url' => 'URLPATH',
                 'url_check_time' => 'TIME',
             ]);
@@ -1013,14 +1020,13 @@ class Module_admin_version
         if (($upgrade_from === null) || ($upgrade_from < 19)) {
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'from_member_id', ['d_from_member_id']);
             $GLOBALS['SITE_DB']->create_index('cache', 'the_member', ['the_member']);
-            $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as', ['m_as']);
             $GLOBALS['SITE_DB']->create_index('rating', 'rating_member', ['rating_member']);
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences', ['r_referer_type', 'r_referer_id']);
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'who_has', ['l_notification_code', 'l_code_category(10)', 'l_setting']); // l_code_category is not enough as may be searched as ''
 
             $GLOBALS['SITE_DB']->create_table('cron_progression', [
                 'c_hook' => '*ID_TEXT',
-                'c_last_run' => '?TIME',
+                'c_last_run_time' => '?TIME',
                 'c_last_execution_secs' => '?INTEGER',
                 'c_last_error' => 'LONG_TEXT',
                 'c_enabled' => 'BINARY',
@@ -1037,7 +1043,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('translation_cache', 'lookup', ['t_lang_from', 't_lang_to', 't_text(100)', 't_context']);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 19)) { // LEGACY
+        if (($upgrade_from !== null) && ($upgrade_from < 19)) { // LEGACY: 11 alpha
             $GLOBALS['SITE_DB']->drop_table_if_exists('bookmarks');
 
             rename_config_option('allowed_partner_sites', 'trusted_sites_2');
@@ -1070,7 +1076,7 @@ class Module_admin_version
             ];
             foreach ($elective_values_remap as $value => $cron_hook) {
                 $GLOBALS['SITE_DB']->query_insert_or_replace('cron_progression', [
-                    'c_last_run' => get_value($value, null, true),
+                    'c_last_run_time' => get_value($value, null, true),
                     'c_last_execution_secs' => null,
                     'c_last_error' => '',
                     'c_enabled' => 1,
@@ -1091,7 +1097,7 @@ class Module_admin_version
             ];
             foreach ($values_remap as $value => $cron_hook) {
                 $GLOBALS['SITE_DB']->query_insert_or_replace('cron_progression', [
-                    'c_last_run' => get_value($value, null),
+                    'c_last_run_time' => get_value($value, null),
                     'c_last_execution_secs' => null,
                     'c_last_error' => '',
                     'c_enabled' => 1,
@@ -1142,9 +1148,6 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->add_table_field('urls_checked', 'url_destination_url', 'URLPATH');
 
             $GLOBALS['SITE_DB']->drop_table_if_exists('https_pages');
-
-            $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
-            $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
 
             $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_name' => 'member_id', 'm_table' => 'member_privileges'], '', 1);
 
@@ -1216,6 +1219,25 @@ class Module_admin_version
 
             set_value('setupwizard_completed', get_value('setupwizard_completed', '0'), true);
             delete_value('setupwizard_completed');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 20)) { // LEGACY: 11.beta1
+            // Consistency changes
+            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_parent', '?AUTO_LINK', 'i_parent_id');
+            //$GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link'); // Actually we do this in version_specific()
+            $GLOBALS['SITE_DB']->alter_table_field('trackbacks', 'trackback_ip', 'IP', 'trackback_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('trackbacks', 'trackback_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('url_title_cache', 't_json_discovery', 'URLPATH', 't_discovery_url_json');
+            $GLOBALS['SITE_DB']->alter_table_field('url_title_cache', 't_xml_discovery', 'URLPATH', 't_discovery_url_xml');
+            $GLOBALS['SITE_DB']->alter_table_field('rating', 'rating_ip', 'IP', 'rating_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_as', 'MEMBER', 'm_as_member');
+            $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_orig_filename', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_save_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('urls_checked', 'url_message', 'SHORT_TEXT', 'response_message');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 20)) {
+            $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as_member', ['m_as_member']);
         }
     }
 

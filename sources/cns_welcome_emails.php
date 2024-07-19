@@ -27,7 +27,7 @@
  */
 function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
 {
-    $newsletter_style = (($mail['w_newsletter'] !== null) && (addon_installed('newsletter')));
+    $newsletter_style = (($mail['w_newsletter_id'] !== null) && (addon_installed('newsletter')));
 
     if ($member === null) {
         $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row(get_member());

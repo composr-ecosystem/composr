@@ -261,7 +261,7 @@ class CMSTopicRead
 
             $participant_id = $method_data;
 
-            $conditions[] = 'pp.p_poster=' . strval($participant_id);
+            $conditions[] = 'pp.p_posting_member=' . strval($participant_id);
 
             // Run query
             $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();

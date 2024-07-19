@@ -1755,15 +1755,18 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
         return $ADDON_INSTALLED_CACHE[$addon_name][$check_hookless][$deep_scan][$disabled_scan];
     }
 
+    $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
+    $check_custom = ((!in_safe_mode()) || ($page == 'admin-addons')); // We must load non-bundled addon hooks on admin-addons to allow upgrading
+
     // Check addon_registry hook
     $addon_name = filter_naughty($addon_name, true);
     $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
-    if ((!$answer) && (!in_safe_mode())) {
+    if ((!$answer) && ($check_custom)) {
         $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
     }
 
     // Check addons table
-    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!in_safe_mode()) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
+    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($check_custom) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
         require_code('database');
 
         if ((!$answer) && ($check_hookless)) {
@@ -2748,7 +2751,7 @@ function get_ip_address(int $amount = 4, ?string $ip = null) : string
     }
 
     global $SITE_INFO;
-    if (($amount == 3) && (!empty($SITE_INFO['full_ips']))) { // Extra configurable security
+    if (($amount == 3) && (!empty($SITE_INFO['full_ip_addresss']))) { // Extra configurable security
         $amount = 4;
     }
 
@@ -3458,8 +3461,8 @@ function find_session_tracking_codes(?string $email_address = null) : array
         // This is not strictly a tracking code (it won't come up in the stats system for example), but we roll it into this function for simplicity
         static $inviter = false;
         if ($inviter === false) {
-            $_inviter = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_inviter', 'i_time'], ['i_email_address' => $email_address], 'ORDER BY i_time DESC', 1);
-            $inviter = array_key_exists(0, $_inviter) ? $_inviter[0]['i_inviter'] : null;
+            $_inviter = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_invite_member', 'i_time'], ['i_email_address' => $email_address], 'ORDER BY i_time DESC', 1);
+            $inviter = array_key_exists(0, $_inviter) ? $_inviter[0]['i_invite_member'] : null;
         }
         if ($inviter !== null) {
             $tracking_codes[] = strval($inviter);
@@ -5701,4 +5704,18 @@ function comma_list_str_to_arr(string $str, bool $block_symbol_style = false) : 
     }
 
     return $map;
+}
+
+/**
+ * Strip privileged data from an error message.
+ *
+ * @param  string $text The error message
+ * @return string Sanitised error message
+ *
+ * @ignore
+ */
+function _sanitise_error_msg(string $text) : string
+{
+    // Strip paths, for security reasons
+    return str_replace([get_custom_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '/', get_file_base() . '\\'], ['', '', '', ''], $text);
 }

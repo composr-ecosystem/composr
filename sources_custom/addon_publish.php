@@ -285,8 +285,8 @@ function generate_addon_description($info)
         $description .= "\n\n[title=\"2\"]System Requirements / Dependencies[/title]\n\n" . $dependencies;
     }
 
-    if ($info['min_cms_version'] == '') {
-        $info['min_cms_version'] = '11.0'; // FUDGE: Anything without min_cms_version cannot be installed on version 11 and above.
+    if (empty($info['min_cms_version'])) {
+        $info['min_cms_version'] = 11.0; // FUDGE: Anything without min_cms_version cannot be installed on version 11 and above.
     }
 
     $description .= "\n\n[title=\"2\"]Website Software Requirements[/title]\n\n";

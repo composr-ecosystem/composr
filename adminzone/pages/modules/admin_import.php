@@ -39,7 +39,7 @@ class Module_admin_import
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 7;
+        $info['version'] = 8;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -92,6 +92,11 @@ class Module_admin_import
             }
         }
 
+        if (($upgrade_from !== null) && ($upgrade_from >= 4) && ($upgrade_from < 7)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('import_parts_done', 'imp_refresh_time', 'INTEGER', 'imp_refresh_interval');
+        }
+
         if (($upgrade_from === null) || ($upgrade_from < 4)) {
             $GLOBALS['SITE_DB']->create_table('import_parts_done', [
                 'id' => '*AUTO',
@@ -107,7 +112,7 @@ class Module_admin_import
                 'imp_db_user' => 'ID_TEXT',
                 'imp_db_table_prefix' => 'ID_TEXT',
                 'imp_hook' => 'ID_TEXT',
-                'imp_refresh_time' => 'INTEGER',
+                'imp_refresh_interval' => 'INTEGER',
             ]);
 
             $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
@@ -385,7 +390,7 @@ class Module_admin_import
             $db_name = $session_row[0]['imp_db_name'];
             $db_user = $session_row[0]['imp_db_user'];
             $db_table_prefix = $session_row[0]['imp_db_table_prefix'];
-            $refresh_time = $session_row[0]['imp_refresh_time'];
+            $refresh_time = $session_row[0]['imp_refresh_interval'];
         } else {
             $old_base_dir = get_param_string('keep_import_tick_all', get_file_base() . '/old');
             $db_host = 'localhost';
@@ -511,7 +516,7 @@ class Module_admin_import
             'imp_db_name' => $db_name,
             'imp_db_user' => $db_user,
             'imp_db_table_prefix' => $db_table_prefix,
-            'imp_refresh_time' => $refresh_time,
+            'imp_refresh_interval' => $refresh_time,
             'imp_session' => get_session_id(),
         ]);
 

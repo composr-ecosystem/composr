@@ -127,7 +127,7 @@ class Hook_commandr_fs_multi_moderations extends Resource_fs_base
         $properties = [
             'label' => get_translated_text($row['mm_name'], $GLOBALS['FORUM_DB']),
             'post_text' => $row['mm_post_text'],
-            'move_to' => $row['mm_move_to'],
+            'move_to' => $row['mm_move_to_forum_id'],
             'pin_state' => $row['mm_pin_state'],
             'open_state' => $row['mm_open_state'],
             'forum_multi_code' => $row['mm_forum_multi_code'],

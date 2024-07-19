@@ -156,6 +156,9 @@ function restricted_manually_enabled_backdoor() : int
     $ret = get_first_admin_user();
     $IS_VIA_BACKDOOR = true;
     create_session($ret, 1); // Will restore from previous session if possible
+
+    enforce_declarations($ret);
+
     return $ret;
 }
 

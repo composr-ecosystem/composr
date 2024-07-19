@@ -102,6 +102,7 @@ function init__database__xml()
         'LANGUAGE_NAME' => 5,
         'URLPATH' => 255,
         'UINTEGER' => 10, // Fudge as we need to send in unsigned integers using strings, as PHP can't hold them
+        'TOKEN' => 15,
     ];
     if (!multi_lang_content()) {
         $STRING_TYPES['SHORT_TRANS'] = 255;

@@ -211,13 +211,13 @@ function cns_get_num_emoticons_on_disk() : int
  * @param  SHORT_TEXT $name A name for the Welcome E-mail
  * @param  SHORT_TEXT $subject The subject of the Welcome E-mail
  * @param  LONG_TEXT $text The message body of the Welcome E-mail
- * @param  integer $send_time The number of hours before sending the e-mail
+ * @param  integer $send_after_hours The number of hours before sending the e-mail
  * @param  ?AUTO_LINK $newsletter What newsletter to send out to instead of members (null: none)
  * @param  ?AUTO_LINK $usergroup The usergroup to tie to (null: none)
  * @param  ID_TEXT $usergroup_type How to send regarding usergroups (blank: indiscriminately)
  * @set primary secondary
  */
-function cns_edit_welcome_email(int $id, string $name, string $subject, string $text, int $send_time, ?int $newsletter, ?int $usergroup, string $usergroup_type)
+function cns_edit_welcome_email(int $id, string $name, string $subject, string $text, int $send_after_hours, ?int $newsletter, ?int $usergroup, string $usergroup_type)
 {
     $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', ['id' => $id]);
     if ($_subject === null) {
@@ -226,8 +226,8 @@ function cns_edit_welcome_email(int $id, string $name, string $subject, string $
     $_text = $GLOBALS['SITE_DB']->query_select_value('f_welcome_emails', 'w_text', ['id' => $id]);
     $map = [
         'w_name' => $name,
-        'w_newsletter' => $newsletter,
-        'w_send_time' => $send_time,
+        'w_newsletter_id' => $newsletter,
+        'w_send_after_hours' => $send_after_hours,
         'w_usergroup' => $usergroup,
         'w_usergroup_type' => $usergroup_type,
     ];
@@ -325,7 +325,7 @@ function cns_mod_log_it(string $the_type, string $param_a = '', string $param_b 
         'l_param_b' => $param_b,
         'l_date_and_time' => $timestamp,
         'l_reason' => $reason,
-        'l_by' => $by,
+        'l_by_member' => $by,
         'l_warning_id' => $RELATED_WARNING_ID,
     ], true);
 }

@@ -121,7 +121,7 @@ class Module_admin_quiz
             }
             $row = $rows[0];
 
-            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')], ['_SELF:_SELF:_quiz_results:' . strval($row['q_quiz']), do_lang_tempcode('QUIZ_RESULTS')]]);
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')], ['_SELF:_SELF:_quiz_results:' . strval($row['q_quiz_id']), do_lang_tempcode('QUIZ_RESULTS')]]);
             breadcrumb_set_self(do_lang_tempcode('RESULT'));
 
             $this->row = $row;
@@ -227,7 +227,7 @@ class Module_admin_quiz
         $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_type', 'q_validated', 'q_add_date'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
-            $num_results = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz' => $m['id']]);
+            $num_results = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz_id' => $m['id']]);
             $quiz_label = get_translated_text($m['q_name']) . ' (' . do_lang($m['q_type']) . ', ' . do_lang('COUNT_RESULTS') . ': ' . integer_format($num_results) . ')';
 
             $entries->attach(form_input_list_entry(strval($m['id']), false, $quiz_label));
@@ -324,7 +324,7 @@ class Module_admin_quiz
         $id = post_param_integer('id');
 
         // Test to see if we have not yet chosen winners
-        $winners = $GLOBALS['SITE_DB']->query_select('quiz_winner', ['q_entry'], ['q_quiz' => $id]);
+        $winners = $GLOBALS['SITE_DB']->query_select('quiz_winner', ['q_entry_id'], ['q_quiz_id' => $id]);
         if (!array_key_exists(0, $winners)) {
             // Close competition
             $close_time = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_close_time', ['id' => $id]);
@@ -333,7 +333,7 @@ class Module_admin_quiz
             }
 
             // Choose all entries
-            $entries = $GLOBALS['SITE_DB']->query('SELECT id,q_member,q_results FROM ' . get_table_prefix() . 'quiz_entries WHERE q_quiz=' . strval($id) . ' AND q_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY q_results DESC');
+            $entries = $GLOBALS['SITE_DB']->query('SELECT id,q_member,q_results FROM ' . get_table_prefix() . 'quiz_entries WHERE q_quiz_id=' . strval($id) . ' AND q_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY q_results DESC');
 
             // Choose the maximum number of rows we'll need who could potentially win
             $num_winners = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_num_winners', ['id' => $id]);
@@ -375,11 +375,11 @@ class Module_admin_quiz
                 $_entry = array_shift($temp);
                 if ($_entry !== null) {
                     $filtered_entries[$k[0]] = $temp;
-                    $winners[] = ['q_entry' => $_entry['id']];
+                    $winners[] = ['q_entry_id' => $_entry['id']];
 
                     $GLOBALS['SITE_DB']->query_insert('quiz_winner', [
-                        'q_quiz' => $id,
-                        'q_entry' => $_entry['id'],
+                        'q_quiz_id' => $id,
+                        'q_entry_id' => $_entry['id'],
                         'q_winner_level' => $i,
                     ]);
                 } else {
@@ -390,7 +390,7 @@ class Module_admin_quiz
 
         $_winners = new Tempcode();
         foreach ($winners as $i => $winner) {
-            $member_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_member', ['id' => $winner['q_entry']]);
+            $member_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_member', ['id' => $winner['q_entry_id']]);
             $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
             switch ($i) {
                 case 0:
@@ -467,12 +467,12 @@ class Module_admin_quiz
 
         // Show summary
         if ($id !== null) {
-            $question_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $id], 'ORDER BY q_order,id');
+            $question_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz_id' => $id], 'ORDER BY q_order,id');
             foreach ($question_rows as $q) {
                 $question = get_translated_text($q['q_question_text']);
 
                 $answers = new Tempcode();
-                $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $q['id']], 'ORDER BY q_order,id');
+                $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question_id' => $q['id']], 'ORDER BY q_order,id');
                 $all_answers = [];
                 foreach ($answer_rows as $i => $a) {
                     $answer = get_translated_text($a['q_answer_text']);
@@ -511,14 +511,14 @@ class Module_admin_quiz
         }
         $where = [];
         if ($id !== null) {
-            $where['q_quiz'] = $id;
+            $where['q_quiz_id'] = $id;
         }
         $member_id = get_param_integer('member_id', null);
         if ($member_id !== null) {
             $where['q_member'] = $member_id;
         }
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', $where);
-        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz', ['e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.q_name', 'q.q_type'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz_id', ['e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.q_name', 'q.q_type'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }
@@ -577,7 +577,7 @@ class Module_admin_quiz
 
         $row = $this->row;
 
-        $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $row['q_quiz']], '', 1);
+        $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $row['q_quiz_id']], '', 1);
         if (!array_key_exists(0, $quizzes)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
         }
@@ -661,14 +661,14 @@ class Module_admin_quiz
 
         $quiz_id = null;
         foreach ($to_delete as $result_id) {
-            $entry_rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', ['q_quiz', 'q_member'], ['id' => $result_id], '', 1);
+            $entry_rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', ['q_quiz_id', 'q_member'], ['id' => $result_id], '', 1);
             if (isset($entry_rows[0])) {
-                $quiz_id = $entry_rows[0]['q_quiz'];
+                $quiz_id = $entry_rows[0]['q_quiz_id'];
 
                 $to_delete_sub = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('quiz_entries', ['id'], $entry_rows[0]));
                 foreach ($to_delete_sub as $_result_id) {
                     $GLOBALS['SITE_DB']->query_delete('quiz_entries', ['id' => $_result_id], '', 1);
-                    $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', ['q_entry' => $_result_id]);
+                    $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', ['q_entry_id' => $_result_id]);
                 }
             }
         }

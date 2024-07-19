@@ -448,15 +448,26 @@ function cms_error_get_last() : string
  * @param  mixed $replace What's being replaced with (string or array)
  * @param  mixed $subject Subject (string or array)
  * @param  integer $times Number of times to replace (to expect to replace)
+ * @param  boolean $fail_ok Whether a failure should attach a message and return the original code (false: a failure should cause a critical error)
  * @return mixed Result (string or array)
  */
-function override_str_replace_exactly($search, $replace, $subject, int $times = 1)
+function override_str_replace_exactly($search, $replace, $subject, int $times = 1, bool $fail_ok = false)
 {
+    // If in the upgrader, force $fail_ok to true so corrupt non-bundled addons (which are not supported by the upgrader) do not break it.
+    if (running_script('upgrader')) {
+        $fail_ok = true;
+    }
+
     $cnt = substr_count($subject, $search);
 
     if ($cnt != $times) {
         $lines = debug_backtrace();
-        critical_error('CORRUPT_OVERRIDE', preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+        $relay = _sanitise_error_msg(preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', '', $lines[0]['file']) . ':' . strval($lines[0]['line']));
+        if ($fail_ok) {
+            attach_message('An override seems to no longer be compatible, ' . htmlentities($relay), (running_script('upgrader') ? 'notice' : 'warn'), false, true);
+            return $subject; // Return original code
+        }
+        critical_error('CORRUPT_OVERRIDE', $relay);
     }
 
     $replace = str_replace('<ditto>', $search, $replace);

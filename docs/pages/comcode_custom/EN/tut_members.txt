@@ -279,7 +279,7 @@ When an account is deleted, the e-mail address on record for the account is e-ma
 
 Privacy allows you to specify what Custom Profile Fields will be visible to whom. It is controlled via the "Member privacy controls" configuration option.
 
-If the "Extended privacy option control" configuration option (Admin Zone > Setup > Configuration > Privacy options > Members) is enabled then it can be set in low-level detail. Otherwise it works via simple access levels for each field.
+If the "Extended privacy option control" configuration option (Admin Zone > Setup > Configuration > Privacy / legal compliance options > Members) is enabled then it can be set in low-level detail. Otherwise it works via simple access levels for each field.
 
 [title="2"]Usergroups[/title]
 

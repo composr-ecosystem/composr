@@ -72,7 +72,7 @@ class Hook_ajax_tree_choose_topic
             $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => intval($default)]);
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>' . "\n";
-                $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $cat]);
+                $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum_id', ['id' => $cat]);
             }
         }
 

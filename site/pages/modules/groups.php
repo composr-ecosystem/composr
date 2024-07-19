@@ -234,7 +234,7 @@ class Module_groups
         if (!has_privilege(get_member(), 'see_hidden_groups')) {
             $sql .= '(g_hidden=0 OR g.id IN (' . implode(',', array_map('strval', $members_groups)) . ')) AND ';
         }
-        $sql .= '(g_promotion_target IS NOT NULL OR EXISTS(SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups h WHERE h.g_promotion_target=g.id)';
+        $sql .= '(g_promotion_target_group IS NOT NULL OR EXISTS(SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups h WHERE h.g_promotion_target_group=g.id)';
         foreach ($staff_groups as $g_id) {
             $sql .= ' OR g.id=' . strval($g_id);
         }
@@ -260,23 +260,23 @@ class Module_groups
             if (in_array($group['id'], $staff_groups)) {
                 $_staff[$group['id']] = $group;
             } else {
-                if ($group['g_promotion_target'] !== null) {
+                if ($group['g_promotion_target_group'] !== null) {
                     // Are we at the start of a usergroup?
                     $found = false;
                     foreach ($groups as $group2) {
-                        if ($group2['g_promotion_target'] == $group['id']) {
+                        if ($group2['g_promotion_target_group'] == $group['id']) {
                             $found = true;
                             break;
                         }
                     }
                     if (!$found) {
                         $_ranks[$group['id']] = [$group['id'] => $group];
-                        $next = $group['g_promotion_target'];
+                        $next = $group['g_promotion_target_group'];
                         while ($next !== null) {
                             $found = false;
                             foreach ($groups as $group2) {
                                 if ($group2['id'] == $next) {
-                                    $next = $group2['g_promotion_target'];
+                                    $next = $group2['g_promotion_target_group'];
                                     $_ranks[$group['id']][$group2['id']] = $group2;
                                     if (array_key_exists($next, $_ranks[$group['id']])) {
                                         break; // uhoh- loop
@@ -381,8 +381,8 @@ class Module_groups
 
                 $_p_t = $row['g_promotion_threshold'];
                 $p_t = new Tempcode();
-                if (($_p_t !== null) && (array_key_exists($row['g_promotion_target'], $_rank))) {
-                    $p_t = do_lang_tempcode('PROMOTION_TO', escape_html(integer_format($_p_t)), escape_html($_rank[$row['g_promotion_target']]['_name']));
+                if (($_p_t !== null) && (array_key_exists($row['g_promotion_target_group'], $_rank))) {
+                    $p_t = do_lang_tempcode('PROMOTION_TO', escape_html(integer_format($_p_t)), escape_html($_rank[$row['g_promotion_target_group']]['_name']));
                 }
 
                 $entry = [];
@@ -417,7 +417,7 @@ class Module_groups
                 $sql .= '(g_hidden=0 OR g.id IN (' . implode(',', array_map('strval', $members_groups)) . ')) AND ';
             }
             $sql .= 'g_is_private_club=' . strval($is_private_club) . ' AND ';
-            $sql .= '(g_promotion_target IS NULL AND NOT EXISTS(SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups h WHERE h.g_promotion_target=g.id)';
+            $sql .= '(g_promotion_target_group IS NULL AND NOT EXISTS(SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups h WHERE h.g_promotion_target_group=g.id)';
             foreach ($staff_groups as $g_id) {
                 $sql .= ' AND g.id<>' . strval($g_id);
             }
@@ -601,9 +601,9 @@ class Module_groups
         }
 
         // Leadership
-        if (($group['g_group_leader'] !== null) && ($GLOBALS['FORUM_DRIVER']->get_username($group['g_group_leader'], false, USERNAME_DEFAULT_NULL) !== null)) {
-            $leader_name = $GLOBALS['FORUM_DRIVER']->get_username($group['g_group_leader'], true);
-            $leader_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($group['g_group_leader']);
+        if (($group['g_group_lead_member'] !== null) && ($GLOBALS['FORUM_DRIVER']->get_username($group['g_group_lead_member'], false, USERNAME_DEFAULT_NULL) !== null)) {
+            $leader_name = $GLOBALS['FORUM_DRIVER']->get_username($group['g_group_lead_member'], true);
+            $leader_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($group['g_group_lead_member']);
             $leader_link = hyperlink($leader_url, $leader_name, false, true);
             $leader = paragraph(do_lang_tempcode('GROUP_LED_BY', $leader_link), 'gfgdfggdf');
         } else {
@@ -611,9 +611,9 @@ class Module_groups
         }
 
         // Promotion
-        if ((addon_installed('points')) && ($group['g_promotion_threshold'] !== null) && ($group['g_promotion_target'] !== null)) {
-            $promote_link = cns_get_group_link($group['g_promotion_target']);
-            $requires_approval = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['id' => $group['g_promotion_target'], 'g_promotion_approval' => 1]);
+        if ((addon_installed('points')) && ($group['g_promotion_threshold'] !== null) && ($group['g_promotion_target_group'] !== null)) {
+            $promote_link = cns_get_group_link($group['g_promotion_target_group']);
+            $requires_approval = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['id' => $group['g_promotion_target_group'], 'g_promotion_approval' => 1]);
             $promotion_info = do_lang_tempcode(($requires_approval === null) ? 'CNS_PROMOTION_INFO_AUTO' : 'CNS_PROMOTION_INFO_MANUAL', escape_html(integer_format($group['g_promotion_threshold'])), $promote_link->evaluate());
         } else {
             $promotion_info = new Tempcode();
@@ -741,7 +741,7 @@ class Module_groups
             $max = get_param_integer('pp_max', 50);
             $max_rows = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_new_group_id' => $id, 'ga_status' => 0]);
             $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['*'], ['ga_new_group_id' => $id, 'ga_status' => 0], '', $max, $start);
-            $can_be_promoted_to = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_promotion_target' => $id]) !== null);
+            $can_be_promoted_to = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_promotion_target_group' => $id]) !== null);
             if (!empty($rows)) {
                 foreach ($rows as $row) {
                     if ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($row['ga_member_id']))) {
@@ -815,7 +815,7 @@ class Module_groups
 
         $forum_id = null;
         if ($club) {
-            $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))];
+            $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum_id' => intval(get_option('club_forum_parent_forum'))];
             $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);
         }
 

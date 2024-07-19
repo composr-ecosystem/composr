@@ -1081,13 +1081,13 @@ class Module_cms_comcode_pages
         }
 
         if ($this->has_integrated_menu_editing($zone . ':' . $file)) {
-            $_existing_menu_branch = $GLOBALS['SITE_DB']->query_select('menu_items', ['i_parent'], ['i_url' => $zone . ':' . $file], '', 1);
+            $_existing_menu_branch = $GLOBALS['SITE_DB']->query_select('menu_items', ['i_parent_id'], ['i_link' => $zone . ':' . $file], '', 1);
             if (array_key_exists(0, $_existing_menu_branch)) {
-                $existing_menu_branch = $_existing_menu_branch[0]['i_parent'];
+                $existing_menu_branch = $_existing_menu_branch[0]['i_parent_id'];
             } else {
                 $existing_menu_branch = -1;
             }
-            $menu_branches = $GLOBALS['SITE_DB']->query_select('menu_items', ['id', 'i_caption', 'i_parent', 'i_url']);
+            $menu_branches = $GLOBALS['SITE_DB']->query_select('menu_items', ['id', 'i_caption', 'i_parent_id', 'i_link']);
             $_menu_branches = new Tempcode();
             $_menu_branches->attach(form_input_list_entry('-1', $existing_menu_branch === -1, do_lang_tempcode('NONE_EM')));
             $_menu_branches->attach(form_input_list_entry('', $existing_menu_branch === null, do_lang_tempcode('TOP_LEVEL')));
@@ -1190,7 +1190,7 @@ class Module_cms_comcode_pages
             return false;
         }
 
-        $num_menus_in_now = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'COUNT(*)', ['i_url' => $page_link]);
+        $num_menus_in_now = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'COUNT(*)', ['i_link' => $page_link]);
         if ($num_menus_in_now > 1) {
             return false;
         }
@@ -1212,7 +1212,7 @@ class Module_cms_comcode_pages
     {
         $_menu_branches = new Tempcode();
         foreach ($menu_branches as $menu_branch) {
-            if (($menu_branch['i_parent'] === $parent_id) && ($menu_branch['i_url'] != $page_link)) {
+            if (($menu_branch['i_parent_id'] === $parent_id) && ($menu_branch['i_link'] != $page_link)) {
                 $caption = get_translated_text($menu_branch['i_caption']);
                 $_menu_branches->attach(form_input_list_entry(strval($menu_branch['id']), $menu_branch['id'] === $existing_menu_branch, $prefix . $caption));
                 $under = $this->menu_branch_selection_under($menu_branch['id'], $menu_branches, $existing_menu_branch, $page_link, $prefix . $caption . ' > ');
@@ -1303,7 +1303,7 @@ class Module_cms_comcode_pages
             }
 
             require_code('submit');
-            give_submit_points('COMCODE_PAGE_ADD', 'comcode_page', $path);
+            give_submit_points('COMCODE_PAGE_ADD', 'comcode_page', $zone . ':' . $file);
 
             require_code('member_mentions');
             dispatch_member_mention_notifications('comcode_page', $zone . ':' . $file, $resource_owner);
@@ -1331,7 +1331,7 @@ class Module_cms_comcode_pages
         }
 
         // Update any current menu link(s)
-        $GLOBALS['SITE_DB']->query_update('menu_items', ['i_url' => $zone . ':' . $new_file], ['i_url' => $zone . ':' . $file]);
+        $GLOBALS['SITE_DB']->query_update('menu_items', ['i_link' => $zone . ':' . $new_file], ['i_link' => $zone . ':' . $file]);
 
         // Menu editing
         if ($this->has_integrated_menu_editing($zone . ':' . $file)) {
@@ -1340,9 +1340,9 @@ class Module_cms_comcode_pages
             if ($menu_item_under == -1) {
                 delete_menu_item_simple($zone . ':' . $new_file);
             } else {
-                $_existing_menu_branch = $GLOBALS['SITE_DB']->query_select('menu_items', ['i_parent'], ['i_url' => $zone . ':' . $new_file], '', 1);
+                $_existing_menu_branch = $GLOBALS['SITE_DB']->query_select('menu_items', ['i_parent_id'], ['i_link' => $zone . ':' . $new_file], '', 1);
                 if (array_key_exists(0, $_existing_menu_branch)) {
-                    $GLOBALS['SITE_DB']->query_update('menu_items', ['i_parent' => $menu_item_under], ['i_url' => $zone . ':' . $new_file], '', 1);
+                    $GLOBALS['SITE_DB']->query_update('menu_items', ['i_parent_id' => $menu_item_under], ['i_link' => $zone . ':' . $new_file], '', 1);
                 } else {
                     $menu = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'i_menu');
                     require_code('zones2');
@@ -1529,20 +1529,20 @@ class Module_cms_comcode_pages
 
             $zone_start_pages = collapse_2d_complexity('zone_name', 'zone_default_page', $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page']));
 
-            $menu_branches = $GLOBALS['SITE_DB']->query_select('menu_items', ['id', 'i_menu', 'i_parent', 'i_caption', 'i_url'], [], 'ORDER BY i_menu');
+            $menu_branches = $GLOBALS['SITE_DB']->query_select('menu_items', ['id', 'i_menu', 'i_parent_id', 'i_caption', 'i_link'], [], 'ORDER BY i_menu');
             $menu_branches_by_url = [];
             foreach ($menu_branches as $menu_branch) {
                 $matches = [];
-                if (preg_match('#^(\w*):$#', $menu_branch['i_url'], $matches) != 0) {
+                if (preg_match('#^(\w*):$#', $menu_branch['i_link'], $matches) != 0) {
                     if (isset($zone_start_pages[$matches[1]])) {
-                        $menu_branch['i_url'] .= $zone_start_pages[$matches[1]];
+                        $menu_branch['i_link'] .= $zone_start_pages[$matches[1]];
                     }
                 }
 
-                if (!isset($menu_branches_by_url[$menu_branch['i_url']])) {
-                    $menu_branches_by_url[$menu_branch['i_url']] = [];
+                if (!isset($menu_branches_by_url[$menu_branch['i_link']])) {
+                    $menu_branches_by_url[$menu_branch['i_link']] = [];
                 }
-                $menu_branches_by_url[$menu_branch['i_url']][] = $menu_branch;
+                $menu_branches_by_url[$menu_branch['i_link']][] = $menu_branch;
             }
             $menu_branches_by_id = list_to_map('id', $menu_branches);
 
@@ -1592,7 +1592,7 @@ class Module_cms_comcode_pages
                 $menu_branch_temp = $menu_branch;
                 do {
                     $menu_path_components[] = get_translated_text($menu_branch_temp['i_caption']);
-                    $parent = $menu_branch_temp['i_parent'];
+                    $parent = $menu_branch_temp['i_parent_id'];
                     if ($parent !== null) {
                         $menu_branch_temp = $menu_branches_by_id[$parent];
                     }

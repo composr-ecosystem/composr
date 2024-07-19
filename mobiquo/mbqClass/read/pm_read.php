@@ -39,7 +39,7 @@ class CMSPmRead
 
         $member_id = get_member();
 
-        $where = ['t_pt_to' => $member_id];
+        $where = ['t_pt_to_member' => $member_id];
         if (addon_installed('validation')) {
             $where['t_validated'] = 1;
         }
@@ -47,7 +47,7 @@ class CMSPmRead
 
         $inbox_unread_total = get_num_unread_private_topics(TAPATALK_MESSAGE_BOX_INBOX);
 
-        $where = ['t_pt_from' => $member_id];
+        $where = ['t_pt_from_member' => $member_id];
         if (addon_installed('validation')) {
             $where['t_validated'] = 1;
         }
@@ -84,11 +84,11 @@ class CMSPmRead
         require_once(COMMON_CLASS_PATH_WRITE . '/post_write.php');
 
         if ($box_id == TAPATALK_MESSAGE_BOX_INBOX) {
-            $lookup_key = 't_pt_to';
-            $anti_lookup_key = 't_pt_from';
+            $lookup_key = 't_pt_to_member';
+            $anti_lookup_key = 't_pt_from_member';
         } else {
-            $lookup_key = 't_pt_from';
-            $anti_lookup_key = 't_pt_to';
+            $lookup_key = 't_pt_from_member';
+            $anti_lookup_key = 't_pt_to_member';
         }
 
         $member_id = get_member();
@@ -101,9 +101,9 @@ class CMSPmRead
         $sql = 'SELECT *,t.id AS topic_id,p.id AS post_id';
         $sql .= ' FROM ' . $table_prefix . 'f_topics t JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id';
         if ($box_id == TAPATALK_MESSAGE_BOX_INBOX) {
-            $sql .= ' WHERE (t_pt_to=' . strval($member_id) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval($member_id) . '))';
+            $sql .= ' WHERE (t_pt_to_member=' . strval($member_id) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval($member_id) . '))';
         } else {
-            $sql .= ' WHERE t_pt_from=' . strval($member_id);
+            $sql .= ' WHERE t_pt_from_member=' . strval($member_id);
         }
 
         if (addon_installed('validation')) {
@@ -129,7 +129,7 @@ class CMSPmRead
 
             $extra = '';
             if (!has_privilege($member_id, 'view_other_pt')) {
-                $extra .= 'AND (p_intended_solely_for IS NULL OR p_poster=' . strval($member_id) . ' OR p_intended_solely_for=' . strval($member_id) . ')';
+                $extra .= 'AND (p_whisper_to_member IS NULL OR p_posting_member=' . strval($member_id) . ' OR p_whisper_to_member=' . strval($member_id) . ')';
             }
             $extra .= 'ORDER BY p_time DESC,p.id DESC';
 
@@ -151,9 +151,9 @@ class CMSPmRead
                     $total_unread_count++;
                 }
 
-                $msg_from = $GLOBALS['FORUM_DRIVER']->get_username($post['p_poster']);
+                $msg_from = $GLOBALS['FORUM_DRIVER']->get_username($post['p_posting_member']);
 
-                $icon_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post['p_poster']);
+                $icon_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post['p_posting_member']);
 
                 $msg_subject = $post['p_title'];
                 if ($msg_subject == '') {
@@ -164,12 +164,12 @@ class CMSPmRead
                     'msg_id' => $post['post_id'],
                     'msg_state' => $msg_state,
                     'sent_date' => $post['p_time'],
-                    'msg_from_id' => $post['p_poster'],
+                    'msg_from_id' => $post['p_posting_member'],
                     'msg_from' => $msg_from,
                     'icon_url' => $icon_url,
                     'msg_subject' => $msg_subject,
                     'short_content' => generate_shortened_post($post, $post['post_id'] == $topic['t_cache_first_post_id']),
-                    'is_online' => member_is_online($post['p_poster']),
+                    'is_online' => member_is_online($post['p_posting_member']),
                 ];
             }
         }
@@ -202,7 +202,7 @@ class CMSPmRead
         }
 
         for ($i = 0; $i < $pos; $i++) {
-            if ($posts[$i]['p_poster'] == get_member()) {
+            if ($posts[$i]['p_posting_member'] == get_member()) {
                 return self::REPLIED;
             }
         }
@@ -254,15 +254,15 @@ class CMSPmRead
         }
 
         $msg_to = [];
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($post_row['t_pt_to']);
+        $username = $GLOBALS['FORUM_DRIVER']->get_username($post_row['t_pt_to_member']);
         $msg_to[] = [
-            'user_id' => $post_row['t_pt_to'],
+            'user_id' => $post_row['t_pt_to_member'],
             'username' => $username,
         ];
 
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($post_row['t_pt_from']);
+        $username = $GLOBALS['FORUM_DRIVER']->get_username($post_row['t_pt_from_member']);
 
-        $icon_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post_row['p_poster']);
+        $icon_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post_row['p_posting_member']);
 
         cns_ping_topic_read($post_row['p_topic_id']);
 
@@ -271,7 +271,7 @@ class CMSPmRead
         $attachment_details = get_post_attachments($post_row['post_id'], null, true, $content);
 
         return [
-            'msg_from_id' => $post_row['t_pt_from'],
+            'msg_from_id' => $post_row['t_pt_from_member'],
             'msg_from' => $username,
             'icon_url' => $icon_url,
             'sent_date' => $post_row['p_time'],

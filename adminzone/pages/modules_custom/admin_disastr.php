@@ -40,7 +40,7 @@ class Module_admin_disastr extends Standard_crud_module
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 3;
+        $info['version'] = 4;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -75,14 +75,14 @@ class Module_admin_disastr extends Standard_crud_module
             $GLOBALS['SITE_DB']->create_table('diseases', [
                 'id' => '*AUTO',
                 'name' => 'SHORT_TEXT',
-                'image' => 'URLPATH',
+                'image_url' => 'URLPATH',
                 'cure' => 'SHORT_TEXT',
                 'cure_price' => 'INTEGER',
                 'immunisation' => 'SHORT_TEXT',
                 'immunisation_price' => 'INTEGER',
                 'spread_rate' => 'INTEGER',
                 'points_per_spread' => 'INTEGER',
-                'last_spread_time' => 'INTEGER',
+                'last_spread_time' => 'TIME',
                 'enabled' => 'BINARY',
             ]);
 
@@ -94,18 +94,25 @@ class Module_admin_disastr extends Standard_crud_module
                 'immunisation' => 'BINARY',
             ]);
 
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Zombiism', 'image' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Zombiism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from Zombiism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'A bad case of Hiccups', 'image' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Hiccup vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from the Hiccups', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Vampirism', 'image' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Vampirism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against Vampirism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'The Flu', 'image' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flu vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against the Flu', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Lice', 'image' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lice-Away Spray', 'cure_price' => 100, 'immunisation' => 'Lice repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Fleas', 'image' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flea spray', 'cure_price' => 100, 'immunisation' => 'Flea repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Man-Flu', 'image' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lots and lots of TLC', 'cure_price' => 1000, 'immunisation' => 'Anti Man-Flu Serum', 'immunisation_price' => 250, 'spread_rate' => 12, 'points_per_spread' => 100, 'last_spread_time' => 0, 'enabled' => 1], true);
+            // TODO: Move to pre-defined content
+            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Zombiism', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Zombiism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from Zombiism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
+            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'A bad case of Hiccups', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Hiccup vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from the Hiccups', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
+            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Vampirism', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Vampirism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against Vampirism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
+            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'The Flu', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flu vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against the Flu', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
+            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Lice', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lice-Away Spray', 'cure_price' => 100, 'immunisation' => 'Lice repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
+            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Fleas', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flea spray', 'cure_price' => 100, 'immunisation' => 'Flea repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
+            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Man-Flu', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lots and lots of TLC', 'cure_price' => 1000, 'immunisation' => 'Anti Man-Flu Serum', 'immunisation_price' => 250, 'spread_rate' => 12, 'points_per_spread' => 100, 'last_spread_time' => 0, 'enabled' => 1], true);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('members_diseases', 'desease_id', 'AUTO_LINK', 'disease_id');
             $GLOBALS['SITE_DB']->alter_table_field('members_diseases', 'user_id', '*MEMBER', 'member_id');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('diseases', 'image', 'URLPATH', 'image_url');
+            $GLOBALS['SITE_DB']->alter_table_field('diseases', 'last_spread_time', 'TIME');
         }
     }
 
@@ -245,7 +252,7 @@ class Module_admin_disastr extends Standard_crud_module
 
         $fields = [
             'NAME' => $name,
-            'IMAGE' => $image,
+            'image_url' => $image,
             'CURE' => $cure,
             'CURE_PRICE' => integer_format($cure_price, 0),
             'IMMUNISATION' => $immunisation,
@@ -352,7 +359,7 @@ class Module_admin_disastr extends Standard_crud_module
         require_code('images2');
         $url = post_param_image('image', 'uploads/disastr_addon', null, true);
 
-        $id = $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => $name, 'image' => $url, 'cure' => $cure, 'cure_price' => $cure_price, 'immunisation' => $immunisation, 'immunisation_price' => $immunisation_price, 'spread_rate' => $spread_rate, 'points_per_spread' => $points_per_spread, 'last_spread_time' => 0, 'enabled' => $enabled], true);
+        $id = $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => $name, 'image_url' => $url, 'cure' => $cure, 'cure_price' => $cure_price, 'immunisation' => $immunisation, 'immunisation_price' => $immunisation_price, 'spread_rate' => $spread_rate, 'points_per_spread' => $points_per_spread, 'last_spread_time' => 0, 'enabled' => $enabled], true);
 
         log_it('ADD_DISEASE', strval($id), $name);
 

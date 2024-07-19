@@ -83,7 +83,7 @@ class Hook_preview_cns_post
         $_post_date = time();
         $post_id = post_param_integer('post_id', null);
         if ($post_id !== null) {
-            $post_owner = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', ['id' => $post_id]);
+            $post_owner = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_posting_member', ['id' => $post_id]);
             if ($post_owner === null) {
                 $post_owner = get_member();
             }
@@ -101,17 +101,17 @@ class Hook_preview_cns_post
         }
         $not_validated = ((post_param_integer('validated', 0) == 0) && (get_page_name() == 'topics')) ? do_lang_tempcode('NOT_VALIDATED') : new Tempcode();
         $emphasis = new Tempcode();
-        $intended_solely_for = post_param_string('intended_solely_for', null);
-        if ($intended_solely_for == '') {
-            $intended_solely_for = null;
+        $whisper_to_member = post_param_string('whisper_to_member', null);
+        if ($whisper_to_member == '') {
+            $whisper_to_member = null;
         }
         $is_emphasised = post_param_integer('is_emphasised', 0) == 1;
         if ($is_emphasised) {
             $emphasis = do_lang_tempcode('IMPORTANT');
-        } elseif ($intended_solely_for !== null) {
-            $emphasis = do_lang_tempcode('PP_TO', escape_html($intended_solely_for));
+        } elseif ($whisper_to_member !== null) {
+            $emphasis = do_lang_tempcode('PP_TO', escape_html($whisper_to_member));
         }
-        $class = $is_emphasised ? 'cns-post-emphasis' : (($intended_solely_for !== null) ? 'cns-post-personal' : '');
+        $class = $is_emphasised ? 'cns-post-emphasis' : (($whisper_to_member !== null) ? 'cns-post-personal' : '');
 
         // Member details
         $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($post_owner);

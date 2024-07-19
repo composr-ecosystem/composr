@@ -161,15 +161,15 @@ class CMSPtWrite
 
         require_code('cns_topics_action2');
 
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_from', 't_pt_to', 't_pt_from_category', 't_pt_to_category'], ['id' => $topic_id], '', 1);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_from_member', 't_pt_to_member', 't_pt_from_category', 't_pt_to_category'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
 
-        if ($topic_info[0]['t_pt_from'] == get_member()) {
+        if ($topic_info[0]['t_pt_from_member'] == get_member()) {
             $us = 't_pt_from_category';
             $them = 't_pt_to_category';
-        } elseif ($topic_info[0]['t_pt_to'] == get_member()) {
+        } elseif ($topic_info[0]['t_pt_to_member'] == get_member()) {
             $us = 't_pt_to_category';
             $them = 't_pt_from_category';
         } else {
@@ -218,7 +218,7 @@ class CMSPtWrite
             $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
             $sql = 'SELECT id FROM ' . $table_prefix . 'f_topics t';
             $sql .= ' WHERE t_forum_id IS NULL';
-            $sql .= ' AND (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
+            $sql .= ' AND (t_pt_from_member=' . strval(get_member()) . ' OR t_pt_to_member=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
             $rows = $GLOBALS['FORUM_DB']->query($sql);
             $topic_ids = collapse_1d_complexity('id', $rows);
             foreach ($topic_ids as $topic_id) {

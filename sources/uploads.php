@@ -321,7 +321,7 @@ function get_temporary_upload_path(string $attach_name, bool $prepend_session_id
  * @param  array $file_upload The $_FILES array entry
  * @param  boolean $should_get_something Whether to give a (deferred?) error if no file was given at all
  * @param  ?integer $max_size Maximum file size in bytes (null: default from get_max_file_size function)
- * @return ?Tempcode Error message (null: none;
+ * @return ?Tempcode Error message (null: none)
  */
 function get_upload_error_message(array $file_upload, bool $should_get_something = true, ?int $max_size = null) : ?object
 {

@@ -79,7 +79,7 @@ The developers recommend that users do have cookies enabled, but that they possi
 [media thumb="0" width="80" framed="0" description="" float="right"]icons/menu/adminzone/setup/config/config.svg[/media]
 The EU require tracking cookies be declared for organisations operating inside the EU.
 
-The Composr "Cookie notice" configuration option (Admin Zone > Setup > Configuration > Privacy options > General) implements this. It isn't on by default because Composr's cookies are heavily minimised to what we consider reasonable compliance without special notice. However, use of something like Adsense strictly requires you enable the cookie notice.
+The Composr "Cookie notice" configuration option (Admin Zone > Setup > Configuration > Privacy / legal compliance options > General) implements this. It isn't on by default because Composr's cookies are heavily minimised to what we consider reasonable compliance without special notice. However, use of something like Adsense strictly requires you enable the cookie notice.
 [/surround]
 
 [title="2"]20 things you didn't know about cookies (for programmers)[/title]

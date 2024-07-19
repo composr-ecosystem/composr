@@ -226,8 +226,8 @@ function build_order_details(object $title, int $id, object $text, bool $show_or
         $transaction_linker = do_lang_tempcode('UNKNOWN_EM');
     }
 
-    $ordered_by_member_id = $order_row['member_id'];
-    $ordered_by_username = $GLOBALS['FORUM_DRIVER']->get_username($order_row['member_id']);
+    $ordering_member_id = $order_row['member_id'];
+    $ordering_member_username = $GLOBALS['FORUM_DRIVER']->get_username($order_row['member_id']);
 
     // Order actions...
 
@@ -299,7 +299,7 @@ function build_order_details(object $title, int $id, object $text, bool $show_or
     $product_rows = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $id], 'ORDER BY p_name');
     $product_entries = new Tempcode();
     foreach ($product_rows as $product_row) {
-        $product_info_url = get_product_details_url($product_row['p_type_code'], false, $ordered_by_member_id);
+        $product_info_url = get_product_details_url($product_row['p_type_code'], false, $ordering_member_id);
         $product_name = $product_row['p_name'];
         $product = hyperlink($product_info_url, $product_name, false, true, do_lang('VIEW'));
 
@@ -329,8 +329,8 @@ function build_order_details(object $title, int $id, object $text, bool $show_or
         'TOTAL_SHIPPING_COST' => float_format($order_row['total_shipping_cost']),
         'CURRENCY' => $order_row['order_currency'],
         'TRANSACTION_LINKER' => $transaction_linker,
-        'ORDERED_BY_MEMBER_ID' => strval($ordered_by_member_id),
-        'ORDERED_BY_USERNAME' => $ordered_by_username,
+        'ORDERED_BY_MEMBER_ID' => strval($ordering_member_id),
+        'ORDERED_BY_USERNAME' => $ordering_member_username,
         'ORDER_STATUS' => do_lang($order_row['order_status']),
         'NOTES' => $order_row['notes'],
         'ORDER_ACTIONS' => $order_actions,

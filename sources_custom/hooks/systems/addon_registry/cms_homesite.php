@@ -239,7 +239,6 @@ This addon does not contain the homesite install code and the overall site and t
             'uploads/website_specific/cms_homesite/logos/choice.php',
             'uploads/website_specific/cms_homesite/logos/default.png',
             'uploads/website_specific/cms_homesite/logos/index.html',
-            'uploads/website_specific/cms_homesite/upgrades/full/index.html',
             'uploads/website_specific/cms_homesite/upgrades/index.html',
             'uploads/website_specific/cms_homesite/upgrades/sample_data/index.html',
             'uploads/website_specific/cms_homesite/upgrades/tar_build/index.html',

@@ -78,7 +78,7 @@ class Hook_content_meta_aware_group extends Hook_CMA
 
             'views_field' => null,
             'order_field' => 'g_order',
-            'submitter_field' => 'g_group_leader',
+            'submitter_field' => 'g_group_lead_member',
             'author_field' => null,
             'add_time_field' => null,
             'edit_time_field' => null,

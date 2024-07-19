@@ -557,7 +557,7 @@ function wiki_edit_page(int $page_id, string $title, string $description, string
             $_points_wiki_posting = '0';
         }
         $points_wiki_posting = intval($_points_wiki_posting);
-        $already_earned_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'wiki_page', 't_subtype' => 'add', 't_type_id' => strval($page_id), 'recipient_id' => $member_id]);
+        $already_earned_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'wiki_page', 't_subtype' => 'add', 't_type_id' => strval($page_id), 'receiving_member' => $member_id]);
 
         if (($already_earned_points === null) && ($points_wiki_posting > 0)) {
             require_code('content');

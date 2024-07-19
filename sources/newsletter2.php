@@ -391,7 +391,7 @@ function add_periodic_newsletter(string $subject, string $message, string $lang,
         'np_day' => $day,
         'np_in_full' => $in_full,
         'np_template' => $template,
-        'np_last_sent' => $last_sent,
+        'np_last_sent_time' => $last_sent,
     ], true);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -448,7 +448,7 @@ function edit_periodic_newsletter(int $id, string $subject, string $message, str
         'np_template' => $template,
     ];
     if ($last_sent !== null) {
-        $map['np_last_sent'] = $last_sent;
+        $map['np_last_sent_time'] = $last_sent;
     }
     $GLOBALS['SITE_DB']->query_update('newsletter_periodic', $map, ['id' => $id]);
 

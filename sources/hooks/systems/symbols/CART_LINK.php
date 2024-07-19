@@ -45,7 +45,7 @@ class Hook_symbol_CART_LINK
         if (is_guest()) {
             $where['session_id'] = get_session_id();
         } else {
-            $where['ordered_by'] = get_member();
+            $where['ordering_member'] = get_member();
         }
         $item_count = $GLOBALS['SITE_DB']->query_select_value('shopping_cart', 'COUNT(*)', $where);
 

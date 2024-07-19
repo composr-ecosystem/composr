@@ -60,8 +60,8 @@ class Hook_cron_cns_confirm_reminder
             $this->rows = $GLOBALS['FORUM_DB']->query($query);
 
             foreach ($this->rows as $i => $row) {
-                $coppa = (get_option('is_on_coppa') == '1') && ($row['m_dob_year'] !== null) && (intval(floor(utctime_to_usertime(time() - cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $row['m_dob_year'])) / 31536000.0)) < intval(get_option('coppa_age')));
-                if (!$coppa) {
+                $parental_consent = (get_option('is_on_parental_consent') == '1') && ($row['m_dob_year'] !== null) && (intval(floor(utctime_to_usertime(time() - cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $row['m_dob_year'])) / 31536000.0)) < intval(get_option('parental_consent_age')));
+                if (!$parental_consent) {
                     unset($this->rows[$i]);
                 }
             }

@@ -25,10 +25,14 @@ function init__site__pages__modules_custom__quiz($in)
         return $in;
     }
 
-    $in = override_str_replace_exactly(
+    require_code('override_api');
+
+    // Charge for entering the competition
+    insert_code_after__by_command(
+        $in,
+        '_do_quiz',
         "// We have not already got points",
         "
-        <ditto>
         \$cost = intval(ceil(floatval(\$quiz['q_points_for_passing']) / 2.0));
         if (\$cost > 0) {
             require_code('points2');
@@ -38,20 +42,20 @@ function init__site__pages__modules_custom__quiz($in)
             \$points_difference -= \$cost;
         }
         ",
-        $in
     );
 
-    $in = override_str_replace_exactly(
+    // Remove cost from awarded points
+    insert_code_after__by_command(
+        $in,
+        '_do_quiz',
         "// Give them their result if it is a test.",
         "
-        <ditto>
         if ((addon_installed('points')) && (\$quiz['q_points_for_passing'] != 0)) {
             require_code('points2');
             \$cost = intval(floor(\$quiz['q_points_for_passing'] / 2));
             \$points_difference -= \$cost;
         }
         ",
-        $in
     );
 
     return $in;

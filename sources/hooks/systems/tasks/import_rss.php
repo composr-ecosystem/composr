@@ -299,7 +299,7 @@ class Hook_task_import_rss
                 require_code('files');
                 $success_status = cms_file_put_contents_safe($full_path, $_content, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                 if (!$success_status) {
-                    return [null, do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($full_path))];
+                    return [null, do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html(_sanitise_error_msg($full_path)))];
                 }
 
                 // Meta
@@ -377,7 +377,7 @@ class Hook_task_import_rss
                             $GLOBALS['SITE_DB']->query_insert('trackbacks', [
                                 'trackback_for_type' => $trackback_for_type,
                                 'trackback_for_id' => strval($trackback_id),
-                                'trackback_ip' => $author_ip,
+                                'trackback_ip_address' => $author_ip,
                                 'trackback_time' => $comment_add_date,
                                 'trackback_url' => $comment_author_url,
                                 'trackback_title' => '',

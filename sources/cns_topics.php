@@ -87,15 +87,15 @@ function cns_get_topic_where(int $topic_id, ?int $member_id = null) : string
 
     $where = 'p_topic_id=' . strval($topic_id);
     if (is_guest()) {
-        $where .= ' AND p_intended_solely_for IS NULL';
+        $where .= ' AND p_whisper_to_member IS NULL';
     } elseif (!has_privilege($member_id, 'view_other_pt')) {
-        $where .= ' AND (p_intended_solely_for=' . strval($member_id) . ' OR p_poster=' . strval($member_id) . ' OR p_intended_solely_for IS NULL)';
+        $where .= ' AND (p_whisper_to_member=' . strval($member_id) . ' OR p_posting_member=' . strval($member_id) . ' OR p_whisper_to_member IS NULL)';
     }
     if ((!has_privilege($member_id, 'see_not_validated')) && (addon_installed('validation'))) {
         if (is_guest($member_id)) {
-            $where .= ' AND (p_validated=1 OR (' . db_string_equal_to('p_ip_address', get_ip_address()) . ' AND p_poster=' . strval($member_id) . '))';
+            $where .= ' AND (p_validated=1 OR (' . db_string_equal_to('p_ip_address', get_ip_address()) . ' AND p_posting_member=' . strval($member_id) . '))';
         } else {
-            $where .= ' AND (p_validated=1 OR p_poster=' . strval($member_id) . ')';
+            $where .= ' AND (p_validated=1 OR p_posting_member=' . strval($member_id) . ')';
         }
     }
     return $where;
@@ -117,7 +117,7 @@ function cns_may_access_topic(int $topic_id, ?int $member_id = null, ?array $top
     }
 
     if ($topic_info === null) {
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id], '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to_member', 't_pt_from_member', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id], '', 1);
 
         if (!array_key_exists(0, $topic_rows)) {
             return false;
@@ -149,7 +149,7 @@ function cns_may_access_topic(int $topic_id, ?int $member_id = null, ?array $top
             return true;
         }
 
-        return (($topic_info['t_pt_to'] == $member_id) || ($topic_info['t_pt_from'] == $member_id) || (cns_has_special_pt_access($topic_id)));
+        return (($topic_info['t_pt_to_member'] == $member_id) || ($topic_info['t_pt_from_member'] == $member_id) || (cns_has_special_pt_access($topic_id)));
     }
 
     return (has_category_access($member_id, 'forums', strval($topic_info['t_forum_id'])));
@@ -243,7 +243,7 @@ function cns_may_post_topic(?int $forum_id, ?int $member_id = null) : bool
  */
 function cns_has_replied_topic(int $topic_id, ?int $member_id = null) : bool
 {
-    $test = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'id', ['p_topic_id' => $topic_id, 'p_poster' => $member_id]);
+    $test = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'id', ['p_topic_id' => $topic_id, 'p_posting_member' => $member_id]);
     return $test !== null;
 }
 

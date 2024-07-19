@@ -67,14 +67,24 @@ class Hook_cns_warnings_silencing
 
             case '_PUNITIVE_SILENCE_FROM_TOPIC':
                 $silence_from_topic_title = '#' . strval($row['p_param_a']);
+                $silence_until = get_timezoned_date_time(intval($row['p_param_b']));
                 if (get_forum_type() == 'cns') {
                     $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_param_a']]);
                     if ($silence_from_topic_title === null) {
                         $silence_from_topic_title = '#' . strval($row['p_param_a']);
+                        $ret = do_lang('_PUNITIVE_SILENCE_FROM_TOPIC', $silence_from_topic_title, ' ' . do_lang('PUNITIVE_SILENCED_UNTIL', $silence_until));
+                    } else {
+                        $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => $row['p_param_a']]);
+                        if ($forum_id !== null) {
+                            $forum_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $forum_id]);
+                            $ret = do_lang('_PUNITIVE_SILENCE_FROM_TOPIC_FORUM', $silence_from_topic_title, $forum_name, [' ' . do_lang('PUNITIVE_SILENCED_UNTIL', $silence_until)]);
+                        }
                     }
+                } else {
+                    $silence_from_topic_title = '#' . strval($row['p_param_a']);
+                    $ret = do_lang('_PUNITIVE_SILENCE_FROM_TOPIC', $silence_from_topic_title, ' ' . do_lang('PUNITIVE_SILENCED_UNTIL', $silence_until));
                 }
-                $silence_until = get_timezoned_date_time(intval($row['p_param_b']));
-                return do_lang('_PUNITIVE_SILENCE_FROM_TOPIC', $silence_from_topic_title, ' ' . do_lang('PUNITIVE_SILENCED_UNTIL', $silence_until));
+                return $ret;
 
             default:
                 return '';
@@ -198,6 +208,15 @@ class Hook_cns_warnings_silencing
             $silence_from_topic_title = strval($silence_from_topic);
             if (get_forum_type() == 'cns') {
                 $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $silence_from_topic]);
+                $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => $silence_from_topic]);
+                if ($forum_id !== null) {
+                    $forum_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $forum_id]);
+                    $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_TOPIC_FORUM', strval($silence_from_topic_title), $forum_name, [strval(do_lang('PUNITIVE_UNTIL', strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id))))], null, false);
+                } else {
+                    $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_TOPIC', strval($silence_from_topic_title), strval(do_lang('PUNITIVE_UNTIL', strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id)))), null, null, false);
+                }
+            } else {
+                $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_TOPIC', strval($silence_from_topic_title), strval(do_lang('PUNITIVE_UNTIL', strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id)))), null, null, false);
             }
 
             $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
@@ -211,8 +230,6 @@ class Hook_cns_warnings_silencing
                 'p_param_b' => strval($_silence_from_topic),
                 'p_reversed' => 0,
             ]);
-
-            $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_TOPIC', strval($silence_from_topic_title), strval(do_lang('PUNITIVE_UNTIL', strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id)))), null, null, false);
         }
 
         // Forum silencing

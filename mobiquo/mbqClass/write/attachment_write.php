@@ -55,7 +55,7 @@ class CMSAttachmentWrite
             $user_read_object = new CMSUserRead();
             if ($filesize > $user_read_object->get_posting_setting(get_member(), 'max_attachment_size')) {
                 unlink($filepath);
-                warn_exit(do_lang_tempcode('ERROR_UPLOADING_1', escape_html(_sanitise_error_msg(rawurldecode($urls[0])))));
+                warn_exit(do_lang_tempcode('ERROR_UPLOADING_1', escape_html(rawurldecode($urls[0]))));
             }
         } else {
             $filesize = $_FILES[$filekey_orig]['size'];
@@ -113,7 +113,7 @@ class CMSAttachmentWrite
             $user_read_object = new CMSUserRead();
             if ($filesize > $user_read_object->get_posting_setting(get_member(), 'max_attachment_size')) {
                 unlink($filepath);
-                warn_exit(do_lang_tempcode('ERROR_UPLOADING_1', escape_html(_sanitise_error_msg(rawurldecode($urls[0])))));
+                warn_exit(do_lang_tempcode('ERROR_UPLOADING_1', escape_html(rawurldecode($urls[0]))));
             }
         } else {
             $filesize = $_FILES[$filekey_orig]['size'];

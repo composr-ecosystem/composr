@@ -91,7 +91,7 @@ class Hook_task_export_points_overview
 
             if (addon_installed('quizzes')) {
                 foreach ($quizzes as $quiz) {
-                    $entered = ($GLOBALS['SITE_DB']->query_select_value_if_there('quiz_entries', 'id', ['q_member' => $member_id, 'q_quiz' => $quiz['id']]) !== null);
+                    $entered = ($GLOBALS['SITE_DB']->query_select_value_if_there('quiz_entries', 'id', ['q_member' => $member_id, 'q_quiz_id' => $quiz['id']]) !== null);
                     $data_point[do_lang('ENTERED_THIS_QUIZ', get_translated_text($quiz['q_name']))] = do_lang($entered ? 'YES' : 'NO');
                 }
             }

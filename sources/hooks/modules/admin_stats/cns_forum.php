@@ -161,7 +161,7 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
 
         $start = 0;
 
-        $query = 'SELECT p_cache_forum_id,p_intended_solely_for,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ';
+        $query = 'SELECT p_cache_forum_id,p_whisper_to_member,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ';
         $query .= 'p_time>=' . strval($start_time) . ' AND ';
         $query .= 'p_time<=' . strval($end_time);
         $query .= ' ORDER BY p_time';
@@ -176,7 +176,7 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                    if (($row['p_cache_forum_id'] === null) || ($row['p_intended_solely_for'] !== null)) {
+                    if (($row['p_cache_forum_id'] === null) || ($row['p_whisper_to_member'] !== null)) {
                         if (!isset($data_buckets['private_posts'][$month][$pivot][$pivot_value])) {
                             $data_buckets['private_posts'][$month][$pivot][$pivot_value] = 0;
                         }

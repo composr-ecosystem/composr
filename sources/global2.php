@@ -1750,9 +1750,15 @@ function get_site_name() : string
  */
 function in_safe_mode() : bool
 {
+    // Force safe mode in the upgrader so corrupt non-bundled addons (which are not supported by the upgrader) do not break it.
+    if (running_script('upgrader')) {
+        return true;
+    }
+
+    // Force safe_mode setting from _config.php if defined unless keep_safe_mode is specified in the URL and does not match the value in _config.php.
     global $SITE_INFO;
     if (!empty($SITE_INFO['safe_mode'])) {
-        if (!isset($_GET['keep_safe_mode'])) {
+        if (!isset($_GET['keep_safe_mode']) || ($_GET['keep_safe_mode'] == $SITE_INFO['safe_mode'])) {
             return ($SITE_INFO['safe_mode'] == '1'); // Generally more robust and fast than specifying as a URL parameter
         }
     }
@@ -1762,10 +1768,10 @@ function in_safe_mode() : bool
     global $CHECKING_SAFEMODE, $REQUIRED_CODE;
     if (!$backdoor_ip) {
         if (!isset($REQUIRED_CODE['lang']) || !$REQUIRED_CODE['lang']) {
-            return false; // Too early. We can get in horrible problems when doing get_member() below if lang hasn't loaded yet
+            return ((isset($_GET['keep_safe_mode'])) && intval($_GET['keep_safe_mode']) == 1); // Too early. We can get in horrible problems when doing get_member() below if lang hasn't loaded yet
         }
         if ($CHECKING_SAFEMODE) {
-            return false; // Stops infinite loops (e.g. Check safe mode > Check access > Check usergroups > Check implicit usergroup hooks > Check whether to look at custom implicit usergroup hooks [i.e. if not in safe mode])
+            return ((isset($_GET['keep_safe_mode'])) && intval($_GET['keep_safe_mode']) == 1); // Stops infinite loops (e.g. Check safe mode > Check access > Check usergroups > Check implicit usergroup hooks > Check whether to look at custom implicit usergroup hooks [i.e. if not in safe mode])
         }
     }
     $CHECKING_SAFEMODE = true;

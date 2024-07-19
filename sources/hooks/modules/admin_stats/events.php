@@ -37,13 +37,13 @@ class Hook_admin_stats_events extends CMSStatsProvider
             return $events;
         }
         $events = [];
-        $event_rows = $GLOBALS['SITE_DB']->query_select('stats_known_events', ['*'], [], 'ORDER BY e_times_seen DESC', 50);
+        $event_rows = $GLOBALS['SITE_DB']->query_select('stats_known_events', ['*'], [], 'ORDER BY e_count_logged DESC', 50);
         foreach ($event_rows as $event_row) {
             $event_label = do_lang($event_row['e_event'], null, null, null, null, false);
             if ($event_label === null) {
                 $event_label = $event_row['e_event'];
             }
-            $events[$event_row['e_event']] = $event_label . ' (' . integer_format($event_row['e_times_seen']) . ')';
+            $events[$event_row['e_event']] = $event_label . ' (' . integer_format($event_row['e_count_logged']) . ')';
         }
         asort($events);
         return $events;
@@ -61,9 +61,9 @@ class Hook_admin_stats_events extends CMSStatsProvider
             return $tracking_codes;
         }
         $tracking_codes = [];
-        $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats_known_tracking', ['*'], [], 'ORDER BY t_times_seen DESC', 50);
+        $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats_known_tracking', ['*'], [], 'ORDER BY t_count_logged DESC', 50);
         foreach ($tracking_code_rows as $tracking_code_row) {
-            $tracking_codes[$tracking_code_row['t_tracking_code']] = $tracking_code_row['t_tracking_code'] . ' (' . integer_format($tracking_code_row['t_times_seen']) . ')';
+            $tracking_codes[$tracking_code_row['t_tracking_code']] = $tracking_code_row['t_tracking_code'] . ' (' . integer_format($tracking_code_row['t_count_logged']) . ')';
         }
         asort($tracking_codes);
         return $tracking_codes;
@@ -294,15 +294,15 @@ class Hook_admin_stats_events extends CMSStatsProvider
 
         // Now keep a record of events
         foreach ($events_seen as $event => $times_seen) {
-            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_events', 'e_times_seen', ['e_event' => $event]);
+            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_events', 'e_count_logged', ['e_event' => $event]);
             if ($times_seen_before === null) {
                 $GLOBALS['SITE_DB']->query_insert('stats_known_events', [
                     'e_event' => $event,
-                    'e_times_seen' => $times_seen,
+                    'e_count_logged' => $times_seen,
                 ]);
             } else {
                 $GLOBALS['SITE_DB']->query_update('stats_known_events', [
-                    'e_times_seen' => $times_seen + $times_seen_before,
+                    'e_count_logged' => $times_seen + $times_seen_before,
                 ], [
                     'e_event' => $event,
                 ], '', 1);
@@ -311,15 +311,15 @@ class Hook_admin_stats_events extends CMSStatsProvider
 
         // Now keep a record of tracking codes
         foreach ($tracking_codes_seen as $tracking_code => $times_seen) {
-            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_tracking', 't_times_seen', ['t_tracking_code' => $tracking_code]);
+            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_tracking', 't_count_logged', ['t_tracking_code' => $tracking_code]);
             if ($times_seen_before === null) {
                 $GLOBALS['SITE_DB']->query_insert('stats_known_tracking', [
                     't_tracking_code' => $tracking_code,
-                    't_times_seen' => $times_seen,
+                    't_count_logged' => $times_seen,
                 ]);
             } else {
                 $GLOBALS['SITE_DB']->query_update('stats_known_tracking', [
-                    't_times_seen' => $times_seen + $times_seen_before,
+                    't_count_logged' => $times_seen + $times_seen_before,
                 ], [
                     't_tracking_code' => $tracking_code,
                 ], '', 1);

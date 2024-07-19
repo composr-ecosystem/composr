@@ -176,7 +176,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         $fields = new Tempcode();
 
         $supported = 'tar';
-        if ((function_exists('zip_open')) || (get_option('unzip_cmd') != '')) {
+        if (class_exists('ZipArchive', false)) {
             $supported .= ', zip';
         }
         $fields->attach(form_input_upload_multi(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_ARCHIVE_TEXT_FILES', escape_html($supported), escape_html('txt')), 'file', true, null, null, true, 'txt,' . $supported));
@@ -227,7 +227,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
         $target_forum = read_multi_code('forum_multi_code');
 
-        $multi_mods = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id'], ['mm_move_to' => null, 'mm_pin_state' => null, 'mm_open_state' => null, 'mm_title_suffix' => '', 'mm_forum_multi_code' => $target_forum]);
+        $multi_mods = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id'], ['mm_move_to_forum_id' => null, 'mm_pin_state' => null, 'mm_open_state' => null, 'mm_title_suffix' => '', 'mm_forum_multi_code' => $target_forum]);
         require_code('cns_moderation_action2');
         foreach ($multi_mods as $multi_mod) {
             cns_delete_multi_moderation($multi_mod['id']);
@@ -249,47 +249,39 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
             switch (get_file_extension($file)) {
                 case 'zip':
-                    if ((!function_exists('zip_open')) && (get_option('unzip_cmd') == '')) {
+                    if (!class_exists('ZipArchive', false)) {
                         warn_exit(do_lang_tempcode('ZIP_NOT_ENABLED'));
                     }
-                    if (!function_exists('zip_open')) {
-                        require_code('m_zip');
-                        $mzip = true;
-                    } else {
-                        $mzip = false;
+
+                    $zip_archive = new ZipArchive();
+                    $myfile = $zip_archive->open($tmp_name);
+                    if ($myfile !== true) {
+                        require_code('failure');
+                        warn_exit(zip_error($tmp_name, $myfile));
                     }
-                    $myfile = zip_open($tmp_name);
-                    if (!is_integer($myfile)) {
-                        while (false !== ($entry = zip_read($myfile))) {
-                            // Load in file
-                            zip_entry_open($myfile, $entry);
 
-                            $filename = zip_entry_name($entry);
+                    for ($i = 0; $i < $zip_archive->numFiles; $i++) {
+                        $filename = $zip_archive->getNameIndex($i);
 
-                            if (!check_extension($filename, false, null, true)) {
-                                continue;
-                            }
-
-                            if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
-                                $data = '';
-                                do {
-                                    $more = zip_entry_read($entry);
-                                    if ($more !== false) {
-                                        $data .= $more;
-                                    }
-                                } while (($more !== false) && ($more != ''));
-
-                                $this->_import_stock_response($filename, $data, $target_forum);
-                            }
-
-                            zip_entry_close($entry);
+                        if (!check_extension($filename, false, null, true)) {
+                            continue;
                         }
 
-                        zip_close($myfile);
-                    } else {
-                        require_code('failure');
-                        warn_exit(zip_error($myfile, $mzip));
+                        if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
+                                $data = $zip_archive->getFromIndex($i);
+                                if ($data === false) { // Error reading
+                                    warn_exit(zip_error($tmp_name, ZipArchive::ER_READ), false, true);
+                                    break;
+                                }
+                                if ($data === '') { // No more to read
+                                    continue;
+                                }
+                                $this->_import_stock_response($filename, $data, $target_forum);
+                        }
                     }
+
+                    $zip_archive->close();
+                    unset($zip_archive);
                     break;
                 case 'tar':
                     require_code('tar');
@@ -455,7 +447,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                 }
             }
 
-            $destination = ($row['mm_move_to'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['mm_move_to']]);
+            $destination = ($row['mm_move_to_forum_id'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['mm_move_to_forum_id']]);
             if ($destination === null) {
                 $destination = do_lang_tempcode('NA_EM');
             }
@@ -498,7 +490,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         }
         $r = $m[0];
 
-        return $this->get_form_fields(get_translated_text($r['mm_name'], $GLOBALS['FORUM_DB']), $r['mm_post_text'], $r['mm_move_to'], $r['mm_pin_state'], $r['mm_open_state'], $r['mm_forum_multi_code'], $r['mm_title_suffix']);
+        return $this->get_form_fields(get_translated_text($r['mm_name'], $GLOBALS['FORUM_DB']), $r['mm_post_text'], $r['mm_move_to_forum_id'], $r['mm_pin_state'], $r['mm_open_state'], $r['mm_forum_multi_code'], $r['mm_title_suffix']);
     }
 
     /**

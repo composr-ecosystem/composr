@@ -102,7 +102,7 @@ class Hook_upon_query_insults
                     // Get PT
                     $pt = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
 
-                    $to_member = (isset($pt[0]['t_pt_to']) && $pt[0]['t_pt_to'] > 0) ? $pt[0]['t_pt_to'] : 0;
+                    $to_member = (isset($pt[0]['t_pt_to_member']) && $pt[0]['t_pt_to_member'] > 0) ? $pt[0]['t_pt_to_member'] : 0;
 
                     if ($to_member == $poster_id) {
                         // Start comparing insult reply and the post
@@ -114,7 +114,7 @@ class Hook_upon_query_insults
                             require_code('points2');
                             require_lang('insults');
 
-                            $rows = $GLOBALS['SITE_DB']->query('SELECT g.id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger g WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like('%' . $insult . '%') . '\' AND g.recipient_id=' . strval($poster_id), 1, 0, false, false, ['reason' => 'SHORT_TRANS']);
+                            $rows = $GLOBALS['SITE_DB']->query('SELECT g.id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger g WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like('%' . $insult . '%') . '\' AND g.receiving_member=' . strval($poster_id), 1, 0, false, false, ['reason' => 'SHORT_TRANS']);
 
                             // If the member hasn't got their reward yet, give it to them
                             if (!isset($rows[0]['id']) && (intval($insult_points) > 0)) {

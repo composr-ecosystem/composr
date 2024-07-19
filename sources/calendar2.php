@@ -529,7 +529,7 @@ function add_event_type(string $title, string $logo, string $external_feed = '')
 
     $map = [
         't_logo' => $logo,
-        't_external_feed' => $external_feed,
+        't_external_feed_url' => $external_feed,
     ];
     $map += insert_lang_comcode('t_title', $title, 2);
     $id = $GLOBALS['SITE_DB']->query_insert('calendar_types', $map, true);
@@ -575,7 +575,7 @@ function edit_event_type(int $id, string $title, string $logo, string $external_
 
     $map = [
         't_logo' => $logo,
-        't_external_feed' => $external_feed,
+        't_external_feed_url' => $external_feed,
     ];
     $map += lang_remap_comcode('t_title', $myrow['t_title'], $title);
     $GLOBALS['SITE_DB']->query_update('calendar_types', $map, ['id' => $id], '', 1);

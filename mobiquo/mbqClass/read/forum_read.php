@@ -180,7 +180,7 @@ class CMSForumRead
 
         $_forum_conditions = [];
 
-        $_forum_conditions[] = 'f.f_parent_forum=' . strval($forum_id);
+        $_forum_conditions[] = 'f.f_parent_forum_id=' . strval($forum_id);
 
         $_forum_conditions[] = 'f.id IN (' . get_allowed_forum_sql() . ')';
 
@@ -218,9 +218,9 @@ class CMSForumRead
 
         $select = ['f.id', 'f_name'];
 
-        $where = ['p_poster' => $member_id];
+        $where = ['p_posting_member' => $member_id];
 
-        $extra = ' AND f.f_parent_forum IN (' . get_allowed_forum_sql() . ') GROUP BY f.id ORDER BY MAX(p_time) DESC';
+        $extra = ' AND f.f_parent_forum_id IN (' . get_allowed_forum_sql() . ') GROUP BY f.id ORDER BY MAX(p_time) DESC';
 
         $participated = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra);
 

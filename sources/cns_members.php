@@ -49,8 +49,8 @@ function init__cns_members()
  */
 function cns_get_filter_cats(bool $only_exists_now = false) : array
 {
-    $filter_rows_a = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_from_category'], ['t_pt_from' => get_member()]);
-    $filter_rows_b = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_to_category'], ['t_pt_to' => get_member()]);
+    $filter_rows_a = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_from_category'], ['t_pt_from_member' => get_member()]);
+    $filter_rows_b = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_to_category'], ['t_pt_to_member' => get_member()]);
     $filter_cats = ['' => 1];
     if (!$only_exists_now) {
         $filter_cats[do_lang('TRASH')] = 1;

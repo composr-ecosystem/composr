@@ -126,7 +126,7 @@ function get_ticket_forum_id(?int $ticket_type_id = null, bool $create = false, 
         $_ticket_type_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'ticket_type_name', ['id' => $ticket_type_id]);
         if ($_ticket_type_name !== null) {
             $ticket_type_name = get_translated_text($_ticket_type_name);
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id'], ['f_parent_forum' => $fid, 'f_name' => $ticket_type_name], '', 1);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id'], ['f_parent_forum_id' => $fid, 'f_name' => $ticket_type_name], '', 1);
             if (empty($rows)) {
                 require_code('cns_forums_action');
                 require_code('cns_forums_action2');
@@ -177,7 +177,7 @@ function is_ticket_forum(?int $forum_id) : bool
         return true;
     }
 
-    $query = 'SELECT COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($forum_id) . ' AND f_parent_forum IN (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($root_ticket_forum_id) . ' OR f_parent_forum IN (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($root_ticket_forum_id) . '))';
+    $query = 'SELECT COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($forum_id) . ' AND f_parent_forum_id IN (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($root_ticket_forum_id) . ' OR f_parent_forum_id IN (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($root_ticket_forum_id) . '))';
 
     $rows = $GLOBALS['FORUM_DB']->query($query);
     $ret = ($rows[0]['cnt'] != 0);
@@ -238,7 +238,7 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
             require_code('cns_forums');
             $forums = cns_get_all_subordinate_forums($fid, null, null, true);
         } else {
-            $query = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE ' . db_string_equal_to('f_name', get_translated_text($ticket_type_name)) . ' AND f_parent_forum=' . strval($fid);
+            $query = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE ' . db_string_equal_to('f_name', get_translated_text($ticket_type_name)) . ' AND f_parent_forum_id=' . strval($fid);
 
             $rows = $GLOBALS['FORUM_DB']->query($query, null, 0, false, true);
             $forums = collapse_2d_complexity('id', 'id', $rows);

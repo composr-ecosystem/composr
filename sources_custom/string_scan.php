@@ -3491,9 +3491,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_complex_privacy_options
         CONFIG_OPTION_complex_uploader
         CONFIG_OPTION_cookie_notice
-        CONFIG_OPTION_coppa_age
         CONFIG_OPTION_website_activity_store_time
-        COPPA_AGE
+        PARENTAL_CONSENT_AGE
         PRIVILEGE_avoid_captcha
         WEBSITE_ACTIVITY_STORE_TIME
         MEMBER_SEARCH
@@ -3676,9 +3675,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_is_on_comcode_page_cache
         CONFIG_OPTION_is_on_comcode_page_children
         CONFIG_OPTION_is_on_comments
-        CONFIG_OPTION_is_on_coppa
-        CNS_WAITING_CONFIRM_MAIL_COPPA
-        COPPA_JOIN_SUBJECT
+        CONFIG_OPTION_is_on_parental_consent
+        CNS_WAITING_CONFIRM_MAIL_PARENTAL_CONSENT
+        PARENTAL_CONSENT_JOIN_SUBJECT
         INCORRECT_CAPTCHA_QUESTION_ANSWER
         CONFIG_GROUP_DESCRIP_CAPTCHA_QUESTIONS
         CAPTCHA_QUESTIONS
@@ -4012,8 +4011,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_topic_pin_tax_code
         CONFIG_OPTION_topic_pin_price_points
         CONFIG_OPTION_tree_lists
-        CONFIG_OPTION_unzip_cmd
-        CONFIG_OPTION_unzip_dir
         CONFIG_OPTION_url_monikers_enabled
         CONFIG_OPTION_url_scheme
         CONFIG_OPTION_url_scheme_VALUE_HTM
@@ -4120,8 +4117,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_SETTINGS
         COOKIE_TEXT
         COOKIE_TEXT__CMS_PREFIX
-        COPPA
-        COPPA_ENABLED
+        PARENTAL_CONSENT
+        PARENTAL_CONSENT_REQUIRED
         MIN_CMS_VERSION
         DESCRIPTION_MIN_CMS_VERSION
         MAX_CMS_VERSION
@@ -4767,7 +4764,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_NOTES
         DESCRIPTION_NUM_WINNERS
         DESCRIPTION_ONE_PER_MEMBER
-        DESCRIPTION_ON_PROBATION_UNTIL
+        DESCRIPTION_PROBATION_EXPIRATION_TIME
         DESCRIPTION_OPEN_STATE
         DESCRIPTION_OPEN_TIME
         DESCRIPTION_ORDER
@@ -5662,12 +5659,18 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_MAINTENANCE
         UPGRADER_MUST_UPGRADE_CNS
         UPGRADER_NOT_FOR_PATCH
+        UPGRADER_RENAMED_MODULES
+        UPGRADER_UNINSTALL_MODULES
+        UPGRADER_UPGRADED_FILE_REPLACEMENTS
+        UPGRADER_UPGRADED_CUSTOM
         UPGRADER_NO_CNS_UPGRADE
         UPGRADER_OPEN_SITE
         UPGRADER_REFER_RELEASE_NOTES
         UPGRADER_RELEASE_NOTES
         UPGRADER_REMOVE_ADDON_FILES
         UPGRADER_SAFE_MODE
+        UPGRADER_SAFE_MODE_ADMIN
+        _UPGRADER_SAFE_MODE_ADMIN
         UPGRADER_STEP
         UPGRADER_TAKE_BACKUP
         UPGRADER_THEME_ERRORS
@@ -5675,6 +5678,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_THEME_UPGRADE_FINAL
         UPGRADER_TUTORIAL
         UPGRADER_UPGRADED_ADDON
+        UPGRADER_SKIPPED_NONBUNDLED_ADDON
         UPGRADER_UPGRADED_BLOCK
         UPGRADER_UPGRADED_CORE_TABLES
         UPGRADER_UPGRADED_MODULE
@@ -6612,8 +6616,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_SANDBOX
         NO_SELECTABLE_THEME_IMAGES_MSN
         NO_SESSION_SECURITY_CODE
-        NO_SHELL_ZIP_POSSIBLE
-        NO_SHELL_ZIP_POSSIBLE2
         NO_SUCH_CONTENT_TYPE
         NO_SUCH_RENDERER
         NO_SUCH_THEME_IMAGE
@@ -7860,8 +7862,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOT_VALIDATED_MAIL_C
         NOT_VALIDATED_PAGE_TEXT
         NOT_VALIDATED_RESOURCES
-        UNZIP_CMD
-        UNZIP_DIR
         UPDATE_HANDLING_DELETE
         UPDATE_HANDLING_FRESHEN
         UPDATE_HANDLING_OVERWRITE
@@ -7955,6 +7955,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WARNING_OVERWRITE
         WARNING_DISK_SPACE
         WARNING_FILE_ADDON
+        WARNING_FILE_OUTDATED_ADDON
         WARNING_FILE_ALIEN
         WARNING_FILE_OVERRIDE_FROM_UNINSTALLED_ADDON
         WARNING_FILE_FUTURE_FILES
@@ -8133,7 +8134,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ZE_CLICK_TO_EDIT
         ZE_HOW_TO_SAVE
         ZIP_ERROR
-        ZIP_ERROR_MZIP
         ZIP_NOT_ENABLED
         ZONE
         ZONES
@@ -8557,6 +8557,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EMAIL_TEMPLATE
         REPLY_TO
         SKIP_TICKET_CREATION
+        CONFIG_OPTION_parental_consent_age
+        UPGRADER_NEW_ADDON_EXTRACTED
     ')));
 
     $non_admin_files = [
@@ -10457,8 +10459,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ONLINE
         ONLINE_NOW
         ONLY_TITLES
-        ON_PROBATION_UNTIL
-        _ON_PROBATION_UNTIL
+        PROBATION_EXPIRATION_TIME
+        _PROBATION_EXPIRATION_TIME
         OPEN
         OPEN_CHATROOMS_IN_TABS
         OPEN_IM_POPUP
@@ -11227,7 +11229,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_client_time
         COOKIE_font_size
         COOKIE_ga
-        PRIVACY_EXPLANATION_COPPA
+        PRIVACY_EXPLANATION_PARENTAL_CONSENT
         PRIVACY_EXPLANATION_COOKIES
         PRIVACY_EXPLANATION_NON_DISCLOSURE
         PRIVACY_ACTION_PROFILE_DISCLOSURE
@@ -12054,6 +12056,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _I_AGREE_RULES
         PAGE_LINKS
         DESCRIPTION_PRIVACY_SITE_MESSAGING
+        PUNITIVE_SILENCE_FROM_TOPIC_FORUM
+        _PUNITIVE_SILENCE_FROM_TOPIC_FORUM
     ')));
 
     // Remove blank lines

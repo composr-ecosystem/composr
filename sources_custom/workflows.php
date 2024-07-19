@@ -575,9 +575,9 @@ function workflow_update_handler() : object
     foreach ($updated_approvals as $approval_id => $status_code) {
         $success_message = do_lang('APPROVAL_CHANGED_DESCRIPTION');
         if (in_array($approval_id, $new_approvals)) {
-            $GLOBALS['SITE_DB']->query_insert('workflow_content_status', ['status_code' => ($status_code ? 1 : 0), 'approved_by' => get_member(), 'workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id]);
+            $GLOBALS['SITE_DB']->query_insert('workflow_content_status', ['status_code' => ($status_code ? 1 : 0), 'approved_by_member' => get_member(), 'workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id]);
         } else {
-            $GLOBALS['SITE_DB']->query_update('workflow_content_status', ['status_code' => ($status_code ? 1 : 0), 'approved_by' => get_member()], ['workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id], '', 1);
+            $GLOBALS['SITE_DB']->query_update('workflow_content_status', ['status_code' => ($status_code ? 1 : 0), 'approved_by_member' => get_member()], ['workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id], '', 1);
         }
     }
 
@@ -774,7 +774,7 @@ function add_content_to_workflow(string $content_type = '', string $content_id =
 
     // Set the workflow status to 0 for each point
     foreach (array_keys(get_all_approval_points($workflow_id)) as $approval_point_id) {
-        $GLOBALS['SITE_DB']->query_insert('workflow_content_status', ['workflow_content_id' => $id, 'workflow_approval_point_id' => $approval_point_id, 'status_code' => 0, 'approved_by' => get_member()]);
+        $GLOBALS['SITE_DB']->query_insert('workflow_content_status', ['workflow_content_id' => $id, 'workflow_approval_point_id' => $approval_point_id, 'status_code' => 0, 'approved_by_member' => get_member()]);
     }
 
     return $id;

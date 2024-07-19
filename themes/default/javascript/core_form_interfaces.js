@@ -1951,11 +1951,21 @@
             }
             nextField.className = thisField.className.replace(/-required/g, '');
             if (thisField.form.elements['label_for__' + nameStub + '0']) {
+                // Hidden label input
                 var nextLabel = document.createElement('input');
                 nextLabel.type = 'hidden';
                 nextLabel.value = thisField.form.elements['label_for__' + nameStub + '0'].value + ' (' + (nextNum + 1) + ')';
                 nextLabel.name = 'label_for__' + nameStub + nextNum;
                 nextFieldWrap.appendChild(nextLabel);
+
+                // Hidden label for accessibility
+                var nextLabelAccessibility = document.createElement('div');
+                nextLabelAccessibility.classList.add('accessibility-hidden');
+                var nextLabelAccessibilityLabel = document.createElement('label');
+                nextLabelAccessibilityLabel.htmlFor = nameStub + nextNum;
+                nextLabelAccessibilityLabel.innerText = thisField.form.elements['label_for__' + nameStub + '0'].value + ' (' + (nextNum + 1) + ')';
+                nextLabelAccessibility.appendChild(nextLabelAccessibilityLabel);
+                nextFieldWrap.appendChild(nextLabelAccessibility);
             }
             nextField.tabIndex = thisField.tabIndex;
             nextField.id = nameStub + nextNum;

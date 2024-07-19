@@ -287,7 +287,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     if ($GLOBALS['REFRESH_URL'][0] != '') {
         $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
             'r_session_id' => get_session_id(),
-            'r_message' => is_object($message) ? $message->evaluate() : escape_html($message),
+            'r_message' => is_object($message) ? _sanitise_error_msg($message->evaluate()) : escape_html(_sanitise_error_msg($message)),
             'r_type' => $type,
             'r_time' => time(),
         ]);
@@ -1159,7 +1159,7 @@ function do_site()
         }
 
         // Tracks very basic details of what sites use the software
-        if ((!is_local_machine()) && (get_option('call_home') == '1') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) !== null)) {
+        if ((!is_local_machine()) && (get_option('call_home') == '1') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) === null)) {
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
             require_code('version2');

@@ -196,8 +196,8 @@ function vote_in_poll(int $poll_id, ?int $cast, ?array $myrow = null, ?int $memb
 
             $GLOBALS['SITE_DB']->query_insert('poll_votes', [
                 'v_poll_id' => $poll_id,
-                'v_voter_id' => $member_id,
-                'v_voter_ip' => $ip,
+                'v_voting_member' => $member_id,
+                'v_voting_ip_address' => $ip,
                 'v_vote_for' => $cast,
                 'v_vote_time' => time(),
             ]);
@@ -207,8 +207,8 @@ function vote_in_poll(int $poll_id, ?int $cast, ?array $myrow = null, ?int $memb
     } else {
         $GLOBALS['SITE_DB']->query_insert('poll_votes', [
             'v_poll_id' => $poll_id,
-            'v_voter_id' => is_guest() ? null : $member_id,
-            'v_voter_ip' => $ip,
+            'v_voting_member' => is_guest() ? null : $member_id,
+            'v_voting_ip_address' => $ip,
             'v_vote_for' => null,
             'v_vote_time' => time(),
         ]);
@@ -241,7 +241,7 @@ function may_vote_in_poll(int $poll_id, int $member_id, string $ip) : bool
     static $ip_restrict = null;
     if ($ip_restrict === null) {
         if ((!$GLOBALS['IS_ACTUALLY_ADMIN']) && ((get_option('vote_member_ip_restrict') == '1') || (is_guest()))) {
-            $ip_restrict = db_string_equal_to('v_voter_ip', get_ip_address());
+            $ip_restrict = db_string_equal_to('v_voting_ip_address', get_ip_address());
         } else {
             $ip_restrict = '1=0';
         }
@@ -249,7 +249,7 @@ function may_vote_in_poll(int $poll_id, int $member_id, string $ip) : bool
     $query .= $ip_restrict;
     if (!is_guest()) {
         $query .= ' OR ';
-        $query .= 'v_voter_id=' . strval(get_member());
+        $query .= 'v_voting_member=' . strval(get_member());
     }
     $query .= ')';
     $times_voted = $GLOBALS['SITE_DB']->query_value_if_there($query, false, true);

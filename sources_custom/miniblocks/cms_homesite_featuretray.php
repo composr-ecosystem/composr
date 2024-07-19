@@ -212,7 +212,7 @@ $feature_tree = [
                 null, // divider
                 ['Ledger', 'See all of the point transactions to crack down on any abuse, and reverse any transactions as necessary'],
                 ['Profiles', 'Browse through member points profiles, see what points members have received and sent, and send / escrow points with them'],
-                ['Escrow', 'Send points to another member, but keep them from being received until conditions are agreed met'],
+                ['Escrow', 'Send points to another member, but keep them from being received until written conditions are agreed met'],
             ],
             'A virtual economy for your members',
         ],
@@ -600,6 +600,7 @@ $feature_tree = [
             [
                 ['Detailed GDPR auditing'],
                 ['COPPA'],
+                // ['Utah (US) Social Media Regulation Act'], // TODO: #5569
             ],
         ],
     ],

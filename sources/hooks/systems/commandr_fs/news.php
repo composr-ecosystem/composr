@@ -302,7 +302,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
             'allow_trackbacks' => $row['allow_trackbacks'],
             'notes' => $row['notes'],
             'views' => $row['news_views'],
-            'image' => remap_urlpath_as_portable($row['news_image']),
+            'image' => remap_urlpath_as_portable($row['news_image_url']),
             'meta_keywords' => $meta_keywords,
             'meta_description' => $meta_description,
             'submitter' => remap_resource_id_as_portable('member', $row['submitter']),

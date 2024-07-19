@@ -919,7 +919,7 @@ class Hook_addon_registry_calendar
                 require_code('lang3');
                 require_lang('calendar');
                 $map = [
-                    't_external_feed' => '',
+                    't_external_feed_url' => '',
                     't_logo' => 'icons/calendar/' . $type,
                 ];
                 $map += lang_code_to_default_content('t_title', 'DEFAULT_CALENDAR_TYPE__' . $type, true);

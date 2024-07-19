@@ -1039,10 +1039,17 @@ function find_all_hooks(string $type, string $subtype, bool $check_custom = true
         }
     }
 
-    $doing_custom_scan = (!isset($GLOBALS['DOING_USERS_INIT'])) && ((!in_safe_mode()) || (($GLOBALS['RELATIVE_PATH'] === '_tests') && ($subtype === 'addon_registry')));
+    $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
+
+    $doing_custom_scan = (!isset($GLOBALS['DOING_USERS_INIT'])) && // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
+        ((!in_safe_mode()) ||
+            (($subtype == 'addon_registry') &&
+                (($GLOBALS['RELATIVE_PATH'] === '_tests') || (running_script('upgrader')) || ($page == 'admin-addons')) // These conditions must allow loading non-bundled addon hooks even in safe mode
+            )
+        );
 
     if ($check_custom) {
-        if ($doing_custom_scan) { // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
+        if ($doing_custom_scan) {
             $dir = get_file_base() . '/sources_custom/hooks/' . $type . '/' . $subtype;
             $dh = is_dir($dir) ? scandir($dir) : false;
             if ($dh !== false) {
@@ -1057,7 +1064,6 @@ function find_all_hooks(string $type, string $subtype, bool $check_custom = true
     }
 
     // Optimisation, so that hooks with same name as our page get loaded first
-    $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
     if (array_key_exists($page, $out)) {
         $_out = [$page => $out[$page]];
         unset($out[$page]);

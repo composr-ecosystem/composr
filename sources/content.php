@@ -105,11 +105,11 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
     // FUDGE: Extra check for private topics
     $topic_id = null;
     if (($real_content_type == 'post') && (get_forum_type() == 'cns')) {
-        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_topic_id', 'p_intended_solely_for', 'p_poster'], ['id' => intval($content_id)], '', 1);
+        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_topic_id', 'p_whisper_to_member', 'p_posting_member'], ['id' => intval($content_id)], '', 1);
         if (!array_key_exists(0, $post_rows)) {
             return false;
         }
-        if (($post_rows[0]['p_intended_solely_for'] !== null) && (($post_rows[0]['p_intended_solely_for'] != $member_id) && ($post_rows[0]['p_poster'] != $member_id) || (is_guest($member_id)))) {
+        if (($post_rows[0]['p_whisper_to_member'] !== null) && (($post_rows[0]['p_whisper_to_member'] != $member_id) && ($post_rows[0]['p_posting_member'] != $member_id) || (is_guest($member_id)))) {
             return false;
         }
         $topic_id = $post_rows[0]['p_topic_id'];
@@ -118,7 +118,7 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
         $topic_id = intval($content_id);
     }
     if ($topic_id !== null) {
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id], '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to_member', 't_pt_from_member', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_rows)) {
             return false;
         }

@@ -128,7 +128,7 @@ class Hook_commandr_fs_quizzes extends Resource_fs_base
         $id = add_quiz($label, $timeout, $start_text, $end_text, $end_text_fail, $notes, $percentage, $open_time, $close_time, $num_winners, $redo_time, $type, $validated, $text, $submitter, $points_for_passing, $tied_newsletter, $reveal_answers, $shuffle_questions, $shuffle_answers, $add_time, $meta_keywords, $meta_description);
 
         if (isset($properties['winners'])) {
-            table_from_portable_rows('quiz_winner', $properties['winners'], ['q_entry' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('quiz_winner', $properties['winners'], ['q_entry_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->add_quiz_entries($properties, $id);
@@ -147,13 +147,13 @@ class Hook_commandr_fs_quizzes extends Resource_fs_base
     protected function add_quiz_entries(array $properties, int $quiz_id)
     {
         if (isset($properties['entries'])) {
-            $GLOBALS['SITE_DB']->query_delete('quiz_entries', ['q_quiz' => $quiz_id]);
+            $GLOBALS['SITE_DB']->query_delete('quiz_entries', ['q_quiz_id' => $quiz_id]);
             foreach ($properties['entries'] as $entry) {
                 $answers = $entry['answers'];
                 unset($entry['answers']);
-                $entry_id = $GLOBALS['SITE_DB']->query_insert('quiz_entries', $entry + ['q_quiz' => $quiz_id], true);
+                $entry_id = $GLOBALS['SITE_DB']->query_insert('quiz_entries', $entry + ['q_quiz_id' => $quiz_id], true);
                 foreach ($answers as $answer) {
-                    $GLOBALS['SITE_DB']->query_insert('quiz_entry_answer', $answer + ['q_entry' => $entry_id]);
+                    $GLOBALS['SITE_DB']->query_insert('quiz_entry_answer', $answer + ['q_entry_id' => $entry_id]);
                 }
             }
         }
@@ -181,9 +181,9 @@ class Hook_commandr_fs_quizzes extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('quiz', strval($row['id']));
 
-        $entries = table_to_portable_rows('quiz_entries', /*skip*/[], ['q_quiz' => intval($resource_id)]);
+        $entries = table_to_portable_rows('quiz_entries', /*skip*/[], ['q_quiz_id' => intval($resource_id)]);
         foreach ($entries as &$entry) {
-            $entry['answers'] = table_to_portable_rows('quiz_entry_answer', /*skip*/['id'], ['q_entry' => $entry['id']]);
+            $entry['answers'] = table_to_portable_rows('quiz_entry_answer', /*skip*/['id'], ['q_entry_id' => $entry['id']]);
             unset($entry['id']);
         }
 
@@ -198,20 +198,20 @@ class Hook_commandr_fs_quizzes extends Resource_fs_base
             'open_time' => remap_time_as_portable($row['q_open_time']),
             'close_time' => remap_time_as_portable($row['q_close_time']),
             'num_winners' => $row['q_num_winners'],
-            'redo_time' => $row['q_redo_time'],
+            'redo_time' => $row['q_reattempt_hours'],
             'type' => $row['q_type'],
             'validated' => $row['q_validated'],
             'text' => $text,
             'submitter' => remap_resource_id_as_portable('member', $row['q_submitter']),
             'points_for_passing' => $row['q_points_for_passing'],
-            'tied_newsletter' => $row['q_tied_newsletter'],
+            'tied_newsletter' => $row['q_newsletter_id'],
             'reveal_answers' => $row['q_reveal_answers'],
             'shuffle_questions' => $row['q_shuffle_questions'],
             'shuffle_answers' => $row['q_shuffle_answers'],
             'add_date' => remap_time_as_portable($row['q_add_date']),
             'meta_keywords' => $meta_keywords,
             'meta_description' => $meta_description,
-            'winners' => table_to_portable_rows('quiz_winner', /*skip*/[], ['q_entry' => intval($resource_id)]),
+            'winners' => table_to_portable_rows('quiz_winner', /*skip*/[], ['q_entry_id' => intval($resource_id)]),
             'entries' => $entries,
         ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
@@ -274,7 +274,7 @@ class Hook_commandr_fs_quizzes extends Resource_fs_base
         edit_quiz(intval($resource_id), $label, $timeout, $start_text, $end_text, $end_text_fail, $notes, $percentage, $open_time, $close_time, $num_winners, $redo_time, $type, $validated, $text, $meta_keywords, $meta_description, $points_for_passing, $tied_newsletter, $reveal_answers, $shuffle_questions, $shuffle_answers, $add_time, $submitter, true);
 
         if (isset($properties['winners'])) {
-            table_from_portable_rows('quiz_winner', $properties['winners'], ['q_entry' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('quiz_winner', $properties['winners'], ['q_entry_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->add_quiz_entries($properties, intval($resource_id));

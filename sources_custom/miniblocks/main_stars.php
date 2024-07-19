@@ -35,19 +35,19 @@ if (@cms_empty_safe($map['param'])) {
     return do_template('RED_ALERT', ['_GUID' => 'f4feed787ebcf1d007ba53625c8accce', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
 }
 
-$sql = 'SELECT recipient_id,SUM(amount_gift_points+amount_points) as cnt FROM ' . get_table_prefix() . 'points_ledger g WHERE ';
-$sql .= $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like($map['param'] . ': %') . '\' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-$sql .= ' GROUP BY recipient_id ORDER BY cnt DESC';
+$sql = 'SELECT receiving_member,SUM(amount_gift_points+amount_points) as cnt FROM ' . get_table_prefix() . 'points_ledger g WHERE ';
+$sql .= $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like($map['param'] . ': %') . '\' AND sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+$sql .= ' GROUP BY receiving_member ORDER BY cnt DESC';
 $rows = $GLOBALS['SITE_DB']->query($sql, 10, 0, false, false, ['reason' => 'SHORT_TRANS']);
 
 if (empty($rows) && $GLOBALS['DEV_MODE']) {
-    $rows[] = ['recipient_id' => 2, 'cnt' => 123];
-    $rows[] = ['recipient_id' => 3, 'cnt' => 7334];
+    $rows[] = ['receiving_member' => 2, 'cnt' => 123];
+    $rows[] = ['receiving_member' => 3, 'cnt' => 7334];
 }
 
 $count = 0;
 foreach ($rows as $row) {
-    $member_id = $row['recipient_id'];
+    $member_id = $row['receiving_member'];
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_DEFAULT_NULL);
     if ($username !== null) {
         $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);

@@ -43,16 +43,16 @@ class Hook_attachments_cns_post
 
         require_code('cns_forums');
         require_code('cns_topics');
-        $info = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_cache_forum_id', 'p_intended_solely_for', 'p_poster', 'p_topic_id'], ['id' => intval($id)], '', 1);
+        $info = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_cache_forum_id', 'p_whisper_to_member', 'p_posting_member', 'p_topic_id'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $info)) {
             return false;
         }
         $forum_id = $info[0]['p_cache_forum_id'];
-        $forum_id_parent = ($forum_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $forum_id]);
-        $forum_id_parent_parent = ($forum_id_parent === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $forum_id_parent]);
-        $poster = $info[0]['p_poster'];
-        $intended_solely_for = $info[0]['p_intended_solely_for'];
-        if (($intended_solely_for !== null) && ($poster != $member_id) && ($intended_solely_for != $member_id)) {
+        $forum_id_parent = ($forum_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum_id', ['id' => $forum_id]);
+        $forum_id_parent_parent = ($forum_id_parent === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum_id', ['id' => $forum_id_parent]);
+        $poster = $info[0]['p_posting_member'];
+        $whisper_to_member = $info[0]['p_whisper_to_member'];
+        if (($whisper_to_member !== null) && ($poster != $member_id) && ($whisper_to_member != $member_id)) {
             return false;
         }
         if (cns_may_access_topic($info[0]['p_topic_id'])) {

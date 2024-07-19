@@ -155,21 +155,22 @@ When editing poll answers, the votes will be maintained; you should generally on
 
 [title="3"]Weighting poll results with points[/title]
 
-A site-wide setting can be enabled to allow poll results to be weighted according to the number of points each voter had in their balance at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for topic polls.
+A site-wide setting can be enabled to allow poll results to be weighted according to the number of life-time points each voter had at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for topic polls.
 
 When the site-wide setting is enabled, individual polls can then have point-weighting enabled or disabled (they will be disabled by default).
 
-Point weighting works by assigning a [b]voting power[/b] to every vote based on the number of points the voter had at the time they voted.
+Point weighting works by assigning a [b]voting power[/b] to every vote based on the number of life-time points the voter had at the time they voted.
 
 The formula used to weigh poll results and generate a voting power is as follows:
 
-[html]<kbd>[/html]{!cns_polls:VOTING_POWER_EQUATION,&lt;maximum&gt;,&lt;offset&gt;,&lt;multiplier&gt;,&lt;points&gt;,&lt;base&gt;}[html]</kbd>[/html]
- - [b]base[/b], [b]multiplier[/b], [b]offset[/b], and [b]maximum[/b] are configurable values in the Forum / Point-weighting for topic polls options.
- - First, the formula takes the log of the member's current points at the time of voting plus the log base.
- - Then, the formula multiplies the results of log by the absolute value of the configured multiplier.
+[html]<kbd>[/html]{!cns_polls:VOTING_POWER_EQUATION,&lt;maximum&gt;,&lt;offset&gt;,&lt;multiplier&gt;,&lt;life-time points&gt;,&lt;root base&gt;}[html]</kbd>[/html]
+ - [b]root base[/b], [b]multiplier[/b], [b]offset[/b], and [b]maximum[/b] are configurable values in the Forum / Point-weighting for topic polls options.
+ - First, the formula takes the root of the member's life-time points at the time of voting (e.g. If the root base is 2, it will take the square root. If it is 3, it will take the cubic root.).
+ - Then, the formula multiplies the results by the absolute value of the configured multiplier.
  - Next, the offset is added to the result (offset can be negative to subtract instead).
  - Finally, the formula ensures voting power is not higher than the defined maximum (if defined), and not lower than 0.
- - When a member's points are 0 or negative, their voting power will be offset + multiplier (if it is below maximum) since the log value will always come out 1.
+ - When a member's life-time points are 0 or negative, their voting power will be 0 (e.g. their vote has no effect on the poll results).
+ - If the points addon is not installed, everyone has a voting power of 1 (e.g. the behaviour is the same as a non-weighted poll).
 
 There are a couple nuances with the weighted voting system:
  - Currently, the weighted voting system is very inefficient for large polls as it must tally all of the voting powers (see [url="Composr tracker issue 4876"]https://composr.app/tracker/view.php?id=4876[/url]).
@@ -202,6 +203,7 @@ Conversr was designed to be a powerful forum in its own right.
 Here are some features we have in Conversr that are mostly unique across forum software:
  - Blind polls (results hidden until voting ends)
  - Default poll options (options can be default or required for all polls in a forum, and allowance of custom options can be disabled)
+ - Weighted polls (so more vetted and active members have a larger influence in a poll's results; this can be very useful for democratic and autonomous voting of issues pertaining to the site)
  - Private topics, rather than primitive private messages
  - Inline private posts (private messages embedded in public forum topics, so people can make private remarks to each other)
  - Forum introduction questions (a much more general concept than the silly 'password protected' forums, which duplicate what usergroup permissions are for)
@@ -215,6 +217,8 @@ Here are some features we have in Conversr that are mostly unique across forum s
  - Important posts (a moderator can highlight a post in a topic to make a clear point)
  - Post Templates (so the forum can be used like a help desk)
  - Integrated rank/usergroup system (because having rank and usergroup separate just gets confusing)
+ - Reputation system (via the {$IS_MAINTAINED,karma,Karma non-bundled addon})
+  - Reputation is not particularly unique across other forums, but Conversr's Karma is vastly more configurable than most and can be set up so more vetted members have a larger impact on the reputation of other members.
 
 Since the time of Conversr's development, standalone forums have actually reduced a lot in popularity, for the same reasons that we decided tight integration was the way to go -- a consistent user experience across a whole website is the way to go, instead of having community features mostly siloed off on some separate piece of software. That ended up being called 'Web 2.0' and then 'Social media', but it basically is what Composr's philosophy always has been: an interactive and integrated cross-website experience. However most "new forums", written from scratch to provide this tight integration, are cut down in functionality and lack a lot of really important features, while we've matched and raised the functionality at the same time as properly integrating it. This is one thing we're quite proud of about with Composr: we don't just throw away proven functionality to create the new, we embrace established concepts and build industry innovations right into the core of it all.
 
@@ -237,5 +241,6 @@ Since the time of Conversr's development, standalone forums have actually reduce
  - [page="_SEARCH:tut_notifications"]Notifications[/page]
  - [page="_SEARCH:tut_forum_tracking"]Keeping on track of busy forums[/page]
  - [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page]
+ - [page="_SEARCH:sup_adding_a_member_reputation_system"]Adding a Member Reputation System[/page]
 
 {$SET,tutorial_tags,Forum,cns_forum,Social,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial will explain how discussion forums work in Conversr, and how best to organise them.}[block]main_tutorial_rating[/block]

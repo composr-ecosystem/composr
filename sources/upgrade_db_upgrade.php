@@ -32,11 +32,10 @@ function init__upgrade_db_upgrade()
  * Do upgrader screen: database upgrade.
  *
  * @ignore
- * @return string Output messages
  */
-function upgrader_db_upgrade_screen() : string
+function upgrader_db_upgrade_screen()
 {
-    $out = '<h2>' . do_lang('UPGRADER_DATABASE_UPGRADE') . '</h2>';
+    echo '<h2>' . do_lang('UPGRADER_DATABASE_UPGRADE') . '</h2>';
 
     log_it('UPGRADER_DATABASE_UPGRADE');
 
@@ -61,41 +60,37 @@ function upgrader_db_upgrade_screen() : string
     $something_done = false;
 
     // Version-specific upgrade
-    if (version_specific()) {
-        $out .= do_lang('UPGRADER_UPGRADED_CORE_TABLES');
-        $something_done = true;
-    }
+    $version_upgrade = version_specific();
+    $something_done = (($something_done) || ($version_upgrade));
 
     // Conversr upgrade
     if ($version_database_cns < $version_files) {
-        $out = '<h2>' . do_lang('UPGRADER_UPGRADE_CNS') . '</h2>';
+        echo '<h3>' . do_lang('UPGRADER_UPGRADE_CNS') . '</h3>';
         if (cns_upgrade()) {
-            $out .= '<p>' . do_lang('SUCCESS') . '</p>';
+            echo '<p>' . do_lang('SUCCESS') . '</p>';
         } else {
-            $out .= do_lang('UPGRADER_NO_CNS_UPGRADE');
+            echo do_lang('UPGRADER_NO_CNS_UPGRADE');
         }
         $something_done = true;
     }
 
     // Modules upgrade
-    $done = upgrade_modules($version_database_cns);
+    $done = upgrade_addons($version_database_cns);
     if ($done != '') {
-        $out .= do_lang('UPGRADER_UPGRADE_MODULES', $done);
+        echo do_lang('UPGRADER_UPGRADE_MODULES', $done);
         $something_done = true;
     }
     if (!$something_done) {
-        $out .= do_lang('NO_UPGRADE_DONE');
+        echo do_lang('NO_UPGRADE_DONE');
     }
 
     set_value('db_version', strval(cms_version_time_db()), true);
-
-    return $out;
 }
 
 /**
  * Version specific upgrading. These are things that are relatively major structural changes and therefore will get done outside the module upgrade system.
  *
- * @return boolean Whether anything was done
+ * @return boolean Whether we did something
  */
 function version_specific() : bool
 {
@@ -122,6 +117,7 @@ function version_specific() : bool
                 }
                 closedir($dh);
             }
+            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '9', 'Migrated imports/mods to imports/addons');
         }
         if ($version_database < 10.0) {
             $GLOBALS['SITE_DB']->add_table_field('config', 'c_value_trans', '?LONG_TRANS');
@@ -164,11 +160,15 @@ function version_specific() : bool
                 'cms_cedi' => 'cms_wiki',
                 'cms_ocf_groups' => 'cms_cns_groups',
             ];
+            $_out = '';
             foreach ($remap as $from => $to) {
+                $_out .= '<li><kbd>' . $from . '</kbd> => <kbd>' . $to . '</kbd></li>';
                 $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $to]);
                 $GLOBALS['SITE_DB']->query_update('modules', ['module_the_name' => $to], ['module_the_name' => $from], '', 1);
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'' . $from . '\',\'' . $to . '\')');
             }
+            echo do_lang('UPGRADER_RENAMED_MODULES', '10', $_out);
+
             /*
             $deleted_modules = [
             ];
@@ -183,10 +183,14 @@ function version_specific() : bool
                 'side_stored_menu' => 'menu',
                 'side_root_galleries' => 'side_galleries',
             ];
+            $_out = '';
             foreach ($remap as $from => $to) {
+                $_out .= '<li><kbd>' . $from . '</kbd> => <kbd>' . $to . '</kbd></li>';
                 $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $to]);
                 $GLOBALS['SITE_DB']->query_update('blocks', ['block_name' => $to], ['block_name' => $from], '', 1);
             }
+            echo do_lang('UPGRADER_RENAMED_MODULES', '10', $_out);
+
             $deleted_blocks = [
                 'main_feedback',
                 'main_sitemap',
@@ -199,9 +203,12 @@ function version_specific() : bool
                 'main_download_tease',
                 'main_gallery_tease',
             ];
+            $_out = '';
             foreach ($deleted_blocks as $block_name) {
+                $_out .= '<li><kbd>' . $block_name . '</kbd></li>';
                 $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $block_name]);
             }
+            echo do_lang('UPGRADER_UNINSTALL_MODULES', '10', $_out);
 
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'ocf_\',\'cns_\')');
 
@@ -281,6 +288,7 @@ function version_specific() : bool
                     $GLOBALS['SITE_DB']->promote_text_field_to_comcode('f_member_custom_fields', $db_field, 'mf_member_id');
                 }
             }
+            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '10', 'applied fix for legacy no-multi-lang crash bug');
 
             // For old (and renamed) non-bundled addons
             if ($GLOBALS['SITE_DB']->table_exists('bank')) {
@@ -298,11 +306,12 @@ function version_specific() : bool
             }
             if (addon_installed('news')) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news_categories SET nc_img=REPLACE(nc_img,\'/grepimages\',\'/repimages\')');
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news SET news_image=REPLACE(news_image,\'/grepimages\',\'/repimages\')');
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news SET news_image_url=REPLACE(news_image_url,\'/grepimages\',\'/repimages\')');
             }
             if (addon_installed('catalogues')) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'catalogue_categories SET rep_image=REPLACE(rep_image,\'/grepimages\',\'/repimages\')');
             }
+            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '10', 'uploads/grepimages => uploads/repimages');
 
             // Delete old files
             @unlink(get_file_base() . '/pages/html_custom/EN/cedi_tree_made.htm');
@@ -341,6 +350,7 @@ function version_specific() : bool
                 '#solidborder#' => 'results_table',
             ];
             perform_search_replace($reps);
+            echo do_lang('UPGRADER_UPGRADED_FILE_REPLACEMENTS', '10');
 
             // Old-style comment topics
             $comment_topic_forums = [
@@ -374,93 +384,142 @@ function version_specific() : bool
                 }
             }
             $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_description' => 'Comment: #block_main_comments_guestbook_main'], ['t_description' => 'guestbook: #block_main_comments_guestbook_main'], '', 1);
+            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '10', 'upgraded old-style comment topics');
+
+            echo do_lang('UPGRADER_UPGRADED_CORE_TABLES', '10');
         }
 
         if ($version_database < 11.0) {
-            // Database changes
+            // Database changes (correcting previous errors in types)
+            $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
+            $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_thumb_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_last_downloaded_time', '?TIME');
+            $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_add_time', 'TIME');
+            $GLOBALS['SITE_DB']->alter_table_field('group_privileges', 'group_id', '*GROUP');
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
+            //$GLOBALS['SITE_DB']->alter_table_field('sessions', 'ip', 'IP', 'ip_address');
 
-            // Changes to support ticket forums
-            if ((addon_installed('tickets')) && (get_forum_type() == 'cns')) {
-                require_code('tickets');
-                require_code('cns_forums_action2');
-                $target_forum_id = get_ticket_forum_id(null, false, true);
-                if ($target_forum_id !== null) {
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Reported posts forum']);
-                    if ($forum_id !== null) {
-                        cns_delete_forum($forum_id, $target_forum_id);
-                    }
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Website "Contact Us" messages']);
-                    if ($forum_id !== null) {
-                        cns_delete_forum($forum_id, $target_forum_id);
-                    }
-                }
-            }
-
-            // Changes to custom fields
-            if (multi_lang_content()) {
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_type'));
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('text_original', 'cms_payment_card_expiry_date'));
-            } else {
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_name=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_type'));
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('cf_name', 'cms_payment_card_expiry_date'));
-            }
+            echo do_lang('UPGRADER_UPGRADED_CORE_TABLES', '11');
 
             // Renamed blocks
             $remap = [
                 'main_activities' => 'main_activity_feed',
                 'main_activities_state' => 'main_activity_feed_state',
             ];
+            $_out = '';
             foreach ($remap as $from => $to) {
+                $_out .= '<li><kbd>' . $from . '</kbd> => <kbd>' . $to . '</kbd></li>';
                 $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $to]);
                 $GLOBALS['SITE_DB']->query_update('blocks', ['block_name' => $to], ['block_name' => $from], '', 1);
             }
+            echo do_lang('UPGRADER_RENAMED_MODULES', '11', $_out);
 
-            // Delete bundled addons that no longer exist
+            // Delete bundled and non-bundled addons that no longer exist (addon => [whether non-bundled, whether being moved between bundled/non-bundled opposed to deleted])
             //  Note that any old tables etc should be removed from the upgrade code in admin_version
             //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be uninstalled manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $deleted_addons = [
-                'bookmarks',
-                'cns_reported_posts',
-                'collaboration_zone',
-                'hphp_buildkit',
-                'linux_helper_scripts',
-                'msn',
-                'pointstore',
-                'ssl',
-                'staff_messaging',
-                'staff',
-                'supermember_directory',
-                'textbased_persistent_caching',
-                'windows_helper_scripts',
-                'xml_fields',
-                'zone_logos',
+                'bookmarks' => [false, false],
+                'cns_reported_posts' => [false, false], // Merged into core
+                'collaboration_zone' => [false, false],
+                'hphp_buildkit' => [false, false],
+                'linux_helper_scripts' => [false, false],
+                'msn' => [false, false],
+                'pointstore' => [false, false], // Merged into points / eCommerce
+                'ssl' => [false, false],
+                'staff_messaging' => [false, false],
+                'staff' => [false, false],
+                'supermember_directory' => [false, false],
+                'textbased_persistent_caching' => [false, false],
+                'windows_helper_scripts' => [false, false],
+                'xml_fields' => [false, false],
+                'zone_logos' => [false, false], // Themes / logo wizard now manage logos
+                'health_check' => [true, true], // Now bundled
             ];
-            foreach ($deleted_addons as $addon) {
-                $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon]);
-                @unlink(get_custom_file_base() . '/imports/addons/' . $addon . '.tar');
+            $_out = '';
+            foreach ($deleted_addons as $addon => $info) {
+                list($is_nonbundled, $is_moved) = $info;
+
+                if (!$is_moved) {
+                    $_out .= '<li><kbd>' . $addon . '</kbd></li>';
+                    $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon]);
+                    $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon]);
+                    $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon]);
+                    @unlink(get_custom_file_base() . '/imports/addons/' . $addon . '.tar');
+                }
 
                 // Just in case the user did not process file integrity yet
-                @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
-                @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
+                if ($is_nonbundled) {
+                    @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
+                } else {
+                    @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
+                }
             }
+            echo do_lang('UPGRADER_UNINSTALL_MODULES', '11', $_out);
 
-            // Renamed addons (old name => new name)
+            // Renamed addons (old name => new name), just in case the user did not process file integrity yet
             //  Note that any table modifications etc should be handled in the upgrade code for the NEW addon / module
             //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $renamed_addons = [
                 'unvalidated' => 'validation'
             ];
+            $_out = '';
             foreach ($renamed_addons as $old_addon => $new_addon) {
-                $GLOBALS['SITE_DB']->query_update('addons', ['addon_name' => $new_addon], ['addon_name' => $old_addon]);
+                $_out .= '<li><kbd>' . $old_addon . '</kbd> => <kbd>' . $new_addon . '</kbd></li>';
+                if ($GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => $new_addon]) === null) {
+                    $GLOBALS['SITE_DB']->query_update('addons', ['addon_name' => $new_addon], ['addon_name' => $old_addon]);
+                    $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
+                        'addon_name' => $new_addon,
+                    ], ['addon_name' => $old_addon], '', 1);
+                    $GLOBALS['SITE_DB']->query_update('addons_files', [
+                        'addon_name' => $new_addon,
+                    ], ['addon_name' => $old_addon], '', 1);
+                }
                 @copy(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar', get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @fix_permissions(get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @unlink(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar');
 
-                // Just in case the user did not process file integrity yet; new hook should have been extracted by the upgrader
+                // New hook should have been extracted by the upgrader; remove old ones
                 @unlink(get_custom_file_base() . '/sources/hooks/systems/addon_registry/' . $old_addon . '.php');
                 @unlink(get_custom_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $old_addon . '.php');
             }
+            echo do_lang('UPGRADER_RENAMED_MODULES', '11', $_out);
+
+            // Deleted modules
+            $deleted_modules = [
+                'admin_ecommerce_logs', // Renamed but has no install code
+                'admin_messaging',
+                'admin_orders',
+                'admin_pointstore',
+                'admin_ssl',
+                'admin_staff',
+                'bookmarks',
+                'pointstore',
+                'staff',
+                'supermembers'
+            ];
+            $_out = '';
+            foreach ($deleted_modules as $module_name) {
+                $_out .= '<li><kbd>' . $module_name . '</kbd></li>';
+                $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $module_name]);
+            }
+            echo do_lang('UPGRADER_UNINSTALL_MODULES', '11', $_out);
+
+            // Deleted blocks
+            $deleted_blocks = [
+                'main_only_if_match',
+                'main_pt_notifications',
+                'main_staff_website_monitoring',
+                'side_network'
+            ];
+            $_out = '';
+            foreach ($deleted_blocks as $block_name) {
+                $_out .= '<li><kbd>' . $block_name . '</kbd></li>';
+                $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $block_name]);
+            }
+            echo do_lang('UPGRADER_UNINSTALL_MODULES', '11', $_out);
 
             // File replacements
             $reps = [
@@ -469,9 +528,19 @@ function version_specific() : bool
                 '#ocProducts#' => 'Core Development Team',
             ];
             perform_search_replace($reps);
+            echo do_lang('UPGRADER_UPGRADED_FILE_REPLACEMENTS', '11');
+
+            // Must do this so we can delete collaboration zone
+            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
+
+            // Delete removed collaboration zone
+            require_code('zones3');
+            actual_delete_zone('collaboration', true);
+            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '11', 'removed collaboration zone');
 
             // Default zone page name change
             $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_default_page' => 'start']);
+            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '11', 'renamed default zone start page to home page');
         }
 
         // Note: When adding upgrade code for a new version it's a good idea to review old code to get an idea for what might need to be done
@@ -485,12 +554,12 @@ function version_specific() : bool
 }
 
 /**
- * Upgrade all modules and blocks.
+ * Upgrade all addons, modules, and blocks.
  *
  * @param  float $from_cms_version From which version of the software we are upgrading
  * @return string List of upgraded/installed modules/blocks
  */
-function upgrade_modules(float $from_cms_version) : string
+function upgrade_addons(float $from_cms_version) : string
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
@@ -553,6 +622,11 @@ function upgrade_modules(float $from_cms_version) : string
     require_code('addons2');
     $addons = find_all_hooks('systems', 'addon_registry');
     foreach ($addons as $addon_name => $type) {
+        if ($type == 'sources_custom') {
+            $out .= '<li>' . do_lang('UPGRADER_SKIPPED_NONBUNDLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            continue;
+        }
+
         $ret = upgrade_addon_soft($addon_name);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';

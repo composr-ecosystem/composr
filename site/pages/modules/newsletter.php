@@ -35,7 +35,7 @@ class Module_newsletter
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 13;
+        $info['version'] = 14;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -94,7 +94,7 @@ class Module_newsletter
 
             $GLOBALS['SITE_DB']->create_table('newsletter_archive', [
                 'id' => '*AUTO',
-                'date_and_time' => 'INTEGER',
+                'date_and_time' => 'TIME',
                 'subject' => 'SHORT_TEXT',
                 'newsletter' => 'LONG_TEXT',
                 'language' => 'ID_TEXT',
@@ -150,7 +150,7 @@ class Module_newsletter
                 'np_day' => 'SHORT_INTEGER',
                 'np_in_full' => 'BINARY',
                 'np_template' => 'ID_TEXT',
-                'np_last_sent' => 'TIME',
+                'np_last_sent_time' => 'TIME',
             ]);
         }
 
@@ -205,6 +205,12 @@ class Module_newsletter
 
         if (($upgrade_from === null) || ($upgrade_from < 12)) {
             $GLOBALS['SITE_DB']->create_index('newsletter_subscribers', 'email', ['email']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 14)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('newsletter_archive', 'date_and_time', 'TIME');
+            $GLOBALS['SITE_DB']->alter_table_field('newsletter_periodic', 'np_last_sent', 'TIME', 'np_last_sent_time');
         }
     }
 

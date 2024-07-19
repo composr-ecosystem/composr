@@ -325,22 +325,22 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
 
     switch ($type) {
         case 'sender': // transactions where the member sent points to another member
-            $where = ['sender_id' => $member_id_of];
+            $where = ['sending_member' => $member_id_of];
 
             // Ignore anonymous transactions if we do not have the privilege to trace them
             if (($member_id_of != $member_id_viewing) && !has_privilege($member_id_viewing, 'trace_anonymous_points_transactions')) {
                 $where['anonymous'] = 0;
             }
 
-            $end = ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()); // Do not include debits
+            $end = ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()); // Do not include debits
             break;
         case 'recipient': // Transactions where the member received points (either from other members or the system)
-            $where = ['recipient_id' => $member_id_of];
+            $where = ['receiving_member' => $member_id_of];
             $end = '';
             break;
         case 'sender_recipient': // Transactions where the member sent points to other members or received points (either from other members or the system)
-            $end = ' AND ((sender_id=' . strval($member_id_of) . ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-            $end .= ') OR (recipient_id=' . strval($member_id_of) . '))'; // We also want to include credits, so do not filter out system senders
+            $end = ' AND ((sending_member=' . strval($member_id_of) . ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $end .= ') OR (receiving_member=' . strval($member_id_of) . '))'; // We also want to include credits, so do not filter out system senders
 
             // Ignore anonymous transactions if we do not have the privilege to trace them
             if (($member_id_of != $member_id_viewing) && !has_privilege($member_id_viewing, 'trace_anonymous_points_transactions')) {
@@ -348,15 +348,15 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
             }
             break;
         case 'credit': // Transactions where the member received points from the system
-            $where = ['recipient_id' => $member_id_of, 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+            $where = ['receiving_member' => $member_id_of, 'sending_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
             $end = '';
             break;
         case 'debit': // Transactions where the member sent points to the system
-            $where = ['sender_id' => $member_id_of, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+            $where = ['sending_member' => $member_id_of, 'receiving_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
             $end = '';
             break;
         case 'all': // All transactions involving the member
-            $end = ' AND (sender_id=' . strval($member_id_of) . ' OR recipient_id=' . strval($member_id_of) . ')';
+            $end = ' AND (sending_member=' . strval($member_id_of) . ' OR receiving_member=' . strval($member_id_of) . ')';
             break;
     }
 
@@ -454,18 +454,18 @@ function points_get_transactions_screen(string $type, int $member_id_of, int $me
         }
 
         // Their name
-        $from_name = is_guest($myrow['sender_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($myrow['sender_id'], true);
-        $to_name = is_guest($myrow['recipient_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($myrow['recipient_id'], true);
-        if (($myrow['anonymous'] == 1) && (!is_guest($myrow['sender_id']))) {
+        $from_name = is_guest($myrow['sending_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($myrow['sending_member'], true);
+        $to_name = is_guest($myrow['receiving_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($myrow['receiving_member'], true);
+        if (($myrow['anonymous'] == 1) && (!is_guest($myrow['sending_member']))) {
             if (!has_privilege($member_id_viewing, 'trace_anonymous_points_transactions')) {
                 $_from_name = do_lang_tempcode('ANON');
             } else {
-                $_from_name = hyperlink(points_url($myrow['sender_id']), do_lang_tempcode('ANON'), false, false, escape_html($from_name));
+                $_from_name = hyperlink(points_url($myrow['sending_member']), do_lang_tempcode('ANON'), false, false, escape_html($from_name));
             }
         } else {
-            $_from_name = (is_guest($myrow['sender_id'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($myrow['sender_id']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+            $_from_name = (is_guest($myrow['sending_member'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($myrow['sending_member']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
         }
-        $_to_name = hyperlink(points_url($myrow['recipient_id']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $_to_name = hyperlink(points_url($myrow['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         $date = make_string_tempcode(escape_html(get_timezoned_date_time($myrow['date_and_time'], false)));
         $amount = $myrow['amount_gift_points'] + $myrow['amount_points'];
@@ -487,8 +487,8 @@ function points_get_transactions_screen(string $type, int $member_id_of, int $me
 
         if ($myrow['status'] == LEDGER_STATUS_NORMAL) {
             $status = do_lang_tempcode('LEDGER_STATUS_0');
-        } elseif (($myrow['linked_to'] !== null) && (has_privilege($member_id_viewing, 'moderate_points'))) {
-            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . strval($myrow['status']), escape_html(strval($myrow['linked_to'])));
+        } elseif (($myrow['linked_ledger_id'] !== null) && (has_privilege($member_id_viewing, 'moderate_points'))) {
+            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . strval($myrow['status']), escape_html(strval($myrow['linked_ledger_id'])));
         } else {
             $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . strval($myrow['status']));
         }
@@ -551,13 +551,13 @@ function transaction_reverse_screen(int $id, int $confirm, object $title) : ?obj
     $myrow = $rows[0];
     $amount_points = $myrow['amount_points'];
     $amount_gift_points = $myrow['amount_gift_points'];
-    $sender_id = $myrow['sender_id'];
-    $recipient_id = $myrow['recipient_id'];
+    $sending_member = $myrow['sending_member'];
+    $receiving_member = $myrow['receiving_member'];
 
     if ($confirm == 0) {
-        $_sender_id = (is_guest($sender_id)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
-        $_recipient_id = (is_guest($recipient_id)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($recipient_id);
-        $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount_points)), escape_html(integer_format($amount_gift_points)), [escape_html($_sender_id), escape_html($_recipient_id)]);
+        $_sending_member = (is_guest($sending_member)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($sending_member);
+        $_receiving_member = (is_guest($receiving_member)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($receiving_member);
+        $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount_points)), escape_html(integer_format($amount_gift_points)), [escape_html($_sending_member), escape_html($_receiving_member)]);
         return do_template('CONFIRM_SCREEN', [
             '_GUID' => '74f1a21b64dc67a9953a5823462bab38',
             'TITLE' => $title,

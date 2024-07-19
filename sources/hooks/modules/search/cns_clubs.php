@@ -116,7 +116,7 @@ class Hook_search_cns_clubs extends FieldsSearchHook
         require_lang('cns');
 
         // Calculate our where clause (search)
-        $sq = build_search_submitter_clauses('g_group_leader', $author_id, $author);
+        $sq = build_search_submitter_clauses('g_group_lead_member', $author_id, $author);
         if ($sq === null) {
             return [];
         } else {
@@ -154,7 +154,7 @@ class Hook_search_cns_clubs extends FieldsSearchHook
      */
     public function render(array $row) : object
     {
-        $leader = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['g_group_leader']);
+        $leader = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['g_group_lead_member']);
 
         require_code('cns_groups');
         $group_name = cns_get_group_name($row['id']);

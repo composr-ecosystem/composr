@@ -278,7 +278,7 @@ class CMSModerationWrite
         $post[$key] = get_translated_text($target_post['p_post'], $GLOBALS['FORUM_DB']);
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $sql = 'SELECT *,id AS post_id FROM ' . $table_prefix . 'f_posts WHERE p_intended_solely_for IS NULL AND id IN (' . implode(',', array_map('strval', $source_post_ids)) . ')';
+        $sql = 'SELECT *,id AS post_id FROM ' . $table_prefix . 'f_posts WHERE p_whisper_to_member IS NULL AND id IN (' . implode(',', array_map('strval', $source_post_ids)) . ')';
         $source_posts = empty($source_post_ids) ? [] : $GLOBALS['FORUM_DB']->query($sql);
         foreach ($source_posts as $source_post) {
             $key = str_pad(strval($source_post['p_time']), 15, '0', STR_PAD_LEFT) . '_' . strval($source_post['post_id']);
@@ -403,7 +403,7 @@ class CMSModerationWrite
 
         if (($delete_all_posts) && (!has_delete_permission('low', get_member(), $user_id, 'topics'))) {
             require_code('cns_posts_action3');
-            $posts = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_posts p', ['p.id AS post_id'], ['p_poster' => $user_id], ' AND p_cache_forum_id IS NOT NULL'));
+            $posts = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_posts p', ['p.id AS post_id'], ['p_posting_member' => $user_id], ' AND p_cache_forum_id IS NOT NULL'));
 
             // Group the posts up by topic
             $topics = [];
@@ -427,7 +427,7 @@ class CMSModerationWrite
             require_code('cns_members_action2');
             cns_ban_member($user_id);
         } else {
-            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $expires], ['id' => $user_id], '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_probation_expiration_time' => $expires], ['id' => $user_id], '', 1);
 
             require_code('cns_general_action2');
             cns_mod_log_it('START_PROBATION', strval($user_id), $username, $reason);
@@ -465,9 +465,9 @@ class CMSModerationWrite
         require_code('cns_members_action2');
         cns_unban_member($user_id);
 
-        $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_on_probation_until');
-        if ($on_probation_until !== null) {
-            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => null], ['id' => $user_id], '', 1);
+        $probation_expiration_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_probation_expiration_time');
+        if ($probation_expiration_time !== null) {
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_probation_expiration_time' => null], ['id' => $user_id], '', 1);
 
             require_code('cns_general_action2');
             cns_mod_log_it('STOP_PROBATION', strval($user_id), $username);

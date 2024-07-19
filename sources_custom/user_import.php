@@ -154,7 +154,7 @@ function do_user_import()
                     '', // pt_rules_text
                     $validated, // validated
                     '', // validated_email_confirm_code
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     $is_perm_banned, // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
@@ -197,7 +197,7 @@ function do_user_import()
                 null, // pt_allow
                 null, // pt_rules_text
                 $validated, // validated
-                null, // on_probation_until
+                null, // probation_expiration_time
                 $is_perm_banned, // is_perm_banned
                 false // check_correctness
             );

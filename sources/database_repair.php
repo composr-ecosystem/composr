@@ -1086,6 +1086,7 @@ class DatabaseRepair
 
     /**
      * Convert raw database field type to software field type.
+     * Update _database_integrity automated test when changing this.
      *
      * @param  string $field_name Field name
      * @param  string $type_raw Field type (MySQL-style)
@@ -1099,8 +1100,10 @@ class DatabaseRepair
         $type = (strpos($type_raw, 'int') !== false) ? 'INTEGER' : 'SHORT_TEXT';
         switch ($type_raw) {
             case 'varchar(5)':
-                //$type = 'LANGUAGE_NAME';   Ideally, but we cannot assume
-                $type = 'ID_TEXT';
+                $type = 'LANGUAGE_NAME';
+                break;
+            case 'varchar(13)':
+                $type = 'TOKEN';
                 break;
             case 'varchar(40)':
                 if (strpos($field_name, 'ip_address') !== false) {
@@ -1129,25 +1132,31 @@ class DatabaseRepair
                 $type = 'SHORT_INTEGER';
                 break;
             case 'int(10) unsigned':
-                if ((strpos($field_name, 'date') !== false) || (strpos($field_name, 'time') !== false)) {
-                    $type = 'TIME';
+                if ((strpos($field_name, 'count_') === 0) || (strpos($field_name, '_count') === (strlen($field_name) - 6)) || (strpos($field_name, '_count_') !== false)) { // Specific checks necessary to filter out fields like county and country
+                    $type = 'UINTEGER'; // Count fields will never be LONG_TRANS / SHORT_TRANS / etc
                 } else {
-                    $type = $is_auto_increment ? 'AUTO' : 'LONG_TRANS'; // Also could be... SHORT_TRANS or UINTEGER... but we can't tell this at all
+                    if ((strpos($field_name, 'date') !== false) || ((strpos($field_name, 'time') !== false) && (strpos($field_name, 'timeout') === false)) || (strpos($field_name, 'until') !== false)) {
+                        $type = 'TIME';
+                    } else {
+                        $type = $is_auto_increment ? 'AUTO' : 'LONG_TRANS'; // Also could be... SHORT_TRANS or UINTEGER... but we can't tell this at all
+                    }
                 }
                 break;
             case 'int(11)':
                 if ($is_auto_increment) {
                     $type = 'AUTO';
-                } else {
-                    if (strpos($field_name, 'group') !== false) {
+                } elseif (strpos($field_name, 'count') === false) {
+                    if ((strpos($field_name, 'group') !== false) && (strpos($field_name, 'grouping') === false)) {
                         $type = 'GROUP';
-                    } elseif ((strpos($field_name, 'user') !== false) || (strpos($field_name, 'member') !== false)) {
+                    } elseif ((strpos($field_name, 'user') !== false) || (strpos($field_name, 'member') !== false) || (strpos($field_name, 'submitter') !== false) || (strpos($field_name, 'owner') !== false)) {
                         $type = 'MEMBER';
                     } elseif (strpos($field_name, '_id') !== false) {
                         $type = 'AUTO_LINK';
                     } else {
                         $type = 'INTEGER';
                     }
+                } else {
+                    $type = 'INTEGER';
                 }
                 break;
             case 'real':

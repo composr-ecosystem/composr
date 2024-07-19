@@ -69,13 +69,13 @@ class Hook_realtime_rain_cns
 
             // Forum posts (f_posts table)
             if ((has_actual_page_access(get_member(), 'topicview')) && (addon_installed('cns_forum'))) {
-                $rows = $GLOBALS['FORUM_DB']->query('SELECT p_intended_solely_for,id,p_poster AS member_id,p_time AS timestamp,p_cache_forum_id,p_post,p_title,p_ip_address FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+                $rows = $GLOBALS['FORUM_DB']->query('SELECT p_whisper_to_member,id,p_posting_member AS member_id,p_time AS timestamp,p_cache_forum_id,p_post,p_title,p_ip_address FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
                 foreach ($rows as $row) {
                     if ($row['p_cache_forum_id'] === null) {
                         continue;
                     }
-                    if ($row['p_intended_solely_for'] !== null) {
+                    if ($row['p_whisper_to_member'] !== null) {
                         continue;
                     }
                     if (!has_category_access(get_member(), 'forums', strval($row['p_cache_forum_id']))) {

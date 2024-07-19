@@ -66,7 +66,7 @@ Many laws require that a site operating in their jurisdiction enable appropriate
  - Staff can download, purge (anonymise or delete), or generate SQL queries for, personal data based on various criteria (Admin Zone > Tools > Privacy).
  - Members can download or purge their personal data on their member profile under Edit > Personal data (though purging in this way is disabled by default; many sites might not want members being able to purge their data on their own unless they are deleting their account).
  - Members can also purge their personal data when they delete their account on their member profile under Edit > Delete.
- - Staff can control to what extent members can download or purge their data from their profile (Admin Zone > Setup > Configuration > Privacy options > Members). This includes disabling the functionality completely or setting a number of days members must wait between downloads / purges. Where functionality is disabled, members will be instructed on their profile to contact staff if they want to download or purge their data.
+ - Staff can control to what extent members can download or purge their data from their profile (Admin Zone > Setup > Configuration > Privacy / legal compliance options > Members). This includes disabling the functionality completely or setting a number of days members must wait between downloads / purges. Where functionality is disabled, members will be instructed on their profile to contact staff if they want to download or purge their data.
 
 The privacy purging system uses intelligence to ensure only data pertaining to the given individual is deleted or anonymised. Where the delete action is employed, if a record does not actually fully belong to that individual, their personal data will be anonymised on that record instead. Also, when downloading records, the system will anonymise fields in the downloaded records containing personal data which does not belong to that individual.
 
@@ -150,12 +150,12 @@ There are laws in various jurisdictions that provide special protection for chil
  - The US has a law, [concept]COPPA[/concept] that you need to comply with if your (US) website targets children under 13 for membership, or if you know that members of your website are under 13. More information on this law is available here from the COPPA website (see 'see also').
  - The EU [concept]GDPR[/concept] requires protection for children under 13/14/15/16 (the actual age varies by EU country). 
 
-For simplicity and historical reasons, we refer to any international child consent provisions as COPPA in the administration, and keep the language in the user UI vague.
+For simplicity and historical reasons, we refer to any international child consent provisions as "parental consent" in the administration, and keep the language in the user UI vague.
 
-If COPPA support is configured in [concept]Conversr[/concept], then when visitors try to join they will be added as not validated if they are too young, with a notice to send in a COPPA form to you via mail or fax.
-In addition to Composr's COPPA support, you should also add your real-world contact details to your privacy policy, along with thorough details about what Custom Profile Fields may be filled in, how the information is used, how it is disclosed (if at all), and specification of various parent rights (which are listed on the COPPA website).
+If parental consent support is configured in [concept]Conversr[/concept], then when visitors try to join they will be added as not validated if they are too young, with a notice to send in a parental consent form to you via mail or fax.
+In addition to Composr's parental consent support, you should also add your real-world contact details to your privacy policy, along with thorough details about what Custom Profile Fields may be filled in, how the information is used, how it is disclosed (if at all), and specification of various parent rights (which are listed on the COPPA or GDPR website).
 
-In order to enable COPPA you need to turn on "COPPA enabled", and configure your fax number and postal address.
+In order to enable parental consent you need to turn on "Parental consent required", and configure your fax number and postal address.
 
 Young members (or even older members) are often naive, as they have less experience of the world and often have lived relatively sheltered lives. Therefore you should actively protect these members from:
  - inappropriate exposure of materials by other members (such as pornography or other sexual content)

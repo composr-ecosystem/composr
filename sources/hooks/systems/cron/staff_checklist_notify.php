@@ -47,7 +47,7 @@ class Hook_cron_staff_checklist_notify
             $this->outstanding = 0;
             $rows = $GLOBALS['SITE_DB']->query_select('staff_checklist_cus_tasks', ['*']);
             foreach ($rows as $r) {
-                $task_done = (($r['task_is_done'] !== null) && (($r['recur_interval'] == 0) || (($r['recur_every'] != 'mins') || (time() < $r['task_is_done'] + 60 * $r['recur_interval'])) && (($r['recur_every'] != 'hours') || (time() < $r['task_is_done'] + 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'days') || (time() < $r['task_is_done'] + 24 * 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'months') || (time() < $r['task_is_done'] + 31 * 24 * 60 * 60 * $r['recur_interval']))));
+                $task_done = (($r['done_time'] !== null) && (($r['recur_interval'] == 0) || (($r['recur_every'] != 'mins') || (time() < $r['done_time'] + 60 * $r['recur_interval'])) && (($r['recur_every'] != 'hours') || (time() < $r['done_time'] + 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'days') || (time() < $r['done_time'] + 24 * 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'months') || (time() < $r['done_time'] + 31 * 24 * 60 * 60 * $r['recur_interval']))));
                 if (!$task_done) {
                     $this->outstanding++;
                 }

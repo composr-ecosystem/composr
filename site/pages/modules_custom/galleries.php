@@ -44,7 +44,9 @@ function init__site__pages__modules_custom__galleries($code)
         "if (\$type == 'workflow') {
             require_code('workflows'); // Load workflow-related code
             return workflow_update_handler();
-        }"
+        }",
+        1,
+        true
     );
 
     // Add workflow warnings to carousel mode galleries. This has to be done for images...
@@ -63,7 +65,9 @@ function init__site__pages__modules_custom__galleries($code)
                     \$warning_details->attach(get_workflow_form(\$workflow_content_id));
                 }
             }
-        }"
+        }",
+        1,
+        true
     );
 
     // ...and videos separately.
@@ -82,7 +86,9 @@ function init__site__pages__modules_custom__galleries($code)
                     \$warning_details->attach(get_workflow_form(\$workflow_content_id));
                 }
             }
-        }"
+        }",
+        1,
+        true
     );
 
     // Add workflow warnings to images
@@ -97,7 +103,9 @@ function init__site__pages__modules_custom__galleries($code)
             if (\$workflow_content_id !== null) {
                 \$warning_details->attach(get_workflow_form(\$workflow_content_id));
             }
-        }"
+        }",
+        1,
+        true
     );
 
     // ...and videos separately.
@@ -112,7 +120,9 @@ function init__site__pages__modules_custom__galleries($code)
             if (\$workflow_content_id !== null) {
                 \$warning_details->attach(get_workflow_form(\$workflow_content_id));
             }
-        }"
+        }",
+        1,
+        true
     );
 
     return $code;

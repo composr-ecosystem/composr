@@ -141,7 +141,7 @@ class Hook_notification_cns extends Hook_Notification
 
         if ($notification_code == 'cns_birthday') {
             // Only members who are a leader of a usergroup should see this notification
-            $is_usergroup_leader = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_group_leader' => $member_id]);
+            $is_usergroup_leader = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_group_lead_member' => $member_id]);
             return ($is_usergroup_leader !== null);
         }
 
@@ -172,7 +172,7 @@ class Hook_notification_cns extends Hook_Notification
 
             $members = [];
             foreach ($_members as $member => $notifications) {
-                $is_usergroup_leader = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_group_leader' => $member]);
+                $is_usergroup_leader = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_group_lead_member' => $member]);
                 if ($is_usergroup_leader !== null) {
                     $members[$member] = $notifications;
                 }

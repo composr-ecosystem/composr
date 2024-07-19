@@ -159,7 +159,7 @@ function cns_get_topic_tree(?int $forum_id = null, ?string $breadcrumbs = null, 
     $children[0]['breadcrumbs'] = $breadcrumbs;
 
     // Children of this forum
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name', 'f_forum_grouping_id', 'f_position'], ['f_parent_forum' => $forum_id], 'ORDER BY f_forum_grouping_id,f_position', 200);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name', 'f_forum_grouping_id', 'f_position'], ['f_parent_forum_id' => $forum_id], 'ORDER BY f_forum_grouping_id,f_position', 200);
     if (count($rows) == 200) {
         $rows = []; // Too many, this method will suck
     }
@@ -294,13 +294,13 @@ function cns_get_forum_tree(?int $member_id = null, ?int $base_forum = null, str
         $forum_tree_secure_cache = ($num_forums >= 300); // Mark it as 'huge'
     }
     if ($forum_tree_secure_cache === true) {
-        $forums = $GLOBALS['FORUM_DB']->query('SELECT id,f_order_sub_alpha,f_name,f_forum_grouping_id,f_parent_forum,f_position,f_cache_last_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id IS NOT NULL AND ' . db_string_equal_to('f_redirection', '') . ' AND ' . (($base_forum === null) ? 'f_parent_forum IS NULL' : ('f_parent_forum=' . strval($base_forum))) . ' ORDER BY f_position,f_name', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+        $forums = $GLOBALS['FORUM_DB']->query('SELECT id,f_order_sub_alpha,f_name,f_forum_grouping_id,f_parent_forum_id,f_position,f_cache_last_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id IS NOT NULL AND ' . db_string_equal_to('f_redirection', '') . ' AND ' . (($base_forum === null) ? 'f_parent_forum_id IS NULL' : ('f_parent_forum_id=' . strval($base_forum))) . ' ORDER BY f_position,f_name', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     } else {
         if (($forum_tree_secure_cache === null) || ($forum_tree_secure_cache === false)) {
-            $forum_tree_secure_cache = $GLOBALS['FORUM_DB']->query('SELECT id,f_order_sub_alpha,f_name,f_forum_grouping_id,f_parent_forum,f_position,f_cache_last_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id IS NOT NULL AND ' . db_string_equal_to('f_redirection', '') . ' ORDER BY f_position,f_name');
+            $forum_tree_secure_cache = $GLOBALS['FORUM_DB']->query('SELECT id,f_order_sub_alpha,f_name,f_forum_grouping_id,f_parent_forum_id,f_position,f_cache_last_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id IS NOT NULL AND ' . db_string_equal_to('f_redirection', '') . ' ORDER BY f_position,f_name');
         }
         foreach ($forum_tree_secure_cache as $x) {
-            if ($x['f_parent_forum'] === $base_forum) {
+            if ($x['f_parent_forum_id'] === $base_forum) {
                 $forums[] = $x;
             }
         }
@@ -342,7 +342,7 @@ function cns_get_forum_tree(?int $member_id = null, ?int $base_forum = null, str
                 'children' => $below,
             ];
             if ($do_stats) {
-                $child['child_count'] = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)', ['f_parent_forum' => $forum['id']]);
+                $child['child_count'] = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)', ['f_parent_forum_id' => $forum['id']]);
                 $child['updated_since'] = $forum['f_cache_last_time'];
             }
 

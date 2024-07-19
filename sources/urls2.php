@@ -1103,7 +1103,7 @@ function check_url_exists(string $url, ?int $test_freq_secs = null, bool $retry_
         $destination_url = $test2->download_url;
     } else {
         $exists = ($test1[0]['url_exists'] == 1);
-        $message = $test1[0]['url_message'];
+        $message = $test1[0]['response_message'];
         $destination_url = $test1[0]['url_destination_url'];
     }
 
@@ -1130,7 +1130,7 @@ function mark_if_url_exists(string $url, bool $exists = true, string $message = 
         'urls_checked',
         [
             'url_exists' => $exists ? 1 : 0,
-            'url_message' => $message,
+            'response_message' => $message,
             'url_destination_url' => $destination_url,
             'url_check_time' => time(),
             'url' => $url,

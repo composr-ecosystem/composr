@@ -83,14 +83,14 @@ function push_content_check_func($raw_params)
         case 'quote':
         case 'tag': //=mention
             $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => intval($data['subid'])], '', 1);
-            if ((isset($posts[0])) && ($posts[0]['p_topic_id'] == intval($data['id'])) && ($posts[0]['p_poster'] == $data['authorid']) && ((is_guest($posts[0]['p_poster'])) || ($GLOBALS['FORUM_DRIVER']->get_username($posts[0]['p_poster'], false, USERNAME_DEFAULT_BLANK) == $data['author']))) {
+            if ((isset($posts[0])) && ($posts[0]['p_topic_id'] == intval($data['id'])) && ($posts[0]['p_posting_member'] == $data['authorid']) && ((is_guest($posts[0]['p_posting_member'])) || ($GLOBALS['FORUM_DRIVER']->get_username($posts[0]['p_posting_member'], false, USERNAME_DEFAULT_BLANK) == $data['author']))) {
                 $result = true;
             }
             break;
         case 'conv': // =PT new topic or PT reply
         case 'pm':
             $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => intval($data['mid'])], '', 1);
-            if ((isset($posts[0])) && ($posts[0]['p_poster'] == intval($data['authorid'])) && ($GLOBALS['FORUM_DRIVER']->get_username($posts[0]['p_poster'], false, USERNAME_DEFAULT_BLANK) == $data['author'])) {
+            if ((isset($posts[0])) && ($posts[0]['p_posting_member'] == intval($data['authorid'])) && ($GLOBALS['FORUM_DRIVER']->get_username($posts[0]['p_posting_member'], false, USERNAME_DEFAULT_BLANK) == $data['author'])) {
                 $result = true;
             }
             break;

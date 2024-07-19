@@ -22,7 +22,6 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
     require_code('version2');
     require_code('cms_homesite');
     require_code('tar');
-    require_code('m_zip');
     require_code('files');
     require_code('files2');
     require_code('addons');
@@ -103,7 +102,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
     }
     if ((get_param_integer('supports_gzip', 0) == 1) && (function_exists('gzopen'))) {
         $filename .= '.cms.gz';
-    } elseif ((get_param_integer('supports_zip', 0) == 1) && ((function_exists('zip_open')) || (get_option('unzip_cmd') == ''))) {
+    } elseif ((get_param_integer('supports_zip', 0) == 1) && (class_exists('ZipArchive', false))) {
         $filename .= '.zip';
     } else {
         $filename .= '.cms';

@@ -208,7 +208,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
     if (is_guest($member_id)) {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip_address' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
     } else {
         $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id, 'pv_revoked' => 0];
     }
@@ -240,12 +240,16 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         access_denied('NOT_AS_GUEST');
     }
 
-    $points = addon_installed('points') ? points_balance($member_id) : 0;
-    $voting_power = cns_points_to_voting_power($points);
-    $total_voting_power_adjust = 0.0;
+    $points = 0;
+    $voting_power = 1.0; // If points addon is not installed, then everyone has a voting power of 1.
+    if (addon_installed('points')) {
+        $points = points_lifetime($member_id);
+        $voting_power = cns_points_to_voting_power($points);
+    }
 
     // Insert votes
     $answer = '';
+    $total_voting_power_adjust = 0.0;
     foreach ($votes as $vote) {
         if (!array_key_exists($vote, $answers)) {
             warn_exit(do_lang_tempcode('VOTE_CHEAT'));
@@ -257,10 +261,10 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
             'pv_poll_id' => $poll_id,
             'pv_member_id' => $member_id,
             'pv_answer_id' => $vote,
-            'pv_ip' => get_ip_address(),
+            'pv_ip_address' => get_ip_address(),
             'pv_revoked' => 0,
             'pv_date_time' => time(),
-            'pv_cache_points_at_voting_time' => $points,
+            'pv_points_when_voted' => $points,
             'pv_cache_voting_power' => $voting_power,
         ]);
 
@@ -370,7 +374,7 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
 
     // Revoke the votes in the database
     if (is_guest($member_id)) {
-        $map = ['pv_poll_id' => $poll_info['id'], 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+        $map = ['pv_poll_id' => $poll_info['id'], 'pv_ip_address' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
     } else {
         $map = ['pv_poll_id' => $poll_info['id'], 'pv_member_id' => $member_id];
     }
@@ -481,7 +485,7 @@ function cns_calculate_answer_voting_power(int $answer_id, bool $recalculate = f
 
     $voting_power = 0.0;
 
-    $votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_cache_points_at_voting_time', 'pv_cache_voting_power', 'pv_revoked'], ['pv_answer_id' => $answer_id, 'pv_revoked' => 0], '');
+    $votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_points_when_voted', 'pv_cache_voting_power', 'pv_revoked'], ['pv_answer_id' => $answer_id, 'pv_revoked' => 0], '');
     foreach ($votes as $vote) {
         $voting_power += cns_calculate_vote_voting_power($vote['id'], $recalculate, $vote);
     }
@@ -502,7 +506,7 @@ function cns_calculate_answer_voting_power(int $answer_id, bool $recalculate = f
 function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false, ?array $row = null) : float
 {
     if ($row === null) {
-        $_row = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_revoked', 'pv_cache_points_at_voting_time', 'pv_cache_voting_power'], ['id' => $vote_id], '', 1);
+        $_row = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_revoked', 'pv_points_when_voted', 'pv_cache_voting_power'], ['id' => $vote_id], '', 1);
         if ($_row === null || !array_key_exists(0, $_row)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -517,7 +521,7 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
         return $row['pv_cache_voting_power'];
     }
 
-    $voting_power = cns_points_to_voting_power($row['pv_cache_points_at_voting_time']);
+    $voting_power = cns_points_to_voting_power($row['pv_points_when_voted']);
 
     $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_cache_voting_power' => $voting_power], ['id' => $vote_id]);
 
@@ -528,14 +532,15 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
  * Calculate how much voting power a certain amount of points has.
  *
  * @param  integer $points The number of points from which to calculate the voting power
+ * @param  array $overrides Array of option overrides (empty: no overrides)
  * @return float The amount of voting power associated with the points
  */
-function cns_points_to_voting_power(int $points) : float
+function cns_points_to_voting_power(int $points, array $overrides = []) : float
 {
-    $ceiling = get_option('topic_polls_weighting_ceiling'); // Could be blank
-    $offset = intval(get_option('topic_polls_weighting_offset'));
-    $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
-    $base = abs(floatval(get_option('topic_polls_weighting_base')));
+    $ceiling = isset($overrides['topic_polls_weighting_ceiling']) ? $overrides['topic_polls_weighting_ceiling'] : get_option('topic_polls_weighting_ceiling'); // Could be blank
+    $offset = isset($overrides['topic_polls_weighting_offset']) ? intval($overrides['topic_polls_weighting_offset']) : intval(get_option('topic_polls_weighting_offset'));
+    $multiplier = isset($overrides['topic_polls_weighting_multiplier']) ? abs(floatval($overrides['topic_polls_weighting_multiplier'])) : abs(floatval(get_option('topic_polls_weighting_multiplier')));
+    $base = isset($overrides['topic_polls_weighting_base']) ? abs(floatval($overrides['topic_polls_weighting_base'])) : abs(floatval(get_option('topic_polls_weighting_base')));
 
     // Sanity check: If negative points, then member has no voting power. This avoids root of a negative number, which equals i.
     if ($points < 0) {
@@ -564,16 +569,17 @@ function cns_points_to_voting_power(int $points) : float
  * Calculate how much voting power a certain amount of points has and return text versions of the calculations.
  *
  * @param  integer $points The number of points from which to calculate the voting power
- * @return array Tuple; first item is a string of the equation itself, second item is a string with the numbers substituted into the equation, and third item is the final result
+ * @param  array $overrides Array of option overrides (empty: no overrides)
+ * @return array Tuple; first item is a Tempcode of the equation itself, second item is a Tempcode with the numbers substituted into the equation, and third item is the final result
  */
-function cns_calculate_poll_voting_power_text(int $points) : array
+function cns_calculate_poll_voting_power_text(int $points, array $overrides = []) : array
 {
     require_lang('cns_polls');
 
-    $ceiling = get_option('topic_polls_weighting_ceiling');
-    $offset = intval(get_option('topic_polls_weighting_offset'));
-    $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
-    $base = abs(floatval(get_option('topic_polls_weighting_base')));
+    $ceiling = isset($overrides['topic_polls_weighting_ceiling']) ? $overrides['topic_polls_weighting_ceiling'] : get_option('topic_polls_weighting_ceiling'); // Could be blank
+    $offset = isset($overrides['topic_polls_weighting_offset']) ? intval($overrides['topic_polls_weighting_offset']) : intval(get_option('topic_polls_weighting_offset'));
+    $multiplier = isset($overrides['topic_polls_weighting_multiplier']) ? abs(floatval($overrides['topic_polls_weighting_multiplier'])) : abs(floatval(get_option('topic_polls_weighting_multiplier')));
+    $base = isset($overrides['topic_polls_weighting_base']) ? abs(floatval($overrides['topic_polls_weighting_base'])) : abs(floatval(get_option('topic_polls_weighting_base')));
 
     // Give context for a blank ceiling in the equation text
     if ($ceiling === null || $ceiling == '') {
@@ -585,9 +591,9 @@ function cns_calculate_poll_voting_power_text(int $points) : array
         $base = 1.0;
     }
 
-    $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'Voting power maximum', 'Offset', ['Multiplier', 'points balance', 'Root base']));
-    $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', escape_html($ceiling), escape_html(strval($offset)), [escape_html(float_to_raw_string($multiplier, 2, true)), escape_html(strval($points)), escape_html(float_to_raw_string($base, 2, true))]));
-    $calculation = cns_points_to_voting_power($points);
+    $equation = do_lang_tempcode('VOTING_POWER_EQUATION', 'Voting power maximum', 'Offset', ['Multiplier', 'life-time points', 'Root base']);
+    $equation_with_numbers = do_lang_tempcode('VOTING_POWER_EQUATION', escape_html($ceiling), escape_html(strval($offset)), [escape_html(float_to_raw_string($multiplier, 2, true)), escape_html(strval($points)), escape_html(float_to_raw_string($base, 2, true))]);
+    $calculation = cns_points_to_voting_power($points, $overrides);
 
     return [$equation, $equation_with_numbers, $calculation];
 }

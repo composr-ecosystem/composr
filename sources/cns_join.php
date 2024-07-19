@@ -210,7 +210,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
 
     if ($invites_if_enabled) { // code branch also triggers general tracking of referrals
         if (get_option_with_overrides('is_on_invites', $adjusted_config_options) == '1') {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address, 'i_taken' => 0]);
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_invite_member', ['i_email_address' => $email_address, 'i_taken' => 0]);
             if ($test === null) {
                 warn_exit(do_lang_tempcode('NO_INVITE'));
             }
@@ -327,8 +327,8 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     $email_validation = (get_option_with_overrides('email_confirm_join', $adjusted_config_options) == '1');
     $validated_email_confirm_code = $email_validation ? strval(get_secure_random_number()) : '';
     $staff_validation = (get_option_with_overrides('require_new_member_validation', $adjusted_config_options) == '1');
-    $coppa = (get_option_with_overrides('is_on_coppa', $adjusted_config_options) == '1') && ($dob_year !== null) && (intval(floor(utctime_to_usertime(time() - cms_mktime(0, 0, 0, $dob_month, $dob_day, $dob_year)) / 31536000.0)) < intval(get_option('coppa_age')));
-    $validated = ($staff_validation || $coppa) ? 0 : 1;
+    $parental_consent = (get_option_with_overrides('is_on_parental_consent', $adjusted_config_options) == '1') && ($dob_year !== null) && (intval(floor(utctime_to_usertime(time() - cms_mktime(0, 0, 0, $dob_month, $dob_day, $dob_year)) / 31536000.0)) < intval(get_option('parental_consent_age')));
+    $validated = ($staff_validation || $parental_consent) ? 0 : 1;
     if ($member_id === null) {
         $member_id = cns_make_member(
             $username, // username
@@ -362,7 +362,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
             '', // pt_rules_text
             $validated, // validated
             $validated_email_confirm_code, // validated_email_confirm_code
-            null, // on_probation_until
+            null, // probation_expiration_time
             '0', // is_perm_banned
             true // check_correctness
         );
@@ -386,13 +386,13 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         }
         $message = do_lang('CNS_SIGNUP_TEXT', comcode_escape(get_site_name()), comcode_escape($url), [$url_simple, $email_address, $validated_email_confirm_code], $language);
         require_code('mail');
-        if (!$coppa) {
+        if (!$parental_consent) {
             dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $language), $message, [$email_address], $username, '', '', ['bypass_queue' => true]);
         }
     }
 
-    // Send COPPA mail
-    if ($coppa) {
+    // Send parental consent mail
+    if ($parental_consent) {
         require_code('fields');
         $fields_done = [];
         $fields_done[] = ['LABEL' => do_lang('USERNAME'), 'VALUE' => make_string_tempcode(escape_html($username))];
@@ -406,18 +406,20 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         }
 
         $privacy_policy_url = build_url(['page' => 'privacy'], '_SEARCH', [], false, false, true);
+        $rules_url = build_url(['page' => 'rules'], '_SEARCH', [], false, false, true);
 
-        $message = do_template('COPPA_MAIL', [
+        $message = do_template('PARENTAL_CONSENT_MAIL', [
             '_GUID' => 'a35c7a16288baec9ec6260d9d7195465',
             'FAX' => get_option('privacy_fax'),
             'POSTAL_ADDRESS' => get_option('privacy_postal_address'),
             'EMAIL_ADDRESS' => get_option('staff_address'),
             'FIELDS_DONE' => $fields_done,
             'PRIVACY_POLICY_URL' => $privacy_policy_url,
+            'RULES_URL' => $rules_url,
         ], $language, false, null, '.txt', 'text');
 
         require_code('mail');
-        dispatch_mail(do_lang('COPPA_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), [$email_address], $username);
+        dispatch_mail(do_lang('PARENTAL_CONSENT_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), [$email_address], $username);
     }
 
     // Run form handlers for joining
@@ -473,11 +475,11 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     // Alert user to situation
     $message = new Tempcode();
     $ready = false;
-    if ($coppa) {
+    if ($parental_consent) {
         if ($email_validation) {
             $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL'));
         }
-        $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL_COPPA', strval(intval(get_option('coppa_age')))));
+        $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL_PARENTAL_CONSENT', strval(intval(get_option('parental_consent_age')))));
     } elseif ($staff_validation) {
         if ($email_validation) {
             $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL'));

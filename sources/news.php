@@ -120,9 +120,9 @@ function render_news_box(array $row, string $zone = '_SEARCH', bool $give_contex
     $category = get_translated_text($news_cat_row['nc_title']);
     $category_url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $news_cat_row['id']], $zone);
 
-    if ($row['news_image'] != '') {
+    if ($row['news_image_url'] != '') {
         require_code('images');
-        $rep_image_url = $row['news_image'];
+        $rep_image_url = $row['news_image_url'];
         if (url_is_local($rep_image_url)) {
             $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
         }

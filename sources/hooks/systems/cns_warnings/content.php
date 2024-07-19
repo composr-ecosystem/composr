@@ -111,7 +111,7 @@ class Hook_cns_warnings_content
                 if (is_guest($member_id)) {
                     $where['p_ip_address'] = $ip_address;
                 } else {
-                    $where['p_poster'] = $member_id;
+                    $where['p_posting_member'] = $member_id;
                 }
                 $sup = ' AND p_time>' . strval($time_limit) . ' ORDER BY p_time DESC';
                 if (!has_privilege(get_member(), 'view_other_pt')) {

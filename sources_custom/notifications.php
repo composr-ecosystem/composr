@@ -20,8 +20,12 @@ if (!function_exists('init__notifications')) {
             return $in;
         }
 
-        $in = override_str_replace_exactly(
-            "\$dispatcher = ",
+        require_code('override_api');
+
+        insert_code_before__by_command(
+            $in,
+            'dispatch_notification',
+            "\$dispatcher = new Notification_dispatcher",
             "
             if (
                 // Existing private topic?
@@ -43,9 +47,7 @@ if (!function_exists('init__notifications')) {
                 require_code('password_censor');
                 \$message = _password_censor(\$message, PASSWORD_CENSOR__INTERACTIVE_SCAN);
             }
-            <ditto>
             ",
-            $in
         );
 
         return $in;

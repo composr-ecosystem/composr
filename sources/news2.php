@@ -293,7 +293,7 @@ function add_news(string $title, string $news, ?string $author = null, int $vali
         $validated = 1;
     }
     $map = [
-        'news_image' => $image,
+        'news_image_url' => $image,
         'edit_date' => $edit_date,
         'news_category' => $main_news_category_id,
         'news_views' => $views,
@@ -524,9 +524,9 @@ function edit_news(int $id, string $title, string $news, string $author, int $va
     }
 
     if ($image !== null) {
-        $update_map['news_image'] = $image;
+        $update_map['news_image_url'] = $image;
         require_code('files2');
-        delete_upload('uploads/repimages', 'news', 'news_image', 'id', $id, $image);
+        delete_upload('uploads/repimages', 'news', 'news_image_url', 'id', $id, $image);
     }
 
     if ($news_categories !== null) {
@@ -650,7 +650,7 @@ function delete_news(int $id)
     $_title = get_translated_text($title);
 
     require_code('files2');
-    delete_upload('uploads/repimages', 'news', 'news_image', 'id', $id);
+    delete_upload('uploads/repimages', 'news', 'news_image_url', 'id', $id);
 
     $GLOBALS['SITE_DB']->query_delete('news', ['id' => $id], '', 1);
     $GLOBALS['SITE_DB']->query_delete('news_category_entries', ['news_entry' => $id]);

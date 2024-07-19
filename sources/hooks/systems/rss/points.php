@@ -62,7 +62,7 @@ class Hook_rss_points
             return null;
         }
 
-        $filters = selectcode_to_sqlfragment($_filters, 'recipient_id', 'f_members', null, 'recipient_id', 'id', true, true); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
+        $filters = selectcode_to_sqlfragment($_filters, 'receiving_member', 'f_members', null, 'receiving_member', 'id', true, true); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
 
         require_lang('points');
         require_code('points');
@@ -74,7 +74,7 @@ class Hook_rss_points
 
             $author = '';
             if (($row['anonymous'] == 0) || (has_privilege(get_member(), 'trace_anonymous_points_transactions'))) {
-                $author = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], false, USERNAME_DEFAULT_BLANK);
+                $author = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], false, USERNAME_DEFAULT_BLANK);
             } else {
                 $author = do_lang('ANON');
             }
@@ -82,7 +82,7 @@ class Hook_rss_points
             $news_date = date($date_string, $row['date_and_time']);
             $edit_date = '';
 
-            $to = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id']);
+            $to = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member']);
             $news_title = xmlentities(do_lang('POINTS_RSS_LINE', $to, integer_format($row['amount_gift_points'] + $row['amount_points'])));
             $summary = xmlentities(get_translated_text($row['reason']));
             $news = '';
@@ -90,7 +90,7 @@ class Hook_rss_points
             $category = '';
             $category_raw = '';
 
-            $view_url = points_url($row['recipient_id'], true);
+            $view_url = points_url($row['receiving_member'], true);
 
             $if_comments = new Tempcode();
 

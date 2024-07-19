@@ -61,7 +61,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
     {
         if ($mime_type == 'text/html' || $mime_type == 'application/xhtml+xml') {
             if ($meta_details !== null) {
-                if (($meta_details['t_json_discovery'] != '') || ($meta_details['t_xml_discovery'] != '')) {
+                if (($meta_details['t_discovery_url_json'] != '') || ($meta_details['t_discovery_url_xml'] != '')) {
                     return MEDIA_RECOG_PRECEDENCE_MEDIUM;
                 }
             }
@@ -429,11 +429,11 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
         $meta_details = get_webpage_meta_details($url);
         $mime_type = $meta_details['t_mime_type'];
         if ($mime_type == 'text/html' || $mime_type == 'application/xhtml+xml') {
-            if ($meta_details['t_json_discovery'] != '') {
-                return $meta_details['t_json_discovery'];
+            if ($meta_details['t_discovery_url_json'] != '') {
+                return $meta_details['t_discovery_url_json'];
             }
-            if ($meta_details['t_xml_discovery'] != '') {
-                return $meta_details['t_xml_discovery'];
+            if ($meta_details['t_discovery_url_xml'] != '') {
+                return $meta_details['t_discovery_url_xml'];
             }
         }
 

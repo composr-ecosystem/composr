@@ -317,7 +317,7 @@ class Hook_import_smf2
             $old_id = strval($row['id_group']);
             // Here we get the software ID of the group
             $id_new = import_id_remap_get('group', $old_id, true);
-            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold], ['id' => $id_new]);
+            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target_group' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold], ['id' => $id_new]);
             // On the next run the promotion target will be this last updated group
             $promotion_target = $id_new;
             // On the next run the promotion threshold will be this last updated groups required posts
@@ -325,7 +325,7 @@ class Hook_import_smf2
         }
         // Now we've done all the groups based on posts lets check whether to update the default group
         if ($updates) {
-            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold], ['id' => $default_group]);
+            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target_group' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold], ['id' => $default_group]);
         }
     }
 
@@ -464,7 +464,7 @@ class Hook_import_smf2
                     '', // pt_rules_text
                     $validated, // validated
                     '', // validated_email_confirm_code
-                    null, // on_probation_until
+                    null, // probation_expiration_time
                     '0', // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
@@ -487,7 +487,7 @@ class Hook_import_smf2
                 }
 
                 // Fix usergroup leadership
-                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => $row['id_member']]);
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_lead_member' => $id_new], ['g_group_lead_member' => $row['id_member']]);
 
                 import_id_remap_put('member', strval($row['id_member']), $id_new);
 
@@ -752,11 +752,11 @@ class Hook_import_smf2
                         if (($row['cannot_access'] == 1) || ($row['cannot_login'] == 1)) { // Permanent ban
                             $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '1'], ['id' => $uid]);
                         } elseif ($row['cannot_post'] == 1) { // "Permanent" probation
-                            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => 2147483647/*TODO: #3046 in tracker*/], ['id' => $uid]);
+                            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_probation_expiration_time' => 2147483647/*TODO: #3046 in tracker*/], ['id' => $uid]);
                         }
                     } else {
                         // treat temporary bans as probation since the software does not have temporary member bans
-                        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $ban_till], ['id' => $uid]);
+                        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_probation_expiration_time' => $ban_till], ['id' => $uid]);
                     }
                 }
 
@@ -909,7 +909,7 @@ class Hook_import_smf2
         foreach ($rows as $row) {
             if (($row['id_parent'] !== null) && (isset($remap_id[$row['id_board']]))) {
                 $parent_id = array_key_exists($row['id_parent'], $remap_id) ? $remap_id[$row['id_parent']] : db_get_first_id();
-                $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum' => $parent_id], ['id' => $remap_id[$row['id_board']]], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum_id' => $parent_id], ['id' => $remap_id[$row['id_board']]], '', 1);
             }
         }
     }
@@ -1053,12 +1053,12 @@ class Hook_import_smf2
 
                 $post = $this->fix_links($post_description, $db, $table_prefix, $file_base);
 
-                $last_edit_by = null;
+                $last_edit_member = null;
                 $last_edit_time = $row['modified_time'];
 
                 $post_username = $row['poster_name'];
 
-                $id_new = cns_make_post($topic_id, $title, $post, 0, true, 1, 0, $post_username, $row['poster_ip'], $row['poster_time'], $member_id, null, $last_edit_time, $last_edit_by, false, false, $forum_id, false);
+                $id_new = cns_make_post($topic_id, $title, $post, 0, true, 1, 0, $post_username, $row['poster_ip'], $row['poster_time'], $member_id, null, $last_edit_time, $last_edit_member, false, false, $forum_id, false);
 
                 import_id_remap_put('post', strval($row['id_msg']), $id_new);
             }
@@ -1191,13 +1191,13 @@ class Hook_import_smf2
 
                 $post_id = import_id_remap_get('post', strval($row['id_msg']));
 
-                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_poster', 'p_post'], ['id' => $post_id], '', 1);
+                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_posting_member', 'p_post'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $post_row)) {
                     import_id_remap_put('post_files', strval($row['id_attach']), 1);
                     continue; // Orphaned post
                 }
                 $post = get_translated_text($post_row[0]['p_post']);
-                $member_id = $post_row[0]['p_poster'];
+                $member_id = $post_row[0]['p_posting_member'];
                 $ext = '.' . $row['fileext'];
                 $filename = strval($row['id_attach']) . '_' . $row['file_hash'];
 
@@ -1287,7 +1287,7 @@ class Hook_import_smf2
 
                     $answer = $answers[strval($row2['id_choice'])];
 
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_cache_points_at_voting_time' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip_address' => '', 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_points_when_voted' => 0]);
                 }
             }
 
@@ -1368,9 +1368,9 @@ class Hook_import_smf2
                     $time = $_post['msgtime'];
                     $poster = $from_id;
                     $last_edit_time = null;
-                    $last_edit_by = null;
+                    $last_edit_member = null;
 
-                    cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
+                    cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_member, false, false, null, false);
                     $first_post = false;
                 }
 
@@ -1921,7 +1921,7 @@ class Hook_import_smf2
                                 'rating_for_type' => 'news',
                                 'rating_for_id' => $id_new,
                                 'rating_member' => $member_id,
-                                'rating_ip' => '',
+                                'rating_ip_address' => '',
                                 'rating_time' => time(),
                                 'rating' => intval($rating) * 2,
                             ];

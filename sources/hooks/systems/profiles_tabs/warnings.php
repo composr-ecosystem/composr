@@ -118,7 +118,7 @@ class Hook_profiles_tabs_warnings
 
             $table_rows->attach(columned_table_row([
                 get_timezoned_date_time($row['w_time']),
-                $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_by']),
+                $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_issuing_member']),
                 $private_topic,
                 $row_contents,
             ], false));

@@ -340,7 +340,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
             'file_size' => $row['file_size'],
             'cost' => $row['download_cost'],
             'submitter_gets_points' => $row['download_submitter_gets_points'],
-            'licence' => $row['download_licence'],
+            'licence' => $row['download_licence_id'],
             'num_downloads' => $row['num_downloads'],
             'views' => $row['download_views'],
             'meta_keywords' => $meta_keywords,

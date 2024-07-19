@@ -35,7 +35,7 @@ class Module_shopping
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 8;
+        $info['version'] = 9;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -72,13 +72,13 @@ class Module_shopping
             $GLOBALS['SITE_DB']->create_table('shopping_cart', [
                 'id' => '*AUTO',
                 'session_id' => 'ID_TEXT',
-                'ordered_by' => 'MEMBER',
+                'ordering_member' => 'MEMBER',
                 'type_code' => 'ID_TEXT',
                 'purchase_id' => 'ID_TEXT',
                 'quantity' => 'INTEGER',
                 'add_time' => 'TIME',
             ]);
-            $GLOBALS['SITE_DB']->create_index('shopping_cart', 'ordered_by', ['ordered_by']);
+            $GLOBALS['SITE_DB']->create_index('shopping_cart', 'ordering_member', ['ordering_member']);
             $GLOBALS['SITE_DB']->create_index('shopping_cart', 'session_id', ['session_id']);
             $GLOBALS['SITE_DB']->create_index('shopping_cart', 'type_code', ['type_code']);
 
@@ -129,7 +129,7 @@ class Module_shopping
                 'id' => '*AUTO',
                 'l_member_id' => '*MEMBER',
                 'l_session_id' => 'ID_TEXT',
-                'l_ip' => 'IP',
+                'l_ip_address' => 'IP',
                 'l_last_action' => 'SHORT_TEXT',
                 'l_date_and_time' => 'TIME',
             ]);
@@ -217,6 +217,12 @@ class Module_shopping
         if (($upgrade_from === null) || ($upgrade_from < 8)) {
             $GLOBALS['SITE_DB']->create_index('shopping_order_details', 'type_code', ['p_type_code']);
             $GLOBALS['SITE_DB']->create_index('shopping_logging', 'cart_log', ['l_date_and_time']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('shopping_cart', 'ordered_by', 'MEMBER', 'ordering_member');
+            $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'l_ip', 'IP', 'l_ip_address');
         }
     }
 

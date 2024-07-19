@@ -39,7 +39,7 @@ function password_censor($auto = false, $display = true, $days_ago = 30)
 
     $sql = 'SELECT p.id,p_post FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p';
     $sql .= ' WHERE (' . $GLOBALS['FORUM_DB']->translate_field_ref('p_post') . ' LIKE \'%password%\' OR ' . $GLOBALS['FORUM_DB']->translate_field_ref('p_post') . ' LIKE \'%Password%\')';
-    $sql .= ' AND (p_cache_forum_id=' . strval($forum_id) . ' OR p_cache_forum_id IS NULL OR p_intended_solely_for IS NOT NULL)';
+    $sql .= ' AND (p_cache_forum_id=' . strval($forum_id) . ' OR p_cache_forum_id IS NULL OR p_whisper_to_member IS NOT NULL)';
     $sql .= ' AND p_time<=' . strval(time() - 60 * 60 * 24 * $days_ago);
     $rows = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
     if ($display) {

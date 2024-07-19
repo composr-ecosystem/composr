@@ -394,13 +394,15 @@ function find_installed_addons(bool $just_non_bundled = false, bool $get_info = 
 
     $hooks = find_all_hooks('systems', 'addon_registry');
 
-    if (!$just_non_bundled) {
-        // Find installed addons- file system method (for coded addons). Coded addons don't need to be in the DB, although they will be if they are (re)installed after the original installation finished.
-        foreach ($hooks as $addon_name => $hook_dir) {
-            if (substr($addon_name, 0, 4) != 'core') {
-                $hook_path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name) . '.php';
-                $addons_installed[$addon_name] = $get_info ? read_addon_info($addon_name, $get_dependencies, null, null, $hook_path) : null;
-            }
+    // Find installed addons- file system method (for coded addons). Coded addons don't need to be in the DB, although they will be if they are (re)installed after the original installation finished.
+    foreach ($hooks as $addon_name => $hook_dir) {
+        if (($just_non_bundled) && ($hook_dir == 'sources')) {
+            continue;
+        }
+
+        if (substr($addon_name, 0, 4) != 'core') {
+            $hook_path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name) . '.php';
+            $addons_installed[$addon_name] = $get_info ? read_addon_info($addon_name, $get_dependencies, null, null, $hook_path) : null;
         }
     }
 
@@ -792,7 +794,7 @@ function has_feature(string $dependency) : bool
     if ((cms_strtolower_ascii($dependency) == 'php xml extension') && (function_exists('xml_parser_create'))) {
         return true;
     }
-    if ((cms_strtolower_ascii($dependency) == 'php zip extension') && (function_exists('zip_open'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php zip extension') && (class_exists('ZipArchive', false))) {
         return true;
     }
     if ((cms_strtolower_ascii($dependency) == 'php pdo_mysql extension') && (defined('PDO::ATTR_DRIVER_NAME'))) {
@@ -1253,12 +1255,37 @@ function upgrade_addon_soft(string $addon_name) : int
         }
     }
 
-    // We should always update the database because min / max cms version could change in the registry hook
+    // Update the database
     $GLOBALS['SITE_DB']->query_update('addons', [
         'addon_version' => $disk_version,
         'addon_min_cms_version' => strval($min_cms_version),
         'addon_max_cms_version' => ($max_cms_version !== null) ? strval($max_cms_version) : '',
     ], ['addon_name' => $addon_name], '', 1);
+
+    $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon_name]);
+    $dependencies = $ob->get_dependencies();
+
+    $requires = array_key_exists('requires', $dependencies) ? $dependencies['requires'] : [];
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($requires), $addon_name),
+        'addon_name_dependant_upon' => array_map('trim', $requires),
+        'addon_name_incompatibility' => array_fill(0, count($requires), 0),
+    ]);
+
+    $incompatibilities = array_key_exists('conflicts_with', $dependencies) ? $dependencies['conflicts_with'] : [];
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($incompatibilities), $addon_name),
+        'addon_name_dependant_upon' => array_map('trim', $incompatibilities),
+        'addon_name_incompatibility' => array_fill(0, count($incompatibilities), 1),
+    ]);
+
+    $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon_name]);
+    $file_list = $ob->get_file_list();
+
+    $GLOBALS['SITE_DB']->query_insert('addons_files', [
+        'addon_name' => array_fill(0, count($file_list), $addon_name),
+        'filepath' => $file_list,
+    ]);
 
     return $ret;
 }
@@ -1475,15 +1502,15 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
 
                         // Remove from menu too
                         $menu_sql = 'SELECT id FROM ' . get_table_prefix() . 'menu_items WHERE ';
-                        $menu_sql .= db_string_equal_to('i_url', $zone . ':' . $module);
+                        $menu_sql .= db_string_equal_to('i_link', $zone . ':' . $module);
                         $menu_sql .= ' OR ';
-                        $menu_sql .= 'i_url LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
+                        $menu_sql .= 'i_link LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
                         if (($zone == 'site') && (get_option('single_public_zone') == '1')) {
                             $zone = '';
                             $menu_sql .= ' OR ';
-                            $menu_sql .= db_string_equal_to('i_url', $zone . ':' . $module);
+                            $menu_sql .= db_string_equal_to('i_link', $zone . ':' . $module);
                             $menu_sql .= ' OR ';
-                            $menu_sql .= 'i_url LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
+                            $menu_sql .= 'i_link LIKE \'' . db_encode_like($zone . ':' . $module . ':%') . '\'';
                         }
                         $menu_items = $GLOBALS['SITE_DB']->query($menu_sql);
                         foreach ($menu_items as $menu_item) {

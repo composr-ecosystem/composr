@@ -35,7 +35,7 @@ class Module_polls
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 7;
+        $info['version'] = 8;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -101,7 +101,7 @@ class Module_polls
                 'is_current' => 'BINARY',
                 'date_and_time' => '?TIME',
                 'submitter' => 'MEMBER',
-                'add_time' => 'INTEGER',
+                'add_time' => 'TIME',
                 'poll_views' => 'INTEGER',
                 'edit_date' => '?TIME',
             ]);
@@ -126,14 +126,14 @@ class Module_polls
             $GLOBALS['SITE_DB']->create_table('poll_votes', [
                 'id' => '*AUTO',
                 'v_poll_id' => 'AUTO_LINK',
-                'v_voter_id' => '?MEMBER',
-                'v_voter_ip' => 'IP',
+                'v_voting_member' => '?MEMBER',
+                'v_voting_ip_address' => 'IP',
                 'v_vote_for' => '?SHORT_INTEGER',
                 'v_vote_time' => 'TIME',
             ]);
 
-            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voter_id', ['v_voter_id']);
-            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voter_ip', ['v_voter_ip']);
+            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voting_member', ['v_voting_member']);
+            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voting_ip_address', ['v_voting_ip_address']);
             $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_vote_for', ['v_vote_for']);
         }
 
@@ -144,8 +144,8 @@ class Module_polls
                 foreach ($voters as $voter) {
                     $GLOBALS['SITE_DB']->query_insert('poll_votes', [
                         'v_poll_id' => $poll['id'],
-                        'v_voter_id' => is_numeric($voter) ? intval($voter) : null,
-                        'v_voter_ip' => is_numeric($voter) ? '' : $voter,
+                        'v_voting_member' => is_numeric($voter) ? intval($voter) : null,
+                        'v_voting_ip_address' => is_numeric($voter) ? '' : $voter,
                         'v_vote_for' => null,
                         'v_vote_time' => time(),
                     ]);
@@ -181,6 +181,13 @@ class Module_polls
                     set_privilege($id, 'edit_own_midrange_content', false, 'cms_polls');
                 }
             }
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY: 11.beta1
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('poll', 'add_time', 'TIME');
+            $GLOBALS['SITE_DB']->alter_table_field('poll_votes', 'v_voter_id', '?MEMBER', 'v_voting_member');
+            $GLOBALS['SITE_DB']->alter_table_field('poll_votes', 'v_voter_ip', 'IP', 'v_voting_ip_address');
         }
     }
 

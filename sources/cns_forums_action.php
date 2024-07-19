@@ -101,7 +101,7 @@ function cns_make_forum(string $name, string $description, ?int $forum_grouping_
     $map = [
         'f_name' => $name,
         'f_forum_grouping_id' => $forum_grouping_id,
-        'f_parent_forum' => $parent_forum,
+        'f_parent_forum_id' => $parent_forum,
         'f_position' => $position,
         'f_order_sub_alpha' => $order_sub_alpha,
         'f_post_count_increment' => $post_count_increment,

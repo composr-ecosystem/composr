@@ -39,9 +39,9 @@ class CMSPtRead
 
         $sql = ' FROM ' . $table_prefix . 'f_topics t' . $GLOBALS['FORUM_DB']->prefer_index('f_topics', 'in_forum', false);
         $sql .= 'JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id';
-        $sql .= ' WHERE (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
-        $sql .= ' AND (t_pt_from<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_from_category', do_lang('TRASH')) . ')';
-        $sql .= ' AND (t_pt_to<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_to_category', do_lang('TRASH')) . ')';
+        $sql .= ' WHERE (t_pt_from_member=' . strval(get_member()) . ' OR t_pt_to_member=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
+        $sql .= ' AND (t_pt_from_member<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_from_category', do_lang('TRASH')) . ')';
+        $sql .= ' AND (t_pt_to_member<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_to_category', do_lang('TRASH')) . ')';
         $sql .= ' ORDER BY t_cache_last_time DESC,t.id DESC';
 
         $_topics = $GLOBALS['FORUM_DB']->query('SELECT *,t.id AS topic_id,p.id AS post_id' . $sql, $max, $start);
@@ -145,9 +145,9 @@ class CMSPtRead
             $posts[] = [
                 'msg_id' => $post['post_id'],
                 'msg_content' => $content,
-                'msg_author_id' => $post['p_poster'],
+                'msg_author_id' => $post['p_posting_member'],
                 'is_unread' => $is_unread,
-                'is_online' => member_is_online($post['p_poster']),
+                'is_online' => member_is_online($post['p_posting_member']),
                 'has_left' => false,
                 'post_time' => $post['p_time'],
                 'new_post' => $is_unread,

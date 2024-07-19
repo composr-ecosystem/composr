@@ -373,8 +373,8 @@ class Module_topicview
                         '_GUID' => '77a28e8bc3cf2ec2211aafdb5ba192bf',
                         'LAST_EDIT_DATE_RAW' => ($_postdetails['last_edit_time'] === null) ? '' : strval($_postdetails['last_edit_time']),
                         'LAST_EDIT_DATE' => $_postdetails['last_edit_date'],
-                        'LAST_EDIT_PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($_postdetails['last_edit_by'], true),
-                        'LAST_EDIT_USERNAME' => $_postdetails['last_edit_by_username'],
+                        'LAST_EDIT_PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($_postdetails['last_edit_member'], true),
+                        'LAST_EDIT_USERNAME' => $_postdetails['last_edit_username'],
                     ]);
                 } else {
                     $last_edited = new Tempcode();
@@ -493,7 +493,7 @@ class Module_topicview
 
                 $post_url = $GLOBALS['FORUM_DRIVER']->post_url($_postdetails['id'], ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']), true);
 
-                if ((array_key_exists('intended_solely_for', $_postdetails)) && ($_postdetails['intended_solely_for'] == get_member())) {
+                if ((array_key_exists('whisper_to_member', $_postdetails)) && ($_postdetails['whisper_to_member'] == get_member())) {
                     // Has now read
                     decache_private_topics(get_member());
                 }
@@ -501,7 +501,7 @@ class Module_topicview
                 $emphasis = cns_get_post_emphasis($_postdetails);
 
                 require_code('feedback');
-                if (!array_key_exists('intended_solely_for', $_postdetails) && get_value('disable_post_rating', '0', true) !== '1') {
+                if (!array_key_exists('whisper_to_member', $_postdetails) && get_value('disable_post_rating', '0', true) !== '1') {
                     actualise_rating(true, 'post', strval($_postdetails['id']), get_self_url(), $_postdetails['title']);
                     $rating = display_rating(get_self_url(), $_postdetails['title'], 'post', strval($_postdetails['id']), 'RATING_INLINE_DYNAMIC', $_postdetails['poster']);
                 } else {
@@ -522,7 +522,7 @@ class Module_topicview
                     'TOPIC_FIRST_POSTER' => ($topic_info['first_poster'] === null) ? '' : strval($topic_info['first_poster']),
                     'POST_ID' => $is_spacer_post ? '' : ((get_option('seq_post_ids') == '1') ? strval($start + $array_id + 1) : strval($_postdetails['id'])),
                     'URL' => $post_url,
-                    'CLASS' => $_postdetails['is_emphasised'] ? 'cns-post-emphasis' : (array_key_exists('intended_solely_for', $_postdetails) ? 'cns-post-personal' : ''),
+                    'CLASS' => $_postdetails['is_emphasised'] ? 'cns-post-emphasis' : (array_key_exists('whisper_to_member', $_postdetails) ? 'cns-post-personal' : ''),
                     'EMPHASIS' => $emphasis,
                     'FIRST_UNREAD' => $first_unread,
                     'POSTER_TITLE' => $is_spacer_post ? '' : $_postdetails['poster_title'],
@@ -632,7 +632,7 @@ class Module_topicview
 
                         require_lang('tickets');
                         require_css('tickets');
-                        $map = ['page' => 'topics', 'type' => 'new_post', 'id' => $id, 'intended_solely_for' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+                        $map = ['page' => 'topics', 'type' => 'new_post', 'id' => $id, 'whisper_to_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
                         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
                         if (($test !== null) && ($test !== '0')) {
                             $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;

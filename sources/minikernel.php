@@ -714,7 +714,12 @@ function is_guest($member_id = null)
  */
 function in_safe_mode()
 {
-    return get_param_integer('keep_safe_mode', 0) == 1;
+    // Force safe mode in the upgrader so corrupt non-bundled addons (which are not supported by the upgrader) do not break it.
+    if (running_script('upgrader')) {
+        return true;
+    }
+
+    return (get_param_integer('keep_safe_mode', 0) == 1);
 }
 
 /**
@@ -1525,8 +1530,11 @@ function loggable_date() : string
  */
 function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
 {
-    // Just a wrapper for inform_exit
-    warn_exit($message);
+    if ($type == 'warn') {
+        warn_exit($message);
+    } else {
+        echo $message . "<br />\n";
+    }
     return '';
 }
 

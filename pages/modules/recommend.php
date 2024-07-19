@@ -670,7 +670,7 @@ class Module_recommend
                 send_recommendation_email($name, $email_address, $_message, true, $recommender_email_address, post_param_string('subject', null), [$names_to_send[$key]]);
 
                 $GLOBALS['FORUM_DB']->query_insert('f_invites', [
-                    'i_inviter' => get_member(),
+                    'i_invite_member' => get_member(),
                     'i_email_address' => $email_address,
                     'i_time' => time(),
                     'i_taken' => 0,
@@ -680,13 +680,13 @@ class Module_recommend
             } elseif ((get_option('is_on_invites') == '0') && (get_forum_type() == 'cns')) {
                 // Used for referral tracking
                 $GLOBALS['FORUM_DB']->query_delete('f_invites', [
-                    'i_inviter' => get_member(),
+                    'i_invite_member' => get_member(),
                     'i_email_address' => $email_address,
                 ]);
                 $GLOBALS['FORUM_DB']->query_insert('f_invites', [
                     'i_time' => time(),
                     'i_taken' => 0,
-                    'i_inviter' => get_member(),
+                    'i_invite_member' => get_member(),
                     'i_email_address' => $email_address,
                 ]);
             }

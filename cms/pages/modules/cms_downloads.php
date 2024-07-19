@@ -382,9 +382,9 @@ class Module_cms_downloads extends Standard_crud_module
             if ($licence === null) {
                 // Choose statistically
                 $total_count = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)');
-                $_licence = $GLOBALS['SITE_DB']->query_select('download_downloads', ['download_licence', 'COUNT(*) AS cnt'], [], 'GROUP BY download_licence ORDER BY cnt DESC');
+                $_licence = $GLOBALS['SITE_DB']->query_select('download_downloads', ['download_licence_id', 'COUNT(*) AS cnt'], [], 'GROUP BY download_licence_id ORDER BY cnt DESC');
                 if ((array_key_exists(0, $_licence)) && (floatval($_licence[0]['cnt']) * 1.25 >= floatval($total_count))) {
-                    $license = $_licence[0]['download_licence'];
+                    $license = $_licence[0]['download_licence_id'];
                 }
             }
         }
@@ -573,7 +573,7 @@ class Module_cms_downloads extends Standard_crud_module
 
         $cat = $myrow['category_id'];
 
-        $ret = $this->get_form_fields($id, get_translated_text($myrow['name']), $cat, $myrow['url'], $myrow['author'], get_translated_text($myrow['the_description']), get_translated_text($myrow['additional_details']), $myrow['out_mode_id'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['file_size'], $myrow['download_cost'], $myrow['download_submitter_gets_points'], $myrow['original_filename'], $myrow['download_licence'], $myrow['default_pic'], $myrow['url_redirect']);
+        $ret = $this->get_form_fields($id, get_translated_text($myrow['name']), $cat, $myrow['url'], $myrow['author'], get_translated_text($myrow['the_description']), get_translated_text($myrow['additional_details']), $myrow['out_mode_id'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['file_size'], $myrow['download_cost'], $myrow['download_submitter_gets_points'], $myrow['original_filename'], $myrow['download_licence_id'], $myrow['default_pic'], $myrow['url_redirect']);
 
         if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_downloads', ['downloads', $cat])) {
             $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
@@ -992,7 +992,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
      * @param  URLPATH $rep_image The rep-image for the download category
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $category = '', ?int $parent_id = null, string $description = '', string $notes = '', ?int $category_id = -1, string $rep_image = '') : array
+    public function get_form_fields(?int $id = null, string $category = '', ?int $parent_id = null, string $description = '', string $notes = '', ?int $category_id = null, string $rep_image = '') : array
     {
         if (($parent_id === null) && ($category_id === null)) {
             $parent_id = get_param_integer('parent_id', db_get_first_id());
@@ -1062,7 +1062,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
     {
         $category = post_param_string('category');
 
-        $parent_id = post_param_integer('parent_id');
+        $parent_id = post_param_integer('parent_id', null);
 
         $description = post_param_string('description');
 

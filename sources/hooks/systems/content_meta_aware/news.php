@@ -62,7 +62,7 @@ class Hook_content_meta_aware_news extends Hook_CMA
             'description_field' => 'news',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'image_field' => ['news_image', 'news_category', 'CALL: generate_news_image_url'],
+            'image_field' => ['news_image_url', 'news_category', 'CALL: generate_news_image_url'],
             'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
@@ -157,8 +157,8 @@ class Hook_content_meta_aware_news extends Hook_CMA
  */
 function generate_news_image_url(array $row) : string
 {
-    if ($row['news_image'] != '') {
-        $ret = $row['news_image'];
+    if ($row['news_image_url'] != '') {
+        $ret = $row['news_image_url'];
         if (url_is_local($ret)) {
             $ret = get_custom_base_url() . '/' . $ret;
         }

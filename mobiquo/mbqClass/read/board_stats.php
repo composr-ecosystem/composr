@@ -89,7 +89,7 @@ class CMSBoardStats
     private function get_online_users_count() : int
     {
         $users_online_time_seconds = intval(get_option('users_online_time')) * 60;
-        $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval(time() - $users_online_time_seconds);
+        $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'sessions WHERE last_activity_time>' . strval(time() - $users_online_time_seconds);
         return $GLOBALS['SITE_DB']->query_value_if_there($sql);
     }
 
@@ -102,7 +102,7 @@ class CMSBoardStats
     {
         $users_online_time_seconds = intval(get_option('users_online_time')) * 60;
         $guest_user_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-        $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval(time() - $users_online_time_seconds) . ' AND member_id=' . strval($guest_user_id);
+        $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'sessions WHERE last_activity_time>' . strval(time() - $users_online_time_seconds) . ' AND member_id=' . strval($guest_user_id);
         return $GLOBALS['SITE_DB']->query_value_if_there($sql);
     }
 }

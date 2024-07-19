@@ -1678,7 +1678,7 @@ function send_kpi_notifications()
             $graph_name = $kpi_row['k_graph_name'];
             $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
             $view_url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'), [], false, false, false, 'graph_' . $graph_name);
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_submitter'], true);
             $kpis_for_tpl[] = [
                 'TITLE' => $kpi_row['k_title'],
                 'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current, 0) : float_format($current, 4, true)),
@@ -1688,7 +1688,7 @@ function send_kpi_notifications()
                 'VIEW_URL' => $view_url,
                 'GRAPH_NAME' => $kpi_row['k_graph_name'],
                 'USERNAME' => $username,
-                'ADDED' => get_timezoned_date($kpi_row['k_added']),
+                'ADDED' => get_timezoned_date($kpi_row['k_added_time']),
                 'NOTES' => $kpi_row['k_notes'],
             ];
         }

@@ -1878,7 +1878,7 @@
         improveStickyForMobile: function () {
             // Add CSS animation effect (TODO: this blocks out the background transitioning animation between see-through and not)
             this.el.style.transition = 'margin-top 0.3s ease-in-out';
-            
+
             var lastScrollY = 0,
                 movement = 0,
                 lastDirection = 0,

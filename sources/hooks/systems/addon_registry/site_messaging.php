@@ -130,15 +130,15 @@ class Hook_addon_registry_site_messaging
         return [
             'adminzone/pages/modules/admin_site_messaging.php',
             'lang/EN/site_messaging.ini',
+            'sources/hooks/modules/admin_import_types/site_messages.php',
             'sources/hooks/systems/actionlog/site_messaging.php',
             'sources/hooks/systems/addon_registry/site_messaging.php',
             'sources/hooks/systems/commandr_fs/site_messaging.php',
             'sources/hooks/systems/page_groupings/site_messaging.php',
+            'sources/hooks/systems/privacy/site_messaging.php',
             'sources/hooks/systems/resource_meta_aware/site_message.php',
             'sources/site_messaging.php',
             'sources/site_messaging2.php',
-            'sources/hooks/modules/admin_import_types/site_messages.php',
-            'sources/hooks/systems/privacy/site_messaging.php',
         ];
     }
 }

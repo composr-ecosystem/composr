@@ -100,7 +100,7 @@ function get_page_warning_details(string $zone, string $codename, object $edit_u
     }
     $uv_warning = do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'comcode_page'); // Wear sun cream
     if (!$edit_url->is_empty()) {
-        $menu_links = $GLOBALS['SITE_DB']->query('SELECT DISTINCT i_menu FROM ' . get_table_prefix() . 'menu_items WHERE ' . db_string_equal_to('i_url', $zone . ':' . $codename) . ' OR ' . db_string_equal_to('i_url', '_SEARCH:' . $codename));
+        $menu_links = $GLOBALS['SITE_DB']->query('SELECT DISTINCT i_menu FROM ' . get_table_prefix() . 'menu_items WHERE ' . db_string_equal_to('i_link', $zone . ':' . $codename) . ' OR ' . db_string_equal_to('i_link', '_SEARCH:' . $codename));
         if (!empty($menu_links)) {
             $menu_items_linking = new Tempcode();
             foreach ($menu_links as $menu_link) {
