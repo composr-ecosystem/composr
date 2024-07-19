@@ -38,7 +38,7 @@ function convert_zip_to_tar(string $in_path, ?string &$out_path = null)
         warn_exit(do_lang_tempcode('ZIP_NOT_ENABLED'));
     }
 
-    $zip_archive = new ZipArchive;
+    $zip_archive = new ZipArchive();
 
     $in_file = $zip_archive->open($in_path);
     if ($in_file !== true) {

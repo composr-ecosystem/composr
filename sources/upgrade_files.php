@@ -292,15 +292,17 @@ function _upgrader_file_upgrade_screen() : string
                             $extract_addon = true;
 
                             // We need to update the database accordingly with the new name of the addon
-                            $GLOBALS['SITE_DB']->query_update('addons', [
-                                'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
-                            ], ['addon_name' => trim($previous_addon, "'")], '', 1);
-                            $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
-                                'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
-                            ], ['addon_name' => trim($previous_addon, "'")], '', 1);
-                            $GLOBALS['SITE_DB']->query_update('addons_files', [
-                                'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
-                            ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                            if ($GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => basename($upgrade_file['path'])]) === null) {
+                                $GLOBALS['SITE_DB']->query_update('addons', [
+                                    'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                                $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
+                                    'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                                $GLOBALS['SITE_DB']->query_update('addons_files', [
+                                    'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                            }
 
                             echo '<p>' . do_lang('UPGRADER_RENAMED_ADDON_MESSAGE', escape_html(trim($previous_addon, "'")), escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '</p>';
                         }

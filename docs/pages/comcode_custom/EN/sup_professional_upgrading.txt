@@ -473,7 +473,7 @@ $filename = $_GET['file'];
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-$zip = new ZipArchive;
+$zip = new ZipArchive();
 $res = $zip->open(dirname(__FILE__) . '/' . $filename);
 if ($res === true) {
     $zip->extractTo('.');

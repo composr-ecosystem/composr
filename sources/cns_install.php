@@ -458,11 +458,11 @@ function install_cns(?float $upgrade_from = null)
 
         // Changes to custom fields
         if (multi_lang_content()) {
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_type'));
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('text_original', 'cms_payment_card_expiry_date'));
+            $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_type'));
+            $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('text_original', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('text_original', 'cms_payment_card_expiry_date'));
         } else {
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_name=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_type'));
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('cf_name', 'cms_payment_card_expiry_date'));
+            $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields SET cf_name=\'cms_payment_card_type\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_type'));
+            $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE ' . db_string_equal_to('cf_name', 'cms_payment_card_start_date') . ' OR ' . db_string_equal_to('cf_name', 'cms_payment_card_expiry_date'));
         }
     }
 
@@ -1643,8 +1643,8 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // LEGACY: 11.beta1; will fail for v10 upgrades (as expected)
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // LEGACY: 11.beta1; will fail for v10 upgrades (as expected)
+        //$GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // Not supported; we expect 11.alpha users to do this manually
+        //$GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // Not supported; we expect 11.alpha users to do this manually
 
         $GLOBALS['FORUM_DB']->create_index('f_poll_answers', 'pollid', ['pa_poll_id']);
 

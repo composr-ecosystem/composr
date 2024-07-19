@@ -604,7 +604,7 @@ function create_data_mash(string $url, ?string $data = null, ?string $extension 
             $tmp_file = cms_tempnam();
             file_put_contents($tmp_file, $data);
 
-            $zip_archive = new ZipArchive;
+            $zip_archive = new ZipArchive();
 
             $in_file = $zip_archive->open($tmp_file);
             if ($in_file !== true) { // Just clean up and don't make a mash on error

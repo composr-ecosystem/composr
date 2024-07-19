@@ -164,6 +164,7 @@ function load_php_metadetails()
         'SplPriorityQueue' => true,
         'SplFixedArray' => true,
         'SplObjectStorage' => true,
+        'ZipArchive' => true,
 
         'php_user_filter' => true,
 

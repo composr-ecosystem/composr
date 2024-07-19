@@ -5659,6 +5659,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_MAINTENANCE
         UPGRADER_MUST_UPGRADE_CNS
         UPGRADER_NOT_FOR_PATCH
+        UPGRADER_RENAMED_MODULES
+        UPGRADER_UNINSTALL_MODULES
+        UPGRADER_UPGRADED_FILE_REPLACEMENTS
+        UPGRADER_UPGRADED_CUSTOM
         UPGRADER_NO_CNS_UPGRADE
         UPGRADER_OPEN_SITE
         UPGRADER_REFER_RELEASE_NOTES
@@ -8130,7 +8134,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ZE_CLICK_TO_EDIT
         ZE_HOW_TO_SAVE
         ZIP_ERROR
-        ZIP_ERROR_MZIP
         ZIP_NOT_ENABLED
         ZONE
         ZONES

@@ -468,13 +468,15 @@ function version_specific() : bool
             $_out = '';
             foreach ($renamed_addons as $old_addon => $new_addon) {
                 $_out .= '<li><kbd>' . $old_addon . '</kbd> => <kbd>' . $new_addon . '</kbd></li>';
-                $GLOBALS['SITE_DB']->query_update('addons', ['addon_name' => $new_addon], ['addon_name' => $old_addon]);
-                $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
-                    'addon_name' => $new_addon,
-                ], ['addon_name' => $old_addon], '', 1);
-                $GLOBALS['SITE_DB']->query_update('addons_files', [
-                    'addon_name' => $new_addon,
-                ], ['addon_name' => $old_addon], '', 1);
+                if ($GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => $new_addon]) === null) {
+                    $GLOBALS['SITE_DB']->query_update('addons', ['addon_name' => $new_addon], ['addon_name' => $old_addon]);
+                    $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
+                        'addon_name' => $new_addon,
+                    ], ['addon_name' => $old_addon], '', 1);
+                    $GLOBALS['SITE_DB']->query_update('addons_files', [
+                        'addon_name' => $new_addon,
+                    ], ['addon_name' => $old_addon], '', 1);
+                }
                 @copy(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar', get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @fix_permissions(get_custom_file_base() . '/imports/addons/' . $new_addon . '.tar');
                 @unlink(get_custom_file_base() . '/imports/addons/' . $old_addon . '.tar');

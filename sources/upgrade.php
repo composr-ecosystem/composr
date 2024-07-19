@@ -184,8 +184,8 @@ function upgrade_script()
             echo upgrader_criticise_mysql_fields_screen();
             break;
 
-        case 'safe_mode';
-            if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) { // Need to establish a session
+        case 'safe_mode':
+            if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
                 require_code('users_active_actions');
                 require_code('users_inactive_occasionals');
                 $ip_address = get_ip_address();
