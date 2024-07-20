@@ -51,7 +51,7 @@ function init__version()
  */
 function cms_version_minor() : string
 {
-    return 'beta1';
+    return 'alpha4';
 }
 
 /**

@@ -1739,9 +1739,10 @@ function has_no_forum() : bool
  * @param  boolean $check_hookless Whether to check addons with no addon_registry hook (it's very rare to need this)
  * @param  boolean $deep_scan Do a deep scan of the database to see if the addon is fully installed
  * @param  boolean $disabled_scan Consider whether the addon is set as disabled
+ * @param  boolean $force_custom Whether to forcefully check custom even if in safe mode
  * @return boolean Whether it is
  */
-function addon_installed(string $addon_name, bool $check_hookless = false, bool $deep_scan = true, bool $disabled_scan = true) : bool
+function addon_installed(string $addon_name, bool $check_hookless = false, bool $deep_scan = true, bool $disabled_scan = true, bool $force_custom = false) : bool
 {
     global $ADDON_INSTALLED_CACHE;
     if (empty($ADDON_INSTALLED_CACHE)) {
@@ -1756,7 +1757,7 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
     }
 
     $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
-    $check_custom = ((!in_safe_mode()) || ($page == 'admin-addons')); // We must load non-bundled addon hooks on admin-addons to allow upgrading
+    $check_custom = (($force_custom) || (!in_safe_mode()) || ($page == 'admin-addons')); // TODO: use new $force_custom parameter on admin-addons page
 
     // Check addon_registry hook
     $addon_name = filter_naughty($addon_name, true);
