@@ -56,7 +56,7 @@ class Hook_addon_registry_nested_cpf_spreadsheet_lists
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**

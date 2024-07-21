@@ -56,7 +56,7 @@ class Hook_addon_registry_multi_domain_login
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**

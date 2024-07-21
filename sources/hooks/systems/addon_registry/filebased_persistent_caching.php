@@ -61,7 +61,7 @@ class Hook_addon_registry_filebased_persistent_caching
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**

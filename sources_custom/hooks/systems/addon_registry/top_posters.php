@@ -56,7 +56,7 @@ class Hook_addon_registry_top_posters
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**
