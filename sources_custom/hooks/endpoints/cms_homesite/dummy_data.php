@@ -28,7 +28,7 @@ class Hook_endpoint_cms_homesite_dummy_data
     public function info(?string $type, ?string $id) : array
     {
         return [
-            'authorization' => false,
+            'authorization' => ['maintenance_password'],
         ];
     }
 
@@ -49,7 +49,7 @@ class Hook_endpoint_cms_homesite_dummy_data
         $size = 32 * 1024 * 1024;
 
         // Generate the dummy data
-        $dummyData = str_repeat('A', $size);
+        $dummy_data = str_repeat('A', $size);
 
         // Send the appropriate headers
         header('Content-Type: application/octet-stream');
@@ -57,7 +57,7 @@ class Hook_endpoint_cms_homesite_dummy_data
         header('Content-Disposition: attachment; filename="dummy_data.txt"');
 
         // Output the dummy data
-        echo $dummyData;
+        echo $dummy_data;
 
         // Non-standard output; we must terminate
         exit;

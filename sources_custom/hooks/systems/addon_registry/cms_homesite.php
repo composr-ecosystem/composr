@@ -194,6 +194,7 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/hooks/blocks/main_staff_checklist/cms_homesite.php',
             'sources_custom/hooks/endpoints/cms_homesite/.htaccess',
             'sources_custom/hooks/endpoints/cms_homesite/addon_manifest.php',
+            'sources_custom/hooks/endpoints/cms_homesite/dummy_data.php',
             'sources_custom/hooks/endpoints/cms_homesite/errorservice.php',
             'sources_custom/hooks/endpoints/cms_homesite/forum_posts.php',
             'sources_custom/hooks/endpoints/cms_homesite/forum_topics.php',
