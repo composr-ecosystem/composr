@@ -22,6 +22,8 @@
  */
 class _http_timeouts_test_set extends cms_test_case
 {
+    protected $test_options;
+
     public function setUp()
     {
         parent::setUp();
@@ -29,6 +31,8 @@ class _http_timeouts_test_set extends cms_test_case
         disable_php_memory_limit();
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
+        $this->test_options = $this->load_key_options('cms_homesite');
     }
 
     public function testTimeouts()
@@ -41,8 +45,8 @@ class _http_timeouts_test_set extends cms_test_case
         $timeout = 5.0;
 
         // Test timeout not being hit for large file
-        $url = 'https://composr.app/docs/php-5.2.4-ocproducts.zip' /*TODO: change name of file*/;
-        $expected_size = 28941943;
+        $url = 'https://composr.app/data/endpoint.php/cms_homesite/dummy_data';
+        $expected_size = (32 * 1024 * 1024);
         if (($this->only === null) || ($this->only == 'big_curl')) {
             $r1 = $this->_testCurl($url, $timeout);
             $this->assertTrue($r1[0], 'Got no results for CURL for file download');
@@ -80,7 +84,11 @@ class _http_timeouts_test_set extends cms_test_case
 
     protected function _testCurl($url, $timeout)
     {
+        $headers = [
+            'Authorization: Basic ' . base64_encode($this->test_options['cms_homesite_maintenance_password'])
+        ];
         $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, intval(ceil($timeout)));
         curl_setopt($ch, CURLOPT_LOW_SPEED_LIMIT, 1);
@@ -88,14 +96,32 @@ class _http_timeouts_test_set extends cms_test_case
         $result = curl_exec($ch);
         curl_close($ch);
 
+        if (is_string($result) && $this->debug) {
+            $this->dump(substr($result, 0, 1000), 'CURL Result (first 1,000 characters)');
+        }
+
         return [is_string($result), is_string($result) ? strlen($result) : 0];
     }
 
     protected function _testURLWrappers($url, $timeout)
     {
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => 'Authorization: Basic ' . base64_encode($this->test_options['cms_homesite_maintenance_password']),
+            ]
+        ];
+
+        $context = stream_context_create($opts);
+
         ini_set('allow_url_fopen', '1');
         ini_set('default_socket_timeout', strval(intval(ceil($timeout))));
-        $result = @file_get_contents($url);
+        $result = @file_get_contents($url, false, $context);
+
+        if (is_string($result) && $this->debug) {
+            $this->dump(substr($result, 0, 1000), 'URL Wrappers Result (first 1,000 characters)');
+        }
+
         return [is_string($result), is_string($result) ? strlen($result) : 0];
     }
 
@@ -106,11 +132,14 @@ class _http_timeouts_test_set extends cms_test_case
         $result = mixed();
         $result = false;
         $parsed = cms_parse_url_safe($url);
-        $fh = fsockopen($parsed['host'], isset($parsed['port']) ? $parsed['port'] : 80, $errno, $errstr, $timeout);
+        $scheme = ($parsed['scheme'] == 'https') ? 'ssl://' : '';
+        $default_port = ($scheme == 'ssl://') ? 443 : 80;
+        $fh = fsockopen($scheme . $parsed['host'], isset($parsed['port']) ? $parsed['port'] : $default_port, $errno, $errstr, $timeout);
         if ($fh !== false) {
             socket_set_timeout($fh, intval($timeout), fmod($timeout, 1.0) / 1000000.0);
             $out = "GET " . $url . " HTTP/1.1\r\n";
             $out .= "Host: " . $parsed['host'] . "\r\n";
+            $out .= "Authorization: Basic " . base64_encode($this->test_options['cms_homesite_maintenance_password']) . "\r\n";
             $out .= "Connection: Close\r\n\r\n";
             fwrite($fh, $out);
             $_frh = [$fh];
@@ -133,9 +162,9 @@ class _http_timeouts_test_set extends cms_test_case
         }
 
         if ($this->debug) {
-            var_dump(gettype($result));
+            $this->dump(gettype($result), 'FSOCK Result type');
             if (is_string($result)) {
-                var_dump(substr($result, 0, 1000));
+                $this->dump(substr($result, 0, 1000), 'FSOCK Result (first 1,000 characters)');
             }
         }
 
