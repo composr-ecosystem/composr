@@ -37,9 +37,10 @@
 {+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$GT,{_PERSONAL_GALLERY_ENTRIES_IMAGES},0}}<p><img src="{$IMG,icons/content_types/image}" width="18" height="18">{!RANK_PERSONAL_GALLERY_ENTRIES_IMAGES,{PERSONAL_GALLERY_ENTRIES_IMAGES*}}</p>{+END}{+END}
 {+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$GT,{_PERSONAL_GALLERY_ENTRIES_VIDEOS},0}}<p><img src="{$IMG,icons/content_types/video}" width="18" height="18">{!RANK_PERSONAL_GALLERY_ENTRIES_VIDEOS,{PERSONAL_GALLERY_ENTRIES_VIDEOS*}}</p>{+END}{+END}
 {+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},1}}<p><img src="{$IMG,icons/content_types/multimedia}" width="18" height="18">{!RANK_PERSONAL_GALLERY_ENTRIES_UNLIMITED}</p>{+END}
-{+START,IF,{$GT,{_GIFT_POINTS},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS,{GIFT_POINTS*}}</p>{+END}
-{+START,IF,{$GT,{_GIFT_POINTS_PER_DAY},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS_PER_DAY,{GIFT_POINTS_PER_DAY*}}</p>{+END}
-								
+{+START,IF,{$CONFIG_OPTION,enable_gift_points}}
+	{+START,IF,{$GT,{_GIFT_POINTS},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS,{GIFT_POINTS*}}</p>{+END}
+	{+START,IF,{$GT,{_GIFT_POINTS_PER_DAY},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS_PER_DAY,{GIFT_POINTS_PER_DAY*}}</p>{+END}
+{+END}								
 {+START,LOOP,UNLOCKED_PRIVILEGES}
 	<p><img src="{$IMG,icons/menu/adminzone/security/permissions/privileges}" width="18" height="18">{!RANK_UNLOCKED_PRIVILEGE,{PRIVILEGE*},{SCOPE*}}</p>
 {+END}
@@ -53,8 +54,9 @@
 {+START,IF,{$EQ,{_POST_LENGTH},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_POSTS}</p>{+END}
 {+START,IF,{$EQ,{_SIGNATURE_LENGTH},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_SIGNATURE}</p>{+END}
 {+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$EQ,{_PERSONAL_GALLERY_ENTRIES_IMAGES},0}}{+START,IF,{$EQ,{_PERSONAL_GALLERY_ENTRIES_VIDEOS},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_PERSONAL_GALLERY}</p>{+END}{+END}{+END}
-{+START,IF,{$AND,{$EQ,{_GIFT_POINTS},0},{$EQ,{_GIFT_POINTS_PER_DAY},0}}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_GIFT_POINTS}</p>{+END}
-
+{+START,IF,{$CONFIG_OPTION,enable_gift_points}}
+	{+START,IF,{$AND,{$EQ,{_GIFT_POINTS},0},{$EQ,{_GIFT_POINTS_PER_DAY},0}}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_GIFT_POINTS}</p>{+END}
+{+END}
 {+START,LOOP,LOCKED_PRIVILEGES}
 	<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_PRIVILEGE,{PRIVILEGE*},{SCOPE*}}</p>
 {+END}

@@ -70,8 +70,10 @@ class Hook_cron_cache_cleanup
         // Prevent other cache directories from getting too overpopulated as well (mapped to array, count to start pruning, count to dump the entire directory)
         $directories = [
             'caches/http' => [1000, 5000],
+            //'caches/lang' => [1000, 5000], // Not necessary; this does not infinitely grow
             'caches/persistent' => [2000, 10000],
             'caches/self_learning' => [1000, 5000],
+            //'caches/static' => [2000, 10000], // We did this separately above by staleness
             'uploads/auto_thumbs' => [2000, 10000], // These can be re-built upon request
         ];
         foreach ($directories as $directory => $prune_rules) {

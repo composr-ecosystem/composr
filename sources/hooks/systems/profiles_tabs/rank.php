@@ -302,7 +302,7 @@ class Hook_profiles_tabs_rank
             }
         }
 
-        $content = do_template('PROFILES_TABS_RANK', [
+        $content = do_template('CNS_MEMBER_PROFILE_RANK', [
             'SIMPLE_STEPPER' => count($groups) >= 7 ? '1' : '0', // Use small steppers if we have >=7 groups so it doesn't cramp mobile displays
             'RANKS' => $groups,
             'CURRENT_RANK' => $rank_name,
