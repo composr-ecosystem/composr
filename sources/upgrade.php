@@ -185,6 +185,11 @@ function upgrade_script()
             break;
 
         case 'safe_mode':
+            if (get_param_integer('redirect_to_addons', 0) == 1) {
+                $redirect = 'adminzone/index.php?page=admin_addons&keep_safe_mode=1';
+            } else {
+                $redirect = 'adminzone/index.php?keep_safe_mode=1';
+            }
             if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
                 require_code('users_active_actions');
                 require_code('users_inactive_occasionals');
@@ -194,12 +199,12 @@ function upgrade_script()
 
                 upgrader_output_header();
                 echo '<h2>' . do_lang('UPGRADER_SAFE_MODE') . '</h2><p>' . do_lang('UPGRADER_SAFE_MODE_ADMIN', $username) . '</p>';
-                echo upgrader_link('adminzone/index.php?keep_safe_mode=1', do_lang('PROCEED'), true);
+                echo upgrader_link($redirect, do_lang('PROCEED'), true);
             } else {
                 upgrader_output_header();
                 echo '<h2>' . do_lang('UPGRADER_SAFE_MODE') . '</h2><p>' . do_lang('_UPGRADER_SAFE_MODE_ADMIN') . '</p>';
-                echo '<meta http-equiv="refresh" content="5;url=' . get_base_url() . 'adminzone/index.php?keep_safe_mode=1">';
-                echo upgrader_link('adminzone/index.php?keep_safe_mode=1', do_lang('PROCEED'), true);
+                echo '<meta http-equiv="refresh" content="5;url=' . get_base_url() . $redirect . '">';
+                echo upgrader_link($redirect, do_lang('PROCEED'), true);
             }
             break;
     }
@@ -519,6 +524,7 @@ function upgrader_menu_screen() : string
     // Integrity scan link
     $l_integrity_scan = upgrader_link('upgrader.php?type=integrity_scan&allow_merging=1', do_lang('UPGRADER_INTEGRITY_SCAN'), false, false, do_lang('UPGRADER_WILL_MERGE'));
     $l_integrity_scan_no_merging = upgrader_link('upgrader.php?type=integrity_scan', do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE'), false);
+    $l_integrity_scan_2 = do_lang('UPGRADER_INTEGRITY_SCAN_2');
 
     // Database upgrade link
     $l_db_upgrade = upgrader_link('upgrader.php?type=db_upgrade', do_lang('UPGRADER_DATABASE_UPGRADE'), false);
@@ -526,10 +532,21 @@ function upgrader_menu_screen() : string
     // Theme upgrade link
     $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade', do_lang('UPGRADER_THEME_UPGRADE'), false);
 
+    // Calculate addons that may need upgrading
+    $addons = $GLOBALS['SITE_DB']->query_select('addons', ['addon_name', 'addon_min_cms_version', 'addon_max_cms_version'], []);
+    $num_incompatible_addons = 0;
+    foreach ($addons as $addon) {
+        if (($addon['addon_min_cms_version'] == '') || (floatval($addon['addon_min_cms_version']) > cms_version_number())) {
+            $num_incompatible_addons++;
+        } elseif (($addon['addon_max_cms_version'] != '') && (floatval($addon['addon_max_cms_version']) < cms_version_number())) {
+            $num_incompatible_addons++;
+        }
+    }
+
     // Error correction links
     $l_safe_mode = upgrader_link('upgrader.php?type=safe_mode', do_lang('UPGRADER_SAFE_MODE'), false);
-    $num_addons = $GLOBALS['SITE_DB']->query_select_value('addons', 'COUNT(*)');
-    $l_addon_management = upgrader_link('adminzone/index.php?page=admin_addons&keep_safe_mode=1', do_lang('UPGRADER_ADDON_MANAGEMENT', integer_format($num_addons)), true, $num_addons == 0);
+    $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'), false, count($addons) == 0);
+    $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', integer_format(count($addons)), integer_format($num_incompatible_addons));
     $show_permission_buttons = (!GOOGLE_APPENGINE && !is_suexec_like() || $GLOBALS['DEV_MODE']);
     $l_check_perms = upgrader_link('upgrader.php?type=check_perms', do_lang('UPGRADER_CHECK_PERMISSIONS'), false);
     $l_fix_perms = upgrader_link('upgrader.php?type=fix_perms', do_lang('UPGRADER_FIX_PERMISSIONS'), false);
@@ -616,6 +633,20 @@ function upgrader_menu_screen() : string
         ";
     }
 
+    // Upgrade addons
+    $step_num++;
+    $_step_num = strval($step_num);
+    $out .= "
+                    <tr><th>{$_step_num}</th><td>{$l_addon_management}<br />{$_l_addon_management}</td><td>" . escape_html(display_time_period(60 * 60)) . "</td></tr>
+    ";
+
+    // Re-run file integrity
+    $step_num++;
+    $_step_num = strval($step_num);
+    $out .= "
+                    <tr><th>{$_step_num}</th><td>{$l_integrity_scan_2}<br />{$l_not_for_patch}</td><td>" . escape_html(display_time_period(60 * 15)) . "&nbsp;&dagger;</td></tr>
+    ";
+
     // Clear caches
     $step_num++;
     $_step_num = strval($step_num);
@@ -650,7 +681,6 @@ function upgrader_menu_screen() : string
     }
     $out .= "
                 <li>{$l_safe_mode}</li>
-                <li>{$l_addon_management}</li>
                 <li>{$l_addon_remove}</li>";
     if ($show_mysql_buttons) {
         $out .= "
