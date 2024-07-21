@@ -304,6 +304,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/profiles_tabs/about.php',
             'sources/hooks/systems/profiles_tabs/edit.php',
             'sources/hooks/systems/profiles_tabs/index.html',
+            'sources/hooks/systems/profiles_tabs/rank.php',
             'sources/hooks/systems/profiles_tabs_edit/.htaccess',
             'sources/hooks/systems/profiles_tabs_edit/delete.php',
             'sources/hooks/systems/profiles_tabs_edit/index.html',
@@ -348,6 +349,7 @@ class Hook_addon_registry_core_cns
             'themes/default/css/cns_header.css',
             'themes/default/css/cns_member_directory.css',
             'themes/default/css/cns_member_profiles.css',
+            'themes/default/css/stepper.css',
             'themes/default/images/EN/cns_rank_images/admin.svg',
             'themes/default/images/EN/cns_rank_images/index.html',
             'themes/default/images/EN/cns_rank_images/mod.svg',
@@ -516,6 +518,7 @@ class Hook_addon_registry_core_cns
             'themes/default/templates/CNS_VIEW_GROUP_MEMBER_SECONDARY.tpl',
             'themes/default/templates/CNS_VIEW_GROUP_SCREEN.tpl',
             'themes/default/templates/POSTING_FIELD.tpl',
+            'themes/default/templates/PROFILES_TABS_RANK.tpl',
             'themes/default/text/PARENTAL_CONSENT_MAIL.txt',
         ];
     }
