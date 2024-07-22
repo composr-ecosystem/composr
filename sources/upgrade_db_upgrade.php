@@ -573,7 +573,7 @@ function database_specific() : bool
 
     $done_something = false;
 
-    if (($upgrade_from !== null) && ($upgrade_from >= 1711670588/*11.alpha1*/) && ($upgrade_from < 1721661975)) {
+    if ((is_numeric($upgrade_from)) && (intval($upgrade_from) >= 1711670588/*11.alpha1*/) && (intval($upgrade_from) < 1721661975)) {
         $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
         $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
         $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_url', 'URLPATH');

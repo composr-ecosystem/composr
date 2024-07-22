@@ -58,6 +58,20 @@ function hash_equals(string $known_string, string $user_string) : bool
 }
 
 /**
+ * Generate a hash value using the contents of a given file.
+ *
+ * @param  string $algo Name of algorithm to use
+ * @param  string $filename File or URL to hash
+ * @param  boolean $binary Whether to output raw binary data (false: output lowercase hex)
+ * @param  array $options Array of options for the hashing algorithm chosen
+ * @return ~string The hash (false: error)
+ */
+function hash_file(string $algo, string $filename, bool $binary = false, array $options = [])
+{
+    return false;
+}
+
+/**
  * Hash the password using the specified algorithm.
  *
  * @param  string $password The password to hash
