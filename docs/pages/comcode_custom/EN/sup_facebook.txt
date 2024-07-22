@@ -204,7 +204,7 @@ For Open Graph to work, the content must have public access. If you deny Guests 
 [title="3"]Images ([tt]og:image[/tt])[/title]
 
 The Composr code hints what image to use for Open Graph, in precedence order it tries the following to find a [i]suitable[/i] image:[list="1"]
-[*] Where possible, a natural image is used. For example when viewing a gallery image, the thumbnail will be the Open Graph image.
+[*] Where possible, a natural image is used. For example when viewing a gallery image, the thumbnail will be the Open Graph image. For Comcode Pages, the first non-WYSIWYG-editable image attachment would be used ([tt]MEDIA_IMAGE_WEBSAFE.tpl[/tt] facilitates this behaviour).
 [*] When viewing something with custom fields (including catalogue entries), the first picture-style field will be the Open Graph image, unless some other picture field has the [tt]is_metadata=1[/tt] field option set for it, and unless the first picture field has the [tt]is_metadata=0[/tt] field option set for it. Note that this works even for hidden fields, so is the perfect way to set image metadata.
 [*] Otherwise, a content-type icon image will be used. For example, for a chatroom the [tt]icons/menu/social/chat/chat[/tt] theme image will be used. However, [b]actually it typically won't[/b] because Composr ships with [tt].svg[/tt] files, which Open Graph can't use.
 [*] Otherwise we are getting desparate because nothing good has been defined, some default templates are programmed to search primary content for embedded images, and use the first one. This applies to the following content types: Comcode pages, news articles, topics, Wiki+. i.e. posts and pages.
