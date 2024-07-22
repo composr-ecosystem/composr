@@ -40,13 +40,13 @@ class _rootkit_detection_test_set extends cms_test_case
 
     public function testRootkitDetection()
     {
-        $this->assertTrue(false, 'Does not work; cannot set blank maintenance passwords. Fix this.');
+        $this->assertTrue(false, 'Run the rootkit detection manually at rootkit_detection.php; this test does not work.');
         return;
 
         require_code('crypt_maintenance');
 
         $post_params = [
-            'password' => '',
+            'password' => '', // Does not work when it should
             'db_host' => get_db_site_host(),
             'db_name' => get_db_site(),
             'db_prefix' => get_table_prefix(),
@@ -55,6 +55,7 @@ class _rootkit_detection_test_set extends cms_test_case
             'do_files' => '0',
         ];
         $result = http_get_contents(get_base_url() . '/rootkit_detection.php?type=go', ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'post_params' => $post_params]);
+        $this->assertTrue(strpos($result, 'Denied') === false, 'Access denied');
         $this->assertTrue(strpos($result, 'Privileges:') !== false, 'Failed to see listed privileges');
         $this->assertTrue(strpos($result, 'Fatal error') === false, 'Found a fatal error');
         $this->assertTrue(strpos($result, 'PHP Error') === false, 'Found an error');

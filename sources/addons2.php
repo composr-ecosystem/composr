@@ -248,12 +248,12 @@ QUERYING ADDONS
  * Find all the available addons (addons in imports/addons that are not necessarily installed).
  *
  * @param  boolean $installed_too Whether to include addons that are installed already
- * @param  boolean $gather_mtimes Whether to gather mtimes of the TARs and sort by them
+ * @param  boolean $hash_and_mtime Whether to generate a file hash and include it along with the file mtime in the info
  * @param  array $already_known Addons we already have details for, performance optimisation
  * @param  boolean $get_info Whether to get full details about each addon
  * @return array Maps of maps describing the available addons (filename => details)
  */
-function find_available_addons(bool $installed_too = true, bool $gather_mtimes = true, array $already_known = [], bool $get_info = true) : array
+function find_available_addons(bool $installed_too = true, bool $hash_and_mtime = true, array $already_known = [], bool $get_info = true) : array
 {
     require_code('version');
 
@@ -274,10 +274,11 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
     // Find mtimes (in separate loop so as to not have to interleave fs-STAT calls between readdir calls (disk seeking)
     foreach ($files as $i => $file_parts) {
         $file = $file_parts[0];
-        $files[$i][1] = $gather_mtimes ? filemtime(get_custom_file_base() . '/imports/addons/' . $file) : 0;
+        $files[$i][1] = $hash_and_mtime ? hash_file('crc32', get_custom_file_base() . '/imports/addons/' . $file) : '';
+        $files[$i][2] = $hash_and_mtime ? filemtime(get_custom_file_base() . '/imports/addons/' . $file) : 0;
     }
 
-    sort_maps_by($files, '1');
+    sort_maps_by($files, '2');
 
     foreach ($files as $_file) {
         $file = $_file[0];
@@ -328,7 +329,8 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
             }
 
             // Special details for installable addons
-            $info['mtime'] = $_file[1];
+            $info['hash'] = $_file[1];
+            $info['mtime'] = $_file[2];
             $info['tar_path'] = $full;
 
             foreach ($addons_available_for_installation as $i => $a) { // Deduplicate, may be multiple versions in imports/addons
@@ -1154,8 +1156,6 @@ function find_updated_addons() : array
     }
 
     $available_addons = find_available_addons(true, true, [], false);
-    sort_maps_by($available_addons, 'mtime');
-    $available_addons = array_reverse($available_addons);
 
     $updated_addons = [];
     foreach ($addon_data['response_data'] as $i => $addon_bits) {
@@ -1164,7 +1164,7 @@ function find_updated_addons() : array
         foreach ($available_addons as $available_addon) {
             if ($available_addon['name'] == $addon_bits[3]) {
                 $found = true;
-                if (($addon_bits[0] !== null) && ($available_addon['mtime'] < $addon_bits[0])) { // If known to server, and updated
+                if (($addon_bits[0] !== null) && (($addon_bits[4] === null) || ($available_addon['hash'] != $addon_bits[4])) && ($available_addon['mtime'] < $addon_bits[0])) { // If known to server, and updated
                     $updated_addons[$addon_bits[3]] = [$addon_bits[1]]; // Is known to server though
                 }
                 break;

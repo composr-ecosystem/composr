@@ -98,10 +98,13 @@ class Hook_endpoint_cms_homesite_addon_manifest
                 if (array_key_exists(0, $result)) {
                     $url = $result[0]['url'];
 
+                    $hash = null;
                     if (url_is_local($url)) {
                         $last_date = @filemtime(get_custom_file_base() . '/' . rawurldecode($url));
+                        $hash = @hash_file('crc32', get_custom_file_base() . '/' . rawurldecode($url));
                     } else {
                         $last_date = @filemtime($url);
+                        $hash = @hash_file('crc32', $url);
                     }
                     if ($last_date === false) {
                         $last_date = $result[0]['edit_date'] !== null ? intval($result[0]['edit_date']) : false;
@@ -112,13 +115,16 @@ class Hook_endpoint_cms_homesite_addon_manifest
                     if ($last_date === false) {
                         continue;
                     }
+                    if ($hash === false) {
+                        $hash = null;
+                    }
 
                     $name_titled = get_translated_text($result[0]['name']);
                     if (array_key_exists($name_titled, $name_remap)) {
                         $name = $name_remap[$name_titled];
                         $url = $result[0]['url'];
                         $id = $result[0]['id'];
-                        $addon_times[intval(substr($x, 6))] = [$last_date, $id, $url, $name];
+                        $addon_times[intval(substr($x, 6))] = [$last_date, $id, $url, $name, $hash];
                     }
                 }
             }
