@@ -39,7 +39,6 @@
 {+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},1}}<p><img src="{$IMG,icons/content_types/multimedia}" width="18" height="18">{!RANK_PERSONAL_GALLERY_ENTRIES_UNLIMITED}</p>{+END}
 {+START,IF,{$GT,{_GIFT_POINTS},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS,{GIFT_POINTS*}}</p>{+END}
 {+START,IF,{$GT,{_GIFT_POINTS_PER_DAY},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS_PER_DAY,{GIFT_POINTS_PER_DAY*}}</p>{+END}
-{+END}
 {+START,LOOP,UNLOCKED_PRIVILEGES}
 	<p><img src="{$IMG,icons/menu/adminzone/security/permissions/privileges}" width="18" height="18">{!RANK_UNLOCKED_PRIVILEGE,{PRIVILEGE*},{SCOPE*}}</p>
 {+END}
