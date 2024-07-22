@@ -42,7 +42,7 @@ class Module_calendar
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 9;
+        $info['version'] = 10;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -193,7 +193,7 @@ class Module_calendar
             $GLOBALS['SITE_DB']->alter_table_field('calendar_events', 'e_start_hour', '?INTEGER');
             $GLOBALS['SITE_DB']->alter_table_field('calendar_events', 'e_start_minute', '?INTEGER');
 
-            $GLOBALS['SITE_DB']->add_table_field('calendar_types', 't_external_feed_url', 'URLPATH');
+            $GLOBALS['SITE_DB']->add_table_field('calendar_types', 't_external_feed', 'URLPATH');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
@@ -293,7 +293,7 @@ class Module_calendar
             } while (!empty($rows));
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta1
+        if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('calendar_types', 't_external_feed', 'URLPATH', 't_external_feed_url');
         }

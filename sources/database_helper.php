@@ -378,8 +378,6 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
         fatal_exit('Inappropriate identifier, too long: ' . $index_name);
     }
 
-    $ok_to_create = true;
-
     $is_full_text = ($index_name[0] == '#');
 
     $_fields = _helper_generate_index_fields($table_name, $fields_with_types, $is_full_text);
@@ -757,15 +755,22 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
         $this_ref->_query($query);
     }
 
-    // Add or remove fulltext index when necessary
+    // Remove/add fulltext index when necessary
+    $old_type = $this_ref->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $table_name, 'm_name' => $name]);
+    if (($old_type !== null) && (strpos($old_type, '_TRANS') !== false)) {
+        if ((strpos($type, '_TRANS') === false) || (multi_lang_content()) || (($new_name !== null) && ($new_name != $name))) {
+            // If we no longer need an auto-created full-text index (see above) due to field type changing, or multi-lang-content changing, we can clean it up
+            // We also have to get rid of it if the field name changes, because some DB backends use special external indexes for full-text and we would need to explicitly recreate them
+            $GLOBALS['SITE_DB']->delete_index_if_exists($table_name, '#' . $name);
+        }
+    }
     if ((strpos($type, '_TRANS') !== false) && (!multi_lang_content())) {
+        // If multi-lang-content is off, we automatically create a full-text index on trans fields, as they are expected to be searchable
+        //  The field may already exist, but create_index silently exits in such a case
         $indices_test = $this_ref->query_select_value_if_there('db_meta_indices', 'i_name', ['i_table' => $table_name, 'i_name' => '#' . (($new_name !== null) ? $new_name : $name)]);
         if ($indices_test === null) {
             $GLOBALS['SITE_DB']->create_index($table_name, '#' . (($new_name !== null) ? $new_name : $name), [(($new_name !== null) ? $new_name : $name)], null, false);
         }
-    }
-    if ((strpos($type, '_TRANS') === false) || (($new_name !== null) && ($new_name != $name)) || (multi_lang_content())) {
-        $GLOBALS['SITE_DB']->delete_index_if_exists($table_name, '#' . $name);
     }
 
     // Adjust meta database

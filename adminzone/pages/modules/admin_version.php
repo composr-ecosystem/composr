@@ -1234,6 +1234,8 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_orig_filename', 'SHORT_TEXT');
             $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_save_url', 'URLPATH');
             $GLOBALS['SITE_DB']->alter_table_field('urls_checked', 'url_message', 'SHORT_TEXT', 'response_message');
+
+            $GLOBALS['SITE_DB']->delete_index_if_exists('logged_mail_messages', 'm_as');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 20)) {

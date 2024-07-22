@@ -92,9 +92,9 @@ class Module_admin_import
             }
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from >= 4) && ($upgrade_from < 7)) { // LEGACY: 11.beta1
+        if (($upgrade_from !== null) && ($upgrade_from >= 4) && ($upgrade_from < 8)) { // LEGACY: 11.beta1
             // Database consistency fixes
-            $GLOBALS['SITE_DB']->alter_table_field('import_parts_done', 'imp_refresh_time', 'INTEGER', 'imp_refresh_interval');
+            $GLOBALS['SITE_DB']->alter_table_field('import_session', 'imp_refresh_time', 'INTEGER', 'imp_refresh_interval');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 4)) {

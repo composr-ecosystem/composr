@@ -209,8 +209,8 @@ function install_cns(?float $upgrade_from = null)
             'join_time' => 'TIME',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'member_id', ['member_id']);
-        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'usergroup_id', ['usergroup_id']);
         $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'join_time', ['join_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'usergroup_id', ['usergroup_id']);
 
         $GLOBALS['FORUM_DB']->create_table('f_password_history', [
             'id' => '*AUTO',
@@ -774,8 +774,6 @@ function install_cns(?float $upgrade_from = null)
             't_cache_num_posts' => 'INTEGER',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_topics', 't_num_views', ['t_num_views']);
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_to_member', ['t_pt_to_member']);
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_from_member', ['t_pt_from_member']);
         $GLOBALS['FORUM_DB']->create_index('f_topics', 't_validated', ['t_validated']);
         $GLOBALS['FORUM_DB']->create_index('f_topics', 'in_forum', ['t_forum_id']);
         $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_time', ['t_cache_last_time']);
@@ -1639,12 +1637,20 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_last_edit_by', '?MEMBER', 'p_last_edit_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_forum_intro_ip', 'i_ip', '*IP', 'i_ip_address');
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_ip', 'IP', 'pv_ip_address');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_cache_points_at_voting_time', 'INTEGER', 'pv_points_when_voted');
         $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
         $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
-        //$GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // Not supported; we expect 11.alpha users to do this manually
-        //$GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member'); // Not supported; we expect 11.alpha users to do this manually
+        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
+
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts', 'last_edit_by');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts_fulltext_index', 'main');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 't_pt_to');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 't_pt_from');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_poll_votes', 'v_voter_id');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_poll_votes', 'v_voter_ip');
 
         $GLOBALS['FORUM_DB']->create_index('f_poll_answers', 'pollid', ['pa_poll_id']);
 
@@ -1758,7 +1764,12 @@ function install_cns(?float $upgrade_from = null)
     }
 
     if (($upgrade_from === null) || ($upgrade_from < 11.0)) {
+        $GLOBALS['FORUM_DB']->change_primary_key('f_poll_answers', ['id']);
         $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_invite_member']);
         $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_member', ['p_last_edit_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_to_member', ['t_pt_to_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_from_member', ['t_pt_from_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'voting_member_id', ['pv_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'voting_ip_address', ['pv_ip_address']);
     }
 }

@@ -197,6 +197,8 @@ class Hook_addon_registry_sms
         if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
             // Database integrity fixes
             $GLOBALS['SITE_DB']->alter_table_field('sms_log', 's_trigger_ip', 'IP', 's_trigger_ip_address');
+
+            $GLOBALS['SITE_DB']->delete_index_if_exists('sms_log', 'sms_trigger_ip');
         }
     }
 }

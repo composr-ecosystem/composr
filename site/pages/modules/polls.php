@@ -132,8 +132,6 @@ class Module_polls
                 'v_vote_time' => 'TIME',
             ]);
 
-            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voting_member', ['v_voting_member']);
-            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voting_ip_address', ['v_voting_ip_address']);
             $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_vote_for', ['v_vote_for']);
         }
 
@@ -188,6 +186,14 @@ class Module_polls
             $GLOBALS['SITE_DB']->alter_table_field('poll', 'add_time', 'TIME');
             $GLOBALS['SITE_DB']->alter_table_field('poll_votes', 'v_voter_id', '?MEMBER', 'v_voting_member');
             $GLOBALS['SITE_DB']->alter_table_field('poll_votes', 'v_voter_ip', 'IP', 'v_voting_ip_address');
+
+            $GLOBALS['SITE_DB']->delete_index_if_exists('poll_votes', 'v_voter_id');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('poll_votes', 'v_voter_ip');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 8)) {
+            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voting_member', ['v_voting_member']);
+            $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voting_ip_address', ['v_voting_ip_address']);
         }
     }
 

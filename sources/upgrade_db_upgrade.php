@@ -80,6 +80,11 @@ function upgrader_db_upgrade_screen()
         echo do_lang('UPGRADER_UPGRADE_MODULES', $done);
         $something_done = true;
     }
+
+    // Database-specific upgrade
+    $database_upgrade = database_specific();
+    $something_done = (($something_done) || ($database_upgrade));
+
     if (!$something_done) {
         echo do_lang('NO_UPGRADE_DONE');
     }
@@ -398,9 +403,10 @@ function version_specific() : bool
             $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_last_downloaded_time', '?TIME');
             $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_add_time', 'TIME');
             $GLOBALS['SITE_DB']->alter_table_field('group_privileges', 'group_id', '*GROUP');
+            $GLOBALS['SITE_DB']->create_index('group_privileges', 'group_id', ['group_id']);
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
-            //$GLOBALS['SITE_DB']->alter_table_field('sessions', 'ip', 'IP', 'ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
 
             echo do_lang('UPGRADER_UPGRADED_CORE_TABLES', '11');
 
@@ -530,9 +536,6 @@ function version_specific() : bool
             perform_search_replace($reps);
             echo do_lang('UPGRADER_UPGRADED_FILE_REPLACEMENTS', '11');
 
-            // Must do this so we can delete collaboration zone
-            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
-
             // Delete removed collaboration zone
             require_code('zones3');
             actual_delete_zone('collaboration', true);
@@ -551,6 +554,79 @@ function version_specific() : bool
     }
 
     return false;
+}
+
+/**
+ * Apply changes specific to a database timestamp version. This should be run after version_specific, install_cns, and upgrade_addons.
+ * LEGACY: Generally this code should be migrated to version_specific(), install_cns(), or other relevant areas on the next minor/major release.
+ *
+ * @return boolean Whether we did something
+ */
+function database_specific() : bool
+{
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
+    require_code('version');
+
+    $upgrade_from = get_value('db_version', null, true);
+    $upgrade_to = cms_version_time_db();
+
+    $done_something = false;
+
+    if (($upgrade_from !== null) && ($upgrade_from >= 1711670588/*11.alpha1*/) && ($upgrade_from < 1721661975)) {
+        $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
+        $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
+        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_url', 'URLPATH');
+        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_thumb_url', 'URLPATH');
+        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_last_downloaded_time', '?TIME');
+        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_add_time', 'TIME');
+        $GLOBALS['SITE_DB']->alter_table_field('group_privileges', 'group_id', '*GROUP');
+        $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
+        $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
+        $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
+
+        $GLOBALS['SITE_DB']->create_index('group_privileges', 'group_id', ['group_id']);
+
+        $GLOBALS['FORUM_DB']->alter_table_field('f_forums', 'f_cache_last_username', 'ID_TEXT');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_answers', 'pa_poll_id', 'AUTO_LINK');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_group_join_log', 'usergroup_id', '?GROUP');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_invites', 'i_inviter', 'MEMBER', 'i_invite_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_on_probation_until', '?TIME', 'm_probation_expiration_time');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_groups', 'g_group_leader', '?MEMBER', 'g_group_lead_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_groups', 'g_promotion_target', '?GROUP', 'g_promotion_target_group');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_forums', 'f_parent_forum', '?AUTO_LINK', 'f_parent_forum_id');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_topics', 't_pt_from', '?MEMBER', 't_pt_from_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_topics', 't_pt_to', '?MEMBER', 't_pt_to_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_poster', 'MEMBER', 'p_posting_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_intended_solely_for', '?MEMBER', 'p_whisper_to_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_last_edit_by', '?MEMBER', 'p_last_edit_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_forum_intro_ip', 'i_ip', '*IP', 'i_ip_address');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_ip', 'IP', 'pv_ip_address');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_cache_points_at_voting_time', 'INTEGER', 'pv_points_when_voted');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
+
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts', 'last_edit_by');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts_fulltext_index', 'main');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 't_pt_to');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 't_pt_from');
+
+        $GLOBALS['FORUM_DB']->change_primary_key('f_poll_answers', ['id']);
+        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_invite_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_member', ['p_last_edit_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_to_member', ['t_pt_to_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_from_member', ['t_pt_from_member']);
+        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'voting_member_id', ['pv_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'voting_ip_address', ['pv_ip_address']);
+
+        $done_something = true;
+    }
+
+    return $done_something;
 }
 
 /**
