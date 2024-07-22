@@ -89,11 +89,11 @@ function cms_version_time_db() : int
 
 /**
  * Find the status of this branch version.
+ * Developers should also edit is_release_discontinued if setting this to VERSION_EOL.
  *
  * @return string A VERSION_* constant
  */
 function cms_version_branch_status() : string
 {
-    // Developers should also edit is_release_discontinued if setting this to VERSION_EOL.
-    return VERSION_ALPHA;
+    return VERSION_BETA;
 }

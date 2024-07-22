@@ -60,6 +60,31 @@ class Module_join
     {
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('agreed_declarations', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'long_text');
+
+            // Copy in rule declarations into new CPFs so members are not forced to re-agree
+            if ((get_option('join_declarations') != '') && (get_option('show_first_join_page') == '1')) {
+                $member_id = null;
+                do {
+                    $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
+                    foreach ($rows as $row) {
+                        $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
+
+                        if ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+                            continue;
+                        }
+
+                        $cpfs = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
+                        if ($cpfs === null) {
+                            continue;
+                        }
+
+                        // Only copy declarations in for members whose declarations field was blank
+                        if (!isset($cpfs['agreed_declarations']) || ($cpfs['agreed_declarations'] == '')) {
+                            $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'agreed_declarations', get_option('join_declarations'));
+                        }
+                    }
+                } while (count($rows) > 0);
+            }
         }
     }
 

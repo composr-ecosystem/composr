@@ -1399,6 +1399,14 @@ class Module_admin_setupwizard
             }
             $rf = $this->get_rules_file(post_param_string('rules'));
             cms_file_put_contents_safe($full_path, $rf, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+
+            // Set default declarations
+            if (get_option('join_declarations') == '') {
+                require_lang('cns');
+                require_lang('cns_config');
+                require_code('temporal');
+                set_option('join_declarations', do_lang('I_AGREE_RULES') . "\n" . do_lang('I_AGREE_PRIVACY') . "\n" . do_lang('I_AGREE_UPDATES', escape_html(get_timezoned_date(time(), false))));
+            }
         }
 
         $block_options = null;
