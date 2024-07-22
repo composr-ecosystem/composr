@@ -8559,6 +8559,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SKIP_TICKET_CREATION
         CONFIG_OPTION_parental_consent_age
         UPGRADER_NEW_ADDON_EXTRACTED
+        UPGRADER_INTEGRITY_SCAN_2
+        UPGRADER_SAFE_MODE_UPGRADE_ADDONS
+        _UPGRADER_ADDON_MANAGEMENT
     ')));
 
     $non_admin_files = [

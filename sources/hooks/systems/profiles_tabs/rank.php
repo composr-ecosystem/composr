@@ -302,6 +302,15 @@ class Hook_profiles_tabs_rank
             }
         }
 
+        // Gift points
+        if ((addon_installed('points')) && (get_option('enable_gift_points') == '1')) {
+            $gift_points = cns_get_member_best_group_property($member_id_of, 'gift_points_base');
+            $gift_points_day = cns_get_member_best_group_property($member_id_of, 'gift_points_per_day');
+        } else {
+            $gift_points = -1;
+            $gift_points_day = -1;
+        }
+
         $content = do_template('CNS_MEMBER_PROFILE_RANK', [
             'SIMPLE_STEPPER' => count($groups) >= 7 ? '1' : '0', // Use small steppers if we have >=7 groups so it doesn't cramp mobile displays
             'RANKS' => $groups,
@@ -328,10 +337,10 @@ class Hook_profiles_tabs_rank
             '_PERSONAL_GALLERY_ENTRIES_IMAGES' => strval($personal_galleries_images),
             'PERSONAL_GALLERY_ENTRIES_VIDEOS' => integer_format($personal_galleries_videos),
             '_PERSONAL_GALLERY_ENTRIES_VIDEOS' => strval($personal_galleries_videos),
-            'GIFT_POINTS' => integer_format(cns_get_member_best_group_property($member_id_of, 'gift_points_base')),
-            '_GIFT_POINTS' => strval(cns_get_member_best_group_property($member_id_of, 'gift_points_base')),
-            'GIFT_POINTS_PER_DAY' => integer_format(cns_get_member_best_group_property($member_id_of, 'gift_points_per_day')),
-            '_GIFT_POINTS_PER_DAY' => strval(cns_get_member_best_group_property($member_id_of, 'gift_points_per_day')),
+            'GIFT_POINTS' => integer_format($gift_points),
+            '_GIFT_POINTS' => strval($gift_points),
+            'GIFT_POINTS_PER_DAY' => integer_format($gift_points_day),
+            '_GIFT_POINTS_PER_DAY' => strval($gift_points_day),
             'FLOOD_CONTROL_SUBMIT' => integer_format(cns_get_member_best_group_property($member_id_of, 'flood_control_submit_secs')),
             '_FLOOD_CONTROL_SUBMIT' => strval(cns_get_member_best_group_property($member_id_of, 'flood_control_submit_secs')),
             'FLOOD_CONTROL_ACCESS' => integer_format(cns_get_member_best_group_property($member_id_of, 'flood_control_access_secs')),
