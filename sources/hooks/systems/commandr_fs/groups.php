@@ -116,7 +116,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         $promotion_target = $this->_default_property_group_null($properties, 'promotion_target');
         $promotion_threshold = $this->_default_property_int_null($properties, 'promotion_threshold');
         $promotion_approval = $this->_default_property_int($properties, 'promotion_approval');
-        $group_leader = $this->_default_property_member_null($properties, 'group_leader');
+        $group_leader = $this->_default_property_member_null($properties, 'group_lead_member');
         $flood_control_submit_secs = $this->_default_property_int_modeavg($properties, 'flood_control_submit_secs', 'f_groups', 0, 'g_flood_control_submit_secs');
         $flood_control_access_secs = $this->_default_property_int_modeavg($properties, 'flood_control_access_secs', 'f_groups', 0, 'g_flood_control_access_secs');
         $max_daily_upload_mb = $this->_default_property_int_modeavg($properties, 'max_daily_upload_mb', 'f_groups', 70, 'g_max_daily_upload_mb');
@@ -196,7 +196,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             'promotion_target' => remap_resource_id_as_portable('group', $row['g_promotion_target_group']),
             'promotion_threshold' => $row['g_promotion_threshold'],
             'promotion_approval' => $row['g_promotion_approval'],
-            'group_leader' => remap_resource_id_as_portable('member', $row['g_group_lead_member']),
+            'group_lead_member' => remap_resource_id_as_portable('member', $row['g_group_lead_member']),
             'flood_control_submit_secs' => $row['g_flood_control_submit_secs'],
             'flood_control_access_secs' => $row['g_flood_control_access_secs'],
             'max_daily_upload_mb' => $row['g_max_daily_upload_mb'],

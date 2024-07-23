@@ -29,7 +29,7 @@
 function cns_may_control_group(int $group_id, int $member_id, ?array $group_row = null) : bool
 {
     if ($group_row === null) {
-        $leader = cns_get_group_property($group_id, 'group_leader');
+        $leader = cns_get_group_property($group_id, 'group_lead_member');
         $is_super_admin = cns_get_group_property($group_id, 'is_super_admin');
     } else {
         $leader = $group_row['g_group_lead_member'];
