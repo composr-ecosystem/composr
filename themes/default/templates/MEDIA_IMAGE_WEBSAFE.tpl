@@ -5,7 +5,7 @@
 {+END}
 
 {+START,IF_PASSED_AND_TRUE,FRAMED}
-	<figure class="attachment">
+	<figure class="attachment{+START,IF_PASSED,FLOAT} {FLOAT*} float-separation{+END}">
 		<figcaption>{!IMAGE}</figcaption>
 		<div>
 			{+START,IF_NON_EMPTY,{DESCRIPTION}}
