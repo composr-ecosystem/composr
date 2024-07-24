@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 x="0px" y="0px" width="9px" height="6px" viewBox="-2 -0.285 9 6">
+<defs>
+</defs>
+<polygon fill="#22a6f2" points="2.68,0 2.181,0.499 4.363,2.682 2.181,4.864 2.68,5.363 5.361,2.682 "/>
+<polygon fill="#22a6f2" points="0.499,0 0,0.499 2.183,2.682 0,4.864 0.499,5.363 3.181,2.682 "/>
+</svg>

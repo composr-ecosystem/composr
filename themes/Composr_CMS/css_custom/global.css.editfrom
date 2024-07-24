@@ -1,0 +1,7908 @@
+﻿/*
+ {$BRAND_NAME`}
+ Copyright (c) Christopher Graham, 2004-2024
+*/
+
+/*
+This is Composr's main CSS file. It defines core styles for core functionality and common re-used styles.
+See _base.css for responsive design breakpoints and some SET commands.
+See _colours.css for colours.
+
+The CSS is written to CSS3/HTML5 standards.
+* Parts that are still considered experimental on some browsers are surrounded using the Tempcode 'BETA_CSS_PROPERTY' symbol, which automatically injects CSS prefixes for all major browsers.
+
+Most sizes are defined in 'em' units. 1em is roughly 10px, depending on font size. If a size is not defined in 'em' then it is probably due to it being dependent on the size of some related image.
+'em' units are great because they scale very well. If you reduce the font size, the spacings will reduce as well, in proportion.
+
+When editing theme CSS we recommend you comment out code you're removing and heavily comment your own changes - this will make it much easier for you to upgrade your theme to new versions.
+Composr minifies outputted CSS, so there is no performance penalty for doing this.
+
+You can also build your CSS by using a Tempcode INCLUDE to the original file but only implementing your changes in your file. This makes upgrading a LOT easier.
+CSS is expressive enough to let you undo things pretty well, if you need to undo core styles.
+This (if you remove the slashes) is how you'd do a Tempcode include from your overridden global.css file:
+\{+START,INCLUDE,global,.css,css\}\{+END\}
+*/
+
+/*
+=========================
+===Overridden Elements===
+=========================
+*/
+
+*:not(.trad-box-model, .trad-box-model *),
+*:not(.trad-box-model, .trad-box-model *)::before,
+*:not(.trad-box-model, .trad-box-model *)::after {
+	/* This code places a big assumption on layout; if you have code that does not work with it, place the trad-box-model class around that portion of the DOM */
+	box-sizing: border-box;
+}
+
+html {
+	font-family: sans-serif;
+	line-height: 1.15;
+	{$BETA_CSS_PROPERTY,text-size-adjust: 100%;}
+	-ms-overflow-style: scrollbar;
+	-webkit-tap-highlight-color: transparent;
+	font-size: 14px;
+	overflow-y: scroll; /* This makes rendering smoother, no jerk when browser realises a scrollbar is needed, or between pages with/without */
+	/*{+START,IF,{$AND,{$EQ,{$THEME_OPTION,header_type},modern},{$THEME_OPTION,sticky_header}}}*/
+		scroll-padding-top: {$GET,stickied_header_modern_height};
+	/*{+END}*/
+}
+
+@-ms-viewport {
+	width: device-width;
+}
+
+article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
+	display: block;
+}
+
+body {
+	margin: 0;
+	font-family: {$THEME_OPTION,font};
+	font-size: {$THEME_OPTION,font_size}px;
+	font-weight: 400;
+	line-height: 1.5;
+	color: {$GET,body_color};
+	text-align: left;
+	background-color: {$GET,WB};
+}
+
+[tabindex="-1"]:focus {
+	outline: 0 !important;
+}
+
+hr {
+	box-sizing: content-box;
+	height: 0;
+	overflow: visible;
+}
+
+p {
+	margin-top: 14px;
+	margin-bottom: 14px;
+}
+
+abbr[title],
+abbr[data-original-title] {
+	text-decoration: underline;
+	{$BETA_CSS_PROPERTY,text-decoration-style: dotted;}
+	cursor: help;
+	border-bottom: 0;
+}
+
+address {
+	margin-bottom: 14px;
+	font-style: normal;
+	line-height: inherit;
+}
+
+ol,
+ul,
+dl {
+	margin-top: 0;
+	margin-bottom: 14px;
+}
+
+ol ol,
+ul ul,
+ol ul,
+ul ol {
+	margin-bottom: 0;
+}
+
+dt {
+	font-weight: 700;
+}
+
+dd {
+	margin-bottom: 7px;
+	margin-left: 0;
+}
+
+blockquote {
+	margin: 0 0 14px;
+}
+
+dfn {
+	font-style: italic;
+}
+
+b,
+strong {
+	font-weight: bolder;
+}
+
+small {
+	font-size: 80%;
+}
+
+sub,
+sup {
+	position: relative;
+	font-size: 75%;
+	line-height: 0;
+	vertical-align: baseline;
+}
+
+sub {
+	bottom: -.25em;
+}
+
+sup {
+	top: -.5em;
+}
+
+a, .button-hyperlink {
+	color: {$GET,a.link};
+	text-decoration: none;
+	background-color: transparent;
+}
+
+a:hover, .button-hyperlink:hover {
+	color: {$GET,a.hover};
+	text-decoration: underline;
+}
+
+.footer-inner a, .footer-inner .button-hyperlink {
+	color: {$GET,a.link_light} !important;
+}
+
+.footer-inner a:hover, .footer-inner .button-hyperlink:hover {
+	color: {$GET,a.hover_light} !important;
+}
+
+a:not([href]):not([tabindex]) {
+	color: inherit;
+	text-decoration: none;
+}
+
+a:not([href]):not([tabindex]):hover, a:not([href]):not([tabindex]):focus {
+	color: inherit;
+	text-decoration: none;
+}
+
+a:not([href]):not([tabindex]):focus {
+	outline: 0;
+}
+
+pre,
+code,
+kbd,
+samp {
+	font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+	font-size: 1em;
+}
+
+pre {
+	margin-top: 0;
+	margin-bottom: 14px;
+	overflow: auto;
+	-ms-overflow-style: scrollbar;
+}
+
+figure {
+	margin: 0 0 14px;
+}
+
+img {
+	vertical-align: middle;
+	border-style: none;
+}
+
+svg:not(:root) {
+	overflow: hidden;
+}
+
+table, .fake-table {
+	border-collapse: collapse;
+}
+
+caption {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: {$GET,seed_secondary};
+	text-align: left;
+	caption-side: bottom;
+}
+
+th, .fake-th {
+	text-align: inherit;
+}
+
+button {
+	border-radius: 0;
+}
+
+button:focus {
+	outline: 1px dotted;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+input,
+button,
+select,
+optgroup,
+textarea {
+	margin: 0;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+button,
+input {
+	overflow: visible;
+}
+
+button,
+select {
+	text-transform: none;
+}
+
+button,
+html [type="button"],
+[type="reset"],
+[type="submit"] {
+	-webkit-appearance: button;
+}
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+	padding: 0;
+	border-style: none;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+	padding: 0;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"] {
+	-webkit-appearance: listbox;
+}
+
+textarea {
+	overflow: auto;
+	resize: vertical;
+}
+
+fieldset {
+	min-width: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+legend {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	padding: 0;
+	margin-bottom: 7px;
+	font-size: 21px;
+	line-height: inherit;
+	color: inherit;
+	white-space: normal;
+}
+
+progress {
+	vertical-align: baseline;
+}
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+	height: auto;
+}
+
+[type="search"] {
+	outline-offset: -2px;
+	-webkit-appearance: none;
+}
+
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-decoration {
+	-webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+	font: inherit;
+	-webkit-appearance: button;
+}
+
+output {
+	display: inline-block;
+}
+
+summary {
+	display: list-item;
+	cursor: pointer;
+}
+
+template {
+	display: none;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+	margin-bottom: 10px;
+	font-family: inherit;
+	font-weight: {$GET,font_weight_medium};
+	line-height: 1.2;
+	color: inherit;
+	/*{+START,IF,{$THEME_OPTION,text_shadows}}*/
+		text-shadow: 2px 2px 3px {$COLOR_RGBA,{$GET,seed_secondary},0.6};
+	/*{+END}*/
+}
+h2, h3, h4, h5, h6,
+.h2, .h3, .h4, .h5, .h6 {
+	margin-top: 10px;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6 {
+	margin-bottom: 10px !important; /* Needs extra precedence here */
+}
+
+h1, .h1 {
+	font-size: 35px;
+	font-weight: {$GET,font_weight_light};
+}
+
+h2, .h2 {
+	font-size: 28px;
+}
+
+h3, .h3 {
+	font-size: 24px;
+}
+
+h4, .h4 {
+	font-size: 21px;
+}
+
+h5, .h5 {
+	font-size: 17px;
+}
+
+h6, .h6 {
+	font-size: 14px;
+}
+
+hr {
+	margin-top: 14px;
+	margin-bottom: 14px;
+	border: 0;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+small,
+.small {
+	font-size: 80%;
+	font-weight: 400;
+}
+
+mark,
+.mark {
+	padding: 0.2em;
+	background-color: {$GET,yellow_highlight_background};
+}
+
+html, body {
+	border: 0;
+	{$BETA_CSS_PROPERTY,text-size-adjust: none;}
+}
+
+tt, kbd, samp {
+	font-weight: bold;
+	font-size: 1.15em;
+	overflow-wrap: break-word;
+}
+
+abbr {
+	border-bottom: 1px dotted; /* For Safari, which does not have it by default */
+	text-decoration: none;
+	cursor: help;
+}
+a abbr {
+	cursor: pointer;
+}
+
+/* Give all browsers a 'q' tag with smart quotes */
+q::before {
+	content: "\201c";
+}
+q::after {
+	content: "\201d";
+}
+
+address {
+	white-space: pre-wrap;
+}
+
+/* Reapply default styles non-HTML5-aware browsers */
+details, aside, header, footer, nav, article, section, figure, figcaption {
+	display: block;
+}
+
+textarea, input, code {
+	font-size: 1em;
+}
+
+.contrast-box {
+	padding: 15px 30px;
+	background-color: rgba(0, 0, 0, 0.5);
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+	color: {$GET,text_light};
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.contrast-box {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+/*{+END}*/
+
+/* An iframe screen */
+.opens-below h1 {
+	display: none;
+}
+
+td, th, .fake-td, .fake-th {
+	vertical-align: top;
+	padding: 0.25em;
+}
+
+th > p:first-child,
+td > p:first-child,
+th > h2:first-child,
+td > h3:first-child,
+.fake-th > p:first-child,
+.fake-td > p:first-child,
+.fake-th > h2:first-child,
+.fake-td > h3:first-child {
+	margin-top: 0;
+}
+
+th > p:last-child,
+td > p:last-child,
+.fake-th > p:last-child,
+.fake-td > p:last-child {
+	margin-bottom: 0;
+}
+
+th, .fake-th {
+	background-color: {$GET,box_title_background};
+	color: {$GET,box_title_text};
+	font-weight: {$GET,font_weight_medium};
+	text-align: center;
+}
+
+[aria-sort="ascending"].table-header-sorted,
+[aria-sort="descending"].table-header-sorted {
+	font-style: italic;
+}
+
+.table-header-sorting {
+	float: right;
+}
+
+.table-header-sorting-link,
+.table-header-sorting-link:hover {
+	color: inherit;
+	text-decoration: none;
+}
+
+.table-header-sorting-link.selected {
+	opacity: 0.5;
+}
+
+thead > tr > th,
+.boxless-space .box > table > thead > tr > th,
+.fake-thead > .fake-tr > .fake-th,
+.boxless-space .box > .fake-table > .fake-thead > .fake-tr > .fake-th,
+.pte-set-box .box > table > thead > tr > th {
+	background-color: {$GET,box_title_background_2};
+	border-color: {$GET,box_title_background_2} !important;
+	color: {$GET,box_title_text_2};
+}
+
+thead > tr > th a,
+thead > tr > th a:hover,
+thead > tr > th a:visited,
+.fake-thead > .fake-tr > .fake-th a,
+.fake-thead > .fake-tr > .fake-th a:hover,
+.fake-thead > .fake-tr > .fake-th a:visited {
+	font-weight: {$GET,font_weight_medium};
+	color: {$GET,box_title_link};
+}
+
+.light-table th, .light-table .fake-th,
+.light-table thead > tr > th, .light-table .fake-thead > .fake-tr > .fake-th,
+.light-table .boxless-space .box > table > thead > tr > th, .light-table .boxless-space .box > .fake-table > .fake-thead > .fake-tr > .fake-th,
+.light-table .pte-set-box .box > table > thead > tr > th {
+	background-color: {$GET,area_light_background};
+}
+
+.box > table > thead > tr > th,
+.box > .fake-table > .fake-thead > .fake-tr > .fake-th {
+	background-color: {$GET,point_of_interest_background};
+	color: {$GET,area_key_text};
+}
+
+.box thead > tr > th a, .box .fake-thead > .fake-tr > .fake-th a {
+	color: inherit;
+}
+/* .de-th makes a th look like a td, yet allows us to use correct markup */
+td,
+.fake-td,
+th.de-th {
+	color: {$GET,slightly_seeded_text};
+	font-weight: normal;
+	text-align: left;
+	font-weight: normal;
+	border: 0;
+}
+table[border="1"] td, table[border="1"] th.de-th { /* To make WYSIWYG easier */
+	border: 1px solid;
+}
+th.de-th {
+	background-color: transparent;
+	background-image: none;
+}
+th.de-th a,
+th.de-th a:hover,
+th.de-th a:visited {
+	color: {$GET,slightly_seeded_text};
+}
+
+iframe {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+.icon, .icon + span {
+	vertical-align: middle;
+}
+
+svg.icon {
+	fill: currentColor;
+}
+
+img.icon {
+	object-fit: contain; /* match the svg behavior, preserve the image's aspect-ratio */
+	/*{+START,IF,{$THEME_DARK}}*/
+		filter: invert(100%);
+	/*{+END}*/
+}
+
+/*input[type="text"],textarea {  So Comcode can be typed
+	unicode-bidi: bidi-override;
+	direction: ltr;
+}*/
+#wysiwyg-editor input[type="text"], #wysiwyg-editor textarea {
+	unicode-bidi: normal;
+	direction: ltr;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	select {
+		white-space: nowrap !important;
+	}
+	select[size]/* Not a drop-down */,
+	.form-table-field-input select {
+		max-width: 100%;
+	}
+
+	/* This prevents automatic zooming when selecting inputs */
+	input[type="text"],
+	input[type="password"],
+	input[type="color"],
+	input[type="email"],
+	input[type="number"],
+	input[type="range"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="url"],
+	select,
+	textarea {
+		font-size: 16px !important;
+	}
+
+	/* On mobiles we want maximum fluidity */
+	table, table.do-next-section {
+		table-layout: auto !important;
+
+		/* Allows wrapping */
+		overflow-x: visible !important;
+		overflow-y: visible !important;
+	}
+	.field-name-column,
+	.field-name-column-shorter,
+	.field-input-column,
+	.field-input-column,
+	.field-sup-column,
+	.results-table col {
+		width: auto !important;
+	}
+	* {
+		white-space: normal;
+		overflow-wrap: break-word;
+	}
+
+	.desktop-only {
+		display: none !important;
+	}
+
+	.inline-desktop {
+		display: none !important;
+	}
+	.inline-mobile {
+		display: inline !important;
+	}
+
+	.inlineblock-desktop {
+		display: none !important;
+	}
+	.inlineblock-mobile {
+		display: inline-block !important;
+	}
+
+	.block-desktop {
+		display: none !important;
+	}
+	.block-mobile {
+		display: block !important;
+	}
+	br.block-mobile {
+		margin-top: 0.5em;
+	}
+
+	.column-desktop {
+		visibility: collapse !important;
+		display: none !important;
+	}
+	.column-mobile {
+		visibility: visible !important;
+	}
+
+	.cell-desktop {
+		display: none !important;
+	}
+	.cell-mobile {
+		display: table-cell !important;
+	}
+
+	/* Exceptions */
+	.ace_layer * {
+		white-space: pre !important;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.mobile-only {
+		display: none !important;;
+	}
+
+	.inline-desktop {
+		display: inline !important;
+	}
+	.inline-mobile {
+		display: none !important;
+	}
+	.inlineblock-desktop {
+		display: inline-block !important;
+	}
+	.inlineblock-mobile {
+		display: none !important;
+	}
+
+	.block-desktop {
+		display: block !important;
+	}
+	.block-mobile {
+		display: none !important;
+	}
+
+	.column-desktop {
+		visibility: visible !important;
+	}
+	.column-mobile {
+		visibility: collapse !important;
+		display: none !important;
+	}
+
+	.cell-desktop {
+		display: table-cell !important;
+	}
+	.cell-mobile {
+		display: none !important;
+	}
+/*{+END}*/
+
+html.is-touch-only .mouse-only {
+	display: none !important;
+}
+
+html.is-mouse-only .touch-only {
+	display: none !important;
+}
+
+/* Cool effect to change how text selection looks; not valid CSS, but is safe */
+::selection {
+	background-color: {$GET,area_text};
+	color: {$GET,WB};
+}
+
+comcode-{$REPLACE,\,,::selection\, comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}::selection, tempcode::selection {
+	background-color: {$GET,green_highlight_text};
+}
+
+/* Stop Chrome breaking our datalist display with an arrow */
+input.input-username::-webkit-calendar-picker-indicator {
+	display: none;
+}
+
+/*
+=========================
+======Global Layout======
+=========================
+*/
+
+/* Consider .website-body as 'body': it is just we cannot put our styles directly on body because sometimes this gets used in things we should not mess with such as the WYSIWYG editors frame (which is #wysiwyg-editor) and e-mails */
+.website-body {
+	background-color: {$GET,main_background};
+}
+
+.website-body.frame {
+	background-color: transparent; /* Don't assume too much for a frame, it may be nested inside a box for example */
+}
+
+#wysiwyg-editor {
+	margin: 0;
+	color: {$GET,slightly_seeded_text};
+	background-color: {$GET,main_background};
+	{$BETA_CSS_PROPERTY,user-select: text !important;}
+}
+
+#main-website {
+	margin: 0;
+}
+
+.container {
+	max-width: {$GET,max_container_width};
+	width: 100%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.container-fluid {
+	width: 100%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.container,
+	.container-fluid {
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+/*{+END}*/
+
+/* Styles for fixed width mode */
+/*{+START,IF,{$AND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
+	/*{+START,CSS_MODE,desktop}*/
+		html > body#main-website { /* #main-website targets only the main site screen, avoiding frames etc */
+			/* Want to change the tiled background?
+				Try this web search to get image ideas https://duckduckgo.com/?q=tile+background&iax=images&ia=images
+				Find how to edit the referenced "outer_background" theme image by doing an Admin Zone search for "outer_background"
+			*/
+			background-color: {$GET,fixed_width_background};
+			/*{+START,IF,{$NEQ,{$THEME_OPTION,fixed_width},4}}*/
+				background-image: url('{$IMG_INLINE;,backgrounds/outer_background}');
+				/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},1}}*/
+					background-size: 220px 220px;
+				/*{+END}*/
+				/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},2,3}}*/
+					background-repeat: no-repeat;
+					background-size: cover;
+					/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},2}}*/
+						background-attachment: fixed;
+					/*{+END}*/
+				/*{+END}*/
+			/*{+END}*/
+		}
+		#main-website #main-website-inner {
+			width: 980px;
+			position: relative;
+			margin: 15px auto 15px auto;
+			border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,fixed_width_border},transparent};
+			/*{+START,IF,{$THEME_OPTION,box_shadows}}*/
+				box-shadow: 0 0 20px {$GET,standard_border};
+			/*{+END}*/
+		}
+		/*{+START,IF,{$NAND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
+			#main-website #main-website-inner {
+				margin: 15px;
+			}
+		/*{+END}*/
+	/*{+END}*/
+
+	/*{+START,CSS_MODE,tablet_fixed_viewport}*/
+		#main-website #main-website-inner {
+			margin: 0 0 0 0.5em;
+			border: 0;
+			box-shadow: none;
+		}
+
+		.global-banner {
+			top: 0 !important;
+		}
+	/*{+END}*/
+
+	.logo {
+		padding-left: 0;
+		padding-right: 0;
+	}
+/*{+END}*/
+
+#main-website #main-website-inner .global-middle-outer {
+	min-height: 450px;
+}
+
+/* If not #main-website, it'll be one of these (the names correspond to the templates used) */
+#basic-html-wrap {
+	margin: 0;
+}
+#standalone-html-wrap {
+	margin: 0;
+}
+
+.popup-spacer {
+	padding: 1em !important;
+}
+.popup-spacer h2 {
+	margin-top: 0;
+}
+
+.header {
+}
+
+header h1 {
+	margin: 0;
+	border: 0;
+}
+/*{+START,CSS_MODE,mobile}*/
+	header h1 {
+		/*width: 100%;*/
+		text-align: center;
+	}
+/*{+END}*/
+
+.global-banner {
+	text-align: center;
+	padding-top: 10px;
+}
+
+.text-banner {
+	width: 13.5em;
+	font-family: 'Arial', sans-serif;
+	background-color: {$GET,native_ui_background};
+}
+.text-banner, .tooltip-ownlayout .text-banner {
+	color: {$GET,native_ui_foreground} !important;
+}
+.text-banner a {
+	font-size: 1.3em;
+	display: block;
+}
+
+.text-banner-l-text {
+	color: {$GET,adwords_style_text};
+	font-size: 0.9em;
+}
+
+.logo {
+	overflow: hidden;
+}
+
+.logo-link {
+	font-size: 25px;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	align-items: center;
+}
+
+.logo-link:hover {
+	text-decoration: none;
+}
+
+.logo-image {
+	max-width: 100%;
+	object-fit: contain;
+}
+
+.header .logo-image-white {
+	display: none;
+}
+
+/*{+START,IF,{$NOT,{$THEME_DARK}}}*/
+	header.is-see-through .top-form img.icon,
+	header.is-see-through .top-buttons img.icon,
+	header.is-see-through .toplevel-link img.icon {
+		/* This makes icons white when sprite icons are disabled */
+		filter: invert(100%);
+	}
+/*{+END}*/
+
+/*{+START,IF,{$THEME_DARK}}*/
+header .top-form img.icon,
+header .top-buttons img.icon,
+header .toplevel-link img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
+}
+/*{+END}*/
+
+.header-classic .logo {
+	padding: 0;
+}
+
+.header-classic .logo-image {
+	width: 100%;
+	height: auto;
+}
+
+.header-classic .logo-link {
+	/*{+START,IF_NON_EMPTY,{$THEME_OPTION,header_classic_text_colour}}*/
+		color: {$THEME_OPTION,header_classic_text_colour} !important;
+	/*{+END}*/
+	/*{+START,IF_EMPTY,{$THEME_OPTION,header_classic_text_colour}}*/
+		color: {$GET,seed} !important;
+	/*{+END}*/
+	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+		background: url('{$IMG_INLINE,{$THEME_OPTION,header_classic_image}}') no-repeat;
+		background-size: cover;
+	/*{+END}*/
+	padding-left: 2em;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+		.header-classic .logo-link {
+			height: {$IMG_HEIGHT,{$IMG,{$THEME_OPTION,header_classic_image}}}px;
+		}
+	/*{+END}*/
+/*{+END}*/
+
+@media (max-width: 539.98px) {
+	.header-classic .logo-image-large {
+		display: none !important;
+	}
+
+	.header-classic .logo-image-color {
+		display: block !important;
+	}
+}
+
+@media (min-width: 540px) {
+	.header-classic .logo-image-large {
+		display: block !important;
+	}
+
+	.header-classic .logo-image-color {
+		display: none !important;
+	}
+}
+
+.header-classic .global-navigation {
+	position: relative;
+}
+
+.header-classic .global-navigation-items {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	min-height: 60px;
+}
+
+.header-classic.is-touch-interface .menu-dropdown-content {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+}
+
+header.is-see-through .logo-image-color {
+	display: none;
+}
+
+header.is-see-through .logo-image-white {
+	display: block !important;
+}
+
+header.is-see-through.with-white-navbar {
+	color: {$GET,text_light};
+	background: rgba(0, 0, 0, 0.5);
+	border-bottom: 1px solid transparent;
+	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
+}
+
+/*{+START,IF,{$NEQ,{$THEME_OPTION,header_type},side}}*/
+	header:not(.is-see-through).with-white-navbar {
+		color: {$GET,a.link};
+		background-color: {$GET,WB};
+		border-bottom: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
+	}
+/*{+END}*/
+
+.header-modern {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	transition: height 0.15s ease-in-out;
+	height: {$GET,header_modern_height};
+	position: relative;
+	z-index: 5; /* Force on top of the home hero slider */
+}
+
+.header-sticky-placeholder {
+	height: {$GET,header_modern_height};
+}
+
+.header-modern ~ #slider-homepage-hero {
+	margin-top: -{$GET,header_modern_height};
+}
+
+.header-modern ~ #slider-homepage-hero .cms-slider-item-inner {
+	padding-top: {$GET,header_modern_height};
+}
+
+html.is-scrolled .header-modern.is-sticky {
+	height: {$GET,stickied_header_modern_height};
+}
+
+.header-modern .header-inner,
+.header-modern .global-navigation,
+.header-modern .logo,
+.header-modern .logo-link,
+.header-modern .logo-image {
+	height: inherit;
+}
+
+.header-modern .global-navigation {
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+.header-modern .global-navigation-items {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	margin-left: auto;
+}
+
+.header-modern .global-navigation .top-form {
+	padding: 0;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	align-items: center;
+}
+
+.header-modern.is-sticky {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	z-index: 100;
+}
+
+.header-modern.is-touch-interface .menu-dropdown-content {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	header.is-see-through.with-white-navbar .logo-link,
+	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link,
+	header.is-see-through.with-white-navbar .top-button {
+		color: {$GET,text_light};
+	}
+
+	header.is-see-through.with-white-navbar .menu-dropdown-item.toplevel:hover > a,
+	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:hover,
+	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:focus,
+	header.is-see-through.with-white-navbar .top-button:hover {
+		color: {$COLOR_RGBA,{$GET,text_light},0.8};
+	}
+/*{+END}*/
+
+html.is-scrolled .header-modern.is-sticky.with-white-navbar {
+	box-shadow: {$GET,box_shadow_sm};
+}
+
+.header-classic.with-seed-navbar .global-navigation,
+.header-modern.with-seed-navbar {
+	color: {$GET,seed_contrast_BW};
+	background: {$GET,seed};
+}
+
+header.with-seed-navbar .logo-link,
+header.with-seed-navbar .menu-dropdown-toggle-btn,
+header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link,
+header.with-seed-navbar.is-hover-interface .top-button {
+	color: {$GET,seed_contrast_BW};
+}
+
+header.with-seed-navbar .menu-dropdown-item.toplevel:hover > a,
+header.with-seed-navbar .menu-dropdown-item-a.toplevel-link:hover,
+header.with-seed-navbar .menu-dropdown-item-a.toplevel-link:focus,
+header.with-seed-navbar .top-button:hover {
+	background: rgba(0, 0, 0, 0.05);
+}
+
+/*{+START,IF,{$NOT,{$THEME_DARK}}}*/
+	/*{+START,IF,{$NOT,{$THEME_COLOUR_IS_BRIGHT,{$GET,seed}}}}*/
+		header.with-seed-navbar .toplevel-link img.icon,
+		header.with-seed-navbar .top-buttons img.icon {
+				filter: invert(100%);
+		}
+	/*{+END}*/
+/*{+END}*/
+
+/*{+START,IF,{$THEME_DARK}}*/
+	/*{+START,IF,{$THEME_COLOUR_IS_BRIGHT,{$GET,seed}}}*/
+	header.with-seed-navbar .toplevel-link img.icon,
+	header.with-seed-navbar .top-buttons img.icon {
+			filter: none;
+	}
+/*{+END}*/
+/*{+END}*/
+
+.global-navigation .menu-dropdown {
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.global-navigation .menu-dropdown {
+		margin-right: 12px;
+	}
+/*{+END}*/
+
+.global-navigation .top-buttons,
+.global-navigation .top-form {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	margin-left: auto;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.global-navigation-items > .top-buttons {
+		display: none; /* On mobile it is moved by JS to .menu-dropdown-content */
+	}
+/*{+END}*/
+
+.top-button-wrapper {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	position: relative;
+}
+
+.top-button {
+	position: relative;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	align-items: center;
+	padding: 0 10px;
+	text-decoration: none;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.top-button:hover {
+	text-decoration: none;
+}
+
+.header.is-touch-interface .top-button-wrapper.is-popup-open .top-button {
+	border-left: 1px solid {$GET,standard_border};
+	border-right: 1px solid {$GET,standard_border};
+	background: {$GET,WB};
+	color: {$GET,body_color};
+}
+
+.top-button > .icon {
+	width: 24px;
+	height: 24px;
+}
+
+.notification-button-bubble {
+	border-radius: {$GET,border_radius};
+	margin-top: -50%;
+	margin-left: -25%;
+	background: rgba(255, 0, 0, 0.7);
+	padding: 0 3px;
+	font-size: 11px;
+	color: {$GET,text_light};
+	z-index: 10;
+}
+
+.notification-button.count-0 .notification-button-bubble {
+	display: none;
+}
+
+.notification-button img, .notification-button svg {
+	animation-name: countanimation;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+}
+.notification-button.count-0 img, .notification-button.count-0 svg {
+	animation-iteration-count: 0;
+	animation-play-state: paused;
+}
+@keyframes countanimation {
+	0%   { opacity: 1; }
+	50% { opacity: 0.7; }
+	100%   { opacity: 1; }
+}
+
+.global-navigation .top-form {
+	padding: 16px 0 16px 10px;
+}
+
+.global-navigation .top-login-controls {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	align-items: center;
+	margin: 0 -5px;
+}
+
+.global-navigation .top-login-controls > * {
+	margin: 0 5px;
+}
+
+.global-navigation .top-login .block-top-login-links {
+	margin-left: 0.8em;
+	width: auto;
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+.global-navigation .top-login .block-top-login-links > li {
+	display: inline-block;
+}
+
+.global-navigation .top-login .block-top-login-links a {
+	color: inherit;
+	text-decoration: none;
+}
+.global-navigation .top-login .block-top-login-links a:hover {
+	text-decoration: underline;
+}
+
+.global-navigation .top-login .block-top-login-links a .icon {
+	width: 24px;
+	height: 24px;
+}
+
+@media(max-width: 539.98px) {
+	.global-navigation .top-login .block-top-login-links .li-join-text,
+	.global-navigation .top-login .block-top-login-links .li-login-text {
+		display: none;
+	}
+}
+
+/* Side Header */
+
+/*{+START,CSS_MODE,mobile}*/
+	.header-side {
+		{$BETA_CSS_PROPERTY,display: flex;}
+		transition: height 0.15s ease-in-out;
+		height: 90px;
+		position: relative;
+		z-index: 3; /* Force on top of the home hero slider */
+	}
+
+	.header-side .header-inner {
+		width: 100%;
+		padding-right: 15px;
+		padding-left: 15px;
+	}
+
+	.header-sticky-placeholder {
+		height: {$GET,header_modern_height};
+	}
+
+	.header-side ~ #slider-homepage-hero {
+		margin-top: -{$GET,header_modern_height};
+	}
+
+	.header-side ~ #slider-homepage-hero .cms-slider-item-inner {
+		padding-top: {$GET,header_modern_height};
+	}
+
+	html.is-scrolled .header-side.is-sticky {
+		height: {$GET,stickied_header_modern_height};
+	}
+
+	.header-side .header-inner,
+	.header-side .global-navigation,
+	.header-side .logo,
+	.header-side .logo-link,
+	.header-side .logo-image {
+		height: inherit;
+	}
+
+	.header-side .global-navigation {
+		{$BETA_CSS_PROPERTY,display: flex;}
+	}
+
+	.header-side .global-navigation-items {
+		{$BETA_CSS_PROPERTY,display: flex;}
+		margin-left: auto;
+	}
+
+	.header-side .global-navigation .top-form {
+		padding: 0;
+		{$BETA_CSS_PROPERTY,display: flex;}
+		align-items: center;
+	}
+
+	.header-side.is-sticky {
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		z-index: 100;
+	}
+
+	.header-side.is-touch-interface .menu-dropdown-content {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		z-index: 1000;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},0}}*/
+		html.has-header-side #main-website-inner {
+			padding-left: 64px; /* Must be equal to side-header's width */
+		}
+	/*{+END}*/
+
+	.header-side .global-navigation-items {
+		position: relative;
+	}
+
+	.header-side .global-navigation .top-buttons {
+		justify-content: space-evenly;
+	}
+
+	.header-side .global-navigation .top-button-wrapper {
+		position: static;
+	}
+
+	.header-side.is-touch-interface .menu-dropdown .menu-dropdown-content {
+		display: block;
+	}
+
+	.header-side .menu-dropdown-toggle-btn {
+		display: none;
+	}
+
+	.header-side .global-navigation .menu-dropdown {
+		margin-right: 0;
+	}
+
+	.header-side.is-touch-interface .logo {
+		margin-bottom: 10px;
+	}
+
+	.header-side::before {
+		content: '';
+		display: block;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 100;
+		visibility: hidden;
+		transition: visibility 0.4s ease-in-out, background-color 0.4s ease-in-out;
+		/* X shape cursor */
+		cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAADFBMVEUAAAD///////////84wDuoAAAAA3RSTlMAYM+UUHBYAAAAPUlEQVR4AeXSwQkAIAwEwVzsv2fh3mMF+ssOQhBnMzjZyYE0QpogDZCOEA2+jo5FuDpEveJecM9X7/b8PhcNlwDl/m+bagAAAABJRU5ErkJggg=='),not-allowed;
+	}
+
+	.header-side.is-side-menu-open::before {
+		background: {$COLOR_RGBA,{$GET,BW},0.7};
+		visibility: visible;
+	}
+
+	.header-side .header-inner {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		background: {$GET,WB};
+		box-shadow: {$GET,box_shadow};
+		z-index: 100;
+		max-width: 100vw;
+		overflow: auto; /* Show scrollbars when exceeding screen height*/
+	}
+
+	.header-side .header-inner .btn-side-menu-toggler {
+		float: right;
+		margin: 10px;
+	}
+
+	.header-side .header-inner .global-navigation {
+		clear: both;
+	}
+/*{+END}*/
+
+/* This is applied to the screen title, which is specially included on each screen; in the case of Comcode pages it is the first level 1 title. The screen title is by default an h1, but we define the styles separately so we can style this special title independently (there are lots of cool things we could do to it) */
+.screen-title {
+	margin-bottom: 0.8em;
+	min-width: 300px;
+	padding-bottom: 6px; /* For better alignment with breadcrumbs to the right */
+}
+.screen-title img {
+	vertical-align: middle;
+}
+.screen-title li span {
+	display: block;
+}
+
+/* .hero-section is specially designed to wrap around a title and some text, to give a 'hero' introduction for the front page of a site (standard marketing technique) */
+.hero-section {
+	background-color: {$GET,main_background};
+	font-size: 1.25em;
+	color: {$GET,slightly_seeded_text};
+	font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; /* Choose better font for larger text */
+	padding: 2em 3em;
+	margin-bottom: 3em;
+	position: relative;
+	left: -0.8em; /* So is flush to borders, undoes page padding */
+}
+#wysiwyg-editor .hero-section {
+	left: 0;
+}
+.hero-section h1 {
+	font-size: 2.6em;
+	margin-bottom: 0.1em;
+	text-decoration: none;
+	border-bottom: none;
+	color: inherit;
+}
+
+.hero-section * {
+	margin-top: 0;
+}
+
+.global-breadcrumbs {
+	padding: 7px 0 7px 0;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.global-breadcrumbs {
+		/*{+START,IF,{$AND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
+			text-align: right; /* Goes on own line in fixed width mode, due to lack of space */
+		/*{+END}*/
+		/*{+START,IF,{$NAND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
+			float: right; /* Sits beside title on non-fixed width */
+		/*{+END}*/
+		margin-left: 0.5em;
+	}
+/*{+END}*/
+.global-breadcrumbs abbr, .global-breadcrumbs a, .global-breadcrumbs span {
+	white-space: nowrap !important;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.global-breadcrumbs {
+		margin-bottom: 1em;
+	}
+/*{+END}*/
+
+.non-accessibility-redundancy .breadcrumbs {
+	width: 100%;
+}
+
+.breadcrumb-sep::after {
+	/* Chevron */
+	border-style: solid;
+	border-width: 0.15em 0.15em 0 0;
+	content: '';
+	display: inline-block;
+	height: 0.5em;
+	left: 0.15em;
+	position: relative;
+	top: 0.15em;
+	transform: rotate(45deg);
+	vertical-align: 0.3em;
+	width: 0.5em;
+	margin-left: 0.3em;
+	margin-right: 0.6em;
+	opacity: 0.7;
+}
+
+.breadcrumb-sep:last-child::after {
+	display: none !important;
+}
+
+.breadcrumbs-img {
+	margin-right: 4px;
+	width: 24px;
+	height: 24px;
+	vertical-align: bottom;
+	color: {$GET,a.link};
+}
+
+.title-tagline {
+	font-size: 0.95em;
+	padding-bottom: 2em;
+	color: {$GET,area_key_text};
+}
+h1 + .title-tagline {
+	margin-top: -1.2em;
+}
+
+body#main-website #main-website-inner, html > body div.global-middle-faux {
+	background-color: {$GET,main_background};
+
+	/*
+		Try this web search to get image ideas https://duckduckgo.com/?q=tile+background&iax=images&ia=images
+		Find how to edit the referenced "inner_background" theme image by doing an Admin Zone search for "inner_background"
+	*/
+	/*{+START,IF,{$THEME_OPTION,inner_background}}*/
+		background: url('{$IMG_INLINE;,backgrounds/inner_background}');
+		background-size: 300px 300px;
+	/*{+END}*/
+}
+
+#main-website-inner.faded::after {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	content: "";
+	pointer-events: none;
+}
+#main-website-inner.faded>header, #main-website-inner.faded>div {
+	opacity: 0.3;
+	transition: opacity 0.5s ease-in-out;
+	filter: sepia();
+}
+
+.main-website-faux {
+	background-color: {$GET,fixed_width_background} !important;
+}
+
+/* Should not be flush with site borders (but the menu above it will be, so don't do the whole panel */
+/*{+START,CSS_MODE,desktop}*/
+	#panel-top .cns-member-bar-etc {
+		margin: 0 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	#panel-top .cns-member-bar-etc {
+		margin: 0 2px;
+	}
+/*{+END}*/
+
+.zone-running-docs .comcode-page {
+	line-height: 1.35em;
+}
+
+.global-middle-outer {
+	margin-top: 1em;
+}
+
+.global-side-panel h2 {
+	text-transform: lowercase;
+	font-weight: normal;
+	padding-top: 10px;
+	padding-left: 10px;
+}
+
+.global-side-panel {
+	overflow-wrap: break-word;
+	color: {$GET,slightly_seeded_gray_text};
+}
+
+.global-middle-faux > .global-side-panel {
+	width: auto;
+}
+
+#panel-left {
+	margin-right: 1em;
+}
+
+#panel-right {
+	margin-left: 1em;
+}
+
+#panel-bottom {
+	color: {$GET,panel_bottom_text};
+	background-color: {$GET,panel_bottom_background};
+	overflow: hidden;
+	border-top: 5px solid {$?,{$THEME_OPTION,borders},{$GET,seed},transparent};
+}
+
+#panel-bottom .box {
+	border-radius: 0;
+	background-color: transparent;
+	border: none;
+}
+
+#panel-bottom .box > .box-inner > h1,
+#panel-bottom .box > .box-inner > h2,
+#panel-bottom .box > .box-inner > h3,
+#panel-bottom .box > .box-inner > h4,
+#panel-bottom .box > .box-inner > h5,
+#panel-bottom .box > .box-inner > h6,
+#panel-bottom .box > .toggleable-tray-title {
+	background: transparent;
+	text-align: left;
+	text-transform: uppercase;
+	border-radius: 0;
+	margin: 0.5em 0;
+	background-color: transparent !important;
+	color: {$GET,panel_bottom_text};
+	border-bottom: 1px solid {$GET,panel_bottom_text};
+	white-space: nowrap;
+}
+
+#panel-bottom td,
+#panel-bottom .fake-td,
+#panel-bottom th.de-th,
+#panel-bottom th.de-th a,
+#panel-bottom th.de-th a:hover,
+#panel-bottom th.de-th a:visited {
+	color: {$GET,panel_bottom_text};
+}
+
+/*{+START,CSS_MODE,desktop}*/
+#panel-bottom .comcode-page {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	flex-wrap: wrap;
+}
+
+#panel-bottom .comcode-page > * {
+	flex-grow: 1;
+	flex-basis: 0;
+	min-width: 25%;
+}
+/*{+END}*/
+
+#panel-bottom .edit-page-link-inline-wrapper {
+	display: none;
+}
+
+#panel-bottom ~ footer {
+	margin-top: 0;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.global-middle-outer {
+		{$BETA_CSS_PROPERTY,display: flex;}
+	}
+
+	.global-middle {
+		/* Add some spacing. This will be overwritten to 1.5em in rules below if we have panels */
+		margin-bottom: 1em;
+		order: 1;
+		flex-grow: 1;
+		min-width: 0; /* This stops it stretching beyond available space if containing something white-space:pre, which it will do in Firefox [unrelated to flex-grow] https://bugzilla.mozilla.org/show_bug.cgi?id=1136818 */
+	}
+
+	#panel-left {
+		order: 0;
+	}
+
+	#panel-right {
+		order: 2;
+	}
+
+	.global-side-panel {
+		width: 20em;
+		/* Force the issue, as flex box can flex too much! */
+		min-width: 20em;
+		max-width: 20em;
+	}
+
+	#panel-bottom {
+		/*margin: 0 1em;*/
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.global-middle {
+		padding-left: 2px;
+		padding-right: 2px;
+		{$BETA_CSS_PROPERTY,text-size-adjust: none;}
+		width: 100% !important; /* Remove this line for 50:50 display of panels */
+	}
+
+	body.overlay {
+		width: 100%;
+	}
+
+	.overlay h1 {
+		display: none;
+	}
+
+	.cms-modal-type-alert .box-inner div,
+	.cms-modal-type-confirm .box-inner div {
+		{$BETA_CSS_PROPERTY,user-select: none;} {$,To stop accidental touching when dismissing}
+	}
+
+	#panel-left {
+		/*float: left;*/
+		padding-left: 2px;
+		padding-right: 1px;
+	}
+	#panel-right {
+		/*float: left;*/
+		padding-right: 2px;
+		padding-left: 1px;
+	}
+
+	.global-side-panel .stuck-nav { /* overrides possibility from the inline style the stuck-nav JS puts there */
+		position: static !important;
+		width: 100% !important;
+	}
+	.global-side-panel {
+		width: 100% !important;
+	}
+
+	#panel-left.global-side-panel {
+		margin-right: 0;
+	}
+
+	#panel-right.global-side-panel {
+		margin-left: 0;
+	}
+
+	.global-side-panel.with-both-panels {
+		width: 50%;
+	}
+
+	#panel-bottom {
+		margin: 0 2px;
+	}
+/*{+END}*/
+
+.global-middle-outer img:not([width]):not([height]) {
+	max-width: 100%;
+	height: auto;
+}
+
+.global-middle-faux .global-messages {
+	margin: 0; /* Probably inside a frame, hence already indented outside said frame */
+}
+
+.global-messages {
+	overflow: auto;
+}
+
+.global-messages .box---message:last-child {
+	margin-bottom: 0;
+}
+
+.global-message {
+	min-height: 21px;
+	margin-top: 0.75em;
+	margin-bottom: 0.75em;
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+.global-message-icon {
+	margin-right: 0.5em;
+	flex-shrink: 0;
+	color: {$GET,seed};
+}
+
+.global-message-warn .global-message-icon {
+	color: {$GET,danger_color};
+}
+
+.global-message strong {
+	text-shadow: 1px 0px 0px {$GET,message_highlighted_part};
+	font-weight: normal;
+}
+
+.global-message p {
+	margin-top: 0.6em;
+	margin-bottom: 0.6em;
+}
+
+footer {
+	clear: both;
+	margin-top: 2em;
+	background: {$GET,footer_background};
+	color: {$GET,footer_text};
+}
+/*{+START,CSS_MODE,desktop}*/
+	footer {
+		padding: 1.5em;
+	}
+/*{+END}*/
+
+footer img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	footer .global-footer-left,
+	footer .global-footer-right {
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	footer .global-footer-left {
+		float: left;
+	}
+
+	footer .global-footer-left + .global-footer-right {
+		float: right;
+	}
+/*{+END}*/
+
+footer .footer-button-loading {
+	opacity: 0.4;
+}
+
+footer .global-footer-left .horizontal-buttons {
+	width: auto;
+	white-space: nowrap;
+	margin-top: 0;
+	font-size: 0;  /*Fixes wrapping problem */
+}
+
+footer .global-footer-left .horizontal-buttons .icon {
+	width: 24px;
+	height: 24px;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	footer .global-footer-left .horizontal-buttons {
+		float: left;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,mobile}*/
+	footer .global-footer-left .su-form {
+		float: right;
+	}
+/*{+END}*/
+
+footer .global-footer-left .horizontal-buttons > li:first-child {
+	padding-left: 0 !important;
+}
+footer .global-footer-left .horizontal-buttons > li {
+	padding-left: 8px !important;
+}
+
+footer .su-form *, footer .special-page-type-form * {
+	vertical-align: middle;
+}
+
+footer .special-page-type-form select, footer .special-page-type-form select option.label {
+	color: {$GET,unfilled_input_text};
+}
+
+footer .special-page-type-form select option {
+	color: {$GET,slightly_seeded_text};
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	footer .global-footer-left .horizontal-buttons, footer .su-form, footer .special-page-type-form {
+		float: left;
+		padding-right: 14px;
+	}
+/*{+END}*/
+footer .global-footer-left .horizontal-buttons {
+	margin-top: 5px;
+}
+footer .su-form, footer .special-page-type-form {
+	margin-top: 6px;
+}
+
+footer .global-footer-left img {
+	vertical-align: middle;
+}
+
+footer .global-footer-left #special-page-type {
+	width: 16em;
+}
+
+footer .global-footer-right {
+}
+
+footer .invisible-ref-point {
+	position: absolute;
+	width: 0;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.global-footer-right .global-copyright {
+		text-align: center;
+	}
+	footer .global-footer-left + .global-footer-right .global-copyright {
+		text-align: right;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	footer .global-copyright {
+		padding: 0.5em 0;
+	}
+/*{+END}*/
+
+footer .global-minilinks {
+	padding-bottom: 0.3em;
+}
+/*{+START,CSS_MODE,desktop}*/
+	footer .global-minilinks {
+		text-align: center;
+	}
+/*{+END}*/
+
+footer .global-minilinks .footer-links {
+	width: auto;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.footer-links > li::before {
+		padding: 0 0.5em 0 0.1em;
+		content: "\00b7" !important; /* a &middot; */
+	}
+
+	.footer-links li:first-child::before {
+		/* Undoes the middot/comma separator */
+		content: "" !important;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+
+	.footer-links > li {
+		display: inline;
+		margin: 0;
+		padding: 0;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+   footer .global-minilinks {
+		padding-top: 1em;
+	}
+
+	footer .global-minilinks .footer-links li {
+		min-width: 7em;
+		margin-right: 1em;
+		display: inline-block;
+		list-style-type: none;
+		padding: 0.25em 0 0.25em 18px;
+	}
+
+	footer .global-minilinks .footer-links li::before {
+		font-family: sans-serif;
+		color: {$GET,seed};
+		content: '\025BA'; /* Rightward triangle */
+		vertical-align: middle;
+		padding-right: 1em;
+		display: inline-block;
+		transform: scale(0.5, 1);
+	}
+
+   footer .global-copyright {
+		text-align: center;
+	}
+/*{+END}*/
+
+/*
+=========================
+==With Special Meanings==
+=========================
+*/
+
+.webstandards-checker-off { /* Membership of this class is used as a tag to turn off the webstandards checker */
+	display: inline-block; /* To stop it breaking text-align: center */
+	width: 100%;
+}
+
+.textarea-scroll { /* Turns off word-wrapping for a textarea: this has to be done using JavaScript so that the invalid 'wrap' property isn't written into the XHTML */
+}
+
+.leave-native-tooltip { /* No automatic tooltips on this element */
+}
+
+body .accessibility-hidden { /* Contents should be made visible (or interpreted) for accessibly representation but hidden for normal visual display */
+	/* Shift it out of the viewport */
+	position: absolute;
+	top: -256000px;
+	left: 0;
+	opacity: 0; /* So browser doesn't waste resources rendering (cannot use visibility, Mac Voiceover will not pick up on it) */
+	display: block; /* stops browser bugs where it interacts with the layout flow incorrectly */
+}
+.email-body .accessibility-hidden { /* E-mail CSS may be less sophisticated */
+	display: none;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+	position: static;
+	width: auto;
+	height: auto;
+	overflow: visible;
+	clip: auto;
+	white-space: normal;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.non-accessibility-redundancy { /* Contents should be skipped by screen-readers */
+		display: none;
+	}
+/*{+END}*/
+
+/*
+=========================
+=====Reusable Styles=====
+=========================
+*/
+
+/* All floats within this will be contained to it */
+.float-surrounder {
+	overflow: hidden;
+}
+
+.clearfix::after {
+	display: block;
+	clear: both;
+	content: "";
+}
+
+/* Commonly used to indicate there is no content to display */
+.nothing-here, .more-here {
+	margin: 1.5em 0;
+}
+
+.nothing-here::before,
+.more-here::before {
+	font-family: sans-serif;
+	color: {$GET,seed};
+	content: '\025BA'; /* Rightward triangle */
+	vertical-align: top;
+	padding-right: 1em;
+	display: inline-block;
+	transform: scale(0.5, 1);
+}
+
+/* Used for styling the 'last edited' information */
+.edited {
+	font-size: 0.85em;
+	font-style: italic;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.edited {
+		padding-left: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.edited {
+		padding-left: 0.7em;
+	}
+/*{+END}*/
+div.edited {
+	margin: 2em 0 1em 0;
+}
+.edited > * {
+	vertical-align: middle;
+}
+
+/* Usage guide: Use on the immediate surrounding element, and make sure that there is no loose text inside (put that in a span) */
+.vertical-alignment, .vertical-alignment > * {
+	vertical-align: middle !important;
+}
+
+/* Used to align inline images to the top of the rendering context */
+.top-vertical-alignment, .top-vertical-alignment * {
+	vertical-align: top;
+}
+
+/* Used to align a back to top image beside screen item buttons */
+.back-to-top-by-buttons {
+	padding-top: 4px;
+}
+
+/* Used to align next to a floated button(s) */
+.vertical-alignment-buttons {
+	line-height: 1.9em;
+}
+
+.vertical-alignment-normalise-line-height {
+	line-height: 0;
+}
+
+
+/* Makes an item of media (e.g. an image) get framed nicely. NB: We do not use this for galleries (which are more elaborate), although that has similar styling with .gallery-grid-cell */
+.media-box {
+	text-align: center;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.media-box {
+		margin: 1.5em 0;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.media-box {
+		margin: 1em 0;
+	}
+/*{+END}*/
+.media-box a {
+	outline: 0;
+}
+.media-box > a > img,
+.media-box > img {
+	border: 1px solid {$GET,standard_border};
+	box-shadow: 3px 3px 10px {$GET,standard_border};
+}
+
+/* Used in a few places to make member links stand out */
+a.fancy-user-link em {
+	text-shadow: 2px 2px 2px {$GET,point_of_interest_border};
+	padding: 4px 0;
+	letter-spacing: 1px;
+}
+a.fancy-user-link,
+a.fancy-user-link:visited,
+a.fancy-user-link:hover {
+	font-size: 1em;
+	font-weight: bold;
+	border: 1px dotted {$GET,point_of_interest_border};
+	border-left: 0;
+	border-right: 0;
+	display: block;
+	background-color: {$GET,point_of_interest_background};
+	margin-bottom: 7px;
+	text-decoration: none;
+	padding: 2px 2px !important;
+}
+.post-poster a.fancy-user-link,
+.post-poster a.fancy-user-link:visited,
+.post-poster a.fancy-user-link:hover {
+	display: inline-block;
+}
+a.fancy-user-link:hover {
+	border-style: solid;
+	background-color: {$GET,area_faded_background};
+}
+
+/* A button styled to look like a link */
+body input.button-hyperlink,
+body button.button-hyperlink,
+body input.button-hyperlink:hover,
+body button.button-hyperlink:hover {
+	border-style: none !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	border-radius: 0 !important;
+	border: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	cursor: pointer !important;
+	text-align: left !important;
+	vertical-align: baseline !important;
+}
+
+/* Used to make a button look more like an icon - i.e. undoes button-face styling */
+.button-icon {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: {$GET,seed};
+}
+
+.help-icon {
+	cursor: pointer;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.help-icon {
+		margin-left: 0.5em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
+	.lonely-label + span + .help-icon {
+		margin-left: 0.5em;
+	}
+	input[type="checkbox"] + input[type="hidden"] + .help-icon {
+		display: inline;
+		margin-top: 0;
+	}
+/*{+END}*/
+
+/* Makes a link tag (a) look like it's not anything special (we use these tags as tab points sometimes) */
+.non-link,
+.non-link:visited,
+.non-link:hover,
+.subtle-link,
+.subtle-link:visited,
+.subtle-link:hover {
+	color: inherit !important;
+	text-decoration: none !important;
+	font-size: 1em !important;
+}
+.non-link,
+.non-link:visited,
+.non-link:hover {
+	cursor: inherit !important;
+}
+
+.subtle-link {
+	transition: color 0.15s ease-in-out;
+}
+
+.subtle-link:hover,
+.subtle-link:focus {
+	color: {$GET,a.hover} !important;
+}
+
+/* Used e.g. for "paginating" through the calendar (i.e. infinite pagination left/right) */
+.trinav-wrap {
+	background-color: {$GET,main_background};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: 20px;
+	/*{+END}*/
+	color: {$GET,heading_text};
+	overflow: hidden;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.trinav-wrap {
+		margin-bottom: 2em;
+	}
+/*{+END}*/
+.trinav-left,
+.trinav-mid,
+.trinav-right {
+	margin: 1em 0 2em 0;
+}
+.trinav-left {
+	float: left;
+	text-align: left;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.trinav-left {
+		margin-right: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.trinav-left {
+		width: 110px;
+		margin-left: 0.5em;
+	}
+/*{+END}*/
+.trinav-mid { /* Used for putting a button in the middle of the left/right pagination, for example */
+	text-align: center;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.trinav-mid.text {
+		padding-top: 6px;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.trinav-mid.text {
+		padding-top: 1px;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.trinav-mid.text > span::before {
+		content: "(";
+	}
+	.trinav-mid.text > span::after {
+		content: ")";
+	}
+/*{+END}*/
+.trinav-right {
+	float: right;
+	text-align: right;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.trinav-right {
+		margin-left: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.trinav-right {
+		width: 110px;
+		margin-right: 0.5em;
+	}
+/*{+END}*/
+
+/* An inline avatar */
+.embedded-mini-avatar {
+	width: 1em;
+	height: 1em;
+	cursor: pointer;
+	border: 1px solid {$GET,standard_border};
+}
+
+/* Error/status messages */
+td.red-alert,
+.fake-td.red-alert,
+span.red-alert,
+a.red-alert,
+strong.red-alert,
+em.red-alert {
+	color: {$GET,red_highlight_text};
+	font-weight: bold;
+}
+
+div.red-alert,
+p.red-alert,
+.inline-wip-message {
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+	padding: 1em;
+}
+
+.red-alert + .red-alert {
+	margin-top: 1em;
+}
+
+div.red-alert,
+p.red-alert {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
+	background-color: {$GET,light_error_background};
+	overflow: hidden;
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+.red-alert-icon {
+	color: {$GET,danger_color};
+	margin-right: 0.5em;
+	flex-shrink: 0;
+}
+
+.inline-wip-message {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,dark_border},transparent};
+	color: {$GET,slightly_seeded_text};
+	padding-left: 38px;
+}
+
+.field-name {
+	font-weight: {$GET,font_weight_medium};
+}
+
+/* Used when a label is the only thing in front of a textarea/list */
+.lonely-label  {
+	margin-bottom: 0.2em !important;
+	display: block !important;
+	font-size: 1.1em !important;
+}
+.lonely-label+ul, .lonely-label+ol, .lonely-label+p {
+	margin-top: 0.2em;
+}
+
+/* Used for a little 'X comments' box, but with the comments bit showing as an HTML tooltip */
+.comment-count:empty {
+	display: none;
+}
+.comment-count {
+	display: inline-block;
+	white-space: nowrap;
+	border: 1px dotted {$GET,dark_border};
+	background-color: {$GET,main_background} !important;
+	text-align: center;
+	width: 1.1em;
+	font-size: 0.9em;
+	position: relative;
+}
+.associated-links-block-group > li .comment-count {
+	top: 2px;
+}
+.comment-count:hover {
+	border-right-color: transparent;
+}
+.comment-count strong {
+	background-color: {$GET,main_background} !important;
+}
+.comment-count span {
+	display: none;
+	padding-right: 2px;
+	background-color: {$GET,main_background} !important;
+}
+.comment-count:hover span {
+	display: inline-block;
+	position: absolute;
+	padding-left: 0.3em;
+	margin-top: -1px; /* Brings it up to the 1px dotted borders level (need to do as out of flow) */
+
+	/* Similar styles to tooltips */
+	background-color: {$GET,area_faded_background};
+	border: 1px dotted {$GET,dark_border};
+	z-index: 1000;
+
+	border-left: 0;
+}
+
+th.metadata-title {
+	font-weight: {$GET,font_weight_medium} !important;
+}
+
+.help-jumpout {
+	padding: 0.5em 0;
+	padding-left: 55px;
+	background: url('{$IMG;,help_jumpout}') no-repeat left center;
+	background-size: 48px 48px;
+}
+
+.help-jumpout p {
+	margin: 0;
+}
+
+.being-dragged {
+	font-style: italic;
+}
+
+.img-thumb { /* Membership of this class is used as a tag to turn on the thumbnail blend effect */
+	opacity: 0.7;
+	transition: opacity 0.2s linear;
+}
+.img-thumb:hover,
+.is-touch-enabled .img-thumb,
+.img-thumb-opaque .img-thumb {
+	opacity: 1.0;
+}
+.img-thumb-opaque .img-thumb {
+	transition: none;
+}
+
+.chevron {
+	border-style: solid;
+	border-width: 0.25em 0.25em 0 0;
+	display: inline-block;
+	position: relative;
+	top: 0.15em;
+	left: 0.15em;
+	transform: rotate(-45deg);
+	vertical-align: 0.1em;
+	width: 0.8em;
+	height: 0.8em;
+}
+
+.chevron-right {
+	left: 0;
+	transform: rotate(45deg);
+}
+
+.chevron-bottom {
+	top: 0;
+	transform: rotate(135deg);
+}
+
+.chevron-left {
+	left: 0.25em;
+	transform: rotate(-135deg);
+}
+
+.has-loading-indicator::after {
+	content: " ";
+	display: inline-block;
+	width: 3em;
+	height: 3em;
+	border-radius: 50%;
+	border: 0.4em solid;
+	border-color: currentColor transparent currentColor transparent;
+	margin: 2em;
+	animation: cms-rotate-360 1.2s ease-in-out infinite;
+}
+
+@keyframes cms-rotate-360 {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+/*
+=========================
+=========Boxes===========
+=========================
+*/
+
+/* Boxes, which most blocks use to wrap their output */
+
+.box {
+		border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+	/*{+START,IF,{$THEME_OPTION,box_shadows}}*/
+		box-shadow: 3px 3px 14px 3px {$COLOR_RGBA,{$GET,area_2_background},0.7};
+	/*{+END}*/
+	margin: 1em 0;
+	background-color: {$GET,WB};
+	/*{+START,IF,{$THEME_OPTION,block_background}}*/
+		background-image: url('{$IMG_INLINE;,backgrounds/block_background}');
+		background-size: 300px 300px;
+	/*{+END}*/
+}
+.box .box {
+	background-image: none;
+}
+td > .box:first-child, .fake-td > .box:first-child, .fake-td > div:first-child > .box:first-child, .fake-td > div:first-child > div:first-child > .box:first-child, .left .box:first-child:last-child, .right .box:first-child:last-child,
+td > .comcode-code:first-child, .fake-td > .comcode-code:first-child, .fake-td > div:first-child > .comcode-code:first-child, .fake-td > div:first-child > div:first-child > .comcode-code:first-child, .left .comcode-code, .right .comcode-code,
+td > .comcode-quote:first-child, .fake-td > .comcode-quote:first-child, .fake-td > div:first-child > .comcode-quote:first-child, .fake-td > div:first-child > div:first-child > .comcode-quote:first-child, .left .comcode-quote, .right .comcode-quote {
+	margin: 0;
+}
+/* Accordion boxes don't have margins */
+.box---standardbox-accordion {
+	margin: 0 !important;
+}
+/* Don't do margins for boxes at the end of frames */
+/*#standalone-html-wrap > div > .box:first-child {	Actually we want this, due to how .fp-col-block has been written
+	margin-top: 0;
+}*/
+#standalone-html-wrap > div > .box:last-child {
+	margin-bottom: 0;
+}
+
+/* Don't let boxes on side panels get too much styling (focuses the eye away) */
+.global-side-panel .box, .box.nested {
+	background-color: {$GET,area_5_background};
+}
+.box.nested {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
+}
+.global-side-panel .box-inner > h1,
+.global-side-panel .box-inner > h2,
+.global-side-panel .box-inner > h3,
+.global-side-panel .box-inner > h4,
+.global-side-panel .box-inner > h5,
+.global-side-panel .box-inner > h6 {
+	background: none;
+	color: inherit;
+	margin: 0;
+	padding-top: 0;
+	border-bottom: none;
+}
+
+.box > .box-inner  {
+	margin: 10px 15px; /* not em so that header may be positioned properly */
+}
+.boxless-space .box > .box-inner,
+.boxless-space .box > .toggleable-tray {
+	margin: 0;
+}
+.email-body .box .box-inner { /* Outlook.com does not support margins or complex use of the sibling selector */
+	margin: 0;
+	padding: 5px; /* not em so that header may be positioned properly */
+}
+
+.box-inner > h1,
+.box-inner > h2,
+.box-inner > h3,
+.box-inner > h4,
+.box-inner > h5,
+.box-inner > h6,
+.toggleable-tray-title,
+#standalone-html-wrap .box .box .box-inner > h2,
+#standalone-html-wrap .box .box .box-inner > h3 {
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-top-left-radius: {$GET,border_radius};
+		border-top-right-radius: {$GET,border_radius};
+	/*{+END}*/
+	background-color: {$GET,box_title_background};
+	/*{+START,IF,{$THEME_OPTION,gradients}}*/
+		background-image: linear-gradient(to bottom, {$GET,area_background}, {$GET,area_4_background});
+	/*{+END}*/
+	color: {$GET,box_title_text};
+	text-align: center;
+	text-decoration: none;
+	font-size: 1.1em;
+	border: 0;
+	letter-spacing: 0;
+
+	/* .box-inner set us in the wrong position, so fiddle around a bit to move us back to be flush */
+	margin: -10px -15px 10px -15px;
+	padding: 0.5em 0.8em 0.5em 0.3em;
+	border-bottom: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
+}
+
+.box-inner > h1 + *,
+.box-inner > h2 + *,
+.box-inner > h3 + *,
+.box-inner > h4 + *,
+.box-inner > h5 + *,
+.box-inner > h6 + *,
+.toggleable-tray-title + * {
+	margin-top: 5px;
+}
+
+.box-inner > h2 > .right .btn-scr {
+	vertical-align: top;
+}
+
+.box.box-prominent > .box-inner {
+	margin: 0;
+}
+
+.box.box-prominent > .box-inner > h2 {
+	padding: 0.8em;
+	margin: 0;
+	text-align: left;
+	font-size: 1.15em;
+}
+
+.box-inner > h1 a,
+.box-inner > h2 a,
+.box-inner > h3 a,
+.box-inner > h4 a,
+.box-inner > h5 a,
+.box-inner > h6 a,
+.toggleable-tray-title a,
+.box-inner > h1 a:visited,
+.box-inner > h2 a:visited,
+.box-inner > h3 a:visited,
+.box-inner > h4 a:visited,
+.box-inner > h5 a:visited,
+.box-inner > h6 a:visited,
+.toggleable-tray-title a:visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+a.toggleable-tray-button { /* Override above for toggleable-tray-button */
+	text-decoration: none !important;
+}
+
+.box-inner > h1 a:hover,
+.box-inner > h2 a:hover,
+.box-inner > h3 a:hover,
+.box-inner > h4 a:hover,
+.box-inner > h5 a:hover,
+.box-inner > h6 a:hover,
+.toggleable-tray-title a:hover {
+	color: {$GET,box_title_text_hover};
+}
+
+.boxless-space .box-inner > h1 a:hover,
+.boxless-space .box-inner > h2 a:hover,
+.boxless-space .box-inner > h3 a:hover,
+.boxless-space .box-inner > h4 a:hover,
+.boxless-space .box-inner > h5 a:hover,
+.boxless-space .box-inner > h6 a:hover,
+.boxless-space .toggleable-tray-title a:hover {
+	color: inherit;
+}
+
+/* If we want a box to stand out less, give it 'pale-box' */
+.pale-box.box, .pale-box .box {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
+}
+
+.box.pale-box h2,
+.box.pale-box h3,
+.pale-box .box h2,
+.pale-box .box h3 {
+	background-color: {$GET,point_of_interest_background} !important;
+	background-image: none;
+	color: {$GET,area_key_text};
+	border-bottom: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
+}
+
+/* If you want to mark a region as box-less, wrap a div with class 'boxless-space' around it -- it'll invoke a very different kind of modern styling */
+.boxless-space .box {
+	background: none;
+	border: none !important;
+	padding: 0;
+	margin: 1em 0; /* Big margin, necessary as the boxes have no border around them */
+	border-radius: 0;
+}
+.frame > .boxless-space .box:first-child {
+	margin-top: 0; /* No top margin for boxes in a frame */
+}
+.boxless-space > .box:last-child {
+	margin-bottom: 0; /* No margin on the last box */
+}
+.boxless-space .fp-col-blocks-wrap .box {
+	margin: 0.5em 0; /* Half-sized margins for the fake-columns on front pages, as the overflow blocks margin collapsing */
+}
+.boxless-space .box > .box-inner {
+	margin: 0;
+}
+.boxless-space .box > .box-inner > h1,
+.boxless-space .box > .box-inner > h2,
+.boxless-space .box > .box-inner > h3,
+.boxless-space .box > .box-inner > h4,
+.boxless-space .box > .box-inner > h5,
+.boxless-space .box > .box-inner > h6,
+.boxless-space .box > .toggleable-tray-title {
+	background: transparent;
+	text-align: left;
+	text-transform: uppercase;
+	border-radius: 0;
+	/*padding-left: 0;*/
+	margin: 0.5em 0;
+}
+
+.boxless-space .buttons-group,
+.boxless-space .associated-links-block-group,
+.boxless-space .media-box {
+	text-align: left;
+	width: auto;
+}
+
+.boxless-space .proceed-button {
+	justify-content: flex-start;
+}
+
+/* ... Dividers within boxless area... */
+.boxless-space .box-wrapper + .box,
+.boxless-space .box-wrapper + .fp-col-blocks-wrap,
+.boxless-space .box + .box,
+.boxless-space .box + .fp-col-blocks-wrap,
+.boxless-space .fp-col-blocks-wrap + .box-wrapper,
+.boxless-space .fp-col-blocks-wrap + .box {
+	border-top: 2px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent} !important;
+	margin-top: 1.5em;
+	padding-top: 0.5em;
+}
+
+.boxless-space .box .box + .box,
+.comments-wrapper .boxless-space .box + .box { /* Nested dividers more subtle */
+	border-top: 0 !important;
+}
+
+.global-side-panel .boxless-space .box .box + .box {
+	padding-top: 0;
+}
+
+.global-middle .boxless-space .box .box + .box::before {
+	content: "";
+	width: 60%;
+	display: block;
+	margin: 0 auto;
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important;
+	padding-top: 0.4em;
+}
+
+.comments-wrapper .boxless-space .box + .box::before {
+	content: "";
+	width: 60%;
+	display: block;
+	margin: 0 auto 2em auto;
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important;
+}
+
+.comments-wrapper .boxless-space .box + .box.highlighted-post::before {
+	display: none;
+}
+
+.comments-wrapper .box.highlighted-post .buttons-group {
+	margin-bottom: 0;
+}
+
+.boxless-space .box + .fp-col-blocks-wrap {
+	padding-top: 0;
+}
+
+/* Boxes under boxes shouldn't have the title style - would be ugly */
+
+.box .box .box-inner > h1,
+.box .box .box-inner > h2,
+.box .box .box-inner > h3,
+.box .box .box-inner > h4,
+.box .box .box-inner > h5,
+.box .box .box-inner > h6,
+.box .box .toggleable-tray-title,
+#standalone-html-wrap .box .box .box .box-inner > h2,
+#standalone-html-wrap .box .box .box .box-inner > h3 {
+	background: none;
+	color: inherit;
+	padding-left: 0;
+	font-size: 1.1em;
+} /* This rule is not applied to boxes under the top level box in the preview (#standalone-html-wrap) as those should show verbatim */
+.box .box .box-inner > h1 a,
+.box .box .box-inner > h2 a,
+.box .box .box-inner > h3 a,
+.box .box .box-inner > h4 a,
+.box .box .box-inner > h5 a,
+.box .box .box-inner > h6 a,
+.box .box .toggleable-tray-title a,
+#standalone-html-wrap .box .box .box .box-inner > h2 a,
+#standalone-html-wrap .box .box .box .box-inner > h3 a {
+	color: {$GET,a.hover};
+}
+
+.box---message,
+.box---login-screen,
+.box---inform-screen {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
+	background-color: {$GET,area_background};
+}
+
+.box---message-warn {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
+	background-color: {$GET,light_error_background};
+}
+
+/* Expanding and contracting, mostly for boxes but not necessarily always */
+
+.toggleable-tray-title {
+	font-size: 1.1em;
+	font-weight: {$GET,font_weight_medium};
+	vertical-align: middle;
+	padding-top: 0.7em;
+	padding-bottom: 0.5em;
+}
+
+.toggleable-tray-button {
+	transition: opacity 0.2s linear;
+	outline: 0;
+	font-weight: {$GET,font_weight_medium};
+	text-decoration: none;
+	/*color: inherit;*/
+}
+
+.toggleable-tray-button, .toggleable-tray-button + span {
+	cursor: pointer;
+}
+
+.toggleable-tray-button .icon {
+	float: right;
+	margin: 0 0 0 0.3em;
+	height: 24px;
+	width: 24px;
+}
+
+.box .toggleable-tray-title .toggleable-tray-button .icon {
+	height: 20px;
+	width: 20px;
+}
+
+h3 .toggleable-tray-button .icon {
+	height: 18px;
+	width: 18px;
+}
+
+.ttb-left-spaced, .ttb-left-spaced div {
+	margin-top: 0.3em;
+}
+
+.toggleable-tray-button.ttb-left .icon {
+	float: left;
+	padding-left: 0 !important;
+}
+
+.toggleable-tray-button.ttb-light {
+	font-weight: normal;
+}
+
+.toggleable-tray {
+	overflow: hidden;
+}
+
+/* Used very rarely if our toggleable boxes need some extra space at their top) */
+.toggleable-tray-pulldown-spacer {
+	padding-top: 1em;
+}
+
+/* Used in the Setup Wizard constructed block layouts in the front page */
+
+.fp-col-blocks-wrap {
+	overflow: hidden;
+}
+
+.fp-col-block {
+}
+/*{+START,CSS_MODE,desktop}*/
+	.fp-col-block {
+		width: 50%;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.fp-col-block {
+		margin: 1em 0;
+		max-width: 100%;
+	}
+	.fp-col-block.left, .fp-col-block.right {
+		float: none;
+	}
+/*{+END}*/
+
+.fp-col-block .pagination {
+	float: none;
+}
+.fp-col-block form + span {
+	margin-left: 0;
+}
+
+.fp-col-block .box {
+	margin-bottom: 0; /* margin-top from boxes below will work instead. This is needed as the "overflow: hidden" stops margin collapsing between the block contents and outside it */
+}
+
+.fp-col-block.left {
+	padding-right: 0.5em;
+}
+.fp-col-block.right {
+	padding-left: 0.5em;
+}
+.fp-col-block.left:last-child {
+	padding-right: 0; /* Undo padding if actually there is nothing to the right of this */
+}
+
+/* Box/title-attached meta details */
+
+.meta-details {
+	font-size: 0.9em;
+	color: {$GET,area_text};
+	border-bottom: 1px {$?,{$THEME_OPTION,borders},dotted {$GET,pale_border},solid transparent};
+	max-width: 100%;
+	padding-left: 0.5em;
+	padding-bottom: 0.5em;
+	margin-bottom: 1em;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.meta-details {
+		width: 25em;
+	}
+/*{+END}*/
+.boxless-space .meta-details {
+	padding-left: 0;
+	margin-top: -0.5em !important;
+}
+
+.compacted-subbox-stream h3+.meta-details, .compacted-subbox-stream .newscat-img+.meta-details {
+	border-bottom: 0;
+	margin-bottom: 0.5em;
+}
+.box-inner > h3+.meta-details {
+	margin-top: 0;
+}
+
+.meta-details a, .meta-details a:visited {
+	text-decoration: none;
+	color: {$GET,area_link};
+}
+.meta-details a:hover {
+	color: {$GET,a.hover};
+}
+
+.global-side-panel .meta-details {
+	border-bottom: 0;
+	padding-left: 0;
+	padding-top: 0.5em;
+}
+
+/* Overlays are also based on boxes */
+
+.box.overlay {
+	box-shadow: 0px 0px 20px {$GET,dark_shadow};
+}
+.box.overlay.lightbox > .box-inner {
+	margin: 0;
+}
+.box.overlay .associated-links-block-group {
+	margin: 1em;
+}
+.box.overlay.lightbox > .box-inner video {
+	display: block;
+}
+
+.cms-modal-container {
+	height: calc(100% - 20px);
+}
+
+/* Boxes with arrows on the top */
+
+.box.box-arrow {
+	overflow: visible;
+	margin-top: 4px; /* 2 +2px gap */
+}
+
+.box.box-arrow::before {
+	content: "\025B2"; /* Upward arrow */
+	color: {$GET,standard_border};
+	display: inline-block;
+	margin-left: 280px;
+	position: absolute;
+	top: -11px;
+	right: 13px;
+}
+
+/*
+=========================
+========Spacing==========
+=========================
+*/
+
+/* These are short hand for defining very common layout patterns. They are quasi-semantic in that they tie into Composr's visual language. */
+
+.not-too-tall {
+	max-height: 30em;
+	overflow: auto;
+}
+
+.horizontal-scrolling {
+	overflow: auto;
+	padding-right: 1px; /* For non-aligning table borders */
+}
+
+.tiny-paragraph {
+	margin: 0.3em 0;
+}
+
+.whitespace-visible {
+	overflow: auto;
+	outline: 0;
+	white-space: pre-wrap !important;
+}
+.whitespace-visible.code {
+	font-family: 'Courier New', 'Courier', monospace;
+}
+
+.standard-indent {
+	padding-left: 4em;
+}
+
+.horizontal-links + .mini-indent {
+	margin-top: -0.3em;
+	margin-bottom: 0.5em;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.mini-indent {
+		padding-left: 2em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.mini-indent {
+		padding-left: 0.75em;
+	}
+/*{+END}*/
+
+hr.spaced-rule {
+	margin: 2em 0;
+}
+
+/* Used to indicate something showing underneath, in conjunction with an arrow image */
+.arrow-ruler {
+	text-align: center;
+}
+
+.inline-block {
+	text-align: left;
+	display: inline-block;
+}
+
+.inline {
+	display: inline;
+}
+
+.inline-flex {
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
+}
+
+.flex {
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+.left {
+	float: left;
+}
+
+.left.float-separation {
+	margin-right: 1em;
+}
+
+.right {
+	float: right;
+}
+
+.right.float-separation,
+.inline.spaced {
+	margin-left: 1em;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.left.responsive {
+		float: none;
+	}
+	.left.responsive.float-separation {
+		margin-right: 0;
+	}
+	.right.responsive {
+		float: none;
+	}
+	.right.responsive.float-separation {
+		margin-left: 0;
+	}
+	.responsive > .box {
+		width: auto !important;
+	}
+/*{+END}*/
+
+.inline-lined-up {
+	white-space: nowrap;
+}
+
+.inline-lined-up > * {
+	white-space: normal;
+	display: inline-block;
+}
+
+.inline-icon {
+	width: 1.5em;
+}
+
+/* Something being shown for previewing, on its own so needs focus */
+.lonely-preview {
+	text-align: center;
+}
+
+/* Used to align stuff horizontally, i.e. force a gap between separate bits */
+.horiz-field-sep, ul.horizontal-links.horiz-field-sep {
+	padding-left: 0.8em;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.horiz-field-sep.block-mobile {
+		padding-left: 0;
+		margin-top: 0.5em;
+	}
+/*{+END}*/
+.horiz-field-sep, .horiz-field-sep-rightward {
+	display: inline-block !important; /* Side-effect: stops internal wrapping */
+}
+.horiz-field-sep-rightward {
+	padding-right: 0.8em; /* Useful so subsequent wrapped text doesn't get indented */
+}
+ul.horizontal-links.horiz-field-sep {
+	display: inline !important;
+}
+
+/* Used e.g. on links that should not get split between lines */
+.must-show-together, .must-show-together * {
+	white-space: nowrap !important;
+}
+
+/*
+=========================
+=========Tables==========
+=========================
+*/
+
+.table-cell-nowrap {
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.autosized-table {
+	table-layout: auto !important;
+}
+.autosized-table.forceful, .autosized-table.forceful th, .autosized-table.forceful td, .autosized-table.forceful .fake-th, .autosized-table.forceful .fake-td {
+	/* Undo some HTML-sourced styles if .forceful is set */
+	width: auto !important;
+}
+.autosized-table.forceful.wide-table {
+	width: 100% !important;
+}
+
+table.scrollable-inside {
+	table-layout: fixed; /* For permission setting stuff that can scroll off */
+}
+.results-table.forceful > * > tr > th,
+.results-table.forceful > * > tr > td,
+.results-table.forceful > * > .fake-tr > .fake-th,
+.results-table.forceful > * > .fake-tr > .fake-td {
+	/* Undo HTML-sourced style if .forceful is set */
+	border-bottom: 0;
+}
+.results-table.forceful:not(.responsive-table) > * > tr > th:not(:first-child),
+.results-table.forceful:not(.responsive-table) > * > tr > td:not(:first-child),
+.results-table.forceful:not(.responsive-table) > * > .fake-tr > .fake-th:not(:first-child),
+.results-table.forceful:not(.responsive-table) > * > .fake-tr > .fake-td:not(:first-child) {
+	/* Undo HTML-sourced style if .forceful is set */
+	border-left: 0;
+}
+.results-table.forceful th > p:first-child:last-child,
+.results-table.forceful td > p:first-child:last-child,
+.results-table.forceful .fake-th > p:first-child:last-child,
+.results-table.forceful .fake-td > p:first-child:last-child {
+	/* Some word processors may carry through p tags inside cells */
+	display: inline;
+}
+
+.wide-table {
+	width: 100%;
+	/*{+START,IF,{$EQ,{$LANG},EN}}*/
+		table-layout: fixed;
+	/*{+END}*/
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	/* Deconstructs map table to blocks, for easy layout fit */
+
+	.map-table.responsive-blocked-table,
+	.map-table.responsive-blocked-table tbody,
+	.map-table.responsive-blocked-table tfoot,
+	.map-table.responsive-blocked-table tr,
+	.map-table.responsive-blocked-table th,
+	.map-table.responsive-blocked-table td,
+	.map-table.responsive-blocked-table .fake-tbody,
+	.map-table.responsive-blocked-table .fake-tr,
+	.map-table.responsive-blocked-table .fake-th,
+	.map-table.responsive-blocked-table .fake-td {
+		display: block;
+	}
+
+	.map-table.responsive-blocked-table th {
+		font-weight: bold;
+	}
+
+	.results-table.responsive-blocked-table tr, .results-table.responsive-blocked-table .fake-tr {
+		margin-bottom: 0.5em;
+	}
+
+	.results-table.responsive-blocked-table th,
+	.results-table.responsive-blocked-table td,
+	.results-table.responsive-blocked-table .fake-th,
+	.results-table.responsive-blocked-table .fake-td {
+		border-radius: 0 !important;
+		border-left: 1px solid {$GET,standard_border} !important;
+		border-right: 1px solid {$GET,standard_border} !important;
+		border-top: 0 !important;
+		border-bottom: 0 !important;
+		text-align: left !important;
+	}
+
+	.map-table.responsive-blocked-table th:first-child,
+	.map-table.responsive-blocked-table td:first-child,
+	.map-table.responsive-blocked-table .fake-th:first-child,
+	.map-table.responsive-blocked-table .fake-td:first-child {
+		border-top: 1px solid {$GET,standard_border} !important;
+	}
+
+	.map-table.responsive-blocked-table th:last-child,
+	.map-table.responsive-blocked-table td:last-child,
+	.map-table.responsive-blocked-table .fake-th:last-child,
+	.map-table.responsive-blocked-table .fake-td:last-child {
+		border-bottom: 1px solid {$GET,standard_border} !important;
+	}
+/*{+END}*/
+
+.spaced-table th, .spaced-table td, .spaced-table .fake-th, .spaced-table .fake-td {
+	padding: 0.7em;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.spaced-table td, .spaced-table .fake-td {
+		overflow-x: auto;
+	}
+/*{+END}*/
+
+/* Undo any descendant spacing for nested tables made in WYSIWYG */
+.results-table table[cellpadding="0"] td,
+.results-table table[cellpadding="0"] th {
+	padding: 0;
+}
+.results-table table[border="0"] td,
+.results-table table[border="0"] th {
+	border: 0;
+}
+
+.highlighted-table-cell {
+	background-color: {$GET,area_4_background};
+}
+
+.highlighted-table-cell th,
+.highlighted-table-cell td {
+	border-color: {$GET,pale_border} !important;
+}
+
+.results-table {
+	border-collapse: separate;
+}
+
+.results-table {
+	border: 0 !important;
+	border-spacing: 0;
+	margin: 1em 0;
+}
+.lined-up-boxes .results-table {
+	margin-top: 0;
+}
+.results-table.wide_table {
+	margin: 0; /* As overflow would cause margin doubling */
+}
+.wide-table.results-table + .wide-table.results-table {
+	margin-top: 1em;
+}
+
+/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+	.results-table > thead:first-child > tr:first-child *:first-child,
+	.results-table > thead:nth-child(2)/*after colspan*/ > tr:first-child *:first-child,
+	.results-table > tbody > tr:first-child > *:first-child,
+	.results-table > .fake-thead:first-child > .fake-tr:first-child *:first-child,
+	.results-table > .fake-thead:nth-child(2)/*after colspan*/ > .fake-tr:first-child *:first-child,
+	.results-table > .fake-tbody > .fake-tr:first-child > *:first-child {
+		border-top-left-radius: 5px;
+	}
+	.results-table > thead:first-child > tr:first-child *:last-child,
+	.results-table > thead:nth-child(2)/*after colspan*/ > tr:first-child *:last-child,
+	.results-table > tbody > tr:first-child > *:last-child,
+	.results-table > .fake-thead:first-child > .fake-tr:first-child *:last-child,
+	.results-table > .fake-thead:nth-child(2)/*after colspan*/ > .fake-tr:first-child *:last-child,
+	.results-table > .fake-tbody > .fake-tr:first-child > *:last-child {
+		border-top-right-radius: 5px;
+	}
+	.results-table.columned-table > tbody > tr:first-child > *:first-child,
+	.results-table.columned-table > .fake-tbody > .fake-tr:first-child > *:first-child {
+		border-top-left-radius: 0px;
+	}
+	.results-table.columned-table > tbody > tr:first-child > *:last-child,
+	.results-table.columned-table > .fake-tbody > .fake-tr:first-child > *:last-child {
+		border-top-right-radius: 0px;
+	}
+	.results-table > tbody:last-child > tr:last-child > *:first-child,
+	.results-table > tbody > tr.last > *:first-child,
+	.results-table > .fake-tbody:last-child > .fake-tr:last-child > *:first-child,
+	.results-table > .fake-tbody > .fake-tr.last > *:first-child {
+		border-bottom-left-radius: 5px;
+	}
+	.results-table > tbody:last-child > tr:last-child > *:last-child,
+	.results-table > tbody > tr.last > *:last-child,
+	.results-table > .fake-tbody:last-child > .fake-tr:last-child > *:last-child,
+	.results-table > .fake-tbody > .fake-tr.last > *:last-child {
+		border-bottom-right-radius: 5px;
+	}
+/*{+END}*/
+
+.results-table > * > tr > th, .results-table > * > .fake-tr > .fake-th {
+	text-align: right;
+}
+
+.results-table > thead > tr > th, .results-table > .fake-thead > .fake-tr > .fake-th {
+	text-align: left;
+}
+
+.results-table > * > tr > td, .results-table > * > tr > th, .results-table > * > .fake-tr > .fake-td, .results-table > * > .fake-tr > .fake-th {
+	border-top: 1px solid {$GET,standard_border};
+	border-right: 1px solid {$GET,standard_border};
+	padding: 0.5em;
+}
+.results-table > * > tr > td:first-child,
+.results-table > * > tr > th:first-child,
+.results-table > * > .fake-tr > .fake-td:first-child,
+.results-table > * > .fake-tr > .fake-th:first-child {
+	border-left: 1px solid {$GET,standard_border};
+}
+.results-table > tbody > tr:last-child > td,
+.results-table > tbody > tr.last > td,
+.results-table > tbody > tr:last-child > th,
+.results-table > .fake-tbody > .fake-tr:last-child > .fake-td,
+.results-table > .fake-tbody > .fake-tr.last > .fake-td,
+.results-table > .fake-tbody > .fake-tr:last-child > .fake-th {
+	border-bottom: 1px solid {$GET,standard_border};
+}
+.results-table > tfoot > tr > td,
+.results-table > tfoot > tr > th {
+	border-bottom: 1px solid {$GET,standard_border};
+}
+
+table > * > .zebra-0 > th,
+table > * > .zebra-0 > td,
+.fake-table > * > .zebra-0 > .fake-th,
+.fake-table > * > .zebra-0 > .fake-td,
+div.zebra-0,
+table.zebra > tbody > tr:nth-child(even) > th,
+table.zebra > tbody > tr:nth-child(even) > td,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(even) > .fake-th,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(even) > .fake-td {
+	background-color: {$GET,area_zebra_background};
+	color: {$GET,slightly_seeded_text};
+}
+table > * > .zebra-1 > th,
+table > * > .zebra-1 > td,
+.fake-table > * > .zebra-1 > .fake-th,
+.fake-table > * > .zebra-1 > .fake-td,
+div.zebra-1,
+table.zebra > tbody > tr:nth-child(odd) > th,
+table.zebra > tbody > tr:nth-child(even) > td,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(odd) > .fake-th,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(even) > .fake-td {
+	background-color: {$GET,area_2_background};
+	color: {$GET,slightly_seeded_text};
+}
+div.zebra-0, div.zebra-1 {
+	border: 1px solid {$GET,standard_border};
+	border-top: 0;
+	padding: 0.5em;
+}
+div.zebra-0 p, div.zebra-1 p {
+	margin-top: 0;
+}
+div.zebra-0 p:last-child, div.zebra-1 p:last-child {
+	margin-bottom: 0;
+}
+div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
+	border-top: 0;
+}
+
+.table-heading-cell {
+	padding: 1em !important;
+	text-align: left !important;
+	background-color: {$GET,area_background} !important; /*  !important so precedence over th.dh */
+	font-weight: normal;
+}
+.table-heading-cell h2 {
+	margin: 0;
+}
+
+.thick-border th, .thick-border td, .thick-border .fake-th, .thick-border .fake-td {
+	border-top-width: 4px !important;
+}
+
+.field-name-column {
+	width: 14em;
+}
+
+.field-name-column-shorter {
+	width: 11em;
+}
+
+.field-input-column, .field-value-column {
+	width: 100%;
+}
+
+.field-sup-column {
+	width: 10em;
+}
+
+/* This relies on some JavaScript running too, to set the data attributes; works great though for properly marked up thead'd tables*/
+/*{+START,CSS_MODE,mobile}*/
+	.responsive-table,
+	.responsive-table > caption,
+	.responsive-table > tbody,
+	.responsive-table > tbody > tr,
+	.responsive-table > tbody > tr > th,
+	.responsive-table > tbody > tr > td,
+	.responsive-table > tfoot,
+	.responsive-table > tfoot > tr,
+	.responsive-table > tfoot > tr > th,
+	.responsive-table > tfoot > tr > td,
+	.responsive-table > tr,
+	.responsive-table > tr > th,
+	.responsive-table > tr > td,
+	.responsive-table > .fake-tbody,
+	.responsive-table > .fake-tbody > .fake-tr,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td,
+	.responsive-table > .fake-tr,
+	.responsive-table > .fake-tr > .fake-th,
+	.responsive-table > .fake-tr > .fake-td {
+		display: block;
+		width: auto;
+		overflow: hidden;
+		text-align: left !important;
+	}
+
+	.responsive-table > thead, .responsive-table > .fake-thead {
+		display: none !important;
+	}
+
+	.responsive-table > tbody > tr,
+	.responsive-table > tfoot > tr,
+	.responsive-table > tr,
+	.responsive-table > .fake-tbody > .fake-tr,
+	.responsive-table > .fake-tr {
+		border-bottom: 1px solid {$GET,standard_border};
+		margin-bottom: 1em;
+	}
+
+	/* On responsive tables, add indentation to separate the th/td labels from the values unless .responsive-table-no-prefix-no-indent exists */
+	.responsive-table > tbody > tr > th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tbody > tr > td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tfoot > tr > th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tfoot > tr > td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tr > th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tr > td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tr > .fake-th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tr > .fake-td:not(.responsive-table-no-prefix-no-indent)::before {
+		content: "";
+		font-weight: bold;
+		width: 7em;
+		overflow-wrap: normal !important;
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	/* Add th/td header and colon to the left side of the indentation unless data-th is blank */
+	.responsive-table > tbody > tr > th:not([data-th=""])::before,
+	.responsive-table > tbody > tr > td:not([data-th=""])::before,
+	.responsive-table > tfoot > tr > th:not([data-th=""])::before,
+	.responsive-table > tfoot > tr > td:not([data-th=""])::before,
+	.responsive-table > tr > th:not([data-th=""])::before,
+	.responsive-table > tr > td:not([data-th=""])::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th:not([data-th=""])::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td:not([data-th=""])::before,
+	.responsive-table > .fake-tr > .fake-th:not([data-th=""])::before,
+	.responsive-table > .fake-tr > .fake-td:not([data-th=""])::before {
+		content: attr(data-th) ":";
+	}
+
+	.responsive-table > tbody > tr > th,
+	.responsive-table > tbody > tr > td,
+	.responsive-table > tfoot > tr > th,
+	.responsive-table > tfoot > tr > td,
+	.responsive-table > tr > th,
+	.responsive-table > tr > td,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td,
+	.responsive-table > .fake-tr > .fake-th,
+	.responsive-table > .fake-tr > .fake-td {
+		border-left: 1px solid {$GET,standard_border};
+		border-radius: 0 !important;
+	}
+
+	.responsive-table > tbody > tr > th .field-name,
+	.responsive-table > tbody > tr > td .field-name,
+	.responsive-table > tr > th .field-name,
+	.responsive-table > tr > td .field-name,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th .field-name,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td .field-name,
+	.responsive-table > .fake-tr > .fake-th .field-name,
+	.responsive-table > .fake-tr > .fake-td .field-name {
+		font-weight: normal;
+		font-style: italic;
+	}
+
+	.responsive-table > tbody > tr > th:empty,
+	.responsive-table > tbody > tr > td:empty,
+	.responsive-table > tfoot > tr > th:empty,
+	.responsive-table > tfoot > tr > td:empty,
+	.responsive-table > tr > th:empty,
+	.responsive-table > tr > td:empty,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th:empty,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td:empty,
+	.responsive-table > .fake-tr > .fake-th:empty,
+	.responsive-table > .fake-tr > .fake-td:empty {
+		display: none;
+	}
+
+	.responsive-table > tbody > tr:last-child > td,
+	.responsive-table > tbody > tr.last > td,
+	.responsive-table > tfoot > tr:last-child > td,
+	.responsive-table > tfoot > tr.last > td,
+	.responsive-table > tbody > tr:last-child > th,
+	.responsive-table > .fake-tbody > .fake-tr:last-child > .fake-td,
+	.responsive-table > .fake-tbody > .fake-tr.last > .fake-td,
+	.responsive-table > .fake-tbody > .fake-tr:last-child > .fake-th {
+		border-bottom: 0;
+	}
+
+	.responsive-table td a:first-child:last-child {
+		/* Will wrap onto next line if too long to fit onto one line, important to make links neat */
+		display: inline-block;
+	}
+
+	.responsive-table .form-table-field-spacer {
+		border: 0 !important;
+	}
+
+	.responsive-table .form-table-field-spacer .table-heading-cell {
+		border: 0 !important;
+		padding: 0 !important;
+	}
+
+	.responsive-table-bolded-first-column > tbody > tr > th:first-child,
+	.responsive-table-bolded-first-column > tbody > tr > td:first-child,
+	.responsive-table-bolded-first-column > tfoot > tr > th:first-child,
+	.responsive-table-bolded-first-column > tfoot > tr > td:first-child,
+	.responsive-table-bolded-first-column > tr > th:first-child,
+	.responsive-table-bolded-first-column > tr > td:first-child,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-th:first-child,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-td:first-child,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-th:first-child,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-td:first-child {
+		font-weight: bold;
+	}
+
+	.responsive-table-bolded-first-column > tbody > tr > th[data-th]::before,
+	.responsive-table-bolded-first-column > tbody > tr > td[data-th]::before,
+	.responsive-table-bolded-first-column > tfoot > tr > th[data-th]::before,
+	.responsive-table-bolded-first-column > tfoot > tr > td[data-th]::before,
+	.responsive-table-bolded-first-column > tr > th[data-th]::before,
+	.responsive-table-bolded-first-column > tr > td[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-td[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-td[data-th]::before {
+		font-weight: normal; /* Overridden from above */
+	}
+
+	.responsive-table-separate-lines > tbody > tr > th[data-th]::before,
+	.responsive-table-separate-lines > tbody > tr > td[data-th]::before,
+	.responsive-table-separate-lines > tfoot > tr > th[data-th]::before,
+	.responsive-table-separate-lines > tfoot > tr > td[data-th]::before,
+	.responsive-table-separate-lines > tr > th[data-th]::before,
+	.responsive-table-separate-lines > tr > td[data-th]::before,
+	.responsive-table-separate-lines > .fake-tbody > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-separate-lines > .fake-tbody > .fake-tr > .fake-td[data-th]::before,
+	.responsive-table-separate-lines > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-separate-lines > .fake-tr > .fake-td[data-th]::before {
+		width: auto;
+		display: block;
+		margin-bottom: 0.5em;
+	}
+/*{+END}*/
+
+/* This class exists so member tooltips have space. */
+.overlay-table {
+	min-height: 300px;
+}
+
+/*
+=========================
+=====Core Interfaces=====
+=========================
+*/
+
+.question-ui-buttons {
+	text-align: center;
+	margin-top: 15px;
+}
+
+.tooltip {
+	font-size: 1em;
+	z-index: 10000;
+	opacity: 0.9;
+	overflow-wrap: break-word;
+	/*min-width: 6em;*/
+	pointer-events: none;
+}
+
+.tooltip a, .tooltip abbr {
+	pointer-events: auto;
+}
+.tooltip-ownlayout {
+	padding: 0.5em;
+	border-radius: {$GET,border_radius};
+	color: {$GET,text_light} !important;
+}
+
+.tooltip-ownlayout * {
+	color: {$GET,text_light} !important;
+}
+
+.tooltip-ownlayout a {
+	color: {$GET,text_light} !important;
+	font-weight: bold;
+}
+
+.tooltip-ownlayout div.red-alert,
+.tooltip-ownlayout p.red-alert {
+	background: transparent;
+}
+
+.tooltip-ownlayout,
+.tooltip-nolayout th.de-th,
+.tooltip-nolayout td {
+	color: {$GET,text_light};
+	background-color: {$GET,tooltip_background};
+}
+
+.tooltip-ownlayout > .box:first-child > .box-inner > h3:first-child,
+.tooltip-ownlayout > p:first-child {
+	margin-top: 0;
+}
+
+.tooltip .box {
+	margin: 0;
+}
+
+.tooltip img {
+	max-width: 100%;
+	max-height: 200px;
+}
+
+.tooltip .shunted-button {
+	display: none;
+}
+.tooltip .whitespace-visible {
+	max-height: 5em;
+	overflow: auto;
+}
+.tooltip .associated-link {
+	display: none;
+}
+.tooltip-img {
+	position: absolute;
+	right: 3px;
+	top: 3px;
+}
+.tooltip h2 {
+	margin-top: 0;
+}
+.tooltip a, .tooltip a:visited, .tooltip a:hover {
+	text-decoration: none !important;
+	color: inherit !important;
+}
+.tooltip.have-links a, .tooltip.have-links a:visited, .tooltip.have-links a:hover {
+	color: {$GET,a.link_light} !important;
+	text-decoration: underline !important;
+}
+.tooltip .tooltip-fields {
+	font-size: 0.85em;
+	display: inline-block;
+	border-spacing: 0;
+}
+.tooltip .tooltip-fields table {
+	border-collapse: collapse;
+}
+.tooltip .tooltip-fields th {
+	border-right: 1px solid {$GET,dark_border};
+	font-weight: bold !important;
+	padding-right: 1em;
+	white-space: nowrap;
+}
+.tooltip .tooltip-fields td {
+	padding-left: 1em;
+	min-width: 18em;
+}
+.tooltip-with-img {
+	padding-right: 30px;
+}
+.faded-tooltip-img {
+	opacity: 0.2;
+}
+
+.diff {
+	white-space: pre-wrap;
+}
+.diff del {
+	color: {$GET,red_highlight_text} !important;
+}
+.diff ins {
+	color: {$GET,green_highlight_text} !important;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.results-table-under {
+	font-size: 12px;
+	margin: 1em 0;
+}
+
+.results-table-sorter {
+	float: left;
+	margin-right: 0.75em;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.results-table-sorter select {
+		max-width: 400px;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.results-table-sorter select {
+		max-width: 315px;
+	}
+/*{+END}*/
+
+.results-table-sorter label {
+	margin-right: 7px;
+}
+
+.pagination-spacing {
+	margin: 1em 0;
+}
+
+.compacted-subbox-stream .pagination-spacing {
+	margin-left: 1em;
+}
+
+.pagination {
+	float: left;
+	/*	max-width: 540px; Looks bad on forumview */
+}
+
+.pagination nav > * {
+	vertical-align: middle;
+}
+.pagination .inline, .pagination nav {
+	display: inline-block;
+}
+
+.pagination nav > a,
+.pagination nav > span,
+.results-launcher a,
+.results-launcher span {
+	border: 1px solid {$GET,pale_border};
+	border-left: 0;
+	background-color: {$GET,area_background};
+}
+
+.pagination nav > a:first-child,
+.pagination nav > span:first-child,
+.results-launcher a:first-child,
+.results-launcher span:first-child,
+.pagination .first-child,
+.results-launcher .first-child {
+	border-left: 1px solid {$GET,pale_border};
+}
+
+.pagination a:hover,
+.results-launcher a:hover {
+	background-color: {$GET,area_hover_2_background} !important;
+}
+
+.pagination-per-page,
+.pagination-nav {
+	margin-right: 8px;
+}
+
+.pagination-load-more {
+	border-top: 1px solid {$GET,standard_border};
+	text-align: center;
+	font-size: 1.6em;
+	padding: 0.2em;
+	clear: both;
+}
+
+.alphabetical-jumper {
+	float: none !important;
+	margin-left: -2px !important;
+	margin-bottom: 10px !important;
+	max-width: 100% !important;
+	padding: 3px;
+}
+
+.alphabetical-jumper.pagination a, .alphabetical-jumper.pagination a:hover, .alphabetical-jumper.pagination span {
+	padding: 0.5em 1em !important;
+}
+
+.results-continue, .results-page-num {
+	border-left: 0;
+}
+
+.results-page-num {
+	font-weight: bold;
+}
+
+.pagination-pages {
+	display: inline;
+}
+
+.pagination nav > a,
+.pagination nav > a:visited,
+.pagination nav > a:hover,
+.pagination nav > span,
+.results-launcher a,
+.results-launcher a:visited,
+.results-launcher a:hover,
+.results-launcher span {
+	display: inline-block;
+	text-decoration: none;
+	margin-top: 0;
+}
+.pagination nav > a:hover,
+.results-launcher a:hover {
+	background-color: {$GET,area_hover_2_background};
+}
+/*{+START,CSS_MODE,desktop}*/
+	.pagination nav > a,
+	.pagination nav > a:visited,
+	.pagination nav > a:hover,
+	.pagination nav > span,
+	.results-launcher a,
+	.results-launcher a:visited,
+	.results-launcher a:hover,
+	.results-launcher span {
+		padding: 4px 6px !important;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.pagination nav > a,
+	.pagination nav > a:visited,
+	.pagination nav > a:hover,
+	.pagination nav > span,
+	.results-launcher a,
+	.results-launcher a:visited,
+	.results-launcher a:hover,
+	.results-launcher span {
+		padding: 4px 10px !important;
+	}
+/*{+END}*/
+
+.results-launcher {
+	font-size: 0.8em;
+	display: inline;
+	padding-left: 2em;
+}
+.results-launcher a,
+.results-launcher a:visited,
+.results-launcher a:hover,
+.results-launcher span {
+	padding: 0 3px;
+}
+
+.compacted-subbox-stream.box-inner {
+}
+
+.compacted-subbox-stream > .raw-ajax-grow-spot > h3 {
+	margin: 1em 5px;
+}
+.compacted-subbox-stream .box {
+	border-top: 1px {$?,{$THEME_OPTION,borders},dotted {$GET,standard_border},solid transparent};
+	border-left: 0;
+	border-right: 0;
+	border-bottom: 0;
+	border-radius: 0;
+	padding: 0 !important;
+	margin: 0.7em 0;
+	padding: 0.7em 0;
+	background: none;
+}
+.compacted-subbox-stream .box:first-child, .compacted-subbox-stream h3 + .box {
+	border-top: 0 !important;
+	margin-top: 0 !important;
+	padding-top: 0 !important;
+}
+.compacted-subbox-stream .box a img {
+	max-width: 150px;
+}
+.compacted-subbox-stream .box+.compacted-subbox-stream .box {
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
+}
+.compacted-subbox-stream .box a {
+	font-size: 1.1em;
+}
+.compacted-subbox-stream .box .associated-details {
+	margin-bottom: 0;
+}
+.compacted-subbox-stream.less-compact .box {
+	padding-top: 1.5em !important;
+	margin: 2em 0;
+}
+.compacted-subbox-stream.less-compact .box-inner > h3 {
+	font-size: 1.3em;
+}
+
+.category-sorter {
+}
+.category-sorter label {
+	font-weight: {$GET,font_weight_medium};
+}
+
+.index-screen-fancier-screen-pre {
+	margin-bottom: 1.5em;
+}
+.index-screen-fancier-screen-post {
+	margin-top: 1.5em;
+}
+
+.index-screen-fancier-screen-entries .not-too-tall {
+	border: 1px solid {$GET,standard_border};
+	padding: 0.5em;
+	margin-bottom: 0.5em;
+}
+.index-screen-fancier-entry {
+	margin: 0.5em;
+	padding: 0.5em;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.index-screen-fancier-entry.box {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: none;
+	}
+/*{+END}*/
+
+.index-screen-fancier-entry-link {
+	font-weight: {$GET,font_weight_medium};
+	margin-bottom: 0.3em;
+}
+
+.index-screen-fancier-entry-count {
+	font-size: 0.9em;
+	font-weight: normal;
+}
+.index-screen-fancier-entry-description {
+	font-size: 0.9em;
+	margin-left: 18px; /* Due to action_link image */
+}
+
+div.wysiwyg-toolbar-color-finder {
+	color: {$GET,area_background};
+}
+
+.fractional-edit {
+	outline: 1px dashed {$GET,point_of_interest_border};
+}
+.fractional-edit, .fractional-edit-nonover {
+	display: inline-block;
+}
+
+.ajax-loading-block {
+	padding: 2em 6em;
+	margin-top: -2em;
+	margin-left: -6em;
+	background-color: rgba(255,255,255,0.5);
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+}
+
+div.ajax-loading, p.ajax-loading {
+	padding: 2em;
+	text-align: center;
+}
+
+.ajax-tree-list {
+	{$BETA_CSS_PROPERTY,user-select: none;}
+}
+
+.ajax-tree-list a, .ajax-tree-list label {
+	vertical-align: middle;
+}
+.ajax-tree-list .icon {
+	vertical-align: baseline;
+}
+
+.ajax-tree-expand-icon {
+	display: inline-block;
+	cursor: pointer;
+}
+
+.ajax-tree-cat-icon {
+	width: 14px;
+	height: 14px;
+	display: none;
+}
+
+.ajax-tree-magic-button {
+	background-color: {$GET,native_ui_background};
+	color: {$GET,native_ui_foreground};
+	cursor: pointer;
+}
+
+.tree-list--root-tree-list {
+	padding-bottom: 0.5em;
+}
+.tree-list-highlighted *, .tree-list-nonhighlighted * {
+	white-space: nowrap;
+}
+.tree-list-highlighted a, .tree-list-nonhighlighted a {
+	background-color: {$GET,native_ui_background};
+	color: {$GET,native_ui_foreground};
+}
+.tree-list-highlighted a {
+	font-weight: bold;
+}
+.tree-list-nonhighlighted a {
+}
+
+.tree-list-node {
+	display: inline-block;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.tree-list-node, .tree-list-nonhighlighted, .tree-list-highlighted {
+		margin: 1em 0;
+	}
+/*{+END}*/
+
+.software-chat {
+	margin: 10px;
+	font-size: 0.9em;
+	float: right;
+	width: 260px;
+}
+.software-chat-iframe {
+	overflow: hidden;
+	width: 650px;
+	height: 90%;
+}
+
+/* Specific field types */
+
+.multilist-mark {
+	width: 1em;
+	display: inline-block;
+}
+.multilist-mark.yes {
+	color: {$GET,green_highlight_text};
+}
+.multilist-mark.no {
+	color: {$GET,red_highlight_text};
+}
+
+/*
+=========================
+========Feedback=========
+=========================
+*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.lined-up-boxes .right {
+		margin-left: 1em;
+	}
+
+	.lined-up-boxes .left {
+		margin-right: 1em;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,mobile}*/
+	.lined-up-boxes .right {
+		width: 100%;
+		float: none;
+		margin-bottom: 20px;
+	}
+
+	.lined-up-boxes .left {
+		width: 100%;
+		float: none;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.ratings {
+		width: 10em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.ratings {
+		width: 100%;
+	}
+/*{+END}*/
+
+.rating-box .rating-inner {
+	text-align: center;
+}
+
+.rating-inline, .rating-inline div, .rating-inline form {
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
+	flex-wrap: wrap;
+}
+
+.rating-inline .rating-outer {
+	padding-right: 2em;
+}
+.rating-inline .rating-outer:last-child {
+	padding-right: 0;
+}
+
+.rating-inline .ajax-loading {
+	padding: 0;
+}
+
+.post-action-link .rating-inline {
+	padding-left: 2em;
+}
+
+.rating-inner img {
+	cursor: pointer;
+}
+
+.rating-error {
+	text-align: center;
+}
+
+.rating-stars {
+	min-width: 55px;
+	display: inline-block;
+}
+
+.rating-star, .rating-star-highlight {
+	padding-right: 3px;
+}
+.rating-star {
+	opacity: 0.2;
+}
+.rating-star-highlight {
+	opacity: 1.0;
+	color: {$GET,seed};
+}
+.email-body .rating-star {
+	display: none;
+}
+
+.rating-display-star {
+	color: {$GET,seed};
+}
+
+.rating-likers a+a {
+	padding-left: 2px;
+}
+
+.box---trackback label {
+	display: block;
+}
+
+.comments-header {
+	margin: 0.4em 0 0 0;
+}
+
+.boxless-space .box > .box-inner > .comments-header {
+	margin-top: 0;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.comments-header {
+		float: left;
+	}
+/*{+END}*/
+
+.comments-sorting-box {
+
+}
+/*{+START,CSS_MODE,desktop}*/
+	.comments-sorting-box {
+		float: right;
+		margin-left: 1em;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.comments-notification-buttons {
+		float: right;
+		margin-left: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.comments-notification-buttons {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+/*{+END}*/
+
+.compact-comments-space .comments-notification-buttons {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.content-screen-comments .comments-wrapper {
+	margin-top: 2em;
+}
+
+.post .post-title {
+	padding-left: 0;
+	margin-bottom: 0.3em;
+}
+
+.post .post-subline {
+	margin: 0 0 1em 0;
+	font-size: 0.9em;
+}
+
+.post .post-poster {
+	font-weight: bold;
+}
+
+.post .post-time {
+	margin-left: 0.5em;
+}
+
+.post .post-action-link {
+}
+
+.post .post-thread-children {
+	margin-top: 1em;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.post .post-thread-children {
+		margin-left: 7px;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,desktop}*/
+	.post .post-thread-children {
+		margin-left: 20px;
+	}
+/*{+END}*/
+
+.post-buttons {
+	text-align: left !important; /* Overrides buttons-group */
+}
+
+.post-buttons .btn {
+	margin-right: 10px;
+}
+
+.post .post-buttons {
+	margin-top: 1.3em;
+}
+
+div .post-buttons > *,
+div .buttons-group-faded > * {
+	opacity: 0.4;
+	transition: opacity 0.3s ease-in-out;
+	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
+}
+
+.post-buttons > *[rel="add reply"],
+.post-buttons > a[rel="back_to_top"] {
+	opacity: 1.0 !important;
+}
+
+.post-buttons:hover > *,
+.is-touch-enabled .post-buttons > *,
+.buttons-group-faded:hover > *,
+.is-touch-enabled .buttons-group-faded > * {
+	opacity: 1.0 !important;
+}
+
+.post-buttons:focus-within > *,
+.buttons-group-faded:focus-within > *{
+	opacity: 1.0 !important;
+}
+
+.post-show-more {
+	text-align: center;
+	border: 1px solid {$GET,standard_border};
+	border-bottom-left-radius: 40px;
+	border-bottom-right-radius: 40px;
+	padding: 1em;
+	font-weight: bold;
+	font-size: 0.85em;
+}
+
+.post .post-show-more {
+	margin-left: 2em;
+}
+
+.comment-wrapper {
+	margin: 1em 0;
+}
+
+.comment-wrapper .highlighted-post {
+	background-color: {$GET,point_of_interest_background} !important;
+	padding: 1em !important;
+	margin-top: 1em;
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important;
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+}
+.comments-wrapper .boxless-space .comment-wrapper .highlighted-post.box {
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important; /* Needs to be more explicit as boxless-space rules will remove borders */
+}
+
+.reviews-average {
+	font-size: 0.8em;
+	opacity: 0.7;
+}
+
+.comments-field-name-column {
+	width: 13em;
+}
+.comments-field-input-column {
+	width: 100%;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.comments-field-name-column, .comments-field-input-column {
+		width: auto;
+	}
+/*{+END}*/
+
+.comments-posting-form-inner {
+	text-align: left;
+	padding: 1em 0 0 0;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.comments-posting-form-inner {
+		overflow: hidden;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.comments-posting-form-inner th,
+	.comments-posting-form-inner td.one-line {
+		padding: 0.5em 1.5em 0.5em 0.5em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.comments-posting-form-inner th,
+	.comments-posting-form-inner td.one-line {
+		padding: 0.5em 1em 0.5em 0;
+	}
+/*{+END}*/
+
+.comments-posting-form-inner th {
+	font-weight: {$GET,font_weight_medium};
+	border-right: 1px solid {$GET,standard_border};
+	text-align: right;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.comments-posting-form-inner th {
+		min-width: 4.5em;
+	}
+/*{+END}*/
+.comments-posting-form-inner th > * {
+	text-align: right !important;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.comments-posting-form-inner td {
+		padding-left: 1.5em;
+		padding-right: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.comments-posting-form-inner td {
+		padding-left: 1em;
+		padding-right: 0.5em;
+	}
+/*{+END}*/
+
+.comments-posting-form-inner textarea {
+	width: 100%;
+}
+
+.comments-posting-form-inner table {
+	border-collapse: collapse;
+}
+
+.comments-posting-form-emoticons {
+	text-align: center;
+	padding-top: 0.5em;
+	padding-left: 0.5em;
+}
+
+.comments-posting-form-emoticons p {
+	margin-bottom: 0;
+}
+
+.comments-posting-form-emoticons a {
+	text-decoration: none;
+}
+.comments-posting-form-emoticons a:hover {
+	text-decoration: underline;
+}
+
+.comments-posting-form-inner .associated-links-block-group {
+	font-size: 0.85em;
+	font-weight: normal;
+}
+.comments-posting-form-inner .associated-links-block-group li {
+	white-space: normal !important;
+}
+
+.comments-posting-form-end {
+}
+
+.comments-posting-form-end::after {
+	display: block;
+	clear: both;
+	content: "";
+}
+
+/*{+START,CSS_MODE,desktop}*//*{+START,IF,{$NOT,{!takes_lots_of_space}}}*/
+	.comments-posting-form-end {
+		margin: 0 0 0.5em 13.5em;
+	}
+/*{+END}*//*{+END}*/
+
+.comments-posting-form-end .proceed-button.contains-preview-button {
+	text-align: left;
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.comments-posting-form-end .proceed-button.contains-preview-button {
+		margin-left: 1em;
+	}
+/*{+END}*/
+
+.comments-captcha {
+	margin-left: 14.5em !important;
+}
+
+.comments-posting-form-end .btn {
+	margin-right: 1em;
+}
+
+.comments-posting-form-end #submit-button.near-preview-button {
+	margin-left: auto;
+}
+
+.comments-captcha {
+	display: inline-block;
+	font-size: 0.85em;
+	text-align: center;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.comments-captcha {
+		margin: 0 auto;
+	}
+/*{+END}*/
+
+/*{+START,IF_EMPTY,{$CONFIG_OPTION,recaptcha_site_key,1}}*/
+	.comments-captcha img,
+	.comments-captcha iframe,
+	.comments-captcha input {
+		vertical-align: middle;
+	}
+
+	input[type="text"]#captcha {
+		font-family: 'Courier New', 'Courier', monospace;
+		font-size: 16px;
+		vertical-align: middle;
+		margin-left: 0.5em;
+		padding: 8px 5px;
+		letter-spacing: 3px;
+		text-transform: uppercase;
+		min-width: 6.2em;
+	}
+/*{+END}*/
+
+/*
+=========================
+==========Lists==========
+=========================
+*/
+
+ul.compact-list,
+.global-side-panel ul,
+ol.compact-list {
+	margin: 0;
+	padding: 0;
+	text-align: left; /* In case cascading from somewhere */
+}
+
+ul.compact-list > li,
+.global-side-panel ul > li,
+ol.compact-list > li {
+	margin: 0 0 0 17px;
+	padding: 0;
+}
+.compact-list > li > p {
+	margin-top: 0;
+}
+
+dl.compact-list {
+	margin: 0.4em 0;
+	overflow: hidden;
+}
+dl.compact-list > dt {
+	display: list-item;
+	list-style-type: circle;
+	float: left;
+	margin: 0 0.5em 0 8px;
+	clear: both;
+}
+.global-side-panel .box dl.compact-list > dt {
+	margin-left: 0;
+}
+dl.compact-list > dt::after {
+	content: ":";
+}
+dl.compact-list > dd {
+	margin: 0;
+}
+
+ul.spaced-list, .spaced-list ul,
+ol.spaced-list, .spaced-list ol,
+.zone-running-docs .comcode-page ul:not([class]),
+.zone-running-docs .comcode-page ol:not([class]) {
+	margin: 0;
+	padding: 0 !important;
+}
+ul.spaced-list, .spaced-list ul,
+.zone-running-docs .comcode-page ul:not([class]) {
+	list-style-type: square;
+}
+.spaced-list li, .zone-running-docs .comcode-page ul:not([class]) > li,
+.zone-running-docs .comcode-page ol:not([class]) > li {
+	margin: 0.5em 0 0.5em 30px !important;
+	padding: 0;
+}
+
+ul.tick-list,
+ul.tick-list li {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+ul.actions-list {
+	padding: 0;
+	margin-left: 0;
+}
+ul.actions-list > li,
+.attachment ul.actions-list > li /*for higher precedence for attachments within docs zone*/ {
+	padding: 2px 0 !important;
+	margin: 0 !important;
+}
+ul.actions-list > li,
+ul.actions-list-compact > li,
+ul.actions-list-super-compact > li {
+	margin: 0;
+	list-style-type: none;
+	list-style-image: none;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	ul.actions-list > li,
+	ul.actions-list-compact > li,
+	ul.actions-list-super-compact > li {
+		float: none !important;
+	}
+/*{+END}*/
+
+ul.actions-list > li > .icon,
+ul.actions-list-compact > li > .icon,
+ul.actions-list-super-compact > li > .icon {
+	color: {$GET,seed};
+	width: 14px;
+	height: 14px;
+}
+ul.actions-list > li > * {
+	vertical-align: middle;
+}
+ul.actions-list h4 {
+	display: inline;
+	line-height: 2em;
+}
+
+ul.actions-list-compact, ul.actions-list-super-compact {
+	padding: 0;
+	margin: 0;
+}
+
+li.actions-list-strong {
+	font-weight: bold;
+}
+
+/*
+A note about display of metadata...
+
+It may be displayed using:
+ - meta-details-list (usually used on full screen views of content)
+ - horizontal-meta-details (usually used on blocks where the meta details are important to encourage a click through)
+ - a table (usually used where the content defines its own metadata beyond what all Composr content has, such as a length or resolution)
+ - a tooltip (good for tucking it away, although it's not touch friendly so should only be used if non-important)
+But it should always have role="note" on it (ARIA)
+*/
+
+ul.meta-details-list {
+	display: block;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.meta-details-list > li {
+	padding: 0;
+	margin: 0.2em 0;
+}
+
+dl.meta-details-list > dt {
+	float: left;
+	clear: left;
+	padding-right: 0.4em !important;
+}
+dl.meta-details-list > dt, dl.meta-details-list > dd {
+	margin: 0;
+	padding: 0.2em 0;
+}
+
+.meta-details > ul.meta-details-list > li {
+	margin: 0.5em 0;
+}
+.meta-details > dl.meta-details-list {
+	margin-bottom: 0;
+	overflow: hidden;
+}
+
+/*
+=========================
+=Associations/Summaries==
+=========================
+*/
+
+.quick-self-edit-link {
+	font-size: 0.8em;
+	text-align: center;
+	border: 1px solid {$GET,pale_border};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+	background-color: {$GET,area_background};
+	padding: 0.5em;
+	opacity: 0.4;
+	transition: opacity 0.6s linear;
+	margin-top: 3em;
+	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
+}
+.quick-self-edit-link img, .quick-self-edit-link span {
+	vertical-align: middle;
+}
+.quick-self-edit-link:hover {
+	opacity: 1.0;
+}
+#panel-top .quick-self-edit-link {
+	display: none;
+}
+
+.staff-actions {
+	margin-top: 2em;
+	font-size: 0.95em;
+	opacity: 0.4;
+	transition: opacity 0.3s ease-in-out;
+	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
+	min-height: 26px;
+	overflow: hidden; /* To contain the settings cog icon */
+}
+
+.staff-actions:hover,
+.is-touch-enabled .staff-actions {
+	opacity: 1;
+}
+
+.staff-actions:focus-within {
+	opacity: 1;
+}
+
+.staff-actions .box-inner {
+	padding-right: 25px;
+	position: relative;
+}
+.staff-actions .box-inner::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	opacity: 0.3;
+	z-index: -1;
+	background: transparent right center no-repeat;
+	/*{+START,IF,{$THEME_OPTION,use_monochrome_icons}}*/
+	background-image: url('{$IMG_INLINE;,icons_monochrome/buttons/settings}');
+	/*{+END}*/
+	/*{+START,IF,{$NOT,{$THEME_OPTION,use_monochrome_icons}}}*/
+	background-image: url('{$IMG_INLINE;,icons/buttons/settings}');
+	/*{+END}*/
+	background-size: 24px 24px;
+}
+
+.staff-actions .field-name.standard-field-name {
+	display: none;
+}
+
+
+.staff-actions ul.horizontal-links {
+	width: auto;
+	font-size: 1em;
+}
+
+.staff-actions ul.horizontal-links .icon {
+	width: 20px;
+	height: 20px;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.staff-actions ul.horizontal-links {
+		display: block;
+		margin: -5px;
+	}
+
+	.staff-actions ul.horizontal-links li {
+		display: inline-block;
+		margin: 5px;
+	}
+/*{+END}*/
+.global-middle .staff-actions li {
+	white-space: nowrap !important;
+}
+
+.associated-details {
+	font-weight: normal; /* Undo what may be set on a surrounding element */
+}
+
+.associated-minor-button-action, .associated-details {
+	font-size: 0.9em;
+}
+
+.associated-details-smaller {
+	font-size: 0.8em;
+}
+
+.global-side-panel .associated-minor-button-action, .global-side-panel .associated-details, .associated-link {
+	font-size: 0.95em;
+}
+
+.associated-minor-button-overlaid {
+	position: absolute;
+}
+
+div.associated-details {
+	margin: 1em 0;
+}
+
+.associated-breadcrumbs {
+	font-size: 0.85em;
+	color: {$GET,a.link};
+}
+
+/*
+a.associated-link / form.associated-link / span.associated-link - a single associated link displayed inline, with CSS-generated brackets around
+p.associated-link / div.associated-link - a single associated link displayed in a block, with CSS-generated brackets around
+ul.associated-links-block-group - a group of associated links displayed in a block, each link on its own line with its own CSS-generated brackets around
+ul.horizontal-links / ul.horizontal-links-comma - a group of associated links displayed in a block, the links on the same line with a CSS-generated separation character; often used to represent block actions; often used in conjunction with associated-links-block-group to get the CSS-generated brackets
+.horizontal-meta-details / .horizontal-buttons / .horizontal-ticker - Additional horizontal list types for things other than links
+.buttons-group - used for a button set, like horizontal-links but for centred buttons
+
+There is 'actions-list' too (defined elsewhere). These are for links that are given more focus as key navigation mechanisms in a task-based UI.
+*/
+
+ul.associated-links-block-group.horizontal-links > li:first-child::before,
+p.associated-link::before,
+div.associated-link::before {
+	opacity: 0.7;
+	font-size: 0.8em;
+}
+/*{+START,CSS_MODE,desktop}*/
+	ul.associated-links-block-group.horizontal-links > li:first-child::before,
+	p.associated-link::before,
+	div.associated-link::before {
+		content: "( " !important;
+	}
+/*{+END}*/
+ul.associated-links-block-group.horizontal-links > li:last-child::after,
+p.associated-link::after,
+div.associated-link::after {
+	opacity: 0.7;
+	font-size: 0.8em;
+}
+/*{+START,CSS_MODE,desktop}*/
+	ul.associated-links-block-group.horizontal-links > li:last-child::after,
+	p.associated-link::after,
+	div.associated-link::after {
+		content: " )" !important;
+	}
+/*{+END}*/
+span.associated-link, a.associated-link, form.associated-link {
+	white-space: nowrap;
+}
+ul.associated-links-block-group > li::before,
+span.associated-link::before,
+a.associated-link::before,
+form.associated-link::before {
+	opacity: 0.7;
+}
+/*{+START,CSS_MODE,desktop}*/
+	ul.associated-links-block-group > li::before,
+	span.associated-link::before,
+	a.associated-link::before,
+	form.associated-link::before {
+		content: "(" !important;
+	}
+/*{+END}*/
+ul.associated-links-block-group > li:first-child::before,
+span.associated-link:first-child::before,
+a.associated-link:first-child::before,
+form.associated-link:first-child::before {
+	vertical-align: baseline !important;
+}
+
+ul.associated-links-block-group.horizontal-links > li::after { /* Undoes the above rules for if 'horizontal-links' is set (the rule further up will run instead and the middot one below) */
+	content: "" !important;
+}
+ul.associated-links-block-group > li::after,
+span.associated-link::after,
+a.associated-link::after,
+form.associated-link::after {
+	opacity: 0.7;
+}
+/*{+START,CSS_MODE,desktop}*/
+	ul.associated-links-block-group > li::after,
+	span.associated-link::after,
+	a.associated-link::after,
+	form.associated-link::after {
+		content: ")" !important;
+	}
+/*{+END}*/
+
+ul.associated-links-block-group.horizontal-links > li:not(:first-child)::before,
+.horizontal-meta-details li:not(:first-child)::before,
+.horizontal-links > li:not(:first-child)::before,
+.horizontal-ticker li:not(:first-child)::before {
+	/* CSS based middot */
+	margin: 0 0.5em;
+	content: "" !important;
+	border-radius: 50%;
+	width: 3px;
+	height: 3px;
+	background-color: {$GET,dark_border};
+	display: inline-block;
+	vertical-align: middle;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.with-images ul.associated-links-block-group.horizontal-links > li::before,
+	.with-images .horizontal-meta-details li::before,
+	.with-images .horizontal-links > li::before,
+	.with-images .horizontal-ticker li::before {
+		display: none;
+	}
+/*{+END}*/
+.horizontal-meta-details li::before {
+	vertical-align: middle;
+}
+.horizontal-buttons li {
+	padding-left: 3px !important;
+}
+.horizontal-buttons li:first-child {
+	/* Undoes the li padding defined above */
+	padding-left: 0 !important;
+}
+.horizontal-links-comma li::before {
+	content: ", \A";
+}
+.horizontal-meta-details li:first-child::before,
+.horizontal-links li:first-child::before,
+.horizontal-buttons li:first-child::before,
+.horizontal-ticker li:first-child::before,
+.horizontal-links-comma li:first-child::before {
+	/* Undoes the middot/comma separator */
+	/*display: none;*/
+}
+ul.associated-link,
+ul.horizontal-meta-details,
+ul.horizontal-links,
+ul.horizontal-links-comma,
+ul.horizontal-buttons,
+.horizontal-ticker {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.horizontal-buttons {
+	list-style: none;
+}
+
+ul.horizontal-links-comma {
+	vertical-align: baseline !important;
+	width: auto !important;
+}
+
+ul.associated-link {
+	display: block;
+}
+
+ul.horizontal-meta-details,
+ul.horizontal-links,
+ul.horizontal-links-comma,
+ul.horizontal-buttons,
+.horizontal-ticker {
+	/* As these go across horizontally, we need to do this to allow centering to work for the group */
+	display: inline-block;
+	width: 100%;
+}
+
+ul.associated-link > li,
+.horizontal-meta-details > li,
+.horizontal-links > li,
+ul.horizontal-links-comma > li,
+.horizontal-buttons > li,
+.horizontal-ticker > li {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+ul.associated-link > li {
+	display: block !important; /* Undoes "display: inline" above */
+}
+
+ul.horizontal-links.with-icons li .icon {
+	margin-right: 0.3em;
+}
+
+ul.horizontal-links li img {
+	max-width: 20px;
+}
+ul.associated-link li img {
+	max-width: 14px;
+}
+ul.horizontal-links li > img, ul.associated-link li > img, ul.horizontal-links li > time, ul.horizontal-links li > a, ul.horizontal-links li > form {
+	vertical-align: middle;
+}
+/*{+START,CSS_MODE,mobile}*/
+	ul.horizontal-links li > img, ul.associated-link li > img, ul.horizontal-links li > time, ul.horizontal-links li > a, ul.horizontal-links li > form {
+		white-space: nowrap !important;
+	}
+
+	ul.horizontal-links {
+		margin: -5px -5px -5px 0;
+	}
+
+	ul.horizontal-links > li {
+		margin: 5px 5px 5px 0;
+	}
+/*{+END}*/
+
+.associated-links-block-group > li{
+	margin: 0.5em 0 !important;
+	white-space: nowrap; /* To force breaking between links */
+}
+
+.global-side-panel .associated-links-block-group > li {
+	white-space: normal;
+}
+
+.buttons-group,
+.associated-links-block-group {
+	text-align: center;
+	padding: 0;
+	margin: 1em 0;
+	display: block;
+	list-style: none;
+}
+
+.horizontal-links,
+.associated-link {
+	font-size: 0.9em;
+}
+
+.horizontal-links form, .horizontal-links div {
+	display: inline;
+}
+
+ul.buttons-group,
+ul.associated-links-block-group {
+	margin: 0; /* Margin will go on li elements if its a list */
+}
+
+.buttons-group-inner {
+	margin: -3px;
+}
+
+.buttons-group .btn {
+	margin: 3px;
+}
+
+.force-normal-margin {
+	margin-top: 1em !important;
+}
+.force-margin {
+	margin-top: 1.5em !important;
+}
+.global-side-panel .force-margin {
+	margin-top: 1em !important;
+}
+
+.associated-link.suggested {
+	font-weight: bold;
+}
+
+.alt-field::before {
+	content: "\00bb"; /* raquo */
+	padding-left: 1em;
+	padding-right: 0.2em;
+}
+.related-field {
+	font-style: italic;
+	font-weight: normal;
+}
+.related-field::before {
+	font-style: normal;
+	content: "\203a"; /* rsaquo */
+	padding-bottom: 5px;
+	padding-left: 0.5em;
+	padding-right: 0.2em;
+}
+
+/*
+=========================
+=======Misc Forms========
+=========================
+*/
+
+.field-input-non-filled {
+	color: {$GET,unfilled_input_text} !important;
+}
+
+::placeholder { /* W3C */
+	color: {$GET,unfilled_input_text} !important;
+}
+::-webkit-input-placeholder { /* Webkit, Blink, Edge */
+	color: {$GET,unfilled_input_text} !important;
+}
+::-moz-placeholder { /* Firefox */
+	color: {$GET,unfilled_input_text} !important;
+}
+::-ms-input-placeholder { /* IE */
+	color: {$GET,unfilled_input_text} !important;
+}
+
+.field-input-filled {
+	color: {$GET,native_ui_foreground};
+}
+
+.locked-input-field {
+	color: {$GET,locked_input_field};
+}
+
+.native-ui-foreground {
+	color: {$GET,native_ui_foreground};
+}
+
+.native-ui-selected {
+	color: {$GET,native_ui_selected_foreground};
+	background-color: {$GET,native_ui_selected_background};
+}
+
+.simple-neat-checkbox {
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+.simple-neat-checkbox input {
+	margin-top: 0.3em;
+}
+.simple-neat-checkbox label {
+	padding-left: 0.5em;
+}
+
+/*{+START,IF_EMPTY,{$CONFIG_OPTION,recaptcha_site_key,1}}*/
+	.captcha-frame {
+		vertical-align: middle;
+
+		/*1px tolerance for rounding errors during zooming*/
+		width: 87px;
+		height: 37px;
+	}
+
+	.captcha a {
+		float: right;
+		margin: 0px 10px 0 5px;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.quite-wide-field {
+		width: 88%;
+	}
+/*{+END}*/
+
+.box---confirm-screen {
+	margin-bottom: 2em;
+}
+
+/*
+=========================
+======Common forms=======
+=========================
+*/
+
+.wide-field {
+	width: 100%;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+.fields-set-contents .form-control-wide {
+	max-width: 500px;
+}
+.multi-field + .multi-field {
+	margin: 0.25em 0;
+}
+
+.form-control {
+	display: inline-block;
+	vertical-align: middle;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: {$GET,slightly_gray_text};
+	background-color: {$GET,WB};
+	background-clip: padding-box;
+	border: 1px solid {$GET,standard_border};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control-wide {
+	display: block;
+	width: 100%;
+}
+
+.form-control:focus {
+	color: {$GET,slightly_gray_text};
+	background-color: {$GET,WB};
+	border-color: {$COLOR_LIGHTEN,{$GET,seed},25%};
+	outline: 0;
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed},0.25};
+}
+
+.form-control::-webkit-input-placeholder {
+	color: {$GET,unfilled_input_text};
+	opacity: 1;
+}
+
+.form-control::-moz-placeholder {
+	color: {$GET,unfilled_input_text};
+	opacity: 1;
+}
+
+.form-control::-ms-input-placeholder {
+	color: {$GET,unfilled_input_text};
+	opacity: 1;
+}
+
+.form-control::placeholder {
+	color: {$GET,unfilled_input_text};
+	opacity: 1;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+	background-color: {$GET,input_disabled_background};
+	opacity: 1;
+}
+
+select.form-control:not([size]):not([multiple]) {
+	height: 36px;
+}
+
+select.form-control:focus::-ms-value {
+	color: {$GET,text_dark};
+	background-color: {$GET,WB};
+}
+
+.form-control-file,
+.form-control-range {
+	display: block;
+	width: 100%;
+}
+
+.form-control-plaintext {
+	display: block;
+	width: 100%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-bottom: 0;
+	line-height: 1.5;
+	color: {$GET,text_dark};
+	background-color: transparent;
+	border: solid transparent;
+	border-width: 1px 0;
+}
+
+.form-control-plaintext.form-control-sm, .input-group-sm > .form-control-plaintext.form-control,
+.input-group-sm > .input-group-prepend > .form-control-plaintext.input-group-text,
+.input-group-sm > .input-group-append > .form-control-plaintext.input-group-text,
+.input-group-sm > .input-group-prepend > .form-control-plaintext.btn,
+.input-group-sm > .input-group-append > .form-control-plaintext.btn,
+.form-control-plaintext.form-control-lg,
+.input-group-lg > .form-control-plaintext.form-control,
+.input-group-lg > .input-group-prepend > .form-control-plaintext.input-group-text,
+.input-group-lg > .input-group-append > .form-control-plaintext.input-group-text,
+.input-group-lg > .input-group-prepend > .form-control-plaintext.btn,
+.input-group-lg > .input-group-append > .form-control-plaintext.btn {
+	padding-right: 0;
+	padding-left: 0;
+}
+
+.form-control-sm, .input-group-sm > .form-control,
+.input-group-sm > .input-group-prepend > .input-group-text,
+.input-group-sm > .input-group-append > .input-group-text,
+.input-group-sm > .input-group-prepend > .btn,
+.input-group-sm > .input-group-append > .btn {
+	padding: 4px 7px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: {$GET,border_radius};
+}
+
+select.form-control-sm:not([size]):not([multiple]), .input-group-sm > select.form-control:not([size]):not([multiple]),
+.input-group-sm > .input-group-prepend > select.input-group-text:not([size]):not([multiple]),
+.input-group-sm > .input-group-append > select.input-group-text:not([size]):not([multiple]),
+.input-group-sm > .input-group-prepend > select.btn:not([size]):not([multiple]),
+.input-group-sm > .input-group-append > select.btn:not([size]):not([multiple]) {
+	height: 28px;
+}
+
+.form-control-lg, .input-group-lg > .form-control,
+.input-group-lg > .input-group-prepend > .input-group-text,
+.input-group-lg > .input-group-append > .input-group-text,
+.input-group-lg > .input-group-prepend > .btn,
+.input-group-lg > .input-group-append > .btn {
+	padding: 7px 14px;
+	font-size: 17px;
+	line-height: 1.5;
+	border-radius: {$GET,border_radius};
+}
+
+select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.form-control:not([size]):not([multiple]),
+.input-group-lg > .input-group-prepend > select.input-group-text:not([size]):not([multiple]),
+.input-group-lg > .input-group-append > select.input-group-text:not([size]):not([multiple]),
+.input-group-lg > .input-group-prepend > select.btn:not([size]):not([multiple]),
+.input-group-lg > .input-group-append > select.btn:not([size]):not([multiple]) {
+	height: 42px;
+}
+
+.form-group {
+	margin-bottom: 14px;
+}
+
+.form-text {
+	display: block;
+	margin-top: 3px;
+}
+
+.form-control.is-valid {
+	border-color: {$GET,success_color};
+}
+
+.form-control.is-valid:focus {
+	border-color: {$GET,success_color};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,success_color},0.25};
+}
+
+.form-control.is-invalid {
+	border-color: {$GET,danger_color};
+}
+
+.form-control.is-invalid:focus {
+	border-color: {$GET,danger_color};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,danger_color},0.25};
+}
+
+.form-inline {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	flex-flow: row wrap;
+	align-items: center;
+}
+
+.form-inline .form-check {
+	width: 100%;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.form-inline label {
+		{$BETA_CSS_PROPERTY,display: flex;}
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 0;
+	}
+	.form-inline .form-group {
+		{$BETA_CSS_PROPERTY,display: flex;}
+		flex: 0 0 auto;
+		flex-flow: row wrap;
+		align-items: center;
+		margin-bottom: 0;
+	}
+	.form-inline .form-control {
+		display: inline-block;
+		width: auto;
+		vertical-align: middle;
+	}
+	.form-inline .form-control-plaintext {
+		display: inline-block;
+	}
+	.form-inline .input-group,
+	.form-inline .custom-select {
+		width: auto;
+	}
+	.form-inline .form-check {
+		{$BETA_CSS_PROPERTY,display: flex;}
+		align-items: center;
+		justify-content: center;
+		width: auto;
+		padding-left: 0;
+	}
+	.form-inline .form-check-input {
+		position: relative;
+		margin-top: 0;
+		margin-right: 3px;
+		margin-left: 0;
+	}
+/*{+END}*/
+
+.big-checkbox {
+	width: 25px;
+	height: 25px;
+	vertical-align: middle;
+}
+
+/*
+=========================
+=========Buttons=========
+=========================
+*/
+
+/* This is used to overlay special out-of-flow edit buttons, for staff only */
+input.magic-image-edit-link {
+	font-size: 13px;
+	border: 1px solid {$GET,light_error_border} !important;
+	background-color: {$GET,light_error_background} !important;
+	color: {$GET,slightly_seeded_text} !important;
+	text-shadow: 0 0 0;
+}
+
+.btn {
+	color: {$GET,box_title_text};
+	display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	{$BETA_CSS_PROPERTY,user-select: none;}
+	border: 1px solid transparent;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.5;
+	border-radius: {$GET,border_radius};
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn:hover,
+.btn:focus {
+	text-decoration: none;
+}
+
+.btn:focus,
+.btn.focus {
+	outline: 0;
+	box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.btn.disabled,
+.btn:disabled {
+	opacity: 0.65;
+}
+
+.btn:not(:disabled):not(.disabled) {
+	cursor: pointer;
+}
+
+a.btn.disabled,
+fieldset:disabled a.btn {
+	pointer-events: none;
+}
+
+.btn-primary {
+	color: {$GET,button_primary_text};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
+}
+
+.btn-primary:hover {
+	color: {$GET,button_primary_text};
+	background-color: {$COLOR_DARKEN,{$GET,button_primary},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,button_primary},10%};
+}
+
+.btn-primary:focus, .btn-primary.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+	color: {$GET,text_light};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
+}
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active {
+	color: {$GET,button_primary_text};
+	background-color: {$COLOR_DARKEN,{$GET,button_primary},10%};
+	border-color: {$COLOR_DARKEN,{$GET,button_primary},12.5%};
+}
+
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
+}
+
+.btn-secondary {
+	color: {$GET,text_light};
+	background-color: {$GET,seed_secondary};
+	border-color: {$GET,seed_secondary};
+}
+
+.btn-secondary:hover {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,seed_secondary},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,seed_secondary},10%};
+}
+
+.btn-secondary:focus,
+.btn-secondary.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed_secondary},0.5};
+}
+
+.btn-secondary.disabled,
+.btn-secondary:disabled {
+	color: {$GET,text_light};
+	background-color: {$GET,seed_secondary};
+	border-color: {$GET,seed_secondary};
+}
+
+.btn-secondary:not(:disabled):not(.disabled):active,
+.btn-secondary:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,seed_secondary},10%};
+	border-color: {$COLOR_DARKEN,{$GET,seed_secondary},12.5%};
+}
+
+.btn-secondary:not(:disabled):not(.disabled):active:focus,
+.btn-secondary:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed_secondary},0.5};
+}
+
+.btn-success {
+	color: {$GET,text_light};
+	background-color: {$GET,success_color};
+	border-color: {$GET,success_color};
+}
+
+.btn-success:hover {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,success_color},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,success_color},10%};
+}
+
+.btn-success:focus,
+.btn-success.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,success_color},0.5};
+}
+
+.btn-success.disabled,
+.btn-success:disabled {
+	color: {$GET,text_light};
+	background-color: {$GET,success_color};
+	border-color: {$GET,success_color};
+}
+
+.btn-success:not(:disabled):not(.disabled):active,
+.btn-success:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,success_color},10%};
+	border-color: {$COLOR_DARKEN,{$GET,success_color},12.5%};
+}
+
+.btn-success:not(:disabled):not(.disabled):active:focus,
+.btn-success:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,success_color},0.5};
+}
+
+.btn-danger {
+	color: {$GET,text_light};
+	background-color: {$GET,danger_color};
+	border-color: {$GET,danger_color};
+}
+
+.btn-danger:hover {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,danger_color},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,danger_color},10%};
+}
+
+.btn-danger:focus,
+.btn-danger.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,danger_color},0.5};
+}
+
+.btn-danger.disabled,
+.btn-danger:disabled {
+	color: {$GET,text_light};
+	background-color: {$GET,danger_color};
+	border-color: {$GET,danger_color};
+}
+
+.btn-danger:not(:disabled):not(.disabled):active,
+.btn-danger:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,danger_color},10%};
+	border-color: {$COLOR_DARKEN,{$GET,danger_color},12.5%};
+}
+
+.btn-danger:not(:disabled):not(.disabled):active:focus,
+.btn-danger:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,danger_color},0.5};
+}
+
+.btn-warning {
+	color: {$GET,text_dark};
+	background-color: {$GET,warning_color};
+	border-color: {$GET,warning_color};
+}
+
+.btn-warning:hover {
+	color: {$GET,text_dark};
+	background-color: {$COLOR_DARKEN,{$GET,warning_color},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,warning_color},10%};
+}
+
+.btn-warning:focus,
+.btn-warning.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,warning_color},0.5};
+}
+
+.btn-warning.disabled,
+.btn-warning:disabled {
+	color: {$GET,text_dark};
+	background-color: {$GET,warning_color};
+	border-color: {$GET,warning_color};
+}
+
+.btn-warning:not(:disabled):not(.disabled):active,
+.btn-warning:not(:disabled):not(.disabled).active {
+	color: {$GET,text_dark};
+	background-color: {$COLOR_DARKEN,{$GET,warning_color},10%};
+	border-color: {$COLOR_DARKEN,{$GET,warning_color},12.5%};
+}
+
+.btn-warning:not(:disabled):not(.disabled):active:focus,
+.btn-warning:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,warning_color},0.5};
+}
+
+.btn-light {
+	color: {$GET,text_dark};
+	background-color: {$GET,light_color};
+	border-color: {$GET,light_color};
+}
+
+.btn-light:hover {
+	color: {$GET,text_dark};
+	background-color: {$COLOR_DARKEN,{$GET,light_color},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,light_color},10%};
+}
+
+.btn-light:focus,
+.btn-light.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,light_color},0.5};
+}
+
+.btn-light.disabled,
+.btn-light:disabled {
+	color: {$GET,text_dark};
+	background-color: {$GET,light_color};
+	border-color: {$GET,light_color};
+}
+
+.btn-light:not(:disabled):not(.disabled):active,
+.btn-light:not(:disabled):not(.disabled).active {
+	color: {$GET,text_dark};
+	background-color: {$COLOR_DARKEN,{$GET,light_color},10%};
+	border-color: {$COLOR_DARKEN,{$GET,light_color},12.5%};
+}
+
+.btn-light:not(:disabled):not(.disabled):active:focus,
+.btn-light:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,light_color},0.5};
+}
+
+.btn-dark {
+	color: {$GET,text_light};
+	background-color: {$GET,dark_color};
+	border-color: {$GET,dark_color};
+}
+
+.btn-dark:hover {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,dark_color},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,dark_color},10%};
+}
+
+.btn-dark:focus,
+.btn-dark.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,dark_color},0.5};
+}
+
+.btn-dark.disabled,
+.btn-dark:disabled {
+	color: {$GET,text_light};
+	background-color: {$GET,dark_color};
+	border-color: {$GET,dark_color};
+}
+
+.btn-dark:not(:disabled):not(.disabled):active,
+.btn-dark:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$COLOR_DARKEN,{$GET,dark_color},10%};
+	border-color: {$COLOR_DARKEN,{$GET,dark_color},12.5%};
+}
+
+.btn-dark:not(:disabled):not(.disabled):active:focus,
+.btn-dark:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,dark_color},0.5};
+}
+
+.btn-outline-primary {
+	color: {$GET,button_primary};
+	background-color: transparent;
+	background-image: none;
+	border-color: {$GET,button_primary};
+}
+
+.btn-outline-primary:hover {
+	color: {$GET,button_primary_text};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
+}
+
+.btn-outline-primary:focus,
+.btn-outline-primary.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
+}
+
+.btn-outline-primary.disabled,
+.btn-outline-primary:disabled {
+	color: {$GET,button_primary};
+	background-color: transparent;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled).active {
+	color: {$GET,button_primary_text};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active:focus,
+.btn-outline-primary:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
+}
+
+.btn-outline-secondary {
+	color: {$GET,seed_secondary};
+	background-color: transparent;
+	background-image: none;
+	border-color: {$GET,seed_secondary};
+}
+
+.btn-outline-secondary:hover {
+	color: {$GET,text_light};
+	background-color: {$GET,seed_secondary};
+	border-color: {$GET,seed_secondary};
+}
+
+.btn-outline-secondary:focus,
+.btn-outline-secondary.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed_secondary},0.5};
+}
+
+.btn-outline-secondary.disabled,
+.btn-outline-secondary:disabled {
+	color: {$GET,seed_secondary};
+	background-color: transparent;
+}
+
+.btn-outline-secondary:not(:disabled):not(.disabled):active,
+.btn-outline-secondary:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$GET,seed_secondary};
+	border-color: {$GET,seed_secondary};
+}
+
+.btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
+.btn-outline-secondary:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed_secondary},0.5};
+}
+
+.btn-outline-success {
+	color: {$GET,success_color};
+	background-color: transparent;
+	background-image: none;
+	border-color: {$GET,success_color};
+}
+
+.btn-outline-success:hover {
+	color: {$GET,text_light};
+	background-color: {$GET,success_color};
+	border-color: {$GET,success_color};
+}
+
+.btn-outline-success:focus,
+.btn-outline-success.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,success_color},0.5};
+}
+
+.btn-outline-success.disabled, .btn-outline-success:disabled {
+	color: {$GET,success_color};
+	background-color: transparent;
+}
+
+.btn-outline-success:not(:disabled):not(.disabled):active,
+.btn-outline-success:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$GET,success_color};
+	border-color: {$GET,success_color};
+}
+
+.btn-outline-success:not(:disabled):not(.disabled):active:focus,
+.btn-outline-success:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,success_color},0.5};
+}
+
+.btn-outline-danger {
+	color: {$GET,danger_color};
+	background-color: transparent;
+	background-image: none;
+	border-color: {$GET,danger_color};
+}
+
+.btn-outline-danger:hover {
+	color: {$GET,text_light};
+	background-color: {$GET,danger_color};
+	border-color: {$GET,danger_color};
+}
+
+.btn-outline-danger:focus,
+.btn-outline-danger.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,danger_color},0.5};
+}
+
+.btn-outline-danger.disabled,
+.btn-outline-danger:disabled {
+	color: {$GET,danger_color};
+	background-color: transparent;
+}
+
+.btn-outline-danger:not(:disabled):not(.disabled):active,
+.btn-outline-danger:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$GET,danger_color};
+	border-color: {$GET,danger_color};
+}
+
+.btn-outline-danger:not(:disabled):not(.disabled):active:focus,
+.btn-outline-danger:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,danger_color},0.5};
+}
+
+.btn-outline-light {
+	color: {$GET,light_color};
+	background-color: transparent;
+	background-image: none;
+	border-color: {$GET,light_color};
+}
+
+.btn-outline-light:hover {
+	color: {$GET,text_dark};
+	background-color: {$GET,light_color};
+	border-color: {$GET,light_color};
+}
+
+.btn-outline-light:focus,
+.btn-outline-light.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,text_dark},0.5};
+}
+
+.btn-outline-light.disabled,
+.btn-outline-light:disabled {
+	color: {$GET,light_color};
+	background-color: transparent;
+}
+
+.btn-outline-light:not(:disabled):not(.disabled):active,
+.btn-outline-light:not(:disabled):not(.disabled).active {
+	color: {$GET,text_dark};
+	background-color: {$GET,light_color};
+	border-color: {$GET,light_color};
+}
+
+.btn-outline-light:not(:disabled):not(.disabled):active:focus,
+.btn-outline-light:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,text_dark},0.5};
+}
+
+.btn-outline-dark {
+	color: {$GET,dark_color};
+	background-color: transparent;
+	background-image: none;
+	border-color: {$GET,dark_color};
+}
+
+.btn-outline-dark:hover {
+	color: {$GET,text_light};
+	background-color: {$GET,dark_color};
+	border-color: {$GET,dark_color};
+}
+
+.btn-outline-dark:focus,
+.btn-outline-dark.focus {
+	box-shadow: 0 0 0 3px rgba(52, 58, 64, 0.5);
+}
+
+.btn-outline-dark.disabled,
+.btn-outline-dark:disabled {
+	color: {$GET,dark_color};
+	background-color: transparent;
+}
+
+.btn-outline-dark:not(:disabled):not(.disabled):active,
+.btn-outline-dark:not(:disabled):not(.disabled).active {
+	color: {$GET,text_light};
+	background-color: {$GET,dark_color};
+	border-color: {$GET,dark_color};
+}
+
+.btn-outline-dark:not(:disabled):not(.disabled):active:focus,
+.btn-outline-dark:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px rgba(52, 58, 64, 0.5);
+}
+
+.btn-link {
+	font-weight: 400;
+	color: {$GET,button_primary};
+	background-color: transparent;
+}
+
+.btn-link:hover {
+	color: {$GET,a.hover};
+	text-decoration: underline;
+	background-color: transparent;
+	border-color: transparent;
+}
+
+.btn-link:focus, .btn-link.focus {
+	text-decoration: underline;
+	border-color: transparent;
+	box-shadow: none;
+}
+
+.btn-link:disabled, .btn-link.disabled {
+	color: {$GET,seed_secondary};
+	pointer-events: none;
+}
+
+.btn-lg, .btn-group-lg > .btn {
+	padding: 7px 14px;
+	font-size: 18px;
+	line-height: 1.5;
+	border-radius: {$GET,border_radius};
+}
+
+.btn-sm, .btn-group-sm > .btn {
+	padding: 4px 7px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+
+.btn-block {
+	display: block;
+	width: 100%;
+}
+
+.btn-block + .btn-block {
+	margin-top: 7px;
+}
+
+input[type="submit"].btn-block,
+input[type="reset"].btn-block,
+input[type="button"].btn-block {
+	width: 100%;
+}
+
+.btn-primary img.icon,
+.btn-secondary img.icon,
+.btn-dark img.icon,
+.btn-success img.icon,
+.btn-danger img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
+}
+
+.btn-warning img.icon {
+	/* When the buttons are bright, we do not want their icons to be white after-all */
+	filter: none !important;
+}
+
+/*{+START,IF,{$THEME_COLOUR_IS_BRIGHT,{$GET,button_primary}}}*/
+	.btn-primary img.icon {
+		/* When the buttons are bright, we do not want their icons to be white after-all */
+		filter: none !important;
+	}
+/*{+END}*/
+
+.btn-flat-image {
+	appearance: none;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	background: none;
+	cursor: pointer;
+}
+
+.btn-row {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	margin: -7px;
+	flex-wrap: wrap;
+}
+
+.btn-row .btn {
+	margin: 7px;
+}
+
+.btn-row-centered {
+	justify-content: center;
+}
+
+.btn-row-stretched {
+	justify-content: space-between;
+}
+
+.btn-row-stretched .btn {
+	flex-grow: 1;
+}
+
+.fade {
+	transition: opacity 0.15s linear;
+}
+
+.fade:not(.show) {
+	opacity: 0;
+}
+
+.collapse:not(.show) {
+	display: none;
+}
+
+.collapsing {
+	position: relative;
+	height: 0;
+	overflow: hidden;
+	transition: height 0.35s ease;
+}
+
+.btn-group,
+.btn-group-vertical {
+	position: relative;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
+	vertical-align: middle;
+}
+
+.btn-group > .btn,
+.btn-group-vertical > .btn {
+	position: relative;
+	flex: 0 1 auto;
+}
+
+.btn-group > .btn:hover,
+.btn-group-vertical > .btn:hover {
+	z-index: 1;
+}
+
+.btn-group > .btn:focus, .btn-group > .btn:active, .btn-group > .btn.active,
+.btn-group-vertical > .btn:focus,
+.btn-group-vertical > .btn:active,
+.btn-group-vertical > .btn.active {
+	z-index: 1;
+}
+
+.btn-group .btn + .btn,
+.btn-group .btn + .btn-group,
+.btn-group .btn-group + .btn,
+.btn-group .btn-group + .btn-group,
+.btn-group-vertical .btn + .btn,
+.btn-group-vertical .btn + .btn-group,
+.btn-group-vertical .btn-group + .btn,
+.btn-group-vertical .btn-group + .btn-group {
+	margin-left: -1px;
+}
+
+.btn-toolbar {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.btn-toolbar .input-group {
+	width: auto;
+}
+
+.btn-group > .btn:first-child {
+	margin-left: 0;
+}
+
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle),
+.btn-group > .btn-group:not(:last-child) > .btn {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.btn-group > .btn:not(:first-child),
+.btn-group > .btn-group:not(:first-child) > .btn {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.btn-group-vertical {
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.btn-group-vertical .btn,
+.btn-group-vertical .btn-group {
+	width: 100%;
+}
+
+.btn-group-vertical > .btn + .btn,
+.btn-group-vertical > .btn + .btn-group,
+.btn-group-vertical > .btn-group + .btn,
+.btn-group-vertical > .btn-group + .btn-group {
+	margin-top: -1px;
+	margin-left: 0;
+}
+
+.btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle),
+.btn-group-vertical > .btn-group:not(:last-child) > .btn {
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.btn-group-vertical > .btn:not(:first-child),
+.btn-group-vertical > .btn-group:not(:first-child) > .btn {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+.btn-group-toggle > .btn,
+.btn-group-toggle > .btn-group > .btn {
+	margin-bottom: 0;
+}
+
+.btn-group-toggle > .btn input[type="radio"],
+.btn-group-toggle > .btn input[type="checkbox"],
+.btn-group-toggle > .btn-group > .btn input[type="radio"],
+.btn-group-toggle > .btn-group > .btn input[type="checkbox"] {
+	position: absolute;
+	clip: rect(0, 0, 0, 0);
+	pointer-events: none;
+}
+
+.input-group {
+	position: relative;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	flex-wrap: wrap;
+	align-items: stretch;
+	width: 100%;
+}
+
+.input-group > .form-control {
+	position: relative;
+	flex: 1 1 auto;
+	width: 1%;
+	margin-bottom: 0;
+}
+
+.input-group > .form-control:focus {
+	z-index: 3;
+}
+
+.input-group > .form-control + .form-control {
+	margin-left: -1px;
+}
+
+.input-group > .form-control:not(:last-child) {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.input-group > .form-control:not(:first-child) {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.input-group-prepend,
+.input-group-append {
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+.input-group-prepend .btn,
+.input-group-append .btn {
+	position: relative;
+	z-index: 2;
+}
+
+.input-group-prepend .btn + .btn,
+.input-group-prepend .btn + .input-group-text,
+.input-group-prepend .input-group-text + .input-group-text,
+.input-group-prepend .input-group-text + .btn,
+.input-group-append .btn + .btn,
+.input-group-append .btn + .input-group-text,
+.input-group-append .input-group-text + .input-group-text,
+.input-group-append .input-group-text + .btn {
+	margin-left: -1px;
+}
+
+.input-group-prepend {
+	margin-right: -1px;
+}
+
+.input-group-append {
+	margin-left: -1px;
+}
+
+.input-group-text {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	align-items: center;
+	padding: 5px 11px;
+	margin-bottom: 0;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.5;
+	color: {$GET,text_dark};
+	text-align: center;
+	white-space: nowrap;
+	background-color: {$GET,input_disabled_background};
+	border: 1px solid {$GET,standard_border};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+}
+
+.input-group-text input[type="radio"],
+.input-group-text input[type="checkbox"] {
+	margin-top: 0;
+}
+
+.input-group > .input-group-prepend > .btn,
+.input-group > .input-group-prepend > .input-group-text,
+.input-group > .input-group-append:not(:last-child) > .btn,
+.input-group > .input-group-append:not(:last-child) > .input-group-text,
+.input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+.input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.input-group > .input-group-append > .btn,
+.input-group > .input-group-append > .input-group-text,
+.input-group > .input-group-prepend:not(:first-child) > .btn,
+.input-group > .input-group-prepend:not(:first-child) > .input-group-text,
+.input-group > .input-group-prepend:first-child > .btn:not(:first-child),
+.input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.btn .icon {
+	width: 18px;
+	height: 18px;
+}
+
+.btn-sm .icon {
+	display: none; /* Too loud for such a small space */
+}
+
+.button-faded {
+	opacity: 0.5 !important;
+}
+
+.proceed-button {
+	{$BETA_CSS_PROPERTY,display: flex;}
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-left: -7px;
+	margin-right: -7px;
+}
+
+.proceed-button .btn {
+	margin: 7px;
+}
+
+.proceed-button:last-child {
+	/*margin-bottom: 0;*/
+}
+div.proceed-button-left {
+	text-align: left;
+}
+div.proceed-button-left-2 {
+	text-align: left;
+	margin-left: -2em;
+}
+
+.shunted-button {
+	clear: right;
+	text-align: right;
+}
+
+.innocuous-fieldset {
+	border: 0;
+	padding: 0;
+	margin: 0 0 1em 0;
+	min-width: 0; /* Works around webkit bug, where it breaks max-width:100% inside because the size calculation has been inverted by the default "min-width: -webkit-min-content;" rule  */
+}
+
+.box-inner > .innocuous-fieldset {
+	margin: 0;
+}
+
+.mass-select-marker {
+	padding: 0.2em;
+	float: right;
+	border: 1px solid {$GET,standard_border};
+	margin-left: 1em;
+	margin-top: 1px; /* To get it past a possible overflow:hidden (may be a browser bug) */
+}
+.mass-select-marker input {
+	width: 25px;
+	height: 25px;
+	margin: 0;
+	vertical-align: middle;
+}
+
+.top-button-popup {
+	position: absolute;
+	color: {$GET,body_color};
+	top: 110%;
+	right: 0;
+	min-width: 20em;
+	z-index: 2000;
+}
+
+.top-button-popup .associated-links-block-group,
+.notification + .notification {
+	margin-top: 0.5em;
+	border-top: 1px solid {$GET,pale_border};
+	padding-top: 0.5em;
+}
+
+#top-language-button {
+	width: 30px;
+	height: 24px;
+	display: inline-block;
+}
+
+#top-language-button > img {
+	padding: 0 5px;
+	vertical-align: middle;
+}
+
+#top-language-rel a,
+#top-language-rel img {
+	vertical-align: middle;
+}
+
+#top-language-rel a.current {
+	font-weight: bold;
+}
+
+/*
+NB: Form buttons are wrapped in either:
+ - .shunted-button
+ - .proceed-button
+ - .mini-proceed-button
+ - .buttons-group (defined elsewhere, in "Associations/Summaries")
+*/
+
+
+.buttons-group .admin--edit,
+.buttons-group .admin--wiki-edit-tree,
+.buttons-group .admin--merge,
+.buttons-group .admin--move {
+	/*background-color: {$GET,required_background};*/
+	/*color: {$GET,slightly_seeded_text} !important;*/
+	/*text-shadow: none !important;*/
+	/*border-color: {$GET,red_highlight_text};*/
+}
+
+.autocomplete-wrapper {
+	/* This is just used to try and anchor the autocomplete widget more reliably from the get-go. Password manager extensions would sometimes do this themselves after-the-fact and cause a positioning shift. */
+	position: relative;
+}
+
+/*
+=========================
+====Frame Interfaces=====
+=========================
+*/
+
+.dynamic-iframe {
+	width: 100%;
+	height: 900px; /* This is dynamically resized; 900px is referenced from global.js so don't change it */
+}
+
+.expandable-iframe {
+	width: 100%;
+	height: 150px; /* Referenced also in global.js */
+}
+
+#preview-frame, .hidden-save-frame, .hidden-preview-frame {
+	width: 100%;
+	height: 0;
+}
+.hidden-save-frame, .hidden-preview-frame {
+	float: left; /* Stops it breaking up margin collapsing */
+}
+
+/*
+=========================
+===========Tabs==========
+=========================
+*/
+
+.tab-surround {
+	border: 1px solid {$GET,tab_border};
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	padding: 0.5em;
+	background-color: {$GET,main_background};
+}
+
+.tab-surround > div > .box:first-child {
+	margin-top: 0;
+}
+
+.tabs {
+	border-left: 0;
+	border-right: 0;
+	border-top: 0;
+	height: 35px;
+}
+
+.spaced-out-tabs.tabs {
+	overflow: hidden;
+	height: auto;
+}
+
+a.tab, a.tab:visited, a.tab:hover {
+	text-decoration: none;
+}
+
+.tab {
+	float: left;
+	padding: 4px 8px 0 8px !important;
+	height: 100%;
+	text-align: center;
+	cursor: pointer;
+	line-height: 18px;
+	border-top: 1px solid {$GET,tab_border};
+	border-right: 1px solid {$GET,tab_border};
+}
+/*{+START,CSS_MODE,mobile}*/
+	.tab {
+		width: 100%;
+		border-left: 1px solid {$GET,tab_border};
+	}
+/*{+END}*/
+
+.spaced-out-tabs .tab {
+	margin-right: 1px;
+}
+
+a.tab > img+span {
+	padding-top: 0;
+}
+a.tab > span {
+	padding-top: 3px;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.tab-surround .tab {
+		min-width: 99px; /* Allows 3 per row, neat alignment (for nested tabs) */
+	}
+/*{+END}*/
+
+.tab > * {
+	vertical-align: middle;
+	display: inline-block;
+	opacity: 0.6;
+}
+
+.tab.tab-active > * {
+	text-shadow: 1px 0 1px {$GET,standard_border};
+	opacity: 1.0 !important;
+}
+
+.tab:hover > *,
+.is-touch-enabled .tab > * {
+	opacity: 1.0;
+}
+
+.tab strong {
+	font-weight: normal;
+	font-style: italic;
+}
+
+.tab img {
+	width: 20px;
+}
+
+.tab-first, a.tab:first-child {
+	border-left: 1px solid {$GET,tab_border};
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	div[role="tabpanel"] {
+		padding-left: 1em;
+		padding-right: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	div[role="tabpanel"] {
+		padding-left: 2px;
+		padding-right: 2px;
+	}
+/*{+END}*/
+div[role="tabpanel"] > div:first-child, div[role="tabpanel"] > style:first-child+div {
+	margin-top: 1em;
+}
+div[role="tabpanel"] > div:last-child {
+	margin-bottom: 1em;
+}
+
+/* Sub-tabs */
+
+/* Tighten up subtab display */
+.tab-surround .tab-surround {
+	background-image: none;
+	background-color: {$GET,main_background};
+	overflow: hidden; /* To stop margin collapsing bleeding backgrounds */
+}
+
+.tabs .tabs {
+	margin-top: 0.5em;
+}
+
+.tab-surround .tab {
+	padding-top: 5px !important;
+	height: 21px;
+	font-size: 0.9em;
+}
+
+.tab-surround .tab img {
+	width: 17px;
+}
+
+/*
+=========================
+=====Menus (generic)=====
+=========================
+*/
+
+ul.nl, .nl ul {
+	display: block;
+	margin: 0;
+	padding-left: 0;
+}
+
+.nl ul > li, ul.nl > li {
+	display: block;
+	margin-left: 0;
+	padding-left: 0;
+	list-style-type: none;
+	list-style-image: none;
+}
+
+.has-img > a {
+	/*
+	background: none !important;
+	padding-left: 0 !important;*/
+	vertical-align: middle;
+}
+
+.has-img img {
+	vertical-align: middle;
+}
+
+/* We hide the inline edit menu links for design reasons, they fade in on top of stuff when hovering the menu */
+.edit-menu-link-inline, .edit-page-link-inline {
+	opacity: 0 !important;
+	transition: opacity 0.5s linear;
+	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
+}
+
+div:hover > .edit-menu-link-inline, div:hover > .edit-page-link-inline {
+	opacity: 1.0 !important;
+}
+
+.edit-menu-link-inline {
+	height: 1em;
+	margin-left: -16px;
+}
+
+.edit-page-link-inline {
+	position: absolute;
+	right: 1px;
+	z-index: 10000;
+	margin-top: -1em;
+}
+
+/*
+=========================
+=========Comcode=========
+=========================
+*/
+
+.comcode-snapback {
+	text-align: right;
+	font-size: 0.75em;
+}
+
+.comcode-overlay-main {
+	margin-bottom: 3em;
+}
+
+.comcode-overlay-dismiss {
+	text-align: center;
+	position: absolute;
+	bottom: 0;
+	width: 90%;
+}
+
+.comcode-code-wrap {
+	overflow-x: auto;
+}
+
+/* .comcode-quote is used where the [quote] tag is parsed. */
+/* .comcode-code is used where the [code] tag is parsed. */
+.email-body .comcode-quote, .email-body .comcode-code {
+	margin: 1em 0;
+}
+.comcode-quote, .comcode-code {
+	margin: 1em;
+
+	/* Takes off default from e-mail clients */
+	border: 0 !important;
+	padding: 0 !important;
+
+	/* To prevent horizontal overlapping with floats */
+	outline: 0;
+	overflow: auto;
+}
+td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-code,
+.fake-td > .comcode-code-wrap > .comcode-quote, .fake-td > .comcode-code-wrap > .comcode-code {
+	margin: 0;
+}
+
+.comcode-quote > h4,
+.comcode-code > h4 {
+	border: 1px solid {$GET,code_border};
+	padding: 4px;
+	margin: 0;
+	background-color: {$GET,code_title_background};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-top-left-radius: {$GET,border_radius};
+		border-top-right-radius: {$GET,border_radius};
+	/*{+END}*/
+	color: {$GET,WB};
+	font-size: 16px;
+}
+
+.comcode-quote-inner,
+.comcode-code-inner {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,code_border},transparent};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-bottom-left-radius: {$GET,border_radius};
+		border-bottom-right-radius: {$GET,border_radius};
+	/*{+END}*/
+	display: block;
+	padding: 5px;
+	margin-left: 8px;
+	background-color: {$GET,code_background};
+	color: {$GET,code_text} !important;/*So can look okay in a tooltip*/
+	overflow: hidden;
+}
+
+.comcode-quote-inner * {
+	color: inherit !important;/*So can look okay in a tooltip*/
+}
+
+.comcode-quote-inner-titled {
+	border-top: 0;
+}
+
+.comcode-code-inner {
+	font-family: 'Courier New', 'Courier', monospace;
+	font-size: 1.1em;
+	border-top: 0;
+	white-space: nowrap;
+	overflow: auto;
+}
+.comcode-code-inner > div { /* Indicates syntax-highlighted, white-space already prepared nicely */
+	white-space: normal;
+}
+
+/* Allow pre tags to work when mixed in, as people do this when pasting */
+pre .comcode-code-wrap {
+	white-space: normal;
+}
+pre .comcode-code-inner {
+	white-space: pre;
+}
+
+.comcode-code-scroll {
+	max-height: 300px;
+}
+
+.comcode-highlight {
+	font-weight: bold;
+	color: {$GET,red_highlight_text};
+	background-color: {$GET,yellow_highlight_background};
+}
+
+.wiki-link, .comcode-concept {
+	color: {$GET,area_key_text};
+	font-size: 0.85em;
+}
+
+.comcode-concept a {
+	background-image: url('{$IMG;,icons/arrow_box/arrow_box}') !important;
+	background-size: 12px 12px !important;
+}
+.comcode-concept a:hover {
+	background-image: url('{$IMG;,icons/arrow_box/arrow_box_hover}') !important;
+}
+
+.wiki-link a {
+	background-image: url('{$IMG;,icons/wiki/link}') !important;
+	background-size: 14px 14px !important;
+}
+.wiki-link a:hover {
+	background-image: url('{$IMG;,icons/wiki/link_hover}') !important;
+}
+
+.comcode-concept a, .wiki-link a {
+	padding-right: 17px !important;
+	background-repeat: no-repeat !important;
+	background-position: 100% 30% !important;
+}
+.comcode-concept a:hover, .wiki-link a:hover {
+	padding-right: 17px !important;
+	background-repeat: no-repeat !important;
+	background-position: 100% 30% !important;
+}
+
+.comcode-concept-inline, a.comcode-concept-inline, a.comcode-concept-inline:visited, a.comcode-concept-inline:hover {
+	border-bottom: 1px dashed {$GET,divider_line};
+	display: inline-block;
+	margin-bottom: 0.3em; /* To make sure bottom border can't be flush with something */
+}
+
+.comcode-concepts {
+	font-size: 0.85em;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.comcode-concepts-title {
+	background-image: url('{$IMG;,icons/checklist/checklist_done}');
+	background-size: 12px 12px;
+	background-repeat: no-repeat;
+	background-position: 1px 0;
+	vertical-align: top;
+	text-indent: 14px;
+	margin: 0;
+}
+
+.comcode-concepts-content {
+	padding-bottom: 0.85em;
+}
+
+.comcode-table-of-contents {
+	display: inline-block;
+	white-space: nowrap;
+	font-size: 0.9em;
+}
+
+.comcode-table-of-contents li {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.search-result .comcode-table-of-contents {
+	display: none;
+}
+
+body div.comcode-table-of-contents > div.box-inner > ol {
+	padding: 0 !important;
+	margin: 0 !important;
+	margin-left: 20px !important;
+}
+body div.comcode-table-of-contents > div.box-inner > ol > li {
+	margin: 0.2em 0 !important;
+	padding: 0 !important;
+}
+
+.comcode-table-of-contents a {
+	margin: 0;
+}
+
+.comcode-table-of-contents-title {
+	text-align: center;
+	color: {$GET,area_key_text};
+	margin: 0.5em;
+	font-weight: {$GET,font_weight_medium};
+}
+
+.comcode-italic {
+	font-style: italic;
+}
+
+.comcode-bold {
+	font-weight: bold;
+}
+
+.comcode-underline {
+	text-decoration: underline;
+}
+
+.comcode-strike {
+	text-decoration: line-through;
+}
+
+.comcode-section-controller {
+	padding-top: 10px;
+	margin-bottom: 20px;
+}
+
+.ticker-wrap {
+	display: inline-block;
+}
+.ticker {
+	margin: 0 auto;
+	height: 1.5em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-align: left;
+	display: inline-block;
+}
+.ticker * {
+	text-indent: 0;
+}
+
+.shocker {
+	text-align: right;
+	font-size: 1.2em;
+}
+
+.shocker-left {
+	float: left;
+	font-weight: bold;
+}
+
+.shocker-right {
+}
+
+.comcode-member-link {
+	border: 1px solid {$GET,standard_border};
+	border-radius: {$GET,border_radius};
+	display: inline-block;
+	padding: 0.2em 0.25em;
+	vertical-align: middle;
+	line-height: 1em;
+	margin: 1px; /* Needed to stop border getting cropped off */
+}
+.comcode-member-link img {
+	cursor: inherit;
+}
+.comcode-member-link .embedded-mini-avatar {
+	vertical-align: middle;
+}
+.comcode-member-link a {
+	vertical-align: middle;
+	color: {$GET,area_text};
+	text-decoration: none;
+}
+
+.attachment {
+	margin: 1em 0;
+	margin-bottom: 1px !important; /* Overrides 0 on .left > figure, .right > figure */
+	font-size: 0.9em;
+	/*display: inline-block; Actually table works better, shows margins even when not floated*/
+	display: table;
+	border-collapse: separate;
+	max-width: 100%;
+	background-color: {$GET,WB};
+}
+/*{+START,CSS_MODE,desktop}*/
+	.attachment {
+		border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
+		padding: 0.5em !important;
+	}
+/*{+END}*/
+figure {
+	margin: 1em 0;
+}
+.left > figure, .right > figure {
+	margin: 0;
+}
+/* Wordpress compatibility */
+.attachment.wp-caption {
+	white-space: normal;
+}
+.alignleft {
+	float: left;
+	margin-right: 0.5em;
+}
+.alignright {
+	float: right;
+	margin-left: 0.5em;
+}
+.aligncenter {
+	display: block;
+	margin: 1em auto;
+}
+.alignnone {
+	display: block;
+	margin: 1em;
+}
+/* Make inline images look a little nicer, including with Wordpress imports (but native too) */
+.alignleft, .alignright, .aligncenter, .alignnone, .media-set img.attachment-img, a[rel="lightbox"] img.attachment-img, .attachment-img img {
+	border: 2px solid {$GET,pale_border};
+}
+.alignleft img, .alignright img, .aligncenter img, .alignnone img {
+	display: block;
+}
+
+a[rel="lightbox"] {
+	text-decoration: none; /* Stops "_" showing when we use white-space */
+}
+
+.attachment img, .attachment-img {
+	vertical-align: middle;
+}
+
+.attachment figcaption {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
+	padding: 0.15em 0.3em;
+	font-style: italic;
+	margin-bottom: 0.5em;
+	display: inline-block;
+}
+
+.attachment-details {
+	margin-top: 0.2em;
+}
+
+.attachment-details .actions-list-strong {
+	background-position: left center;
+}
+
+.attachment-left {
+	float: left;
+	margin: 0 1.5em 0.5em 0;
+}
+
+.attachment-right {
+	float: right;
+	margin: 0 0 0.5em 1.5em;
+}
+
+.attachment-left .attachment, .attachment-right .attachment {
+	width: 200px;
+	white-space: normal;
+}
+
+.media-set {
+	margin: 1em 0;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	flex-wrap: wrap;
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
+	background-color: {$GET,area_background};
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
+}
+
+.media-set * {
+	vertical-align: top;
+}
+
+.media-set br {
+	display: none;
+}
+
+.media-set a {
+	margin: 0.5em;
+	min-width: {$DIV,{$CONFIG_OPTION,thumb_width},2}px;
+	text-align: center;
+}
+
+.media-set img {
+	width: {$DIV,{$CONFIG_OPTION,thumb_width},2}px;
+	height: auto;
+}
+
+.fake-table {
+	display: table;
+}
+.fake-colgroup {
+	display: table-column-group;
+}
+.fake-col {
+	display: table-column;
+}
+.fake-thead {
+	display: table-header-group;
+}
+.fake-tbody {
+	display: table-row-group;
+}
+.fake-tr {
+	display: table-row;
+}
+.fake-th, .fake-td {
+	display: table-cell;
+}
+
+.flex-wrapper {
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+.flex-wrapper > div {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+.flex-wrapper > div + div {
+	padding-left: 1em;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.flex-wrapper > div {
+		width: auto !important;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.floats-wrap .float-surrounder + .float-surrounder {
+		margin-top: 1em;
+	}
+	.floats-wrap .float-left {
+		float: left;
+	}
+	.floats-wrap .float-left + .float-left, .floats-wrap .float-right {
+		padding-left: 1em;
+	}
+	.floats-wrap .float-right {
+		float: right;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.floats-wrap .float-left, .floats-wrap .float-right {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+		width: auto !important;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.inline-block-box {
+		display: inline-block;
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+	.inline-block-box + .inline-block-box {
+		margin-left: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.inline-block-box + .inline-block-box {
+		margin-top: 1em;
+		width: auto !important;
+	}
+/*{+END}*/
+
+/* Wrap video code with <div class="responsive-video">...</div> if you want it responsive; jwplayer is doing this by default using its own JS though */
+.responsive-video video {
+	max-width: 100%;
+	height: auto;
+}
+
+/* We normally expect a standard-sized YouTube embed, but for mobile we will lock the size to the browser window */
+/*{+START,CSS_MODE,mobile}*/
+	html:not(.is-gallery-slideshow) .responsive-media-wrapper {
+		overflow: hidden;
+		width: 100%;
+		position: relative;
+		padding-bottom: 56.25%;
+		padding-top: 25px;
+		height: 0;
+	}
+	html:not(.is-gallery-slideshow) .responsive-media-wrapper iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+/*{+END}*/
+
+/*
+=========================
+===Live themeing editor==
+=========================
+*/
+
+@keyframes greenPulse {
+	from { background-color: #749a02; box-shadow: 0 0 9px #333333;/*{$,hardcoded_ok}*/ }
+	50% { background-color: #91bd09; box-shadow: 0 0 18px #91bd09;/*{$,hardcoded_ok}*/ }
+	to { background-color: #749a02; box-shadow: 0 0 9px #333333;/*{$,hardcoded_ok}*/ }
+}
+.glowing-node {
+	animation-name: greenPulse;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+}
+
+/*
+=========================
+====Link type display====
+===Based on "Elements"===
+==== by Ben Henschel ====
+=========================
+*/
+
+/*{+START,IF,{$THEME_OPTION,filetype_icons}}*/
+	/* Higher than media links for lower CSS precedence */
+	a[target="_blank"].user-link { /* Detected external links have styling */
+		background: url('{$IMG;,icons/file_types/external_link}') no-repeat right top;
+		background-size: 10px 12px;
+		padding-right: 11px;
+	}
+	body div a.external-link { /* Explicitly marked external links must show the styling with precedence */
+		background: url('{$IMG;,icons/file_types/external_link}') no-repeat right top !important;
+		background-size: 10px 12px !important;
+		padding-right: 11px !important;
+	}
+
+	a[href^="mailto:"] {
+		background: url('{$IMG;,icons/file_types/email_link}') no-repeat right top !important; /* Important because the URL may contain arbitrary stuff, including ".php", due to embedded mail body */
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0 !important;
+	}
+
+	a[href$=".pdf"].user-link, a[href$=".ps"].user-link, body div a.pdf-link {
+		background: url('{$IMG;,icons/file_types/page_pdf}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".doc"].user-link, a[href$=".docx"].user-link, a[href$=".rtf"].user-link, body div a.doc-link {
+		background: url('{$IMG;,icons/file_types/page_doc}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".xls"].user-link, a[href$=".xlsx"].user-link, body div a.xls-link {
+		background: url('{$IMG;,icons/file_types/page_xls}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".ppt"].user-link, a[href$=".pptx"].user-link, body div a.ppt-link {
+		background: url('{$IMG;,icons/file_types/page_ppt}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".log"].user-link, a[href$=".txt"].user-link, body div a.txt-link {
+		background: url('{$IMG;,icons/file_types/page_txt}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".odt"].user-link, body div a.odt-link {
+		background: url('{$IMG;,icons/file_types/page_odt}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".odp"].user-link, body div a.odp-link {
+		background: url('{$IMG;,icons/file_types/page_odt}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".ods"].user-link, body div a.ods-link {
+		background: url('{$IMG;,icons/file_types/page_ods}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".rss"].user-link, body div a.feed-link {
+		background: url('{$IMG;,icons/file_types/page_feed}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".torrent"].user-link, body div a.torrent-link {
+		background: url('{$IMG;,icons/file_types/page_torrent}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".zip"].user-link, a[href$=".gz"].user-link, a[href$=".bz2"].user-link, a[href$=".tar"].user-link, a[href$=".rar"].user-link, body div a.archive-link {
+		background: url('{$IMG;,icons/file_types/page_archive}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".asf"].user-link, a[href$=".ra"].user-link, a[href$=".wma"].user-link, a[href$=".wav"].user-link, a[href$=".mp3"].user-link, a[href$=".ogg"].user-link, a[href$=".mid"].user-link, a[href$=".mov"].user-link, a[href$=".qt"].user-link, a[href$=".wmv"].user-link, a[href$=".ram"].user-link, a[href$=".rm"].user-link, a[href$=".avi"].user-link, a[href$=".mpg"].user-link, a[href$=".mpe"].user-link, a[href$=".mpeg"].user-link, a[href$=".mp4"].user-link, a[href$=".mp2"].user-link, a[href$=".mpv2"].user-link, a[href$=".m2v"].user-link, a[href$=".mpa"].user-link, a[href$=".3g2"].user-link, a[href$=".3gp"].user-link, a[href$=".3gp2"].user-link, a[href$=".3gpp"].user-link, a[href$=".3p"].user-link, a[href$=".f4v"].user-link, a[href$=".m4v"].user-link, a[href$=".ogv"].user-link, a[href$=".aac"].user-link, a[href$=".aif"].user-link, a[href$=".aifc"].user-link, a[href$=".aiff"].user-link, a[href$=".weba"].user-link, a[href$=".webm"].user-link, body div a.media-link {
+		background: url('{$IMG;,icons/file_types/page_media}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".css"].user-link, body div a.css-link {
+		background: url('{$IMG;,icons/file_types/page_css}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".js"].user-link, body div a.js-link {
+		background: url('{$IMG;,icons/file_types/page_js}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".tpl"].user-link, body div a.tpl-link {
+		background: url('{$IMG;,icons/file_types/page_tpl}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	a[href$=".xml"].user-link, body div a.xml-link {
+		background: url('{$IMG;,icons/file_types/page_xml}') no-repeat right top;
+		background-size: 16px 16px !important;
+		padding: 0 22px 5px 0;
+	}
+
+	body a.link-exempt, body .link-exempt-wrap a, body a[href*=".php"]:not(.force-filetype-icon).user-link, a[rel="lightbox"] { /* Turn off the "new window" icon for URLs containing ".php" because usually in Composr these are used for system pages that don't warrant these icons */
+		background-image: none !important;
+		padding: 0px !important;
+	}
+
+	body a.link-exempt2 {
+		background-image: none !important;
+	}
+/*{+END}*/
+
+/*{+START,IF,{$ADDON_INSTALLED,recommend}}*/
+	.print-icon {
+		padding: 0 0 5px 0 !important;
+		display: inline-block;
+	}
+
+	.print-icon .icon {
+		width: 24px;
+		height: 24px;
+		margin-right: 0.3em;
+	}
+/*{+END}*/
+
+a[title="{!VIRTUAL_ROOT}"]:hover {
+	color: {$GET,red_highlight_text};
+}
+
+/*
+=========================
+=========Overlays========
+=========================
+*/
+
+.cms-modal {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.cms-modal-overlay {
+	position: fixed;
+}
+
+.overlay [role="toolbar"],
+.overlay .emoticon-chooser,
+.overlay .posting-rules,
+.overlay .required-field-warning {
+	display: none;
+}
+
+.overlay {
+	overflow: visible;
+	border: 0;
+	overflow-wrap: break-word;
+}
+
+.overlay-close-button {
+	position: absolute;
+	cursor: pointer;
+}
+
+.overlay-close-button .icon {
+	width: 38px;
+	height: 38px;
+}
+
+/*{+START,CSS_MODE,mobile}*/
+	.overlay-close-button {
+		top: 0;
+		right: 0;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,desktop}*/
+	.overlay-close-button {
+		top: -16px;
+		right: -16px;
+	}
+/*{+END}*/
+
+.overlay img.lightbox-image {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.overlay .previous-button,
+.overlay .next-button {
+	position: absolute;
+	cursor: pointer;
+	top: calc(50% - {$DIV,74,2}px);
+	max-width: 20%;
+}
+
+.overlay .previous-button,
+.overlay .next-button {
+	opacity: 0;
+	transition-property : opacity;
+	transition-duration : 0.5s;
+}
+.overlay .previous-button:hover,
+.overlay .next-button:hover,
+.overlay.mousemove .previous-button,
+.overlay.mousemove .next-button,
+.is-touch-enabled .overlay.mousemove .previous-button,
+.is-touch-enabled .overlay.mousemove .next-button {
+	opacity: 1.0 !important;
+}
+
+.overlay .previous-button {
+	left: 1.5em;
+}
+
+.overlay .next-button {
+	right: 1.5em;
+}
+
+.cms-modal-button-container {
+	margin-top: 14px;
+}
+
+#lightbox-meta {
+	margin: 0.5em 0;
+}
+
+span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-full-link::before {
+	margin-left: 0.25em;
+	content: "\00b7" !important;
+	padding-right: 0.5em;
+	vertical-align: middle;
+}
+
+/*
+=========================
+==========Slider=========
+=========================
+*/
+
+.cms-slider {
+	position: relative;
+}
+
+.cms-slider-inner {
+	position: relative;
+	width: 100%;
+}
+
+.cms-slider-item {
+	position: relative;
+	display: none;
+	align-items: center;
+	width: 100%;
+	transition: transform 0.6s ease;
+	backface-visibility: hidden;
+	perspective: 1000px;
+}
+
+.cms-slider-item-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	object-position: center;
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+}
+
+.cms-slider-item.active,
+.cms-slider-item-next,
+.cms-slider-item-prev {
+	display: block;
+}
+
+.cms-slider-item-next,
+.cms-slider-item-prev {
+	position: absolute;
+	top: 0;
+}
+
+.cms-slider-item-next.cms-slider-item-left,
+.cms-slider-item-prev.cms-slider-item-right {
+	transform: translateX(0);
+}
+
+@supports (transform-style: preserve-3d) {
+	.cms-slider-item-next.cms-slider-item-left,
+	.cms-slider-item-prev.cms-slider-item-right {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.cms-slider-item-next,
+.active.cms-slider-item-right {
+	transform: translateX(100%);
+}
+
+@supports (transform-style: preserve-3d) {
+	.cms-slider-item-next,
+	.active.cms-slider-item-right {
+		transform: translate3d(100%, 0, 0);
+	}
+}
+
+.cms-slider-item-prev,
+.active.cms-slider-item-left {
+	transform: translateX(-100%);
+}
+
+@supports (transform-style: preserve-3d) {
+	.cms-slider-item-prev,
+	.active.cms-slider-item-left {
+		transform: translate3d(-100%, 0, 0);
+	}
+}
+
+.cms-slider-fade .cms-slider-item {
+	opacity: 0;
+	transition-duration: 0.6s;
+	transition-property: opacity;
+}
+
+.cms-slider-fade .cms-slider-item.active,
+.cms-slider-fade .cms-slider-item-next.cms-slider-item-left,
+.cms-slider-fade .cms-slider-item-prev.cms-slider-item-right {
+	opacity: 1;
+}
+
+.cms-slider-fade .active.cms-slider-item-left,
+.cms-slider-fade .active.cms-slider-item-right {
+	opacity: 0;
+}
+
+.cms-slider-fade .cms-slider-item-next,
+.cms-slider-fade .cms-slider-item-prev,
+.cms-slider-fade .cms-slider-item.active,
+.cms-slider-fade .active.cms-slider-item-left,
+.cms-slider-fade .active.cms-slider-item-prev {
+	transform: translateX(0);
+}
+
+@supports (transform-style: preserve-3d) {
+	.cms-slider-fade .cms-slider-item-next,
+	.cms-slider-fade .cms-slider-item-prev,
+	.cms-slider-fade .cms-slider-item.active,
+	.cms-slider-fade .active.cms-slider-item-left,
+	.cms-slider-fade .active.cms-slider-item-prev {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* Hide next/previous buttons when having single item */
+.cms-slider.has-single-item .cms-slider-control-prev,
+.cms-slider.has-single-item .cms-slider-control-next {
+	display: none;
+}
+
+.cms-slider-control-prev,
+.cms-slider-control-next {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	align-items: center;
+	justify-content: center;
+	width: 15%;
+	color: {$GET,WB};
+	text-align: center;
+	opacity: 0.5;
+	transition: opacity 0.2s linear;
+}
+
+.cms-slider-control-prev:hover,
+.cms-slider-control-prev:focus,
+.cms-slider-control-next:hover,
+.cms-slider-control-next:focus {
+	color: {$GET,WB};
+	text-decoration: none;
+	outline: 0;
+	opacity: .9;
+}
+
+.cms-slider-control-prev {
+	left: 0;
+}
+
+.cms-slider-control-next {
+	right: 0;
+}
+
+.cms-slider-control-prev-icon,
+.cms-slider-control-next-icon {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: transparent no-repeat center center;
+	background-size: 100% 100%;
+}
+
+.cms-slider-control-prev-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+}
+
+.cms-slider-control-next-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
+}
+
+.cms-slider-indicators {
+	position: absolute;
+	right: 0;
+	bottom: 10px;
+	left: 0;
+	z-index: 15;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	justify-content: center;
+	padding-left: 0;
+	margin-right: 15%;
+	margin-left: 15%;
+	list-style: none;
+}
+
+.cms-slider-indicators li {
+	position: relative;
+	flex: 0 1 auto;
+	width: 30px;
+	height: 3px;
+	margin-right: 3px;
+	margin-left: 3px;
+	text-indent: -999px;
+	cursor: pointer;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.cms-slider-indicators li::before {
+	position: absolute;
+	top: -10px;
+	left: 0;
+	display: inline-block;
+	width: 100%;
+	height: 10px;
+	content: "";
+}
+
+.cms-slider-indicators li::after {
+	position: absolute;
+	bottom: -10px;
+	left: 0;
+	display: inline-block;
+	width: 100%;
+	height: 10px;
+	content: "";
+}
+
+.cms-slider-indicators .active {
+	background-color: {$GET,WB};
+}
+
+.cms-slider-caption {
+	position: absolute;
+	right: 15%;
+	bottom: 20px;
+	left: 15%;
+	z-index: 10;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	color: {$GET,WB};
+	text-align: center;
+}
+
+.cms-slider-scroll-button {
+	position: absolute;
+	bottom: 20px;
+	z-index: 15;
+	text-align: center;
+	color: {$GET,text_light};
+	font-weight: {$GET,font_weight_medium};
+	width: 100px;
+	left: 50%;
+	margin-left: -50px;
+}
+
+.cms-slider-scroll-button:hover {
+	color: {$GET,text_light};
+	opacity: 0.8;
+	text-decoration: none;
+}
+
+.cms-slider-scroll-button-icon {
+	height: 24px;
+	width: 24px;
+	margin: 0 auto 10px auto;
+	position: relative;
+}
+
+.cms-slider-scroll-button-icon .icon {
+	width: 24px;
+	height: 24px;
+	left: 50%;
+	margin-left: -12px;
+	position: absolute;
+	animation: 1s linear 0s infinite alternate bounce-cms-slider-scroll-button-icon;
+}
+
+@keyframes bounce-cms-slider-scroll-button-icon {
+	from {
+		top: 0;
+	}
+	to {
+		top: -10px;
+	}
+}
+
+.cms-slider-progress-bar {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	height: 5px;
+}
+
+.cms-slider-progress-bar-fill {
+	background: {$GET,seed};
+	width: 0%;
+	height: 5px;
+}
+
+.cms-slider-item-edit-link {
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.2s linear, visibility 0.2s linear;
+	color: {$GET,text_light};
+}
+
+.cms-slider-item:hover .cms-slider-item-edit-link,
+.cms-slider-item-edit-link:hover,
+.cms-slider-item-edit-link:focus {
+	opacity: 1;
+	visibility: visible;
+	color: {$GET,text_light};
+}
+
+/*
+=========================
+==========Misc===========
+=========================
+*/
+
+@keyframes cms-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes cms-fade-out {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
+/*
+=========================
+=======Print rules=======
+=========================
+*/
+
+@media print {
+	body {
+		background: none;
+	}
+
+	#main-website-inner {
+		width: auto !important;
+		margin: 0 !important;
+		background: none !important;
+		box-shadow: none !important;
+		border:0 !important;
+	}
+
+	h1 {
+		display: none;
+	}
+
+	.global-middle {
+		margin: 0 !important;
+		padding: 0 !important;
+		background: none !important;
+	}
+
+	.non-accessibility-redundancy,
+	.menu-type--top,
+	.buttons-group,
+	.associated-links-block-group,
+	.screen-actions-outer,
+	.adminzone-search,
+	.global-banner,
+	header,
+	footer,
+	.global-side-panel,
+	.toggleable-tray-button,
+	.post-buttons,
+	.quick-self-edit-link, .staff-actions,
+	.comments-form,
+	.ratings, .trackbacks {
+		display: none !important;
+	}
+
+	.global-navigation {
+		visibility: hidden;
+	}
+}
+
+/* Search filter UI */
+
+.box-filter-inputs {
+	margin-bottom: 1.5em;
+}
+
+.box-filter-inputs .box-inner {
+	margin: 0.25em;
+}
+
+.box-filter-inputs .search-option {
+	width: 10em;
+	padding: 0.3em;
+	margin: 0;
+	float: left;
+}
+
+.box-filter-inputs .search-option label {
+	display: block;
+}
+
+.box-filter-inputs .search-option-value {
+	width: 100%;
+	margin-bottom: 0;
+}
+
+.box-filter-inputs .search-button {
+	margin-top: 0.6em;
+}
+
+.box-filter-inputs .search-button + .search-button {
+	margin-left: 0.5em;
+}
+
+.box-filter-inputs .search-option, .box-filter-inputs .search-button {
+	/* Force a neat float alignment */
+	min-height: 2.7em;
+}
+
+.box-filter-inputs .filter-inputs {
+	{$BETA_CSS_PROPERTY,display: flex};
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 0.5em;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.box-filter-inputs .filter-input + .filter-input {
+		margin-left: 1.5em;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,mobile}*/
+	.box-filter-inputs .filter-input {
+		width: 100%;
+	}
+
+	.box-filter-inputs .filter-input + .filter-input {
+		margin-top: 1em;
+	}
+/*{+END}*/
+
+.box-filter-inputs .filter-input div, .box-filter-inputs .filter-input .form-control-wide {
+	display: inline-block;
+}
+
+/*
+=========================
+===Multi-Content Tiles===
+=========================
+*/
+
+.multi-content-tile {
+	float: left;
+	position: relative;
+	margin: 0.3em;
+}
+
+.multi-content-tile-details-top {
+	position: absolute;
+	top: 0;
+	background: {$COLOR_RGBA,{$GET,WB},0.8};
+	margin-top: 0;
+	padding: 0.2em;
+	width: 100%;
+}
+
+.multi-content-tile-details-bottom {
+	position: absolute;
+	bottom: 0;
+	background: {$COLOR_RGBA,{$GET,WB},0.8};
+	margin-bottom: 0;
+	padding: 0.2em;
+	width: 100%;
+}
+
+html.is-mouse-enabled .multi-content-tile-details-bottom {
+	display: none;
+}
+
+/*
+=========================
+========Includes=========
+=========================
+*/
+
+/*{+START,INCLUDE,toastify,.css,css}{+END}*/

@@ -1,0 +1,35 @@
+.dlHolder { overflow:hidden; {$BETA_CSS_PROPERTY,border-radius:4px;} margin-bottom:20px; }
+.dlHead { font-weight:bold; text-shadow:1px 1px #B06A15; padding:0px 10px; height:40px; line-height:40px; font-size:15px; color:#FFF; background-color:#F5A23C; {$BETA_CSS_PROPERTY,border-radius:4px 4px 0px 0px;} }
+.dlHead.blu { background-color:#677EA4;text-shadow:1px 1px #3C4A64; }
+.dlHead.grn { background-color:#5BBB69;text-shadow:1px 1px #2D6A36; }
+.dlHead span { font-size:13px; font-weight:normal; text-align:right; float:right; }
+
+.dlBody { padding:10px; overflow:hidden; line-height:22px; font-size:15px; color:#666; background-color:#F0F7F9; {$BETA_CSS_PROPERTY,border-radius:0px 0px 4px 4px;} }
+.dlBody p { color:#666; }
+.dlBody p a.niceLink { font-weight:bold; background-color:#E1EBEC; padding:4px 10px; border:1px solid #E1EBEC; {$BETA_CSS_PROPERTY,border-radius:4px;} }
+.dlBody p a.alLft { color:#666; text-align:left; float:left; }
+.dlBody p a.alRht { color:#666; text-align:right; float:right; }
+.dlBody a.niceLink:hover { color:#E5922C; background-color:transparent; border:1px solid #CCC; }
+
+.page_running_download .colrBl { margin:0; }
+
+.dlMore { float:left; width:660px; height:24px; padding-bottom:40px; background-image:url('{$IMG;,composr_homesite/download/coming-soon-bg}'); background-position:bottom center; background-repeat:no-repeat; }
+.dlMore a { text-decoration:none; font-size:15px; text-align:center; display:block; height:24px; color:#677EA4; }
+
+.dlLogo ul { list-style:none; margin:0; padding:0; overflow:hidden; padding-bottom:20px; font-size:14px; }
+.dlLogo ul li {
+	float:left;
+	{+START,IF,{$NOT,{$MOBILE}}}
+		width:210px;
+	{+END}
+	{+START,IF,{$MOBILE}}
+		width:200px;
+	{+END}
+	margin:0px 5px 5px 0px;
+}
+{+START,IF,{$MOBILE}}
+	.dlLogo ul li img {
+		width:100%;
+		height:auto;
+	}
+{+END}

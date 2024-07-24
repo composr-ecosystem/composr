@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 x="0px" y="0px" width="40px" height="40px" viewBox="-2.467 -2.375 40 40">
+<defs>
+</defs>
+<circle fill="#1e5cfc" cx="17.429" cy="17.429" r="17.429"/>
+<path fill="#1c75c8" d="M34.859,17.429c0,9.627-7.803,17.43-17.43,17.43c-0.215-0.125,0.07-34.526,0-34.859
+	C27.056,0,34.859,7.802,34.859,17.429z"/>
+</svg>
