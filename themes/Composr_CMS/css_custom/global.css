@@ -53,7 +53,7 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 =========================
 */
 
-@media (min-width: 640px) {
+@media (min-width: 800px) {
 	.cntLeft {
 		/*{+START,IF,{$NOT,{$MOBILE}}}*/
 			float:left;
