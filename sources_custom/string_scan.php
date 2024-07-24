@@ -8562,6 +8562,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_INTEGRITY_SCAN_2
         UPGRADER_SAFE_MODE_UPGRADE_ADDONS
         _UPGRADER_ADDON_MANAGEMENT
+        CMD_GET_VALUE_HELP
+        CMD_GET_VALUE_HELP_E
+        CMD_GET_VALUE_HELP_PARAM_0
+        CMD_SET_VALUE_HELP
+        CMD_SET_VALUE_HELP_E
+        CMD_SET_VALUE_HELP_PARAM_0
+        CMD_SET_VALUE_HELP_PARAM_1
     ')));
 
     $non_admin_files = [
