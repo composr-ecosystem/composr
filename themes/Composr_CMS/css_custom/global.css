@@ -70,15 +70,11 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 .cntLRow {
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
 		float:left;
-		width:66%;
 	/*{+END}*/
 	padding-bottom:10px;
 }
 .cntRRow {
 	float:left;
-	/*{+START,IF,{$NOT,{$MOBILE}}}*/
-		width:33%;
-	/*{+END}*/
 	padding-bottom:10px;
 }
 .cntLeft h1 { padding-bottom:10px; display:block; }
