@@ -10636,6 +10636,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVATE_TOPIC
         PRIVATE_TOPICS
         PRIVATE_TOPICS_INBOX
+        _PRIVATE_TOPICS_INBOX
         PRIVATE_TOPICS_OF
         PRIVATE_TOPIC_DOC
         PROBATION
