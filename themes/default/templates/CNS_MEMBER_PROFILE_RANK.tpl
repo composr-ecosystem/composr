@@ -27,33 +27,32 @@
 
 <p>{!RANK_BASED_PRIVILEGES_TEXT}</p>
 
-{+START,IF_NON_EMPTY,{UNLOCKED_THEMES}}<p><img src="{$IMG,icons/menu/adminzone/style/themes/themes}" width="18" height="18"></img>{!RANK_UNLOCKED_THEMES,{UNLOCKED_THEMES*}}</p>{+END}
-{+START,IF,{$EQ,{HAS_DAILY_UPLOAD_QUOTA},0}}<p><img src="{$IMG,icons/buttons/upload}" width="18" height="18"></img>{!RANK_DAILY_UPLOAD_QUOTA_UNLIMITED}</p>{+END}
-{+START,IF,{$EQ,{HAS_DAILY_UPLOAD_QUOTA},1}}{+START,IF,{$GT,{_DAILY_UPLOAD_QUOTA},0}}<p><img src="{$IMG,icons/buttons/upload}" width="18" height="18"></img>{!RANK_DAILY_UPLOAD_QUOTA,{DAILY_UPLOAD_QUOTA*}}</p>{+END}{+END}
-{+START,IF,{$GT,{_MAX_ATTACHMENTS},0}}<p><img src="{$IMG,icons/buttons/save}" width="18" height="18">{!RANK_MAX_ATTACHMENTS,{MAX_ATTACHMENTS*}}</p>{+END}
-{+START,IF,{$GT,{_POST_LENGTH},0}}<p><img src="{$IMG,icons/buttons/new_post_full}" width="18" height="18">{!RANK_POST_LENGTH,{POST_LENGTH*}}</p>{+END}
-{+START,IF,{$GT,{_SIGNATURE_LENGTH},0}}<p><img src="{$IMG,icons/tabs/member_account/edit/signature}" width="18" height="18">{!RANK_SIGNATURE_LENGTH,{SIGNATURE_LENGTH*}}</p>{+END}
-{+START,IF,{$EQ,{CAN_UPLOAD_AVATARS},1}}<p><img src="{$IMG,icons/tabs/member_account/edit/avatar}" width="18" height="18">{!RANK_MAXIMUM_AVATAR_DIMENSIONS,{MAXIMUM_AVATAR_DIMENSIONS*}}</p>{+END}
-{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$GT,{_PERSONAL_GALLERY_ENTRIES_IMAGES},0}}<p><img src="{$IMG,icons/content_types/image}" width="18" height="18">{!RANK_PERSONAL_GALLERY_ENTRIES_IMAGES,{PERSONAL_GALLERY_ENTRIES_IMAGES*}}</p>{+END}{+END}
-{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$GT,{_PERSONAL_GALLERY_ENTRIES_VIDEOS},0}}<p><img src="{$IMG,icons/content_types/video}" width="18" height="18">{!RANK_PERSONAL_GALLERY_ENTRIES_VIDEOS,{PERSONAL_GALLERY_ENTRIES_VIDEOS*}}</p>{+END}{+END}
-{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},1}}<p><img src="{$IMG,icons/content_types/multimedia}" width="18" height="18">{!RANK_PERSONAL_GALLERY_ENTRIES_UNLIMITED}</p>{+END}
-{+START,IF,{$GT,{_GIFT_POINTS},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS,{GIFT_POINTS*}}</p>{+END}
-{+START,IF,{$GT,{_GIFT_POINTS_PER_DAY},0}}<p><img src="{$IMG,icons/menu/social/points}" width="18" height="18">{!RANK_GIFT_POINTS_PER_DAY,{GIFT_POINTS_PER_DAY*}}</p>{+END}
-{+END}
+{+START,IF_NON_EMPTY,{UNLOCKED_THEMES}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/menu/adminzone/style/themes/themes}"></img>{!RANK_UNLOCKED_THEMES,{UNLOCKED_THEMES*}}</p>{+END}
+{+START,IF,{$EQ,{HAS_DAILY_UPLOAD_QUOTA},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/buttons/upload}"></img>{!RANK_DAILY_UPLOAD_QUOTA_UNLIMITED}</p>{+END}
+{+START,IF,{$EQ,{HAS_DAILY_UPLOAD_QUOTA},1}}{+START,IF,{$GT,{_DAILY_UPLOAD_QUOTA},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/buttons/upload}"></img>{!RANK_DAILY_UPLOAD_QUOTA,{DAILY_UPLOAD_QUOTA*}}</p>{+END}{+END}
+{+START,IF,{$GT,{_MAX_ATTACHMENTS},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/buttons/save}">{!RANK_MAX_ATTACHMENTS,{MAX_ATTACHMENTS*}}</p>{+END}
+{+START,IF,{$GT,{_POST_LENGTH},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/buttons/new_post_full}">{!RANK_POST_LENGTH,{POST_LENGTH*}}</p>{+END}
+{+START,IF,{$GT,{_SIGNATURE_LENGTH},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/tabs/member_account/edit/signature}">{!RANK_SIGNATURE_LENGTH,{SIGNATURE_LENGTH*}}</p>{+END}
+{+START,IF,{$EQ,{CAN_UPLOAD_AVATARS},1}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/tabs/member_account/edit/avatar}">{!RANK_MAXIMUM_AVATAR_DIMENSIONS,{MAXIMUM_AVATAR_DIMENSIONS*}}</p>{+END}
+{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$GT,{_PERSONAL_GALLERY_ENTRIES_IMAGES},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/content_types/image}">{!RANK_PERSONAL_GALLERY_ENTRIES_IMAGES,{PERSONAL_GALLERY_ENTRIES_IMAGES*}}</p>{+END}{+END}
+{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$GT,{_PERSONAL_GALLERY_ENTRIES_VIDEOS},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/content_types/video}">{!RANK_PERSONAL_GALLERY_ENTRIES_VIDEOS,{PERSONAL_GALLERY_ENTRIES_VIDEOS*}}</p>{+END}{+END}
+{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},1}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/content_types/multimedia}">{!RANK_PERSONAL_GALLERY_ENTRIES_UNLIMITED}</p>{+END}
+{+START,IF,{$GT,{_GIFT_POINTS},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/menu/social/points}">{!RANK_GIFT_POINTS,{GIFT_POINTS*}}</p>{+END}
+{+START,IF,{$GT,{_GIFT_POINTS_PER_DAY},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/menu/social/points}">{!RANK_GIFT_POINTS_PER_DAY,{GIFT_POINTS_PER_DAY*}}</p>{+END}
 {+START,LOOP,UNLOCKED_PRIVILEGES}
-	<p><img src="{$IMG,icons/menu/adminzone/security/permissions/privileges}" width="18" height="18">{!RANK_UNLOCKED_PRIVILEGE,{PRIVILEGE*},{SCOPE*}}</p>
+	<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/menu/adminzone/security/permissions/privileges}">{!RANK_UNLOCKED_PRIVILEGE,{PRIVILEGE*},{SCOPE*}}</p>
 {+END}
 
-{+START,IF,{$GT,{_FLOOD_CONTROL_SUBMIT},0}}<p><img src="{$IMG,icons/menu/adminzone/security}" width="18" height="18">{!RANK_FLOOD_CONTROL_SUBMIT,{FLOOD_CONTROL_SUBMIT*}}</p>{+END}
-{+START,IF,{$GT,{_FLOOD_CONTROL_ACCESS},0}}<p><img src="{$IMG,icons/menu/adminzone/security}" width="18" height="18">{!RANK_FLOOD_CONTROL_ACCESS,{FLOOD_CONTROL_ACCESS*}}</p>{+END}
+{+START,IF,{$GT,{_FLOOD_CONTROL_SUBMIT},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/menu/adminzone/security}">{!RANK_FLOOD_CONTROL_SUBMIT,{FLOOD_CONTROL_SUBMIT*}}</p>{+END}
+{+START,IF,{$GT,{_FLOOD_CONTROL_ACCESS},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/menu/adminzone/security}">{!RANK_FLOOD_CONTROL_ACCESS,{FLOOD_CONTROL_ACCESS*}}</p>{+END}
 
-{+START,IF_NON_EMPTY,{LOCKED_THEMES}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_THEMES,{LOCKED_THEMES*}}</p>{+END}
-{+START,IF,{$EQ,{HAS_DAILY_UPLOAD_QUOTA},1}}{+START,IF,{$EQ,{_DAILY_UPLOAD_QUOTA},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_UPLOAD_ATTACHMENTS}</p>{+END}{+END}
-{+START,IF,{$EQ,{_MAX_ATTACHMENTS},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_ADD_ATTACHMENTS}</p>{+END}
-{+START,IF,{$EQ,{_POST_LENGTH},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_POSTS}</p>{+END}
-{+START,IF,{$EQ,{_SIGNATURE_LENGTH},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_SIGNATURE}</p>{+END}
-{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$EQ,{_PERSONAL_GALLERY_ENTRIES_IMAGES},0}}{+START,IF,{$EQ,{_PERSONAL_GALLERY_ENTRIES_VIDEOS},0}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_PERSONAL_GALLERY}</p>{+END}{+END}{+END}
-{+START,IF,{$AND,{$EQ,{_GIFT_POINTS},0},{$EQ,{_GIFT_POINTS_PER_DAY},0}}}<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_GIFT_POINTS}</p>{+END}
+{+START,IF_NON_EMPTY,{LOCKED_THEMES}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_THEMES,{LOCKED_THEMES*}}</p>{+END}
+{+START,IF,{$EQ,{HAS_DAILY_UPLOAD_QUOTA},1}}{+START,IF,{$EQ,{_DAILY_UPLOAD_QUOTA},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_UPLOAD_ATTACHMENTS}</p>{+END}{+END}
+{+START,IF,{$EQ,{_MAX_ATTACHMENTS},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_ADD_ATTACHMENTS}</p>{+END}
+{+START,IF,{$EQ,{_POST_LENGTH},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_POSTS}</p>{+END}
+{+START,IF,{$EQ,{_SIGNATURE_LENGTH},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_SIGNATURE}</p>{+END}
+{+START,IF,{$EQ,{INFINITE_PERSONAL_GALLERY_ENTRIES},0}}{+START,IF,{$EQ,{_PERSONAL_GALLERY_ENTRIES_IMAGES},0}}{+START,IF,{$EQ,{_PERSONAL_GALLERY_ENTRIES_VIDEOS},0}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_PERSONAL_GALLERY}</p>{+END}{+END}{+END}
+{+START,IF,{$AND,{$EQ,{_GIFT_POINTS},0},{$EQ,{_GIFT_POINTS_PER_DAY},0}}}<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_GIFT_POINTS}</p>{+END}
 {+START,LOOP,LOCKED_PRIVILEGES}
-	<p><img src="{$IMG,icons/cns_topic_modifiers/closed}" width="18" height="18">{!RANK_LOCKED_PRIVILEGE,{PRIVILEGE*},{SCOPE*}}</p>
+	<p><img class="icon inline-icon" src="{$IMG,icons_monochrome/cns_topic_modifiers/closed}">{!RANK_LOCKED_PRIVILEGE,{PRIVILEGE*},{SCOPE*}}</p>
 {+END}

@@ -573,6 +573,7 @@ function database_specific() : bool
 
     $done_something = false;
 
+    // Handle database field edits from 11 alpha to 11.beta1
     if ((is_numeric($upgrade_from)) && (intval($upgrade_from) >= 1711670588/*11.alpha1*/) && (intval($upgrade_from) < 1721661975)) {
         $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
         $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
@@ -624,6 +625,33 @@ function database_specific() : bool
         $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'voting_ip_address', ['pv_ip_address']);
 
         $done_something = true;
+    }
+
+    // Copy declarations in CPF on upgrade so members are not forced to re-agree to the rules
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1721686113)) {
+        if ((get_option('join_declarations') != '') && (get_option('show_first_join_page') == '1')) {
+            $member_id = null;
+            do {
+                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
+                foreach ($rows as $row) {
+                    $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
+
+                    if ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+                        continue;
+                    }
+
+                    $cpfs = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
+                    if ($cpfs === null) {
+                        continue;
+                    }
+
+                    // Only copy declarations in for members whose declarations field was blank
+                    if (!isset($cpfs['agreed_declarations']) || ($cpfs['agreed_declarations'] == '')) {
+                        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'agreed_declarations', get_option('join_declarations'));
+                    }
+                }
+            } while (count($rows) > 0);
+        }
     }
 
     return $done_something;

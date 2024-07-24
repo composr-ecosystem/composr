@@ -329,7 +329,7 @@ function cns_get_group_property(int $group, string $property, bool $hide_hidden 
 
     if (!array_key_exists($group, $USER_GROUPS_CACHED)) { // DB corruption
         switch ($property) {
-            case 'group_leader':
+            case 'group_lead_member':
                 return null;
 
             default:

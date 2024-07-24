@@ -49,7 +49,7 @@ class Hook_profiles_tabs_pts
      */
     public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : array
     {
-        $title = do_lang_tempcode('PRIVATE_TOPICS_INBOX');
+        $title = do_lang_tempcode('_PRIVATE_TOPICS_INBOX');
 
         $order = 80;
 

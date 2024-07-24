@@ -412,7 +412,7 @@ class Module_topicview
                         $posters_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($_postdetails['poster'], true);
                         foreach ($posters_groups as $group) {
                             $rank_image = cns_get_group_property($group, 'rank_image');
-                            $group_leader = cns_get_group_property($group, 'group_leader');
+                            $group_leader = cns_get_group_property($group, 'group_lead_member');
                             $group_name = cns_get_group_name($group);
                             $rank_image_pri_only = cns_get_group_property($group, 'rank_image_pri_only');
                             if (($rank_image != '') && (($rank_image_pri_only == 0) || ($group == $GLOBALS['FORUM_DRIVER']->get_member_row_field($_postdetails['poster'], 'm_primary_group')))) {

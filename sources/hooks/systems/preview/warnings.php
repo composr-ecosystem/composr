@@ -134,7 +134,7 @@ class Hook_preview_warnings
         $posters_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($post_owner, true);
         foreach ($posters_groups as $group) {
             $rank_image = cns_get_group_property($group, 'rank_image');
-            $group_leader = cns_get_group_property($group, 'group_leader');
+            $group_leader = cns_get_group_property($group, 'group_lead_member');
             $group_name = cns_get_group_name($group);
             if ($rank_image != '') {
                 $rank_images->attach(do_template('CNS_RANK_IMAGE', [
