@@ -79,6 +79,10 @@ class Hook_endpoint_cms_homesite_telemetry
 
                 $error_message = $decrypted_data['error_message'];
 
+                if ($error_message == 'TEST') { // Unit test; return dummy ID
+                    return ['success' => true, 'relayed_error_id' => 0];
+                }
+
                 // FUDGE: Ignore cases that might not yet be mainstream in the relay_error_notification function for the software
                 if (
                     (strpos($error_message, 'Cannot write to ') !== false) ||
