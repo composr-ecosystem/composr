@@ -77,6 +77,34 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 	float:left;
 	padding-bottom:10px;
 }
+
+@media (min-width: 640px) {
+	.cntLeft {
+		/*{+START,IF,{$NOT,{$MOBILE}}}*/
+			float:left;
+			width:66%;
+		/*{+END}*/
+		overflow:hidden;
+	}
+	.cntRight {
+		/*{+START,IF,{$NOT,{$MOBILE}}}*/
+			float:right;
+			width:33%;
+		/*{+END}*/
+		overflow:hidden;
+	}
+	.cntLRow {
+		/*{+START,IF,{$NOT,{$MOBILE}}}*/
+			float:left;
+		/*{+END}*/
+		padding-bottom:10px;
+	}
+	.cntRRow {
+		float:left;
+		padding-bottom:10px;
+	}
+}
+
 .cntLeft h1 { padding-bottom:10px; display:block; }
 h2.leftH3Like, .cntLeft h2.h3Like, .cntLeft h3 { font-size:20px !important; font-weight:bold; color:#677EA4; padding:5px 0px 10px 0px; display:block; }
 .cntLeft p { font-size:14px; line-height:22px; color:#666666; text-align:justify; padding-bottom:10px; }
