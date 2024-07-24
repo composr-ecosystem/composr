@@ -46,3 +46,48 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 		background-attachment: fixed;
 	/*{+END}*/
 }
+
+/*
+=========================
+=======New Elements======
+=========================
+*/
+
+.cntLeft {
+	/*{+START,IF,{$NOT,{$MOBILE}}}*/
+		float:left;
+		width:66%;
+	/*{+END}*/
+	overflow:hidden;
+}
+.cntRight {
+	/*{+START,IF,{$NOT,{$MOBILE}}}*/
+		float:right;
+		width:33%;
+	/*{+END}*/
+	overflow:hidden;
+}
+.cntLRow {
+	/*{+START,IF,{$NOT,{$MOBILE}}}*/
+		float:left;
+		width:66%;
+	/*{+END}*/
+	padding-bottom:10px;
+}
+.cntRRow {
+	float:left;
+	/*{+START,IF,{$NOT,{$MOBILE}}}*/
+		width:33%;
+	/*{+END}*/
+	padding-bottom:10px;
+}
+.cntLeft h1 { padding-bottom:10px; display:block; }
+h2.leftH3Like, .cntLeft h2.h3Like, .cntLeft h3 { font-size:20px !important; font-weight:bold; color:#677EA4; padding:5px 0px 10px 0px; display:block; }
+.cntLeft p { font-size:14px; line-height:22px; color:#666666; text-align:justify; padding-bottom:10px; }
+.cntLeft p.noJustify { text-align:left; }
+
+.cntRow p + h1 { margin-top:10px; }
+.cntRow h1 { margin:0; padding-bottom:20px; display:block; }
+.cntRow h2 { font-size:24px; font-weight:bold; padding-bottom:10px; display:block; }
+.cntRow h3 { font-size:18px; font-weight:bold; padding-bottom:5px; display:block; }
+.cntRow>h3>a { color:white !important; }
