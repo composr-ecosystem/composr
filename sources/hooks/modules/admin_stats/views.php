@@ -379,6 +379,10 @@ class Hook_admin_stats_views extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data');
+
+        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
         require_code('locations');
 
         $server_timezone = get_server_timezone();
@@ -402,7 +406,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
         $query .= 'date_and_time>=' . strval($start_time) . ' AND ';
         $query .= 'date_and_time<=' . strval($end_time);
         $query .= ' ORDER BY date_and_time';
+        cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data (main processing loop)');
         do {
+            cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data (group ' . integer_format($start) . ')');
             $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
             foreach ($rows as $row) {
                 $timestamp = $row['date_and_time'];
@@ -617,11 +623,14 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 }
             }
 
+            cms_profile_end_for('Hook_admin_stats_views->preprocess_raw_data (group ' . integer_format($start) . ')');
             $start += $max;
         } while (!empty($rows));
+        cms_profile_end_for('Hook_admin_stats_views->preprocess_raw_data (main processing loop)');
 
         // We need to anonymise the IPs and simplify the data structure...
 
+        cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data (simplify data)');
         foreach ($data_buckets['total_unique_views'] as $month => $_) {
             foreach ($_ as $pivot => $__) {
                 foreach ($__ as $pivot_value => $___) {
@@ -638,9 +647,11 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 }
             }
         }
+        cms_profile_end_for('Hook_admin_stats_views->preprocess_raw_data (simplify data)');
 
         // Session behaviours (slow)...
 
+        cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data (session behaviours)');
         foreach (array_keys($found_sessions) as $session_id) {
             $first_page_link = null;
             $first_page_timestamp = null;
@@ -651,36 +662,44 @@ class Hook_admin_stats_views extends CMSStatsProvider
             $month = null;
             $country = '';
 
-            $rows = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'date_and_time', 'ip'], ['session_id' => $session_id], 'ORDER BY date_and_time');
-            foreach ($rows as $row) {
-                $timestamp = $row['date_and_time'];
-                if ($timestamp < $start_time) {
-                    continue;
-                }
-                $timestamp = tz_time($timestamp, $server_timezone);
-
-                $month = get_stats_month_for_timestamp($timestamp);
-
-                list($zone, $attributes) = page_link_decode($row['page_link']);
-                $page = isset($attributes['page']) ? $attributes['page'] : DEFAULT_ZONE_PAGE_NAME;
-                $page_link = $zone . ':' . $page;
-
-                if ($first_page_link === null) {
-                    $first_page_link = $page_link;
-                    $first_page_timestamp = $timestamp;
-
-                    $ip_address = $row['ip'];
-                    $country = geolocate_ip($ip_address);
-                    if ($country === null) {
-                        $country = '';
+            $start = 0;
+            $max = 1000;
+            do {
+                cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data (session behaviours) (session ' . $session_id . ' group ' . integer_format($start) . ')');
+                $rows = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'date_and_time', 'ip'], ['session_id' => $session_id], 'ORDER BY date_and_time', $max, $start);
+                foreach ($rows as $row) {
+                    $timestamp = $row['date_and_time'];
+                    if ($timestamp < $start_time) {
+                        continue;
                     }
+                    $timestamp = tz_time($timestamp, $server_timezone);
+
+                    $month = get_stats_month_for_timestamp($timestamp);
+
+                    list($zone, $attributes) = page_link_decode($row['page_link']);
+                    $page = isset($attributes['page']) ? $attributes['page'] : DEFAULT_ZONE_PAGE_NAME;
+                    $page_link = $zone . ':' . $page;
+
+                    if ($first_page_link === null) {
+                        $first_page_link = $page_link;
+                        $first_page_timestamp = $timestamp;
+
+                        $ip_address = $row['ip'];
+                        $country = geolocate_ip($ip_address);
+                        if ($country === null) {
+                            $country = '';
+                        }
+                    }
+
+                    $last_page_link = $page_link;
+                    $last_page_timestamp = $timestamp;
+
+                    $total_views++;
                 }
 
-                $last_page_link = $page_link;
-                $last_page_timestamp = $timestamp;
-
-                $total_views++;
-            }
+                cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data (session behaviours) (session ' . $session_id . ' group ' . integer_format($start) . ')');
+                $start += $max;
+            } while (!empty($rows));
 
             $is_bounce = ($total_views == 1);
             $session_duration = $last_page_timestamp - $first_page_timestamp;
@@ -730,6 +749,11 @@ class Hook_admin_stats_views extends CMSStatsProvider
             }
             $data_buckets['session_total_views'][$month][''][$country][$total_views]++;
         }
+        cms_profile_end_for('Hook_admin_stats_views->preprocess_raw_data (session behaviours)');
+
+        cms_profile_end_for('Hook_admin_stats_views->preprocess_raw_data');
+
+        cms_set_time_limit($old);
     }
 
     /**
@@ -1475,6 +1499,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
         }
 
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+
+        return [];
     }
 
     /**

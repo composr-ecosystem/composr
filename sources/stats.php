@@ -1658,7 +1658,7 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
 
     unset($data_buckets_flat);
 
-    cms_profile_start_for('preprocess_raw_data_for::' . $hook_name . '->preprocess_raw_data_flat');
+    cms_profile_end_for('preprocess_raw_data_for::' . $hook_name . '->preprocess_raw_data_flat');
 
     cms_profile_end_for('preprocess_raw_data_for::' . $hook_name);
 }
