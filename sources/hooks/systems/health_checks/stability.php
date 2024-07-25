@@ -74,7 +74,7 @@ class Hook_health_check_stability extends Hook_Health_Check
         }
 
         $path = get_custom_file_base() . '/data_custom/errorlog.php';
-        if (filesize($path) >= 25) {
+        if (filesize($path) >= 25) { // Accounting for the top return line
             $this->stateCheckManual('Check the software error log');
         }
 
