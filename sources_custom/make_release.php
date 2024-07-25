@@ -216,6 +216,26 @@ function make_installers($skip_file_grab = false)
                 return \$data;
             }
 
+            function file_array_scandir(\$path) {
+                global \$FILE_ARRAY;
+                \$ret = [];
+
+                foreach (\$FILE_ARRAY as \$file) {
+                    if (strpos(\$file, str_replace('\\\\', '/', \$path)) === 0) {
+                        \$_ret = str_replace(\$path, '', \$file); // Strip specified path off of file to make it relative
+                        if ((substr(\$path, -1) != '/') && (\$_ret[0] != '/')) { // Actually this is a partial match, not a full match; skip
+                            continue;
+                        }
+                        if (\$_ret[0] == '/') { // Strip leading slash
+                            \$_ret = substr(\$_ret, 1);
+                        }
+                        \$ret[] = \$_ret;
+                    }
+                }
+
+                return \$ret;
+            }
+
             function file_array_exists(\$path)
             {
                 global \$OFFSET_ARRAY;
