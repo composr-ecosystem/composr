@@ -250,6 +250,12 @@ class Hook_health_check_integrity extends Hook_Health_Check
                 return;
             }
 
+            global $FILE_ARRAY;
+            if (@is_array($FILE_ARRAY)) {
+                $this->log('Skipped; not necessary in quick installer.');
+                return;
+            }
+
             /*Actually CMSPermissionsScannerSimplified will be used which is safer if (strpos(PHP_OS, 'WIN') !== false) {
                 if ($sdc === null) {
                     return; // Too unreliable/slow, so has to be explicitly enabled

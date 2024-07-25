@@ -1761,9 +1761,17 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
 
     // Check addon_registry hook
     $addon_name = filter_naughty($addon_name, true);
-    $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
-    if ((!$answer) && ($check_custom)) {
-        $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
+    global $FILE_ARRAY;
+    if (@is_array($FILE_ARRAY)) { // quick installer
+        $answer = file_array_exists('sources/hooks/systems/addon_registry/' . $addon_name . '.php');
+        if ((!$answer) && ($check_custom)) {
+            $answer = file_array_exists('sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
+        }
+    } else {
+        $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
+        if ((!$answer) && ($check_custom)) {
+            $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
+        }
     }
 
     // Check addons table
@@ -4145,6 +4153,10 @@ function get_zone_default_page(string $zone_name, bool &$zone_missing = false) :
             }
         }
         if ($_zone_default_page === null) {
+            if (running_script('install')) { // Can't run $SITE_DB in installer
+                $ZONE_DEFAULT_PAGES_CACHE[$zone_name] = DEFAULT_ZONE_PAGE_NAME;
+                return DEFAULT_ZONE_PAGE_NAME;
+            }
             $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page', 'zone_title'], []/*Load multiple so we can cache for performance ['zone_name' => $zone_name]*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
         }
         foreach ($_zone_default_page as $zone_row) {
