@@ -20,15 +20,19 @@ class Hook_startup_hybridauth
 {
     public function run()
     {
-        if (!addon_installed('hybridauth')) {
-            return;
-        }
+        return; // TODO: Do we really need this to happen on every page load? It causes timeouts.
 
-        if (!function_exists('curl_init')) {
-            return;
-        }
+        /*
+            if (!addon_installed('hybridauth')) {
+                return;
+            }
 
-        require_code('hybridauth');
-        initiate_hybridauth_session_state();
+            if (!function_exists('curl_init')) {
+                return;
+            }
+
+            require_code('hybridauth');
+            initiate_hybridauth_session_state();
+        */
     }
 }

@@ -38,6 +38,8 @@ function initiate_hybridauth_session_state()
 
 function initiate_hybridauth()
 {
+    initiate_hybridauth_session_state(); // TODO: temporary work-around for Hybridauth timeouts (instead of using the startup hook)
+
     $providers = enumerate_hybridauth_providers();
 
     global $CSP_NONCE;
