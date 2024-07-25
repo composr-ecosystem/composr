@@ -1568,6 +1568,8 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
         return;
     }
 
+    cms_profile_start_for('preprocess_raw_data_for::' . $hook_name);
+
     // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
 
     $months = [];
@@ -1575,6 +1577,8 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
         $month = get_stats_month_for_timestamp($timestamp);
         $months[$month] = true;
     }
+
+    cms_profile_start_for('preprocess_raw_data_for::' . $hook_name . '->preprocess_raw_data');
 
     $data_buckets = [];
     foreach (array_keys($info) as $bucket) {
@@ -1617,7 +1621,11 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
 
     unset($data_buckets);
 
+    cms_profile_end_for('preprocess_raw_data_for::' . $hook_name . '->preprocess_raw_data');
+
     // Now for flat data...
+
+    cms_profile_start_for('preprocess_raw_data_for::' . $hook_name . '->preprocess_raw_data_flat');
 
     // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
 
@@ -1649,6 +1657,10 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
     }
 
     unset($data_buckets_flat);
+
+    cms_profile_end_for('preprocess_raw_data_for::' . $hook_name . '->preprocess_raw_data_flat');
+
+    cms_profile_end_for('preprocess_raw_data_for::' . $hook_name);
 }
 
 /**
@@ -1656,6 +1668,8 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
  */
 function send_kpi_notifications()
 {
+    cms_profile_start_for('send_kpi_notifications');
+
     $series = [ // Runs day after a period ends
         'year_series' => (date('m-d') == '01-01'),
         'quarter_series' => (date('d') == '01') && (in_array(date('m'), ['01', '04', '07', '10'])),
@@ -1700,4 +1714,6 @@ function send_kpi_notifications()
 
         dispatch_notification('kpis', '', do_lang('NOTIFICATION_TYPE_kpis'), $mail->evaluate(get_site_default_lang()));
     }
+
+    cms_profile_end_for('send_kpi_notifications');
 }

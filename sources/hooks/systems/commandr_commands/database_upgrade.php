@@ -45,7 +45,7 @@ class Hook_commandr_command_database_upgrade
         }
 
         require_code('upgrade_db_upgrade');
-        $result = upgrade_modules($from_cms_version);
+        $result = upgrade_addons($from_cms_version);
         if ($result == '') {
             $result = do_lang('NO_ACTION_REQUIRED');
         }

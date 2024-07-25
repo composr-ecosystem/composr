@@ -168,7 +168,7 @@ if (!array_key_exists('step', $_GET)) {
     $_GET['step'] = '1';
 }
 
-if (intval($_GET['step']) == 1) { // Language
+if (intval($_GET['step']) == 1) { // Language and integrity checks
     $content = step_1();
 }
 
@@ -344,7 +344,7 @@ function step_1() : object
     }
 
     global $DATADOTCMS_FILE;
-    if (!@is_resource($DATADOTCMS_FILE)) { // Do an integrity check - missing corrupt files
+    if (!@is_resource($DATADOTCMS_FILE)) { // Do an integrity check if running the manual installer - missing corrupt files
         $sdc = get_param_integer('skip_disk_checks', null);
         if (($sdc === 1) || (($sdc !== 0) && (file_exists(get_file_base() . '/.git')))) {
             if (!file_exists(get_file_base() . '/.git')) {
@@ -441,11 +441,12 @@ function step_1() : object
             $warnings->attach(do_template('INSTALLER_NOTICE', ['_GUID' => '2f22076de944028f70f40388c43fb96e', 'MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
         }
     }
+
     if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
         $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => '368fe19bba96ef38027e7822e1a0a432', 'MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
     }
 
-    // Some sanity checks
+    // Some sanity checks on manual installer
     if (!@is_array($FILE_ARRAY)) { // Secondary to the file-by-file check. Aims to give more specific information
         if ((file_exists(get_file_base() . '/themes/default/templates/ANCHOR.tpl')) && (!file_exists(get_file_base() . '/themes/default/templates/COMCODE_TABULAR_INLINE_BLOCKS.tpl'))) {
             warn_exit(do_lang_tempcode('CORRUPT_FILES_CROP'));
@@ -461,8 +462,7 @@ function step_1() : object
     }
 
     // Language selection...
-
-    if (file_exists('lang_custom/langs.ini')) {
+    if ((@is_array($FILE_ARRAY) && file_array_exists('lang_custom/langs.ini')) || file_exists('lang_custom/langs.ini')) {
         $lookup = cms_parse_ini_file_fast(get_custom_file_base() . '/lang_custom/langs.ini');
     } else {
         $lookup = cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini');

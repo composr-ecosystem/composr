@@ -78,7 +78,6 @@ class Module_shopping
                 'quantity' => 'INTEGER',
                 'add_time' => 'TIME',
             ]);
-            $GLOBALS['SITE_DB']->create_index('shopping_cart', 'ordering_member', ['ordering_member']);
             $GLOBALS['SITE_DB']->create_index('shopping_cart', 'session_id', ['session_id']);
             $GLOBALS['SITE_DB']->create_index('shopping_cart', 'type_code', ['type_code']);
 
@@ -187,7 +186,7 @@ class Module_shopping
 
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'e_member_id', '*MEMBER', 'l_member_id');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'session_id', 'ID_TEXT', 'l_session_id');
-            $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'ip', 'IP', 'l_ip_address');
+            $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'ip', 'IP', 'l_ip');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'last_action', 'SHORT_TEXT', 'l_last_action');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'date_and_time', 'TIME', 'l_date_and_time');
 
@@ -223,6 +222,12 @@ class Module_shopping
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('shopping_cart', 'ordered_by', 'MEMBER', 'ordering_member');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_logging', 'l_ip', 'IP', 'l_ip_address');
+
+            $GLOBALS['SITE_DB']->delete_index_if_exists('shopping_cart', 'ordered_by');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 9)) {
+            $GLOBALS['SITE_DB']->create_index('shopping_cart', 'ordering_member', ['ordering_member']);
         }
     }
 

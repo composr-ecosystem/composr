@@ -122,6 +122,19 @@ class Module_points
             $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'sender_id', 'MEMBER', 'sending_member');
             $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'recipient_id', 'MEMBER', 'receiving_member');
             $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'linked_to', '?AUTO_LINK', 'linked_ledger_id');
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'sender_id', 'MEMBER', 'sending_member');
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'recipient_id', 'MEMBER', 'receiving_member');
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'expiration', '?TIME', 'expiration_time');
+
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_ledger_id', ['linked_ledger_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'sending_member', ['sending_member']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'receiving_member', ['receiving_member']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY
+            $GLOBALS['SITE_DB']->delete_index_if_exists('points_ledger', 'linked_to');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('escrow', 'sender_id');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('escrow', 'recipient_id');
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
@@ -365,13 +378,6 @@ class Module_points
 
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_lifetime', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta1
-            // Database consistency fixes
-            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'sender_id', 'MEMBER', 'sending_member');
-            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'recipient_id', 'MEMBER', 'receiving_member');
-            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'expiration', '?TIME', 'expiration_time');
         }
     }
 

@@ -72,6 +72,9 @@ class Hook_cron_stats_preprocess_raw_data
         $end_time = tz_time($end_time, $server_timezone);
 
         if ($end_time > $start_time) {
+            require_code('global3');
+            cms_profile_start_for('Hook_cron_stats_preprocess_raw_data');
+
             push_query_limiting(false);
             disable_php_memory_limit();
 
@@ -90,6 +93,8 @@ class Hook_cron_stats_preprocess_raw_data
             send_kpi_notifications();
 
             pop_query_limiting();
+
+            cms_profile_end_for('Hook_cron_stats_preprocess_raw_data');
         }
     }
 }

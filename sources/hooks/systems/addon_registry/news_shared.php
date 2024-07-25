@@ -61,7 +61,7 @@ class Hook_addon_registry_news_shared
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**

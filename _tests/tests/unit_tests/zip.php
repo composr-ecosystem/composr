@@ -41,7 +41,7 @@ class zip_test_set extends cms_test_case
 
         $path = get_file_base() . '/uploads/website_specific/cms_homesite/banners.zip';
 
-        $zip_archive = new ZipArchive;
+        $zip_archive = new ZipArchive();
 
         $in_file = $zip_archive->open($path);
         if ($in_file !== true) {

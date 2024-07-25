@@ -52,8 +52,6 @@ class Hook_config_join_declarations
      */
     public function get_default() : ?string
     {
-        require_lang('cns_config');
-        require_code('temporal');
-        return do_lang('I_AGREE_RULES') . "\n" . do_lang('I_AGREE_PRIVACY') . "\n" . do_lang('I_AGREE_UPDATES', escape_html(get_timezoned_date(time(), false)));
+        return ''; // We do not want a default for a blank rules page; Setup Wizard will fill in a default
     }
 }

@@ -1739,9 +1739,10 @@ function has_no_forum() : bool
  * @param  boolean $check_hookless Whether to check addons with no addon_registry hook (it's very rare to need this)
  * @param  boolean $deep_scan Do a deep scan of the database to see if the addon is fully installed
  * @param  boolean $disabled_scan Consider whether the addon is set as disabled
+ * @param  boolean $force_custom Whether to forcefully check custom even if in safe mode
  * @return boolean Whether it is
  */
-function addon_installed(string $addon_name, bool $check_hookless = false, bool $deep_scan = true, bool $disabled_scan = true) : bool
+function addon_installed(string $addon_name, bool $check_hookless = false, bool $deep_scan = true, bool $disabled_scan = true, bool $force_custom = false) : bool
 {
     global $ADDON_INSTALLED_CACHE;
     if (empty($ADDON_INSTALLED_CACHE)) {
@@ -1755,15 +1756,26 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
         return $ADDON_INSTALLED_CACHE[$addon_name][$check_hookless][$deep_scan][$disabled_scan];
     }
 
+    $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
+    $check_custom = (($force_custom) || (!in_safe_mode()) || ($page == 'admin-addons')); // TODO: use new $force_custom parameter on admin-addons page
+
     // Check addon_registry hook
     $addon_name = filter_naughty($addon_name, true);
-    $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
-    if ((!$answer) && (!in_safe_mode())) {
-        $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
+    global $FILE_ARRAY;
+    if (@is_array($FILE_ARRAY)) { // quick installer
+        $answer = file_array_exists('sources/hooks/systems/addon_registry/' . $addon_name . '.php');
+        if ((!$answer) && ($check_custom)) {
+            $answer = file_array_exists('sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
+        }
+    } else {
+        $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
+        if ((!$answer) && ($check_custom)) {
+            $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
+        }
     }
 
     // Check addons table
-    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!in_safe_mode()) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
+    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($check_custom) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
         require_code('database');
 
         if ((!$answer) && ($check_hookless)) {
@@ -4141,6 +4153,10 @@ function get_zone_default_page(string $zone_name, bool &$zone_missing = false) :
             }
         }
         if ($_zone_default_page === null) {
+            if (running_script('install')) { // Can't run $SITE_DB in installer
+                $ZONE_DEFAULT_PAGES_CACHE[$zone_name] = DEFAULT_ZONE_PAGE_NAME;
+                return DEFAULT_ZONE_PAGE_NAME;
+            }
             $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page', 'zone_title'], []/*Load multiple so we can cache for performance ['zone_name' => $zone_name]*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
         }
         foreach ($_zone_default_page as $zone_row) {

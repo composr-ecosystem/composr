@@ -42,10 +42,13 @@ function has_ttf() : bool
         return $result;
     }
 
+    // Actually this is a problematic check because it fails on the quick installer (fonts not extracted) and we're testing for server ttf support, not if this file exists / can be processed
+    /*
     if (@imagettfbbox(26.0, 0.0, get_file_base() . '/data/fonts/NotoSans-Regular.ttf', 'test') === false) {
         $result = false;
         return $result;
     }
+    */
 
     $result = true;
     return $result;

@@ -1753,8 +1753,8 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('db_meta', '
 ('seo_meta_keywords', 'keywords_alt_key', 'meta_for_type,meta_for_id'),
 ('seo_meta_keywords', 'ftjoin_dmeta_keywords', 'meta_keyword'),
 ('f_group_join_log', 'member_id', 'member_id'),
-('f_group_join_log', 'usergroup_id', 'usergroup_id'),
 ('f_group_join_log', 'join_time', 'join_time'),
+('f_group_join_log', 'usergroup_id', 'usergroup_id'),
 ('f_password_history', 'p_member_id', 'p_member_id'),
 ('f_emoticons', 'relevantemoticons', 'e_relevance_level'),
 ('f_emoticons', 'topicemos', 'e_use_topics'),
@@ -1799,8 +1799,6 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_members',
 ('f_forums', 'f_position', 'f_position'),
 ('f_topics', '#t_cache_first_post', 't_cache_first_post'),
 ('f_topics', 't_num_views', 't_num_views'),
-('f_topics', 't_pt_to_member', 't_pt_to_member'),
-('f_topics', 't_pt_from_member', 't_pt_from_member'),
 ('f_topics', 't_validated', 't_validated'),
 ('f_topics', 'in_forum', 't_forum_id'),
 ('f_topics', 'topic_order_time', 't_cache_last_time'),
@@ -1811,10 +1809,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_members',
 ('f_topics', 't_cascading', 't_cascading'),
 ('f_topics', 't_cascading_or_forum', 't_cascading,t_forum_id'),
 ('f_topics', 'topic_order', 't_cascading,t_pinned,t_cache_last_time'),
-('f_topics', 'topic_order_forum', 't_forum_id,t_cascading,t_pinned,t_cache_last_time');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_topics', 'ownedtopics', 't_cache_first_member_id'),
-('f_topics', 'unread_forums', 't_forum_id,t_cache_last_time'),
-('f_posts', '#p_post', 'p_post'),
+('f_topics', 'topic_order_forum', 't_forum_id,t_cascading,t_pinned,t_cache_last_time'),
+('f_topics', 'ownedtopics', 't_cache_first_member_id'),
+('f_topics', 'unread_forums', 't_forum_id,t_cache_last_time');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_posts', '#p_post', 'p_post'),
 ('f_posts', 'p_validated', 'p_validated'),
 ('f_posts', 'in_topic', 'p_topic_id,p_time,id'),
 ('f_posts', 'post_order_time', 'p_time,id'),
@@ -1830,10 +1828,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_topics', 
 ('f_read_logs', 'erase_old_read_logs', 'l_time'),
 ('f_members', 'last_visit_time', 'm_dob_month,m_dob_day,m_last_visit_time'),
 ('f_posts', 'posts_by_in_forum', 'p_posting_member,p_cache_forum_id'),
-('f_posts', 'posts_by_in_topic', 'p_posting_member,p_topic_id');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_posts', 'posts_by', 'p_posting_member,p_time'),
-('f_topics', 't_cache_num_posts', 't_cache_num_posts'),
-('f_posts', 'in_topic_change_order', 'p_topic_id,p_last_edit_time,p_time,id'),
+('f_posts', 'posts_by_in_topic', 'p_posting_member,p_topic_id'),
+('f_posts', 'posts_by', 'p_posting_member,p_time'),
+('f_topics', 't_cache_num_posts', 't_cache_num_posts');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_posts', 'in_topic_change_order', 'p_topic_id,p_last_edit_time,p_time,id'),
 ('f_topics', 't_cache_last_member_id', 't_cache_last_member_id'),
 ('f_topics', 't_cache_first_post_id', 't_cache_first_post_id'),
 ('f_topics', 't_cache_last_post_id', 't_cache_last_post_id'),
@@ -1842,8 +1840,6 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_posts', '
 ('f_forums', 'club_search', 'f_description'),
 ('f_special_pt_access', 'sp_member', 's_member_id'),
 ('f_special_pt_access', 'sp_topic', 's_topic_id'),
-('f_posts', 'last_edit_member', 'p_last_edit_member'),
-('f_invites', 'inviter', 'i_invite_member'),
 ('f_poll_votes', 'member_id', 'pv_member_id'),
 ('f_members', 'last_visit_time_2', 'm_last_visit_time'),
 ('f_group_approvals', '#ga_reason', 'ga_reason'),
@@ -1871,12 +1867,12 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_posts', '
 ('f_pposts_fulltext_index', 'main_14', 'i_lang,i_ngram,i_posting_member,i_starter,i_occurrence_rate'),
 ('f_pposts_fulltext_index', 'main_15', 'i_lang,i_ngram,i_posting_member,i_for,i_occurrence_rate'),
 ('f_pposts_fulltext_index', 'main_16', 'i_lang,i_ngram,i_starter,i_for,i_occurrence_rate'),
-('f_pposts_fulltext_index', 'main_17', 'i_lang,i_ngram,i_ac,i_add_time,i_posting_member,i_occurrence_rate');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_pposts_fulltext_index', 'main_18', 'i_lang,i_ngram,i_ac,i_add_time,i_starter,i_occurrence_rate'),
+('f_pposts_fulltext_index', 'main_17', 'i_lang,i_ngram,i_ac,i_add_time,i_posting_member,i_occurrence_rate'),
+('f_pposts_fulltext_index', 'main_18', 'i_lang,i_ngram,i_ac,i_add_time,i_starter,i_occurrence_rate'),
 ('f_pposts_fulltext_index', 'main_19', 'i_lang,i_ngram,i_ac,i_add_time,i_for,i_occurrence_rate'),
 ('f_pposts_fulltext_index', 'main_20', 'i_lang,i_ngram,i_ac,i_posting_member,i_starter,i_occurrence_rate'),
-('f_pposts_fulltext_index', 'main_21', 'i_lang,i_ngram,i_ac,i_posting_member,i_for,i_occurrence_rate'),
-('f_pposts_fulltext_index', 'main_22', 'i_lang,i_ngram,i_ac,i_starter,i_for,i_occurrence_rate'),
+('f_pposts_fulltext_index', 'main_21', 'i_lang,i_ngram,i_ac,i_posting_member,i_for,i_occurrence_rate');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_pposts_fulltext_index', 'main_22', 'i_lang,i_ngram,i_ac,i_starter,i_for,i_occurrence_rate'),
 ('f_pposts_fulltext_index', 'main_23', 'i_lang,i_ngram,i_add_time,i_posting_member,i_starter,i_occurrence_rate'),
 ('f_pposts_fulltext_index', 'main_24', 'i_lang,i_ngram,i_add_time,i_posting_member,i_for,i_occurrence_rate'),
 ('f_pposts_fulltext_index', 'main_25', 'i_lang,i_ngram,i_add_time,i_starter,i_for,i_occurrence_rate'),
@@ -1908,11 +1904,17 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_pposts_fu
 ('f_posts_fulltext_index', 'main_19', 'i_lang,i_ngram,i_occurrence_rate'),
 ('f_warnings_punitive', 'warningsid', 'p_warning_id'),
 ('f_warnings_punitive', 'warninghook', 'p_hook'),
+('f_invites', 'inviter', 'i_invite_member'),
+('f_posts', 'last_edit_member', 'p_last_edit_member'),
+('f_topics', 't_pt_to_member', 't_pt_to_member'),
+('f_topics', 't_pt_from_member', 't_pt_from_member'),
+('f_poll_votes', 'voting_member_id', 'pv_member_id'),
+('f_poll_votes', 'voting_ip_address', 'pv_ip_address'),
 ('menu_items', '#i_caption', 'i_caption'),
-('menu_items', '#i_caption_long', 'i_caption_long'),
-('menu_items', 'menu_extraction', 'i_menu'),
-('trackbacks', 'trackback_for_type', 'trackback_for_type');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('trackbacks', 'trackback_for_id', 'trackback_for_id'),
+('menu_items', '#i_caption_long', 'i_caption_long');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('menu_items', 'menu_extraction', 'i_menu'),
+('trackbacks', 'trackback_for_type', 'trackback_for_type'),
+('trackbacks', 'trackback_for_id', 'trackback_for_id'),
 ('trackbacks', 'trackback_time', 'trackback_time'),
 ('captchas', 'si_time', 'si_time'),
 ('member_tracking', 'mt_page', 'mt_page'),
@@ -1928,10 +1930,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('trackbacks'
 ('url_title_cache', 't_url', 't_url'),
 ('rating', 'alt_key', 'rating_for_type,rating_for_id'),
 ('rating', 'rating_for_id', 'rating_for_id'),
-('comcode_pages', 'p_submitter', 'p_submitter'),
-('comcode_pages', 'p_add_date', 'p_add_date'),
-('comcode_pages', 'p_validated', 'p_validated');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('cached_comcode_pages', '#string_index', 'string_index'),
+('comcode_pages', 'p_submitter', 'p_submitter');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('comcode_pages', 'p_add_date', 'p_add_date'),
+('comcode_pages', 'p_validated', 'p_validated'),
+('cached_comcode_pages', '#string_index', 'string_index'),
 ('cached_comcode_pages', '#cc_page_title', 'cc_page_title'),
 ('cached_comcode_pages', 'ftjoin_ccpt', 'cc_page_title'),
 ('cached_comcode_pages', 'ftjoin_ccsi', 'string_index'),
@@ -1969,10 +1971,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('cached_comc
 ('cached_comcode_pages', '#page_search__combined', 'cc_page_title,string_index'),
 ('sitemap_cache', 'set_number', 'set_number,last_updated'),
 ('sitemap_cache', 'last_updated', 'last_updated'),
-('sitemap_cache', 'is_deleted', 'is_deleted'),
-('urls_checked', 'url', 'url(200)'),
-('member_privileges', 'member_privileges_name', 'privilege,the_page,module_the_name,category_name');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('member_privileges', 'member_privileges_member', 'member_id'),
+('sitemap_cache', 'is_deleted', 'is_deleted');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('urls_checked', 'url', 'url(200)'),
+('member_privileges', 'member_privileges_name', 'privilege,the_page,module_the_name,category_name'),
+('member_privileges', 'member_privileges_member', 'member_id'),
 ('url_id_monikers', 'uim_page_link', 'm_resource_page,m_resource_type,m_resource_id'),
 ('member_tracking', 'mt_time', 'mt_time'),
 ('edit_pings', 'edit_pings_on', 'the_page,the_type,the_id'),
@@ -1981,7 +1983,6 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('member_priv
 ('post_tokens', 'generation_time', 'generation_time'),
 ('digestives_tin', 'from_member_id', 'd_from_member_id'),
 ('cache', 'the_member', 'the_member'),
-('logged_mail_messages', 'm_as_member', 'm_as_member'),
 ('rating', 'rating_member', 'rating_member'),
 ('attachment_refs', 'attachmentreferences', 'r_referer_type,r_referer_id'),
 ('notifications_enabled', 'who_has', 'l_notification_code,l_code_category(10),l_setting'),
@@ -2000,6 +2001,7 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('member_priv
 ('cpages_fulltext_index', 'content_id', 'i_zone_name,i_page_name'),
 ('cpages_fulltext_index', 'main', 'i_lang,i_ngram,i_ac,i_occurrence_rate'),
 ('cpages_fulltext_index', 'main_2', 'i_lang,i_ngram,i_occurrence_rate'),
+('logged_mail_messages', 'm_as_member', 'm_as_member'),
 ('group_page_access', 'group_id', 'group_id'),
 ('aggregate_type_instances', 'aggregate_lookup', 'aggregate_label'),
 ('award_archive', 'awardquicksearch', 'content_id'),
@@ -2009,10 +2011,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('member_priv
 ('f_welcome_emails', '#w_text', 'w_text'),
 ('content_reviews', 'next_review_time', 'next_review_time,review_notification_happened'),
 ('content_reviews', 'needs_review', 'next_review_time,content_type'),
-('custom_comcode', '#tag_title', 'tag_title'),
-('custom_comcode', '#tag_description', 'tag_description'),
-('revisions', 'lookup_by_id', 'r_resource_type,r_resource_id');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('revisions', 'lookup_by_cat', 'r_resource_type,r_category_id'),
+('custom_comcode', '#tag_title', 'tag_title');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('custom_comcode', '#tag_description', 'tag_description'),
+('revisions', 'lookup_by_id', 'r_resource_type,r_resource_id'),
+('revisions', 'lookup_by_cat', 'r_resource_type,r_category_id'),
 ('revisions', 'actionlog_link', 'r_actionlog_id'),
 ('revisions', 'moderatorlog_link', 'r_moderatorlog_id'),
 ('hackattack', 'otherhacksby', 'ip'),
@@ -2026,13 +2028,13 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('revisions',
 ('stats_kpis', 'k_graph_name', 'k_graph_name'),
 ('stats_link_tracker', 'c_url', 'c_url'),
 ('stats_link_tracker', 'c_date_and_time', 'c_date_and_time'),
+('stats_known_links', 'l_url', 'l_url'),
+('stats', 'session_id', 'session_id'),
+('ip_country', 'begin_num', 'begin_num');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('ip_country', 'end_num', 'end_num'),
 ('stats_known_events', 'e_count_logged', 'e_count_logged'),
 ('stats_known_tracking', 't_count_logged', 't_count_logged'),
-('stats_known_links', 'l_url', 'l_url'),
 ('stats_known_links', 'l_count_logged', 'l_count_logged'),
-('stats', 'session_id', 'session_id');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('ip_country', 'begin_num', 'begin_num'),
-('ip_country', 'end_num', 'end_num'),
 ('theme_images', 'theme', 'theme,lang'),
 ('theme_screen_tree', 'page_link', 'page_link'),
 ('sms_log', 'sms_log_for', 's_member_id,s_time'),
@@ -2069,10 +2071,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('ip_country'
 ('calendar_jobs', 'member_id', 'j_member_id'),
 ('calendar_reminders', 'member_id', 'n_member_id'),
 ('catalogues', '#c_title', 'c_title'),
-('catalogues', '#c_description', 'c_description'),
-('catalogue_categories', '#cc_title', 'cc_title'),
-('catalogue_categories', '#cc_description', 'cc_description');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('catalogue_categories', 'catstoclean', 'cc_move_target_id'),
+('catalogues', '#c_description', 'c_description');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('catalogue_categories', '#cc_title', 'cc_title'),
+('catalogue_categories', '#cc_description', 'cc_description'),
+('catalogue_categories', 'catstoclean', 'cc_move_target_id'),
 ('catalogue_categories', 'cataloguefind', 'c_name'),
 ('catalogue_categories', 'cc_parent_id', 'cc_parent_id'),
 ('catalogue_fields', '#cf_name', 'cf_name'),
@@ -2109,10 +2111,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('catalogue_c
 ('catalogue_efv_short_trans', 'stce_id', 'ce_id'),
 ('catalogue_entries', 'ce_cc_id', 'cc_id'),
 ('catalogue_categories', 'ftjoin_cctitle', 'cc_title'),
-('catalogue_categories', 'ftjoin_ccdescrip', 'cc_description'),
-('catalogue_efv_long_trans', 'ltcv_value', 'cv_value'),
-('catalogue_efv_short_trans', 'stcv_value', 'cv_value');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('catalogue_entries', 'ce_add_date', 'ce_add_date'),
+('catalogue_categories', 'ftjoin_ccdescrip', 'cc_description');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('catalogue_efv_long_trans', 'ltcv_value', 'cv_value'),
+('catalogue_efv_short_trans', 'stcv_value', 'cv_value'),
+('catalogue_entries', 'ce_add_date', 'ce_add_date'),
 ('catalogue_entries', 'ce_c_name', 'c_name'),
 ('catalogue_categories', '#cat_cat_search__combined', 'cc_title,cc_description'),
 ('ce_fulltext_index', 'content_id', 'i_catalogue_entry_id'),
@@ -2128,10 +2130,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('catalogue_e
 ('ce_fulltext_index', 'main_10', 'i_lang,i_ngram,i_ac,i_submitter,i_occurrence_rate'),
 ('ce_fulltext_index', 'main_11', 'i_lang,i_ngram,i_add_time,i_c_name,i_occurrence_rate'),
 ('ce_fulltext_index', 'main_12', 'i_lang,i_ngram,i_add_time,i_category_id,i_occurrence_rate'),
-('ce_fulltext_index', 'main_13', 'i_lang,i_ngram,i_add_time,i_submitter,i_occurrence_rate'),
-('ce_fulltext_index', 'main_14', 'i_lang,i_ngram,i_c_name,i_category_id,i_occurrence_rate'),
-('ce_fulltext_index', 'main_15', 'i_lang,i_ngram,i_c_name,i_submitter,i_occurrence_rate');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('ce_fulltext_index', 'main_16', 'i_lang,i_ngram,i_category_id,i_submitter,i_occurrence_rate'),
+('ce_fulltext_index', 'main_13', 'i_lang,i_ngram,i_add_time,i_submitter,i_occurrence_rate');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('ce_fulltext_index', 'main_14', 'i_lang,i_ngram,i_c_name,i_category_id,i_occurrence_rate'),
+('ce_fulltext_index', 'main_15', 'i_lang,i_ngram,i_c_name,i_submitter,i_occurrence_rate'),
+('ce_fulltext_index', 'main_16', 'i_lang,i_ngram,i_category_id,i_submitter,i_occurrence_rate'),
 ('ce_fulltext_index', 'main_17', 'i_lang,i_ngram,i_ac,i_add_time,i_c_name,i_occurrence_rate'),
 ('ce_fulltext_index', 'main_18', 'i_lang,i_ngram,i_ac,i_add_time,i_category_id,i_occurrence_rate'),
 ('ce_fulltext_index', 'main_19', 'i_lang,i_ngram,i_ac,i_add_time,i_submitter,i_occurrence_rate'),
@@ -2169,11 +2171,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('ce_fulltext
 ('download_downloads', '#additional_details', 'additional_details'),
 ('download_downloads', 'download_views', 'download_views'),
 ('download_downloads', 'category_list', 'category_id'),
-('download_downloads', 'recent_downloads', 'add_date'),
-('download_downloads', 'top_downloads', 'num_downloads'),
-('download_downloads', 'downloadauthor', 'author');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('download_downloads', 'dds', 'submitter'),
-('download_downloads', 'ddl', 'download_licence_id'),
+('download_downloads', 'recent_downloads', 'add_date');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('download_downloads', 'top_downloads', 'num_downloads'),
+('download_downloads', 'downloadauthor', 'author'),
+('download_downloads', 'dds', 'submitter'),
 ('download_downloads', 'dvalidated', 'validated'),
 ('download_downloads', 'ftjoin_dname', 'name'),
 ('download_downloads', 'ftjoin_ddescrip', 'the_description'),
@@ -2185,6 +2186,7 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('download_do
 ('download_categories', '#dl_cat_search__combined', 'category,the_description'),
 ('download_downloads', '#dl_search__combined', 'original_filename,download_data_mash'),
 ('download_downloads', 'ftjoin_dadditional', 'additional_details'),
+('download_downloads', 'ddl', 'download_licence_id'),
 ('galleries', '#the_description', 'the_description'),
 ('galleries', '#fullname', 'fullname'),
 ('galleries', 'watermark_top_left', 'watermark_top_left'),
@@ -2209,10 +2211,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('download_do
 ('videos', 'vs', 'submitter'),
 ('videos', 'v_validated', 'validated'),
 ('videos', 'category_list', 'cat'),
-('videos', 'vadd_date', 'add_date'),
-('videos', 'ftjoin_dtitle', 'title'),
-('video_transcoding', 't_local_id', 't_local_id');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('galleries', '#gallery_search__combined', 'fullname,the_description'),
+('videos', 'vadd_date', 'add_date');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('videos', 'ftjoin_dtitle', 'title'),
+('video_transcoding', 't_local_id', 't_local_id'),
+('galleries', '#gallery_search__combined', 'fullname,the_description'),
 ('images', '#image_search__combined', 'the_description,title'),
 ('videos', '#video_search__combined', 'the_description,title'),
 ('images', 'ftjoin_idescription', 'the_description'),
@@ -2228,10 +2230,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('galleries',
 ('news', 'nes', 'submitter'),
 ('news', 'headlines', 'date_and_time,id'),
 ('news', 'nvalidated', 'validated'),
-('news_categories', '#nc_title', 'nc_title'),
-('news_categories', 'ncs', 'nc_owner'),
-('news_category_entries', 'news_entry_category', 'news_entry_category');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('news', 'ftjoin_ititle', 'title'),
+('news_categories', '#nc_title', 'nc_title');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('news_categories', 'ncs', 'nc_owner'),
+('news_category_entries', 'news_entry_category', 'news_entry_category'),
+('news', 'ftjoin_ititle', 'title'),
 ('news', 'ftjoin_nnews', 'news'),
 ('news', 'ftjoin_nnewsa', 'news_article'),
 ('news', '#news_search__combined', 'title,news,news_article'),
@@ -2269,10 +2271,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('news', 'ftj
 ('poll', '#option4', 'option4'),
 ('poll', '#option5', 'option5'),
 ('poll', '#option6', 'option6'),
-('poll', '#option7', 'option7'),
-('poll', '#option8', 'option8'),
-('poll', '#option9', 'option9');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('poll', '#option10', 'option10'),
+('poll', '#option7', 'option7');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('poll', '#option8', 'option8'),
+('poll', '#option9', 'option9'),
+('poll', '#option10', 'option10'),
 ('poll', 'poll_views', 'poll_views'),
 ('poll', 'get_current', 'is_current'),
 ('poll', 'ps', 'submitter'),
@@ -2284,10 +2286,10 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('poll', '#op
 ('poll', 'ftjoin_po3', 'option3'),
 ('poll', 'ftjoin_po4', 'option4'),
 ('poll', 'ftjoin_po5', 'option5'),
-('poll_votes', 'v_voting_member', 'v_voting_member'),
-('poll_votes', 'v_voting_ip_address', 'v_voting_ip_address'),
 ('poll_votes', 'v_vote_for', 'v_vote_for'),
 ('poll', '#poll_search__combined', 'question,option1,option2,option3,option4,option5'),
+('poll_votes', 'v_voting_member', 'v_voting_member'),
+('poll_votes', 'v_voting_ip_address', 'v_voting_ip_address'),
 ('ecom_prods_custom', '#c_title', 'c_title'),
 ('ecom_prods_custom', '#c_description', 'c_description'),
 ('ecom_prods_custom', '#c_mail_subject', 'c_mail_subject'),
@@ -2309,16 +2311,15 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('poll', '#op
 ('quiz_questions', '#q_question_text', 'q_question_text'),
 ('quiz_questions', '#q_question_extra_text', 'q_question_extra_text'),
 ('quiz_question_answers', '#q_answer_text', 'q_answer_text'),
-('quiz_question_answers', '#q_explanation', 'q_explanation'),
-('quizzes', 'ftjoin_qstarttext', 'q_start_text'),
-('quizzes', '#quiz_search__combined', 'q_start_text,q_name');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('quiz_entries', 'q_member', 'q_member'),
+('quiz_question_answers', '#q_explanation', 'q_explanation');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('quizzes', 'ftjoin_qstarttext', 'q_start_text'),
+('quizzes', '#quiz_search__combined', 'q_start_text,q_name'),
+('quiz_entries', 'q_member', 'q_member'),
 ('quiz_member_last_visit', 'member_id', 'v_member_id'),
 ('reported_content', 'reported_already', 'r_content_type,r_content_id'),
 ('searches_logged', 'past_search', 's_primary'),
 ('searches_logged', '#past_search_ft', 's_primary'),
 ('searches_logged', 'member_id', 's_member_id'),
-('shopping_cart', 'ordering_member', 'ordering_member'),
 ('shopping_cart', 'session_id', 'session_id'),
 ('shopping_cart', 'type_code', 'type_code'),
 ('shopping_orders', 'finddispatchable', 'order_status'),
@@ -2328,10 +2329,11 @@ INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('quiz_entrie
 ('shopping_order_details', 'order_id', 'p_order_id'),
 ('shopping_order_details', 'type_code', 'p_type_code'),
 ('shopping_logging', 'cart_log', 'l_date_and_time'),
-('f_usergroup_subs', '#s_title', 's_title'),
-('f_usergroup_subs', '#s_description', 's_description'),
-('f_usergroup_subs', '#s_mail_start', 's_mail_start');
-INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_usergroup_subs', '#s_mail_end', 's_mail_end'),
+('shopping_cart', 'ordering_member', 'ordering_member'),
+('f_usergroup_subs', '#s_title', 's_title');
+INSERT INTO cms_db_meta_indices (i_table, i_name, i_fields) VALUES ('f_usergroup_subs', '#s_description', 's_description'),
+('f_usergroup_subs', '#s_mail_start', 's_mail_start'),
+('f_usergroup_subs', '#s_mail_end', 's_mail_end'),
 ('f_usergroup_subs', '#s_mail_uhoh', 's_mail_uhoh'),
 ('f_usergroup_sub_mails', '#m_subject', 'm_subject'),
 ('f_usergroup_sub_mails', '#m_body', 'm_body'),
@@ -2425,7 +2427,7 @@ ALTER TABLE cms_download_categories ADD INDEX child_find (parent_id);
 ALTER TABLE cms_download_categories ADD INDEX ftjoin_dccat (category(250));
 
 ALTER TABLE cms_download_categories ADD INDEX ftjoin_dcdescrip (the_description(250));
-INSERT INTO cms_download_categories (id, category, parent_id, add_date, notes, the_description, rep_image, the_description__text_parsed, the_description__source_user) VALUES (1, 'Downloads home', NULL, 1721011843, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_download_categories (id, category, parent_id, add_date, notes, the_description, rep_image, the_description__text_parsed, the_description__source_user) VALUES (1, 'Downloads home', NULL, 1721678793, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbc3b1b627.81058224_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbc3b1b627.81058224_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbc3b1b627.81058224_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_download_downloads;
 CREATE TABLE cms_download_downloads (
@@ -2991,12 +2993,12 @@ ALTER TABLE cms_f_forums ADD INDEX f_position (f_position);
 ALTER TABLE cms_f_forums ADD INDEX findnamedforum (f_name(250));
 
 ALTER TABLE cms_f_forums ADD INDEX subforum_parenting (f_parent_forum_id);
-INSERT INTO cms_f_forums (id, f_name, f_description, f_forum_grouping_id, f_parent_forum_id, f_position, f_order_sub_alpha, f_post_count_increment, f_intro_question, f_intro_answer, f_cache_num_topics, f_cache_num_posts, f_cache_last_topic_id, f_cache_last_title, f_cache_last_time, f_cache_last_username, f_cache_last_member_id, f_cache_last_forum_id, f_redirection, f_order, f_is_threaded, f_allows_anonymous_posts, f_mail_email_address, f_mail_server_type, f_mail_server_host, f_mail_server_port, f_mail_folder, f_mail_username, f_mail_password, f_mail_nonmatch_policy, f_mail_unconfirmed_notice, f_poll_default_options_xml, f_description__text_parsed, f_description__source_user, f_intro_question__text_parsed, f_intro_question__source_user) VALUES (1, 'Forum home', '', NULL, NULL, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_1\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_1\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_2\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_2\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'General chat', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_3\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_3\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_4\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_4\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'Trash', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_5\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_5\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_6\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_6\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(4, 'Website comment topics', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 1, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_7\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_7\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_8\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_8\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(5, 'Staff', '', 2, 1, 1, 0, 1, '', '', 1, 1, 1, 'Welcome to the forums', 1721011820, 'System', 1, 5, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_66948e6b248777.35863319_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_66948e6b248777.35863319_9\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_9\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_10\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_10\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(6, 'Website support tickets', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_29\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_29\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_29\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e7c9ac7b1.13604045_30\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e7c9ac7b1.13604045_30\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e7c9ac7b1.13604045_30\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_f_forums (id, f_name, f_description, f_forum_grouping_id, f_parent_forum_id, f_position, f_order_sub_alpha, f_post_count_increment, f_intro_question, f_intro_answer, f_cache_num_topics, f_cache_num_posts, f_cache_last_topic_id, f_cache_last_title, f_cache_last_time, f_cache_last_username, f_cache_last_member_id, f_cache_last_forum_id, f_redirection, f_order, f_is_threaded, f_allows_anonymous_posts, f_mail_email_address, f_mail_server_type, f_mail_server_host, f_mail_server_port, f_mail_folder, f_mail_username, f_mail_password, f_mail_nonmatch_policy, f_mail_unconfirmed_notice, f_poll_default_options_xml, f_description__text_parsed, f_description__source_user, f_intro_question__text_parsed, f_intro_question__source_user) VALUES (1, 'Forum home', '', NULL, NULL, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_1\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_1\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_2\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_2\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'General chat', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_3\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_3\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_4\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_4\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'Trash', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_5\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_5\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_6\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_6\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(4, 'Website comment topics', '', 1, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 1, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_7\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_7\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_8\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_8\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(5, 'Staff', '', 2, 1, 1, 0, 1, '', '', 1, 1, 1, 'Welcome to the forums', 1721678772, 'System', 1, 5, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_669ebbb33e0fd8.99627752_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_669ebbb33e0fd8.99627752_9\\\";s:68:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_9\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_10\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_10\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_10\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(6, 'Website support tickets', '', 2, 1, 1, 0, 1, '', '', 0, 0, NULL, '', NULL, '', NULL, NULL, '', 'last_post', 0, 0, '', '', '', NULL, '', '', '', 'post_as_guest', 1, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbc3b1b627.81058224_29\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbc3b1b627.81058224_29\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbc3b1b627.81058224_29\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbc3b1b627.81058224_30\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbc3b1b627.81058224_30\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbc3b1b627.81058224_30\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_f_group_approvals;
 CREATE TABLE cms_f_group_approvals (
@@ -3193,9 +3195,9 @@ ALTER TABLE cms_f_member_custom_fields ADD FULLTEXT field_3 (field_3);
 ALTER TABLE cms_f_member_custom_fields ADD FULLTEXT field_4 (field_4);
 
 ALTER TABLE cms_f_member_custom_fields ADD FULLTEXT field_5 (field_5);
-INSERT INTO cms_f_member_custom_fields (mf_member_id, field_1, field_2, field_3, field_3__text_parsed, field_3__source_user, field_4, field_4__text_parsed, field_4__source_user, field_5, field_5__text_parsed, field_5__source_user, field_6, field_7, field_8, field_9, field_10, field_11, field_12, field_13, field_14, field_15, field_16, field_17, field_18, field_19, field_20, field_21, field_22, field_23, field_24, field_25, field_26, field_27, field_28, field_29, field_30, field_31) VALUES (1, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_14\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_14\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_15\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_15\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
-(2, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_19\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_19\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
-(3, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_23\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_23\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_23\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_24\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_24\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_24\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_25\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_25\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_25\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+INSERT INTO cms_f_member_custom_fields (mf_member_id, field_1, field_2, field_3, field_3__text_parsed, field_3__source_user, field_4, field_4__text_parsed, field_4__source_user, field_5, field_5__text_parsed, field_5__source_user, field_6, field_7, field_8, field_9, field_10, field_11, field_12, field_13, field_14, field_15, field_16, field_17, field_18, field_19, field_20, field_21, field_22, field_23, field_24, field_25, field_26, field_27, field_28, field_29, field_30, field_31) VALUES (1, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_13\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_13\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_13\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_14\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_14\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_14\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_15\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_15\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_15\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
+(2, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_18\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_18\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_18\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_19\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_19\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_19\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_20\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_20\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_20\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
+(3, '', '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_23\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_23\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_23\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_24\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_24\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_24\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_25\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_25\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_25\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, '', NULL, NULL, 0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
 DROP TABLE IF EXISTS cms_f_member_known_login_ips;
 CREATE TABLE cms_f_member_known_login_ips (
@@ -3288,9 +3290,9 @@ ALTER TABLE cms_f_members ADD INDEX sort_post_count (m_cache_num_posts);
 ALTER TABLE cms_f_members ADD INDEX user_list (m_username);
 
 ALTER TABLE cms_f_members ADD INDEX whos_validated (m_validated);
-INSERT INTO cms_f_members (id, m_username, m_email_address, m_primary_group, m_dob_day, m_dob_month, m_dob_year, m_pass_hash_salted, m_pass_salt, m_password_change_code, m_password_change_code_time, m_password_compat_scheme, m_login_key, m_timezone_offset, m_language, m_theme, m_title, m_photo_url, m_avatar_url, m_signature, m_preview_posts, m_reveal_age, m_views_signatures, m_auto_monitor_contrib_content, m_smart_topic_notification, m_mailing_list_style, m_auto_mark_read, m_sound_enabled, m_allow_emails, m_allow_emails_from_staff, m_highlighted_name, m_pt_allow, m_pt_rules_text, m_validated, m_validated_email_confirm_code, m_probation_expiration_time, m_is_perm_banned, m_ip_address, m_join_time, m_last_visit_time, m_last_submit_time, m_profile_views, m_total_sessions, m_cache_num_posts, m_cache_warnings, m_max_email_attach_size_mb, m_signature__text_parsed, m_signature__source_user, m_pt_rules_text__text_parsed, m_pt_rules_text__source_user) VALUES (1, 'Guest', '', 1, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721011820, 1721011820, 1721011820, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_12\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_12\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'admin', 'foo@example.com', 2, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', 'themes/default/images/cns_default_avatars/default.png', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721011820, 1721011820, 1721011820, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_17\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_17\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'test', '', 8, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721011820, 1721011820, 1721011820, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_66948e6b248777.35863319_22\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_66948e6b248777.35863319_22\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_66948e6b248777.35863319_22\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_f_members (id, m_username, m_email_address, m_primary_group, m_dob_day, m_dob_month, m_dob_year, m_pass_hash_salted, m_pass_salt, m_password_change_code, m_password_change_code_time, m_password_compat_scheme, m_login_key, m_timezone_offset, m_language, m_theme, m_title, m_photo_url, m_avatar_url, m_signature, m_preview_posts, m_reveal_age, m_views_signatures, m_auto_monitor_contrib_content, m_smart_topic_notification, m_mailing_list_style, m_auto_mark_read, m_sound_enabled, m_allow_emails, m_allow_emails_from_staff, m_highlighted_name, m_pt_allow, m_pt_rules_text, m_validated, m_validated_email_confirm_code, m_probation_expiration_time, m_is_perm_banned, m_ip_address, m_join_time, m_last_visit_time, m_last_submit_time, m_profile_views, m_total_sessions, m_cache_num_posts, m_cache_warnings, m_max_email_attach_size_mb, m_signature__text_parsed, m_signature__source_user, m_pt_rules_text__text_parsed, m_pt_rules_text__source_user) VALUES (1, 'Guest', '', 1, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721678772, 1721678772, 1721678772, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_11\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_11\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_11\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_12\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_12\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_12\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(2, 'admin', 'foo@example.com', 2, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', 'themes/default/images/cns_default_avatars/default.png', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721678772, 1721678772, 1721678772, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_16\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_16\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_16\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_17\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_17\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_17\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+(3, 'test', '', 8, NULL, NULL, NULL, '', '', '', NULL, 'plain', '', 'UTC', '', '', '', '', '', '', 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, '*', '', 1, '', NULL, '0', '127.0.0.1', 1721678772, 1721678772, 1721678772, 0, 0, 0, 0, 5, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_21\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_21\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_21\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_669ebbb33e0fd8.99627752_22\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_669ebbb33e0fd8.99627752_22\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_669ebbb33e0fd8.99627752_22\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_f_moderator_logs;
 CREATE TABLE cms_f_moderator_logs (
@@ -3353,3 +3355,7 @@ CREATE TABLE cms_f_poll_votes (
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_poll_votes ADD INDEX member_id (pv_member_id);
+
+ALTER TABLE cms_f_poll_votes ADD INDEX voting_ip_address (pv_ip_address);
+
+ALTER TABLE cms_f_poll_votes ADD INDEX voting_member_id (pv_member_id);

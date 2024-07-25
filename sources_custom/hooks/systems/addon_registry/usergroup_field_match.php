@@ -56,7 +56,7 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**

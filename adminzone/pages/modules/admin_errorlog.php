@@ -557,7 +557,9 @@ class Module_admin_errorlog
                 $probably_slow = get_value_newer_than('cron_currently_running__' . $hook, time() - 60, true);
                 if ($probably_slow === null) { // Do not warn if the hook was locked less than 60 seconds ago
                     $locked_status = do_lang_tempcode('YES');
-                    attach_message(do_lang_tempcode('LOCKED_HOOKS'), 'warn');
+                    if ($enabled) { // Don't warn on locked hooks which have been disabled
+                        attach_message(do_lang_tempcode('LOCKED_HOOKS'), 'warn');
+                    }
                 } else {
                     $locked_status = do_lang_tempcode('IS_LOCKED_RUNNING');
                 }

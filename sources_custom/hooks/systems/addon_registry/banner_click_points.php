@@ -56,7 +56,7 @@ class Hook_addon_registry_banner_click_points
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**

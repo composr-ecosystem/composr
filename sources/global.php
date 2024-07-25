@@ -32,8 +32,9 @@
  * @param  string $codename The codename for the source module to load (or a full relative path, ending with .php; if custom checking is needed, this must be the custom version)
  * @param  boolean $light_exit Whether to cleanly fail when a source file is missing
  * @param  ?boolean $has_custom Whether this is going to be from under a custom directory (null: search). This is used for performance to avoid extra searching when we already know where a file is
+ * @param  boolean $force_custom Whether to forcefully allow custom overrides even if in safe mode
  */
-function require_code(string $codename, bool $light_exit = false, ?bool $has_custom = null)
+function require_code(string $codename, bool $light_exit = false, ?bool $has_custom = null, bool $force_custom = false)
 {
     // Handle if already required...
 
@@ -42,7 +43,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
         return;
     }
 
-    $ok_per_safe_mode = (!function_exists('in_safe_mode')) || ($REQUIRING_CODE) || (!in_safe_mode());
+    $ok_per_safe_mode = (($force_custom) || (!function_exists('in_safe_mode')) || ($REQUIRING_CODE) || (!in_safe_mode()));
     if (isset($REQUIRED_CODE[$codename])) {
         return; // In case it changed through the above safe mode check
     }

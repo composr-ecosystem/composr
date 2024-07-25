@@ -967,7 +967,7 @@ class Module_groups
         if ($id === null) {
             $id = $this->id;
 
-            $_leader = cns_get_group_property($id, 'group_leader');
+            $_leader = cns_get_group_property($id, 'group_lead_member');
             $free_access = (cns_get_group_property($id, 'open_membership') == 1);
 
             $post_url = build_url(['page' => '_SELF', 'type' => get_param_string('type')], '_SELF', [], true);

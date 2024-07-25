@@ -174,9 +174,26 @@ class Module_tickets
             set_global_category_access('tickets', $ticket_type_id);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 7)) {
+        if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
             rename_config_option('ticket_email_from', 'ticket_mail_email_address');
             rename_config_option('ticket_mail_server', 'ticket_mail_server_host');
+
+            // Changes to support ticket forums
+            if ((addon_installed('tickets')) && (get_forum_type() == 'cns')) {
+                require_code('tickets');
+                require_code('cns_forums_action2');
+                $target_forum_id = get_ticket_forum_id(null, false, true);
+                if ($target_forum_id !== null) {
+                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Reported posts forum']);
+                    if ($forum_id !== null) {
+                        cns_delete_forum($forum_id, $target_forum_id);
+                    }
+                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Website "Contact Us" messages']);
+                    if ($forum_id !== null) {
+                        cns_delete_forum($forum_id, $target_forum_id);
+                    }
+                }
+            }
         }
     }
 

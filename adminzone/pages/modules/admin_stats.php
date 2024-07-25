@@ -227,13 +227,11 @@ class Module_admin_stats extends Standard_crud_module
                 'e_event' => '*ID_TEXT',
                 'e_count_logged' => 'INTEGER',
             ]);
-            $GLOBALS['SITE_DB']->create_index('stats_known_events', 'e_count_logged', ['e_count_logged']);
 
             $GLOBALS['SITE_DB']->create_table('stats_known_tracking', [
                 't_tracking_code' => '*ID_TEXT',
                 't_count_logged' => 'INTEGER',
             ]);
-            $GLOBALS['SITE_DB']->create_index('stats_known_tracking', 't_count_logged', ['t_count_logged']);
 
             $GLOBALS['SITE_DB']->create_table('stats_known_links', [
                 'id' => '*AUTO',
@@ -241,7 +239,6 @@ class Module_admin_stats extends Standard_crud_module
                 'l_count_logged' => 'INTEGER',
             ]);
             $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_url', ['l_url']);
-            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_count_logged', ['l_count_logged']);
 
             $GLOBALS['SITE_DB']->create_index('stats', 'session_id', ['session_id']);
 
@@ -249,13 +246,28 @@ class Module_admin_stats extends Standard_crud_module
             $GLOBALS['SITE_DB']->create_index('ip_country', 'end_num', ['end_num']);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY: 11.beta1
+        if (($upgrade_from !== null) && ($upgrade_from == 10)) { // LEGACY: 11.beta1
             // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('stats', 'referer', 'URLPATH', 'referer_url');
             $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added', 'TIME', 'k_added_time');
             $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added_by', 'MEMBER', 'k_submitter');
             $GLOBALS['SITE_DB']->alter_table_field('stats_known_events', 'e_times_seen', 'INTEGER', 'e_count_logged');
             $GLOBALS['SITE_DB']->alter_table_field('stats_known_tracking', 't_times_seen', 'INTEGER', 't_count_logged');
             $GLOBALS['SITE_DB']->alter_table_field('stats_known_links', 'l_times_seen', 'INTEGER', 'l_count_logged');
+
+            $GLOBALS['SITE_DB']->delete_index_if_exists('escrow', 'recipient_id');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats_known_events', 'e_times_seen');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats_known_links', 'l_times_seen');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats_known_tracking', 't_times_seen');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 11)) {
+            $GLOBALS['SITE_DB']->create_index('stats_known_events', 'e_count_logged', ['e_count_logged']);
+            $GLOBALS['SITE_DB']->create_index('stats_known_tracking', 't_count_logged', ['t_count_logged']);
+            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_count_logged', ['l_count_logged']);
         }
     }
 

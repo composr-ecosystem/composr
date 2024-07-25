@@ -82,7 +82,7 @@ class Hook_admin_stats_content extends CMSStatsProvider
                 $add_time_field = $info['add_time_field'];
 
                 $select = [];
-                append_content_select_for_fields($select, $info, ['title', 'id', 'views', 'add_time']);
+                append_content_select_for_fields($select, $info, ['title', 'id', 'views', 'add_time', 'category']);
                 $rows = $db->query_select($table, $select, [], 'ORDER BY ' . $views_field . ' DESC', $limit_per_content_type);
                 foreach ($rows as $row) {
                     $title = $hook_ob->get_title($row);

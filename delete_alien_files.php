@@ -92,7 +92,7 @@ if (git_repos() == 'cms_homesite_v11') {
     // Wanted so that icons, documentation, etc, can still work
     $files_to_always_keep[] = '#^lang/EN/#';
     $files_to_always_keep[] = '#^themes/default/images/#';
-    $files_to_always_keep[] = 'data_custom/cms_homesite_web_service.php';
+    $files_to_always_keep[] = '#^sources_custom/hooks/endpoints/cms_homesite/#';
 }
 
 foreach ($extra_files_to_delete as $file) {

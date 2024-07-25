@@ -61,7 +61,7 @@ class Hook_addon_registry_commandr
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**
@@ -257,6 +257,8 @@ class Hook_addon_registry_commandr
             'themes/default/templates/COMMANDR_RSS.tpl',
             'themes/default/templates/COMMANDR_USERS_ONLINE.tpl',
             'themes/default/templates/COMMANDR_WHOIS.tpl',
+            'sources/hooks/systems/commandr_commands/get_value.php',
+            'sources/hooks/systems/commandr_commands/set_value.php',
         ];
     }
 

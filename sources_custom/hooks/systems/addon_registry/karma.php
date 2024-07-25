@@ -56,7 +56,7 @@ class Hook_addon_registry_karma
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**
@@ -206,6 +206,7 @@ Karma and its API can be further extended for additional functionality. For exam
             'sources_custom/hooks/systems/config/karma_threshold.php',
             'sources_custom/hooks/systems/config/karma_voting.php',
             'sources_custom/hooks/systems/contentious_overrides/karma.php',
+            'sources_custom/hooks/systems/member_boxes/karma.php',
             'sources_custom/hooks/systems/page_groupings/karma.php',
             'sources_custom/hooks/systems/points_transact/karma.php',
             'sources_custom/hooks/systems/privacy/karma.php',
@@ -214,7 +215,6 @@ Karma and its API can be further extended for additional functionality. For exam
             'sources_custom/karma2.php',
             'themes/default/css_custom/karma.css',
             'themes/default/templates_custom/BLOCK_MAIN_KARMA_GRAPH.tpl',
-            'sources_custom/hooks/systems/member_boxes/karma.php',
         ];
     }
 }

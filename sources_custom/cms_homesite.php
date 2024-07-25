@@ -291,7 +291,7 @@ function recursive_unzip($zip_path, $unzip_path)
         warn_exit(do_lang_tempcode('ZIP_NOT_ENABLED'));
     }
 
-    $zip_archive = new ZipArchive;
+    $zip_archive = new ZipArchive();
 
     $in_file = $zip_archive->open($zip_path);
     if ($in_file !== true) {

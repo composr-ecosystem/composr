@@ -1,0 +1,104 @@
+/*
+ {$BRAND_NAME`}
+ Copyright (c) Christopher Graham, 2004-2024
+*/
+
+.stepper-wrapper {
+	margin-top: 30px;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	justify-content: space-between;
+	margin-bottom: 30px;
+}
+.stepper-item {
+	position: relative;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+
+	font-size: 0.8em;
+	@media (max-width: 768px) {
+		font-size: 0.7em;
+	}
+}
+
+.stepper-item::before {
+	position: absolute;
+	content: "";
+	border-bottom: 2px solid {$GET,area_faded_background};
+	width: 100%;
+	top: 15px;
+	left: -50%;
+	z-index: 2;
+}
+
+.stepper-item.simple::before {
+	top: 5px;
+}
+
+.stepper-item::after {
+	position: absolute;
+	content: "";
+	border-bottom: 2px solid {$GET,area_faded_background};
+	width: 100%;
+	top: 15px;
+	left: 50%;
+	z-index: 2;
+}
+
+.stepper-item.simple::after {
+	top: 5px;
+}
+
+.stepper-item .step-counter {
+	position: relative;
+	z-index: 5;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	justify-content: center;
+	align-items: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: #ccc;
+	margin-bottom: 6px;
+}
+
+.stepper-item.simple .step-counter {
+	width: 10px;
+	height: 10px;
+}
+
+.stepper-item.active {
+	font-weight: bold;
+}
+
+.stepper-item.completed .step-counter {
+	background-color: {$GET,seed};
+	color: {$GET,seed_contrast_high};
+}
+
+.stepper-item.active .step-counter {
+	background-color: {$GET,success_color};
+	color: #ffffff;
+}
+
+.stepper-item.completed::after {
+	position: absolute;
+	content: "";
+	border-bottom: 2px solid {$GET,seed};
+	width: 100%;
+	top: 15px;
+	left: 50%;
+	z-index: 3;
+}
+
+.stepper-item.simple.completed::after {
+	top: 5px;
+}
+
+.stepper-item:first-child::before {
+	content: none;
+}
+.stepper-item:last-child::after {
+	content: none;
+}

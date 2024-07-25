@@ -200,7 +200,7 @@ class Module_quiz
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('quizzes', 'q_redo_time', '?INTEGER', 'q_reattempt_hours');
-            $GLOBALS['SITE_DB']->alter_table_field('quizzes', 'q_tied_newsletter', '?INTEGER', 'q_newsletter_id');
+            $GLOBALS['SITE_DB']->alter_table_field('quizzes', 'q_tied_newsletter', '?AUTO_LINK', 'q_newsletter_id');
             $GLOBALS['SITE_DB']->alter_table_field('quiz_questions', 'q_quiz', 'AUTO_LINK', 'q_quiz_id');
             $GLOBALS['SITE_DB']->alter_table_field('quiz_question_answers', 'q_question', 'AUTO_LINK', 'q_question_id');
             $GLOBALS['SITE_DB']->alter_table_field('quiz_winner', 'q_quiz', '*AUTO_LINK', 'q_quiz_id');

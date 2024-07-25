@@ -137,7 +137,7 @@ function automate_upgrade__safe()
     clear_caches_1();
     clear_caches_2();
     version_specific();
-    upgrade_modules($from_cms_version);
+    upgrade_addons($from_cms_version);
     rebuild_zone_files();
 
     // Conversr

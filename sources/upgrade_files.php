@@ -239,6 +239,7 @@ function _upgrader_file_upgrade_screen() : string
     }
 
     $addon_contents = [];
+    $addons_wanted = [];
 
     /*
      * Full CMS release archives will contain the entire addon_registry directory including index.html; hotfixes will not.
@@ -258,13 +259,12 @@ function _upgrader_file_upgrade_screen() : string
                 $files = is_array($wanted_functions[0]) ? call_user_func_array($wanted_functions[0][0], $wanted_functions[0][1]) : cms_eval($wanted_functions[0], $upgrade_file2, false);
             }
             $addon_contents[basename($upgrade_file2, '.php')] = $files;
+            $addons_wanted[] = basename($upgrade_file2, '.php');
         }
     }
 
     // Find addons in the TAR to extract (should take priority over what we loaded from disk)
     afm_make_directory('exports/upgrade/', false, true);
-    $addon_contents = [];
-    $addons_wanted = [];
     foreach ($directory as $offset => $upgrade_file) {
         $extract_addon = false;
         if ((strpos($upgrade_file['path'], '/addon_registry/') !== false) && (substr($upgrade_file['path'], -4) == '.php')) {
@@ -292,9 +292,17 @@ function _upgrader_file_upgrade_screen() : string
                             $extract_addon = true;
 
                             // We need to update the database accordingly with the new name of the addon
-                            $GLOBALS['SITE_DB']->query_update('addons', [
-                                'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
-                            ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                            if ($GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => basename($upgrade_file['path'])]) === null) {
+                                $GLOBALS['SITE_DB']->query_update('addons', [
+                                    'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                                $GLOBALS['SITE_DB']->query_update('addons_dependencies', [
+                                    'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                                $GLOBALS['SITE_DB']->query_update('addons_files', [
+                                    'addon_name' => str_replace('.php', '', basename($upgrade_file['path'])),
+                                ], ['addon_name' => trim($previous_addon, "'")], '', 1);
+                            }
 
                             echo '<p>' . do_lang('UPGRADER_RENAMED_ADDON_MESSAGE', escape_html(trim($previous_addon, "'")), escape_html(str_replace('.php', '', basename($upgrade_file['path'])))) . '</p>';
                         }

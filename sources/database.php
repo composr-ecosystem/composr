@@ -707,8 +707,12 @@ abstract class DatabaseDriver
     {
         $default = mixed();
 
+        if (strpos($type, '?') !== false) {
+            return null;
+        }
+
         // We need to create a sensible default when none was provided, if the field cannot be null
-        switch ($type) {
+        switch (str_replace('*', '', $type)) {
             case 'AUTO':
                 $default = null;
                 break;
@@ -807,6 +811,9 @@ abstract class DatabaseDriver
             $perhaps_null = 'NULL';
         } else {
             $perhaps_null = 'NOT NULL';
+            if ($default === null) { // Cannot allow a null default on a non-null field
+                fatal_exit('Tried to request null value on a type that does not allow null');
+            }
         }
         $__type = str_replace(['*', '?'], ['', ''], $_type);
         $sql_type = $type_remap[$__type] . ' ' . $perhaps_null;

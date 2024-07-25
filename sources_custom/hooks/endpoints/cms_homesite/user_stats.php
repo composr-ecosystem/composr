@@ -51,12 +51,13 @@ class Hook_endpoint_cms_homesite_user_stats
         $version = get_param_string('version');
         $num_members = get_param_integer('num_members');
         $num_hits_per_day = get_param_integer('num_hits_per_day');
+
         $GLOBALS['SITE_DB']->query_insert('logged', [
             'website_url' => $website_url,
             'website_name' => $website_name,
             'l_version' => $version,
             'hittime' => time(),
-            'num_members' => $num_members,
+            'count_members' => $num_members,
             'num_hits_per_day' => $num_hits_per_day,
         ]);
 

@@ -253,7 +253,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                         warn_exit(do_lang_tempcode('ZIP_NOT_ENABLED'));
                     }
 
-                    $zip_archive = new ZipArchive;
+                    $zip_archive = new ZipArchive();
                     $myfile = $zip_archive->open($tmp_name);
                     if ($myfile !== true) {
                         require_code('failure');

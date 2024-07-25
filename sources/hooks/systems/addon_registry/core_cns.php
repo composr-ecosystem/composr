@@ -61,7 +61,7 @@ class Hook_addon_registry_core_cns
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**
@@ -225,7 +225,6 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/commandr_fs_extended_member/known_login_ips.php',
             'sources/hooks/systems/config/allow_alpha_search.php',
             'sources/hooks/systems/config/complex_privacy_options.php',
-            'sources/hooks/systems/config/parental_consent_age.php',
             'sources/hooks/systems/config/decryption_key.php',
             'sources/hooks/systems/config/display_name_generator.php',
             'sources/hooks/systems/config/dobs.php',
@@ -243,9 +242,9 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/config/important_groups_per_page.php',
             'sources/hooks/systems/config/invites_per_day.php',
             'sources/hooks/systems/config/is_on_automatic_mark_topic_read.php',
-            'sources/hooks/systems/config/is_on_parental_consent.php',
             'sources/hooks/systems/config/is_on_invisibility.php',
             'sources/hooks/systems/config/is_on_invites.php',
+            'sources/hooks/systems/config/is_on_parental_consent.php',
             'sources/hooks/systems/config/is_on_post_map.php',
             'sources/hooks/systems/config/is_on_timezone_detection.php',
             'sources/hooks/systems/config/join_declarations.php',
@@ -263,6 +262,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/config/normal_groups_per_page.php',
             'sources/hooks/systems/config/one_per_email_address.php',
             'sources/hooks/systems/config/page_after_join.php',
+            'sources/hooks/systems/config/parental_consent_age.php',
             'sources/hooks/systems/config/password_change_days.php',
             'sources/hooks/systems/config/password_expiry_days.php',
             'sources/hooks/systems/config/password_reset_minutes.php',
@@ -304,6 +304,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/profiles_tabs/about.php',
             'sources/hooks/systems/profiles_tabs/edit.php',
             'sources/hooks/systems/profiles_tabs/index.html',
+            'sources/hooks/systems/profiles_tabs/rank.php',
             'sources/hooks/systems/profiles_tabs_edit/.htaccess',
             'sources/hooks/systems/profiles_tabs_edit/delete.php',
             'sources/hooks/systems/profiles_tabs_edit/index.html',
@@ -348,6 +349,7 @@ class Hook_addon_registry_core_cns
             'themes/default/css/cns_header.css',
             'themes/default/css/cns_member_directory.css',
             'themes/default/css/cns_member_profiles.css',
+            'themes/default/css/stepper.css',
             'themes/default/images/EN/cns_rank_images/admin.svg',
             'themes/default/images/EN/cns_rank_images/index.html',
             'themes/default/images/EN/cns_rank_images/mod.svg',
@@ -505,6 +507,7 @@ class Hook_addon_registry_core_cns
             'themes/default/templates/CNS_MEMBER_PROFILE_EDIT.tpl',
             'themes/default/templates/CNS_MEMBER_PROFILE_FIELD.tpl',
             'themes/default/templates/CNS_MEMBER_PROFILE_FIELDS.tpl',
+            'themes/default/templates/CNS_MEMBER_PROFILE_RANK.tpl',
             'themes/default/templates/CNS_MEMBER_PROFILE_SCREEN.tpl',
             'themes/default/templates/CNS_POST_MAP.tpl',
             'themes/default/templates/CNS_POST_MAP_ITEM.tpl',
@@ -541,6 +544,7 @@ class Hook_addon_registry_core_cns
             'templates/CNS_MEMBER_PROFILE_FIELDS.tpl' => 'cns_member_profile_screen',
             'templates/CNS_MEMBER_PROFILE_FIELD.tpl' => 'cns_member_profile_screen',
             'templates/CNS_MEMBER_PROFILE_EDIT.tpl' => 'cns_member_profile_screen',
+            'templates/CNS_MEMBER_PROFILE_RANK.tpl' => 'cns_member_profile_rank',
             'templates/CNS_USERS_ONLINE_SCREEN.tpl' => 'cns_users_online_screen',
             'templates/CNS_GROUP_DIRECTORY_SCREEN.tpl' => 'cns_group_directory_screen',
             'templates/CNS_VIEW_GROUP_MEMBER.tpl' => 'cns_view_group_screen',
@@ -1297,6 +1301,81 @@ class Hook_addon_registry_core_cns
             'MEMBER_ID' => placeholder_first_admin_id(),
             'TABS' => $tabs,
         ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__cns_member_profile_rank() : object
+    {
+        $groups = [];
+        $groups[] = [
+            'RANK_GROUP' => '1',
+            'RANK_NAME' => lorem_word(),
+            'RANK_THRESHOLD' => placeholder_number(),
+            'RANK_STATUS' => '2',
+        ];
+        $groups[] = [
+            'RANK_GROUP' => '2',
+            'RANK_NAME' => lorem_word_2(),
+            'RANK_THRESHOLD' => placeholder_number(),
+            'RANK_STATUS' => '1',
+        ];
+        $groups[] = [
+            'RANK_GROUP' => '2',
+            'RANK_NAME' => lorem_word(),
+            'RANK_THRESHOLD' => placeholder_number(),
+            'RANK_STATUS' => '0',
+        ];
+        $locked_privileges = [];
+        $unlocked_privileges = [];
+        $locked_privileges[] = [
+            'PRIVILEGE' => lorem_phrase(),
+            'SCOPE' => lorem_word(),
+        ];
+        $unlocked_privileges[] = [
+            'PRIVILEGE' => lorem_phrase(),
+            'SCOPE' => lorem_word(),
+        ];
+        return lorem_globalise(do_template('CNS_MEMBER_PROFILE_RANK', [
+            'SIMPLE_STEPPER' => '0',
+            'RANKS' => $groups,
+            'CURRENT_RANK' => lorem_word_2(),
+            '_NUM_POINTS_ADVANCE' => placeholder_number(),
+            'NUM_POINTS_ADVANCE' => placeholder_number(),
+            'LOCKED_THEMES' => lorem_phrase(),
+            'UNLOCKED_THEMES' => lorem_phrase(),
+            'LOCKED_PRIVILEGES' => $locked_privileges,
+            'UNLOCKED_PRIVILEGES' => $unlocked_privileges,
+            'HAS_DAILY_UPLOAD_QUOTA' => '1',
+            'DAILY_UPLOAD_QUOTA' => placeholder_number(),
+            '_DAILY_UPLOAD_QUOTA' => placeholder_number(),
+            'MAX_ATTACHMENTS' => placeholder_number(),
+            '_MAX_ATTACHMENTS' => placeholder_number(),
+            'POST_LENGTH' => placeholder_number(),
+            '_POST_LENGTH' => placeholder_number(),
+            'SIGNATURE_LENGTH' => placeholder_number(),
+            '_SIGNATURE_LENGTH' => placeholder_number(),
+            'CAN_UPLOAD_AVATARS' => '1',
+            'MAXIMUM_AVATAR_DIMENSIONS' => placeholder_number(),
+            'INFINITE_PERSONAL_GALLERY_ENTRIES' => '0',
+            'PERSONAL_GALLERY_ENTRIES_IMAGES' => placeholder_number(),
+            '_PERSONAL_GALLERY_ENTRIES_IMAGES' => placeholder_number(),
+            'PERSONAL_GALLERY_ENTRIES_VIDEOS' => placeholder_number(),
+            '_PERSONAL_GALLERY_ENTRIES_VIDEOS' => placeholder_number(),
+            'GIFT_POINTS' => placeholder_number(),
+            '_GIFT_POINTS' => placeholder_number(),
+            'GIFT_POINTS_PER_DAY' => placeholder_number(),
+            '_GIFT_POINTS_PER_DAY' => placeholder_number(),
+            'FLOOD_CONTROL_SUBMIT' => placeholder_number(),
+            '_FLOOD_CONTROL_SUBMIT' => placeholder_number(),
+            'FLOOD_CONTROL_ACCESS' => placeholder_number(),
+            '_FLOOD_CONTROL_ACCESS' => placeholder_number(),
+        ]));
     }
 
     /**

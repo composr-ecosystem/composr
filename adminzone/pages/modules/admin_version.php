@@ -339,7 +339,9 @@ class Module_admin_version
 
         if (($upgrade_from !== null) && ($upgrade_from < 20)) { // LEGACY: 11.beta1 (later upgrade code depends on this)
             // Consistency changes which must occur first
-            $GLOBALS['SITE_DB']->alter_table_field('cron_progression', 'c_last_run', '?TIME', 'c_last_run_time');
+            if ($upgrade_from == 19) {
+                $GLOBALS['SITE_DB']->alter_table_field('cron_progression', 'c_last_run', '?TIME', 'c_last_run_time');
+            }
         }
 
         if (($upgrade_from < 10) || ($upgrade_from === null)) {
@@ -1018,7 +1020,6 @@ class Module_admin_version
         if (($upgrade_from === null) || ($upgrade_from < 19)) {
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'from_member_id', ['d_from_member_id']);
             $GLOBALS['SITE_DB']->create_index('cache', 'the_member', ['the_member']);
-            $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as_member', ['m_as_member']);
             $GLOBALS['SITE_DB']->create_index('rating', 'rating_member', ['rating_member']);
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences', ['r_referer_type', 'r_referer_id']);
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'who_has', ['l_notification_code', 'l_code_category(10)', 'l_setting']); // l_code_category is not enough as may be searched as ''
@@ -1148,9 +1149,6 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->drop_table_if_exists('https_pages');
 
-            $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
-            $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
-
             $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_name' => 'member_id', 'm_table' => 'member_privileges'], '', 1);
 
             $GLOBALS['SITE_DB']->add_table_field('seo_meta_keywords', 'sort_order', 'INTEGER');
@@ -1226,7 +1224,7 @@ class Module_admin_version
         if (($upgrade_from !== null) && ($upgrade_from < 20)) { // LEGACY: 11.beta1
             // Consistency changes
             $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_parent', '?AUTO_LINK', 'i_parent_id');
-            $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
+            //$GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link'); // Actually we do this in version_specific()
             $GLOBALS['SITE_DB']->alter_table_field('trackbacks', 'trackback_ip', 'IP', 'trackback_ip_address');
             $GLOBALS['SITE_DB']->alter_table_field('trackbacks', 'trackback_url', 'URLPATH');
             $GLOBALS['SITE_DB']->alter_table_field('url_title_cache', 't_json_discovery', 'URLPATH', 't_discovery_url_json');
@@ -1236,6 +1234,12 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_orig_filename', 'SHORT_TEXT');
             $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_save_url', 'URLPATH');
             $GLOBALS['SITE_DB']->alter_table_field('urls_checked', 'url_message', 'SHORT_TEXT', 'response_message');
+
+            $GLOBALS['SITE_DB']->delete_index_if_exists('logged_mail_messages', 'm_as');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 20)) {
+            $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as_member', ['m_as_member']);
         }
     }
 

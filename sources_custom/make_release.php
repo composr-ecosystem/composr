@@ -82,6 +82,14 @@ function make_installers($skip_file_grab = false)
         fix_permissions($builds_path . '/builds/' . $version_dotted . '/');
     }
 
+    // Integrity check: files_previous manifest
+    require_code('upgrade_integrity_scan');
+    $manifest = load_integrity_manifest(true);
+    if (cms_empty_safe($manifest)) {
+        warn_exit(do_lang_tempcode('MANIFEST_CORRUPT_FILES'));
+    }
+    unset($manifest);
+
     if (!$skip_file_grab) {
         @copy(get_file_base() . '/install.php', $builds_path . '/builds/build/' . $version_branch . '/install.php');
         fix_permissions($builds_path . '/builds/build/' . $version_branch . '/install.php');
@@ -94,23 +102,26 @@ function make_installers($skip_file_grab = false)
         @copy(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', get_file_base() . '/data/keys/telemetry.pub');
         fix_permissions(get_file_base() . '/data/keys/telemetry.pub');
 
-        // Get file data array
-        $out .= '<ul>';
-        $out .= populate_build_files_list();
-        $out .= '</ul>';
+        if (post_param_string('skip_data_files', '') == '') {
+            download_latest_data_files();
+        }
+
+        if (post_param_string('rebuild_sql', '') != '') { // TODO: should database_manifest build from this instead so that it matches what we expect without manually reinstalling the dev install of the software?
+            make_install_sql();
+        }
+        make_database_manifest();
 
         require_code('themes3');
         generate_svg_sprite('default', false, false);
         generate_svg_sprite('default', true, false);
 
-        if (post_param_string('skip_data_files', '') == '') {
-            download_latest_data_files();
-        }
+        // Get file data array; must be done second-to-last to ensure all updated files are transported to the build
+        $out .= '<ul>';
+        $out .= populate_build_files_list();
+        $out .= '</ul>';
+
+        // Generate file manifest; must be done last so it accounts for all updated files
         make_files_manifest();
-        make_database_manifest();
-        if (post_param_string('rebuild_sql', '') != '') {
-            make_install_sql();
-        }
     }
 
     // Integrity check: files manifest
@@ -203,6 +214,26 @@ function make_installers($skip_file_grab = false)
                 }
                 \$data = fread(\$DATADOTCMS_FILE,\$size);
                 return \$data;
+            }
+
+            function file_array_scandir(\$path) {
+                global \$FILE_ARRAY;
+                \$ret = [];
+
+                foreach (\$FILE_ARRAY as \$file) {
+                    if (strpos(\$file, str_replace('\\\\', '/', \$path)) === 0) {
+                        \$_ret = str_replace(\$path, '', \$file); // Strip specified path off of file to make it relative
+                        if ((substr(\$path, -1) != '/') && (\$_ret[0] != '/')) { // Actually this is a partial match, not a full match; skip
+                            continue;
+                        }
+                        if (\$_ret[0] == '/') { // Strip leading slash
+                            \$_ret = substr(\$_ret, 1);
+                        }
+                        \$ret[] = \$_ret;
+                    }
+                }
+
+                return \$ret;
             }
 
             function file_array_exists(\$path)

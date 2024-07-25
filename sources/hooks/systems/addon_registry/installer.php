@@ -35,7 +35,7 @@ class Hook_addon_registry_installer
     }
 
     /**
-     * Get the version of the software this addon is for (used in generating the TAR filename).
+     * Get the version of Composr this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -81,7 +81,7 @@ class Hook_addon_registry_installer
      */
     public function get_description() : string
     {
-        return 'The installer files (can be removed immediately after installing; in fact ' . brand_name() . ' makes you remove install.php manually).';
+        return 'The installer files (can be removed immediately after installing; in fact Composr makes you remove install.php manually).';
     }
 
     /**

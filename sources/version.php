@@ -51,7 +51,7 @@ function init__version()
  */
 function cms_version_minor() : string
 {
-    return 'alpha4';
+    return 'beta1';
 }
 
 /**
@@ -71,7 +71,7 @@ function cms_version_number() : float
  */
 function cms_version_time() : int
 {
-    return 1716945351;
+    return 1721678521;
 }
 
 // cms_version_time_major() was removed in v11. This was never used in v10 and was also not planned for any use in v11.
@@ -84,16 +84,16 @@ function cms_version_time() : int
  */
 function cms_version_time_db() : int
 {
-    return 1716945351;
+    return 1721678521;
 }
 
 /**
  * Find the status of this branch version.
+ * Developers should also edit is_release_discontinued if setting this to VERSION_EOL.
  *
  * @return string A VERSION_* constant
  */
 function cms_version_branch_status() : string
 {
-    // Developers should also edit is_release_discontinued if setting this to VERSION_EOL.
-    return VERSION_ALPHA;
+    return VERSION_BETA;
 }

@@ -107,7 +107,7 @@ class DatabaseRepair
     public function search_for_database_issues() : array
     {
         require_code('database_helper');
-        require_code('database_relations');
+        require_code('database_relations', false, null, true);
 
         push_query_limiting(false);
 
@@ -224,14 +224,14 @@ class DatabaseRepair
 
         $expected_tables = [];
         foreach ($data['tables'] as $table_name => $table) {
-            if (addon_installed($table['addon'], false, false)) {
+            if (addon_installed($table['addon'], false, false, true, true)) {
                 $expected_tables[$table_name] = $table['fields'];
             }
         }
 
         $expected_indices = [];
         foreach ($data['indices'] as $universal_index_key => $index) {
-            if (addon_installed($index['addon'], false, false)) {
+            if (addon_installed($index['addon'], false, false, true, true)) {
                 unset($index['addon']);
                 $expected_indices[$universal_index_key] = $index;
             }
@@ -239,7 +239,7 @@ class DatabaseRepair
 
         $expected_privileges = [];
         foreach ($data['privileges'] as $privilege_name => $privilege) {
-            if (addon_installed($privilege['addon'], false, false)) {
+            if (addon_installed($privilege['addon'], false, false, true, true)) {
                 unset($privilege['addon']);
                 $expected_privileges[$privilege_name] = $privilege;
             }
@@ -532,12 +532,7 @@ class DatabaseRepair
                 sort($expected_key_fields);
                 sort($existent_key_fields);
                 if ($expected_key_fields != $existent_key_fields) {
-                    list($drop_key_query) = $this->fix_table_inconsistent_in_db__bad_primary_key($table_name, $expected_key_fields, isset($meta_tables[$table_name][$field_name]), true);
-                    $this->sql_fixup = array_merge(
-                        array_slice($this->sql_fixup, 0, count($this->sql_fixup) - $fields_added),
-                        [$drop_key_query . ';'],
-                        array_slice($this->sql_fixup, count($this->sql_fixup) - $fields_added)
-                    );
+                    $this->fix_table_inconsistent_in_db__bad_primary_key($table_name, $expected_key_fields, isset($meta_tables[$table_name][$field_name]), false);
                     $needs_changes = true;
                 }
 

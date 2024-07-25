@@ -1755,9 +1755,10 @@ function in_safe_mode() : bool
         return true;
     }
 
+    // Force safe_mode setting from _config.php if defined unless keep_safe_mode is specified in the URL and does not match the value in _config.php.
     global $SITE_INFO;
     if (!empty($SITE_INFO['safe_mode'])) {
-        if (!isset($_GET['keep_safe_mode'])) {
+        if (!isset($_GET['keep_safe_mode']) || ($_GET['keep_safe_mode'] == $SITE_INFO['safe_mode'])) {
             return ($SITE_INFO['safe_mode'] == '1'); // Generally more robust and fast than specifying as a URL parameter
         }
     }

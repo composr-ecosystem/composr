@@ -56,7 +56,7 @@ class Hook_addon_registry_remote_content_grabber
      */
     public function get_max_cms_version() : ?float
     {
-        return null;
+        return 11.9;
     }
 
     /**

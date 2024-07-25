@@ -23,7 +23,7 @@ function get_table_purpose_flags() : array
 {
     $ret = non_overridden__get_table_purpose_flags();
 
-    if (!addon_installed('meta_toolkit')) {
+    if (!addon_installed('meta_toolkit', false, true, true, true)) {
         return $ret;
     }
 
@@ -102,7 +102,7 @@ function get_table_descriptions() : array
 {
     $ret = non_overridden__get_table_descriptions();
 
-    if (!addon_installed('meta_toolkit')) {
+    if (!addon_installed('meta_toolkit', false, true, true, true)) {
         return $ret;
     }
 
@@ -177,7 +177,7 @@ function get_relation_map() : array
 {
     $ret = non_overridden__get_relation_map();
 
-    if (!addon_installed('meta_toolkit')) {
+    if (!addon_installed('meta_toolkit', false, true, true, true)) {
         return $ret;
     }
 
