@@ -102,10 +102,12 @@ class Hook_cns_warnings_content
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
+        $num_days_back = 7;
+
         // Get form fields for actions on forum topics / posts
         $posts_deletable = [];
         if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
-            $time_limit = time() - (60 * 60 * 24 * 7); // Limit to content within the last 7 days
+            $time_limit = time() - (60 * 60 * 24 * $num_days_back); // Limit to content within the last X days
             if ((!is_guest($member_id)) || ($ip_address !== null)) {
                 $where = [];
                 if (is_guest($member_id)) {
@@ -211,7 +213,7 @@ class Hook_cns_warnings_content
 
         // See also hooks/systems/tasks/privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
         if (addon_installed('commandr') && has_privilege(get_member(), 'delete_highrange_content')) {
-            $content = find_member_content($member_id, 7);
+            $content = find_member_content($member_id, $num_days_back);
             $list_options = new Tempcode();
             $content_deletable = [];
             foreach ($content as $content_details) {
