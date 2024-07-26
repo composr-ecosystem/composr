@@ -175,6 +175,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             'uploads/incoming' => 1024,
             'uploads/captcha' => 1024,
             'temp' => 512,
+            'data_custom/errors' => 256,
         ];
         foreach (array_keys(find_all_langs()) as $lang) {
             $directories['themes/' . $GLOBALS['FORUM_DRIVER']->get_theme('') . '/templates_cached/' . $lang] = 48;
