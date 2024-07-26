@@ -1246,7 +1246,12 @@ This section is not designed as primary documentation for the tools. Those tools
 | [tt]addon_publish[/tt]
 | Composr module
 |-
-| [tt]adminzone:make_release[/tt]
+| [tt]adminzone:admin_modularisation[/tt]
+| Ensure consistency between files, package comments, addon info, and addons' file lists. The UI offers automatic fixes for some issues. Note that this tool is intentionally aggressive, and some issues may not be appropriate to fix.
+| [tt]cms_release_build[/tt]
+| Composr module
+|-
+| [tt]adminzone:admin_make_release[/tt]
 | Make a Composr release.
 | [tt]cms_release_build[/tt]
 | Composr module
@@ -1335,7 +1340,12 @@ Rules:
  - Versions should never be skipped. E.g. There can't be a 3.2 if there is no 3.1.
  - All versions have to have formally named news posts, in the 'New releases' news category. Our upgrade scripts do this automatically.
  - Dots are not decimal points. They split major/minor/patch levels. You can have numbers in any dot section exceeding 9 and going to 10.
+ - The term "alpha" means not all planned features have been implemented. Bugs are highly likely. Should solely be used for testing.
+ - The term "beta" means bugs are anticipated / the release did not meet Composr's standards of testing. Not recommended for live / production sites.
+ - The term "RC" (release candidate) means significant bugs are not anticipated, but we are not yet satisfied with the level of testing done on the release. Live / production sites should use with caution.
  - alpha/beta/RC is technically attached to a patch-level release, not a major/minor version. i.e. any patch release can have alpha/beta/RC.
+ - The "minor" version should be bumped whenever implementing new / significant features, but are unlikely to break sites from previous minor versions.
+ - The "major" version should be bumped whenever significantly changing the core Composr APIs to the point sites on previous versions need to use extra care / testing / planning when upgrading.
 
 Inside our code we always use the "dotted" scheme, which is the same except that the space is replaced by a dot.
 
