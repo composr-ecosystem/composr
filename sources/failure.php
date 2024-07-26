@@ -1126,6 +1126,8 @@ function cms_error_log(string $errormsg, string $notification_category = 'error_
  */
 function relay_error_notification(string $text, bool $developers = true, string $notification_category = 'error_occurred')
 {
+    $text_size_limit = (1024 * 256); // If $text is > this then we will either save the error to disk (and provide path in notification) or truncate.
+
     if (isset($GLOBALS['SENDING_MAIL']) && $GLOBALS['SENDING_MAIL']) {
         return;
     }
@@ -1148,13 +1150,16 @@ function relay_error_notification(string $text, bool $developers = true, string 
         set_value('num_error_mails_' . date('Y-m-d'), strval($num), true);
     }
 
-    if (strlen($text) > (1024 * 256)) { // Too large; fall back to saving the error on disk and providing an error code in the e-mail instead.
+    $error_message = strip_html(explode("\n\n", $text)[0]);
+
+    if (strlen($text) > $text_size_limit) { // Too large; fall back to saving the error on disk and providing an error code in the e-mail instead.
+        $error_message = strip_html(explode("\n\n", substr($text, 0, ($text_size_limit - 3)) . '...')[0]);
         $dir = get_custom_file_base() . '/data_custom/errors';
         $code = uniqid('', true);
-        if ((is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', $text) !== false)) {
+        if (($send_error_email) && (is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', $text) !== false)) {
             $text = do_lang('ERROR_MAIL_OVERFLOW', escape_html($code));
         } else {
-            $text = substr($text, 0, ((1024 * 256) - 3)) . '...';
+            $text = substr($text, 0, ($text_size_limit - 3)) . '...';
         }
     }
 
@@ -1171,8 +1176,6 @@ function relay_error_notification(string $text, bool $developers = true, string 
     if ($send_error_email) {
         dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     }
-
-    $error_message = strip_html(explode("\n\n", $text)[0]);
 
     if (
         ($mail !== null) &&
