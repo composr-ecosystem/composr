@@ -946,6 +946,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/strip_tags.php',
             '_tests/tests/unit_tests/suphp.php',
             '_tests/tests/unit_tests/tar.php',
+            '_tests/tests/unit_tests/telemetry.php',
             '_tests/tests/unit_tests/tempcode.php',
             '_tests/tests/unit_tests/tempcode_errors.php',
             '_tests/tests/unit_tests/tempcode_mistakes.php',

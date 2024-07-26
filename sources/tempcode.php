@@ -1777,7 +1777,7 @@ class Tempcode
     /**
      * Find if this Tempcode object uses less memory (very roughly!) than the given number of bytes.
      *
-     * @param  integer $bytes_available The number of bytes
+     * @param  integer $bytes_available The number of bytes passed by reference
      * @return boolean Whether it is
      */
     public function is_smaller_than(int &$bytes_available) : bool

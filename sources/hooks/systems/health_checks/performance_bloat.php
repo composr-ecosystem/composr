@@ -190,11 +190,12 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             'uploads/incoming' => 100,
             'temp' => 100,
             'data_custom' => 100,
+            'data_custom/errors' => 100,
         ];
         foreach ($directories as $dir => $max_contents_threshold) {
             if (file_exists(get_file_base() . '/' . $dir)) {
                 $count = count(get_directory_contents(get_file_base() . '/' . $dir, '', IGNORE_ACCESS_CONTROLLERS, false));
-                $this->assertTrue($count < $max_contents_threshold, 'Directory [tt]' . $dir . '[/tt] now contains ' . integer_format($count) . ' files, should hover only slightly over empty');
+                $this->assertTrue($count < $max_contents_threshold, 'Directory [tt]' . $dir . '[/tt] now contains ' . integer_format($count) . ' files, should be kept under ' . integer_format($max_contents_threshold));
             }
         }
     }

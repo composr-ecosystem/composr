@@ -1134,16 +1134,28 @@ function relay_error_notification(string $text, bool $developers = true, string 
         return;
     }
 
+    require_lang('critical_error');
+
     // Make sure we don't send too many error e-mails
     $send_error_email = true;
     if ((function_exists('get_value')) && (!$GLOBALS['BOOTSTRAPPING']) && (array_key_exists('SITE_DB', $GLOBALS)) && ($GLOBALS['SITE_DB'] !== null)) {
         $num = intval(get_value('num_error_mails_' . date('Y-m-d'), null, true)) + 1;
-        if ($num == 51) { // TODO: turn this into a value? #5399
+        if (($num >= 51) && (!$GLOBALS['DEV_MODE'])) { // TODO: turn this into a value? #5399
             $send_error_email = false; // We've sent too many error e-mails today, but we might still want to send this to developers as we use fsock instead
         }
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values_elective WHERE the_name LIKE \'' . db_encode_like('num\_error\_mails\_%') . '\'');
         persistent_cache_delete('VALUES');
         set_value('num_error_mails_' . date('Y-m-d'), strval($num), true);
+    }
+
+    if (strlen($text) > (1024 * 256)) { // Too large; fall back to saving the error on disk and providing an error code in the e-mail instead.
+        $dir = get_custom_file_base() . '/data_custom/errors';
+        $code = uniqid('', true);
+        if ((is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', $text) !== false)) {
+            $text = do_lang('ERROR_MAIL_OVERFLOW', escape_html($code));
+        } else {
+            $text = substr($text, 0, ((1024 * 256) - 3)) . '...';
+        }
     }
 
     require_code('urls');
@@ -1362,10 +1374,10 @@ function die_html_trace(string $message)
 function put_value_in_stack_trace($value) : string
 {
     try {
-        if (($value === null) || (is_array($value) && (strlen(json_encode($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
+        if ($value === null) {
             $_value = gettype($value);
         } elseif (is_object($value) && (is_a($value, 'Tempcode'))) {
-            $max_bytes = 500;
+            $max_bytes = MAX_STACK_TRACE_VALUE_LENGTH;
             if ($value->is_smaller_than($max_bytes)) { // Don't display Tempcode if it's really long, and would use too much memory/space
                 $_value = 'Tempcode -> ...';
             } else {
@@ -1377,15 +1389,25 @@ function put_value_in_stack_trace($value) : string
                 }
             }
         } elseif ((is_array($value)) || (is_object($value))) {
-            $_value = json_encode($value);
+            if (strlen(json_encode($value)) > MAX_STACK_TRACE_VALUE_LENGTH) {
+                $_value = gettype($value);
+            } else {
+                $_value = json_encode($value);
+            }
         } elseif (is_string($value)) {
-            $_value = '\'' . php_addslashes($value) . '\'';
+            if (strlen($value) > MAX_STACK_TRACE_VALUE_LENGTH) {
+                $_value = gettype($value);
+            } else {
+                $_value = '\'' . php_addslashes($value) . '\'';
+            }
         } elseif (is_float($value)) {
             $_value = float_to_raw_string($value);
         } elseif (is_integer($value)) {
             $_value = integer_format($value);
         } elseif (is_bool($value)) {
             $_value = $value ? 'true' : 'false';
+        } elseif (strlen(strval($value)) > MAX_STACK_TRACE_VALUE_LENGTH) {
+            $_value = gettype($value);
         } else {
             $_value = strval($value);
         }
@@ -1394,11 +1416,11 @@ function put_value_in_stack_trace($value) : string
     }
 
     global $SITE_INFO;
-    if ((isset($SITE_INFO['db_site_password'])) && (strlen($SITE_INFO['db_site_password']) > 4)) {
-        $_value = str_replace($SITE_INFO['db_site_password'], '(password removed)', $_value);
-    }
-    if ((isset($SITE_INFO['db_forums_password'])) && (strlen($SITE_INFO['db_forums_password']) > 4)) {
-        $_value = str_replace($SITE_INFO['db_forums_password'], '(password removed)', $_value);
+    $site_info_keys = ['db_site_password', 'db_forums_password', 'maintenance_password', 'master_password', 'mysql_root_password'];
+    foreach ($site_info_keys as $key) {
+        if ((isset($SITE_INFO[$key])) && (strlen($SITE_INFO[$key]) > 4)) {
+            $_value = str_replace($SITE_INFO[$key], '(password removed)', $_value);
+        }
     }
 
     return escape_html($_value);
@@ -1458,7 +1480,7 @@ function get_html_trace() : object
                 continue;
             }
 
-            $post[$key] = $val;
+            $post[$key] = put_value_in_stack_trace($val);
         }
     }
 

@@ -8569,6 +8569,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_SET_VALUE_HELP_E
         CMD_SET_VALUE_HELP_PARAM_0
         CMD_SET_VALUE_HELP_PARAM_1
+        ERROR_MAIL_OVERFLOW
     ')));
 
     $non_admin_files = [
