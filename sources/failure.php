@@ -1156,7 +1156,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
         $_text = substr($text, 0, ($text_size_limit - 3)) . '...';
         $dir = get_custom_file_base() . '/data_custom/errors';
         $code = uniqid('', true);
-        if (($send_error_email) && (is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', strip_comcode($text)) !== false)) {
+        if (($send_error_email) && (is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', $text) !== false)) {
             $text = do_lang('ERROR_MAIL_OVERFLOW', escape_html($code));
         } else {
             $text = $_text;
