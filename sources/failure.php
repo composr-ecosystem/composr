@@ -401,6 +401,8 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
 
     cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
 
+    require_code('global3');
+
     if (is_object($text)) {
         $text = $text->evaluate();
         $text = _sanitise_error_msg($text);
