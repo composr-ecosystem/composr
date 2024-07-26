@@ -1150,18 +1150,20 @@ function relay_error_notification(string $text, bool $developers = true, string 
         set_value('num_error_mails_' . date('Y-m-d'), strval($num), true);
     }
 
-    $error_message = strip_html(explode("\n\n", $text)[0]);
+    $_text = $text; // $_text will never contain fallback disk file error and instead will be truncated when necessary
 
     if (strlen($text) > $text_size_limit) { // Too large; fall back to saving the error on disk and providing an error code in the e-mail instead.
-        $error_message = strip_html(explode("\n\n", substr($text, 0, ($text_size_limit - 3)) . '...')[0]);
+        $_text = substr($text, 0, ($text_size_limit - 3)) . '...';
         $dir = get_custom_file_base() . '/data_custom/errors';
         $code = uniqid('', true);
-        if (($send_error_email) && (is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', $text) !== false)) {
+        if (($send_error_email) && (is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', strip_comcode($text)) !== false)) {
             $text = do_lang('ERROR_MAIL_OVERFLOW', escape_html($code));
         } else {
-            $text = substr($text, 0, ($text_size_limit - 3)) . '...';
+            $text = $_text;
         }
     }
+
+    $error_message = strip_html(explode("\n\n", $_text)[0]);
 
     require_code('urls');
     require_code('tempcode');
@@ -1172,10 +1174,12 @@ function relay_error_notification(string $text, bool $developers = true, string 
 
     require_code('notifications');
     require_code('comcode');
-    $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $developers ? '?' : get_ip_address(), get_site_default_lang());
     if ($send_error_email) {
+        $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $developers ? '?' : get_ip_address(), get_site_default_lang());
         dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     }
+
+    $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $_text, $developers ? '?' : get_ip_address(), get_site_default_lang());
 
     if (
         ($mail !== null) &&
