@@ -1338,6 +1338,8 @@ The following are examples of invalid "pretty" names:
 
 Rules:
  - Versions should never be skipped. E.g. There can't be a 3.2 if there is no 3.1.
+ - Conversely, versions should never be repeated. You must always bump the major, minor, patch, or qualifier number on every release.
+ - Do not pull and re-release a version if it has already been released publicly (e.g. if you publicly release 3.0 and find a critical issue, do not pull 3.0; instead, release 3.0.1 with the fix and indicate on the 3.0 download / news post not to use that version).
  - All versions have to have formally named news posts, in the 'New releases' news category. Our upgrade scripts do this automatically.
  - Dots are not decimal points. They split major/minor/patch levels. You can have numbers in any dot section exceeding 9 and going to 10.
  - The term "alpha" means not all planned features have been implemented. Bugs are highly likely. Should solely be used for testing.
@@ -1346,6 +1348,7 @@ Rules:
  - alpha/beta/RC is technically attached to a patch-level release, not a major/minor version. i.e. any patch release can have alpha/beta/RC.
  - The "minor" version should be bumped whenever implementing new / significant features, but are unlikely to break sites from previous minor versions.
  - The "major" version should be bumped whenever significantly changing the core Composr APIs to the point sites on previous versions need to use extra care / testing / planning when upgrading.
+ - Otherwise, the "patch" version should be bumped, or if an alpha/beta/RC tag has a number on it, bump that.
 
 Inside our code we always use the "dotted" scheme, which is the same except that the space is replaced by a dot.
 
