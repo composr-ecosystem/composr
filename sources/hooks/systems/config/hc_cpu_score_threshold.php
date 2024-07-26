@@ -56,6 +56,6 @@ class Hook_config_hc_cpu_score_threshold
             return null;
         }
 
-        return '25000';
+        return '50000';
     }
 }

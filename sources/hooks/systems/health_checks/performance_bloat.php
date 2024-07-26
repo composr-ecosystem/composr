@@ -69,18 +69,25 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             return;
         }
 
-        $tables = [
+        $tables = [ // Should generally be consistent with database_relations.php TABLE_PURPOSE__NO_BACKUPS
             'autosave' => 100000,
             'cache' => 1000000,
+            'cache_on' => 10000,
             'cached_comcode_pages' => 10000,
             'captchas' => 10000,
+            'catalogue_cat_treecache' => 1000000,
+            'catalogue_childcountcache' => 100000,
             'chat_active' => 100000,
             'chat_events' => 10000000,
             'cron_caching_requests' => 10000,
             'post_tokens' => 1000000,
+            'digestives_tin' => 1000000,
+            'incoming_uploads' => 10000,
+            'stats' => 10000000,
+            'stats_events' => 10000000,
+            'stats_link_tracker' => 10000000,
             'edit_pings' => 10000,
             'hackattack' => 1000000,
-            'incoming_uploads' => 10000,
             'logged_mail_messages' => 100000,
             'messages_to_render' => 100000,
             'sessions' => 1000000,
@@ -161,16 +168,16 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
 
         $mb = 1024 * 1024;
         $directories = [
-            'caches/static' => 5000,
-            'caches/lang' => 200,
-            'caches/persistent' => 500,
-            'caches/self_learning' => 500,
-            'uploads/incoming' => 500,
-            'uploads/captcha' => 5000,
-            'temp' => 500,
+            'caches/static' => 2048,
+            'caches/lang' => 128,
+            'caches/persistent' => 256,
+            'caches/self_learning' => 256,
+            'uploads/incoming' => 1024,
+            'uploads/captcha' => 1024,
+            'temp' => 512,
         ];
         foreach (array_keys(find_all_langs()) as $lang) {
-            $directories['themes/' . $GLOBALS['FORUM_DRIVER']->get_theme('') . '/templates_cached/' . $lang] = 20;
+            $directories['themes/' . $GLOBALS['FORUM_DRIVER']->get_theme('') . '/templates_cached/' . $lang] = 48;
         }
         foreach ($directories as $dir => $max_threshold_size_in_mb) {
             if (file_exists(get_file_base() . '/' . $dir)) {
@@ -180,8 +187,8 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
         }
 
         $directories = [
-            'uploads/incoming' => 50,
-            'temp' => 50,
+            'uploads/incoming' => 100,
+            'temp' => 100,
             'data_custom' => 100,
         ];
         foreach ($directories as $dir => $max_contents_threshold) {
@@ -215,7 +222,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
 
         require_code('files');
 
-        $log_threshold = 1000000;
+        $log_threshold = 1024 * 256; // 256 kb
 
         $log_files = [];
 

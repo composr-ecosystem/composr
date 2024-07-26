@@ -364,6 +364,7 @@ END;
             $files = get_directory_contents('/home', '', null, false);
         } else {
             $files = get_directory_contents('C:\\Users', '', null, false);
+            $files = array_merge($files, get_directory_contents('C:\\Documents and Settings', '', null, false)); // LEGACY: Windows XP and below which some people still use
         }
         $this->assertTrue(empty($files), do_lang('WARNING_OPEN_BASEDIR'));
     }

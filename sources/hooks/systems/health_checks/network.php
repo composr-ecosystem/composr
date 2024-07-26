@@ -81,7 +81,7 @@ class Hook_health_check_network extends Hook_Health_Check
             }
         }
         $result = @json_decode($data, true);
-        $this->assertTrue(($result !== null) && ($result['success'] === true), 'Could not access website externally, got error code ' . $result['response_data']['status']);
+        $this->assertTrue(($result !== null) && ($result['success'] === true), 'Could not access website externally from the software homesite, got error code ' . $result['response_data']['status']);
     }
 
     /**
@@ -115,7 +115,7 @@ class Hook_health_check_network extends Hook_Health_Check
 
             $matches = [];
             if (preg_match('# (\d(\.\d+)?%) packet loss#', $data, $matches) != 0) {
-                $this->assertTrue(floatval($matches[1]) == 0.0, 'Unreliable Internet connection on server');
+                $this->assertTrue(floatval($matches[1]) == 0.0, 'Unreliable Internet connection on server; detected packet losses on ping.');
             } else {
                 $this->stateCheckSkipped('Could not get a recognised ping response');
             }
@@ -238,6 +238,6 @@ class Hook_health_check_network extends Hook_Health_Check
             }
         }
 
-        $this->assertTrue($ok, 'Slow speed transfering data to a remote machine @ ' . (($megabits_per_second === null) ? 'N/A' : float_format($megabits_per_second)) . ' Megabits per second');
+        $this->assertTrue($ok, 'Slow speed transferring data to the software homesite @ ' . (($megabits_per_second === null) ? 'N/A' : float_format($megabits_per_second)) . ' Megabits per second');
     }
 }

@@ -281,7 +281,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
                 usleep(5000000);
             }
         }
-        $this->assertTrue($ok, 'Problem downloading HTTP requests by SSL');
+        $this->assertTrue($ok, 'Your server seems to be having trouble loading HTTPS/SSL websites in general (tested with DuckDuckGo)');
 
         if ($ok) {
             // If it's a problem with SSL verification on our domain specifically
@@ -294,7 +294,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
                     $data = http_get_contents($test_url, ['trigger_error' => false]);
                     $ok1 = (($data !== null) && (strpos($data, '<html') !== false));
 
-                    $msg = 'Problem detected with the [tt]' . $domain . '[/tt] SSL certificate';
+                    $msg = 'Could not load [tt]' . $domain . '[/tt] under HTTPS/SSL; check that your certificate is valid.';
                     if (!$ok1) {
                         set_value('disable_ssl_for__' . $domain, '1');
                         $data = http_get_contents($test_url, ['trigger_error' => false]);
@@ -393,7 +393,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             $domain = cms_parse_url_safe($url, PHP_URL_HOST);
 
             $has_caa = @checkdnsrr($domain, 'CAA');
-            $this->assertTrue($has_caa, 'CAA record not set for [tt]' . $domain . '[/tt], which increases the risk of 3rd-party certificate forgery');
+            $this->assertTrue($has_caa, 'CAA record not set for [tt]' . $domain . '[/tt], which increases the risk of 3rd-party certificate forgery. Please fix this accordingly in your DNS records.');
         } else {
             $this->stateCheckSkipped('PHP [tt]checkdnsrr[/tt] function not available');
         }

@@ -73,7 +73,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
             return;
         }
 
-        if (cms_version_minor() == '?') {
+        if (cms_version_minor() == '?') { // Ideally should never be used as it breaks the ability to upgrade
             return;
         }
 
@@ -82,13 +82,13 @@ class Hook_health_check_upkeep extends Hook_Health_Check
                 $_is_discontinued = $this->call_homesite_api('release_discontinued', float_to_raw_string(cms_version_number()));
                 $is_discontinued = ($_is_discontinued !== null) && ($_is_discontinued['success'] === true) && ($_is_discontinued['response_data']['discontinued'] === true);
 
-                $this->assertTrue($is_discontinued !== true, 'The ' . brand_name() . ' version is discontinued');
+                $this->assertTrue($is_discontinued !== true, 'This ' . brand_name() . ' version (' . float_format(cms_version_number()) . ') is discontinued; you will not receive important security updates or bug fixes. It is strongly advised that you upgrade.');
                 break;
 
             case 'uptodate':
                 require_code('version2');
                 $info = get_future_version_information();
-                $this->assertTrue(strpos($info->evaluate(), '<strong>not</strong>') === false, 'The ' . brand_name() . ' version is not up-to-date');
+                $this->assertTrue(strpos($info->evaluate(), 'You are <strong>not</strong> running the latest version.') === false, 'This ' . brand_name() . ' version (' . float_format(cms_version_number()) . ') is not up-to-date; you should update as soon as possible.');
                 break;
         }
     }
@@ -112,7 +112,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
 
         require_code('version2');
         $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-        $this->assertTrue(is_php_version_supported_by_phpdevs($v) !== false, 'Your PHP version is not supported by the PHP developers: ' . $v);
+        $this->assertTrue(is_php_version_supported_by_phpdevs($v) !== false, 'Your website PHP version is not supported by the PHP developers: ' . $v);
     }
 
     /**
@@ -135,7 +135,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
         if (php_function_allowed('shell_exec')) {
             require_code('version2');
             $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-            $this->assertTrue((@trim(shell_exec('which php')) == '/usr/bin/php') || (is_php_version_supported_by_phpdevs($v) !== false), 'Unsupported PHP version ' . $v);
+            $this->assertTrue((@trim(shell_exec('which php')) == '/usr/bin/php') || (is_php_version_supported_by_phpdevs($v) !== false), 'Your server distro PHP version is not supported by the PHP developers: ' . $v);
         } else {
             $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
@@ -228,7 +228,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
         }
 
         if ($year !== null) {
-            $this->assertTrue($year == $current_year, 'Copyright date seems outdated');
+            $this->assertTrue($year == $current_year, 'Your copyright date needs updating: ' . $year);
         }
     }
 
