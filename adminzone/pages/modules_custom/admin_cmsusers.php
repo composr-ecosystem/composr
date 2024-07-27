@@ -395,10 +395,10 @@ class Module_admin_cmsusers
         $where = [];
         $end = '';
         if ($filter_website != '') {
-            $end .= ' AND website_url LIKE ' . db_encode_like('%' . $filter_website . '%');
+            $end .= ' AND website_url LIKE \'' . db_encode_like('%' . $filter_website . '%') . '\'';
         }
         if ($filter_error_message != '') {
-            $end .= ' AND website_message LIKE ' . db_encode_like('%' . $filter_error_message . '%');
+            $end .= ' AND error_message LIKE \'' . db_encode_like('%' . $filter_error_message . '%') . '\'';
         }
         if ($filter_show_resolved == 0) {
             $where['resolved'] = 0;
