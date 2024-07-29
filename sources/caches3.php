@@ -492,6 +492,7 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
     }
 
     if (!$GLOBALS['IN_MINIKERNEL_VERSION']) {
+        require_code('zones');
         $zones = find_all_zones();
         $values = [];
         foreach ($zones as $zone) {
