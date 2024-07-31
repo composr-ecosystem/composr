@@ -240,7 +240,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         }
     }
 
-    if (($type == 'warn') && (strlen($message_eval) < 130)) {
+    if ($type == 'warn') {
         require_code('failure');
 
         $webservice_result = get_webservice_result($message);
