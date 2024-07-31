@@ -88,6 +88,9 @@ class Module_recommend
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
             rename_config_option('enable_csv_recommend', 'enable_spreadsheet_recommend');
+
+            require_code('permissions3');
+            add_privilege('RECOMMEND', 'use_own_recommend_message', false);
         }
     }
 
@@ -307,8 +310,14 @@ class Module_recommend
 
         handle_max_file_size($hidden);
 
-        $fields->attach(form_input_line(do_lang_tempcode('SUBJECT'), '', 'subject', $subject, true));
-        $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('RECOMMEND_SUP_MESSAGE', escape_html(get_site_name())), 'message', $message, $need_message, null, true));
+        // Force use of default subject and message if the member does not have the privilege to use their own
+        if (has_privilege(get_member(), 'use_own_recommend_message')) {
+            $fields->attach(form_input_line(do_lang_tempcode('SUBJECT'), '', 'subject', $subject, true));
+            $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('RECOMMEND_SUP_MESSAGE', escape_html(get_site_name())), 'message', $message, $need_message, null, true));
+        } else {
+            $hidden->attach(form_input_hidden('subject', $subject));
+            $hidden->attach(form_input_hidden('message', $message));
+        }
 
         if (addon_installed('captcha')) {
             require_code('captcha');
@@ -353,16 +362,18 @@ class Module_recommend
             return [$subject, $message];
         }
 
-        // POST-back
-        $message = post_param_string('message', '');
-        if ($message != '') {
-            return [$subject, $message];
-        }
+        if (has_privilege(get_member(), 'use_own_recommend_message')) {
+            // POST-back
+            $message = post_param_string('message', '');
+            if ($message != '') {
+                return [$subject, $message];
+            }
 
-        // Message passed by URL
-        $message = get_param_string('s_message', '', INPUT_FILTER_GET_COMPLEX);
-        if ($message != '') {
-            return [$subject, $message];
+            // Message passed by URL
+            $message = get_param_string('s_message', '', INPUT_FILTER_GET_COMPLEX);
+            if ($message != '') {
+                return [$subject, $message];
+            }
         }
 
         // Recommending a URL
@@ -389,8 +400,12 @@ class Module_recommend
 
             // Generate message
             $message = do_lang('FOUND_THIS_ON', get_site_name(), comcode_escape($from_url), comcode_escape($resource_title));
+
+            return [$subject, $message];
         }
 
+        // Fallback when all else fails; recommend the software itself
+        $message = do_lang('RECOMMEND_SOFTWARE', brand_name(), get_brand_base_url());
         return [$subject, $message];
     }
 
@@ -554,8 +569,14 @@ class Module_recommend
     public function actual() : object
     {
         $name = post_param_string('name');
+        $subject = post_param_string('subject', null);
         $message = post_param_string('message');
         $recommender_email_address = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
+
+        // Prevents DOM manipulation of hidden values when member does not have the privilege to use their own message
+        if (!has_privilege(get_member(), 'use_own_recommend_message')) {
+            list($subject, $message) = $this->generate_default_message();
+        }
 
         $invite = false;
 
@@ -667,7 +688,7 @@ class Module_recommend
             }
 
             if ((may_use_invites()) && (post_param_integer('invite', 0) == 1)) {
-                send_recommendation_email($name, $email_address, $_message, true, $recommender_email_address, post_param_string('subject', null), [$names_to_send[$key]]);
+                send_recommendation_email($name, $email_address, $_message, true, $recommender_email_address, $subject, [$names_to_send[$key]]);
 
                 $GLOBALS['FORUM_DB']->query_insert('f_invites', [
                     'i_invite_member' => get_member(),
@@ -692,7 +713,7 @@ class Module_recommend
             }
 
             if (!$invite) {
-                send_recommendation_email($name, $email_address, $_message, false, $recommender_email_address, post_param_string('subject', null), [$names_to_send[$key]]);
+                send_recommendation_email($name, $email_address, $_message, false, $recommender_email_address, $subject, [$names_to_send[$key]]);
             }
         }
 

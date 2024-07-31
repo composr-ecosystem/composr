@@ -8570,6 +8570,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_SET_VALUE_HELP_PARAM_0
         CMD_SET_VALUE_HELP_PARAM_1
         ERROR_MAIL_OVERFLOW
+        PRIVILEGE_use_own_recommend_message
     ')));
 
     $non_admin_files = [
@@ -12098,6 +12099,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RANK_LOCKED_PERSONAL_GALLERY
         RANK_LOCKED_GIFT_POINTS
         RANK_LOCKED_PRIVILEGE
+        RECOMMEND
     ')));
 
     // Remove blank lines
