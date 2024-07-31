@@ -1082,12 +1082,15 @@ function get_webservice_result($error_message) : ?string
         return null;
     }
 
-    // Talk to web service
+    // The first 8 kb is sufficient; very unlikely our webservice will have any matches beyond this.
+    $error_message = substr($error_message, 0, (1024 * 8));
+
     $brand = get_value('rebrand_name');
     if ($brand === null) {
         $brand = DEFAULT_BRAND_NAME;
     }
 
+    // Talk to web service
     require_code('version2');
     require_code('http');
     $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/errorservice/' . urlencode(get_version_dotted()) . '/?product=' . urlencode($brand);
