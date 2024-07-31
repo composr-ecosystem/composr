@@ -216,7 +216,7 @@ function take_param_int_modeavg(?int $setting, string $db_property, string $tabl
 function attach_wysiwyg()
 {
     // Force-disable CSP as CKEditor doesn't yet support CSP
-    load_csp(['csp_enabled' => '0']); // TODO: Remove once CKEditor supports CSP (#651)
+    load_csp(['csp_allow_inline_js' => '1']); // TODO: Remove once CKEditor supports CSP (#651)
 
     global $WYSIWYG_ATTACHED;
     if (!$WYSIWYG_ATTACHED) {
