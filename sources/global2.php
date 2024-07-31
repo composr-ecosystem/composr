@@ -350,9 +350,8 @@ function init__global2()
     }
     $static_cache_mode = null;
     if (web_client_may_use_static_cache(true, $static_cache_mode)) {
-        load_csp(['csp_enabled' => '0']);
         require_code('static_cache');
-        static_cache($static_cache_mode);
+        static_cache($static_cache_mode); // NB: $static_cache_mode will never be null if web_client_may_use_static_cache returns true
     }
 
     // More critical things
