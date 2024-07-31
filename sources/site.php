@@ -206,12 +206,12 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES;
 
     foreach ($ATTACHED_MESSAGES_RAW as $last) {
-        if ([is_object($last[0]) ? $last[0]->evaluate() : escape_html($last[0]), $last[1]] == [$message_eval, $type]) {
+        if ([$last[0], $last[1]] == [$message_eval, $type]) {
             $am_looping--;
             return ''; // Already shown
         }
     }
-    $ATTACHED_MESSAGES_RAW[] = [$message, $type];
+    $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
 
     if ($log_error) {
         require_code('urls');
