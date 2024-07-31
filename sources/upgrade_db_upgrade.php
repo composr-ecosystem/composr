@@ -651,6 +651,8 @@ function database_specific() : bool
                     }
                 }
             } while (count($rows) > 0);
+
+            $done_something = true;
         }
     }
 
@@ -658,6 +660,8 @@ function database_specific() : bool
     if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1722461012)) {
         require_code('permissions3');
         add_privilege('RECOMMEND', 'use_own_recommend_message', true, false, true);
+
+        $done_something = true;
     }
 
     return $done_something;
