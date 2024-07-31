@@ -657,7 +657,7 @@ function database_specific() : bool
     // LEGACY: (11.beta2) Add new privilege for recommend addon
     if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1722461012)) {
         require_code('permissions3');
-        add_privilege('RECOMMEND', 'use_own_recommend_message', false);
+        add_privilege('RECOMMEND', 'use_own_recommend_message', true, false, true);
     }
 
     return $done_something;

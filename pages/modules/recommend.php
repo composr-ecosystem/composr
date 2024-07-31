@@ -90,7 +90,7 @@ class Module_recommend
             rename_config_option('enable_csv_recommend', 'enable_spreadsheet_recommend');
 
             require_code('permissions3');
-            add_privilege('RECOMMEND', 'use_own_recommend_message', false);
+            add_privilege('RECOMMEND', 'use_own_recommend_message', true, false, true);
         }
     }
 
