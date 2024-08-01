@@ -340,8 +340,10 @@ class Module_admin_stats extends Standard_crud_module
         if ($type == 'category') {
             $categories = stats_find_graph_categories();
             $category_name = get_param_string('id');
+            if (!isset($categories[$category_name])) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+            }
             $this->title = get_screen_title($categories[$category_name]['label_lang_string']);
-
             $_graphs = stats_find_graphs_in_category($category_name);
             foreach ($_graphs as $graph_name => $_graph) {
                 list($hook_ob, $graph_details) = $_graph;
