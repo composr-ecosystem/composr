@@ -413,7 +413,7 @@ abstract class Database_super_mysql extends DatabaseDriver
         if (function_exists('ocp_mark_as_escaped')) {
             ocp_mark_as_escaped($err);
         }
-        if ((!running_script('upgrader')) && ((!get_mass_import_mode()) || (get_param_integer('keep_fatalistic', 0) != 0)) && (strpos($err, 'Duplicate entry') === false)) {
+        if ((!running_script('upgrader')) && ((!get_mass_import_mode()) || (current_fatalistic() > 0)) && (strpos($err, 'Duplicate entry') === false)) {
             $matches = [];
             if (preg_match('#/(\w+)\' is marked as crashed and should be repaired#U', $err, $matches) !== 0) {
                 $this->query('REPAIR TABLE ' . $matches[1], $connection);

@@ -32,7 +32,7 @@ function init__failure()
     $THROWING_ERRORS = false;
 
     if (!defined('MAX_STACK_TRACE_VALUE_LENGTH')) {
-        define('MAX_STACK_TRACE_VALUE_LENGTH', (get_param_integer('keep_fatalistic', 0) == 2) ? 10000 : 300);
+        define('MAX_STACK_TRACE_VALUE_LENGTH', (current_fatalistic() == 2) ? 10000 : 300);
     }
 
     /** Whether we want errors to result in simple text responses. Useful for AJAX scripts.
@@ -60,7 +60,7 @@ function init__failure()
  */
 function suggest_fatalistic()
 {
-    if ((may_see_stack_traces()) && (get_param_integer('keep_fatalistic', 0) == 0) && (running_script('index'))) {
+    if ((may_see_stack_traces()) && (current_fatalistic() == 0) && (running_script('index'))) {
         require_code('urls');
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $stack_trace_url = build_url(['page' => '_SELF', 'keep_fatalistic' => 1], '_SELF', [], true);
@@ -362,7 +362,7 @@ function _warn_screen(object $title, $text, bool $provide_back = true, bool $sup
         }
     }
 
-    if (get_param_integer('keep_fatalistic', 0) != 0) {
+    if (current_fatalistic() > 0) {
         _generic_exit($text, 'FATAL_SCREEN', false, false, 500);
     }
 
@@ -391,7 +391,7 @@ function _warn_screen(object $title, $text, bool $provide_back = true, bool $sup
  */
 function _generic_exit($text, string $template, ?bool $support_match_key_messages = false, bool $log_error = false, ?int $http_status = null, ?object $title = null, ?string $image_url = null)
 {
-    if (($template == 'WARN_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
+    if (($template == 'WARN_SCREEN') && ((current_fatalistic() > 0) || (running_script('commandr')))) {
         _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
     }
 
@@ -1628,7 +1628,7 @@ function _access_denied(string $class, string $param, bool $force_login)
         throw new CMSException($message);
     }
 
-    if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_integer('keep_fatalistic', 0) != 0)) {
+    if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (current_fatalistic() > 0)) {
         fatal_exit($message);
     }
 
