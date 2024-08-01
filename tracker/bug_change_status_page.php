@@ -60,6 +60,8 @@ require_api( 'relationship_api.php' );
 require_api( 'sponsorship_api.php' );
 require_api( 'version_api.php' );
 
+require_css( 'status_config.php' );
+
 $f_bug_id = gpc_get_int( 'id' );
 $t_bug = bug_get( $f_bug_id );
 
@@ -116,9 +118,7 @@ if( config_get( 'bug_assigned_status' ) == $f_new_status ) {
 	}
 }
 
-//$t_status_label = str_replace( ' ', '_', MantisEnum::getLabel( config_get( 'status_enum_string' ), $f_new_status ) );
-// Composr - allow statuses with hyphens
-$t_status_label = str_replace( array(' ', '-'), array('_', '_'), MantisEnum::getLabel( config_get( 'status_enum_string' ), $f_new_status ) );
+$t_status_label = str_replace( ' ', '_', MantisEnum::getLabel( config_get( 'status_enum_string' ), $f_new_status ) );
 
 layout_page_header( bug_format_summary( $f_bug_id, SUMMARY_CAPTION ) );
 
@@ -247,7 +247,7 @@ layout_page_begin();
 				data-picker-locale="<?php lang_get_current_datetime_locale() ?>"
 				data-picker-format="<?php echo config_get( 'datetime_picker_format' ) ?>"
 				<?php helper_get_tab_index() ?> value="<?php echo $t_date_to_display ?>" />
-			<i class="fa fa-calendar fa-xlg datetimepicker"></i>
+			<?php print_icon( 'fa-calendar', 'fa-xlg datetimepicker' ); ?>
 		</td>
 	</tr>
 
@@ -278,18 +278,32 @@ layout_page_begin();
 		$t_display = $t_def['display_' . $t_custom_status_label];
 		$t_require = $t_def['require_' . $t_custom_status_label];
 
-		if( ( 'update' == $t_custom_status_label ) && ( !$t_require ) ) {
+		$t_show_custom_field = $t_require;
+
+		if( !$t_show_custom_field ) {
+			if( in_array( $t_custom_status_label, array( 'resolved', 'closed' ) ) && $t_display ) {
+				$t_show_custom_field = true;
+			} else {
+				$t_plugin_Event_result = event_signal( 'EVENT_UPDATE_BUG_SHOW_CUSTOM_FIELD', array( $t_bug, $t_id ) );
+				foreach( $t_plugin_Event_result as $t_event_result ) {
+					if( in_array( true, $t_event_result ) ) {
+						$t_show_custom_field = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if( !$t_show_custom_field ) {
 			continue;
 		}
-		if( in_array( $t_custom_status_label, array( 'resolved', 'closed' ) ) && !( $t_display || $t_require ) ) {
-			continue;
-		}
+
 		$t_has_write_access = custom_field_has_write_access( $t_id, $f_bug_id );
 ?>
 	<tr>
 		<th class="category">
 			<?php if( $t_require && $t_has_write_access ) {?><span class="required">*</span><?php } ?>
-			<?php echo lang_get_defaulted( $t_def['name'] ) ?>
+			<?php echo string_attribute( lang_get_defaulted( $t_def['name'] ) ) ?>
 		</th>
 		<td>
 <?php

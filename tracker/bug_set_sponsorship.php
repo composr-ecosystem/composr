@@ -63,8 +63,7 @@ if( current_user_is_anonymous() ) {
 }
 
 $f_bug_id	= gpc_get_int( 'bug_id' );
-//$f_amount	= gpc_get_int( 'amount' );
-$f_amount	= floatval(gpc_get_string( 'amount' )); // Composr - support non-integer sponsorship
+$f_amount	= gpc_get_int( 'amount' );
 
 $t_bug = bug_get( $f_bug_id, true );
 if( $t_bug->project_id != helper_get_current_project() ) {

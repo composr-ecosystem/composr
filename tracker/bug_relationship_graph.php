@@ -50,6 +50,8 @@ require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 require_api( 'relationship_graph_api.php' );
 
+require_css( 'status_config.php' );
+
 # If relationship graphs were made disabled, we disallow any access to
 # this script.
 
@@ -106,7 +108,7 @@ layout_page_begin();
 	<div class="widget-box widget-color-blue2">
 		<div class="widget-header widget-header-small">
 			<h4 class="widget-title lighter">
-				<i class="ace-icon fa fa-sitemap"></i>
+				<?php print_icon( 'fa-sitemap', 'ace-icon' ); ?>
 				<?php echo $t_title ?>
 			</h4>
 		</div>
