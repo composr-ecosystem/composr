@@ -19,7 +19,7 @@ class ComposrPlugin extends MantisPlugin {
     protected $cms_sc_business_name_possesive = 'Composr\'s';
     protected $cms_sc_business_name = 'Composr';
     protected $cms_guest_id = 1;
-    protected $cms_extra_signin_sql = ' AND field_46 IN(\'\',\'Content Management System\')'; // TODO: Customise
+    protected $cms_extra_signin_sql = ''; // TODO: Customise for Composr's antispam
     protected $cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
     protected $cms_sc_home_url = 'https://composr.app';
     protected $cms_updater_groups = array();
@@ -35,6 +35,7 @@ class ComposrPlugin extends MantisPlugin {
     protected $cms_sc_login_url = '';
     protected $cms_sc_lostpassword_url = '';
     protected $cms_sc_join_url = '';
+    protected $cms_sc_invite_url = '';
     protected $cms_sc_member_view_url = '';
     protected $cms_sc_tracker_url = '';
 
@@ -56,7 +57,7 @@ class ComposrPlugin extends MantisPlugin {
         $this->url = 'https://composr.app';
 
         // Set up Composr-specific variables
-        require_once(__DIR__ . '/../../_config.php');
+        require_once(__DIR__ . '/../../../_config.php');
         global $SITE_INFO;
         $this->cms_sc_site_url = $SITE_INFO['base_url'];
         $this->cms_sc_profile_url = $this->cms_sc_site_url . '/members/view.htm';
@@ -65,6 +66,7 @@ class ComposrPlugin extends MantisPlugin {
         $this->cms_sc_login_url = $this->cms_sc_site_url . '/login.htm';
         $this->cms_sc_lostpassword_url = $this->cms_sc_lostpassword_url . '/lost-password.htm';
         $this->cms_sc_join_url = $this->cms_sc_site_url . '/join.htm';
+        $this->cms_sc_invite_url = $this->cms_sc_site_url . '/recommend.htm';
         $this->cms_sc_member_view_url = $this->cms_sc_site_url . '/members/view/%1$d.htm'; // sprintf
         $this->cms_sc_tracker_url = $this->cms_sc_site_url . '/tracker/';
         $this->cms_sc_db_prefix = $SITE_INFO['table_prefix'];
@@ -88,6 +90,7 @@ class ComposrPlugin extends MantisPlugin {
             'EVENT_AUTH_USER_FLAGS' => 'event_auth_user_flags',
             'EVENT_CORE_READY' => 'event_core_ready',
             'EVENT_MENU_MAIN' => 'event_menu_main',
+            'EVENT_BUGNOTE_ADD_FORM' => 'event_bugnote_add_form',
 
             // TODO: find a better way that does not involve having to edit original code.
             // CAREFUL! Do not remove these signals from core/user_api.php
@@ -98,12 +101,12 @@ class ComposrPlugin extends MantisPlugin {
 
     function event_core_headers()
     {
-        require_api('utility_api');
-        require_api('gpc_api');
+        require_api('utility_api.php');
+        require_api('gpc_api.php');
 
         // Redirect the Mantis account page to the Composr members page
         if (is_page_name( 'account_page.php' )) {
-            header('Location: ' . $this->cms_sc_profile_url);
+            header('Location: ' . sprintf($this->cms_sc_member_view_url, strval(auth_get_current_user_id())));
             exit();
         }
 
@@ -115,19 +118,31 @@ class ComposrPlugin extends MantisPlugin {
 
         // Redirect the Mantis login page to the Composr login page
         if (is_page_name( 'login_page.php' )) {
-            header('Location: ' . $this->cms_sc_login_url);
+            header('Location: ' . $this->cms_sc_login_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
+            exit();
+        }
+
+        // Redirect the Mantis logout page to the Composr logout page
+        if (is_page_name( 'logout_page.php' )) {
+            header('Location: ' . $this->cms_sc_login_url . '?type=logout&redirect=' . urlencode($this->cms_sc_tracker_url));
             exit();
         }
 
         // Redirect the Mantis lost password page to the Composr lost password page
         if (is_page_name( 'lost_pwd_page.php' )) {
-            header('Location: ' . $this->cms_sc_lostpassword_url);
+            header('Location: ' . $this->cms_sc_lostpassword_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
             exit();
         }
 
         // Redirect the Mantis signup page to the Composr join page
         if (is_page_name( 'signup_page.php' )) {
-            header('Location: ' . $this->cms_sc_join_url);
+            header('Location: ' . $this->cms_sc_join_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
+            exit();
+        }
+
+        // Redirect Mantis create user page to Composr recommend page (it is used for inviting users)
+        if (is_page_name( 'manage_user_create_page.php' )) {
+            header('Location: ' . $this->cms_sc_invite_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
             exit();
         }
 
@@ -145,26 +160,30 @@ class ComposrPlugin extends MantisPlugin {
 
     function event_layout_content_begin()
     {
-        require_api('utility_api');
+        require_api('utility_api.php');
 
         // Bug reporting guidance
         if (is_page_name( 'bug_report_page.php' )) {
-            require_api('lang_api');
-            require_api('current_user_api');
+            require_api('lang_api.php');
+            require_api('current_user_api.php');
 
-            return '
+            $ret = '
             <p>
-                ' . sprintf(plugin_lang_get('bug_report_guidance'), $this->cms_sc_report_guidance_url) . '
-            </p>
+            ' . sprintf(plugin_lang_get('bug_report_guidance'), $this->cms_sc_report_guidance_url) . '
+            </p>';
 
-            ' . (current_user_is_anonymous()) ? ('<p>' . plugin_lang_get( 'not_logged_in_bad' ) . '</p>') : '';
+            if (current_user_is_anonymous()) {
+                $ret .= '<p>' . plugin_lang_get( 'not_logged_in_bad' ) . '</p>';
+            }
+
+            return $ret;
         }
 
         // TODO: bug_sponsorship_list_view_inc; convert to using points escrow
 
         // Composr specific welcome message
         if (is_page_name( 'my_view_page.php' )) {
-            require_api('lang_api');
+            require_api('lang_api.php');
 
             return '
             <div style="margin: 1em; font-size: 1.2em">
@@ -176,7 +195,7 @@ class ComposrPlugin extends MantisPlugin {
 
         // Search information
         if (is_page_name( 'view_all_inc.php' )) {
-            require_api('lang_api');
+            require_api('lang_api.php');
 
             return '<p>' . plugin_lang_get('hint_message') . '</p>';
         }
@@ -184,10 +203,28 @@ class ComposrPlugin extends MantisPlugin {
         return '';
     }
 
-    function event_menu_issue_relationship($bug_id)
+    function event_bugnote_add_form()
+    {
+        require_api('current_user_api.php');
+
+        if (current_user_is_anonymous()) {
+            echo '
+            <tr>
+				<th class="category">
+					' . plugin_lang_get('bugnote_not_logged_in_title') . '
+				</th>
+				<td>
+					' . plugin_lang_get('bugnote_not_logged_in_text') . '
+				</td>
+			</tr>
+            ';
+        }
+    }
+
+    function event_menu_issue_relationship($event, $bug_id)
     {
         // Add a button for searching commits tagged with this issue
-        require_api('lang_api');
+        require_api('lang_api.php');
         return [
             plugin_lang_get( 'search_commits' ) => $this->cms_sc_sourcecode_url . '/commits/master?search=MANTIS-' . strval($bug_id)
         ];
@@ -195,15 +232,15 @@ class ComposrPlugin extends MantisPlugin {
 
     function event_auth_user_flags($p_event_name, $p_args)
     {
-        require_api('authentication_api');
-        require_api('helper_api');
+        require_api('authentication_api.php');
+        require_api('helper_api.php');
 
         // Only allow authentication via Composr
         $t_flags = new AuthFlags();
         $t_flags->setCanUseStandardLogin( false );
         $t_flags->setPasswordManagedExternallyMessage( 'You must manage your password from the ' . $this->cms_sc_site_name . ' site.');
-        $t_flags->setCredentialsPage(helper_url_combine($this->cms_sc_login_url, 'username=' . urlencode($p_args['username']) . '&redirect=' . urlencode($this->cms_sc_tracker_url)));
-        $t_flags->setLogoutRedirectPage(helper_url_combine($this->cms_sc_login_url, 'type=logout&redirect=' . urlencode($this->cms_sc_tracker_url)));
+        //$t_flags->setCredentialsPage(helper_url_combine($this->cms_sc_login_url, 'username=' . urlencode($p_args['username']) . '&redirect=' . urlencode($this->cms_sc_tracker_url)));
+        //$t_flags->setLogoutPage(helper_url_combine($this->cms_sc_login_url, 'type=logout&redirect=' . urlencode($this->cms_sc_tracker_url)));
 
         return $t_flags;
     }
@@ -211,9 +248,9 @@ class ComposrPlugin extends MantisPlugin {
     function event_core_ready()
     {
         // Composr - try session authentication
-        require_api('authentication_api');
-        require_api('database_api');
-        require_api('user_api');
+        require_api('authentication_api.php');
+        require_api('database_api.php');
+        require_api('user_api.php');
 
         global $g_script_login_cookie, $g_cache_anonymous_user_cookie_string, $g_db;
         if ((isset($_COOKIE[$this->cms_sc_session_cookie_name])) && (isset($g_db)))
@@ -251,24 +288,24 @@ class ComposrPlugin extends MantisPlugin {
         // Composr - Gitlab link
         $t_sidebar_items[] = array(
             'url' => $this->cms_sc_sourcecode_url,
-            'title' => 'cms_sourcecode_link',
+            'title' => plugin_lang_get('sourcecode_link'),
             'icon' => 'fa-git',
         );
 
         // Composr - Main website link
         $t_sidebar_items[] = array(
             'url' => $this->cms_sc_home_url,
-            'title' => 'cms_home_link',
+            'title' => plugin_lang_get('home_link'),
             'icon' => 'fa-home',
         );
 
         return $t_sidebar_items;
     }
 
-    function event_composr_user_cache_array_rows(array $p_user_id_array)
+    function event_composr_user_cache_array_rows($event, $p_user_id_array)
     {
-        require_api('user_api');
-        require_api('database_api');
+        require_api('user_api.php');
+        require_api('database_api.php');
 
         // Composr - sync user accounts from CMS
         global $g_cache_user;
@@ -339,9 +376,9 @@ class ComposrPlugin extends MantisPlugin {
         return []; // Actually we want to always return empty so the MantisBT code does not execute further.
     }
 
-    function event_composr_user_get_id_by_name($p_username)
+    function event_composr_user_get_id_by_name($event, $p_username)
     {
-        require_api('database_api');
+        require_api('database_api.php');
 
         // Composr - sync user accounts from CMS
         db_param_push();
@@ -355,7 +392,6 @@ class ComposrPlugin extends MantisPlugin {
         return false; // If member not found, return false instead of null so MantisBT does not proceed finding the member.
     }
 
-    // TODO: bugnote_text JavaScript placeholder if user is anonymous
     // TODO: antispam measure that is more effective than renaming bugnote_text (does not stop paid human spammers)
     // TODO: Prevent guests from editing guest issues
     // TODO: hide user buttons on menu if guest (?)

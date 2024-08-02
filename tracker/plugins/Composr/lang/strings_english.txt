@@ -2,6 +2,8 @@
 # plugin-specific
 $s_plugin_Composr_search_commits = 'Search Commits';
 $s_plugin_Composr_my_view_welcome_message = 'Welcome to the feature tracker, the tool used to plan new versions of %1$s (amongst other things). All %2$s planned features are organised on this feature tracker. Please be aware that %3$s maintains no formal roadmap for %1$s (for good reasons that we explain in our FAQ &ndash; in summary, it wouldn\'t work) so no conclusions about &ldquo;what is around the corner&rdquo; should be drawn from the issues here (unless you can sponsor/contribute things). It does however provide a real foundation for transparency and engagement. For more information, see the appropriate part of the <a href="%4$s">providing feedback tutorial</a>.';
+$s_plugin_Composr_bugnote_not_logged_in_title = 'You are not logged in';
+$s_plugin_Composr_bugnote_not_logged_in_text = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications. And if you reply, we will not know for sure you are the original poster of the issue.';
 $s_plugin_Composr_not_logged_in_bad = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications, if you reply we will not know for sure you are the original poster of the issue, and you will not be able to view any private issues you report anonymously.';
 $s_plugin_Composr_bug_report_guidance = 'This is the public tracker for features/bugs, not a private support system and not a discussion forum. Please read the bug reporting guidance in the <a href="%1$s">providing feedback tutorial</a>.';
 $s_plugin_Composr_sourcecode_link = 'GitLab';
@@ -38,13 +40,14 @@ $s_plugin_Composr_progress_paid_up = 'Progress (paid up)';
 $s_plugin_Composr_credits_remaining = 'credits remaining';
 
 # Overrides for bug_change_status_page.php
-$s_non-assigned_bug_title = 'New Issue';
-$s_non-assigned_bug_button = 'New Issue';
+$s_not_assigned_bug_title = 'New Issue';
+$s_not_assigned_bug_button = 'New Issue';
 
 # Overrides for manage_proj_edit_page.php
-$s_private = 'private (for use for security issues or if your issue strictly requires disclosing private information; <strong>if you submit as a guest, you will not be able to see your issue after submission</strong>)';
+$s_private = 'Private (for security issues or disclosing of private information; <strong>if you submit as a guest, you will not be able to see your submission</strong>)';
 
 # misc overrides
-$s_status_enum_string = '10:non-assigned,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';
+$s_status_enum_string = '10:Not Assigned,50:Assigned,80:Resolved,90:Closed';
+$s_severity_enum_string = '10:Feature or Request,20:Trivial Bug,50:Minor Bug,60:Major Bug,95:Security Hole';
 $s_report_bug_link = 'Report Issue (or suggest feature)';
 $s_users_sponsoring_bug = 'Optionally sponsor this issue by escrowing points to it (will incentivise developers more to implement it)';

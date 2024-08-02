@@ -127,7 +127,7 @@ function user_cache_array_rows( array $p_user_id_array ) {
 	}
 
     // Composr - Try populating from plugin user cache
-    $c_user_id_array = event_signal('EVENT_COMPOSR_USER_CACHE_ARRAY_ROWS', $c_user_id_array);
+    $c_user_id_array = event_signal('EVENT_COMPOSR_USER_CACHE_ARRAY_ROWS', [$c_user_id_array]);
     if( empty( $c_user_id_array ) ) {
         return;
     }

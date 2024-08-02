@@ -104,9 +104,9 @@ $g_default_bug_severity = FEATURE; // We primarily track features
 $g_default_bug_reproducibility = 100; // We primarily track features
 $g_bug_reopen_status = NEW_;
 $g_bug_feedback_status = NEW_;
-$g_status_enum_string = '10:non-assigned,50:assigned,80:resolved,90:closed';
+$g_status_enum_string = '10:not assigned,50:assigned,80:resolved,90:closed';
 $g_status_colors = array(
-    'non-assigned' => '//fcbdbd', // red
+    'not assigned' => '//fcbdbd', // red
     'feedback' => '//e3b7eb', // purple
     'acknowledged' => '//ffcd85', // orange
     'confirmed' => '//fff494', // yellow
@@ -194,6 +194,10 @@ $g_bug_update_page_fields = array(
     'view_state',
 );
 $g_severity_enum_string = '10:Feature-request,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
+
+// Turn off changelogs and roadmaps; we don't use them nor guarantee any roadmaps
+$g_view_changelog_threshold = NOBODY;
+$g_roadmap_view_threshold = NOBODY;
 
 // Misc
 $g_show_realname = OFF;
