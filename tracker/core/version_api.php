@@ -31,6 +31,8 @@
  * @uses helper_api.php
  * @uses project_api.php
  * @uses project_hierarchy_api.php
+ *
+ * @noinspection PhpMissingReturnTypeInspection, PhpMissingParamTypeInspection
  */
 
 require_api( 'config_api.php' );
@@ -46,6 +48,14 @@ use Mantis\Exceptions\ClientException;
 
 /**
  * Version Data Structure Definition
+ *
+ * @property int $id
+ * @property int $project_id
+ * @property string $version
+ * @property string $description
+ * @property bool $released
+ * @property bool $obsolete
+ * @property int $date_order
  */
 class VersionData {
 	/**
@@ -74,9 +84,9 @@ class VersionData {
 	protected $released = VERSION_FUTURE;
 
 	/**
-	 * Obsolete
+	 * Version Obsolescence Status
 	 */
-	protected $obsolete = 0;
+	protected $obsolete = false;
 
 	/**
 	 * Date Order
@@ -85,8 +95,10 @@ class VersionData {
 
 	/**
 	 * VersionData constructor.
+	 *
 	 * Initialize the object with default values, or with data from a
 	 * project_version table row.
+	 *
 	 * @param array|null $p_row
 	 */
 	public function __construct( array $p_row = null ) {
@@ -96,40 +108,27 @@ class VersionData {
 	}
 
 	/**
-	 * Overloaded function
-	 * @param string         $p_name  A valid property name.
+	 * Setting protected class properties.
+	 *
+	 * @param string $p_name A valid property name.
 	 * @param integer|string $p_value The property value to set.
 	 * @return void
-	 * @private
+	 * @throws ClientException
 	 */
 	public function __set( $p_name, $p_value ) {
-		$t_value = $p_value;
-
-		switch( $p_name ) {
-			case 'date_order':
-				if( !is_numeric( $p_value ) ) {
-					if( $p_value == '' ) {
-						$t_value = date_get_null();
-					} else {
-						$t_value = strtotime( $p_value );
-						if( $t_value === false ) {
-							throw new ClientException(
-								"Invalid date format '$p_value'",
-								ERROR_INVALID_DATE_FORMAT,
-								array( $p_value ) );
-						}
-					}
-				}
+		if( $p_name == 'date_order' && !is_numeric( $p_value ) ) {
+			$this->date_order = date_strtotime( $p_value );
+			return;
 		}
 
-		$this->$p_name = $t_value;
+		$this->$p_name = $p_value;
 	}
 
 	/**
-	 * Overloaded function
+	 * Getting protected class properties.
+	 *
 	 * @param string $p_name A valid property name.
 	 * @return integer|string
-	 * @private
 	 */
 	public function __get( $p_name ) {
 		return $this->{$p_name};
@@ -137,6 +136,7 @@ class VersionData {
 
 	/**
 	 * Initialize the object with data from a database row.
+	 *
 	 * @param array $p_row
 	 */
 	public function set_from_db_row( array $p_row ) {
@@ -172,50 +172,70 @@ $g_cache_versions = array();
 $g_cache_versions_project  = array();
 
 /**
- * Cache a version row if necessary and return the cached copy
- * If the second parameter is true (default), trigger an error
- * if the version can't be found.  If the second parameter is
- * false, return false if the version can't be found.
- * @param integer $p_version_id     A version identifier to look up.
- * @param boolean $p_trigger_errors Whether to generate errors if not found.
- * @return array
+ * Clear version cache
+ *
+ * @return void
  */
-function version_cache_row( $p_version_id, $p_trigger_errors = true ) {
+function version_cache_clear() {
+	global $g_cache_versions_project, $g_cache_versions;
+	$g_cache_versions_project = array();
+	$g_cache_versions = array();
+}
+
+/**
+ * Remove specified version from version cache
+ *
+ * @param integer $p_version_id The version id to remove from cache.
+ * @return void
+ */
+function version_cache_clear_row( $p_version_id ) {
 	global $g_cache_versions;
 
 	$c_version_id = (int)$p_version_id;
 
-	if( isset( $g_cache_versions[$c_version_id] ) ) {
-		return $g_cache_versions[$c_version_id];
+	unset( $g_cache_versions[$c_version_id] );
+}
+
+/**
+ * Cache a version row if necessary and return the cached copy.
+ *
+ * @param integer $p_version_id A Version identifier.
+ *
+ * @return array Version data
+ * @throws ClientException if the Version does not exist.
+ */
+function version_cache_row( $p_version_id ) {
+	global $g_cache_versions;
+
+	$c_version_id = (int)$p_version_id;
+
+	if( empty( $g_cache_versions[$c_version_id] ) ) {
+		db_param_push();
+		$t_query = 'SELECT * FROM {project_version} WHERE id=' . db_param();
+		$t_result = db_query( $t_query, array( $c_version_id ) );
+		$t_row = db_fetch_array( $t_result );
+
+		$g_cache_versions[$c_version_id] = $t_row;
+	} else {
+		$t_row = $g_cache_versions[$c_version_id];
 	}
 
-	db_param_push();
-	$t_query = 'SELECT * FROM {project_version} WHERE id=' . db_param();
-	$t_result = db_query( $t_query, array( $c_version_id ) );
-
-	$t_row = db_fetch_array( $t_result );
-
-	if( !$t_row ) {
-		$g_cache_versions[$c_version_id] = false;
-
-		if( $p_trigger_errors ) {
-			throw new ClientException(
-				"Version with id $p_version_id not found",
-				ERROR_VERSION_NOT_FOUND,
-				array( $p_version_id ) );
-		}
-
-		return false;
+	if( false === $t_row ) {
+		throw new ClientException(
+			"Version with id $p_version_id not found",
+			ERROR_VERSION_NOT_FOUND,
+			array( $p_version_id )
+		);
 	}
-
-	$g_cache_versions[$c_version_id] = $t_row;
 
 	return $t_row;
 }
 
 /**
- * Cache version information for an array of project id's
+ * Cache version information for an array of project id's.
+ *
  * @param array $p_project_ids An array of project identifiers.
+ *
  * @return void
  */
 function version_cache_array_rows( array $p_project_ids ) {
@@ -243,9 +263,7 @@ function version_cache_array_rows( array $p_project_ids ) {
 			$g_cache_versions_project[$c_project_id] = array();
 		}
 		$g_cache_versions_project[$c_project_id][] = $c_version_id;
-		if( isset( $t_ids_to_fetch[$c_project_id] ) ) {
-			unset( $t_ids_to_fetch[$c_project_id] );
-		}
+        unset( $t_ids_to_fetch[$c_project_id] );
 	}
 	foreach( $t_ids_to_fetch as $t_id_not_found ) {
 		$g_cache_versions_project[$t_id_not_found] = false;
@@ -253,32 +271,59 @@ function version_cache_array_rows( array $p_project_ids ) {
 }
 
 /**
- * Check whether the version exists
- * $p_project_id : null will use the current project, otherwise the specified project
- * Returns true if the version exists, false otherwise
- * @param integer $p_version_id A version identifier.
- * @return boolean
+ * Check whether the version exists.
+ *
+ * @param integer $p_version_id A Version identifier.
+ *
+ * @return boolean True if the Version exists, false otherwise
  */
 function version_exists( $p_version_id ) {
-	return version_cache_row( $p_version_id, false ) !== false;
+	try {
+		$t_exists = (bool)version_cache_row( $p_version_id );
+	} catch( ClientException $e ) {
+		return false;
+	}
+	return $t_exists;
 }
 
 /**
- * Check whether the version name is unique
- * Returns true if the name is unique, false otherwise
+ * Check whether the version name is unique.
+ *
  * @param string  $p_version    A version string to check.
  * @param integer $p_project_id A valid Project identifier.
- * @return boolean
+ *
+ * @return boolean True if the name is unique, false otherwise.
  */
 function version_is_unique( $p_version, $p_project_id = null ) {
 	return version_get_id( $p_version, $p_project_id ) === false;
 }
 
 /**
- * Check whether the version exists
- * Trigger an error if it does not
+ * Validate the specified version name
+ *
+ * @param string $p_version_name Version name to validate.
+ * @return boolean true: valid, false: otherwise.
+ */
+function version_is_valid_name( $p_version_name ) {
+	if( is_null( $p_version_name ) ||
+		is_blank( $p_version_name ) ||
+		stripos( $p_version_name, "\r" ) !== false ||
+		stripos( $p_version_name, "\n" ) !== false ||
+		trim( $p_version_name ) !== $p_version_name ||
+		strlen( $p_version_name ) > 64 ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Check whether the version exists.
+ *
  * @param integer $p_version_id A version identifier.
+ *
  * @return void
+ * @throws ClientException if Version does not exist.
  */
 function version_ensure_exists( $p_version_id ) {
 	if( !version_exists( $p_version_id ) ) {
@@ -290,11 +335,13 @@ function version_ensure_exists( $p_version_id ) {
 }
 
 /**
- * Check whether the version is unique within a project
- * Trigger an error if it is not
+ * Check whether the version is unique within a project.
+ *
  * @param string  $p_version    A version string.
  * @param integer $p_project_id A valid Project identifier.
+ *
  * @return void
+ * @throws ClientException if Version already exists in the Project.
  */
 function version_ensure_unique( $p_version, $p_project_id = null ) {
 	if( !version_is_unique( $p_version, $p_project_id ) ) {
@@ -306,14 +353,17 @@ function version_ensure_unique( $p_version, $p_project_id = null ) {
 }
 
 /**
- * Add a version to the project
+ * Add a version to the project.
+ *
  * @param integer $p_project_id  A valid project id.
  * @param string  $p_version     Name of a version to add.
  * @param integer $p_released    Release status of the version.
  * @param string  $p_description Description of the version.
  * @param integer $p_date_order  Date Order.
  * @param boolean $p_obsolete    Obsolete status of the version.
+ *
  * @return integer
+ * @throws ClientException if Version already exists in the Project.
  */
 function version_add( $p_project_id, $p_version, $p_released = VERSION_FUTURE, $p_description = '', $p_date_order = null, $p_obsolete = false ) {
 	$c_project_id = (int)$p_project_id ;
@@ -343,9 +393,12 @@ function version_add( $p_project_id, $p_version, $p_released = VERSION_FUTURE, $
 }
 
 /**
- * Update the definition of a version
+ * Update the definition of a version.
+ *
  * @param VersionData $p_version_info A version structure to update.
+ *
  * @return void
+ * @throws ClientException if Version does not exist.
  */
 function version_update( VersionData $p_version_info ) {
 	version_ensure_exists( $p_version_info->id );
@@ -426,10 +479,13 @@ function version_update( VersionData $p_version_info ) {
 }
 
 /**
- * Remove a version from the project
+ * Remove a version from the project.
+ *
  * @param integer $p_version_id  A valid version identifier.
  * @param string  $p_new_version A version string to update issues using the old version with.
+ *
  * @return void
+ * @throws ClientException if Version does not exist.
  */
 function version_remove( $p_version_id, $p_new_version = '' ) {
 	version_ensure_exists( $p_version_id );
@@ -466,9 +522,11 @@ function version_remove( $p_version_id, $p_new_version = '' ) {
 }
 
 /**
- * Remove all versions associated with a project
+ * Remove all versions associated with a project.
+ *
  * @param integer $p_project_id A project identifier.
- * @return boolean
+ *
+ * @return void
  */
 function version_remove_all( $p_project_id ) {
 	$c_project_id = (int)$p_project_id;
@@ -484,24 +542,27 @@ function version_remove_all( $p_project_id ) {
 	db_param_push();
 	$t_query = 'DELETE FROM {project_version} WHERE project_id=' . db_param();
 	db_query( $t_query, array( $c_project_id ) );
-
-	return true;
 }
 
 /**
- * Return all versions for the specified project or projects list
+ * Return all versions for the specified project or projects list.
+ *
  * Returned versions are ordered by reverse 'date_order'
- * @param integer|array $p_project_ids  A valid project id, or array of ids
- * @param boolean $p_released   Whether to show only released, unreleased, or both.
- *                  For this parameter, use constants defined as:
- *                  VERSION_ALL (null): returns any
- *                  VERSION_FUTURE (false): returns only unreleased versions
- *                  VERSION_RELEASED (true): returns only released versions
- * @param boolean $p_obsolete   Whether to include obsolete versions.
- * @param boolean $p_inherit    True to include versions from parent projects,
- *                              false not to, or null to use configuration
- *                              setting ($g_subprojects_inherit_versions).
+ *
+ * @param integer|array $p_project_ids A valid project id, or array of ids
+ * @param boolean       $p_released    Whether to show only released, unreleased, or both.
+ *                                     For this parameter, use constants defined as:
+ *                                     VERSION_ALL (null): returns any
+ *                                     VERSION_FUTURE (false): returns only unreleased versions
+ *                                     VERSION_RELEASED (true): returns only released versions
+ * @param boolean       $p_obsolete    Whether to include obsolete versions.
+ * @param boolean       $p_inherit     True to include versions from parent projects,
+ *                                     false not to, or null to use configuration
+ *                                     setting ($g_subprojects_inherit_versions).
+ *
  * @return array Array of version rows (in array format)
+ *
+ * @noinspection PhpDocMissingThrowsInspection
  */
 function version_get_all_rows( $p_project_ids, $p_released = null, $p_obsolete = false, $p_inherit = null ) {
 	global $g_cache_versions_project;
@@ -533,6 +594,7 @@ function version_get_all_rows( $p_project_ids, $p_released = null, $p_obsolete =
 	foreach( $t_project_list as $t_project_id ) {
 		if( !empty( $g_cache_versions_project[$t_project_id]) ) {
 			foreach( $g_cache_versions_project[$t_project_id] as $t_id ) {
+				/** @noinspection PhpUnhandledExceptionInspection */
 				$t_version_row = version_cache_row( $t_id );
 				if( $p_obsolete === false && (int)$t_version_row['obsolete'] == 1 ) {
 					continue;
@@ -559,14 +621,15 @@ function version_get_all_rows( $p_project_ids, $p_released = null, $p_obsolete =
 }
 
 /**
- * Get the version_id, given the project_id and $p_version_id
- * returns false if not found, otherwise returns the id.
+ * Get the version_id, given the project_id and $p_version_id.
+ *
  * @param string  $p_version    A version string to look up.
  * @param integer $p_project_id A valid project identifier.
  * @param boolean $p_inherit    True to include versions from parent projects,
  *                              false not to, or null to use configuration
  *                              setting ($g_subprojects_inherit_versions).
- * @return integer
+ *
+ * @return int|false False if not found, otherwise returns the id.
  */
 function version_get_id( $p_version, $p_project_id = null, $p_inherit = null ) {
 
@@ -587,10 +650,13 @@ function version_get_id( $p_version, $p_project_id = null, $p_inherit = null ) {
 
 /**
  * Get the specified field name for the specified version id.
- * triggers an error if version not found, otherwise returns the field value.
+ *
  * @param integer $p_version_id A valid version identifier.
  * @param string  $p_field_name A valid field name to lookup.
- * @return string
+ *
+ * @return mixed The Version field's value.
+ *
+ * @throws ClientException if the Version or the Field does not exist.
  */
 function version_get_field( $p_version_id, $p_field_name ) {
 	$t_row = version_cache_row( $p_version_id );
@@ -611,42 +677,47 @@ function version_get_field( $p_version_id, $p_field_name ) {
 }
 
 /**
- * Gets the full name of a version.  This may include the project name as a prefix (e.g. '[MantisBT] 2.0.0')
+ * Gets the full name of a version.
+ *
+ * This may include the project name as a prefix (e.g. '[MantisBT] 2.0.0')
  *
  * @param integer $p_version_id         The version id.
- * @param boolean $p_show_project       Whether to include the project name or not,
- *                                      null means include the project if different from current.
- * @param integer $p_current_project_id The current project id or null to use the cookie.
+ * @param boolean $p_show_project       Whether to include the project name or
+ *                                      not, null means include the project if
+ *                                      different from current.
+ * @param integer $p_current_project_id The current project id or null to use
+ *                                      the cookie.
+ *
  * @return string The full name of the version.
+ *
+ * @throws ClientException if the Version does not exist.
  */
 function version_full_name( $p_version_id, $p_show_project = null, $p_current_project_id = null ) {
-	if( 0 == $p_version_id ) {
-		# No Version
-		return '';
+	$t_row = version_cache_row( $p_version_id );
+	$t_project_id = $t_row['project_id'];
+
+	$t_current_project_id = is_null( $p_current_project_id ) ? helper_get_current_project() : $p_current_project_id;
+
+	if( $p_show_project === null ) {
+		$t_show_project = $t_project_id != $t_current_project_id;
 	} else {
-		$t_row = version_cache_row( $p_version_id );
-		$t_project_id = $t_row['project_id'];
-
-		$t_current_project_id = is_null( $p_current_project_id ) ? helper_get_current_project() : $p_current_project_id;
-
-		if( $p_show_project === null ) {
-			$t_show_project = $t_project_id != $t_current_project_id;
-		} else {
-			$t_show_project = $p_show_project;
-		}
-
-		if( $t_show_project ) {
-			return '[' . project_get_name( $t_project_id ) . '] ' . $t_row['version'];
-		}
-
-		return $t_row['version'];
+		$t_show_project = $p_show_project;
 	}
+
+	if( $t_show_project ) {
+		return '[' . project_get_name( $t_project_id ) . '] ' . $t_row['version'];
+	}
+
+	return $t_row['version'];
 }
 
 /**
- * get information about a version given its id
+ * Get information about a version given its id.
+ *
  * @param integer $p_version_id A valid version identifier.
+ *
  * @return VersionData
+ * @throws ClientException if Version does not exist.
  */
 function version_get( $p_version_id ) {
 	$t_row = version_cache_row( $p_version_id );
@@ -657,7 +728,9 @@ function version_get( $p_version_id ) {
 /**
  * Checks whether the product version should be shown
  * (i.e. report, update, view, print).
+ *
  * @param integer|array $p_project_ids  A valid project id or array of ids
+ *
  * @return boolean true: show, false: otherwise.
  */
 function version_should_show_product_version( $p_project_ids ) {

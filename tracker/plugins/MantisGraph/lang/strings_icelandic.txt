@@ -25,7 +25,7 @@
  * **                                                                  **
  * **                      DO NOT UPDATE MANUALLY                      **
  * **                                                                  **
- * ** To improve a translation please visit http://translatewiki.net   **
+ * ** To improve a translation please visit https://translatewiki.net  **
  * ** Detailed instructions on how to create or update translations at **
  * ** http://www.mantisbt.org/wiki/doku.php/mantisbt:translationshowto **
  * **********************************************************************
@@ -33,19 +33,18 @@
 /** Icelandic (íslenska)
  * 
  * See the qqq 'language' for message documentation incl. usage of parameters
- * To improve a translation please visit http://translatewiki.net
+ * To improve a translation please visit https://translatewiki.net
  *
  * @ingroup Language
  * @file
  *
- * @author Abijeet Patro
  * @author Sveinn í Felli
  */
 
 $s_plugin_MantisGraph_title = 'Gröf/línurit Mantis';
 $s_plugin_MantisGraph_description = 'Opinber forritsviðbót fyrir gröf/línurit.';
 $s_plugin_MantisGraph_config = 'Uppsetning';
-$s_plugin_MantisGraph_tab_label = 'Gröf/línurit Mantis';
+$s_plugin_MantisGraph_tab_label = 'Gröf/línurit';
 $s_plugin_MantisGraph_status_link = 'Eftir stöðu';
 $s_plugin_MantisGraph_priority_link = 'Eftir forgangi';
 $s_plugin_MantisGraph_severity_link = 'Eftir mikilvægi';

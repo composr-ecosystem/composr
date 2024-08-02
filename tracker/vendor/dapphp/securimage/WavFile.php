@@ -1701,7 +1701,7 @@ class WavFile
 
                 /************* DEGRADE FILTER *******************/
                 if ($filter_degrade) {
-                    $sampleFloat += rand(1000000 * ($degrade_quality - 1), 1000000 * (1 - $degrade_quality)) / 1000000;
+                    $sampleFloat += rand(round(1000000 * ($degrade_quality - 1)), round(1000000 * (1 - $degrade_quality))) / 1000000;
                 }
 
                 /************* VOLUME FILTER *******************/

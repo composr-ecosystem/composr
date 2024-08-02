@@ -42,7 +42,7 @@
 class MantisMarkdown extends Parsedown
 {
 	/**
-	 * MantisMarkdown singleton instance for MantisMarkdown class.
+	 * @var MantisMarkdown singleton instance for MantisMarkdown class.
 	 */
 	private static $mantis_markdown = null;
 
@@ -69,6 +69,27 @@ class MantisMarkdown extends Parsedown
 
 		# XSS protection
 		$this->setSafeMode( true );
+
+		# Only turn URLs into links if config says so
+		plugin_push_current( 'MantisCoreFormatting' );
+		if( !plugin_config_get( 'process_urls' ) ) {
+			$this->setUrlsLinked( false );
+		}
+		plugin_pop_current();
+	}
+
+	/**
+	 * @param array $Element Properties of a marked element.
+	 * @return string HTML markup of the element.
+	 */
+	protected function element( array $Element )
+	{
+		# Adding CSS classes to tables.
+		if( $Element['name'] === 'table' ) {
+			$Element['attributes']['class'] = $this->table_class;
+		}
+
+		return parent::element( $Element );
 	}
 
 	/**
@@ -113,89 +134,6 @@ class MantisMarkdown extends Parsedown
 		if ( preg_match( '/^ {0,3}#{1,6}(?: |$)/', $line['text'] ) ) {
 			return parent::blockHeader($line);
 		}
-	}
-
-	/**
-	 * Add a class attribute on a table markdown elements
-	 *
-	 * @param string $line The Markdown syntax to parse
-	 * @param array $block A block-level element
-	 * @param string $fn the function name to call (blockTable or blockTableContinue)
-	 * @access private
-	 * @return string html representation generated from markdown.
-	 */
-	private function __doTable( $line, $block, $fn ) {
-		if( $block = call_user_func( 'parent::' . $fn, $line, $block ) ) {
-			$block['element']['attributes']['class'] = $this->table_class;
-		}
-
-		return $block;
-	}
-
-	/**
-	 * Customize the logic on blockTable method by adding a class attribute
-	 *
-	 * @param string $line The Markdown syntax to parse
-	 * @param array $block A block-level element
-	 * @access protected
-	 * @return string html representation generated from markdown.
-	 */
-	protected function blockTable( $line, array $block = null ) {
-		return $this->__doTable( $line, $block, __FUNCTION__ );
-	}
-
-	/**
-	 * Customize the logic on blockTableContinue method by adding a class attribute
-	 *
-	 * @param string $line The Markdown syntax to parse
-	 * @param array $block A block-level element
-	 * @access protected
-	 * @return string html representation generated from markdown.
-	 */
-	protected function blockTableContinue( $line, array $block ) {
-		return $this->__doTable( $line, $block, __FUNCTION__ );
-	}
-
-	/**
-	 * Add an inline style on a blockquote markdown elements
-	 *
-	 * @param string $line The Markdown syntax to parse
-	 * @param array $block A block-level element
-	 * @param string $fn the function name to call (blockQuote or blockQuoteContinue)
-	 * @access private
-	 * @return string html representation generated from markdown.
-	 */
-	private function __quote( $line, $block, $fn ) {
-
-		if( $block = call_user_func( 'parent::' . $fn, $line, $block ) ) {
-			# TODO: To open another issue to track css style sheet issue vs. inline style.
-			$block['element']['attributes']['style'] = 'padding:0.13em 1em;color:rgb(119,119,119);border-left:0.25em solid #C0C0C0;font-size:13px;';
-		}
-
-		return $block;
-	}
-
-	/**
-	 * Customize the blockQuote method by adding a style attribute
-	 *
-	 * @param string $line The Markdown syntax to parse
-	 * @access protected
-	 * @return string html representation generated from markdown.
-	 */
-	protected function blockQuote( $line ){
-		return $this->__quote( $line, array(), __FUNCTION__ );
-	}
-
-	/**
-	 * Customize the blockQuoteContinue method by adding a style attribute
-	 *
-	 * @param string $line The Markdown syntax to parse
-	 * @param array $block A block-level element
-	 * @access protected
-	 * @return string html representation generated from markdown.
-	 */
-	protected function blockQuoteContinue( $line, array $block ){
-		return $this->__quote( $line, $block, __FUNCTION__ );
 	}
 
 	/**
@@ -255,20 +193,28 @@ class MantisMarkdown extends Parsedown
 	/**
 	 * Customize the inlineLink method
 	 *
-	 * @param array $block A block-level element
+	 * @param array $Excerpt A block-level element
 	 * @access protected
-	 * @return string html representation generated from markdown.
+	 * @return array html representation generated from markdown.
 	 */
-	protected function inlineLink( $block ) {
-
-		$block = parent::inlineLink( $block );
-
-		if( isset( $block['element']['attributes']['href'] )) {
-			$this->processAmpersand( $block['element']['attributes']['href'] );
-		}
-
-		return $block;
+	protected function inlineLink( $Excerpt ) {
+		return $this->processUrl( parent::inlineLink( $Excerpt ) );
 	}
+
+	protected function inlineUrl( $Excerpt ) {
+		return $this->processUrl( parent::inlineUrl( $Excerpt ) );
+	}
+
+	protected function inlineUrlTag( $Excerpt ) {
+		# @FIXME
+		# This function is supposed to process links like `<http://example.com>`
+		# on single-line texts, but it does not actually work: the function is
+		# never called (see Parsedown::line() 1077), because
+		# MantisCoreFormattingPlugin::formatted() applies html_specialchars()
+		# first, so the < > are converted to &lt;/&gt;.
+		return $this->processUrl( parent::inlineUrlTag( $Excerpt ) );
+	}
+
 
 	/**
 	 * Initialize the singleton static instance.
@@ -293,6 +239,30 @@ class MantisMarkdown extends Parsedown
 	 */
 	private function processAmpersand( &$p_text ) {
 		$p_text = str_replace( '&amp;', '&', $p_text );
+	}
+
+	/**
+	 * Set a link's target and rel attributes as appropriate.
+	 *
+	 * @param array|null $Excerpt
+	 * @return array|null
+	 *
+	 * @see helper_get_link_attributes()
+	 */
+	private function processUrl( $Excerpt ) {
+		if( isset( $Excerpt['element']['attributes']['href'] ) ) {
+			$this->processAmpersand( $Excerpt['element']['attributes']['href'] );
+		}
+
+		if( isset( $Excerpt['element']['attributes'] ) ) {
+			# Set the link's attributes according to configuration
+			$Excerpt['element']['attributes'] = array_replace(
+				$Excerpt['element']['attributes'],
+				helper_get_link_attributes()
+			);
+		}
+
+		return $Excerpt;
 	}
 
 }

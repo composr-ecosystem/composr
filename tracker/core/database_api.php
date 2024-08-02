@@ -37,10 +37,15 @@ require_api( 'error_api.php' );
 require_api( 'logging_api.php' );
 require_api( 'utility_api.php' );
 
+/**
+ * Main database connection.
+ * @var ADOConnection $g_db
+ */
+$g_db = false;
+
 # An array in which all executed queries are stored.  This is used for profiling
 # @global array $g_queries_array
 $g_queries_array = array();
-
 
 # Stores whether a database connection was successfully opened.
 # @global bool $g_db_connected
@@ -368,7 +373,7 @@ function db_affected_rows() {
 /**
  * Retrieve the next row returned from a specific database query
  * @param IteratorAggregate &$p_result Database Query Record Set to retrieve next result for.
- * @return array Database result
+ * @return array|false Database result or false if
  */
 function db_fetch_array( IteratorAggregate &$p_result ) {
 	global $g_db_functional_type;
@@ -620,33 +625,6 @@ function db_close() {
 	global $g_db;
 
 	$g_db->Close();
-}
-
-/**
- * prepare a string before DB insertion
- * @param string $p_string Unprepared string.
- * @return string prepared database query string
- * @deprecated db_query should be used in preference to this function. This function may be removed in 1.2.0 final
- */
-function db_prepare_string( $p_string ) {
-	global $g_db;
-	$t_db_type = config_get_global( 'db_type' );
-
-	switch( $t_db_type ) {
-		case 'mssqlnative':
-		case 'odbc_mssql':
-			return addslashes( $p_string );
-		case 'mysqli':
-			$t_escaped = $g_db->qstr( $p_string, false );
-			return mb_substr( $t_escaped, 1, mb_strlen( $t_escaped ) - 2 );
-		case 'pgsql':
-			return pg_escape_string( $p_string );
-		case 'oci8':
-			return $p_string;
-		default:
-			error_parameters( 'db_type', $t_db_type );
-			trigger_error( ERROR_CONFIG_OPT_INVALID, ERROR );
-	}
 }
 
 /**
@@ -1167,9 +1145,11 @@ function db_oracle_adapt_query_syntax( $p_query, array &$p_arr_parms = null ) {
 }
 
 /**
- * Replace 4-byte UTF-8 chars
+ * Replace 4-byte UTF-8 chars.
+ *
  * This is a workaround to avoid data getting truncated on MySQL databases
- * using native utf8 encoding, which only supports 3 bytes chars (see #20431)
+ * using native utf8 encoding, which only supports 3 bytes chars (see #20431).
+ *
  * @param string $p_string
  * @return string
  */
@@ -1183,7 +1163,7 @@ function db_mysql_fix_utf8( $p_string ) {
 		# replace with U+FFFD to avoid potential Unicode XSS attacks,
 		# see http://unicode.org/reports/tr36/#Deletion_of_Noncharacters
 		"\xEF\xBF\xBD",
-		$p_string
+		(string)$p_string
 	);
 }
 
