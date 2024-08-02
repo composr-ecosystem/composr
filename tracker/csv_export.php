@@ -47,12 +47,7 @@ require_api( 'print_api.php' );
 
 auth_ensure_user_authenticated();
 
-// Composr - stop server slow down
-$t_filter = filter_get_bug_rows_filter();
-$t_filter_query = new BugFilterQuery($t_filter, array('query_type' => BugFilterQuery::QUERY_TYPE_LIST));
-if( $t_filter_query->get_bug_count() > 100 ) {
-	trigger_error( 'Too many bugs to process for this operation - select fewer than 100', ERROR );
-}
+access_ensure_project_level( config_get( 'export_issues_threshold' ) );
 
 helper_begin_long_process();
 

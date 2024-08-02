@@ -466,14 +466,14 @@ function mc_project_version_add( $p_username, $p_password, stdClass $p_version )
 			'description' => $p_version['description'],
 			'released' => $p_version['released'],
 			'obsolete' => isset( $p_version['obsolete'] ) ? $p_version['obsolete'] : false,
-			'timestamp' => $p_version['date_order'],
+			'timestamp' => $p_version['date_order']
 		)
 	);
 
 	$t_command = new VersionAddCommand( $t_data );
 	$t_result = $t_command->execute();
 
-	return $t_result['id'];
+	return $t_result['version']['id'];
 }
 
 /**
@@ -486,8 +486,6 @@ function mc_project_version_add( $p_username, $p_password, stdClass $p_version )
  * @return boolean returns true or false depending on the success of the update action
  */
 function mc_project_version_update( $p_username, $p_password, $p_version_id, stdClass $p_version ) {
-	global $g_project_override;
-
 	$t_user_id = mci_check_login( $p_username, $p_password );
 
 	if( $t_user_id === false ) {
@@ -505,11 +503,10 @@ function mc_project_version_update( $p_username, $p_password, $p_version_id, std
 	$p_version = ApiObjectFactory::objectToArray( $p_version );
 
 	$t_project_id = $p_version['project_id'];
-	$g_project_override = $t_project_id;
 	$t_name = $p_version['name'];
 	$t_released = $p_version['released'];
 	$t_description = $p_version['description'];
-	$t_date_order = isset( $p_version['date_order'] ) ? strtotime( $p_version['date_order'] ) : null;
+	$t_date_order = is_blank( $p_version['date_order'] ) ? null : $p_version['date_order'];
 	$t_obsolete = isset( $p_version['obsolete'] ) ? $p_version['obsolete'] : false;
 
 	if( is_blank( $t_project_id ) ) {
@@ -524,36 +521,23 @@ function mc_project_version_update( $p_username, $p_password, $p_version_id, std
 		return mci_fault_access_denied( $t_user_id );
 	}
 
-	if( !mci_has_access( config_get( 'manage_project_threshold' ), $t_user_id, $t_project_id ) ) {
-		return mci_fault_access_denied( $t_user_id );
-	}
+	$t_data = array(
+		'query' => array(
+			'project_id' => $t_project_id,
+			'version_id' => $p_version_id
+		),
+		'payload' => array(
+			'name' => $t_name,
+			'description' => $t_description,
+			'released' => $t_released,
+			'obsolete' => $t_obsolete,
+			'timestamp' => $t_date_order
+		)
+	);
 
-	if( is_blank( $t_name ) ) {
-		return ApiObjectFactory::faultBadRequest( 'Mandatory field "name" was missing' );
-	}
+	$t_command = new VersionUpdateCommand( $t_data );
+	$t_command->execute();
 
-	# check for duplicates
-	$t_old_version_name = version_get_field( $p_version_id, 'version' );
-	if( ( strtolower( $t_old_version_name ) != strtolower( $t_name ) ) && !version_is_unique( $t_name, $t_project_id ) ) {
-		return ApiObjectFactory::faultConflict( 'Version exists for project' );
-	}
-
-	if( $t_released === false ) {
-		$t_released = VERSION_FUTURE;
-	} else {
-		$t_released = VERSION_RELEASED;
-	}
-
-	$t_version_data = new VersionData();
-	$t_version_data->id = $p_version_id;
-	$t_version_data->project_id = $t_project_id;
-	$t_version_data->version = $t_name;
-	$t_version_data->description = $t_description;
-	$t_version_data->released = $t_released;
-	$t_version_data->date_order = $t_date_order;
-	$t_version_data->obsolete = $t_obsolete;
-
-	version_update( $t_version_data );
 	return true;
 }
 
@@ -566,8 +550,6 @@ function mc_project_version_update( $p_username, $p_password, $p_version_id, std
  * @return boolean returns true or false depending on the success of the delete action
  */
 function mc_project_version_delete( $p_username, $p_password, $p_version_id ) {
-	global $g_project_override;
-
 	$t_user_id = mci_check_login( $p_username, $p_password );
 
 	if( $t_user_id === false ) {
@@ -583,17 +565,21 @@ function mc_project_version_delete( $p_username, $p_password, $p_version_id ) {
 	}
 
 	$t_project_id = version_get_field( $p_version_id, 'project_id' );
-	$g_project_override = $t_project_id;
 
 	if( !mci_has_readwrite_access( $t_user_id, $t_project_id ) ) {
 		return mci_fault_access_denied( $t_user_id );
 	}
 
-	if( !mci_has_access( config_get( 'manage_project_threshold' ), $t_user_id, $t_project_id ) ) {
-		return mci_fault_access_denied( $t_user_id );
-	}
+	$t_data = array(
+		'query' => array(
+			'project_id' => $t_project_id,
+			'version_id' => $p_version_id
+		)
+	);
 
-	version_remove( $p_version_id );
+	$t_command = new VersionDeleteCommand( $t_data );
+	$t_command->execute();
+
 	return true;
 }
 
@@ -712,7 +698,7 @@ function mci_project_custom_fields_validate( $p_project_id, &$p_custom_fields ) 
 		    !custom_field_validate( $t_custom_field_id, $t_custom_field_values[$t_name] ) ) {
 			throw new ClientException(
 				"Invalid custom field '$t_name' value.",
-				ERROR_EMPTY_FIELD,
+				ERROR_CUSTOM_FIELD_INVALID_VALUE,
 				array( $t_name )
 			);
 		}
@@ -1063,58 +1049,44 @@ function mc_project_add( $p_username, $p_password, stdClass $p_project ) {
 
 	$p_project = ApiObjectFactory::objectToArray( $p_project );
 
-	if( !isset( $p_project['name'] ) ) {
-		return ApiObjectFactory::faultBadRequest( 'Required field "name" is missing' );
-	} else {
-		$t_name = $p_project['name'];
+	$t_project_data = array();
+
+	if( isset( $p_project['name'] ) ) {
+		$t_project_data['name'] = $p_project['name'];
 	}
 
 	if( isset( $p_project['status'] ) ) {
-		$t_status = $p_project['status'];
-	} else {
-		$t_status = array( 'name' => 'development' ); # development
+		$t_project_data['status'] = $p_project['status'];
 	}
 
 	if( isset( $p_project['view_state'] ) ) {
-		$t_view_state = $p_project['view_state'];
-	} else {
-		$t_view_state = array( 'id' => VS_PUBLIC );
+		$t_project_data['view_state'] = $p_project['view_state'];
 	}
 
 	if( isset( $p_project['enabled'] ) ) {
-		$t_enabled = $p_project['enabled'];
-	} else {
-		$t_enabled = true;
+		$t_project_data['enabled'] = $p_project['enabled'];
 	}
 
 	if( isset( $p_project['description'] ) ) {
-		$t_description = $p_project['description'];
-	} else {
-		$t_description = '';
+		$t_project_data['description'] = $p_project['description'];
 	}
 
 	if( isset( $p_project['file_path'] ) ) {
-		$t_file_path = $p_project['file_path'];
-	} else {
-		$t_file_path = '';
+		$t_project_data['file_path'] = $p_project['file_path'];
 	}
 
 	if( isset( $p_project['inherit_global'] ) ) {
-		$t_inherit_global = $p_project['inherit_global'];
-	} else {
-		$t_inherit_global = true;
+		$t_project_data['inherit_global'] = $p_project['inherit_global'];
 	}
 
-	# check to make sure project doesn't already exist
-	if( !project_is_name_unique( $t_name ) ) {
-		return ApiObjectFactory::faultConflict( 'Project name already exists' );
-	}
+	$t_data = array( 'payload' => $t_project_data );
 
-	$t_project_status = mci_get_project_status_id( $t_status );
-	$t_project_view_state = mci_get_project_view_state_id( $t_view_state );
+	$t_command = new ProjectAddCommand( $t_data );
+	$t_result = $t_command->execute();
+	$t_project_id = $t_result['id'];
 
 	# project_create returns the new project's id, spit that out to web service caller
-	return project_create( $t_name, $t_description, $t_project_status, $t_project_view_state, $t_file_path, $t_enabled, $t_inherit_global );
+	return $t_project_id;
 }
 
 /**
@@ -1127,78 +1099,52 @@ function mc_project_add( $p_username, $p_password, stdClass $p_project ) {
  * @return boolean returns true or false depending on the success of the update action
  */
 function mc_project_update( $p_username, $p_password, $p_project_id, stdClass $p_project ) {
-	global $g_project_override;
-
 	$t_user_id = mci_check_login( $p_username, $p_password );
 	if( $t_user_id === false ) {
 		return mci_fault_access_denied();
 	}
 
-	if( !mci_has_administrator_access( $t_user_id, $p_project_id ) ) {
-		return mci_fault_access_denied( $t_user_id );
-	}
-
-	if( !project_exists( $p_project_id ) ) {
-		return ApiObjectFactory::faultNotFound( 'Project \'' . $p_project_id . '\' does not exist.' );
-	}
-
-	$g_project_override = $p_project_id;
-
 	$p_project = ApiObjectFactory::objectToArray( $p_project );
 
-	if( !isset( $p_project['name'] ) ) {
-		return ApiObjectFactory::faultBadRequest( 'Missing required field \'name\'.' );
+	$t_project_data = array();
+
+	if( isset( $p_project['name'] ) ) {
+		$t_project_data['name'] = $p_project['name'];
 	}
 
-	$t_name = $p_project['name'];
-
-	# check to make sure project doesn't already exist
-	if( $t_name != project_get_name( $p_project_id ) ) {
-		if( !project_is_name_unique( $t_name ) ) {
-			return ApiObjectFactory::faultConflict( 'Project name conflict' );
-		}
+	if( isset( $p_project['description'] ) ) {
+		$t_project_data['description'] = $p_project['description'];
 	}
 
-	if( !isset( $p_project['description'] ) ) {
-		$t_description = project_get_field( $p_project_id, 'description' );
-	} else {
-		$t_description = $p_project['description'];
+	if( isset( $p_project['status'] ) ) {
+		$t_project_data['status'] = $p_project['status'];
 	}
 
-	if( !isset( $p_project['status'] ) ) {
-		$t_status = project_get_field( $p_project_id, 'status' );
-	} else {
-		$t_status = $p_project['status'];
+	if( isset( $p_project['view_state'] ) ) {
+		$t_project_data['view_state'] = $p_project['view_state'];
 	}
 
-	if( !isset( $p_project['view_state'] ) ) {
-		$t_view_state = project_get_field( $p_project_id, 'view_state' );
-	} else {
-		$t_view_state = $p_project['view_state'];
+	if( isset( $p_project['file_path'] ) ) {
+		$t_project_data['file_path'] = $p_project['file_path'];
 	}
 
-	if( !isset( $p_project['file_path'] ) ) {
-		$t_file_path = project_get_field( $p_project_id, 'file_path' );
-	} else {
-		$t_file_path = $p_project['file_path'];
+	if( isset( $p_project['enabled'] ) ) {
+		$t_project_data['enabled'] = $p_project['enabled'];
 	}
 
-	if( !isset( $p_project['enabled'] ) ) {
-		$t_enabled = project_get_field( $p_project_id, 'enabled' );
-	} else {
-		$t_enabled = $p_project['enabled'];
+	if( isset( $p_project['inherit_global'] ) ) {
+		$t_project_data['inherit_global'] = $p_project['inherit_global'];
 	}
 
-	if( !isset( $p_project['inherit_global'] ) ) {
-		$t_inherit_global = project_get_field( $p_project_id, 'inherit_global' );
-	} else {
-		$t_inherit_global = $p_project['inherit_global'];
-	}
+	$t_data = array(
+		'query' => array(
+			'id' => $p_project_id,
+		),
+		'payload' => $t_project_data,
+	);
 
-	$t_project_status = mci_get_project_status_id( $t_status );
-	$t_project_view_state = mci_get_project_view_state_id( $t_view_state );
-
-	project_update( $p_project_id, $t_name, $t_description, $t_project_status, $t_project_view_state, $t_file_path, $t_enabled, $t_inherit_global );
+	$t_command = new ProjectUpdateCommand( $t_data );
+	$t_command->execute();
 
 	return true;
 }
@@ -1212,24 +1158,21 @@ function mc_project_update( $p_username, $p_password, $p_project_id, stdClass $p
  * @return boolean returns true or false depending on the success of the delete action
  */
 function mc_project_delete( $p_username, $p_password, $p_project_id ) {
-	global $g_project_override;
-
 	$t_user_id = mci_check_login( $p_username, $p_password );
 	if( $t_user_id === false ) {
 		return mci_fault_login_failed();
 	}
 
-	if( !project_exists( $p_project_id ) ) {
-		return ApiObjectFactory::faultNotFound( 'Project \'' . $p_project_id . '\' does not exist.' );
-	}
+	$t_data = array(
+		'query' => array(
+			'id' => (int)$p_project_id,
+		),
+	);
 
-	$g_project_override = $p_project_id;
+	$t_command = new ProjectDeleteCommand( $t_data );
+	$t_command->execute();
 
-	if( !mci_has_administrator_access( $t_user_id, $p_project_id ) ) {
-		return mci_fault_access_denied( $t_user_id );
-	}
-
-	return project_delete( $p_project_id );
+	return true;
 }
 
 /**
@@ -1295,29 +1238,19 @@ function mc_project_get_users( $p_username, $p_password, $p_project_id, $p_acces
 		return mci_fault_login_failed();
 	}
 
-	$g_project_override = $p_project_id;
+	$t_data = array(
+		'query' => array(
+			'id' => $p_project_id,
+			'page' => 1,
+			'page_size' => 0,
+			'access_level' => $p_access,
+			'include_access_levels' => 0
+		)
+	);
 
-	$t_users = project_get_all_user_rows( $p_project_id, $p_access ); # handles ALL_PROJECTS case
+	$t_command = new ProjectUsersGetCommand( $t_data );
+	$t_result = $t_command->execute();
+	$t_result = $t_result['users'];
 
-	$t_display = array();
-	$t_sort = array();
-
-	foreach( $t_users as $t_user ) {
-		$t_user_name = user_get_name_from_row( $t_user );
-		$t_display[] = string_attribute( $t_user_name );
-		$t_sort[] = user_get_name_for_sorting_from_row( $t_user );
-	}
-
-	array_multisort( $t_sort, SORT_ASC, SORT_STRING, $t_users, $t_display );
-
-	$t_result = array();
-	for( $i = 0;$i < count( $t_sort );$i++ ) {
-		$t_row = $t_users[$i];
-
-		# This is not very performant - But we have to assure that the data returned is exactly
-		# the same as the data that comes with an issue (test for equality - $t_row[] does not
-		# contain email fields).
-		$t_result[] = mci_account_get_array_by_id( $t_row['id'] );
-	}
 	return $t_result;
 }

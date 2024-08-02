@@ -133,14 +133,6 @@ asort( $t_boxes );
 $t_timeline_view_threshold_access = access_has_any_project_level( config_get( 'timeline_view_threshold' ), $t_project_ids_to_check, $t_current_user_id );
 $t_timeline_view_class = ( $t_timeline_view_threshold_access ) ? "col-md-7" : "col-md-6";
 ?>
-
-<!-- Composr - intro message -->
-<div style="margin: 1em; font-size: 1.2em">
-	<p>
-		<?php echo sprintf(lang_get('cms_my_view_welcome_message'), $cms_sc_product_name, $cms_sc_business_name_possesive, $cms_sc_business_name, $cms_sc_report_guidance_url);?>
-	</p>
-</div>
-
 <div class="col-xs-12 <?php echo $t_timeline_view_class ?>">
 
 <?php

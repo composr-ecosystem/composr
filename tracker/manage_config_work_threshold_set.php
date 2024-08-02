@@ -51,12 +51,6 @@ form_security_validate( 'manage_config_work_threshold_set' );
 
 auth_reauthenticate();
 
-$t_redirect_url = 'manage_config_work_threshold_page.php';
-
-layout_page_header( lang_get( 'manage_threshold_config' ), $t_redirect_url );
-
-layout_page_begin();
-
 $g_access = current_user_get_access_level();
 $g_project = helper_get_current_project();
 
@@ -190,6 +184,9 @@ set_capability_row( 'update_readonly_bug_threshold' );
 set_capability_row( 'update_bug_status_threshold' );
 set_capability_row( 'set_view_status_threshold' );
 set_capability_row( 'change_view_status_threshold' );
+set_capability_row( 'bug_revision_view_threshold' );
+set_capability_row( 'bug_revision_drop_threshold' );
+set_capability_row( 'set_bug_sticky_threshold' );
 set_capability_row( 'show_monitor_list_threshold' );
 set_capability_row( 'monitor_add_others_bug_threshold' );
 set_capability_row( 'monitor_delete_others_bug_threshold' );
@@ -201,6 +198,8 @@ if( capability_exists( 'limit_reporters' ) ) {
 if( capability_exists( 'limit_view_unless_threshold' ) ) {
 	set_capability_row( 'limit_view_unless_threshold' );
 }
+set_capability_row( 'print_reports_threshold' );
+set_capability_row( 'export_issues_threshold' );
 
 # Notes
 set_capability_row( 'add_bugnote_threshold' );
@@ -221,6 +220,19 @@ set_capability_row( 'tag_create_threshold' );
 set_capability_row( 'tag_edit_threshold' );
 set_capability_row( 'tag_edit_own_threshold' );
 
+# Attachments
+if( config_get( 'allow_file_upload' ) == ON ) {
+	set_capability_row( 'view_attachments_threshold' );
+	set_capability_row( 'download_attachments_threshold' );
+	set_capability_row( 'delete_attachments_threshold' );
+	set_capability_row( 'upload_bug_file_threshold' );
+}
+
+# Filters
+set_capability_row( 'stored_query_create_threshold' );
+set_capability_row( 'stored_query_create_shared_threshold' );
+set_capability_row( 'stored_query_use_threshold' );
+
 # Others
 set_capability_row( 'view_changelog_threshold' );
 set_capability_row( 'roadmap_view_threshold' );
@@ -232,6 +244,4 @@ set_capability_row( 'reminder_receive_threshold' );
 
 form_security_purge( 'manage_config_work_threshold_set' );
 
-html_operation_successful( $t_redirect_url );
-
-layout_page_end();
+print_header_redirect( 'manage_config_work_threshold_page.php' );

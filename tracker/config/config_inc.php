@@ -100,7 +100,7 @@ $cms_sc_custom_profile_field = 'cms_support_credits';
 $cms_sponsorship_locked_until = mktime(0, 0, 0, 7, 1, 2016); // Useful to deal with work back-logs, as unscheduled work can be a major problem sometimes (as much as sponsorship is valued and important)
 
 // Composr User integration settings
-$g_allow_signup = ON;
+$g_allow_signup = OFF; // Signup is through the Composr site
 $g_allow_anonymous_login = ON;
 $g_anonymous_account = 'Guest';
 $g_reauthentication = OFF;
@@ -229,7 +229,7 @@ $g_bug_update_page_fields = array(
 	//'target_version',
 	'view_state',
 );
-$g_severity_enum_string = '10:Feature-suggestion,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
+$g_severity_enum_string = '10:Feature-request,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
 
 // Integrate to Composr error log
 $g_log_destination = 'file:' . dirname(dirname(__DIR__)) . '/data_custom/errorlog.php';

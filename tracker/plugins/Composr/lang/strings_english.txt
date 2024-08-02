@@ -1,0 +1,10 @@
+<?php
+# plugin-specific
+$s_plugin_Composr_search_commits = 'Search Commits';
+
+# bug_change_status_page.php
+$s_non-assigned_bug_title = 'Not Assigned';
+$s_non-assigned_bug_button = 'Assign Issue';
+
+# manage_proj_edit_page.php
+$s_private = 'private (for use for security issues or if your issue strictly requires disclosing private information; <strong>if you submit as a guest, you will not be able to see your issue after submission</strong>)';

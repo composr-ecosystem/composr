@@ -39,14 +39,31 @@ function api_token_can_create( $p_user_id = null ) {
 }
 
 /**
+ * Get token row given its id.
+ * 
+ * @param integer $p_token_id The id of the token
+ * @return array|false The token row or false if not found.
+ */
+function api_token_get( $p_token_id ) {
+	db_param_push();
+
+	$t_query = 'SELECT * FROM {api_token} WHERE id=' . db_param();
+	$t_result = db_query( $t_query, array( $p_token_id ) );
+	$t_row = db_fetch_array( $t_result );
+
+	return $t_row;
+}
+
+/**
  * Create an API token
  *
  * @param string $p_token_name The name (description) identifying what the token is going to be used for.
  * @param integer $p_user_id The user id.
- * @return string The plain token.
+ * @param bool $p_return_id if true, returns an associate array with id and token.
+ * @return string|array The plain token or array of id and token.
  * @access public
  */
-function api_token_create( $p_token_name, $p_user_id ) {
+function api_token_create( $p_token_name, $p_user_id, $p_return_id = false ) {
 	if( is_blank( $p_token_name ) ) {
 		error_parameters( lang_get( 'api_token_name' ) );
 		trigger_error( ERROR_EMPTY_FIELD, ERROR );
@@ -69,6 +86,11 @@ function api_token_create( $p_token_name, $p_user_id ) {
 					( user_id, name, hash, date_created )
 					VALUES ( ' . db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ' )';
 	db_query( $t_query, array( $p_user_id, (string)$t_token_name, $t_hash, $t_date_created ) );
+
+	if( $p_return_id ) {
+		$t_id = db_insert_id( db_get_table( 'api_token' ) );
+		return array( 'id' => $t_id, 'token' => $t_plain_token );
+	}
 
 	return $t_plain_token;
 }
@@ -242,3 +264,15 @@ function api_token_revoke( $p_api_token_id, $p_user_id ) {
 	db_query( $t_query, array( $p_api_token_id, $p_user_id ) );
 }
 
+/**
+ * Revoke all api tokens for the specified user.
+ *
+ * @param integer $p_user_id The user id.
+ * @return void
+ * @access public
+ */
+function api_token_revoke_all( $p_user_id ) {
+	db_param_push();
+	$t_query = 'DELETE FROM {api_token} WHERE user_id = ' . db_param();
+	db_query( $t_query, array( $p_user_id ) );
+}

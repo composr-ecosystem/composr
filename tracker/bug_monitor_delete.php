@@ -47,7 +47,7 @@ require_api( 'helper_api.php' );
 require_api( 'print_api.php' );
 require_api( 'user_api.php' );
 
-//form_security_validate( 'bug_monitor_delete' );  Composr - disabled so direct linking works
+form_security_validate( 'bug_monitor_delete' );
 
 $f_bug_id = gpc_get_int( 'bug_id' );
 $t_bug = bug_get( $f_bug_id, true );
@@ -84,13 +84,4 @@ bug_unmonitor( $f_bug_id, $t_user_id );
 
 form_security_purge( 'bug_monitor_delete' );
 
-// Composr - show message relating to vote (monitor = vote)
-$p_redirect_to='view.php?id=' . strval($f_bug_id);
-layout_page_header_begin( lang_get('cms_title_vote_removed') );
-layout_page_header_end();
-layout_page_begin( 'bug_monitor_add.php' );
-echo '<br /><div class="center">';
-echo lang_get('cms_vote_removed').'<br />';
-print_small_button( $p_redirect_to, lang_get('cms_sc_view_details') );
-echo '</div>';
-layout_page_end();
+print_header_redirect_view( $f_bug_id );

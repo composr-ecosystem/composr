@@ -53,7 +53,7 @@ class ProjectHierarchyDeleteCommand extends Command {
 	 * Validate the data.
 	 */
 	function validate() {
-		if ( config_get( 'subprojects_enabled' ) == OFF ) {
+		if ( config_get_global( 'subprojects_enabled' ) == OFF ) {
 			throw new ClientException(
 				'Project hierarchy (subprojects) is disabled',
 				ERROR_PROJECT_HIERARCHY_DISABLED );
@@ -94,7 +94,7 @@ class ProjectHierarchyDeleteCommand extends Command {
 	/**
 	 * Process the command.
 	 *
-	 * @returns array Command response
+	 * @return array Command response
 	 */
 	protected function process() {
 		if( $this->project_id != helper_get_current_project() ) {

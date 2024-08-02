@@ -46,8 +46,8 @@ require_api( 'logging_api.php' );
  * The internal processing steps for query string are:
  * 1) $query_string: stores the user input string, containing parameter tokens for all
  *   supported formats:
- *     - ":{string}" For labeled parameters. Binded values are stored in $query_bind_array
- *     - "${int}" For anonymous parameters. Binded values are stored in $query_autobind_array
+ *     - ":{string}" For labeled parameters. Bound values are stored in $query_bind_array
+ *     - "${int}" For anonymous parameters. Bound values are stored in $query_autobind_array
  *     - "${string}{int}" For special constructs, eg: $in0 for late binding IN clauses
  * 2) $expanded_query_string: stores the query string after expansion of special constructs
  *   into standard "${int}" parameters
@@ -241,6 +241,12 @@ class DbQuery {
 	 * @return IteratorAggregate|boolean ADOdb result set or false if the query failed.
 	 */
 	public function execute( array $p_bind_array = null, $p_limit = null, $p_offset = null ) {
+		# For backwards compatibility with legacy code still relying on DB API,
+		# we need to save the parameters count before binding otherwise it will
+		# be reset after query execution, which will cause issues on RDBMS with
+		# numbered params (e.g. PostgreSQL).
+		db_param_push();
+
 		# bind values if provided
 		if( null !== $p_bind_array ) {
 			$this->bind_values( $p_bind_array );
@@ -251,7 +257,9 @@ class DbQuery {
 		$this->process_bind_params();
 		$this->process_sql_syntax();
 
-		return $this->db_execute( $p_limit, $p_offset );
+		$t_result = $this->db_execute($p_limit, $p_offset);
+		db_param_pop();
+		return $t_result;
 	}
 
 	/**
@@ -544,7 +552,7 @@ class DbQuery {
 	 */
 	public function sql_in( $p_alias, $p_label_or_values ) {
 		if( is_array( $p_label_or_values ) ) {
-			if( count( $p_label_or_values ) > self::$oracle_in_limit ) {
+			if( db_is_oracle() && count( $p_label_or_values ) > self::$oracle_in_limit ) {
 				$t_sql = $this->helper_in_oracle_fix( $p_alias, $p_label_or_values );
 			} elseif( count( $p_label_or_values ) == 1 ) {
 				$t_sql = $p_alias . ' = ' . $this->param( reset( $p_label_or_values ) );
@@ -849,7 +857,7 @@ class DbQuery {
 			$this->fetch();
 		}
 		if( is_numeric( $p_index_or_name ) ) {
-			if( count( $this->current_row ) > $p_index_or_name ) {
+			if( $this->current_row && count( $this->current_row ) > $p_index_or_name ) {
 				# get the element at that numerical position
 				$t_keys = array_keys( $this->current_row );
 				$t_value = $this->current_row[$t_keys[$p_index_or_name]];
