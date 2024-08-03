@@ -17,7 +17,7 @@
 /**
  * User API
  *
- * @package CoreAPI
+ * @package    cms_homesite_tracker
  * @subpackage UserAPI
  * @copyright Copyright 2000 - 2002  Kenzaburo Ito - kenito@300baud.org
  * @copyright Copyright 2002  MantisBT Team - mantisbt-dev@lists.sourceforge.net
