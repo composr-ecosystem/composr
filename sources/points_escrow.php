@@ -171,7 +171,7 @@ function escrow_get_logs(int $id) : object
             $date,
             do_lang_tempcode($myrow['log_type']),
             ($myrow['member_id'] !== null) ? $name : '',
-            generate_truncation($reason, 'left', 200, true, true)
+            protect_from_escaping(generate_truncation($reason, 'left', 200, true, true))
         ];
 
         $out->attach(results_entry($results_entry, true));
@@ -211,8 +211,8 @@ function escrow_points(int $sending_member, ?int $receiving_member, int $amount,
 
     require_code('points2');
 
-    // Actually debit the points into escrow (use null for gift points so we prioritise escrowing gift points first, when applicable)
-    $escrow_id = points_debit_member($sending_member, do_lang('ESCROW_REASON', $username, $reason), $amount, null, 0, $send_notifications, 0, 'points_escrow', 'add');
+    // Actually debit the points into escrow (do not allow using gift points as escrows since escrows are for transactions, not gifts)
+    $escrow_id = points_debit_member($sending_member, do_lang('ESCROW_REASON', $username, $reason), $amount, 0, 0, $send_notifications, 0, 'points_escrow', 'add');
     if ($escrow_id === null) {
         return null;
     }
@@ -385,7 +385,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     $username = $GLOBALS['FORUM_DRIVER']->get_username($sending_member, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
 
     // Update the escrow status
-    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_COMPLETED, 'updated_date_and_time' => time()], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_COMPLETED, 'update_date_and_time' => time()], ['id' => $id], '', 1);
 
     // Credit the points to the recipient in a new transaction
     $_id = points_credit_member($receiving_member, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, null, 0, 'points_escrow', 'complete', strval($id));
@@ -773,4 +773,57 @@ function escrow_update_receiving_member(int $id, int $receiving_member)
     $GLOBALS['SITE_DB']->query_update('escrow', ['update_date_and_time' => time(), 'receiving_member' => $receiving_member], ['id' => $id], '', 1);
 
     escrow_log_it('LOG_ESCROW_UPDATED_RECEIVING_MEMBER', $id, $receiving_member);
+}
+
+/**
+ * Cancel all escrows associated with the given content type and ID.
+ *
+ * @param  ID_TEXT $content_type The content type to search
+ * @param  ID_TEXT $content_id The content ID to search
+ * @param  LONG_TEXT $reason The reason for cencelling these escrows
+ * @return array Array of AUTO_LINK escrow IDs cancelled mapped to their ?AUTO_LINK point ledger
+ */
+function cancel_all_escrows_by_content(string $content_type, string $content_id, string $reason) : array
+{
+    if (($content_type == '') || ($content_id == '')) { // These cannot be blank
+        warn_exit(do_lang('INTERNAL_ERROR'));
+    }
+
+    $ret = [];
+
+    $to_cancel = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['content_type' => $content_type, 'content_id' => $content_id], ' AND status>=2');
+    foreach ($to_cancel as $row) {
+        $ret[$row['id']] = cancel_escrow($row['id'], get_member(), $reason, $row);
+    }
+
+    return $ret;
+}
+
+/**
+ * Complete all escrows by a given content type and ID.
+ * This bypasses the satisfy system. It will only complete escrows in the pending state.
+ *
+ * @param  MEMBER $receiving_member The member receiving the points for escrows without a receiving member set
+ * @param  ID_TEXT $content_type The associated content type to complete
+ * @param  ID_TEXT $content_id The associated content ID to complete
+ * @return array Map of escrow IDs to the output of _complete_escrow()
+ */
+function complete_all_escrows_by_content(int $receiving_member, string $content_type, string $content_id) : array
+{
+    if (($content_type == '') || ($content_id == '')) { // These cannot be blank
+        warn_exit(do_lang('INTERNAL_ERROR'));
+    }
+
+    $ret = [];
+
+    // Set all associated escrows without a receiving member to the specified one
+    $GLOBALS['SITE_DB']->query_update('escrow', ['receiving_member' => $receiving_member], ['receiving_member' => null, 'content_type' => $content_type, 'content_id' => $content_id]);
+
+    // Satisfy all associated escrows, but only the pending ones
+    $to_satisfy = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['content_type' => $content_type, 'content_id' => $content_id, 'status' => ESCROW_STATUS_PENDING]);
+    foreach ($to_satisfy as $row) {
+        $ret[$row['id']] = array_merge(_complete_escrow($row), ['amount' => $row['amount']]);
+    }
+
+    return $ret;
 }

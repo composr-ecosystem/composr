@@ -290,7 +290,9 @@ function sponsorship_get_currency() {
  */
 function sponsorship_format_amount( $p_amount ) {
 	$t_currency = sponsorship_get_currency();
-	return $t_currency . ' ' . $p_amount;
+    // Composr - Do the reverse for points
+	// return $t_currency . ' ' . $p_amount;
+    return $p_amount . ' ' . $t_currency;
 }
 
 /**
@@ -408,9 +410,13 @@ function sponsorship_set( SponsorshipData $p_sponsorship ) {
  * @return void
  */
 function sponsorship_delete_all( $p_bug_id ) {
+    event_signal('EVENT_COMPOSR_SPONSORSHIP_DELETE_ALL', [$p_bug_id]); // Composr
+
+    /*
 	db_param_push();
 	$t_query = 'DELETE FROM {sponsorship} WHERE bug_id=' . db_param();
 	db_query( $t_query, array( (int)$p_bug_id ) );
+    */
 
 	sponsorship_clear_cache( );
 }
@@ -454,6 +460,8 @@ function sponsorship_delete( $p_sponsorship_id ) {
  * @return boolean
  */
 function sponsorship_update_paid( $p_sponsorship_id, $p_paid ) {
+    return true; // Composr - do nothing; we handle this in escrows
+
 	$t_sponsorship = sponsorship_get( $p_sponsorship_id );
 
 	db_param_push();
@@ -472,6 +480,8 @@ function sponsorship_update_paid( $p_sponsorship_id, $p_paid ) {
  * @return boolean
  */
 function sponsorship_update_date( $p_sponsorship_id ) {
+    return true; // Composr - do nothing; we handle this in escrows
+
 	db_param_push();
 	$t_query = 'UPDATE {sponsorship} SET last_updated=' . db_param() . ' WHERE id=' . db_param();
 	db_query( $t_query, array( db_now(), (int)$p_sponsorship_id ) );

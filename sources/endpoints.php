@@ -150,14 +150,29 @@ function endpoint_script()
                 }
             }
 
-            // Try session authorization (assumes keep_session was passed in the URL request)
-            if ((!$authorized) && in_array('session', $info['authorization'])) {
-                require_code('users');
-                $member = get_member();
-                if (is_guest($member)) { // Nope, do not allow guests
-                    $member = null;
-                } else {
-                    $authorized = true;
+            // Try session authorization via the keep_session parameter (note we do not validate IP address; these endpoints might be called internally)
+            if ((!$authorized) && in_array('keep_session', $info['authorization'])) {
+                global $SESSION_CACHE;
+                $session = get_param_string('keep_session');
+                $member_row = null;
+                if (
+                    ($session != '') &&
+                    ($SESSION_CACHE !== null) &&
+                    (array_key_exists($session, $SESSION_CACHE)) &&
+                    ($SESSION_CACHE[$session] !== null) &&
+                    (array_key_exists('member_id', $SESSION_CACHE[$session])) &&
+                    ($SESSION_CACHE[$session]['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))
+                ) {
+                    $member_row = $SESSION_CACHE[$session];
+                }
+
+                if ($member_row !== null) { // We have a matching session
+                    $member = $member_row['member_id'];
+                    if (is_guest($member)) { // Nope, guests are not considered authorized!
+                        $member = null;
+                    } else {
+                        $authorized = true;
+                    }
                 }
             }
 

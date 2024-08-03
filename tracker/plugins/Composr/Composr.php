@@ -91,6 +91,7 @@ class ComposrPlugin extends MantisPlugin {
             'EVENT_COMPOSR_SPONSORSHIP_GET_ALL_IDS' => EVENT_TYPE_CHAIN,
             'EVENT_COMPOSR_SPONSORSHIP_SET' => EVENT_TYPE_FIRST,
             'EVENT_COMPOSR_SPONSORSHIP_DELETE' => EVENT_TYPE_EXECUTE,
+            'EVENT_COMPOSR_SPONSORSHIP_DELETE_ALL' => EVENT_TYPE_EXECUTE,
         );
     }
 
@@ -104,6 +105,7 @@ class ComposrPlugin extends MantisPlugin {
             'EVENT_CORE_READY' => 'event_core_ready',
             'EVENT_MENU_MAIN' => 'event_menu_main',
             'EVENT_BUGNOTE_ADD_FORM' => 'event_bugnote_add_form',
+            'EVENT_UPDATE_BUG' => 'event_update_bug',
 
             'EVENT_COMPOSR_USER_CACHE_ARRAY_ROWS' => 'event_composr_user_cache_array_rows',
             'EVENT_COMPOSR_USER_GET_ID_BY_NAME' => 'event_composr_user_get_id_by_name',
@@ -112,6 +114,7 @@ class ComposrPlugin extends MantisPlugin {
             'EVENT_COMPOSR_SPONSORSHIP_GET_ALL_IDS' => 'event_composr_sponsorship_get_all_ids',
             'EVENT_COMPOSR_SPONSORSHIP_SET' => 'event_composr_sponsorship_set',
             'EVENT_COMPOSR_SPONSORSHIP_DELETE' => 'event_composr_sponsorship_delete',
+            'EVENT_COMPOSR_SPONSORSHIP_DELETE_ALL' => 'event_composr_sponsorship_delete_all',
         );
     }
 
@@ -268,7 +271,7 @@ class ComposrPlugin extends MantisPlugin {
         require_api('database_api.php');
         require_api('user_api.php');
 
-        global $g_script_login_cookie, $g_cache_anonymous_user_cookie_string, $g_db;
+        global $g_script_login_cookie, $g_cache_anonymous_user_cookie_string, $g_db, $g_window_title;
         if ((isset($_COOKIE[$this->cms_sc_session_cookie_name])) && (isset($g_db)))
         {
             $query = 'SELECT member_id FROM ' . $this->cms_sc_db_prefix . 'sessions WHERE the_session=\'' . db_prepare_binary_string($_COOKIE[$this->cms_sc_session_cookie_name]) . '\'';
@@ -289,6 +292,10 @@ class ComposrPlugin extends MantisPlugin {
 
                     $g_cache_anonymous_user_cookie_string = $t_cookie;
                     current_user_set((int)$t_row['id']);
+
+                    // Update the session
+                    $query = 'UPDATE ' . $this->cms_sc_db_prefix . 'sessions SET last_activity_time=' . db_param() . ', the_zone=' . db_param() . ', the_page=' . db_param() . ', the_type=' . db_param() . ', the_id=' . db_param() . ', the_title=' . db_param() . ' WHERE the_session=' . db_param();
+                    db_query($query, Array(time(), '', '', '', '', $g_window_title,  $_COOKIE[$this->cms_sc_session_cookie_name]));
 
                     // This line ensures that the fetched cookie is used in auth_get_current_user_cookie()
                     $g_script_login_cookie = $t_cookie;
@@ -424,7 +431,7 @@ class ComposrPlugin extends MantisPlugin {
 
         db_param_push();
         $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND id=' . db_param();
-        $t_result = db_query($t_query, array('tracker_sponsorship', $c_sponsorship_id));
+        $t_result = db_query($t_query, array('tracker_issue', $c_sponsorship_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
             $g_cache_sponsorships[(int)$t_row['id']] = [
@@ -434,7 +441,7 @@ class ComposrPlugin extends MantisPlugin {
                 'amount' => (int)$t_row['amount'],
                 'logo' => '',
                 'url' => sprintf($this->cms_sc_escrow_view_url, strval($t_row['id'])),
-                'paid' => ($t_row['status'] == 1) ? (int)$t_row['amount'] : 0,
+                'paid' => ($t_row['status'] > 0) ? (int)$t_row['amount'] : 0,
                 'date_submitted' => $t_row['date_and_time'],
                 'last_updated' => $t_row['update_date_and_time'],
             ];
@@ -449,7 +456,7 @@ class ComposrPlugin extends MantisPlugin {
         // We use the escrow ID as the sponsorship ID.
         db_param_push();
         $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
-        $t_result = db_query($t_query, array('tracker_sponsorship', $p_bug_id, $c_user_id));
+        $t_result = db_query($t_query, array('tracker_issue', $p_bug_id, $c_user_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
             return (int)$t_row['id'];
@@ -468,7 +475,7 @@ class ComposrPlugin extends MantisPlugin {
 
         db_param_push();
         $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND content_id=' . db_param();
-        $t_result = db_query($t_query, array('tracker_sponsorship', $c_bug_id));
+        $t_result = db_query($t_query, array('tracker_issue', $c_bug_id));
         for ($i = 0; $i < db_num_rows($t_result); $i++) {
             $t_row = db_fetch_array($t_result);
             $t_sponsorship_ids[] = $t_row['id'];
@@ -479,7 +486,7 @@ class ComposrPlugin extends MantisPlugin {
                 'amount' => (int)$t_row['amount'],
                 'logo' => '',
                 'url' => sprintf($this->cms_sc_escrow_view_url, strval($t_row['id'])),
-                'paid' => ($t_row['status'] == 1) ? (int)$t_row['amount'] : 0,
+                'paid' => ($t_row['status'] > 0) ? (int)$t_row['amount'] : 0,
                 'date_submitted' => $t_row['date_and_time'],
                 'last_updated' => $t_row['update_date_and_time'],
             ];
@@ -529,7 +536,6 @@ class ComposrPlugin extends MantisPlugin {
     function event_composr_sponsorship_delete($event, $sponsorship_id, $bug_id)
     {
         // Intercept sponsorships and use Composr's points escrow instead; we have to use an external API call as this requires very complex processing
-        // TODO: Implement on endpoint and test
         require_api('sponsorship_api.php');
         require_api('url_api.php');
         require_api('error_api.php');
@@ -551,11 +557,132 @@ class ComposrPlugin extends MantisPlugin {
         }
 
         $data = @json_decode($response, true);
-        if ((!$data['success']) || (!isset($data['response_data']['id']))) {
+        if (!$data['success']) {
             if (isset($data['error_details'])) {
                 trigger_error($data['error_details'], ERROR );
             }
             trigger_error('Error deleting the sponsorship with ' . $this->cms_sc_site_name, ERROR );
+        }
+    }
+
+    function event_composr_sponsorship_delete_all($event, $bug_id)
+    {
+        // Intercept sponsorships and use Composr's points escrow instead; we have to use an external API call as this requires very complex processing
+        require_api('sponsorship_api.php');
+        require_api('url_api.php');
+        require_api('error_api.php');
+
+        $url = $this->cms_sc_endpoint_url . 'tracker_sponsorship/' . strval($bug_id) . '?';
+        $map = [
+            'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+            'type' => 'delete-all',
+            'reason' => 'The issue was deleted'
+        ];
+        foreach ($map as $key => $value) {
+            $url .= $key . '=' . urlencode($value) . '&';
+        }
+        $url = substr($url, 0, -1);
+
+        $response = url_get($url);
+        if ($response === null) {
+            trigger_error('Error communicating the deletion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
+        }
+
+        $data = @json_decode($response, true);
+        if (!$data['success']) {
+            if (isset($data['error_details'])) {
+                trigger_error($data['error_details'], ERROR );
+            }
+            trigger_error('Error deleting the sponsorships with ' . $this->cms_sc_site_name, ERROR );
+        }
+    }
+
+    function event_update_bug($event, $old_bug, $new_bug)
+    {
+        require_api('bug_api.php');
+        require_api('sponsorship_api.php');
+        require_api('url_api.php');
+        require_api('error_api.php');
+
+        if ($old_bug->status != $new_bug->status) { // Status changed, so process sponsorships
+            $url = $this->cms_sc_endpoint_url . 'tracker_sponsorship/' . strval($new_bug->id) . '?';
+
+            switch ($new_bug->status) {
+                case 80: // Resolved
+                    $map = [
+                        'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+                        'type' => 'complete-all',
+                        'recipient' => strval($new_bug->handler_id),
+                        'reporter' => strval($new_bug->reporter_id),
+                    ];
+                    foreach ($map as $key => $value) {
+                        $url .= $key . '=' . urlencode($value) . '&';
+                    }
+                    $url = substr($url, 0, -1);
+
+                    $response = url_get($url);
+                    if ($response === null) {
+                        trigger_error('Error communicating the completion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                    }
+
+                    $data = @json_decode($response, true);
+                    if (!$data['success']) {
+                        if (isset($data['error_details'])) {
+                            trigger_error($data['error_details'], ERROR );
+                        }
+                        trigger_error('Error completing the sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                    }
+
+                    break;
+                case 90: // Closed
+                    $map = [
+                        'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+                        'type' => 'delete-all',
+                        'reason' => 'The issue was closed'
+                    ];
+                    foreach ($map as $key => $value) {
+                        $url .= $key . '=' . urlencode($value) . '&';
+                    }
+                    $url = substr($url, 0, -1);
+
+                    $response = url_get($url);
+                    if ($response === null) {
+                        trigger_error('Error communicating the deletion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                    }
+
+                    $data = @json_decode($response, true);
+                    if (!$data['success']) {
+                        if (isset($data['error_details'])) {
+                            trigger_error($data['error_details'], ERROR );
+                        }
+                        trigger_error('Error deleting the sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                    }
+
+                    break;
+
+                default:
+                    $map = [
+                        'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+                        'type' => 'reopen-all',
+                    ];
+                    foreach ($map as $key => $value) {
+                        $url .= $key . '=' . urlencode($value) . '&';
+                    }
+                    $url = substr($url, 0, -1);
+
+                    $response = url_get($url);
+                    if ($response === null) {
+                        trigger_error('Error communicating the reversal of issue points with ' . $this->cms_sc_site_name, ERROR );
+                    }
+
+                    $data = @json_decode($response, true);
+                    if (!$data['success']) {
+                        if (isset($data['error_details'])) {
+                            trigger_error($data['error_details'], ERROR );
+                        }
+                        trigger_error('Error reversing issue points with ' . $this->cms_sc_site_name, ERROR );
+                    }
+            }
         }
     }
 

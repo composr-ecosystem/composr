@@ -96,8 +96,8 @@ $g_report_bug_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBOD
 
 // Sponsorship Settings
 $g_enable_sponsorship = ON;
-$g_sponsorship_currency = ''; // TODO: put in points once MantisBT supports having currency after the number
-$g_minimum_sponsorship_amount = 100;
+$g_sponsorship_currency = 'points';
+$g_minimum_sponsorship_amount = 25;
 
 // Simplify by removing unneeded complexity
 $g_default_bug_severity = FEATURE; // We primarily track features
@@ -221,32 +221,3 @@ if (function_exists('ocp_mark_as_escaped')) {
     );
     $g_show_detailed_errors = ON;
 }
-
-// software-specific
-$cms_sc_site_url = $SITE_INFO['base_url'];
-$cms_sc_site_name = 'composr.app';
-$cms_sc_profile_url = $cms_sc_site_url . '/members/view.htm';
-$cms_sc_commercial_support_url = $cms_sc_site_url . '/professional-support.htm';
-$cms_sc_report_guidance_url = $cms_sc_site_url . '/docs/tut-software-feedback.htm';
-$cms_sc_join_url = $cms_sc_site_url . '/join.htm';
-$cms_sc_lostpassword_url = $cms_sc_site_url . '/lost_password.htm';
-$cms_sc_member_view_url = $cms_sc_site_url . '/members/view/%1$d.htm'; // Set the user id as variable in the url ie %1$d
-$cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
-$cms_sc_home_url = 'https://composr.app';
-$cms_sc_product_name = 'Composr';
-$cms_sc_business_name = 'Composr';
-$cms_sc_business_name_possesive = 'Composr\'s';
-$cms_sc_credits_per_hour = 6;
-$cms_sc_price_per_credit = 5.5;
-$cms_sc_main_currency = 'GBP';
-$cms_sc_main_currency_symbol = '&pound';
-$cms_sc_alternate_currencies = array('USD', 'CAD', 'EUR');
-$cms_sc_custom_profile_field = 'cms_support_credits';
-$cms_sponsorship_locked_until = mktime(0, 0, 0, 7, 1, 2016); // Useful to deal with work back-logs, as unscheduled work can be a major problem sometimes (as much as sponsorship is valued and important)
-
-$cms_updater_groups = array();
-$cms_developer_groups = array(22);
-$cms_manager_groups = array();
-$cms_admin_groups = array(2, 3);
-$cms_guest_id = 1;
-$cms_extra_signin_sql = ' AND field_46 IN(\'\',\'Content Management System\')'; // TODO: Customise
