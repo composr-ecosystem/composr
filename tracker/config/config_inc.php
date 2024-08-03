@@ -96,7 +96,7 @@ $g_report_bug_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBOD
 
 // Sponsorship Settings
 $g_enable_sponsorship = ON;
-$g_sponsorship_currency = 'points';
+$g_sponsorship_currency = ''; // TODO: put in points once MantisBT supports having currency after the number
 $g_minimum_sponsorship_amount = 100;
 
 // Simplify by removing unneeded complexity

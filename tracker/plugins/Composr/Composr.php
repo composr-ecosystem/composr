@@ -38,9 +38,12 @@ class ComposrPlugin extends MantisPlugin {
     protected $cms_sc_invite_url = '';
     protected $cms_sc_member_view_url = '';
     protected $cms_sc_tracker_url = '';
+    protected $cms_sc_escrow_view_url = '';
+    protected $cms_sc_endpoint_url = '';
 
     protected $cms_sc_db_prefix = 'cms_';
     protected $cms_sc_session_cookie_name = 'cms_session';
+    protected $cms_file_base = __DIR__ . '/../../../';
 
     function register()
     {
@@ -57,9 +60,10 @@ class ComposrPlugin extends MantisPlugin {
         $this->url = 'https://composr.app';
 
         // Set up Composr-specific variables
-        require_once(__DIR__ . '/../../../_config.php');
+        require_once($this->cms_file_base . '_config.php');
         global $SITE_INFO;
         $this->cms_sc_site_url = $SITE_INFO['base_url'];
+        $this->cms_sc_endpoint_url = $this->cms_sc_site_url . '/data/endpoint.php/cms_homesite/';
         $this->cms_sc_profile_url = $this->cms_sc_site_url . '/members/view.htm';
         $this->cms_sc_report_guidance_url = $this->cms_sc_site_url . '/docs/tut-software-feedback.htm';
         $this->cms_sc_simple_report_url = $this->cms_sc_site_url . '/report-issue.htm';
@@ -69,6 +73,7 @@ class ComposrPlugin extends MantisPlugin {
         $this->cms_sc_invite_url = $this->cms_sc_site_url . '/recommend.htm';
         $this->cms_sc_member_view_url = $this->cms_sc_site_url . '/members/view/%1$d.htm'; // sprintf
         $this->cms_sc_tracker_url = $this->cms_sc_site_url . '/tracker/';
+        $this->cms_sc_escrow_view_url = $this->cms_sc_site_url . '/site/points.htm?type=view_escrow&id=%1$d'; // sprintf
         $this->cms_sc_db_prefix = $SITE_INFO['table_prefix'];
         $this->cms_sc_session_cookie_name = $SITE_INFO['session_cookie'];
     }
@@ -76,8 +81,16 @@ class ComposrPlugin extends MantisPlugin {
     function events()
     {
         return array(
+            // CAREFUL! Do not remove these signals from core/user_api.php
             'EVENT_COMPOSR_USER_CACHE_ARRAY_ROWS' => EVENT_TYPE_CHAIN,
             'EVENT_COMPOSR_USER_GET_ID_BY_NAME' => EVENT_TYPE_FIRST,
+
+            // CAREFUL! Do not remove these signals from core/sponsorship_api.php
+            'EVENT_COMPOSR_SPONSORSHIP_CACHE_ROW' => EVENT_TYPE_EXECUTE,
+            'EVENT_COMPOSR_SPONSORSHIP_GET_ID' => EVENT_TYPE_FIRST,
+            'EVENT_COMPOSR_SPONSORSHIP_GET_ALL_IDS' => EVENT_TYPE_CHAIN,
+            'EVENT_COMPOSR_SPONSORSHIP_SET' => EVENT_TYPE_FIRST,
+            'EVENT_COMPOSR_SPONSORSHIP_DELETE' => EVENT_TYPE_EXECUTE,
         );
     }
 
@@ -92,10 +105,13 @@ class ComposrPlugin extends MantisPlugin {
             'EVENT_MENU_MAIN' => 'event_menu_main',
             'EVENT_BUGNOTE_ADD_FORM' => 'event_bugnote_add_form',
 
-            // TODO: find a better way that does not involve having to edit original code.
-            // CAREFUL! Do not remove these signals from core/user_api.php
             'EVENT_COMPOSR_USER_CACHE_ARRAY_ROWS' => 'event_composr_user_cache_array_rows',
             'EVENT_COMPOSR_USER_GET_ID_BY_NAME' => 'event_composr_user_get_id_by_name',
+            'EVENT_COMPOSR_SPONSORSHIP_CACHE_ROW' => 'event_composr_sponsorship_cache_row',
+            'EVENT_COMPOSR_SPONSORSHIP_GET_ID' => 'event_composr_sponsorship_get_id',
+            'EVENT_COMPOSR_SPONSORSHIP_GET_ALL_IDS' => 'event_composr_sponsorship_get_all_ids',
+            'EVENT_COMPOSR_SPONSORSHIP_SET' => 'event_composr_sponsorship_set',
+            'EVENT_COMPOSR_SPONSORSHIP_DELETE' => 'event_composr_sponsorship_delete',
         );
     }
 
@@ -392,9 +408,158 @@ class ComposrPlugin extends MantisPlugin {
         return false; // If member not found, return false instead of null so MantisBT does not proceed finding the member.
     }
 
+    function event_composr_sponsorship_cache_row($event, $c_sponsorship_id)
+    {
+        // Intercept cache sponsorship rows because we want to use Composr's points escrow instead of MantisBT sponsorship table
+        require_api('sponsorship_api.php');
+
+        global $g_cache_sponsorships;
+
+        if( isset( $g_cache_sponsorships[$c_sponsorship_id] ) ) { // Don't need to do anything
+            return;
+        }
+
+        // Always initialize to false so it is forcefully returned by MantisBT, preventing a Mantis DB query
+        $g_cache_sponsorships[$c_sponsorship_id] = false;
+
+        db_param_push();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND id=' . db_param();
+        $t_result = db_query($t_query, array('tracker_sponsorship', $c_sponsorship_id));
+        $t_row = db_fetch_array($t_result);
+        if ($t_row) {
+            $g_cache_sponsorships[(int)$t_row['id']] = [
+                'id' => (int)$t_row['id'],
+                'bug_id' => (int)$t_row['content_id'],
+                'user_id' => (int)$t_row['sending_member'],
+                'amount' => (int)$t_row['amount'],
+                'logo' => '',
+                'url' => sprintf($this->cms_sc_escrow_view_url, strval($t_row['id'])),
+                'paid' => ($t_row['status'] == 1) ? (int)$t_row['amount'] : 0,
+                'date_submitted' => $t_row['date_and_time'],
+                'last_updated' => $t_row['update_date_and_time'],
+            ];
+        }
+    }
+
+    function event_composr_sponsorship_get_id($event, $p_bug_id, $c_user_id)
+    {
+        require_api('sponsorship_api.php');
+        require_api('database_api.php');
+
+        // We use the escrow ID as the sponsorship ID.
+        db_param_push();
+        $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
+        $t_result = db_query($t_query, array('tracker_sponsorship', $p_bug_id, $c_user_id));
+        $t_row = db_fetch_array($t_result);
+        if ($t_row) {
+            return (int)$t_row['id'];
+        }
+
+        return false; // If escrow not found, return false instead of null so MantisBT does not proceed in its own database.
+    }
+
+    function event_composr_sponsorship_get_all_ids($event, $t_sponsorship_ids, $c_bug_id)
+    {
+        // Intercept getting sponsorship IDs and use Composr's points escrow instead
+        require_api('sponsorship_api.php');
+        require_api('database_api.php');
+
+        global $g_cache_sponsorships;
+
+        db_param_push();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND content_id=' . db_param();
+        $t_result = db_query($t_query, array('tracker_sponsorship', $c_bug_id));
+        for ($i = 0; $i < db_num_rows($t_result); $i++) {
+            $t_row = db_fetch_array($t_result);
+            $t_sponsorship_ids[] = $t_row['id'];
+            $g_cache_sponsorships[(int)$t_row['id']] = [
+                'id' => (int)$t_row['id'],
+                'bug_id' => $c_bug_id,
+                'user_id' => (int)$t_row['sending_member'],
+                'amount' => (int)$t_row['amount'],
+                'logo' => '',
+                'url' => sprintf($this->cms_sc_escrow_view_url, strval($t_row['id'])),
+                'paid' => ($t_row['status'] == 1) ? (int)$t_row['amount'] : 0,
+                'date_submitted' => $t_row['date_and_time'],
+                'last_updated' => $t_row['update_date_and_time'],
+            ];
+        }
+
+        return $t_sponsorship_ids;
+    }
+
+    function event_composr_sponsorship_set($event, $p_sponsorship)
+    {
+        // Intercept sponsorships and use Composr's points escrow instead; we have to use an external API call as this requires very complex processing
+        require_api('sponsorship_api.php');
+        require_api('url_api.php');
+        require_api('error_api.php');
+
+        $url = $this->cms_sc_endpoint_url . 'tracker_sponsorship/' . strval($p_sponsorship->id) . '?';
+        $map = [
+            'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+            'type' => ($p_sponsorship->id == 0) ? 'add' : 'edit',
+            'bug_id' => strval($p_sponsorship->bug_id),
+            'user_id' => strval($p_sponsorship->user_id),
+            'amount' => strval($p_sponsorship->amount),
+        ];
+        foreach ($map as $key => $value) {
+            $url .= $key . '=' . urlencode($value) . '&';
+        }
+        $url = substr($url, 0, -1);
+
+        $response = url_get($url);
+        if ($response === null) {
+            trigger_error('Error communicating the sponsorship with ' . $this->cms_sc_site_name, ERROR );
+        }
+
+        $data = @json_decode($response, true);
+        if ((!$data['success']) || (!isset($data['response_data']['id']))) {
+            if (isset($data['error_details'])) {
+                trigger_error($data['error_details'], ERROR );
+            }
+            trigger_error('Error processing the sponsorship with ' . $this->cms_sc_site_name, ERROR );
+        }
+
+        // TODO: Still does not correctly update bug with total sponsorship after completed
+
+        return $data['response_data']['id'];
+    }
+
+    function event_composr_sponsorship_delete($event, $sponsorship_id, $bug_id)
+    {
+        // Intercept sponsorships and use Composr's points escrow instead; we have to use an external API call as this requires very complex processing
+        // TODO: Implement on endpoint and test
+        require_api('sponsorship_api.php');
+        require_api('url_api.php');
+        require_api('error_api.php');
+
+        $url = $this->cms_sc_endpoint_url . 'tracker_sponsorship/' . strval($sponsorship_id) . '?';
+        $map = [
+            'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+            'type' => 'delete',
+            'bug_id' => strval($bug_id),
+        ];
+        foreach ($map as $key => $value) {
+            $url .= $key . '=' . urlencode($value) . '&';
+        }
+        $url = substr($url, 0, -1);
+
+        $response = url_get($url);
+        if ($response === null) {
+            trigger_error('Error communicating the sponsorship with ' . $this->cms_sc_site_name, ERROR );
+        }
+
+        $data = @json_decode($response, true);
+        if ((!$data['success']) || (!isset($data['response_data']['id']))) {
+            if (isset($data['error_details'])) {
+                trigger_error($data['error_details'], ERROR );
+            }
+            trigger_error('Error deleting the sponsorship with ' . $this->cms_sc_site_name, ERROR );
+        }
+    }
+
     // TODO: antispam measure that is more effective than renaming bugnote_text (does not stop paid human spammers)
     // TODO: Prevent guests from editing guest issues
-    // TODO: hide user buttons on menu if guest (?)
-    // TODO: redirect manage_user_create_page.php to Composr's manage users
-    // TODO: disable roadmap
+    // TODO: Make bug_sponsorship_list_view_inc.php nicer; MantisBT has it all wonky and does not conform with other widget layouts
 }

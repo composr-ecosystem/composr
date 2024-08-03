@@ -150,6 +150,17 @@ function endpoint_script()
                 }
             }
 
+            // Try session authorization (assumes keep_session was passed in the URL request)
+            if ((!$authorized) && in_array('session', $info['authorization'])) {
+                require_code('users');
+                $member = get_member();
+                if (is_guest($member)) { // Nope, do not allow guests
+                    $member = null;
+                } else {
+                    $authorized = true;
+                }
+            }
+
             if (($authorized) && ($member !== null)) {
                 require_code('users_inactive_occasionals');
                 create_session($member);
@@ -189,7 +200,23 @@ function endpoint_script()
         if (is_file($_log_file)) {
             require_code('files');
             $log_message = loggable_date() . ' INTERNAL ERROR on endpoint ' . $rest_path . ' by IP address ' . get_ip_address() . "\n";
-            $log_message .= strip_html($e->getMessage()) . "\n";
+            $log_message .= strip_html($e->getMessage());
+            foreach ($e->getTrace() as $key => $trace) {
+                $log_message .= "\n\t" . strval($key + 1) . ')';
+                if (isset($trace['file'])) {
+                    $log_message .= ' File: ' . $trace['file'];
+                    if (isset($trace['line'])) {
+                        $log_message .= ' (line ' . $trace['line'] . ')';
+                    }
+                }
+                if (isset($trace['function'])) {
+                    $log_message .= "\n\t\t" . 'Function: ' . $trace['function'];
+                }
+                if (isset($trace['args'])) {
+                    $log_message .= "\n\t\t" . 'Args: ' . serialize($trace['args']);
+                }
+            }
+            $log_message .= "\n";
             $log_file = cms_fopen_text_write($_log_file, true, 'ab');
             fwrite($log_file, $log_message);
             flock($log_file, LOCK_UN);

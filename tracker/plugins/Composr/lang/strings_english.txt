@@ -51,3 +51,4 @@ $s_status_enum_string = '10:Not Assigned,50:Assigned,80:Resolved,90:Closed';
 $s_severity_enum_string = '10:Feature or Request,20:Trivial Bug,50:Minor Bug,60:Major Bug,95:Security Hole';
 $s_report_bug_link = 'Report Issue (or suggest feature)';
 $s_users_sponsoring_bug = 'Optionally sponsor this issue by escrowing points to it (will incentivise developers more to implement it)';
+$s_sponsorship_process_url = ''; // TODO
