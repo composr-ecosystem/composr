@@ -430,7 +430,7 @@ class ComposrPlugin extends MantisPlugin {
         $g_cache_sponsorships[$c_sponsorship_id] = false;
 
         db_param_push();
-        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND id=' . db_param();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>=2 AND content_type=' . db_param() . ' AND id=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $c_sponsorship_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
@@ -455,7 +455,7 @@ class ComposrPlugin extends MantisPlugin {
 
         // We use the escrow ID as the sponsorship ID.
         db_param_push();
-        $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
+        $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>=2 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $p_bug_id, $c_user_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
@@ -474,7 +474,7 @@ class ComposrPlugin extends MantisPlugin {
         global $g_cache_sponsorships;
 
         db_param_push();
-        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status!=0 AND content_type=' . db_param() . ' AND content_id=' . db_param();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>=2 AND content_type=' . db_param() . ' AND content_id=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $c_bug_id));
         for ($i = 0; $i < db_num_rows($t_result); $i++) {
             $t_row = db_fetch_array($t_result);

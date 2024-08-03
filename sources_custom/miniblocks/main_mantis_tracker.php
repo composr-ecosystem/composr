@@ -65,27 +65,9 @@ if (!running_script('tracker') && get_param_integer('keep_frames', null) !== 0) 
 $sql = 'SELECT id FROM mantis_custom_field_table WHERE ' . db_string_equal_to('name', 'Time estimation (hours)');
 $cms_hours_field = $GLOBALS['FORUM_DB']->query_value_if_there($sql);
 
-$s_currency = get_option('currency', true);
-if (empty($s_currency)) {
-    $s_currency = 'USD';
-}
-
-$_s_credit_value = get_option('support_credit_price', true);
-$s_credit_value = null;
-if ($_s_credit_value !== null) {
-    $s_credit_value = floatval($_s_credit_value);
-}
-
-$_minutes_per_credit = get_option('support_priority_backburner_minutes', true);
-$minutes_per_credit = null;
-$credits_per_hour = null;
-if ($_minutes_per_credit !== null) {
-    $minutes_per_credit = intval($_minutes_per_credit);
-    $credits_per_hour = intval(60 / $minutes_per_credit);
-    if ($credits_per_hour == 0) {
-        $credits_per_hour = 1;
-    }
-}
+// FUDGE: We are making the assumption off of $50/hour and 100 points = $1.
+$s_currency = 'POINTS';
+$s_points_per_hour = 5000;
 
 // Patreons...
 
@@ -126,10 +108,10 @@ if (!empty($patreon_patrons)) {
 $select = 'a.*,b.description,d.name AS category';
 $select .= ',(SELECT COUNT(*) FROM mantis_bugnote_table x WHERE x.bug_id=a.id) AS num_comments';
 $select .= ',(SELECT COUNT(*) FROM mantis_bug_monitor_table y WHERE y.bug_id=a.id)+' . $patreon_bonuses_a . '+' . $patreon_bonuses_b . ' AS num_votes';
-$select .= ',(SELECT SUM(amount) FROM mantis_sponsorship_table z WHERE z.bug_id=a.id) AS money_raised';
-$select .= ',CAST(c.value AS DECIMAL) as hours';
-if (($s_credit_value !== null) && ($credits_per_hour !== null)) {
-    $select .= ',CAST(c.value AS DECIMAL)*' . strval($credits_per_hour) . '*' . float_to_raw_string($s_credit_value) . ' AS currency_needed';
+$select .= ',(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2) AS points_raised';
+$select .= ',CAST(c.value AS FLOAT) as hours';
+if ($s_points_per_hour !== null) {
+    $select .= ',CAST(c.value AS DECIMAL)*' . float_to_raw_string($s_points_per_hour) . ' AS currency_needed';
 }
 
 $table = 'mantis_bug_table a JOIN mantis_bug_text_table b ON b.id=a.bug_text_id JOIN mantis_custom_field_string_table c ON c.bug_id=a.id AND field_id=' . $cms_hours_field . ' JOIN mantis_category_table d ON d.id=a.category_id';
@@ -137,9 +119,8 @@ $table = 'mantis_bug_table a JOIN mantis_bug_text_table b ON b.id=a.bug_text_id 
 $where = 'duplicate_id=0';
 $where .= ' AND view_state=10';
 $where .= ' AND severity=10';
-if (isset($map['completed'])) {
-    $where .= ' AND ' . (($map['completed'] == '0') ? 'a.status<=50' : 'a.status=80');
-}
+$where .= ' AND ' . ((isset($map['completed']) && ($map['completed'] == '1')) ? 'a.status=80' : 'a.status<=50');
+
 if (isset($map['voted'])) {
     $where .= ' AND (' . (($map['voted'] == '1') ? /*disabled as messy if someone's reported lots 'a.reporter_id='.strval(get_member()).' OR '.*/'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM mantis_bug_monitor_table p WHERE user_id=' . strval(get_member()) . ' AND p.bug_id=a.id))';
 }
@@ -165,9 +146,9 @@ if (isset($map['sort'])) {
             $where .= ' AND ' . db_string_not_equal_to('c.value', '');
             break;
         case 'sponsorship_progress':
-            $where .= ' AND (SELECT SUM(amount) FROM mantis_sponsorship_table z WHERE z.bug_id=a.id)<>0';
-            if (($s_credit_value !== null) && ($credits_per_hour !== null)) {
-                $order = '(SELECT SUM(amount) FROM mantis_sponsorship_table z WHERE z.bug_id=a.id)/CAST(c.value AS DECIMAL)*' . strval($credits_per_hour) . '*' . float_to_raw_string($s_credit_value) . ' ' . $direction;
+            $where .= ' AND (SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)<>0';
+            if ($s_points_per_hour !== null) {
+                $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)/CAST(c.value AS DECIMAL)*' . float_to_raw_string($s_points_per_hour) . ' ' . $direction;
             }
             break;
     }
@@ -184,17 +165,16 @@ $max_rows = $GLOBALS['SITE_DB']->query_value_if_there($query_count);
 
 $issues = [];
 foreach ($_issues as $issue) {
-    if (($s_credit_value !== null) && ($credits_per_hour !== null)) {
-        $cost = ($issue['hours'] == 0 || ($issue['hours'] === null)) ? null : ($issue['hours'] * $s_credit_value * $credits_per_hour);
+    if ($s_points_per_hour !== null) {
+        $cost = ($issue['hours'] == 0 || ($issue['hours'] === null)) ? null : ($issue['hours'] * $s_points_per_hour);
     } else {
         $cost = null;
     }
-    $_cost = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : (static_evaluate_tempcode(comcode_to_tempcode('[currency="' . $s_currency . '"]' . float_to_raw_string($cost) . '[/currency]')));
-    $money_raised = ($issue['money_raised'] !== null) ? $issue['money_raised'] : 0.0;
-    $_money_raised = static_evaluate_tempcode(comcode_to_tempcode('[currency="' . $s_currency . '"]' . float_to_raw_string($money_raised) . '[/currency]'));
-    $_percentage = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : (escape_html(float_format(100.0 * $money_raised / $cost, 0)) . '%');
+    $_cost = ($cost === null) ? '' : integer_format($cost);
+    $points_raised = ($issue['points_raised'] !== null) ? $issue['points_raised'] : 0.0;
+    $_points_raised = integer_format($points_raised);
+    $_percentage = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : (escape_html(float_format(100.0 * $points_raised / $cost, 0)) . '%');
     $_hours = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : do_lang('FEATURES_HOURS_lc', escape_html(integer_format($issue['hours'])));
-    $_credits = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : do_lang('FEATURES_CREDITS_lc', escape_html(integer_format($issue['hours'] * $credits_per_hour)));
 
     $voted = ($GLOBALS['SITE_DB']->query_value_if_there('SELECT user_id FROM mantis_bug_monitor_table WHERE user_id=' . strval(get_member()) . ' AND bug_id=' . strval($issue['id'])) !== null);
 
@@ -204,10 +184,9 @@ foreach ($_issues as $issue) {
         'DESCRIPTION' => nl2br(escape_html($issue['description'])),
 
         'COST' => $_cost,
-        'MONEY_RAISED' => $_money_raised,
+        'POINTS_RAISED' => $_points_raised,
         'PERCENTAGE' => $_percentage,
         'HOURS' => $_hours,
-        'CREDITS' => $_credits,
 
         '_NUM_COMMENTS' => strval($issue['num_comments']),
         'NUM_COMMENTS' => integer_format($issue['num_comments'], 0),

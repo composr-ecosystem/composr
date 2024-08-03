@@ -31,11 +31,11 @@
 						{+END}
 
 						<p class="tracker-issue-progress">
-							{!FEATURES_RAISED_PERCENT_OF,{PERCENTAGE*},{CREDITS*}}
+							{!FEATURES_SPONSORED,{POINTS_RAISED*}}
 
-							{+START,IF_PASSED,COST}
+							{+START,IF_NON_EMPTY,{COST}}
 								<br />
-								<span class="associated-details">({!FEATURES_CREDITS_HOURS_COST,{CREDITS*},{HOURS*},{$TRIM,{COST}}})</span>
+								<span class="associated-details">({!FEATURES_ESTIMATED_COST,{$TRIM,{COST}}})</span>
 							{+END}
 						</p>
 					</div>

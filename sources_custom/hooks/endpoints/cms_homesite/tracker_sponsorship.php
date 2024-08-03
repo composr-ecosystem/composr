@@ -68,9 +68,12 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
 
         // Editing a sponsorship requires cancelling the previous escrow and making a new one
         if ($type == 'edit') {
-            $id = cancel_escrow($id, get_member(), 'Sponsorship amended');
-            if ($id === null) {
-                return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the original sponsorship.'];
+            $row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id]);
+            if (array_key_exists(0, $row) && $row[0]['status'] >= 2) {
+                $id = cancel_escrow($id, get_member(), 'Sponsorship amended', $row[0]);
+                if ($id === null) {
+                    return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the original sponsorship.'];
+                }
             }
             $id = escrow_points(get_member(), null, $amount, $reason, $agreement, null, 'tracker_issue', strval($bug_id));
             if ($id !== null) {
@@ -80,9 +83,12 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
         }
 
         if ($type == 'delete') {
-            $id = cancel_escrow($id, get_member(), 'Sponsorship cancelled');
-            if ($id === null) {
-                return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the sponsorship.'];
+            $row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id]);
+            if (array_key_exists(0, $row) && $row[0]['status'] >= 2) {
+                $id = cancel_escrow($id, get_member(), 'Sponsorship amended', $row);
+                if ($id === null) {
+                    return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the sponsorship.'];
+                }
             }
             return ['success' => true];
         }

@@ -136,6 +136,7 @@ class Hook_addon_registry_cms_homesite_tracker
                 'Conversr',
                 //'core_all_icons',
                 'cms_homesite',
+                'PHP 7.4',
             ],
             'recommends' => [
                 'stats',
