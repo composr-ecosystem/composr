@@ -13,6 +13,16 @@
  * @package    cms_homesite_tracker
  */
 
+/*
+ * Files with custom overrides for Composr:
+ * - tracker/core/config/config_inc.php
+ * - tracker/core/config/custom_constants_inc.php
+ * - tracker/plugins/Composr (and all files within)
+ * - tracker/core/user_api.php
+ * - tracker/core/sponsorship_api.php
+ * - tracker/bug_sponsorship_list_view_inc.php
+ */
+
 class ComposrPlugin extends MantisPlugin {
     protected $cms_sc_site_name = 'composr.app';
     protected $cms_sc_product_name = 'Composr';
@@ -432,7 +442,7 @@ class ComposrPlugin extends MantisPlugin {
         $g_cache_sponsorships[$c_sponsorship_id] = false;
 
         db_param_push();
-        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>=2 AND content_type=' . db_param() . ' AND id=' . db_param();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>0 AND content_type=' . db_param() . ' AND id=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $c_sponsorship_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
@@ -443,7 +453,7 @@ class ComposrPlugin extends MantisPlugin {
                 'amount' => (int)$t_row['amount'],
                 'logo' => '',
                 'url' => sprintf($this->cms_sc_escrow_view_url, strval($t_row['id'])),
-                'paid' => ($t_row['status'] > 0) ? (int)$t_row['amount'] : 0,
+                'paid' => $t_row['status'],
                 'date_submitted' => $t_row['date_and_time'],
                 'last_updated' => $t_row['update_date_and_time'],
             ];
@@ -457,7 +467,7 @@ class ComposrPlugin extends MantisPlugin {
 
         // We use the escrow ID as the sponsorship ID.
         db_param_push();
-        $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>=2 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
+        $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>0 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $p_bug_id, $c_user_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
@@ -476,7 +486,7 @@ class ComposrPlugin extends MantisPlugin {
         global $g_cache_sponsorships;
 
         db_param_push();
-        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>=2 AND content_type=' . db_param() . ' AND content_id=' . db_param();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>0 AND content_type=' . db_param() . ' AND content_id=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $c_bug_id));
         for ($i = 0; $i < db_num_rows($t_result); $i++) {
             $t_row = db_fetch_array($t_result);
@@ -488,7 +498,7 @@ class ComposrPlugin extends MantisPlugin {
                 'amount' => (int)$t_row['amount'],
                 'logo' => '',
                 'url' => sprintf($this->cms_sc_escrow_view_url, strval($t_row['id'])),
-                'paid' => ($t_row['status'] > 0) ? (int)$t_row['amount'] : 0,
+                'paid' => $t_row['status'],
                 'date_submitted' => $t_row['date_and_time'],
                 'last_updated' => $t_row['update_date_and_time'],
             ];
@@ -721,6 +731,8 @@ class ComposrPlugin extends MantisPlugin {
 
         # Use the PHP cURL extension
         if (function_exists('curl_init')) {
+            $t_curl = null;
+
             try {
                 $t_curl = curl_init($p_url);
 
@@ -728,8 +740,8 @@ class ComposrPlugin extends MantisPlugin {
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_FOLLOWLOCATION  => true, // Follow redirects
                     CURLOPT_MAXREDIRS      => 3,     // Limit the number of redirections
-                    CURLOPT_TIMEOUT        => 10,     // Timeout in seconds
-                    CURLOPT_CONNECTTIMEOUT => 10      // Connection timeout in seconds
+                    CURLOPT_TIMEOUT        => 5,     // Timeout in seconds
+                    CURLOPT_CONNECTTIMEOUT => 5      // Connection timeout in seconds
                 );
 
                 # Default User Agent (Mantis version + php curl extension version)
@@ -744,13 +756,17 @@ class ComposrPlugin extends MantisPlugin {
                 $t_data = curl_exec($t_curl);
                 if ($t_data !== false) {
                     curl_close($t_curl);
+                    $t_curl = null;
                     return $t_data;
                 }
             } catch (Exception $e) {
                 // Ignore errors; try a different method below
                 error_log('CURL: ERROR ' . $e->getMessage());
             } finally {
-                curl_close($t_curl);
+                if ($t_curl !== null) {
+                    curl_close($t_curl);
+                    $t_curl = null;
+                }
             }
         }
 
@@ -782,10 +798,11 @@ class ComposrPlugin extends MantisPlugin {
             $response = '';
             $errno = null;
             $errstr = '';
+            $fp = null;
 
             try {
                 // Create the socket connection
-                $fp = @fsockopen($host, $port, $errno, $errstr, 10);
+                $fp = @fsockopen($host, $port, $errno, $errstr, 5);
 
                 // Check if the connection was successful
                 if (!$fp) {
@@ -809,15 +826,18 @@ class ComposrPlugin extends MantisPlugin {
                 list($headers, $body) = explode("\n\n", str_replace("\r", '', $response), 2);
 
                 fclose($fp);
+                $fp = null;
                 return $body;
             } catch (Exception $e) {
                 // Ignore; try a different method below
                 error_log('fsock: ERROR ' . $e->getMessage());
             } finally {
                 // Close the socket connection
-                fclose($fp);
+                if ($fp !== null) {
+                    fclose($fp);
+                    $fp = null;
+                }
             }
-
         }
 
         # Last resort system call
