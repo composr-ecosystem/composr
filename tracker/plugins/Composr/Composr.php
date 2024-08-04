@@ -106,6 +106,8 @@ class ComposrPlugin extends MantisPlugin {
             'EVENT_MENU_MAIN' => 'event_menu_main',
             'EVENT_BUGNOTE_ADD_FORM' => 'event_bugnote_add_form',
             'EVENT_UPDATE_BUG' => 'event_update_bug',
+            'EVENT_BUG_DELETED' => 'event_composr_sponsorship_delete_all', // Shares exact same functionality
+            'EVENT_BUG_ACTION' => 'event_bug_action',
 
             'EVENT_COMPOSR_USER_CACHE_ARRAY_ROWS' => 'event_composr_user_cache_array_rows',
             'EVENT_COMPOSR_USER_GET_ID_BY_NAME' => 'event_composr_user_get_id_by_name',
@@ -515,7 +517,7 @@ class ComposrPlugin extends MantisPlugin {
         }
         $url = substr($url, 0, -1);
 
-        $response = url_get($url);
+        $response = $this->url_get($url);
         if ($response === null) {
             trigger_error('Error communicating the sponsorship with ' . $this->cms_sc_site_name, ERROR );
         }
@@ -551,7 +553,7 @@ class ComposrPlugin extends MantisPlugin {
         }
         $url = substr($url, 0, -1);
 
-        $response = url_get($url);
+        $response = $this->url_get($url);
         if ($response === null) {
             trigger_error('Error communicating the sponsorship with ' . $this->cms_sc_site_name, ERROR );
         }
@@ -583,7 +585,7 @@ class ComposrPlugin extends MantisPlugin {
         }
         $url = substr($url, 0, -1);
 
-        $response = url_get($url);
+        $response = $this->url_get($url);
         if ($response === null) {
             trigger_error('Error communicating the deletion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
         }
@@ -620,7 +622,7 @@ class ComposrPlugin extends MantisPlugin {
                     }
                     $url = substr($url, 0, -1);
 
-                    $response = url_get($url);
+                    $response = $this->url_get($url);
                     if ($response === null) {
                         trigger_error('Error communicating the completion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
                     }
@@ -645,7 +647,7 @@ class ComposrPlugin extends MantisPlugin {
                     }
                     $url = substr($url, 0, -1);
 
-                    $response = url_get($url);
+                    $response = $this->url_get($url);
                     if ($response === null) {
                         trigger_error('Error communicating the deletion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
                     }
@@ -670,7 +672,7 @@ class ComposrPlugin extends MantisPlugin {
                     }
                     $url = substr($url, 0, -1);
 
-                    $response = url_get($url);
+                    $response = $this->url_get($url);
                     if ($response === null) {
                         trigger_error('Error communicating the reversal of issue points with ' . $this->cms_sc_site_name, ERROR );
                     }
@@ -686,7 +688,151 @@ class ComposrPlugin extends MantisPlugin {
         }
     }
 
+    function event_bug_action($event, $f_action, $t_bug_id)
+    {
+        require_api('bug_api.php');
+
+        switch ($f_action) {
+            case 'CLOSE':
+            case 'DELETE':
+                $this->event_composr_sponsorship_delete_all($event, $t_bug_id);
+                break;
+            case 'RESOLVE':
+                $old_bug = new BugData(); // We don't know the old bug's info, so use default template
+                $new_bug = bug_get($t_bug_id);
+                $this->event_update_bug($event, $old_bug, $new_bug);
+                break;
+        }
+    }
+
     // TODO: antispam measure that is more effective than renaming bugnote_text (does not stop paid human spammers)
     // TODO: Prevent guests from editing guest issues
     // TODO: Make bug_sponsorship_list_view_inc.php nicer; MantisBT has it all wonky and does not conform with other widget layouts
+
+    /**
+     * Retrieve the contents of a remote URL.
+     * First tries using built-in PHP modules (OpenSSL and cURL), then attempts
+     * system call as last resort.
+     * @param string $p_url The URL to fetch.
+     * @return null|string URL contents (NULL in case of errors)
+     */
+    protected function url_get($p_url) {
+        require_api('utility_api.php');
+
+        # Use the PHP cURL extension
+        if (function_exists('curl_init')) {
+            try {
+                $t_curl = curl_init($p_url);
+
+                $t_curl_opt = array(
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_FOLLOWLOCATION  => true, // Follow redirects
+                    CURLOPT_MAXREDIRS      => 3,     // Limit the number of redirections
+                    CURLOPT_TIMEOUT        => 10,     // Timeout in seconds
+                    CURLOPT_CONNECTTIMEOUT => 10      // Connection timeout in seconds
+                );
+
+                # Default User Agent (Mantis version + php curl extension version)
+                $t_vers = curl_version();
+                $t_curl_opt[CURLOPT_USERAGENT] =
+                    'mantisbt/' . MANTIS_VERSION . ' php-curl/' . $t_vers['version'];
+
+                # Set the options
+                curl_setopt_array($t_curl, $t_curl_opt);
+
+                # Retrieve data
+                $t_data = curl_exec($t_curl);
+                if ($t_data !== false) {
+                    curl_close($t_curl);
+                    return $t_data;
+                }
+            } catch (Exception $e) {
+                // Ignore errors; try a different method below
+                error_log('CURL: ERROR ' . $e->getMessage());
+            } finally {
+                curl_close($t_curl);
+            }
+        }
+
+        # FSOCK call
+        if (function_exists('fsockopen')) {
+            // Parse the URL
+            $parsed_url = parse_url($p_url);
+            if ($parsed_url === false) {
+                trigger_error('Invalid URL passed in ComposrPlugin->url_get()', ERROR);
+            }
+
+            // Extract components from the parsed URL
+            $host = $parsed_url['host'] ?? '';
+            $port = $parsed_url['port'] ?? 80; // Default to port 80 if not specified
+            $path = $parsed_url['path'] ?? '/';
+            $query = $parsed_url['query'] ?? '';
+            if ($query) {
+                $path .= '?' . $query;
+            }
+
+            // Handle secure connections (HTTPS)
+            $scheme = $parsed_url['scheme'] ?? 'http';
+            if ($scheme === 'https') {
+                $host = 'ssl://' . $host;
+                $port = 443; // Default port for HTTPS
+            }
+
+            // Initialize the output and error variables
+            $response = '';
+            $errno = null;
+            $errstr = '';
+
+            try {
+                // Create the socket connection
+                $fp = @fsockopen($host, $port, $errno, $errstr, 10);
+
+                // Check if the connection was successful
+                if (!$fp) {
+                    trigger_error('Failed fsock connection: ' . $errstr, ERROR);
+                }
+
+                // Create the HTTP GET request
+                $out = "GET $path HTTP/1.1\r\n";
+                $out .= "Host: {$parsed_url['host']}\r\n";
+                $out .= "Connection: Close\r\n\r\n";
+
+                // Send the request
+                fwrite($fp, $out);
+
+                // Read the response
+                while (!feof($fp)) {
+                    $response .= fgets($fp, 128);
+                }
+
+                // Separate headers and body
+                list($headers, $body) = explode("\n\n", str_replace("\r", '', $response), 2);
+
+                fclose($fp);
+                return $body;
+            } catch (Exception $e) {
+                // Ignore; try a different method below
+                error_log('fsock: ERROR ' . $e->getMessage());
+            } finally {
+                // Close the socket connection
+                fclose($fp);
+            }
+
+        }
+
+        # Last resort system call
+        try {
+            $t_url = escapeshellarg($p_url);
+            $t_data = shell_exec('curl ' . $t_url);
+            if ($t_data !== false) {
+                return $t_data;
+            }
+        } catch (Exception $e) {
+            // proceed;
+            error_log('CURL (terminal): ERROR ' . $e->getMessage());
+        }
+
+        # If all methods fail, return null to indicate an error
+        return null;
+    }
 }

@@ -67,7 +67,7 @@ $cms_hours_field = $GLOBALS['FORUM_DB']->query_value_if_there($sql);
 
 // FUDGE: We are making the assumption off of $50/hour and 100 points = $1.
 $s_currency = 'POINTS';
-$s_points_per_hour = 5000;
+$s_points_per_hour = 2000;
 
 // Patreons...
 
