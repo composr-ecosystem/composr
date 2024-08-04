@@ -85,7 +85,7 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
         if ($type == 'delete') {
             $row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id]);
             if (array_key_exists(0, $row) && ($row[0]['status'] >= 2)) {
-                $id = cancel_escrow($id, get_member(), 'Sponsorship amended', $row);
+                $id = cancel_escrow($id, get_member(), 'Sponsorship amended', $row[0]);
                 if ($id === null) {
                     return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the sponsorship.'];
                 }
