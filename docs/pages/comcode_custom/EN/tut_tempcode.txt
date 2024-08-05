@@ -953,6 +953,10 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>{$THEME_COLOUR_IS_BRIGHT,colour}</td>
 			<td>Find if the provided hexadecimal colour is bright (has a luminance of 50% or higher), typically used for deciding if black or white text / icons should be used on top of the specified colour</td>
 		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$CURRENT_FATALISTIC}</td>
+			<td>Find the current fatalistic mode (whether all terminal errors will throw stack traces): 0 if it is off, 1 if it is on, 2 if it is on with additional details.</td>
+		</tr>
 	</tbody>
 </table>
 [/html]

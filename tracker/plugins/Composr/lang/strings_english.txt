@@ -1,0 +1,55 @@
+<?php
+# plugin-specific
+$s_plugin_Composr_search_commits = 'Search Commits';
+$s_plugin_Composr_my_view_welcome_message = 'Welcome to the feature tracker, the tool used to plan new versions of %1$s (amongst other things). All %2$s planned features are organised on this feature tracker. Please be aware that %3$s maintains no formal roadmap for %1$s (for good reasons that we explain in our FAQ &ndash; in summary, it wouldn\'t work) so no conclusions about &ldquo;what is around the corner&rdquo; should be drawn from the issues here (unless you can sponsor/contribute things). It does however provide a real foundation for transparency and engagement. For more information, see the appropriate part of the <a href="%4$s">providing feedback tutorial</a>.';
+$s_plugin_Composr_bugnote_not_logged_in_title = 'You are not logged in';
+$s_plugin_Composr_bugnote_not_logged_in_text = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications. And if you reply, we will not know for sure you are the original poster of the issue.';
+$s_plugin_Composr_not_logged_in_bad = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications, if you reply we will not know for sure you are the original poster of the issue, and you will not be able to view any private issues you report anonymously.';
+$s_plugin_Composr_bug_report_guidance = 'This is the public tracker for features/bugs, not a private support system and not a discussion forum. Please read the bug reporting guidance in the <a href="%1$s">providing feedback tutorial</a>.';
+$s_plugin_Composr_sourcecode_link = 'GitLab';
+$s_plugin_Composr_home_link = 'composr.app';
+$s_plugin_Composr_login_instruct = 'Login using your regular %1$s username and password.';
+$s_plugin_Composr_hint_message = '<strong>Hint</strong>: To find bugs with no risks attach, do a search with the following tag filter&hellip; <samp>-Existing tags,-Breaks themes,-Breaks translations significantly,-Changes core website behaviour,-Core rearchitecting,-Creates Comcode incompatibility,-Database change,-Deprecates functionality,-General incompatibility,-Large database change,-Major rearchitecting,-Risk of breaking upgrade bootstraper,-Type: Cross-cutting feature</samp>';
+$s_plugin_Composr_return_instruct = '<a class="back-to-login-link pull-left" href="%1$s">Return to the main %2$s website</a>.';
+$s_plugin_Composr_do_not_reply = 'THIS IS AN AUTOMATED E-MAIL. PLEASE DO NOT REPLY DIRECTLY. Reply from within the tracker itself.';
+$s_plugin_Composr_not_myself = 'Not myself';
+$s_plugin_Composr_mass_mail_header = "THIS IS AN AUTOMATED E-MAIL. PLEASE DO NOT REPLY DIRECTLY. Reply from within the tracker itself.\n\n\n";
+$s_plugin_Composr_mass_mail_footer = "\n\n------------------\n\nTo unsubscribe from e-mails like these, uncheck your e-mail notifications in your account preferences (%1\$s)";
+
+$s_plugin_Composr_title_vote_added = 'Monitor / Vote issue';
+$s_plugin_Composr_title_vote_removed = 'Unmonitor / Unvote issue';
+$s_plugin_Composr_vote_added = 'You are now monitoring this issue, and your vote is added to the tally.';
+$s_plugin_Composr_vote_removed = 'You are no longer monitoring this issue, and your vote has been removed from the tally.';
+$s_plugin_Composr_sc_view_details = 'View full details of bug';
+
+# DEPRECATED
+$s_plugin_Composr_divide_cost = '/ Cost';
+$s_plugin_Composr_sponsor_first_message = 'At %1$d hour(s), this would cost %2$d support credit(s) at back-burner priority %3$s [ convert to  %4$s ] ). If this is reached and sponsors have this much in their accounts, %5$s will prioritise the feature and release the code early in this tracker. If a feature is not sponsored then it may also be done anyway, but there is no guarantee that any features posted in the tracker are planned as %6$s is non-commercial and no roadmap is maintained.';
+$s_plugin_Composr_sponsor_second_message = 'Full details about the <a href="%1$s">sponsorship process and terms</a>.';
+$s_plugin_Composr_sponsorship_is_disabled = 'Sponsorship is temporarily disabled while we process a work back-log.';
+$s_plugin_Composr_amount_in_support_credits = 'Amount in support credits ';
+$s_plugin_Composr_current_credits_balance = '(you currently have %1$d balance, although you can enter any number here), or&hellip; ';
+$s_plugin_Composr_amount_in_main_currency = 'Amount in %1$s ';
+$s_plugin_Composr_filling_in_form_message = 'Filling in this form replaces your previous sponsorship, it does not add to it. To remove re-sponsor with zero.';
+$s_plugin_Composr_support_credits = 'support credits';
+$s_plugin_Composr_backed_by_existing_support_credits = ' - backed by existing support credits';
+$s_plugin_Composr_not_backed_by_existing_support_credits = ' - not backed by existing support credits';
+$s_plugin_Composr_buy_some = ' - <a href="%1$s" target="_blank">buy some</a>';
+$s_plugin_Composr_progress_theory = 'Progress (theory)';
+$s_plugin_Composr_progress_paid_up = 'Progress (paid up)';
+$s_plugin_Composr_credits_remaining = 'credits remaining';
+
+# Overrides for bug_change_status_page.php
+$s_not_assigned_bug_title = 'New Issue';
+$s_not_assigned_bug_button = 'New Issue';
+
+# Overrides for manage_proj_edit_page.php
+$s_private = 'Private (for security issues or disclosing of private information; <strong>if you submit as a guest, you will not be able to see your submission</strong>)';
+
+# misc overrides
+$s_status_enum_string = '10:Not Assigned,50:Assigned,80:Resolved,90:Closed';
+$s_severity_enum_string = '10:Feature or Request,20:Trivial Bug,50:Minor Bug,60:Major Bug,95:Security Hole';
+$s_report_bug_link = 'Report Issue (or suggest feature)';
+$s_users_sponsoring_bug = 'You can incentivise others to implement this feature by sponsoring (escrowing) points to it. When you do, the resolving / assigned member will receive the sponsored points. If the issue is closed or deleted, your points will be refunded. You can also use this form to change your sponsorship amount. Set to 0 to cancel your sponsorship completely.';
+$s_sponsorship_process_url = ''; // TODO
+$s_sponsorship_enum_string = '0:Refunded,1:Paid to issue handler,2:Active,3:Pending dispute';

@@ -1072,9 +1072,6 @@ class Hook_import_cms_merge
                 if ($viewer_member === null) {
                     $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                 }
-                if ($member_id === null) {
-                    $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-                }
 
                 $reason = get_translated_text($row['reason']);
                 $agreement = get_translated_text($row['agreement']);
@@ -1082,6 +1079,7 @@ class Hook_import_cms_merge
                 $ledger_id_new = import_id_remap_get('points_ledger', strval($row['original_points_ledger_id']));
                 $map = [
                     'date_and_time' => $row['date_and_time'],
+                    'update_date_and_time' => $row['update_date_and_time'],
                     'amount' => $row['amount'],
                     'original_points_ledger_id' => $ledger_id_new,
                     'sending_member' => $viewer_member,
@@ -1090,6 +1088,8 @@ class Hook_import_cms_merge
                     'sender_status' => $row['sender_status'],
                     'recipient_status' => $row['recipient_status'],
                     'status' => $row['status'],
+                    'content_type' => $row['content_type'],
+                    'content_id' => '', // FUDGE: Currently blanking this because it may refer to an improperly mapped content ID
                 ];
                 $map += insert_lang_comcode('reason', $reason, 4);
                 $map += insert_lang_comcode('agreement', $agreement, 5);

@@ -175,7 +175,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue((strpos(get_file_base(), '_custom') === false), 'You should not have _custom in the base directory path, due to an internal coding limitation.');
+        $this->assertTrue((strpos(get_file_base(), '_custom') === false), 'You should not have _custom in the base directory path; _custom has semantic meaning in the software and thus this will cause it to break');
     }
 
     /**
@@ -213,12 +213,8 @@ class Hook_health_check_install_env extends Hook_Health_Check
             // Is okay
         }
 
-        if (in_array($test->message, ['401', '403'])) {
+        if (in_array($test->message, ['401', /*'403'*/])) { // 403 could be a ModSecurity issue which we do want to error about in this test
             // Is access denied, which could happen so isn't an error from our point of view
-        }
-
-        if (($installing) && ($test->message == '500')) {
-            // May be the final configuration isn't placed yet by the installer
         }
 
         // Redirect
@@ -467,7 +463,14 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
 
         // Test to see if we have any ModSecurity issue that blocks config form submissions, via posting through some perfectly legitimate things that it might be paranoid about
-        $test_url = get_custom_base_url() . '/data/empty.php';
+        $installing = ($check_context == CHECK_CONTEXT__INSTALL);
+
+        if ($installing) {
+            $test_url = get_base_url() . '/install.php?type=test_blank_result'; // But this definitely must exist if running the installer
+        } else {
+            $test_url = find_script('empty') . '?truly=1';
+        }
+
         $test_a = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => ['test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>']]);
         $message_a = $test_a->message;
         if ($message_a != '200') {
@@ -622,7 +625,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         if ($result !== null) {
             list($ok, $perms, $dir_perms) = $result;
             $has_group_read_perms = (($perms & 0040) != 0);
-            $this->assertTrue($ok, 'Could not access test static file created with default permissions, group read permissions ' . ($has_group_read_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_read_perms) ? ' (likely the web server itself is running as a different server to PHP is executed with so relies on the group permissions)' : ''));
+            $this->assertTrue($ok, 'Could not access test static file created with default permissions, group read permissions ' . ($has_group_read_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_read_perms) ? ' (likely the web server itself is running as a different user than what PHP is executed with so relies on the group permissions)' : ''));
         }
 
         // Directory test
@@ -633,7 +636,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             if ($result !== null) {
                 list($ok, $perms, $dir_perms) = $result;
                 $has_group_execute_perms = (($perms & 0010) != 0);
-                $this->assertTrue($ok, 'Could not access test static file in directory created with default permissions, group execute permissions ' . ($has_group_execute_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_execute_perms) ? ' (likely the web server itself is running as a different server to PHP is executed with so relies on the group permissions)' : ''));
+                $this->assertTrue($ok, 'Could not access test static file in directory created with default permissions, group execute permissions ' . ($has_group_execute_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_execute_perms) ? ' (likely the web server itself is running as a different user than what PHP is executed with so relies on the group permissions)' : ''));
             }
         }
 
@@ -733,7 +736,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $set_locale = setlocale(LC_ALL, '0');
             setlocale(LC_ALL, $current_locale);
 
-            $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Threaded mode of PHP on a server with Turkish locale installed on server');
+            $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Threaded mode of PHP on a server with Turkish locale installed on server failed');
         }
     }
 }

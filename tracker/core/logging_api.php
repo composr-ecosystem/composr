@@ -83,9 +83,15 @@ function log_event( $p_level, $p_msg ) {
 	$t_now = date( config_get_global( 'complete_date_format' ) );
 	$t_level = $g_log_levels[$p_level];
 
-	$t_plugin_event = '[' . $t_level . '] ' . $t_msg;
-	if( function_exists( 'event_signal' ) ) {
+	# Prevent recursion from plugins hooked on EVENT_LOG
+	static $s_event_log_called = false;
+	# Checking existence of event_signal function is required, because Logging
+	# API is loaded before Event API.
+	if( !$s_event_log_called && function_exists( 'event_signal' ) ) {
+		$t_plugin_event = '[' . $t_level . '] ' . $t_msg;
+		$s_event_log_called = true;
 		event_signal( 'EVENT_LOG', array( $t_plugin_event ) );
+		$s_event_log_called = false;
 	}
 
 	$t_log_destination = config_get_global( 'log_destination' );
@@ -170,7 +176,7 @@ function log_print_to_page() {
 		echo "\t<div class=\"widget-box widget-color-red\">\n";
 		echo "\t<div class=\"widget-header widget-header-small\">\n";
 		echo "\t<h4 class=\"widget-title lighter\">\n";
-		echo "\t<i class=\"ace-icon fa fa-flag-o\"></i>\n";
+		echo "\t" . icon_get( 'fa-flag-o', 'ace-icon' ) . "\n";
 		echo "Debug Log";
 		echo "</h4>\n";
 		echo "</div>\n";
@@ -265,7 +271,7 @@ function log_print_to_page() {
 function log_get_caller( $p_level = null ) {
 	$t_full_backtrace = debug_backtrace();
 	$t_backtrace = $t_full_backtrace;
-	$t_root_path = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR;
+	$t_root_path = dirname( __FILE__, 2 ) . DIRECTORY_SEPARATOR;
 
 	# Remove top trace, as it's this function
 	unset( $t_backtrace[0] );

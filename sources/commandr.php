@@ -125,7 +125,7 @@ function commandr_script()
                     <result>
                         <command>' . xmlentities(post_param_string('command', '')) . '</command>
                         <stdcommand></stdcommand>
-                        <stdhtml><div xmlns="http://www.w3.org/1999/xhtml">' . ((get_param_integer('keep_fatalistic', 0) != 0) ? static_evaluate_tempcode(get_html_trace()) : '') . '</div></stdhtml>
+                        <stdhtml><div xmlns="http://www.w3.org/1999/xhtml">' . ((current_fatalistic() > 0) ? static_evaluate_tempcode(get_html_trace()) : '') . '</div></stdhtml>
                         <stdout>' . xmlentities($e->getMessage()) . '</stdout>
                         <stderr>' . xmlentities($_stderr) . '</stderr>
                     </result>

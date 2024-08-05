@@ -81,6 +81,7 @@ class Hook_health_check_email extends Hook_Health_Check
         }
 
         if (get_option('mail_queue_debug') == '1') {
+            $this->log('Skipped; mail queue debugging is enabled.');
             return;
         }
 
@@ -88,7 +89,7 @@ class Hook_health_check_email extends Hook_Health_Check
 
         $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'logged_mail_messages WHERE m_queued=1 AND m_date_and_time<' . strval(time() - 60 * 60 * 1);
         $count = $GLOBALS['SITE_DB']->query_value_if_there($sql);
-        $this->assertTrue($count == 0, 'The e-mail queue has e-mails still not sent within the last hour');
+        $this->assertTrue($count == 0, 'There are e-mails in the queue which have not been sent for over an hour');
     }
 
     /**
@@ -112,7 +113,7 @@ class Hook_health_check_email extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue(ini_get('mail.add_x_header') !== '1', 'The PHP mail.add_x_header setting may get your e-mail flagged as spam');
+        $this->assertTrue(ini_get('mail.add_x_header') !== '1', 'The PHP mail.add_x_header is set which may get your e-mails flagged as spam');
     }
 
     /**
@@ -137,22 +138,20 @@ class Hook_health_check_email extends Hook_Health_Check
         }
 
         $dkim_configured = (get_option('dkim_private_key') != '');
-        $this->assertTrue($dkim_configured, 'DKIM is not configured');
-        if ($dkim_configured) {
-            $domains = $this->get_mail_domains(true);
-            foreach ($domains as $domain => $email) {
-                if (php_function_allowed('dns_get_record')) {
-                    $found_record = false;
-                    $records = @dns_get_record($domain, DNS_TXT);
-                    foreach ($records as $record) {
-                        if (strpos($record['host'], 'v=DKIM') !== false) {
-                            $found_record = true;
-                        }
+        $this->assertTrue($dkim_configured, 'You have not configured DKIM in the software. This is fine if your server signs outgoing mail, but otherwise you must configure this or your e-mails will get flagged as spam.');
+        $domains = $this->get_mail_domains(true);
+        foreach ($domains as $domain => $email) {
+            if (php_function_allowed('dns_get_record')) {
+                $found_record = false;
+                $records = @dns_get_record($domain, DNS_TXT);
+                foreach ($records as $record) {
+                    if (strpos($record['host'], 'v=DKIM') !== false) {
+                        $found_record = true;
                     }
-                    $this->assertTrue($found_record, 'Could not find a DKIM DNS record even though DKIM is configured');
-                } else {
-                    $this->stateCheckSkipped('PHP [tt]dns_get_record[/tt] function not available');
                 }
+                $this->assertTrue($found_record, 'Could not find a DKIM DNS record; your e-mails may get flagged as spam. Check your DNS records and fix accordingly. You must have this record set in your DNS even if you set up DKIM in the software.');
+            } else {
+                $this->stateCheckSkipped('PHP [tt]dns_get_record[/tt] function not available');
             }
         }
     }
@@ -222,11 +221,11 @@ class Hook_health_check_email extends Hook_Health_Check
             foreach ($domains as $domain => $email) {
                 $mail_hosts = [];
                 $result = @getmxrr($domain, $mail_hosts);
-                $this->assertTrue($result, 'Could not look up MX records for our [tt]' . $email . '[/tt] e-mail address');
+                $this->assertTrue($result, 'No valid MX records were found for the [tt]' . $email . '[/tt] e-mail address. You might not receive incoming e-mail. Please check your DNS records and fix accordingly.');
 
                 foreach (array_unique($mail_hosts) as $host) {
                     $has_dns = @checkdnsrr($host, 'A');
-                    $this->assertTrue($has_dns, 'Mail server MX DNS does not seem to be set up properly for our [tt]' . $email . '[/tt] e-mail address (host=[tt]' . $host . '[/tt])');
+                    $this->assertTrue($has_dns, 'Every MX record must have a matching A record, but ' . $host . ' (from e-mail address [tt]' . $email . '[/tt]) does not have one. You might not receive incoming e-mail. Please fix accordingly in your DNS records.');
 
                     if (!$has_dns) {
                         continue;
@@ -240,7 +239,7 @@ class Hook_health_check_email extends Hook_Health_Check
                             $reverse_dns_host = $_reverse_dns_host;
                         }
                     }
-                    $this->assertTrue($reverse_dns_host !== null, 'Missing reverse-DNS for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt])');
+                    $this->assertTrue($reverse_dns_host !== null, 'Missing reverse-DNS for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt]). You might not receive incoming e-mail. Please check your DNS records and ensure the MX record and its matching A record point to the correct address, and that it can be resolved.');
 
                     if (php_function_allowed('fsockopen')) {
                         // See if SMTP running
@@ -248,7 +247,7 @@ class Hook_health_check_email extends Hook_Health_Check
                         $errstr = '';
                         $socket = @fsockopen($host, 25, $errno, $errstr, 4.0);
                         $can_connect = ($socket !== false);
-                        $this->assertTrue($can_connect, 'Could not connect to SMTP server for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt]); possibly server network is firewalled on this port though');
+                        $this->assertTrue($can_connect, 'Could not connect to SMTP server (port 25) for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt]); possibly server network is firewalled on this port. You might not be able to send outgoing e-mails.');
                         if ($can_connect) {
                             fread($socket, 1024);
                             fwrite($socket, 'HELO ' . $domain . "\n");
@@ -257,12 +256,12 @@ class Hook_health_check_email extends Hook_Health_Check
 
                             $matches = [];
                             $has_helo = preg_match('#^250 ([^\s]*)#', $data, $matches) != 0;
-                            $this->assertTrue($has_helo, 'Could not get HELO response from SMTP server for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt])');
+                            $this->assertTrue($has_helo, 'Could not get HELO response from SMTP server for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt]). You might not be able to send outgoing e-mails.');
                             if ($has_helo) {
                                 $reported_host = $matches[1];
 
                                 if (($reverse_dns_host !== null) && ($reported_host != $reverse_dns_host)) {
-                                    $this->stateCheckManual('HELO response from SMTP server (' . $reported_host . ') not matching reverse DNS (' . $reverse_dns_host . ') for ' . $email . ' address; not ideal but we won\'t flag as unhealthy due to how common it is');
+                                    $this->stateCheckManual('HELO response from SMTP server (' . $reported_host . ') not matching reverse DNS (' . $reverse_dns_host . ') for ' . $email . ' address; not ideal but we won\'t flag as unhealthy due to how common it is (and that your SMTP server should typically still work)');
                                 }
                             }
                         }
@@ -638,15 +637,15 @@ class Hook_health_check_email extends Hook_Health_Check
                 $username = get_option('mail_username');
                 $password = get_option('mail_password');
             } else {
-                $address = 'test@ocproducts.com'; // TODO: change?
+                $address = 'test@composr.app';
 
                 $type = 'imaps';
-                $host = 'imap.gmail.com';
+                $host = 'ns100030.ip-147-135-1.us';
                 $port = 993;
                 $folder = 'INBOX';
 
-                $username = 'test@ocproducts.com'; // TODO: change?
-                $password = '!Xtest1234';
+                $username = 'test@composr.app';
+                $password = '!qz09BwdsNJb1f9zn';
             }
 
             if (($address == '') || ($host == '') || ($username == '')) {
@@ -855,6 +854,6 @@ class Hook_health_check_email extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue(get_option('list_unsubscribe_target') != '', 'You do not have a List-Unsubscribe target configuration option set, which may increase your spam score.');
+        $this->assertTrue(get_option('list_unsubscribe_target') != '', 'You do not have a List-Unsubscribe target configuration option set, which may increase your spam score and violate some local laws on user privacy.');
     }
 }

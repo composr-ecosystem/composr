@@ -67,7 +67,7 @@ class Hook_health_check_cron extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue(cron_installed(), 'The system scheduler not running, it is needed for various features to work');
+        $this->assertTrue(cron_installed(), 'The system scheduler is not running; it is needed for various features to work. See the tutorials on how to set this up.');
     }
 
     /**
@@ -99,11 +99,11 @@ class Hook_health_check_cron extends Hook_Health_Check
         if (($last_cron_started !== null) && ($last_cron_finished !== null)) {
             // Completed cycle
             $time = intval($last_cron_finished) - intval($last_cron_started);
-            $this->assertTrue($time < $threshold, 'The system scheduler is running slow @ ' . display_time_period($time) . ' to run');
+            $this->assertTrue($time < $threshold, 'The system scheduler is running slow @ ' . display_time_period($time) . ' to run.');
         } elseif (($last_cron_started !== null) && ($last_cron_finished === null)) {
             // Mid cycle
             $time = time() - intval($last_cron_started);
-            $this->assertTrue($time < $threshold, 'The system scheduler has taken ' . display_time_period($time) . ' and not finished -- it is either running very slow, or it failed');
+            $this->assertTrue($time < $threshold, 'The system scheduler has taken ' . display_time_period($time) . ' and not finished -- it is either running very slow, it failed, or it got stuck.');
         } else {
             // No cycle
             $this->stateCheckSkipped('The system scheduler never ran');

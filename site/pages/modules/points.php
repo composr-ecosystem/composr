@@ -32,7 +32,7 @@ class Module_points
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 10;
+        $info['version'] = 11;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -339,16 +339,19 @@ class Module_points
             $GLOBALS['SITE_DB']->create_table('escrow', [
                 'id' => '*AUTO',
                 'date_and_time' => 'TIME',
+                'update_date_and_time' => 'TIME',
                 'amount' => 'INTEGER',
                 'original_points_ledger_id' => 'AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
                 'sending_member' => 'MEMBER',
-                'receiving_member' => 'MEMBER',
+                'receiving_member' => '?MEMBER',
                 'reason' => 'SHORT_TRANS__COMCODE',
                 'agreement' => 'LONG_TRANS__COMCODE',
                 'expiration_time' => '?TIME',
                 'sender_status' => 'BINARY', // 1 = sender marked satisfied
                 'recipient_status' => 'BINARY', // 1 = recipient marked satisfied
                 'status' => 'INTEGER', // See ESCROW_STATUS_* in points_escrow.php
+                'content_type' => 'ID_TEXT',
+                'content_id' => 'ID_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('escrow', 'original_points_ledger_id', ['original_points_ledger_id']);
             $GLOBALS['SITE_DB']->create_index('escrow', 'sending_member', ['sending_member']);
@@ -378,6 +381,13 @@ class Module_points
 
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_lifetime', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11) && ($upgrade_from >= 9)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('escrow', 'update_date_and_time', 'TIME');
+            $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_type', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_id', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'receiving_member', '?MEMBER');
         }
     }
 
@@ -489,7 +499,7 @@ class Module_points
                 }
                 $row = $_row[0];
 
-                if ($member_id_viewing == $row['receiving_member']) {
+                if ($member_id_viewing === $row['receiving_member']) {
                     $member_id_of = $row['receiving_member'];
                 } else {
                     $member_id_of = $row['sending_member'];
@@ -988,7 +998,7 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to access an escrow we do not have the privilege to access?
-        if (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] != $member_id_viewing) && !has_privilege($member_id_viewing, 'moderate_points_escrow')) {
+        if (($row['sending_member'] != $member_id_viewing) && (($row['receiving_member'] === null) || ($row['receiving_member'] != $member_id_viewing)) && !has_privilege($member_id_viewing, 'moderate_points_escrow')) {
             access_denied('PRIVILEGE', 'moderate_points_escrow');
         }
 
@@ -998,8 +1008,8 @@ class Module_points
         $expiry = ($row['expiration_time'] !== null) ? get_timezoned_date_time($row['expiration_time']) : do_lang_tempcode('NA_EM');
         $from_name = is_guest($row['sending_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], true);
         $_from_name = (is_guest($row['sending_member'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($row['sending_member']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
-        $to_name = is_guest($row['receiving_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true);
-        $_to_name = (is_guest($row['receiving_member'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $to_name = (($row['receiving_member'] === null) || is_guest($row['receiving_member'])) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true);
+        $_to_name = (($row['receiving_member'] === null) || is_guest($row['receiving_member'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         $buttons = new Tempcode();
         $status = new Tempcode();
@@ -1012,7 +1022,7 @@ class Module_points
                 $status = do_lang_tempcode('ESCROW_STATUS__COMPLETED');
                 break;
             default: // ESCROW_STATUS_PENDING and ESCROW_STATUS_DISPUTED
-                $involved = ($member_id_viewing == $row['sending_member']) || ($member_id_viewing == $row['receiving_member']);
+                $involved = ($member_id_viewing == $row['sending_member']) || ($member_id_viewing === $row['receiving_member']);
 
                 // Dispute button
                 if ($involved) {
@@ -1021,8 +1031,8 @@ class Module_points
                     $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '76a89f1d22849a9215c47c58000ad036', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_DISPUTE'), 'IMG' => 'buttons/report', 'HIDDEN' => $hidden]));
                 }
 
-                // Satisfy escrow buttons; not shown / allowed if an escrow is disputed
-                if (($row['status'] == ESCROW_STATUS_PENDING) && ((($member_id_viewing == $row['sending_member']) && ($row['sender_status'] == 0)) || (($member_id_viewing == $row['receiving_member']) && ($row['recipient_status'] == 0)))) {
+                // Satisfy escrow buttons; not shown / allowed if an escrow is disputed or receiving_member is null (implying content link)
+                if (($row['status'] == ESCROW_STATUS_PENDING) && ($row['receiving_member'] !== null) && ((($member_id_viewing == $row['sending_member']) && ($row['sender_status'] == 0)) || (($member_id_viewing == $row['receiving_member']) && ($row['recipient_status'] == 0)))) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'satisfy_escrow', 'id' => $row['id']]);
                     $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '4090ee4d36dd4006ef9e4ba5262fe786', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
@@ -1101,7 +1111,7 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to satisfy an escrow we do not have the privilege to access?
-        if (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] != $member_id_viewing)) {
+        if (($row['receiving_member'] === null) || (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] != $member_id_viewing))) {
             access_denied('I_ERROR');
         }
 
@@ -1111,7 +1121,7 @@ class Module_points
         }
 
         // Member already marked escrow as satisfied
-        if ((($member_id_viewing == $row['sending_member']) && ($row['sender_status'] == 1)) || (($member_id_viewing == $row['receiving_member']) && ($row['recipient_status'] == 1))) {
+        if ((($member_id_viewing == $row['sending_member']) && ($row['sender_status'] == 1)) || (($member_id_viewing === $row['receiving_member']) && ($row['recipient_status'] == 1))) {
             return warn_screen($this->title, do_lang_tempcode('E_ESCROW_ALREADY_SATISFIED'));
         }
 
@@ -1119,7 +1129,7 @@ class Module_points
 
         // Confirmation screen
         if ($confirm == 0) {
-            if ($member_id_viewing == $row['sending_member']) {
+            if ($member_id_viewing === $row['sending_member']) {
                 $other_member = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true);
             } else {
                 $other_member = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], true);
@@ -1167,7 +1177,7 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to access an escrow we do not have the privilege to access?
-        if (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] != $member_id_viewing)) {
+        if (($row['sending_member'] != $member_id_viewing) && ($row['receiving_member'] !== $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 
@@ -1241,7 +1251,7 @@ class Module_points
         $row = $_row[0];
 
         // Are we trying to moderate an escrow in which we are involved?
-        if (($row['sending_member'] == $member_id_viewing) || ($row['receiving_member'] == $member_id_viewing)) {
+        if (($row['sending_member'] == $member_id_viewing) || ($row['receiving_member'] === $member_id_viewing)) {
             access_denied('I_ERROR');
         }
 

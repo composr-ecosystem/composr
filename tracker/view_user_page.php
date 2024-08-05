@@ -52,18 +52,15 @@ require_api( 'string_api.php' );
 require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
 
-// Composr - redirect to CMS profile page
-if (gpc_get_int('id', auth_get_current_user_id()) != $cms_guest_id) {
-	header('Location: '.sprintf($cms_sc_member_view_url, strval($_GET['id'])));
-	exit();
-}
-
 auth_ensure_user_authenticated();
 
-# extracts the user information for the currently logged in user
-# and prefixes it with u_
+# extracts the user information and prefixes it with u_
 $f_user_id = gpc_get_int( 'id', auth_get_current_user_id() );
 $t_row = user_get_row( $f_user_id );
+if( !$t_row ) {
+	error_parameters( $f_user_id );
+	trigger_error( ERROR_USER_BY_ID_NOT_FOUND, ERROR );
+}
 
 extract( $t_row, EXTR_PREFIX_ALL, 'u' );
 
@@ -92,7 +89,7 @@ $t_timeline_view_class = ( $t_timeline_view_threshold_access ) ? "col-md-7" : "c
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 	<h4 class="widget-title lighter">
-		<i class="ace-icon fa fa-user"></i>
+		<?php print_icon( 'fa-user', 'ace-icon' ); ?>
 		<?php echo lang_get('view_account_title') ?>
 	</h4>
 </div>

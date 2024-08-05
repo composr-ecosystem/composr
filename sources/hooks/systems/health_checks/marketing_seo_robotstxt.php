@@ -75,7 +75,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
 
         $rules = $this->robots_parse(null, true);
 
-        $this->assertTrue($rules !== null, '[tt]robots.txt[/tt] not found on domain root or not web accessible');
+        $this->assertTrue($rules !== null, '[tt]robots.txt[/tt] not found on domain root, or not web accessible. This file is necessary to tell web crawlers what to do and not to do.');
     }
 
     /**
@@ -116,17 +116,17 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
             }
 
             if ($google_allowed == $other_allowed) {
-                $this->assertTrue(!$google_allowed, 'Site not blocked by [tt]robots.txt[/tt]');
+                $this->assertTrue(!$google_allowed, 'Site not blocked by [tt]robots.txt[/tt]; test sites should be blocked so they do not get indexed.');
             } else {
-                $this->assertTrue(!$google_allowed, 'Site not blocked on Google by [tt]robots.txt[/tt] as per Google\'s way of implementing robots standard');
-                $this->assertTrue(!$other_allowed, 'Site not blocked on Google by [tt]robots.txt[/tt] as per standard (non-Google) way of implementing robots standard');
+                $this->assertTrue(!$google_allowed, 'Site not blocked on Google by [tt]robots.txt[/tt] as per Google\'s way of implementing robots standard; test sites should be blocked so they do not get indexed.');
+                $this->assertTrue(!$other_allowed, 'Site not blocked on Google by [tt]robots.txt[/tt] as per standard (non-Google) way of implementing robots standard; test sites should be blocked so they do not get indexed.');
             }
         } else {
             if ($google_allowed == $other_allowed) {
-                $this->assertTrue($google_allowed, 'Site blocked by [tt]robots.txt[/tt]');
+                $this->assertTrue($google_allowed, 'Live site blocked by [tt]robots.txt[/tt]');
             } else {
-                $this->assertTrue($google_allowed, 'Site blocked on Google by [tt]robots.txt[/tt] as per Google\'s way of implementing robots standard');
-                $this->assertTrue($other_allowed, 'Site blocked on Google by [tt]robots.txt[/tt] as per standard (non-Google) way of implementing robots standard');
+                $this->assertTrue($google_allowed, 'Live site blocked on Google by [tt]robots.txt[/tt] as per Google\'s way of implementing robots standard');
+                $this->assertTrue($other_allowed, 'Live site blocked on Google by [tt]robots.txt[/tt] as per standard (non-Google) way of implementing robots standard');
             }
         }
 
@@ -186,7 +186,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         foreach ($scripts as $script) {
             $url = get_base_url() . '/' . $script;
             $allowed = $this->robots_allowed($url, 'Googlebot', true);
-            $this->assertTrue(!$allowed, 'robots.txt should be blocking [tt]' . $script . '[/tt]');
+            $this->assertTrue(!$allowed, 'robots.txt should be blocking [tt]' . $script . '[/tt] because this is a high-security area.');
         }
     }
 
@@ -250,7 +250,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         }
 
         if ($check_context == CHECK_CONTEXT__LIVE_SITE) {
-            $this->assertTrue(!empty($found), 'No Sitemap directive found in robots.txt');
+            $this->assertTrue(!empty($found), 'No Sitemap directive found in robots.txt; you should set one to ' . $expected_sitemap_url);
         }
     }
 

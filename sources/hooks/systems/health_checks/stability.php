@@ -75,7 +75,12 @@ class Hook_health_check_stability extends Hook_Health_Check
 
         $path = get_custom_file_base() . '/data_custom/errorlog.php';
         if (filesize($path) >= 25) { // Accounting for the top return line
-            $this->stateCheckManual('Check the software error log');
+            $this->stateCheckManual('Check the software error log; it is currently non-empty.');
+        }
+
+        require_code('files2');
+        if (count(get_directory_contents(get_file_base() . '/data_custom/errors', '', IGNORE_ACCESS_CONTROLLERS, false)) > 0) {
+            $this->stateCheckManual('Check large errors that are logged in data_custom/errors. This is currently non-empty.');
         }
 
         $this->stateCheckManual('Check the web server error logs, e.g. for 404 errors you may want to serve via a redirect');
@@ -222,7 +227,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
             if ($manual_checks) {
                 if (filesize($path) > 20) {
-                    $this->stateCheckManual('Check the [page="adminzone:admin_errorlog"]error log[/page]');
+                    $this->stateCheckManual('Check the [page="adminzone:admin_errorlog"]error log[/page]; it is currently non-empty.');
                 }
             }
         } else {

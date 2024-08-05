@@ -180,6 +180,7 @@ class Hook_addon_registry_commandr
             'sources/hooks/systems/commandr_commands/find_id_via_label.php',
             'sources/hooks/systems/commandr_commands/find_label_via_id.php',
             'sources/hooks/systems/commandr_commands/fs_search.php',
+            'sources/hooks/systems/commandr_commands/get_value.php',
             'sources/hooks/systems/commandr_commands/grep.php',
             'sources/hooks/systems/commandr_commands/help.php',
             'sources/hooks/systems/commandr_commands/index.html',
@@ -197,6 +198,7 @@ class Hook_addon_registry_commandr
             'sources/hooks/systems/commandr_commands/rm.php',
             'sources/hooks/systems/commandr_commands/rmdir.php',
             'sources/hooks/systems/commandr_commands/set_comment_forum.php',
+            'sources/hooks/systems/commandr_commands/set_value.php',
             'sources/hooks/systems/commandr_commands/sql_dump.php',
             'sources/hooks/systems/commandr_commands/test_mail.php',
             'sources/hooks/systems/commandr_commands/time.php',
@@ -257,8 +259,6 @@ class Hook_addon_registry_commandr
             'themes/default/templates/COMMANDR_RSS.tpl',
             'themes/default/templates/COMMANDR_USERS_ONLINE.tpl',
             'themes/default/templates/COMMANDR_WHOIS.tpl',
-            'sources/hooks/systems/commandr_commands/get_value.php',
-            'sources/hooks/systems/commandr_commands/set_value.php',
         ];
     }
 

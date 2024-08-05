@@ -203,15 +203,15 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     }
     $am_looping++;
 
-    global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES;
+    global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES, $SITE_INFO;
 
     foreach ($ATTACHED_MESSAGES_RAW as $last) {
-        if ([is_object($last[0]) ? $last[0]->evaluate() : escape_html($last[0]), $last[1]] == [$message_eval, $type]) {
+        if ([$last[0], $last[1]] == [$message_eval, $type]) {
             $am_looping--;
             return ''; // Already shown
         }
     }
-    $ATTACHED_MESSAGES_RAW[] = [$message, $type];
+    $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
 
     if ($log_error) {
         require_code('urls');
@@ -240,7 +240,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         }
     }
 
-    if (($type == 'warn') && (strlen($message_eval) < 130)) {
+    if ($type == 'warn') {
         require_code('failure');
 
         $webservice_result = get_webservice_result($message);
@@ -256,10 +256,10 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
             $message = tooltip($message, $webservice_result, false);
             $message = protect_from_escaping($message);
         }
-    }
 
-    if ((get_param_integer('keep_fatalistic', 0) != 0) && ($type == 'warn')) {
-        fatal_exit($message);
+        if (current_fatalistic() > 0) {
+            fatal_exit($message);
+        }
     }
 
     $message_tpl = do_template('MESSAGE', [
@@ -1121,7 +1121,7 @@ function do_site()
         $disable_safe_mode_url = get_self_url(true, true, ['keep_safe_mode' => $safe_mode_via_config ? 0 : null]);
         attach_message(do_lang_tempcode('CURRENTLY_HAS_KEEP_SAFE_MODE', escape_html($disable_safe_mode_url)), 'notice');
     }
-    if (get_param_integer('keep_fatalistic', 0) != 0) {
+    if (current_fatalistic() > 0) {
         $disable_fatalistic_url = get_self_url(true, true, ['keep_fatalistic' => null]);
         attach_message(do_lang_tempcode('CURRENTLY_HAS_KEEP_FATALISTIC', escape_html($disable_fatalistic_url)), 'notice');
     }

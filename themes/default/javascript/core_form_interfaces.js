@@ -1503,7 +1503,7 @@
                 }
             }
 
-            _simplifiedFormContinueSubmit(iframe, formCatSelector);
+            _simplifiedFormContinueSubmit(e, iframe, formCatSelector);
 
             return null;
         }

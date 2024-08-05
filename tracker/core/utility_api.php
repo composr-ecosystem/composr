@@ -51,7 +51,7 @@ function trans_bool( $p_num ) {
 	if( 0 == $p_num ) {
 		return '&#160;';
 	} else {
-		return '<i class="fa fa-check fa-lg"></i>';
+		return icon_get( 'fa-check', 'fa-lg' );
 	}
 }
 
@@ -73,7 +73,7 @@ function terminate_directory_path( $p_path ) {
  * @access public
  */
 function is_blank( $p_var ) {
-	$p_var = trim( $p_var );
+	$p_var = trim( (string)$p_var );
 	$t_str_len = strlen( $p_var );
 	if( 0 == $t_str_len ) {
 		return true;

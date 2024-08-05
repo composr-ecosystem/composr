@@ -319,10 +319,10 @@ function page_not_found(string $page, string $zone) : object
     ksort($did_mean);
     $_did_mean = array_pop($did_mean);
 
-    if (($_SERVER['HTTP_REFERER'] != '') && (get_value_newer_than('gave-error-notificiation-for-request-' . $zone . ':' . $page, time() - 60 * 60 * 24 * 30) === null)) {
+    if (($_SERVER['HTTP_REFERER'] != '') && (get_value_newer_than('missing-page--' . $zone . ':' . $page, time() - 60 * 60 * 24 * 30) === null)) {
         require_code('failure');
         relay_error_notification(do_lang('_MISSING_RESOURCE', $zone . ':' . $page, do_lang('PAGE')) . ' ' . do_lang('REFERRER', $_SERVER['HTTP_REFERER'], substr(get_browser_string(), 0, 255)), false, 'error_occurred_missing_page');
-        set_value('gave-error-notificiation-for-request-' . $zone . ':' . $page, '1', true);
+        set_value('missing-page--' . $zone . ':' . $page, '1', true);
     }
 
     $title = get_screen_title('ERROR_OCCURRED');

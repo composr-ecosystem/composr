@@ -2879,7 +2879,6 @@ class __lang_spelling_epic_test_set extends cms_test_case
             'treelist',
             'treemenu',
             'treturn',
-            'trickstr',
             'tricksy',
             'trigered',
             'tristique',

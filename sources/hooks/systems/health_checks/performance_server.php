@@ -174,7 +174,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
         }
 
         if ($check_context == CHECK_CONTEXT__INSTALL) {
-            $threshold = 25000;
+            $threshold = 50000;
         } else {
             $threshold = intval(get_option('hc_cpu_score_threshold'));
         }

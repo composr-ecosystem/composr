@@ -130,9 +130,6 @@ if( $f_error || $f_cookie_error ) {
 		echo '<p>' . lang_get( 'login_cookies_disabled' ) . '</p>';
 	}
 
-	// Composr - Extra login instructions
-	echo '<p>' . sprintf(lang_get('cms_login_instruct'), $cms_sc_site_name) . '</p>';
-
 	echo '</div>';
 }
 
@@ -155,6 +152,12 @@ if( config_get_global( 'admin_checks' ) == ON ) {
 		}
 	}
 
+	# $g_path was defaulted - risk of Host Header injection attack
+	global $g_defaulted_path;
+	if( $g_defaulted_path ) {
+		$t_warnings[] = lang_get( 'warning_host_header_injection_hazard' );
+	}
+
 	/**
 	 * Display Warnings for enabled debugging / developer settings
 	 * @param string $p_type    Message Type.
@@ -164,8 +167,8 @@ if( config_get_global( 'admin_checks' ) == ON ) {
 	 */
 	function debug_setting_message ( $p_type, $p_setting, $p_value ) {
 		return sprintf( lang_get( 'warning_change_setting' ), $p_setting, $p_value )
-			. sprintf( lang_get( 'word_separator' ) )
-			. sprintf( lang_get( "warning_{$p_type}_hazard" ) );
+			. lang_get( 'word_separator' )
+			. lang_get( "warning_{$p_type}_hazard" );
 	}
 
 	$t_config = 'show_detailed_errors';
@@ -175,7 +178,7 @@ if( config_get_global( 'admin_checks' ) == ON ) {
 
 	# since admin directory and db_upgrade lists are available check for missing db upgrades
 	# if db version is 0, we do not have a valid database.
-	$t_db_version = config_get( 'database_version', 0 );
+	$t_db_version = config_get( 'database_version', 0, ALL_USERS, ALL_PROJECTS );
 	if( $t_db_version == 0 ) {
 		$t_warnings[] = lang_get( 'error_database_no_schema_version' );
 	}
@@ -183,6 +186,7 @@ if( config_get_global( 'admin_checks' ) == ON ) {
 	# Check for db upgrade for versions > 1.0.0 using new installer and schema
 	if( $t_admin_dir_is_accessible ) {
 		require_once( 'admin/schema.php' );
+		/** @var array $g_upgrade */
 		$t_upgrades_reqd = count( $g_upgrade ) - 1;
 
 		if( ( 0 < $t_db_version ) &&
@@ -206,7 +210,7 @@ if( config_get_global( 'admin_checks' ) == ON ) {
 		<div class="widget-body">
 			<div class="widget-main">
 				<h4 class="header lighter bigger">
-					<i class="ace-icon fa fa-sign-in"></i>
+					<?php print_icon( 'fa-sign-in', 'ace-icon' ); ?>
 					<?php echo $t_form_title ?>
 				</h4>
 				<div class="space-10"></div>
@@ -230,13 +234,13 @@ if( config_get_global( 'admin_checks' ) == ON ) {
 					<input id="username" name="username" type="text" placeholder="<?php echo $t_username_label ?>"
 						   size="32" maxlength="<?php echo DB_FIELD_SIZE_USERNAME;?>" value="<?php echo string_attribute( $t_username ); ?>"
 						   class="form-control autofocus">
-					<i class="ace-icon fa fa-user"></i>
+					<?php print_icon( 'fa-user', 'ace-icon' ); ?>
 				</span>
 			</label>
 
 			<div class="space-10"></div>
 
-			<input type="submit" class="width-40 pull-right btn btn-success btn-inverse bigger-110" value="<?php echo lang_get( 'login_button' ) ?>" />
+			<input type="submit" class="width-40 pull-right btn btn-success btn-inverse bigger-110" value="<?php echo lang_get( 'login' ) ?>" />
 		</fieldset>
 	</form>
 
@@ -264,16 +268,13 @@ if( $t_show_anonymous_login || $t_show_signup ) {
 		echo '<a class="back-to-login-link pull-right" href="login_anon.php?return=' . string_url( $f_return ) . '">' . lang_get( 'login_anonymously' ) . '</a>';
 	}
 
-	//if( $t_show_signup ) {
-	//	echo '<a class="back-to-login-link pull-left" href="signup_page.php">', lang_get( 'signup_link' ), '</a>';
-	//}
-	// Composr - show return to main site link
-	echo sprintf(lang_get('cms_return_instruct'), $cms_sc_site_url, $cms_sc_site_name);
+	if( $t_show_signup ) {
+		echo '<a class="back-to-login-link pull-left" href="signup_page.php">', lang_get( 'signup_link' ), '</a>';
+	}
 
 	echo '<div class="clearfix"></div>';
 	echo '</div>';
 }
-
 ?>
 
 		</div>

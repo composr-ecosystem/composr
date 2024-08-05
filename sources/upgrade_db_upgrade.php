@@ -573,7 +573,7 @@ function database_specific() : bool
 
     $done_something = false;
 
-    // Handle database field edits from 11 alpha to 11.beta1
+    // LEGACY: Handle database field edits from 11 alpha to 11.beta1
     if ((is_numeric($upgrade_from)) && (intval($upgrade_from) >= 1711670588/*11.alpha1*/) && (intval($upgrade_from) < 1721661975)) {
         $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
         $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
@@ -627,7 +627,7 @@ function database_specific() : bool
         $done_something = true;
     }
 
-    // Copy declarations in CPF on upgrade so members are not forced to re-agree to the rules
+    // LEGACY: (11.beta2) Copy declarations in CPF on upgrade so members are not forced to re-agree to the rules
     if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1721686113)) {
         if ((get_option('join_declarations') != '') && (get_option('show_first_join_page') == '1')) {
             $member_id = null;
@@ -651,7 +651,17 @@ function database_specific() : bool
                     }
                 }
             } while (count($rows) > 0);
+
+            $done_something = true;
         }
+    }
+
+    // LEGACY: (11.beta2) Add new privilege for recommend addon
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1722461012)) {
+        require_code('permissions3');
+        add_privilege('RECOMMEND', 'use_own_recommend_message', true, false, true);
+
+        $done_something = true;
     }
 
     return $done_something;

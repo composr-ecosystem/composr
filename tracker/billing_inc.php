@@ -102,13 +102,13 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 <div class="col-md-12 col-xs-12">
 <div id="time_tracking_stats" class="widget-box widget-color-blue2 <?php echo $t_block_css ?>">
 <div class="widget-header widget-header-small">
-    <h4 class="widget-title lighter">
-        <i class="ace-icon fa fa-clock-o"></i>
-        <?php echo lang_get( 'time_tracking' ) ?>
-    </h4>
+	<h4 class="widget-title lighter">
+		<?php print_icon( 'fa-clock-o', 'ace-icon' ); ?>
+		<?php echo lang_get( 'time_tracking' ) ?>
+	</h4>
 	<div class="widget-toolbar">
 		<a data-action="collapse" href="#">
-			<i class="1 ace-icon <?php echo $t_block_icon ?> fa bigger-125"></i>
+			<?php print_icon( $t_block_icon, 'ace-icon 1 bigger-125' ); ?>
 		</a>
 	</div>
 </div>
@@ -214,6 +214,13 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 			$t_link = sprintf( lang_get( 'label' ), string_get_bug_view_link( $t_issue_id ) ) . lang_get( 'word_separator' ) . $t_project_info . string_display_line( $t_issue['summary'] );
 			echo '<tr class="row-category-history"><td colspan="4">' . $t_link . '</td></tr>';
 
+			uksort(
+				$t_issue['users'],
+				function ( $a, $b ) {
+					return strcasecmp( user_get_name( $a ), user_get_name( $b ) );
+				}
+			);
+
 			foreach( $t_issue['users'] as $t_user_id => $t_user_info ) {
 ?>
 	<tr>
@@ -268,6 +275,13 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 	</tr>
 
 <?php
+	uksort(
+		$t_bugnote_stats['users'],
+		function ( $a, $b ) {
+			return strcasecmp( user_get_name( $a ), user_get_name( $b ) );
+		}
+	);
+
 	foreach ( $t_bugnote_stats['users'] as $t_user_id => $t_user_info ) {
 ?>
 	<tr>

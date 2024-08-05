@@ -19,7 +19,7 @@
  *
  * @package CoreAPI
  * @subpackage TagAPI
- * @author John Reese
+ * @author Amethyst Reese
  * @copyright Copyright 2000 - 2002  Kenzaburo Ito - kenito@300baud.org
  * @copyright Copyright 2002  MantisBT Team - mantisbt-dev@lists.sourceforge.net
  * @link http://www.mantisbt.org
@@ -589,9 +589,11 @@ function tag_create( $p_name, $p_user_id = null, $p_description = '' ) {
  * Update a tag with given name, creator, and description.
  * @param integer $p_tag_id      The tag ID which is being updated.
  * @param string  $p_name        The name of the tag.
- * @param integer $p_user_id     The user ID to set when updating the tag. Note: This replaces the existing user id.
+ * @param integer $p_user_id     The user ID to set when updating the tag.
+ *                               Note: This replaces the existing user id.
  * @param string  $p_description An updated description for the tag.
  * @return boolean
+ * @throws ClientException
  */
 function tag_update( $p_tag_id, $p_name, $p_user_id, $p_description ) {
 	$t_tag_row = tag_get( $p_tag_id );
@@ -611,10 +613,14 @@ function tag_update( $p_tag_id, $p_name, $p_user_id, $p_description ) {
 	} else {
 		$t_update_level = config_get( 'tag_edit_threshold' );
 	}
-
 	access_ensure_global_level( $t_update_level );
 
 	tag_ensure_name_is_valid( $p_name );
+
+	# Do not allow assigning a tag to a user who is not allowed to create one
+	if( !access_has_global_level( config_get( 'tag_create_threshold' ), $p_user_id ) ) {
+		trigger_error( ERROR_USER_DOES_NOT_HAVE_REQ_ACCESS, ERROR );
+	}
 
 	$t_rename = false;
 	if( mb_strtolower( $p_name ) != mb_strtolower( $t_tag_name ) ) {
@@ -745,7 +751,7 @@ function tag_bug_get_row( $p_tag_id, $p_bug_id ) {
 
 	$t_bug_tags = $g_cache_bug_tags[$c_bug_id];
 	if( !$t_bug_tags || !isset( $t_bug_tags[$p_tag_id] ) ) {
-		trigger_error( TAG_NOT_ATTACHED, ERROR );
+		trigger_error( ERROR_TAG_NOT_ATTACHED, ERROR );
 	}
 	return $t_bug_tags[$p_tag_id];
 }
@@ -812,7 +818,7 @@ function tag_bug_attach( $p_tag_id, $p_bug_id, $p_user_id = null ) {
 	tag_ensure_exists( $p_tag_id );
 
 	if( tag_bug_is_attached( $p_tag_id, $p_bug_id ) ) {
-		trigger_error( TAG_ALREADY_ATTACHED, ERROR );
+		trigger_error( ERROR_TAG_ALREADY_ATTACHED, ERROR );
 	}
 
 	if( null == $p_user_id ) {
@@ -855,7 +861,7 @@ function tag_bug_detach( $p_tag_id, $p_bug_id, $p_add_history = true, $p_user_id
 	}
 
 	if( !tag_bug_is_attached( $p_tag_id, $p_bug_id ) ) {
-		trigger_error( TAG_NOT_ATTACHED, ERROR );
+		trigger_error( ERROR_TAG_NOT_ATTACHED, ERROR );
 	}
 
 	$t_tag_row = tag_bug_get_row( $p_tag_id, $p_bug_id );
@@ -945,7 +951,7 @@ function tag_display_link( array $p_tag_row, $p_bug_id = 0 ) {
 		$t_tooltip = string_html_specialchars( sprintf( lang_get( 'tag_detach' ), string_display_line( $p_tag_row['name'] ) ) );
 		$t_href = 'tag_detach.php?bug_id=' . $p_bug_id . '&amp;tag_id=' . $p_tag_row['id'] . $s_security_token;
 		echo ' <a class="btn btn-xs btn-primary btn-white btn-round" title="' . $t_tooltip . '" href="' . $t_href . '">';
-		echo '<i class="fa fa-times"></i>';
+		print_icon( 'fa-times' );
 		echo '</a>';
 	}
 

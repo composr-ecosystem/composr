@@ -124,16 +124,18 @@ function collapse_icon( $p_name ) {
 	global $g_open_collapse_section;
 
 	if( $g_open_collapse_section === true ) {
-		$t_icon = 'fa-chevron-up bigger-120';
+		$t_icon = 'fa-chevron-up';
 		$t_alt = '-';
 		$t_id = $p_name . '_open_link';
 	} else {
-		$t_icon = 'fa-chevron-down bigger-120';
+		$t_icon = 'fa-chevron-down';
 		$t_alt = '+';
 		$t_id = $p_name. '_closed_link';
 	}
 
-	echo '&nbsp;&nbsp;<a id="', $t_id, '" class="collapse-link noprint"><i class="fa ', $t_icon, '" title="', $t_alt, '"></i></a>';
+	echo '&nbsp;&nbsp;<a id="', $t_id, '" class="collapse-link noprint">';
+	print_icon( $t_icon, 'bigger-120', $t_alt);
+	echo '</a>';
 }
 
 /**
@@ -203,7 +205,8 @@ function collapse_cache_token() {
 
 	$g_collapse_cache_token = $t_data;
 
-	$t_cookie = gpc_get_cookie( 'MANTIS_collapse_settings', '' );
+	$t_collapse_cookie = config_get_global( 'collapse_settings_cookie' );
+	$t_cookie = gpc_get_cookie( $t_collapse_cookie, '' );
 
 	if( false !== $t_cookie && !is_blank( $t_cookie ) ) {
 		$t_update = false;
@@ -229,6 +232,6 @@ function collapse_cache_token() {
 			token_touch( $t_token['id'] );
 		}
 
-		gpc_clear_cookie( 'MANTIS_collapse_settings' );
+		gpc_clear_cookie( $t_collapse_cookie );
 	}
 }

@@ -208,11 +208,16 @@ function require_css( $p_stylesheet_path ) {
  */
 function html_css() {
 	global $g_stylesheets_included;
-	html_css_link( config_get_global( 'css_include_file' ) );
+
+	$t_cache_key = helper_generate_cache_key();
+
+	html_css_link( config_get_global( 'css_include_file' ), $t_cache_key );
+
 	# Add right-to-left css if needed
 	if( lang_get( 'directionality' ) == 'rtl' ) {
-		html_css_link( config_get_global( 'css_rtl_include_file' ) );
+		html_css_link( config_get_global( 'css_rtl_include_file' ), $t_cache_key );
 	}
+
 	foreach( $g_stylesheets_included as $t_stylesheet_path ) {
 		# status_config.php is a special css file, dynamically generated.
 		# Add a hash to the query string to differentiate content based on its
@@ -224,6 +229,7 @@ function html_css() {
 				'cache_key=' . helper_generate_cache_key( array( 'user' ) )
 			);
 		}
+
 		html_css_link( $t_stylesheet_path );
 	}
 
@@ -238,14 +244,23 @@ function html_css() {
 /**
  * Prints a CSS link
  * @param string $p_filename Filename.
+ * @param string $p_cache_key The cache key to put on query string or empty string.
  * @return void
  */
-function html_css_link( $p_filename ) {
+function html_css_link( $p_filename, $p_cache_key = '' ) {
+	$t_filename = $p_filename;
+
 	# If no path is specified, look for CSS files in default directory
-	if( $p_filename == basename( $p_filename ) ) {
-		$p_filename = 'css/' . $p_filename;
+	if( $t_filename == basename( $t_filename ) ) {
+		$t_filename = 'css/' . $t_filename;
 	}
-	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( $p_filename ), true ), '" />', "\n";
+
+	$t_url = helper_mantis_url( $t_filename );
+	if ( !empty( $p_cache_key ) ) {
+		$t_url = helper_url_combine( $t_url, 'cache_key=' . $p_cache_key );
+	}
+
+	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( $t_url, true ), '" />', "\n";
 }
 
 /**
@@ -268,7 +283,7 @@ function html_css_cdn_link( $p_url, $p_hash = '' ) {
  * $p_time is the number of seconds to wait before redirecting.
  * If we have handled any errors on this page return false and don't redirect.
  *
- * @param string  $p_url      The page to redirect: has to be a relative path.
+ * @param string  $p_url      The page to redirect: has to be relative to the install path {@see $g_path}.
  * @param integer $p_time     Seconds to wait for before redirecting.
  * @param boolean $p_sanitize Apply string_sanitize_url to passed URL.
  * @return boolean
@@ -294,6 +309,19 @@ function html_meta_redirect( $p_url, $p_time = null, $p_sanitize = true ) {
 	echo "\t" . '<meta http-equiv="Refresh" content="' . $p_time . '; URL=' . $t_url . '" />' . "\n";
 
 	return true;
+}
+
+/**
+ * Print a canonical meta tag.
+ *
+ * @param string  $p_url      The canonical URL: has to be relative to the install path {@see $g_path}.
+ */
+function html_meta_canonical( $p_url ) {
+	$t_url = config_get_global( 'path' ) . $p_url;
+
+	$t_url = htmlspecialchars( $t_url );
+
+	echo "\t" . '<link rel="canonical" href="' . $t_url . '" />' . "\n";
 }
 
 /**
@@ -362,7 +390,7 @@ function html_head_end() {
  */
 function html_print_logo( $p_logo = null ) {
 	if( !$p_logo ) {
-		$p_logo = config_get( 'logo_image' );
+		$p_logo = config_get_global( 'logo_image' );
 	}
 
 	if( !is_blank( $p_logo ) ) {
@@ -388,7 +416,7 @@ function html_print_logo( $p_logo = null ) {
  */
 function html_top_banner() {
 	$t_page = config_get_global( 'top_include_page' );
-	$t_logo_image = config_get( 'logo_image' );
+	$t_logo_image = config_get_global( 'logo_image' );
 
 	if( !is_blank( $t_page ) && file_exists( $t_page ) && !is_dir( $t_page ) ) {
 		include( $t_page );
@@ -405,14 +433,16 @@ function html_top_banner() {
  * Outputs a message to confirm an operation's result.
  * @param array   $p_buttons     Array of (URL, label) pairs used to generate
  *                               the buttons; if label is null or unspecified,
- *                               the default 'proceed' text will be displayed.
+ *                               the default 'proceed' text will be displayed;
+ *                               If the array is empty or not provided, no
+ *                               buttons will be printed.
  * @param string  $p_message     Message to display to the user. If none is
  *                               provided, a default message will be printed
  * @param integer $p_type        One of the constants CONFIRMATION_TYPE_SUCCESS,
  *                               CONFIRMATION_TYPE_WARNING, CONFIRMATION_TYPE_FAILURE
  * @return void
  */
-function html_operation_confirmation( array $p_buttons, $p_message = '', $p_type = CONFIRMATION_TYPE_SUCCESS ) {
+function html_operation_confirmation( array $p_buttons = null, $p_message = '', $p_type = CONFIRMATION_TYPE_SUCCESS ) {
 	switch( $p_type ) {
 		case CONFIRMATION_TYPE_FAILURE:
 			$t_alert_css = 'alert-danger';
@@ -440,17 +470,20 @@ function html_operation_confirmation( array $p_buttons, $p_message = '', $p_type
 	} else {
 		$t_message = $p_message;
 	}
-	echo '<p class="bold bigger-110">' . $t_message  . '</p><br />';
+	echo '<p class="bold bigger-110">' . $t_message  . '</p>';
 
 	# Print buttons
-	echo '<div class="btn-group">';
-	foreach( $p_buttons as $t_button ) {
-		$t_url = string_sanitize_url( $t_button[0] );
-		$t_label = isset( $t_button[1] ) ? $t_button[1] : lang_get( 'proceed' );
+	if( !empty( $p_buttons ) ) {
+		echo '<br />';
+		echo '<div class="btn-group">';
+		foreach( $p_buttons as $t_button ) {
+			$t_url = string_sanitize_url( $t_button[0] );
+			$t_label = isset( $t_button[1] ) ? $t_button[1] : lang_get( 'proceed' );
 
-		print_link_button( $t_url, $t_label );
+			print_link_button( $t_url, $t_label );
+		}
+		echo '</div>';
 	}
-	echo '</div>';
 
 	echo '</div></div></div>', PHP_EOL;
 }
@@ -520,24 +553,33 @@ function html_end() {
 
 /**
  * Print the menu bar with a list of projects to which the user has access
+ *
+ * @see $g_show_project_menu_bar
+ *
  * @return void
  */
 function print_project_menu_bar() {
 	$t_project_ids = current_user_get_accessible_projects();
 	$t_current_project_id = helper_get_current_project();
+	$t_button_classes = 'btn btn-xs btn-white btn-info';
 
 	echo '<div class="col-md-12 col-xs-12">' . "\n";
 	echo '<div class="btn-group">' . "\n";
 
-	$t_active = ALL_PROJECTS == $t_current_project_id ? 'active' : '';
-	echo '<a class="btn btn-xs btn-white btn-info ' . $t_active .
-		'" href="' . helper_mantis_url( 'set_project.php?project_id=' . ALL_PROJECTS ) . '">', lang_get( 'all_projects' ), '</a>' . "\n";
-
+	echo project_link_for_menu(
+			ALL_PROJECTS,
+			$t_current_project_id == ALL_PROJECTS,
+			$t_button_classes
+		);
+	echo "\n";
 	foreach( $t_project_ids as $t_id ) {
-		$t_active = $t_id == $t_current_project_id ? 'active' : '';
-		echo '<a class="btn btn-xs btn-white btn-info ' . $t_active .
-			'" href="' . helper_mantis_url( 'set_project.php?project_id=' . $t_id ) . '">', string_html_specialchars( project_get_field( $t_id, 'name' ) ), '</a>' . "\n";
-		print_subproject_menu_bar( $t_current_project_id, $t_id, $t_id . ';' );
+		echo project_link_for_menu(
+				$t_id,
+				$t_current_project_id == $t_id,
+				$t_button_classes
+			);
+		echo "\n";
+		print_subproject_menu_bar( $t_current_project_id, $t_id, array( $t_id ) );
 	}
 
 	echo '</div>' . "\n";
@@ -546,25 +588,33 @@ function print_project_menu_bar() {
 }
 
 /**
- * Print the menu bar with a list of projects to which the user has access
- * @todo check parents param - set_project.php?project_id=' . $p_parents . $t_subproject
+ * Print the menu bar with a list of subprojects to which the user has access
+ *
  * @param integer $p_current_project_id Selected project id.
- * @param integer $p_parent_project_id Parent project id.
- * @param string  $p_parents    Parent project identifiers.
+ * @param integer $p_parent_project_id  Parent project id.
+ * @param array   $p_parents            Parent project identifiers.
+ *
  * @return void
  */
-function print_subproject_menu_bar( $p_current_project_id, $p_parent_project_id, $p_parents = '' ) {
+function print_subproject_menu_bar( $p_current_project_id, $p_parent_project_id, array $p_parents = array() ) {
 	$t_subprojects = current_user_get_accessible_subprojects( $p_parent_project_id );
 
 	foreach( $t_subprojects as $t_subproject_id ) {
-		$t_active = $p_current_project_id == $t_subproject_id ? 'active' : '';
-		echo '<a class="btn btn-xs btn-white btn-default ' . $t_active .
-			'" href="' . helper_mantis_url( 'set_project.php?project_id=' . $p_parents . $t_subproject_id ) .
-			'"><i class="ace-icon fa fa-angle-double-right"></i> ' .
-			string_html_specialchars( project_get_field( $t_subproject_id, 'name' ) ) . '</a>';
+		echo project_link_for_menu(
+				$t_subproject_id,
+				$t_subproject_id == $p_current_project_id,
+				'btn btn-xs btn-white btn-info',
+				$p_parents,
+				icon_get( 'fa-angle-double-right', 'ace-icon' )
+			);
+		echo "\n";
 
-		# Render this subproject's subprojects ... passing current project id to highlight selected project
-		print_subproject_menu_bar( $p_current_project_id, $t_subproject_id, $p_parents . $t_subproject_id . ';' );
+		# Recursive call to render this subproject's subprojects
+		print_subproject_menu_bar(
+			$p_current_project_id,
+			$t_subproject_id,
+			array_merge( $p_parents, array( $t_subproject_id) )
+		);
 	}
 }
 
@@ -583,7 +633,9 @@ function print_menu( array $p_menu_items, $p_current_page = '', $p_event = null 
 
 		echo '<li class="' . $t_active .  '">';
 		if( $t_item['label'] == '' ) {
-			echo '<a href="'. lang_get_defaulted( $t_item['url'] ) .'"><i class="blue ace-icon fa fa-info-circle"></i> </a>';
+			echo '<a href="'. lang_get_defaulted( $t_item['url'] ) .'">';
+			print_icon( 'fa-info-circle', 'blue ace-icon' );
+			echo '</a>';
 		} else {
 			echo '<a href="'. helper_mantis_url( $t_item['url'] ) .'">' . lang_get_defaulted( $t_item['label'] ) . '</a>';
 		}
@@ -624,7 +676,7 @@ function print_submenu( array $p_menu_items, $p_current_page = '', $p_event = nu
 				$t_active = $p_current_page && strpos( $t_item['url'], $p_current_page ) !== false
 					? 'active' : '';
 				$t_icon = array_key_exists( 'icon', $t_item )
-					? '<i class="fa ' . $t_item['icon'] . '"></i>&nbsp;'
+					? icon_get( $t_item['icon'] ) . '&nbsp;'
 					: '';
 
 				printf( $t_btn_template,
@@ -856,7 +908,7 @@ function print_doc_menu( $p_page = '' ) {
 		);
 	}
 
-	print_menu( $t_pages, $p_page );
+	print_menu( $t_pages, $p_page, 'EVENT_MENU_DOCS' );
 }
 
 /**
@@ -888,7 +940,7 @@ function print_summary_menu( $p_page = '', array $p_filter = null ) {
  */
 function print_admin_menu_bar( $p_page ) {
 	# Build array with admin menu items, add Upgrade tab if necessary
-	$t_menu_items['index.php'] = '<i class="blue ace-icon fa fa-info-circle"></i>';
+	$t_menu_items['index.php'] = icon_get( 'fa-info-circle', 'blue ace-icon' );
 
 	# At the beginning of admin checks, the DB is not yet loaded so we can't
 	# check the schema to inform user that an upgrade is needed
@@ -896,9 +948,9 @@ function print_admin_menu_bar( $p_page ) {
 		# Relative URL up one level to ensure valid links on Admin Checks page
 		$t_path = '../';
 	} else {
-		global $g_upgrade;
-		include_once( 'schema.php' );
-		if( count( $g_upgrade ) - 1 != config_get( 'database_version' ) ) {
+		global $g_absolute_path, $g_upgrade;
+		require_once( $g_absolute_path . 'admin/schema.php' );
+		if( count( $g_upgrade ) - 1 != config_get( 'database_version', -1, ALL_USERS, ALL_PROJECTS ) ) {
 			$t_menu_items['install.php'] = 'Upgrade your installation';
 		}
 

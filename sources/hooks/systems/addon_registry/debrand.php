@@ -81,7 +81,7 @@ class Hook_addon_registry_debrand
      */
     public function get_description() : string
     {
-        return 'Allow easy debranding of the website software.';
+        return 'Allow easy debranding of the website software. This is meant for agencies who want to use Composr as a white-labeled product.';
     }
 
     /**

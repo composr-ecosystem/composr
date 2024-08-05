@@ -85,7 +85,7 @@ print_summary_submenu();
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 	<h4 class="widget-title lighter">
-		<i class="ace-icon fa fa-bar-chart-o"></i>
+		<?php print_icon( 'fa-bar-chart-o', 'ace-icon' ); ?>
 		<?php echo lang_get('summary_title') ?>
 	</h4>
 </div>
@@ -107,7 +107,7 @@ print_summary_submenu();
 				<?php echo $t_summary_header ?>
 			</tr>
 		</thead>
-		<?php summary_print_by_project( array(), null, null, $t_filter ); ?>
+		<?php summary_print_by_project( array(), 0, null, $t_filter ); ?>
 	</table>
 	</div>
 

@@ -528,6 +528,7 @@ function cron_bridge_script(string $caller)
                     $GLOBALS['SITE_DB']->query_update(
                         'cron_progression',
                         [
+                            'c_hook' => $hook,
                             'c_last_run_time' => time(),
                             'c_last_execution_secs' => $time_after - $time_before,
                             'c_last_error' => $last_error,
@@ -546,7 +547,7 @@ function cron_bridge_script(string $caller)
                         'c_last_error' => $last_error,
                         'c_enabled' => 1,
                     ];
-                    $GLOBALS['SITE_DB']->query_insert('cron_progression', $cron_progression[$hook]);
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('cron_progression', $cron_progression[$hook], ['c_hook' => $hook]);
                 }
 
                 // Unlock

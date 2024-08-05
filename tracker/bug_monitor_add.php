@@ -39,10 +39,10 @@ require_api( 'helper_api.php' );
 require_api( 'print_api.php' );
 require_api( 'utility_api.php' );
 
-//form_security_validate( 'bug_monitor_add' );  Composr - disabled so direct linking works
+form_security_validate( 'bug_monitor_add' );
 
 $f_bug_id = gpc_get_int( 'bug_id' );
-$f_usernames = trim( gpc_get_string( 'username', '' ) );
+$f_usernames = trim( gpc_get_string( 'user_to_add', '' ) );
 
 $t_payload = array();
 
@@ -66,13 +66,4 @@ $t_command->execute();
 
 form_security_purge( 'bug_monitor_add' );
 
-// Composr - show message relating to vote (monitor = vote)
-$p_redirect_to='view.php?id=' . strval($f_bug_id);
-layout_page_header_begin( lang_get('cms_title_vote_added') );
-layout_page_header_end();
-layout_page_begin( 'bug_monitor_add.php' );
-echo '<br /><div class="center">';
-echo lang_get('cms_vote_added').'<br />';
-print_small_button( $p_redirect_to, lang_get('cms_sc_view_details') );
-echo '</div>';
-layout_page_end();
+print_header_redirect_view( $f_bug_id );

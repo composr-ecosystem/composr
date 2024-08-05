@@ -350,9 +350,8 @@ function init__global2()
     }
     $static_cache_mode = null;
     if (web_client_may_use_static_cache(true, $static_cache_mode)) {
-        load_csp(['csp_enabled' => '0']);
         require_code('static_cache');
-        static_cache($static_cache_mode);
+        static_cache($static_cache_mode); // NB: $static_cache_mode will never be null if web_client_may_use_static_cache returns true
     }
 
     // More critical things
@@ -2518,4 +2517,32 @@ function currently_logging_in() : bool
     }
     $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
     return ($page == 'login');
+}
+
+/**
+ * Find the current mode of fatalistic.
+ *
+ * @return integer 0 if fatalistic is off, 1 if it is on, or 2 if it is on with additional details
+ */
+function current_fatalistic() : int
+{
+    // _config.php takes priority
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['keep_fatalistic'])) {
+        switch ($SITE_INFO['keep_fatalistic']) { // This is to prevent invalid config values from breaking the site
+            case '1':
+                return 1;
+            case '2':
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
+    // URL parameter, but only if we are a super administrator
+    if ((get_param_integer('keep_fatalistic', 0) != 0) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+        return get_param_integer('keep_fatalistic');
+    }
+
+    return 0;
 }

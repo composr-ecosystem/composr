@@ -67,6 +67,8 @@ require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
 require_api( 'version_api.php' );
 
+require_css( 'status_config.php' );
+
 /**
  * Print header for the specified project version.
  * @param integer $p_version_id A valid version identifier.
@@ -100,33 +102,47 @@ function print_version_header( $p_version_id ) {
 
 	echo '<div id="' . $t_block_id . '" class="widget-box widget-color-blue2 ' . $t_block_css . '">';
 	echo '<div class="widget-header widget-header-small">';
+	echo PHP_EOL;
 	echo '<h4 class="widget-title lighter">';
-	echo '<i class="ace-icon fa fa-retweet"></i>';
+	print_icon( 'fa-retweet', 'ace-icon' );
 	echo $t_release_title, lang_get( 'word_separator' );
 	echo '</h4>';
+	echo PHP_EOL;
 	echo '<div class="widget-toolbar">';
 	echo '<a data-action="collapse" href="#">';
-	echo '<i class="1 ace-icon fa ' . $t_block_icon . ' bigger-125"></i>';
+	print_icon( $t_block_icon, '1 ace-icon bigger-125' );
 	echo '</a>';
 	echo '</div>';
 	echo '</div>';
+	echo PHP_EOL;
 
 	echo '<div class="widget-body">';
 	echo '<div class="widget-toolbox padding-8 clearfix">';
-	echo '<div class="pull-left"><i class="fa fa-calendar-o fa-lg"> </i> ' . $t_release_date . '</div>';
+	echo '<div class="pull-left">' . icon_get( 'fa-calendar-o', 'fa-lg' ) . ' ' . $t_release_date . '</div>';
+	echo PHP_EOL;
 	echo '<div class="btn-toolbar pull-right">';
-	echo '<a class="btn btn-xs btn-primary btn-white btn-round" ';
-	echo 'href="view_all_set.php?type=' . FILTER_ACTION_PARSE_NEW . '&temporary=y&' . FILTER_PROPERTY_PROJECT_ID . '=' . $t_project_id .
-		 '&' . filter_encode_field_and_value( FILTER_PROPERTY_FIXED_IN_VERSION, $t_version_name ) .
-		 '&' . FILTER_PROPERTY_HIDE_STATUS . '=' . META_FILTER_NONE . '">';
-	echo lang_get( 'view_bugs_link' );
-	echo '<a class="btn btn-xs btn-primary btn-white btn-round" href="changelog_page.php?version_id=' . $p_version_id . '">' . string_display_line( $t_version_name ) . '</a>';
-	echo '<a class="btn btn-xs btn-primary btn-white btn-round" href="changelog_page.php?project_id=' . $t_project_id . '">' . string_display_line( $t_project_name ) . '</a>';
-	echo '</a>';
+	print_extra_small_button(
+		'view_all_set.php?type=' . FILTER_ACTION_PARSE_NEW
+		. '&temporary=y&' . FILTER_PROPERTY_PROJECT_ID . '=' . $t_project_id
+		. '&' . filter_encode_field_and_value( FILTER_PROPERTY_FIXED_IN_VERSION, $t_version_name )
+		. '&' . FILTER_PROPERTY_HIDE_STATUS . '=' . META_FILTER_NONE,
+		lang_get( 'view_bugs_link' )
+	);
+	print_extra_small_button(
+		'changelog_page.php?version_id=' . $p_version_id,
+		string_display_line( $t_version_name )
+	);
+	print_extra_small_button(
+		'changelog_page.php?project_id=' . $t_project_id,
+		string_display_line( $t_project_name )
+	);
 	echo '</div>';
+	echo PHP_EOL;
 
 	echo '</div>';
+	echo PHP_EOL;
 	echo '<div class="widget-main">';
+
 }
 
 /**
@@ -143,14 +159,16 @@ function print_version_footer( $p_version_id, $p_issues_resolved ) {
 	echo '</div>';
 	echo '<div class="widget-toolbox padding-8 clearfix">';
 	echo ' ' . $p_issues_resolved . ' ' . lang_get( $t_bug_string ) . ' ';
-	echo '<a class="btn btn-xs btn-primary btn-white btn-round" ';
-	echo 'href="view_all_set.php?type=' . FILTER_ACTION_PARSE_NEW . '&temporary=y&' . FILTER_PROPERTY_PROJECT_ID . '=' . $t_project_id .
-		 '&' . filter_encode_field_and_value( FILTER_PROPERTY_FIXED_IN_VERSION, $t_version_name ) .
-		 '&' . FILTER_PROPERTY_HIDE_STATUS . '=' . META_FILTER_NONE . '">';
-	echo lang_get( 'view_bugs_link' );
-	echo '</a>';
+	print_extra_small_button(
+		'view_all_set.php?type=' . FILTER_ACTION_PARSE_NEW
+		. '&temporary=y&' . FILTER_PROPERTY_PROJECT_ID . '=' . $t_project_id
+		. '&' . filter_encode_field_and_value( FILTER_PROPERTY_FIXED_IN_VERSION, $t_version_name )
+		. '&' . FILTER_PROPERTY_HIDE_STATUS . '=' . META_FILTER_NONE,
+		 lang_get( 'view_bugs_link' )
+	);
 	echo '</div></div></div>';
 	echo '<div class="space-10"></div>';
+	echo PHP_EOL;
 }
 
 /**
@@ -162,6 +180,7 @@ function print_project_header_changelog( $p_project_name ) {
 	echo '<div class="page-header">';
 	echo '<h1><strong>' . string_display_line( $p_project_name ), '</strong> - ', lang_get( 'changelog' ) . '</h1>';
 	echo '</div>';
+	echo PHP_EOL;
 }
 
 $t_issues_found = false;
@@ -291,7 +310,7 @@ foreach( $t_project_ids as $t_project_id ) {
 
 			$t_issue_id = $t_row['id'];
 			$t_issue_parent = $t_row['source_bug_id'];
-			$t_parent_version = $t_row['parent_version'];
+			$t_parent_version = (string)$t_row['parent_version'];
 
 			if( !helper_call_custom_function( 'changelog_include_issue', array( $t_issue_id ) ) ) {
 				continue;
@@ -314,6 +333,7 @@ foreach( $t_project_ids as $t_project_id ) {
 
 		if( $t_issues_resolved > 0 ) {
 			if( !$t_project_header_printed ) {
+				echo PHP_EOL;
 				print_project_header_changelog( $t_project_name );
 				$t_project_header_printed = true;
 			}
@@ -324,7 +344,9 @@ foreach( $t_project_ids as $t_project_id ) {
 			}
 
 			if( !is_blank( $t_description ) ) {
-				echo '<div class="alert alert-warning">', string_display( "$t_description" ), '</div>';
+				echo '<div class="alert alert-warning">',
+					string_display_links( $t_description ),
+					'</div>';
 			}
 		} else {
 			continue;
@@ -376,14 +398,18 @@ foreach( $t_project_ids as $t_project_id ) {
 			}
 		}
 
+		echo '<ul class="changelog">' . PHP_EOL;
 		for( $j = 0; $j < count( $t_issue_set_ids ); $j++ ) {
 			$t_issue_set_id = $t_issue_set_ids[$j];
 			$t_issue_set_level = $t_issue_set_levels[$j];
 
+			echo '<li>';
 			helper_call_custom_function( 'changelog_print_issue', array( $t_issue_set_id, $t_issue_set_level ) );
+			echo '</li>' . PHP_EOL;
 
 			$t_issues_found = true;
 		}
+		echo '</ul>' . PHP_EOL;
 
 	if( $t_version_header_printed ) {
 		print_version_footer( $t_version_id,  $t_issues_resolved);

@@ -408,7 +408,7 @@ class points_test_set extends cms_test_case
 
         $points_to_escrow = $initial_gift_points + 1;
 
-        $this->escrow = escrow_points($this->admin_user, $this->member_user, $points_to_escrow, 'Unit test: escrow with gift points', 'Unit test', null, false, null);
+        $this->escrow = escrow_points($this->admin_user, $this->member_user, $points_to_escrow, 'Unit test: escrow with gift points', 'Unit test', null, '', '', false, null);
         if ($this->escrow === null) {
             $this->assertTrue(false, 'escrow_points failed (returned null instead of an ID).');
             return;

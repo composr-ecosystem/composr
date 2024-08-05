@@ -1181,7 +1181,7 @@ class DatabaseRepair
     {
         $this->sql_fixup[md5($query)/*De-duplicates*/] = $query . ';';
 
-        if (get_param_integer('keep_fatalistic', 0) != 0) {
+        if (current_fatalistic() > 0) {
             fatal_exit($query);
         }
     }

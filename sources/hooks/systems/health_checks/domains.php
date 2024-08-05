@@ -75,7 +75,7 @@ class Hook_health_check_domains extends Hook_Health_Check
             $domains = get_server_names(false);
 
             foreach ($domains as $domain) {
-                $this->assertTrue(@checkdnsrr($domain, 'A'), 'DNS does not seem to be set up properly for [tt]' . $domain . '[/tt]');
+                $this->assertTrue(@checkdnsrr($domain, 'A'), 'No valid DNS \'A\' records were found for [tt]' . $domain . '[/tt]; the domain is probably not set up correctly.');
             }
         } else {
             $this->stateCheckSkipped('PHP [tt]checkdnsrr[/tt] function not available');
@@ -127,7 +127,7 @@ class Hook_health_check_domains extends Hook_Health_Check
                 if (preg_match('#(Expiry date|Expiration date|Expiration):\s*([^\s]*)#im', $data, $matches) != 0) {
                     $expiry = strtotime($matches[2]);
                     if ($expiry > 0) {
-                        $this->assertTrue($expiry > time() - 60 * 60 * 24 * 7, 'Domain name [tt]' . $domain . '[/tt] seems to be expiring within a week or already expired');
+                        $this->assertTrue($expiry > time() - 60 * 60 * 24 * 7, 'Domain name [tt]' . $domain . '[/tt] has expired or will expire in less than a week.');
                     } else {
                         $this->stateCheckSkipped('Error reading expiry date for [tt]' . $domain . '[/tt]');
                     }

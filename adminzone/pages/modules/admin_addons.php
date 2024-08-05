@@ -1384,6 +1384,7 @@ class Module_admin_addons
         $fields .= $field->evaluate();
 
         require_code('version');
+        require_lang('config');
         $field = form_input_float(do_lang_tempcode('MIN_CMS_VERSION'), do_lang_tempcode('DESCRIPTION_MIN_CMS_VERSION'), 'min_cms_version', floatval($min_cms_version), true);
         $fields .= $field->evaluate();
         $field = form_input_float(do_lang_tempcode('MAX_CMS_VERSION'), do_lang_tempcode('DESCRIPTION_MAX_CMS_VERSION'), 'max_cms_version', ($max_cms_version != '') ? floatval($max_cms_version) : null, false);
