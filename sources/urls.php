@@ -248,7 +248,8 @@ function cms_rawurlencode(string $url_part, ?bool $can_try_url_schemes = null) :
     }
     if ($can_try_url_schemes) { // These interfere with URL Scheme processing because they get pre-decoded and make things ambiguous
         //$url_part = str_replace(':', '(colon)', $url_part); We'll ignore theoretical problem here- we won't expect there to be a need for encodings within redirect URL paths (params is fine, handles naturally)
-        $url_part = str_replace(['&', '#'], [':amp:', ':uhash:'], $url_part); // horrible but mod_rewrite does it so we need to
+        $url_part = str_replace(['&', '#', ' '], [':amp:', ':uhash:', ':space:'], $url_part); // horrible but mod_rewrite does it so we need to
+        // ^ Normally space would map to %20 for this encoding (rawurlencode as opposed to urlencode) and that would work just fine, But it's been needed since this issue: https://www.plesk.com/kb/support/domain-in-plesk-shows-error-403-rewritten-query-string-contains-control-characters-or-spaces/.
     }
     $url_part = str_replace('%2F', '/', rawurlencode($url_part));
     return $url_part;
@@ -264,7 +265,7 @@ function cms_urldecode_post_process(string $url_part) : string
 {
     if (strpos($url_part, ':') !== false) {
         if (can_try_url_schemes()) {
-            $url_part = str_replace([':uhash:', ':amp:', ':slash:', ':plus:'], ['#', '&', '/', '+'], $url_part);
+            $url_part = str_replace([':uhash:', ':amp:', ':slash:', ':plus:', ':space:'], ['#', '&', '/', '+', ' '], $url_part);
             //$url_part = str_replace('(colon)', ':', $url_part);
         }
         if (get_value('disable_modsecurity_workaround') !== '1') {
