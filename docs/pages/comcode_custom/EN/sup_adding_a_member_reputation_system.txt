@@ -5,6 +5,11 @@
 [media width="150" description="Karma" float="right"]data_custom/images/docs/sup_adding_a_member_reputation_system/karma_bar_profile.jpg[/media]
 The {$IS_MAINTAINED,karma,Karma non-bundled addon} enables site admins to introduce a member reputation system to their Conversr-powered site. Similar to other forum software which have a reputation system, karma is a publicly visible and crowdsourced 'score' of how reputable a member is within the community. Other members can then make a judgment call as to how they will interact with said member based on their karma. The Karma addon, however, goes way beyond that and has many configurable features.
 
+[title="2"]Difference between Karma and Points[/title]
+Composr's Points bundled addon can be thought of as a virtual currency system; the more points someone has, the more wealthy they are in the community. Karma, on the other hand, is a reputation system. The more karma a member has, the more reputable they are and the more established they are in the community.
+
+Typically, a member will also have more points the more reputable they are. But this is often not always the case. For example, depending on the site, points can be spent on things, given to other members, or earned in ways not pertaining to behaviour (e.g. making a donation to the site).
+
 [title="2"]Installing the karma addon[/title]
 Before proceeding, be aware that the karma addon requires that you are running the Conversr forum software. This is by design as other forum software may have their own reputation systems. This requirement prevents confusion with the reputation systems of other forum software.
 
