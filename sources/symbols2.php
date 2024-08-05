@@ -2286,6 +2286,9 @@ function ecv2_XOR(string $lang, array $escaped, array $param) : string
     foreach ($param as $test) {
         if ($test == '1') {
             $count++;
+            if ($count == 2) {
+                break;
+            }
         }
     }
     $value = ($count == 1) ? '1' : '0';

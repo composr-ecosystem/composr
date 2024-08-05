@@ -456,4 +456,67 @@ bar
             echo '<code style="white-space: pre">' . diff_simple_text($got, $expected) . '</code>';
         }
     }
+
+    public function testLogicSymbols()
+    {
+        $tests = [
+            'OR' => [
+                [[], false],
+                [[false], false],
+                [[true], true],
+                [[false, false], false],
+                [[false, true], true],
+                [[true, false], true],
+                [[true, true], true],
+            ],
+            'AND' => [
+                [[], false],
+                [[false], false],
+                [[true], true],
+                [[false, false], false],
+                [[false, true], false],
+                [[true, false], false],
+                [[true, true], true],
+            ],
+            'NOR' => [
+                [[], true],
+                [[false], true],
+                [[true], false],
+                [[false, false], true],
+                [[false, true], false],
+                [[true, false], false],
+                [[true, true], false],
+            ],
+            'NAND' => [
+                [[], true],
+                [[false], true],
+                [[true], false],
+                [[false, false], true],
+                [[false, true], true],
+                [[true, false], true],
+                [[true, true], false],
+            ],
+            'XOR' => [
+                [[], false],
+                [[false], false],
+                [[true], true],
+                [[false, false], false],
+                [[false, true], true],
+                [[true, false], true],
+                [[true, true], false],
+            ],
+        ];
+
+        foreach ($tests as $symbol => $cases) {
+            foreach ($cases as $i => $details) {
+                list($inputs, $expected) = $details;
+                $_inputs = [];
+                foreach ($inputs as $input) {
+                    $_inputs[] = $input ? '1' : '0';
+                }
+                $out = symbol_tempcode($symbol, $_inputs);
+                $this->assertTrue($out->evaluate() == ($expected ? '1' : '0'), 'Unexpected for ' . $symbol . ' in case #' . strval($i));
+            }
+        }
+    }
 }

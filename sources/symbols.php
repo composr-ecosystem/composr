@@ -5197,6 +5197,7 @@ function ecv_OR(string $lang, array $escaped, array $param) : string
     foreach ($param as $test) {
         if ($test == '1') {
             $count++;
+            break;
         }
     }
     $value = ($count > 0) ? '1' : '0';
@@ -5222,12 +5223,14 @@ function ecv_AND(string $lang, array $escaped, array $param) : string
     $count = 0;
     $total = 0;
     foreach ($param as $test) {
+        $total++;
         if ($test === '1') {
             $count++;
+        } else {
+            break;
         }
-        $total++;
     }
-    $value = ($count === $total) ? '1' : '0';
+    $value = ($count === $total && $total != 0) ? '1' : '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
@@ -5251,6 +5254,7 @@ function ecv_NOR(string $lang, array $escaped, array $param) : string
     foreach ($param as $test) {
         if ($test === '1') {
             $count++;
+            break;
         }
     }
     $value = ($count > 0) ? '0' : '1';
@@ -5274,12 +5278,16 @@ function ecv_NOR(string $lang, array $escaped, array $param) : string
 function ecv_NAND(string $lang, array $escaped, array $param) : string
 {
     $count = 0;
+    $total = 0;
     foreach ($param as $test) {
+        $total++;
         if ($test === '1') {
             $count++;
+        } else {
+            break;
         }
     }
-    $value = ($count === count($param)) ? '0' : '1';
+    $value = ($count === $total && $total != 0) ? '0' : '1';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
