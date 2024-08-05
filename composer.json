@@ -2,7 +2,6 @@
     "require": {
         "ext-json": "*",
         "ext-openssl": "*",
-        "ext-posix": "*",
         "ext-simplexml": "*",
         "ext-zip": "*",
         "ext-libxml": "*",
@@ -18,7 +17,6 @@
         "ext-mysqli": "*",
         "ext-ftp": "*",
         "ext-sodium": "*",
-        "ext-pspell": "*",
         "ext-enchant": "*"
     }
 }

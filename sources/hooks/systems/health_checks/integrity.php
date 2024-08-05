@@ -78,7 +78,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
 
         require_code('upgrade_integrity_scan');
         $data = run_integrity_check(false, false, false);
-        $this->assertTrue($data == do_lang('NO_ISSUES_FOUND'), 'Integrity checker reporting potential issues, see upgrader for details');
+        $this->assertTrue($data == do_lang('NO_ISSUES_FOUND'), 'Integrity checker reporting potential issues. Run the file integrity scan in upgrader.php.');
     }
 
     /**
@@ -115,7 +115,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
         require_code('database_repair');
         $repair_ob = new DatabaseRepair();
         list($phase, $sql) = $repair_ob->search_for_database_issues();
-        $this->assertTrue($sql == '', 'There seem to be some inconsistencies in the database, run the "Correct MySQL schema issues (advanced)" upgrader tool');
+        $this->assertTrue($sql == '', 'There seem to be some inconsistencies in the database, run the "Check for MySQL schema issues" tool in upgrader.php');
     }
 
     /**
@@ -152,7 +152,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
                 if (!$ok) {
                     if ($automatic_repair) {
                         $results_repair = $GLOBALS['SITE_DB']->query('REPAIR TABLE ' . get_table_prefix() . $table['m_table']);
-                        $ok_repair = $results[0]['Msg_text'] == 'OK';
+                        $ok_repair = $results_repair[0]['Msg_text'] == 'OK';
                         if ($ok_repair) {
                             $message = 'Corrupt table automatically repaired: [tt]' . $table['m_table'] . '[/tt] gave status "' . $results[0]['Msg_text'] . '"';
                         }
@@ -224,7 +224,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
         }
 
         require_code('addons2');
-        $this->assertTrue(empty(find_updated_addons()), 'Some addon(s) need updating');
+        $this->assertTrue(empty(find_updated_addons()), 'Some addon(s) need updating; see Admin Zone > Structure > Addons.');
     }
 
     /**
@@ -247,6 +247,12 @@ class Hook_health_check_integrity extends Hook_Health_Check
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $sdc = get_param_integer('skip_disk_checks', null);
             if ($sdc === 1) {
+                return;
+            }
+
+            global $FILE_ARRAY;
+            if (@is_array($FILE_ARRAY)) {
+                $this->log('Skipped; not necessary in quick installer.');
                 return;
             }
 

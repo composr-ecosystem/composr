@@ -26,7 +26,7 @@ function adminzone_common_pages_code()
     // Run a Health Check
     if (has_zone_access(get_member(), 'adminzone')) {
         $health_check = [];
-        if ((addon_installed('health_check')) && (get_param_integer('keep_fatalistic', 0) == 0)) {
+        if ((addon_installed('health_check')) && (current_fatalistic() == 0)) {
             require_code('health_check');
             $has_fails = false;
             $categories = run_health_check($has_fails, ['Stability \\ Error log']);

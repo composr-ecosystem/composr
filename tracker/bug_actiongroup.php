@@ -101,6 +101,9 @@ foreach( $f_bug_arr as $t_bug_id ) {
 		config_flush_cache(); # flush the config cache so that configs are refetched
 	}
 
+	# Make sure user has access to the bug
+	access_ensure_bug_level( config_get( 'view_bug_threshold' ), $t_bug_id );
+
 	$t_status = $t_bug->status;
 
 	switch( $f_action ) {
@@ -345,6 +348,7 @@ foreach( $f_bug_arr as $t_bug_id ) {
 form_security_purge( $t_form_name );
 
 if( count( $t_failed_ids ) > 0 ) {
+	require_css( 'status_config.php' );
 	bug_group_action_print_top();
 	bug_group_action_print_results( $t_failed_ids );
 	bug_group_action_print_bottom();

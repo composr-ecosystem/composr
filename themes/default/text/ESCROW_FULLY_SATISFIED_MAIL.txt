@@ -3,3 +3,5 @@
 {!SENDER@}: [page="_SEARCH:members:member:{ESCROW_FROM#}"]{$USERNAME@,{ESCROW_FROM}}[/page]
 {!RECIPIENT@}: [page="_SEARCH:members:member:{ESCROW_TO#}"]{$USERNAME@,{ESCROW_TO}}[/page]
 {!POINTS@}: [b]{AMOUNT@}[/b]
+{+START,IF_PASSED,CONTENT_TYPE}{!CONTENT_TYPE@}: [b]{CONTENT_TYPE@}[/b]{+END}
+{+START,IF_PASSED,CONTENT_URL}{!CONTENT@}: [b][url="{CONTENT_TITLE#}"]{CONTENT_URL@}[/url][/b]{+END}

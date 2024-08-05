@@ -326,7 +326,7 @@ class Module_admin_disastr extends Standard_crud_module
         $myrow = $rows[0];
 
         $name = $myrow['name'];
-        $image = $myrow['image'];
+        $image = $myrow['image_url'];
         $cure = $myrow['cure'];
         $cure_price = $myrow['cure_price'];
         $immunisation = $myrow['immunisation'];

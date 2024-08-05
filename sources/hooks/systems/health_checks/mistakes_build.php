@@ -94,9 +94,9 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $this->stateCheckManual('Check schema.org/microformats validation on either [url="Google"]https://developers.google.com/search/docs/appearance/structured-data[/url] or [url="Bing"]https://www.bing.com/webmasters/help/url-inspection-55a30305[/url] or [url="Yandex"]https://webmaster.yandex.com/tools/microtest/[/url], on any key pages you want to be semantic');
 
-        $this->stateCheckManual('Do a [url="general check"]https://www.woorank.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
-        $this->stateCheckManual('Do a [url="general check"]https://website.grader.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
-        $this->stateCheckManual('Do a [url="general check"]https://webhint.io/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
+        $this->stateCheckManual('Do a [url="general check on Woorank"]https://www.woorank.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
+        $this->stateCheckManual('Do a [url="general check on Grader"]https://website.grader.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
+        $this->stateCheckManual('Do a [url="general check on Webhint"]https://webhint.io/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
 
         $this->stateCheckManual('Test in Mozilla Firefox');
         $this->stateCheckManual('Test in Mozilla Firefox (mobile)');
@@ -133,7 +133,12 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
-        $page_links = $this->process_urls_into_page_links([':', ':login']);
+        $page_links = $this->process_urls_into_page_links([
+            ':',
+            ':login',
+            /*':join',*/ // Some site admins may want to restrict joining / memberships
+            ':lost_password',
+        ]);
 
         foreach ($page_links as $page_link) {
             $http_result = $this->get_page_http_content($page_link);
@@ -476,7 +481,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         $paths = ['pages/comcode_custom/' . user_lang()];
         $zones = find_all_zones();
         foreach ($zones as $zone) {
-            if ($zone != 'docs') { // Big, and we check this in an automated test
+            if (($zone != 'docs') || (!addon_installed('composr_tutorials'))) { // Big, and we check this in an automated test
                 $paths[] = $zone . '/pages/comcode_custom/' . user_lang();
             }
         }

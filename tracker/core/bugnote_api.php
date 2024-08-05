@@ -312,7 +312,7 @@ function bugnote_add( $p_bug_id, $p_bugnote_text, $p_time_tracking = '0:00', $p_
 
 	# Event integration
 	if( $p_trigger_event ) {
-		event_signal( 'EVENT_BUGNOTE_ADD', array( $p_bug_id, $t_bugnote_id, 'files' => array() ) );
+		event_signal( 'EVENT_BUGNOTE_ADD', array( $p_bug_id, $t_bugnote_id, array() ) );
 	}
 
 	# only send email if the text is not blank, otherwise, it is just recording of time without a comment.
@@ -808,9 +808,12 @@ function bugnote_clear_cache( $p_bugnote_id = null ) {
 		$g_cache_bugnotes_by_id = array();
 		$g_cache_bugnotes_by_bug_id = array();
 	} else {
-		if( isset( $g_cache_bugnotes_by_id[(int)$p_bugnote_id] ) ) {
-			$t_note_obj = $g_cache_bugnotes_by_id[(int)$p_bugnote_id];
-			# current note id will be unset in the following call
+		$p_bugnote_id = (int)$p_bugnote_id;
+		if( isset( $g_cache_bugnotes_by_id[$p_bugnote_id] ) ) {
+			$t_note_obj = $g_cache_bugnotes_by_id[$p_bugnote_id];
+			unset($g_cache_bugnotes_by_id[$p_bugnote_id]);
+
+			# Clear the bug-level cache for the bugnote's parent bug
 			bugnote_clear_bug_cache( $t_note_obj->bug_id );
 		}
 	}

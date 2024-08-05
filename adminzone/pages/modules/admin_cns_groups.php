@@ -369,7 +369,7 @@ class Module_admin_cns_groups extends Standard_crud_module
         ];
         if (addon_installed('points')) {
             $sortables = array_merge($sortables, [
-                'g_promotion_threshold ASC,id' => do_lang_tempcode('PROMOTION_TARGET'),
+                'g_promotion_threshold ASC,r.id' => do_lang_tempcode('PROMOTION_TARGET'),
             ]);
         }
         $sortables = array_merge($sortables, [

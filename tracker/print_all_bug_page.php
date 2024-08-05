@@ -57,14 +57,11 @@ require_api( 'project_api.php' );
 require_api( 'string_api.php' );
 require_api( 'utility_api.php' );
 
+require_css( 'status_config.php' );
+
 auth_ensure_user_authenticated();
 
-// Composr - stop server slow down
-$t_filter = filter_get_bug_rows_filter();
-$t_filter_query = new BugFilterQuery($t_filter, array('query_type' => BugFilterQuery::QUERY_TYPE_LIST));
-if( $t_filter_query->get_bug_count() > 100 ) {
-	trigger_error( 'Too many bugs to process for this operation - select fewer than 100', ERROR );
-}
+access_ensure_project_level( config_get( 'print_reports_threshold' ) );
 
 $f_search		= gpc_get_string( FILTER_PROPERTY_SEARCH, false ); # @todo need a better default
 $f_offset		= gpc_get_int( 'offset', 0 );
@@ -166,8 +163,9 @@ $f_export = implode( ',', $f_bug_arr );
 			$t_params['filter'] = filter_get_temporary_key( $t_filter );
 		}
 
-		echo '<a href="' . $t_icon[0] . '.php?' . http_build_query( $t_params ) . '" ' . $t_icon[2] . '>'
-			. '<i class="fa ' . $t_icon[3] . '" title="' . $t_icon[4] . '"></i></a> ';
+		echo '<a href="' . $t_icon[0] . '.php?' . http_build_query( $t_params ) . '" ' . $t_icon[2] . '>';
+		print_icon( $t_icon[3], '', $t_icon[4] );
+		echo '</a> ';
 	}
 ?>
 

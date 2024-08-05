@@ -1015,7 +1015,7 @@ function get_hook_ob(string $type, string $subtype, string $hook, string $classn
  */
 function find_all_hooks(string $type, string $subtype, bool $check_custom = true) : array
 {
-    global $HOOKS_CACHE;
+    global $HOOKS_CACHE, $FILE_ARRAY;
     if (isset($HOOKS_CACHE[$type . '/' . $subtype])) {
         return $HOOKS_CACHE[$type . '/' . $subtype];
     }
@@ -1028,8 +1028,14 @@ function find_all_hooks(string $type, string $subtype, bool $check_custom = true
     if (strpos($subtype, '..') !== false) {
         $subtype = filter_naughty($subtype);
     }
-    $dir = get_file_base() . '/sources/hooks/' . $type . '/' . $subtype;
-    $dh = is_dir($dir) ? scandir($dir) : false;
+
+    if (@is_array($FILE_ARRAY)) {
+        $dir = 'sources/hooks/' . $type . '/' . $subtype;
+        $dh = file_array_scandir($dir);
+    } else {
+        $dir = get_file_base() . '/sources/hooks/' . $type . '/' . $subtype;
+        $dh = is_dir($dir) ? scandir($dir) : false;
+    }
     if ($dh !== false) {
         foreach ($dh as $file) {
             $basename = basename($file, '.php');
@@ -1050,8 +1056,13 @@ function find_all_hooks(string $type, string $subtype, bool $check_custom = true
 
     if ($check_custom) {
         if ($doing_custom_scan) {
-            $dir = get_file_base() . '/sources_custom/hooks/' . $type . '/' . $subtype;
-            $dh = is_dir($dir) ? scandir($dir) : false;
+            if (@is_array($FILE_ARRAY)) {
+                $dir = 'sources_custom/hooks/' . $type . '/' . $subtype;
+                $dh = file_array_scandir($dir);
+            } else {
+                $dir = get_file_base() . '/sources_custom/hooks/' . $type . '/' . $subtype;
+                $dh = is_dir($dir) ? scandir($dir) : false;
+            }
             if ($dh !== false) {
                 foreach ($dh as $file) {
                     $basename = basename($file, '.php');
@@ -1748,25 +1759,47 @@ function extract_module_functions(string $path, array $functions, array $params 
         return $ret;
     }
 
-    if (!is_file($path)) {
-        $ret = [];
-        foreach ($functions as $function) {
-            $ret[] = null;
+    global $FILE_ARRAY;
+    if (@is_array($FILE_ARRAY)) {
+        if (strpos($path, get_file_base()) === 0) {
+            $path = str_replace(get_file_base() . '/', '', $path);
         }
-        return $ret;
-    }
+        if (strpos($path, get_custom_file_base()) === 0) {
+            $path = str_replace(get_custom_file_base() . '/', '', $path);
+        }
+        if ($path[0] == '/') {
+            $path = substr($path, 1);
+        }
+        if (!file_array_exists($path)) {
+            $ret = [];
+            foreach ($functions as $function) {
+                $ret[] = null;
+            }
+            return $ret;
+        }
 
-    $file = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
-    if ((strpos($path, '/modules_custom/') !== false) && (is_file(str_replace('/modules_custom/', '/modules/', $path))) && (strpos($file, "\nclass ") === false)) {
-        // Customised file is not a full class, so go to default file
-        $path = str_replace('/modules_custom/', '/modules/', $path);
+        $file = file_array_get($path);
+    } else {
+        if (!is_file($path)) {
+            $ret = [];
+            foreach ($functions as $function) {
+                $ret[] = null;
+            }
+            return $ret;
+        }
+
         $file = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
-    }
+        if ((strpos($path, '/modules_custom/') !== false) && (is_file(str_replace('/modules_custom/', '/modules/', $path))) && (strpos($file, "\nclass ") === false)) {
+            // Customised file is not a full class, so go to default file
+            $path = str_replace('/modules_custom/', '/modules/', $path);
+            $file = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
+        }
 
-    if (strpos($file, 'class Mx_') !== false) {
-        unset($file); // To save memory
+        if (strpos($file, 'class Mx_') !== false) {
+            unset($file); // To save memory
 
-        return extract_module_functions($path, $functions, $params, true);
+            return extract_module_functions($path, $functions, $params, true);
+        }
     }
 
     global $ARB_COUNTER;

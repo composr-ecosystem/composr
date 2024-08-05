@@ -94,9 +94,9 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
     foreach ($rows as $myrow) {
         // Their name
         $from_name = is_guest($myrow['sending_member']) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($myrow['sending_member'], true);
-        $to_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['receiving_member'], true);
-        $_from_name = (is_guest($myrow['sending_member'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($myrow['sending_member']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
-        $_to_name = hyperlink(points_url($myrow['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $to_name = (($myrow['receiving_member'] === null) || is_guest($myrow['receiving_member'])) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($myrow['receiving_member'], true);
+        $_from_name = is_guest($myrow['sending_member']) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($myrow['sending_member']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $_to_name = (($myrow['receiving_member'] === null) || is_guest($myrow['receiving_member'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($myrow['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         $date = get_timezoned_date_time($myrow['date_and_time'], false);
         $_date = hyperlink(build_url(['page' => 'points', 'type' => 'view_escrow', 'id' => $myrow['id'], 'member_id_of' => $member_id_of], get_module_zone('points')), escape_html($date), false, false, do_lang_tempcode('ESCROW_VIEW'));
@@ -171,7 +171,7 @@ function escrow_get_logs(int $id) : object
             $date,
             do_lang_tempcode($myrow['log_type']),
             ($myrow['member_id'] !== null) ? $name : '',
-            generate_truncation($reason, 'left', 200, true, true)
+            protect_from_escaping(generate_truncation($reason, 'left', 200, true, true))
         ];
 
         $out->attach(results_entry($results_entry, true));
@@ -183,30 +183,36 @@ function escrow_get_logs(int $id) : object
  * Create a new points escrow between two members.
  *
  * @param  MEMBER $sending_member The member creating and putting the points into escrow
- * @param  MEMBER $receiving_member The member who will receive the points once the escrow conditions are met
+ * @param  ?MEMBER $receiving_member The member who will receive the points once the escrow conditions are met (null: system because we do not know who will receive these points yet)
  * @param  integer $amount The amount of points to escrow
  * @param  SHORT_TEXT $reason The reason for escrow used in logs
  * @param  LONG_TEXT $agreement The detailed terms and conditions for the escrow
  * @param  ?TIME $expiry_time The time this escrow will automatically cancel or enter dispute if the terms are not met (null: do not automatically expire)
+ * @param  ID_TEXT $content_type The associated content type with this escrow (blank: none)
+ * @param  ID_TEXT $content_id The associated content ID with this escrow (blank: none)
  * @param  boolean $escrow_log Whether to log the escrow creation in its own log
  * @param  ?boolean $send_notifications Whether to send notifications for this transaction (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
  * @return ?AUTO_LINK The ID of the escrow record (null: There was an error)
  */
-function escrow_points(int $sending_member, int $receiving_member, int $amount, string $reason, string $agreement, ?int $expiry_time = null, bool $escrow_log = true, ?bool $send_notifications = true) : ?int
+function escrow_points(int $sending_member, ?int $receiving_member, int $amount, string $reason, string $agreement, ?int $expiry_time = null, string $content_type = '', string $content_id = '', bool $escrow_log = true, ?bool $send_notifications = true) : ?int
 {
-    if (is_guest($sending_member) || is_guest($receiving_member)) {
+    if (is_guest($sending_member) || (($receiving_member !== null) && (is_guest($receiving_member)))) { // We can escrow to guest, but not from guest
         return null;
     }
     if ($amount <= 0) {
         return null;
     }
 
-    $username = $GLOBALS['FORUM_DRIVER']->get_username($receiving_member, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
+    if ($receiving_member === null) {
+        $username = do_lang('SYSTEM');
+    } else {
+        $username = $GLOBALS['FORUM_DRIVER']->get_username($receiving_member, true, USERNAME_GUEST_AS_DEFAULT);
+    }
 
     require_code('points2');
 
-    // Actually debit the points into escrow (use null for gift points so we prioritise escrowing gift points first, when applicable)
-    $escrow_id = points_debit_member($sending_member, do_lang('ESCROW_REASON', $username, $reason), $amount, null, 0, $send_notifications, 0, 'points_escrow', 'add');
+    // Actually debit the points into escrow (do not allow using gift points as escrows since escrows are for transactions, not gifts)
+    $escrow_id = points_debit_member($sending_member, do_lang('ESCROW_REASON', $username, $reason), $amount, 0, 0, $send_notifications, 0, 'points_escrow', 'add');
     if ($escrow_id === null) {
         return null;
     }
@@ -214,6 +220,7 @@ function escrow_points(int $sending_member, int $receiving_member, int $amount, 
     // Insert the escrow into the database
     $map = [
         'date_and_time' => time(),
+        'update_date_and_time' => time(),
         'amount' => $amount,
         'original_points_ledger_id' => $escrow_id,
         'sending_member' => $sending_member,
@@ -222,6 +229,8 @@ function escrow_points(int $sending_member, int $receiving_member, int $amount, 
         'sender_status' => 0,
         'recipient_status' => 0,
         'status' => ESCROW_STATUS_PENDING,
+        'content_type' => $content_type,
+        'content_id' => $content_id,
     ];
     $map += insert_lang_comcode('reason', $reason, 4);
     $map += insert_lang_comcode('agreement', $agreement, 5);
@@ -243,17 +252,31 @@ function escrow_points(int $sending_member, int $receiving_member, int $amount, 
             'ID' => strval($id),
             'INTRO' => do_lang_tempcode('NEW_ESCROW_TRANSACTION_INTRO', $link_comcode),
             'ESCROW_FROM' => strval($sending_member),
-            'ESCROW_TO' => strval($receiving_member),
             'AMOUNT' => integer_format($amount),
             'REASON' => $reason,
             'TERMS' => $agreement,
         ];
+        if ($receiving_member !== null) {
+            $map['ESCROW_TO'] = strval($receiving_member);
+        }
         if ($expiry_time !== null) {
             $map['EXPIRATION'] = strval($expiry_time);
         }
+        if (($content_type != '')) {
+            if (($content_id != '')) {
+                require_code('content');
+                list($title, , , , , $mail_url) = content_get_details($content_type, $content_id);
+                if ($title !== null) {
+                    $map['CONTENT_TITLE'] = $title;
+                    $map['CONTENT_URL'] = $mail_url;
+                }
+            } else {
+                $map['CONTENT_TYPE'] = $content_type;
+            }
+        }
 
         // Involved members
-        if ($send_notifications) {
+        if (($send_notifications) && ($receiving_member !== null)) {
             $subject = do_lang_tempcode('NEW_ESCROW_TRANSACTION_SUBJECT', $reason);
             $mail = do_notification_template('ESCROW_TRANSACTIONS_MAIL', $map, get_lang($receiving_member), false, null, '.txt', 'text');
             dispatch_notification('point_escrows', null, $subject->evaluate(get_lang($receiving_member)), $mail->evaluate(get_lang($receiving_member)), [$receiving_member], $sending_member);
@@ -294,11 +317,16 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
+    // Cannot mark an escrow satisfied if we still do not know to whom the points are going
+    if ($row['receiving_member'] === null) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
     // Mark the escrow satisfied
-    $map = [];
+    $map = ['update_date_and_time' => time()];
     if ($row['sending_member'] == $member_id) {
         $map['sender_status'] = 1;
-    } elseif ($row['receiving_member'] == $member_id) {
+    } elseif ($row['receiving_member'] === $member_id) {
         $map['recipient_status'] = 1;
     } else { // This should never happen!
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -315,7 +343,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
 
     // If both members satisfied the escrow, then complete it
     $finished = @intval($GLOBALS['SITE_DB']->query_select_value('escrow', 'sender_status+recipient_status', ['id' => $id]));
-    if ($finished == 2) {
+    if ($finished === 2) {
         return _complete_escrow($row, null, $escrow_log, $send_notifications);
     }
     return null;
@@ -346,12 +374,18 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     $id = $row['id'];
     $sending_member = $row['sending_member'];
     $receiving_member = $row['receiving_member'];
+    $content_type = $row['content_type'];
+    $content_id = $row['content_id'];
     $reason = get_translated_text($row['reason']);
+
+    if ($receiving_member === null) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
 
     $username = $GLOBALS['FORUM_DRIVER']->get_username($sending_member, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
 
     // Update the escrow status
-    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_COMPLETED], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_COMPLETED, 'update_date_and_time' => time()], ['id' => $id], '', 1);
 
     // Credit the points to the recipient in a new transaction
     $_id = points_credit_member($receiving_member, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, null, 0, 'points_escrow', 'complete', strval($id));
@@ -374,7 +408,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
         $response[] = $refund_gift_points;
 
         // Also, edit the points amount on the escrow itself; we especially need to know this for accurate stats
-        $GLOBALS['SITE_DB']->query_update('escrow', ['amount' => $amount], ['id' => $id], '', 1);
+        $GLOBALS['SITE_DB']->query_update('escrow', ['amount' => $amount, 'update_date_and_time' => time()], ['id' => $id], '', 1);
     }
 
     // Log it
@@ -395,6 +429,18 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
             'AMOUNT' => integer_format($amount),
             'REASON' => $reason,
         ];
+        if (($content_type != '')) {
+            if (($content_id != '')) {
+                require_code('content');
+                list($title, , , , , $mail_url) = content_get_details($content_type, $content_id);
+                if ($title !== null) {
+                    $map['CONTENT_TITLE'] = $title;
+                    $map['CONTENT_URL'] = $mail_url;
+                }
+            } else {
+                $map['CONTENT_TYPE'] = $content_type;
+            }
+        }
 
         // Involved members
         if ($send_notifications) {
@@ -444,7 +490,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_GUEST_AS_DEFAULT);
 
     // Update status
-    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_CANCELLED], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_CANCELLED, 'update_date_and_time' => time()], ['id' => $id], '', 1);
 
     $refund_id = null;
     if ($actually_refund) {
@@ -458,7 +504,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
         // Refund points to the sender
         require_code('points2');
         $_reason = do_lang_tempcode('ESCROW_REASON_CANCELLED', $escrow_reason);
-        $refund_id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $row['sending_member'], $_reason->evaluate(), $row['amount'], $ledger['amount_gift_points'], 0, $ledger, true, 'escrow', 'cancel', strval($id));
+        $refund_id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $row['sending_member'], $_reason->evaluate(), $row['amount'], $ledger['amount_gift_points'], 0, $ledger, true, 'points_escrow', 'cancel', strval($id));
     }
 
     // Log it
@@ -478,7 +524,10 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
     ];
 
     // Involved members
-    $notification_members = [$row['receiving_member'], $row['sending_member']];
+    $notification_members = [$row['sending_member']];
+    if ($row['receiving_member'] !== null) {
+        $notification_members[] = $row['receiving_member'];
+    }
     foreach ($notification_members as $n_member) {
         $mail = do_notification_template('ESCROW_CANCELLED_MAIL', $map, get_lang($n_member), false, null, '.txt', 'text');
         dispatch_notification('point_escrows', null, $subject->evaluate(get_lang($n_member)), $mail->evaluate(get_lang($n_member)), [$n_member], $member_id);
@@ -518,7 +567,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_GUEST_AS_DEFAULT);
 
     // Update status
-    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_DISPUTED], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_DISPUTED, 'update_date_and_time' => time()], ['id' => $id], '', 1);
 
     // Log it
     escrow_log_it('LOG_ESCROW_DISPUTED', $id, $member_id, $reason);
@@ -570,7 +619,7 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_GUEST_AS_DEFAULT);
 
     // Modify reason and agreement text
-    $map = [];
+    $map = ['update_date_and_time' => time()];
     $map += lang_remap_comcode('reason', $row['reason'], $new_reason);
     $map += lang_remap_comcode('agreement', $row['agreement'], $new_agreement);
 
@@ -608,16 +657,33 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
                 'ID' => strval($id),
                 'ESCROW_REASON' => $escrow_reason,
                 'MODERATING_MEMBER' => strval($member_id),
-                'RECIPIENT' => strval($row['receiving_member']),
                 'POINTS_RECEIVED' => integer_format($points),
                 'SENDER' => strval($row['sending_member']),
                 'POINTS_REFUNDED' => integer_format($points_refunded),
                 'GIFT_POINTS_REFUNDED' => integer_format($gift_points_refunded),
                 'REASON' => $reason,
             ];
+            if ($row['receiving_member'] !== null) {
+                $map['RECIPIENT'] = strval($row['receiving_member']);
+            }
+            if (($row['content_type'] != '')) {
+                if (($row['content_id'] != '')) {
+                    require_code('content');
+                    list($title, , , , , $mail_url) = content_get_details($row['content_type'], $row['content_id']);
+                    if ($title !== null) {
+                        $map['CONTENT_TITLE'] = $title;
+                        $map['CONTENT_URL'] = $mail_url;
+                    }
+                } else {
+                    $map['CONTENT_TYPE'] = $row['content_type'];
+                }
+            }
 
             // Involved members
-            $notification_members = [$row['receiving_member'], $row['sending_member']];
+            $notification_members = [$row['sending_member']];
+            if ($row['receiving_member'] !== null) {
+                $notification_members[] = $row['receiving_member'];
+            }
             foreach ($notification_members as $n_member) {
                 $mail = do_notification_template('ESCROW_AMENDED_MAIL', $map, get_lang($n_member), false, null, '.txt', 'text');
                 dispatch_notification('point_escrows', null, $subject->evaluate(get_lang($n_member)), $mail->evaluate(get_lang($n_member)), [$n_member], $member_id);
@@ -643,7 +709,10 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
             ];
 
             // Involved members
-            $notification_members = [$row['receiving_member'], $row['sending_member']];
+            $notification_members = [$row['sending_member']];
+            if ($row['receiving_member'] !== null) {
+                $notification_members[] = $row['receiving_member'];
+            }
             foreach ($notification_members as $n_member) {
                 $mail = do_notification_template('ESCROW_AMENDED_MAIL', $map, get_lang($n_member), false, null, '.txt', 'text');
                 dispatch_notification('point_escrows', null, $subject->evaluate(get_lang($n_member)), $mail->evaluate(get_lang($n_member)), [$n_member], $member_id);
@@ -675,5 +744,86 @@ function escrow_log_it(string $type, int $id, ?int $member_id = null, string $in
     ];
     $map += insert_lang_comcode('information', $information, 5);
 
+    // Update timestamp on the escrow
+    $GLOBALS['SITE_DB']->query_update('escrow', ['update_date_and_time' => time()], ['id' => $id], '', 1);
+
     return $GLOBALS['SITE_DB']->query_insert('escrow_logs', $map, true);
+}
+
+/**
+ * Update (and log) the receiving member of an escrow.
+ * This assumes the receiving member is set to null; if not, this will error.
+ *
+ * @param  AUTO_LINK $id The ID of the escrow to edit
+ * @param  MEMBER $receiving_member The member to set as the receiving member
+ * @return void
+ */
+function escrow_update_receiving_member(int $id, int $receiving_member)
+{
+    $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id], '', 1);
+    if ($_row === null || !array_key_exists(0, $_row)) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+    $row = $_row[0];
+
+    if ($row['receiving_member'] !== null) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    $GLOBALS['SITE_DB']->query_update('escrow', ['update_date_and_time' => time(), 'receiving_member' => $receiving_member], ['id' => $id], '', 1);
+
+    escrow_log_it('LOG_ESCROW_UPDATED_RECEIVING_MEMBER', $id, $receiving_member);
+}
+
+/**
+ * Cancel all escrows associated with the given content type and ID.
+ *
+ * @param  ID_TEXT $content_type The content type to search
+ * @param  ID_TEXT $content_id The content ID to search
+ * @param  LONG_TEXT $reason The reason for cencelling these escrows
+ * @return array Array of AUTO_LINK escrow IDs cancelled mapped to their ?AUTO_LINK point ledger
+ */
+function cancel_all_escrows_by_content(string $content_type, string $content_id, string $reason) : array
+{
+    if (($content_type == '') || ($content_id == '')) { // These cannot be blank
+        warn_exit(do_lang('INTERNAL_ERROR'));
+    }
+
+    $ret = [];
+
+    $to_cancel = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['content_type' => $content_type, 'content_id' => $content_id], ' AND status>=2');
+    foreach ($to_cancel as $row) {
+        $ret[$row['id']] = cancel_escrow($row['id'], get_member(), $reason, $row);
+    }
+
+    return $ret;
+}
+
+/**
+ * Complete all escrows by a given content type and ID.
+ * This bypasses the satisfy system. It will only complete escrows in the pending state.
+ *
+ * @param  MEMBER $receiving_member The member receiving the points for escrows without a receiving member set
+ * @param  ID_TEXT $content_type The associated content type to complete
+ * @param  ID_TEXT $content_id The associated content ID to complete
+ * @return array Map of escrow IDs to the output of _complete_escrow()
+ */
+function complete_all_escrows_by_content(int $receiving_member, string $content_type, string $content_id) : array
+{
+    if (($content_type == '') || ($content_id == '')) { // These cannot be blank
+        warn_exit(do_lang('INTERNAL_ERROR'));
+    }
+
+    $ret = [];
+
+    // Set all associated escrows without a receiving member to the specified one
+    $GLOBALS['SITE_DB']->query_update('escrow', ['receiving_member' => $receiving_member], ['receiving_member' => null, 'content_type' => $content_type, 'content_id' => $content_id]);
+
+    // Satisfy all associated escrows, but only the pending ones
+    $to_satisfy = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['content_type' => $content_type, 'content_id' => $content_id, 'status' => ESCROW_STATUS_PENDING]);
+    foreach ($to_satisfy as $row) {
+        $ret[$row['id']] = array_merge(_complete_escrow($row), ['amount' => $row['amount']]);
+    }
+
+    return $ret;
 }

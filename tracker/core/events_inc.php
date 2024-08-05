@@ -89,6 +89,10 @@ event_declare_many( array(
 	'EVENT_MANAGE_USER_DELETE' => EVENT_TYPE_EXECUTE,
 	'EVENT_MANAGE_USER_PAGE' => EVENT_TYPE_EXECUTE,
 
+	'EVENT_MANAGE_PROJECT_USER_CREATE' => EVENT_TYPE_EXECUTE,
+	'EVENT_MANAGE_PROJECT_USER_UPDATE' => EVENT_TYPE_EXECUTE,
+	'EVENT_MANAGE_PROJECT_USER_DELETE' => EVENT_TYPE_EXECUTE,
+
 	# TODO: Should we use jquery to insert elements on view page and on forms
 	#       rather than having events that restrict where to insert such elements?
 
@@ -122,6 +126,7 @@ event_declare_many( array(
 	'EVENT_UPDATE_BUG_DATA' => EVENT_TYPE_CHAIN,
 	'EVENT_UPDATE_BUG' => EVENT_TYPE_EXECUTE,
 	'EVENT_UPDATE_BUG_STATUS_FORM' => EVENT_TYPE_EXECUTE,
+	'EVENT_UPDATE_BUG_SHOW_CUSTOM_FIELD' => EVENT_TYPE_DEFAULT,
 
 	# Other bug events
 	'EVENT_BUG_DELETED' => EVENT_TYPE_EXECUTE,
@@ -152,4 +157,6 @@ event_declare_many( array(
 
 	# Authentication Events
 	'EVENT_AUTH_USER_FLAGS' => EVENT_TYPE_FIRST,
+
+	'EVENT_CRONJOB' => EVENT_TYPE_EXECUTE
 ) );

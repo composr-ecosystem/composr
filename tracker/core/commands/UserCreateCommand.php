@@ -70,6 +70,11 @@ class UserCreateCommand extends Command {
 	private $enabled;
 
 	/**
+	 * @var int user's access level
+	 */
+	private $access_level;
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $p_data The command data.
@@ -83,7 +88,7 @@ class UserCreateCommand extends Command {
 	 */
 	function validate() {
 		# Ensure user has access level to create users
-		if( !access_has_global_level( config_get_global( 'manage_user_threshold' ) ) ) {
+		if( !access_has_global_level( config_get( 'manage_user_threshold' ) ) ) {
 			throw new ClientException( 'Access denied to create users', ERROR_ACCESS_DENIED );
 		}
 
@@ -127,7 +132,7 @@ class UserCreateCommand extends Command {
 	/**
 	 * Process the command.
 	 *
-	 * @returns array Command response
+	 * @return array Command response
 	 */
 	protected function process() {
 		# Need to send the user creation mail in the tracker language, not in the creating admin's language

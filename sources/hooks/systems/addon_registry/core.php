@@ -704,6 +704,8 @@ class Hook_addon_registry_core
             'data/xml_config/.htaccess',
             'data/xml_config/index.html',
             'data_custom/.htaccess',
+            'data_custom/errors/.htaccess',
+            'data_custom/errors/index.html',
             'data_custom/execute_temp.php',
             'data_custom/execute_temp.php.bundle',
             'data_custom/firewall_rules.txt',

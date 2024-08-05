@@ -119,7 +119,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
         }
         if ((($results === false) || ((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true)) && (!$fail_ok)) {
             $err = serialize(sqlsrv_errors());
-            if ((!running_script('upgrader')) && ((!get_mass_import_mode()) || (get_param_integer('keep_fatalistic', 0) != 0))) {
+            if ((!running_script('upgrader')) && ((!get_mass_import_mode()) || (current_fatalistic() > 0))) {
                 if ((!function_exists('do_lang')) || (do_lang('QUERY_FAILED', null, null, null, null, false) === null)) {
                     $this->failed_query_exit(htmlentities('Query failed: ' . $query . ' : ' . $err));
                 }

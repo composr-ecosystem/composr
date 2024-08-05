@@ -15,13 +15,13 @@
 # along with MantisBT.  If not, see <http://www.gnu.org/licenses/>.
 /**
  * MantisBT Constants
- *
+ * @noinspection PhpDefineCanBeReplacedWithConstInspection
  */
 
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.24.0' );
+define( 'MANTIS_VERSION', '2.26.2' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -35,7 +35,7 @@ define( 'GOOD', 1 );
 define( 'WARN', 2 );
 
 # PHP-related constants
-define( 'PHP_MIN_VERSION', '5.5.0' );
+define( 'PHP_MIN_VERSION', '7.2.5' );
 define( 'PHP_CLI', 0 );
 define( 'PHP_CGI', 1 );
 
@@ -233,6 +233,10 @@ define( 'CONFIRMATION_TYPE_SUCCESS', 0 );
 define( 'CONFIRMATION_TYPE_WARNING', 1 );
 define( 'CONFIRMATION_TYPE_FAILURE', 2 );
 
+# Plugin management
+define( 'PLUGIN_PRIORITY_LOW', 1 );
+define( 'PLUGIN_PRIORITY_HIGH', 5 );
+
 # error messages
 define( 'ERROR_PHP', -1 );
 define( 'ERROR_GENERIC', 0 );
@@ -260,6 +264,7 @@ define( 'ERROR_SPAM_SUSPECTED', 27 );
 define( 'ERROR_FIELD_TOO_LONG', 28 );
 define( 'ERROR_INVALID_FIELD_VALUE', 29 );
 define( 'ERROR_LOGFILE_NOT_WRITABLE', 30 );
+define( 'ERROR_MONITOR_ACCESS_TOO_LOW', 31 );
 
 # ERROR_CONFIG_*
 define( 'ERROR_CONFIG_OPT_NOT_FOUND', 100 );
@@ -291,6 +296,7 @@ define( 'ERROR_FILE_INVALID_UPLOAD_PATH', 503 );
 define( 'ERROR_FILE_NO_UPLOAD_FAILURE', 504 );
 define( 'ERROR_FILE_MOVE_FAILED', 505 );
 define( 'ERROR_FILE_NOT_FOUND', 506 );
+define( 'ERROR_FILE_NAME_TOO_LONG', 507 );
 
 # ERROR_BUGNOTE_*
 define( 'ERROR_BUGNOTE_NOT_FOUND', 600 );
@@ -319,6 +325,7 @@ define( 'ERROR_USER_CURRENT_PASSWORD_MISMATCH', 812 );
 define( 'ERROR_USER_EMAIL_NOT_UNIQUE', 813 );
 define( 'ERROR_USER_BY_EMAIL_NOT_FOUND', 814 );
 define( 'ERROR_USER_BY_REALNAME_NOT_FOUND', 815 );
+define( 'ERROR_USER_TOKEN_NOT_FOUND', 816 );
 
 # ERROR_AUTH_*
 define( 'ERROR_AUTH_INVALID_COOKIE', 900 );
@@ -346,17 +353,19 @@ define( 'ERROR_CUSTOM_FIELD_INVALID_VALUE', 1303 );
 define( 'ERROR_CUSTOM_FIELD_INVALID_DEFINITION', 1304 );
 define( 'ERROR_CUSTOM_FIELD_NOT_LINKED_TO_PROJECT', 1305 );
 define( 'ERROR_CUSTOM_FIELD_INVALID_PROPERTY', 1306 );
+define( 'ERROR_CUSTOM_FIELD_NAME_INVALID', 1307 );
 
 # ERROR_LDAP_*
 define( 'ERROR_LDAP_AUTH_FAILED', 1400 );
 define( 'ERROR_LDAP_SERVER_CONNECT_FAILED', 1401 );
 define( 'ERROR_LDAP_UPDATE_FAILED', 1402 );
 define( 'ERROR_LDAP_USER_NOT_FOUND', 1403 );
-define( 'ERROR_LDAP_EXTENSION_NOT_LOADED', 1404 );
+define( 'ERROR_LDAP_UNABLE_TO_SET_MIN_TLS', 1405 );
+define( 'ERROR_LDAP_UNABLE_TO_STARTTLS', 1406 );
 
 # ERROR_CATEGORY_*
 define( 'ERROR_CATEGORY_DUPLICATE', 1500 );
-define( 'ERROR_CATEGORY_NO_ACTION', 1501 );
+define( 'ERROR_NO_COPY_ACTION', 1501 );
 define( 'ERROR_CATEGORY_NOT_FOUND', 1502 );
 define( 'ERROR_CATEGORY_NOT_FOUND_FOR_PROJECT', 1503 );
 define( 'ERROR_CATEGORY_CANNOT_DELETE_DEFAULT', 1504 );
@@ -375,7 +384,6 @@ define( 'ERROR_SPONSORSHIP_ASSIGNER_ACCESS_LEVEL_TOO_LOW', 1704 );
 define( 'ERROR_SPONSORSHIP_SPONSOR_NO_EMAIL', 1705 );
 
 # ERROR RELATIONSHIP
-define( 'ERROR_RELATIONSHIP_ALREADY_EXISTS', 1800 );  # TODO: remove once no longer used in lang files
 define( 'ERROR_RELATIONSHIP_ACCESS_LEVEL_TO_DEST_BUG_TOO_LOW', 1801 );
 define( 'ERROR_RELATIONSHIP_NOT_FOUND', 1802 );
 define( 'ERROR_RELATIONSHIP_SAME_BUG', 1803 );
@@ -424,10 +432,6 @@ define( 'ERROR_COLUMNS_DUPLICATE', 2600 );
 define( 'ERROR_COLUMNS_INVALID', 2601 );
 
 # ERROR_SESSION_*
-define( 'ERROR_SESSION_HANDLER_INVALID', 2700 );
-# ERROR_SESSION_HANDLER_INVALID is no longer used in code
-# but can't be removed as long as it's used in one of the language files
-# for $MANTIS_ERROR[ERROR_SESSION_HANDLER_INVALID]
 define( 'ERROR_SESSION_VAR_NOT_FOUND', 2701 );
 define( 'ERROR_SESSION_NOT_VALID', 2702 );
 
@@ -436,7 +440,6 @@ define( 'ERROR_FORM_TOKEN_INVALID', 2800 );
 
 # ERROR_CRYPTO_*
 define( 'ERROR_CRYPTO_MASTER_SALT_INVALID', 2900 );
-define( 'ERROR_CRYPTO_CAN_NOT_GENERATE_STRONG_RANDOMNESS', 2901 );
 
 # ERROR_API_TOKEN_*
 define( 'ERROR_API_TOKEN_NAME_NOT_UNIQUE', 3000 );
@@ -470,7 +473,6 @@ define( 'CUSTOM_FIELD_TYPE_TEXTAREA', 10 );
 define( 'META_FILTER_MYSELF', -1 );
 define( 'META_FILTER_NONE', - 2 );
 define( 'META_FILTER_CURRENT', - 3 );
-define( 'META_FILTER_NOT_MYSELF', -4 ); // Composr - Ability to find stuff you're not monitoring yourself
 define( 'META_FILTER_ANY', 0 );
 
 # Filter view types
@@ -551,13 +553,6 @@ define( 'CUSTOM_FIELD_DATE_ON', 5 );
 define( 'CUSTOM_FIELD_DATE_AFTER', 6 );
 define( 'CUSTOM_FIELD_DATE_ONORAFTER', 7 );
 
-# custom field types
-define( 'CUSTOM_FIELD_TYPE_BUG', 0 );
-define( 'CUSTOM_FIELD_TYPE_USER', 1 );
-define( 'CUSTOM_FIELD_TYPE_BUGNOTE', 2 );
-define( 'CUSTOM_FIELD_TYPE_PROJECT', 3 );
-define( 'CUSTOM_FIELD_TYPE_FILE', 4 );
-
 # display types for $g_display_errors
 define( 'DISPLAY_ERROR_HALT', 'halt' );
 define( 'DISPLAY_ERROR_INLINE', 'inline' );
@@ -617,6 +612,7 @@ define( 'DB_FIELD_SIZE_REALNAME', 255 );
 define( 'DB_FIELD_SIZE_PASSWORD', 64 );
 define( 'DB_FIELD_SIZE_API_TOKEN_NAME', 128 );
 define( 'DB_FIELD_SIZE_HISTORY_VALUE', 255 );
+define( 'DB_FIELD_SIZE_FILENAME', 250 );
 
 # Maximum size for the user's password when storing it as a hash
 define( 'PASSWORD_MAX_SIZE_BEFORE_HASH', 1024 );
@@ -626,6 +622,8 @@ define( 'SECONDS_PER_DAY', 86400 );
 # Auto-generated link targets
 define( 'LINKS_SAME_WINDOW', 1 );
 define( 'LINKS_NEW_WINDOW', 2 );
+define( 'LINKS_NOOPENER', 4 );
+define( 'LINKS_NOREFERRER', 8 );
 
 # Auth Related Constants
 define( 'API_TOKEN_LENGTH', 32 );
@@ -650,23 +648,23 @@ define( 'JQUERY_HASH', 'sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=' );
 define( 'BOOTSTRAP_VERSION', '3.4.1' );
 define( 'BOOTSTRAP_HASH_JS', 'sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd' );
 define( 'BOOTSTRAP_HASH_CSS', 'sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu' );
-define( 'FONT_AWESOME_VERSION', '4.6.3' );
-define( 'FONT_AWESOME_HASH', 'sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' );
+define( 'FONT_AWESOME_VERSION', '4.7.0' );
+define( 'FONT_AWESOME_HASH', 'sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN' );
 
 # Moment & DateTimePicker
-define( 'MOMENT_VERSION', '2.24.0' );
-define( 'MOMENT_HASH', 'sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=' );
+define( 'MOMENT_VERSION', '2.29.4' );
+define( 'MOMENT_HASH', 'sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==' );
 define( 'DATETIME_PICKER_VERSION', '4.17.47' );
 define( 'DATETIME_PICKER_HASH_JS', 'sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=' );
 define( 'DATETIME_PICKER_HASH_CSS', 'sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=' );
 
 # Tyeahead JS
-define( 'TYPEAHEAD_VERSION', '1.3.0' );
-define( 'TYPEAHEAD_HASH', 'sha256-VWMJXexFUMAwIXw/PoOzOleP6q97pIbKWuY4v9gMXoY=' );
+define( 'TYPEAHEAD_VERSION', '1.3.4' );
+define( 'TYPEAHEAD_HASH', 'sha512-+f1CvxhWImXOCzqPaBaXNtH+cyfZYeHaJTPoT1v/CK326MliOFISS+rEEwRwO4atJr1+eXpVRVyaUyjXotFBKg==' );
 
 # List JS
-define( 'LISTJS_VERSION', '1.5.0' );
-define( 'LISTJS_HASH', 'sha384-JDmRxRiXkNkskRM5AD4qHRGk9ItwZ9flbqOpsRYs8SOrIRwcMtTGKP2Scnjptzgm' );
+define( 'LISTJS_VERSION', '2.3.1' );
+define( 'LISTJS_HASH', 'sha512-93wYgwrIFL+b+P3RvYxi/WUFRXXUDSLCT2JQk9zhVGXuS2mHl2axj6d+R6pP+gcU5isMHRj1u0oYE/mWyt/RjA==' );
 
 # Dropzone JS
 define( 'DROPZONE_VERSION', '5.5.0' );

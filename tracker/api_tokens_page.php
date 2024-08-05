@@ -58,7 +58,7 @@ print_account_menu( 'api_tokens_page.php' );
 <div class="widget-box widget-color-blue2">
 	<div class="widget-header widget-header-small">
 		<h4 class="widget-title lighter">
-			<i class="ace-icon fa fa-plus"></i>
+			<?php print_icon( 'fa-plus', 'ace-icon' ); ?>
 			<?php echo lang_get( 'api_token_create_form_title' ) ?>
 		</h4>
 	</div>
@@ -112,7 +112,7 @@ if ( count( $t_tokens ) > 0 ) {
 	<div class="widget-box widget-color-blue2">
 	<div class="widget-header widget-header-small">
 		<h4 class="widget-title lighter">
-			<i class="ace-icon fa fa-ticket"></i>
+			<?php print_icon( 'fa-ticket', 'ace-icon' ); ?>
 			<?php echo lang_get( 'api_tokens_title' ) ?>
 		</h4>
 	</div>
@@ -149,7 +149,6 @@ if ( count( $t_tokens ) > 0 ) {
 						<?php echo form_security_field( 'revoke_api_token_form' ); ?>
 						<fieldset>
 							<input id="token_id" type="hidden" name="token_id" value="<?php echo $u_id ; ?>" />
-							<input id="token_name" type="hidden" name="token_name" value="<?php echo string_attribute( $u_name ); ?>" />
 							<input type="submit" class="btn btn-sm btn-primary btn-white btn-round" value="<?php echo lang_get( 'api_token_revoke_button' ) ?>" />
 						</fieldset>
 					</form>

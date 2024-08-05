@@ -98,7 +98,7 @@ class MobiquoServerJSON extends MobiquoServer
             @header('HTTP/1.0 200'); // We always give 200 responses, so make sure we undo any other ones given
 
             $msg = $e->getMessage();
-            if ($GLOBALS['DEV_MODE'] && get_param_integer('keep_fatalistic', 0) != 0) {
+            if ($GLOBALS['DEV_MODE'] && (current_fatalistic() > 0)) {
                 $msg .= ' ' . var_export($e->getTrace(), true);
             }
             $response = mobiquo_response_false($msg);

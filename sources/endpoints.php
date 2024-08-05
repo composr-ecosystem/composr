@@ -150,6 +150,32 @@ function endpoint_script()
                 }
             }
 
+            // Try session authorization via the keep_session parameter (note we do not validate IP address; these endpoints might be called internally)
+            if ((!$authorized) && in_array('keep_session', $info['authorization'])) {
+                global $SESSION_CACHE;
+                $session = get_param_string('keep_session');
+                $member_row = null;
+                if (
+                    ($session != '') &&
+                    ($SESSION_CACHE !== null) &&
+                    (array_key_exists($session, $SESSION_CACHE)) &&
+                    ($SESSION_CACHE[$session] !== null) &&
+                    (array_key_exists('member_id', $SESSION_CACHE[$session])) &&
+                    ($SESSION_CACHE[$session]['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))
+                ) {
+                    $member_row = $SESSION_CACHE[$session];
+                }
+
+                if ($member_row !== null) { // We have a matching session
+                    $member = $member_row['member_id'];
+                    if (is_guest($member)) { // Nope, guests are not considered authorized!
+                        $member = null;
+                    } else {
+                        $authorized = true;
+                    }
+                }
+            }
+
             if (($authorized) && ($member !== null)) {
                 require_code('users_inactive_occasionals');
                 create_session($member);
@@ -189,7 +215,23 @@ function endpoint_script()
         if (is_file($_log_file)) {
             require_code('files');
             $log_message = loggable_date() . ' INTERNAL ERROR on endpoint ' . $rest_path . ' by IP address ' . get_ip_address() . "\n";
-            $log_message .= strip_html($e->getMessage()) . "\n";
+            $log_message .= strip_html($e->getMessage());
+            foreach ($e->getTrace() as $key => $trace) {
+                $log_message .= "\n\t" . strval($key + 1) . ')';
+                if (isset($trace['file'])) {
+                    $log_message .= ' File: ' . $trace['file'];
+                    if (isset($trace['line'])) {
+                        $log_message .= ' (line ' . $trace['line'] . ')';
+                    }
+                }
+                if (isset($trace['function'])) {
+                    $log_message .= "\n\t\t" . 'Function: ' . $trace['function'];
+                }
+                if (isset($trace['args'])) {
+                    $log_message .= "\n\t\t" . 'Args: ' . serialize($trace['args']);
+                }
+            }
+            $log_message .= "\n";
             $log_file = cms_fopen_text_write($_log_file, true, 'ab');
             fwrite($log_file, $log_message);
             flock($log_file, LOCK_UN);

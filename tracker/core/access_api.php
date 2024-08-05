@@ -91,7 +91,7 @@ function access_denied() {
 				}
 				$t_return_page = string_url( string_sanitize_url( $t_return_page ) );
 				echo '<p class="center">' . error_string( ERROR_ACCESS_DENIED ) . '</p><p class="center">';
-				print_link_button( auth_login_page( 'return=' . $t_return_page ), lang_get( 'click_to_login' ) );
+				print_link_button( auth_login_page( 'return=' . $t_return_page ), lang_get( 'login' ) );
 				echo '</p><p class="center">';
 				print_link_button(
 					helper_mantis_url( config_get_global( 'default_home_page' ) ),
@@ -337,20 +337,24 @@ function access_has_project_level( $p_access_level, $p_project_id = null, $p_use
 }
 
 /**
- * Filters an array of project ids, based on an access level, returning an array
- * containing only those projects which meet said access level.
- * An optional limit for the number of results is provided as a shortcut for access checks.
+ * Filters an array of project ids based on an access level.
+ *
+ * Returns an array containing only those projects which meet said access level.
+ * An optional limit for the number of results is provided as a shortcut for
+ * access checks.
  *
  * @param integer|array|string  $p_access_level Parameter representing access level threshold, may be:
  *                                              - integer: for a simple threshold
  *                                              - array: for an array threshold
  *                                              - string: for a threshold option which will be evaluated
- *                                                 for each project context
+ *                                                for each project context
  * @param array                 $p_project_ids  Array of project ids to check access against, default to null
  *                                               to use all user accessible projects
  * @param integer|null          $p_user_id      Integer representing user id, defaults to null to use current user.
  * @param integer               $p_limit        Maximum number of results, default is 0 for all results
+ *
  * @return array                The filtered array of project ids
+ * @throws ClientException
  */
 function access_project_array_filter( $p_access_level, array $p_project_ids = null, $p_user_id = null, $p_limit = 0 ) {
 	# Short circuit the check in this case
@@ -375,6 +379,8 @@ function access_project_array_filter( $p_access_level, array $p_project_ids = nu
 			$t_default = config_get_global( $p_access_level );
 		}
 	}
+
+	project_cache_array_rows( $p_project_ids );
 
 	$t_check_level = $p_access_level;
 	$t_filtered_projects = array();
@@ -935,4 +941,58 @@ function access_has_limited_view( $p_project_id = null, $p_user_id = null ) {
 
 	$t_project_level = access_get_project_level( $p_project_id, $p_user_id );
 	return !access_compare_level( $t_project_level, $t_threshold_can_view );
+}
+
+/**
+ * Return true if user is allowed to view bug revisions.
+ *
+ * User must have $g_bug_revision_view_threshold or be the bug's reporter.
+ *
+ * @param int $p_bug_id
+ * @param int $p_user_id
+ *
+ * @return bool
+ */
+function access_can_view_bug_revisions( $p_bug_id, $p_user_id = null ) {
+	if( !bug_exists( $p_bug_id ) ) {
+		return false;
+	}
+	$t_project_id = bug_get_field( $p_bug_id, 'project_id' );
+	$t_user_id = null === $p_user_id ? auth_get_current_user_id() : $p_user_id;
+
+	$t_has_access = access_has_bug_level(
+		config_get( 'bug_revision_view_threshold', null, $t_user_id, $t_project_id ),
+		$p_bug_id,
+		$t_user_id
+	);
+
+	return $t_has_access || bug_is_user_reporter( $p_bug_id, $t_user_id );
+}
+
+/**
+ * Return true if user is allowed to view bugnote revisions.
+ *
+ * User must have $g_bug_revision_view_threshold or be the bugnote's reporter.
+ *
+ * @param int $p_bugnote_id
+ * @param int $p_user_id
+ *
+ * @return bool
+ */
+function access_can_view_bugnote_revisions( $p_bugnote_id, $p_user_id = null ) {
+	if( !bugnote_exists( $p_bugnote_id ) ) {
+		return false;
+	}
+	$t_bug_id = bugnote_get_field( $p_bugnote_id, 'bug_id' );
+	$t_project_id = bug_get_field( $t_bug_id, 'project_id' );
+	$t_user_id = null === $p_user_id ? auth_get_current_user_id() : $p_user_id;
+
+	$t_has_access = access_has_bugnote_level(
+		config_get( 'bug_revision_view_threshold', null, $t_user_id, $t_project_id ),
+		$p_bugnote_id,
+		$t_user_id
+	);
+
+
+	return $t_has_access || bugnote_is_user_reporter( $p_bugnote_id, $t_user_id );
 }

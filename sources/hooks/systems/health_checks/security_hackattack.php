@@ -95,7 +95,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
                         }
                     }
 
-                    $this->assertTrue(count(array_unique($countries)) <= 1, 'Admin account "' . $username . '" appears to have logged in from multiple countries (' . implode(', ', $countries) . ')');
+                    $this->assertTrue(count(array_unique($countries)) <= 1, 'Admin account "' . $username . '" appears to have logged in from multiple countries (' . implode(', ', $countries) . '). The account may have been compromised.');
                 }
             } else {
                 $this->stateCheckSkipped('Geolocation data not installed so cannot do admin country checks');
@@ -126,9 +126,12 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
             return;
         }
 
+        // TODO: configurable threshold
+        $threshold = 50;
+
         $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'hackattack WHERE date_and_time>' . strval(time() - 60 * 60 * 24);
         $num_failed = $GLOBALS['SITE_DB']->query_value_if_there($sql);
-        $this->assertTrue($num_failed < 100, integer_format($num_failed, 0) . ' hack-attack alerts happened today');
+        $this->assertTrue($num_failed < $threshold, 'High number of hack-attacks triggered in the last 24 hours, at ' . integer_format($num_failed, 0));
     }
 
     /**
@@ -152,9 +155,12 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
             return;
         }
 
+        // TODO: configurable threshold
+        $threshold = 50 + intval($GLOBALS['FORUM_DRIVER']->get_num_members() / 25); // There will be a slight increase in frequency with more members present
+
         $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'failedlogins WHERE date_and_time>' . strval(time() - 60 * 60 * 24);
         $num_failed = $GLOBALS['SITE_DB']->query_value_if_there($sql);
-        $this->assertTrue($num_failed < 100, integer_format($num_failed, 0) . ' failed logins happened today');
+        $this->assertTrue($num_failed < $threshold, 'High number of failed login attempts in the last 24 hours, at ' . integer_format($num_failed, 0));
     }
 
     /**

@@ -471,8 +471,8 @@ function get_directory_contents(string $path, string $rel_path = '', ?int $bitma
  * Get the size in bytes of a directory. It is assumed that the directory exists.
  *
  * @param  PATH $path The path to search
- * @param  boolean $recurse Whether to recurse (if not, will return directories as files)
- * @return integer The extra space requested
+ * @param  boolean $recurse Whether to recurse
+ * @return integer The size in bytes
  */
 function get_directory_size(string $path, bool $recurse = true) : int
 {

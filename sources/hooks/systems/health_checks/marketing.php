@@ -68,7 +68,7 @@ class Hook_health_check_marketing extends Hook_Health_Check
             return;
         }
 
-        $this->stateCheckManual('Check the social media channels are being regularly updated');
+        $this->stateCheckManual('Check that your social media channels are being regularly updated');
         $this->stateCheckManual('Check [url="Social sharing stats"]http://www.sharedcount.com/[/url]');
         $this->stateCheckManual('Check [url="Facebook Insights"]https://www.facebook.com/business/news/audience-insights[/url] (Facebook Analytics)');
     }
@@ -98,9 +98,9 @@ class Hook_health_check_marketing extends Hook_Health_Check
         if (trim($ga) != '') {
             $this->stateCheckManual('Check Google Analytics to see how your site is performing');
         } elseif (addon_installed('stats')) {
-            $this->stateCheckManual('Check stats to see how your site is performing');
+            $this->stateCheckManual('Check stats in Admin Zone > Audit > Site statistics to see how your site is performing');
         }
-        $this->stateCheckManual('See how your traffic compares to other websites using [url="Similarweb"]https://www.similarweb.com/[/url]');
+        $this->stateCheckManual('See how your traffic compares to other websites using online tools');
     }
 
     /**
@@ -126,7 +126,7 @@ class Hook_health_check_marketing extends Hook_Health_Check
             erase_cached_templates(false, ['global', 'CMS']);
 
             $data = cms_file_get_contents_safe(javascript_enforce('global'), FILE_READ_LOCK | FILE_READ_BOM);
-            $this->assertTrue(strpos($data, $ga) !== false, 'Google Analytics enabled (' . $ga . ') but not in page output (themeing issue?)');
+            $this->assertTrue(strpos($data, $ga) !== false, 'Google Analytics enabled (' . $ga . ') but its code is not in page output (themeing issue?)');
         }
 
         // IDEA: Call Google Analytics API and see if data still being gathered (this is complex, needs working oAuth) #974

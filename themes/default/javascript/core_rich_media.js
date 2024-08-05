@@ -653,26 +653,10 @@
             delete _flipPageTimeouts[id];
         }
 
-        if ($util.isNumeric(to)) {
-            to = Number(to);
-
-            for (i = 0; i < sections.length; i++) {
-                section = document.getElementById(id + '-section-' + sections[i]);
-                if (section) {
-                    if ((section.style.display === 'block') && (section.style.position !== 'absolute')) {
-                        currentPos = i;
-                        break;
-                    }
-                }
-            }
-
-            currentPos += to;
-        } else {
-            for (i = 0; i < sections.length; i++) {
-                if (sections[i] === to) {
-                    currentPos = i;
-                    break;
-                }
+        for (i = 0; i < sections.length; i++) {
+            if (sections[i] === to) {
+                currentPos = i;
+                break;
             }
         }
 
@@ -721,13 +705,12 @@
             el = document.getElementById(id + '-section-' + sections[i]);
             if (el) {
                 if (el.classList.contains('comcode-big-tab')) {
+                    /* Unreliable; causes weird behavior with contents showing under the fold
                     if (i === currentPos) {
                         el.style.width = '';
                         el.style.position = 'static';
-                        el.style.zIndex = 10;
                         el.style.opacity = 1;
                     } else {
-                        el.style.opacity = (el.style.position !== 'static') ? 0 : 1;
                         el.style.width = (el.offsetWidth - 24) + 'px'; // 24=lhs padding+rhs padding+lhs border+rhs border
                         el.style.position = 'absolute';
                         el.style.zIndex = -10;
@@ -735,6 +718,8 @@
                         el.parentNode.style.position = 'relative';
                     }
                     el.style.display = 'block';
+                    */
+                    el.style.display = (i === currentPos) ? 'block' : 'none';
                 } else {
                     el.style.display = (i === currentPos) ? 'block' : 'none';
                 }
@@ -747,12 +732,12 @@
 
                 for (i = 0; i < sections.length; i++) {
                     el = document.getElementById(id + '-section-' + sections[i]);
-                    if ((el) && (el.style.display === 'block') && (el.style.position !== 'absolute')) {
+                    if ((el) && (el.style.display === 'block')) {
                         nextPage = i + 1;
                     }
                 }
 
-                if (nextPage === sections.length) {
+                if (nextPage >= sections.length) {
                     nextPage = 0;
                 }
 

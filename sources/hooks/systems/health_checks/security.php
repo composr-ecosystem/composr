@@ -215,7 +215,7 @@ class Hook_health_check_security extends Hook_Health_Check
         }
 
         $to_check = [
-            'data_custom/ecommerce.log',
+            'data_custom/cron.log',
             'caches/test.txt',
             'temp/test.txt',
         ];
@@ -274,7 +274,7 @@ class Hook_health_check_security extends Hook_Health_Check
                     $dns_lookup_remote = shell_exec('nslookup ' . $domain . ' 8.8.8.8');
                     $matched_remote = preg_match($regexp, $dns_lookup_remote, $matches_remote);
                     if (($matched_local != 0) && ($matched_remote != 0)) {
-                        $this->assertTrue($matches_local[1] == $matches_remote[1], 'DNS lookup for our domain seems to be looking up differently ([tt]' . $matches_local[1] . '[/tt] vs [tt]' . $matches_remote[1] . '[/tt])');
+                        $this->assertTrue($matches_local[1] == $matches_remote[1], 'DNS lookup for our domain seems to be looking up differently ([tt]' . $matches_local[1] . '[/tt] vs [tt]' . $matches_remote[1] . '[/tt]). This may be expected if you are using a proxy such as Cloudflare.');
                     } else {
                         $this->stateCheckSkipped('Failed to get a recognisable DNS resolution via the command line for [tt]' . $domain . '[/tt]');
                     }
@@ -311,7 +311,7 @@ class Hook_health_check_security extends Hook_Health_Check
         if (!$ok) {
             $ok = (http_get_contents(get_base_url() . '/config_editor.php', ['trigger_error' => false]) === null);
         }
-        $this->assertTrue($ok, 'Should not have a maintenance password defined, or should control access to config scripts');
+        $this->assertTrue($ok, 'Maintenance scripts can be accessed publicly. You should either disable the maintenance password or secure maintenance scripts.');
     }
 
     /**
@@ -366,6 +366,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = $this->getBaseDirectoriesFiles();
         $files = array_merge($files, get_directory_contents($fb, '', 0, false, true, ['php'])); // base directory
+        $files = array_merge($files, get_directory_contents($fb . '/imports', 'imports', 0, true, true, ['php'])); // common uploads location
         $files = array_merge($files, get_directory_contents($fb . '/uploads', 'uploads', 0, true, true, ['php'])); // common uploads location
         $files = array_merge($files, get_directory_contents($fb . '/themes', 'themes', 0, true, true, ['php'])); // common uploads location
 
@@ -374,7 +375,7 @@ class Hook_health_check_security extends Hook_Health_Check
             if ($c !== false) {
                 $trigger = $this->isLikelyWebShell($file, $c);
                 if ($trigger !== null) {
-                    $this->assertTrue(false, 'Likely webshell: [tt]' . $file . '[/tt]; triggered by [tt]' . $trigger . '[/tt]');
+                    $this->assertTrue(false, 'Likely webshell detected: [tt]' . $file . '[/tt]; triggered by [tt]' . $trigger . '[/tt]. This is an extremely dangerous issue and could indicate your site has been compromised! You should immediately remove the Webshells and run a full security scan / audit on your server.');
                 }
             }
         }
@@ -535,12 +536,12 @@ class Hook_health_check_security extends Hook_Health_Check
 
         require_code('http');
 
-        $files = $this->getBaseDirectoriesFiles(['tar', 'gz', 'zip', 'sql']);
+        $files = $this->getBaseDirectoriesFiles(['tar', 'gz', 'zip', 'sql', '7z', 'rar']);
 
         foreach ($files as $file) {
-            if ((preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) && (!in_array($file, ['install.sql']))) {
+            if ((preg_match('#back.*\.(tar|gz|zip|7z|rar)$|\.(sql)$#i', basename($file)) != 0) && (!in_array($file, ['install.sql']))) {
                 $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
-                $this->assertTrue($http_result->message != '200', 'Likely exposed backup: [tt]' . $file . '[/tt]');
+                $this->assertTrue($http_result->message != '200', 'Likely exposed backup file: [tt]' . $file . '[/tt]');
             }
         }
     }
@@ -637,7 +638,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $result = http_get_contents(get_base_url() . '/.git/config', ['trigger_error' => false]);
 
-        $this->assertTrue(empty($result), 'The contents of the .git directory is exposed to web requests');
+        $this->assertTrue(empty($result), 'The contents of the .git directory is exposed to web requests.');
     }
 
     /**
@@ -664,6 +665,6 @@ class Hook_health_check_security extends Hook_Health_Check
         $hostname = get_base_url_hostname();
         $intranet = ((is_local_machine($hostname)) || (preg_match('#^\w+$#', $hostname) != 0));
         $ok = ((addon_installed('captcha')) && (get_option('use_captchas') == '1')) || ($intranet);
-        $this->assertTrue($ok, 'CAPTCHA is not enabled and it looks like your website (based on the domain/IP) -- you could get attacked by spam bots');
+        $this->assertTrue($ok, 'CAPTCHA is not enabled -- you could get attacked by spam bots');
     }
 }

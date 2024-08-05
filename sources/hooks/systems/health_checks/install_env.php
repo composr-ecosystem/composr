@@ -175,7 +175,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue((strpos(get_file_base(), '_custom') === false), 'You should not have _custom in the base directory path, due to an internal coding limitation.');
+        $this->assertTrue((strpos(get_file_base(), '_custom') === false), 'You should not have _custom in the base directory path; _custom has semantic meaning in the software and thus this will cause it to break');
     }
 
     /**
@@ -195,27 +195,26 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
+        $installing = ($check_context == CHECK_CONTEXT__INSTALL);
+
         if (file_exists(get_file_base() . '/data/empty.php')) {
             $test_url = get_base_url() . '/data/empty.php'; // Should normally exist, simple static URL call
+        } elseif ($installing) {
+            $test_url = get_base_url() . '/install.php'; // But this definitely must exist if running the installer
         } else {
-            $test_url = static_evaluate_tempcode(build_url(['page' => ''], '', [], false, false, true)); // But this definitely must exist
+            $test_url = static_evaluate_tempcode(build_url(['page' => ''], '', [], false, false, true)); // This absolutely must exist otherwise
         }
 
         $test = cms_http_request($test_url, ['byte_limit' => 1, 'trigger_error' => false, 'no_redirect' => true]); // Should return a 200 blank, not an HTTP error or a redirect; actual data would be a software error
 
         $has_www = (strpos(get_base_url(), '://www.') !== false);
-        $installing = ($check_context == CHECK_CONTEXT__INSTALL);
 
         if (in_array($test->message, ['200'])) {
             // Is okay
         }
 
-        if (in_array($test->message, ['401', '403'])) {
+        if (in_array($test->message, ['401', /*'403'*/])) { // 403 could be a ModSecurity issue which we do want to error about in this test
             // Is access denied, which could happen so isn't an error from our point of view
-        }
-
-        if (($installing) && ($test->message == '500')) {
-            // May be the final configuration isn't placed yet by the installer
         }
 
         // Redirect
@@ -259,7 +258,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         $php_too_old = version_compare(PHP_VERSION, '7.2', '<'); // LEGACY: Also maintain in tut_webhosting.txt, install.php, restore.php.pre, _standard_dir_files.php
         $this->assertTrue(!$php_too_old, do_lang('PHP_TOO_OLD', '7.2'));
 
-        $max_tested_php_version = '8.0'; // LEGACY: This needs to keep raising (also it is in tut_webhosting.txt, _standard_dir_files.php)
+        $max_tested_php_version = '8.3'; // LEGACY: This needs to keep raising (also it is in tut_webhosting.txt, _standard_dir_files.php)
         if (!is_maintained('php')) {
             $php_too_new = version_compare(PHP_VERSION, $max_tested_php_version . '.1000', '>'); // LEGACY needs maintaining
             $this->assertTrue(
@@ -369,7 +368,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
                 $mysql_too_old = version_compare($version, $minimum_version, '<');
                 $this->assertTrue(!$mysql_too_old, do_lang('MYSQL_TOO_OLD', $minimum_version, $version));
 
-                $max_tested_mysql_version = '8.0'; // LEGACY needs maintaining
+                $max_tested_mysql_version = '8.2'; // LEGACY needs maintaining
                 if (!is_maintained('mysql')) {
                     $mysql_too_new = version_compare($version, $max_tested_mysql_version . '.1000', '>');
                     $this->assertTrue(
@@ -464,7 +463,14 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
 
         // Test to see if we have any ModSecurity issue that blocks config form submissions, via posting through some perfectly legitimate things that it might be paranoid about
-        $test_url = get_custom_base_url() . '/data/empty.php';
+        $installing = ($check_context == CHECK_CONTEXT__INSTALL);
+
+        if ($installing) {
+            $test_url = get_base_url() . '/install.php?type=test_blank_result'; // But this definitely must exist if running the installer
+        } else {
+            $test_url = find_script('empty') . '?truly=1';
+        }
+
         $test_a = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => ['test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>']]);
         $message_a = $test_a->message;
         if ($message_a != '200') {
@@ -619,7 +625,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         if ($result !== null) {
             list($ok, $perms, $dir_perms) = $result;
             $has_group_read_perms = (($perms & 0040) != 0);
-            $this->assertTrue($ok, 'Could not access test static file created with default permissions, group read permissions ' . ($has_group_read_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_read_perms) ? ' (likely the web server itself is running as a different server to PHP is executed with so relies on the group permissions)' : ''));
+            $this->assertTrue($ok, 'Could not access test static file created with default permissions, group read permissions ' . ($has_group_read_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_read_perms) ? ' (likely the web server itself is running as a different user than what PHP is executed with so relies on the group permissions)' : ''));
         }
 
         // Directory test
@@ -630,7 +636,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             if ($result !== null) {
                 list($ok, $perms, $dir_perms) = $result;
                 $has_group_execute_perms = (($perms & 0010) != 0);
-                $this->assertTrue($ok, 'Could not access test static file in directory created with default permissions, group execute permissions ' . ($has_group_execute_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_execute_perms) ? ' (likely the web server itself is running as a different server to PHP is executed with so relies on the group permissions)' : ''));
+                $this->assertTrue($ok, 'Could not access test static file in directory created with default permissions, group execute permissions ' . ($has_group_execute_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_execute_perms) ? ' (likely the web server itself is running as a different user than what PHP is executed with so relies on the group permissions)' : ''));
             }
         }
 
@@ -730,7 +736,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $set_locale = setlocale(LC_ALL, '0');
             setlocale(LC_ALL, $current_locale);
 
-            $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Threaded mode of PHP on a server with Turkish locale installed on server');
+            $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Threaded mode of PHP on a server with Turkish locale installed on server failed');
         }
     }
 }

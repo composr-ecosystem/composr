@@ -47,15 +47,19 @@ require_api( 'utility_api.php' );
 
 /**
  * Print the page header section
- * @param string $p_page_title   Html page title.
- * @param string $p_redirect_url URL to redirect to if necessary.
- * @param string $p_page_id      The page id.
+ * @param string $p_page_title    Html page title.
+ * @param string $p_redirect_url  URL to redirect to if necessary: has to be relative to the install path {@see $g_path}.
+ * @param string $p_page_id       The page id.
+ * @param string $p_canonical_url Canonical URL if necessary: has to be relative to the install path {@see $g_path}.
  * @return void
  */
-function layout_page_header( $p_page_title = null, $p_redirect_url = null, $p_page_id = null ) {
+function layout_page_header( $p_page_title = null, $p_redirect_url = null, $p_page_id = null, $p_canonical_url = null ) {
 	layout_page_header_begin( $p_page_title );
 	if( $p_redirect_url !== null ) {
 		html_meta_redirect( $p_redirect_url );
+	}
+	if( $p_canonical_url !== null ) {
+		html_meta_canonical( $p_canonical_url );
 	}
 
 	layout_page_header_end( $p_page_id );
@@ -82,13 +86,13 @@ function layout_page_header_begin( $p_page_title = null ) {
 	layout_head_css();
 	html_rss_link();
 
-	$t_favicon_image = config_get( 'favicon_image' );
+	$t_favicon_image = config_get_global( 'favicon_image' );
 	if( !is_blank( $t_favicon_image ) ) {
 		echo "\t", '<link rel="shortcut icon" href="', helper_mantis_url( $t_favicon_image ), '" type="image/x-icon" />', "\n";
 	}
 
 	# Advertise the availability of the browser search plug-ins.
-	$t_title = config_get( 'search_title' );
+	$t_title = htmlspecialchars( config_get( 'search_title' ) );
 	$t_searches = array( 'text', 'id' );
 	foreach( $t_searches as $t_type ) {
 		echo "\t",
@@ -222,7 +226,7 @@ function layout_admin_page_end() {
 	layout_body_javascript();
 
 	html_body_end();
-	html_end();
+    html_end();
 }
 
 
@@ -251,6 +255,8 @@ function layout_head_meta() {
  * @return void
  */
 function layout_head_css() {
+	$t_cache_key = helper_generate_cache_key();
+
 	# bootstrap & fontawesome
 	if ( config_get_global( 'cdn_enabled' ) == ON ) {
 		html_css_cdn_link( 'https://stackpath.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/css/bootstrap.min.css',BOOTSTRAP_HASH_CSS );
@@ -267,7 +273,7 @@ function layout_head_css() {
 		html_css_link( 'font-awesome-' . FONT_AWESOME_VERSION . '.min.css' );
 
 		# theme text fonts
-		html_css_link( 'fonts.css' );
+		html_css_link( 'fonts.css', $t_cache_key );
 
 		# datetimepicker
 		html_css_link( 'bootstrap-datetimepicker-' . DATETIME_PICKER_VERSION . '.min.css' );
@@ -276,12 +282,12 @@ function layout_head_css() {
 	# page specific plugin styles
 
 	# theme styles
-	html_css_link( 'ace.min.css' );
-	html_css_link( 'ace-mantis.css' );
-	html_css_link( 'ace-skins.min.css' );
+	html_css_link( 'ace.min.css', $t_cache_key );
+	html_css_link( 'ace-mantis.css', $t_cache_key );
+	html_css_link( 'ace-skins.min.css', $t_cache_key );
 
 	if( layout_is_rtl() ) {
-		html_css_link( 'ace-rtl.min.css' );
+		html_css_link( 'ace-rtl.min.css', $t_cache_key );
 	}
 
 	echo "\n";
@@ -341,7 +347,7 @@ function layout_body_javascript() {
  * Print opening markup for login/signup/register pages
  * @return void
  */
-function layout_login_page_begin() {
+function layout_login_page_begin( $p_title = '' ) {
 	html_begin();
 	html_head_begin();
 	html_content_type();
@@ -351,13 +357,13 @@ function layout_login_page_begin() {
 		echo "\t", '<meta name="robots" content="', $g_robots_meta, '" />', "\n";
 	}
 
-	html_title();
+	html_title( $p_title );
 	layout_head_meta();
 	html_css();
 	layout_head_css();
 	html_rss_link();
 
-	$t_favicon_image = config_get( 'favicon_image' );
+	$t_favicon_image = config_get_global( 'favicon_image' );
 	if( !is_blank( $t_favicon_image ) ) {
 		echo "\t", '<link rel="shortcut icon" href="', helper_mantis_url( $t_favicon_image ), '" type="image/x-icon" />', "\n";
 	}
@@ -436,15 +442,8 @@ function layout_navbar() {
 		layout_navbar_button_bar();
 		# projects dropdown menu
 		layout_navbar_projects_menu();
-
-		//# user buttons such as messages, notifications and user menu
-		//layout_navbar_user_menu();
-		// Composr - nothing to show if Guest
-		global $cms_guest_id;
-		if (current_user_get_field('id') != $cms_guest_id) {
-			# user buttons such as messages, notifications and user menu
-			layout_navbar_user_menu();
-		}
+		# user buttons such as messages, notifications and user menu
+		layout_navbar_user_menu();
 	}
 	echo '</ul>';
 	echo '</div>';
@@ -463,8 +462,8 @@ function layout_navbar() {
 function layout_navbar_menu_item( $p_url, $p_title, $p_icon ) {
 	echo '<li>';
 	echo '<a href="' . $p_url . '">';
-	echo '<i class="ace-icon fa ' . $p_icon . '"> </i> ' . $p_title;
-	echo '</a>';
+	print_icon( $p_icon, 'ace-icon' );
+	echo ' ' . $p_title . '</a>';
 	echo '</li>';
 }
 
@@ -487,17 +486,17 @@ function layout_navbar_user_menu( $p_show_avatar = true ) {
 		echo '<span class="user-info">';
 		echo $t_username;
 		echo '</span>';
-		echo '<i class="ace-icon fa fa-angle-down"></i>';
+		print_icon( 'fa-angle-down', 'ace-icon' );
 	} else {
 		echo '&#160;' . $t_username . '&#160;' . "\n";
-		echo '<i class="ace-icon fa fa-angle-down bigger-110"></i>';
+		print_icon( 'fa-angle-down', 'ace-icon bigger-110' );
 	}
 	echo '</a>';
 	echo '<ul class="user-menu dropdown-menu dropdown-menu-right dropdown-yellow dropdown-caret dropdown-close">';
 
 	# My Account
 	if( !current_user_is_protected() ) {
-		layout_navbar_menu_item( helper_mantis_url( /*'account_page.php'*/'account_prefs_page.php'/*Composr - no account page in tracker*/ ), lang_get( 'account_link' ), 'fa-user' );
+		layout_navbar_menu_item( helper_mantis_url( 'account_page.php' ), lang_get( 'account_link' ), 'fa-user' );
 	}
 
 	# RSS Feed
@@ -507,11 +506,8 @@ function layout_navbar_user_menu( $p_show_avatar = true ) {
 
 	echo '<li class="divider"></li>';
 
-	/* Composr - disabled as this is done in CMS
 	# Logout
 	layout_navbar_menu_item( helper_mantis_url( auth_logout_page() ), lang_get( 'logout_link' ), 'fa-sign-out' );
-	*/
-
 	echo '</ul>';
 	echo '</li>';
 }
@@ -525,18 +521,21 @@ function layout_navbar_projects_menu() {
 	if( !layout_navbar_can_show_projects_menu() ) {
 		return;
 	}
-	echo '<li class="grey" id="dropdown_projects_menu">' . "\n";
+	echo "\n" . '<li class="grey" id="dropdown_projects_menu">' . "\n";
 	echo '<a data-toggle="dropdown" href="#" class="dropdown-toggle">' . "\n";
 
 	$t_current_project_id = helper_get_current_project();
-	if( ALL_PROJECTS == $t_current_project_id) {
+
+	# Check user's access to the project, and if not authorized select display
+	# ALL PROJECTS to avoid disclosing the private project's name.
+	if( ALL_PROJECTS == $t_current_project_id || !access_get_project_level( $t_current_project_id ) ) {
 		echo '&#160;' . string_attribute( lang_get( 'all_projects' ) ) . '&#160;' . "\n";
 	} else {
 		echo '&#160;' . string_attribute( project_get_field( $t_current_project_id, 'name' ) ) . '&#160;' . "\n";
 	}
 
-	echo ' <i class="ace-icon fa fa-angle-down bigger-110"></i>' . "\n";
-	echo '</a>' . "\n";
+	print_icon( 'fa-angle-down', 'ace-icon bigger-110' );
+	echo "\n" . '</a>' . "\n";
 
 	echo '<ul id="projects-list" class=" dropdown-menu dropdown-menu-right dropdown-yellow dropdown-caret dropdown-close">' . "\n";
 	layout_navbar_projects_list( implode( ';', helper_get_current_project_trace() ), true, null, true );
@@ -568,17 +567,17 @@ function layout_navbar_button_bar() {
 	if( $t_show_report_bug_button )  {
 		$t_bug_url = string_get_bug_report_url();
 		echo '<a class="btn btn-primary btn-sm" href="' . $t_bug_url . '">';
-		echo '<i class="fa fa-edit"></i> ' . lang_get( 'report_bug_link' );
+		print_icon( 'fa-edit');
+		echo ' ' . lang_get( 'report_bug_link' );
 		echo '</a>';
 	}
 
-	/* Composr - disabled as this is done in CMS
 	if( $t_show_invite_user_button ) {
 		echo '<a class="btn btn-primary btn-sm" href="manage_user_create_page.php">';
-		echo '<i class="fa fa-user-plus"></i> ' . lang_get( 'invite_users' );
+		print_icon( 'fa-user-plus' );
+		echo ' ' . lang_get( 'invite_users' );
 		echo '</a>';
 	}
-	\*/
 
 	echo '</div>';
 	echo '</li>';
@@ -606,29 +605,31 @@ function layout_navbar_projects_list( $p_project_id = null, $p_include_all_proje
 	echo '<div class="projects-searchbox">';
 	echo '<input class="search form-control input-md" placeholder="' . lang_get( 'search' ) . '" />';
 	echo '</div>';
-	echo '</li>';
+	echo "</li>\n";
+
 	echo '<li class="divider"></li>' . "\n";
+
 	echo '<li>';
-	echo '<div class="scrollable-menu">';
-	echo '<ul class="list dropdown-yellow no-margin">';
+	echo '<div class="scrollable-menu">' . "\n";
+	echo '<ul class="list dropdown-yellow no-margin">' . "\n";
 
 	if( $p_include_all_projects && $p_filter_project_id !== ALL_PROJECTS ) {
-		echo ALL_PROJECTS == $p_project_id ? '<li class="active">' : '<li>';
-		echo '<a href="' . helper_mantis_url( 'set_project.php' ) . '?project_id=' . ALL_PROJECTS . '">';
-		echo lang_get( 'all_projects' ) . ' </a></li>' . "\n";
+		echo '<li>';
+		echo project_link_for_menu( ALL_PROJECTS, false, 'project-link' );
+		echo "</li>\n";
 		echo '<li class="divider"></li>' . "\n";
 	}
 
 	foreach( $t_project_ids as $t_id ) {
 		echo 0 == strcmp( $t_id, $p_project_id ) ? '<li class="active">' : '<li>';
-		echo '<a href="' . helper_mantis_url( 'set_project.php' ) . '?project_id=' . $t_id . '"';
-		echo ' class="project-link"> ' . string_attribute( project_get_field( $t_id, 'name' ) ) . ' </a></li>' . "\n";
+		echo project_link_for_menu( $t_id, false, 'project-link' );
+		echo "</li>\n";
 		layout_navbar_subproject_option_list( $t_id, $p_project_id, $p_filter_project_id, $p_trace );
 	}
 
-	echo '</ul>';
-	echo '</div>';
-	echo '</li>';
+	echo "</ul>\n";
+	echo "</div>\n";
+	echo "</li>\n";
 }
 
 /**
@@ -645,6 +646,7 @@ function layout_navbar_subproject_option_list( $p_parent_id, $p_project_id = nul
 	array_push( $p_parents, $p_parent_id );
 	$t_user_id = auth_get_current_user_id();
 	$t_project_ids = user_get_accessible_subprojects( $t_user_id, $p_parent_id );
+	$t_indent = str_repeat( '&nbsp;', 4 );
 
 	foreach( $t_project_ids as $t_id ) {
 		if( $p_trace ) {
@@ -654,9 +656,8 @@ function layout_navbar_subproject_option_list( $p_parent_id, $p_project_id = nul
 		}
 
 		echo 0 == strcmp( $p_project_id, $t_full_id ) ? '<li class="active">' : '<li>';
-		echo '<a href="' . helper_mantis_url( 'set_project.php' ) . '?project_id=' . $t_full_id . '"';
-		echo ' class="project-link"> ' . str_repeat( '&#160;', count( $p_parents ) * 4 );
-		echo string_attribute( project_get_field( $t_id, 'name' ) ) . '</a></li>' . "\n";
+		echo project_link_for_menu( $t_id, false, 'project-link', $p_parents, $t_indent );
+		echo "</li>\n";
 
 		layout_navbar_subproject_option_list( $t_id, $p_project_id, $p_filter_project_id, $p_trace, $p_parents );
 	}
@@ -669,7 +670,7 @@ function layout_navbar_subproject_option_list( $p_parent_id, $p_project_id = nul
  * @return void
  */
 function layout_navbar_user_avatar( $p_img_class = 'nav' ) {
-	$t_default_avatar = '<i class="ace-icon fa fa-user fa-2x white"></i> ';
+	$t_default_avatar = icon_get( 'fa-user', 'ace-icon fa-2x white' ) . ' ';
 
 	if( OFF === config_get( 'show_avatar' ) ) {
 		echo $t_default_avatar;
@@ -718,8 +719,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => 'main_page.php',
 				'title' => 'main_link',
-				'icon' => 'fa-bullhorn',
-				'category' => 'analysis', /*Composr - provide some link structure*/
+				'icon' => 'fa-bullhorn'
 			);
 		}
 
@@ -727,16 +727,14 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 		$t_sidebar_items[] = array(
 			'url' => 'my_view_page.php',
 			'title' => 'my_view_link',
-			'icon' => 'fa-dashboard',
-			'category' => 'issues', /*Composr - provide some link structure*/
+			'icon' => 'fa-dashboard'
 		);
 
 		# View Bugs
 		$t_sidebar_items[] = array(
 			'url' => 'view_all_bug_page.php',
 			'title' => 'view_bugs_link',
-			'icon' => 'fa-list-alt',
-			'category' => 'issues', /*Composr - provide some link structure*/
+			'icon' => 'fa-list-alt'
 		);
 
 		# Report Bugs
@@ -744,8 +742,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => string_get_bug_report_url(),
 				'title' => 'report_bug_link',
-				'icon' => 'fa-edit',
-				'category' => 'issues', /*Composr - provide some link structure*/
+				'icon' => 'fa-edit'
 			);
 		}
 
@@ -754,27 +751,23 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			'url' => 'changelog_page.php',
 			'title' => 'changelog_link',
 			'icon' => 'fa-retweet',
-			'access_level' => config_get( 'view_changelog_threshold' ),
-			'category' => 'issues', /*Composr - provide some link structure*/
+			'access_level' => config_get( 'view_changelog_threshold' )
 		);
 
 		# Roadmap Page
-		/* Composr - disabled for simplicity
 		$t_sidebar_items[] = array(
 			'url' => 'roadmap_page.php',
 			'title' => 'roadmap_link',
 			'icon' => 'fa-road',
 			'access_level' => config_get( 'roadmap_view_threshold' )
 		);
-		*/
 
 		# Summary Page
 		$t_sidebar_items[] = array(
 			'url' => 'summary_page.php',
 			'title' => 'summary_link',
 			'icon' => 'fa-bar-chart-o',
-			'access_level' => config_get( 'view_summary_threshold' ),
-			'category' => 'analysis', /*Composr - provide some link structure*/
+			'access_level' => config_get( 'view_summary_threshold' )
 		);
 
 		# Project Documentation Page
@@ -782,8 +775,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => 'proj_doc_page.php',
 				'title' => 'docs_link',
-				'icon' => 'fa-book',
-				'category' => 'misc', /*Composr - provide some link structure*/
+				'icon' => 'fa-book'
 			);
 		}
 
@@ -792,8 +784,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => 'wiki.php?type=project&amp;id=' . $t_current_project,
 				'title' => 'wiki',
-				'icon' => 'fa-book',
-				'category' => 'misc', /*Composr - provide some link structure*/
+				'icon' => 'fa-book'
 			);
 		}
 
@@ -804,7 +795,6 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 				'url' => $t_link,
 				'title' => 'manage_link',
 				'icon' => 'fa-gears',
-				'category' => 'administration', /*Composr - provide some link structure*/
 			);
 		}
 
@@ -814,27 +804,8 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 				'url' => 'billing_page.php',
 				'title' => 'time_tracking_billing_link',
 				'icon' => 'fa-clock-o',
-				'category' => 'administration', /*Composr - provide some link structure*/
 			);
 		}
-
-		// Composr - GitHub link
-		global $cms_sc_sourcecode_url;
-		$t_sidebar_items[] = array(
-			'url' => $cms_sc_sourcecode_url,
-			'title' => 'cms_sourcecode_link',
-			'icon' => 'fa-git',
-			'category' => 'scm', /*Composr - provide some link structure*/
-		);
-
-		// Composr - Main website link
-		global $cms_sc_home_url;
-		$t_sidebar_items[] = array(
-			'url' => $cms_sc_home_url,
-			'title' => 'cms_home_link',
-			'icon' => 'fa-home',
-			'category' => 'misc', /*Composr - provide some link structure*/
-		);
 
 		# Plugin / Event added options
 		$t_event_menu_main = event_signal( 'EVENT_MENU_MAIN' );
@@ -863,12 +834,6 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 
 			# Output the sidebar items
 			layout_options_for_sidebar( $t_sidebar_items, $p_active_sidebar_page );
-
-			// Composr - provide some link structure
-			global $LINK_SECTIONS;
-			foreach ($LINK_SECTIONS as $link_section => $link_section_contents) {
-				echo  $link_section_contents;
-			}
 
 			# Ending sidebar markup
 			layout_sidebar_end();
@@ -943,7 +908,7 @@ function layout_options_for_sidebar( $p_menu_options, $p_active_sidebar_page ) {
 			}
 		}
 
-		layout_sidebar_menu( $t_menu_option['url'], $t_menu_option['title'], $t_icon, $p_active_sidebar_page, /*Composr - provide some link structure*/array_key_exists('category', $t_menu_option) ? $t_menu_option['category'] : 'misc' );
+		layout_sidebar_menu( $t_menu_option['url'], $t_menu_option['title'], $t_icon, $p_active_sidebar_page );
 	}
 }
 
@@ -967,14 +932,9 @@ function layout_sidebar_begin() {
  * @param string $p_title menu title in english
  * @param string $p_icon icon to use for this menu
  * @param string $p_active_sidebar_page page name to set as active
- * @param string $p_section section to show under - Composr
  * @return void
  */
-function layout_sidebar_menu( $p_page, $p_title, $p_icon, $p_active_sidebar_page = null, $p_section = null/*Composr*/ ) {
-	// Composr - provide some link structure
-	global $LINK_SECTIONS;
-	ob_start();
-
+function layout_sidebar_menu( $p_page, $p_title, $p_icon, $p_active_sidebar_page = null ) {
 	if( $p_page == $p_active_sidebar_page ||
 		$p_page == basename( $_SERVER['SCRIPT_NAME'] ) ) {
 		echo '<li class="active">' . "\n";
@@ -990,18 +950,11 @@ function layout_sidebar_menu( $p_page, $p_title, $p_icon, $p_active_sidebar_page
 	}
 
 	echo '<a href="' . $t_url . '">' . "\n";
-	echo '<i class="menu-icon fa ' . $p_icon . '"></i> ' . "\n";
-	echo '<span class="menu-text"> ' . lang_get_defaulted( $p_title ) . ' </span>' . "\n";
+	print_icon( $p_icon, 'menu-icon' );
+	echo "\n" . '<span class="menu-text"> ' . lang_get_defaulted( $p_title ) . ' </span>' . "\n";
 	echo '</a>' . "\n";
 	echo '<b class="arrow"></b>' . "\n";
 	echo '</li>' . "\n";
-
-	// Composr - provide some link structure
-	if (!isset($LINK_SECTIONS[$p_section])) {
-		$LINK_SECTIONS[$p_section] = '';
-	}
-	$LINK_SECTIONS[$p_section] .= ob_get_contents();
-	ob_end_clean();
 }
 
 
@@ -1103,11 +1056,13 @@ function layout_breadcrumbs() {
 
 		$t_return_page = string_url( $t_return_page );
 
-		echo ' <li><i class="fa fa-user home-icon active"></i> ' . lang_get( 'anonymous' ) . ' </li>' . "\n";
+		echo ' <li>';
+		print_icon( 'fa-user', 'home-icon active' );
+		echo lang_get( 'anonymous' ) . ' </li>' . "\n";
 
 		echo '<div class="btn-group btn-corner">' . "\n";
 		echo '	<a href="' . helper_mantis_url( auth_login_page( 'return=' . $t_return_page ) ) .
-			'" class="btn btn-primary btn-xs">' . lang_get( 'login_link' ) . '</a>' . "\n";
+			'" class="btn btn-primary btn-xs">' . lang_get( 'login' ) . '</a>' . "\n";
 		if( auth_signup_enabled() ) {
 			echo '	<a href="' . helper_mantis_url( 'signup_page.php' ) . '" class="btn btn-primary btn-xs">' .
 				lang_get( 'signup_link' ) . '</a>' . "\n";
@@ -1121,7 +1076,8 @@ function layout_breadcrumbs() {
 		$t_realname = current_user_get_field( 'realname' );
 		$t_display_realname = is_blank( $t_realname ) ? '' : ' ( ' . string_html_specialchars( $t_realname ) . ' ) ';
 
-		echo '  <li><i class="fa fa-user home-icon active"></i>';
+		echo '  <li>';
+		print_icon( 'fa-user', 'home-icon active' );
 		$t_page = ( OFF == $t_protected ) ? 'account_page.php' : 'my_view_page.php';
 		echo '  <a href="' . helper_mantis_url( $t_page ) . '">' .
 			$t_display_username . $t_display_realname . '</a>' . "\n";
@@ -1158,7 +1114,7 @@ function layout_breadcrumbs() {
 	echo '<form class="form-search" method="post" action="' . helper_mantis_url( 'jump_to_bug.php' ) . '">';
 	echo '<span class="input-icon">';
 	echo '<input type="text" name="bug_id" autocomplete="off" class="nav-search-input" placeholder="' . lang_get( 'issue_id' ) . '">';
-	echo '<i class="ace-icon fa fa-search nav-search-icon"></i>';
+	print_icon( 'fa-search', 'ace-icon nav-search-icon' );
 	echo '</span>';
 	echo '</form>';
 	echo '</div>';
@@ -1195,7 +1151,7 @@ function layout_footer() {
 	# Show MantisBT version and copyright statement
 	$t_version_suffix = '';
 	$t_copyright_years = ' 2000 - ' . date( 'Y' );
-	if( config_get( 'show_version' ) == ON ) {
+	if( config_get_global( 'show_version' ) == ON ) {
 		$t_version_suffix = ' ' . htmlentities( MANTIS_VERSION . config_get_global( 'version_suffix' ) );
 	}
 	echo '<div class="col-md-6 col-xs-12 no-padding">' . "\n";
@@ -1204,14 +1160,14 @@ function layout_footer() {
 	echo "<small>Copyright &copy;$t_copyright_years MantisBT Team</small>" . '<br>';
 
 	# Show optional user-specified custom copyright statement
-	$t_copyright_statement = config_get( 'copyright_statement' );
+	$t_copyright_statement = config_get_global( 'copyright_statement' );
 	if( $t_copyright_statement ) {
 		echo '<small>' . $t_copyright_statement . '</small>' . "\n";
 	}
 
 	# Show contact information
 	if( !is_page_name( 'login_page' ) ) {
-		$t_webmaster_contact_information = sprintf( lang_get( 'webmaster_contact_information' ), string_html_specialchars( config_get( 'webmaster_email' ) ) );
+		$t_webmaster_contact_information = sprintf( lang_get( 'webmaster_contact_information' ), string_html_specialchars( config_get_global( 'webmaster_email' ) ) );
 		echo '<small>' . $t_webmaster_contact_information . '</small>' . '<br>' . "\n";
 	}
 
@@ -1249,13 +1205,17 @@ function layout_footer() {
 	# Print the page execution time
 	if( $t_show_timer ) {
 		$t_page_execution_time = sprintf( lang_get( 'page_execution_time' ), number_format( microtime( true ) - $g_request_time, 4 ) );
-		echo '<small><i class="fa fa-clock-o"></i> ' . $t_page_execution_time . '</small>&#160;&#160;&#160;&#160;' . "\n";
+		echo '<small>';
+		print_icon( 'fa-clock-o' );
+		echo ' ' . $t_page_execution_time . '</small>&#160;&#160;&#160;&#160;' . "\n";
 	}
 
 	# Print the page memory usage
 	if( $t_show_memory_usage ) {
-		$t_page_memory_usage = sprintf( lang_get( 'memory_usage_in_kb' ), number_format( memory_get_peak_usage() / 1024 ) );
-		echo '<small><i class="fa fa-bolt"></i> ' . $t_page_memory_usage . '</small>&#160;&#160;&#160;&#160;' . "\n";
+		$t_page_memory_usage = sprintf( lang_get( 'memory_usage' ), number_format( memory_get_peak_usage() / 1024 ) );
+		echo '<small>';
+		print_icon( 'fa-bolt' );
+		echo ' ' . $t_page_memory_usage . '</small>&#160;&#160;&#160;&#160;' . "\n";
 	}
 
 	# Determine number of unique queries executed
@@ -1276,13 +1236,19 @@ function layout_footer() {
 		}
 
 		$t_total_queries_executed = sprintf( lang_get( 'total_queries_executed' ), $t_total_queries_count );
-		echo '<small><i class="fa fa-database"></i> ' . $t_total_queries_executed . '</small>&#160;&#160;&#160;&#160;' . "\n";
+		echo '<small>';
+		print_icon( 'fa-database' );
+		echo ' ' . $t_total_queries_executed . '</small>&#160;&#160;&#160;&#160;' . "\n";
 		if( config_get_global( 'db_log_queries' ) ) {
 			$t_unique_queries_executed = sprintf( lang_get( 'unique_queries_executed' ), $t_unique_queries_count );
-			echo '<small><i class="fa fa-database"></i> ' . $t_unique_queries_executed . '</small>&#160;&#160;&#160;&#160;' . "\n";
+			echo '<small>';
+			print_icon( 'fa-database' );
+			echo ' ' . $t_unique_queries_executed . '</small>&#160;&#160;&#160;&#160;' . "\n";
 		}
 		$t_total_query_time = sprintf( lang_get( 'total_query_execution_time' ), $t_total_query_execution_time );
-		echo '<small><i class="fa fa-clock-o"></i> ' . $t_total_query_time . '</small>&#160;&#160;&#160;&#160;' . "\n";
+		echo '<small>';
+		print_icon( 'fa-clock-o' );
+		echo ' ' . $t_total_query_time . '</small>&#160;&#160;&#160;&#160;' . "\n";
 	}
 
 	if( $t_display_debug_info ) {
@@ -1321,8 +1287,8 @@ function layout_footer_end() {
  */
 function layout_scroll_up_button() {
 	echo '<a class="btn-scroll-up btn btn-sm btn-inverse display" id="btn-scroll-up" href="#">' . "\n";
-	echo '<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>' . "\n";
-	echo '</a>' . "\n";
+	print_icon( 'fa-angle-double-up', 'ace-icon icon-only bigger-110');
+	echo "\n" . '</a>' . "\n";
 }
 
 /**
@@ -1332,7 +1298,7 @@ function layout_scroll_up_button() {
 function layout_login_page_logo() {
 	?>
 	<div class="login-logo">
-		<img src="<?php echo helper_mantis_url( config_get( 'logo_image' ) ); ?>">
+		<img src="<?php echo helper_mantis_url( config_get_global( 'logo_image' ) ); ?>">
 	</div>
 	<?php
 }

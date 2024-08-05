@@ -640,6 +640,10 @@ class Module_admin_errorlog
      */
     protected function configure_cron_hook(string $hook, int $enabled) : object
     {
+        if (!hook_exists('systems', 'cron', $hook)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+
         // Update cron_progression table
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('cron_progression', 'c_hook', ['c_hook' => $hook]) !== null) {
             $GLOBALS['SITE_DB']->query_update('cron_progression', ['c_enabled' => $enabled], ['c_hook' => $hook], '', 1);

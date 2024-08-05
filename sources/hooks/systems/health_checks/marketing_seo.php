@@ -78,8 +78,10 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
 
         // external_health_check (on maintenance sheet)
 
-        $this->stateCheckManual('Check for [url="SEO issues"]https://seositecheckup.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
+        $this->stateCheckManual('Check for [url="SEO issues"]https://seositecheckup.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate for your use case)');
         $this->stateCheckManual('Check for search issues in [url="Google Webmaster Tools"]https://www.google.com/webmasters/tools/home[/url] (including crawl errors, mobile issues, manual webspam actions, and changes in keyword ranking) and/or [url="Bing Webmaster Tools"]https://www.bing.com/webmasters/about/[/url] and/or [url="Yandex Webmaster Tools"]https://webmaster.yandex.com/[/url]');
+
+        // TODO: replace with FOSS-friendly services
         $this->stateCheckManual('Analyse what [url="popular keywords you rank for"]https://www.thehoth.com/[/url] and what you could [url="try and rank for"]https://www.authoritylabs.com/ranking-tool/[/url] and [url="compare to competitors"]https://moz.com[/url]');
     }
 
@@ -253,7 +255,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         }
 
         $ok = ($header !== null);
-        $this->assertTrue($ok, 'Could not find any <h1>');
+        $this->assertTrue($ok, 'Could not find any <h1> tags');
     }
 
     /**
@@ -286,7 +288,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
 
         $last_updated_file = @filemtime($path . '/index.xml');
         $ok = ($last_updated_file !== false);
-        $this->assertTrue($ok, 'XML Sitemap does not seem to be building');
+        $this->assertTrue($ok, 'XML Sitemap does not seem to be building; check the scheduler and error logs.');
 
         if ($ok) {
             $last_updated_file = 0;
@@ -299,7 +301,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
             closedir($dh);
             $last_updated = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'MAX(last_updated)', [], ' AND last_updated<' . strval(time() - 60 * 60 * 25));
             if ($last_updated !== null) {
-                $this->assertTrue($last_updated_file > $last_updated - 60 * 60 * 24, 'XML Sitemap does not seem to be updating');
+                $this->assertTrue($last_updated_file > $last_updated - 60 * 60 * 24, 'XML Sitemap does not seem to be updating; check the scheduler and error logs.');
             } else {
                 $this->stateCheckSkipped('Nothing queued to go into the XML Sitemap old enough to know it should be there');
             }
@@ -333,8 +335,8 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         do {
             $rows = $GLOBALS['SITE_DB']->query('SELECT ip,i_descrip,i_ban_until FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL' . ' OR i_ban_until>' . strval(time()) . ')', 100, $start);
             foreach ($rows as $row) {
-                $this->assertTrue(!is_unbannable_bot_dns($row['ip']), 'Accidentally banned a web crawler (according to DNS): ' . $row['ip']);
-                $this->assertTrue(!is_unbannable_bot_ip($row['ip']), 'Accidentally banned a web crawler (according to IP address): ' . $row['ip']);
+                $this->assertTrue(!is_unbannable_bot_dns($row['ip']), 'Accidentally banned a web crawler (according to DNS): ' . $row['ip'] . '. This should probably be unbanned.');
+                $this->assertTrue(!is_unbannable_bot_ip($row['ip']), 'Accidentally banned a web crawler (according to IP address): ' . $row['ip'] . '. This should probably be unbanned.');
             }
             $start += 100;
         } while (count($rows) == 100);

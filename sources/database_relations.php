@@ -53,7 +53,7 @@ function init__database_relations()
  */
 function get_table_purpose_flags() : array
 {
-    return [
+    return [ // If you change TABLE_PURPOSE__NO_BACKUPS on any of these, you should probably also edit the performance_bloat testTableSize health check
         'addons' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
         'addons_dependencies' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA/*under addons*/,
         'addons_files' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA/*under addons*/,

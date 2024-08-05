@@ -61,7 +61,7 @@ layout_page_begin();
 <div id="save-filter" class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 	<h4 class="widget-title lighter">
-		<i class="ace-icon fa fa-filter"></i>
+		<?php print_icon( 'fa-filter', 'ace-icon' ); ?>
 		<?php echo lang_get( 'save_query' ) ?>
 	</h4>
 </div>
@@ -82,7 +82,7 @@ foreach( $t_query_arr as $t_id => $t_name ) {
 }
 
 # Check for an error
-$t_error_msg = strip_tags( gpc_get_string( 'error_msg', null ) );
+$t_error_msg = strip_tags( gpc_get_string( 'error_msg', '' ) );
 if( $t_error_msg != null ) {
 	print '<br />' . $t_error_msg . '<br /><br />';
 }

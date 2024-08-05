@@ -25,29 +25,29 @@
  * **                                                                  **
  * **                      DO NOT UPDATE MANUALLY                      **
  * **                                                                  **
- * ** To improve a translation please visit http://translatewiki.net   **
+ * ** To improve a translation please visit https://translatewiki.net  **
  * ** Detailed instructions on how to create or update translations at **
  * ** http://www.mantisbt.org/wiki/doku.php/mantisbt:translationshowto **
  * **********************************************************************
  */
-/** Serbian (Cyrillic script) (српски (ћирилица)‎)
+/** Serbian (Cyrillic script) (српски (ћирилица))
  * 
  * See the qqq 'language' for message documentation incl. usage of parameters
- * To improve a translation please visit http://translatewiki.net
+ * To improve a translation please visit https://translatewiki.net
  *
  * @ingroup Language
  * @file
  *
- * @author Abijeet Patro
  * @author Acamicamacaraca
  * @author BadDog
+ * @author Kizule
  * @author Rancher
  */
 
 $s_plugin_MantisGraph_title = 'Графикони за MantisBT';
 $s_plugin_MantisGraph_description = 'Званични додатак за исцртавање графикона.';
 $s_plugin_MantisGraph_config = 'Подешавање';
-$s_plugin_MantisGraph_tab_label = 'Графикони за MantisBT';
+$s_plugin_MantisGraph_tab_label = 'Графикони';
 $s_plugin_MantisGraph_status_link = 'По статусу';
 $s_plugin_MantisGraph_priority_link = 'По важности';
 $s_plugin_MantisGraph_severity_link = 'По озбиљности';

@@ -5,7 +5,7 @@
 		{TEXT*}
 	</p>
 
-	{+START,IF,{$_GET,keep_fatalistic}}
+	{+START,IF,{$CURRENT_FATALISTIC}}
 		<div class="box box---fatal-screen"><div class="box-inner">
 			{!MAYBE_NOT_FATAL}
 		</div></div>
@@ -28,7 +28,7 @@
 		</p>
 	{+END}
 
-	{+START,IF,{$NOR,{$_GET,keep_fatalistic},{$EQ,{$PAGE},admin_config}}}
+	{+START,IF,{$NOR,{$CURRENT_FATALISTIC},{$EQ,{$PAGE},admin_config}}}
 		{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_config}}
 			<hr class="spaced-rule" />
 

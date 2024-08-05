@@ -154,6 +154,7 @@ class Hook_health_check_performance extends Hook_Health_Check
 
         global $SITE_INFO;
         if ((isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1')) {
+            $this->stateCheckSkipped('Skipped; guests are cached');
             return;
         }
 
@@ -371,6 +372,11 @@ class Hook_health_check_performance extends Hook_Health_Check
             return;
         }
 
+        if ((get_option('site_closed') != '0') || ($check_context != CHECK_CONTEXT__LIVE_SITE)) { // We might have intentionally disabled caches on non-live sites
+            $this->stateCheckSkipped('Skipped cache checks as the site is currently closed or in test mode.');
+            return;
+        }
+
         $options = [
             'is_on_template_cache',
             'is_on_lang_cache',
@@ -378,7 +384,7 @@ class Hook_health_check_performance extends Hook_Health_Check
             'is_on_block_cache',
         ];
         foreach ($options as $option) {
-            $this->assertTrue(get_option($option) == '1', 'Cache option should be enabled, ' . $option);
+            $this->assertTrue(get_option($option) == '1', 'Cache option should be enabled to improve performance, ' . $option);
         }
 
         if ($manual_checks) {
@@ -433,7 +439,7 @@ class Hook_health_check_performance extends Hook_Health_Check
             }
         }
 
-        $threshold = 200; // Number of hits over 24 hour period. This is every 7 minutes or so, which a human would not sustain over that time.
+        $threshold = 200; // Number of hits over 24 hour period. This is every 7 minutes or so, which a guest human would not sustain over that time.
 
         $where = 'member_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval(time() - 60 * 60 * 24) . $bots_where;
 

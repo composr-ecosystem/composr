@@ -1877,27 +1877,35 @@ function cns_check_name_valid(?string &$username, ?int $member_id = null, ?strin
     }
 
     // Check lengths
-    if (get_page_name() != 'admin_cns_members') {
-        if ($username !== null) {
+    if ($username !== null) {
+        if (get_page_name() != 'admin_cns_members') {
             $_maximum_username_length = get_option('maximum_username_length');
-            $maximum_username_length = intval($_maximum_username_length);
-            if ((cms_mb_strlen($username) > $maximum_username_length) && ($username_known_available)) {
-                $error = do_lang_tempcode('USERNAME_TOO_LONG', escape_html(integer_format($maximum_username_length)));
-                if ($return_errors) {
-                    return $error;
-                }
-                warn_exit($error);
-            }
-            $_minimum_username_length = get_option('minimum_username_length');
-            $minimum_username_length = intval($_minimum_username_length);
-            if ((cms_mb_strlen($username) < $minimum_username_length) && ($username_known_available)) {
-                $error = do_lang_tempcode('USERNAME_TOO_SHORT', escape_html(integer_format($minimum_username_length)));
-                if ($return_errors) {
-                    return $error;
-                }
-                warn_exit($error);
-            }
+            $maximum_username_length = min(100, intval($_maximum_username_length));
+        } else {
+            $maximum_username_length = 100;
         }
+        if ((cms_mb_strlen($username) > $maximum_username_length) && ($username_known_available)) {
+            $error = do_lang_tempcode('USERNAME_TOO_LONG', escape_html(integer_format($maximum_username_length)));
+            if ($return_errors) {
+                return $error;
+            }
+            warn_exit($error);
+        }
+        if (get_page_name() != 'admin_cns_members') {
+            $_minimum_username_length = get_option('minimum_username_length');
+            $minimum_username_length = max(1, intval($_minimum_username_length));
+        } else {
+            $minimum_username_length = 1;
+        }
+        if ((cms_mb_strlen($username) < $minimum_username_length) && ($username_known_available)) {
+            $error = do_lang_tempcode('USERNAME_TOO_SHORT', escape_html(integer_format($minimum_username_length)));
+            if ($return_errors) {
+                return $error;
+            }
+            warn_exit($error);
+        }
+    }
+    if (get_page_name() != 'admin_cns_members') {
         if ($password !== null) {
             require_code('password_rules');
             $test = check_password_complexity($password, ($username === null) ? '' : $username, ($email_address === null) ? '' : $email_address, $dob, $return_errors);

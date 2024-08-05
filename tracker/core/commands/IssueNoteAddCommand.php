@@ -219,7 +219,7 @@ class IssueNoteAddCommand extends Command {
 	/**
 	 * Process the command.
 	 *
-	 * @returns array Command response
+	 * @return array Command response
 	 */
 	protected function process() {
 		if( $this->issue->project_id != helper_get_current_project() ) {
@@ -278,7 +278,7 @@ class IssueNoteAddCommand extends Command {
 		email_bugnote_add( $t_note_id, $t_file_infos, /* user_exclude_ids */ $t_user_ids_that_got_mention_notifications );
 
 		# Event integration
-		event_signal( 'EVENT_BUGNOTE_ADD', array( $this->issue->id, $t_note_id, 'files' => $t_file_infos ) );
+		event_signal( 'EVENT_BUGNOTE_ADD', array( $this->issue->id, $t_note_id, $t_file_infos ) );
 
 		return array( 'id' => $t_note_id );
 	}

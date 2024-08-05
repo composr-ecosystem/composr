@@ -32,7 +32,7 @@ function init__failure()
     $THROWING_ERRORS = false;
 
     if (!defined('MAX_STACK_TRACE_VALUE_LENGTH')) {
-        define('MAX_STACK_TRACE_VALUE_LENGTH', (get_param_integer('keep_fatalistic', 0) == 2) ? 10000 : 300);
+        define('MAX_STACK_TRACE_VALUE_LENGTH', (current_fatalistic() == 2) ? 10000 : 300);
     }
 
     /** Whether we want errors to result in simple text responses. Useful for AJAX scripts.
@@ -60,7 +60,7 @@ function init__failure()
  */
 function suggest_fatalistic()
 {
-    if ((may_see_stack_traces()) && (get_param_integer('keep_fatalistic', 0) == 0) && (running_script('index'))) {
+    if ((may_see_stack_traces()) && (current_fatalistic() == 0) && (running_script('index'))) {
         require_code('urls');
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $stack_trace_url = build_url(['page' => '_SELF', 'keep_fatalistic' => 1], '_SELF', [], true);
@@ -362,7 +362,7 @@ function _warn_screen(object $title, $text, bool $provide_back = true, bool $sup
         }
     }
 
-    if (get_param_integer('keep_fatalistic', 0) != 0) {
+    if (current_fatalistic() > 0) {
         _generic_exit($text, 'FATAL_SCREEN', false, false, 500);
     }
 
@@ -391,7 +391,7 @@ function _warn_screen(object $title, $text, bool $provide_back = true, bool $sup
  */
 function _generic_exit($text, string $template, ?bool $support_match_key_messages = false, bool $log_error = false, ?int $http_status = null, ?object $title = null, ?string $image_url = null)
 {
-    if (($template == 'WARN_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
+    if (($template == 'WARN_SCREEN') && ((current_fatalistic() > 0) || (running_script('commandr')))) {
         _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
     }
 
@@ -400,6 +400,8 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
     }
 
     cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
+
+    require_code('global3');
 
     if (is_object($text)) {
         $text = $text->evaluate();
@@ -1080,12 +1082,15 @@ function get_webservice_result($error_message) : ?string
         return null;
     }
 
-    // Talk to web service
+    // The first 8 kb is sufficient; very unlikely our webservice will have any matches beyond this.
+    $error_message = substr($error_message, 0, (1024 * 8));
+
     $brand = get_value('rebrand_name');
     if ($brand === null) {
         $brand = DEFAULT_BRAND_NAME;
     }
 
+    // Talk to web service
     require_code('version2');
     require_code('http');
     $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/errorservice/' . urlencode(get_version_dotted()) . '/?product=' . urlencode($brand);
@@ -1126,6 +1131,8 @@ function cms_error_log(string $errormsg, string $notification_category = 'error_
  */
 function relay_error_notification(string $text, bool $developers = true, string $notification_category = 'error_occurred')
 {
+    $text_size_limit = (1024 * 256); // If $text is > this then we will either save the error to disk (and provide path in notification) or truncate.
+
     if (isset($GLOBALS['SENDING_MAIL']) && $GLOBALS['SENDING_MAIL']) {
         return;
     }
@@ -1134,17 +1141,34 @@ function relay_error_notification(string $text, bool $developers = true, string 
         return;
     }
 
+    require_lang('critical_error');
+
     // Make sure we don't send too many error e-mails
     $send_error_email = true;
     if ((function_exists('get_value')) && (!$GLOBALS['BOOTSTRAPPING']) && (array_key_exists('SITE_DB', $GLOBALS)) && ($GLOBALS['SITE_DB'] !== null)) {
         $num = intval(get_value('num_error_mails_' . date('Y-m-d'), null, true)) + 1;
-        if ($num == 51) { // TODO: turn this into a value? #5399
+        if (($num >= 51) && (!$GLOBALS['DEV_MODE'])) { // TODO: turn this into a value? #5399
             $send_error_email = false; // We've sent too many error e-mails today, but we might still want to send this to developers as we use fsock instead
         }
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values_elective WHERE the_name LIKE \'' . db_encode_like('num\_error\_mails\_%') . '\'');
         persistent_cache_delete('VALUES');
         set_value('num_error_mails_' . date('Y-m-d'), strval($num), true);
     }
+
+    $_text = $text; // $_text will never contain fallback disk file error and instead will be truncated when necessary
+
+    if (strlen($text) > $text_size_limit) { // Too large; fall back to saving the error on disk and providing an error code in the e-mail instead.
+        $_text = substr($text, 0, ($text_size_limit - 3)) . '...';
+        $dir = get_custom_file_base() . '/data_custom/errors';
+        $code = uniqid('', true);
+        if (($send_error_email) && (is_dir($dir)) && (@file_put_contents($dir . '/' . $code . '.log', $text) !== false)) {
+            $text = do_lang('ERROR_MAIL_OVERFLOW', escape_html($code));
+        } else {
+            $text = $_text;
+        }
+    }
+
+    $error_message = strip_html(explode("\n\n", $_text)[0]);
 
     require_code('urls');
     require_code('tempcode');
@@ -1155,12 +1179,12 @@ function relay_error_notification(string $text, bool $developers = true, string 
 
     require_code('notifications');
     require_code('comcode');
-    $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $developers ? '?' : get_ip_address(), get_site_default_lang());
     if ($send_error_email) {
+        $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $developers ? '?' : get_ip_address(), get_site_default_lang());
         dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $developers ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     }
 
-    $error_message = strip_html(explode("\n\n", $text)[0]);
+    $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $_text, $developers ? '?' : get_ip_address(), get_site_default_lang());
 
     if (
         ($mail !== null) &&
@@ -1362,10 +1386,10 @@ function die_html_trace(string $message)
 function put_value_in_stack_trace($value) : string
 {
     try {
-        if (($value === null) || (is_array($value) && (strlen(json_encode($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
+        if ($value === null) {
             $_value = gettype($value);
         } elseif (is_object($value) && (is_a($value, 'Tempcode'))) {
-            $max_bytes = 500;
+            $max_bytes = MAX_STACK_TRACE_VALUE_LENGTH;
             if ($value->is_smaller_than($max_bytes)) { // Don't display Tempcode if it's really long, and would use too much memory/space
                 $_value = 'Tempcode -> ...';
             } else {
@@ -1377,15 +1401,25 @@ function put_value_in_stack_trace($value) : string
                 }
             }
         } elseif ((is_array($value)) || (is_object($value))) {
-            $_value = json_encode($value);
+            if (strlen(json_encode($value)) > MAX_STACK_TRACE_VALUE_LENGTH) {
+                $_value = gettype($value);
+            } else {
+                $_value = json_encode($value);
+            }
         } elseif (is_string($value)) {
-            $_value = '\'' . php_addslashes($value) . '\'';
+            if (strlen($value) > MAX_STACK_TRACE_VALUE_LENGTH) {
+                $_value = gettype($value);
+            } else {
+                $_value = '\'' . php_addslashes($value) . '\'';
+            }
         } elseif (is_float($value)) {
             $_value = float_to_raw_string($value);
         } elseif (is_integer($value)) {
             $_value = integer_format($value);
         } elseif (is_bool($value)) {
             $_value = $value ? 'true' : 'false';
+        } elseif (strlen(strval($value)) > MAX_STACK_TRACE_VALUE_LENGTH) {
+            $_value = gettype($value);
         } else {
             $_value = strval($value);
         }
@@ -1394,11 +1428,11 @@ function put_value_in_stack_trace($value) : string
     }
 
     global $SITE_INFO;
-    if ((isset($SITE_INFO['db_site_password'])) && (strlen($SITE_INFO['db_site_password']) > 4)) {
-        $_value = str_replace($SITE_INFO['db_site_password'], '(password removed)', $_value);
-    }
-    if ((isset($SITE_INFO['db_forums_password'])) && (strlen($SITE_INFO['db_forums_password']) > 4)) {
-        $_value = str_replace($SITE_INFO['db_forums_password'], '(password removed)', $_value);
+    $site_info_keys = ['db_site_password', 'db_forums_password', 'maintenance_password', 'master_password', 'mysql_root_password'];
+    foreach ($site_info_keys as $key) {
+        if ((isset($SITE_INFO[$key])) && (strlen($SITE_INFO[$key]) > 4)) {
+            $_value = str_replace($SITE_INFO[$key], '(password removed)', $_value);
+        }
     }
 
     return escape_html($_value);
@@ -1458,7 +1492,7 @@ function get_html_trace() : object
                 continue;
             }
 
-            $post[$key] = $val;
+            $post[$key] = put_value_in_stack_trace($val);
         }
     }
 
@@ -1594,7 +1628,7 @@ function _access_denied(string $class, string $param, bool $force_login)
         throw new CMSException($message);
     }
 
-    if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_integer('keep_fatalistic', 0) != 0)) {
+    if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (current_fatalistic() > 0)) {
         fatal_exit($message);
     }
 

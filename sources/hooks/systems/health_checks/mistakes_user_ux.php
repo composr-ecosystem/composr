@@ -68,9 +68,9 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
             return;
         }
 
-        $url = get_base_url() . '/testing-for-404.html';
+        $url = get_base_url() . '/testing-for-404-cug3uy4f3uysBSH.html';
         $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]);
-        $this->assertTrue(($data === null) || (strpos($data, '<link') !== false) || (strpos($data, '<a ') !== false), '[tt]404[/tt] status page is too basic looking, probably not helpful, suggest to display a sitemap');
+        $this->assertTrue(($data === null) || (strpos($data, '<link') !== false) || (strpos($data, '<a ') !== false), 'Server [tt]404[/tt] status page is too basic looking, probably not helpful. Perhaps configure your server to use use the software 404 page.');
     }
 
     /**

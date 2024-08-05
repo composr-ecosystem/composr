@@ -2013,7 +2013,7 @@ function paid_amount_matches(float $price, float $tax, float $shipping, float $e
  */
 function fatal_ipn_exit(string $error, bool $dont_trigger = false)
 {
-    if (get_param_integer('keep_fatalistic', 0) != 0) {
+    if (current_fatalistic() > 0) {
         fatal_exit($error);
     }
 

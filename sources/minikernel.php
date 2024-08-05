@@ -1551,3 +1551,31 @@ function raise_php_memory_limit()
 
     cms_ini_set('memory_limit', '128M');
 }
+
+/**
+ * Find the current mode of fatalistic.
+ *
+ * @return integer 0 if fatalistic is off, 1 if it is on, or 2 if it is on with additional details
+ */
+function current_fatalistic() : int
+{
+    // _config.php takes priority
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['keep_fatalistic'])) {
+        switch ($SITE_INFO['keep_fatalistic']) { // This is to prevent invalid config values from breaking the site
+            case '1':
+                return 1;
+            case '2':
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
+    // URL parameter
+    if (get_param_integer('keep_fatalistic', 0) != 0) {
+        return get_param_integer('keep_fatalistic');
+    }
+
+    return 0;
+}
