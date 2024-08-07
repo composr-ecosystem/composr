@@ -320,6 +320,10 @@ function cns_ping_topic_read(int $topic_id, ?int $member_id = null, ?int $timest
  */
 function cns_has_read_topic(int $topic_id, ?int $topic_last_time = null, ?int $member_id = null, ?int $member_last_time = null) : bool
 {
+    if (!addon_installed('cns_forum')) {
+        return true;
+    }
+
     if ($member_id === null) {
         $member_id = get_member();
     }

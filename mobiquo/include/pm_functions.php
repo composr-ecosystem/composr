@@ -46,7 +46,9 @@ function get_num_unread_private_topics(?int $box_type = null) : int
     $sql .= ' AND (t_pt_from_member<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_from_category', do_lang('TRASH')) . ')';
     $sql .= ' AND (t_pt_to_member<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_to_category', do_lang('TRASH')) . ')';
     $sql .= ' AND (l_time IS NULL OR l_time<t_cache_last_time)'; // Cannot get join match OR gets one and it is behind of last post
-    $sql .= ' AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))); // Within tracking range
+    if (addon_installed('cns_forum')) {
+        $sql .= ' AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))); // Within tracking range
+    }
 
     return $GLOBALS['FORUM_DB']->query_value_if_there($sql);
 }

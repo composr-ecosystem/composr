@@ -286,6 +286,10 @@ function cns_delete_forum(int $forum_id, ?int $target_forum_id = null, int $dele
  */
 function cns_ping_forum_read_all(int $forum_id)
 {
+    if (!addon_installed('cns_forum')) {
+        return;
+    }
+
     $or_list = cns_get_all_subordinate_forums($forum_id, 't_forum_id');
     if ($or_list == '') {
         return;
@@ -319,6 +323,10 @@ function cns_ping_forum_read_all(int $forum_id)
  */
 function cns_ping_forum_unread_all(int $forum_id)
 {
+    if (!addon_installed('cns_forum')) {
+        return;
+    }
+
     $or_list = cns_get_all_subordinate_forums($forum_id, 't_forum_id');
     $topics = $GLOBALS['FORUM_DB']->query('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE (' . $or_list . ') AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))));
     $or_list_2 = '';

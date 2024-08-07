@@ -361,7 +361,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 ],
                 'f_read_logs' => [
                     'timestamp_field' => 'l_time',
-                    'retention_days' => intval(get_option('post_read_history_days')),
+                    'retention_days' => addon_installed('cns_forum') ? intval(get_option('post_read_history_days')) : null,
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
                     'owner_id_field' => 'l_member_id',
                     'additional_member_id_fields' => [],
