@@ -456,7 +456,7 @@ function get_db_for(string $table, bool $force_site_db = false) : object
         ($table != 'f_welcome_emails') &&
         (!$force_site_db) &&
         (get_forum_type() == 'cns') &&
-        ($GLOBALS['FORUM_DB'] !== null)
+        (isset($GLOBALS['FORUM_DB']))
     );
     $db = $GLOBALS[$use_forum_db ? 'FORUM_DB' : 'SITE_DB'];
     return $db;
