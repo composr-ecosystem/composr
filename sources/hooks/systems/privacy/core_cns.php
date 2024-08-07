@@ -45,7 +45,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             'positive' => [
                 ((get_option('is_on_parental_consent') == '0') || (get_option('dobs') == '0')) ? null : [
                     'heading' => do_lang('CHILD_PROTECTION'),
-                    'explanation' => do_lang_tempcode('privacy:PRIVACY_EXPLANATION_PARENTAL_CONSENT', escape_html(get_option('parental_consent_age'))),
+                    'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_PARENTAL_CONSENT', escape_html(get_option('parental_consent_age'))),
                 ],
                 [
                     'heading' => do_lang('COOKIES'),
