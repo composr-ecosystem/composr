@@ -350,11 +350,26 @@ function decrypt_data_telemetry(string $nonce_base64, string $encrypted_data_bas
  */
 function generate_telemetry_key_pair(float $version, bool $overwrite_existing = false)
 {
+    require_code('files2');
+
     $key_path = get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true);
 
-    // Key already exists, so nothing to do
-    if (!$overwrite_existing && file_exists($key_path . '.key')) {
-        return;
+    if (!$overwrite_existing) {
+        // Key already exists, so nothing to do
+        if (file_exists($key_path . '.key')) {
+            return;
+        }
+
+        // Try calling homesite to retrieve this version's public key in case we accidentally deleted it
+        require_code('global3');
+        $homesite_call = cms_http_request(get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry/' . float_to_raw_string($version, 2, true) . '?type=key', ['convert_to_internal_encoding' => true, 'timeout' => 10.0, 'trigger_error' => false]);
+        if ($homesite_call->data !== null) {
+            $data = @json_decode($homesite_call->data, true);
+            if (($data !== false) && ($data['success'] === true)) {
+                cms_file_put_contents_safe($key_path . '.pub', $data['response_data']['key'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                return;
+            }
+        }
     }
 
     $key_pair = sodium_crypto_box_keypair();
@@ -368,7 +383,6 @@ function generate_telemetry_key_pair(float $version, bool $overwrite_existing = 
     $private_key_base64 = base64_encode($private_key);
 
     // Save our keys
-    require_code('files2');
     cms_file_put_contents_safe($key_path . '.pub', $public_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     cms_file_put_contents_safe($key_path . '.key', $private_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
