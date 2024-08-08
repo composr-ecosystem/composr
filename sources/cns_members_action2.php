@@ -491,7 +491,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     */
 
     if ($sound_enabled === null) {
-        $sound_enabled = (get_option_with_overrides('sound_enabled_default', $adjusted_config_options) == '1') ? 1 : 0;
+        $sound_enabled = ((addon_installed('cns_forum')) && (get_option_with_overrides('sound_enabled_default', $adjusted_config_options) == '1')) ? 1 : 0;
     }
 
     $hidden = new Tempcode();
@@ -2704,7 +2704,7 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
 function cns_can_edit_birthday(?int $member_id) : bool
 {
     $can_edit_birthday = true;
-    $_birthday_points = get_option('points_birthday');
+    $_birthday_points = get_option('points_birthday', true);
     $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);
 
     if ($member_id !== null) {

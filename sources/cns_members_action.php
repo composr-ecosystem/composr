@@ -189,7 +189,7 @@ function cns_make_member(string $username, string $password, string $email_addre
         $mailing_list_style = (get_option('mailing_list_style_default') == '1') ? 1 : 0;
     }
     if ($sound_enabled === null) {
-        $sound_enabled = (get_option('sound_enabled_default') == '1') ? 1 : 0;
+        $sound_enabled = ((addon_installed('cns_forum')) && (get_option('sound_enabled_default') == '1')) ? 1 : 0;
     }
 
     $doing_email_option = (get_option('member_email_receipt_configurability') == '2') && (addon_installed('cns_contact_member'));
