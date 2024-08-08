@@ -196,6 +196,7 @@ function find_page_stats_for(int $member_id, string $ip, int $start = 0, int $ma
 function find_security_alerts(array $where = []) : array
 {
     require_code('templates_tooltip');
+    require_code('templates_results_table');
 
     require_lang('security');
 

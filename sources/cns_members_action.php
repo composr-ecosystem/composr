@@ -23,9 +23,9 @@
  *
  * @param  ID_TEXT $option_name The config option
  * @param  ?array $overrides Map of config option codenames and overridden values (null: no overrides)
- * @return ID_TEXT Config option value
+ * @return ?ID_TEXT Config option value (null: config option disabled or not found)
  */
-function get_option_with_overrides(string $option_name, ?array $overrides) : string
+function get_option_with_overrides(string $option_name, ?array $overrides) : ?string
 {
     if ((isset($overrides[$option_name])) && ($overrides[$option_name] != '')) {
         return $overrides[$option_name];

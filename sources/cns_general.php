@@ -307,7 +307,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
     }
 
     // Browser
-    if (($need === null) || (in_array('browser', $need)) || (in_array('operating_system', $need))) {
+    if ((addon_installed('stats')) && (($need === null) || (in_array('browser', $need)) || (in_array('operating_system', $need)))) {
         $last_stats = $GLOBALS['SITE_DB']->query_select('stats', ['browser', 'operating_system', 'date_and_time'], ['member_id' => $member_id], 'ORDER BY date_and_time DESC', 1);
         if (array_key_exists(0, $last_stats)) {
             $member_info['browser'] = $last_stats[0]['browser'];

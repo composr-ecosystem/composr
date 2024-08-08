@@ -476,6 +476,9 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
         $groups = cns_get_all_default_groups(true);
     }
     $preview_posts = take_param_int_modeavg($preview_posts, 'm_preview_posts', 'f_members', 0);
+
+    // Not needed as it is managed on the notifications tab, and may cause errors if cns_forum is not installed
+    /*
     if ($auto_monitor_contrib_content === null) {
         $auto_monitor_contrib_content = (get_option_with_overrides('allow_auto_notifications', $adjusted_config_options) == '0') ? 0 : 1;
     }
@@ -485,6 +488,8 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     if ($mailing_list_style === null) {
         $mailing_list_style = (get_option_with_overrides('mailing_list_style_default', $adjusted_config_options) == '1') ? 1 : 0;
     }
+    */
+
     if ($sound_enabled === null) {
         $sound_enabled = (get_option_with_overrides('sound_enabled_default', $adjusted_config_options) == '1') ? 1 : 0;
     }

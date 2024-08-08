@@ -52,6 +52,9 @@ class Module_recommend
             'the_zone' => '',
             'the_page' => 'recommend_help',
         ], '', 1);
+
+        require_code('permissions3');
+        delete_privilege('use_own_recommend_message');
     }
 
     /**

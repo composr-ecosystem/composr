@@ -704,6 +704,7 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
 
     $can_do_db_sorting = ($order_by != 'distance');
 
+    require_code('content');
     require_code('hooks/systems/content_meta_aware/catalogue_entry');
     $cma_ob = object_factory('Hook_content_meta_aware_catalogue_entry');
 
