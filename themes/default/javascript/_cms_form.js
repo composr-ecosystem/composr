@@ -27,9 +27,9 @@
                             if ($cms.isDevMode()) {
                                 $util.inform('$cms.form.doAjaxFieldTest()', 'xhr.responseText:', xhr.responseText);
                             }
-                            $cms.ui.alert(xhr.responseText, '{!JS_ERROR_OCCURRED;^}', true);
+                            $cms.ui.alert('{!JS_ERROR_OCCURRED;^}\n\n' + xhr.responseText, '{!ERROR_OCCURRED;^}', true);
                         } else {
-                            $cms.ui.alert(xhr.responseText);
+                            $cms.ui.alert(xhr.responseText, '{!ERROR_OCCURRED;^}');
                         }
                     }
                     resolve(false);

@@ -566,7 +566,7 @@
         var read = $cms.readCookie(cookieName);
 
         if (read && (read !== cookieValue) && $cms.isDevMode() && !alertedCookieConflict) {
-            $cms.ui.alert('{!COOKIE_CONFLICT_DELETE_COOKIES;^}' + '... ' + document.cookie + ' (' + output + ')', '{!JS_ERROR_OCCURRED;^}');
+            $cms.ui.alert('{!COOKIE_CONFLICT_DELETE_COOKIES;^}' + '... ' + document.cookie + ' (' + output + ')', '{!ERROR_OCCURRED;^}');
             alertedCookieConflict = true;
         }
     };
@@ -1252,7 +1252,7 @@
                 // HTTP error...
 
                 try {
-                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_AJAX;^}\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
+                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_AJAX;^}\n' + xhr.responseURL + '\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
 
                     if ((xhr.status === 0) || (xhr.status > 10000)) { // implies site down, or network down
                         if (!networkDownAlerted) {
@@ -1264,8 +1264,8 @@
                         if (callbackError == null) {
                             if (!genericAjaxErrorAlerted) {
                                 // There's no callback to handle the error
-                                var alert = '{!PROBLEM_AJAX;^}\n' + xhr.status + ': ' + xhr.statusText + '.';
-                                $cms.ui.alert(alert, '{!JS_ERROR_OCCURRED;^}');
+                                var alert = '{!JS_ERROR_OCCURRED;^}\n\n{!PROBLEM_AJAX;^}\n' + xhr.responseURL + '\n' + xhr.status + ': ' + xhr.statusText + '.';
+                                $cms.ui.alert(alert, '{!ERROR_OCCURRED;^}');
                                 genericAjaxErrorAlerted = true;
                             }
                         }

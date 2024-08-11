@@ -1591,7 +1591,7 @@
                     window.doneOneError = true;
                     var alert = '{!JAVASCRIPT_ERROR;^}\n\n' + code + ': ' + msg + '\n' + file;
                     if (document.body) { // i.e. if loaded
-                        $cms.ui.alert(alert, '{!JS_ERROR_OCCURRED;^}');
+                        $cms.ui.alert(alert, '{!ERROR_OCCURRED;^}');
                     }
                 }
                 return false;
