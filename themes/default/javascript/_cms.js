@@ -566,7 +566,7 @@
         var read = $cms.readCookie(cookieName);
 
         if (read && (read !== cookieValue) && $cms.isDevMode() && !alertedCookieConflict) {
-            $cms.ui.alert('{!COOKIE_CONFLICT_DELETE_COOKIES;^}' + '... ' + document.cookie + ' (' + output + ')', '{!ERROR_OCCURRED;^}');
+            $cms.ui.alert('{!COOKIE_CONFLICT_DELETE_COOKIES;^}' + '... ' + document.cookie + ' (' + output + ')', '{!JS_ERROR_OCCURRED;^}');
             alertedCookieConflict = true;
         }
     };
@@ -1264,7 +1264,8 @@
                         if (callbackError == null) {
                             if (!genericAjaxErrorAlerted) {
                                 // There's no callback to handle the error
-                                $cms.ui.alert('{!ERROR_OCCURRED;^}');
+                                var alert = '{!PROBLEM_AJAX;^}\n' + xhr.status + ': ' + xhr.statusText + '.';
+                                $cms.ui.alert(alert, '{!JS_ERROR_OCCURRED;^}');
                                 genericAjaxErrorAlerted = true;
                             }
                         }

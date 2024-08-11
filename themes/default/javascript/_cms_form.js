@@ -23,9 +23,11 @@
             $cms.doAjaxRequest(url, null, post).then(function (xhr) {
                 if ((xhr.responseText !== '') && (xhr.responseText.replace(/[ \t\n\r]/g, '') !== '0'/*some cache layers may change blank to zero*/)) {
                     if (xhr.responseText !== 'false') {
-                        if (xhr.responseText.length > 1000) {
-                            //$util.inform('$cms.form.doAjaxFieldTest()', 'xhr.responseText:', xhr.responseText);
-                            $cms.ui.alert(xhr.responseText, '{!ERROR_OCCURRED;^}', true);
+                        if (xhr.responseText.length > 1000) { // Indicates we probably received an error page from the software
+                            if ($cms.isDevMode()) {
+                                $util.inform('$cms.form.doAjaxFieldTest()', 'xhr.responseText:', xhr.responseText);
+                            }
+                            $cms.ui.alert(xhr.responseText, '{!JS_ERROR_OCCURRED;^}', true);
                         } else {
                             $cms.ui.alert(xhr.responseText);
                         }
