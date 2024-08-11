@@ -44,17 +44,17 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
         access_denied('I_ERROR');
     }
 
-    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from_member', 't_cache_first_title'], ['id' => $topic_id], '', 1);
-    $topic_title = $topic_info['t_cache_first_title'];
-
     $GLOBALS['FORUM_DB']->query_update('f_posts', [
         'p_validated' => 1,
     ], ['id' => $post_id], '', 1);
 
+    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from_member', 't_cache_first_title'], ['id' => $topic_id], '', 1);
     if (!array_key_exists(0, $topic_info)) {
         return $topic_id; // Dodgy, topics gone missing
     }
+
     $is_starter = ($topic_info[0]['t_cache_first_post_id'] == $post_id);
+    $topic_title = $topic_info[0]['t_cache_first_title'];
 
     $GLOBALS['FORUM_DB']->query_update('f_topics', [ // Validating a post will also validate a topic
         't_validated' => 1,

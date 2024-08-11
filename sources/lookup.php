@@ -196,6 +196,7 @@ function find_page_stats_for(int $member_id, string $ip, int $start = 0, int $ma
 function find_security_alerts(array $where = []) : array
 {
     require_code('templates_tooltip');
+    require_code('templates_results_table');
 
     require_lang('security');
 
@@ -422,7 +423,7 @@ function find_user_metadata(bool $include_referer = true, ?int $member_id = null
     if (addon_installed('stats')) {
         $history = [];
 
-        $select = 'a.page_link,a.date_and_time,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system,a.tracking_code,a.requested_language';
+        $select = 'a.page_link,a.date_and_time,a.member_id,a.ip,a.session_id,a.referer_url,a.browser,a.operating_system,a.tracking_code,a.requested_language';
 
         $where = db_string_equal_to('ip', $ip) . ' AND member_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         if (!is_guest($member_id)) {

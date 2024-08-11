@@ -30,8 +30,12 @@ function init__database_search()
     $GLOBALS['TOTAL_SEARCH_RESULTS'] = 0;
 
     if (!defined('MAXIMUM_RESULT_COUNT_POINT')) {
-        $maximum_result_count_point = get_option('search_maximum_result_count_point');
-        define('MAXIMUM_RESULT_COUNT_POINT', intval($maximum_result_count_point));
+        if (addon_installed('search')) {
+            $maximum_result_count_point = get_option('search_maximum_result_count_point');
+            define('MAXIMUM_RESULT_COUNT_POINT', intval($maximum_result_count_point));
+        } else {
+            define('MAXIMUM_RESULT_COUNT_POINT', 1000);
+        }
     }
 
     if (!defined('APPEARANCE_CONTEXT_TITLE')) {

@@ -390,6 +390,7 @@ function get_fields_hook(string $type) : object
     }
 
     // Try creating an object factory as a last resort
+    require_code('failure');
     $path = 'hooks/systems/fields/' . filter_naughty($type);
     set_throw_errors(true);
     try {
@@ -405,7 +406,7 @@ function get_fields_hook(string $type) : object
     set_throw_errors(false);
 
     // We got nothing; fall back to short_text
-    if ($type == 'short_text') { // Uh oh! We already tried short_text.
+    if ($type == 'short_text') { // This should never happen where even short_text fails!
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
     return get_fields_hook('short_text');

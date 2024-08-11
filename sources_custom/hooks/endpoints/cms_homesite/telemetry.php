@@ -168,6 +168,15 @@ class Hook_endpoint_cms_homesite_telemetry
                     return ['success' => true, 'relayed_error_id' => $id];
                 }
 
+            case 'key':
+                require_code('global3');
+                $file = cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($id) . '.pub');
+                if ($file === false) {
+                    http_response_code(404);
+                    return ['success' => false, 'error_details' => 'A public key for the specified version was not found.'];
+                }
+                return ['success' => true, 'key' => $file];
+
             default:
                 return []; // Not implemented
         }

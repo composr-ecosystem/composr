@@ -361,7 +361,7 @@ class Module_cms_comcode_pages
 
         // URLs etc...
 
-        if ($translations_mode) {
+        if (($translations_mode) || !addon_installed('search')) {
             $text = new Tempcode();
         } else {
             $search_url = build_url(['page' => 'search', 'id' => 'comcode_pages'], get_module_zone('search'));
@@ -1446,7 +1446,7 @@ class Module_cms_comcode_pages
         } else {
             $__pages = $GLOBALS['SITE_DB']->query_select(
                 'comcode_pages a LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages b ON a.the_zone=b.the_zone AND a.the_page=b.the_page',
-                ['a.*', 'b.cc_page_title', 'b.string_index', 'b.p_include_on_sitemap'],
+                ['a.*', 'b.cc_page_title', 'b.string_index', 'a.p_include_on_sitemap'],
                 [],
                 'ORDER BY the_zone,the_page'
             );

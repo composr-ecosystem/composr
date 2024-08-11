@@ -471,7 +471,7 @@ function _helper_get_forum_topic_posts(object $this_ref, ?int $topic_id, ?int &$
     }
 
     if ($mark_read) {
-        if ((get_option('post_read_history_days') != '0') && (get_value('disable_normal_topic_read_history') !== '1')) {
+        if ((addon_installed('cns_forum')) && (get_option('post_read_history_days') != '0') && (get_value('disable_normal_topic_read_history') !== '1')) {
             cms_register_shutdown_function_safe(function () use ($topic_id) {
                 require_code('cns_topics');
                 cns_ping_topic_read($topic_id);
