@@ -97,7 +97,7 @@ class cms_test_case extends WebTestCase
         require_code('users_active_actions');
         $MEMBER_CACHED = restricted_manually_enabled_backdoor();
 
-        $this->dump($this->browser->getContent());
+        $this->dump($this->_browser->getContent());
 
         return get_session_id();
     }
