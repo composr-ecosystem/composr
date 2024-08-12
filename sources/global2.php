@@ -1970,3 +1970,24 @@ function cms_ob_end_clean()
         }
     }
 }
+
+/**
+ * Get server hostname as used in the base URL.
+ * See also get_domain() and get_request_hostname() and get_server_names().
+ *
+ * @return string The hostname
+ */
+function get_base_url_hostname()
+{
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['base_url'])) {
+        $ret = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        if ($ret !== null) {
+            return $ret;
+        }
+    }
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+    }
+    return gethostname();
+}

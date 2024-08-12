@@ -658,6 +658,21 @@ function cms_safe_exit_flow()
     }
 }
 
+/**
+ * Get possible IP addresses of a localhost machine.
+ * Also see get_server_ips().
+ *
+ * @return array IP addresses
+ */
+function get_localhost_ips()
+{
+    return array(
+        '0000:0000:0000:0000:0000:0000:0000:0001',
+        '::1',
+        '127.0.0.1',
+    );
+}
+
 // Useful for basic profiling
 global $PAGE_START_TIME;
 $PAGE_START_TIME = microtime(true);
