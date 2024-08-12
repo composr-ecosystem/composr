@@ -56,7 +56,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
         $this->assertTrue($result !== null);
     }
 
@@ -88,7 +90,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
         $this->assertTrue($result === null);
     }
 
@@ -118,7 +122,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
         $this->assertTrue($result !== null);
     }
 
@@ -148,7 +154,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
         $this->assertTrue($result === null);
     }
 
@@ -179,7 +187,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id));
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), null, 'ORDER BY id DESC', 1);
         $row = $rows[0];
@@ -212,7 +222,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id));
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), null, 'ORDER BY id DESC', 1);
         $row = $rows[0];
@@ -245,7 +257,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id));
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), null, 'ORDER BY id DESC', 1);
         $row = $rows[0];
@@ -279,7 +293,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id));
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), null, 'ORDER BY id DESC', 1);
         $row = $rows[0];
@@ -312,7 +328,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id));
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), null, 'ORDER BY id DESC', 1);
         $row = $rows[0];
@@ -345,7 +363,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id));
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), null, 'ORDER BY id DESC', 1);
         $row = $rows[0];
@@ -378,7 +398,9 @@ class filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => 'add'), 'cms');
 
-        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+        $session_id = $this->establish_admin_callback_session();
+
+        $result = http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id));
 
         $this->assertTrue(substr_count($result, ' value="foobar"') == 1);
     }
@@ -416,7 +438,9 @@ class filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+            $session_id = $this->establish_admin_callback_session();
+
+            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -455,7 +479,9 @@ class filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+            $session_id = $this->establish_admin_callback_session();
+
+            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -494,7 +520,9 @@ class filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+            $session_id = $this->establish_admin_callback_session();
+
+            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -534,7 +562,9 @@ class filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+            $session_id = $this->establish_admin_callback_session();
+
+            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -573,7 +603,9 @@ class filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+            $session_id = $this->establish_admin_callback_session();
+
+            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -612,7 +644,9 @@ class filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => get_session_id()));
+            $session_id = $this->establish_admin_callback_session();
+
+            $result = http_download_file($url->evaluate(), null, false, false, 'Composr', $post, array(get_session_cookie() => $session_id));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {

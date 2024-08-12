@@ -91,7 +91,9 @@ class _setup_wizard_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'admin_setupwizard', 'type' => 'step10'), 'adminzone');
 
-        http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 30.0);
+        $session_id = $this->establish_admin_callback_session();
+
+        http_download_file($url->evaluate(), null, true, false, 'Composr', $post, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 30.0);
 
         $this->assertTrue($GLOBALS['HTTP_MESSAGE'] == '200');
     }

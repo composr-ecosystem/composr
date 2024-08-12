@@ -87,10 +87,12 @@ class search_test_set extends cms_test_case
             $url_parts['search_' . $hook] = 1;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         foreach (array(0, 1) as $safe_mode) {
             foreach (array($this->get_canonical_username('admin'), $this->get_canonical_username('test')) as $username) {
                 $url = build_url($url_parts + array('keep_su' => $username, 'keep_safe_mode' => $safe_mode), get_module_zone('search'));
-                $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+                $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
                 $this->assertTrue(strpos($data, do_lang('NO_RESULTS_SEARCH')) !== false, 'We expected a NO_RESULTS_SEARCH, but did not get it.'); // We expect no results, but also no crash!
                 if (isset($_GET['debug']) && ($_GET['debug'] == '1')) {
                     @var_dump($data);
@@ -101,14 +103,16 @@ class search_test_set extends cms_test_case
 
     public function testOpenSearch()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = find_script('opensearch');
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $parsed = new CMS_simple_xml_reader($data);
         global $HTTP_DOWNLOAD_MIME_TYPE;
         $this->assertTrue(strpos($HTTP_DOWNLOAD_MIME_TYPE, 'text/xml') !== false);
 
         $url = find_script('opensearch') . '?type=suggest&request=abc';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(is_array(json_decode($data)));
         global $HTTP_DOWNLOAD_MIME_TYPE;
         $this->assertTrue(strpos($HTTP_DOWNLOAD_MIME_TYPE, 'application/x-suggestions+json') !== false);

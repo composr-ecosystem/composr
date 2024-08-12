@@ -37,35 +37,39 @@ class feeds_and_podcasts_test_set extends cms_test_case
 
     public function testXML()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = find_script('backend');
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '</opml>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
 
         $url = find_script('backend') . '?type=xslt-opml';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '</xsl:stylesheet>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
 
         $url = find_script('backend') . '?type=xslt-atom';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '</xsl:stylesheet>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
 
         $url = find_script('backend') . '?type=xslt-rss';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '</xsl:stylesheet>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
     }
 
     public function testFeeds()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $_feeds = find_all_hooks('systems', 'rss');
         $feeds = array();
         foreach (array_keys($_feeds) as $feed) {
             foreach (array('RSS2', 'Atom') as $type) {
                 $url = find_script('backend') . '?type=' . $type . '&mode=' . $feed . '&days=30&max=100';
-                $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+                $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
 
                 $data = str_replace(array('http://localhost/', 'https://localhost/'), array('http://example.com/', 'http://example.com/'), $data); // Workaround validator bug
 
@@ -88,45 +92,53 @@ class feeds_and_podcasts_test_set extends cms_test_case
 
     public function testDayFilter()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&select=podcast';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '<item>') !== false, 'Failed on ' . $url);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&select=abcxxx';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '<item>') === false, 'Failed on ' . $url);
     }
 
     public function testMaxFilter()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=1';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '<item>') !== false, 'Failed on ' . $url);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=0';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '<item>') === false, 'Failed on ' . $url);
     }
 
     public function testDaysFilter()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=1';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '<item>') !== false, 'Failed on ' . $url);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=0';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '<item>') === false, 'Failed on ' . $url);
     }
 
     public function testPodcast()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&select=podcast';
-        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, 'itunes:') === false);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&filter=podcast';
-        $data = http_download_file($url, null, true, false, 'iTunes/9.0.3 (Macintosh; U; Intel Mac OS X 10_6_2; en-ca)', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url, null, true, false, 'iTunes/9.0.3 (Macintosh; U; Intel Mac OS X 10_6_2; en-ca)', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, '<itunes:author>') !== false, 'Failed on ' . $url);
         $this->assertTrue(strpos($data, '<itunes:owner>') !== false, 'Failed on ' . $url);
         $this->assertTrue(strpos($data, '<itunes:name>') !== false, 'Failed on ' . $url);

@@ -41,8 +41,9 @@ class tasks_test_set extends cms_test_case
         $ob_import->run(fallback_lang(), db_get_first_id(), 1, $tmp_path);
 
         $this->establish_admin_session();
+        $session_id = $this->establish_admin_callback_session();
         $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'csv' => 1), 'adminzone');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
         file_put_contents($tmp_path, $data);

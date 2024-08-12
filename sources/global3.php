@@ -4179,3 +4179,20 @@ function cms_preg_split_safe($pattern, $subject, $max_splits = -1, $mode = null)
     }
     return preg_split($pattern, $subject, $max_splits, $mode);
 }
+
+/**
+ * Make our best guess on what IP addresses connections from server to server will use.
+ * Also see get_server_ips().
+ *
+ * @return IP IP address
+ */
+function get_server_external_looparound_ip()
+{
+    if (get_option('ip_forwarding') == '1') {
+        $server_ips = get_server_ips(true);
+        $ip_address = $server_ips[0];
+    } else {
+        $ip_address = cms_gethostbyname(get_base_url_hostname());
+    }
+    return $ip_address;
+}

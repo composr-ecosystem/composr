@@ -39,6 +39,8 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $glob_cmd = get_file_base() . '/data_custom/profiling--*.log';
 
         clearstatcache();
@@ -46,7 +48,7 @@ class extra_logging_test_set extends cms_test_case
 
         set_value('enable_profiler', '1');
         $url = build_url(array('page' => ''), 'forum');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         set_value('enable_profiler', '0');
 
         clearstatcache();
@@ -68,12 +70,14 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         set_value('monitor_slow_urls', '0.1');
 
         $log_path = get_file_base() . '/data_custom/errorlog.php';
         cms_file_put_contents_safe($log_path, '');
         $url = build_url(array('page' => 'faq', 'cache' => 0), 'docs');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos(cms_file_get_contents_safe($log_path), 'Over time limit @'));
 
         set_value('monitor_slow_urls', '0');
@@ -86,12 +90,14 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         set_value('memory_tracking', '1');
 
         $log_path = get_file_base() . '/data_custom/errorlog.php';
         cms_file_put_contents_safe($log_path, '');
         $url = build_url(array('page' => ''), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos(cms_file_get_contents_safe($log_path), 'Memory usage above memory_tracking'));
 
         set_value('memory_tracking', '0');
@@ -104,8 +110,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'memory'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'Memory usage:') !== false);
     }
 
@@ -116,8 +124,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'ide_linkage'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'txmt://') !== false);
     }
 
@@ -128,8 +138,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'query'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'View queries') !== false);
     }
 
@@ -140,8 +152,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'lang_EN'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'Translate/rephrase Composr into English') !== false || strpos($data, 'Translate/rephrase the software into English') !== false);
     }
 
@@ -152,8 +166,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'code'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'Standards checker notices') !== false);
     }
 
@@ -164,8 +180,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'theme_images'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'Theme image editing') !== false);
     }
 
@@ -176,8 +194,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'templates'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'Templates') !== false);
     }
 
@@ -188,8 +208,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'tree'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'Template tree') !== false);
     }
 
@@ -200,8 +222,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'show_markers'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, '<!-- START-TEMPLATE=HTML_HEAD -->') !== false);
     }
 
@@ -212,8 +236,10 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $url = build_url(array('page' => '', 'special_page_type' => 'show_edit_links'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         $this->assertTrue(strpos($data, 'admin-themes') !== false);
     }
 
@@ -240,13 +266,15 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $path = get_file_base() . '/data_custom/permissioncheckslog.php';
         cms_file_put_contents_safe($path, '');
 
         clearstatcache();
         $size_before = filesize($path);
         $url = build_url(array('page' => '', 'keep_su' => 'Guest'), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         clearstatcache();
         $size_after = filesize($path);
         $this->assertTrue($size_after > $size_before);
@@ -261,13 +289,15 @@ class extra_logging_test_set extends cms_test_case
             return;
         }
 
+        $session_id = $this->establish_admin_callback_session();
+
         $path = get_file_base() . '/data_custom/queries.log';
         cms_file_put_contents_safe($path, '');
 
         clearstatcache();
         $size_before = filesize($path);
         $url = build_url(array('page' => ''), '');
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 20.0);
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 20.0);
         clearstatcache();
         $size_after = filesize($path);
         $this->assertTrue($size_after > $size_before);

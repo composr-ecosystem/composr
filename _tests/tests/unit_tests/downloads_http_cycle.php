@@ -43,16 +43,21 @@ class downloads_http_cycle_test_set extends cms_test_case
         $files = array(
             'file__upload' => get_file_base() . '/data/images/donate.png',
         );
-        http_download_file($url->evaluate(), null, true, false, 'Composr', $post_params, array(get_session_cookie() => get_session_id()), null, null, null, null, null, null, 6.0, false, $files);
+
+        $session_id = $this->establish_admin_callback_session();
+
+        http_download_file($url->evaluate(), null, true, false, 'Composr', $post_params, array(get_session_cookie() => $session_id), null, null, null, null, null, null, 6.0, false, $files);
     }
 
     public function testDownload()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         set_option('immediate_downloads', '0');
 
         $max_download_id = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'MAX(id)');
         $url = find_script('dload') . '?id=' . strval($max_download_id);
-        $result = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
+        $result = http_download_file($url, null, true, false, 'Composr', null, array(get_session_cookie() => $session_id));
         $this->assertTrue($result == file_get_contents(get_file_base() . '/data/images/donate.png'));
         global $HTTP_DOWNLOAD_MIME_TYPE, $HTTP_FILENAME;
         $this->assertTrue($HTTP_DOWNLOAD_MIME_TYPE == 'application/octet-stream');

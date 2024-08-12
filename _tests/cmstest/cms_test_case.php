@@ -87,22 +87,78 @@ class cms_test_case extends WebTestCase
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         }
 
+        static $done_once = false;
+        if ($done_once) {
+            return get_session_id();
+        }
+        $done_once = true;
+
         global $MEMBER_CACHED;
         require_code('users_active_actions');
         $MEMBER_CACHED = restricted_manually_enabled_backdoor();
 
-        $this->dump($this->_browser->getContent());
+        $this->dump($this->browser->getContent());
+
+        return get_session_id();
+    }
+
+    // Establishes an admin session on the server's likely callback IP
+    protected function establish_admin_callback_session()
+    {
+        require_code('users_active_actions');
+        require_code('users_inactive_occasionals');
+
+        $ip_address = get_server_external_looparound_ip();
+
+        return create_session(get_first_admin_user(), 1, false, false, $ip_address);
     }
 
     public function get_canonical_username($username)
     {
-        if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($username) === null) {
-            if ($username == 'admin') {
-                $username = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_username', array('m_primary_group' => db_get_first_id() + 1));
-            } elseif ($username == 'test') {
-                $username = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_primary_group<>' . strval(db_get_first_id()) . ' AND m_primary_group<>' . strval(db_get_first_id() + 1));
+        if (get_forum_type() != 'cns') {
+            // Dodgy, but may be enough to make it work...
+            require_code('users_active_actions');
+            $first_admin = get_first_admin_user();
+
+            if ($username == 'test') {
+                // Try to find a member who is not the first admin
+                $member_id = null;
+                $start = null;
+                do {
+                    $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start);
+                    if (empty($rows)) {
+                        break;
+                    }
+
+                    $_member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($rows[0]);
+                    if ($_member_id != $first_admin) {
+                        $member_id = $_member_id;
+                    }
+                    $start = $_member_id;
+                } while ((count($rows) > 0) && ($member_id === null));
+
+                if ($member_id === null) {
+                    return $GLOBALS['FORUM_DRIVER']->get_username($GLOBALS['FORUM_DRIVER']->get_guest_id());
+                }
+
+                return $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+            } elseif ($username == 'admin') {
+                return $GLOBALS['FORUM_DRIVER']->get_username($first_admin);
+            } elseif ($username == 'guest') {
+                return $GLOBALS['FORUM_DRIVER']->get_username($GLOBALS['FORUM_DRIVER']->get_guest_id());
             }
         }
+
+        if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($username) === null) {
+            if ($username == 'admin') {
+                $username = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_username', ['m_primary_group' => db_get_first_id() + 1]);
+            } elseif ($username == 'test') {
+                $username = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_primary_group<>' . strval(db_get_first_id()) . ' AND m_primary_group<>' . strval(db_get_first_id() + 1));
+            } elseif ($username == 'guest') {
+                $username = 'Guest';
+            }
+        }
+
         return $username;
     }
 }

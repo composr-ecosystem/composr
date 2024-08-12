@@ -35,9 +35,11 @@ class rest_test_set extends cms_test_case
 
     public function testCreate()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs/' . $this->path;
         $post_params = array(json_encode(array('summary' => 'test')));
-        $cookies = array(get_session_cookie() => get_session_id());
+        $cookies = array(get_session_cookie() => $session_id);
         $raw_post = true;
         $http_verb = 'POST';
         $raw_content_type = 'application/json';
@@ -55,9 +57,11 @@ class rest_test_set extends cms_test_case
 
     public function testUpdate()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs/' . $this->path;
         $post_params = array(json_encode(array('summary' => 'test')));
-        $cookies = array(get_session_cookie() => get_session_id());
+        $cookies = array(get_session_cookie() => $session_id);
         $raw_post = true;
         $http_verb = 'PUT';
         $raw_content_type = 'application/json';
@@ -75,9 +79,11 @@ class rest_test_set extends cms_test_case
 
     public function testDelete()
     {
+        $session_id = $this->establish_admin_callback_session();
+
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs/' . $this->path;
         $post_params = array(json_encode(array('summary' => 'test')));
-        $cookies = array(get_session_cookie() => get_session_id());
+        $cookies = array(get_session_cookie() => $session_id);
         $raw_post = true;
         $http_verb = 'DELETE';
         $raw_content_type = 'application/json';
