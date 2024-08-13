@@ -189,25 +189,31 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         if ($author == '') {
             // Make sure we record that for all cached Comcode pages, we know of them (only those not cached would not have been under the scope of the current search)
-            $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('the_zone', 'the_page'));
-            foreach ($all_pages as $row) {
-                $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
-                if (in_memory_search_match(array('content' => $content, 'conjunctive_operator' => $boolean_operator), get_translated_text($row['string_index']))) {
-                    $out[$out_i]['data'] = array('the_zone' => $row['the_zone'], 'the_page' => $row['the_page']) + array('extra' => array($row['the_zone'], $row['the_page'], $limit_to));
-                    if ($remapped_orderer == 'the_page') {
-                        $out[$out_i]['orderer'] = $row['the_page'];
-                    } elseif ($remapped_orderer == 'the_zone') {
-                        $out[$out_i]['orderer'] = $row['the_zone'];
-                    }
+            $start = 0;
+            $max = 10; // SQL can take up memory very quickly here
+            do {
+                $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('the_zone', 'the_page', 'string_index'), array(), '', $max, $start);
+                foreach ($all_pages as $row) {
+                    $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
+                    if (in_memory_search_match(array('content' => $content, 'conjunctive_operator' => $boolean_operator), get_translated_text($row['string_index']))) {
+                        $out[$out_i]['data'] = array('the_zone' => $row['the_zone'], 'the_page' => $row['the_page']) + array('extra' => array($row['the_zone'], $row['the_page'], $limit_to));
+                        if ($remapped_orderer == 'the_page') {
+                            $out[$out_i]['orderer'] = $row['the_page'];
+                        } elseif ($remapped_orderer == 'the_zone') {
+                            $out[$out_i]['orderer'] = $row['the_zone'];
+                        }
 
-                    if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
-                        $out[$out_i]['restricted'] = true;
-                    }
+                        if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
+                            $out[$out_i]['restricted'] = true;
+                        }
 
-                    $out_i++;
-                    $GLOBALS['TOTAL_SEARCH_RESULTS']++;
+                        $out_i++;
+                        $GLOBALS['TOTAL_SEARCH_RESULTS']++;
+                    }
                 }
-            }
+
+                $start += $max;
+            } while (!empty($all_pages));
 
             // Now, look on disk for non-cached Comcode pages
             $zones = find_all_zones();
