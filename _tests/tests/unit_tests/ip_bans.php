@@ -59,6 +59,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === null);
+
             remove_ip_ban($wildcarded_ip);
             $is_unbannable = null;
             $ban_until = null;
@@ -75,6 +76,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === $future_timestamp);
+
             remove_ip_ban($ip);
             $is_unbannable = null;
             $ban_until = null;
@@ -91,6 +93,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === null);
+
             remove_ip_ban($ip);
             $is_unbannable = null;
             $ban_until = null;
@@ -107,6 +110,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === $future_timestamp);
+
             remove_ip_ban($wildcarded_ip);
             $is_unbannable = null;
             $ban_until = null;
@@ -220,6 +224,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive ban against something listed in spam_check_exclusions (add, then not banned) - then cleanup
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
+            $prev_exclusions = get_option('spam_check_exclusions');
             set_option('spam_check_exclusions', $ip);
             $result = add_ip_ban($ip, '', null, true, false);
             //$this->assertTrue(!$result); Actually we do let it be added, as the check is meant to be on ip_banned only (allows retroactive setting of spam_check_exclusions, and less code)
@@ -228,6 +233,8 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($ip);
+
             $result = add_ip_ban($wildcarded_ip, '', null, true, false);
             //$this->assertTrue(!$result); Ditto previous comment
             $is_unbannable = null;
@@ -235,6 +242,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($wildcarded_ip);
 
             // Test adding a positive ban against a localhost IP (add, then not banned)
             $ip = '127.0.0.1';
@@ -245,6 +253,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($ip);
 
             // Test adding a positive ban against an invalid IP (add, then not banned)
             $ip = '123';
@@ -255,6 +264,7 @@ class ip_bans_test_set extends cms_test_case
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === null);
+            remove_ip_ban($ip); // Just in case
         }
 
         set_option('spam_check_exclusions', '');
