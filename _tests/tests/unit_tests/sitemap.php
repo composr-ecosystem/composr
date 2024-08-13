@@ -112,7 +112,7 @@ class sitemap_test_set extends cms_test_case
                 } elseif (!isset($node_searched['title'])) {
                     $this->assertTrue(false, 'Null title on search result for ' . $page_link);
                 } else {
-                    $this->assertTrue($node['title']->evaluate() == $node_searched['title']->evaluate(), 'Search produced different node for ' . $page_link . ' (comparing title)');
+                    $this->assertTrue($node['title']->evaluate() == $node_searched['title']->evaluate(), 'Search produced different node for ' . $page_link . ' (comparing title; ' . $node['title']->evaluate() . ' vs ' . $node_searched['title']->evaluate() . ')');
                 }
             }
         }
