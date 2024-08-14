@@ -119,9 +119,6 @@ if( ( config_get( 'enable_sponsorship' ) == ON ) && ( access_has_bug_level( conf
                 </div>
                 <?php
                     }
-
-                    $t_total_sponsorship = bug_get_field( $f_bug_id, 'sponsorship_total' );
-                    if( $t_total_sponsorship > 0 ) {
                 ?>
                     <div class="widget-main no-padding">
                         <?php
@@ -171,19 +168,10 @@ if( ( config_get( 'enable_sponsorship' ) == ON ) && ( access_has_bug_level( conf
                                     </tbody>
                                 </table>
                             </div>
-                                <p>
-                                    <?php
-                                    echo sprintf( lang_get( 'total_sponsorship_amount' ),
-                                        sponsorship_format_amount( $t_total_sponsorship ) );
-                                    ?>
-                                </p>
                         <?php
                             }
                         ?>
                     </div>
-                <?php
-                    }
-                ?>
             </div>
         </div>
     </div>

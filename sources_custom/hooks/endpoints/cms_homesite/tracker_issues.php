@@ -93,7 +93,7 @@ class Hook_endpoint_cms_homesite_tracker_issues
                 $close = post_param_integer('close', 0);
                 if ($close == 1) {
                     require_code('mantis');
-                    close_tracker_issue(intval($id));
+                    resolve_tracker_issue(intval($id));
                     $data['success'] = true;
                 }
 
