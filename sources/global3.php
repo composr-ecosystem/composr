@@ -4244,7 +4244,7 @@ function get_server_ips($local_interface_only = false)
  * @param  boolean $include_equivalents Whether to include www vs non-www equivalents
  * @return array Host names
  */
-function get_server_names($include_non_web_names = true, bool $include_equivalents = true)
+function get_server_names($include_non_web_names = true, $include_equivalents = true)
 {
     $arr = array();
     if ($include_non_web_names) {
@@ -4256,7 +4256,9 @@ function get_server_names($include_non_web_names = true, bool $include_equivalen
         $arr[] = preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
     }
     if ($include_non_web_names) {
-        $arr[] = gethostname();
+        if (function_exists('gethostname')) {
+            $arr[] = gethostname();
+        }
     }
     global $SITE_INFO;
     if (!empty($SITE_INFO['domain'])) {

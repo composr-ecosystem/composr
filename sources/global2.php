@@ -1989,5 +1989,9 @@ function get_base_url_hostname()
     if (!empty($_SERVER['HTTP_HOST'])) {
         return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
     }
-    return gethostname();
+    if (function_exists('gethostname')) {
+        return gethostname();
+    }
+
+    return '';
 }

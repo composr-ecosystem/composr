@@ -54,7 +54,7 @@ class Tempcode_test_set extends cms_test_case
 	\[html]\[/html]
 </p>
 <p>
-	foo%3Dbar
+	foo%3Aequals%3Abar
 </p>
 <!--
 <p>

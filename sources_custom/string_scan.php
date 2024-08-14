@@ -9815,6 +9815,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         locale
         _REQUIRED_NOT_FILLED_IN
         NOT_VALID_ISBN
+        AUTHOR_MAIL
     ')));
 
     // Start with what we know

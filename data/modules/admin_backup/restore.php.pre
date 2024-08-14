@@ -239,13 +239,17 @@ function require_code($codename)
     if (array_key_exists($codename, $REQUIRED_BEFORE)) {
         return;
     }
+    
+    $init_func = 'init__' . str_replace('/', '__', $codename);
     $REQUIRED_BEFORE[$codename] = 1;
     if (@is_array($FILE_ARRAY)) {
         $file = file_array_get('sources/' . $codename . '.php');
         $file = str_replace('<' . '?php', '', $file);
         $file = str_replace('?' . '>', '', $file);
         eval($file);
-        @call_user_func('init__' . str_replace('/', '__', $codename));
+        if (function_exists($init_func)) {
+            @call_user_func($init_func);
+        }
     } else {
         global $FILE_BASE;
 
@@ -254,7 +258,9 @@ function require_code($codename)
             $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources_custom/' . $codename . '.php') : '/' . str_replace('_custom', '', $codename));
         }
         require_once($path);
-        @call_user_func('init__' . str_replace('/', '__', $codename));
+        if (function_exists($init_func)) {
+            @call_user_func($init_func);
+        }
     }
 }
 
