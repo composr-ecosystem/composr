@@ -77,13 +77,13 @@ class Module_admin_broken_urls
             attach_message(do_lang_tempcode('BROKEN_URLS_SLOW_WITHOUT_TASK', escape_html($config_url->evaluate())), 'warn');
         }
 
-        set_helper_panel_tutorial('tut_website_health');
-        set_helper_panel_text(comcode_lang_string('DOC_BROKEN_URLS'));
-
         $this->title = get_screen_title('BROKEN_URLS');
 
         if ($type != 'browse') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('BROKEN_URLS')]]);
+        } else {
+            set_helper_panel_tutorial('tut_website_health');
+            set_helper_panel_text(comcode_lang_string('DOC_BROKEN_URLS'));
         }
 
         if ($type == 'choose') {
