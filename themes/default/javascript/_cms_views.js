@@ -1573,7 +1573,7 @@
                     ((file) && (file.includes('TODO: FIXME'))) || // Something too generic / Can be caused by extensions
                     (msg.includes('TODO: FIXME')) || // Something too generic / Can be caused by extensions
                     (msg.includes('Location.toString')) || // Buggy extensions may generate
-                    (msg.includes('Error loading script')) || // User's connection error
+                    // (msg.includes('Error loading script')) || // User's connection error (actually we should show an error to the user because the page may therefore not be stable)
                     (msg.includes('NS_ERROR_FAILURE')) || // Usually an internal error
                     (msg.includes('moz-extension')) || // An error inside an extension
 

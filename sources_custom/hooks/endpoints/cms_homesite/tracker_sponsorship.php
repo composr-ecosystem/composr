@@ -51,55 +51,38 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
         $bug_id = get_param_integer('bug_id', 0);
         $amount = get_param_integer('amount', 0);
 
-        $reason = 'Sponsored issue #' . strval($bug_id);
-        $agreement = 'This escrow shall be considered satisfied when [url="tracker issue #' . strval($bug_id) . '"]' . get_base_url() . '/tracker/view.php?id=' . strval($bug_id) . '[/url] has been resolved. The resolving member will receive the points escrowed. Should the issue be closed / not implemented, the escrow shall be considered cancelled and all points refunded.';
+        require_code('points_escrow__sponsorship');
+        require_code('mantis');
 
-        require_code('points_escrow');
-        require_code('points2');
-
-        // Create the escrow for the sponsorship
         if ($type == 'add') {
-            $id = escrow_points(get_member(), null, $amount, $reason, $agreement, null, 'tracker_issue', strval($bug_id));
-            if ($id !== null) {
-                return ['success' => true, 'id' => $id];
+            $escrow_id = escrow_create_sponsorship($bug_id, $amount);
+            if ($escrow_id !== null) {
+                return ['success' => true, 'id' => $escrow_id];
             }
             return ['success' => false, 'error_details' => 'Could not create an escrow for this sponsorship. Perhaps you do not have enough points (you have ' . integer_format(points_balance(get_member())) . ')?'];
         }
 
-        // Editing a sponsorship requires cancelling the previous escrow and making a new one
         if ($type == 'edit') {
-            $row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id]);
-            if (array_key_exists(0, $row) && ($row[0]['status'] >= 2)) {
-                $id = cancel_escrow($id, get_member(), 'Sponsorship amended', $row[0]);
-                if ($id === null) {
-                    return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the original sponsorship.'];
-                }
+            $escrow_id = escrow_edit_sponsorship($id, $bug_id, $amount);
+            if ($escrow_id !== null) {
+                return ['success' => true, 'id' => $escrow_id];
             }
-            $id = escrow_points(get_member(), null, $amount, $reason, $agreement, null, 'tracker_issue', strval($bug_id));
-            if ($id !== null) {
-                return ['success' => true, 'id' => $id];
-            }
-            return ['success' => false, 'error_details' => 'We cancelled the old sponsorship and refunded the points, but could not create a new sponsorship. Perhaps you do not have enough points (you have ' . integer_format(points_balance(get_member())) . ')?'];
+            return ['success' => false, 'error_details' => 'We could not amend your sponsorship. Perhaps you do not have enough points (you have ' . integer_format(points_balance(get_member())) . ')? Be aware it is possible we still cancelled your old sponsorship.'];
         }
 
         if ($type == 'delete') {
-            $row = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['id' => $id]);
-            if (array_key_exists(0, $row) && ($row[0]['status'] >= 2)) {
-                $id = cancel_escrow($id, get_member(), 'Sponsorship amended', $row[0]);
-                if ($id === null) {
-                    return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the sponsorship.'];
-                }
+            $ledger_id = escrow_cancel_sponsorship($id);
+            if ($ledger_id === null) {
+                return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the sponsorship.'];
             }
             return ['success' => true];
         }
 
         if ($type == 'delete-all') { // $id is the bug ID
             $reason = get_param_string('reason');
-            $ids = cancel_all_escrows_by_content('tracker_issue', $id, $reason);
-            foreach ($ids as $id => $value) {
-                if ($value === null) {
-                    return ['success' => false, 'error_details' => 'Could not cancel all the escrows / refund the points of the sponsorships.'];
-                }
+            $results = escrow_cancel_all_sponsorships($id, $reason);
+            if ($results[1] === false) {
+                return ['success' => false, 'error_details' => 'Could not cancel all the escrows / refund the points of the sponsorships. Note that it is possible some were cancelled, but not all.'];
             }
             return ['success' => true];
         }
@@ -112,18 +95,14 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
                 return ['success' => false, 'error_details' => 'A recipient / issue handler must be assigned to complete the sponsorships.'];
             }
 
-            $ids = complete_all_escrows_by_content($recipient, 'tracker_issue', $id);
-            foreach ($ids as $id => $value) {
-                if ($value[0] === null) {
-                    return ['success' => false, 'error_details' => 'Could not mark all escrows completed and award the points.'];
-                }
+            $results = escrow_complete_all_sponsorships($id, $recipient);
+            if ($results[1] === false) {
+                return ['success' => false, 'error_details' => 'Could not mark all escrows completed and award the points. Note that some may have been marked completed, but not all. Also note that basic tracker points have not been awarded due to this error.'];
             }
 
-            // FUDGE: Now credit 25 baseline points to both the reporter and the handler (undo previous transactions for this issue)
-            points_transactions_reverse_all(true, null, null, 'tracker_issue', '', strval($id));
-            points_credit_member($recipient, 'Resolved tracker issue #' . strval($id), 25, 0, true, 0, 'tracker_issue', 'resolve', strval($id));
-            if (($reporter > 0) && !is_guest($reporter)) {
-                points_credit_member($reporter, 'Reported resolved tracker issue #' . strval($id), 25, 0, true, 0, 'tracker_issue', 'report_resolved', strval($id));
+            $tracker_points = award_tracker_points($id, $recipient, $reporter);
+            if ($tracker_points === false) {
+                return ['success' => false, 'error_details' => 'Could not award points for resolved tracker issue. Note that sponsorships have been awarded if there were any.'];
             }
 
             return ['success' => true];
@@ -131,7 +110,7 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
 
         if ($type == 'reopen-all') { // $id is the bug ID
             // When re-opening issues, reverse the baseline points awarded
-            points_transactions_reverse_all(true, null, null, 'tracker_issue', '', strval($id));
+            reverse_tracker_points($id);
             return ['success' => true];
         }
 

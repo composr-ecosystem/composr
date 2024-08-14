@@ -344,7 +344,75 @@ function create_tracker_post($tracker_id, $tracker_comment_message)
     return $GLOBALS['SITE_DB']->_query($query, null, 0, false, true, null, '', false);
 }
 
-function close_tracker_issue($tracker_id)
+function resolve_tracker_issue($tracker_id, $handler = null)
 {
-    $GLOBALS['SITE_DB']->query('UPDATE mantis_bug_table SET resolution=20, status=80 WHERE id=' . strval($tracker_id));
+    if ($handler === null) {
+        $handler = get_member();
+    }
+
+    $GLOBALS['SITE_DB']->query('UPDATE mantis_bug_table SET resolution=20, status=80, handler_id=' . strval($handler) . ' WHERE id=' . strval($tracker_id));
+
+    if (addon_installed('points')) {
+        require_code('points_escrow__sponsorship');
+        escrow_complete_all_sponsorships($tracker_id, $handler);
+
+        $reporter = $GLOBALS['SITE_DB']->query_value_if_there('SELECT reporter_id FROM mantis_bug_table WHERE id=' . strval($tracker_id));
+        if ($reporter !== null) {
+            award_tracker_points($tracker_id, $reporter, $handler);
+        }
+    }
+}
+
+/**
+ * Award points for a resolved tracker issue.
+ * This will undo previous transactions for the same issue if they exist (treated as an edit).
+ *
+ * @param  AUTO_LINK $bug_id The issue that was resolved
+ * @param  MEMBER $reporter The member who reported the issue
+ * @param  MEMBER $handler The member who resolved the issue
+ * @return boolean Whether the operation was successful
+ */
+function award_tracker_points(int $bug_id, int $reporter, int $handler) : bool
+{
+    if (!addon_installed('points')) {
+        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('points')));
+    }
+
+    require_code('points2');
+
+    $ret = true;
+    $points = 25; // FUDGE
+
+    points_transactions_reverse_all(true, null, null, 'tracker_issue', '', strval($bug_id));
+
+    $id = points_credit_member($handler, 'Resolved tracker issue #' . strval($bug_id), $points, 0, true, 0, 'tracker_issue', 'resolve', strval($bug_id));
+    if ($id === null) {
+        $ret = false;
+    }
+
+    if (($reporter > 0) && !is_guest($reporter)) {
+        $id = points_credit_member($reporter, 'Reported resolved tracker issue #' . strval($bug_id), $points, 0, true, 0, 'tracker_issue', 'report_resolved', strval($bug_id));
+        if ($id === null) {
+            $ret = false;
+        }
+    }
+
+    return $ret;
+}
+
+/**
+ * Undo points awarded on a tracker issue.
+ * This does not undo sponsorships.
+ *
+ * @param  AUTO_LINK $bug_id The tracker issue
+ */
+function reverse_tracker_points(int $bug_id)
+{
+    if (!addon_installed('points')) {
+        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('points')));
+    }
+
+    require_code('points2');
+
+    points_transactions_reverse_all(true, null, null, 'tracker_issue', '', strval($bug_id));
 }

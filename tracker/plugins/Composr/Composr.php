@@ -179,7 +179,7 @@ class ComposrPlugin extends MantisPlugin {
 
         // Redirect to the member profile on Composr if not guest
         if (is_page_name( 'view_user_page.php' )) {
-            require_api('authentication_api');
+            require_api('authentication_api.php');
 
             $user_id = gpc_get_int( 'id', auth_get_current_user_id());
             if ($user_id !== $this->cms_guest_id) {
@@ -442,7 +442,7 @@ class ComposrPlugin extends MantisPlugin {
         $g_cache_sponsorships[$c_sponsorship_id] = false;
 
         db_param_push();
-        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>0 AND content_type=' . db_param() . ' AND id=' . db_param();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status=2 AND content_type=' . db_param() . ' AND id=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $c_sponsorship_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
@@ -467,7 +467,7 @@ class ComposrPlugin extends MantisPlugin {
 
         // We use the escrow ID as the sponsorship ID.
         db_param_push();
-        $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>0 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
+        $t_query = 'SELECT id FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status=2 AND content_type=' . db_param() . ' AND content_id=' . db_param() . ' AND sending_member=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $p_bug_id, $c_user_id));
         $t_row = db_fetch_array($t_result);
         if ($t_row) {
@@ -486,7 +486,7 @@ class ComposrPlugin extends MantisPlugin {
         global $g_cache_sponsorships;
 
         db_param_push();
-        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status>0 AND content_type=' . db_param() . ' AND content_id=' . db_param();
+        $t_query = 'SELECT * FROM ' . $this->cms_sc_db_prefix . 'escrow WHERE status=2 AND content_type=' . db_param() . ' AND content_id=' . db_param();
         $t_result = db_query($t_query, array('tracker_issue', $c_bug_id));
         for ($i = 0; $i < db_num_rows($t_result); $i++) {
             $t_row = db_fetch_array($t_result);
@@ -533,7 +533,7 @@ class ComposrPlugin extends MantisPlugin {
         }
 
         $data = @json_decode($response, true);
-        if ((!$data['success']) || (!isset($data['response_data']['id']))) {
+        if (($data === null) || (!$data['success']) || (!isset($data['response_data']['id']))) {
             if (isset($data['error_details'])) {
                 trigger_error($data['error_details'], ERROR );
             }
@@ -569,7 +569,7 @@ class ComposrPlugin extends MantisPlugin {
         }
 
         $data = @json_decode($response, true);
-        if (!$data['success']) {
+        if (($data === null) || (!$data['success'])) {
             if (isset($data['error_details'])) {
                 trigger_error($data['error_details'], ERROR );
             }
@@ -601,7 +601,7 @@ class ComposrPlugin extends MantisPlugin {
         }
 
         $data = @json_decode($response, true);
-        if (!$data['success']) {
+        if (($data === null) || (!$data['success'])) {
             if (isset($data['error_details'])) {
                 trigger_error($data['error_details'], ERROR );
             }
@@ -638,7 +638,7 @@ class ComposrPlugin extends MantisPlugin {
                     }
 
                     $data = @json_decode($response, true);
-                    if (!$data['success']) {
+                    if (($data === null) || (!$data['success'])) {
                         if (isset($data['error_details'])) {
                             trigger_error($data['error_details'], ERROR );
                         }
@@ -663,13 +663,12 @@ class ComposrPlugin extends MantisPlugin {
                     }
 
                     $data = @json_decode($response, true);
-                    if (!$data['success']) {
+                    if (($data === null) || (!$data['success'])) {
                         if (isset($data['error_details'])) {
                             trigger_error($data['error_details'], ERROR );
                         }
                         trigger_error('Error deleting the sponsorships with ' . $this->cms_sc_site_name, ERROR );
                     }
-
                     break;
 
                 default:
@@ -688,7 +687,7 @@ class ComposrPlugin extends MantisPlugin {
                     }
 
                     $data = @json_decode($response, true);
-                    if (!$data['success']) {
+                    if (($data === null) || (!$data['success'])) {
                         if (isset($data['error_details'])) {
                             trigger_error($data['error_details'], ERROR );
                         }

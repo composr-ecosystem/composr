@@ -12100,6 +12100,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RANK_LOCKED_GIFT_POINTS
         RANK_LOCKED_PRIVILEGE
         RECOMMEND
+        JS_ERROR_OCCURRED
     ')));
 
     // Remove blank lines

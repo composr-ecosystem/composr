@@ -1252,7 +1252,7 @@
                 // HTTP error...
 
                 try {
-                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_AJAX;^}\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
+                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_AJAX;^}\n' + xhr.responseURL + '\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
 
                     if ((xhr.status === 0) || (xhr.status > 10000)) { // implies site down, or network down
                         if (!networkDownAlerted) {
@@ -1264,7 +1264,8 @@
                         if (callbackError == null) {
                             if (!genericAjaxErrorAlerted) {
                                 // There's no callback to handle the error
-                                $cms.ui.alert('{!ERROR_OCCURRED;^}');
+                                var alert = '{!JS_ERROR_OCCURRED;^}\n\n{!PROBLEM_AJAX;^}\n' + xhr.responseURL + '\n' + xhr.status + ': ' + xhr.statusText + '.';
+                                $cms.ui.alert(alert, '{!ERROR_OCCURRED;^}');
                                 genericAjaxErrorAlerted = true;
                             }
                         }

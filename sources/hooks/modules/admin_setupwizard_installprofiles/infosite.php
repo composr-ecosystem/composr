@@ -107,7 +107,7 @@ class Hook_admin_setupwizard_installprofiles_infosite
                 'type' => 'listing',
             ],
             'main_rss' => [
-                'param' => 'http://feeds.reuters.com/reuters/topNews',
+                'param' => 'https://composr.app/backend.php?type=rss2&mode=news&select=%2A',
             ],
         ];
     }
