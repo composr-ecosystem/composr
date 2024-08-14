@@ -124,7 +124,7 @@ function reprocess_url($url, $operation_base_url)
                 array_key_exists('expires', $cookie_parts) ? strtotime($cookie_parts['expires']) : 0,
                 array_key_exists('path', $cookie_parts) ? $cookie_parts['path'] : '',
                 array_key_exists('domain', $cookie_parts) ? $cookie_parts['domain'] : '',
-                strpos($url, 'https://') !== false,
+                (strpos($url, 'https://') !== false)
             );
         }
     }

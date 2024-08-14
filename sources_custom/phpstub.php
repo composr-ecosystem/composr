@@ -2927,10 +2927,11 @@ function set_exception_handler($exception_handler)
  * @param  ?integer $expire Expiration timestamp (null: session cookie).
  * @param  ?string $path Path (null: current URL path).
  * @param  ?string $domain Domain (null: current URL domain).
- * @param  BINARY $secure Whether the cookie is only for HTTPS.
+ * @param  boolean $secure Whether the cookie is only for HTTPS.
+ * @param  boolean $httponly Whether the cookie can only be accessed through the HTTP protocol.
  * @return ?boolean Success status (fails if output already started) (null: failed also).
  */
-function setcookie($name, $value = null, $expire = null, $path = null, $domain = null, $secure = 0)
+function setcookie($name, $value = null, $expire = null, $path = null, $domain = null, $secure = false, $httponly = false)
 {
     return false;
 }
