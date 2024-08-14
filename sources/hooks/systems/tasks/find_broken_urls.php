@@ -36,10 +36,12 @@ class Hook_task_find_broken_urls
         require_code('broken_urls');
         require_code('caches');
 
-        $_urls = get_cache_entry('broken_urls_choose', serialize([$urls_identifier]));
+        $_urls = get_cache_entry('broken_urls_choose', serialize([$urls_identifier]), CACHE_AGAINST_NOTHING_SPECIAL);
         if ($_urls === null) {
+            task_log($this, 'Failed cache hit');
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
+
         $urls = unserialize($_urls);
 
         $url_scanner = new BrokenURLScanner();
