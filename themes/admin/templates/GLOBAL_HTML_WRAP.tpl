@@ -235,5 +235,7 @@ Powered by {$BRAND_NAME*} version {$VERSION_NUMBER*}, (c) ocProducts Ltd
 
 		{+START,IF,{$EQ,{$_GET,wide_print},1}}try { window.print(); } catch (e) {}{+END}
 	//]]></script>
+
+	<input type="hidden" id="g-post-tkn" value="{$CSRF_TOKEN}">
 </body>
 </html>
