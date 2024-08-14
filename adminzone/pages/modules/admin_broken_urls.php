@@ -274,8 +274,13 @@ class Module_admin_broken_urls
 
         $table = do_template('BROKEN_URLS', ['_GUID' => '98816b6ea5f175cb5d46550a5fbc37aa', 'URLS' => $urls, 'DONE' => false]);
 
+        // Cache the results with an identifier; this works around the high risk we exceed POST limits
+        require_code('caches2');
+        $identifier = uniqid('');
+        set_cache_entry('broken_urls_choose', (60 * 24), serialize([$identifier]), serialize($urls));
+
         $hidden = new Tempcode();
-        $hidden->attach(form_input_hidden('urls', serialize($urls)));
+        $hidden->attach(form_input_hidden('urls_identifier', $identifier));
 
         $fields = new Tempcode();
 
@@ -318,11 +323,10 @@ class Module_admin_broken_urls
      */
     public function check() : object
     {
-        $urls = unserialize(post_param_string('urls'));
-
+        $urls_identifier = post_param_string('urls_identifier');
         $show_passes = (post_param_integer('show_passes', 0) == 1);
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('BROKEN_URLS'), get_screen_title('BROKEN_URLS'), 'find_broken_urls', [$urls, $show_passes]);
+        return call_user_func_array__long_task(do_lang('BROKEN_URLS'), get_screen_title('BROKEN_URLS'), 'find_broken_urls', [$urls_identifier, $show_passes]);
     }
 }
