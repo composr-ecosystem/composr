@@ -277,7 +277,7 @@ class Module_admin_broken_urls
         // Cache the results with an identifier; this works around the high risk we exceed POST limits
         require_code('caches2');
         $identifier = uniqid('');
-        set_cache_entry('broken_urls_choose', (60 * 24), serialize([$identifier]), serialize($urls));
+        set_cache_entry('broken_urls_choose', (60 * 24), serialize([$identifier]), serialize($urls), CACHE_AGAINST_NOTHING_SPECIAL);
 
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('urls_identifier', $identifier));
