@@ -2004,3 +2004,26 @@ function get_base_url_hostname()
 
     return '';
 }
+
+/**
+ * Get server hostname as used in the URL.
+ *
+ * @return string The hostname
+ */
+function get_request_hostname()
+{
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+    }
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['base_url'])) {
+        $ret = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        if ($ret !== null) {
+            return $ret;
+        }
+    }
+    if (function_exists('gethostname')) {
+        return gethostname();
+    }
+    return '';
+}

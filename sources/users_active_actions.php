@@ -353,32 +353,33 @@ function set_invisibility($make_invisible = true)
  * @param  string $name The name of the cookie
  * @param  string $value The value to store in the cookie
  * @param  boolean $session Whether it is a session cookie (gets removed once the browser window closes)
- * @param  boolean $http_only Whether the cookie should not be readable by JavaScript (forced on if $session is true)
- * @param  ?float $days Days to store (null: default)
+ * @param  boolean $httponly Whether the cookie should not be readable by JavaScript
+ * @param  ?float $days Days to store (null: default); not applicable for session cookies
  * @return boolean The result of the PHP setcookie command
  */
-function cms_setcookie($name, $value, $session = false, $http_only = false, $days = null)
+function cms_setcookie($name, $value, $session = false, $httponly = true, $days = null)
 {
     /*if (($GLOBALS['DEV_MODE']) && (running_script('index')) && (get_forum_type() == 'cns') && (get_param_integer('keep_debug_has_cookies', 0) == 0) && ($name != 'has_referers')) {    Annoying, and non-cookie support is very well tested by now
         return true;
     }*/
 
     if ($session) {
-        $http_only = true; // Force http-only on Session cookies per web standards
+        $httponly = true; // Force http-only on Session cookies per web standards
     }
 
-    $secure = (substr(get_base_url(), 0, 8) == 'https://');
-
-    static $cache = array();
-    $sz = serialize(array($name, $value, $session, $http_only));
+    static $cache = [];
+    $sz = serialize([$name, $value, $session, $httponly]);
     if (isset($cache[$sz])) {
         return $cache[$sz];
     }
 
-    $cookie_domain = get_cookie_domain();
-    if ($cookie_domain === null) {
-        $cookie_domain = get_base_url_hostname();
+    // Eat the current cookies before creating a new one to prevent conflicting cookies from existing (which creates a login loop)
+    @cms_eatcookie($name);
+
+    if ($days === null) {
+        $days = get_cookie_days();
     }
+    $expires = ($session ? 0 : (time() + intval($days * 24.0 * 60.0 * 60.0)));
 
     $path = get_cookie_path();
     if ($path == '') {
@@ -391,24 +392,42 @@ function cms_setcookie($name, $value, $session = false, $http_only = false, $day
         }
     }
 
-    $time = $session ? null : (time() + (is_null($days) ? get_cookie_days() : $days) * 24 * 60 * 60);
-    if ($cookie_domain == '') { // http-only and secure cannot be set if there is no domain
-        $output = @setcookie($name, $value, $time, $path);
-    } else {
-        if (PHP_VERSION < 5.2) {
-            $extra = '';
-            if ($http_only) {
-                $extra .= '; HttpOnly';
-            }
-            if ($secure) {
-                $extra .= '; Secure';
-            }
-            $output = @setcookie($name, $value, $time, $path, $cookie_domain . $extra);
-        } else {
-            $output = @call_user_func_array('setcookie', array($name, $value, $time, $path, $cookie_domain, $secure, $http_only)); // For Phalanger
-            //$output = @setcookie($name, $value, $time, $path, $cookie_domain, $secure, $http_only);
-        }
+    $domain = get_cookie_domain();
+    if ($domain === null) {
+        $domain = get_base_url_hostname();
     }
+
+    $secure = (substr(get_base_url(), 0, 8) === 'https://');
+
+    if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
+        $options = array(
+            'expires' => $expires,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httponly' => $httponly,
+        );
+
+        // Stops HTTP POSTs from external sites inheriting cookie value.
+        //  Note that Lax is not necessarily the same as setting no value.
+        //  That said for Chrome 80+ all are Lax by default.
+        //  Tracked at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+        $options['samesite'] = 'Lax';
+
+        $output = @call_user_func_array('setcookie', array($name, $value, $options));
+    } elseif (version_compare(PHP_VERSION, '5.2', '<')) { // LEGACY
+        $extra = '';
+        if ($httponly) {
+            $extra .= '; HttpOnly';
+        }
+        if ($secure) {
+            $extra .= '; Secure';
+        }
+        $output = @setcookie($name, $value, $expires, $path, $domain . $extra);
+    } else { // LEGACY
+        $output = @call_user_func_array('setcookie', array($name, $value, $expires, $path, $domain, $secure, $httponly));
+    }
+
     if ($name != 'has_cookies') {
         $_COOKIE[$name] = @get_magic_quotes_gpc() ? addslashes($value) : $value;
     }
@@ -429,10 +448,10 @@ function cms_eatcookie($name)
     $expire = time() - 100000; // Note the negative number must be greater than 13*60*60 to account for maximum timezone difference
 
     // Try and remove other potentials
-    @setcookie($name, '', $expire, '', preg_replace('#^www\.#', '', cms_srv('HTTP_HOST')));
-    @setcookie($name, '', $expire, '/', preg_replace('#^www\.#', '', cms_srv('HTTP_HOST')));
-    @setcookie($name, '', $expire, '', 'www.' . preg_replace('#^www\.#', '', cms_srv('HTTP_HOST')));
-    @setcookie($name, '', $expire, '/', 'www.' . preg_replace('#^www\.#', '', cms_srv('HTTP_HOST')));
+    @setcookie($name, '', $expire, '', preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '/', preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '', 'www.' . preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '/', 'www.' . preg_replace('#^www\.#', '', get_request_hostname()));
     @setcookie($name, '', $expire, '', '');
     @setcookie($name, '', $expire, '/', '');
 
