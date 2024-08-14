@@ -75,15 +75,19 @@ function _enforce_sessioned_url($url)
  * Set up a new session / Restore an existing one that was lost.
  *
  * @sets_output_state
- *
  * @param  MEMBER $member Logged in member
  * @param  BINARY $session_confirmed Whether the session should be considered confirmed
  * @param  boolean $invisible Whether the session should be invisible
  * @param  boolean $create_cookie Whether to create the cookie for the session
+ * @param  ?IP $ip_address IP address for session (null: current user's IP address)
  * @return ID_TEXT New session ID
  */
-function create_session($member, $session_confirmed = 0, $invisible = false, $create_cookie = true)
+function create_session($member, $session_confirmed = 0, $invisible = false, $create_cookie = true, $ip_address = null)
 {
+    if ($ip_address === null) {
+        $ip_address = get_ip_address();
+    }
+
     global $SESSION_CACHE, $MEMBER_CACHED, $SITE_INFO;
     $MEMBER_CACHED = $member;
 
@@ -110,7 +114,7 @@ function create_session($member, $session_confirmed = 0, $invisible = false, $cr
             'the_session' => $new_session,
             'last_activity' => time(),
             'member_id' => $member,
-            'ip' => get_ip_address(3),
+            'ip' => get_ip_address(3, $ip_address),
             'session_confirmed' => $session_confirmed,
             'session_invisible' => $invisible ? 1 : 0,
             'cache_username' => $username,
@@ -138,7 +142,7 @@ function create_session($member, $session_confirmed = 0, $invisible = false, $cr
             'the_type' => cms_mb_substr(get_param_string('type', ''), 0, 80),
             'the_id' => cms_mb_substr(get_param_string('id', ''), 0, 80),
             'last_activity' => time(),
-            'ip' => get_ip_address(3),
+            'ip' => get_ip_address(3, $ip_address),
             'session_confirmed' => $session_confirmed,
         );
         $big_change = ($prior_session_row['last_activity'] < time() - 10) || ($prior_session_row['session_confirmed'] != $session_confirmed) || ($prior_session_row['ip'] != $new_session_row['ip']);
@@ -205,14 +209,12 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
     }
 
     // Save cookie
-    $timeout = $guest_session ? (time() + intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) : null;
     /*if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_debug_has_cookies', 0) == 0)) {     Useful for testing non-cookie support, but annoying if left on
         $test = false;
     } else {*/
-    $test = @setcookie(get_session_cookie(), $id, $timeout, get_cookie_path(), get_cookie_domain()); // Set a session cookie with our session ID. We only use sessions for secure browser-session login... the database and url's do the rest
-    if (is_null($test)) {
-        $test = false;
-    }
+    require_code('users_active_actions');
+    $test = cms_setcookie(get_session_cookie(), $id, true, true, $guest_session ? (max(0.017, floatval(get_option('session_expiry_time'))) / 24.0) : null); // Set a session cookie with our session ID. We only use sessions for secure browser-session login... the database and url's do the rest
+
     //}
     $_COOKIE[get_session_cookie()] = $id; // So we remember for this page view
 

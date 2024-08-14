@@ -255,6 +255,8 @@ function strip_comcode($text, $for_extract = false, $tags_to_preserve = null)
 
     $has_comcode_tags = (strpos($text, '[') !== false);
     if ($has_comcode_tags) {
+        init_valid_comcode_tags();
+
         $text = preg_replace('#\[/?i\]#i', '', $text); // italics tag a special case, as false-positives are more likely with this
 
         $comcode_tags_piped = implode('|', array_diff(array_keys($VALID_COMCODE_TAGS), array('i'), $tags_to_preserve));

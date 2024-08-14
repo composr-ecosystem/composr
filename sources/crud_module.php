@@ -274,6 +274,7 @@ abstract class Standard_crud_module
                     }
                 }
             } else {
+                global $BREADCRUMB_SET_PARENTS;
                 if (($this->special_edit_frontend) && (($type == '_edit') || ($type == '_edit_category'))) {
                     breadcrumb_set_parents(array_merge(array(array('_SELF:_SELF:' . substr($type, 1), do_lang_tempcode('CHOOSE'))), $BREADCRUMB_SET_PARENTS));
                 }

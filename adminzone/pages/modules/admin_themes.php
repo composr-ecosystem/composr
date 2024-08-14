@@ -1467,9 +1467,11 @@ class Module_admin_themes
             }
 
             // The file we're editing
+            $new_file = false;
             $file = filter_naughty(get_param_string('f' . $i . 'file', ''));
             if ($file == '') {
                 $file = filter_naughty(get_param_string('f' . $i . 'file2', ''));
+                $new_file = true;
             }
             if ($file == '') {
                 continue;
@@ -1506,7 +1508,7 @@ class Module_admin_themes
 
             // Get file path
             $_default_load_path = find_template_place(basename($file, '.' . $ext), null, $theme, '.' . $ext, dirname($file));
-            if ($_default_load_path === null) {
+            if (($_default_load_path === null) && (!$new_file)) {
                 attach_message(do_lang_tempcode('_MISSING_RESOURCE', escape_html($file)), 'warn');
                 continue;
             }
@@ -1542,7 +1544,7 @@ class Module_admin_themes
             // The file we're LOADING from for edit
             $contents = '';
             $revisions = new Tempcode();
-            if (!is_null($_default_load_path[0])) {
+            if (($_default_load_path !== null) && (!is_null($_default_load_path[0]))) {
                 $default_load_path = 'themes/' . $_default_load_path[0] . $_default_load_path[1] . '/' . $codename;
                 $full_path = get_custom_file_base() . '/' . $default_load_path;
                 if (!is_file($full_path)) {

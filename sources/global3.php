@@ -4179,3 +4179,142 @@ function cms_preg_split_safe($pattern, $subject, $max_splits = -1, $mode = null)
     }
     return preg_split($pattern, $subject, $max_splits, $mode);
 }
+
+/**
+ * Make our best guess on what IP addresses connections from server to server will use.
+ * Also see get_server_ips().
+ *
+ * @return IP IP address
+ */
+function get_server_external_looparound_ip()
+{
+    if (get_option('ip_forwarding') == '1') {
+        $server_ips = get_server_ips(true);
+        $ip_address = $server_ips[0];
+    } else {
+        $ip_address = cms_gethostbyname(get_base_url_hostname());
+    }
+    return $ip_address;
+}
+
+/**
+ * Get possible IP addresses of the server.
+ * In order of what is most likely what the server considers itself. The first entry may be used for server loopback connections.
+ *
+ * @param  boolean $local_interface_only Whether to only get IP addresses that are on a local network interface
+ * @return array IP addresses
+ */
+function get_server_ips($local_interface_only = false)
+{
+    static $arr = null;
+
+    if ($arr === null) {
+        $arr = array();
+
+        if (!empty($_SERVER['SERVER_ADDR'])) {
+            $arr[] = $_SERVER['SERVER_ADDR'];
+        }
+        if (!empty($_SERVER['LOCAL_ADDR'])) {
+            $arr[] = $_SERVER['LOCAL_ADDR'];
+        }
+
+        if (!$local_interface_only) {
+            $hostnames = get_server_names(false);
+            foreach ($hostnames as $hostname) {
+                $test = cms_gethostbyname($hostname);
+                if ($test != $hostname) {
+                    $arr[] = $test;
+                }
+            }
+        }
+
+        $arr = array_merge($arr, get_localhost_ips());
+
+        $arr = array_unique($arr);
+    }
+
+    return $arr;
+}
+
+/**
+ * Get possible hostnames of the server.
+ * In order of what is most likely what the server considers itself.
+ *
+ * @param  boolean $include_non_web_names Whether to include names that may not be for a web domain
+ * @param  boolean $include_equivalents Whether to include www vs non-www equivalents
+ * @return array Host names
+ */
+function get_server_names($include_non_web_names = true, $include_equivalents = true)
+{
+    $arr = array();
+    if ($include_non_web_names) {
+        if ($_SERVER['SERVER_NAME'] != '') {
+            $arr[] = $_SERVER['SERVER_NAME'];
+        }
+    }
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        $arr[] = preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+    }
+    if ($include_non_web_names) {
+        if (function_exists('gethostname')) {
+            $arr[] = gethostname();
+        }
+    }
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['domain'])) {
+        $arr[] = $SITE_INFO['domain'];
+    }
+    if (!empty($SITE_INFO['base_url'])) {
+        $tmp = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        if (!empty($tmp)) {
+            $arr[] = $tmp;
+        }
+    }
+    if (get_custom_base_url() != get_base_url()) {
+        $tmp = parse_url(get_custom_base_url(), PHP_URL_HOST);
+        if (!empty($tmp)) {
+            $arr[] = $tmp;
+        }
+    }
+    $zl = strlen('ZONE_MAPPING_');
+    foreach ($SITE_INFO as $key => $_val) {
+        if ($key !== '' && $key[0] === 'Z' && substr($key, 0, $zl) === 'ZONE_MAPPING_') {
+            $arr[] = $_val[0];
+        }
+    }
+    if ($include_non_web_names) {
+        $arr = array_merge($arr, get_localhost_names());
+    }
+
+    $arr = array_unique($arr);
+
+    $arr2 = array();
+    foreach ($arr as $domain) {
+        $arr2[] = $domain;
+
+        // www vs non-www equivalents
+        if ($include_equivalents) {
+            if (preg_match('#^[\d:.]$#', $domain) == 0) { // If not an IP address
+                if (preg_match('#^www\.#', $domain) != 0) {
+                    $arr2[] = substr($domain, 4);
+                } else {
+                    $arr2[] = 'www.' . $domain;
+                }
+            }
+        }
+    }
+
+    return array_unique($arr2);
+}
+
+/**
+ * Get possible hostnames of a localhost machine.
+ *
+ * @return array Hostnames and IP addresses
+ */
+function get_localhost_names()
+{
+    return array(
+        'localhost',
+    );
+}
