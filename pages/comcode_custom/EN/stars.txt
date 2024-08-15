@@ -1,23 +1,6 @@
 ﻿[semihtml]<p>[contents levels="3"][/contents]&nbsp;</p>[title="1"]Community stars[/title]
 <p>Sometimes when you are given points, you are assigned a role in relation to the points you receive:</p>
 
-<ul>
-	<li>Helpful soul &ndash; For those who are generally helpful</li>
-	<li>Support expert &ndash; For those who help give out technical support</li>
-	<li>Programming god &ndash; For those who are great addon coders, or coding advice</li>
-	<li>Themeing genius &ndash; For those that put out great themes, or themeing advice</li>
-	<li>Community ambassador &ndash; For those that work inside and outside our community to strengthen us all</li>
-	<li>Tracker master &ndash; For those that report bugs or feature suggestions on <a class="user-link" href="https://compo.sr/tracker" rel="external" target="_blank" title="the tracker (this link will open in a new window)">the tracker</a></li>
-	<li>Translator saviour &ndash; For those that work on translations</li>
-</ul>
-
-<p>This page honours the top &#39;stars&#39; for each of these 7 roles. That means:</p>
-
-<ul>
-	<li>If you show up here then it&#39;s something really special, and worth putting on your CV/R&eacute;sum&eacute;.</li>
-	<li>If you&#39;ve received a lot of help, and the people have put PayPal donation details in their bio, consider donating.</li>
-</ul>
-
 [title="2"]Helpful soul[/title]
 <p>Helpful souls are members who are generally helpful around the community.</p>
 [block param=&quot;Helpful soul&quot;]main_stars[/block]
