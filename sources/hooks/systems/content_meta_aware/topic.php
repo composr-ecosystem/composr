@@ -50,7 +50,7 @@ class Hook_content_meta_aware_topic extends Hook_CMA
             'content_type_universal_label' => 'Forum topic',
 
             'db' => get_db_for('f_topics'),
-            'extra_where_sql' => 't_forum_id IS NOT NULL',
+            'extra_where_sql' => 'r.t_forum_id IS NOT NULL',
             'table' => 'f_topics',
             'id_field' => 'id',
             'id_field_numeric' => true,

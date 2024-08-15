@@ -113,7 +113,7 @@ class Hook_content_meta_aware_poll extends Hook_CMA
 
             'default_prominence_weight' => PROMINENCE_WEIGHT_HIGHEST,
             'default_prominence_flags' => PROMINENCE_FLAG_ACTIVE_ONLY | PROMINENCE_FLAG_PINNED,
-            'active_only_extra_where_sql' => 'is_current=1',
+            'active_only_extra_where_sql' => 'r.is_current=1',
         ];
     }
 

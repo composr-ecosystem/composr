@@ -46,7 +46,7 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
             'content_type_universal_label_override' => 'CALL: generate_catalogue_entry_content_type_universal_label',
 
             'db' => $GLOBALS['SITE_DB'],
-            'extra_where_sql' => 'c_name NOT LIKE \'' . db_encode_like('\_%') . '\'',
+            'extra_where_sql' => 'r.c_name NOT LIKE \'' . db_encode_like('\_%') . '\'',
             'table' => 'catalogue_entries',
             'id_field' => 'id',
             'id_field_numeric' => true,
