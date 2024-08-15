@@ -12,7 +12,9 @@
 
 <p>Take a look at our available downloads for Composr CMS</p>
 
-<p>[block param="download_category" select="{$COMPOSR_HOMESITE_ID_LATEST_ADDONS},{$COMPOSR_HOMESITE_ID_LATEST_THEMES},{$COMPOSR_HOMESITE_ID_LATEST_TRANSLATIONS}" zone="_SEARCH" sort="natural ASC" render_mode="tiles" pinned="*" no_links="0" give_context="0" include_breadcrumbs="0" max="30" start="0" pagination="1" attach_to_url_filter="0" render_if_empty="1" as_guest="0" check="1"]main_multi_content[/block]</p>
+<p>
+{$BLOCK,block=main_multi_content,param=download_category,select={$COMPOSR_HOMESITE_ID_LATEST_ADDONS}\,{$COMPOSR_HOMESITE_ID_LATEST_THEMES}\,{$COMPOSR_HOMESITE_ID_LATEST_TRANSLATIONS},zone=_SEARCH,sort=natural ASC,render_mode=tiles,pinned=*,no_links=0,give_context=0,include_breadcrumbs=0,max=30,start=0,pagination=1,attach_to_url_filter=0,render_if_empty=1,as_guest=0}
+</p>
 
 <h2>Testimonials</h2>
 
