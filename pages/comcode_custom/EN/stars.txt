@@ -1,64 +1,56 @@
-[semihtml]
-[title]Community stars[/title]
+﻿[semihtml]<p>[contents levels="3"][/contents]&nbsp;</p>[title="1"]Community stars[/title]
+<p>Sometimes when you are given points, you are assigned a role in relation to the points you receive:</p>
 
-<div class="cntRow">
-	<p>Sometimes when you are given points, you are assigned a role in relation to the points you receive:</p>
+<ul>
+	<li>Helpful soul &ndash; For those who are generally helpful</li>
+	<li>Support expert &ndash; For those who help give out technical support</li>
+	<li>Programming god &ndash; For those who are great addon coders, or coding advice</li>
+	<li>Themeing genius &ndash; For those that put out great themes, or themeing advice</li>
+	<li>Community ambassador &ndash; For those that work inside and outside our community to strengthen us all</li>
+	<li>Tracker master &ndash; For those that report bugs or feature suggestions on <a class="user-link" href="https://compo.sr/tracker" rel="external" target="_blank" title="the tracker (this link will open in a new window)">the tracker</a></li>
+	<li>Translator saviour &ndash; For those that work on translations</li>
+</ul>
 
-	<div class="cmn-strs">
-		<div class="list">
-			<ul>
-				<li>Helpful soul &ndash; For those who are generally helpful</li>
-				<li>Support expert &ndash; For those who help give out technical support</li>
-				<li>Programming god &ndash; For those who are great addon coders, or coding advice</li>
-				<li>Themeing genius &ndash; For those that put out great themes, or themeing advice</li>
-				<li>Community ambassador &ndash; For those that work inside and outside our community to strengthen us all</li>
-				<li>Tracker master &ndash; For those that report bugs or feature suggestions on [url="the tracker"]https://compo.sr/tracker[/url]</li>
-				<li>Translator saviour &ndash; For those that work on translations</li>
-			</ul>
-		</div>
+<p>This page honours the top &#39;stars&#39; for each of these 7 roles. That means:</p>
 
-		<p>This page honours the top 'stars' for each of these 7 roles. That means:</p>
+<ul>
+	<li>If you show up here then it&#39;s something really special, and worth putting on your CV/R&eacute;sum&eacute;.</li>
+	<li>If you&#39;ve received a lot of help, and the people have put PayPal donation details in their bio, consider donating.</li>
+</ul>
 
-		<div class="list2">
-			<ul>
-				<li>If you show up here then it's something really special, and worth putting on your CV/Résumé.</li>
-				<li>If you've received a lot of help, and the people have put PayPal donation details in their bio, consider donating.</li>
-			</ul>
-		</div>
-	</div>
-</div>
+[title="2"]Helpful soul[/title]
+<p>Helpful souls are members who are generally helpful around the community.</p>
+[block param=&quot;Helpful soul&quot;]main_stars[/block]
 
-<h2 class="colrBl">Helpful soul</h2>
+[title="2"]Support expert[/title]
+<p>Support experts are members known for giving out great technical support.</p>
+[block param=&quot;Support expert&quot;]main_stars[/block]
 
-[block="Helpful soul"]main_stars[/block]
+[title="2"]Programming god[/title]
+<p>Programming gods are members known for contributing excellent code or coding advice to Composr or the community (e.g. Addons or core development).</p>
+[block param=&quot;Programming god&quot;]main_stars[/block]
 
-<h2 class="colrBl">Support expert</h2>
+[title="2"]Themeing genius[/title]
+<p>Themeing geniuses are members known for making great Composr themes or offering great themeing advice.</p>
+[block param=&quot;Themeing genius&quot;]main_stars[/block]
 
-[block="Support expert"]main_stars[/block]
+[title="2"]Community ambassador[/title]
+<p>Community ambassadors are members with charisma who help build and strengthen the Composr community.</p>
+[block param=&quot;Community ambassador&quot;]main_stars[/block]
 
-<h2 class="colrBl">Programming god</h2>
+[title="2"]Tracker master[/title]
+<p>Tracker master are members who regularly use the tracker to report and/or resolve bugs and feature requests.</p>
+[block param=&quot;Tracker master&quot;]main_stars[/block]
 
-[block="Programming god"]main_stars[/block]
+[title="2"]Translator saviour[/title]
+<p>Translator saviours are members who contributed towards translating Composr in different languages.</p>
+[block param=&quot;Translator saviour&quot;]main_stars[/block]
 
-<h2 class="colrBl">Themeing genius</h2>
+<hr />[title="2"]Special mentions for core developers[/title]
+<p>Over a dozen developers have contributed to ocPortal / Composr CMS in an official (core) capacity. Key contributors over the history of the software include the following:</p>
 
-[block="Themeing genius"]main_stars[/block]
+[block param="8" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
 
-<h2 class="colrBl">Community ambassador</h2>
+[block param="7" display_type="LIST" sorting="1" max="100" start="0" pagination="0" as_guest="0" check="1"]main_cc_embed[/block]
 
-[block="Community ambassador"]main_stars[/block]
-
-<h2 class="colrBl">Tracker master</h2>
-
-[block="Tracker master"]main_stars[/block]
-
-<h2 class="colrBl">Translator saviour</h2>
-
-[block="Translator saviour"]main_stars[/block]
-
-<h2 class="colrBl">Special mentions for original team</h2>
-
-<div class="cntRow">
-	<p>Over a dozen developers have contributed to Composr CMS in an official capacity. However, much of the early development for ocPortal (the precursor to Composr CMS) was done through donated time from the original development team. Key contributors include:</p>
-</div>
 [/semihtml]
