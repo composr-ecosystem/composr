@@ -1,0 +1,19 @@
+﻿[semihtml]<h1 class="screen-title" itemprop="name"><a id="title--CommunitySites"></a> Community Site Showcase</h1>
+
+<p>These are some of the sites who have elected to be featured on composr.app . If you would like your site to be featured, select the applicable option in step 4 when installing your Composr site. Or, if you already installed your site, please [page=&quot;:contact-us&quot;]Contact Us[/page]&nbsp;if you would like to be featured.</p>
+
+<p>Please be aware of the following:</p>
+
+<ul>
+	<li>We are not responsible for the content of these sites, and we do not regularly monitor for their content or even if they still work (please report problematic sites using the Report This link).</li>
+	<li>The views and opinions expressed on these sites do not reflect the views and opinions of Composr CMS / composr.app.</li>
+	<li>Composr CMS makes it easy for anyone to make a website. You may find sites without professional designs or with controversial topics.
+	<ul>
+		<li>That being said, we do apply a level of loose moderation. If featuring your site could get us in trouble (e.g. Dark Web sites or pornographic sites), we probably will not feature it.</li>
+	</ul>
+	</li>
+</ul>
+
+<p>[block param="catalogue_entry" zone="_SEARCH" sort="natural ASC" render_mode="boxes" pinned="*" no_links="0" give_context="0" include_breadcrumbs="0" max="10" start="0" pagination="1" attach_to_url_filter="0" render_if_empty="1" as_guest="0" check="1"]main_multi_content[/block]</p>
+
+<p>[block]main_comcode_page_children[/block]</p>[/semihtml]
