@@ -277,7 +277,7 @@ class Module_admin_broken_urls
         // Cache the results with an identifier; this works around the high risk we exceed POST limits
         require_code('caches2');
         $identifier = uniqid('');
-        set_cache_entry('broken_urls_choose', (60 * 24), serialize([$identifier]), serialize($urls), CACHE_AGAINST_NOTHING_SPECIAL);
+        set_cache_entry('broken_urls_choose', (60 * 24), serialize([$identifier]), serialize($urls));
 
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('urls_identifier', $identifier));
@@ -323,10 +323,17 @@ class Module_admin_broken_urls
      */
     public function check() : object
     {
-        $urls_identifier = post_param_string('urls_identifier');
+        $identifier = post_param_string('urls_identifier');
         $show_passes = (post_param_integer('show_passes', 0) == 1);
 
+        // Get our cached URLs
+        require_code('caches');
+        $_urls = get_cache_entry('broken_urls_choose', serialize([$identifier]));
+        if ($_urls === null) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('BROKEN_URLS'), get_screen_title('BROKEN_URLS'), 'find_broken_urls', [$urls_identifier, $show_passes]);
+        return call_user_func_array__long_task(do_lang('BROKEN_URLS'), get_screen_title('BROKEN_URLS'), 'find_broken_urls', [unserialize($_urls), $show_passes]);
     }
 }
