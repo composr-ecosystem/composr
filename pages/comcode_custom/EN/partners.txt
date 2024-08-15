@@ -1,0 +1,23 @@
+[semihtml]
+[title]Composr partners[/title]
+
+<p>
+	This page shows companies or individuals who have registered their Composr services (*). Listing&nbsp;is&nbsp;open (&dagger;) and free so <a href="{$PAGE_LINK*,cms:cms_catalogues:add:catalogue_name=partners}">add your listing now</a>.
+</p>
+
+	<h2>Companies</h2>
+
+	{$BLOCK,block=main_cc_embed,cache=0,param=10}
+	
+	<h2>Individuals</h2>
+	
+	{$BLOCK,block=main_cc_embed,cache=0,param=11}
+
+	<hr />
+
+	<p>
+		* Services must be substantially related to Composr. For example webhosting that happens to be compatible with Composr would not apply, but webhosting that came with expert Composr support would.<br />
+		&dagger; It is the responsibility of purchasers of services to assess the suitability of any particular provider they choose. Listings are manually validated and periodically reviewed, but this is not official endorsement.
+	</p>
+</div>
+[/semihtml]
