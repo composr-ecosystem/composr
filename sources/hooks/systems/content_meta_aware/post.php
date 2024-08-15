@@ -50,7 +50,7 @@ class Hook_content_meta_aware_post extends Hook_CMA
             'content_type_universal_label' => 'Forum post',
 
             'db' => get_db_for('f_posts'),
-            'extra_where_sql' => 'p_whisper_to_member IS NULL',
+            'extra_where_sql' => 'r.p_whisper_to_member IS NULL',
             'table' => 'f_posts',
             'id_field' => 'id',
             'id_field_numeric' => true,

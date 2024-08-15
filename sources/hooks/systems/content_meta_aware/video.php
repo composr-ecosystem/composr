@@ -43,7 +43,7 @@ class Hook_content_meta_aware_video extends Hook_CMA
             'content_type_universal_label' => ((function_exists('get_option')) && (get_option('allow_audio_videos') == '2')) ? 'Multimedia file' : 'Video',
 
             'db' => $GLOBALS['SITE_DB'],
-            'extra_where_sql' => 'cat NOT LIKE \'' . db_encode_like('download\_%') . '\'',
+            'extra_where_sql' => 'r.cat NOT LIKE \'' . db_encode_like('download\_%') . '\'',
             'table' => 'videos',
             'id_field' => 'id',
             'id_field_numeric' => true,

@@ -111,7 +111,7 @@ class Hook_content_meta_aware_comcode_page extends Hook_CMA
 
             'actionlog_regexp' => '\w+_COMCODE_PAGE',
 
-            'extra_where_sql' => 'p_include_on_sitemap=1',
+            'extra_where_sql' => 'r.p_include_on_sitemap=1',
 
             'default_prominence_weight' => PROMINENCE_WEIGHT_MEDIUM,
             'default_prominence_flags' => 0,

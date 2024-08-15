@@ -43,7 +43,7 @@ class Hook_content_meta_aware_event extends Hook_CMA
             'content_type_universal_label' => 'Calendar event',
 
             'db' => $GLOBALS['SITE_DB'],
-            'extra_where_sql' => 'e_member_calendar IS NULL',
+            'extra_where_sql' => 'r.e_member_calendar IS NULL',
             'table' => 'calendar_events',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -116,7 +116,7 @@ class Hook_content_meta_aware_event extends Hook_CMA
             'default_prominence_flags' => 0,
 
             // No support for recurrences due to complexity of that
-            'active_only_extra_where_sql' => '(e_next_recurrence_time IS NOT NULL OR e_previous_recurrence_time IS NOT NULL AND e_previous_recurrence_time>' . strval(time() - 60 * 60 * 24 * 2) . ')', // Only show those in future or recent past
+            'active_only_extra_where_sql' => '(r.e_next_recurrence_time IS NOT NULL OR r.e_previous_recurrence_time IS NOT NULL AND r.e_previous_recurrence_time>' . strval(time() - 60 * 60 * 24 * 2) . ')', // Only show those in future or recent past
             'prominence_custom_sort' => '(' . strval(time()) . '-' . db_function('LEAST', [db_function('ABS', [strval(time()) . '-' . db_function('COALESCE', ['e_previous_recurrence_time', strval(PHP_INT_MAX)])]), db_function('ABS', [strval(time()) . '-' . db_function('COALESCE', ['e_next_recurrence_time', strval(PHP_INT_MAX)])])]) . ')',
             'prominence_custom_sort_dir' => 'ASC',
         ];
