@@ -26,23 +26,14 @@ class Hook_task_find_broken_urls
     /**
      * Run the task hook.
      *
-     * @param  ID_TEXT $urls_identifier The cache identifier which holds the URLs we are scanning
+     * @param  array $urls URL structure array
      * @param  boolean $show_passes Whether to show passes
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(string $urls_identifier, bool $show_passes) : ?array
+    public function run(array $urls, bool $show_passes) : ?array
     {
         require_lang('cleanup');
         require_code('broken_urls');
-        require_code('caches');
-
-        $_urls = get_cache_entry('broken_urls_choose', serialize([$urls_identifier]), CACHE_AGAINST_NOTHING_SPECIAL);
-        if ($_urls === null) {
-            task_log($this, 'Failed cache hit');
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
-        $urls = unserialize($_urls);
 
         $url_scanner = new BrokenURLScanner();
 
