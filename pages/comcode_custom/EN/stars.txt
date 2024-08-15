@@ -46,11 +46,18 @@
 <p>Translator saviours are members who contributed towards translating Composr in different languages.</p>
 [block param=&quot;Translator saviour&quot;]main_stars[/block]
 
-<hr />[title="2"]Special mentions for core developers[/title]
+<hr />
+
+[title="2"]Special mentions for core developers[/title]
 <p>Over a dozen developers have contributed to ocPortal / Composr CMS in an official (core) capacity. Key contributors over the history of the software include the following:</p>
 
+[title="3"]Original Development Team[/title]
+[block param="9" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
+
+[title="3"]Active Core Developers[/title]
 [block param="8" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
 
+[title="3"]Inactive Core Developers[/title]
 [block param="7" display_type="LIST" sorting="1" max="100" start="0" pagination="0" as_guest="0" check="1"]main_cc_embed[/block]
 
 [/semihtml]
