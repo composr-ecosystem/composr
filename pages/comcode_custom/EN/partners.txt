@@ -2,7 +2,11 @@
 [title]Composr partners[/title]
 
 <p>
-	This page shows companies or individuals who have registered their Composr services (*). Listing&nbsp;is&nbsp;open (&dagger;) and free so <a href="{$PAGE_LINK*,cms:cms_catalogues:add:catalogue_name=partners}">add your listing now</a>.
+	This page shows companies or individuals who have registered their Composr services&dagger;.
+</p>
+
+<p>
+	We encourage anyone who offers services or support for those running Composr CMS to <a href="{$PAGE_LINK*,cms:cms_catalogues:add:catalogue_name=partners}">add your listing</a>*.
 </p>
 
 	<h2>Companies</h2>
