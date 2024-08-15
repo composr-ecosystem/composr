@@ -1,46 +1,22 @@
 ﻿[semihtml]<p>[contents levels="3"][/contents]&nbsp;</p>[title="1"]Community stars[/title]
-<p>Sometimes when you are given points, you are assigned a role in relation to the points you receive:</p>
-
-[title="2"]Helpful soul[/title]
+<p>Sometimes when you are given points, you are assigned a role in relation to the points you receive:</p>[title="2"]Helpful soul[/title]
 <p>Helpful souls are members who are generally helpful around the community.</p>
-[block param=&quot;Helpful soul&quot;]main_stars[/block]
-
-[title="2"]Support expert[/title]
+[block param=&quot;Helpful soul&quot;]main_stars[/block][title="2"]Support expert[/title]
 <p>Support experts are members known for giving out great technical support.</p>
-[block param=&quot;Support expert&quot;]main_stars[/block]
-
-[title="2"]Programming god[/title]
+[block param=&quot;Support expert&quot;]main_stars[/block][title="2"]Programming god[/title]
 <p>Programming gods are members known for contributing excellent code or coding advice to Composr or the community (e.g. Addons or core development).</p>
-[block param=&quot;Programming god&quot;]main_stars[/block]
-
-[title="2"]Themeing genius[/title]
+[block param=&quot;Programming god&quot;]main_stars[/block][title="2"]Themeing genius[/title]
 <p>Themeing geniuses are members known for making great Composr themes or offering great themeing advice.</p>
-[block param=&quot;Themeing genius&quot;]main_stars[/block]
-
-[title="2"]Community ambassador[/title]
+[block param=&quot;Themeing genius&quot;]main_stars[/block][title="2"]Community ambassador[/title]
 <p>Community ambassadors are members with charisma who help build and strengthen the Composr community.</p>
-[block param=&quot;Community ambassador&quot;]main_stars[/block]
-
-[title="2"]Tracker master[/title]
+[block param=&quot;Community ambassador&quot;]main_stars[/block][title="2"]Tracker master[/title]
 <p>Tracker master are members who regularly use the tracker to report and/or resolve bugs and feature requests.</p>
-[block param=&quot;Tracker master&quot;]main_stars[/block]
-
-[title="2"]Translator saviour[/title]
+[block param=&quot;Tracker master&quot;]main_stars[/block][title="2"]Translator saviour[/title]
 <p>Translator saviours are members who contributed towards translating Composr in different languages.</p>
 [block param=&quot;Translator saviour&quot;]main_stars[/block]
 
-<hr />
-
-[title="2"]Special mentions for core developers[/title]
-<p>Over a dozen developers have contributed to ocPortal / Composr CMS in an official (core) capacity. Key contributors over the history of the software include the following:</p>
-
-[title="3"]Original Development Team[/title]
-[block param="9" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
-
-[title="3"]Active Core Developers[/title]
-[block param="8" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
-
-[title="3"]Inactive Core Developers[/title]
-[block param="7" display_type="LIST" sorting="1" max="100" start="0" pagination="0" as_guest="0" check="1"]main_cc_embed[/block]
-
-[/semihtml]
+<hr />[title="2"]Special mentions for core developers[/title]
+<p>Over a dozen developers have contributed to ocPortal / Composr CMS in an official (core) capacity. Key contributors over the history of the software include the following:</p>[title="3"]Original Development Team[/title]
+[block param="9" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block][title="3"]Active Core Developers[/title]
+[block param="8" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block][title="3"]Inactive Core Developers[/title]
+[block param="4" display_type="TITLELIST" sorting="1" max="100" start="0" pagination="0" as_guest="0" check="1"]main_cc_embed[/block][/semihtml]
