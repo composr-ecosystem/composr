@@ -1,0 +1,64 @@
+[semihtml]
+[title]Community stars[/title]
+
+<div class="cntRow">
+	<p>Sometimes when you are given points, you are assigned a role in relation to the points you receive:</p>
+
+	<div class="cmn-strs">
+		<div class="list">
+			<ul>
+				<li>Helpful soul &ndash; For those who are generally helpful</li>
+				<li>Support expert &ndash; For those who help give out technical support</li>
+				<li>Programming god &ndash; For those who are great addon coders, or coding advice</li>
+				<li>Themeing genius &ndash; For those that put out great themes, or themeing advice</li>
+				<li>Community ambassador &ndash; For those that work inside and outside our community to strengthen us all</li>
+				<li>Tracker master &ndash; For those that report bugs or feature suggestions on [url="the tracker"]https://compo.sr/tracker[/url]</li>
+				<li>Translator saviour &ndash; For those that work on translations</li>
+			</ul>
+		</div>
+
+		<p>This page honours the top 'stars' for each of these 7 roles. That means:</p>
+
+		<div class="list2">
+			<ul>
+				<li>If you show up here then it's something really special, and worth putting on your CV/Résumé.</li>
+				<li>If you've received a lot of help, and the people have put PayPal donation details in their bio, consider donating.</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<h2 class="colrBl">Helpful soul</h2>
+
+[block="Helpful soul"]main_stars[/block]
+
+<h2 class="colrBl">Support expert</h2>
+
+[block="Support expert"]main_stars[/block]
+
+<h2 class="colrBl">Programming god</h2>
+
+[block="Programming god"]main_stars[/block]
+
+<h2 class="colrBl">Themeing genius</h2>
+
+[block="Themeing genius"]main_stars[/block]
+
+<h2 class="colrBl">Community ambassador</h2>
+
+[block="Community ambassador"]main_stars[/block]
+
+<h2 class="colrBl">Tracker master</h2>
+
+[block="Tracker master"]main_stars[/block]
+
+<h2 class="colrBl">Translator saviour</h2>
+
+[block="Translator saviour"]main_stars[/block]
+
+<h2 class="colrBl">Special mentions for original team</h2>
+
+<div class="cntRow">
+	<p>Over a dozen developers have contributed to Composr CMS in an official capacity. However, much of the early development for ocPortal (the precursor to Composr CMS) was done through donated time from the original development team. Key contributors include:</p>
+</div>
+[/semihtml]
