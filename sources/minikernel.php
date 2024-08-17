@@ -1316,9 +1316,48 @@ function get_session_cookie()
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['session_cookie'])) {
-        $SITE_INFO['session_cookie'] = 'cms_session';
+        $SITE_INFO['session_cookie'] = '__Host-cms_session';
     }
+
+    validate_special_cookie_prefix($SITE_INFO['session_cookie']);
+
     return $SITE_INFO['session_cookie'];
+}
+
+/**
+ * Ensure that if we are using a special cookie name prefix that we can actually do so, otherwise strip it.
+ *
+ * @param ID_TEXT $cookie_name The name of the cookie (passed by reference; prefix will be stripped if it cannot be used)
+ */
+function validate_special_cookie_prefix(string &$cookie_name)
+{
+    global $SITE_INFO;
+
+    // If __Host- prefixed, determine if we can use it
+    if (strpos($cookie_name, '__Host-') === 0) {
+        if (!empty(get_cookie_domain())) { // Cannot use __Host- if a domain is set
+            $cookie_name = substr($cookie_name, 7);
+            return;
+        }
+
+        if (strpos(get_base_url(), 'https://') !== 0) { // Cannot use __Host- if not running securely
+            $cookie_name = substr($cookie_name, 7);
+            return;
+        }
+
+        if (get_cookie_path() !== '/') { // Cannot use __Host- if path is not /
+            $cookie_name = substr($cookie_name, 7);
+            return;
+        }
+    }
+
+    // If __Secure- prefixed, determine if we can use it
+    if (strpos($cookie_name, '__Secure-') === 0) {
+        if (strpos(get_base_url(), 'https://') !== 0) { // Cannot use __Secure- if not running securely
+            $cookie_name = substr($cookie_name, 9);
+            return;
+        }
+    }
 }
 
 /**

@@ -53,6 +53,8 @@ class ComposrPlugin extends MantisPlugin {
 
     protected $cms_sc_db_prefix = 'cms_';
     protected $cms_sc_session_cookie_name = 'cms_session';
+    protected $cms_sc_cookie_domain = '';
+    protected $cms_sc_cookie_path = '';
     protected $cms_file_base = __DIR__ . '/../../../';
 
     function register()
@@ -85,7 +87,10 @@ class ComposrPlugin extends MantisPlugin {
         $this->cms_sc_tracker_url = $this->cms_sc_site_url . '/tracker/';
         $this->cms_sc_escrow_view_url = $this->cms_sc_site_url . '/site/points.htm?type=view_escrow&id=%1$d'; // sprintf
         $this->cms_sc_db_prefix = $SITE_INFO['table_prefix'];
-        $this->cms_sc_session_cookie_name = $SITE_INFO['session_cookie'];
+        $this->cms_sc_cookie_domain = isset($SITE_INFO['cookie_domain']) ? $SITE_INFO['cookie_domain'] : '';
+        $this->cms_sc_cookie_path = isset($SITE_INFO['cookie_path']) ? $SITE_INFO['cookie_path'] : '/';
+
+        $this->cms_sc_session_cookie_name = $this->validate_special_cookie_prefix($SITE_INFO['session_cookie']);
     }
 
     function events()
@@ -284,6 +289,7 @@ class ComposrPlugin extends MantisPlugin {
         require_api('user_api.php');
 
         global $g_script_login_cookie, $g_cache_anonymous_user_cookie_string, $g_db, $g_window_title;
+
         if ((isset($_COOKIE[$this->cms_sc_session_cookie_name])) && (isset($g_db)))
         {
             $query = 'SELECT member_id FROM ' . $this->cms_sc_db_prefix . 'sessions WHERE the_session=\'' . db_prepare_binary_string($_COOKIE[$this->cms_sc_session_cookie_name]) . '\'';
@@ -853,5 +859,42 @@ class ComposrPlugin extends MantisPlugin {
 
         # If all methods fail, return null to indicate an error
         return null;
+    }
+
+    /**
+     * Ensure that if we are using a special cookie name prefix that we can actually do so, otherwise strip it.
+     *
+     * @param ID_TEXT $cookie_name The name of the cookie (passed by reference; prefix will be stripped if it cannot be used)
+     * @return ID_TEXT The name of the cookie we should use
+     */
+    protected function validate_special_cookie_prefix(string &$cookie_name)
+    {
+        // If __Host- prefixed, determine if we can use it
+        if (strpos($cookie_name, '__Host-') === 0) {
+            if (!empty($this->cms_sc_cookie_domain)) { // Cannot use __Host- if a domain is set
+                $cookie_name = substr($cookie_name, 7);
+                return $cookie_name;
+            }
+
+            if (strpos($this->cms_sc_site_url, 'https://') !== 0) { // Cannot use __Host- if not running securely
+                $cookie_name = substr($cookie_name, 7);
+                return $cookie_name;
+            }
+
+            if ($this->cms_sc_cookie_path != '/') { // Cannot use __Host- if path is not /
+                $cookie_name = substr($cookie_name, 7);
+                return $cookie_name;
+            }
+        }
+
+        // If __Secure- prefixed, determine if we can use it
+        if (strpos($cookie_name, '__Secure-') === 0) {
+            if (strpos($this->cms_sc_site_url, 'https://') !== 0) { // Cannot use __Secure- if not running securely
+                $cookie_name = substr($cookie_name, 9);
+                return $cookie_name;
+            }
+        }
+
+        return $cookie_name;
     }
 }

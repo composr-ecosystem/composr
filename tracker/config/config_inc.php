@@ -38,10 +38,6 @@ if ($g_db_type == 'mysql_pdo') {
 	$g_db_type = 'mysqli';
 }
 
-$cms_sc_db_prefix = $SITE_INFO['table_prefix'];
-$cms_sc_session_cookie_name = $SITE_INFO['session_cookie'];
-$cms_sc_multi_lang_content = (!isset($SITE_INFO['multi_lang_content'])) || ($SITE_INFO['multi_lang_content'] == '1');
-
 // Attachments / File Uploads
 $g_allow_file_upload = ON;
 $g_file_upload_method = DISK;
@@ -91,8 +87,12 @@ $g_tag_create_threshold = DEVELOPER;
 $g_crypto_master_salt = 'uSQCKx+lVIlwZqKZ2r630GwIHlNO0kcCWGP8pTzLVKs=';
 
 // Lets make it so only website-visitors can post. Otherwise spam happens
+/*
 $g_add_bugnote_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBODY : REPORTER;
 $g_report_bug_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBODY : REPORTER;
+*/
+$g_add_bugnote_threshold = REPORTER;
+$g_report_bug_threshold = REPORTER;
 
 // Sponsorship Settings
 $g_enable_sponsorship = ON;
@@ -201,7 +201,7 @@ $g_roadmap_view_threshold = NOBODY;
 
 // Misc
 $g_show_realname = OFF;
-$g_show_user_realname_threshold = NOBODY; // Set to access level (e.g. VIEWER, REPORTER, DEVELOPER, MANAGER, etc)
+$g_show_user_realname_threshold = NOBODY;
 $g_cookie_time_length = 60 * 60 * 24 * 30;
 $g_html_valid_tags = 'p, li, ul, ol, br, pre, i, b, u, em';
 $g_rss_enabled = OFF;
