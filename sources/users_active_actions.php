@@ -373,9 +373,6 @@ function cms_setcookie($name, $value, $session = false, $httponly = true, $days 
         return $cache[$sz];
     }
 
-    // Eat the current cookies before creating a new one to prevent conflicting cookies from existing (which creates a login loop)
-    @cms_eatcookie($name);
-
     if ($days === null) {
         $days = get_cookie_days();
     }
