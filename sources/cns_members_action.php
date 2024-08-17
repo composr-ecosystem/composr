@@ -259,7 +259,7 @@ function cns_make_member(string $username, string $password, string $email_addre
         'm_pass_salt' => $salt,
         'm_password_change_code' => '',
         'm_password_change_code_time' => null,
-        'm_login_key' => '',
+        'm_login_key_hash' => '',
         'm_email_address' => $email_address,
         'm_primary_group' => $primary_group,
         'm_dob_day' => $dob_day,

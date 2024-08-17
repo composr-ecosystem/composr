@@ -388,7 +388,7 @@ class Module_lost_password
             'm_validated_email_confirm_code' => '',
             'm_password_compat_scheme' => $password_compatibility_scheme,
             'm_pass_hash_salted' => $new,
-            'm_login_key' => '',
+            'm_login_key_hash' => '',
         ];
         if (!$temporary_passwords) {
             // Mark code used if it has instant effect only - otherwise we cannot do it as the link could have been pre-clicked by a virus scanner - rely on password_reset_minutes to expire it

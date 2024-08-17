@@ -29,11 +29,12 @@ function cns_create_login_cookie(int $member_id)
     cms_setcookie(get_member_cookie(), strval($member_id), false, true);
 
     // Password
-    $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key');
+    $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key_hash');
     if ($login_key == '') {
         require_code('crypt');
         $login_key = get_secure_random_string();
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key' => $login_key], ['id' => $member_id], '', 1);
+        $login_key_hash = ratchet_hash($login_key, get_site_salt() . '_' . get_pass_cookie());
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key_hash' => $login_key_hash], ['id' => $member_id], '', 1);
     }
     cms_setcookie(get_pass_cookie(), $login_key, false, true);
 }
@@ -199,7 +200,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     break;
 
                 default:
-                    if (($row['m_login_key'] == '') || (!hash_equals($row['m_login_key'], $password_mixed))) {
+                    require_code('crypt');
+                    if (($row['m_login_key_hash'] == '') || (!ratchet_hash_verify($password_mixed, get_site_salt() . '_' . get_pass_cookie(), $row['m_login_key_hash']))) {
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
