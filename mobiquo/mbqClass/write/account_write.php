@@ -454,7 +454,7 @@ class CMSAccountWrite
             'm_pass_salt' => $salt,
             'm_pass_hash_salted' => $password_salted,
             'm_ip_address' => $ip_address,
-            'm_login_key' => '',
+            'm_login_key_hash' => '',
         ];
         $GLOBALS['FORUM_DB']->query_update('f_members', $map, ['id' => $member_id], '', 1);
     }
