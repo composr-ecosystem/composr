@@ -353,8 +353,8 @@ function set_invisibility($make_invisible = true)
  * @param  string $name The name of the cookie
  * @param  string $value The value to store in the cookie
  * @param  boolean $session Whether it is a session cookie (gets removed once the browser window closes)
- * @param  boolean $http_only Whether the cookie should not be readable by JavaScript (forced on if $session is true)
- * @param  ?float $days Days to store (null: default)
+ * @param  boolean $http_only Whether the cookie should not be readable by JavaScript
+ * @param  ?integer $days Days to store (null: default)
  * @return boolean The result of the PHP setcookie command
  */
 function cms_setcookie($name, $value, $session = false, $http_only = false, $days = null)
@@ -363,12 +363,6 @@ function cms_setcookie($name, $value, $session = false, $http_only = false, $day
         return true;
     }*/
 
-    if ($session) {
-        $http_only = true; // Force http-only on Session cookies per web standards
-    }
-
-    $secure = (substr(get_base_url(), 0, 8) == 'https://');
-
     static $cache = array();
     $sz = serialize(array($name, $value, $session, $http_only));
     if (isset($cache[$sz])) {
@@ -376,10 +370,6 @@ function cms_setcookie($name, $value, $session = false, $http_only = false, $day
     }
 
     $cookie_domain = get_cookie_domain();
-    if ($cookie_domain === null) {
-        $cookie_domain = get_base_url_hostname();
-    }
-
     $path = get_cookie_path();
     if ($path == '') {
         $base_url = get_base_url();
@@ -392,21 +382,18 @@ function cms_setcookie($name, $value, $session = false, $http_only = false, $day
     }
 
     $time = $session ? null : (time() + (is_null($days) ? get_cookie_days() : $days) * 24 * 60 * 60);
-    if ($cookie_domain == '') { // http-only and secure cannot be set if there is no domain
+    if ($cookie_domain == '') {
         $output = @setcookie($name, $value, $time, $path);
     } else {
-        if (PHP_VERSION < 5.2) {
-            $extra = '';
-            if ($http_only) {
-                $extra .= '; HttpOnly';
-            }
-            if ($secure) {
-                $extra .= '; Secure';
-            }
-            $output = @setcookie($name, $value, $time, $path, $cookie_domain . $extra);
+        if (!$http_only) {
+            $output = @setcookie($name, $value, $time, $path, $cookie_domain);
         } else {
-            $output = @call_user_func_array('setcookie', array($name, $value, $time, $path, $cookie_domain, $secure, $http_only)); // For Phalanger
-            //$output = @setcookie($name, $value, $time, $path, $cookie_domain, $secure, $http_only);
+            if (PHP_VERSION < 5.2) {
+                $output = @setcookie($name, $value, $time, $path, $cookie_domain . '; HttpOnly');
+            } else {
+                $output = @call_user_func_array('setcookie', array($name, $value, $time, $path, $cookie_domain, substr(get_base_url(null), 0, 7) == 'http://', true)); // For Phalanger
+                //$output = @setcookie($name, $value, $time, $path, $cookie_domain, 0, true);
+            }
         }
     }
     if ($name != 'has_cookies') {
