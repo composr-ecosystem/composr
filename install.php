@@ -810,14 +810,14 @@ function step_4() : object
     if (($forum_type != 'cns') && ($forum_type != 'none')) {
         // Play safe with our defaults via prefixing; user is unlikely to get cookie domain/path settings right, and integration code could become broken if cookie-encoding scheme changes in 3rd party software
         if (array_key_exists('cookie_member_id', $PROBED_FORUM_CONFIG)) {
-            $PROBED_FORUM_CONFIG['cookie_member_id'] = 'cms__' . $PROBED_FORUM_CONFIG['cookie_member_id'];
+            $PROBED_FORUM_CONFIG['cookie_member_id'] = '__Secure-cms__' . $PROBED_FORUM_CONFIG['cookie_member_id'];
         } else {
-            $PROBED_FORUM_CONFIG['cookie_member_id'] = 'cms_member_id';
+            $PROBED_FORUM_CONFIG['cookie_member_id'] = '__Secure-cms_member_id';
         }
         if (array_key_exists('cookie_member_hash', $PROBED_FORUM_CONFIG)) {
-            $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'cms__' . $PROBED_FORUM_CONFIG['cookie_member_hash'];
+            $PROBED_FORUM_CONFIG['cookie_member_hash'] = '__Secure-cms__' . $PROBED_FORUM_CONFIG['cookie_member_hash'];
         } else {
-            $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'cms_member_hash';
+            $PROBED_FORUM_CONFIG['cookie_member_hash'] = '__Secure-cms_member_hash';
         }
     }
 
@@ -1916,7 +1916,7 @@ if (!function_exists(\'git_repos\')) {
 
     // Derive a session cookie name based on the base_url, to stop conflicts between sites
     if (!isset($_POST['session_cookie'])) {
-        $config_contents .= '$SITE_INFO[\'session_cookie\'] = \'cms_session__' . md5($base_url) . "';\n";
+        $config_contents .= '$SITE_INFO[\'session_cookie\'] = \'__Host-cms_session__' . md5($base_url) . "';\n";
     }
 
     // Copy over current safe mode setting (if testing installer in safe mode)

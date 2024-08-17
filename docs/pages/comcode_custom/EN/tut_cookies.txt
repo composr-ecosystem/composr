@@ -65,7 +65,7 @@ If the problem is number 1, then you can adjust the browser settings to reenable
 [title="2"]Privacy[/title]
 
 [media thumb="0" width="80" framed="0" description="" float="right"]themes/default/images/icons/menu/adminzone/security.svg[/media]
-Cookies can only be read by the site that created them, or a site 'underneath' the site that created them. This prevents other websites from stealing cookies.
+When a cookie path is set to '/', the cookie can only be read by the site that created them, or a site 'underneath' the site that created them. This prevents other websites from stealing cookies.
 
 When cookies were fairly new, there was a lot of controversy about their ability to track users browsing 'all around the web'. This is not really the case, due to sites only being able to read their own cookies; however, for affiliated companies, such as advertising companies, it is true that cookies could be placed in banners such that any site showing a banner could aid the banner company in tracking every website the banner viewer visited on their network.
 
@@ -79,7 +79,7 @@ The developers recommend that users do have cookies enabled, but that they possi
 [media thumb="0" width="80" framed="0" description="" float="right"]icons/menu/adminzone/setup/config/config.svg[/media]
 The EU require tracking cookies be declared for organisations operating inside the EU.
 
-The Composr "Cookie notice" configuration option (Admin Zone > Setup > Configuration > Privacy / legal compliance options > General) implements this. It isn't on by default because Composr's cookies are heavily minimised to what we consider reasonable compliance without special notice. However, use of something like Adsense strictly requires you enable the cookie notice.
+The Composr "Cookie notice" configuration option (Admin Zone > Setup > Configuration > Privacy / legal compliance options > General) implements this. It isn't on by default because Composr's cookies are heavily minimised to what we consider reasonable compliance without special notice. However, use of something like Adsense or Google Analytics strictly requires you enable the cookie notice.
 [/surround]
 
 [title="2"]20 things you didn't know about cookies (for programmers)[/title]
@@ -89,19 +89,19 @@ The Composr "Cookie notice" configuration option (Admin Zone > Setup > Configura
 3) Session cookie XSS prevention security is lost if web browser tabs are used: the cookies don't expire because the browser is never closed.
 4) Cookie expiry time is measured in GMT UNIX timestamp seconds, hence client/server time is theoretically the same -- but care is still needed as computer clocks may be fast/slow
 5) A third-party cookie is a cookie that is set onto a domain name that the main page document cannot read. This is possible only because a document may reference images on other servers, and these images may themselves set cookies (any URL can generate cookies). Some browser privacy settings disable these.
-6) While cookies are sometimes disabled by people for privacy concerns, session cookies are usually allowed as an exception -- so it isn't the end of the world if session cookies are required -- but it's better to be able to store session IDs in the URL. Some popular websites do require cookies to be enabled though (Tesco.com, New York Times, ...).
+6) While cookies are sometimes disabled by people for privacy concerns, session cookies are usually allowed as an exception -- so it isn't the end of the world if session cookies are required -- but it's better to be able to store session IDs in the URL. Some popular websites do require cookies to be enabled though.
 7) Full cookie data is sent with all web requests that the cookies are scoped under, even image requests -- so it is inefficient to store a lot of cookies.
 8) Cookies must be set against a domain name. This is either done by putting [tt].domain[/tt] as the cookie domain, or by leaving the domain blank when setting the cookie; the domain should never be defined as [tt]domain[/tt] as it will not work properly.
 9) Cookies work with an elaborate but confusing precedence system. Only cookies underneath a matched domain/path combination will be sent to a server URL (for privacy reasons), and they will be given precedence based on 'most specific gets priority'. To change a cookie the server must set it against the domain/path combination it was created with. The variables a cookie was defined under are not available server-side, which means that anyone modifying the cookie must know these in advance, or guess wildly.
 10) There is a legitimate privacy concern with cookies when ads are concerned. Banner rotations run from centralised sites, and hence have the ability to effectively track users from this centralised site but with regard any site that they visit that uses the rotation. Nevertheless, such tracking could happen regardless of cookies, via server logging and cross-server messaging -- so blaming cookies is simplistic.
-11) Microsoft made a great extension to Netscape's original cookie spec, allowing 'HTTP only' cookies (cookies that JavaScript cannot read). Use of this prevents XSS many vulnerabilities.
+11) Microsoft made a great extension to Netscape's original cookie spec, allowing 'HTTP only' cookies (cookies that JavaScript cannot read). Use of this prevents many XSS vulnerabilities. Composr uses HTTP Only cookies where possible especially on the session cookie (for non-guests).
 12) At the protocol level, cookies are sent to the server in a single Cookie HTTP header, but set from the server using individual Set-Cookie headers.
 13) Cookies just store names and values, and never any data that a web server or normal JavaScript would not have been able to discern -- because it is the web server or browser that sets the cookie.
 14) JavaScript provides its cookie support by a virtual variable, [tt]document.cookie[/tt]. The variable can be set and read, but the process is not actually direct.
 15) A common server-side coding mistake is to set a cookie and then refer to the cookie value within the same server response -- yet the cookie would not have been activated until the response had been sent.
 16) Some web servers (including Apache) restrict cookie data length, refusing to server data if the length is exceeded.
 17) Cookie names should not contain certain special characters like '=' as these have special meanings within HTTP and there is no standard escaping mechanism for cookie names. (Unexpected bugs may happen if you attempt to set such cookies)
-18) Cookies were invented by Netscape, not by the usual standards bodies (the IETF or W3C).
+18) Cookies were invented by Netscape, not by the usual standards bodies (the IETF or W3C), and definitely not by the Cookie Monster.
 19) On some web servers it is not possible to set a cookie at the same time as doing an HTTP redirect.
 20) The name 'cookie' was given for no particular reason, but is the origin of endless bad jokes.
 
