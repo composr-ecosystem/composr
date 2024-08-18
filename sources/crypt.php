@@ -93,23 +93,36 @@ function get_site_salt() : string
 {
     $site_salt = get_value('site_salt');
     if ($site_salt === null) {
-        $site_salt = get_secure_random_string();
+        $site_salt = get_secure_random_string(32); // We are going to MD5 it so it should be long to increase variability
         set_value('site_salt', $site_salt);
     }
     return md5($site_salt);
 }
 
 /**
- * Get a randomised string acceptable for use as tokens, etc.
- * Will be 13 bytes long and base16. Do not use for passwords; use get_secure_random_password() instead.
+ * Get a URL-safe alphanumeric randomised string acceptable for use as tokens, etc.
+ * Do not use for passwords because it does not contain symbols; use get_secure_random_password() instead.
  *
+ * @param  integer The length of the string in bytes
  * @return string The randomised password
  */
-function get_secure_random_string() : string
+function get_secure_random_string(int $bytes = 13) : string
 {
-    // md5 used in the below so that we get nice ASCII characters
+    /*
+     * We only use lowercase letters due to case sensitivity inconsistencies between operating systems.
+     * For maximum cryptographic security, the length must be a power of 2.
+     * Therefore, we took letters + numbers (36) and removed 1/l, and 0/o (32) as they look similar.
+     */
+    $characters = '23456789abcdefghijkmnpqrstuvwxyz';
+    $characters_length = strlen($characters);
 
-    return substr(md5(random_bytes(13)), 0, 13);
+    $random_string = '';
+    for ($i = 0; $i < $bytes; $i++) {
+        $random_byte = random_bytes(1);
+        $random_index = ord($random_byte) % $characters_length; // Convert byte to index
+        $random_string .= $characters[$random_index];
+    }
+    return $random_string;
 }
 
 /**
