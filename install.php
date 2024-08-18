@@ -327,11 +327,28 @@ function step_1()
 {
     // To stop previous installs interfering
     require_code('caches3');
+    require_code('version');
     erase_cached_templates();
     erase_cached_language();
 
     // Integrity check
     $warnings = new Tempcode();
+
+    // Software version
+    $version_status = cms_version_branch_status();
+    if ($version_status == VERSION_ALPHA) {
+        $warnings->attach(do_template('INSTALLER_WARNING', array('_GUID' => 'ac01e3ee32cfe34d8aab256cf0530969', 'MESSAGE' => do_lang_tempcode('INSTALLING_ALPHA_VERSION'))));
+    }
+    if ($version_status == VERSION_BETA) {
+        $warnings->attach(do_template('INSTALLER_NOTICE', array('_GUID' => '973aae9c89d1f8ea067ff234f411e21d', 'MESSAGE' => do_lang_tempcode('INSTALLING_BETA_VERSION'))));
+    }
+    if ($version_status == VERSION_LTM) {
+        $warnings->attach(do_template('INSTALLER_NOTICE', array('_GUID' => 'rthtrhuy2dg28gxc823dui23fhiyeuwr', 'MESSAGE' => do_lang_tempcode('INSTALLING_LTM_VERSION'))));
+    }
+    if ($version_status == VERSION_EOL) {
+        $warnings->attach(do_template('INSTALLER_WARNING', array('_GUID' => 'c8374ed6264394947c39e2cc679ee472', 'MESSAGE' => do_lang_tempcode('INSTALLING_EOL_VERSION'))));
+    }
+
     global $DATADOTCMS_FILE;
     if (!@is_resource($DATADOTCMS_FILE)) { // Do an integrity check - missing corrupt files
         $sdc = get_param_integer('skip_disk_checks', null);
