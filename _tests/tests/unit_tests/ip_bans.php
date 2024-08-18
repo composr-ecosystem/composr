@@ -224,7 +224,6 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive ban against something listed in spam_check_exclusions (add, then not banned) - then cleanup
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
-            $prev_exclusions = get_option('spam_check_exclusions');
             set_option('spam_check_exclusions', $ip);
             $result = add_ip_ban($ip, '', null, true, false);
             //$this->assertTrue(!$result); Actually we do let it be added, as the check is meant to be on ip_banned only (allows retroactive setting of spam_check_exclusions, and less code)

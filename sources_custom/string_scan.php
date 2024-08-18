@@ -7131,6 +7131,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PHP_VERSION_UNSUPPORTED
         U_RENAMED_ADDON_MESSAGE
         U_NEW_ADDON_EXTRACTED
+        INSTALLING_ALPHA_VERSION
+        INSTALLING_BETA_VERSION
+        INSTALLING_EOL_VERSION
+        INSTALLING_LTM_VERSION
     ')));
 
     $non_admin_files = array(

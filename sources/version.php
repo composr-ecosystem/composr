@@ -38,6 +38,7 @@ function init__version()
         define('VERSION_BETA', 'Beta');
         define('VERSION_MAINLINE', 'Mainline');
         define('VERSION_SUPPORTED', 'Supported');
+        define('VERSION_LTM', 'Long-term maintenance');
         define('VERSION_EOL', 'EOL');
     }
 }
@@ -49,7 +50,7 @@ function init__version()
  */
 function cms_version_minor()
 {
-    return '0.49';
+    return '0.50';
 }
 
 /**
@@ -69,7 +70,7 @@ function cms_version_number()
  */
 function cms_version_time()
 {
-    return 1723602218;
+    return 1723941825;
 }
 
 /**
@@ -89,7 +90,7 @@ function cms_version_time_major()
  */
 function cms_version_branch_status()
 {
-    return VERSION_MAINLINE;
+    return VERSION_LTM;
 }
 
 /**
