@@ -19,6 +19,11 @@ if (!addon_installed('composr_homesite_support_credits') || !addon_installed('co
     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
 }
 
+// Do not allow reports from Guests anymore due to excessive spam
+if (is_guest()) {
+    access_denied('NOT_AS_GUEST');
+}
+
 require_code('decision_tree');
 require_code('mantis');
 require_code('composr_homesite');
