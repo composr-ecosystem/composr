@@ -209,12 +209,14 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
     }
 
     // Save cookie
+    $timeout = $guest_session ? (time() + intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) : null;
     /*if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_debug_has_cookies', 0) == 0)) {     Useful for testing non-cookie support, but annoying if left on
         $test = false;
     } else {*/
-    require_code('users_active_actions');
-    $test = cms_setcookie(get_session_cookie(), $id, true, true, $guest_session ? (max(0.017, floatval(get_option('session_expiry_time'))) / 24.0) : null); // Set a session cookie with our session ID. We only use sessions for secure browser-session login... the database and url's do the rest
-
+    $test = @setcookie(get_session_cookie(), $id, $timeout, get_cookie_path(), get_cookie_domain()); // Set a session cookie with our session ID. We only use sessions for secure browser-session login... the database and url's do the rest
+    if (is_null($test)) {
+        $test = false;
+    }
     //}
     $_COOKIE[get_session_cookie()] = $id; // So we remember for this page view
 

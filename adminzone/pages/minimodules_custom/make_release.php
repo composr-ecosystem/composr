@@ -107,6 +107,7 @@ function phase_0()
             <label for="version">What is the full version number (no bloody A, B, C, or D) of the NEW version you are releasing right now? If you are only testing the make release process, you should leave this value alone (use the on-disk version).</label>
             <br />
             <input maxlength="14" size="14" type="text" name="version" id="version" value="' . escape_html($on_disk_version) . '" />
+            <input type="checkbox" name="ltm" id="ltm" value="1" /><label for="ltm">This is a Long-Term Maintenance release</label>
         </fieldset>
         <br />
         <fieldset>
@@ -121,6 +122,7 @@ function phase_0()
 function phase_1()
 {
     $skip_check = (get_param_integer('skip', 0) == 1) ? 'checked="checked"' : '';
+    $is_ltm = (post_param_integer('ltm', 0) == 1);
 
     require_code('version2');
     $new_version = get_new_version();
@@ -167,13 +169,19 @@ function phase_1()
         // Update branch status flag
         if (strpos($new_version, 'alpha') !== false) {
             $_replacement = 'VERSION_ALPHA';
+            $is_ltm = false;
         } elseif (strpos($new_version, 'beta') !== false) {
             $_replacement = 'VERSION_BETA';
+            $is_ltm = false;
         } elseif (strpos($new_version, 'RC') !== false) {
             $_replacement = 'VERSION_SUPPORTED';
+            $is_ltm = false;
+        } elseif ($is_ltm) {
+            $_replacement = 'VERSION_LTM';
         } else {
             $_replacement = 'VERSION_MAINLINE';
         }
+
         $pattern = '/function cms_version_branch_status\(\)\s*{\s*return\s*(.*?)\;\s*}/s';
         $replacement = "function cms_version_branch_status()\n{\n    return " . $_replacement . ";\n}";
         $version_file = preg_replace($pattern, $replacement, $version_file);
@@ -250,8 +258,12 @@ function phase_1()
             // Start populating changes
             $tracker_reporters = array();
             $tracker_handlers = array();
+            $changes = '';
+            if ($is_ltm) {
+                $changes .= 'This is a long-term maintenance release. Only critical bugs and security holes are being fixed in this version branch. If a newer branch is available, it is highly recommended upgrading your site to the newest branch at your earliest convenience.' . "\n\n";
+            }
             if (count($tracker_issues) > 0) {
-                $changes = 'The following [url="tracker issues"]' . $tracker_url . '[/url] have been resolved since version ' . $previous_version . "...\n";
+                $changes .= 'The following [url="tracker issues"]' . $tracker_url . '[/url] have been resolved since version ' . $previous_version . "...\n";
                 ksort($tracker_issues); // Sort by tracker ID (usually results in oldest to newest sorting)
                 foreach ($tracker_issues as $key => $data) {
                     list($summary, $reporter, $handler) = $data;

@@ -27,6 +27,8 @@ Fix any TODOs in this file.
 
 require(__DIR__ . '/../../_config.php');
 
+global $SITE_INFO;
+
 // Database Configuration
 $g_hostname = $SITE_INFO['db_site_host'];
 $g_db_username = $SITE_INFO['db_site_user'];
@@ -119,16 +121,16 @@ $g_favicon_image = '../themes/default/images/favicon.ico';
 
 // Security Settings
 $g_show_user_email_threshold = ADMINISTRATOR;
-$g_upload_bug_file_threshold = ANYBODY;
-$g_set_view_status_threshold = ANYBODY;
-$g_update_readonly_bug_threshold = VIEWER;
-$g_tag_attach_threshold = ANYBODY;
+$g_upload_bug_file_threshold = REPORTER;
+$g_set_view_status_threshold = REPORTER;
+$g_update_readonly_bug_threshold = REPORTER;
+$g_tag_attach_threshold = REPORTER;
 $g_tag_create_threshold = DEVELOPER;
 $g_crypto_master_salt = 'uSQCKx+lVIlwZqKZ2r630GwIHlNO0kcCWGP8pTzLVKs=';
 
 // Lets make it so only website-visitors can post. Otherwise spam happens
-$g_add_bugnote_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBODY : REPORTER;
-$g_report_bug_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBODY : REPORTER;
+$g_add_bugnote_threshold = REPORTER;
+$g_report_bug_threshold = REPORTER;
 
 // Sponsorship Settings
 $g_enable_sponsorship = ON;

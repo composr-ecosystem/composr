@@ -2772,16 +2772,12 @@ function keep_stub(starting_query_string,skip_session,context) // starting_query
 			}
 		}
 	}
-
-	// We can no longer do this due to cookie security; if it's not already in the URL, then it must be excluded
-	/*
-		if (!done_session)
-		{
-			var session=get_session_id();
-			gap_symbol=(((to_add=='') && (starting_query_string))?'?':'&');
-			if (session) to_add=to_add+gap_symbol+'keep_session='+window.encodeURIComponent(session);
-		}
-	*/
+	if (!done_session)
+	{
+		var session=get_session_id();
+		gap_symbol=(((to_add=='') && (starting_query_string))?'?':'&');
+		if (session) to_add=to_add+gap_symbol+'keep_session='+window.encodeURIComponent(session);
+	}
 
 	if (((typeof context=='undefined') || (context.indexOf('keep_')==-1)) && (skip_session))
 	{
@@ -2799,13 +2795,12 @@ function keep_stub(starting_query_string,skip_session,context) // starting_query
 
 function get_csrf_token()
 {
-	var element = document.getElementById('g-post-tkn'); // We use a slightly obfuscated name so it's not quite obvious what this is.
-	return element.value;
+	return read_cookie('{$SESSION_COOKIE_NAME;}'); // Session also works as a CSRF-token, as client-side knows it (AJAX)
 }
 
 function get_session_id()
 {
-	throw new Error('get_session_id() is deprecated; never use session cookies in JavaScript.');
+	return read_cookie('{$SESSION_COOKIE_NAME;}');
 }
 
 /* Get an element's HTML, including the element itself */
