@@ -19,6 +19,20 @@
  */
 
 /**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__crypt()
+{
+    if (!defined('CRYPT_BASE16')) {
+        define('CRYPT_BASE16', '0123456789abcdef');
+        define('CRYPT_BASE32', '23456789abcdefghijkmnpqrstuvwxyz');
+        define('CRYPT_BASE64', '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-+'); // Needs to be URL-safe
+    }
+}
+
+/**
  * Do a hashing, with support for our "ratcheting up" algorithm (i.e. lets the admin increase the complexity over the time, as CPU speeds get faster).
  *
  * @param  SHORT_TEXT $password The password in plain text
@@ -93,27 +107,27 @@ function get_site_salt() : string
 {
     $site_salt = get_value('site_salt');
     if ($site_salt === null) {
-        $site_salt = get_secure_random_string(32); // We are going to MD5 it so it should be long to increase variability
+        $site_salt = get_secure_random_hash();
         set_value('site_salt', $site_salt);
     }
-    return md5($site_salt);
+
+    if (strlen($site_salt) != 32) { // LEGACY
+        return md5($site_salt);
+    }
+
+    return $site_salt;
 }
 
 /**
- * Get a URL-safe alphanumeric randomised string acceptable for use as tokens, etc.
- * Do not use for passwords because it does not contain symbols; use get_secure_random_password() instead.
+ * Generate a cryptographically secure pseudo-random string suitable for tokens, etc.
+ * Do not use for passwords; use get_secure_random_password() instead.
  *
- * @param  integer The length of the string in bytes
- * @return string The randomised password
+ * @param  integer $bytes The length of the string in bytes
+ * @param  string $characters A CRYPT_* constant defining the character map to use
+ * @return string The randomised string
  */
-function get_secure_random_string(int $bytes = 13) : string
+function get_secure_random_string(int $bytes = 13, string $characters = CRYPT_BASE32) : string
 {
-    /*
-     * We only use lowercase letters due to case sensitivity inconsistencies between operating systems.
-     * For maximum cryptographic security, the length must be a power of 2.
-     * Therefore, we took letters + numbers (36) and removed 1/l, and 0/o (32) as they look similar.
-     */
-    $characters = '23456789abcdefghijkmnpqrstuvwxyz';
     $characters_length = strlen($characters);
 
     $random_string = '';
@@ -123,6 +137,16 @@ function get_secure_random_string(int $bytes = 13) : string
         $random_string .= $characters[$random_index];
     }
     return $random_string;
+}
+
+/**
+ * Generate a cryptographically secure pseudo-random MD5 hash.
+ *
+ * @return string The pseudo-random MD5 hash
+ */
+function get_secure_random_hash()
+{
+    return get_secure_random_string(32, CRYPT_BASE16);
 }
 
 /**
