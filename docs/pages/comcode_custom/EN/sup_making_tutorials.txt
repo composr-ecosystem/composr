@@ -58,7 +58,7 @@ The difficulty level can be either [tt]novice[/tt], [tt]regular[/tt], or [tt]exp
 
 [*] As tutorials are a part of the non-bundled [tt]composr_tutorials[/tt] addon, all your new files must be referenced from the [tt]get_file_list()[/tt] function of [tt]sources_custom/hooks/systems/addon_registry/composr_tutorials.php[/tt].
 
-[*] We also have some automated tests for testing the tutorials all stay consistent. To run these go to [tt]http://yourbaseurl/_tests[/tt] and run all the tests starting [tt]tutorial[/tt]. Make sure they pass. Also running the [tt]aaa_modularisation[/tt] test is a good idea, to make sure you have updated the [tt]addon_registry[/tt] file correctly, and haven't left unreferenced files.
+[*] We also have some automated tests for testing the tutorials all stay consistent. To run these go to [tt]http://yourbaseurl/_tests[/tt] and run all the tests starting [tt]tutorial[/tt]. Make sure they pass. Also running the [tt]modularisation[/tt] test is a good idea, to make sure you have updated the [tt]addon_registry[/tt] file correctly, and haven't left unreferenced files.
 
 [*] Add/Commit/Push your work (standard Git workflow).
 

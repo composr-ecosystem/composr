@@ -1342,6 +1342,7 @@ class Hook_addon_registry_core_cns
             'SCOPE' => lorem_word(),
         ];
         return lorem_globalise(do_template('CNS_MEMBER_PROFILE_RANK', [
+            '_GUID' => '08c9853175987d67e96f77d912e9e809',
             'SIMPLE_STEPPER' => '0',
             'RANKS' => $groups,
             'CURRENT_RANK' => lorem_word_2(),
