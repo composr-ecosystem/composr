@@ -75,10 +75,12 @@ class crypt_test_set extends cms_test_case
 
     public function testRatchet()
     {
-        $password = get_secure_random_password();
-        $salt = get_secure_random_hash();
-        $pass_hash_salted = ratchet_hash($password, $salt);
-        $this->assertTrue(ratchet_hash_verify($password, $salt, $pass_hash_salted));
+        for ($i = 0; $i < 100; $i++) { // We do less of this because of strict security level checking
+            $password = get_secure_random_password();
+            $salt = get_secure_random_string(32, CRYPT_BASE64);
+            $pass_hash_salted = ratchet_hash($password, $salt);
+            $this->assertTrue(ratchet_hash_verify($password, $salt, $pass_hash_salted));
+        }
     }
 
     public function testObfuscate()

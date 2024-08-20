@@ -175,10 +175,12 @@ function bookings_ical_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce')));
     }
 
-    require_code('crypt');
-    $pass_ok = ratchet_hash_verify($GLOBALS['SITE_INFO']['maintenance_password'], get_site_salt(), get_param_string('pass', '', INPUT_FILTER_GET_COMPLEX));
-    if ((!$pass_ok) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
-        access_denied('I_ERROR');
+    if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
+        require_code('crypt');
+        $pass_ok = ratchet_hash_verify($GLOBALS['SITE_INFO']['maintenance_password'], get_site_salt(), get_param_string('pass', '', INPUT_FILTER_GET_COMPLEX));
+        if (!$pass_ok) {
+            access_denied('I_ERROR');
+        }
     }
 
     require_code('calendar_ical');

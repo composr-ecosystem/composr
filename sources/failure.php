@@ -120,7 +120,7 @@ function zip_error(string $filename, int $errno) : object
             $errmsg = $error_message;
         }
     }
-    return do_lang_tempcode('ZIP_ERROR', _sanitise_error_msg($filename), $errmsg);
+    return do_lang_tempcode('ZIP_ERROR', escape_html(_sanitise_error_msg($filename)), escape_html($errmsg));
 }
 
 /**
@@ -1428,7 +1428,7 @@ function put_value_in_stack_trace($value) : string
     }
 
     global $SITE_INFO;
-    $site_info_keys = ['db_site_password', 'db_forums_password', 'maintenance_password', 'master_password', 'mysql_root_password'];
+    $site_info_keys = ['db_site_password', 'db_forums_password', 'maintenance_password', 'master_password', 'admin_password', 'mysql_root_password'];
     foreach ($site_info_keys as $key) {
         if ((isset($SITE_INFO[$key])) && (strlen($SITE_INFO[$key]) > 4)) {
             $_value = str_replace($SITE_INFO[$key], '(password removed)', $_value);

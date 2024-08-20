@@ -294,8 +294,10 @@ function _enforce_temporary_passwords(int $member_id)
         }
     }
 
+    $password_compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
+
     // Temporary?
-    if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary') {
+    if (($password_compat_scheme == 'temporary'/*LEGACY*/) || ($password_compat_scheme == 'bcrypt_temporary')) {
         require_lang('cns');
         $force_change_message = do_lang_tempcode('YOU_HAVE_TEMPORARY_PASSWORD', escape_html($username));
         require_code('urls');

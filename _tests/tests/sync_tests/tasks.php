@@ -26,6 +26,8 @@ class tasks_test_set extends cms_test_case
 
         require_code('files');
         require_code('tasks');
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
     }
 
     public function testNewsletterSpreadsheet()
@@ -256,13 +258,19 @@ class tasks_test_set extends cms_test_case
 
     public function testUnnecessaryTaskNotifications()
     {
-        $files = get_directory_contents(get_file_base(), get_file_base(), null, true, true, ['php']);
+        require_code('files2');
+
+        $files = get_directory_contents(get_file_base(), get_file_base(), IGNORE_ACCESS_CONTROLLERS | IGNORE_FLOATING | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
+        $exceptions = [
+            'exports/', // TODO: No idea why bitmask is not ignoring this
+            'sync_tests/tasks.php', // Test should ignore itself
+        ];
         foreach ($files as $path) {
             // Exceptions
-            if (in_array(basename($path), [
-                '__tasks.php' // Testing ourselves will result in a false positive
-            ])) {
-                continue;
+            foreach ($exceptions as $exception) {
+                if (strpos($path, $exception) !== false) {
+                    continue 2;
+                }
             }
 
             $code = cms_file_get_contents_safe($path, FILE_READ_LOCK);

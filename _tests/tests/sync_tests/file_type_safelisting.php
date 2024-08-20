@@ -449,12 +449,12 @@ class file_type_safelisting_test_set extends cms_test_case
             $filename = basename($line);
             $ext = get_file_extension($filename);
             if (($ext != '') && ('.' . $ext != $filename)) {
-                $exts[$ext] = true;
+                $exts[$ext] = $filename;
             }
         }
         ksort($exts);
-        foreach (array_keys($exts) as $ext) {
-            $this->assertTrue(array_key_exists($ext, $found), 'Unknown file type in Git that should be in .gitattributes to clarify how to manage it: ' . $ext);
+        foreach ($exts as $ext => $filename) {
+            $this->assertTrue(array_key_exists($ext, $found), 'Unknown file type in Git that should be in .gitattributes to clarify how to manage it: ' . $ext . ' (' . $filename . ')');
         }
     }
 

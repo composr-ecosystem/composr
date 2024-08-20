@@ -62,19 +62,17 @@ class Hook_commandr_command_passwd
         $update = [];
         $update['m_password_change_code'] = '';
         $update['m_password_change_code_time'] = null;
-        $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
-        if ($salt === null) {
-            return ['', '', '', do_lang('_MEMBER_NO_EXIST', array_key_exists('username', $options) ? $options['username'] : $options['u'])];
-        }
 
         if (get_value('disable_password_hashing') === '1') {
             $update['m_password_compat_scheme'] = 'plain';
             $update['m_pass_salt'] = '';
             $update['m_pass_hash_salted'] = $parameters[0];
         } else {
-            $update['m_password_compat_scheme'] = '';
             require_code('crypt');
-            $update['m_pass_hash_salted'] = ratchet_hash($parameters[0], $salt);
+
+            $update['m_password_compat_scheme'] = 'bcrypt';
+            $update['m_pass_salt'] = get_secure_random_string(32, CRYPT_BASE64); // Prevent rainbow table attacks by changing the salt
+            $update['m_pass_hash_salted'] = ratchet_hash($parameters[0], $update['m_pass_salt']);
         }
 
         $GLOBALS['FORUM_DB']->query_update('f_members', $update, ['id' => $member_id], '', 1);

@@ -192,3 +192,4 @@
 *.lock binary
 *.sq3 binary
 *.pfb binary
+*.ser binary

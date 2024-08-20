@@ -346,7 +346,7 @@ function enforce_temporary_passwords(int $member_id)
 
     // Only enforce passwords on software schemes
     $scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
-    if (!in_array($scheme, ['', 'temporary', 'expired'])) {
+    if (!in_array($scheme, ['bcrypt', 'bcrypt_temporary', 'bcrypt_expired', '', 'temporary', 'expired'])) {
         return;
     }
 
@@ -630,7 +630,7 @@ function get_pass_cookie() : string
 /**
  * Ensure that if we are using a special cookie name prefix that we can actually do so, otherwise strip it.
  *
- * @param ID_TEXT $cookie_name The name of the cookie (passed by reference; prefix will be stripped if it cannot be used)
+ * @param  ID_TEXT $cookie_name The name of the cookie (passed by reference; prefix will be stripped if it cannot be used)
  */
 function validate_special_cookie_prefix(string &$cookie_name)
 {

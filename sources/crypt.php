@@ -28,7 +28,11 @@ function init__crypt()
     if (!defined('CRYPT_BASE16')) {
         define('CRYPT_BASE16', '0123456789abcdef');
         define('CRYPT_BASE32', '23456789abcdefghijkmnpqrstuvwxyz');
-        define('CRYPT_BASE64', '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-+'); // Needs to be URL-safe
+        define('CRYPT_BASE64', '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'); // Needs to be URL-safe
+
+        // ratchet_hash_verify
+        define('CRYPT_LEGACY_V10', 1); // Strictly use v10 style
+        define('CRYPT_LEGACY_FALLBACK_TO_V10', 2); // Try v11 and if that fails, try v10.
     }
 }
 
@@ -43,7 +47,7 @@ function ratchet_hash(string $password, string $salt) : string
 {
     // NB: We don't pass the salt separately, we let password_hash generate its own internal salt also (that builds into the hash). So it is double salted.
     $ratchet = max(10, intval(get_option('crypt_ratchet')));
-    return password_hash($salt . md5($password), PASSWORD_BCRYPT, ['cost' => $ratchet]);
+    return password_hash($salt . $password, PASSWORD_BCRYPT, ['cost' => $ratchet]);
 }
 
 /**
@@ -52,25 +56,42 @@ function ratchet_hash(string $password, string $salt) : string
  * @param  SHORT_TEXT $password The password in plain text
  * @param  SHORT_TEXT $salt The salt
  * @param  SHORT_TEXT $pass_hash_salted The prior salted&hashed password, which will also include the algorithm/ratcheting level (unless it's old style, in which case we use non-ratcheted md5)
- * @param  integer $legacy_style Legacy hashing style to fallback to
- * @return boolean Whether the password if verified
+ * @param  integer $legacy_style CRYPT_LEGACY_* constant defining the legacy hashing style to fallback to
+ * @return boolean Whether the password is verified
  */
 function ratchet_hash_verify(string $password, string $salt, string $pass_hash_salted, int $legacy_style = 0) : bool
 {
-    if (strpos($pass_hash_salted, '$') !== false) {
-        return password_verify($salt . md5($password), $pass_hash_salted);
+    $passed = false;
+
+    // v11
+    if ($legacy_style != CRYPT_LEGACY_V10) {
+        if (strpos($pass_hash_salted, '$') === 0) {
+            $passed = password_verify($salt . $password, $pass_hash_salted);
+        } else {
+            $passed = hash_equals($pass_hash_salted, md5($salt . $password));
+        }
     }
-    return hash_equals($pass_hash_salted, md5($salt . md5($password)));
+
+    // LEGACY: v10
+    if (($legacy_style == CRYPT_LEGACY_V10) || ((!$passed) && ($legacy_style == CRYPT_LEGACY_FALLBACK_TO_V10))) {
+        if (strpos($pass_hash_salted, '$') === 0) {
+            $passed = password_verify($salt . md5($password), $pass_hash_salted);
+        } else {
+            $passed = hash_equals($pass_hash_salted, md5($salt . md5($password)));
+        }
+    }
+
+    return $passed;
 }
 
 /**
  * Calculate a reasonable cryptographic ratchet based on the server's CPU speed.
  *
  * @param  float $target_time The ratchet should not exceed this amount of time in seconds when calculating
- * @param  integer $minimum_cost The minimum allowed ratchet; must be between 4 and 31
+ * @param  integer $minimum_cost The minimum allowed ratchet; must be between 10 and 31
  * @return ?integer The suggested ratchet to use (null: password_hash is not supported)
  */
-function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cost = 4) : ?int
+function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cost = 10) : ?int
 {
     if (!function_exists('password_hash')) {
         return null;
@@ -78,14 +99,14 @@ function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cos
 
     $cost = ($minimum_cost - 1);
 
-    // Costs < 4 are not supported. This will be increased by 1 in the first iteration.
-    if ($cost < 3) {
-        $cost = 3;
+    // We do not allow costs less than 10 in the software (this is increased by 1 in the first iteration)
+    if ($cost < 9) {
+        $cost = 9;
     }
 
     do {
         $cost++;
-        if ($cost > 31) { // Costs > 31 are not supported
+        if ($cost > 31) { // Costs > 31 are not supported by bcrypt
             break;
         }
         $start = microtime(true);
@@ -111,7 +132,7 @@ function get_site_salt() : string
         set_value('site_salt', $site_salt);
     }
 
-    if (strlen($site_salt) != 32) { // LEGACY
+    if (strlen($site_salt) != 32) { // LEGACY: v10 used the md5 of 13 characters, which is not secure. But changing existing site salts is too breaking to do.
         return md5($site_salt);
     }
 
@@ -119,32 +140,33 @@ function get_site_salt() : string
 }
 
 /**
- * Generate a cryptographically secure pseudo-random string suitable for tokens, etc.
+ * Generate a cryptographically secure pseudo-random string suitable for tokens, salts, etc.
  * Do not use for passwords; use get_secure_random_password() instead.
  *
- * @param  integer $bytes The length of the string in bytes
- * @param  string $characters A CRYPT_* constant defining the character map to use
- * @return string The randomised string
+ * @param  integer $string_length The length of the string
+ * @param  string $character_map A CRYPT_* constant defining the character map to use; the string length should be a power of 2
+ * @return string The paeudo-random string
  */
-function get_secure_random_string(int $bytes = 13, string $characters = CRYPT_BASE32) : string
+function get_secure_random_string(int $string_length = 13, string $character_map = '23456789abcdefghijkmnpqrstuvwxyz') : string
 {
-    $characters_length = strlen($characters);
+    $characters_length = strlen($character_map);
 
     $random_string = '';
-    for ($i = 0; $i < $bytes; $i++) {
+    for ($i = 0; $i < $string_length; $i++) {
         $random_byte = random_bytes(1);
         $random_index = ord($random_byte) % $characters_length; // Convert byte to index
-        $random_string .= $characters[$random_index];
+        $random_string .= $character_map[$random_index];
     }
     return $random_string;
 }
 
 /**
  * Generate a cryptographically secure pseudo-random MD5 hash.
+ * This does not actually use the md5 function which is insecure. Each character is cryptographically generated.
  *
  * @return string The pseudo-random MD5 hash
  */
-function get_secure_random_hash()
+function get_secure_random_hash() : string
 {
     return get_secure_random_string(32, CRYPT_BASE16);
 }

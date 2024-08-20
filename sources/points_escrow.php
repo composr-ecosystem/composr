@@ -756,7 +756,6 @@ function escrow_log_it(string $type, int $id, ?int $member_id = null, string $in
  *
  * @param  AUTO_LINK $id The ID of the escrow to edit
  * @param  MEMBER $receiving_member The member to set as the receiving member
- * @return void
  */
 function escrow_update_receiving_member(int $id, int $receiving_member)
 {

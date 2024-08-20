@@ -66,6 +66,7 @@ function load_php_metadetails()
         'critical_error' => true,
         'file_array_exists' => true,
         'file_array_get' => true,
+        'file_array_scandir' => true,
         'file_array_count' => true,
         'file_array_get_at' => true,
         'master__sync_file' => true,

@@ -12101,6 +12101,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RANK_LOCKED_PRIVILEGE
         RECOMMEND
         JS_ERROR_OCCURRED
+        LOG_ESCROW_UPDATED_RECEIVING_MEMBER
     ')));
 
     // Remove blank lines

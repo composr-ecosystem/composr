@@ -112,16 +112,13 @@ function external_db_user_sync(int $member_id, array $record)
     $email_address_field = get_value('external_db_login__email_address_field', null, true);
 
     require_code('crypt');
-    $salt = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
-    if ($salt == '') {
-        $salt = get_secure_random_string();
-    }
+    $salt = get_secure_random_string(32, CRYPT_BASE64);
     $new = ratchet_hash($record[$password_field], $salt);
 
     $update_map = [
         'm_email_address' => $record[$email_address_field],
         'm_validated_email_confirm_code' => '',
-        'm_password_compat_scheme' => '',
+        'm_password_compat_scheme' => 'bcrypt',
         'm_password_change_code' => '',
         'm_password_change_code_time' => null,
         'm_pass_hash_salted' => $new,

@@ -83,9 +83,9 @@ class extra_logging_test_set extends cms_test_case
 
         $log_path = get_custom_file_base() . '/data_custom/errorlog.php';
         cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
-        $url = build_url(['page' => 'faq', 'cache' => 0], 'docs');
+        $url = build_url(['page' => 'home', 'cache' => 0], 'adminzone');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Over time limit @'));
+        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Over time limit @'), 'Expected an over time limit log but did not get one.');
 
         set_value('monitor_slow_urls', '0');
     }
@@ -102,7 +102,7 @@ class extra_logging_test_set extends cms_test_case
         cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
         $url = build_url(['page' => ''], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Memory usage above memory_tracking'));
+        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Expected Memory usage above memory_tracking but did not get one'));
 
         set_value('memory_tracking', '0');
     }
@@ -115,7 +115,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'memory'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'Memory usage:') !== false);
+        $this->assertTrue(strpos($data, 'Memory usage:') !== false, 'Expected Memory usage tracking but did not get any');
     }
 
     public function testSpecialPageTypeIDELinkage()
@@ -126,7 +126,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'ide_linkage'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'txmt://') !== false);
+        $this->assertTrue(strpos($data, 'txmt://') !== false, 'Expected txmt:// link but did not get one');
     }
 
     public function testSpecialPageTypeQuery()
@@ -137,7 +137,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'query'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'View queries') !== false);
+        $this->assertTrue(strpos($data, 'View queries') !== false, 'Expected queries page but did not get it');
     }
 
     public function testSpecialPageTypeTranslateContent()
@@ -148,7 +148,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'lang_EN'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'Translate/rephrase Composr into English') !== false || strpos($data, 'Translate/rephrase the software into English') !== false);
+        $this->assertTrue(strpos($data, 'Translate/rephrase Composr into English') !== false || strpos($data, 'Translate/rephrase the software into English') !== false, 'Expected translation to English page but did not get it');
     }
 
     public function testSpecialPageTypeValidate()
@@ -159,7 +159,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'code'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'Standards checker notices') !== false);
+        $this->assertTrue(strpos($data, 'Standards checker notices') !== false, 'Expected standards checker notices but did not get them');
     }
 
     public function testSpecialPageTypeThemeImages()
@@ -170,7 +170,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'theme_images'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'Theme image editing') !== false);
+        $this->assertTrue(strpos($data, 'Theme image editing') !== false, 'Expected theme image editor but did not get it');
     }
 
     public function testSpecialPageTypeTemplates()
@@ -181,7 +181,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'templates'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'Edit templates') !== false);
+        $this->assertTrue(strpos($data, 'Edit templates') !== false, 'Expected template editor but did not get it');
     }
 
     public function testSpecialPageTypeTree()
@@ -192,7 +192,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'tree'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'Template tree') !== false);
+        $this->assertTrue(strpos($data, 'Template tree') !== false, 'Expected template tree but did not get it');
     }
 
     public function testSpecialPageTypeShowMarkers()
@@ -203,7 +203,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'keep_markers' => 1], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, '<!-- START-TEMPLATE=CSS_NEED') !== false);
+        $this->assertTrue(strpos($data, '<!-- START-TEMPLATE=CSS_NEED') !== false, 'Expected HTML comment markers but did not get them');
     }
 
     public function testSpecialPageTypeShowEditLinks()
@@ -214,7 +214,7 @@ class extra_logging_test_set extends cms_test_case
 
         $url = build_url(['page' => '', 'special_page_type' => 'show_edit_links'], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, 'admin-themes') !== false);
+        $this->assertTrue(strpos($data, 'admin-themes') !== false, 'Expected edit links but did not get them');
     }
 
     public function testErrorLog()
@@ -230,7 +230,7 @@ class extra_logging_test_set extends cms_test_case
         error_log('Composr: DEBUG This is a test log');
         clearstatcache();
         $size_after = filesize($path);
-        $this->assertTrue($size_after > $size_before);
+        $this->assertTrue($size_after > $size_before, 'Expected a test log but did not get it');
     }
 
     public function testPermissionChecksLog()
@@ -248,7 +248,7 @@ class extra_logging_test_set extends cms_test_case
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
         clearstatcache();
         $size_after = filesize($path);
-        $this->assertTrue($size_after > $size_before);
+        $this->assertTrue($size_after > $size_before, 'Expected a permissions check log on Guest but did not get one');
 
         unlink($path);
     }
@@ -268,7 +268,7 @@ class extra_logging_test_set extends cms_test_case
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
         clearstatcache();
         $size_after = filesize($path);
-        $this->assertTrue($size_after > $size_before);
+        $this->assertTrue($size_after > $size_before, 'Expected queries to get logged but that did not happen');
 
         unlink($path);
     }

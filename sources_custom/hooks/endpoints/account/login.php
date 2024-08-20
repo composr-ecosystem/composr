@@ -107,7 +107,7 @@ class Hook_endpoint_account_login
         $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key_hash');
         if ($login_key == '') {
             require_code('crypt');
-            $login_key = get_secure_random_string();
+            $login_key = get_secure_random_string(32, CRYPT_BASE64);
             $login_key_hash = ratchet_hash($login_key, get_site_salt() . '_' . get_pass_cookie());
             $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key_hash' => $login_key_hash], ['id' => $member_id], '', 1);
         }

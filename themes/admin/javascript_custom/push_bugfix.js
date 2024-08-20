@@ -2,14 +2,15 @@
     'use strict';
 
     $cms.templates.adminPushBugfix = function adminPushBugfix(params, container) {
-        const update_automatic_category = function update_automatic_category()
+        var update_automatic_category = function update_automatic_category()
         {
-            let i;
+            var i;
 // See if we can match all the selected files to a particular category
-            let fixed_files = [];
-            let fixed_files_e = document.getElementById('fixed_files');
-            let file_addons = params.gitFound;
-            let category_title = null;
+            var fixed_files = [];
+            var fixed_files_e = document.getElementById('fixed_files');
+            var file_addons = Array.from(params.gitFound);
+            var category_title = null;
+            
             for (i = 0; i < fixed_files_e.options.length; i++) {
                 if (fixed_files_e.options[i].selected) {
                     fixed_files.push(fixed_files_e.options[i].value);

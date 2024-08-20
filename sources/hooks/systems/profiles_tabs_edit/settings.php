@@ -213,6 +213,12 @@ class Hook_profiles_tabs_edit_settings
                 $sensitive_change_alert = true;
             }
 
+            if ($password !== null) { // Changing password? Also generate a new salt
+                $salt = '';
+            } else {
+                $salt = null;
+            }
+
             cns_edit_member(
                 $member_id_of, // member_id
                 $username, // username
@@ -248,7 +254,7 @@ class Hook_profiles_tabs_edit_settings
                 null, // is perm_banned
                 true, // Check correctness
                 null, // Password scheme
-                null, // Salt
+                $salt, // Salt
                 null, // Join time
                 $sensitive_change_alert // Email on sensitive changes
             );

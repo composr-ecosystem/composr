@@ -471,7 +471,7 @@ class Module_newsletter
             if ($password == '') {
                 $password = get_secure_random_password(null, $forename . ' ' . $surname, $email);
             }
-            $salt = get_secure_random_string();
+            $salt = get_secure_random_string(32, CRYPT_BASE64);
             if ($old_confirm === null) {
                 add_newsletter_subscriber($email, time(), $code_confirm, ratchet_hash($password, $salt), $salt, $language, $forename, $surname);
 
@@ -496,7 +496,7 @@ class Module_newsletter
         $old_password = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'the_password', ['email' => $email]);
         $old_salt = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'pass_salt', ['email' => $email]);
         require_code('crypt');
-        if ((!has_privilege(get_member(), 'change_newsletter_subscriptions')) && ($old_confirm !== null) && ($old_confirm == 0) && ($old_password != '') && (!ratchet_hash_verify($password, $old_password, $old_salt))) { // Access denied. People who can change any subscriptions can't get denied.
+        if ((!has_privilege(get_member(), 'change_newsletter_subscriptions')) && ($old_confirm !== null) && ($old_confirm == 0) && ($old_password != '') && (!ratchet_hash_verify($password, $old_password, $old_salt, CRYPT_LEGACY_FALLBACK_TO_V10))) { // Access denied. People who can change any subscriptions can't get denied.
             // Access denied to an existing record that was confirmed
             $_reset_url = build_url(['page' => '_SELF', 'type' => 'reset', 'email' => $email], '_SELF');
             $reset_url = $_reset_url->evaluate();
@@ -536,9 +536,9 @@ class Module_newsletter
 
         $email = get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER);
         $language = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'language', ['email' => $email]);
-        $salt = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'pass_salt', ['email' => $email]);
+        $salt = get_secure_random_string(32, CRYPT_BASE64);
         $new_password = get_secure_random_password(null, '', $email);
-        $GLOBALS['SITE_DB']->query_update('newsletter_subscribers', ['the_password' => ratchet_hash($new_password, $salt)], ['email' => $email], '', 1);
+        $GLOBALS['SITE_DB']->query_update('newsletter_subscribers', ['pass_salt' => $salt, 'the_password' => ratchet_hash($new_password, $salt)], ['email' => $email], '', 1);
 
         $message = do_lang('NEWSLETTER_PASSWORD_CHANGE', comcode_escape(get_ip_address()), comcode_escape($new_password), null, $language);
 

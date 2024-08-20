@@ -186,11 +186,11 @@ class Hook_task_import_members
                 $parts = explode(' / ', $line['Password'], 3);
                 $password = $parts[0];
                 $salt = array_key_exists(1, $parts) ? $parts[1] : null;
-                $password_compatibility_scheme = array_key_exists(2, $parts) ? $parts[2] : null;
+                $password_compat_scheme = array_key_exists(2, $parts) ? $parts[2] : null;
             } else {
                 $password = null;
                 $salt = null;
-                $password_compatibility_scheme = null;
+                $password_compat_scheme = null;
             }
             $matches = [];
             if (array_key_exists($email_address_key, $line)) {
@@ -366,8 +366,8 @@ class Hook_task_import_members
                 if ($salt === null) {
                     $salt = '';
                 }
-                if ($password_compatibility_scheme === null) {
-                    $password_compatibility_scheme = ($use_temporary_passwords ? 'temporary' : '');
+                if ($password_compat_scheme === null) {
+                    $password_compat_scheme = ($use_temporary_passwords ? 'bcrypt_temporary' : 'bcrypt');
                 }
 
                 if ($using_default_password) {
@@ -413,7 +413,7 @@ class Hook_task_import_members
                     $is_perm_banned, // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
-                    $password_compatibility_scheme, // password_compatibility_scheme
+                    $password_compat_scheme, // password_compatibility_scheme
                     $salt, // salt
                     $join_time // join_time
                 );
@@ -466,7 +466,7 @@ class Hook_task_import_members
                     null, // probation_expiration_time
                     $is_perm_banned, // is_perm_banned
                     false, // check_correctness
-                    $password_compatibility_scheme, // password_compatibility_scheme
+                    $password_compat_scheme, // password_compatibility_scheme
                     $salt, // salt
                     $join_time // join_time
                 );

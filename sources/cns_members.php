@@ -78,7 +78,7 @@ function cns_authusername_is_bound_via_httpauth(string $authusername) : ?int
 {
     $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_password_compat_scheme' => 'httpauth', 'm_pass_hash_salted' => $authusername]);
     if ($ret === null) {
-        $ret = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_not_equal_to('m_password_compat_scheme', '') . ' AND ' . db_string_equal_to('m_username', $authusername));
+        $ret = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_not_equal_to('m_password_compat_scheme', '')/*LEGACY*/ . ' AND ' . db_string_not_equal_to('m_password_compat_scheme', 'bcrypt') . ' AND ' . db_string_equal_to('m_username', $authusername));
     }
     return $ret;
 }

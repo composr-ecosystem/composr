@@ -162,8 +162,8 @@ class Hook_profiles_tabs_rank
         }
 
         // How many points until we advance to the next rank?
-        if (isset($groups[$rank+1]) && ($groups[$rank+1]['RANK_THRESHOLD'] !== null)) {
-            $num_points_advance = $groups[$rank+1]['RANK_THRESHOLD'] - points_lifetime($member_id_of);
+        if ((isset($groups[$rank + 1])) && ($groups[$rank + 1]['RANK_THRESHOLD'] !== null)) {
+            $num_points_advance = $groups[$rank + 1]['RANK_THRESHOLD'] - points_lifetime($member_id_of);
         } else {
             $num_points_advance = 0;
         }
@@ -206,12 +206,12 @@ class Hook_profiles_tabs_rank
             // Check how many ranked groups have this privilege assigned
             $count_assigned = [];
             $count_not_assigned = [];
-            foreach ($groups as $group) {
-                if ($group['RANK_THRESHOLD'] === null) { // Ignore probation
+            for ($i = 0; $i < count($groups); $i++) { // NB: foreach on $groups is against coding standards
+                if ($groups[$i]['RANK_THRESHOLD'] === null) { // Ignore probation
                     continue;
                 }
 
-                $rows = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['privilege' => $privilege['the_name'], 'group_id' => $group['RANK_GROUP']]);
+                $rows = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['privilege' => $privilege['the_name'], 'group_id' => $groups[$i]['RANK_GROUP']]);
                 foreach ($rows as $row) {
                     $the_value = $privilege['the_default'];
                     if ($row['the_value'] !== null) {
@@ -226,17 +226,17 @@ class Hook_profiles_tabs_rank
                     ];
 
                     if ($the_value == 1) { // Always a ranked privilege if it could ever be assigned based on a rank regardless of scope
-                        $count_assigned[$group['RANK_GROUP']] = true;
-                        unset($count_not_assigned[$group['RANK_GROUP']]);
-                    } elseif ((!isset($count_assigned[$group['RANK_GROUP']])) && (($row['the_page'] . $row['module_the_name'] . $row['category_name']) == '') && ($the_value == 0)) { // Is only not considered assigned if denied globally
-                        $count_not_assigned[$group['RANK_GROUP']] = true;
+                        $count_assigned[$groups[$i]['RANK_GROUP']] = true;
+                        unset($count_not_assigned[$groups[$i]['RANK_GROUP']]);
+                    } elseif ((!isset($count_assigned[$groups[$i]['RANK_GROUP']])) && (($row['the_page'] . $row['module_the_name'] . $row['category_name']) == '') && ($the_value == 0)) { // Is only not considered assigned if denied globally
+                        $count_not_assigned[$groups[$i]['RANK_GROUP']] = true;
                     }
                 }
                 if (count($rows) == 0) {
                     if ($privilege['the_default'] == 1) {
-                        $count_assigned[$group['RANK_GROUP']] = true;
+                        $count_assigned[$groups[$i]['RANK_GROUP']] = true;
                     } else {
-                        $count_not_assigned[$group['RANK_GROUP']] = true;
+                        $count_not_assigned[$groups[$i]['RANK_GROUP']] = true;
                     }
                 }
             }
@@ -294,11 +294,11 @@ class Hook_profiles_tabs_rank
         }
 
         // We must now convert RANK_THRESHOLD to string for the template
-        foreach ($groups as &$group) {
-            if ($group['RANK_THRESHOLD'] === null) {
-                $group['RANK_THRESHOLD'] = '';
+        for ($i = 0; $i < count($groups); $i++) { // NB: foreach on $groups is against coding standards
+            if ($groups[$i]['RANK_THRESHOLD'] === null) {
+                $groups[$i]['RANK_THRESHOLD'] = '';
             } else {
-                $group['RANK_THRESHOLD'] = integer_format($group['RANK_THRESHOLD']); // TODO: small number format
+                $groups[$i]['RANK_THRESHOLD'] = integer_format($groups[$i]['RANK_THRESHOLD']); // TODO: small number format
             }
         }
 
@@ -313,7 +313,7 @@ class Hook_profiles_tabs_rank
 
         $content = do_template('CNS_MEMBER_PROFILE_RANK', [
             '_GUID' => '23abecddc8a6540709ffc6f318ff6022',
-            'SIMPLE_STEPPER' => count($groups) >= 7 ? '1' : '0', // Use small steppers if we have >=7 groups so it doesn't cramp mobile displays
+            'SIMPLE_STEPPER' => (count($groups) >= 7) ? '1' : '0', // Use small steppers if we have >=7 groups so it doesn't cramp mobile displays
             'RANKS' => $groups,
             'CURRENT_RANK' => $rank_name,
             '_NUM_POINTS_ADVANCE' => strval($num_points_advance),
