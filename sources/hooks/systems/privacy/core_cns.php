@@ -193,7 +193,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'email_fields' => ['m_email_address'],
                     'username_fields' => ['m_username'],
                     'file_fields' => ['m_avatar_url', 'm_photo_url'],
-                    'additional_anonymise_fields' => ['m_pass_salt', 'm_pass_hash_salted', 'm_password_change_code', 'm_login_key', 'm_validated_email_confirm_code'],
+                    'additional_anonymise_fields' => ['m_pass_salt', 'm_pass_hash_salted', 'm_password_change_code', 'm_login_key_hash', 'm_validated_email_confirm_code'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Prevent accidental lock-out

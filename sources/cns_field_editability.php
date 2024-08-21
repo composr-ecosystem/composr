@@ -29,7 +29,7 @@
 function get_member_special_type(int $member_id) : string
 {
     $special_type = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
-    if ($special_type != '') {
+    if ($special_type != 'bcrypt') {
         return $special_type;
     }
     if (cns_is_ldap_member($member_id)) {

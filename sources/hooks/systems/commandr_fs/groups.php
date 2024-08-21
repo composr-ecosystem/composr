@@ -349,7 +349,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
 
         $ip_address = $this->_default_property_str_null($properties, 'ip_address');
 
-        $password_compatibility_scheme = $this->_default_property_str_null($properties, 'password_compatibility_scheme');
+        $password_compat_scheme = $this->_default_property_str_null($properties, 'password_compatibility_scheme');
         $salt = $this->_default_property_str($properties, 'salt');
 
         $join_time = $this->_default_property_time($properties, 'join_time');
@@ -374,7 +374,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $actual_custom_fields[$custom_field['id']] = $value;
         }
 
-        return [$password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $probation_expiration_time, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time];
+        return [$password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $probation_expiration_time, $is_perm_banned, $ip_address, $password_compat_scheme, $salt, $join_time];
     }
 
     /**
@@ -397,7 +397,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
 
         require_code('cns_members_action');
 
-        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $probation_expiration_time, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, false);
+        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $probation_expiration_time, $is_perm_banned, $ip_address, $password_compat_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, false);
 
         $id = cns_make_member(
             $label, // username
@@ -435,7 +435,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $is_perm_banned, // is_perm_banned
             false, // check_correctness
             $ip_address, // ip_address
-            $password_compatibility_scheme, // password_compatibility_scheme
+            $password_compat_scheme, // password_compatibility_scheme
             $salt, // salt
             $join_time // join_time
         );
@@ -563,7 +563,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         require_code('cns_groups_action2');
 
         $label = $this->_default_property_str($properties, 'label');
-        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $probation_expiration_time, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, true);
+        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $probation_expiration_time, $is_perm_banned, $ip_address, $password_compat_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, true);
 
         $old_groups = $GLOBALS['CNS_DRIVER']->get_members_groups(intval($resource_id));
         cns_edit_member(
@@ -600,7 +600,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $probation_expiration_time, // probation_expiration_time
             $is_perm_banned, // is_perm_banned
             false, // check_correctness
-            $password_compatibility_scheme, // password_compatibility_scheme
+            $password_compat_scheme, // password_compatibility_scheme
             $salt, // salt
             $join_time // join_time
         );

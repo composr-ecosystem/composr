@@ -579,14 +579,18 @@ function points_dispatch_notification(int $id, int $sending_member, int $receivi
         if (!is_guest($sending_member)) {
             $transaction_type = is_guest($receiving_member) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L') : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SENT_L');
             $url = points_url($sending_member, true);
+            $to_l = '';
+            if (!is_guest($receiving_member)) {
+                $to_l = do_lang('NOTIFICATION_POINTS_TRANSACTION_TO_L', comcode_escape($their_displayname));
+            }
             $message_raw = do_notification_lang(
                 is_guest($receiving_member) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
                 (($actual_gift_points !== 0) && (!$is_refund)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', comcode_escape(integer_format($actual_points)), comcode_escape(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', comcode_escape(integer_format($total_points))),
                 [
-                    is_guest($receiving_member) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_TO_L', comcode_escape($their_displayname)),
+                    comcode_escape($to_l),
                     comcode_escape($reason),
-                    $url->evaluate(),
+                    comcode_escape($url->evaluate()),
                     do_lang('_POINTS', comcode_escape($your_displayname)),
                 ],
                 get_lang($sending_member)
@@ -607,14 +611,18 @@ function points_dispatch_notification(int $id, int $sending_member, int $receivi
                 $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
             }
             $url = points_url($receiving_member, true);
+            $from_l = '';
+            if (!is_guest($receiving_member)) {
+                $from_l = do_lang('NOTIFICATION_POINTS_TRANSACTION_FROM_L', comcode_escape($_your_displayname));
+            }
             $message_raw = do_notification_lang(
                 is_guest($sending_member) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
                 (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', comcode_escape(integer_format($actual_points)), comcode_escape(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', comcode_escape(integer_format($total_points))),
                 [
-                    is_guest($receiving_member) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_FROM_L', comcode_escape($_your_displayname)),
+                    comcode_escape($from_l),
                     comcode_escape($reason),
-                    $url->evaluate(),
+                    comcode_escape($url->evaluate()),
                     do_lang('_POINTS', comcode_escape($their_displayname)),
                 ],
                 get_lang($receiving_member)

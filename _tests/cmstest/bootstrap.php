@@ -32,10 +32,6 @@ function unit_testing_run()
     if (($id === null) && (isset($_SERVER['argv'][1]))) {
         $id = $_SERVER['argv'][1];
         $cli = true;
-
-        if (strpos($id, '/') === false) {
-            $id = 'unit_tests/' . $id;
-        }
     } else {
         $cli = false;
     }
@@ -69,19 +65,32 @@ function unit_testing_run()
 
     echo "
     <div>
-        <p class=\"lonely-label\">Notes:</p>
+        <p class=\"lonely-label\">Naming notes:</p>
         <ul>
-            <li>The one(s) starting <kbd>___</kbd> should be run occasionally with discretion, should only be run through the command line / PHP cli (the command is indicated in a comment in the file), and are not always expected to pass. These tests cannot be run with the concurrent tool.
-            <li>The ones starting <kbd>__</kbd> should be run occasionally with discretion, and one at a time, due to significant slowness, the expectation of false-positives, or the need for an API key file. These tests cannot be run with the concurrent tool.
-            <li>The ones starting <kbd>_</kbd> should be run one at a time due to slowness or conflicting with other tests. They will run one at a time after other tests finish in the concurrent tool.</li>
-            <li>Some support a 'debug' GET/CLI parameter, to dump out debug information</li>
-            <li>Some support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
+            <li><kbd>first_tests</kbd> should be run first. They can be run with the concurrency tool (one at a time) and will run first if selected.</li>
+            <li><kbd>async_tests</kbd> can be run using the concurrency tool. Multiple tests will run at the same time.</li>
+            <li><kbd>sync_tests</kbd> are slower or may conflict with other tests. They can also be run using the concurrency tool, but they will only run one at a time.</li>
+            <li><kbd>cli_tests</kbd> can only be run from the command line / terminal (there may be exceptions as explained in the test file). The command is in the file and will also be displayed when you attempt to run them in the web browser.</li>
+            <li>Tests beginning with no underscores are expected to pass and should be run for every major, minor, and patch release.</li>
+            <li>Tests beginning with <kbd>_</kbd> are expected to pass but do not need to be run for patch releases.</li>
+            <li>Tests beginning with <kbd>__</kbd> are <strong>not</strong> expected to pass and should only be run sparingly (e.g. major releases or when relevant to a minor release). Use discretion when reading the results.</li>
         </ul>
-    </div>";
+    </div>
+
+    <div>
+        <p class=\"lonely-label\">Other Notes:</p>
+        <ul>
+            <li>The cqc_function_sigs test needs to be run again every time you change a function signature before running other CQC tests</li>
+            <li>Some tests support a 'debug' GET/CLI parameter, to dump out debug information</li>
+            <li>Some tests support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
+        </ul>
+    </div>
+
+    ";
 
     $cnt = 0;
     foreach ($sets as $set) {
-        if (strpos($set, '/__') === false) {
+        if (strpos($set, 'cli_tests/') === false) {
             $cnt++;
         }
     }
@@ -90,7 +99,7 @@ function unit_testing_run()
         <p class="lonely-label">Running tests concurrently:</p>
         <select id="select-list" multiple="multiple" size="' . escape_html(integer_format($cnt)) . '">';
     foreach ($sets as $set) {
-        if (strpos($set, '/__') === false) {
+        if (strpos($set, 'cli_tests/') === false) {
             echo '<option>' . escape_html($set) . '</option>' . "\n";
         }
     }
@@ -98,18 +107,55 @@ function unit_testing_run()
 
     echo "
         </select>
+        <p><button class=\"btn btn-primary btn-scr\" type=\"button\"id=\"patch-button\" />Select for patch release</button></p>
+        <p><button class=\"btn btn-primary btn-scr\" type=\"button\"id=\"minor-button\" />Select for minor release</button></p>
+        <p><button class=\"btn btn-primary btn-scr\" type=\"button\"id=\"major-button\" />Select for major release</button></p>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
         <p>Status of tests will appear on the left. Click a status to view its output at the bottom of the page.</p>
         <script nonce=\"" . $GLOBALS['CSP_NONCE'] . "\" id=\"select-list\">
             var max_slots = 2; // Set to the maximum number of tests to run concurrently. Careful as too many tests could result in some timing out.
 
             var process_urls_process;
-            var test_urls;
-            var on_hold_iframes;
+            var async_tests;
+            var sync_tests;
+            var first_tests;
+            var queued_tests;
             var navigated_iframes;
             var actual_max_slots = 0;
 
             var list = document.getElementById('select-list');
+
+            var patch_button = document.getElementById('patch-button');
+            patch_button.onclick = function() {
+                for (var i = 0; i < list.options.length; i++) {
+                    var name = list.options[i].value;
+                    if (name.includes('/_')) {
+                        list.options[i].selected = false;
+                    } else {
+                        list.options[i].selected = true;
+                    }
+                }
+            }
+
+            var minor_button = document.getElementById('minor-button');
+            minor_button.onclick = function() {
+                for (var i = 0; i < list.options.length; i++) {
+                    var name = list.options[i].value;
+                    if (name.includes('/__')) {
+                        list.options[i].selected = false;
+                    } else {
+                        list.options[i].selected = true;
+                    }
+                }
+            }
+
+            var major_button = document.getElementById('major-button');
+            major_button.onclick = function() {
+                for (var i = 0; i < list.options.length; i++) {
+                    list.options[i].selected = true;
+                }
+            }
+
             var button = document.getElementById('select-button');
             button.onclick = function() {
                 button.disabled = true;
@@ -131,8 +177,10 @@ function unit_testing_run()
                     });
                 });
 
-                test_urls = [];
-                on_hold_iframes = [];
+                async_tests = [];
+                sync_tests = [];
+                first_tests = [];
+                queued_tests = [];
                 for (var i = 0; i < list.options.length; i++) {
                     if (list.options[i].selected) {
                         var name = list.options[i].value;
@@ -147,16 +195,18 @@ function unit_testing_run()
                             url_iframe.style.width = '100%';
                             url_iframe.style.height = '768px';
                             document.body.appendChild(url_iframe);
-                            if (name.includes('/_')) { // These tests must be run one at a time
-                                on_hold_iframes.push([url, url_iframe, name.replace('/', '__')]);
+                            if (name.includes('first_tests/')) { // These tests must run first
+                                first_tests.push([url, url_iframe, name.replace('/', '__')]);
+                            } else if (!name.includes('async_tests/')) { // These tests must be run one at a time
+                                sync_tests.push([url, url_iframe, name.replace('/', '__')]);
                             } else {
-                                test_urls.push([url, url_iframe, name.replace('/', '__')]);
+                                async_tests.push([url, url_iframe, name.replace('/', '__')]);
                             }
                             (function(url_iframe_b, test_status_b, url_b, name_b) {
                                 url_iframe.addEventListener('error', function(event) {
                                     if (actual_max_slots > 1) {
                                         test_status_b.innerHTML = '<span style=\"color: DarkRed;\">Error thrown by iframe; pending second attempt</span>';
-                                        on_hold_iframes.push([url_b, url_iframe_b, name_b]);
+                                        sync_tests.push([url_b, url_iframe_b, name_b]);
 
                                         // Allow us to reload the source later
                                         url_iframe_b.src = 'about:blank';
@@ -167,10 +217,12 @@ function unit_testing_run()
                             })(url_iframe, test_status, url, name);
                         } else {
                             existing_iframe.src = 'about:blank';
-                            if (name.includes('/_')) { // These tests must be run one at a time
-                                on_hold_iframes.push([url, existing_iframe, name.replace('/', '__')]);
+                            if (name.includes('first_tests/')) { // These tests must run first
+                                first_tests.push([url, url_iframe, name.replace('/', '__')]);
+                            } else if (!name.includes('async_tests/')) { // These tests must be run one at a time
+                                sync_tests.push([url, url_iframe, name.replace('/', '__')]);
                             } else {
-                                test_urls.push([url, existing_iframe, name.replace('/', '__')]);
+                                async_tests.push([url, url_iframe, name.replace('/', '__')]);
                             }
                         }
                         test_status.innerHTML = '<span style=\"color: DimGrey;\">Queued</span>';
@@ -204,7 +256,7 @@ function unit_testing_run()
                                 test_status.innerHTML = '<span style=\"color: Coral;\">Finished; some tests failed</span>';
                             } else if (actual_max_slots > 1) {
                                 test_status.innerHTML = '<span style=\"color: DarkRed;\">Failed to run; pending second attempt</span>';
-                                on_hold_iframes.push([url, url_iframe, name]);
+                                sync_tests.push([url, url_iframe, name]);
 
                                 // Allow us to reload the source later
                                 url_iframe.src = 'about:blank';
@@ -220,10 +272,38 @@ function unit_testing_run()
                 navigated_iframes = navigated_iframes_cleaned;
 
                 var free_slots = actual_max_slots - active_iframes;
-                while ((free_slots > 0) && (test_urls.length > 0)) {
-                    var url = test_urls[0][0];
-                    var url_iframe = test_urls[0][1];
-                    var name = test_urls[0][2];
+
+                if ((navigated_iframes.length === 0) && (queued_tests.length === 0)) {
+                    if (first_tests.length > 0) {
+                        actual_max_slots = 1;
+                        queued_tests = first_tests;
+                        first_tests = [];
+
+                        console.log('Running first_tests one at a time...');
+                    } else if (async_tests.length > 0) {
+                        actual_max_slots = max_slots;
+                        queued_tests = async_tests;
+                        async_tests = [];
+
+                        console.log('Running async_tests...');
+                    } else if (sync_tests.length > 0) { // Tests queued to run one at a time and after concurrent ones
+                        actual_max_slots = 1;
+                        queued_tests = sync_tests;
+                        sync_tests = [];
+
+                        console.log('Running sync_tests which may also include tests which failed and were re-queued...');
+                    } else {
+                        button.disabled = false;
+                        window.clearInterval(process_urls_process);
+
+                        console.log('FINISHED testing!');
+                    }
+                }
+
+                while ((free_slots > 0) && (queued_tests.length > 0)) {
+                    var url = queued_tests[0][0];
+                    var url_iframe = queued_tests[0][1];
+                    var name = queued_tests[0][2];
                     var test_status = document.getElementById('status-' + name);
 
                     console.log('Loading ' + name);
@@ -232,25 +312,11 @@ function unit_testing_run()
 
                     navigated_iframes.push([url, url_iframe, name]);
 
-                    test_urls.splice(0, 1); // Delete array element
+                    queued_tests.splice(0, 1); // Delete array element
 
                     free_slots--;
 
                     test_status.innerHTML = '<span style=\"color: BlueViolet;\">Running test...</span>';
-                }
-
-                if (navigated_iframes.length === 0) {
-                    if (on_hold_iframes.length > 0) { // Tests queued to run one at a time and after concurrent ones
-                        actual_max_slots = 1;
-                        test_urls = on_hold_iframes;
-
-                        console.log('Finished testing; synchronously re-loading tests that failed to run, and running individual tests');
-                    } else {
-                        button.disabled = false;
-                        window.clearInterval(process_urls_process);
-
-                        console.log('Finished testing');
-                    }
                 }
             }
         </script>

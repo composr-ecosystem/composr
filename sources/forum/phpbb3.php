@@ -1461,7 +1461,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
         require_code('crypt');
 
-        $hash = substr(get_secure_random_string(), 0, 17);
+        $hash = get_secure_random_string(17);
         $this->db->query_insert('sessions_keys', ['key_id' => md5($hash), 'user_id' => $member_id, 'last_ip' => strval(ip2long(get_ip_address())), 'last_login' => time()]);
 
         if (substr($member_cookie_name, 0, 5) != 'cms__') {

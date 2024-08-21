@@ -93,7 +93,12 @@ function edit_site_message(int $id, string $title, string $message, string $type
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    // Process the insert
+    // Are we validating?
+    if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('site_messages', 'm_validated', ['id' => $id]) === 0)) {
+        log_it('VALIDATE_SITE_MESSAGE', strval($id), $title);
+    }
+
+    // Process the update
     $map = [
         'm_submitter' => get_member(),
         'm_title' => $title,

@@ -413,7 +413,7 @@ class Module_admin_cns_members
         }
 
         // Add member
-        $password_compatibility_scheme = ((post_param_integer('temporary_password', 0) == 1) ? 'temporary' : '');
+        $password_compat_scheme = ((post_param_integer('temporary_password', 0) == 1) ? 'bcrypt_temporary' : 'bcrypt');
         $id = cns_make_member(
             $username, // username
             $password, // password
@@ -450,7 +450,7 @@ class Module_admin_cns_members
             '0', // is_perm_banned
             true, // check_correctness
             '', // ip_address
-            $password_compatibility_scheme // password_compatibility_scheme
+            $password_compat_scheme // password_compatibility_scheme
         );
 
         if (addon_installed('content_reviews')) {

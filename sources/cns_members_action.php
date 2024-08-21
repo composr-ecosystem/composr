@@ -115,7 +115,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  boolean $check_correctness Whether to check details for correctness
  * @param  ?IP $ip_address The member's IP address (blank: unknown) (null: IP address of current user)
- * @param  ?ID_TEXT $password_compatibility_scheme The compatibility scheme that the password operates in (blank: none) (null: none [meaning normal bcrypt salted style] or plain, depending on whether passwords are encrypted)
+ * @param  ?ID_TEXT $password_compat_scheme The compatibility scheme that the password operates in (blank: plain) (null: none [meaning normal bcrypt salted style] or plain, depending on whether passwords are encrypted)
  * @param  SHORT_TEXT $salt The password salt (blank: password compatibility scheme does not use a salt / auto-generate)
  * @param  ?TIME $join_time When the member joined (null: now)
  * @param  ?TIME $last_visit_time When the member last visited (null: now)
@@ -125,26 +125,26 @@ function member_field_is_required(?int $member_id, string $field_class, $current
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of the new member
  */
-function cns_make_member(string $username, string $password, string $email_address = '', ?int $primary_group = null, ?array $secondary_groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, array $custom_fields = [], ?string $timezone = null, ?string $language = null, string $theme = '', string $title = '', string $photo_url = '', ?string $avatar_url = null, string $signature = '', ?int $preview_posts = null, int $reveal_age = 0, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, string $validated_email_confirm_code = '', ?int $probation_expiration_time = null, string $is_perm_banned = '0', bool $check_correctness = true, ?string $ip_address = null, ?string $password_compatibility_scheme = null, string $salt = '', ?int $join_time = null, ?int $last_visit_time = null, ?int $last_submit_time = null, int $profile_views = 0, int $total_sessions = 0, ?int $id = null) : int
+function cns_make_member(string $username, string $password, string $email_address = '', ?int $primary_group = null, ?array $secondary_groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, array $custom_fields = [], ?string $timezone = null, ?string $language = null, string $theme = '', string $title = '', string $photo_url = '', ?string $avatar_url = null, string $signature = '', ?int $preview_posts = null, int $reveal_age = 0, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, string $validated_email_confirm_code = '', ?int $probation_expiration_time = null, string $is_perm_banned = '0', bool $check_correctness = true, ?string $ip_address = null, ?string $password_compat_scheme = null, string $salt = '', ?int $join_time = null, ?int $last_visit_time = null, ?int $last_submit_time = null, int $profile_views = 0, int $total_sessions = 0, ?int $id = null) : int
 {
     require_code('form_templates');
     require_code('cns_members');
     require_code('cns_groups');
 
-    if ($password_compatibility_scheme === null) {
+    if ($password_compat_scheme === null) {
         if (get_value('disable_password_hashing') === '1' || $password == ''/*Makes debugging easier or allows basic testing to work on PHP installs with broken OpenSSL*/) {
-            $password_compatibility_scheme = 'plain';
+            $password_compat_scheme = 'plain';
         } else {
-            $password_compatibility_scheme = '';
+            $password_compat_scheme = 'bcrypt';
         }
     }
-    if ((($password_compatibility_scheme == '') || ($password_compatibility_scheme == 'temporary')) && (get_value('disable_password_hashing') === '1')) {
-        $password_compatibility_scheme = 'plain';
+    if ((($password_compat_scheme == '') || ($password_compat_scheme == 'temporary')) && (get_value('disable_password_hashing') === '1')) {
+        $password_compat_scheme = 'plain';
         $salt = '';
     }
-    if (($salt == '') && (($password_compatibility_scheme == '') || ($password_compatibility_scheme == 'temporary'))) {
+    if (($salt == '') && (($password_compat_scheme == 'bcrypt') || ($password_compat_scheme == 'bcrypt_temporary'))) {
         require_code('crypt');
-        $salt = get_secure_random_string();
+        $salt = get_secure_random_string(32, CRYPT_BASE64);
         $password_salted = ratchet_hash($password, $salt);
     } else {
         $password_salted = $password;
@@ -202,10 +202,10 @@ function cns_make_member(string $username, string $password, string $email_addre
     }
 
     if ($check_correctness) {
-        if (!in_array($password_compatibility_scheme, ['ldap', 'httpauth'])) {
+        if (!in_array($password_compat_scheme, ['ldap', 'httpauth'])) {
             require_code('cns_members_action2');
             require_code('temporal');
-            cns_check_name_valid($username, null, ($password_compatibility_scheme == '') ? $password : null, $email_address, ($dob_year === null) ? null : cms_mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
+            cns_check_name_valid($username, null, ($password_compat_scheme == 'bcrypt') ? $password : null, $email_address, ($dob_year === null) ? null : cms_mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
         }
         if ((!function_exists('has_actual_page_access')) || (!has_actual_page_access(get_member(), 'admin_cns_members'))) {
             require_code('type_sanitisation');
@@ -255,11 +255,11 @@ function cns_make_member(string $username, string $password, string $email_addre
     $map = [
         'm_username' => $username,
         'm_pass_hash_salted' => $password_salted,
-        'm_password_compat_scheme' => $password_compatibility_scheme,
+        'm_password_compat_scheme' => $password_compat_scheme,
         'm_pass_salt' => $salt,
         'm_password_change_code' => '',
         'm_password_change_code_time' => null,
-        'm_login_key' => '',
+        'm_login_key_hash' => '',
         'm_email_address' => $email_address,
         'm_primary_group' => $primary_group,
         'm_dob_day' => $dob_day,
@@ -371,9 +371,9 @@ function cns_make_member(string $username, string $password, string $email_addre
         $password_change_days = '0';
     }
     if (intval($password_change_days) > 0) {
-        if ($password_compatibility_scheme == '') {
+        if ($password_compat_scheme == 'bcrypt') {
             require_code('password_rules');
-            bump_password_change_date($member_id, $password, $password_salted, $salt);
+            bump_password_change_date($member_id, $password);
         }
     }
 

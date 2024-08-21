@@ -4417,7 +4417,8 @@ class Module_topics
             $action_list->attach(do_lang_tempcode('MULTI_MODERATION_WILL_TITLE_SUFFIX', escape_html($_mm['mm_title_suffix'])));
         }
         if ($_mm['mm_move_to_forum_id'] !== null) {
-            $action_list->attach(do_lang_tempcode('MULTI_MODERATION_WILL_MOVE', span(breadcrumb_segments_to_tempcode(cns_forum_breadcrumbs($_mm['mm_move_to_forum_id'])), '', 'breadcrumbs')));
+            $span = span(breadcrumb_segments_to_tempcode(cns_forum_breadcrumbs($_mm['mm_move_to_forum_id'])), '', 'breadcrumbs');
+            $action_list->attach(do_lang_tempcode('MULTI_MODERATION_WILL_MOVE', protect_from_escaping($span)));
         }
         $action_list->attach(do_lang_tempcode('MULTI_MODERATION_WILL_POST'));
         $text = do_lang_tempcode('MULTI_MODERATION_WILL', make_string_tempcode($mm_title), $action_list);

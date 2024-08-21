@@ -29,11 +29,12 @@ function cns_create_login_cookie(int $member_id)
     cms_setcookie(get_member_cookie(), strval($member_id), false, true);
 
     // Password
-    $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key');
+    $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key_hash');
     if ($login_key == '') {
         require_code('crypt');
-        $login_key = get_secure_random_string();
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key' => $login_key], ['id' => $member_id], '', 1);
+        $login_key = get_secure_random_string(32, CRYPT_BASE64); // Needs to be long and complex as it's like a password
+        $login_key_hash = ratchet_hash($login_key, get_site_salt() . '_' . get_pass_cookie());
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key_hash' => $login_key_hash], ['id' => $member_id], '', 1);
     }
     cms_setcookie(get_pass_cookie(), $login_key, false, true);
 }
@@ -186,20 +187,46 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
 
     // Check password
     if (!$skip_auth) {
-        $password_compatibility_scheme = $row['m_password_compat_scheme'];
+        $password_compat_scheme = $row['m_password_compat_scheme'];
+        $needs_rehash = false;
         if ($cookie_login) {
-            switch ($password_compatibility_scheme) {
+            switch ($password_compat_scheme) {
+                case 'pending_deletion': // Account is actually pending deletion in the task queue; we should bail on error
+                    cms_eatcookie(get_member_cookie());
+                    cms_eatcookie(get_pass_cookie());
+                    require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
+                    $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_PENDING_DELETION');
+                    return $out;
+
                 case 'none':
                     require_code('crypt');
                     if (!hash_equals(md5(get_site_salt() . $row['m_pass_hash_salted']), $password_mixed)) {
+                        cms_eatcookie(get_member_cookie());
+                        cms_eatcookie(get_pass_cookie());
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
                     break;
 
-                default:
-                    if (($row['m_login_key'] == '') || (!hash_equals($row['m_login_key'], $password_mixed))) {
+                case 'bcrypt':
+                case 'bcrypt_temporary':
+                case 'bcrypt_expired':
+                    require_code('crypt');
+                    if (($row['m_login_key_hash'] == '') || (!ratchet_hash_verify($password_mixed, get_site_salt() . '_' . get_pass_cookie(), $row['m_login_key_hash']))) {
+                        cms_eatcookie(get_member_cookie());
+                        cms_eatcookie(get_pass_cookie());
+                        require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
+                        $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                        return $out;
+                    }
+                    break;
+
+                default: // LEGACY
+                    require_code('crypt');
+                    if (($row['m_login_key_hash'] == '') || (!ratchet_hash_verify($password_mixed, get_site_salt() . '_' . get_pass_cookie(), $row['m_login_key_hash'], CRYPT_LEGACY_V10))) {
+                        cms_eatcookie(get_member_cookie());
+                        cms_eatcookie(get_pass_cookie());
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
@@ -207,14 +234,14 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     break;
             }
         } else {
-            switch ($password_compatibility_scheme) {
-                case 'pending_deletion': // Account is actually pending deletion; we should bail on error
+            switch ($password_compat_scheme) {
+                case 'pending_deletion': // Account is actually pending deletion in the task queue; we should bail on error
                     $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_PENDING_DELETION');
                     return $out;
 
-                case '': // Salted bcrypt algorithm
-                case 'temporary': // as above, but forced temporary password
-                case 'expired': // as above, but forced temporary password because the previous one expired
+                case 'bcrypt': // v11 style bcrypt passwords
+                case 'bcrypt_temporary': // as above, but forced temporary password
+                case 'bcrypt_expired': // as above, but forced temporary password because the previous one expired
                     require_code('crypt');
                     if (!ratchet_hash_verify($password_mixed, $row['m_pass_salt'], $row['m_pass_hash_salted'])) {
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
@@ -222,15 +249,26 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     }
                     break;
 
-                case 'plain': // No hashing (extremely, horribly, terribly bad idea)
-                    if (!hash_equals($row['m_pass_hash_salted'], $password_mixed)) {
+                case '': // LEGACY: v10 style bcrypt passwords (insecure as they use md5)
+                case 'temporary': // LEGACY: as above, but forced temporary password
+                case 'expired': // LEGACY: as above, but forced temporary password because the previous one expired
+                    require_code('crypt');
+                    if (!ratchet_hash_verify($password_mixed, $row['m_pass_salt'], $row['m_pass_hash_salted'], CRYPT_LEGACY_V10)) {
+                        $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                        return $out;
+                    }
+                    $needs_rehash = true; // We need to re-hash this password to the updated v11 bcrypt scheme
+                    break;
+
+                case 'md5': // Old style plain md5 (very bad idea)
+                    if ((!hash_equals($row['m_pass_hash_salted'], md5($password_mixed))) && ($password_mixed !== '!!!')) { // The !!! bit would never be in a hash, but for plain text checks using this same code, we sometimes use '!!!' to mean 'Error'.
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
                     break;
 
-                case 'md5': // Old style plain md5 (very bad idea)
-                    if ((!hash_equals($row['m_pass_hash_salted'], md5($password_mixed))) && ($password_mixed !== '!!!')) { // The !!! bit would never be in a hash, but for plain text checks using this same code, we sometimes use '!!!' to mean 'Error'.
+                case 'plain': // No hashing (extremely, horribly, terribly bad idea)
+                    if (!hash_equals($row['m_pass_hash_salted'], $password_mixed)) {
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
@@ -244,9 +282,9 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
 
                 default:
                     // Some kind of plugin (probably for logging in to an account that was imported)
-                    $path = get_file_base() . '/sources_custom/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
+                    $path = get_file_base() . '/sources_custom/hooks/systems/cns_auth/' . $password_compat_scheme . '.php';
                     if (!file_exists($path)) {
-                        $path = get_file_base() . '/sources/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
+                        $path = get_file_base() . '/sources/hooks/systems/cns_auth/' . $password_compat_scheme . '.php';
                     }
                     if (!file_exists($path)) {
                         if (function_exists('build_url')) {
@@ -258,8 +296,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                         $out['failed_login'] = false; // Internal error, not a failed login
                         return $out;
                     }
-                    require_code('hooks/systems/cns_auth/' . filter_naughty_harsh($password_compatibility_scheme, true));
-                    $ob = object_factory('Hook_cns_auth_' . filter_naughty_harsh($password_compatibility_scheme, true));
+                    require_code('hooks/systems/cns_auth/' . filter_naughty_harsh($password_compat_scheme, true));
+                    $ob = object_factory('Hook_cns_auth_' . filter_naughty_harsh($password_compat_scheme, true));
                     $error = $ob->auth($row['m_username'], $row['id'], $password_mixed, $row);
                     if ($error !== null) {
                         $out['error'] = $error;
@@ -267,6 +305,25 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     }
                     break;
             }
+        }
+
+        // LEGACY: Transform old style v10 passwords into v11 passwords
+        if ($needs_rehash) {
+            require_code('crypt');
+            $password_salt = get_secure_random_string(32, CRYPT_BASE64);
+            $password_salted = ratchet_hash($password_mixed, $password_salt);
+
+            $GLOBALS['FORUM_DB']->query_update('f_members', [
+                'm_pass_hash_salted' => $password_salted,
+                'm_password_compat_scheme' => ($password_compat_scheme == '') ? 'bcrypt' : ('bcrypt_' . $password_compat_scheme),
+                'm_pass_salt' => $password_salt,
+            ], ['id' => $member_id]);
+
+            unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id]);
+
+            // Destroy login cookie; we cannot re-hash them because it might not have been passed in.
+            cms_eatcookie(get_member_cookie());
+            cms_eatcookie(get_pass_cookie());
         }
     }
 

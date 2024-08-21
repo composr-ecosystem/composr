@@ -687,7 +687,7 @@ Use the correct redirection APIs
 All files must be associated with an addon
 | Modularity
 | Product development only
-| Automated test ([tt]aaa_modularisation.php[/tt])
+| Automated test ([tt]modularisation.php[/tt])
 | Every file intended to be distributed with Composr must be registered in one addon, installation / uninstallation / integrity-scans. To do this list it in the obvious position within one of the [tt]sources/hooks/systems/addon_registry[/tt] files. If it is a PHP file it should have a matching [tt]@package[/tt] line at the top of the file.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -958,7 +958,7 @@ Be type-strict
 Avoid complex SQL
 | Portability
 | Product development only
-| Automated test ([tt]___installer_xml_db.php[/tt], [tt]database_unsupported_sql.php[/tt])
+| Automated test ([tt]_installer_xml_db.php[/tt], [tt]database_unsupported_sql.php[/tt])
 | You cannot use SQL syntax that is not widely supported, unless the [tt]db_function[/tt] function supports it. Expressions on aggregate functions are not allowed.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -972,7 +972,7 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 ]Don't use ` symbols in your SQL and don't use keywords for table/field names
 | Portability: they are MySQL-specific
 | Product development only
-| Automated test ([tt]___installer_xml_db.php[/tt]), table creation code checks
+| Automated test ([tt]_installer_xml_db.php[/tt]), table creation code checks
 | You will have been forced to choose field names that don't require escaping anyway.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2224,7 +2224,7 @@ Be careful with global functions and variables
 [color="red"]Icons are multi-purpose[/color]
 | Themeing
 | Product development only
-| Automated test ([tt]aaa_modularisation[/tt])
+| Automated test ([tt]modularisation[/tt])
 | You will likely create new icons for very specific purposes. However, icons (especially SVG icons) are also an excellent resource for webmasters to use in their designs (regardless of what addons they've installed). For this reason every icon must be packaged both for the specific addon it is associated with, and the general purpose [tt]core_all_icons[/tt] addon.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]

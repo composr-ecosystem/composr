@@ -34,7 +34,6 @@
  * @param  ?boolean $has_custom Whether this is going to be from under a custom directory (null: search). This is used for performance to avoid extra searching when we already know where a file is
  * @param  boolean $force_custom Whether to forcefully allow custom overrides even if in safe mode
  */
-
 function require_code(string $codename, bool $light_exit = false, ?bool $has_custom = null, bool $force_custom = false)
 {
     // Handle if already required...
@@ -1134,7 +1133,7 @@ if (empty($SITE_INFO)) {
         @copy($FILE_BASE . '/info.php', $FILE_BASE . '/_config.php');
         if (is_file($FILE_BASE . '/_config.php')) {
             $new_config_file = file_get_contents($FILE_BASE . '/_config.php');
-            $new_config_file = str_replace(['ocf_table_prefix', 'use_mem_cache', 'ocp_member_id', 'ocp_member_hash', 'ocf', 'admin_password'], ['cns_table_prefix', 'use_persistent_cache', 'cms_member_id', 'cms_member_hash', 'cns', 'maintenance_password'], $new_config_file);
+            $new_config_file = str_replace(['ocf_table_prefix', 'use_mem_cache', 'ocp_member_id', 'ocp_member_hash', 'ocf', 'admin_password', 'master_password'], ['cns_table_prefix', 'use_persistent_cache', 'cms_member_id', 'cms_member_hash', 'cns', 'maintenance_password', 'maintenance_password'], $new_config_file);
             $new_config_file = str_replace(']=\'', '] = \'', $new_config_file); // Clean up formatting to new convention
             file_put_contents($FILE_BASE . '/_config.php', $new_config_file, LOCK_EX);
         } else {

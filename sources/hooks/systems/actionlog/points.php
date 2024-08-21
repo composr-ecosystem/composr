@@ -121,6 +121,15 @@ class Hook_actionlog_points extends Hook_actionlog
                     'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
                 ],
             ],
+            'LOG_ESCROW_UPDATED_RECEIVING_MEMBER' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
+                ],
+            ],
         ];
     }
 }

@@ -228,7 +228,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
         }
 
         if ($year !== null) {
-            $this->assertTrue($year == $current_year, 'Your copyright date needs updating: ' . $year);
+            $this->assertTrue($year == $current_year, 'Your copyright date needs updating: ' . strval($year));
         }
     }
 

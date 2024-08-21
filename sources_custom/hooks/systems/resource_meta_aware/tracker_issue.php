@@ -27,6 +27,10 @@ class Hook_resource_meta_aware_tracker_issue extends Hook_CMA
      */
     public function info(?string $zone = null, bool $get_extended_data = false) : ?array
     {
+        if (!addon_installed('cms_homesite')) {
+            return null;
+        }
+
         if (!addon_installed('cms_homesite_tracker')) {
             return null;
         }

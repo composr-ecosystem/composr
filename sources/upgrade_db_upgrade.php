@@ -664,6 +664,12 @@ function database_specific() : bool
         $done_something = true;
     }
 
+    // LEGACY: (11.beta2) login keys should be stored as hashes just like passwords
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1723865750)) {
+        $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_login_key', 'SHORT_TEXT', 'm_login_key_hash');
+    }
+
+
     return $done_something;
 }
 

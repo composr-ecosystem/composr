@@ -435,16 +435,16 @@ class CMSAccountWrite
     {
         $ip_address = get_ip_address();
         $salt = '';
-        $password_compatibility_scheme = '';
+        $password_compat_scheme = 'bcrypt';
 
         if ((get_value('disable_password_hashing') === '1')) {
-            $password_compatibility_scheme = 'plain';
+            $password_compat_scheme = 'plain';
             $salt = '';
         }
 
-        if (($salt == '') && ($password_compatibility_scheme == '')) {
+        if (($salt == '') && ($password_compat_scheme == 'bcrypt')) {
             require_code('crypt');
-            $salt = get_secure_random_string();
+            $salt = get_secure_random_string(32, CRYPT_BASE64); // A new salt should be assigned to mitigate rainbow table attacks
             $password_salted = ratchet_hash($password, $salt);
         } else {
             $password_salted = $password;
@@ -453,8 +453,9 @@ class CMSAccountWrite
         $map = [
             'm_pass_salt' => $salt,
             'm_pass_hash_salted' => $password_salted,
+            'm_password_compat_scheme' => $password_compat_scheme,
             'm_ip_address' => $ip_address,
-            'm_login_key' => '',
+            'm_login_key_hash' => '',
         ];
         $GLOBALS['FORUM_DB']->query_update('f_members', $map, ['id' => $member_id], '', 1);
     }

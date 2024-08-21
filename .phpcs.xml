@@ -29,7 +29,6 @@
 	<exclude-pattern>sources_custom/sugar_crm_lib.php</exclude-pattern>
 	<exclude-pattern>sources_custom/swift_mailer</exclude-pattern>
 	<exclude-pattern>sources_custom/Transliterator</exclude-pattern>
-	<exclude-pattern>sources_custom/twitter.php</exclude-pattern>
 	<exclude-pattern>data_custom/errorlog.php</exclude-pattern>
 	<exclude-pattern>data_custom/execute_temp.php</exclude-pattern>
 	<exclude-pattern>mobiquo/lib/xmlrpc.php</exclude-pattern>

@@ -224,6 +224,7 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/miniblocks/cms_homesite_make_upgrader.php',
             'sources_custom/miniblocks/cms_maintenance_status.php',
             'sources_custom/miniblocks/main_version_support.php',
+            'sources_custom/points_escrow__sponsorship.php',
             'themes/default/images_custom/icons/cms_homesite/index.html',
             'themes/default/images_custom/icons/cms_homesite/theme_upgrade.svg',
             'themes/default/images_custom/icons/cms_homesite/translations_rough.svg',

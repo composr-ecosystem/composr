@@ -227,7 +227,7 @@ function user_sync__inbound($since = null)
             if ($member_id === null) {
                 $user_data['pass_hash_salted'] = ($user_data['pass_hash_salted'] === null) ? $default_password : $user_data['pass_hash_salted'];
                 $password = ($user_data['pass_hash_salted'] === null) ? get_secure_random_password(null, $username, $email_address) : $user_data['pass_hash_salted'];
-                $password_compatibility_scheme = $temporary_password ? 'temporary' : (($user_data['pass_hash_salted'] === null) ? 'plain'/*so we can find it from the DB*/ : null);
+                $password_compat_scheme = $temporary_password ? 'bcrypt_temporary' : (($user_data['pass_hash_salted'] === null) ? 'plain'/*so we can find it from the DB*/ : null);
 
                 $member_id = cns_make_member(
                     $username, // username
@@ -265,7 +265,7 @@ function user_sync__inbound($since = null)
                     $is_perm_banned, // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
-                    '', // password_compatibility_scheme
+                    $password_compat_scheme, // password_compatibility_scheme
                     '', // salt
                     $join_time // join_time
                 );
@@ -282,7 +282,7 @@ function user_sync__inbound($since = null)
 
                 // Passwords will not be re-synched
                 $password = null;
-                $password_compatibility_scheme = null;
+                $password_compat_scheme = null;
                 $salt = null;
 
                 $old_groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id);
@@ -320,7 +320,7 @@ function user_sync__inbound($since = null)
                     null, // probation_expiration_time
                     $is_perm_banned, // is_perm_banned
                     false, // check_correctness
-                    $password_compatibility_scheme, // password_compatibility_scheme
+                    $password_compat_scheme, // password_compatibility_scheme
                     $salt, // salt
                     $join_time // join_time
                 );

@@ -31,50 +31,50 @@ function init__continuous_integration()
 
         $status = cms_version_branch_status();
         define('CI_EXCLUDED_TESTS', [
-            // Will be added back to run first
-            'unit_tests/_cqc__function_sigs',
-
             // Very slow
-            'unit_tests/__actionlog',
-            'unit_tests/___bash_parser',
-            'unit_tests/___backups',
-            'unit_tests/___broken_links',
-            'unit_tests/__images',
-            'unit_tests/___installer_xml_db', // (Messes with _config.php too)
-            'unit_tests/__tutorial_quality',
-            'unit_tests/__special_links',
-            'unit_tests/_http_timeouts',
-            'unit_tests/__web_resources',
-            'unit_tests/_oembed',
-            'unit_tests/_feeds_and_podcasts',
-            'unit_tests/_filter_xml',
-            'unit_tests/__lang_no_unused',
-            // 'unit_tests/___installer', Important enough to spend the time on it (Messes with _config.php but we do not run in parallel
+            'sync_tests/actionlog',
+            'cli_tests/_bash_parser',
+            'cli_tests/_backups',
+            'cli_tests/_broken_links',
+            'sync_tests/_images',
+            'cli_tests/_installer_xml_db', // (Messes with _config.php too)
+            'sync_tests/_tutorial_quality',
+            'sync_tests/__special_links',
+            'sync_tests/http_timeouts',
+            'sync_tests/web_resources',
+            'sync_tests/oembed',
+            'sync_tests/feeds_and_podcasts',
+            'sync_tests/filter_xml',
+            'sync_tests/_lang_no_unused',
+            // 'cli_tests/installer', Important enough to spend the time on it (Messes with _config.php but we do not run in parallel
 
             // Excessively complex and may not always succeed depending on test site context
-            'unit_tests/___performance',
-            'unit_tests/___resource_fs',
-            'unit_tests/__blob_slowdown',
-            'unit_tests/_commandr_fs',
-            'unit_tests/_database_integrity',
-            'unit_tests/___installer_forum_drivers', // (Messes with _config.php too)
-            'unit_tests/__tasks',
-            'unit_tests/__template_previews',
-            'unit_tests/__lang_spelling_epic',
-            'unit_tests/__email_spam_check', // May utilise APIs which we don't want to spam
+            'cli_tests/__performance',
+            'cli_tests/__resource_fs',
+            'sync_tests/__blob_slowdown',
+            'sync_tests/commandr_fs',
+            'async_tests/_database_integrity',
+            'async_tests/__database_fields',
+            'cli_tests/_installer_forum_drivers', // (Messes with _config.php too)
+            'sync_tests/tasks',
+            'sync_tests/_template_previews',
+            'sync_tests/__lang_spelling_epic',
+            'async_tests/_email_spam_check', // May utilise APIs which we don't want to spam
 
             // Is not expected to pass
-            'unit_tests/___health_check',
+            'cli_tests/__health_check',
+            'sync_tests/__debrand_epic',
+            'sync_tests/__webdav',
 
             // Messes with _config.php but we do not run in parallel
-            /*'unit_tests/_rate_limiting',
-            'unit_tests/_critical_error_display',
-            'unit_tests/_static_caching',
-            'unit_tests/__extra_logging',*/
+            /*'sync_tests/rate_limiting',
+            'sync_tests/critical_error_display',
+            'sync_tests/static_caching',
+            'sync_tests/extra_logging',*/
 
-            // Can not run over HTTPS
-            ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_copyright' : null,
-            ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_tracker_categories' : null,
+            // Not reasonable to run in pre-release versions
+            ($status == VERSION_ALPHA || $status == VERSION_BETA) ? 'sync_tests/_copyright' : null,
+            ($status == VERSION_ALPHA || $status == VERSION_BETA) ? 'async_tests/tracker_categories' : null,
         ]);
 
         define('CI_COMMIT_QUEUE_PATH', get_custom_file_base() . '/data_custom/ci_queue.bin');
@@ -112,13 +112,6 @@ function continuous_integration_script()
             $output = (get_param_integer('output', 0) == 1) || ($cli);
             $_limit_to = get_param_string('limit_to', '');
             $limit_to = ($_limit_to == '') ? null : explode(',', $_limit_to);
-            if ($limit_to !== null) {
-                foreach ($limit_to as $i => $_limit_to) {
-                    if (strpos($_limit_to, '/') === false) {
-                        $limit_to[$i] = 'unit_tests/' . $_limit_to;
-                    }
-                }
-            }
             $context = [];
             foreach ($_GET as $name => $value) {
                 if (strpos($name, 'context__') === 0) {
@@ -453,17 +446,23 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
 
 function find_all_applicable_tests($limit_to = null)
 {
-    $_tests = [];
+    $first_tests = [];
+    $other_tests = [];
     $tests = get_directory_contents(get_file_base() . '/_tests/tests', '', 0, true, true, ['php']);
     foreach ($tests as $test) {
         $_test = preg_replace('#\.php$#', '', $test);
         if ((!@in_array($_test, CI_EXCLUDED_TESTS)) && (($limit_to === null) || (in_array($_test, $limit_to)))) {
-            $_tests[] = $_test;
+            if ((strpos($_test, 'first_tests/') !== false)) {
+                $first_tests[] = $_test;
+            } else {
+                $other_tests[] = $_test;
+            }
         }
     }
-    sort($_tests);
-    $_tests = array_merge(['unit_tests/_cqc__function_sigs']/*Must run first*/, $_tests);
-    return $_tests;
+    sort($first_tests);
+    sort($other_tests);
+
+    return array_merge($first_tests, $other_tests);
 }
 
 function post_results_to_commit($commit_id, $note)

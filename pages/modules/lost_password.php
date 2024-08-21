@@ -365,20 +365,22 @@ class Module_lost_password
         }
 
         // Update stored password
+        $salt = '';
         if ((get_value('disable_password_hashing') === '1') && (!$temporary_passwords)) {
-            $password_compatibility_scheme = 'plain';
+            $password_compat_scheme = 'plain';
             $new = $new_password;
         } else {
             require_code('crypt');
-            $password_compatibility_scheme = ($temporary_passwords ? 'temporary' : '');
-            $salt = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
+            $password_compat_scheme = ($temporary_passwords ? 'bcrypt_temporary' : 'bcrypt');
+            $salt = get_secure_random_string(32, CRYPT_BASE64); // A new salt should be assigned to mitigate rainbow table attacks
             $new = ratchet_hash($new_password, $salt);
         }
+
         $password_change_days = get_option('password_change_days');
         if (intval($password_change_days) > 0) {
-            if ($password_compatibility_scheme == '') {
+            if ($password_compat_scheme == 'bcrypt') {
                 require_code('password_rules');
-                bump_password_change_date($member_id, $new_password, $new, $salt, false);
+                bump_password_change_date($member_id, $new_password, false);
             }
         }
 
@@ -386,9 +388,10 @@ class Module_lost_password
         unset($_GET['code']);
         $update_map = [
             'm_validated_email_confirm_code' => '',
-            'm_password_compat_scheme' => $password_compatibility_scheme,
+            'm_password_compat_scheme' => $password_compat_scheme,
             'm_pass_hash_salted' => $new,
-            'm_login_key' => '',
+            'm_pass_salt' => $salt,
+            'm_login_key_hash' => '',
         ];
         if (!$temporary_passwords) {
             // Mark code used if it has instant effect only - otherwise we cannot do it as the link could have been pre-clicked by a virus scanner - rely on password_reset_minutes to expire it

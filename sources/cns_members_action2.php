@@ -596,7 +596,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     if (cns_field_editable('password', $special_type)) {
         if (($member_id === null) || ($member_id == get_member()) || (has_privilege(get_member(), 'assume_any_member'))) {
             $compat_scheme = ($member_id === null) ? '' : $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
-            $temporary_password = ($member_id !== null) && ($member_id == get_member() && (($compat_scheme == 'temporary') || ($compat_scheme == 'expired')));
+            $temporary_password = ($member_id !== null) && ($member_id == get_member() && (($compat_scheme == 'temporary'/*LEGACY*/) || ($compat_scheme == 'expired'/*LEGACY*/) || ($compat_scheme == 'bcrypt_temporary') || ($compat_scheme == 'bcrypt_expired')));
             if ($temporary_password) {
                 $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD_TEMPORARY');
             } else {
@@ -949,7 +949,7 @@ function _cpfs_internal_use_only() : array
  *
  * @param  AUTO_LINK $member_id The ID of the member
  * @param  ?string $username The username (null: don't change)
- * @param  ?string $password The password (null: don't change)
+ * @param  ?string $password The password, plain-text if compat scheme is software-based, else hashed (null: don't change)
  * @param  ?SHORT_TEXT $email_address The e-mail address (null: don't change)
  * @param  ?GROUP $primary_group The member's primary usergroup (null: don't change) (you must handle updating group approvals manually)
  * @param  ?integer $dob_day Day of date of birth (null: don't change) (-1: unset)
@@ -980,13 +980,18 @@ function _cpfs_internal_use_only() : array
  * @param  ?TIME $probation_expiration_time When the member is on probation until (null: don't change)
  * @param  ?ID_TEXT $is_perm_banned Banned status (null: don't change)
  * @param  boolean $check_correctness Whether to check details for correctness and do most of the change-triggered e-mails
- * @param  ?ID_TEXT $password_compatibility_scheme Password compatibility scheme (null: don't change)
- * @param  ?SHORT_TEXT $salt Password salt (null: don't change)
+ * @param  ?ID_TEXT $password_compat_scheme Password compatibility scheme (null: don't change)
+ * @param  ?SHORT_TEXT $salt Password salt (null: don't change) (blank: generate a new one depending on our password compat scheme)
  * @param  ?TIME $join_time When the member joined (null: don't change)
  * @param  ?boolean $sensitive_change_alert Whether to send an alert to the member that their login information has changed, if applicable (null: use the value of $check_correctness)
  */
-function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $probation_expiration_time = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compatibility_scheme = null, ?string $salt = null, ?int $join_time = null, ?bool $sensitive_change_alert = null)
+function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $probation_expiration_time = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compat_scheme = null, ?string $salt = null, ?int $join_time = null, ?bool $sensitive_change_alert = null)
 {
+    // Cannot edit a member pending deletion
+    if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'pending_deletion') {
+        warn_exit(do_lang_tempcode('MEMBER_PENDING_DELETION'));
+    }
+
     if ($sensitive_change_alert === null) {
         $sensitive_change_alert = $check_correctness;
     }
@@ -1022,41 +1027,71 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         suggest_new_idmoniker_for('members', 'view', strval($member_id), '', $username);
     }
 
-    if ($password !== null) { // Password change
-        if (($password_compatibility_scheme === null) && (get_value('disable_password_hashing') === '1')) {
-            $password_compatibility_scheme = 'plain';
-            $update['m_password_change_code'] = '';
-            $update['m_password_change_code_time'] = null;
-            $salt = '';
-        }
-
+    // Password change
+    if ($password !== null) {
         // Invalidate any existing login key
-        $update['m_login_key'] = '';
+        $update['m_login_key_hash'] = '';
 
-        // Get or generate a password salt if necessary
-        if (($salt !== null) || ($password_compatibility_scheme !== null)) {
-            if ($salt !== null) {
-                $update['m_pass_salt'] = $salt;
+        // Determine password scheme
+        if ($password_compat_scheme === null) {
+            if (get_value('disable_password_hashing') === '1') {
+                $password_compat_scheme = 'plain';
+            } else {
+                $password_compat_scheme = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
             }
-            if ($password_compatibility_scheme !== null) {
-                $update['m_password_compat_scheme'] = $password_compatibility_scheme;
-            }
-            $update['m_pass_hash_salted'] = $password;
         } else {
-            require_code('crypt');
-            $update['m_password_change_code'] = '';
-            $update['m_password_change_code_time'] = null;
-            $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
-            $update['m_pass_hash_salted'] = ratchet_hash($password, $salt);
-            $update['m_password_compat_scheme'] = '';
+            $update['m_password_compat_scheme'] = $password_compat_scheme;
         }
+
+        // Process some update code depending on our scheme
+        $update['m_password_change_code'] = '';
+        $update['m_password_change_code_time'] = null;
+        switch ($password_compat_scheme) {
+            case 'plain':
+                $salt = '';
+                $update['m_pass_salt'] = '';
+                $password_hashed = $password;
+                break;
+
+            case 'md5':
+                $salt = ''; // We don't support salting on software md5
+                $update['m_pass_salt'] = '';
+                $password_hashed = md5($password);
+                break;
+
+            case 'bcrypt':
+            case 'bcrypt_temporary':
+            case 'bcrypt_expired':
+                require_code('crypt');
+
+                if (($salt !== null) && ($salt != '')) {
+                    $update['m_pass_salt'] = $salt;
+                } else {
+                    if ($salt === null) {
+                        $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
+                    }
+                    if ($salt == '') { // Generate a new salt
+                        $salt = get_secure_random_string(32, CRYPT_BASE64);
+                        $update['m_pass_salt'] = $salt;
+                    }
+                }
+                $password_hashed = ratchet_hash($password, $salt);
+                break;
+
+            default: // Some special scheme; we assume $password is already hashed in this case
+                $password_hashed = $password;
+                if ($salt !== null) {
+                    $update['m_pass_salt'] = $salt;
+                }
+        }
+        $update['m_pass_hash_salted'] = $password_hashed;
 
         // Set when the password must be changed, if applicable
         $password_change_days = get_option('password_change_days');
         if (intval($password_change_days) > 0) {
-            if ($password_compatibility_scheme == '') {
+            if ($password_compat_scheme == 'bcrypt') {
                 require_code('password_rules');
-                bump_password_change_date($member_id, $password, $update['m_pass_hash_salted'], $salt, $check_correctness);
+                bump_password_change_date($member_id, $password, $check_correctness);
 
                 $update['m_last_visit_time'] = time(); // Needed when an admin changing another password (but okay always): So that the password isn't assumed auto-expired, forcing them to reset it again
             }

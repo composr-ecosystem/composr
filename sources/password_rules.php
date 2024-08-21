@@ -172,8 +172,13 @@ function bump_password_times_forward()
  */
 function member_password_expired(int $member_id) : bool
 {
+    $password_compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
+
     // Expired in the database
-    if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'expired') {
+    if ($password_compat_scheme == 'expired') { // LEGACY
+        return true;
+    }
+    if ($password_compat_scheme == 'bcrypt_expired') {
         return true;
     }
 
@@ -183,7 +188,11 @@ function member_password_expired(int $member_id) : bool
         $last_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_last_visit_time');
         if ($last_time < time() - 60 * 60 * 24 * $expiry_days) {
             // Make sure the expiration sticks because m_last_visit_time is going to get updated
-            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'expired'], ['id' => $member_id]);
+            $updated_scheme = 'bcrypt_expired';
+            if ($password_compat_scheme == '') { // LEGACY
+                $updated_scheme = 'expired';
+            }
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => $updated_scheme], ['id' => $member_id]);
 
             return true;
         }
@@ -269,35 +278,39 @@ function check_password_complexity(string $password, string $username, string $e
  *
  * @param  MEMBER $member_id The member this is for
  * @param  string $password New password
- * @param  string $password_salted Hashed password
- * @param  string $salt Password salt
  * @param  boolean $check_correctness Whether to check details for correctness
  * @param  ?TIME $time The time this is logged to be happening at (null: now)
  */
-function bump_password_change_date(int $member_id, string $password, string $password_salted, string $salt, bool $check_correctness = true, ?int $time = null)
+function bump_password_change_date(int $member_id, string $password, bool $check_correctness = true, ?int $time = null)
 {
     if ($time === null) {
         $time = time();
     }
 
-    // Ensure does not re-use previous password
-    if ($check_correctness) {
-        require_code('crypt');
+    require_code('crypt');
 
-        $past_passwords = $GLOBALS['FORUM_DB']->query_select('f_password_history', ['*'], ['p_member_id' => $member_id], 'ORDER BY p_time DESC', 1000/*reasonable limit*/);
+    // Ensure does not re-use recently previous password
+    if ($check_correctness) {
+        $past_passwords = $GLOBALS['FORUM_DB']->query_select('f_password_history', ['*'], ['p_member_id' => $member_id], 'ORDER BY p_time DESC', 10/*Only compare against the last 10 passwords used*/);
         foreach ($past_passwords as $past_password) {
-            if (ratchet_hash_verify($password, $past_password['p_salt'], $past_password['p_hash_salted'])) {
+            if (ratchet_hash_verify($password . '_history', $past_password['p_salt'], $past_password['p_hash_salted'])) {
                 require_lang('password_rules');
+
+                // NB: This lang string should not directly disclose the re-use of a password as hackers could use that to figure out someone's password in a rainbow attack.
                 warn_exit(do_lang_tempcode('CANNOT_REUSE_PASSWORD'));
             }
         }
     }
 
+    // Generate our own salt and hash for the history log so hackers cannot easily compare it with existing records
+    $log_salt = get_secure_random_string(32, CRYPT_BASE64);
+    $log_hash = ratchet_hash($password . '_history', $log_salt);
+
     // Insert into log
     $GLOBALS['FORUM_DB']->query_insert('f_password_history', [
         'p_member_id' => $member_id,
-        'p_hash_salted' => $password_salted,
-        'p_salt' => $salt,
+        'p_hash_salted' => $log_hash,
+        'p_salt' => $log_salt,
         'p_time' => $time,
     ]);
 }

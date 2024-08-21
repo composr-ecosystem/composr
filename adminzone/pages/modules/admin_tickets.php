@@ -367,6 +367,7 @@ class Module_admin_tickets
         $url = build_url(['page' => '_SELF', 'type' => '_email'], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => 'e6f5ec9aef0abf21cb47a107100bc538',
             'HIDDEN' => $hidden,
             'TITLE' => $this->title,
             'FIELDS' => $fields,

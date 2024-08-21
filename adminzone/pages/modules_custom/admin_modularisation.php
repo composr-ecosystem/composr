@@ -112,7 +112,7 @@ class Module_admin_modularisation
 
     /**
      * Scan for modularisation issues and render a UI for resolving them.
-     * This code should also be updated in the aaa_modularisation test if edited.
+     * This code should also be updated in the modularisation test if edited.
      *
      * @return Tempcode The UI
      */

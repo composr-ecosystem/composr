@@ -418,7 +418,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_mailing_list_style', 'BINARY', 1);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_password_change_code_time', '?TIME');
-        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_login_key', 'ID_TEXT');
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_login_key_hash', 'SHORT_TEXT');
 
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
 
@@ -550,7 +550,7 @@ function install_cns(?float $upgrade_from = null)
             'm_password_change_code' => 'SHORT_TEXT',
             'm_password_change_code_time' => '?TIME',
             'm_password_compat_scheme' => 'ID_TEXT',
-            'm_login_key' => 'ID_TEXT',
+            'm_login_key_hash' => 'SHORT_TEXT',
 
             // Selections
             'm_timezone_offset' => 'SHORT_TEXT',
