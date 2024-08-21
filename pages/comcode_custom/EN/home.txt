@@ -1,0 +1,44 @@
+﻿[semihtml]<h1><span class="inner"><span style="display: block; text-align: center;"><strong>Composr CMS</strong>:&nbsp;<br />
+The versatile <span style="color:#f39c12;">Content Management System</span> for next<br />
+generation websites</span></span></h1>
+
+<p>Need a website? Tired of primitive systems that don&#39;t meet your requirements?</p>
+
+<p>Composr is Open Source so our community download runs without limits. Our services will give you that critical &#39;pro edge&#39;.</p>
+
+<table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+	<tbody>
+		<tr>
+			<td>
+			<h2>What is Composr CMS?</h2>
+
+			<p>Composr is a very flexible CMS with advanced social, interactive and dynamic functionality.</p>
+
+			<p>Hundreds of features&nbsp;are available out of the box, as well as building blocks, and further addons (think multi-channel content delivery).</p>
+
+			<p>Composr is embraced by Fortune-100 companies, government agencies, and small startups. We make all the best ideas available to everyone.</p>
+			</td>
+			<td>
+			<h2>Create smarter web properties; <span style="color:#f39c12;">accelerate</span> time to market&nbsp;</h2>
+
+			<ul>
+				<li><abbr title="Many features working together seamlessly out-of-the-box, including photo galleries, events, forums, and news">Huge integrated feature-set</abbr></li>
+				<li>Enthusiastic community</li>
+				<li>No licensing costs</li>
+				<li>Cloud-compatible</li>
+				<li><abbr title="Powered by HTML5">HTML5</abbr>,&nbsp;<abbr title="Full design flexibility using templating and CSS3">CSS3</abbr>,&nbsp;<abbr title="Acclaimed accessibility, including WCAG and ATAG compliance">WCAG</abbr></li>
+			</ul>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;[block param="5" member_based="0" display_slides="0" display_summaries="3" display_briefs="5" blogs="0" zone="_SEARCH" title="Latest v11 News" show_in_full="0" no_links="0" attach_to_url_filter="0" render_if_empty="1" start="0" pagination="0" as_guest="0" optimise="0" check="1" render_mode="grid" slider_interval="6000" news_articles_per_slide="3"]main_news[/block]</p>
+
+<h2><span class="inner"><span style="display: block;">Get an Early Preview of Version 11 by Visiting These Sites</span></span></h2>
+
+<p><span class="inner"><span style="display: block;"><strong>[block param="3" sorting="0" max="12" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]</strong></span></span></p>
+
+<p>Would you like your v11 site featured? When installing v11, on the licence agreement / terms page, indicate that we may feature your site. Note that setting this option does not guarantee we will feature your site.</p>
+
+<p>Remember, version 11 is still in beta. We do not recommend running it in production unless you know what you are doing and are aware of the responsibilities and implications (especially security and stability).</p>[/semihtml]
