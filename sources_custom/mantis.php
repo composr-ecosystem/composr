@@ -67,7 +67,7 @@ function get_tracker_issues($ids, $version = null, $previous_version = null)
     return $_issue_titles;
 }
 
-function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project = '1')
+function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project = '1', $handler_id = null, $steps_to_reproduce = '', $reproducibility = '10'/*always*/, $status = '80'/*resolved*/, $resolution = '20'/*fixed*/, $view_state = '10'/*public*/)
 {
     $query = "
         INSERT INTO
@@ -80,13 +80,17 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
         VALUES
         (
             '" . db_escape_string($tracker_message) . "',
-            '',
+            '" . db_escape_string($steps_to_reproduce) . "',
             '" . db_escape_string($tracker_additional) . "'
         )
     ";
-    $text_id = $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
+    $text_id = $GLOBALS['SITE_DB']->_query(trim($query), null, null, false, true, null, '', false);
 
     ensure_version_exists_in_tracker($version);
+
+    if ($handler_id === null) {
+        $handler_id = strval(get_member());
+    }
 
     $query = "
         INSERT INTO
@@ -125,13 +129,13 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
         (
             '" . db_escape_string($tracker_project) . "',
             '" . strval(get_member()) . "',
-            '" . strval(get_member()) . "',
+            '" . db_escape_string($handler_id) . "',
             '0',
             '40', /* High priority */
             '" . db_escape_string($tracker_severity) . "',
-            '10', /* Always reproducible */
-            '80', /* Status: Resolved */
-            '20', /* Resolution: Fixed */
+            '" . db_escape_string($reproducibility) . "',
+            '" . db_escape_string($status) . "',
+            '" . db_escape_string($resolution) . "',
             '10',
             '10',
             '" . strval($text_id) . "',
@@ -142,7 +146,7 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
             '',
             '',
             '0',
-            '10',
+            '" . db_escape_string($view_state) . "',
             '" . db_escape_string($tracker_title) . "',
             '0',
             '0',
@@ -153,7 +157,18 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
             '" . strval(time()) . "'
         )
     ";
-    return $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
+    $ret = $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
+
+    // We need to send out our own e-mail notifications for the issue because Mantis won't do that (we're using the database directly)
+    require_code('notifications');
+    dispatch_notification(
+        'tracker_issue_added',
+        null,
+        'New tracker issue: ' . $tracker_title,
+        'A new tracker issue has been reported through the report issue wizard, [url="issue #' . strval($ret) . '"]' . get_base_url() . '/tracker/view.php?id=' . strval($ret) . '[/url]' . "\n\n" . 'Subject: ' . comcode_escape($tracker_title) . "\n\n" . 'Message: ' . comcode_escape($tracker_message)
+    );
+
+    return $ret;
 }
 
 function update_tracker_issue($tracker_id, $version = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
