@@ -1645,7 +1645,7 @@ class Module_cms_comcode_pages
 
         $only = get_param_string('only', null);
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
         push_query_limiting(false);
 
         $num_revisions = 0;
