@@ -1,10 +1,9 @@
 ﻿[semihtml]<h1><span class="inner"><span style="display: block; text-align: center;"><strong>Composr CMS</strong>:&nbsp;<br />
-The versatile <span style="color:#f39c12;">Content Management System</span> for next<br />
-generation websites</span></span></h1>
+Your <span style="color:#f39c12;">Data</span>, Your <span style="color:#f39c12;">Privacy</span>, Your <span style="color:#f39c12;">Control</span></span></span></h1>
 
-<p>Need a website? Tired of primitive systems that don&#39;t meet your requirements?</p>
+<p>Do you need to build a website? Are you tired of being locked down by third-party website builders and software? Composr CMS gives you full control and full autonomy over your website and its data!</p>
 
-<p>Composr is Open Source so our community download runs without limits. Our services will give you that critical &#39;pro edge&#39;.</p>
+<p>The Composr software&nbsp;is Free and Open Source, so anyone can download and use it. Build any website you want, from a simple informational site to a complex eCommerce&nbsp;platform and anything in-between.</p>
 
 <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
 	<tbody>
@@ -14,19 +13,20 @@ generation websites</span></span></h1>
 
 			<p>Composr is a very flexible CMS with advanced social, interactive and dynamic functionality.</p>
 
-			<p>Hundreds of features&nbsp;are available out of the box, as well as building blocks, and further addons (think multi-channel content delivery).</p>
+			<p>Hundreds of features and building blocks are available out of the box. You don&#39;t need to rely on sketchy and potentially unmaintained third-party addons any longer.</p>
 
-			<p>Composr is embraced by Fortune-100 companies, government agencies, and small startups. We make all the best ideas available to everyone.</p>
+			<p>Composr is embraced by a wide variety of industries, from Fortune-100 companies, government agencies, small startups / hobby sites, and much more!&nbsp;We make all the best ideas available to everyone.</p>
 			</td>
 			<td>
 			<h2>Create smarter web properties; <span style="color:#f39c12;">accelerate</span> time to market&nbsp;</h2>
 
 			<ul>
-				<li><abbr title="Many features working together seamlessly out-of-the-box, including photo galleries, events, forums, and news">Huge integrated feature-set</abbr></li>
-				<li>Enthusiastic community</li>
-				<li>No licensing costs</li>
+				<li><abbr title="Many features work together seamlessly out-of-the-box, such as photo galleries, events, forums, and news">Huge integrated feature-set</abbr></li>
+				<li>Supportive community</li>
+				<li><abbr title="While the software is free to download and use as-is, it is provided with no warranty of any kind. You need to provide your own web hosting on which to run the software (members of the community may help you with that, and we have some tutorials on this as well). And you may need to hire your own developers if you want professional support / maintenance.">No licensing costs</abbr></li>
 				<li>Cloud-compatible</li>
-				<li><abbr title="Powered by HTML5">HTML5</abbr>,&nbsp;<abbr title="Full design flexibility using templating and CSS3">CSS3</abbr>,&nbsp;<abbr title="Acclaimed accessibility, including WCAG and ATAG compliance">WCAG</abbr></li>
+				<li><abbr title="The default themes are mobile responsive. It is the responsibility of theme developers to maintain mobile responsiveness when making custom themes.">Mobile responsive</abbr></li>
+				<li><abbr title="Supports HTML5 markup">HTML5</abbr>,&nbsp;<abbr title="Full design flexibility using templating and CSS3">CSS3</abbr>,&nbsp;<abbr title="Acclaimed accessibility, including WCAG and ATAG compliance (for the default themes)">WCAG</abbr></li>
 			</ul>
 			</td>
 		</tr>
