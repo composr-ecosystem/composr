@@ -20,30 +20,18 @@ class static_caching_test_set extends cms_test_case
 {
     public function testStaticCacheWorks()
     {
-        // Check for POSTing blocks
-        $bad_blocks = [
-            'main_newsletter_signup',
-            'side_newsletter',
-            'side_shoutbox'
-        ];
-
-        $panel_text = '';
+        // We want panel pages without POST blocks, so we will back up our current ones (if they exist) and create new ones for this test
         foreach (['panel_left', 'panel_right', 'panel_top', 'panel_bottom'] as $panel) {
-            $_panel_text = @strval(file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $panel . '.txt'));
-            if (empty($_panel_text)) {
-                $_panel_text = @strval(file_get_contents(get_custom_file_base() . '/pages/comcode/' . get_site_default_lang() . '/' . $panel . '.txt'));
-            }
-            if (is_string($_panel_text)) {
-                $panel_text .= $_panel_text;
-            }
-        }
-        foreach ($bad_blocks as $bad_block) {
-            if (strpos($panel_text, $bad_block . '[/block]') !== false) {
-                $this->assertTrue(false, 'Cannot have a POSTing block in a panel for this test. Try creating comcode_custom pages for each panel and putting some random word in it.');
-                break;
-            }
+            $path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $panel . '.txt';
+
+            @rename($path, $path . '.test.bak');
+            @fix_permissions($path . '.test.bak');
+
+            file_put_contents($path, uniqid('', false));
+            @fix_permissions($path);
         }
 
+        // Alter our config file and wait
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
         file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['static_caching_inclusion_list']='.*';");
@@ -78,7 +66,15 @@ class static_caching_test_set extends cms_test_case
             var_dump($data);
         }
 
+        // Revert our changes
         file_put_contents($config_file_path, $config_file);
+        foreach (['panel_left', 'panel_right', 'panel_top', 'panel_bottom'] as $panel) {
+            $path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $panel . '.txt';
+
+            unlink($path);
+            @rename($path . '.test.bak', $path);
+            @fix_permissions($path);
+        }
     }
 
     public function testFailover()

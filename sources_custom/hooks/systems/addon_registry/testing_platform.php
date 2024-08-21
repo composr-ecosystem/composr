@@ -826,7 +826,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/async_tests/php_versioning.php',
             '_tests/tests/async_tests/phpbb_post_parser.php',
             '_tests/tests/async_tests/phpstub_accuracy.php',
-            '_tests/tests/async_tests/points.php',
+            '_tests/tests/sync_tests/points.php',
             '_tests/tests/async_tests/polls.php',
             '_tests/tests/async_tests/post_templates.php',
             '_tests/tests/async_tests/posts.php',

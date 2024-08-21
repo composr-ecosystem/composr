@@ -34,7 +34,7 @@ class Hook_commandr_command_get_value
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('get_value', ['h'], [true, true, true]), '', ''];
+            return ['', do_command_help('get_value', ['h'], [true, true]), '', ''];
         }
 
         if (!array_key_exists(0, $parameters)) {

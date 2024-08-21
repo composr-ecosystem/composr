@@ -8571,6 +8571,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_SET_VALUE_HELP_PARAM_1
         ERROR_MAIL_OVERFLOW
         PRIVILEGE_use_own_recommend_message
+        CMD_GET_VALUE_HELP_PARAM_1
     ')));
 
     $non_admin_files = [

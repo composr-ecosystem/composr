@@ -109,12 +109,11 @@ class specsettings_documented_test_set extends cms_test_case
                 (/*AFM*/strpos($var, 'ftp_') === false) &&
                 (/*Testing Platform*/!in_array($var, ['ci_password', 'gitlab_personal_token'])) &&
 
-                /* LEGACY: Demonstrator; no longer maintained
+                // LEGACY: Demonstrator; no longer maintained (but some of these are also used by Google App Engine, make release, etc)
                 (strpos($var, 'throttle_') === false) &&
                 (strpos($var, 'custom_') === false) &&
                 ($var != 'mysql_demonstratr_password') &&
                 ($var != 'mysql_root_password') &&
-                */
 
                 (/*Custom domains*/strpos($var, 'ZONE_MAPPING') === false) &&
                 (/*Legacy password name*/$var != 'admin_password') &&

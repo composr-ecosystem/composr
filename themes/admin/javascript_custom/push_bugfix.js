@@ -10,7 +10,7 @@
             var fixed_files_e = document.getElementById('fixed_files');
             var file_addons = Array.from(params.gitFound);
             var category_title = null;
-            
+
             for (i = 0; i < fixed_files_e.options.length; i++) {
                 if (fixed_files_e.options[i].selected) {
                     fixed_files.push(fixed_files_e.options[i].value);

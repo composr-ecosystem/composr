@@ -29,8 +29,8 @@ class points_test_set extends cms_test_case
     protected $gift_points_sent;
     protected $gift_points_id;
 
-    protected $initial_credit_sender;
-    protected $initial_credit_recipient;
+    protected $initial_credit_sender = null;
+    protected $initial_credit_recipient = null;
 
     protected $disable_clean_up = true;
 
@@ -75,8 +75,14 @@ class points_test_set extends cms_test_case
         $this->establish_admin_session();
 
         // Credit some points so each member is in the positive (necessary for the tests to succeed)
-        $this->initial_credit_sender = points_credit_member($this->admin_user, 'Unit test: Points', 100000, 0, null);
-        $this->initial_credit_recipient = points_credit_member($this->member_user, 'Unit test: Points', 100000, 0, null);
+        $balance_admin = points_balance($this->admin_user);
+        if ($balance_admin < 1000) {
+            $this->initial_credit_sender = points_credit_member($this->admin_user, 'Unit test: Points', (1000 - $balance_admin), 0, null);
+        }
+        $balance_test = points_balance($this->member_user);
+        if ($balance_test < 1000) {
+            $this->initial_credit_recipient = points_credit_member($this->member_user, 'Unit test: Points', (1000 - $balance_test), 0, null);
+        }
 
         // Also credit some gift points to the admin so we can run our gift point tests
         $this->gift_points_id = points_refund($this->get_canonical_member_id('guest'), $this->admin_user, 'Unit test: Points', 25, 25);
@@ -427,16 +433,16 @@ class points_test_set extends cms_test_case
         $current_points = points_balance($this->admin_user);
         $current_points_recipient = points_balance($this->member_user);
 
-        $expected_gift_points_sent = $initial_gift_points;
+        $expected_gift_points_sent = 0; // NB: Escrow should never use gift points by design because gift points are meant for giving, not for exchanging for goods and services.
         $actual_gift_points_sent = ($current_gift_points_sent - $initial_gift_points_sent);
         $this->assertTrue(($actual_gift_points_sent == $expected_gift_points_sent), 'Escrow: Expected current gift points sent to go up by ' . strval($expected_gift_points_sent) . ' but instead was ' . strval($actual_gift_points_sent));
-        $this->assertTrue(($current_gift_points == 0), 'Escrow: Expected current gift points balance to be 0 but instead was ' . strval($current_gift_points));
+        $this->assertTrue(($current_gift_points == $initial_gift_points), 'Escrow: Expected current gift points balance to be the same, aka ' . strval($initial_gift_points) . ' but instead was ' . strval($current_gift_points));
 
-        $expected_points_spent = 1;
+        $expected_points_spent = $points_to_escrow;
         $actual_points_spent = ($current_points_spent - $initial_points_spent);
         $this->assertTrue(($actual_points_spent == $expected_points_spent), 'Escrow: Expected current points spent to go up by ' . strval($expected_points_spent) . ' but instead was ' . strval($actual_points_spent));
 
-        $expected_points = $initial_points - 1;
+        $expected_points = $initial_points - $points_to_escrow;
         $this->assertTrue(($current_points == $expected_points), 'Escrow: Expected current points balance to be ' . strval($expected_points) . ' but instead was ' . strval($current_points));
         $this->assertTrue(($current_points_recipient == $initial_points_recipient), 'Escrow: Expected the recipient to not yet have any change in their points balance, but a change happened.');
 
@@ -494,11 +500,22 @@ class points_test_set extends cms_test_case
         }
 
         // Reverse credited points
-        $reverse1 = points_transaction_reverse($this->initial_credit_sender);
-        $reverse2 = points_transaction_reverse($this->initial_credit_recipient);
+        $reversals = [];
+        if ($this->initial_credit_sender !== null) {
+            $reversals[] = $this->initial_credit_sender;
+            $reverse1 = points_transaction_reverse($this->initial_credit_sender);
+            $reversals[] = $reverse1[0];
+        }
+        if ($this->initial_credit_recipient !== null) {
+            $reversals[] = $this->initial_credit_recipient;
+            $reverse2 = points_transaction_reverse($this->initial_credit_recipient);
+            $reversals[] = $reverse2[0];
+        }
+        $reversals[] = $this->gift_points_id;
         $reverse3 = points_transaction_reverse($this->gift_points_id);
+        $reversals[] = $reverse3[0];
         if (!$this->disable_clean_up) {
-            foreach ([$this->initial_credit_sender, $reverse1[0], $this->initial_credit_recipient, $reverse2[0], $this->gift_points_id, $reverse3[0]] as $id) {
+            foreach ($reversals as $id) {
                 $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $id], '', 1);
             }
         }

@@ -62,7 +62,7 @@
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
-	background: #ccc;
+	background: {$GET,standard_border};
 	margin-bottom: 6px;
 }
 
@@ -82,7 +82,7 @@
 
 .stepper-item.active .step-counter {
 	background-color: {$GET,success_color};
-	color: #ffffff;
+	color: {$GET,native_ui_background};
 }
 
 .stepper-item.completed::after {

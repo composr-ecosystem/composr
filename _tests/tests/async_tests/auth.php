@@ -18,6 +18,7 @@
  */
 class auth_test_set extends cms_test_case
 {
+    protected $ip_strict_for_sessions;
     public function setUp()
     {
         parent::setUp();
@@ -27,6 +28,9 @@ class auth_test_set extends cms_test_case
         require_code('users');
 
         $GLOBALS['SITE_DB']->query_delete('sessions');
+
+        $this->ip_strict_for_sessions = get_option('ip_strict_for_sessions');
+        set_option('ip_strict_for_sessions', '1'); // Necessary for this test to be accurate
     }
 
     public function testNoBackdoor()
@@ -142,5 +146,11 @@ class auth_test_set extends cms_test_case
                 $this->assertTrue($success, 'Access when none expected for ' . $ip . ' with ' . $fake_session_id);
             }
         }
+    }
+
+    public function tearDown() {
+        set_option('ip_strict_for_sessions', $this->ip_strict_for_sessions);
+
+        parent::tearDown();
     }
 }
