@@ -99,14 +99,14 @@ class DecisionTree
         // Verify the tree contains a valid structure. Either explicit errors, or implicit errors generated trying to process the data structure.
         foreach ($decision_tree as $screen_name => $screen) {
             if (substr($screen_name, 0, 1) == '_') {
-                fatal_exit('Cannot start a screen name with underscore, is reserved');
+                fatal_exit('Cannot start a screen name (' . $screen_name . ') with underscore; this is reserved');
             }
 
             if (isset($screen['next'])) {
                 if (is_array($screen['next'])) {
                     foreach ($screen['next'] as $next) {
                         if (count($next) != 3) {
-                            fatal_exit('Each \'next\' must be a tuple of 3 details: parameter, value, next screen to go to');
+                            fatal_exit('Each \'next\' must be a tuple of 3 details: parameter, value, next screen to go to. Fix this on the screen ' . $screen_name);
                         }
                     }
                 }
@@ -118,7 +118,7 @@ class DecisionTree
             }
             foreach ($required_properties as $property) {
                 if (@cms_empty_safe($screen[$property])) {
-                    fatal_exit($property . ' parameter required on each screen');
+                    fatal_exit($property . ' parameter required on each screen; missing on ' . $screen_name);
                 }
 
                 if (isset($screen['questions'])) {
@@ -126,7 +126,7 @@ class DecisionTree
                         $required_properties = ['label'];
                         foreach ($required_properties as $question_property) {
                             if (@cms_empty_safe($question[$question_property])) {
-                                fatal_exit($question_property . ' parameter required on each question');
+                                fatal_exit($question_property . ' parameter required on each question; missing on ' . $screen_name . ' => ' . $question_name);
                             }
                         }
                     }
@@ -242,7 +242,7 @@ class DecisionTree
                 foreach ($details[$notice_type] as $notice_details) {
                     if (is_array($notice_details)) { // Contextual, dynamic
                         if (count($notice_details) != 3) {
-                            fatal_exit('Each \'' . $notice_type . '\' must be a tuple of 3 details: parameter, value, notice');
+                            fatal_exit('Each \'' . $notice_type . '\' array must be a tuple of 3 details: parameter, value, notice. Fix this on ' . $title->evaluate());
                         }
 
                         list($parameter, $value, $notice) = $notice_details;
@@ -433,8 +433,8 @@ class DecisionTree
                     }
                     $val = $hook_ob->inputted_to_field_value(false, $field);
 
-                    // Required field validation (a standard for all field hooks)
-                    if (($field['cf_required'] == 1) && (($val == '') || ($val === null) || (($val == STRING_MAGIC_NULL) && !fractional_edit()))) {
+                    // Required field validation (a standard for all field hooks except tick)
+                    if (($field['cf_type'] != 'tick') && ($field['cf_required'] == 1) && (($val == '') || ($val === null) || (($val == STRING_MAGIC_NULL) && !fractional_edit()))) {
                         warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', escape_html($field['cf_input_name'])));
                     }
 

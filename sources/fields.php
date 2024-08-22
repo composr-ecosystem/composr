@@ -736,8 +736,8 @@ function save_form_custom_fields(string $content_type, string $id, ?string $old_
 
         $value = $ob->inputted_to_field_value($existing !== null, $field, 'uploads/catalogues', ($existing === null) ? null : _get_catalogue_entry_field($field['id'], $existing, $storage_type));
 
-        // Required field validation (a standard for all field hooks)
-        if (($field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
+        // Required field validation (a standard for all field hooks except tick)
+        if (($field['cf_type'] != 'tick') && ($field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
             warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', get_translated_tempcode('catalogue_fields', $field, 'cf_name')));
         }
 

@@ -347,8 +347,8 @@ function cns_read_in_custom_fields(array $custom_fields, ?int $member_id = null)
 
         $value = $ob->inputted_to_field_value($member_id !== null, $custom_field, 'uploads/cns_cpf_upload', ($old_value === null) ? null : ['cv_value' => $old_value]);
 
-        // Required field validation (a standard for all field hooks)
-        if (($custom_field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
+        // Required field validation (a standard for all field hooks except tick)
+        if (($custom_field['cf_type'] != 'tick') && ($custom_field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
             warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', get_translated_tempcode('f_custom_fields', $custom_field, 'cf_name')));
         }
 
