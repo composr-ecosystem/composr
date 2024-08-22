@@ -4,7 +4,7 @@ This tutorial will provide you some advice for reporting different kinds of feed
  - Comprehensively (you don't want to provide vague non-actionable feedback)
  - Fairly (so that you're not expecting people to be working unpaid to meet your particular needs)
  - Courteously (so as to not cheese anybody off)
-It is written from the perspective of the Composr developers.
+It is written from the perspective of the core Composr developers.
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -16,15 +16,19 @@ We really want every tiny little issue in Composr reported. This includes everyt
 
 This might mean making a bug report, or logging a feature suggestion -- if something is not working as conceived, that's a bug, otherwise it's a feature suggestion. [b]This section is about bug reports[/b]. Design/interface changes usually count as a feature suggestion, unless something is clearly not functional in the general case.
 
+[title="3"]The Report Issue Wizard[/title]
+
+The easiest way to report a bug or feature is to use our [page="site:report-issue"]report issue wizard[/page]. The wizard will ask you questions specific to your selections so you are not overwhelmed by the Mantis bug tracker interface. The wizard will then create a tracker issue for you and provide you a link so you can upload files / screenshots or post comments on it.
+
 [title="3"]What to expect[/title]
 
-The developers have a track record of responding to bug reports within just a few days. Don't expect a same-day response, but do post a reminder if you get no response after a week (it's rare for it to take that long).
+Don't expect a same-day response, after-all this is free software and developers are donating their time (when they can) to fix issues. But do post a reminder (e.g. a bug note / comment on the issue) if you get no response after a couple weeks. Sometimes a notification might not have gone through.
 
 Bug fixes usually come with an automated (non-personal) response that includes a hotfix, a description of the bug, and/or a link to show the changes made in the code repository (git/github).
 
-If you really do require an urgent priority response it means either (or both):
- - You need to pay for support from a professional
- - You need to take better backups so you don't rely on external factors
+If you really do require an urgent priority response, then:
+ - You need to hire a professional to fix the bug(s) for you, and/or
+ - You should ensure you have a redundant backup policy so you can revert breaking changes until they get fixed
 So please bear this in mind and structure your own processes accordingly.
 
 [title="3"]Rules to follow[/title]
@@ -33,19 +37,20 @@ So please bear this in mind and structure your own processes accordingly.
 We don't want people to have to labour over bug reports. However there are some basic rules you will need to follow...
 
 Before starting your report:
- - [b]Check the bug has not already been reported[/b] on the [url="tracker"]https://composr.app/tracker[/url]. Don't spend more than 5 minutes looking, but at least have a glance over.
+ - [b]Check the bug has not already been reported[/b] on the [url="tracker"]https://composr.app/tracker[/url]. Don't spend more than 5 minutes looking, but at least have a glance over. You can also go to your Admin Zone dashboard. And in the version block, click the link which allows you to view issues reported for your version.
  - [b]Try not to report unrelated problems together[/b]. Generally speaking it is better each issue is reported separately so that it can be handled in one go without interdependence.
- - [b]Check it is a Composr bug[/b]. If it relates to a third-party addon, it should not be reported as a Composr bug.
+ - [b]Check it is a Composr bug[/b]. If it relates to a third-party addon (a non-bundled addon which is not offered on the downloads section of Composr), it should not be reported as a Composr bug.
  - [b]Check the FAQ[/b]. If your problem looks like it might be caused by a server configuration issue (for example if you are getting an 'Internal server error' message), please check our [page="_SEARCH:faq"]FAQ[/page] first.
 
 What to include on your report:
+ - [b]Use concise and specific language in the title / subject[/b]. The title / subject is what shows up on change logs for new releases of Composr. It's also what shows up when viewing issues as a list on the tracker. So simply saying "Issue with the downloads page" will confuse anyone who reads the change log, or developers who want to quickly know what each issue is about. Instead, be specific, such as "Opening the downloads page triggers a critical error: undefined function points_balance". Keep this short and specific; no more than a sentence.
  - [b]Describe your problem[/b]. If the problem it is at all complex it may also help if you can give precise [b]steps to reproduce the problem[/b]. That said, we are a huge fan of [url="TechSmith Capture"]https://www.techsmith.com/jing-tool.html[/url], and often simply spending a few minutes recording a video means you won't need to type much explanation and your problem will be more easily understood without ambiguity or language problems.
- - If you think there is any chance that the problem only happens on some browsers (e.g. some kind of layout problem or JavaScript problem), [b]report which browser you are using[/b] (e.g. Mozilla Firefox 58).
- - If you are not running the latest stable version of Composr, state [b]which Composr version you are running[/b].
+ - If you think there is any chance that the problem only happens on some browsers (e.g. some kind of layout problem or JavaScript problem), [b]report which browser you are using[/b] in the Additional Information section (e.g. Mozilla Firefox 58). Generally you can find this in your browser's settings / about section.
+ - State [b]which Composr version you are running[/b]. You are usually prompted for this in Mantis as 'Product Version'. The wizard also asks you for this. It helps us immensely to know what version you are running. And it categorises your issue so others running the same version can easily find it.
  - If you get an error message, copy and paste the [b]error message[/b]. The developers need to know precisely what it said, without paraphrasing or typos.
- - If you see a stack trace, or are invited to generate one, include that [b]full stack trace[/b]. Often stack traces are extremely useful. You should scan over the stack trace first though to make sure there isn't anything in there you wouldn't be happy sharing (such as your website URL, or potentially passwords or sensitive text). If you find anything you do not want to share, simply censor it out of the report. Don't expect the developers to censor things for you unless it really jumps out at them, that's not something they'll have time for.
- - Mention [b]anything else that you might think potentially relevant to the situation[/b]. For example, if you have disabled JavaScript, or are browsing on a phone, or have installed hotfixes in related areas of the code, or if you're on a really new version of PHP. We can't list everything that might be relevant here, and that's the point (don't consider the aforementioned examples a checklist): if something that is likely to be relevant comes to mind, include it.
- - Consider [b]offering server access[/b]. If your problem might be hard to reproduce, take some time to reproduce, or be specific to your own server (e.g. only occur on certain PHP versions), it may help the developers to have direct access to your server to see the problem and develop/test a fix. You can add FTP details to your site in your member account (these will get encrypted). If you wish to grant developer access then make sure you agree to the [page="_SEARCH:server_access"]server access policy[/page] (designed to protect the developers from claims against them), and clearly include in your report that you agree and that you are happy for direct site access. The developers like to resolve bugs efficiently with the minimal amount of discussion, so if you can provide access immediately at the point of making your report it may help a lot (otherwise the developers may need to come back with questions, and the back-and-forth and second guessing could take a while). If you don't want to give live access you could consider cloning your site and providing access to the clone.
+ - If you see a stack trace, or are invited to generate one, include that [b]full stack trace[/b]. Often stack traces are extremely useful. You should scan over the stack trace first though to make sure there isn't anything in there you wouldn't be happy sharing (such as your website URL, full file paths, or potentially passwords or sensitive text). If you find anything you do not want to share, simply censor it out of the report. Or, you can post your stack trace on the issue separately as a 'private' comment. Don't expect the developers to censor things for you; they don't have the time for that.
+ - Mention [b]anything else that you might think potentially relevant to the situation[/b]. For example, if you have disabled JavaScript, made relevant changes to Composr settings, or are browsing on a phone, or have installed hotfixes in related areas of the code, or if you're on a really new version of PHP. We can't list everything that might be relevant here, and that's the point (don't consider the aforementioned examples a checklist): if something that is likely to be relevant comes to mind, include it.
+ - If your problem might be hard to reproduce, [b]take some time to reproduce or to enable remote access for the developers[/b], or be specific to your own server (e.g. only occur on certain PHP versions). If you wish to grant developer access then make sure you agree to the [page="_SEARCH:server_access"]server access policy[/page] (designed to protect the developers from claims against them), and clearly include in your report that you agree and that you are happy for direct site access. The developers like to resolve bugs efficiently with the minimal amount of discussion, so if you can provide access immediately at the point of making your report it may help a lot (otherwise the developers may need to come back with questions, and the back-and-forth and second guessing could take a while). If you don't want to give live access you could consider cloning your site and providing access to the clone.
 
 In general:
  - Use a [b]high-standard of English[/b]. Don't use l33t-speak, txtspk, or anything like Hinglish. If you don't write English well then try checking what you have written by passing it through a translator (e.g. Google Translate or Bing Translator). There have been many situations where users type English as they hear it in relation to their own language, not how it is spelt. This tends to force the developers to stare at their screens for 10 minutes to decode it.
@@ -56,28 +61,35 @@ In general:
   - Clicking the button results in something seemingly happening, except the browser just stays in a "loading" state without actually showing any result.
   - Clicking the button takes you to a white-screen.
   - Clicking the button takes the browser away and right back to where you were with no message.
+  - Clicking the button triggers a JavaScript error.
  - [b]Don't write a long meandering essay[/b]. If you could convey as much meaning using fewer words, try and do that. Remember that the developers might have to read another 10 reports in the same morning, actually deal with them, and finish it all without having expended the energy required for their primary job. They don't have time to read too much narrative.
- - [b]Don't write it as a letter[/b] to someone specific. Chris Graham may currently be the lead developer, but don't start your report "Dear Chris" - it's a little annoying because it adds some unnecessary pressure / filing difficulty. What if Chris is on holiday or ill and someone else is covering lead development duties?
+ - [b]Don't address someone in specific[/b]. Not every developer is available at all times. Whichever developer can resolve the issue will resolve the issue (assuming a developer can, which is not a guarantee for free software / support). Therefore, it is inaccurate to assume a specific person will resolve it.
  - [b]Write for a broad audience[/b]. Other users are probably also reading your report. Don't write the report as something about you and your site, try to keep the focus on the problem itself, and Composr.
- - [b]Assume the developers have amnesia[/b]. You may have previously interacted with the developers, and therefore assume details of this will be remembered. However, assuming 4 issues are dealt with per day, that means 1460 issues per year - so please forgive that the developers will often dump their memory after dealing with something.
+ - [b]Assume the developers have amnesia[/b]. You may have previously interacted with the developers, and therefore assume details of this will be remembered. However, assuming 4 issues are dealt with per day, that means 1460 issues per year - so please forgive that the developers will often dump their memory after dealing with something. And remember that you may have a different developer interacting with you each time, or even within the same issue.
 
-If you can't remember a PHP or Composr-critical error message, you may be able to find it in your error log (located in Admin Zone > Audit > Low-level logging). The error log shows all non-user-errors that have occurred on your site.
+If you can't remember a PHP or Composr-critical error message, you may be able to find it in your error log (located in Admin Zone > Audit > Low-level logging). The error log shows all non-user-errors that have occurred on your site. If you cannot find the error on the UI (which truncates to the newest ones to prevent PHP memory issues), you can open your log at [tt]data_custom/errorlog.php[/tt].
 
 If your report is not clear enough for the developers to [i]immediately[/i] see it as a bug it may not be treated as such &ndash; so please make your reports as clear as possible.
 
-[title="3"]Automatic reporting[/title]
+[title="3"]Automatic reporting (telemetry)[/title]
 
-Composr comes with an automatic bug reporting mechanism, that is enabled by default but may be disabled during installation and at any time in the site configuration. We prefer that users leave this option enabled, as it allows us to fix bugs that do not get reported (which is probably a high percentage). This system logs and e-mails us any stack traces you may encounter.
+Composr comes with an automatic bug reporting mechanism which may be disabled during installation and at any time in the site configuration. We prefer that users leave this option enabled, as it allows us to fix bugs that do not get reported. When enabled, some errors are sent to the homesite securely by encrypting it with a public key which was distributed with your version. Your error log (Admin Zone > Audit > Low-level logging) will indicate which errors were relayed. You can click a link for a relayed error to see if the developers added any status or information to it (e.g. maybe it was already resolved and a tracker issue will be provided for a hotfix). Sometimes a message is applied automatically / instantly (e.g. a reported error was already fixed) so developers don't have to sift through errors that were already fixed.
+
+This automatic reporting mechanism [b]should not[/b] be considered a substitute for reporting issues on the tracker. You should still report issues / errors to the tracker so that other members and developers can see it and discuss it.
 
 [title="3"]Where to post[/title]
 
-The "correct" place is the [url="tracker"]https://composr.app/tracker[/url]. However, practically speaking most users are most comfortable posting informally on the forum, and up to this point the developers have been very happy with that. The developers have tools for automatic submission of formal reports to the tracker anyway.
+The "correct" place is the [url="tracker"]https://composr.app/tracker[/url] or through our [page="site:report-issue"]report issue wizard[/page].
 
-The developers don't promise to check the forum, so if you don't get a reply to a bug after about a week then you should go to post on the tracker, but not getting a reply on the forum has been rare in the past.
+You could informally post an issue on the forum. But the developers don't promise to check the forum. The issue tracker is the best way for developers to keep issues organised. So it is highly recommended you post there.
 
 [title="2"]Reporting security problems[/title]
 
-If reporting a security hole (or suspected hole), make sure the tracker issue is reported as [i]private[/i]. Immediate public disclosure (before an official response can be prepared) is not responsible and will reflect negatively on your reputation.
+[b]You must report security holes or suspected security holes privately[/b] by marking the tracker issue as 'Private' (if reporting through the wizard, it will do this automatically if you chose security hole as the issue type).
+
+Disclosing security holes publicly is very irresponsible because malicious users can spot those and exploit people's Composr sites before a patch is made. The core developer team will disclose the security hole after it has been patched.
+
+This is a very serious offense, so you may be issued a warning / punitive actions for failing to report a security hole privately.
 
 [title="2"]Reporting performance problems[/title]
 
@@ -90,15 +102,17 @@ Webhosts may work on various metrics, or may respond to issues they have manuall
 
 [title="3"]Database size[/title]
 
-This could be an issue if you store a very large amount of data/content on your website. It has rarely, if ever, been reported as an issue for a Composr site.
+This could be an issue if you store a very large amount of data/content on your website. It has rarely, if ever, been reported as an issue for a Composr site. Composr has many cleanup tools and health checks in place to help remove old and unnecessary data from the database (and to alert webmasters when culprit tables get too large).
+
+That being said, the biggest culprit table seems to be stats. If your stats table is very large (it is not uncommon for it to be multiple GBs on an active site), consider changing your Composr settings to store stats for a fewer number of days. This will not affect your stats graphs / pages so long as your system scheduler is working (the data for the graphs is stored separately).
 
 [title="3"]Bandwidth[/title]
 
-This could be an issue if you are hosting large files, such as videos or downloads, and a lot of people are downloading them. Composr itself has no particular high bandwidth requirement.
+This could be an issue if you are hosting large files, such as videos or downloads, and a lot of people are downloading them. Composr itself has no particular high bandwidth requirement. But there is a setting you can set which allows you to limit the amount of bandwidth used in a given month (under Admin Zone > Setup > Configuration > Site options > Closed site).
 
 [title="3"]Request volume[/title]
 
-It may be that you have very large numbers of visitors. If you have many hits each second, the webhost may struggle to serve these requests. This is not specific to Composr.
+It may be that you have very large numbers of visitors. If you have many hits each second, the webhost may struggle to serve these requests. This is not specific to Composr. But you may consider using a load balancer on your server, or at the very least enabling Composr's rate limiting features in config_editor.php.
 
 [title="3"]CPU usage[/title]
 
@@ -113,20 +127,20 @@ Let's imagine the webhost has 500 accounts on the server, and 7% of those sites 
 [tt]500*0.07*0.5/10=1.75 seconds of request per second of real time[/tt], probably enough to tax a dual-core server.
 So you can see, depending on what kinds of customers the host has, what software they run, how many accounts are held on the server, and the power of the server, hosts may have to do some push back against what their customers might do.
 
-If you are using the Composr chatroom, and a few people leave it open, the reqs/sec could rise considerably.
+If you are using the Composr chatroom, and a few people leave it open, the reqs/sec could rise considerably. The reqs/sec could also rise considerably if you use site-wide IM or if you use notification polling.
 
 If you are going to run a popular CMS site, you will eventually outgrow shared hosting and need a VPS, dedicated server, or cloud instances. Until then, try and see past webhost marketing and choose a host that has a good reputation and good hardware -- absolutely don't cheap-out and try and get really cheap hosting, as you'll suffer from it. Cheap hosting is ideal only for simple static sites that get few hits. It's really important to realise how cut-throat and difficult it is for webhosts -- think how much salary a host needs to pay for the support you use from them, for the hardware they provide, for the marketing/advertising/offers they run, and for maintaining their business (their own website, etc) -- you'll see how squeezed it is and how if you go on the cheap end you can't possibly do well from it.
 
 [title="3"]Disk I/O[/title]
 
-No Composr user has ever reported that a webhost has reported excessive disk I/O (input/output) to them, but it may be an issue affecting the performance of your site due to factors outside the scope of Composr. I/O can be a real performance bottleneck if the server is not well-configured, such as having a remote disk, a slow disk, a failing disk, or if other users on the server are doing something that is really making the disk 'thrash'. Composr won't thrash the disk, but it would be affected by another user doing so. Composr therefore does have some special options for limiting its need to regularly check the hard disk, discussed in the [page="_SEARCH:tut_performance"]Optimising performance[/page] tutorial.
+As of this writing, no Composr user has ever reported that a webhost has reported excessive disk I/O (input/output) to them, but it may be an issue affecting the performance of your site due to factors outside the scope of Composr. I/O can be a real performance bottleneck if the server is not well-configured, such as having a remote disk, a slow disk, a failing disk, or if other users on the server are doing something that is really making the disk 'thrash'. Composr won't thrash the disk, but it would be affected by another user doing so. Composr therefore does have some special options for limiting its need to regularly check the hard disk, discussed in the [page="_SEARCH:tut_performance"]Optimising performance[/page] tutorial.
 
 [title="3"]Memory usage[/title]
 
 [media width="64" thumb="0" float="right" framed="0"]themes/default/images/icons/menu/cms/cms.svg[/media]
 Normally Composr requests are explicitly limited to a [i]maximum[/i] of 128MB, which is very small compared to the amount of RAM a server has (4GB is fairly typical nowadays). There are a very small number of one-off admin tasks where Composr raises or removes the limit, but its very unlikely to be a problem.
 
-If a webhost complains about memory usage they are probably looking at an aggregate figure.
+If a webhost complains about memory usage they are probably looking at an aggregate figure. If you get an error about PHP running out of memory, and you believe it is not because of tight PHP memory limits on your webhost but rather Composr using far more than it should, you can report it to the tracker.
 
 [title="4"]Example: chatroom[/title]
 
@@ -173,13 +187,13 @@ If you are using too many resources for shared hosting, you'll need something be
 
 [title="2"]Reporting spam problems[/title]
 
-&raquo; See advice provided in the [page="_SEARCH:tut_antispam"]Anti-spam settings[/page] tutorial.
+&raquo; See advice provided in the [page="_SEARCH:tut_antispam"]Anti-spam settings[/page] tutorial. Note that if there is an issue with the anti-spam system itself, please report it to the tracker, but don't report general spam incidences on your site.
 
 [title="2"]Requesting support[/title]
 
 Generally, users can help each other out on the community forum.
 
-Please don't demand free professional/official support from the experts. Professionals should be paid competitively for the work they do without quibbles.
+Please don't demand free professional/official support. Members will provide the support they can provide when and if they can provide it. If you need guaranteed / urgent support or have a mission-critical architecture, consider hiring a professional instead.
 
 [title="3"]Reporting and avoiding emergency problems[/title]
 
@@ -188,35 +202,34 @@ This section describes how to report emergency problems.
 
 It is about:
  - emergency events that have substantially and suddenly taken down your website
- - ...legitimate bugs or undocumented major usability problems that could serious trip regular users up
+ - ...legitimate bugs or undocumented major usability problems that could seriously trip regular users up
 
 It is not about:
  - general bugs in functionality
  - problems with your hosting, e.g. databases suddenly corrupting
 
-If you have a major problem that you believe to have been caused by a Composr bug, you can open a [page=":contact:free"]free bug report support ticket[/page]. The developers will respond appropriately (although if it is a problem with your computer's software or hosting, they may say so and not be able to tackle as a Composr bug report).
+If you have a major problem that you believe to have been caused by a Composr bug, you can open open a tracker issue for it.
 
-It is important that you help the developers help you. Remember that the developers are not employed 24x7 to manage your bug reports, they have to fit it in within their working hours, and it is a secondary job to what pays the bills. You need to make it really easy for them to jump in to fix the problem, the first time they open the ticket. The developers will not want to:
+It is important that you help the developers help you. Remember that the developers are not employed (they are members who volunteer their time to further the Composr project), so they have to fit it in within their availability. It is secondary to what pays their bills. You need to make it really easy for them to jump in to fix the problem. The developers will not want to:
  - negotiate for the access needed to fix the problem
  - have a protracted back-and-forth over hours or days
- - have to schedule processing of the ticket
+ - have to schedule processing of the issue
  - have to keep requesting additional information
-In short: provide the access they need to solve the problem immediately when they open the ticket for the first time, i.e. FTP or control panel access. There is functionality to encrypt these details. Ideally, the developers should be able to look at your ticket, have the access they need to resolve the problem immediately, resolve it there and then, and then simply be able to tell you it has been resolved.
 
-Don't make the developers have to do detective work just to extra crucial information from you. Explain the exact situation and anything pertinent. For example, if it is a problem upgrading, describe the exact process you used to upgrade, what you upgraded from, and what you upgraded to.
+Don't make the developers have to do detective work just to receive extra crucial information from you. Explain the exact situation and anything pertinent. For example, if it is a problem upgrading, describe the exact process you used to upgrade, what you upgraded from, and what you upgraded to.
 
-In return, the developers will try their best to ensure unintended glitches don't cause you unnecessarily pain. They have a [i]very[/i] strong track record for this.
+In return, the developers will try their best to ensure unintended glitches don't cause you unnecessary pain.
 
-Specifically for upgrading, the developers do advise taking backups as part of the upgrade process. If you did have a problem upgrading, the best process you could follow would be:
+Specifically for upgrading, you are advised to take backups as part of the upgrade process. The best process you could follow would be:
 1) Take a backup
 2) Do an upgrade
 3) (Find it went wrong)
-4) Move the current site into a temporary directory (e.g. [tt]failed_upgrade[/tt]), and rename the database (e.g. [tt]failed_upgrade[/tt])
+4) Move the current, broken site into a temporary directory (e.g. [tt]failed_upgrade[/tt]), and rename the database (e.g. [tt]failed_upgrade[/tt])
 5) Restore the backup to its original directory and database
-6) Open a support ticket explaining the problem, and providing access to the temporary site
-7) (The developers would then quickly resolve)
+6) Report an issue explaining the problem, and providing access to the temporary (failed_upgrade) site via the FTP fields on your member profile
+7) (The developers would then do what is needed to investigate and solve the problem)
 
-Bear in mind that the primary defence to something suddenly going wrong with your site is to take backups, and know how to restore them (having practised it at least once). The developers are committed to ensuring Composr's stability as a product, but bug fixing is [i]not[/i] a free concierge service that puts the responsibility for your site onto the developer's shoulders. The developers can provide this kind of service via professional support, but not via free bug fixing.
+Bear in mind that the primary defence to something suddenly going wrong with your site is to take backups, and know how to restore them (having practised it at least once). The developers are committed to ensuring Composr's stability as a product, but bug fixing is [i]not[/i] a free concierge service that puts the responsibility for your site onto the developer's shoulders. That kind of responsibility requires employing and/or contracting a developer and paying them for their time.
 
 &raquo; Also see the [page="_SEARCH:tut_disaster"]Disaster recovery[/page] tutorial.
 
@@ -226,13 +239,15 @@ If you are finding background requests for pages are not getting called (AJAX), 
 
 To report such issues it is best to take a screenshot of your JavaScript console. All modern browsers have this as a part of the developer tools, and it basically shows a log of all JavaScript errors that have happened since the page loaded.
 
+Here are some tutorials on how to do that:
+
 https://www.youtube.com/watch?v=FNEnGF4qYGk
 
 https://www.youtube.com/watch?v=8KXGIZGUPwE
 
 [title="4"]Cross-domain problems[/title]
 
-Issues with AJAX and frames specifically can be caused by JavaScript security relating to access across domains. If JavaScript is asked to call one domain, from a different one, it won't allow it, to preserve the general security of the web.
+Issues with AJAX and frames specifically can be caused by JavaScript security relating to access across domains. If JavaScript is asked to call one domain, from a different one, it might not allow it, to preserve the general security of the web.
 
 In Composr it can happen if the base URL has changed. One possibility is if it is blank in the [tt]_config.php[/tt] file. If it was never set, and sometimes Composr is getting called by different variants of the base URL (typically with and without 'www.') then the cache can get a mixture, and it triggers such cross-domain errors.
 
@@ -244,22 +259,20 @@ Feedback is one of the most important signals for us when developing Composr. Co
 Most of the guidance for reporting bugs also counts for posting feature suggestions, so please review the advice above ("Rules to follow").
 
 Additionally:
- - Make sure your posting is reasonably comprehensive and self-contained. For example, if you are suggesting integrating with an external system then don't ask developers to go and do further research just to see what you mean -- explain exactly what you want integrating, how, and why. Doing research ourselves can take hours, so if you ask for it you'll instead likely just find that the issue gets closed.
- - Esoteric feature suggestions really aren't likely to be taken seriously, as Composr must not be allowed to become bloatware. Additionally big complex features/integrations need volunteers or funding, and when we see big esoteric requests like this it looks like a request for free work. Because otherwise such an esoteric thing wouldn't be brought to the tracker, they'd just be handled as some separate personal or commercial project. So such requests are not likely to receive a good response.
+ - Make sure your posting is reasonably comprehensive and self-contained. For example, if you are suggesting integrating with an external system then don't ask developers to go and do further research just to see what you mean -- explain exactly what you want integrating, how, and why. Doing research can take hours, so if you ask for it you'll instead likely just find that the issue gets closed (remember, Composr developers don't get paid; if you want a developer to do the research, then pay them for it).
+ - Esoteric feature suggestions really aren't likely to be taken seriously, as Composr must not be allowed to become bloatware. Additionally big complex features/integrations need volunteers or funding, and when we see big esoteric requests like this it looks like a request for free work. Because otherwise such an esoteric thing wouldn't be brought to the tracker, they'd just be handled as some separate personal or commercial project. So such requests are not likely to receive a good response. Bottom line, if you make a feature suggestion, ensure that you believe multiple people will use it and benefit from it.
 
-Unfortunately, it is often not possible for the developers to comment on whether or not any certain feature will be developed.
+Unfortunately, it is often not possible for the developers to comment on whether or not any certain feature will be developed. In fact, this practice is discouraged since the development of features largely depends on developer availability (which may also depend on whether someone can pay them to develop it, if they are not willing to do it for free). There are too many variables in the Composr project to allow for a sort-of "road map" of feature development. Further explanations are detailed below.
 
-The reason the developers can't comment on user feedback is because whether they answer 'yes' or 'no' they end up in a difficult situation, as described below.
+Regardless, we have the [url="feature tracker"]https://composr.app/tracker/[/url] available for full discussions, so your feedback will always be heard by someone in the community, even if someone is not able to address it. In the spirit of Open Source you can even see ideas direct from the core developers. Features can be directly sponsored from the tracker (using points; if you want to financially sponsor an issue, see TODO).
 
-Regardless, we have the [url="feature tracker"]https://composr.app/tracker/[/url] available for full discussions, so your feedback will always be heard, even though the developers won't necessarily be able to address it. In the spirit of Open Source you can even see ideas direct from the developers (which is our rough equivalent to having a product roadmap). Features can be directly sponsored from the tracker.
+[title="3"]If a developer declares 'yes' to a suggestion immediately[/title]
 
-[title="3"]If the developers declare 'yes' to a suggestion immediately[/title]
+ - They may need to find funding for development, as professional developers have to spend large amounts of time adding functionality. So, regardless of any developer's views, it often comes down to whether Composr users are able to sponsor functionality, hire someone to develop the feature, or develop it themselves.
+ - The community's plans for Composr might change for a good reason that they hadn't foreseen -- meaning it wouldn't be included after all. This can happen if the design process reveals a big problem with the idea. This is often the case, even for core developers' own ideas. It would be a big problem if any of Composr users built their plans around a premature announcement.
+ - Even if someone develops the feature it might take longer than people were expecting, and this not only rushes them into making releases too early, but Composr users can develop a dependency that is unhealthy for not just the development process, but the health of the user's business/organisation.
 
- - The developers may need to find funding for development, as professional developers have to spend large amounts of time adding functionality. So, regardless of any developer's views, it often comes down to whether Composr users are able to sponsor functionality.
- - The core team's plans might change for a good reason that they hadn't foreseen -- meaning it wouldn't be included after all. This can happen if the design process reveals a big problem with the idea. This is often the case, even for developers' own ideas. It would be a big problem if any of Composr users built their plans around a premature announcement.
- - Even if the developers develop the feature it might take longer than people were expecting, and this not only rushes them into making releases too early, but Composr users can develop a dependency that is unhealthy for not just the development process, but the health of the user's business/organisation.
-
-[title="3"]If the developers declare 'no' to a suggestion immediately[/title]
+[title="3"]If a developer declares 'no' to a suggestion immediately[/title]
 
 The problem with this is that it almost always causes arguments -- which of course we all wish to avoid.
 
@@ -269,20 +282,20 @@ As a developer's perspective can be hard to explain, the harder they try and exp
 
 Read on to get a better idea of our perspective.
 
-[title="3"]Why the developers might think 'no'[/title]
+[title="3"]Why a developer might think 'no'[/title]
 
 There are many reasons, but here are a few:
-1) We may feel a feature over-complicates things;
-2) We may feel a feature biases it in a particular direction;
-3) We may feel a feature would cause performance problems;
-4) We may feel a feature would introduce security risks;
-5) We may feel a feature directly conflicts with other plans;
-6) We may feel a feature would make Composr [page="_SEARCH:antifeatures"]bloatware[/page];
-7) We may feel a feature breaks important engineering principles such as [url="separation of concerns"]http://en.wikipedia.org/wiki/Separation_of_concerns[/url];
-8) We may feel a feature is somehow incoherent with Composr's under-the-hood architecture, so would need many subtle and complex changes to numerous interconnected subsystems, and introduce risks of new bugs or confusion about redefined Composr concepts;
-9) A feature could require skills or experience that no available developer has;
-10) For features relating to 'flexibility', developers sometimes feel that implementing yet another complex extra layer of control may be more complex to control that just customisation of the actual PHP code (which Composr supports in a neat and controlled way);
-11) Often Composr users will travel down a rabbit-hole of feature suggestions, as a poor substitute to having a proper budget for skilled and experienced developers working on a project. The core team is clear that non-trivial projects will always require some amount of designer and developer time, and no amount of loading Composr with features can change this, so at a certain point of complexity and specificity the advice would always just be 'hire a developer to code this directly'.
+1) They may feel a feature over-complicates things;
+2) They may feel a feature biases Composr in a particular direction;
+3) They may feel a feature would cause performance problems;
+4) They may feel a feature would introduce security risks;
+5) They may feel a feature directly conflicts with other plans;
+6) They may feel a feature would make Composr [page="_SEARCH:antifeatures"]bloatware[/page];
+7) They may feel a feature breaks important engineering principles such as [url="separation of concerns"]http://en.wikipedia.org/wiki/Separation_of_concerns[/url];
+8) They may feel a feature is somehow incoherent with Composr's under-the-hood architecture, so would need many subtle and complex changes to numerous interconnected subsystems, and introduce risks of new bugs or confusion about redefined Composr concepts;
+9) A feature could require skills or experience that no currently-available developer has;
+10) For features relating to 'flexibility', developers sometimes feel that implementing yet another complex extra layer of control may be more complex to control than customisation of the actual PHP code (which Composr supports in a neat and controlled way);
+11) Often members of software communities will travel down a rabbit-hole of feature suggestions as a poor substitute to having a proper budget for skilled and experienced developers working on a project. We are clear that non-trivial projects will always require some amount of designer and developer time, and no amount of loading Composr with features can change this, so at a certain point of complexity and specificity the advice would always just be 'hire a developer to code this directly'.
 
 As well as 'yes' vs 'no', there are the matters of strategy and of release management, which are not simple.
 
@@ -314,13 +327,16 @@ In patch releases the developers typically only fix bugs. However on some occasi
 Most features introduce risk in a number of areas, and all features are subject to some kind of prioritisation. For example:
  - there is quite a large risk if the database structure is changed, due to complexities of upgrading.
  - there is large incompatibility if the CSS is added to, because it means people's customised themes get busted.
-It is best that risk and incompatibility is managed in bulk, in major releases.
+ - the feature changes a lot of code, or more significantly the APIs, breaking customisations or non-bundled addons.
+ 
+ 
+It is best that risk and incompatibility is managed in bulk, in major releases. Sometimes the developers will compromise by introducing a small number of features in a minor release, which can be thought of as an in-between of a patch and a major release.
 
 [title="3"]Rules of thumb[/title]
 
-[b]No free guarantees[/b] -- There is no guarantee that someone will implement what you want. Open Source is not a free lunch, and volunteer Open Source developers makers only tend to implement things that are useful to themselves or fun to do. While Open Source programmers are usually highly ethical, and care about moving the world forward through cooperation, it's important to remember the best web developers are highly skilled and experienced professionals, like solicitors or doctors, and thus are paid as such. There's a lot of expertise in a lot of disciplines that is required to be a good web developer.
+[b]No free guarantees[/b] -- There is no guarantee that someone will implement what you want. Open Source is not a free lunch, and volunteer Open Source developers makers only tend to implement things that are useful to themselves or fun to do. While Open Source programmers are usually highly ethical, and care about moving the world forward through cooperation, it's important to remember the best web developers are highly skilled and experienced professionals, like solicitors or doctors, and thus are paid as such. There's a lot of expertise in a lot of disciplines that is required to be a good web developer. At the very least, developers have bills to pay.
 
-[b]You can sponsor functionality[/b] -- If you have some financial resources available then you can simply sponsor development financially to push things the way you want them to go.
+[b]You can sponsor functionality[/b] -- If you have some financial resources available then you can simply sponsor development financially to push things the way you want them to go. You can hire a developer to develop / resolve something on the tracker for you, or even provide ongoing maintenance of your site. If you don't have finances but you have points then you can sponsor an issue on the tracker using points. While this has far less power than financial compensation, at least the developer who implements the issue will receive the points (which boosts their voting power / ranks in the community and allows them to sponsor issues they want to see themselves).
 
 [b]Lead by example[/b] -- Of course only a proportion of Composr users can afford to sponsor functionality. So, why not set an example for end-users making contributions by releasing something yourself (addons, themes, translations, pull requests, etc) -- remember that if you don't release anything, you forfeit a right to complain if others aren't doing the same too. Demonstrating commitment to contributing to the product ecosystem (with deeds, not words) is much more likely to result in people being willing to help you out.
 
@@ -375,7 +391,7 @@ So, largely this feedback comes down to the fact that if you're creating a websi
 Composr doesn't look as good as Wordpress.
 [/quote]
 
-The default Wordpress look is pretty dry and basic, so chances are this feedback more relates to comparing a Wordpress theme to the default Composr look. Or, considering the Composr Theme Wizard as comparable to installing a theme for Wordpress (it isn't -- the Theme Wizard creates a colour scheme, which is pretty different). People do release themes for Composr; if the latest major release is quite new there may not be very many, but you can try and encourage authors of older themes to upgrade them.
+The default Wordpress look is pretty dry and basic, so chances are this feedback more relates to comparing a Wordpress theme to the default Composr look. Or, considering the Composr Theme Wizard as comparable to installing a theme for Wordpress (it isn't -- the Theme Wizard creates a colour scheme, which is pretty different). People do release themes for Composr; if the latest major release is quite new there may not be very many (or there may even just be the default theme), but you can try and encourage authors of older themes to upgrade them.
 
 It is true that you may need to invest more in getting a Composr theme than a Wordpress theme, assuming you don't want a website as simple as a Wordpress website. This is because Composr solves more sophisticated requirements; themes are going to require more work because there is a lot more within a Composr website to design against.
 
@@ -388,7 +404,7 @@ Usually this is more of an issue of a specific configuration of Composr looking 
 [title="3"]How to give constructive criticism[/title]
 
 [media width="100" thumb="0" float="right" framed="0"]themes/default/images/icons/status/inform.svg[/media]
-This is best shown by example. Recently (at the time of writing) the developers got some very vague feedback, mentioned in passing in our chatroom. It was not mentioned, but we were able to guess that this related to some display issues on the Composr demo, and analysis (read: second guessing) led to some bug reports, that the developers could then resolve:
+This is best shown by example. The developers got some very vague feedback, mentioned in passing in our chatroom. It was not mentioned, but we were able to guess that this related to some display issues on the Composr demo, and analysis (read: second guessing) led to some bug reports, that the developers could then resolve:
  - https://composr.app/tracker/view.php?id=1169
  - https://composr.app/tracker/view.php?id=1170
  - https://composr.app/tracker/view.php?id=1171
@@ -452,12 +468,12 @@ Feedback feedback feedback feedback.
 
 [title="2"]General courtesy and guidelines[/title]
 
-[title="3"]Don't start over-optimistic, then end up leaning on the developers[/title]
+[title="3"]Don't start over-optimistic, then end up leaning on the core developers[/title]
 
 [media width="64" thumb="0" float="right" framed="0"]themes/default/images/icons/menu/adminzone/home.svg[/media]
 Despite [page="_SEARCH:antifeatures"]attempts to accurately describe[/page] what Composr can do, many people see Composr as a way of achieving the equivalent to what high-funded Silicon Valley companies achieve, but for free. Whenever there are roadblocks to that, people often end up trying to lean on the developers to get closer to it.
 
-This can be very frustrating for the developers, who are probably as squeezed for time as anyone around (often already working 15 hour days, 7 days a week). Building and maintaining Composr is a huge effort, and if individual users take more resources from the project than they provide through contributions/financially, it makes it unsustainable.
+This can be very frustrating for the developers, who are probably as squeezed for time as anyone around. Building and maintaining Composr is a huge effort, and if individual users take more resources from the project than they provide through contributions/financially, it makes it unsustainable.
 
 The developers are generally polite (if sometimes a bit curt due to time pressure), and they know a lot of people don't realise how much time responding to people can take, and the developers are empathic about people's technical challenges. But ultimately the developers can't save people from themselves and are often at the receiving end of people's frustration (with undue insults being relatively common).
 
@@ -472,35 +488,36 @@ If you do then find it a big challenge to achieve your desired goals, don't appr
 [title="3"]Avoid doing any of the following[/title]
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
-1) Expecting core developers to work at specific times (they may be in a different timezone from you, they may only work office hours, or they may only work in their spare time)
-2) Demanding free one-on-one support, or call the developers idiots for not doing your work for free, as "it'll bring in lots of paying customers"
-3) When the developers say they can't do something for free, twisting definitions (e.g. if something specific you want to do is not easy, call it a usability problem and call all usability problems bugs)
-4) Don't take backups, then blaming bugs if anything happens to stop your site working, expecting free support to get it fixed
-5) Sponsor a feature from a developer, then trying to use that to leverage free support in other areas (a sponsorship payment would go directly to fund the work involved implementing the feature, so would not be a donation)
+1) Expecting core developers to work at specific times (they may be in a different timezone from you, they may only be on during certain times, or they may only work in their spare time)
+2) Demanding free support, or calling the developers idiots for not doing your work for free, as "it'll bring in lots of paying customers"
+3) When the developers say they can't (or won't) do something for free, twisting definitions (e.g. if something specific you want to do is not easy, call it a usability problem and call all usability problems bugs)
+4) Not taking backups, then blaming bugs if anything happens to break your site, expecting free support to get it fixed
+5) Sponsor a feature from a developer, then trying to use that to leverage free or discounted support in other areas (a sponsorship payment would go directly to fund the work involved implementing the feature, so would not be a donation)
 6) Expecting people to work for less than they think they're worth
 7) Pushing volunteers beyond their limits
 
 [title="2"]Maintenance Policies[/title]
 
-It is an unfortunate but inevitable fact that computer software has bugs. Composr is no exception, and although the developers work to make sure every single bug gets fixed, they aren't able to make sure every past version ever released is kept bug-free. It is essential that users understand the maintenance policy, and perform upgrades as suggested.
+It is an unfortunate but inevitable fact that computer software has bugs. Composr is no exception, and although developers make a reasonable effort to fix as many bugs as they can, they aren't able to make sure everything always works (especially in past versions or in non-maintained / third-party features). It is essential that users understand the maintenance policy, and perform upgrades as suggested.
 
 [title="3"]Bug policy[/title]
 
 [media width="64" thumb="0" float="right" framed="0"]themes/default/images/icons/menu/adminzone/audit.svg[/media]
 There are four classifications of bug:
- - [b]Security-hole[/b]. A security issue.
- - [b]Major[/b]. A major integrity issue, or a bug so significant that it cuts off major functionality.
- - [b]Minor[/b]. Most bugs.
- - [b]Trivial[/b]. Any bug that is very specific and won't affect many users.
+ - [b]Security-hole[/b]. A security issue, such as someone being able to gain admin access when they should not have it.
+ - [b]Major[/b]. A bug so severe that it breaks core functionality or entire sites (e.g. most pages throw a critical error), or it corrupts data.
+ - [b]Minor[/b]. A bug that affects a small portion of some functionality (e.g. editing a download throws an error, but you can still view / add / download things).
+ - [b]Trivial[/b]. A bug that does not break functionality (e.g. a spelling mistake, or field sorting doesn't work on a specific field on a specific table).
 
-The developers don't usually immediately release a new version when there is a bug. We usually put out a hotfix, then a new patch release every few months. That is for supported versions: new releases of alpha and beta versions are put out on the needs of the development process rather than the needs of active users.
+The developers don't usually immediately release a new version when there is a bug fix. They usually put out a hotfix (which can be applied either through the upgrader or by manually extracting the files), then a new patch release every couple of months. That is for supported versions: new releases of alpha and beta versions are put out on the needs of the development process rather than the needs of active users, so they are usually more frequent.
 
-Composr works off a "rolling release" development process. New major/minor versions are released when ready, and then patch releases are made for the latest version only, not older versions. It is up to webmasters to stay updated to the latest release, or apply fixes they need. There are a number of reasons for this policy, which is new as of Composr version 11:
+Composr works off a "rolling release" development process. New major/minor versions are released when ready, and then patch releases are made for the latest supported version only, not older versions (a rare exception might be if a massively critical bug or security issue is discovered in the previous version, but even then it is highly unlikely to be patched if the version is declared discontinued). It is up to webmasters to stay updated to the latest release, or apply fixes they need. There are a number of reasons for this policy, which is new as of Composr version 11:
 1) We can focus our resources on the latest versions, rather than spreading ourselves thin.
 2) Sites that are difficult to keep upgraded are usually 'forked' enough to need manual patching anyway -- applying patch releases aren't an option for many sites, so why create them?
+2b) We try to avoid that situation as much as possible in version 11 by using code overrides instead of making changes to original code (v11 has better support for it than v10; see item 4). That way highly-customised sites can still receive downstream fixes especially for security issues and major bugs.
 3) As creating modern attractive web designs becomes more challenging, we expect users to rely on the improvements we create to the default theme more than they worry about maintaining their own customisations across upgrades.
-4) We have made various smart way of defining overrides in version 11, meaning it should be possible to define overrides that are less fragile across major/minor releases of Composr.
-5) Eventually we want to get to a point where upgrades are automatic, so that everyone can always be on the latest version -- maintaining multiple versions gets in the way of this vision.
+4) We have made various smart ways of defining overrides in version 11, meaning it should be possible to define overrides that are less fragile across major/minor releases of Composr.
+5) Eventually we (might) want to get to a point where upgrades are automatic, so that everyone can always be on the latest version -- maintaining multiple versions gets in the way of this vision.
 
 Please note that if Composr is installed by a hosting-control-panel, it is very unlikely that it will be up-to-date. Thus, hosting-control-panel installs will need immediate upgrade.
 
@@ -517,9 +534,9 @@ The developers have to address both the need to responsibly inform our users of 
 
 Our policy is as follows:
 1) Fixes for vulnerabilities will show up as soon as they are made in Git commit logs. These logs will show the presence of the vulnerability, and inevitably will provide hints to hackers on what a security hole might be.
-2) The actual security reports will be kept permanently private on the tracker. Anyone posting a vulnerability should initially post it as private, but if not then developer(s) will make it as such as soon as they are aware and able. Anyone in the community with access to view the private issues will be expected to maintain confidence. By keeping the full details of a vulnerability temporarily private, it will in most circumstances make it more difficult for the typical hacker to learn how to exploit a vulnerability -- giving the developers and users sufficient time to respond.
+2) The actual security reports will be kept permanently private on the tracker. Anyone posting a vulnerability should initially post it as private, but if not then developer(s) will make it as such as soon as they are aware and able. Anyone in the community with access to view the private issues will be expected to maintain confidentiality. By keeping the full details of a vulnerability temporarily private, it will in most circumstances make it more difficult for the typical hacker to learn how to exploit a vulnerability -- giving the developers and users sufficient time to respond.
 3) Within one month of the developers becoming aware of a vulnerability, they will put out a new patch release that deals with it, along with a full description of the vulnerability and any other important information (such as manual patches for those who do not wish to fully upgrade). The release notes for the new version(s) will mention that the upgrade addresses security issue(s). Wherever possible the time period will be much shorter than a month, measured in days.
-4) The developers make no guarantee on posting information about the vulnerabilities on communication channels outside the main news section of the Composr homesite. This is to reduce the pressures on over-stretched developers for what will be a stressful period for them. It is the responsibility of Composr users to monitor this news and apply patches as appropriate. That said, the news section is automatically syndicated via Twitter, Facebook, and available as RSS. If other groups wish to syndicate security news more broadly, this is encouraged.
+4) The developers make no guarantee on posting information about the vulnerabilities on communication channels outside the main news section of the Composr homesite. This is to reduce the pressures on over-stretched developers for what will be a stressful period for them. It is the responsibility of Composr users to monitor this news and apply patches as appropriate. That said, the news section is automatically syndicated via Facebook, and available as RSS. It is also by default available on the Admin Zone dashboard of Composr sites. If other groups wish to syndicate security news more broadly, this is encouraged.
 
 This policy applies to any code bundled with the main Composr distribution or held within the main Git repository.
 
