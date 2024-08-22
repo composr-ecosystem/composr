@@ -433,8 +433,8 @@ class DecisionTree
                     }
                     $val = $hook_ob->inputted_to_field_value(false, $field);
 
-                    // Required field validation (a standard for all field hooks)
-                    if (($field['cf_required'] == 1) && (($val == '') || ($val === null) || (($val == STRING_MAGIC_NULL) && !fractional_edit()))) {
+                    // Required field validation (a standard for all field hooks except tick)
+                    if (($field['cf_type'] != 'tick') && ($field['cf_required'] == 1) && (($val == '') || ($val === null) || (($val == STRING_MAGIC_NULL) && !fractional_edit()))) {
                         warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', escape_html($field['cf_input_name'])));
                     }
 
