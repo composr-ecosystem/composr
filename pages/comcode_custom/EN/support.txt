@@ -1,0 +1,16 @@
+[title="1"]Support Options[/title]
+
+If you need support on how to use or extend Composr, or if you are having issues, here are some resources you can utilise.
+
+[title="2"]Free Options[/title]
+
+You have the following free options available:
+ - [page=":catalogues:category:6"]Frequently Asked Questions (FAQ)[/page]: View answers to commonly-asked questions about Composr.
+ - [page="docs:tutorials"]Documentation[/page]: Check out hundreds of comprehensive tutorials, from using / developing Composr, to guides on running sites, and more. You can also contribute your own user tutorials or [page=":report-issue"]report inaccuracies[/page] if you find any.
+ - [url="Known Bugs and Hotfixes"]{$BASE_URL*}/tracker/search.php?project_id=1&status_id=80&sortby=last_updated&dir=DESC&hide_status_id=90[/url]: See reported bugs and hotfixes for them on the tracker.
+ - [page="docs:codebook"]Developers' Code Book[/page]: Are you looking to modify Composr's code, contribute code changes, or develop themes / addons? The Codebook will detail how to do so and the standards that we follow.
+ - [url="Developers' API Guide"]{$BASE_URL*}/docs/api/[/url]: View the auto-generated PHP API Documentation of Composr.
+ 
+[title="2"]Paid Options[/title]
+
+If you need guaranteed, timely, or mission-critical support, you may wish to consider hiring a developer to help you. Please check out the [page=":partners"]Composr partners[/page] for individuals and companies who are specifically offering Composr services and support. If you want to offer Composr-specific services, please add your own entry to the catalogue so others can find you and hire you.
