@@ -20,7 +20,13 @@ if (!addon_installed('cms_homesite')) {
 }
 
 require_code('cms_homesite');
+require_code('temporal');
 $branches = get_composr_branches();
+if ((!$GLOBALS['DEV_MODE']) && (count($branches) == 0)) {
+    // We want this condition to be logged instead of just returning a red alert
+    attach_message('Expected branch maintenance status data but did not get any. Is the git repository initialized or the GitLab credentials specified and valid?', 'warn', false, true);
+    return do_template('RED_ALERT', ['_GUID' => 'g4l3co9a92efbejkrfbekrjfberkjfberjk', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]);
+}
 
 $_branches = [];
 foreach ($branches as $branch) {
@@ -28,6 +34,8 @@ foreach ($branches as $branch) {
         'GIT_BRANCH' => $branch['git_branch'],
         'BRANCH' => $branch['branch'],
         'STATUS' => $branch['status'],
+        'VERSION' => $branch['version'],
+        'VERSION_TIME' => get_timezoned_date_time_tempcode($branch['version_time']),
     ];
 }
 

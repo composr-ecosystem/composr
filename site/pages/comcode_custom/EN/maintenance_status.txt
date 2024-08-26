@@ -1,42 +1,64 @@
 [title]Maintenance status[/title]
 
+[contents][/contents]
+
+This page outlines the current maintenance status of Composr.
+
 [title="2"]Branch maintenance[/title]
 
 As based on our policy described in our [page="docs:tut_software_feedback"]Problem and feedback reports, and development policies[/page] tutorial, current Composr branches are maintained as follows...
 
 [block]main_version_support[/block]
 
+Branch statuses:
+ - [b]Alpha[/b]: Not all planned features have been implemented yet. Bugs, including critical ones and security issues, are expected. Do not use in production.
+ - [b]Beta[/b]: All planned features have been implemented, but bugs are still expected. Not recommended for production.
+ - [b]Mainline[/b]: This branch is receiving bug fixes and periodic new features. Most suitable for production.
+ - [b]Supported[/b]: This branch is only receiving bug fixes. Can be used for production, but consider upgrading in the future.
+ - [b]Long-term maintenance[/b]: This branch is only receiving fixes for critical bugs or security vulnerabilities that affect multiple people. Can be used in production, but consider upgrading in the near future.
+ - [b]EOL[/b]: End of life. This branch is not receiving any more updates and may contain bugs and security issues. Not suitable for production; you should upgrade to a supported version as soon as possible.
+
 [title="2"]Feature maintenance[/title]
 
 Composr is an enormous system that contains a number of highly specialist features as well as integration with third-party systems that are subject to unpredictable change.
 
-It isn't feasible for us to guarantee all this will keep working as things evolve internally and externally, often at a rapid pace outside our control.
+It isn't feasible for the core developers to guarantee all this will keep working as things evolve internally and externally, often at a rapid pace outside our control. This is especially true when the available developer power for Composr is low.
 
 We track functionality that has a moderate to high risk of breakage. This:
-1) Helps us provide a reliable product and ecosystem by informing users of what they need to keep an eye on and budget for
-2) Allows us to solicit funding for on-going support of rare or fragile functionality (we think it's fair for the up-keep of highly specialist and advanced functionality to be directly paid for by those who need it)
-3) Allows us to mark off unreliable functionality so that we don't need to force developers to maintain every specialist cross-cutting feature that has ever been added to Composr (sometimes things are worth keeping, but only worth actively maintaining if there's funding or a large user-base)
+1) Helps us provide a reliable product and ecosystem by informing users of what they need to keep an eye on and budget for if they want support for said feature
+2) Allows us to encourage funding / sponsorships or hiring developers within the community for on-going support of rare or fragile functionality (we think it's fair for the up-keep of highly specialist and advanced functionality to be directly paid for by those who need it)
+3) Allows us to mark off unreliable functionality so that we don't need to force core developers to maintain every specialist cross-cutting feature that has ever been added to Composr (sometimes things are worth keeping, but only worth actively maintaining if there's funding or a large user-base)
 4) Helps direct testing efforts
 5) Provides us a broad reminder of what needs on-going reappraisal
 Further discussion and justification may be found in and directed to the [url="original tracker issue"]https://compo.sr/tracker/view.php?id=2578[/url].
 
-Bugs may be reported for non-actively-maintained functionality. However, the speed at which they will be fixed (or if they get fixed at all) will depend on developer availability and their sense of priority.
-
-[title="3"]Maintenance status table[/title]
-
-[block]cms_maintenance_status[/block]
+Bugs may be reported for non-actively-maintained functionality. However, the speed at which they will be fixed (or if they get fixed at all) will depend on developer availability and their sense of priority. Additionally, most tracker issues for features not maintained will be marked off as sponsorship, meaning they are subject to members sponsoring the issue or hiring someone to do it.
 
 [title="3"]Sponsorship[/title]
 
-Sponsorship involves taking direct responsibility including testing and bug fixing, or paying someone (such as ocProducts) to do that. In some cases it may also involve taking some up-stream responsibility, funding or maintaining frameworks or projects that Composr functionality is depending on.
+Sponsorship involves taking direct responsibility including testing and bug fixing, or paying someone (e.g. a [page=":partners"]Composr partner[/page]) to do that. In some cases it may also involve taking some up-stream responsibility, funding or maintaining frameworks or projects that Composr functionality is depending on.
 
-The cost of sponsoring functionality may vary greatly, from hours of time per year to weeks per year. For more information [page=":contact_us"]contact the developers[/page].
+The cost of sponsoring functionality may vary greatly depending on the amount of time and effort needed to maintain said feature. And costs are at the discretion of the individual or company you wish to hire.
 
-Note that sponsoring functionality initially is not the same as sponsoring on-going maintenance. Once something is implemented and delivered there isn't a guarantee it can be maintained forever without on-going sponsorship.
+Note that sponsoring functionality initially is not the same as sponsoring on-going maintenance. Once something is implemented and delivered there isn't a guarantee it can be maintained forever without on-going sponsorship (and it usually will not).
+
+[title="3"]Maintenance status table[/title]
+
+The table below outlines the current status of features which have an elevated risk of breaking. The table also outlines the current status of maintenance (e.g. which individual / company is actively maintaining each feature). Any features which do not have a listing for "Actively bug-fixed by" are likely broken in Composr (or could get broken in the future).
+
+If you see a feature here that you would like to sponsor for bug fixes and/or maintenance, consider [page=":partners"]hiring a Composr partner[/page] to do so. Or, if you would like to maintain it yourself, consider [url="making a merge request on our repository"]https://gitlab.com/composr-foundation/composr[/url] for the feature you want to maintain (fixing something or adding a new feature), and then [page=":contact"]contacting us[/page] so we can list you here (choose free options, make a partnership inquiry).
+
+[block]cms_maintenance_status[/block]
 
 [title="3"]Non-bundled addons[/title]
 
-No non-bundled addon will be put into the table [i]unless[/i] it is being officially supported by the core developers. The default assumption should be that no non-bundled addon is supported by the core developers to the same level of reliability and quality as Composr itself. If you want a non-bundled addon added to the list you can request to sponsor it though. Most non-bundled addons will regardless be supported by bug fixes, and automatically updated as Composr APIs change -- but not to the normal expected quality, and not proactively tested.
+The default assumption for non-bundled addons if they are not listed should be that no non-bundled addon is supported to the same level of reliability and quality as Composr itself.
+
+[block include_non_bundled="only"]cms_maintenance_status[/block]
+
+If you want a non-bundled addon receive on-going maintenance you can request to sponsor it. Most non-bundled addons will regardless be supported by critical bug fixes, and automatically updated as Composr APIs change -- but not to the normal expected quality, and not proactively tested.
+
+If the core developers feel there is not a use for a non-bundled addon any longer, and there is no interest in sponsoring its maintenance, the addon may be pulled from the main repository and [url="archived on GitLab"]https://gitlab.com/composr-foundation/composr-archived-addons[/url]. This is so the core developers do not have to continue implementing critical bug fixes / API changes for a non-bundled addon which is likely being rarely used if at all. See [url="this tracker issue"]https://composr.app/tracker/view.php?id=5687[/url] for an ongoing list of non-bundled addons nominated for archiving / removal, and to discuss them.
 
 [title="3"]Third-party software[/title]
 

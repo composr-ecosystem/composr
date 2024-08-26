@@ -1300,7 +1300,7 @@ class Module_admin_version
             'Patrick Schmalstig' => ['AREAS' => ['Lead developer', 'Composr Core Developer']],
             'Christopher Graham' => ['AREAS' => ['Senior developer', 'Composr Core Developer']],
             'Adam Edington' => ['AREAS' => ['Moderator of the Composr site']],
-            'PDSTIG LLC' => ['AREAS' => ['Web hosting for composr.app']],
+            'PDStig, LLC' => ['AREAS' => ['Web hosting for composr.app']],
         ];
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
