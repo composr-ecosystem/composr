@@ -1,0 +1,61 @@
+﻿[title]Mission, Vision, and Purpose[/title]
+
+We, the Composr community, operate on the following fundamentals:
+
+[title="2"]Mission[/title]
+
+Our mission is to empower individuals and organizations wanting to create dynamic, autonomous, and privacy-respecting websites. We are committed to offering an alternative to the restrictions of big tech, giving users and webmasters full control over their data, content, and online presence.
+
+[title="2"]Vision[/title]
+
+Our vision is to be the leading open-source platform for building and managing autonomous websites. We want to be recognized for our commitment to privacy, user control, and freedom from big tech's constraints. We envision a digital ecosystem where everyone can create secure and independent websites free from centralized control.
+
+[title="2"]Purpose[/title]
+
+Our purpose is to democratize web development. We foster a community-driven approach to development, support, and innovation, ensuring that members retain full control over the direction of Composr.
+
+[title]The Composr Manifesto[/title]
+
+Our mission can be additionally summarized by our manifesto:
+
+ - [b]Not dependent on addons[/b]: Nobody should have to rely on non-bundled addons to achieve common website functionality. Conversely, features must be easily justifiable and software bloat avoided.
+ - [b]Users first[/b]: Key features should be designed for users, not developers. But developers should also be supported in achieving their optimal productivity.
+ - [b]Developed to high standards[/b]: Composr should embody and reflect web standards. It should not follow trends just because everyone else does. It should focus on stability, usability, and compatibility.
+ - [b]Harmonious[/b]: Everything should fit together smoothly into a tidy streamlined model, from the features running through the software to the clean design of the Composr website.
+ - [b]Unencumbered and Open Source[/b]: Composr should remain Open Source software: free to download, install, and modify. Openness fosters innovation throughout all the corners of society.
+ - [b]User-friendly[/b]: Everything should be as documented and user-friendly as possible – any area where this can't be achieved by the core developers should be crowd-sourced to members.
+ - [b]Empowering[/b]: Composr is here to empower everyone, from casual users, to programmers, to web managers.
+ - [b]Economical / Rewarding[/b]: Composr users should be encouraged to give back to the Composr project in what ways they can, to ensure Composr continues to push forward unencumbered by external influences – and contributors should be given the credit they deserve for the efforts they put in.
+ - [b]Non-biased[/b]: Composr development should not be guided by short-term fads, or reinventions of the wheel. Composr should not be biased in its affiliation with third-party companies.
+ - [b]Malleable[/b]: Everything in the Composr ecosystem should be done to high standards but remain flexible and customisable.
+
+[title]Standards & accessibility[/title]
+
+One key factor we emphasise is the growing importance of accessibility on the Internet. For the web to progress, we all (website developers) share the obligation to build semantically-correct websites. This essential consideration ensures that innovative new software can interact with websites in clever ways, and that everyone, including visually and physically impaired users, can fully participate on the web.
+
+Sadly, widespread support is largely lacking within the CMS industry. Composr currently conforms to [page="docs:tut_markup"]dozens of strict standards[/page] — something for which we are very proud.
+
+[title]Security[/title]
+
+We are very vigilant about solid security and employ layers of security throughout our development process to ensure that the only person making changes to your website is you.
+
+[title]History[/title]
+
+Here are the highlights of our major versions over the years:
+
+ocPortal:
+ - [b]v1[/b] [i](March 2004)[/i]: The release of a forum-friendly trailblazer
+ - [b]v2[/b] [i](August 2004)[/i]: A whole new CMS framework and a MVC system
+ - [b]v2.5[/b] [i](October 2005)[/i]: A standalone social networking system
+ - [b]v3[/b] [i](July 2006)[/i]: AJAX features and a major system overhaul
+ - [b]v4[/b] [i](August 2008)[/i]: UI/UX improvements
+ - [b]v5[/b] [i](July 2010)[/i]: UI/UX improvements
+ - [b]v6[/b] [i](March 2011)[/i]: Major performance improvements
+ - [b]v6.1[/b] [i](April 2011)[/i]: Interactive CSS editing, theme UX
+ - [b]v7[/b] [i](May 2011)[/i]: Finishing up interactive CSS editing, theme UX
+ - [b]v8[/b] [i](March 2012)[/i]: Major feature upgrades
+ - [b]v9[/b] [i](August 2012)[/i]: Major theme design improvements
+
+Composr CMS:
+ - [b]v10[/b] [i](January 2016)[/i]: Platform overhaul
+ - [b]v11[/b] [i](Not released yet)[/i]: Responsive theme, major performance and security improvements
