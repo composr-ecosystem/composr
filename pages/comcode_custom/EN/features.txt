@@ -17,40 +17,40 @@ Please also check the following information to help you in your CMS decision:
 
 Learn about all the different types of content you can manage in Composr CMS:
 
-[block="12" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
+[block="12" sorting="0" max="10" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
 [title="2"]General Features[/title]
 
 These are features that are not categorised elsewhere:
 
-[block="13" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
+[block="13" sorting="0" max="10" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
 [title="2"]Forums and Members[/title]
 
 These features pertain to the Conversr forum system and to how Composr manages members:
 
-[block="14" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
+[block="14" sorting="0" max="10" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
 [title="2"]Social networking[/title]
 
 These features pertain to other ways members can interact with each other in a Composr website:
 
-[block="15" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
+[block="15" sorting="0" max="10" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
 [title="2"]Design and Management[/title]
 
 Here are all the different tools available to you for managing your Composr website:
 
-[block="16" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
+[block="16" sorting="0" max="10" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
 [title="2"]Standards[/title]
 
 Learn about the features we implement and the standards to which we comply:
 
-[block="17" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
+[block="17" sorting="0" max="10" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
 [title="2"]Architecture[/title]
 
 Learn about how you can manage the structure of your Composr website:
 
-[block="18" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
+[block="18" sorting="0" max="10" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
