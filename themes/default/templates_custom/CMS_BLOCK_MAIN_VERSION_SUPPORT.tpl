@@ -3,7 +3,9 @@
 		<tr>
 			<th>Branch</th>
 			<th>Git branch</th>
-			<th>Status</th>
+			<th>Latest version</th>
+			<th>Released On</th>
+			<th>Branch Status</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -11,6 +13,8 @@
 			<tr>
 				<td>{BRANCH*}</td>
 				<td>{GIT_BRANCH*}</td>
+				<td>{VERSION*}</td>
+				<td>{VERSION_TIME*}</td>
 				<td>{STATUS*}</td>
 			</tr>
 		{+END}

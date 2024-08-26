@@ -247,31 +247,112 @@ function get_composr_branches()
 {
     require_code('version2');
 
-    $_branches = shell_exec('git branch');
     $branches = [];
-    foreach (explode("\n", is_string($_branches) ? $_branches : '') as $_branch) {
-        $matches = [];
-        if (preg_match('#^\s*\*?\s*(master|main|v[\d\.]+)$#', $_branch, $matches) != 0) {
-            $git_branch = $matches[1];
+    $_branches = shell_exec('git branch');
 
-            $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
+    if (is_string($_branches)) { // Local git repository present
+        foreach (explode("\n", $_branches) as $_branch) {
+            $matches = [];
+            if (preg_match('#^\s*\*?\s*(master|main|v[\S]+)$#', $_branch, $matches) != 0) { // We only want main/master and 'v' branches
+                $git_branch = $matches[1];
+
+                $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
+                $version_file .= "\n\ninit__version();\n\necho serialize([cms_version_minor(), cms_version_number(), cms_version_time(), cms_version_branch_status()]);";
+
+                $tempnam = cms_tempnam();
+                file_put_contents($tempnam, $version_file);
+                $test = shell_exec('php ' . $tempnam . ' 2>&1');
+                $results = @unserialize($test);
+                @unlink($tempnam);
+                if ($results === false) {
+                    attach_message($test, 'warn');
+                    continue;
+                }
+
+                if ((is_array($results)) && (count($results) == 4)) {
+                    list($version_minor, $version_major, $version_time, $branch_status) = $results;
+                    $version = get_version_dotted(intval($version_major), $version_minor);
+
+
+                    $branches[$git_branch] = [
+                        'git_branch' => $git_branch,
+                        'branch' => get_version_branch($version_major),
+                        'status' => $branch_status,
+                        'version' => $version,
+                        'version_time' => $version_time
+                    ];
+                }
+            }
+        }
+    } elseif (file_exists(get_file_base() . '/data_custom/keys/gitlab.ini')) { // Local git repository not present; try GitLab
+        require_code('files');
+        require_code('http');
+        require_code('zones');
+        require_code('version2');
+
+        $gitlab_info = cms_parse_ini_file_fast(get_file_base() . '/data_custom/keys/gitlab.ini');
+        list($gitlab_response) = cache_and_carry('cms_http_request', [
+            'https://gitlab.com/api/v4/projects/' . $gitlab_info['project_id'] . '/repository/branches',
+            [
+                'convert_to_internal_encoding' => true,
+                'timeout' => 5.0,
+                'trigger_error' => $GLOBALS['DEV_MODE'],
+                'extra_headers' => [
+                    'Authorization' => 'Bearer ' . $gitlab_info['api_token']
+                ]
+            ]
+        ], 60);
+        $_branches = @json_decode($gitlab_response, true);
+        if (!is_array($_branches)) {
+            return [];
+        }
+        $_branches = collapse_1d_complexity('name', $_branches);
+
+        foreach ($_branches as $branch) {
+            if (!in_array($branch, ['main', 'master']) && (strpos($branch, 'v') !== 0)) { // We only want main/master and 'v' branches
+                continue;
+            }
+
+            list($gitlab_response) = cache_and_carry('cms_http_request', [
+                'https://gitlab.com/api/v4/projects/' . $gitlab_info['project_id'] . '/repository/files/' . urlencode('sources/version.php') . '?ref=' . $branch,
+                [
+                    'convert_to_internal_encoding' => true,
+                    'timeout' => 5.0,
+                    'trigger_error' => $GLOBALS['DEV_MODE'],
+                    'extra_headers' => [
+                        'Authorization' => 'Bearer ' . $gitlab_info['api_token']
+                    ]
+                ]
+            ], 60);
+
+            $_version_file = @json_decode($gitlab_response, true);
+            if (!is_array($_version_file)) {
+                return [];
+            }
+            $version_file = base64_decode($_version_file['content']);
+            $version_file .= "\n\ninit__version();\n\necho serialize([cms_version_minor(), cms_version_number(), cms_version_time(), cms_version_branch_status()]);";
 
             $tempnam = cms_tempnam();
-            file_put_contents($tempnam, $version_file . "\n\ninit__version();\n\necho serialize([cms_version_number(), function_exists('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown']);");
+            file_put_contents($tempnam, $version_file);
             $test = shell_exec('php ' . $tempnam . ' 2>&1');
             $results = @unserialize($test);
-            unlink($tempnam);
+            @unlink($tempnam);
             if ($results === false) {
                 attach_message($test, 'warn');
                 continue;
             }
-            if ((is_array($results)) && (count($results) == 2)) {
-                list($version_number, $status) = $results;
 
-                $branches[str_pad(float_to_raw_string($version_number), 10, '0', STR_PAD_LEFT)] = [
-                    'git_branch' => $git_branch,
-                    'branch' => get_version_branch($version_number),
-                    'status' => $status,
+            if ((is_array($results)) && (count($results) == 4)) {
+                list($version_minor, $version_major, $version_time, $branch_status) = $results;
+                $version = get_version_dotted(intval($version_major), $version_minor);
+
+
+                $branches[$branch] = [
+                    'git_branch' => $branch,
+                    'branch' => get_version_branch($version_major),
+                    'status' => $branch_status,
+                    'version' => $version,
+                    'version_time' => $version_time
                 ];
             }
         }
