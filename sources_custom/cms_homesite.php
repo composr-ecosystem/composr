@@ -257,31 +257,25 @@ function get_composr_branches()
                 $git_branch = $matches[1];
 
                 $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
-                $version_file .= "\n\ninit__version();\n\necho serialize([cms_version_minor(), cms_version_number(), cms_version_time(), cms_version_branch_status()]);";
+                $uid = uniqid('', false);
+                $version_file = str_replace('<?php', '', $version_file);
+                $version_file = preg_replace('/function\s+(\w+)\s*\(/', 'function ${1}_' . $uid . '(', $version_file);
 
-                $tempnam = cms_tempnam();
-                file_put_contents($tempnam, $version_file);
-                $test = shell_exec('php ' . $tempnam . ' 2>&1');
-                $results = @unserialize($test);
-                @unlink($tempnam);
-                if ($results === false) {
-                    attach_message($test, 'warn');
-                    continue;
-                }
+                cms_eval($version_file, 'git branch ' . $git_branch . ' sources/version.php');
+                $version_minor = call_user_func_array('cms_version_minor_' . $uid, []);
+                $version_major = call_user_func_array('cms_version_number_' . $uid, []);
+                $version_time = call_user_func_array('cms_version_time_' . $uid, []);
+                $branch_status = call_user_func_array('cms_version_branch_status_' . $uid, []);
 
-                if ((is_array($results)) && (count($results) == 4)) {
-                    list($version_minor, $version_major, $version_time, $branch_status) = $results;
-                    $version = get_version_dotted(intval($version_major), $version_minor);
+                $version = get_version_dotted(intval($version_major), $version_minor);
 
-
-                    $branches[$git_branch] = [
-                        'git_branch' => $git_branch,
-                        'branch' => get_version_branch($version_major),
-                        'status' => $branch_status,
-                        'version' => $version,
-                        'version_time' => $version_time
-                    ];
-                }
+                $branches[$git_branch] = [
+                    'git_branch' => $git_branch,
+                    'branch' => get_version_branch($version_major),
+                    'status' => $branch_status,
+                    'version' => $version,
+                    'version_time' => $version_time
+                ];
             }
         }
     } elseif (file_exists(get_file_base() . '/data_custom/keys/gitlab.ini')) { // Local git repository not present; try GitLab
@@ -330,31 +324,24 @@ function get_composr_branches()
                 return [];
             }
             $version_file = base64_decode($_version_file['content']);
-            $version_file .= "\n\ninit__version();\n\necho serialize([cms_version_minor(), cms_version_number(), cms_version_time(), cms_version_branch_status()]);";
+            $uid = uniqid('', false);
+            $version_file = str_replace('<?php', '', $version_file);
+            $version_file = preg_replace('/function\s+(\w+)\s*\(/', 'function ${1}_' . $uid . '(', $version_file);
 
-            $tempnam = cms_tempnam();
-            file_put_contents($tempnam, $version_file);
-            $test = shell_exec('php ' . $tempnam . ' 2>&1');
-            $results = @unserialize($test);
-            @unlink($tempnam);
-            if ($results === false) {
-                attach_message($test, 'warn');
-                continue;
-            }
+            cms_eval($version_file, 'GitLab branch ' . $branch . ' sources/version.php');
+            $version_minor = call_user_func_array('cms_version_minor_' . $uid, []);
+            $version_major = call_user_func_array('cms_version_number_' . $uid, []);
+            $version_time = call_user_func_array('cms_version_time_' . $uid, []);
+            $branch_status = call_user_func_array('cms_version_branch_status_' . $uid, []);
+            $version = get_version_dotted(intval($version_major), $version_minor);
 
-            if ((is_array($results)) && (count($results) == 4)) {
-                list($version_minor, $version_major, $version_time, $branch_status) = $results;
-                $version = get_version_dotted(intval($version_major), $version_minor);
-
-
-                $branches[$branch] = [
-                    'git_branch' => $branch,
-                    'branch' => get_version_branch($version_major),
-                    'status' => $branch_status,
-                    'version' => $version,
-                    'version_time' => $version_time
-                ];
-            }
+            $branches[$branch] = [
+                'git_branch' => $branch,
+                'branch' => get_version_branch($version_major),
+                'status' => $branch_status,
+                'version' => $version,
+                'version_time' => $version_time
+            ];
         }
     }
 
