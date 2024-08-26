@@ -108,7 +108,7 @@ if ($type == 'submit') {
         if ($additional_information != '') {
             $additional_information .= "\n\n";
         }
-        $additional_information .= 'I grant permission for the core developers to investigate this issue remotely on my site, in accordance with the server access policies ( ' . $BASE_URL . '/server-access.htm ), via the FTP credentials provided on my member profile (developers should allow a few hours from the time the issue was submitted so the member can update their credentials).';
+        $additional_information .= 'I grant permission for the core developers to investigate this issue remotely on my site, in accordance with the server access policies ( ' . $BASE_URL . '/server-access.htm ), via the FTP credentials provided on my member profile (developers: you must exchange an e-mail contact with the user and send a digital copy [not just a link] of the server access policy for them to agree to via e-mail before accessing the server).';
     }
 
     // Create the tracker issue

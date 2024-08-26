@@ -1,0 +1,33 @@
+﻿[title]Server access policy[/title]
+
+[surround="spaced_list"]
+If the core developers need to fix a bug that they can't reproduce, it may be helpful to securely provide them FTP credentials to be able to access your Composr website. No one can remotely access Composr sites without the relevant FTP credentials as there are no 'back-doors' in the software itself (this is extremely frowned upon in the Open Source community).
+
+Providing or making available FTP credentials is entirely optional. But doing so for the resolution of specific issues will greatly help the core developers better investigate the bug / issue, especially if they cannot reproduce it in their own environments.
+
+[title="2"]Requirements[/title]
+
+If you do decide to give  access to your server, the core developers require certain provisions:
+1) that you have a full backup of your site, including files and database, and that you know how to restore it
+2) that the FTP (or hosting control panel, or SSH) details you give are temporary and will be deleted (and the FTP account ideally removed) when the developers have finished
+3) that any administration user account given is temporary and is removed or de-authorised as soon as the developers are finished
+4) that you only provide FTP credentials in your member profile FTP credentials section (these fields are encrypted and can only be viewed by the core developers); do not share them anywhere else such as but not limited to on the forums, issue tracker, Private Topics, Support Tickets, e-mails, third-party sites or messengers, and so on.
+5) that you accept that when the developers are done, it is your responsibility to secure your site, scan it for back-doors, and ensure only the people who should have access to it
+
+[title="2"]Indemnification[/title]
+
+You agree to accept full responsibility for providing FTP access to the core developers. You will not hold the developers liable for anything that happens once they are done investigating or resolving the issue. The developers are not responsible for any unauthorized access or changes to your server once they have finished their job; it is your responsibility to close those access avenues and scan for and remove any detected back-doors.
+
+You also agree to remove the $SITE_INFO['backdoor_ip'] option from your _config.php file if it is still present after the developers are finished, and not to hold the developers responsible if it is left there.
+
+[title="2"]Temporary restricted back-door[/title]
+
+When granted access, the typical process involves the developers adding a temporary back-door to the [tt]_config.php[/tt] file (the backdoor_ip option), to their IP address. This is a clean way for them to be automatically logged in as the first administrator without having to know any temporary passwords, have a separate account, or reset any password.
+
+It is possible the developers could forget to remove this, so if you see them have accidentally left an IP address in there, please remove it.
+
+[title="2"]Communication[/title]
+
+All communication regarding the server / server access must be in writing via e-mail. This is to ensure a paper trail between you and the core developers in the event of an issue. No other communication methods, including via the homesite, are accepted. The core developers will exchange an e-mail contact with you in this process.
+
+[/surround]
