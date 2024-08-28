@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- We can cut off breadcrumb chains from a point (by match-key page-link) and specify everything else that is to appear toward the beginning of the chain (by page-link) -->
+<breadcrumbs>
+	<!-- Rules used to unify modules under zone into single breadcrumb tree going back through zone front pages to the site zone front page... -->
+	<substitution match_key="forum:forumview">
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key=":_WILD_NOT_START:browse">
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key=":_WILD_NOT_START">
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key="site:_WILD_NOT_START:browse" skip_if_single_public_zone="true">
+		<link label="{!HOME}">:</link>
+		<link label="{!SITE}">site:</link>
+	</substitution>
+	<substitution match_key="site:_WILD_NOT_START" skip_if_single_public_zone="true">
+		<link label="{!HOME}">:</link>
+		<link label="{!SITE}">site:</link>
+	</substitution>
+	<substitution match_key="site:wiki:browse:1"> <!-- Wiki+ has a special URL structure -->
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key="docs:_WILD_NOT_START">
+		<link label="{!HELP}">docs:tutorials</link>
+	</substitution>
+	<substitution match_key="docs:tutorials">
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key="cms:cms">
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key="adminzone:_WILD_NOT_START">
+		<link label="{!ADMIN_ZONE}">adminzone:</link>
+	</substitution>
+	<substitution match_key="adminzone:home">
+		<link label="{!HOME}">:</link>
+	</substitution>
+
+	<!-- Simple blog links back to home page (what most people want for a personal blog) -->
+	<substitution match_key="_WILD:news:view:blog=1">
+		<link label="{!HOME}">:</link>
+	</substitution>
+
+	<substitution match_key="_WILD:catalogues:index:features:tree=0" final="true"> <!-- Skip catalogues list. -->
+		<link label="{!FEATURES}">:features</link>
+	</substitution>
+	<substitution match_key="_WILD:catalogues:index:partners:tree=0" final="true"> <!-- Skip catalogues list. -->
+		<link label="Composr Partners">:partners</link>
+	</substitution>
+	
+	<!-- Simple catalogue links back to home page (most people don't want to expose catalogues technically as such) -->
+	<substitution match_key="_WILD:catalogues:index:tree=0" final="true"> <!-- Skip catalogues list. -->
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key="_WILD:catalogues:category"> <!-- Skip catalogues list. This rule won't run for non-tree catalogues as the above rule terminates first; i.e. it is only for tree catalogues -->
+		<link label="{!HOME}">:</link>
+	</substitution>
+	<substitution match_key="_WILD:catalogues:atoz"> <!-- Skip catalogues list. -->
+		<link label="{!HOME}">:</link>
+	</substitution>
+
+	<!-- Examples follow... -->
+
+	<!-- If you created and go to a gallery named "example_distorted_gallery" this will give you a special breadcrumb path -->
+	<!--<substitution label="Distorted gallery" match_key="site:galleries:browse:example_distorted_gallery">
+		<link label="Our page">site:page_for_distorted_gallery</link>
+	</substitution>-->
+
+	<!-- Extend it a bit more, -->
+	<!--<substitution label="Our page" match_key="site:page_for_distorted_gallery">
+		<link label="Home">:home</link>
+	</substitution>-->
+
+	<!-- Changing just the label of a node, preserving the rest of the chain -->
+	<!--<substitution match_key="site:news:view:1" label="foo">
+		<link />
+	</substitution>-->
+</breadcrumbs>
+
+<!-- Note PHP regular expressions are not allowed but _WILD is for any component -->
