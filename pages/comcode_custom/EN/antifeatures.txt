@@ -1,0 +1,34 @@
+﻿[title]Antifeatures[/title]
+
+[contents][/contents]
+
+When evaluating which CMS is right for you, you might find it helpful to consider what Composr is not.
+
+Most of the points here probably also apply to any other systems you might be considering. We, the core developers, are particularly keen to emphasise that business users of Composr should carefully budget for things like ongoing support. Some of the more advanced things in Composr do require some level of technical experience. And you may also run into the inevitable need for some level of custom development.
+
+Sometimes developers intentionally do things that make Composr stand out from the crowd when they feel other people are doing things wrong; but also there are a few real cases where perhaps Composr is not optimised for a specific environment.
+
+We believe in laying out the facts and letting people make informed choices.
+
+[title="2"]Composr is not (and for good reason)...[/title]
+
+[list default="normal"]
+[*][b]Designed to meet fads[/b]
+Composr is not specifically designed just to match the passing trends like 'social media', 'web 2.0', 'AI', 'cloud computing', 'SaaS', and 'platform'. Many of these are great ideas, and Composr does include most of them. But these phrases are not used just because they're fashionable – we use them when appropriate and always develop to meet rock-solid established needs. The truth is many of these trends aren't new at all – there's a cycle of technology, and often Composr can meet trends before they come back again. However, it might not be called the same thing!
+[*][b]Chaotically organised[/b]
+Much of Open Source software is presented in a disorganised way. Composr is intentionally presented as a very organised, “easy out of the box” solution. This approach prevents you from having to kludge together a solution from a disparate mess of third party contributions (e.g. a huge and often outdated plugin ecosystem), and trawl a whole scattered community of documentation for help.
+[*][b]A closed environment[/b]
+Composr is Open Source – in other words, free (as-in freedom). Users can customise it how they want, using and employ whoever they want to do it. Competing systems (true competitors – not basic CMSs) typically cost tens of thousands of US dollars – which you might only find out after making a phone call to a sales representative.
+
+You are not limited to what you are allowed to do with Composr, and you can even fork the software (distribute your own versions). You have the code, and you can do what you want with it. Unlike some other CMSs, you can also white label Composr without cost; in fact Composr has a bundled addon just for that purpose!
+
+The community also strongly believes in creating an open marketplace where people can use the software freely. Members and companies do offer their own professional services. And we hope users will choose one's services based on quality and their relationship with the software – not by vendor lock-in or monopoly.
+[*][b]A Software as a Service (SaaS)[/b]
+SaaS is when you don't install and maintain software yourself, but rather use someone else's remote install of it. You therefore often cannot make your own modifications, similar to closed-source software, if you need to have a sophisticated website. It's very easy to get a hosting account or cloud hosting and install Composr (many hosts can auto-install it for you) – with most of the advantages of SaaS but without any loss of control. If you're creating a novel website, you need the option to fully control its code and data!
+[*][b]A front end to third-party sites and services[/b]
+Composr is best for building whole websites, rather than “mash-ups”. The developers intentionally try and incorporate the features you will need inside the software itself.
+
+When designing Composr, developers try to be neutral and not directly incorporate features for integrating with specific third-party services, such as Adsense or Amazon affiliates. Instead, you are provided the flexibility to add in this kind of integration as you require.
+
+This way, developers aren't constantly catching up with a changing market, or making commercial decisions or implied recommendations on behalf of other people.
+[/list]
