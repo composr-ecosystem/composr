@@ -1,0 +1,63 @@
+﻿[title]Composr compared to other Content Management Systems[/title]
+
+[contents][/contents]
+
+Here is a whimsical comparison of Composr to other CMS':
+ - [url="WordPress"]https://wordpress.org[/url]: WordPress is great if you want a blog / online voice or a WISIWYG page builder. With the right plugins (and there are many of them), you can contort it to do more. But why rely on a huge plugin ecosystem where plugins are often freemium, fall out of maintenance, and/or are not maintained to the same standards as WordPress itself?
+ - [url="Joomla"]https://www.joomla.org[/url]: Joomla is great for news and Press sites. But everything in the core of Joomla is an 'article' whether you want it to be or not.
+ - [url="Drupal"]https://www.drupal.org[/url]: Drupal is great for Enterprise and highly-sophisticated sites. But largely, you have to gather what pieces you need and put them together yourself which could take a lot of time and money.
+ - [url="Piwigo"]https://piwigo.org/[/url]: Piwigo is great for hosting basic galleries. But it cannot do much more than that; you often need to pair it with another CMS software and use Piwigo on a sub-domain or sub-directory.
+ - [url="MediaCMS"]https://www.mediacms.io/[/url]: MediaCMS is great for sharing videos. But like Piwigo, it cannot do much more than that and often needs to be paired with other CMS' or page builders if you want more.
+ - [url="Prestashop"]https://prestashop.com/open-source/[/url]: Prestashop is great for building a complex eCommerce site. But it might as well be called freemium because you will likely have to buy additional plugins / themes to make it do what you want it to do.
+ - [url="LimeSurvey"]https://community.limesurvey.org/[/url]: LimeSurvey is great at managing very sophisticated surveys and questionnaires. But it is complicated to set up and not really useful for anything else (often has to be paired with another CMS or page builder). Some features are also not available in the community edition.
+ - [url="Moodle"]https://moodle.org/[/url]: Moodle is great for managing educational courses, exams, grades, and materials. But some plugins are freemium. And its features are tailored for educational use rather than general public use.
+ - [url="MediaWiki"]https://www.mediawiki.org/wiki/MediaWiki[/url]: MediaWiki is great for building traditional Wikis (encyclopedias). But if your site content is not meant to be collaborative, a Wiki might not be right for you.
+ - [url="Tiki"]https://tiki.org/HomePage[/url]: Tiki operates similarly to Composr in a lot of ways; it has many modules and features available out of the box which work harmoniously with each other. And it can be used to build a wide variety of websites. But Tiki relies on (and bundles) many third-party PHP libraries to operate whereas Composr does not. This means the Tiki ZIP archive is over 150 MB compared to Composr's under 30 MB. And Tiki can run much slower than Composr because of all the third-party code being loaded up.
+
+[title="2"]Calling all...[/title]
+
+This page shows many of Composr's benefits. Composr has many innovative features, but can also do a lot of important things as-standard that a lot of the common CMSs don't really do (at least not in an official capacity). A deeper philosophical discussion is in the [page="docs:tut_webapp"]Web-applications, Composr, and PHP tutorial[/page].
+
+[surround][big_tab_controller switch_time="0"]Webmasters,Developers,Designers[/big_tab_controller]
+[big_tab="Webmasters" default="1"]
+ - Composr has no licensing costs – it is free to download, even for commercial use – so you can re-focus investment where it's needed.
+ - So many website features are available out of the box: you can start with just what you need and turn things on as you need them. Lack of reliance on addons = no risk of features becoming orphaned.
+ - Composr can be thoroughly customised – you can do a surprising amount without a programmer.
+ - Use the integrated administration system: everything is neatly organised in harmony. Because Composr is developed with a strict coding standard, everything is designed for simplicity and coherence.
+ - Composr has many [page="docs:tutorials"]100s of pages of docs[/page] freely available, plus video tutorials. Because you don't need 3rd party addons, you can find all support and documentation in one place.
+ - Composr (and formerly ocPortal) has been around since 2004 and has evolved continuously to keep up to date with technological changes. Composr is a real hotbed of innovation, with features not found anywhere else.
+ - [page=":partners"]Some community members offer professional support and services[/page] if you need them.
+ - Composr runs on almost any supported PHP web server – [abbr="That being said, you may have to make changes or request your web host to make some changes so Composr can run. Many web hosts, especially cheap ones, impose strict or poor configurations which can sometimes impede on Composr's ability to operate properly."]there are no special software or hardware requirements[/abbr].
+[/big_tab]
+
+[big_tab="Developers"]
+ - There are [page="docs:codebook"]over 100 pages of field-tested developer documentation[/page].
+ - Plug-in your existing code without needing to make substantial changes: 'echo' still works.
+ - Every single PHP function is documented, however trivial – make use of a solid API.
+ - You can remove any features you don't need: we hate bloat too and believe in simplicity.
+ - Use the Composr framework (_custom folders; contentious_overrides; hooks) to extend and override code and thus making future upgrades easier.
+ - The core team of Composr lives Tech.
+ - The core developers have very high code quality standards including their own code quality checker and strict PHP version.
+ - There's no need for third party plugins to get a decent feature-base.
+ - The core developer's high standards span across all [bundled] features.
+ - Composr's system architecture allows cross-feature functionality such as points (e.g. if eCommerce is also installed, use points for a discount) and unified search (e.g. if galleries are installed, also search within galleries).
+ - Technology is used consistently – e.g. you only need to work with one templating system.
+ - Everything the developers do is free and online: no need to invest in extra books or commercial addons.
+ - Composr is secure-by-design, with [abbr="That being said, you should probably still utilise your own security tools; consider these supplementary / a second layer of protection."]layers of security and an inbuilt Web Application Firewall[/abbr].
+[/big_tab]
+
+[big_tab="Designers"]
+ - Every little bit of HTML and CSS can be customised in Composr without having to ever touch PHP.
+ - Composr's powerful templating language (Tempcode) allows you to do common things like zebra stripes easily.
+ - Composr lets you completely White Label it with just a few clicks for free.
+ - Developers are strict about W3C compliance: see our [page=":vision"]vision[/page] page for more information.
+ - Clean design is very important: see how we cut out the noise on our website compared to other CMSs.
+ - A single Composr site can have multiple zones, or sub-sites, each with their own themes and branding.
+ - Avoid wrestling with the design styles of a dozen addon designers: use Composr's consistent base.
+ - Features are tame and built without ego – unlike third party addons other CMSs rely on heavily.
+ - The founder, Chris Graham, used to work for top brands at a design agency: the developers live what you need and expect
+ - All kinds of effects are built into Composr's Comcode, such as carousels, tooltips, tabs, and sliders. In fact, we're using one right now!
+ - Composr is designed for use by non-techies.
+ - With Composr, you can create a platform for your client that can grow with their business – turn on new features as you/they need them, and turn them off when they do not need them.
+[/big_tab]
+[/surround]
