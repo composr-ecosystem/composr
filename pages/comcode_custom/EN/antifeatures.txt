@@ -2,7 +2,7 @@
 
 [contents][/contents]
 
-When evaluating which CMS is right for you, you might find it helpful to consider what Composr is not.
+When evaluating which CMS is right for you, you might find it helpful to consider what Composr is not (although the community is more than welcome to vote having Composr go otherwise).
 
 Most of the points here probably also apply to any other systems you might be considering. We, the core developers, are particularly keen to emphasise that business users of Composr should carefully budget for things like ongoing support. Some of the more advanced things in Composr do require some level of technical experience. And you may also run into the inevitable need for some level of custom development.
 
@@ -10,7 +10,9 @@ Sometimes developers intentionally do things that make Composr stand out from th
 
 We believe in laying out the facts and letting people make informed choices.
 
-[title="2"]Composr is not (and for good reason)...[/title]
+[title="2"]Composr is not...[/title]
+
+Composr CMS is not the following, and for good reasons as explained in each item:
 
 [list default="normal"]
 [*][b]Designed to meet fads[/b]
@@ -31,4 +33,122 @@ Composr is best for building whole websites, rather than “mash-ups”. The dev
 When designing Composr, developers try to be neutral and not directly incorporate features for integrating with specific third-party services, such as Adsense or Amazon affiliates. Instead, you are provided the flexibility to add in this kind of integration as you require.
 
 This way, developers aren't constantly catching up with a changing market, or making commercial decisions or implied recommendations on behalf of other people.
+[*][b]Awash with addons to install[/b]
+Composr doesn't have hundreds of addons to dig through, but that is by design. The majority of features you'd ever need are built in, which is our equivalent to the hundreds of addons you might want to install separately for other software. Our inbuilt features are wonderfully integrated and organised and can be uninstalled if they aren't wanted (the Setup Wizard will recommend to you what you probably do/don't want).
+[*][b]Full of options you will never use[/b]
+It is important that Composr is flexible, but if we did it by adding 1000s of options for controlling every part of it, it could never work:
+ - Developers would fall into a rabbit hole of discovering more and more unnecessary options that could be added and then adding them.
+ - The administration would be so complex that it would be unusable.
+
+The core developers solve this problem in three ways:
+ - They remove any unneeded complexity. They pick one good way of doing things that works for most users rather than giving choices that very few would care about.
+ - They allow for enormous flexibility by implementing everything on top of a highly customisable framework. For example, you can override any template to change layout using the Tempcode language to great effect.
+ - Composr is an Open Source non-compiled product, meaning anyone can make changes to the underlying PHP code easily. Further to this, Composr has a sophisticated override system that lets you change all parts of the system in a pin-pointed way without overwriting the original Composr code.
+[*][b]Split into separate front-ends and back-ends[/b]
+Composr does not have a segregated admin section in the common sense (but it is its own 'zone' and has its own theme). Composr gives you complete permissions and privileges control, allowing you to control exactly what areas you wish to give users and staff. The divisions are not hard-coded how a third party developer thinks they should be.
+[*][b]A cynical attempt to check boxes[/b]
+Composr doesn't have advanced inbuilt analytics (but it does have a nice stats and KPI system) and it doesn't try to replace image editing software. The reason is simple – there are already great options for these out there, and there is no disadvantage to just using those options. The developers believe very strongly in the importance of integration in order to create a consistent website and brand experience, and to make administration saner. But we don't need to reinvent the wheel when these kinds of advantages don't apply. So enjoy Google Analytics and Paint.net, and the developers will continue to invest their time in the great innovative features you love.
+[*][b]Drag and Drop[/b]
+Composr doesn't have a drag and drop feature to place blocks because this is limiting; you need more control. For example, you might want to make a block only show to certain usergroups, have subtle layout changes for different tablet sizes, or add some randomisation logic to conduct split testing. We've seen many CMSs that provide drag and drop and end up really limiting what you could achieve, and we know from experience it would not work for the sites people want.
+
+Instead of drag and drop, Composr has an 'Add block' button, which adds the code for the block to your content. You can then preview the block via a tooltip. Composr also has a Zone Editor which allows you to define the panels and blocks you want on each zone of your site. It's just as easy, but far more powerful!
+[*][b]A static content exporter[/b]
+Composr does not export content to static HTML files for you to upload to a conventional web server. While this approach might result in very fast websites, it is extremely limiting: social applications need dynamism and a model of interaction which static sites can not offer. This said, there is a Composr option to cache full page content for guest users, and this provides incredibly high performance. Composr actually has a static export addon too, but it's not bundled and it naturally can't support most of Composr's dynamic features.
+[*][b]One solution to rule them all[/b]
+There are some features which are unlikely to be built into Composr if the developers feel they are too obscure, unbalancing, would be costly to maintain for little benefit, or would lead to 'bloat'. For example, Composr is unlikely to feature addons pertaining to gaming (unless, of course, an influx of users want to build gaming websites and want to support development of said addons).
+
+Developers also consciously avoid certain kinds of features if they don't fit into the Composr design or philosophy. For example, 'form builders' are very popular and common in other software, but developers have not implemented them because Composr has a different but more flexible alternative – catalogues (for which notification e-mails can be sent and data saved and searched). In fact, 'forms' can be built using catalogues and then included in pages via blocks for visitors to fill out.
+[*][b]Run by a company or organisation[/b]
+Composr is not run by any company or organisation. Composr is for the people, by the people. While companies and organisations certainly [abbr="For example, web hosting for composr.app is currently being provided by a company. But that doesn't mean someone else couldn't take over web-hosting responsibilities. In fact, the composr.app site can be found in the Composr GitLab repository."]can and do contribute to its development[/abbr], they are no different from an individual's capability to do the same. Therefore, you can be rest assured that even when there is no direct commercial backing, so long as there is an enthusiastic community, Composr will continue to thrive. This is the joy and freedom of Open Source software.
 [/list]
+
+[title="2"]Composr is not optimised for...[/title]
+
+Here are some situations in which Composr CMS was not designed for optimal performance or capabilities. While someone could certainly make their own customisations to Composr to support these scenarios (or sponsor for them to be developed by someone else), Composr is not optimised for them out of the box.
+
+[list default="normal"]
+[*][b]A document management system / Enterprise Intranet[/b]
+Some CMSs have repositories (aka asset management), complex web services, JSR-286 portlets, and the like. These are necessary for organising sprawling document libraries and integrating with business applications, but Composr doesn't fit into this particular bracket. Rather, Composr is primarily designed for feature-rich websites. Conversely, Intranet/document CMSs can't do what Composr can do. Composr doesn't try and replace native filesystems; the developers feel that sharing files is easier done (and perhaps also more secure) with something like Dropbox or network drives than sharing it through web apps.
+
+The above all said, Composr does in fact have many enterprise features such as The Repository. We used to have a WebDAV addon to easily access The Repository, but unfortunately the library, SabreDAV, is no-longer maintained. We would love for someone to sponsor or hire a developer so they can either fix it or implement another maintained library. See Community > Partners if interested.
+[*][b]A glorified blog, basic CMS, or “site builder”[/b]
+Composr is designed to be able to meet advanced needs, not just create very simple websites with a few articles or pages and maybe a contact form. While it is possible to host a very simple site with Composr, it may not be ideal (at least without removing all the addons you do not need) given Composr's advanced functionality. Composr is a very different system to what most CMS vendors market.
+[*][b]A way to quickly clone popular websites[/b]
+Composr is not a Facebook clone, an X (Twitter) clone, a YouTube clone, or a clone of any kind. Composr's not designed to replicate features of any specific websites, but rather to provide the best flexible features known or innovated by the developers themselves. Because Composr is a general purpose product, it's intentionally designed for the majority. For example, a lot of sites use galleries for maintaining something like a simple portfolio or team photo gallery – you can do far far more with Composr galleries, but the default configurations and templates tend to favour the majority use-cases.
+[*][b]A standalone framework[/b]
+The Composr core assumes it is used to power a website designed via the Composr CMS features. In this sense, Composr is not suitable for programmers looking to create a new system from foundations. You might wish to check out Conposr or Conposr++ on [url="our GitLab"]https://gitlab.com/composr-foundation[/url] if you are looking for a framework, but these frameworks are different (despite some similarities) from what Composr uses.
+[*][b]Designed just for programmers or entirely point-and-click[/b]
+With Composr, you can get a very advanced website 'out of the box' that you may start adding content to after only setting a few options and filling in a few 'blanks'. You can get a website up really easily with minimal skill.
+
+The system is also extremely flexible and configurable so as to make sites highly personal: however, this level of customisation requires an understanding of the various concepts of the system as described in our tutorials. Developers can't make everything point-and-click because they can't anticipate every need a user might have. There are cases where flexibility is achieved through general-purpose technologies, some of which are moderately complex. Users should not expect to be able to substantially reshape the system themselves without first gaining a reasonable understanding of the underlying technology.
+
+Many of the points in this document come back to this. Composr is designed to be simple to start with, and to provide a ladder that lets you progress to building incredibly sophisticated websites. It's important to understand that complex custom sites are not at the bottom of that ladder. The beauty of Composr is that it's designed to work great for novel ideas, not just as a template for cloning other people's ideas.
+[*][b]A mixed content-tree CMS[/b]
+Composr is a modular CMS. It has modules for news, galleries, polls, and so on. Some other systems take a mixed content-tree approach – a single shared tree/node structure with different types of content bolted on. Both approaches have positives and negatives.
+
+The advantages to Composr's approach:
+ - [b]Simplicity for webmasters[/b]. You can just go to the Content Management zone and choose the icon for the content you are interested in. You will not be distracted with anything related to different content types or your site structure as a whole – just what exists for the particular content type you are working with.
+ - [b]Cleaner feature coding[/b]. When programmers try and squeeze everything through shared subsystems, it can become hard to customise things for different cases. For example, imagine you are customising the Composr code so that the submitter of a video gets a community point every time someone views their video. If videos are implemented as a node in a shared tree, then you have to squeeze your extra code into what is already a complicated and abstract mess – it can become unsustainable and unmaintainable, and requires exceptionally smart programmers. With a modular system the programmer simply targets the code of the galleries module.
+
+The advantages of a content-tree approach reside around having broad and deep rich hierarchies. For example, you might put a poll underneath a news story and have that automatically display as a subitem on a menu. You might have a single browsable category containing both news and videos. You might have a pets custom content type, with news stories, videos, and topics underneath it.
+
+Some modular CMSs don't allow mixed-content structuring at all, but Composr has advanced functionality to make it possible. Its features include breadcrumbs configuration, aggregate content types, custom URL monikers, unlimited menu creation, advanced filtering (Selectcode and Filtercode), zones, virtual-roots, content blocks, and transparent redirects. In Composr, you therefore get the best of both worlds – simple by default, but extremely flexible.
+[*][b]A [progressive] web-app trying to be a desktop app[/b]
+Composr is designed as a web system, which is based on a publishing/magazine metaphor. It's not trying to look like a traditional desktop app. If you open up parts of your content management to end users (for example, by giving them blogs), the developers intend the content management functionality to look like it is naturally an extension of your website, rather than some utility they have been dumped into.
+[/list]
+
+Our “Why we're different” page has a whimsical view on the CMS market, but actually for some scenarios our competitors may be better if you have more specific needs. For example:
+ - [url="Wordpress"]https://wordpress.org[/url] might be better for blogs, WISIWYG site building, and modular systems where you actually do prefer a plugin-based approach.
+ - [url="Piwigo"]https://piwigo.org[/url] might be better for simple galleries.
+ - [url="Joomla"]https://www.joomla.org[/url] might be better for news / Press sites or any site heavily utilising articles.
+ - [url="Drupal"]https://www.drupal.org[/url] might be better for large and complex Enterprise Intranets.
+ - [url="MediaCMS"]https://www.mediacms.io[/url] might be better for video hosting.
+ - [url="Prestashop"]https://prestashop.com/open-source/[/url] might be better for eCommerce.
+ - [url="LimeSurvey"]https://community.limesurvey.org[/url] might be better for running surveys and gathering user feedback.
+ - [url="Moodle"]https://moodle.org[/url] might be better for managing educational courses.
+ - [url="MediaWiki"]https://www.mediawiki.org/wiki/MediaWiki[/url] might be better for traditional Wiki-style sites. 
+ - [url="Tiki"]https://tiki.org/HomePage[/url] might be better for those who want a lot of modularity with their site functionality.
+Ultimately, the choice of CMS is up to you. Do your research and your homework to find the CMS that best fits your needs. If Composr ends up being the one, wonderful! If not, that's great too; you have done your due diligence as a webmaster to find the system that is best for you upfront so you are not as likely to deal with migrating systems multiple times.
+
+[title="2"]No CMS is...[/title]
+
+We've laid out what Composr is not. Now, here are some things in which not only Composr, but no system, is:
+
+[list default="normal"]
+[*][b]A magic bullet[/b]
+No CMS can completely eliminate the need for programmers. This is especially true for Free and Open Source software. If your site has complex or relatively unusual requirements, then you will need to hire a programmer. Luckily for you, we're helping you find someone by providing a [page=":partners"]Composr partners directory[/page] where you can find companies and individuals who can offer Composr-specific services. It is up to you to contact them and negotiate work orders and contracts.
+
+Developers make Composr as powerful and flexible as they possibly can (without making it an overly-complex mess), but they acknowledge occasional real-world limitations. For example, Composr catalogues are not a 4GL system, and even if they were, 4GLs have not become predominant because they usually fail in their goals.
+[*][b]A way to get “a world-class website on the cheap”[/b]
+There is no way to get a complex, fully customised, [b]world-class[/b] site cheaply. Most world-class sites have a full-time team of programmers and designers behind them. Composr represents significant cost-savings and accelerated time-to-market because you can build on the existing foundations – is future proof for easy growth – and helps you tap into talent. But these are savings and not eliminations.
+
+If you're trying to operate a world-class website, then you probably at the very least need a part-time web designer, a few days of SEO per-month, a day of content writing per month, and an ongoing relationship with a programmer who can solve technical issues and make small changes competently and swiftly. That's before considering the time needing to manage daily operation, do marketing, and the time taken to develop the website in the first place.
+
+You'll need to treat the people working for you well by either paying competitive salary or market hourly rates – if you try and negotiate the price for each few hours of work done for you, or get people to work outside office hours without over-time pay, or expect free maintenance without an ongoing maintenance agreement, you'll likely either get very unskilled workers, or [page="docs:sup_developer_relationships"]have a bad relationship with them[/page].
+
+It's important to also understand that Composr has had very large investment to get it where it is at. Good code takes time to write, and it's a big mistake to think that just because Composr is given for free that things are easy to do. Due to the number of considerations involved for a quality job, each small feature (even if it's just a small option on a screen) typically takes a few hours to write if a developer knows what they're doing and is working in an efficient environment (and this is still only when everything works smoothly and absolutely no bugs occur in the process, which is rarely ever the case).
+
+World-class sites are expensive to run, even with the cost-savings Composr can give, because modern sites are far more than just the technology behind them. We can't understate the importance of making sure you have the budget to achieve what you're trying to achieve so that your project is sustainable.
+
+We recommend consulting with people who run successful websites with a similar skill level and ambition to your own, and asking what it costs and takes to do it – the answer is usually venture-capital investment, or the founding team having a high level of their own technical skill, or both.
+
+If you're looking for a site that just does what it needs to without being too flashy, you may well be able to avoid all these costs and just get something up cheaply and quickly. But please please [page="docs:sup_pricing"]think your budgeting and requirements through[/page], and if necessary build a business and financing plan to suit.
+[*][b]A free lunch for web design agencies[/b]
+If you run a web design agency, you should absolutely never expect to be able to lean on Composr as an immediate way to meet complex clients needs without a programming budget. For a complex project (and in reality – most people want a complex project, even though they don't want to acknowledge it) it is absolutely essential that you have either:
+ - a) In-house PHP programming skills to back things up where needed;
+ - b) Or, you budget a chunk of your quoted price for a professional development agency
+
+It is frankly very poor business to quote extremely low (to undercut the more established companies that do employ programmers) because you'll “just deploy Composr” because for 99.9% of projects there will be some proportion of project-specific things that Composr can't quite do out of the box; or generally there may be a need for good support on how to configure more advanced features in clever ways.
+
+We do not like to see cases on the forum where a non-programmer user is building a site for their client, but then expects free support from the developers / community to help them finish the hard parts of their project. Web development on commercial projects is never simple, even with Composr, so you need to prepare for the total costs when you give a quotation to a client.
+
+So, please see Composr as a way to make a great cost-saving, or deliver a better result for your client. But, don't see it as a cost elimination. Plan sustainably.
+[*][b]100% bug free[/b]
+As Composr is a vast and flexible system, you'll probably be using a lot of features and using them in ways other people might not have been regularly doing. Occasionally when developers introduce new features or fix bugs, they can accidentally cause some new bugs. So you should expect to find a few bugs as you go. Developers try really hard to avoid this happening with a whole suite of testing tools and processes, but at the end of the day some amount of human fallibility can't be prevented, and the small mistakes of computer programmers tend to be far more consequential than the small mistakes of other professionals.
+
+The core developers have a great record for fixing issues quickly, and usually the first person to report a bug is provided a hotfix. All hotfixes are posted publicly into the [url="tracker"]{$BASE_URL*}/tracker/[/url], and all fixes posted into Git. The development team can't, however, provide free one-on-one hotfix deployment to each user – so we put out patch releases occasionally to fix everything people have found.
+
+If you are working on a commercial project, then it is quite conceivable that a bug could be a business issue for you, and a hotfix might not be immediately available. Therefore it makes business sense to budget some support time for having hotfixes manually applied to your site by a developer if you do find any issues. As with other points made above, it's important to not assume Open Source software is a free lunch – Open Source is a philosophy that dramatically increases value for users, but the philosophy can't remove the fact that developers can't fund a warranty for software given away free, so individual attention needs to be handled through a support relationship. The core developers try and avoid this situation as much as possible through their systems to avoid bugs, and by releasing all the fixes out to [url="GitLab"]https://gitlab.com/composr-foundation/composr[/url] so that there is no monopoly on bug fix support – but realistically business customers expect expedient responses, and the best way is often to hire a developer to do those for them.
+[/list]
+
+We include more information on where Composr sits in our [page="docs:tut_webapp"]Web-applications, Composr, and PHP tutorial[/page].
