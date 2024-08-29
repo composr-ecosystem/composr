@@ -6,42 +6,64 @@ We encourage anyone with the skills and the time available to develop non-bundle
 
 To encourage high-quality and useful addons / themes, core developers use a rubric as outlined below for judging whether an addon / theme gets accepted into the Composr non-bundled addons repository, and how many points you receive as a reward. These points are assigned an appropriate role which could also list you on the [page=":stars"]community stars[/page] page.
 
-[b]If you score 1,500 points or more below, the addon will also receive a featured award and get additional promotion[/b].
+[surround][big_tab_controller switch_time="0"]Rejected,250 points,500 points,750 points,1000 points,1250 points,1500 points[/big_tab_controller]
 
-The points awarded is based on the following rubric used by the core developers:
-[list default="normal"]
-[*][b]Innovation[/b]: How innovative is your addon / theme?
- - Brings nothing new to Composr / unnecessarily reinvents the wheel: [i]will get rejected; instead, you can instead share it on the forums[/i]
- - Improves on something Composr already has: 100 points
- - Not seen in Composr but found in some other CMS': 250 points
- - Neither seen in Composr nor in most CMS': 500 points
- - Something that blows the minds of even the core developers: 1,000 points
-[*][b]Usefulness[/b]: How useful would this addon / theme be for the general public?
- - Unlikely to be used by anyone but you: [i]will get rejected; you can instead share it on the forums[/i]
- - May be useful for a few sites: 50 points
- - May be useful for several sites: 100 points
- - May be useful for many sites: 250 points
-Add 250 points if the core developers decide to use it on composr.app.
-[*][b]Code Quality[/b]: How closely did you conform to our [page="docs:codebook"]coding standards[/page]?
- - Does not follow even basic PHP standards: [i]will get rejected; we will recommend you fix the code before sharing it[/i]
- - Follows basic PHP standards but not Composr standards: [i]will get rejected unless it's made as a minimodule / miniblock[/i]
- - Follows PHP standards and basic Composr standards: 50 points
- - Follows PHP standards and most of Composr's standards: 150 points
- - Cannot be differentiated in quality from core code: 250 points
-[*][b]Bugs[/b]: Does it work?:
- - One or more core features are broken, or it breaks something else in Composr: [i]will get rejected; you will be asked to fix your addon / theme and seek help from the community[/i]
- - The addon is very slow or inefficient: [i]will get rejected; you will be asked to fix your addon / theme and seek help from the community[/i]
- - One or more considerable security issues were detected: [i]will get rejected; you will be asked to fix your addon / theme and seek help from the community[/i]
- - Minor bugs exist which the developers believe should have easily been spotted: [i]will get rejected; you will be asked to fix your addon / theme and seek help from the community[/i]
- - Minor bugs exist which were not easily spotted but the addon / theme can still be used: 100 points, but you will be encouraged to fix the bugs
- - No bugs detected, but the addon is moderately slow / inefficient: 100 points, but you will be encouraged to optimise
- - No bugs detected, and the addon is fast / efficient: 250 points
-[*][b]Documentation[/b] (usually addons only): Did you write tutorials, and how good of quality are they?
- - No tutorials: 0 points (tutorials are optional, so this will not necessarily result in a rejection)
- - Low quality, or contains no relevant screenshots or videos: 50 points (it may be rejected if the grammar and spelling are below standards)
- - Moderate quality and includes at least one relevant screenshot: 100 points
- - Good quality (thorough, covers all features and concepts, and similar [or better] to the quality of a tutorial written by a core developer): 150 points
- - Good quality and also includes video demonstrations: 250 points
-[/list]
+[big_tab="Rejected" default="1"]
+The addon or theme will be [i]rejected[/i], and either the member encouraged to fix their addon / theme and re-submit again, or to share the addon / theme in the forum instead, if [i]any[/i] of the following conditions hold true:
+ - The addon / theme is too niche and would not be useful for a vast majority of sites.
+ - The addon / theme does not add any useful features or reinvents the wheel on something that does not need to be reinvented.
+ - The developers do not believe the addon / theme aligns with the current philosophy / direction of Composr.
+ - The addon / theme does not work, contains any major bugs or security issues, breaks anything else in Composr, or contains any minor bugs the developers believe should have been easily spotted and fixed.
+ - The addon / theme has significant UI / UX issues.
+ - The addon / theme contains poor grammar and/or spelling.
+ - The addon / theme is very slow or inefficient.
+ - The addon / theme does not pass our automated tests (we may allow a few exceptions).
+ - The code does not adhere to basic PHP or Composr [page="docs:codebook"]coding standards[/page] (we allow some leniency for non-bundled addons but we still expect they conform to basic standards).
+[/big_tab]
+
+[big_tab="250 points"]
+Your addon or theme will earn [i]250 points[/i] if it meets [i]any[/i] of the following criteria:
+ - The addon / theme only introduces minor improvements to existing Composr features / the default theme, but does not add anything new itself.
+ - The addon / theme is niche and will probably not be useful for a lot of cases (but could be useful in enough cases to allow it in the directory).
+ - The code only adheres to basic PHP and Composr [page="docs:codebook"]coding standards[/page].
+[/big_tab]
+
+[big_tab="500 points"]
+Your addon or theme will earn [i]500 points[/i] if it meets [i]any[/i] of the criteria for the 250-point category, plus:
+ - You wrote a basic tutorial for the addon / theme, but it does not include any screenshots or videos, lacks documentation for one or more core functions or concepts of the addon / theme, or contains poor grammar / spelling.
+[/big_tab]
+
+[big_tab="750 points"]
+Your addon or theme will earn [i]750 points[/i] if it meets [i]any[/i] of the following criteria:
+ - The addon / theme introduces a new feature to Composr, but the feature is not uncommon in other CMS'. 
+ - For themes, it introduces some unique UI designs but still borrows many from the default theme.
+ - The addon / theme will probably not be used by more than several sites (but more than what would be considered niche).
+ - The code adheres to most PHP and Composr [page="docs:codebook"]coding standards[/page], but it still lacks the quality seen in core code.
+[/big_tab]
+
+[big_tab="1000 points"]
+Your addon or theme will earn [i]1,000 points[/i] if it meets [i]any[/i] of the criteria for the 750-point category, plus:
+ - You wrote a decent tutorial that includes at least one screenshot and covers all of the core functions and concepts of the addon / theme. But it does not include any video demonstrations.
+[/big_tab]
+
+[big_tab="1250 points"]
+Your addon or theme will earn [i]1,250 points[/i] if it meets [b]all[/b] of the following criteria:
+ - The addon introduces new features to Composr that are also rare to see in other CMS'.
+ - For themes, it introduces a lot of new, unique, and well-crafted UI elements.
+ - The addon / theme could be useful for many sites that run Composr.
+ - The addon / theme contains no noticeable bugs beyond trivial ones that will not affect most users.
+ - The addon / theme runs fast and efficiently.
+ - You wrote a decent tutorial that includes at least one screenshot and covers all of the core functions and concepts of the addon / theme. But it does not include any video demonstrations.
+ - The grammar / spelling is correct across the entire addon / theme and its tutorials (we may allow a few minor errors).
+ - The code adheres to PHP and Composr [page="docs:codebook"]coding standards[/page] to the degree that the quality cannot be differentiated from core code.
+[/big_tab]
+
+[big_tab="1500 points"]
+Your addon or theme will earn [i]1,500 points[/i] if it meets [b]all[/b] of the criteria for 1,000 points plus:
+ - You wrote a thorough tutorial that includes at least one screenshot, covers all of the functions and concepts of the addon / theme, and contains at least one video demonstration.
+
+[b]Addons / themes which reach this degree of quality will also earn an award and receive substantial promotion by the core team![/b]
+[/big_tab]
+[/surround]
 
 In addition to the above, you will also receive points when someone likes the addon. Members can individually send you points as a thank-you for the addon. And you will get points when you regularly maintain and update the addon / theme.
