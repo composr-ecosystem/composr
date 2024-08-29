@@ -35,7 +35,7 @@ Your addon or theme will earn [i]500 points[/i] if it meets [i]any[/i] of the cr
 
 [big_tab="750 points"]
 Your addon or theme will earn [i]750 points[/i] if it meets [i]any[/i] of the following criteria:
- - The addon / theme introduces a new feature to Composr, but the feature is not uncommon in other CMS'. 
+ - The addon / theme introduces a new feature to Composr, but the feature is not uncommon in other CMS', and your implementation is not notably better than what other CMS' do. 
  - For themes, it introduces some unique UI designs but still borrows many from the default theme.
  - The addon / theme will probably not be used by more than several sites (but more than what would be considered niche).
  - The code adheres to most PHP and Composr [page="docs:codebook"]coding standards[/page], but it still lacks the quality seen in core code.
@@ -48,7 +48,7 @@ Your addon or theme will earn [i]1,000 points[/i] if it meets [i]any[/i] of the 
 
 [big_tab="1250 points"]
 Your addon or theme will earn [i]1,250 points[/i] if it meets [b]all[/b] of the following criteria:
- - The addon introduces new features to Composr that are also rare to see in other CMS'.
+ - The addon introduces new features to Composr that are also rare to see in other CMS' (or if it is common in other CMS', you implemented it in a much better way than most do).
  - For themes, it introduces a lot of new, unique, and well-crafted UI elements.
  - The addon / theme could be useful for many sites that run Composr.
  - The addon / theme contains no noticeable bugs beyond trivial ones that will not affect most users.
@@ -59,7 +59,7 @@ Your addon or theme will earn [i]1,250 points[/i] if it meets [b]all[/b] of the 
 [/big_tab]
 
 [big_tab="1500 points"]
-Your addon or theme will earn [i]1,500 points[/i] if it meets [b]all[/b] of the criteria for 1,000 points plus:
+Your addon or theme will earn [i]1,500 points[/i] if it meets [b]all[/b] of the criteria for 1,250 points plus:
  - You wrote a thorough tutorial that includes at least one screenshot, covers all of the functions and concepts of the addon / theme, and contains at least one video demonstration.
 
 [b]Addons / themes which reach this degree of quality will also earn an award and receive substantial promotion by the core team![/b]
