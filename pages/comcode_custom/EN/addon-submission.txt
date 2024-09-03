@@ -2,13 +2,23 @@
 
 We encourage anyone with the skills and the time available to develop non-bundled addons and themes for Composr. By doing so, you enable others to further extend their Composr sites with features not covered by the core developers. And you get a bit of coding experience in the process!
 
-[title="2"]Points[/title]
+To submit your addon, [page=":contact"]click here to Contact Us[/page], choose Other (free services), and choose "Submit a non-bundled addon or theme".
 
-To encourage high-quality and useful addons / themes in the official repository, core developers use a rubric as outlined below for judging whether an addon / theme gets accepted into the Composr non-bundled addons repository, and how many points you receive as a reward. These points are assigned an appropriate role which could also list you on the [page=":stars"]community stars[/page] page.
-
-[title="3"]Why should I submit to the official repository?[/title]
+[title="2"]Why should I submit to the official repository?[/title]
 
 While it is entirely optional, getting your addon or theme accepted into the repository means that it will be easily downloadable from any Composr site's Admin Zone and from the composr.app site (more visibility). Additionally, although you will be responsible for maintaining the addon, the core developers will ensure it continues to function on a very basic / core level between Composr versions. And finally, you will receive points as a reward.
+
+[title="2"]Guidelines[/title]
+When submitting an addon or theme for inclusion in the official repository of non-bundled addons / themes, please consider the following:
+ - Your code is expected to adhere to the latest PHP coding standards. As of this writing, it is PSR-12. Consider reviewing our [page="docs:tut_programming"]tutorial on programming[/page] and our [page="docs:sup_hardcore_blocks"]coding primer[/page].
+ - Your code is expected to adhere to the [page="docs:codebook_standards"]Composr coding standards[/page]; it doesn't have to be perfect but it must follow basic practices at minimum.
+ - Have a look on our [page="docs:sup_hardcore_1"]tutorial for building addons[/page] (also go to "see also" for parts 2 and 3).
+ - Consider using the export addon tool in the Admin Zone (can also be used for themes). This is the best way to archive your addon and submit it to the core team as it is already packaged in such a way other Composr sites can install it.
+ - Please read the Points / Rubric section and each tab before submitting your addon. That way, you will have an idea of some of the criteria the core team looks for in accepting addons.
+
+[title="2"]Points / Rubric[/title]
+
+To encourage high-quality and useful addons / themes in the official repository, core developers use a rubric as outlined below for judging whether an addon / theme gets accepted into the Composr non-bundled addons repository, and how many points you receive as a reward. These points are assigned an appropriate role which could also list you on the [page=":stars"]community stars[/page] page.
 
 [surround][big_tab_controller switch_time="0"]Rejected,250 points,500 points,750 points,1000 points,1250 points,1500 points[/big_tab_controller]
 
