@@ -2326,7 +2326,6 @@ class __lang_spelling_epic_test_set extends cms_test_case
             'pngs',
             'pngthing',
             'po',
-            'pointstore',
             'pokery',
             'policier',
             'pollbox',
