@@ -1,0 +1,7 @@
+﻿[box="Antispam / Security Policy"]
+[include param=""]_antispam_policy[/include]
+[/box]
+
+[box="The Composr Constitution"]
+[include param=""]constitution[/include]
+[/box]

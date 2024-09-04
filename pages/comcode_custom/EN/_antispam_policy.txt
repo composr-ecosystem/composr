@@ -1,0 +1,30 @@
+﻿[title]Antispam Policy[/title]
+
+[b]Do not[/b] register an account if your intent is to spam. You are wasting your time! We have a number of very effective measures in place to eliminate spam, including but not limited to the following:
+
+ - [b]Stealth link prevention[/b]: Links in your member profile will be disabled until you make a couple legitimate forum posts.
+ - [b]nofollow SEO[/b]: All links members post will be attributed with rel=nofollow. Therefore, it will not help you at all with SEO rankings to spam us.
+ - [b]Reports to spam blocklists[/b]: Members we ban for spam will be reported to spam blocklists such as StopForumSpam. Many sites use these blocklists to automatically ban spammers. So you could get banned automatically en-masse from many other websites.
+ - [b]Direct contact with webmasters[/b]: We will contact the webmasters of any sites you spam to warn them that you are doing disreputable actions / spamming in their name (and thus to cease all business with you).
+ - [b]Quick actions[/b]: We have tools to quickly mass delete spam so few people (if any) ever see them.
+ - [b]Shadow-banning[/b]: Suspicious new accounts are automatically shadow-banned so legitimate members cannot see anything they post, thus limiting their impact of spamming even further.
+ - [b]Profile info banning[/b]: Shadow-banned accounts also cannot make any modifications to their profile info, so spamming within their profile will also be virtually impossible.
+ - [b]CAPTCHAs[/b]: We require new members to continue solving CAPTCHAs for a while.
+ - [b]Blackholes[/b]: We put hidden blackholes in place to automatically trap, ban, and report spam bots.
+ - [b]Heuristics[/b]: We have heuristics in place to automatically hide or block spam behaviour, or even instantly ban spammers if the confidence is very high.
+ - [b]Rewards for fighting against spam[/b]: We reward members who report spam to us and moderators who take quick action against spammers. Literally all eyes are on you!
+
+Most of the above processes happen automatically by our website software and thus require effectively no human time on our part; that's the true versatility of Composr CMS!
+
+If you get shadow-banned and you are not a spammer, just make a legitimate forum post in the forum you see and we will remove the shadow ban. It's very clear to us who is and is not a spammer, so don't worry at all if you are not.
+
+If you are a spammer and this site is on a list of high-profile sites you're paid to spam, get that list adjusted as it is working against you.
+
+[title]Security Policy[/title]
+
+Also, [b]do not[/b] use or join this site if you intend to try hacking it. Again, you are wasting your time. We have three layers of security in place to block attempts to hack the site:
+ - A third-party to monitor traffic coming in to the server before it reaches the server
+ - A Web Application Firewall and a Network firewall on the server itself
+ - A web application firewall within the Composr CMS software which powers this website (including brute-force login prevention)
+
+[b]If you get a hack attack message or a 403 forbidden error, do not refresh your browser![/b] You could cause your IP to get banned. Instead, navigate manually back to {$BASE_URL*}. And if you believe the hack attack / 403 error was a false positive, [page=":report-issue"]report it to the tracker[/page].
