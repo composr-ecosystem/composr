@@ -63,7 +63,7 @@ class Block_top_notifications
 
         require_code('notification_poller');
 
-        list($notifications, $num_unread_web_notifications) = get_web_notifications($max);
+        list($notifications, , $num_unread_web_notifications) = get_web_notifications($max);
 
         list($pts, $num_unread_pts) = get_pts($max);
 

@@ -146,7 +146,7 @@ class Module_notifications
         $max = get_param_integer('n_max', 10); // We keep this low by default or we may trigger PHP memory errors
 
         require_code('notification_poller');
-        list($notifications, $max_rows) = get_web_notifications($max, $start);
+        list($notifications, $max_rows,) = get_web_notifications($max, $start);
 
         require_code('templates_pagination');
         $pagination = pagination(do_lang_tempcode('NOTIFICATIONS'), $start, 'n_start', $max, 'n_max', $max_rows);
