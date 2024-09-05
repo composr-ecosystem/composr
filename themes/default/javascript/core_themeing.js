@@ -752,23 +752,23 @@
                             file = file.replace(/\..*$/, '');
                             switch (subdir) {
                                 case 'templates':
-                                    file += '.tpl';
+                                    file = 'templates/' + file + '.tpl';
                                     break;
 
                                 case 'css':
-                                    file += '.css';
+                                    file = 'css/' + file + '.css';
                                     break;
 
                                 case 'javascript':
-                                    file += '.js';
+                                    file = 'javascript/' + file + '.js';
                                     break;
 
                                 case 'text':
-                                    file += '.txt';
+                                    file = 'text/' + file + '.txt';
                                     break;
 
                                 case 'xml':
-                                    file += '.xml';
+                                    file = 'xml/' + file + '.xml';
                                     break;
                             }
 
