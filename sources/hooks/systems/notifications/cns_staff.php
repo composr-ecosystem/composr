@@ -40,6 +40,7 @@ class Hook_notification_cns_staff extends Hook_notification__Staff
         if ($notification_code == 'cns_profile_high_impact_edit') {
             return A_NA;
         }
+
         return A__STATISTICAL;
     }
 
@@ -58,6 +59,7 @@ class Hook_notification_cns_staff extends Hook_notification__Staff
         $list = [];
         $list['cns_group_join_request_staff'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_join_request_staff')];
         $list['cns_profile_high_impact_edit'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_profile_high_impact_edit')];
+        $list['cns_member_deleted'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cms_member_deleted')];
         $list['cns_member_needs_validation'] = [do_lang('VALIDATION'), do_lang('cns:NOTIFICATION_TYPE_cns_member_needs_validation')];
         return $list;
     }

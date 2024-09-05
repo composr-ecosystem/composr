@@ -1427,16 +1427,22 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 /**
  * Delete a member.
  *
- * @param  AUTO_LINK $member_id The ID of the member
+ * @param  MEMBER $member_id The ID of the member
+ * @param  ?MEMBER $member_id_deleting The ID of the member doing the deleting (null: current member)
  */
-function cns_delete_member(int $member_id)
+function cns_delete_member(int $member_id, ?int $member_id_deleting = null)
 {
     $info = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], ['id' => $member_id], '', 1);
     if (!array_key_exists(0, $info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'member'));
     }
 
+    if ($member_id_deleting === null) {
+        $member_id_deleting = get_member();
+    }
+
     $username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
+    $by_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id_deleting, 'm_username');
     $signature = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_signature');
     $email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
 
@@ -1498,22 +1504,27 @@ function cns_delete_member(int $member_id)
     delete_value('cns_newest_member_id');
     delete_value('cns_newest_member_username');
 
-    log_it('DELETE_MEMBER', strval($member_id), $username);
+    // Must use cns_mod_log_it instead of log_it because we need to define the member who did the deleting
+    cns_mod_log_it('DELETE_MEMBER', strval($member_id), $username, '', $member_id_deleting);
 
     // E-mail the member to inform them their account was deleted
     if ($email_address != '') {
-        $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
-
         $part_b = '';
         if (!has_actual_page_access(get_member(), 'admin_cns_members')) { // If change not by an admin
             $part_b = do_lang('SECURITY_ASPECT_CHANGED_BODY_2', get_ip_address());
         }
 
         require_code('mail');
-        $dm_subject = do_lang('ACCOUNT_DELETED_SUBJECT', comcode_escape($username), comcode_escape($current_username), [get_site_name()]);
-        $dm_body = do_lang('ACCOUNT_DELETED_BODY', comcode_escape($username), comcode_escape($current_username), [get_site_name(), comcode_escape($email_address), $part_b]);
+        $dm_subject = do_lang('ACCOUNT_DELETED_SUBJECT', comcode_escape($username), comcode_escape($by_username), [get_site_name()]);
+        $dm_body = do_lang('ACCOUNT_DELETED_BODY', comcode_escape($username), comcode_escape($by_username), [get_site_name(), comcode_escape($email_address), $part_b]);
         dispatch_mail($dm_subject, $dm_body, [$email_address], $username, '', '');
     }
+
+    // Also notify staff
+    require_code('notifications');
+    require_lang('cns');
+    $message = do_notification_lang('MEMBER_DELETED_MAIL', comcode_escape($username), comcode_escape($by_username));
+    dispatch_notification('cns_member_deleted', null, do_lang('MEMBER_DELETED_SUBJECT', comcode_escape($username)), $message, null, $member_id_deleting);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
