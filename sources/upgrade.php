@@ -526,6 +526,8 @@ function upgrader_menu_screen() : string
     $l_integrity_scan_no_merging = upgrader_link('upgrader.php?type=integrity_scan', do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE'), false);
     $l_integrity_scan_2 = do_lang('UPGRADER_INTEGRITY_SCAN_2');
 
+    $l_htaccess = do_lang('UPGRADER_HTACCESS');
+
     // Database upgrade link
     $l_db_upgrade = upgrader_link('upgrader.php?type=db_upgrade', do_lang('UPGRADER_DATABASE_UPGRADE'), false);
 
@@ -616,6 +618,15 @@ function upgrader_menu_screen() : string
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--><br />{$l_not_for_patch}</td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 30))) . "&nbsp;&dagger;</td></tr>
     ";
+
+    // Check .htaccess file
+    if (is_file(get_file_base() . '/.htaccess')) {
+        $step_num++;
+        $_step_num = strval($step_num);
+        $out .= "
+                    <tr><th>{$_step_num}</th><td>{$l_htaccess}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
+        ";
+    }
 
     // Database upgrade
     $step_num++;
