@@ -2994,8 +2994,8 @@ function build_search_results_interface(array $results, int $start, int $max, st
     $i = 0;
     $tabular_results = [];
     foreach ($results as $result) {
-        if (array_key_exists('restricted', $result)) {
-            continue; // This has been blanked out due to insufficient access permissions or some other reason
+        if (array_key_exists('restricted', $result) && ($result['restricted'] === true)) {
+            continue; // Insufficient permissions
         }
 
         $content_type = convert_cms_type_codes('search_hook', $result['type'], 'content_type');
@@ -3010,14 +3010,16 @@ function build_search_results_interface(array $results, int $start, int $max, st
         }
 
         if (($i >= $start) && ($i < $start + $max)) {
+            $object = get_hook_ob('modules', 'search', $result['type'], 'Hook_search_');
+
             if (array_key_exists('template', $result)) {
                 $rendered_result = $result['template'];
             } else {
-                $rendered_result = $result['object']->render($result['data']);
+                $rendered_result = $object->render($result['data']);
             }
             if ($rendered_result !== null) {
                 if (is_array($rendered_result)) {
-                    $class = get_class($result['object']);
+                    $class = get_class($object);
                     if (!array_key_exists($class, $tabular_results)) {
                         $tabular_results[$class] = [];
                     }
