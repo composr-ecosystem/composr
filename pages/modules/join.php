@@ -224,7 +224,7 @@ class Module_join
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         require_code('global4');
         if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
-            $map['redirect'] = $redirect;
+            $map['redirect'] = protect_url_parameter($redirect);
         }
         $url = build_url($map, '_SELF');
 
@@ -280,7 +280,7 @@ class Module_join
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         require_code('global4');
         if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
-            $map['redirect'] = $redirect;
+            $map['redirect'] = protect_url_parameter($redirect);
         }
         $url = build_url($map, '_SELF');
 
@@ -438,7 +438,7 @@ class Module_join
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         require_code('global4');
         if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
-            $map['redirect'] = $redirect;
+            $map['redirect'] = protect_url_parameter($redirect);
         }
         $url = build_url($map, '_SELF');
         $url_disagree = build_url(['page' => '_SELF', 'type' => '_review_rules_disagree']);

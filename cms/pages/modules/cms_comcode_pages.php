@@ -1150,7 +1150,7 @@ class Module_cms_comcode_pages
 
         $text = new Tempcode();
         if (addon_installed('points')) {
-            $login_url = build_url(['page' => 'login', 'type' => 'browse', 'redirect' => get_self_url(true)], get_module_zone('login'));
+            $login_url = build_url(['page' => 'login', 'type' => 'browse', 'redirect' => protect_url_parameter(get_self_url(true))], get_module_zone('login'));
             $_login_url = escape_html($login_url->evaluate());
             if ((is_guest()) && ((get_forum_type() != 'cns') || (has_actual_page_access(get_member(), 'join')))) {
                 $text->attach(paragraph(do_lang_tempcode('NOT_LOGGED_IN_NO_CREDIT', $_login_url)));

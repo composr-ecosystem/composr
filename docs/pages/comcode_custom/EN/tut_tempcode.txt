@@ -414,7 +414,7 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$PROTECT_URL_PARAMETER,http://example}</td>
-			<td>Convert the format of a URL so it can be embedded as a parameter that ModSecurity will not trigger security errors on.</td>
+			<td>Convert the format of a URL so it can be embedded as a parameter that ModSecurity and browser-based XSS filtering will not trigger security errors on.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$BACKSLASH}</td>

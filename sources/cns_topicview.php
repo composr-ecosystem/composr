@@ -799,7 +799,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         if ($rendering_context == 'tickets') {
             $map['redirect'] = protect_url_parameter(build_url(['page' => 'tickets', 'type' => 'ticket', 'id' => get_param_string('id')], get_module_zone('tickets'), [], false, false, false, '_top'));
         } else {
-            $map['redirect'] = $GLOBALS['FORUM_DRIVER']->topic_url($_postdetails['topic_id'], '', true);
+            $map['redirect'] = protect_url_parameter($GLOBALS['FORUM_DRIVER']->topic_url($_postdetails['topic_id'], '', true));
         }
         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
         if (($test !== null) && ($test !== '0')) {

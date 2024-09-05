@@ -52,7 +52,7 @@ function generate_login_screen(object $title, string $target = '_top', $redirect
     }
     require_code('global4');
     if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
-        $passion->attach(form_input_hidden('redirect', $redirect));
+        $passion->attach(form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter($redirect))));
     } else { // We will only go to the zone-default page if an explicitly blank redirect URL is given or if the redirect would take us direct to another login or logout page
         global $ZONE;
         $_url = build_url(['page' => $ZONE['zone_default_page']], '_SELF');
