@@ -434,7 +434,7 @@
             return;
         }
 
-        $dom.html(realtimedate, dateObject.getFullYear() + '/' + (String(dateObject.getMonth())) + '/' + (String(dateObject.getDate())));
+        $dom.html(realtimedate, dateObject.getFullYear() + '/' + (String(dateObject.getMonth() + 1)) + '/' + (String(dateObject.getDate())));
 
         var hours = (String(dateObject.getHours()));
         var minutes = (String(dateObject.getMinutes()));

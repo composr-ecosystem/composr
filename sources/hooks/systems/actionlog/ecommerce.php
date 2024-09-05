@@ -62,7 +62,7 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => 0,
                 'followup_page_links' => [
-                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
+                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_ecommerce:prices',
                 ],
             ],
             'ECOM_PRODUCTS_ADD_MAIL_POP3' => [
@@ -71,7 +71,7 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => 0,
                 'followup_page_links' => [
-                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
+                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_ecommerce:prices',
                 ],
             ],
             'ECOM_PRODUCTS_AMEND_CUSTOM_PERMISSIONS' => [
@@ -80,7 +80,7 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
+                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_ecommerce:prices',
                 ],
             ],
             'ECOM_PRODUCTS_AMEND_CUSTOM_PRODUCTS' => [
@@ -89,7 +89,7 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
+                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_ecommerce:prices',
                 ],
             ],
             'ECOM_PRODUCT_CHANGED_PRICES' => [
@@ -98,7 +98,7 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
+                    'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_ecommerce:prices',
                 ],
             ],
         ];

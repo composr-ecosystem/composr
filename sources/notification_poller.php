@@ -70,7 +70,7 @@ function notification_display_script()
 
     $max = post_param_integer('max', null);
 
-    list($tpl,) = get_web_notifications($max);
+    list($tpl, ,) = get_web_notifications($max);
     $tpl->evaluate_echo();
 }
 
@@ -116,7 +116,7 @@ function notification_poller_script()
         }
 
         if ($max !== null) {
-            list($display, $unread) = get_web_notifications($max, 0, $forced_update);
+            list($display, , $unread) = get_web_notifications($max, 0, $forced_update);
             $xml .= '
                     <display_web_notifications>' . $display->evaluate() . '</display_web_notifications>
                     <unread_web_notifications>' . strval($unread) . '</unread_web_notifications>
@@ -179,12 +179,12 @@ function notification_poller_script()
  * @param  ?integer $max Number of notifications to show (null: no limit)
  * @param  integer $start Start offset
  * @param  boolean $skip_cache Whether to skip serving results from the cache
- * @return array A pair: Templating, Max rows
+ * @return array A tuple: Templating, Max rows, unread rows
  */
 function get_web_notifications(?int $max = null, int $start = 0, bool $skip_cache = false) : array
 {
     if (is_guest()) {
-        return [new Tempcode(), 0];
+        return [new Tempcode(), 0, 0];
     }
 
     if (($start == 0) && !$skip_cache) {
@@ -244,9 +244,10 @@ function get_web_notifications(?int $max = null, int $start = 0, bool $skip_cach
         $out->attach($rendered);
     }
 
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)', $where + ['d_read' => 0]);
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)', $where);
+    $unread_rows = $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)', $where + ['d_read' => 0]);
 
-    $ret = [$out, $max_rows];
+    $ret = [$out, $max_rows, $unread_rows];
 
     if ($start == 0) {
         require_code('caches2');

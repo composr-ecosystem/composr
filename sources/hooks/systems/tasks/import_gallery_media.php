@@ -113,6 +113,12 @@ class Hook_task_import_gallery_media
             }
         }
 
+        // Clear caches
+        require_code('caches');
+        delete_cache_entry('main_multi_content');
+        delete_cache_entry('main_gallery_embed');
+        delete_cache_entry('main_gallery_mosaic');
+
         $ret = do_lang_tempcode('GALLERY_IMPORT_SUCCESS_EDIT_TITLES_INLINE', escape_html(integer_format(count($media_imported))));
 
         return ['text/html', $ret];

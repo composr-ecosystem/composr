@@ -41,7 +41,7 @@ class Hook_realtime_rain_stats
         if (has_actual_page_access(get_member(), 'admin_stats')) {
             require_lang('stats');
 
-            $rows = $GLOBALS['SITE_DB']->query('SELECT browser,referer,page_link,ip,member_id,date_and_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+            $rows = $GLOBALS['SITE_DB']->query('SELECT browser,referer_url,page_link,ip,member_id,date_and_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
                 $timestamp = $row['timestamp'];
@@ -52,7 +52,7 @@ class Hook_realtime_rain_stats
                 $title = rain_truncate_for_title(do_lang('HIT', $page_link));
 
                 // Show referer domain
-                $referer = @cms_parse_url_safe($row['referer']);
+                $referer = @cms_parse_url_safe($row['referer_url']);
                 if ($referer !== false) {
                     if (!array_key_exists('host', $referer)) {
                         $referer['host'] = do_lang('UNKNOWN');

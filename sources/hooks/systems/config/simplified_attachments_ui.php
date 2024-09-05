@@ -56,6 +56,6 @@ class Hook_config_simplified_attachments_ui
             return null;
         }
 
-        return '1';
+        return '0';
     }
 }

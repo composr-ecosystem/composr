@@ -10,7 +10,7 @@
 </p>
 
 <p>
-	{!EDIT_ECOMMERCE_CONFIG,{$PAGE_LINK*,_SEARCH:admin_config:category:POINTSTORE}}
+	{!EDIT_ECOMMERCE_CONFIG,{$PAGE_LINK*,_SEARCH:admin_config:category:ECOMMERCE_PRODUCTS}}
 </p>
 
 {+START,IF_NON_EMPTY,{EDIT_FORM}}
