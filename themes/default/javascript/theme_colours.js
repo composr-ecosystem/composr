@@ -83,7 +83,7 @@
         });
 
         // LEGACY
-        if (window.jQuery.fn.spectrum !== undefined) {
+        if (window.jQuery && window.jQuery.fn.spectrum !== undefined) {
             var test = document.createElement('input');
             try {
                 test.type = 'color';

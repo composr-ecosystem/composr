@@ -725,7 +725,9 @@
             }
         }, 1000);
 
-        window.jQuery && window.jQuery.fn.resizable && window.jQuery('.template-editor-file-selector').resizable();
+        if (window.jQuery && window.jQuery.fn.resizable) {
+            window.jQuery('.template-editor-file-selector').resizable();
+        }
 
         templateEditorAssignUnloadEvent();
 
@@ -1153,17 +1155,19 @@
                 highlightTemplate(window.opener, fileIdToFile(fileId));
             }
 
-            window.jQuery('#e-' + fileId.replace(/\./g, '\\.') + '-wrap').resizable({
-                resize: function () {
-                    var editor = window.aceEditors['e_' + fileId];
-                    if (editor !== undefined) {
-                        $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').style.height = '100%';
-                        $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').parentNode.style.height = '100%';
-                        editor.resize();
-                    }
-                },
-                handles: 's'
-            });
+            if (window.jQuery && window.jQuery.fn.resizable) {
+                window.jQuery('#e-' + fileId.replace(/\./g, '\\.') + '-wrap').resizable({
+                    resize: function () {
+                        var editor = window.aceEditors['e_' + fileId];
+                        if (editor !== undefined) {
+                            $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').style.height = '100%';
+                            $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').parentNode.style.height = '100%';
+                            editor.resize();
+                        }
+                    },
+                    handles: 's'
+                });
+            }
         }, 1000);
 
         function fileIdToFile(fileId) {
