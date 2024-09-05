@@ -898,7 +898,7 @@ function read_abstract_sorting_params(string $_url_sort, ?array $allowed_sorts, 
     list($url_sort, $dir) = $parts;
     if (($allowed_sorts !== null) && (!in_array($url_sort, $allowed_sorts))) {
         if (($strict_error) && (!in_array($url_sort, $banal_default_sorts))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
+            // log_hack_attack_and_exit('ORDERBY_HACK'); TODO: MANTIS #5909
         }
         $url_sort = $allowed_sorts[0];
     }
