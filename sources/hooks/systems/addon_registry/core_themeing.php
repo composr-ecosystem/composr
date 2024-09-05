@@ -334,6 +334,10 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_template_editor_screen() : object
     {
+        // Enable web workers for ace
+        require_code('csp');
+        load_csp(['csp_allow_workers' => '1']);
+
         return lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'FILES_TO_LOAD' => [],
