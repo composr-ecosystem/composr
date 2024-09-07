@@ -209,75 +209,92 @@ class Module_points
             rename_privilege('trace_anonymous_gifts', 'trace_anonymous_points_transactions');
 
             // Delete the points_gained_given field but not before checking if we need to add a legacy record to the ledger.
-            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'receiving_member'], [], ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY receiving_member');
-            foreach ($rows as $row) {
-                $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['receiving_member']);
-                $amount = ($row['points'] + $row['gift_points']);
-                if ($amount !== $fields['points_gained_given']) {
-                    $difference = ($fields['points_gained_given'] - $amount);
-                    $map = [
-                        'sending_member' => ($difference < 0) ? $row['receiving_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                        'receiving_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['receiving_member'],
-                        'amount_gift_points' => 0,
-                        'amount_points' => abs($difference),
-                        'date_and_time' => time(),
-                        'anonymous' => 0,
-                        'linked_ledger_id' => null,
-                        't_type' => 'legacy',
-                        't_subtype' => 'upgrader',
-                        't_type_id' => 'points_gained_given',
-                        'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL, // Refunding gained points back to the system
-                        'locked' => 0,
-                    ];
-                    $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Gained-Given discrepancy', 4);
-                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
+            $start = 0;
+            do {
+                $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'receiving_member'], [], ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY receiving_member', 100, $start);
+                foreach ($rows as $row) {
+                    $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['receiving_member']);
+                    if (!isset($fields['points_gained_given'])) {
+                        continue;
+                    }
+                    $amount = ($row['points'] + $row['gift_points']);
+                    if ($amount !== $fields['points_gained_given']) {
+                        $difference = ($fields['points_gained_given'] - $amount);
+                        $map = [
+                            'sending_member' => ($difference < 0) ? $row['receiving_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                            'receiving_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['receiving_member'],
+                            'amount_gift_points' => 0,
+                            'amount_points' => abs($difference),
+                            'date_and_time' => time(),
+                            'anonymous' => 0,
+                            'linked_ledger_id' => null,
+                            't_type' => 'legacy',
+                            't_subtype' => 'upgrader',
+                            't_type_id' => 'points_gained_given',
+                            'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL, // Refunding gained points back to the system
+                            'locked' => 0,
+                        ];
+                        $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Gained-Given discrepancy', 4);
+                        $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
+                    }
                 }
-            }
+
+                $start += 100;
+            } while (array_key_exists(0, $rows));
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_given');
 
             // Delete the points_used and gift_points_used fields but not before checking if we need to add a legacy record to the ledger.
-            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'sending_member'], [], ' AND sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY sending_member');
-            foreach ($rows as $row) {
-                $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['sending_member']);
-                if ($row['points'] !== $fields['points_used']) {
-                    $difference = ($fields['points_used'] - $row['points']);
-                    $map = [
-                        'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
-                        'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                        'amount_gift_points' => 0,
-                        'amount_points' => abs($difference),
-                        'date_and_time' => time(),
-                        'anonymous' => 0,
-                        'linked_ledger_id' => null,
-                        't_type' => 'legacy',
-                        't_subtype' => 'upgrader',
-                        't_type_id' => 'points_used',
-                        'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
-                        'locked' => 0,
-                    ];
-                    $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
-                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
+            $start = 0;
+            do {
+                $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'sending_member'], [], ' AND sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY sending_member', 100, $start);
+                foreach ($rows as $row) {
+                    $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['sending_member']);
+                    if (isset($fields['points_used'])) {
+                        if ($row['points'] !== $fields['points_used']) {
+                            $difference = ($fields['points_used'] - $row['points']);
+                            $map = [
+                                'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
+                                'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                                'amount_gift_points' => 0,
+                                'amount_points' => abs($difference),
+                                'date_and_time' => time(),
+                                'anonymous' => 0,
+                                'linked_ledger_id' => null,
+                                't_type' => 'legacy',
+                                't_subtype' => 'upgrader',
+                                't_type_id' => 'points_used',
+                                'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
+                                'locked' => 0,
+                            ];
+                            $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
+                            $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
+                        }
+                    }
+                    if (isset($fields['gift_points_used'])) {
+                        if ($fields['gift_points_used'] !== $row['gift_points']) {
+                            $difference = ($fields['gift_points_used'] - $row['gift_points']);
+                            $map = [
+                                'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
+                                'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                                'amount_gift_points' => abs($difference),
+                                'amount_points' => 0,
+                                'date_and_time' => time(),
+                                'anonymous' => 0,
+                                'linked_ledger_id' => null,
+                                't_type' => 'legacy',
+                                't_subtype' => 'upgrader',
+                                't_type_id' => 'gift_points_used',
+                                'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
+                                'locked' => 0,
+                            ];
+                            $map += insert_lang_comcode('reason', 'Upgrader: Fixing Gift-Points-Used discrepancy', 4);
+                            $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
+                        }
+                    }
                 }
-                if ($fields['gift_points_used'] !== $row['gift_points']) {
-                    $difference = ($fields['gift_points_used'] - $row['gift_points']);
-                    $map = [
-                        'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
-                        'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                        'amount_gift_points' => abs($difference),
-                        'amount_points' => 0,
-                        'date_and_time' => time(),
-                        'anonymous' => 0,
-                        'linked_ledger_id' => null,
-                        't_type' => 'legacy',
-                        't_subtype' => 'upgrader',
-                        't_type_id' => 'gift_points_used',
-                        'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
-                        'locked' => 0,
-                    ];
-                    $map += insert_lang_comcode('reason', 'Upgrader: Fixing Gift-Points-Used discrepancy', 4);
-                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
-                }
-            }
+
+                $start += 100;
+            } while (array_key_exists(0, $rows));
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_used');
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('gift_points_used');
 
@@ -297,6 +314,9 @@ class Module_points
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
 
                     foreach ($deprecated_fields as $field => $title) {
+                        if (!isset($fields[$field])) {
+                            continue;
+                        }
                         if (array_key_exists($title, $fields)) {
                             $map = [
                                 'sending_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
