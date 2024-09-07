@@ -441,7 +441,7 @@ function upgrade_module(string $zone, string $module) : int
                     ]));
             }
 
-            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
             require_all_core_cms_code();
             require_code('files2');
@@ -508,7 +508,7 @@ function reinstall_module(string $zone, string $module) : bool
     }
 
     if ($functions[2] !== null) {
-        $old = cms_extend_time_limit(5); // Give 5 seconds for uninstalling
+        $old = cms_extend_time_limit(15);
 
         if (is_array($functions[2])) {
             call_user_func_array($functions[2][0], $functions[2][1]);
@@ -538,7 +538,7 @@ function reinstall_module(string $zone, string $module) : bool
     }
 
     if ($functions[1] !== null) {
-        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
         if (is_array($functions[1])) {
             call_user_func_array($functions[1][0], $functions[1][1]);
@@ -588,11 +588,15 @@ function uninstall_module(string $zone, string $module)
             return;
         }
 
+        $old = cms_extend_time_limit(15);
+
         if (is_array($functions[0])) {
             call_user_func_array($functions[0][0], $functions[0][1]);
         } else {
             cms_eval($functions[0], $module_path);
         }
+
+        cms_set_time_limit($old);
     }
 
     set_value('kill_cron_looping', '1', true);
@@ -741,7 +745,7 @@ function upgrade_block(string $block) : int
         }
 
         if (($functions[1] !== null) && ((($upgrade_from < $info['version']) && (!empty($info['update_require_upgrade']))) || (($upgrade_from_hack < $info['hack_version']) && (!empty($info['hack_require_upgrade']))))) {
-            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
             require_all_core_cms_code();
             require_code('files2');
@@ -792,7 +796,7 @@ function reinstall_block(string $block) : bool
     }
 
     if ($functions[2] !== null) {
-        $old = cms_extend_time_limit(5);
+        $old = cms_extend_time_limit(15);
 
         if (is_array($functions[2])) {
             call_user_func_array($functions[2][0], $functions[2][1]);
@@ -827,7 +831,7 @@ function reinstall_block(string $block) : bool
 
     $GLOBALS['SITE_DB']->query_insert('blocks', ['block_name' => $block, 'block_author' => $info['author'], 'block_organisation' => $info['organisation'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'block_hack_version' => $info['hack_version'], 'block_version' => $info['version']]);
     if ($functions[1] !== null) {
-        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
         if (is_array($functions[1])) {
             call_user_func_array($functions[1][0], $functions[1][1]);

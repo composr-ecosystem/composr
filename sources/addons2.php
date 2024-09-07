@@ -1072,12 +1072,12 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
         $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
 
         if (method_exists($ob, 'uninstall')) {
-            $old = cms_extend_time_limit(5);
+            $old = cms_extend_time_limit(15);
             $ob->uninstall();
             cms_set_time_limit($old);
         }
         if (method_exists($ob, 'install')) {
-            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
             $ob->install();
             cms_set_time_limit($old);
         }
@@ -1254,7 +1254,7 @@ function upgrade_addon_soft(string $addon_name) : int
     $ret = 0;
     if (floatval($upgrade_from) < floatval($disk_version)) {
         if (method_exists($ob, 'install')) {
-            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
             $ob->install($upgrade_from);
             $ret = 1;
             cms_set_time_limit($old);

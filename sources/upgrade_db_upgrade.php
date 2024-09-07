@@ -706,7 +706,7 @@ function upgrade_addons(float $from_cms_version) : string
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>') . '</li>';
         }
 
-        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 32)) {
             $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
             return $out;
         }
@@ -737,7 +737,7 @@ function upgrade_addons(float $from_cms_version) : string
                 }
             }
 
-            if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+            if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 32)) {
                 $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
                 return $out;
             }
@@ -756,7 +756,7 @@ function upgrade_addons(float $from_cms_version) : string
             }
         }
 
-        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 32)) {
             $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
             return $out;
         }
@@ -781,7 +781,7 @@ function upgrade_addons(float $from_cms_version) : string
             $out .= '<li>' . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
         }
 
-        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 32)) {
             $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
             return $out;
         }
