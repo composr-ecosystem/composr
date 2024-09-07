@@ -176,7 +176,7 @@ function uninstall_cns()
  */
 function install_cns(?float $upgrade_from = null)
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
     require_code('cns_members');
     require_code('cns_topics');
@@ -1685,7 +1685,7 @@ function install_cns(?float $upgrade_from = null)
                             'p_reversed' => 0,
                         ]);
                     }
-                    if ($row['p_probation'] !== null) {
+                    if (($row['p_probation'] !== null) && ($row['p_probation'] > 0)) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
                             'p_member_id' => $row['w_member_id'],
@@ -1698,7 +1698,7 @@ function install_cns(?float $upgrade_from = null)
                             'p_reversed' => 0,
                         ]);
                     }
-                    if ($row['p_banned_ip'] !== null) {
+                    if (($row['p_banned_ip'] !== null) && ($row['p_banned_ip'] != '')) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
                             'p_member_id' => $row['w_member_id'],
@@ -1711,7 +1711,7 @@ function install_cns(?float $upgrade_from = null)
                             'p_reversed' => 0,
                         ]);
                     }
-                    if ($row['p_charged_points'] !== null) {
+                    if (($row['p_charged_points'] !== null) && ($row['p_charged_points'] > 0)) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
                             'p_member_id' => $row['w_member_id'],
@@ -1724,7 +1724,7 @@ function install_cns(?float $upgrade_from = null)
                             'p_reversed' => 0,
                         ]);
                     }
-                    if ($row['p_banned_member'] !== null) {
+                    if ($row['p_banned_member'] !== 0) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
                             'p_member_id' => $row['w_member_id'],
