@@ -535,20 +535,26 @@ function upgrader_menu_screen() : string
     $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade', do_lang('UPGRADER_THEME_UPGRADE'), false);
 
     // Calculate addons that may need upgrading
-    $addons = $GLOBALS['SITE_DB']->query_select('addons', ['addon_name', 'addon_min_cms_version', 'addon_max_cms_version'], []);
+    $addons = $GLOBALS['SITE_DB']->query_select('addons', ['addon_name', 'addon_min_cms_version', 'addon_max_cms_version'], [], '', null, 0, true); // Possible we did not upgrade the database yet
     $num_incompatible_addons = 0;
-    foreach ($addons as $addon) {
-        if (($addon['addon_min_cms_version'] == '') || (floatval($addon['addon_min_cms_version']) > cms_version_number())) {
-            $num_incompatible_addons++;
-        } elseif (($addon['addon_max_cms_version'] != '') && (floatval($addon['addon_max_cms_version']) < cms_version_number())) {
-            $num_incompatible_addons++;
+    if ($addons !== null) {
+        foreach ($addons as $addon) {
+            if (($addon['addon_min_cms_version'] == '') || (floatval($addon['addon_min_cms_version']) > cms_version_number())) {
+                $num_incompatible_addons++;
+            } elseif (($addon['addon_max_cms_version'] != '') && (floatval($addon['addon_max_cms_version']) < cms_version_number())) {
+                $num_incompatible_addons++;
+            }
         }
+
+        $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'), false, count($addons) == 0);
+        $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', integer_format(count($addons)), integer_format($num_incompatible_addons));
+    } else {
+        $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'));
+        $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', do_lang('UNKNOWN'), integer_format($num_incompatible_addons));
     }
 
     // Error correction links
     $l_safe_mode = upgrader_link('upgrader.php?type=safe_mode', do_lang('UPGRADER_SAFE_MODE'), false);
-    $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'), false, count($addons) == 0);
-    $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', integer_format(count($addons)), integer_format($num_incompatible_addons));
     $show_permission_buttons = (!GOOGLE_APPENGINE && !is_suexec_like() || $GLOBALS['DEV_MODE']);
     $l_check_perms = upgrader_link('upgrader.php?type=check_perms', do_lang('UPGRADER_CHECK_PERMISSIONS'), false);
     $l_fix_perms = upgrader_link('upgrader.php?type=fix_perms', do_lang('UPGRADER_FIX_PERMISSIONS'), false);
