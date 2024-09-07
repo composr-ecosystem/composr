@@ -138,6 +138,8 @@ class Module_points
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
+            global $CUSTOM_FIELD_CACHE;
+
             $GLOBALS['SITE_DB']->rename_table('gifts', 'points_ledger');
 
             $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'amount_points', 'INTEGER');
@@ -200,6 +202,8 @@ class Module_points
 
                 $start += 500;
             } while (array_key_exists(0, $chargelogs));
+            unset($chargelogs);
+
             $GLOBALS['SITE_DB']->drop_table_if_exists('chargelog');
 
             delete_privilege('have_negative_gift_points');
@@ -219,8 +223,8 @@ class Module_points
                         continue;
                     }
                     $amount = ($row['points'] + $row['gift_points']);
-                    if ($amount !== $fields['points_gained_given']) {
-                        $difference = ($fields['points_gained_given'] - $amount);
+                    if ($amount !== intval($fields['points_gained_given'])) {
+                        $difference = (intval($fields['points_gained_given']) - $amount);
                         $map = [
                             'sending_member' => ($difference < 0) ? $row['receiving_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                             'receiving_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['receiving_member'],
@@ -240,8 +244,13 @@ class Module_points
                     }
                 }
 
+                unset($fields);
+                $CUSTOM_FIELD_CACHE = [];
+
                 $start += 100;
             } while (array_key_exists(0, $rows));
+            unset($rows);
+
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_given');
 
             // Delete the points_used and gift_points_used fields but not before checking if we need to add a legacy record to the ledger.
@@ -251,8 +260,8 @@ class Module_points
                 foreach ($rows as $row) {
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['sending_member']);
                     if (isset($fields['points_used'])) {
-                        if ($row['points'] !== $fields['points_used']) {
-                            $difference = ($fields['points_used'] - $row['points']);
+                        if ($row['points'] !== intval($fields['points_used'])) {
+                            $difference = (intval($fields['points_used']) - $row['points']);
                             $map = [
                                 'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
                                 'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
@@ -272,8 +281,8 @@ class Module_points
                         }
                     }
                     if (isset($fields['gift_points_used'])) {
-                        if ($fields['gift_points_used'] !== $row['gift_points']) {
-                            $difference = ($fields['gift_points_used'] - $row['gift_points']);
+                        if ($fields['gift_points_used'] !== intval($row['gift_points'])) {
+                            $difference = (intval($fields['gift_points_used']) - $row['gift_points']);
                             $map = [
                                 'sending_member' => ($difference < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row['sending_member'],
                                 'receiving_member' => ($difference < 0) ? $row['sending_member'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
@@ -294,8 +303,13 @@ class Module_points
                     }
                 }
 
+                unset($fields);
+                $CUSTOM_FIELD_CACHE = [];
+
                 $start += 100;
             } while (array_key_exists(0, $rows));
+            unset($rows);
+
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_used');
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('gift_points_used');
 
@@ -309,7 +323,7 @@ class Module_points
             ];
             $member_id = null;
             do {
-                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
+                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 25);
                 foreach ($rows as $row) {
                     $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
@@ -323,7 +337,7 @@ class Module_points
                                 'sending_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                                 'receiving_member' => $member_id,
                                 'amount_gift_points' => 0,
-                                'amount_points' => $fields[$field],
+                                'amount_points' => intval($fields[$field]),
                                 'date_and_time' => time(),
                                 'anonymous' => 0,
                                 'linked_ledger_id' => null,
@@ -333,12 +347,12 @@ class Module_points
                                 'status' => LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
                             ];
-                            if ($fields[$field] < 0) { // Never have negative points
+                            if (intval($fields[$field]) < 0) { // Never have negative points
                                 $sending_member = $map['sending_member'];
                                 $receiving_member = $map['receiving_member'];
                                 $map['sending_member'] = $receiving_member;
                                 $map['receiving_member'] = $sending_member;
-                                $map['amount_points'] = abs($fields[$field]);
+                                $map['amount_points'] = abs(intval($fields[$field]));
                                 $map['status'] = LEDGER_STATUS_REFUND; // Refunding earned points back to the system
                             }
                             $map += insert_lang_comcode('reason', 'Upgrader: Importing legacy ' . $title . ' as a ledger item', 4);
@@ -346,7 +360,12 @@ class Module_points
                         }
                     }
                 }
+
+                unset($fields);
+                $CUSTOM_FIELD_CACHE = [];
             } while (count($rows) > 0);
+            unset($rows);
+
             foreach ($deprecated_fields as $field => $title) {
                 $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($field);
             }
