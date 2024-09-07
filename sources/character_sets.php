@@ -536,6 +536,9 @@ function convert_to_internal_encoding($data, $input_charset = null, $internal_ch
             return $test;
         }
     }
+
+    require_code('config'); // We might be running from minikernel and do not have get_value
+
     if ((function_exists('iconv')) && ($VALID_ENCODING) && (get_value('disable_iconv') !== '1')) {
         $test = @iconv($input_charset, $internal_charset . '//TRANSLIT', $data);
         if ($test === false) {
