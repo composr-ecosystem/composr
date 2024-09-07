@@ -180,13 +180,12 @@ class Module_points
                         $sending_member = $chargelog['member_id'];
                         $status = LEDGER_STATUS_NORMAL;
                     }
-                    $GLOBALS['SITE_DB']->query_insert('points_ledger', [
+                    $map = [
                         'date_and_time' => $chargelog['date_and_time'],
                         'amount_gift_points' => 0,
                         'amount_points' => abs($chargelog['amount']),
                         'sending_member' => $sending_member,
                         'receiving_member' => $receiving_member,
-                        'reason' => $chargelog['reason'],
                         'anonymous' => 0,
                         'linked_ledger_id' => null,
                         't_type' => 'legacy',
@@ -194,7 +193,9 @@ class Module_points
                         't_type_id' => 'chargelog',
                         'status' => $status,
                         'locked' => 0
-                    ]);
+                    ];
+                    $map += insert_lang_comcode('reason', $chargelog['reason'], 3);
+                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
                 }
 
                 $start += 500;
