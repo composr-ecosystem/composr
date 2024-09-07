@@ -1030,3 +1030,26 @@ function cms_ob_end_clean()
         }
     }
 }
+
+/**
+ * Performs lots of magic to make sure data encodings are converted correctly. Input, and output too (as often stores internally in UTF or performs automatic dynamic conversions from internal to external charsets).
+ *
+ * @param  boolean $known_utf8 Whether we know we are working in utf-8. This is the case for AJAX calls.
+ */
+function convert_data_encodings($known_utf8 = false)
+{
+    global $VALID_ENCODING, $CONVERTED_ENCODING;
+    $VALID_ENCODING = true;
+
+    if ($CONVERTED_ENCODING) {
+        return; // Already done it
+    }
+
+    if (preg_match('#^[\x00-\x7F]*$#', serialize($_POST) . serialize($_GET) . serialize($_FILES)) != 0) { // Simple case, all is ASCII
+        $CONVERTED_ENCODING = true;
+        return;
+    }
+
+    require_code('character_sets');
+    _convert_data_encodings($known_utf8);
+}
