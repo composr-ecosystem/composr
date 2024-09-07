@@ -79,6 +79,10 @@ function upgrader_db_upgrade_screen()
     if ($done != '') {
         echo do_lang('UPGRADER_UPGRADE_MODULES', $done);
         $something_done = true;
+
+        if (strpos('we are not done yet', $done) !== false) { // We are terminating early
+            return;
+        }
     }
 
     // Database-specific upgrade
@@ -681,12 +685,11 @@ function database_specific() : bool
  */
 function upgrade_addons(float $from_cms_version) : string
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-
     $out = '';
 
     require_code('zones2');
     require_code('zones3');
+    require_code('files'); // For memory checking
 
     // Define which modules must be upgraded first as other modules may depend on it
     $must_upgrade_first = [
@@ -696,10 +699,16 @@ function upgrade_addons(float $from_cms_version) : string
         $must_upgrade_first['admin_addons'] = 'adminzone'; // DB changes
         $must_upgrade_first['catalogues'] = 'site'; // Required for any module installing new custom profile fields (e.g. points)
     }
+    $out .= '<li><strong>Upgrading critical modules...</strong></li>';
     foreach ($must_upgrade_first as $module => $zone) {
         $ret = upgrade_module($zone, $module);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>') . '</li>';
+        }
+
+        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+            $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
+            return $out;
         }
     }
 
@@ -713,8 +722,11 @@ function upgrade_addons(float $from_cms_version) : string
     if (!in_array('site', $zones)) {
         $zones[] = 'site';
     }
+
+    $out .= '<li><strong>Upgrading other modules...</strong></li>';
     foreach ($zones as $zone) {
         $modules = find_all_modules($zone);
+
         foreach ($modules as $module => $type) {
             $ret = upgrade_module($zone, $module);
             if ($ret == 1) {
@@ -724,9 +736,15 @@ function upgrade_addons(float $from_cms_version) : string
                     $out .= '<li>' . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
                 }
             }
+
+            if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+                $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
+                return $out;
+            }
         }
     }
 
+    $out .= '<li><strong>Upgrading blocks...</strong></li>';
     $blocks = find_all_blocks();
     foreach ($blocks as $block => $type) {
         $ret = upgrade_block($block);
@@ -737,13 +755,18 @@ function upgrade_addons(float $from_cms_version) : string
                 $out .= '<li>' . do_lang('UPGRADER_INSTALLED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
             }
         }
+
+        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+            $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
+            return $out;
+        }
     }
 
+    $out .= '<li><strong>Upgrading addons...</strong></li>';
     require_code('addons2');
     $addons = find_all_hooks('systems', 'addon_registry');
     foreach ($addons as $addon_name => $type) {
         if ($type == 'sources_custom') {
-            $out .= '<li>' . do_lang('UPGRADER_SKIPPED_NONBUNDLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
             continue;
         }
 
@@ -756,6 +779,11 @@ function upgrade_addons(float $from_cms_version) : string
             $out .= '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
         } elseif ($ret == -1) {
             $out .= '<li>' . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+        }
+
+        if ((php_return_bytes(ini_get('memory_limit')) - memory_get_peak_usage()) < (1024 * 1024 * 64)) {
+            $out .= '<li><kbd>WARNING:</kbd> we are not done yet! To prevent PHP running out of memory, we ended early. Please run the database upgrade again to continue.</li>';
+            return $out;
         }
     }
 

@@ -441,6 +441,8 @@ function upgrade_module(string $zone, string $module) : int
                     ]));
             }
 
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
             require_all_core_cms_code();
             require_code('files2');
 
@@ -450,6 +452,8 @@ function upgrade_module(string $zone, string $module) : int
                 cms_eval($functions[1], $module_path);
             }
             $ret = 1;
+
+            cms_set_time_limit($old);
         }
     }
     if ($info['hacked_by'] === null) {
@@ -504,28 +508,22 @@ function reinstall_module(string $zone, string $module) : bool
     }
 
     if ($functions[2] !== null) {
+        $old = cms_extend_time_limit(5); // Give 5 seconds for uninstalling
+
         if (is_array($functions[2])) {
             call_user_func_array($functions[2][0], $functions[2][1]);
         } else {
             cms_eval($functions[2], $module_path);
         }
+
+        cms_set_time_limit($old);
     }
+
     if ($info === null) {
         return false;
     }
     if ($info['hacked_by'] === null) {
         $info['hacked_by'] = '';
-    }
-    if ($functions[1] !== null) {
-        if (is_array($functions[1])) {
-            call_user_func_array($functions[1][0], $functions[1][1]);
-        } else {
-            cms_eval($functions[1], $module_path);
-        }
-    }
-
-    if (empty($info['addon'])) {
-        $info['addon'] = do_lang('NA');
     }
 
     // Version compatibility check
@@ -537,6 +535,22 @@ function reinstall_module(string $zone, string $module) : bool
                 escape_html($info['addon']),
                 protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
             ]));
+    }
+
+    if ($functions[1] !== null) {
+        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
+        if (is_array($functions[1])) {
+            call_user_func_array($functions[1][0], $functions[1][1]);
+        } else {
+            cms_eval($functions[1], $module_path);
+        }
+
+        cms_set_time_limit($old);
+    }
+
+    if (empty($info['addon'])) {
+        $info['addon'] = do_lang('NA');
     }
 
     $GLOBALS['SITE_DB']->query_insert('modules', ['module_the_name' => $module, 'module_author' => $info['author'], 'module_organisation' => $info['organisation'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'module_hack_version' => $info['hack_version'], 'module_version' => $info['version']]);
@@ -715,25 +729,6 @@ function upgrade_block(string $block) : int
     $ret = 0;
     $info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $block_path);
     if (($upgrade_from < $info['version']) || ($upgrade_from_hack < $info['hack_version'])) {
-        if (($functions[1] !== null) && ((($upgrade_from < $info['version']) && (!empty($info['update_require_upgrade']))) || (($upgrade_from_hack < $info['hack_version']) && (!empty($info['hack_require_upgrade']))))) {
-            require_all_core_cms_code();
-            require_code('files2');
-
-            if (is_array($functions[1])) {
-                call_user_func_array($functions[1][0], $functions[1][1]);
-            } else {
-                cms_eval($functions[1], $block_path);
-            }
-        }
-
-        if ($info['hacked_by'] === null) {
-            $info['installed_hacked_by'] = '';
-        }
-
-        if (empty($info['addon'])) {
-            $info['addon'] = do_lang('NA');
-        }
-
         // Version compatibility check
         if ((empty($info['min_cms_version'])) || ($info['min_cms_version'] > cms_version_number()) || ((!empty($info['max_cms_version']) && ($info['max_cms_version'] < cms_version_number())))) {
             warn_exit(do_lang_tempcode('INCOMPATIBLE_ADDON_REMEDIES',
@@ -743,6 +738,29 @@ function upgrade_block(string $block) : int
                     escape_html($info['addon']),
                     protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
                 ]));
+        }
+
+        if (($functions[1] !== null) && ((($upgrade_from < $info['version']) && (!empty($info['update_require_upgrade']))) || (($upgrade_from_hack < $info['hack_version']) && (!empty($info['hack_require_upgrade']))))) {
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
+            require_all_core_cms_code();
+            require_code('files2');
+
+            if (is_array($functions[1])) {
+                call_user_func_array($functions[1][0], $functions[1][1]);
+            } else {
+                cms_eval($functions[1], $block_path);
+            }
+
+            cms_set_time_limit($old);
+        }
+
+        if ($info['hacked_by'] === null) {
+            $info['installed_hacked_by'] = '';
+        }
+
+        if (empty($info['addon'])) {
+            $info['addon'] = do_lang('NA');
         }
 
         $GLOBALS['SITE_DB']->query_update('blocks', ['block_version' => $info['version'], 'block_hack_version' => $info['hack_version'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by']], ['block_name' => $block], '', 1);
@@ -774,11 +792,15 @@ function reinstall_block(string $block) : bool
     }
 
     if ($functions[2] !== null) {
+        $old = cms_extend_time_limit(5);
+
         if (is_array($functions[2])) {
             call_user_func_array($functions[2][0], $functions[2][1]);
         } else {
             cms_eval($functions[2], $block_path);
         }
+
+        cms_set_time_limit($old);
     }
     $info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $block_path);
     if ($info === null) {
@@ -805,11 +827,15 @@ function reinstall_block(string $block) : bool
 
     $GLOBALS['SITE_DB']->query_insert('blocks', ['block_name' => $block, 'block_author' => $info['author'], 'block_organisation' => $info['organisation'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'block_hack_version' => $info['hack_version'], 'block_version' => $info['version']]);
     if ($functions[1] !== null) {
+        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         if (is_array($functions[1])) {
             call_user_func_array($functions[1][0], $functions[1][1]);
         } else {
             cms_eval($functions[1], $block_path);
         }
+
+        cms_set_time_limit($old);
         return true;
     }
     return false;

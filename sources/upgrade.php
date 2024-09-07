@@ -550,7 +550,7 @@ function upgrader_menu_screen() : string
         $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', integer_format(count($addons)), integer_format($num_incompatible_addons));
     } else {
         $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'));
-        $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', do_lang('UNKNOWN'), integer_format($num_incompatible_addons));
+        $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', do_lang('UNKNOWN'), do_lang('UNKNOWN'));
     }
 
     // Error correction links
