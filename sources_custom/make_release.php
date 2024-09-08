@@ -961,7 +961,7 @@ function make_install_sql()
     $table_purposes = get_table_purpose_flags();
     push_db_scope_check(false);
     foreach ($table_purposes as $table => $purpose) {
-        if ((table_has_purpose_flag($table, TABLE_PURPOSE__FLUSHABLE)) && ($db->table_exists($table))) {
+        if ((table_has_purpose_flag($table, (TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE))) && ($db->table_exists($table))) {
             $db->query_delete($table);
         }
     }

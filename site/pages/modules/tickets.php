@@ -1097,7 +1097,6 @@ class Module_tickets
         }
 
         foreach ($hook_results as $i => $result) {
-            $result['object'] = $object;
             $result['type'] = 'catalogue_entries';
             $hook_results[$i] = $result;
         }

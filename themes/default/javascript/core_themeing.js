@@ -725,7 +725,9 @@
             }
         }, 1000);
 
-        window.jQuery && window.jQuery.fn.resizable && window.jQuery('.template-editor-file-selector').resizable();
+        if (window.jQuery && window.jQuery.fn.resizable) {
+            window.jQuery('.template-editor-file-selector').resizable();
+        }
 
         templateEditorAssignUnloadEvent();
 
@@ -750,23 +752,23 @@
                             file = file.replace(/\..*$/, '');
                             switch (subdir) {
                                 case 'templates':
-                                    file += '.tpl';
+                                    file = 'templates/' + file + '.tpl';
                                     break;
 
                                 case 'css':
-                                    file += '.css';
+                                    file = 'css/' + file + '.css';
                                     break;
 
                                 case 'javascript':
-                                    file += '.js';
+                                    file = 'javascript/' + file + '.js';
                                     break;
 
                                 case 'text':
-                                    file += '.txt';
+                                    file = 'text/' + file + '.txt';
                                     break;
 
                                 case 'xml':
-                                    file += '.xml';
+                                    file = 'xml/' + file + '.xml';
                                     break;
                             }
 
@@ -1153,17 +1155,19 @@
                 highlightTemplate(window.opener, fileIdToFile(fileId));
             }
 
-            window.jQuery('#e-' + fileId.replace(/\./g, '\\.') + '-wrap').resizable({
-                resize: function () {
-                    var editor = window.aceEditors['e_' + fileId];
-                    if (editor !== undefined) {
-                        $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').style.height = '100%';
-                        $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').parentNode.style.height = '100%';
-                        editor.resize();
-                    }
-                },
-                handles: 's'
-            });
+            if (window.jQuery && window.jQuery.fn.resizable) {
+                window.jQuery('#e-' + fileId.replace(/\./g, '\\.') + '-wrap').resizable({
+                    resize: function () {
+                        var editor = window.aceEditors['e_' + fileId];
+                        if (editor !== undefined) {
+                            $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').style.height = '100%';
+                            $dom.$('#e_' + fileId.replace(/\./g, '\\.') + '__ace').parentNode.style.height = '100%';
+                            editor.resize();
+                        }
+                    },
+                    handles: 's'
+                });
+            }
         }, 1000);
 
         function fileIdToFile(fileId) {

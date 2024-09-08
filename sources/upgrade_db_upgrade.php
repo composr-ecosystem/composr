@@ -35,11 +35,10 @@ function init__upgrade_db_upgrade()
  */
 function upgrader_db_upgrade_screen()
 {
-    echo '<h2>' . do_lang('UPGRADER_DATABASE_UPGRADE') . '</h2>';
+    echo '<h2>' . do_lang('_UPGRADER_DATABASE_UPGRADE') . '</h2>';
+    echo do_lang('UPGRADER_DATABASE_UPGRADE_TEXT');
 
-    log_it('UPGRADER_DATABASE_UPGRADE');
-
-    clear_caches_2();
+    $offset = get_param_integer('offset', 0);
 
     $version_files = cms_version_number();
     $_version_database_cns = get_value('cns_version');
@@ -57,39 +56,116 @@ function upgrader_db_upgrade_screen()
         $version_database_cns = floatval($_version_database_cns);
     }
 
-    $something_done = false;
+    if ($offset == 0) {
+        // Ensure we do not re-use a temporary file on a new upgrade
+        @unlink(get_custom_file_base() . '/data_custom/db_upgrade_temp.bin');
 
-    // Version-specific upgrade
-    $version_upgrade = version_specific();
-    $something_done = (($something_done) || ($version_upgrade));
+        log_it('UPGRADER_DATABASE_UPGRADE');
 
-    // Conversr upgrade
-    if ($version_database_cns < $version_files) {
+        echo '<h3>' . do_lang('UPGRADER_UPGRADE_VERSION') . '</h3>';
+
+        $version_upgrade = version_specific();
+        if ($version_upgrade) {
+            echo do_lang('SUCCESS');
+        } else {
+            echo do_lang('UPGRADER_NO_VERSION_UPGRADE');
+        }
+    } elseif ($offset == 1) {
         echo '<h3>' . do_lang('UPGRADER_UPGRADE_CNS') . '</h3>';
-        if (cns_upgrade()) {
-            echo '<p>' . do_lang('SUCCESS') . '</p>';
+
+        if ($version_database_cns < $version_files) {
+            if (cns_upgrade()) {
+                echo '<p>' . do_lang('SUCCESS') . '</p>';
+            } else {
+                echo do_lang('UPGRADER_NO_CNS_UPGRADE');
+            }
         } else {
             echo do_lang('UPGRADER_NO_CNS_UPGRADE');
         }
-        $something_done = true;
+    } elseif (($offset >= 2) && ($offset < 1000000)) {
+        echo '<h3>' . do_lang('_UPGRADER_UPGRADE_MODULES') . '</h3>';
+
+        $done = upgrade_addons($version_database_cns, ($offset));
+        if ($done != '') {
+            echo do_lang('UPGRADER_UPGRADE_MODULES', $done);
+        }
+    } elseif ($offset == 1000000) {
+        echo '<h3>' . do_lang('UPGRADER_UPGRADE_DB_SPECIFIC') . '</h3>';
+
+        // Database-specific upgrade
+        $database_upgrade = database_specific();
+        set_value('db_version', strval(cms_version_time_db()), true);
+        clear_caches_2();
+
+        echo do_lang('SUCCESS');
     }
 
-    // Modules upgrade
-    $done = upgrade_addons($version_database_cns);
-    if ($done != '') {
-        echo do_lang('UPGRADER_UPGRADE_MODULES', $done);
-        $something_done = true;
+    // Add a self-executing proceed button
+    if ($offset < 1000000) {
+        $offset++;
+        $url = get_base_url() . '/upgrader.php?type=db_upgrade&offset=' . escape_html(strval($offset));
+        $given_password = escape_html(post_param_string('given_password', false, INPUT_FILTER_PASSWORD));
+        $l_proceed = do_lang('PROCEED');
+
+        require_code('csp');
+
+        echo <<<END
+        <form action="{$url}" method="post">
+            <div>
+                <input type="hidden" name="given_password" value="{$given_password}"></input>
+
+                <p class="proceed-button">
+                    <button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit"><span class="js-button-label">{$l_proceed}</span></button>
+                </p>
+            </div>
+	    </form>
+
+        <script nonce="{$GLOBALS['CSP_NONCE']}">
+            (function () {
+                var button = document.getElementById('proceed-button'),
+                timer,
+                unloading = false;
+
+                button.countdown = 3;
+
+                continueFunc();
+                timer = window.setInterval(continueFunc, 1000);
+                button.addEventListener('mouseover', function () {
+                    if (timer) {
+                        window.clearInterval(timer);
+                        timer = null;
+                    }
+                });
+                window.addEventListener('beforeunload', function () {
+                    if (timer) {
+                        window.clearInterval(timer);
+                        timer = null;
+                    }
+                    unloading = true;
+                });
+                button.addEventListener('mouseout', function () {
+                    if (!unloading) {
+                        timer = window.setInterval(continueFunc, 1000);
+                    }
+                });
+
+                function continueFunc() {
+                    var labelEl = button.querySelector('.js-button-label');
+                    if (button.countdown === 0) {
+                        if (timer) {
+                            window.clearInterval(timer);
+                            timer = null;
+                        }
+                        button.form.submit();
+                        button.disabled = true;
+                    } else {
+                        button.countdown--;
+                    }
+                }
+            })();
+        </script>
+END;
     }
-
-    // Database-specific upgrade
-    $database_upgrade = database_specific();
-    $something_done = (($something_done) || ($database_upgrade));
-
-    if (!$something_done) {
-        echo do_lang('NO_UPGRADE_DONE');
-    }
-
-    set_value('db_version', strval(cms_version_time_db()), true);
 }
 
 /**
@@ -677,16 +753,16 @@ function database_specific() : bool
  * Upgrade all addons, modules, and blocks.
  *
  * @param  float $from_cms_version From which version of the software we are upgrading
- * @return string List of upgraded/installed modules/blocks
+ * @param  integer $offset The offset of modules / blocks / addons (passed by reference)
+ * @return string List of upgraded/installed modules/blocks (we only run one at a time)
  */
-function upgrade_addons(float $from_cms_version) : string
+function upgrade_addons(float $from_cms_version, int &$offset) : string
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-
-    $out = '';
+    $_offset = ($offset - 2); // We start at 2 when we first execute this
 
     require_code('zones2');
     require_code('zones3');
+    require_code('files'); // For memory checking
 
     // Define which modules must be upgraded first as other modules may depend on it
     $must_upgrade_first = [
@@ -697,69 +773,152 @@ function upgrade_addons(float $from_cms_version) : string
         $must_upgrade_first['catalogues'] = 'site'; // Required for any module installing new custom profile fields (e.g. points)
     }
     foreach ($must_upgrade_first as $module => $zone) {
+        if ($_offset > 0) {
+            $_offset--;
+            continue;
+        }
+
         $ret = upgrade_module($zone, $module);
         if ($ret == 1) {
-            $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>') . '</li>';
+            return '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>') . '</li>';
+        } else {
+            $offset++;
         }
     }
 
-    $zones = find_all_zones();
-    if (!in_array('adminzone', $zones)) {
-        $zones[] = 'adminzone';
+    $modules = [];
+    $blocks = [];
+    $addons = [];
+    $must_save_temp = false;
+
+    // Gather what we know from our temp file
+    if (is_file(get_custom_file_base() . '/data_custom/db_upgrade_temp.bin')) {
+        require_code('files');
+        $data = @unserialize(cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/db_upgrade_temp.bin', FILE_READ_LOCK | FILE_READ_BOM));
+        if ($data === false) { // Corrupt file
+            @unlink(get_custom_file_base() . '/data_custom/db_upgrade_temp.bin');
+        } else {
+            $modules = $data['modules'];
+            $blocks = $data['blocks'];
+            $addons = $data['addons'];
+        }
     }
-    if (!in_array('cms', $zones)) {
-        $zones[] = 'cms';
+
+    // Calculate what we do not know
+    if (empty($modules)) {
+        $must_save_temp = true;
+
+        $zones = find_all_zones();
+        if (!in_array('adminzone', $zones)) {
+            $zones[] = 'adminzone';
+        }
+        if (!in_array('cms', $zones)) {
+            $zones[] = 'cms';
+        }
+        if (!in_array('site', $zones)) {
+            $zones[] = 'site';
+        }
+
+        foreach ($zones as $zone) {
+            $modules[$zone] = find_all_modules($zone);
+        }
     }
-    if (!in_array('site', $zones)) {
-        $zones[] = 'site';
+    if (empty($blocks)) {
+        $must_save_temp = true;
+
+        $blocks = find_all_blocks();
     }
-    foreach ($zones as $zone) {
-        $modules = find_all_modules($zone);
-        foreach ($modules as $module => $type) {
+    if (empty($addons)) {
+        $must_save_temp = true;
+
+        $addons = find_all_hooks('systems', 'addon_registry');
+    }
+
+    // Save into a temp file
+    if ($must_save_temp) {
+        require_code('files2');
+        $map = [
+            'modules' => $modules,
+            'blocks' => $blocks,
+            'addons' => $addons,
+        ];
+        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/db_upgrade_temp.bin', serialize($map));
+    }
+
+    // Upgrade modules
+    foreach ($modules as $zone => $zone_modules) {
+        foreach ($zone_modules as $module => $type) {
+            if ($_offset > 0) {
+                $_offset--;
+                continue;
+            }
+
             $ret = upgrade_module($zone, $module);
             if ($ret == 1) {
-                $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
+                return '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
             } elseif ($ret == -2) {
                 if (reinstall_module($zone, $module)) {
-                    $out .= '<li>' . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
+                    return '<li>' . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
+                } else {
+                    $offset++;
                 }
+            } else {
+                $offset++;
             }
         }
     }
 
-    $blocks = find_all_blocks();
+    // Upgrade blocks
     foreach ($blocks as $block => $type) {
+        if ($_offset > 0) {
+            $_offset--;
+            continue;
+        }
+
         $ret = upgrade_block($block);
         if ($ret == 1) {
-            $out .= '<li>' . do_lang('UPGRADER_UPGRADED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
+            return '<li>' . do_lang('UPGRADER_UPGRADED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
         } elseif ($ret == -2) {
             if (reinstall_block($block)) {
-                $out .= '<li>' . do_lang('UPGRADER_INSTALLED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
+                return '<li>' . do_lang('UPGRADER_INSTALLED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
+            } else {
+                $offset++;
             }
+        } else {
+            $offset++;
         }
     }
 
+    // Upgrade addons
     require_code('addons2');
-    $addons = find_all_hooks('systems', 'addon_registry');
     foreach ($addons as $addon_name => $type) {
         if ($type == 'sources_custom') {
-            $out .= '<li>' . do_lang('UPGRADER_SKIPPED_NONBUNDLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            continue;
+        }
+
+        if ($_offset > 0) {
+            $_offset--;
             continue;
         }
 
         $ret = upgrade_addon_soft($addon_name);
         if ($ret == 1) {
-            $out .= '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            return '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
         } elseif ($ret == -2) {
             reinstall_addon_soft($addon_name);
 
-            $out .= '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            return '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
         } elseif ($ret == -1) {
-            $out .= '<li>' . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            return '<li>' . do_lang('UPGRADER_ADDON_INCOMPATIBLE', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+        } else {
+            $offset++;
         }
     }
 
-    return $out;
+    // Done!
+    @unlink(get_custom_file_base() . '/data_custom/db_upgrade_temp.bin');
+    $offset = (1000000 - 1); // Will be bumped by 1
+    return '<li>' . do_lang('SUCCESS') . '</li>';
 }
 
 /**

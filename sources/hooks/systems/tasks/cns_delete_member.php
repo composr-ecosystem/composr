@@ -27,10 +27,11 @@ class Hook_task_cns_delete_member
      * Run the task hook.
      *
      * @param  MEMBER $member_id The member being deleted
+     * @param  MEMBER $member_id_deleting The member doing the deleting
      * @param  boolean $also_purge Whether we are also purging their personal data
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(int $member_id, bool $also_purge = false) : ?array
+    public function run(int $member_id, int $member_id_deleting, bool $also_purge = false) : ?array
     {
         // Purge member data if applicable
         if ($also_purge) {
@@ -62,7 +63,7 @@ class Hook_task_cns_delete_member
         // Actually delete the member
         require_code('cns_members_action');
         require_code('cns_members_action2');
-        cns_delete_member($member_id);
+        cns_delete_member($member_id, $member_id_deleting);
 
         return null;
     }

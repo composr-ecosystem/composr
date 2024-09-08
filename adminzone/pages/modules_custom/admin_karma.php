@@ -538,7 +538,7 @@ class Module_admin_karma
         $fields = build_keep_post_fields();
         $fields->attach(form_input_line_comcode(do_lang('REASON'), do_lang('DESCRIPTION_KARMA_REASON'), 'reason', $myreason, true));
 
-        $map = ['page' => '_SELF', 'type' => '_edit', 'redirect' => $redirect];
+        $map = ['page' => '_SELF', 'type' => '_edit', 'redirect' => protect_url_parameter($redirect)];
         $url = build_url($map, '_SELF');
 
         return do_template('FORM_SCREEN', [
@@ -611,7 +611,7 @@ class Module_admin_karma
 
         $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE_KARMA', integer_format($amount), $type, escape_html($username));
 
-        $map = ['page' => '_SELF', 'type' => '_delete', 'redirect' => $redirect];
+        $map = ['page' => '_SELF', 'type' => '_delete', 'redirect' => protect_url_parameter($redirect)];
         $url = build_url($map, '_SELF');
 
         return do_template('CONFIRM_SCREEN', [

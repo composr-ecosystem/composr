@@ -249,11 +249,12 @@ QUERYING ADDONS
  *
  * @param  boolean $installed_too Whether to include addons that are installed already
  * @param  boolean $hash_and_mtime Whether to generate a file hash and include it along with the file mtime in the info
- * @param  array $already_known Addons we already have details for, performance optimisation
+ * @param  array $already_known Map of addons we already have details for, performance optimisation
  * @param  boolean $get_info Whether to get full details about each addon
+ * @param  boolean $even_incompatible Whether to also return available addons that are not compatible with this version of the software
  * @return array Maps of maps describing the available addons (filename => details)
  */
-function find_available_addons(bool $installed_too = true, bool $hash_and_mtime = true, array $already_known = [], bool $get_info = true) : array
+function find_available_addons(bool $installed_too = true, bool $hash_and_mtime = true, array $already_known = [], bool $get_info = true, bool $even_incompatible = false) : array
 {
     require_code('version');
 
@@ -288,7 +289,7 @@ function find_available_addons(bool $installed_too = true, bool $hash_and_mtime 
             continue;
         }
 
-        if ((!$installed_too) && (addon_installed(preg_replace('#-\d+#', '', basename($file, '.tar'))))) {
+        if ((!$installed_too) && (addon_installed(preg_replace('#-\d+#', '', basename($file, '.tar')), false, true, true, true))) {
             continue;
         }
 
@@ -305,7 +306,7 @@ function find_available_addons(bool $installed_too = true, bool $hash_and_mtime 
             $info = cms_parse_ini_file_fast(null, $info_file['data']);
 
             // Skip incompatible addon TARs
-            if (((empty($info['min_cms_version'])) || (floatval($info['min_cms_version']) > cms_version_number())) || ((!empty($info['max_cms_version'])) && (floatval($info['max_cms_version']) < cms_version_number()))) {
+            if ((!$even_incompatible) && (((empty($info['min_cms_version'])) || (floatval($info['min_cms_version']) > cms_version_number())) || ((!empty($info['max_cms_version'])) && (floatval($info['max_cms_version']) < cms_version_number())))) {
                 continue;
             }
 
@@ -1072,10 +1073,14 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
         $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
 
         if (method_exists($ob, 'uninstall')) {
+            $old = cms_extend_time_limit(15);
             $ob->uninstall();
+            cms_set_time_limit($old);
         }
         if (method_exists($ob, 'install')) {
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
             $ob->install();
+            cms_set_time_limit($old);
         }
     }
 
@@ -1136,10 +1141,36 @@ function find_updated_addons() : array
         return $updated_addons;
     }
 
-    $addons = find_installed_addons(true, false);
+    $addons = find_installed_addons(true, true);
     if (empty($addons)) {
         return [];
     }
+
+    // Repair: To properly check for non-bundled addons needing upgrading, they must have a TAR. Sometimes they get removed for whatever reason.
+    require_code('tar');
+    $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+    foreach ($addons as $addon_name => $info) {
+        if (!is_file(get_custom_file_base() . '/imports/addons/'. $addon_name . '.tar')) {
+            create_addon(
+                $addon_name . '.tar',
+                $info['files'],
+                $info['name'],
+                implode(',', $info['incompatibilities']),
+                implode(',', $info['dependencies']),
+                $info['author'],
+                $info['organisation'],
+                $info['version'],
+                $info['category'],
+                implode("\n", $info['copyright_attribution']),
+                $info['licence'],
+                $info['description'],
+                $info['min_cms_version'],
+                $info['max_cms_version'],
+                'imports/addons'
+            );
+        }
+    }
+    cms_set_time_limit($old);
 
     $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/addon_manifest/' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
     $post = [];
@@ -1155,7 +1186,7 @@ function find_updated_addons() : array
         //warn_exit(do_lang('INTERNAL_ERROR'));
     }
 
-    $available_addons = find_available_addons(true, true, [], false);
+    $available_addons = find_available_addons(true, true, $addons, false, true);
 
     $updated_addons = [];
     foreach ($addon_data['response_data'] as $i => $addon_bits) {
@@ -1250,8 +1281,10 @@ function upgrade_addon_soft(string $addon_name) : int
     $ret = 0;
     if (floatval($upgrade_from) < floatval($disk_version)) {
         if (method_exists($ob, 'install')) {
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
             $ob->install($upgrade_from);
             $ret = 1;
+            cms_set_time_limit($old);
         }
     }
 

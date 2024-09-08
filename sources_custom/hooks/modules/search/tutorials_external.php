@@ -127,6 +127,8 @@ class Hook_search_tutorials_external extends FieldsSearchHook
      */
     public function render(array $row) : object
     {
+        require_code('tutorials');
+
         $tags = collapse_1d_complexity('t_tag', $GLOBALS['SITE_DB']->query_select('tutorials_external_tags', ['t_tag'], ['t_id' => $row['id']]));
         $metadata = get_tutorial_metadata(strval($row['id']), $row, $tags);
         return do_template('TUTORIAL_BOX', templatify_tutorial($metadata));

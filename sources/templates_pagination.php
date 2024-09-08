@@ -142,7 +142,7 @@ function get_keyset_pagination_settings(string $max_name, int $max_default, stri
  * @param  integer $max The maximum number of rows to show per browser page
  * @param  ID_TEXT $max_name The parameter name used to store the total number of results to show per-page (usually, 'max')
  * @param  integer $max_rows The maximum number of rows in the entire dataset
- * @param  boolean $keep_post Whether to keep post data when browsing through
+ * @param  boolean $keep_post Whether to keep POST data when browsing through and relay it as GET
  * @param  ?integer $max_pagination_links The maximum number of quick-jump pagination-links to show (null: configured default)
  * @param  ?array $_selectors List of per-page selectors to show (null: show hard-coded ones)
  * @param  ID_TEXT $hash Hash component to URL

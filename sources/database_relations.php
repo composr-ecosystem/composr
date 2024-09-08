@@ -32,7 +32,7 @@ function init__database_relations()
     if (!defined('TABLE_PURPOSE__NORMAL')) {
         define('TABLE_PURPOSE__NORMAL', 0);
         define('TABLE_PURPOSE__NO_BACKUPS', 1); // For some reason we do not backup this
-        define('TABLE_PURPOSE__FLUSHABLE', 2 + (4)); // Flushable because the contents is not HUGELY important. Should not be routinely flushed. Logs, chats, etc - not member settings, etc. Think: "stuff to do before opening a new site that has just gone through testing"
+        define('TABLE_PURPOSE__FLUSHABLE', 2); // Flushable because the contents is not HUGELY important. Should not be routinely flushed. Logs, chats, etc - not member settings, etc. Think: "stuff to do before opening a new site that has just gone through testing"
         define('TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE', 4); // Flushable if we're being extra aggressive. Don't set if already has FLUSHABLE set
         define('TABLE_PURPOSE__NO_STAGING_COPY', 8); // For some special reason we don't copy this between staging to live. Don't set if already has FLUSHABLE set
         define('TABLE_PURPOSE__NON_BUNDLED', 16); // Non-bundled. Do not apply this to anything defined in this core file. Applies only to non-bundled tables injected via an override to this file
@@ -57,7 +57,7 @@ function get_table_purpose_flags() : array
         'addons' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
         'addons_dependencies' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA/*under addons*/,
         'addons_files' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA/*under addons*/,
-        'actionlogs' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'actionlogs' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'aggregate_type_instances' => TABLE_PURPOSE__NORMAL,
         'alternative_ids' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under <content>*/,
         'attachment_refs' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under <content> (implied)*/,
@@ -98,7 +98,7 @@ function get_table_purpose_flags() : array
         'chat_blocking' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'chat_events' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE,
         'chat_friends' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under f_members*/,
-        'chat_messages' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under chat_rooms*/,
+        'chat_messages' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under chat_rooms*/,
         'chat_rooms' => TABLE_PURPOSE__NORMAL,
         'chat_sound_effects' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'comcode_pages' => TABLE_PURPOSE__NORMAL,
@@ -122,7 +122,7 @@ function get_table_purpose_flags() : array
         'download_logging' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under download_downloads*/,
         'edit_pings' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under <content>*/,
         'email_bounces' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
-        'escrow' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members and points_ledger*/,
+        'escrow' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under f_members and points_ledger*/,
         'escrow_logs' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under escrow*/,
         'f_custom_fields' => TABLE_PURPOSE__NORMAL,
         'f_emoticons' => TABLE_PURPOSE__NORMAL,
@@ -140,7 +140,7 @@ function get_table_purpose_flags() : array
         'f_member_custom_fields' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'f_member_known_login_ips' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'f_members' => TABLE_PURPOSE__NORMAL,
-        'f_moderator_logs' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'f_moderator_logs' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'f_multi_moderations' => TABLE_PURPOSE__NORMAL,
         'f_password_history' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'f_poll_answers' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under f_topics*/,
@@ -173,7 +173,7 @@ function get_table_purpose_flags() : array
         'incoming_uploads' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE,
         'ecom_invoices' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'ip_country' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__AUTOGEN_STATIC,
-        'leader_board' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'leader_board' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'leader_boards' => TABLE_PURPOSE__NORMAL,
         'leader_boards_groups' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA,
         'daily_visits' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
@@ -201,7 +201,7 @@ function get_table_purpose_flags() : array
         'notifications_enabled' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'points_ledger' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'poll' => TABLE_PURPOSE__NORMAL,
-        'poll_votes' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under poll*/,
+        'poll_votes' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under poll*/,
         'ecom_prods_prices' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'privilege_list' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
         'ecom_prods_custom' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,

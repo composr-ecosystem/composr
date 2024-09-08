@@ -92,7 +92,7 @@ function _helper_install_create_custom_field(object $this_ref, string $name, int
 function _helper_install_edit_custom_field(object $this_ref, string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
 {
     cns_require_all_forum_stuff();
-    require_code('cns_members_action');
+    require_code('cns_members_action2');
 
     $old_name = 'cms_' . $old_name;
     $name = 'cms_' . $name;

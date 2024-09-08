@@ -1482,7 +1482,7 @@ function ensure_protocol_suitability(string $url) : string
 }
 
 /**
- * Convert the format of a URL so it can be embedded as a parameter that ModSecurity will not trigger security errors on.
+ * Convert the format of a URL so it can be embedded as a parameter that ModSecurity and browser-based XSS filtering will not trigger security errors on.
  *
  * @param  mixed $parameter Non-encoded parameter (Tempcode, string, or null)
  * @return ?Tempcode Encoded parameter (null: null input pipe-through)

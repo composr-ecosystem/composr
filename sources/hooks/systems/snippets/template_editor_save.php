@@ -73,7 +73,7 @@ class Hook_snippet_template_editor_save
             }
 
             if (is_file($original_path) && cms_file_get_contents_safe($original_path, FILE_READ_LOCK | FILE_READ_BOM) == $contents) {
-                // Delete
+                // Delete custom file if it exactly matches original
                 if (file_exists($custom_path)) {
                     unlink($custom_path);
                     sync_file($custom_path);

@@ -107,14 +107,14 @@ class Block_main_leader_board
             // Calculate rankings for legacy result sets
             $dates = $GLOBALS['SITE_DB']->query('SELECT DISTINCT date_and_time FROM ' . get_table_prefix() . 'leader_board');
             foreach ($dates as $date) {
-                $rows = $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_date_and_time' => $date['lb_date_and_time']]);
+                $rows = $GLOBALS['SITE_DB']->query_select('leader_board', ['*'], ['date_and_time' => $date['date_and_time']]);
 
                 sort_maps_by($rows, '!lb_points');
 
                 $i = 0;
                 foreach ($rows as $row) {
                     $i++;
-                    $GLOBALS['SITE_DB']->query_update('leader_board', ['lb_rank' => $i], ['lb_member' => $row['lb_member'], 'lb_date_and_time' => $date['lb_date_and_time']], '', 1);
+                    $GLOBALS['SITE_DB']->query_update('leader_board', ['lb_rank' => $i], ['lb_member' => $row['lb_member'], 'date_and_time' => $date['date_and_time']], '', 1);
                 }
             }
 

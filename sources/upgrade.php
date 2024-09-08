@@ -165,7 +165,6 @@ function upgrade_script()
         case 'db_upgrade':
             require_code('upgrade_db_upgrade');
             upgrader_db_upgrade_screen(); // Already echoed to help with error tracking
-            $something_done = false;
             break;
 
         case 'theme_upgrade':
@@ -526,6 +525,8 @@ function upgrader_menu_screen() : string
     $l_integrity_scan_no_merging = upgrader_link('upgrader.php?type=integrity_scan', do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE'), false);
     $l_integrity_scan_2 = do_lang('UPGRADER_INTEGRITY_SCAN_2');
 
+    $l_htaccess = do_lang('UPGRADER_HTACCESS');
+
     // Database upgrade link
     $l_db_upgrade = upgrader_link('upgrader.php?type=db_upgrade', do_lang('UPGRADER_DATABASE_UPGRADE'), false);
 
@@ -533,20 +534,26 @@ function upgrader_menu_screen() : string
     $l_theme_upgrade = upgrader_link('upgrader.php?type=theme_upgrade', do_lang('UPGRADER_THEME_UPGRADE'), false);
 
     // Calculate addons that may need upgrading
-    $addons = $GLOBALS['SITE_DB']->query_select('addons', ['addon_name', 'addon_min_cms_version', 'addon_max_cms_version'], []);
+    $addons = $GLOBALS['SITE_DB']->query_select('addons', ['addon_name', 'addon_min_cms_version', 'addon_max_cms_version'], [], '', null, 0, true); // Possible we did not upgrade the database yet
     $num_incompatible_addons = 0;
-    foreach ($addons as $addon) {
-        if (($addon['addon_min_cms_version'] == '') || (floatval($addon['addon_min_cms_version']) > cms_version_number())) {
-            $num_incompatible_addons++;
-        } elseif (($addon['addon_max_cms_version'] != '') && (floatval($addon['addon_max_cms_version']) < cms_version_number())) {
-            $num_incompatible_addons++;
+    if ($addons !== null) {
+        foreach ($addons as $addon) {
+            if (($addon['addon_min_cms_version'] == '') || (floatval($addon['addon_min_cms_version']) > cms_version_number())) {
+                $num_incompatible_addons++;
+            } elseif (($addon['addon_max_cms_version'] != '') && (floatval($addon['addon_max_cms_version']) < cms_version_number())) {
+                $num_incompatible_addons++;
+            }
         }
+
+        $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'), false, count($addons) == 0);
+        $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', integer_format(count($addons)), integer_format($num_incompatible_addons));
+    } else {
+        $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'));
+        $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', do_lang('UNKNOWN'), do_lang('UNKNOWN'));
     }
 
     // Error correction links
     $l_safe_mode = upgrader_link('upgrader.php?type=safe_mode', do_lang('UPGRADER_SAFE_MODE'), false);
-    $l_addon_management = upgrader_link('upgrader.php?type=safe_mode&redirect_to_addons=1', do_lang('UPGRADER_ADDON_MANAGEMENT'), false, count($addons) == 0);
-    $_l_addon_management = do_lang('_UPGRADER_ADDON_MANAGEMENT', integer_format(count($addons)), integer_format($num_incompatible_addons));
     $show_permission_buttons = (!GOOGLE_APPENGINE && !is_suexec_like() || $GLOBALS['DEV_MODE']);
     $l_check_perms = upgrader_link('upgrader.php?type=check_perms', do_lang('UPGRADER_CHECK_PERMISSIONS'), false);
     $l_fix_perms = upgrader_link('upgrader.php?type=fix_perms', do_lang('UPGRADER_FIX_PERMISSIONS'), false);
@@ -616,6 +623,15 @@ function upgrader_menu_screen() : string
     $out .= "
                     <tr><th>{$_step_num}</th><td>{$l_integrity_scan_no_merging}<!-- " . do_lang('OR') . " {$l_integrity_scan}--><br />{$l_not_for_patch}</td><td>" . str_replace(' ', '&nbsp;', escape_html(display_time_period(60 * 30))) . "&nbsp;&dagger;</td></tr>
     ";
+
+    // Check .htaccess file
+    if (is_file(get_file_base() . '/.htaccess')) {
+        $step_num++;
+        $_step_num = strval($step_num);
+        $out .= "
+                    <tr><th>{$_step_num}</th><td>{$l_htaccess}</td><td>" . escape_html(display_time_period(60 * 5)) . "</td></tr>
+        ";
+    }
 
     // Database upgrade
     $step_num++;

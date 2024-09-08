@@ -606,7 +606,7 @@ function transaction_amend_screen(int $id, object $title, ?int $member_id_of = n
         $fields = build_keep_post_fields();
         $fields->attach(form_input_line_comcode(do_lang('REASON'), do_lang('DESCRIPTION_POINTS_REASON'), 'reason', $myreason, true));
 
-        $map = ['page' => '_SELF', 'type' => 'amend', 'redirect' => $redirect];
+        $map = ['page' => '_SELF', 'type' => 'amend', 'redirect' => protect_url_parameter($redirect)];
         if ($member_id_of !== null) {
             $map['member_id_of'] = $member_id_of;
         }

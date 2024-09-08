@@ -153,7 +153,7 @@ class database_relations_test_set extends cms_test_case
             }
         }
 
-        $skip_flags = TABLE_PURPOSE__NON_BUNDLED | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__NO_STAGING_COPY | TABLE_PURPOSE__MISC_NO_MERGE | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG;
+        $skip_flags = TABLE_PURPOSE__NON_BUNDLED | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__NO_STAGING_COPY | TABLE_PURPOSE__MISC_NO_MERGE | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG;
 
         $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($all_tables as $_table) {
@@ -172,6 +172,100 @@ class database_relations_test_set extends cms_test_case
             if (!table_has_purpose_flag($table, $skip_flags)) {
                 $this->assertTrue(isset($tables_in_hooks[$table]), 'Table not in a content or resource hook: ' . $table);
             }
+        }
+    }
+
+    public function testExportScriptConsistency()
+    {
+        $expected = [];
+        $got_a = [];
+        $got_b = [];
+
+        // Parse database relations
+        require_code('database_relations');
+        $purpose_flags = get_table_purpose_flags();
+        foreach ($purpose_flags as $table => $flags) {
+            // No non-bundled tables
+            if (table_has_purpose_flag($table, TABLE_PURPOSE__NON_BUNDLED)) {
+                continue;
+            }
+
+            // Tables that should have the no-data flag
+            if (
+                (table_has_purpose_flag($table, TABLE_PURPOSE__FLUSHABLE))
+            ) {
+                $expected[] = $table;
+            }
+        }
+
+        // Parse script file
+        require_code('global3');
+        $script_file = cms_file_get_contents_safe(get_file_base() . '/db_export.sh');
+        $doing_a = false;
+        $doing_b = false;
+        foreach (explode("\n", $script_file) as $line) {
+            if (!$doing_a && !$doing_b) {
+                if (trim($line) == "read -d '' NO_DATA_TABLES_A << EOF") {
+                    $doing_a = true;
+                    $doing_b = false;
+                }
+                if (trim($line) == "read -d '' NO_DATA_TABLES_B << EOF") {
+                    $doing_a = false;
+                    $doing_b = true;
+                }
+                continue;
+            } else {
+                if (trim($line) == "EOF") {
+                    $doing_a = false;
+                    $doing_b = false;
+                    continue;
+                }
+            }
+
+            if ($doing_a) {
+                $got_a[] = trim(str_replace('--ignore-table=${DB_NAME}.${DB_TABLE_PREFIX}', '', trim($line)));
+            }
+
+            if ($doing_b) {
+                $got_b[] = trim(str_replace('${DB_TABLE_PREFIX}', '', trim($line)));
+            }
+        }
+
+        // Sort to make diff easier to understand
+        sort($expected);
+        sort($got_a);
+        sort($got_b);
+
+        // Run checks
+        $diff_a = array_diff($expected, $got_a);
+        $diff_b = array_diff($got_a, $expected);
+        $diff_c = array_diff($got_a, $got_b);
+        $diff_d = array_diff($got_b, $got_a);
+
+        if ((count($diff_a) > 0) || (count($diff_b) > 0)) {
+            $this->assertTrue(false, 'db_export.sh is not consistent with database relations.');
+            $output = '';
+            foreach ($expected as $table) {
+                $output .= '--ignore-table=${DB_NAME}.${DB_TABLE_PREFIX}' . $table . "\n";
+            }
+            $this->dump($output, 'Expected NO_DATA_TABLES_A');
+            $output = '';
+            foreach ($expected as $table) {
+                $output .= '${DB_TABLE_PREFIX}' . $table . "\n";
+            }
+            $this->dump($output, 'Expected NO_DATA_TABLES_B');
+        } elseif ((count($diff_c) > 0) || (count($diff_d) > 0)) {
+            $this->assertTrue(false, 'NO_DATA_TABLES_A and NO_DATA_TABLES_B should contain the same tables, but they do not.');
+            $output = '';
+            foreach ($expected as $table) {
+                $output .= '--ignore-table=${DB_NAME}.${DB_TABLE_PREFIX}' . $table . "\n";
+            }
+            $this->dump($output, 'Expected NO_DATA_TABLES_A');
+            $output = '';
+            foreach ($expected as $table) {
+                $output .= '${DB_TABLE_PREFIX}' . $table . "\n";
+            }
+            $this->dump($output, 'Expected NO_DATA_TABLES_B');
         }
     }
 }

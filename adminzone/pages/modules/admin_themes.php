@@ -973,6 +973,10 @@ class Module_admin_themes
         // Opening up file browser location
         $default_theme_files_location = get_param_string('default_theme_files_location', null, INPUT_FILTER_GET_COMPLEX);
 
+        // Enable web workers for ace
+        require_code('csp');
+        load_csp(['csp_allow_workers' => '1']);
+
         return do_template('THEME_TEMPLATE_EDITOR_SCREEN', [
             '_GUID' => 'bd4284c92fd25e0f489f6f4add25340b',
             'TITLE' => $this->title,

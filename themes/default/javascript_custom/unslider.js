@@ -13,6 +13,11 @@
             options.balanceheight = false;
         }
 
+        if (!window.jQuery || !window.jQuery.fn.unslider) {
+            $util.fatal('$cms.templates.blockMainUnslider(): jQuery.fn.unslider plugin is not loaded');
+            return;
+        }
+
         var $sliderEl = window.jQuery('#' + params.sliderId);
         $sliderEl.unslider(options);
 

@@ -901,6 +901,8 @@ class Advanced_banning_loader
     private $hackattack_specifiers; // Output
 
     private $text_so_far;
+    private $this_page;
+    private $this_type;
 
     /**
      * Run the loader, to load up field-restrictions from the XML file.
@@ -924,6 +926,9 @@ class Advanced_banning_loader
         $this->automatic_rules = [];
         $this->reasoned_bans = [];
         $this->hackattack_specifiers = [];
+
+        $this->this_page = $this_page;
+        $this->this_type = $this_type;
 
         // Create and setup our parser
         if (function_exists('libxml_disable_entity_loader')) {

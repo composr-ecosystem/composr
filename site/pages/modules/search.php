@@ -603,68 +603,136 @@ class Module_search
         $start = get_param_integer('search_start', 0);
         $default_max = intval(get_option('search_results_per_page'));
         $max = get_param_integer('search_max', $default_max);  // Also see get_search_rows
+        $search_id = get_param_string('search_id', ''); // Used to cache results in pagination
 
-        list($content_where) = build_content_where($search_query);
+        $only_search_meta = get_param_integer('only_search_meta', 0) == 1;
+        $direction = get_param_string('direction', 'ASC');
+        $all_defaults = get_param_integer('all_defaults', 0);
 
-        disable_php_memory_limit();
-
-        // Search under all hooks we've asked to search under
         $results = [];
-        $_hooks = find_all_hook_obs('modules', 'search', 'Hook_search_');
-        foreach ($_hooks as $hook => $ob) {
-            $test = get_param_integer('search_' . $hook, 0);
 
-            if ((($id == '') || ($id == $hook)) && (($test == 1) || ((get_param_integer('all_defaults', 0) == 1) && (true)) || ($id == $hook))) {
-                $info = $ob->info();
-                if (($info === null) || ($info === false)) {
-                    continue;
-                }
-            }
-
-            if ((($id == '') || ($id == $hook)) && (($test == 1) || ((get_param_integer('all_defaults', 0) == 1) && ($info['default'])) || ($id == $hook))) {
-                // Category filter
-                if (($search_under != '!') && ($search_under != '-1') && (array_key_exists('category', $info))) {
-                    $cats = explode(',', $search_under);
-                    $where_clause = '(';
-                    foreach ($cats as $cat) {
-                        if (trim($cat) == '') {
-                            continue;
-                        }
-
-                        if ($where_clause != '(') {
-                            $where_clause .= ' OR ';
-                        }
-                        if ($info['integer_category']) {
-                            if (is_numeric($cat)) {
-                                $where_clause .= ((strpos($info['category'], '.') !== false) ? '' : 'r.') . $info['category'] . '=' . strval(intval($cat));
-                            } else {
-                                $where_clause .= '1=0';
-                            }
-                        } else {
-                            $where_clause .= db_string_equal_to(((strpos($info['category'], '.') !== false) ? '' : 'r.') . $info['category'], $cat);
-                        }
-                    }
-                    $where_clause .= ')';
-                } else {
-                    $where_clause = '';
-                }
-
-                $only_search_meta = get_param_integer('only_search_meta', 0) == 1;
-                $direction = get_param_string('direction', 'ASC');
-                cms_set_time_limit(10); // Prevent errant search hooks (easily written!) taking down a server. Each call given 10 seconds (calling cms_set_time_limit resets the timer).
-                $hook_results = $ob->run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff);
-                if ($hook_results === null) {
-                    continue;
-                }
-                foreach ($hook_results as $i => $result) {
-                    $result['object'] = $ob;
-                    $result['type'] = $hook;
-                    $hook_results[$i] = $result;
-                }
-
-                $results = sort_search_results($hook_results, $results, $direction);
-            }
+        // Try to load up cached results if a search ID was provided
+        if ($search_id != '') {
+            require_code('caches');
+            $results = get_cache_entry(
+                'search_results',
+                serialize([ // Should contain the search ID and all possible parameters (except pagination / sorting) which can influence results
+                    $search_id,
+                    $id,
+                    $search_query,
+                    $all_defaults,
+                    $only_search_meta,
+                    $author,
+                    $author_id,
+                    $cutoff,
+                    $only_titles,
+                    $search_under
+                ]),
+                CACHE_AGAINST_MEMBER, // Some content is permissions based
+                15
+            );
         }
+
+        // No results? We need to populate them.
+        if (($results === null) || empty($results)) {
+            $results = [];
+            $search_id = ''; // Clear out old ID
+
+            list($content_where) = build_content_where($search_query);
+
+            disable_php_memory_limit();
+
+            // Search under all hooks we've asked to search under
+            $_hooks = find_all_hook_obs('modules', 'search', 'Hook_search_');
+            $result_count = 0;
+            foreach ($_hooks as $hook => $ob) {
+                $test = get_param_integer('search_' . $hook, 0);
+
+                if ((($id == '') || ($id == $hook)) && (($test == 1) || (($all_defaults == 1) && (true)) || ($id == $hook))) {
+                    $info = $ob->info();
+                    if (($info === null) || ($info === false)) {
+                        continue;
+                    }
+                }
+
+                if ((($id == '') || ($id == $hook)) && (($test == 1) || (($all_defaults == 1) && ($info['default'])) || ($id == $hook))) {
+                    // Category filter
+                    if (($search_under != '!') && ($search_under != '-1') && (array_key_exists('category', $info))) {
+                        $cats = explode(',', $search_under);
+                        $where_clause = '(';
+                        foreach ($cats as $cat) {
+                            if (trim($cat) == '') {
+                                continue;
+                            }
+
+                            if ($where_clause != '(') {
+                                $where_clause .= ' OR ';
+                            }
+                            if ($info['integer_category']) {
+                                if (is_numeric($cat)) {
+                                    $where_clause .= ((strpos($info['category'], '.') !== false) ? '' : 'r.') . $info['category'] . '=' . strval(intval($cat));
+                                } else {
+                                    $where_clause .= '1=0';
+                                }
+                            } else {
+                                $where_clause .= db_string_equal_to(((strpos($info['category'], '.') !== false) ? '' : 'r.') . $info['category'], $cat);
+                            }
+                        }
+                        $where_clause .= ')';
+                    } else {
+                        $where_clause = '';
+                    }
+
+                    cms_set_time_limit(10); // Prevent errant search hooks (easily written!) taking down a server. Each call given 10 seconds (calling cms_set_time_limit resets the timer).
+                    $_hook_results = $ob->run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, intval(get_option('general_safety_listing_limit')), 0, $sort, $direction, $author, $author_id, $cutoff);
+                    if ($_hook_results === null) {
+                        continue;
+                    }
+
+                    $hook_results = [];
+                    foreach ($_hook_results as $i => $result) {
+                        $result_count++;
+                        $result['type'] = $hook;
+                        $hook_results[$i] = $result;
+                    }
+
+                    $results = sort_search_results($hook_results, $results, $direction);
+                }
+            }
+
+            // Cache our results if we have any
+            if (!empty($results)) {
+                require_code('crypt');
+                require_code('caches2');
+                $search_id = get_secure_random_string();
+                set_cache_entry(
+                    'search_results',
+                    15,
+                    serialize([ // Should match exactly what was defined earlier for get_cache_entry
+                        $search_id,
+                        $id,
+                        $search_query,
+                        $all_defaults,
+                        $only_search_meta,
+                        $author,
+                        $author_id,
+                        $cutoff,
+                        $only_titles,
+                        $search_under
+                    ]),
+                    $results,
+                    CACHE_AGAINST_MEMBER // Some content is permissions based
+                );
+
+                // FUDGE: Set search ID in $_POST so pagination picks up on it
+                $_POST['search_id'] = $search_id;
+            }
+        } else {
+            $results = sort_search_results($results, [], $direction);
+        }
+
+        // Get accurate results count
+        $GLOBALS['TOTAL_SEARCH_RESULTS'] = count($results);
 
         if ((empty($results)) && (get_option('search_did_you_mean') == '1')) {
             // Did you mean?

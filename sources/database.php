@@ -622,6 +622,8 @@ function get_db_forums_password() : string
  */
 abstract class DatabaseDriver
 {
+    protected $echoed_failed_queries = 0;
+
     /**
      * Get the default user for making db connections (used by the installer as a default).
      *
@@ -1263,6 +1265,12 @@ abstract class DatabaseDriver
             $this->substitute_query_message($message);
         }
         echo $message . "<br />\n";
+
+        // Bomb out if we have a bunch of failed queries to prevent PHP running out of memory or causing a browser crash
+        $this->echoed_failed_queries++;
+        if ($this->echoed_failed_queries >= 1000) {
+            $this->failed_query_exit(htmlentities('Too many failed database queries.'));
+        }
     }
 
     /**

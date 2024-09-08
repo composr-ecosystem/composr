@@ -300,7 +300,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         $out = [];
         $pages_found = [];
-        foreach ($rows as $i => $row) {
+        $out_i = 0;
+        foreach ($rows as $row) {
             foreach ($redirects as $redirect) {
                 if (($redirect['r_from_page'] == $row['the_page']) && ($redirect['r_from_zone'] == $row['the_zone'])) {
                     continue 2;
@@ -314,23 +315,42 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 continue;
             }
             $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
-            $out[$i]['data'] = $row + ['extra' => [$row['the_zone'], $row['the_page'], $max]];
+            $out[$out_i]['data'] = $row + ['extra' => [$row['the_zone'], $row['the_page'], $max]];
             if (($remapped_orderer != '') && (array_key_exists($remapped_orderer, $row))) {
-                $out[$i]['orderer'] = $row[$remapped_orderer];
+                $out[$out_i]['orderer'] = $row[$remapped_orderer];
             } elseif (strpos($remapped_orderer, '_rating:') !== false) {
-                $out[$i]['orderer'] = $row[$remapped_orderer];
+                $out[$out_i]['orderer'] = $row[$remapped_orderer];
             }
 
             if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
-                $out[$i]['restricted'] = true;
+                $out[$out_i]['restricted'] = true;
             }
+
+            $out_i++;
+            $GLOBALS['TOTAL_SEARCH_RESULTS']++;
         }
 
         if (($author == '') && (!$fast_custom_index)) {
             // Make sure we record that for all cached Comcode pages, we know of them (only those not cached would not have been under the scope of the current search)
-            $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_zone', 'the_page']);
+            $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_zone', 'the_page', 'string_index']);
             foreach ($all_pages as $row) {
                 $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
+            }
+
+            if (in_memory_search_match(['content' => $search_query], get_translated_text($row['string_index']))) {
+                $out[$out_i]['data'] = ['the_zone' => $row['the_zone'], 'the_page' => $row['the_page']] + ['extra' => [$row['the_zone'], $row['the_page'], $max]];
+                if ($remapped_orderer == 'the_page') {
+                    $out[$out_i]['orderer'] = $row['the_page'];
+                } elseif ($remapped_orderer == 'the_zone') {
+                    $out[$out_i]['orderer'] = $row['the_zone'];
+                }
+
+                if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
+                    $out[$out_i]['restricted'] = true;
+                }
+
+                $out_i++;
+                $GLOBALS['TOTAL_SEARCH_RESULTS']++;
             }
 
             // Now, look on disk for non-cached Comcode pages
@@ -356,9 +376,13 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                         }
 
                         require_code('global4');
-                        if (!comcode_page_include_on_sitemap($zone, $page)) {
-                            continue;
-                        }
+
+                        // Actually sitemap is solely for the sitemap; should use the validation addon to hide pages we do not want in search
+                        /*
+                            if (!comcode_page_include_on_sitemap($zone, $page)) {
+                                continue;
+                            }
+                        */
 
                         foreach ($redirects as $redirect) {
                             if (($redirect['r_from_page'] == $page) && ($redirect['r_from_zone'] == $zone)) {
@@ -377,15 +401,18 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                         }
 
                         if (in_memory_search_match(['content' => $search_query], $contents)) {
-                            $out[$i]['data'] = ['the_zone' => $zone, 'the_page' => $page] + ['extra' => [$zone, $page, $max]];
+                            $out[$out_i]['data'] = ['the_zone' => $zone, 'the_page' => $page] + ['extra' => [$zone, $page, $max]];
                             if ($remapped_orderer == 'the_page') {
-                                $out[$i]['orderer'] = $page;
+                                $out[$out_i]['orderer'] = $page;
                             } elseif ($remapped_orderer == 'the_zone') {
-                                $out[$i]['orderer'] = $zone;
+                                $out[$out_i]['orderer'] = $zone;
+                            }
+
+                            if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
+                                $out[$out_i]['restricted'] = true;
                             }
 
                             $i++;
-
                             $GLOBALS['TOTAL_SEARCH_RESULTS']++;
 
                             // Let it cache for next time
@@ -436,7 +463,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         if ($summary == '') {
             $page_request = _request_page($page, $zone);
-            if (strpos($page_request[0], 'COMCODE') === false) {
+            if (($page_request === false) || (strpos($page_request[0], 'COMCODE') === false)) {
                 cms_set_time_limit($old_limit);
 
                 return new Tempcode();
