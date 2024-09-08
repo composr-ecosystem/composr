@@ -1140,10 +1140,37 @@ function find_updated_addons() : array
         return $updated_addons;
     }
 
-    $addons = find_installed_addons(true, false);
+    $addons = find_installed_addons(true, true);
     if (empty($addons)) {
         return [];
     }
+
+    // Repair: To properly check for non-bundled addons needing upgrading, they must have a TAR. Sometimes they get removed for whatever reason.
+    require_code('tar');
+    $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+    foreach ($addons as $addon_name => $info) {
+        if (!is_file(get_custom_file_base() . '/imports/addons/'. $addon_name . '.tar')) {
+            $newest_mtime = strtotime('2000-01-01 00:00:00');
+            $tar = tar_open(get_custom_file_base() . '/imports/addons/'. $addon_name . '.tar', 'wb');
+            foreach ($info['files'] as $file) {
+                $data = cms_file_get_contents_safe(get_custom_file_base() . '/' . $file, FILE_READ_LOCK);
+                if ($data === false) {
+                    continue;
+                }
+
+                $mtime = filemtime(get_custom_file_base() . '/' . $file);
+                if ($mtime > $newest_mtime) {
+                    $newest_mtime = $mtime;
+                }
+                tar_add_file($tar, $file, $data, 0644, $mtime);
+                unset($data);
+            }
+            tar_close($tar);
+            unset($tar);
+            touch(get_custom_file_base() . '/imports/addons/'. $addon_name . '.tar', $newest_mtime);
+        }
+    }
+    cms_set_time_limit($old);
 
     $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/addon_manifest/' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
     $post = [];
