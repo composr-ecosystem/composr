@@ -83,14 +83,15 @@ function cron_bridge_script(string $caller)
         header('Content-Type: text/plain; charset=' . get_charset());
     }
 
-    echo cron_run(
+    cron_run(
         $force,
         $verbose,
         $limit_hooks,
         $include_msn,
         $loop,
         $loop_wait_seconds,
-        $loop_max_seconds
+        $loop_max_seconds,
+        true
     );
 
     if (!headers_sent()) {
@@ -108,21 +109,27 @@ function cron_bridge_script(string $caller)
  * @param  boolean $loop Whether to loop execution
  * @param  integer $loop_wait_seconds The number of seconds to wait between loops
  * @param  integer $loop_max_seconds Terminate looping after this many seconds
+ * @param  boolean $echo_out Echo the log as it happens instead of only returning it at the end of execution
+ * @return string Various debugging / logging of the process
  */
-function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hooks = null, bool $include_msn = false, bool $loop = false, int $loop_wait_seconds = 3, int $loop_max_seconds = 3595) : string
+function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hooks = null, bool $include_msn = false, bool $loop = false, int $loop_wait_seconds = 3, int $loop_max_seconds = 3595, bool $echo_out = false) : string
 {
     require_code('failure');
     require_code('version');
 
-    $ret = [];
+    $ret = '';
 
     // Check global locking, but only in looping mode
     if ($loop) {
         if ((get_value_newer_than('cron_currently_running', time() - 60 * 60/*large 1 hour timeout in case an instance is stuck doing something very slow*/, true) === '1') && (!$force)) {
             if ($verbose) {
-                $ret[] = loggable_date() . ' Cron is still locked';
+                $log_message = loggable_date() . ' Cron is still locked' . "\n";
+                $ret .= $log_message;
+                if ($echo_out) {
+                    echo $log_message;
+                }
             }
-            return implode("\n", $ret);
+            return $ret;
         }
         set_value('cron_currently_running', '1', true);
     }
@@ -132,9 +139,13 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
     $version_db = strval(cms_version_time_db());
     if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files) || (get_value('db_version', '', true) != $version_db)) {
         if ($verbose) {
-            $ret[] = loggable_date() . ' An upgrade is pending, cannot run';
+            $log_message = loggable_date() . ' An upgrade is pending, cannot run' . "\n";
+            $ret .= $log_message;
+            if ($echo_out) {
+                echo $log_message;
+            }
         }
-        //return implode("\n", $ret);
+        return $ret;
     }
 
     // Starting logging
@@ -223,7 +234,11 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
             // Inclusion-listed?
             if (($limit_hooks !== null) && (!in_array($hook, $limit_hooks))) {
                 if ($verbose) {
-                    $ret[] = loggable_date() . ' Skipping ' . $hook . ' as limit_hooks was defined';
+                    $log_message = loggable_date() . ' Skipping ' . $hook . ' as limit_hooks was defined' . "\n";
+                    $ret .= $log_message;
+                    if ($echo_out) {
+                        echo $log_message;
+                    }
                 }
                 unset($cron_hooks[$hook]);
                 continue;
@@ -234,7 +249,11 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 // Manually disabled?
                 if ($cron_progression[$hook]['c_enabled'] == 0) {
                     if ($verbose) {
-                        $ret[] = loggable_date() . ' Skipping ' . $hook . ' as it was manually disabled';
+                        $log_message = loggable_date() . ' Skipping ' . $hook . ' as it was manually disabled' . "\n";
+                        $ret .= $log_message;
+                        if ($echo_out) {
+                            echo $log_message;
+                        }
                     }
                     unset($cron_hooks[$hook]);
                     continue;
@@ -252,14 +271,22 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 $info = $object->info($last_run, true); // Need to do this so that any calculations done in here can then be used by ->run()
                 if ($info === null) {
                     if ($verbose) {
-                        $ret[] = loggable_date() . ' Skipping ' . $hook . ' as it did not return any info (perhaps it is not meant to run)';
+                        $log_message = loggable_date() . ' Skipping ' . $hook . ' as it did not return any info (perhaps it is not meant to run)' . "\n";
+                        $ret .= $log_message;
+                        if ($echo_out) {
+                            echo $log_message;
+                        }
                     }
                     unset($cron_hooks[$hook]);
                     continue;
                 }
                 if (!isset($cron_progression[$hook]) && ($info['enabled_by_default'] === false)) { // New hook must be manually enabled
                     if ($verbose) {
-                        $ret[] = loggable_date() . ' Skipping ' . $hook . ' as it is disabled by default and has not yet been enabled';
+                        $log_message = loggable_date() . ' Skipping ' . $hook . ' as it is disabled by default and has not yet been enabled' . "\n";
+                        $ret .= $log_message;
+                        if ($echo_out) {
+                            echo $log_message;
+                        }
                     }
                     unset($cron_hooks[$hook]);
                     continue;
@@ -271,7 +298,11 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
             if (($limit_hooks === null) || ($limit_hooks !== [$hook])) { // Only if not directly requested
                 if (($last_run !== null) && ($last_run + $info['minutes_between_runs'] * 60 > time())) {
                     if ($verbose) {
-                        $ret[] = loggable_date() . ' Not yet time to run ' . $hook;
+                        $log_message = loggable_date() . ' Not yet time to run ' . $hook . "\n";
+                        $ret .= $log_message;
+                        if ($echo_out) {
+                            echo $log_message;
+                        }
                     }
 
                     continue;
@@ -283,7 +314,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 // Update log to say starting
                 $log_message = loggable_date() . '  STARTING ' . $hook . ' (' . $info['label'] . ')' . "\n";
                 if ($verbose) {
-                    $ret[] = $log_message;
+                    $ret .= $log_message;
+                    if ($echo_out) {
+                        echo $log_message;
+                    }
                 }
                 if ($log_file !== null) {
                     flock($log_file, LOCK_EX);
@@ -352,7 +386,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 // Update log to say finished
                 $log_message = loggable_date() . '  FINISHED ' . $hook . ' (' . $info['label'] . ')' . "\n";
                 if ($verbose) {
-                    $ret[] = $log_message;
+                    $ret .= $log_message;
+                    if ($echo_out) {
+                        echo $log_message;
+                    }
                 }
                 if ($log_file !== null) {
                     flock($log_file, LOCK_EX);
@@ -364,7 +401,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 // Update log to say locked
                 $log_message = loggable_date() . '  WAS LOCKED ' . $hook . ' (' . $info['label'] . ')' . "\n";
                 if ($verbose) {
-                    $ret[] = $log_message;
+                    $ret .= $log_message;
+                    if ($echo_out) {
+                        echo $log_message;
+                    }
                 }
                 if ($log_file !== null) {
                     flock($log_file, LOCK_EX);
@@ -378,7 +418,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
             if ($time_elapsed >= 20) {
                 $log_message = loggable_date() . ' ENDING EARLY; we reached the execution time limit of 20 seconds.' . "\n";
                 if ($verbose) {
-                    $ret[] = $log_message;
+                    $ret .= $log_message;
+                    if ($echo_out) {
+                        echo $log_message;
+                    }
                 }
                 if ($log_file !== null) {
                     flock($log_file, LOCK_EX);
@@ -402,7 +445,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 $log_message = loggable_date() . '  PAUSED FOR ' . integer_format($loop_wait_seconds) . ' SECONDS BEFORE LOOPING' . "\n";
             }
             if ($verbose) {
-                $ret[] = $log_message;
+                $ret .= $log_message;
+                if ($echo_out) {
+                    echo $log_message;
+                }
             }
             if ($log_file !== null) {
                 flock($log_file, LOCK_EX);
@@ -423,7 +469,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 } else {
                     $log_message = loggable_date() . '  PHP sleep and usleep functions are missing so loop_wait_seconds will be ignored' . "\n";
                     if ($verbose) {
-                        echo $log_message;
+                        $ret .= $log_message;
+                        if ($echo_out) {
+                            echo $log_message;
+                        }
                     }
                     if ($log_file !== null) {
                         flock($log_file, LOCK_EX);
@@ -439,7 +488,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
             if (($kill_cron_looping == '1') || (filemtime(get_file_base() . '/sources/version.php') > $_SERVER['REQUEST_TIME'])) {
                 $log_message = loggable_date() . '  LOOPING KILL SIGNAL DETECTED' . "\n";
                 if ($verbose) {
-                    echo $log_message;
+                    $ret .= $log_message;
+                    if ($echo_out) {
+                        echo $log_message;
+                    }
                 }
                 if ($log_file !== null) {
                     flock($log_file, LOCK_EX);
@@ -463,7 +515,10 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
     // Ending logging
     $log_message = loggable_date() . '  (CRON ENDING)' . "\n";
     if ($verbose) {
-        echo $log_message;
+        $ret .= $log_message;
+        if ($echo_out) {
+            echo $log_message;
+        }
     }
     if ($log_file !== null) {
         flock($log_file, LOCK_EX);
@@ -474,5 +529,5 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
         fclose($log_file);
     }
 
-    return implode("\n", $ret);
+    return $ret;
 }
