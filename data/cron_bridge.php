@@ -52,5 +52,5 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-require_code('misc_scripts');
+require_code('cron');
 cron_bridge_script(__FILE__);
