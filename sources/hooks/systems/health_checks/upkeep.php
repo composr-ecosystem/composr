@@ -42,9 +42,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
     {
         $this->process_checks_section('testCMSVersion', brand_name() . ' version', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testPHPVersion', 'PHP version', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        if ((php_function_allowed('shell_exec')) && (@strpos(shell_exec('which php'), 'php') !== false)) {
-            $this->process_checks_section('testPHPVersionDistroSafe', 'PHP version (if not distro default)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        }
+        $this->process_checks_section('testPHPVersionDistroSafe', 'PHP version (if not distro default)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testAdminAccountStaleness', 'Admin account staleness', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testCopyrightDate', 'Copyright date', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testStaffChecklist', 'Staff checklist', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -132,13 +130,10 @@ class Hook_health_check_upkeep extends Hook_Health_Check
             return;
         }
 
-        if (php_function_allowed('shell_exec')) {
-            require_code('version2');
-            $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-            $this->assertTrue((@trim(shell_exec('which php')) == '/usr/bin/php') || (is_php_version_supported_by_phpdevs($v) !== false), 'Your server distro PHP version is not supported by the PHP developers: ' . $v);
-        } else {
-            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
-        }
+        require_code('version2');
+        require_code('files2');
+        $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
+        $this->assertTrue((find_php_path() == '/usr/bin/php') || (is_php_version_supported_by_phpdevs($v) !== false), 'Your server distro PHP version is not supported by the PHP developers: ' . $v);
     }
 
     /**

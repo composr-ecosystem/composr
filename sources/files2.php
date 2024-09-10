@@ -353,6 +353,14 @@ function _deldir_contents(string $dir, bool $default_preserve = false, bool $del
  */
 function find_php_path(bool $cgi = false) : string
 {
+    global $SITE_INFO;
+    if ((!$cgi) && isset($SITE_INFO['php_path']) && is_file($SITE_INFO['php_path'])) {
+        return $SITE_INFO['php_path'];
+    }
+    if (($cgi) && isset($SITE_INFO['php_cgi_path']) && is_file($SITE_INFO['php_cgi_path'])) {
+        return $SITE_INFO['php_cgi_path'];
+    }
+
     if (strpos(PHP_OS, 'WIN') !== false) {
         $search_dirs = [
             'c:\\php*',
@@ -390,6 +398,7 @@ function find_php_path(bool $cgi = false) : string
             'php-cgi',
         ];
     }
+
     $php_path = '';
     foreach ($search_dirs as $dir) {
         foreach ($filenames as $file) {

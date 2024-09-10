@@ -116,6 +116,7 @@ You may use the config editor to:
  - Change the base URL
  - Change forum and site database details
  - Change cookie details
+ - Define the absolute path to your PHP binaries in the event Composr cannot auto-detect them (and the standard [tt]php[/tt] and [tt]php-cgi[/tt] commands either do not work or use the wrong binary)
  - Force 'URL Schemes' to be disabled, if you enabled it, but it failed to function correctly, locking you out of Composr
 
 [title="2"]Advanced page structure changes[/title]
