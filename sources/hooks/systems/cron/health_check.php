@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cron__health_check
+class Hook_cron_health_check
 {
     /**
      * Get info from this hook.
@@ -51,8 +51,6 @@ class Hook_cron__health_check
      */
     public function run(?int $last_run)
     {
-        // Note that we have a leading "_" on the hook name so that it runs first (we run the system scheduler hooks in sorted order)
-
         require_code('health_check');
 
         $cron_notify_regardless = get_option('hc_cron_notify_regardless');
