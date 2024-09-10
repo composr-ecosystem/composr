@@ -320,8 +320,13 @@ This should have now added a schedule within Windows scheduler to run the [tt]cr
 
 [title="3"]Help -- my webhost does not support Cron![/title]
 
-In the event your hosting platform does not allow you access to Cron, there are a number of options available to you. These options work to call the [tt]data/cron_bridge.php[/tt] script by URL, rather than via a direct command on the server.
+In the event your hosting platform does not allow you access to Cron, there are a number of options available to you. One easy option is to have scheduled tasks run in the background when visitors access your site. To do this, you need to go to the Admin Zone > Setup > Configuration > Performance options, and tick (check) "Web requests run scheduled tasks".
 
+There are a couple caveats to using web requests:
+ - This will only work if your server supports PHP's register shutdown function. Most servers do.
+ - This is not a reliable way to ensure scheduled tasks run on time. It depends on someone making a page request to your website to trigger making the tasks run in the background.
+
+Alternatively, you can use an external service to call the [tt]data/cron_bridge.php[/tt] script by URL:
  - EasyCron provide direct instructions for Composr, and free and paid plans: https://www.easycron.com/cron-job-tutorials/how-to-set-up-cron-job-for-composr
  - Other free options are http://www.setcronjob.com/ (up to every 5 minutes but the schedule needs to be re-set every week) and http://www.onlinecronjobs.com/ (up to 5 jobs twice a day).
 
