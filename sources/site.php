@@ -1176,7 +1176,7 @@ function do_site()
     // Execute Cron bridge if we want web requests to run scheduled tasks
     if ((running_script('index')) && (get_option('enable_web_request_scheduler') == '1')) {
         cms_register_shutdown_function_if_available(function () {
-            // NB: We run cron checks inside the register shutdown function to prevent overlaps
+            // NB: We run timing checks inside the register shutdown function to prevent overlaps
             if (
                 (get_value_newer_than('cron_currently_running', time() - (60 * 60), true) !== '1') && // Don't run if scheduled tasks are running now unless it's been over an hour
                 (get_value_newer_than('last_cron', time() - 60) === null) // Don't run if scheduled tasks ran in the last 60 seconds
