@@ -70,22 +70,32 @@ function get_news_cat_row(int $id, bool $null_ok = false) : ?array
  * Find a news category image from a string that may have multiple interpretations.
  *
  * @param  string $nc_img URL / theme image code / blank
- * @return URLPATH URL (or blank)
+ * @return URLPATH URL (blank: not found or not specified)
  */
 function get_news_category_image_url(string $nc_img) : string
 {
+    $image = '';
+    $as_admin = false;
+
     if ($nc_img == '') {
         $image = '';
     } elseif (url_is_local($nc_img)) {
-        $image = get_custom_base_url() . '/' . $nc_img;
+        $image = find_theme_image($nc_img, true); // Try theme image first
+        if ($image == '') { // No theme image? Maybe this is a relative path to a direct image file
+            $image = get_custom_base_url() . '/' . $nc_img;
+        } else {
+            $as_admin = true; // We trust theme images because they generally can only be edited by admins
+        }
     } elseif (looks_like_url($nc_img)) {
         $image = $nc_img;
-    } else {
-        $image = find_theme_image($nc_img, true);
-        if ($image === null) {
-            $image = '';
-        }
     }
+
+    // Sanity check: Make sure what we have is an actual web image, otherwise blank it out.
+    require_code('images');
+    if (!is_image($image, IMAGE_CRITERIA_WEBSAFE, $as_admin, true)) {
+        $image = '';
+    }
+
     return $image;
 }
 
