@@ -23,7 +23,7 @@
 /**
  * Find available mime types.
  *
- * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
+ * @param  boolean $as_admin Whether there are admin privileges; to render dangerous media types (client-side risk only)
  * @return array The MIME types
  */
 function get_mime_types(bool $as_admin) : array
@@ -76,7 +76,7 @@ function get_mime_types(bool $as_admin) : array
         'rtf' => 'application/rtf',
         'ps' => 'application/postscript',
 
-        // Web documents
+        // Web documents (NB: should never be trusted as a non-admin)
         'html' => $as_admin ? 'text/html' : 'application/octet-stream',
         'htm' => $as_admin ? 'text/html' : 'application/octet-stream',
         'js' => $as_admin ? 'text/javascript' : 'application/octet-stream',
@@ -99,7 +99,7 @@ function get_mime_types(bool $as_admin) : array
         'psd' => 'image/x-photoshop',
         // 'ai' has no known mime type
         'webp' => 'image/webp',
-        'svg' => $as_admin ? 'image/svg+xml' : 'application/octet-stream',
+        'svg' => $as_admin ? 'image/svg+xml' : 'application/octet-stream', // NB: SVG vectors are embedded XML which could be dangerous; only trust as admin
 
         // Non/badly compressed images
         'bmp' => 'image/bmp',
@@ -174,11 +174,11 @@ function get_mime_types(bool $as_admin) : array
         'ics' => 'text/calendar',
 
         // Misc data
-        'bin' => 'application/octet-stream',
+        'bin' => 'application/octet-stream', // NB: Never trust; we use bin to contain sensitive data
         'dmg' => 'application/x-apple-diskimage',
         'exe' => 'application/x-msdownload',
         'iso' => 'application/x-iso9660-image',
-        'php' => 'application/octet-stream',
+        'php' => 'application/octet-stream', // NB: Never trust; extremely dangerous as it can be executed on a server!
     ];
 
     return $mime_types;

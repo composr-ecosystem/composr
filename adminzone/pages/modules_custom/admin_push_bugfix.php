@@ -178,6 +178,9 @@ class Module_admin_push_bugfix
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c71105a3e00c55cb7ef29a3e23e43033', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_URLS'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_URLS')]));
         $fields->attach(form_input_url(do_lang_tempcode('PUSH_BUGFIX_REMOTE_BASE_URL'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_REMOTE_BASE_URL'), 'remote_base_url', $REMOTE_BASE_URL, true));
 
+        // Full scan
+        $fields->attach(form_input_tick(do_lang_tempcode('PUSH_BUGFIX_ISSUE_FULL_SCAN'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_FULL_SCAN'), 'full_scan', false));
+
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
@@ -217,7 +220,7 @@ class Module_admin_push_bugfix
         $on_disk_version = get_version_dotted();
 
         $git_found = $this->git_find_uncommitted_files(get_param_integer('include_push_bugfix', 0) == 1);
-        $do_full_scan = (get_param_integer('full_scan', 0) == 1);
+        $do_full_scan = (post_param_integer('full_scan', 0) == 1);
         if (($do_full_scan) || (empty($git_found))) {
             $files = $this->push_bugfix_do_dir($git_found, 24 * 60 * 60);
             if (empty($files)) {

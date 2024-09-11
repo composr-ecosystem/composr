@@ -349,6 +349,8 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
 {
     cms_disable_time_limit();
 
+    require_code('files2');
+
     chdir(get_file_base());
 
     $successes = [];
@@ -359,7 +361,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
     $tests = find_all_applicable_tests($limit_to);
     foreach ($tests as $test) {
         $before = microtime(true);
-        $result = trim(shell_exec('"' . PHP_BINARY . '" _tests/index.php ' . escapeshellarg($test) . ' 2>&1'));
+        $result = trim(shell_exec('"' . find_php_path() . '" _tests/index.php ' . escapeshellarg($test) . ' 2>&1'));
         $after = microtime(true);
         $time = $after - $before;
 

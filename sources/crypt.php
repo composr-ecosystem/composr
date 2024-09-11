@@ -195,50 +195,52 @@ function get_secure_random_password(?int $strength = null, string $username = ''
     $special = str_split('!@#$%^&*+=-_?.,:;()/|~`\'"'); // <> is ignored as it is XML, [] is ignored as it is Comcode, and {} is ignored as it is Tempcode
 
     $password = [];
-    $characters = intval(get_option('minimum_password_length')); // Start off with minimum password length
+    $min_characters = intval(get_option('minimum_password_length'));
     $failed = false;
 
     // Start generating our password
     do {
-        // Generate our characters
-        for ($i = 0; $i < $characters; $i++) {
-            switch (random_int(1, 10)) {
-                case 1:
-                case 2:
-                    $password[] = $digits[random_int(0, (count($digits) - 1))];
-                    break;
-                case 3:
-                case 4:
-                case 5:
-                    $password[] = $lowercase[random_int(0, (count($lowercase) - 1))];
-                    break;
-                case 6:
-                case 7:
-                case 8:
-                    $password[] = $uppercase[random_int(0, (count($uppercase) - 1))];
-                    break;
-                case 9:
-                case 10:
-                    $password[] = $special[random_int(0, (count($special) - 1))];
-                    break;
-            }
+        $failed = false;
+
+        switch (random_int(1, 10)) {
+            case 1:
+            case 2:
+                $password[] = $digits[random_int(0, (count($digits) - 1))];
+                break;
+            case 3:
+            case 4:
+            case 5:
+                $password[] = $lowercase[random_int(0, (count($lowercase) - 1))];
+                break;
+            case 6:
+            case 7:
+            case 8:
+                $password[] = $uppercase[random_int(0, (count($uppercase) - 1))];
+                break;
+            case 9:
+            case 10:
+                $password[] = $special[random_int(0, (count($special) - 1))];
+                break;
+        }
+
+        // Exceeded the allowed number of characters? Bail out with an error.
+        if (count($password) > min(255, intval(get_option('maximum_password_length')))) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            break;
+        }
+
+        // Not enough characters? Start the loop again (no need to test password strength yet).
+        if (count($password) < $min_characters) {
+            $failed = true;
+            continue;
         }
 
         // Test the password strength
         $password_strength = test_password(implode('', $password), $username, $email_address, $dob);
-
-        if ($password_strength < $strength) {
-            // Failed; reset the password to do the loop again, but increase the character count by 1.
-            $password = [];
-            $characters++;
-
-            // If we exceed the maximum length allowed, bail with an internal error.
-            if ($characters > min(255, intval(get_option('maximum_password_length')))) {
-                $failed = true;
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-            }
+        if ($password_strength < $strength) { // Not strong enough; trigger the loop to run again and add another character.
+            $failed = true;
         }
-    } while (empty($password) && !$failed);
+    } while ($failed);
 
     return implode('', $password);
 }

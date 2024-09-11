@@ -34,7 +34,7 @@ class _bash_parser_test_set extends cms_test_case
     public function testValidCode()
     {
         require_code('files2');
-        $php_path = PHP_BINARY;
+        $php_path = find_php_path();
 
         $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';

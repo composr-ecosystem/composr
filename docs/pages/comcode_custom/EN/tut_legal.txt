@@ -14,6 +14,8 @@ It is important to develop a rules page that is consistent with the approach you
 
 It is inevitable that some members will break the rules, maliciously or accidentally, but they are still a powerful tool. A good rules page will list offences of a balanced specificity, along with approximate associated punishments. It may also have a legal element, referencing law, and placing legal responsibility on the user.
 
+Rules can also be the place where you define your Terms of Service.
+
 Composr provides a number of default rules pages that can be chosen using the Setup Wizard, or when creating a new Comcode page from a page template. The rules page is linked into your menus, and is displayed for enforced agreement when a member joins the site. This page can be edited like any Composr Comcode page.
 [/surround]
 
