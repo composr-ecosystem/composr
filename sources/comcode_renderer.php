@@ -532,10 +532,10 @@ function test_url(string $url_full, string $tag_type, string $given_url, int $so
     if (get_option('check_broken_urls') == '0') {
         return new Tempcode();
     }
-    if (strpos($url_full, '{$') !== false) {
+    if (strpos($url_full, '{$') !== false) { // Cannot check a URL with Tempcode in it
         return new Tempcode();
     }
-    if (substr($url_full, 0, 1) == '#') {
+    if (substr($url_full, 0, 1) == '#') { // Anchor tag, not a hyperlink
         return new Tempcode();
     }
 
@@ -1061,7 +1061,10 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
         case 'del':
             $cite = array_key_exists('cite', $attributes) ? $attributes['cite'] : null;
             if ($cite !== null) {
-                $temp_tpl = test_url($cite, 'del', $cite, $source_member);
+                $_temp_tpl = test_url($cite, 'del', $cite, $source_member);
+                if (!$_temp_tpl->is_empty()) {
+                    break; // Do not show citations with broken links
+                }
             }
             $datetime = array_key_exists('datetime', $attributes) ? $attributes['datetime'] : null;
             $temp_tpl->attach(do_template('COMCODE_DEL', ['_GUID' => 'acsd4f9910sfd03f81b61919b74ac24c', 'CONTENT' => $embed, 'CITE' => $cite, 'DATETIME' => $datetime]));
@@ -1070,9 +1073,9 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
         case 'ins':
             $cite = array_key_exists('cite', $attributes) ? $attributes['cite'] : null;
             if ($cite !== null) {
-                $temp_tpl = test_url($cite, 'ins', $cite, $source_member);
-                if (!$temp_tpl->is_empty()) {
-                    break;
+                $_temp_tpl = test_url($cite, 'ins', $cite, $source_member);
+                if (!$_temp_tpl->is_empty()) {
+                    break; // Do not show citations with broken links
                 }
             }
             $datetime = array_key_exists('datetime', $attributes) ? $attributes['datetime'] : null;
@@ -1478,8 +1481,12 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
         case 'quote':
             $cite = array_key_exists('cite', $attributes) ? $attributes['cite'] : null;
+            $cite_broken = false;
             if ($cite !== null) {
-                $temp_tpl = test_url($cite, 'quote', $cite, $source_member);
+                $_temp_tpl = test_url($cite, 'quote', $cite, $source_member);
+                if (!$_temp_tpl->is_empty()) {
+                    $cite_broken = true;
+                }
             }
 
             if (($attributes['param'] == '') && (isset($attributes['author']))) {
@@ -1492,9 +1499,9 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
             if ($attributes['param'] != '') {
                 $attributes['param'] = protect_from_escaping(comcode_to_tempcode($attributes['param'], $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member));
-                $temp_tpl->attach(do_template('COMCODE_QUOTE_BY', ['_GUID' => '18f55a548892ad08b0b50b3b586b5b95', 'CITE' => $cite, 'CONTENT' => $embed, 'BY' => $attributes['param'], 'SAIDLESS' => array_key_exists('saidless', $attributes) ? $attributes['saidless'] : '0']));
+                $temp_tpl->attach(do_template('COMCODE_QUOTE_BY', ['_GUID' => '18f55a548892ad08b0b50b3b586b5b95', 'CITE' => $cite, 'CITE_BROKEN' => $cite_broken, 'CONTENT' => $embed, 'BY' => $attributes['param'], 'SAIDLESS' => array_key_exists('saidless', $attributes) ? $attributes['saidless'] : '0']));
             } else {
-                $temp_tpl->attach(do_template('COMCODE_QUOTE', ['_GUID' => 'fa275de59433c17da19b22814c17fdc5', 'CITE' => $cite, 'CONTENT' => $embed]));
+                $temp_tpl->attach(do_template('COMCODE_QUOTE', ['_GUID' => 'fa275de59433c17da19b22814c17fdc5', 'CITE' => $cite, 'CITE_BROKEN' => $cite_broken, 'CONTENT' => $embed]));
             }
             break;
 
@@ -1807,9 +1814,14 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             } else {
                 $url_full = $url;
             }
+
+            $url_broken = false;
             $striped_base_url = str_replace('www.', '', str_replace('https://', '', str_replace('http://', '', get_base_url())));
             if (($striped_base_url != '') && (substr($url, 0, 1) != '%') && (strpos($url_full, $striped_base_url) === false)) { // We don't want to hammer our own server when we have Comcode pages full of links to our own site (much less risk of hammering other people's servers, as we won't tend to have loads of links to them). Would also create bugs in e-mails sent out - e.g. auto-running approve_ip.php links hence voiding the intent of the feature.
-                $temp_tpl = test_url($url_full, 'url', $given_url, $source_member);
+                $_temp_tpl = test_url($url_full, 'url', $given_url, $source_member);
+                if (!$_temp_tpl->is_empty()) {
+                    $url_broken = true;
+                }
             }
 
             // Render
@@ -1837,7 +1849,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             } else {
                 $title = '';
             }
-            $temp_tpl->attach(do_template('COMCODE_URL', ['_GUID' => 'd1657530e6d3d57e6a4791fb3bfa0dd7', 'TITLE' => $title, 'REL' => implode(' ', array_keys($rel)), 'TARGET' => $attributes['target'], 'URL' => $url_full, 'CAPTION' => $caption]));
+            $temp_tpl->attach(do_template('COMCODE_URL', ['_GUID' => 'd1657530e6d3d57e6a4791fb3bfa0dd7', 'TITLE' => $title, 'REL' => implode(' ', array_keys($rel)), 'TARGET' => $attributes['target'], 'URL' => $url_full, 'URL_BROKEN' => $url_broken, 'CAPTION' => $caption]));
             break;
 
         case 'email':

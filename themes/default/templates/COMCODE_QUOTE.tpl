@@ -5,7 +5,7 @@
 {+END}
 
 {+START,IF,{$NOT,{$TAPATALK}}}
-	<blockquote class="comcode-quote"{+START,IF_PASSED,CITE} cite="{CITE*}"{+END}>
+	<blockquote class="comcode-quote{+START,IF_PASSED_AND_TRUE,CITE_BROKEN} js-broken-link{+END}"{+START,IF_PASSED,CITE} cite="{CITE*}"{+END}>
 		<div class="comcode-quote-inner">
 			<div class="clearfix">
 				{+START,IF,{$MOBILE}}
