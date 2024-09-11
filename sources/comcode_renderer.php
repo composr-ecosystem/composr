@@ -1956,13 +1956,16 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     }
                 }
                 if ($ptest === false) {
-                    //$temp_tpl->attach(' [' . do_lang('MISSING_RESOURCE') . ']');  // Don't want this as we might be making the page immediately
-                    if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
-                        if ($ignore_if_hidden) {
-                            $temp_tpl = do_template('COMCODE_DEL', ['_GUID' => 'df638c61bc17ca975e95cf5f749836f5', 'CONTENT' => $caption]);
-                        } else {
-                            require_code('failure');
-                            relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'page_link', $page_link), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
+                    if (running_script('index')) {
+                        $temp_tpl = do_template('COMCODE_URL', ['TITLE' => $caption, 'REL' => '', 'TARGET' => '_top', 'URL' => $pl_url, 'URL_BROKEN' => true, 'CAPTION' => $caption]);
+
+                        if ($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) {
+                            if ($ignore_if_hidden) {
+                                $temp_tpl = do_template('COMCODE_DEL', ['_GUID' => 'df638c61bc17ca975e95cf5f749836f5', 'CONTENT' => $caption]);
+                            } else {
+                                require_code('failure');
+                                relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'page_link', $page_link), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
+                            }
                         }
                     }
                 }
