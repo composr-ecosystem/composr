@@ -49,6 +49,7 @@ $s_private = 'Private (for security issues or disclosing of private information;
 # misc overrides
 $s_status_enum_string = '10:Not Assigned,50:Assigned,80:Resolved,90:Closed';
 $s_severity_enum_string = '10:Feature or Request,20:Trivial Bug,50:Minor Bug,60:Major Bug,95:Security Hole';
+$s_priority_enum_string = '20:Deferred,30:Not Financially Sponsored,40:Financially Sponsored,50:Sponsored by Client,60:Critical';
 $s_report_bug_link = 'Report Issue (or suggest feature)';
 $s_users_sponsoring_bug = 'You can incentivise others to implement this feature by sponsoring (escrowing) points to it. When you do, the resolving / assigned member will receive the sponsored points. If the issue is closed or deleted, your points will be refunded. You can also use this form to change your sponsorship amount. Set to 0 to cancel your sponsorship completely.';
 $s_sponsorship_process_url = ''; // TODO
