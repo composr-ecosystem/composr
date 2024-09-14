@@ -121,33 +121,28 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
         if (!is_file($full_path)) {
             $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
         }
-    }
 
-    if (
-        (!$is_cached) ||
-        ($support_smart_decaching &&
-            (!is_file($js_cache_path)) ||
-            ((filemtime($js_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
-            (!dependencies_are_good($j, '.js', 'javascript', $active_theme, filemtime($js_cache_path)))
-        )
-    ) {
-        if (@filesize($full_path) == 0) {
-            return '';
-        }
-
-        if ($allow_defer) {
-            return 'defer';
-        }
-
-        if ((!isset($SITE_INFO['no_disk_sanity_checks'])) || ($SITE_INFO['no_disk_sanity_checks'] != '1')) {
-            if (!is_dir($dir)) {
-                require_code('files2');
-                make_missing_directory($dir);
+        if ((!is_file($js_cache_path)) ||
+        ((filemtime($js_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
+        (!dependencies_are_good($j, '.js', 'javascript', $active_theme, filemtime($js_cache_path)))) {
+            if (@filesize($full_path) == 0) {
+                return '';
             }
-        }
 
-        require_code('web_resources2');
-        js_compile($j, $js_cache_path, $minify, $active_theme);
+            if ($allow_defer) {
+                return 'defer';
+            }
+
+            if ((!isset($SITE_INFO['no_disk_sanity_checks'])) || ($SITE_INFO['no_disk_sanity_checks'] != '1')) {
+                if (!is_dir($dir)) {
+                    require_code('files2');
+                    make_missing_directory($dir);
+                }
+            }
+
+            require_code('web_resources2');
+            js_compile($j, $js_cache_path, $minify, $active_theme);
+        }
     }
 
     if (@intval(filesize($js_cache_path)) == 0/*@ for race condition*/) {
