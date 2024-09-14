@@ -3207,7 +3207,7 @@ class Hook_import_cms_merge
                     }
                     $only_group2 = $only_group;
                 }
-                $id_new = cns_make_custom_field($name, $row['cf_locked'], $this->get_lang_string($db, $row['cf_description']), $row['cf_default'], $row['cf_public_view'], $row['cf_owner_view'], $row['cf_owner_set'], $row['cf_encrypted'], $row['cf_type'], $row['cf_required'], $row['cf_show_in_posts'], $row['cf_show_in_post_previews'], $row['cf_order'], $only_group, $row['cf_show_on_join_form'], $row['cf_options'], $row['include_in_main_search'], $row['allow_template_search'], $row['cf_icon'], $row['cf_section'], $row['cf_tempcode']);
+                $id_new = cns_make_custom_field($name, $row['cf_locked'], $this->get_lang_string($db, $row['cf_description']), $row['cf_default'], $row['cf_public_view'], $row['cf_owner_view'], $row['cf_owner_set'], $row['cf_encrypted'], $row['cf_type'], $row['cf_required'], $row['cf_show_in_posts'], $row['cf_show_in_post_previews'], $row['cf_order'], $only_group, $row['cf_show_on_join_form'], $row['cf_options'], $row['cf_include_in_main_search'], $row['cf_allow_template_search'], $row['cf_icon'], $row['cf_section'], $row['cf_tempcode']);
             } else {
                 $id_new = $existing[0]['id'];
             }
