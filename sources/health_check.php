@@ -175,7 +175,8 @@ function display_health_check_results_as_text(array $categories) : string
  */
 function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool $show_passes = false, bool $show_skips = false, bool $show_manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, ?int $check_context = null) : array
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+    global $HEALTH_CHECK_ACTUAL_MAX_EXECUTION_TIME; // Used by the max_execution_time checks; we need the real value and not just our elevated value
+    $HEALTH_CHECK_ACTUAL_MAX_EXECUTION_TIME = cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
     if ($check_context === null) {
         if (running_script('install')) {
