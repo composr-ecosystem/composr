@@ -152,6 +152,8 @@ class Module_admin_phpinfo
             $out .= '<p><strong>PHP configured as</strong>: ' . escape_html(php_sapi_name()) . '</p>';
         }
 
+        $out .= '<p><strong>Estimated MD5 uniqid operations per second</strong> (CPU speed): ' . escape_html(float_format(calculate_performance_score())) . '</p>';
+
         if (strpos(get_db_type(), 'mysql') !== false) {
             $mysql_version = $GLOBALS['SITE_DB']->query_value_if_there('SELECT version()');
             $out .= '<p><strong>MySQL version</strong>: ' . $mysql_version . '</p>';
