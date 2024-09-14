@@ -608,6 +608,7 @@ function version_specific() : bool
                 '#main_activities#' => 'main_activity_feed',
                 '#main_activities_state#' => 'main_activity_feed_state',
                 '#ocProducts#' => 'Core Development Team',
+                '#:start#' => ':home',
             ];
             perform_search_replace($reps);
             echo do_lang('UPGRADER_UPGRADED_FILE_REPLACEMENTS', '11');
