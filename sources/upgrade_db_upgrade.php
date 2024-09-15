@@ -484,6 +484,9 @@ function version_specific() : bool
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
             $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
 
+            // Core CPF change
+            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
+
             echo do_lang('UPGRADER_UPGRADED_CORE_TABLES', '11');
 
             // Renamed blocks
@@ -744,8 +747,16 @@ function database_specific() : bool
     // LEGACY: (11.beta2) login keys should be stored as hashes just like passwords
     if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1723865750)) {
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_login_key', 'SHORT_TEXT', 'm_login_key_hash');
+
+        $done_something = true;
     }
 
+    // LEGACY: (11.beta3) the country CPF was changed to country type in v11 but was never added to upgrade code
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1726358732)) {
+        $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
+
+        $done_something = true;
+    }
 
     return $done_something;
 }
