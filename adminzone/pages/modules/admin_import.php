@@ -18,10 +18,6 @@
  * @package    import
  */
 
-/*EXTRA FUNCTIONS: register_tick_function*/
-
-declare(ticks=1);
-
 /**
  * Module page class.
  */
@@ -397,7 +393,10 @@ class Module_admin_import
             $db_name = get_db_site();
             $db_user = get_db_site_user();
             $db_table_prefix = array_key_exists('prefix', $info) ? $info['prefix'] : $GLOBALS['SITE_DB']->get_table_prefix();
-            $refresh_time = 45;
+            $refresh_time = intval(ini_get('max_execution_time'));
+            if ($refresh_time >= 10) {
+                $refresh_time -= 5; // Allow 5 second grace if we can for refresh checking.
+            }
         }
 
         // Build the form
@@ -659,16 +658,24 @@ class Module_admin_import
 
         // Protection from if things take too long
         $refresh_url = get_self_url(true, false, ['type' => 'import'], false, true);
-        $refresh_time = either_param_integer('refresh_time', 0); // Shouldn't default, but reported on some systems to do so
-        cms_set_time_limit($refresh_time);
+        $refresh_time = either_param_integer('refresh_time', 25); // Shouldn't default, but reported on some systems to do so
+        if ($refresh_time <= 0) {
+            cms_set_time_limit(0);
+            $refresh_time = 0;
+        } else {
+            cms_set_time_limit($refresh_time + 5); // 5 second grace to allow a call to i_timed_refresh
+        }
         send_http_output_ping();
-        global $I_REFRESH_URL, $I_REFRESH_TIME;
+        global $I_REFRESH_URL, $I_REFRESH_TIME, $I_REFRESH_DID_SOMETHING;
         $I_REFRESH_URL = $refresh_url;
         $I_REFRESH_TIME = $refresh_time;
+        $I_REFRESH_DID_SOMETHING = false; // NB: Unless using import_id_remap_get or import_id_remap_put, this should be set to true in import hooks when we did something.
         push_query_limiting(false);
-        if ($I_REFRESH_TIME != 0) {
-            register_tick_function('i_timed_refresh');
-        }
+        /*
+            NB: Not good to use because it is very unreliable.
+            Therefore, when not using import_check_if_imported / import_id_remap_*, you should call i_timed_refresh in the import hooks after each task / loop iteration.
+        */
+        // register_tick_function('i_timed_refresh');
 
         // Do not log errors if not in dev mode; we will collect them later and present a general message.
         if (!$GLOBALS['DEV_MODE']) {
