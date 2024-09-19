@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_list_unsubscribe_target
+class Hook_config_list_unsubscribe_post
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_list_unsubscribe_target
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'LIST_UNSUBSCRIBE_TARGET',
+            'human_name' => 'LIST_UNSUBSCRIBE_POST',
             'type' => 'line',
             'category' => 'MESSAGES',
             'group' => 'EMAIL_GENERAL',
-            'explanation' => 'CONFIG_OPTION_list_unsubscribe_target',
+            'explanation' => 'CONFIG_OPTION_list_unsubscribe_post',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
+            'order_in_category_group' => 4,
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
@@ -52,6 +52,6 @@ class Hook_config_list_unsubscribe_target
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '';
     }
 }

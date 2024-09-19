@@ -700,6 +700,7 @@ class Hook_addon_registry_core
             'data/sounds/message_received.mp3',
             'data/static_cache.php',
             'data/tasks.php',
+            'data/unsubscribe.php',
             'data/upload_syndication_auth.php',
             'data/xml_config/.htaccess',
             'data/xml_config/index.html',

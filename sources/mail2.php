@@ -21,6 +21,16 @@
 /*EXTRA FUNCTIONS: imap\_.+|proc\_.+|stream_set_blocking|stream_get_contents|stream_set_timeout*/
 
 /**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__mail2()
+{
+    require_code('mail');
+}
+
+/**
  * Spam check an e-mail.
  *
  * @param  string $mime_email The e-mail
@@ -171,6 +181,7 @@ function find_mail_folders(string $host, int $port, ?string $type, string $usern
 
 /**
  * Find if a member can be e-mailed.
+ * This is a wrapper for can_email_address.
  *
  * @param  MEMBER $member_id The member ID
  * @param  ?string $host The server hostname (null: use configured)
@@ -180,16 +191,48 @@ function find_mail_folders(string $host, int $port, ?string $type, string $usern
  * @param  ?string $folder The inbox identifier (null: use configured)
  * @param  ?string $username The username (null: use configured)
  * @param  ?string $password The password (null: use configured)
- * @return ?TIME Last bounce time (null: not bounced)
+ * @return boolean Whether the member can be e-mailed
  */
-function can_email_member(int $member_id, ?string $host = null, ?int $port = null, ?string $type = null, ?string $folder = null, ?string $username = null, ?string $password = null) : ?int
+function can_email_member(int $member_id, ?string $host = null, ?int $port = null, ?string $type = null, ?string $folder = null, ?string $username = null, ?string $password = null) : bool
 {
     $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
+
+    // Condition: member must have an e-mail address set
     if ($email == '') {
-        return null;
+        return false;
     }
 
-    return is_mail_bounced($email, $host, $port, $folder, $username, $password);
+    return can_email_address($email, $host, $port, $folder, $username, $password);
+}
+
+/**
+ * Find if an e-mail address can be e-mailed.
+ *
+ * @param  EMAIL $email_address The e-mail address
+ * @param  ?string $host The server hostname (null: use configured)
+ * @param  ?integer $port The port (null: use configured)
+ * @param  ?string $type The protocol (null: use configured / autodetect)
+ * @set imap imaps imaps_nocert pop3 pop3s pop3s_nocert
+ * @param  ?string $folder The inbox identifier (null: use configured)
+ * @param  ?string $username The username (null: use configured)
+ * @param  ?string $password The password (null: use configured)
+ * @return boolean Whether this address can be e-mailed
+ */
+function can_email_address(string $email_address, ?string $host = null, ?int $port = null, ?string $type = null, ?string $folder = null, ?string $username = null, ?string $password = null) : bool
+{
+    // Condition: e-mail address must not have unsubscribed from any e-mails
+    $unsubscribed = $GLOBALS['SITE_DB']->query_select_value_if_there('unsubscribed_emails', 'id', ['b_email_address' => $email_address]);
+    if ($unsubscribed !== null) {
+        return false;
+    }
+
+    // Condition: we must not have had a bounce from this address in the last 8 weeks
+    $bounced_time = is_mail_bounced($email_address, $host, $port, $folder, $username, $password);
+    if (($bounced_time !== null) && (time() - (60 * 60 * 24 * 7 * 8)) <= $bounced_time) {
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -472,20 +515,22 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      * @param  EMAIL $from_email From e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
-     * @param  string $headers Headers to use
+     * @param  string $_headers Provisional headers to use
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $_headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
     {
         $worked = false;
         $error = null;
 
         $worked = false;
         foreach ($to_emails as $i => $_to_email) {
+            $headers = $this->inject_unsubscribe_headers($_to_email, $_headers);
+
             $additional = '';
             if (($this->enveloper_override) && ($this->website_email != '')) {
                 $additional = '-f ' . $this->website_email;

@@ -92,11 +92,13 @@ function import_id_remap_get(string $type, string $id_old, bool $fail_ok = false
     $value = $GLOBALS['SITE_DB']->query_select_value_if_there('import_id_remap', 'id_new', ['id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old]);
     if ($value === null) {
         if ($fail_ok) {
+            i_timed_refresh(); // We could end up in a long loop of null values, so we need to check refresh time.
             return null;
         }
         warn_exit(do_lang_tempcode('IMPORT_NOT_IMPORTED', escape_html($type), escape_html($id_old)));
     }
     $remap_cache[$type][$id_old] = $value;
+
     return $value;
 }
 
@@ -112,7 +114,14 @@ function import_check_if_imported(string $type, string $id_old) : bool
     send_http_output_ping();
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('import_id_remap', 'id_new', ['id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old]);
-    return $test !== null;
+    $imported = $test !== null;
+
+    // Could end up in a long loop of already-imported content; so we need to check refresh time.
+    if ($imported) {
+        i_timed_refresh();
+    }
+
+    return $imported;
 }
 
 /**
@@ -125,6 +134,11 @@ function import_check_if_imported(string $type, string $id_old) : bool
 function import_id_remap_put(string $type, string $id_old, int $id_new)
 {
     $GLOBALS['SITE_DB']->query_insert('import_id_remap', ['id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old, 'id_new' => $id_new]);
+
+    // Mark that we did something, and also check execution time / if we need to refresh
+    global $I_REFRESH_DID_SOMETHING;
+    $I_REFRESH_DID_SOMETHING = true;
+    i_timed_refresh();
 }
 
 /**
@@ -157,6 +171,9 @@ function i_timed_refresh()
         $time = time();
     }
     global $I_REFRESH_TIME;
+    if (($I_REFRESH_TIME == 0) || !array_key_exists('I_REFRESH_URL', $GLOBALS)) {
+        return;
+    }
     if (time() >= $time + $I_REFRESH_TIME) {
         i_force_refresh();
     }
@@ -167,30 +184,40 @@ function i_timed_refresh()
  */
 function i_force_refresh()
 {
-    if (array_key_exists('I_REFRESH_URL', $GLOBALS)) {
-        if ((strpos($GLOBALS['I_REFRESH_URL'], "\n") !== false) || (strpos($GLOBALS['I_REFRESH_URL'], "\r") !== false)) {
-            log_hack_attack_and_exit('HEADER_SPLIT_HACK');
-        }
-
-        global $I_REFRESH_URL, $I_REFRESH_TIME;
-
-        $post = build_keep_post_fields([], true);
-        $refresh = do_template('JS_REFRESH', ['_GUID' => '748a4b4d970990453271f229f29a0a09', 'FORM_NAME' => 'redir_form']);
-
-        $title = get_screen_title('IMPORT');
-        $url = $I_REFRESH_URL;
-        foreach ($GLOBALS as $key => $val) {
-            if (preg_match('#^JUMPSTART_#', $key) != 0) {
-                $url = preg_replace('#&' . preg_quote($key, '#') . '=\d+#', '', $url);
-                $url .= '&' . $key . '=' . strval($val);
-            }
-        }
-        $middle = do_template('REDIRECT_POST_METHOD_SCREEN', ['_GUID' => '63ad793efebb1abe05d2aa27a2b7de38', 'REFRESH' => $refresh, 'TITLE' => $title, 'TEXT' => do_lang_tempcode('REFRESH_TIMEOUT_REACHED', strval($I_REFRESH_TIME)), 'URL' => $url, 'POST' => $post]);
-
-        $echo = globalise($middle, null, '', true);
-        $echo->evaluate_echo();
-        exit();
+    if ((strpos($GLOBALS['I_REFRESH_URL'], "\n") !== false) || (strpos($GLOBALS['I_REFRESH_URL'], "\r") !== false)) {
+        log_hack_attack_and_exit('HEADER_SPLIT_HACK');
     }
+
+    global $I_REFRESH_URL, $I_REFRESH_TIME, $I_REFRESH_DID_SOMETHING;
+
+    $post = build_keep_post_fields([], true);
+    $refresh = do_template('JS_REFRESH', ['_GUID' => '748a4b4d970990453271f229f29a0a09', 'FORM_NAME' => 'redir-form']);
+
+    $title = get_screen_title('IMPORT');
+    $url = $I_REFRESH_URL;
+    foreach ($GLOBALS as $key => $val) {
+        if (preg_match('#^JUMPSTART_#', $key) != 0) {
+            $url = preg_replace('#&' . preg_quote($key, '#') . '=\d+#', '', $url);
+            $url .= '&' . $key . '=' . strval($val);
+        }
+    }
+
+    if ($I_REFRESH_DID_SOMETHING) {
+        $middle = do_template('REDIRECT_POST_METHOD_SCREEN', [
+            '_GUID' => '63ad793efebb1abe05d2aa27a2b7de38',
+            'REFRESH' => $refresh,
+            'TITLE' => $title,
+            'TEXT' => do_lang_tempcode('REFRESH_TIMEOUT_REACHED', strval($I_REFRESH_TIME)),
+            'URL' => $url,
+            'POST' => $post,
+        ]);
+    } else {
+        warn_exit(do_lang_tempcode('REFRESH_TIMEOUT_REACHED_NOTHING_DONE', strval($I_REFRESH_TIME)));
+    }
+
+    $echo = globalise($middle, null, '', true);
+    $echo->evaluate_echo();
+    exit();
 }
 
 /**

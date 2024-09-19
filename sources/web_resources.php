@@ -121,33 +121,28 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
         if (!is_file($full_path)) {
             $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
         }
-    }
 
-    if (
-        (!$is_cached) ||
-        ($support_smart_decaching &&
-            (!is_file($js_cache_path)) ||
-            ((filemtime($js_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
-            (!dependencies_are_good($j, '.js', 'javascript', $active_theme, filemtime($js_cache_path)))
-        )
-    ) {
-        if (@filesize($full_path) == 0) {
-            return '';
-        }
-
-        if ($allow_defer) {
-            return 'defer';
-        }
-
-        if ((!isset($SITE_INFO['no_disk_sanity_checks'])) || ($SITE_INFO['no_disk_sanity_checks'] != '1')) {
-            if (!is_dir($dir)) {
-                require_code('files2');
-                make_missing_directory($dir);
+        if ((!is_file($js_cache_path)) ||
+        ((filemtime($js_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
+        (!dependencies_are_good($j, '.js', 'javascript', $active_theme, filemtime($js_cache_path)))) {
+            if (@filesize($full_path) == 0) {
+                return '';
             }
-        }
 
-        require_code('web_resources2');
-        js_compile($j, $js_cache_path, $minify, $active_theme);
+            if ($allow_defer) {
+                return 'defer';
+            }
+
+            if ((!isset($SITE_INFO['no_disk_sanity_checks'])) || ($SITE_INFO['no_disk_sanity_checks'] != '1')) {
+                if (!is_dir($dir)) {
+                    require_code('files2');
+                    make_missing_directory($dir);
+                }
+            }
+
+            require_code('web_resources2');
+            js_compile($j, $js_cache_path, $minify, $active_theme);
+        }
     }
 
     if (@intval(filesize($js_cache_path)) == 0/*@ for race condition*/) {
@@ -355,39 +350,34 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
         if (!is_file($full_path)) {
             $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $c . $found[2];
         }
-    }
 
-    if (
-        (!$is_cached) ||
-        ($support_smart_decaching &&
-            (!is_file($css_cache_path)) ||
-            ((filemtime($css_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
-            (!dependencies_are_good($c, '.css', 'css', $active_theme, filemtime($css_cache_path)))
-        )
-    ) {
-        if (@filesize($full_path) == 0) {
-            return '';
-        }
-
-        if ($allow_defer) {
-            static $deferred_one = false;
-            if ((!$deferred_one) && (!cms_is_writable(dirname($css_cache_path)))) {
-                attach_message(do_lang_tempcode('WRITE_ERROR', escape_html(dirname($css_cache_path))), 'warn');
+        if ((!is_file($css_cache_path)) ||
+        ((filemtime($css_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
+        (!dependencies_are_good($c, '.css', 'css', $active_theme, filemtime($css_cache_path)))) {
+            if (@filesize($full_path) == 0) {
+                return '';
             }
-            $deferred_one = true;
 
-            return 'defer';
-        }
+            if ($allow_defer) {
+                static $deferred_one = false;
+                if ((!$deferred_one) && (!cms_is_writable(dirname($css_cache_path)))) {
+                    attach_message(do_lang_tempcode('WRITE_ERROR', escape_html(dirname($css_cache_path))), 'warn');
+                }
+                $deferred_one = true;
 
-        if ((!isset($SITE_INFO['no_disk_sanity_checks'])) || ($SITE_INFO['no_disk_sanity_checks'] != '1')) {
-            if (!is_dir($dir)) {
-                require_code('files2');
-                make_missing_directory($dir);
+                return 'defer';
             }
-        }
 
-        require_code('web_resources2');
-        css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $minify);
+            if ((!isset($SITE_INFO['no_disk_sanity_checks'])) || ($SITE_INFO['no_disk_sanity_checks'] != '1')) {
+                if (!is_dir($dir)) {
+                    require_code('files2');
+                    make_missing_directory($dir);
+                }
+            }
+
+            require_code('web_resources2');
+            css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $minify);
+        }
     }
 
     if (@intval(filesize($css_cache_path)) == 0/*@ for race condition*/) {

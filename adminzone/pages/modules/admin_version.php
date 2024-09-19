@@ -86,6 +86,7 @@ class Module_admin_version
             'comcode_pages',
             'cached_comcode_pages',
             'email_bounces',
+            'unsubscribed_emails',
             'sitemap_cache',
             'urls_checked',
             'content_regions',
@@ -1240,6 +1241,14 @@ class Module_admin_version
 
         if (($upgrade_from === null) || ($upgrade_from < 20)) {
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as_member', ['m_as_member']);
+
+            $GLOBALS['SITE_DB']->create_table('unsubscribed_emails', [
+                'id' => '*AUTO',
+                'b_email_address' => 'SHORT_TEXT',
+                'b_time' => 'TIME',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_email_address', ['b_email_address']);
+            $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_time', ['b_time']);
         }
     }
 

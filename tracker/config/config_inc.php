@@ -41,7 +41,7 @@ if ($g_db_type == 'mysql_pdo') {
 // Attachments / File Uploads
 $g_allow_file_upload = ON;
 $g_file_upload_method = DISK;
-$g_max_file_size = 25000000; // in bytes
+$g_max_file_size = (1024 * 1024 * 32); // in bytes
 $g_preview_attachments_inline_max_size = 256 * 1024;
 $g_allowed_files = '1st,3g2,3gp,3gp2,3gpp,3p,7z,aac,ai,aif,aifc,aiff,br,bz2,cur,dot,dotx,f4v,ico,ics,iso,jpe,keynote,log,m2v,m4v,mdb,mid,mp2,mpa,mpe,mpv2,odb,odc,odi,ogv,otf,rtf,tgz,tiff,ttf,vsd,vtt,weba,webm,webp,wma,pages,numbers,patch,diff,sql,odg,odp,odt,ods,ps,pdf,doc,ppt,csv,xls,docx,pptx,xlsx,pub,txt,psd,tga,tif,gif,png,bmp,jpg,jpeg,avi,mov,mpg,mpeg,mp4,asf,wmv,ram,ra,rm,qt,zip,tar,rar,gz,wav,mp3,ogg,torrent,php,tpl,ini,eml';
 $g_disallowed_files = '';
@@ -54,7 +54,7 @@ $g_smtp_username = ''; // used with PHPMAILER_METHOD_SMTP
 $g_smtp_password = ''; // used with PHPMAILER_METHOD_SMTP
 $g_administrator_email = 'tracker@composr.app'; // TODO: Customise
 $g_webmaster_email = $g_administrator_email;
-$g_from_name = 'Composr CMS feature tracker'; // TODO: Customise
+$g_from_name = 'Composr CMS issue tracker'; // TODO: Customise
 $g_from_email = $g_administrator_email; // the "From: " field in emails
 $g_return_path_email = $g_administrator_email; // the return address for bounced mail
 $g_email_receive_own = OFF;
@@ -62,10 +62,10 @@ $g_email_send_using_cronjob = ON;
 
 // User integration with Composr (the plugin performs more operations)
 $g_allow_signup = OFF; // Signup is through the Composr site
-$g_allow_anonymous_login = ON;
+$g_allow_anonymous_login = ON; // Anonymous users should be allowed to view issues
 $g_anonymous_account = 'Guest'; // This should be the exact username of ComposrPlugin::cms_guest_id
-$g_reauthentication = OFF;
-$g_lost_password_feature = OFF;
+$g_reauthentication = OFF; // Done through Composr
+$g_lost_password_feature = OFF; // Done through Composr
 
 // Force install the Composr plugin
 $g_plugins_force_installed = [
@@ -77,22 +77,29 @@ $g_window_title = 'Composr CMS feature tracker'; // TODO: Customise
 $g_logo_image = '../themes/default/images/EN/logo/standalone_logo.png'; // TODO: Customise
 $g_favicon_image = '../themes/default/images/favicon.ico';
 
-// Security Settings
-$g_show_user_email_threshold = ADMINISTRATOR;
-$g_upload_bug_file_threshold = ANYBODY;
+// Access Settings
+$g_access_levels_enum_string = '10:Guest,25:Member,40:Updater,55:Community Developer,70:Core Developer,90:Lead Developer';
+$g_show_user_email_threshold = ADMINISTRATOR; // Prevent spam
+$g_upload_bug_file_threshold = REPORTER; // Prevent spam
+$g_add_bugnote_threshold = REPORTER; // Prevent spam
+$g_report_bug_threshold = REPORTER; // Prevent spam
 $g_set_view_status_threshold = ANYBODY;
-$g_update_readonly_bug_threshold = VIEWER;
-$g_tag_attach_threshold = ANYBODY;
+$g_private_bug_threshold = ADMINISTRATOR; // We use private bugs for serious security issues. Only lead developers should see these.
+$g_update_readonly_bug_threshold = DEVELOPER; // If a bug is resolved / closed, we want members to open a new issue, not re-open the existing one
+$g_allow_reporter_reopen = OFF;
+$g_tag_attach_threshold = REPORTER;
 $g_tag_create_threshold = DEVELOPER;
+$g_view_changelog_threshold = NOBODY; // We use our own change logs on Composr
+$g_roadmap_view_threshold = NOBODY; // We don't use road maps because nothing is guaranteed
+$g_set_status_threshold = array(
+    NEW_ => REPORTER,
+    CLOSED => MANAGER,
+    RESOLVED => DEVELOPER,
+    ASSIGNED => DEVELOPER,
+);
+
 $g_crypto_master_salt = 'uSQCKx+lVIlwZqKZ2r630GwIHlNO0kcCWGP8pTzLVKs=';
 
-// Lets make it so only website-visitors can post. Otherwise spam happens
-/*
-$g_add_bugnote_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBODY : REPORTER;
-$g_report_bug_threshold = isset($_COOKIE[$SITE_INFO['session_cookie']]) ? ANYBODY : REPORTER;
-*/
-$g_add_bugnote_threshold = REPORTER;
-$g_report_bug_threshold = REPORTER;
 
 // Sponsorship Settings
 $g_enable_sponsorship = ON;
@@ -100,6 +107,8 @@ $g_sponsorship_currency = 'points';
 $g_minimum_sponsorship_amount = 25;
 
 // Simplify by removing unneeded complexity
+$g_display_bug_padding = 0; // We don't want leading 0s
+$g_display_bugnote_padding = 0; // We don't want leading 0s
 $g_default_bug_severity = FEATURE; // We primarily track features
 $g_default_bug_reproducibility = 100; // We primarily track features
 $g_bug_reopen_status = NEW_;
@@ -123,7 +132,7 @@ $g_bug_report_page_fields = array(
     //'os',
     //'os_version',
     //'platform',
-    //'priority',
+    //'priority', // We don't want the public setting this, so we only make it visible on edit
     //'product_build',
     'product_version',
     //'reproducibility',
@@ -148,7 +157,7 @@ $g_bug_view_page_fields = array(
     //'os',
     //'os_version',
     //'platform',
-    //'priority',
+    'priority',
     //'product_build',
     'product_version',
     'project',
@@ -178,7 +187,7 @@ $g_bug_update_page_fields = array(
     //'os',
     //'os_version',
     //'platform',
-    //'priority',
+    'priority',
     //'product_build',
     'product_version',
     'project',
@@ -195,9 +204,10 @@ $g_bug_update_page_fields = array(
 );
 $g_severity_enum_string = '10:Feature-request,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
 
-// Turn off changelogs and roadmaps; we don't use them nor guarantee any roadmaps
-$g_view_changelog_threshold = NOBODY;
-$g_roadmap_view_threshold = NOBODY;
+// We use priorities to track if and how a bug was sponsored
+$g_priority_enum_string = '20:Deferred,30:Not Sponsored,40:Sponsored by Community,50:Sponsored by Client,60:Critical';
+$g_show_priority_text = ON;
+$g_default_email_on_priority = ON;
 
 // Misc
 $g_show_realname = OFF;
@@ -207,6 +217,9 @@ $g_html_valid_tags = 'p, li, ul, ol, br, pre, i, b, u, em';
 $g_rss_enabled = OFF;
 $g_default_home_page = 'my_view_page.php'; // Set to name of page to go to after login
 $g_logo_url = './';
+$g_summary_category_include_project = ON;
+$g_html_make_links = LINKS_NEW_WINDOW | LINKS_NOOPENER | LINKS_NOREFERRER; // Prevent SEO benefit on spam links
+$g_issue_activity_note_attachments_seconds_threshold = 180; // Might be using the submit bugfix tool in Composr
 
 // Debugging
 //$g_show_detailed_errors = ON;

@@ -1261,14 +1261,17 @@ abstract class DatabaseDriver
      */
     public function failed_query_echo(string $message)
     {
+        // Log to the error log so staff can investigate and have a record (especially useful when refreshing or running in steps)
+        @error_log('Composr Database: WARN ' . $message);
+
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);
         }
         echo $message . "<br />\n";
 
-        // Bomb out if we have a bunch of failed queries to prevent PHP running out of memory or causing a browser crash
+        // Bomb out anyway if we have a bunch of failed queries; usually indicates something seriously wrong.
         $this->echoed_failed_queries++;
-        if ($this->echoed_failed_queries >= 1000) {
+        if ($this->echoed_failed_queries >= 100) {
             $this->failed_query_exit(htmlentities('Too many failed database queries.'));
         }
     }

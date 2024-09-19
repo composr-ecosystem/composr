@@ -246,14 +246,14 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
      * @param  EMAIL $from_email Reply_to e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
-     * @param  string $headers Headers to use
+     * @param  string $_headers Provisional headers to use
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $_headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
     {
         $worked = true;
         $error = null;
@@ -266,6 +266,8 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
         }
 
         foreach ($to_emails as $i => $_to_email) {
+            $headers = $this->inject_unsubscribe_headers($_to_email, $_headers);
+
             $additional = '';
             if (($this->enveloper_override) && ($this->_sender_email !== null)) {
                 if (is_valid_email_address($this->_sender_email)) { // Required for security
@@ -404,14 +406,14 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      * @param  EMAIL $from_email Reply-to e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
-     * @param  string $headers Headers to use
+     * @param  string $_headers Provisional headers to use
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $_headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
     {
         $worked = false;
         $error = null;
@@ -426,6 +428,8 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
         $errno = 0;
         $errstr = '';
         foreach ($to_emails as $i => $to) {
+            $headers = $this->inject_unsubscribe_headers($to, $_headers);
+
             // Open up a connection
             global $SMTP_SOCKET;
             $cache_key = $this->smtp_sockets_host . ':' . strval($this->smtp_sockets_port);
@@ -1024,10 +1028,6 @@ abstract class Mail_dispatcher_base
             $brand_name = DEFAULT_BRAND_NAME;
         }
         $headers .= 'X-Mailer: ' . $brand_name . $this->line_term;
-        $list_unsubscribe_target = get_option('list_unsubscribe_target');
-        if (!empty($list_unsubscribe_target)) {
-            $headers .= 'List-Unsubscribe: <' . $list_unsubscribe_target . '>' . $this->line_term;
-        }
         if ((count($to_emails) == 1) && ($this->require_recipient_valid_since !== null)) {
             $_require_recipient_valid_since = date('r', $this->require_recipient_valid_since);
             $headers .= 'Require-Recipient-Valid-Since: ' . $to_emails[0] . '; ' . $_require_recipient_valid_since . $this->line_term;
@@ -1037,9 +1037,9 @@ abstract class Mail_dispatcher_base
         }
         $headers .= 'MIME-Version: 1.0' . $this->line_term;
         if (!empty($this->attachments)) {
-            $headers .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"';
+            $headers .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . $this->line_term;
         } else {
-            $headers .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"';
+            $headers .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $this->line_term;
         }
         $sending_message = '';
         $sending_message .= 'This is a multi-part message in MIME format.' . $this->line_term . $this->line_term;
@@ -1232,6 +1232,8 @@ abstract class Mail_dispatcher_base
      */
     protected function tidy_parameters(string &$subject_line, string &$message_raw, ?array &$to_emails, &$to_names, string &$from_email, string &$from_name, string &$lang, string &$theme)
     {
+        require_code('mail2');
+
         escape_header($subject_line);
 
         $staff_address = get_option('staff_address');
@@ -1239,12 +1241,21 @@ abstract class Mail_dispatcher_base
             $staff_address = '';
         }
 
+        // Filter e-mails to which we are not allowed to send
+        foreach ($to_emails as $key => $email) {
+            if (!can_email_address($email)) {
+                $this->log('SKIPPED', $email . ' is either unsubscribed or had a bounce in the last 8 weeks.');
+
+                unset($to_emails[$key]);
+            }
+        }
+
         // Filter our e-mails of banned members
         if ($this->priority != 1 && $to_emails !== null) {
             foreach ($to_emails as $key => $email) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
                 if (($member_id !== null) && ($GLOBALS['FORUM_DRIVER']->is_banned($member_id))) {
-                    $this->log('SKIPPED', $email . ' is for a banned member');
+                    $this->log('SKIPPED', $email . ' is for a banned member, and we are not sending on priority 1.');
 
                     unset($to_emails[$key]);
                 }
@@ -1436,6 +1447,49 @@ abstract class Mail_dispatcher_base
     public function is_dispatcher_available(array $advanced_parameters) : bool
     {
         return true;
+    }
+
+    /**
+     * Inject List-Unsubscribe headers for an e-mail to a single address.
+     *
+     * @param EMAIL $email_address The recipient e-mail address
+     * @param string $_headers The provisional headers to use
+     * @return string Updated headers to use including List-Unsubscribe
+     */
+    public function inject_unsubscribe_headers(string $email_address, string $_headers) : string
+    {
+        $list_unsubscribe_target = get_option('list_unsubscribe_target');
+        $list_unsubscribe_post = get_option('list_unsubscribe_post');
+
+        $headers = $_headers;
+        if (!empty($list_unsubscribe_target)) {
+            if (strpos($list_unsubscribe_target, 'mailto:') !== 0) { // mailto does not allow POSTing
+                // Add recipient e-mail to POST data so we know who is unsubscribing
+                if ($list_unsubscribe_post != '') {
+                    $list_unsubscribe_post .= '&';
+                }
+                $list_unsubscribe_post .= 'email_address=' . rawurlencode($email_address);
+
+                if ($list_unsubscribe_target == '1') { // Use the software's built-in List-Unsubscribe
+                    $list_unsubscribe_target = find_script('unsubscribe');
+
+                    require_code('crypt');
+
+                    // Add a nonce (we cannot use CSRF because the member sending the email is not necessarily the one unsubscribing)
+                    $nonce = get_secure_random_string();
+                    $list_unsubscribe_post .= '&nonce=' . rawurlencode($nonce);
+
+                    // Add a checksum ratchet using the e-mail address, nonce, and site salt
+                    $list_unsubscribe_post .= '&checksum=' . rawurlencode(ratchet_hash($nonce . $email_address, get_site_salt()));
+                }
+
+                $headers .= 'List-Unsubscribe-Post: ' . $list_unsubscribe_post . $this->line_term;
+            }
+
+            $headers .= 'List-Unsubscribe: <' . $list_unsubscribe_target . '>' . $this->line_term;
+        }
+
+        return $headers;
     }
 
     /**

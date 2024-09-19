@@ -206,10 +206,16 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             return;
         }
 
-        // .user.ini should set this correctly, but let's be sure it's not been force-lowered
+        global $HEALTH_CHECK_ACTUAL_MAX_EXECUTION_TIME;
 
-        $low_met = (is_numeric(ini_get('max_execution_time'))) && (intval(ini_get('max_execution_time')) > 0) && (intval(ini_get('max_execution_time')) < 10);
-        $this->assertTrue(!$low_met, do_lang('WARNING_MAX_EXECUTION_TIME'));
+        // Check that the real max_execution_time is not too low
+        $this->assertTrue(($HEALTH_CHECK_ACTUAL_MAX_EXECUTION_TIME == 0) || ($HEALTH_CHECK_ACTUAL_MAX_EXECUTION_TIME > 10), do_lang('WARNING_MAX_EXECUTION_TIME'));
+
+        // Check that the real max_execution_time is also not too high (allows hanging PHP processes to take up resources)
+        $this->assertTrue(($HEALTH_CHECK_ACTUAL_MAX_EXECUTION_TIME <= 300), do_lang('WARNING_MAX_EXECUTION_TIME_HIGH'));
+
+        // Also check to ensure the software can adjust the limit (it should have already been adjusted by the Health Check)
+        $this->assertTrue(intval(ini_get('max_execution_time')) > $HEALTH_CHECK_ACTUAL_MAX_EXECUTION_TIME, do_lang('WARNING_MAX_EXECUTION_TIME_NOT_INCREASED'));
     }
 
     /**
