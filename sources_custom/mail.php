@@ -227,7 +227,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
                     if ($list_unsubscribe_post != '') {
                         $list_unsubscribe_post .= '&';
                     }
-                    $list_unsubscribe_post .= 'email_address=' . rawurlencode($recipient);
+                    $list_unsubscribe_post .= 'email=' . rawurlencode($recipient);
 
                     if ($list_unsubscribe_target == '1') { // Use the software's built-in List-Unsubscribe
                         $list_unsubscribe_target = find_script('unsubscribe');

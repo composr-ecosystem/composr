@@ -627,24 +627,117 @@ function external_url_proxy_script()
  */
 function unsubscribe_script()
 {
-    header('X-Robots-Tag: noindex');
-
     // Gather necessary details
-    $email_address = either_param_string('email_address', false, INPUT_FILTER_EMAIL_ADDRESS);
-    $nonce = either_param_string('nonce');
-    $checksum = either_param_string('checksum');
+    $email = post_param_string('email', null, INPUT_FILTER_EMAIL_ADDRESS);
 
     require_code('crypt');
 
-    // Verify the checksum
-    if (!ratchet_hash_verify($nonce . $email_address, get_site_salt(), $checksum)) {
-        warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
+    // Provide a form if e-mail was not provided
+    if ($email === null) {
+        require_code('templates');
+        require_code('tempcode');
+        require_code('form_templates');
+        require_lang('mail');
+
+        $_title = do_lang('UNSUBSCRIBE');
+        $title = get_screen_title('UNSUBSCRIBE');
+
+        $text = do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT');
+        $fields = new Tempcode();
+        $fields->attach(form_input_email(do_lang_tempcode('YOUR_EMAIL_ADDRESS'), do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT'), 'email', null, true));
+
+        $hidden = new Tempcode();
+
+        $post_url = find_script('unsubscribe');
+
+        // Header
+        $charset = get_charset();
+        $lang = user_lang();
+        $dir = do_lang('dir');
+
+        cms_ob_end_clean();
+        echo <<<END
+    <!DOCTYPE html>
+        <html lang="{$lang}" dir="{$dir}">
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
+            <meta id="cms-symbol-data" name="cms-symbol-data" content="{}" />
+
+            <title>{$_title}</title>
+            <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+            <style>/*<![CDATA[*/
+    END;
+        foreach (['_base', '_colours', 'global', 'forms'] as $css_file) {
+            $css_path = css_enforce($css_file, 'default');
+            if ($css_path != '') {
+                @print(cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_BOM));
+            }
+        }
+        echo <<<END
+            </style>
+            <meta name="robots" content="noindex, nofollow" />
+        </head>
+        <body class="website-body"><div class="container-fluid"><div class="global-middle">
+    END;
+
+        // Body
+        $tpl = do_template('FORM_SCREEN', [
+            'GET' => false,
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => $hidden,
+            'TITLE' => $title,
+            'TEXT' => $text,
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'FIELDS' => $fields,
+            'URL' => $post_url,
+        ]);
+        $tpl->handle_symbol_preprocessing();
+        $tpl->evaluate_echo();
+
+        // Footer
+        $tpl = do_template('HTML_HEAD_POLYFILLS', ['FROM' => get_base_url() . '/data/polyfills']);
+        $tpl->handle_symbol_preprocessing();
+        $tpl->evaluate_echo();
+
+        foreach (['global', 'core_form_interfaces', 'checking'] as $js_file) {
+            $js_path = javascript_enforce($js_file, 'default');
+            if ($js_path != '') {
+                echo "<script nonce=\"" . $GLOBALS['CSP_NONCE'] . "\">";
+                @print(cms_file_get_contents_safe($js_path, FILE_READ_LOCK | FILE_READ_BOM));
+                echo '</script>';
+            }
+        }
+        echo <<<END
+        </div></div></body>
+    </html>
+    END;
+        return;
+    }
+
+    $checksum = post_param_string('checksum', null);
+
+    if ($checksum !== null) {
+        $nonce = post_param_string('nonce');
+
+        // Verify the checksum if provided
+        if (!ratchet_hash_verify($nonce . $email, get_site_salt(), $checksum)) {
+            warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
+        }
+    } else {
+        // If no checksum was provided, we assume a CSRF was passed in by filling out the e-mail form
+        global $CSRF_TOKENS;
+        $CSRF_TOKENS = true;
+
+        require_code('csrf_filter');
+        check_csrf_token(post_param_string('csrf_token', null));
     }
 
     // Mark the e-mail address as unsubscribed
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('unsubscribed_emails', 'id', ['b_email_address' => $email_address]);
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('unsubscribed_emails', 'id', ['b_email_address' => $email]);
     if ($test === null) {
-        $GLOBALS['SITE_DB']->query_insert('unsubscribed_emails', ['b_email_address' => $email_address, 'b_time' => time()]);
+        $GLOBALS['SITE_DB']->query_insert('unsubscribed_emails', ['b_email_address' => $email, 'b_time' => time()]);
     }
 
     $tpl = do_lang_tempcode('SUCCESS');
