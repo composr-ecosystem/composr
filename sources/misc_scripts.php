@@ -619,3 +619,35 @@ function external_url_proxy_script()
         @fclose($f);
     }
 }
+
+/**
+ * Unsubscribe someone from e-mails.
+ *
+ * @ignore
+ */
+function unsubscribe_script()
+{
+    header('X-Robots-Tag: noindex');
+
+    // Gather necessary details
+    $email_address = either_param_string('email_address', false, INPUT_FILTER_EMAIL_ADDRESS);
+    $nonce = either_param_string('nonce');
+    $checksum = either_param_string('checksum');
+
+    require_code('crypt');
+
+    // Verify the checksum
+    if (!ratchet_hash_verify($nonce . $email_address, get_site_salt(), $checksum)) {
+        warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
+    }
+
+    // Mark the e-mail address as unsubscribed
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('unsubscribed_emails', 'id', ['b_email_address' => $email_address]);
+    if ($test === null) {
+        $GLOBALS['SITE_DB']->query_insert('unsubscribed_emails', ['b_email_address' => $email_address, 'b_time' => time()]);
+    }
+
+    $tpl = do_lang_tempcode('SUCCESS');
+    $tpl->handle_symbol_preprocessing();
+    $tpl->evaluate_echo();
+}

@@ -272,6 +272,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/keywords.php',
             'sources/hooks/systems/config/lax_comcode.php',
             'sources/hooks/systems/config/likes.php',
+            'sources/hooks/systems/config/list_unsubscribe_post.php',
             'sources/hooks/systems/config/list_unsubscribe_target.php',
             'sources/hooks/systems/config/login_error_secrecy.php',
             'sources/hooks/systems/config/long_google_cookies.php',

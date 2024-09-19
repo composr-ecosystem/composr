@@ -426,6 +426,16 @@ class Hook_profiles_tabs_edit_settings
         $js_function_calls = ['hookProfilesTabsEditSettingsRenderTab'];
         $text = new Tempcode();
 
+        // E-mail issues check
+        if ($member_id_of == $member_id_viewing) {
+            require_code('mail');
+            require_code('mail2');
+            if (!can_email_member($member_id_of)) {
+                $tpl = do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('CANNOT_RECEIVE_MAIL_MEMBER')]);
+                $text->attach($tpl);
+            }
+        }
+
         if ($memory_debugging) {
             require_code('files');
             $usage_after = memory_get_usage();

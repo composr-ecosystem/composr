@@ -854,6 +854,6 @@ class Hook_health_check_email extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue(get_option('list_unsubscribe_target') != '', 'You do not have a List-Unsubscribe target configuration option set, which may increase your spam score and violate some local laws on user privacy.');
+        $this->assertTrue(!empty(get_option('list_unsubscribe_target')), 'You do not have a List-Unsubscribe target configuration option set, which may increase your spam score and violate some local laws on user privacy.');
     }
 }

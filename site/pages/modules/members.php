@@ -286,7 +286,7 @@ class Module_members
         require_code('newsletter');
 
         if ($hash != get_unsubscribe_hash($subscriber['m_pass_hash_salted'])) {
-            warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
+            warn_exit(do_lang_tempcode('NEWSLETTER_COULD_NOT_UNSUBSCRIBE'));
         }
 
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_allow_emails_from_staff' => 0], ['id' => $id], '', 1);

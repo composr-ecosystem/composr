@@ -565,7 +565,7 @@ class Module_newsletter
         $subscriber = $_subscriber[0];
 
         if (!verify_unsunscribe_hash($hash, $subscriber['the_password'])) {
-            warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
+            warn_exit(do_lang_tempcode('NEWSLETTER_COULD_NOT_UNSUBSCRIBE'));
         }
 
         $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['email' => $subscriber['email']]);
