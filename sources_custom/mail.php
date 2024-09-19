@@ -95,14 +95,14 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      * @param  EMAIL $from_email Reply-to e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
-     * @param  string $headers Headers to use
+     * @param  string $_headers Provisional headers to use
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $_headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
     {
         $worked = true;
         $error = null;
@@ -200,10 +200,53 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
         $message->setCc($this->cc_addresses);
         $message->setBcc($this->bcc_addresses);
 
+        $headers = $message->getHeaders();
+
+        // Actually this could cause problems with duplicate headers getting registered
+        /*
+            foreach (explode($this->line_term, $_headers) as $header) {
+                if (trim($header) != '') {
+                    $parts = explode(': ', $header, 2);
+                    $headers->addTextHeader($parts[0], $parts[1]);
+                }
+            }
+        */
+
         if ((count($to_emails) == 1) && ($this->require_recipient_valid_since !== null)) {
-            $headers = $message->getHeaders();
             $_require_recipient_valid_since = date('r', $this->require_recipient_valid_since);
             $headers->addTextHeader('Require-Recipient-Valid-Since', $to_emails[0] . '; ' . $_require_recipient_valid_since);
+        }
+
+        // List-Unsubscribe
+        $list_unsubscribe_target = get_option('list_unsubscribe_target');
+        $list_unsubscribe_post = get_option('list_unsubscribe_post');
+        foreach ($message->getTo() as $recipient) {
+            if (!empty($list_unsubscribe_target)) {
+                if (strpos($list_unsubscribe_target, 'mailto:') !== 0) { // mailto does not allow POSTing
+                    // Add recipient e-mail to POST data so we know who is unsubscribing
+                    if ($list_unsubscribe_post != '') {
+                        $list_unsubscribe_post .= '&';
+                    }
+                    $list_unsubscribe_post .= 'email_address=' . rawurlencode($recipient);
+
+                    if ($list_unsubscribe_target == '1') { // Use the software's built-in List-Unsubscribe
+                        $list_unsubscribe_target = find_script('unsubscribe');
+
+                        require_code('crypt');
+
+                        // Add a nonce (we cannot use CSRF because the member sending the email is not necessarily the one unsubscribing)
+                        $nonce = get_secure_random_string();
+                        $list_unsubscribe_post .= '&nonce=' . rawurlencode($nonce);
+
+                        // Add a checksum ratchet using the e-mail address, nonce, and site salt
+                        $list_unsubscribe_post .= '&checksum=' . rawurlencode(ratchet_hash($nonce . $recipient, get_site_salt()));
+                    }
+
+                    $headers->addTextHeader('List-Unsubscribe-Post', $list_unsubscribe_post);
+                }
+
+                $headers->addTextHeader('List-Unsubscribe', '<' . $list_unsubscribe_target . '>');
+            }
         }
 
         // DKIM
