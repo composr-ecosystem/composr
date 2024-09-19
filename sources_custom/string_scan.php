@@ -9228,6 +9228,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CORRECT_ANSWER
         COST
         COULD_NOT_UNSUBSCRIBE
+        NEWSLETTER_COULD_NOT_UNSUBSCRIBE
         COUNTDOWN_MINUS
         COUNTDOWN_PLUS
         COUNTDOWN_SEP
