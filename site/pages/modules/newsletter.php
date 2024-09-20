@@ -436,7 +436,6 @@ class Module_newsletter
             enforce_captcha();
         }
 
-        // Add
         $email = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
         $password = post_param_string('password', '', INPUT_FILTER_PASSWORD);
         $forename = post_param_string('forename');
@@ -447,6 +446,13 @@ class Module_newsletter
         $language = user_lang__with__translation_override(true);
         if (!is_valid_email_address($email)) {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+        }
+
+        // Do a check if we can e-mail the provided address, and warn exit if not
+        require_code('mail');
+        require_code('mail2');
+        if (!can_email_address($email)) {
+            warn_exit(do_lang_tempcode('CANNOT_RECEIVE_MAIL_NEWSLETTER'));
         }
 
         $message = do_lang_tempcode('NEWSLETTER_UPDATE');
