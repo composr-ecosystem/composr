@@ -8,3 +8,5 @@
 {$ENTITY_DECODE,{$COPYRIGHT}}
 
 {$PREG_REPLACE,^.*://,,{$BASE_URL}}
+
+{!UNSUBSCRIBE@} {$FIND_SCRIPT,unsubscribe}

@@ -18,8 +18,6 @@
  * @package    ecommerce
  */
 
-/*EXTRA FUNCTIONS: hash_hmac*/
-
 /**
  * Hook class.
  */
@@ -407,8 +405,8 @@ class Hook_payment_gateway_authorize
 
         $txn_id = ($subscription_id != '') ? $subscription_id : $_txn_id;
 
-        // SECURITY: Check hash if hash_hmac is available
-        if ((function_exists('hash_hmac')) && ($signature_key != '')) {
+        // SECURITY: Check hash
+        if ($signature_key != '') {
             $hash = post_param_string('x_SHA2_Hash');
 
             // https://www.authorize.net/content/dam/anet-redesign/documents/SIM_guide.pdf page 73
@@ -464,16 +462,6 @@ class Hook_payment_gateway_authorize
                     return null;
                 }
                 fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED') . ' - ' . json_encode($_POST));
-            }
-        } else {
-            if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
-                require_code('files');
-                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
-                fwrite($myfile, loggable_date() . "\n");
-                fwrite($myfile, '(hooks/systems/payment_gateway/authorize)->handle_ipn_transaction: WARN: hash_hmac not available in this PHP installation; hash checking was skipped.' . "\n");
-                fwrite($myfile, "\n\n");
-                flock($myfile, LOCK_UN);
-                fclose($myfile);
             }
         }
 

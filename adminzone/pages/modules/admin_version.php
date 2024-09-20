@@ -1244,10 +1244,9 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->create_table('unsubscribed_emails', [
                 'id' => '*AUTO',
-                'b_email_address' => 'SHORT_TEXT',
+                'b_email_hashed' => 'SHORT_TEXT',
                 'b_time' => 'TIME',
             ]);
-            $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_email_address', ['b_email_address']);
             $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_time', ['b_time']);
         }
     }

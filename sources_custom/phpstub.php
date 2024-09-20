@@ -72,6 +72,20 @@ function hash_file(string $algo, string $filename, bool $binary = false, array $
 }
 
 /**
+ * Generate a keyed hash value using the HMAC method.
+ *
+ * @param  string $algo Name of the algorithm to use
+ * @param  string $data The data to hash
+ * @param  string $key The shared secret key
+ * @param  boolean $binary Whether to output as raw binary data (false: output lowercase hex)
+ * @return string The hash
+ */
+function hash_hmac(string $algo, string $data, string $key, bool $binary = false) : string
+{
+    return '';
+}
+
+/**
  * Hash the password using the specified algorithm.
  *
  * @param  string $password The password to hash

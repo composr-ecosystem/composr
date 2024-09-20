@@ -18,8 +18,6 @@
  * @package    core_forum_drivers
  */
 
- /*EXTRA FUNCTIONS: hash_hmac*/
-
 /**
  * Forum driver class.
  *
@@ -1380,10 +1378,6 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     protected function cookie_hash_salt(string $password, string $salt) : string
     {
-        if (!function_exists('hash_hmac')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
         // Append the salt to get a user-specific authentication secret.
         $secret_key = get_value('smf_auth_secret') . $salt;
 

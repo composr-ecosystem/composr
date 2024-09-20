@@ -9,5 +9,12 @@
 	<div style="font-size: 12px">
 		{CONTENT}
 	</div>
+	<hr class="spaced-rule" />
+	<div class="email-footer">
+		<div class="email-url">
+			<href="{$FIND_SCRIPT*,unsubscribe}">{!UNSUBSCRIBE}</a>
+		</div>
+	</div>
+	<br clear="all" />
 </body>
 </html>
