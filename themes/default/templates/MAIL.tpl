@@ -21,15 +21,12 @@
 
 		<div class="email-footer">
 			<div class="email-copyright">
-				{$COPYRIGHT`}
+				<p>{$COPYRIGHT`}</p>
 			</div>
 
 			<div class="email-url">
-				{$PREG_REPLACE*,^.*://,,{$BASE_URL}}
-			</div>
-
-			<div class="email-url">
-				<a href="{$FIND_SCRIPT*,unsubscribe}">{!UNSUBSCRIBE}</a>
+				<p>{$PREG_REPLACE*,^.*://,,{$BASE_URL}}</p>
+				<p><a href="{$FIND_SCRIPT*,unsubscribe}">{!UNSUBSCRIBE}</a></p>
 			</div>
 		</div>
 		<br clear="all" />
