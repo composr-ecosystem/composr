@@ -12,7 +12,7 @@
 	<hr class="spaced-rule" />
 	<div class="email-footer">
 		<div class="email-url">
-			<href="{$FIND_SCRIPT*,unsubscribe}">{!UNSUBSCRIBE}</a>
+			<a href="{$FIND_SCRIPT*,unsubscribe}">{!UNSUBSCRIBE}</a>
 		</div>
 	</div>
 	<br clear="all" />
