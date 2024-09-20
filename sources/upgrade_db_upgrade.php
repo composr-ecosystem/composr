@@ -759,13 +759,12 @@ function database_specific() : bool
     }
 
     // LEGACY: (11.beta3) we need to track unsubscribed e-mail addresses so we never e-mail them (admin_version module v20)
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1726770461)) {
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1726794034)) {
         $GLOBALS['SITE_DB']->create_table('unsubscribed_emails', [
             'id' => '*AUTO',
-            'b_email_address' => 'SHORT_TEXT',
+            'b_email_hashed' => 'SHORT_TEXT',
             'b_time' => 'TIME',
         ]);
-        $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_email_address', ['b_email_address']);
         $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_time', ['b_time']);
     }
 

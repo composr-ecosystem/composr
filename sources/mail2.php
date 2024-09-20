@@ -221,7 +221,9 @@ function can_email_member(int $member_id, ?string $host = null, ?int $port = nul
 function can_email_address(string $email_address, ?string $host = null, ?int $port = null, ?string $type = null, ?string $folder = null, ?string $username = null, ?string $password = null) : bool
 {
     // Condition: e-mail address must not have unsubscribed from any e-mails
-    $unsubscribed = $GLOBALS['SITE_DB']->query_select_value_if_there('unsubscribed_emails', 'id', ['b_email_address' => $email_address]);
+    require_code('crypt');
+    $email_address_hashed = hash_hmac('sha256', $email_address, get_site_salt());
+    $unsubscribed = $GLOBALS['SITE_DB']->query_select_value_if_there('unsubscribed_emails', 'id', ['b_email_hashed' => $email_address_hashed]);
     if ($unsubscribed !== null) {
         return false;
     }
