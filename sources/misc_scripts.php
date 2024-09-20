@@ -642,26 +642,30 @@ function unsubscribe_script()
         $can_unsubscribe = false;
         $checksum = post_param_string('checksum', null);
 
-        if ($checksum !== null) {
+        if ($checksum !== null) { // Checksum provided; we are trying a one-click unsubscribe
             $nonce = post_param_string('nonce', null);
 
-            // Verify the checksum if provided
             if (($nonce !== null) && ratchet_hash_verify($nonce . $email, get_site_salt(), $checksum)) {
                 $can_unsubscribe = true;
-            } else {
+            } else { // Gracefully fall back to showing the unsubscribe form with an error at the top if verification failed
                 $text->attach(do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('COULD_NOT_UNSUBSCRIBE')]));
             }
-        } elseif (post_param_string('csrf_token', null) !== null) { // If no CSRF provided either, we assume e-mail is to pre-populate the form
+        } elseif (post_param_string('csrf_token', null) !== null) { // CSRF provided; we submitted the e-mail form
             global $CSRF_TOKENS;
             $CSRF_TOKENS = true;
 
             require_code('csrf_filter');
             check_csrf_token(post_param_string('csrf_token', null)); // NB: Will exit if it fails
 
+            if (addon_installed('captcha')) {
+                require_code('captcha');
+                enforce_captcha();
+            }
+
             $can_unsubscribe = true;
         }
 
-        if ($can_unsubscribe) {
+        if ($can_unsubscribe) { // We are actualising an unsubscribe
             // Obfuscate the e-mail with hashing to protect user privacy
             $email_hashed = hash_hmac('sha256', $email, get_site_salt());
 
@@ -679,6 +683,8 @@ function unsubscribe_script()
         }
     }
 
+    /* Unsubscribe form */
+
     $_title = do_lang('UNSUBSCRIBE');
     $title = get_screen_title('UNSUBSCRIBE');
 
@@ -686,9 +692,17 @@ function unsubscribe_script()
     $text->attach(do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT', escape_html(get_site_name()), escape_html($privacy_policy->evaluate()), escape_html(get_option('staff_address'))));
 
     $fields = new Tempcode();
-    $fields->attach(form_input_email(do_lang_tempcode('YOUR_EMAIL_ADDRESS'), do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT'), 'email', $email, true));
-
     $hidden = new Tempcode();
+
+    $fields->attach(form_input_email(do_lang_tempcode('YOUR_EMAIL_ADDRESS'), do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT'), 'email', $email, true));
+    if (addon_installed('captcha')) {
+        require_code('captcha');
+        if (use_captcha()) {
+            $fields->attach(form_input_captcha($hidden));
+            $text->attach(' ');
+            $text->attach(do_lang_tempcode('captcha:FORM_TIME_SECURITY'));
+        }
+    }
 
     $post_url = find_script('unsubscribe');
 
