@@ -65,12 +65,10 @@ class Hook_profiles_tabs_standing
 
         // Try the cache first because this hook uses quite a bit of resources and database queries
         require_code('caches');
-        /*
         $content = get_cache_entry('profiles_tabs_standing', $cache_identifier, CACHE_AGAINST_DEFAULT, 15, true);
         if ($content !== null) {
             return [$title, $content, $order, 'menu/social/warnings'];
         }
-        */
 
         /*
             Grab stepper information.
