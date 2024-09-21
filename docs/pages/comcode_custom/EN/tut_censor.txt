@@ -46,7 +46,7 @@ There are a number of ways to punish members who do not follow site policy (such
  - 'Verbally' (unofficially) warning them, via a Private Topic or other means of private communication
  - Giving them a formal warning via the warn form (read on)
 
-As all these methods work on members, but only banning by IP address works for guests, you may wish to consider making it a requirement for all users to join in order to participate on the website. In other words, you may wish to remove permission for guests to make submissions.
+As all these methods work on members, but only banning by IP address works for guests, you may wish to consider making it a requirement for all users to join in order to participate on the website. In other words, you may wish to remove privileges for guests to make submissions. Guests by default do not have the privilege to submit content in Composr sites.
 [/surround]
 
 [surround]
@@ -56,22 +56,22 @@ As all these methods work on members, but only banning by IP address works for g
 All the various punishment tools are brought together for convenience on one screen named "Warn member" (Conversr only).
 
 This screen can be accessed from either:
-1) members' post ("Warn" button)
+1) members' post ("Warn" button) (recommended method when punishing a member for a forum post they made; you will have more punitive options)
 2) or, from any member-profile screen ("Warn member" or "Deal with as spammer" under Audit)
 
 [title="3"]Warnings Form[/title]
 
 The warnings form consists of the following options that can be utilised to easily deal with problematic members or spammers:
- - [b]Warning Type[/b]: A "Formal Warning" counts towards the member's total number of warnings, whereas an "Off-the-book Warning" does not. Furthermore, off-the-book warnings are not listed to the member on their profile.
+ - [b]Warning Type[/b]: A "Formal Warning" counts towards the member's total number of warnings, whereas an "Off-the-book Warning" does not. Furthermore, off-the-book warnings are not listed to the member on their profile (but if you issue punitive actions, those might still show up while they are active).
  - [b]Punitive Actions[/b]
-  - [b]Ban the member's IP address[/b]: Bans the last-known IP address of the member so they (and others) can no longer access the website from that IP. The ban is performed on the .htaccess file so they cannot even access the website anymore.
-  - [b]Ban member[/b]: Unlike banning the IP address, the member can still access the website. But they can no longer log in to / use their account.
+  - [b]Ban the member's IP address[/b]: Bans the last-known IP address of the member so they (and others) can no longer access the website from that IP. The ban is performed on the .htaccess file so they cannot even access the website anymore. Note that if you ban the IP address but not the member, they can still log in from another IP address / device.
+  - [b]Ban member[/b]: This prevents the member from being able to log in to their account anymore, but they can still use the site as a guest. Additionally, other visitors can no longer view their profile. Note that it is still possible for a member to register a new account (e.g. from a different IP and using a different username and IP address).
   - [b]Change usergroup to[/b]: Change the primary usergroup which this member belongs (such as to de-rank them).
-  - [b]Extend probation[/b]: Start a probation period, or extend an existing one, by this many days. The member will only have the permissions assigned to the "Probation" usergroup regardless of any other usergroup they are in.
+  - [b]Extend probation[/b]: Start a probation period, or extend an existing one, by this many days. The member will only have the permissions assigned to the "Probation" usergroup regardless of any other usergroup they are in until probation expires.
  - [b]Delete content[/b]
   - A list of recently posted content by the member will appear in this section. You can choose which content to delete. This is handy for quickly mass-deleting spam content posted by a member.
  - [b]Charge or Reverse Points[/b]
-  - A list of point transactions involving this member within the last 7 days (50 maximum) will appear. You can choose which ones to reverse. You do not have to reverse ones for which you are deleting the associated content; they will be reversed automatically. Reversed points will be subtracted from the member's life-time points.
+  - A list of point transactions involving this member within the last 7 days (50 maximum) will appear. You can choose which ones to reverse. You do not have to reverse ones for which you are deleting the associated content; they will be reversed automatically. Reversed points will also be subtracted from the member's life-time points.
   - [b]Charge points[/b]: Take points away from the member. It is permissible to charge more points than they have in their balance; this will put their balance in negative points. Charges will add an anonymous record in the points ledger. Charged points will subtract from the member's life-time points (unlike debiting points from their points profile) because it is considered a punishment to their rank. However, they will not automatically be reassigned the correct usergroup if they lost a rank. You should reassign their usergroup manually via the 'Change usergroup' punitive action.
  - [b]Explanatory Text[/b]
   - You can load a previously-saved explanatory reason and message by clicking the "Load an explanation/message" link.
@@ -80,18 +80,26 @@ The warnings form consists of the following options that can be utilised to easi
   - [b]Save explanatory details[/b]: If you want to save what you wrote in the "Reason" and "Message" fields for later use, you can provide a name here. The next time you want to use it, click the "Load an explanation/message" link at the top of the "Explanatory Text" section to pre-populate a saved reason and message. If you have [tt]Include punitive actions in message[/tt] ticked (checked), the auto-generated punitive actions are not included in the saved message.
   - [b]Include punitive actions in message[/b]: Auto-generate information about what punitive actions you are taking for the Private Topic sent to the member. This is beneficial so you do not have to write them yourself in the message. But it also allows you to better manage saved reasons / messages; you can re-use a saved reason / message without having to edit it for the punitive actions you are taking now.
 
-All punitive actions are defined in hooks under [tt]hooks/systems/cns_warnings[/tt]. You can develop additional punitive actions for the warnings system (e.g. through non-bundled addons) by making new hooks. See the "ban_member" hook for a basic example. In each hook are the following methods:
+A note about Private Topics sent for warnings: A private topic will not get sent to the member for their warning if nothing is written in the "Message" field and "Include punitive actions in message" is unticked (unchecked). Also, if "Message" is blank but "Include punitive actions in message" is ticked (checked), a private topic will get sent, but it will only contain the punitive actions taken.
+
+All punitive actions are defined in hooks under [tt]hooks/systems/cns_warnings[/tt]. You can develop additional punitive actions for the warnings system (e.g. through non-bundled addons) by making new hooks. See the "ban_ip" hook for a basic example. In each hook are the following methods:
  - [b]get_details[/b]: return null to disable the hook or an array of details, such as 'order' to define the field order on the warnings form.
  - [b]generate_text[/b]: generate past-tense text to explain the punitive action taken (used in the warnings history)
  - [b]get_form_fields[/b]: renders / attaches form fields, intro paragraph text, and/or hidden fields on the warning form for this punitive action
  - [b]actualise_punitive_action[/b]: actualises / applies the punitive action on the member. This gets called for every hook when the warning is submitted, so you should check if an action should actually get applied via POST parameters from the form. You must add a record into the f_warnings_punitive table for each punitive action applied, and you should also call log_it or cns_mod_log_it. The warnings module does not do these automatically as some hooks may apply more than one punitive action (e.g. deleting multiple forum posts). The logs will be associated with the warning ID.
  - [b]undo_punitive_action[/b] (optional): reverses a punitive action when a staff member clicks "Undo" on the warning history for the action. If the method is not defined, then no undo action will be allowed for this hook. You do not need to do anything with f_warnings_punitive here; the warnings module will take care of that. However, you should log_it or cns_mod_log_it the reversal. The log will be associated with the warning ID. Note that if actualise_punitive_action applies more than one action, then each action will have their own individual undo capability, so undo_punitive_action should not undo more than one action at a time.
-
-A note about Private Topics sent for warnings: A private topic will not get sent to the member for their warning if nothing is written in the "Message" field and "Include punitive actions in message" is unticked (unchecked). Also, if "Message" is blank but "Include punitive actions in message" is ticked (checked), a private topic will get sent, but it will only contain the punitive actions taken.
+ - [b]get_stepper[/b] (optional): defines an array of maps to be displayed on the member's 'Standing' profile tab including for the stepper at the top. Each map in the array contains the following:
+  - order: Integer defining the order of steppers and information (lower is to the left on the stepper, further up for information). If multiple hooks or items define the same order, it is assumed they use and control the same stepper and thus will be merged.
+  - label: The short label for the stepper item
+  - explanation: A tooltip explaining when the stepper is highlighted / active
+  - icon: A path to an icon to use on the stepper
+  - active: Whether the stepper item is highlighted
+  - active_color: A class in stepper.css to define the colours of the stepper when highlighted
+  - info: An array of maps indicating items to display under the stepper for further explanation / information (e.g. explaining the active punitive actions, where they apply, and when they expire). Each map contains icon (a path to an icon) and text (the Tempcode to use for the list item). Should be left an empty array to not add any items to the list.
 
 [title="3"]Probation[/title]
 
-The probation feature is designed to work via the warnings system. You could manually put a member into the probation usergroup, but it's not advisable because any secondary usergroups they are in may lead to extra undesirable privileges. The recommended method is to set the time until which they finish probation, either via editing their account or using the warn form.
+The probation feature is designed to work via the warnings system. You could manually put a member into the probation usergroup, but it's not advisable because any secondary usergroups they are in may lead to extra undesirable privileges. Furthermore, manually adding them to the probation usergroup will not show up on their 'Standing' tab. The recommended method is to set the time until which they finish probation, either via editing their account or using the warn form.
 
 If you use the warnings system to put a user in probation, Composr automatically returns their only usergroup as Probation, disregarding other settings until their probation expires. Their usergroups will continue to [i]display[/i] as normal, but from a permission point of view, they'll only be in the probations usergroup.
 [/surround]
@@ -101,9 +109,9 @@ If you use the warnings system to put a user in probation, Composr automatically
 [surround]
 [media width="150" description="Banning a member via editing their member account" float="right"]data_custom/images/docs/tut_censor/censor_member.png[/media]
 There are many methods for banning a Composr user:
- - [b]Banning a member[/b] via editing their member account. This is perhaps the most useful method of banning and shows them an error when they next log in telling them they've been banned. Note that there is no way to prevent a user re-joining with a new username; members can still re-join with a different IP, username, and/or e-mail address.
+ - [b]Banning a member[/b] via editing their member account. This is perhaps the most useful method of banning and shows them an error when they next log in telling them they've been banned. It also prevents others from being able to see their profile anymore which is especially useful if they spammed stuff on their profile. Note that there is no way to prevent a user re-joining with a new username; members can still re-join with a different IP, username, and/or e-mail address.
  - [b]Banning an IP address[/b], or IP address range. {!submitban:DOC_IP_BAN} More information about IP addresses is given in the [page="_SEARCH:tut_trace"]Using IP addresses to trace users[/page] tutorial.
- - 'Banning' a member via [b]changing their usergroup[/b] to one with virtually no privileges. This is useful if you want to reduce access in a highly customised fashion.
+ - 'Banning' a member via [b]changing their usergroup[/b] to one with virtually no privileges. This is useful if you want to reduce access in a highly customised fashion. It is highly recommended using the probation mechanism for this.
  - [b]Banning member submission[/b]. This is useful if you only want to ban a member from making submissions, and not the whole site; it is done from the Action Logs module (accessed from Admin Zone > Audit > Action logs). This feature is also useful if you are not using [concept]Conversr[/concept], and want to ban a member in Composr, but not in the forum.
 [/surround]
 
@@ -139,6 +147,13 @@ Note that reasoned bans will not work when banning someone by IP address. The so
 Automatic bans are similar to the security alerts (hack-attacks). The difference is hack-attacks are general hacker/spammer signals Composr is hard-coded to be able to detect, are individually logged as incidents, and cumulate towards IP bans -- while automatic bans are custom defined by the webmaster for clear specific threats, resulting in immediate configurable banning.
 The advanced banning configuration also has [tt]<hackattack>[/tt] rules, which are documented in the [page="_SEARCH:tut_security"]Security[/page] tutorial.
 
+[title="3"]The Standing Tab[/title]
+[surround]
+[media width="150" description="Viewing account standing and punitive actions via the Standing tab" float="right"]data_custom/images/docs/tut_censor/censor_standing_tab.png[/media]
+Every member will see a 'Standing' tab on their profile when viewing their own profile. Staff with the privilege to assume any member can also see this tab on any/all member profiles.
+
+The 'Standing' tab is an overview of the member's current account standing in regards to the warnings system. At the top, a stepper indicates either their overall standing or types of active punitive actions against them. An explanation of their standing, including specifics to active punitive actions, are listed under the stepper. Finally, a list of formal warnings against the member is displayed in a table at the bottom. Staff will also see a link where they can view, edit, and audit all warnings (including off-the-book ones) against the member.
+[/surround]
 [title="2"]The Action Log (audit trails)[/title]
 
 [surround]
