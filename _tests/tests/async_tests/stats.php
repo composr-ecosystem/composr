@@ -112,6 +112,7 @@ class stats_test_set extends cms_test_case
             'videos' => [[]],
             'wiki_pages' => [[]],
             'wiki_posts' => [[]],
+            'unsubscribed_emails' => [[]],
         ];
         if (addon_installed('tickets')) {
             require_code('tickets');

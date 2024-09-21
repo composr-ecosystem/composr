@@ -627,7 +627,6 @@ function external_url_proxy_script()
  */
 function unsubscribe_script()
 {
-    // Gather necessary details
     $email = either_param_string('email', null, INPUT_FILTER_EMAIL_ADDRESS);
 
     require_code('crypt');
@@ -638,7 +637,7 @@ function unsubscribe_script()
 
     $text = new Tempcode();
 
-    if ($email !== null) {
+    if ($email !== null) { // E-mail provided? See if we can unsubscribe.
         $can_unsubscribe = false;
         $checksum = post_param_string('checksum', null);
 
@@ -665,17 +664,28 @@ function unsubscribe_script()
             $can_unsubscribe = true;
         }
 
-        if ($can_unsubscribe) { // We are actualising an unsubscribe
+        if ($can_unsubscribe) { // We passed unsubscribe checks and can be unsubscribed
             // Obfuscate the e-mail with hashing to protect user privacy
             $email_hashed = hash_hmac('sha256', $email, get_site_salt());
 
-            // Mark the e-mail address as unsubscribed
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('unsubscribed_emails', 'id', ['b_email_hashed' => $email_hashed]);
             if ($test === null) {
-                $GLOBALS['SITE_DB']->query_insert('unsubscribed_emails', ['b_email_hashed' => $email_hashed, 'b_time' => time()]);
-            }
+                // Send e-mail confirmation first before we add the address in the unsubscribe table
+                require_code('mail');
+                require_code('notifications');
+                require_code('lang');
+                $mail_subject = do_lang('UNSUBSCRIBED_SUBJECT');
+                $mail_body = do_notification_template('UNSUBSCRIBE_MAIL', [], null, false, null, '.txt', 'text'); // TODO: translate
+                dispatch_mail($mail_subject, $mail_body->evaluate(get_site_default_lang()), [$email], '', '', '', ['priority' => 1, 'bypass_queue' => true]);
 
-            $tpl = do_lang_tempcode('UNSUBSCRIBE_SUCCESS', escape_html(get_option('staff_address')));
+                $GLOBALS['SITE_DB']->query_insert('unsubscribed_emails', [
+                    'b_email_hashed' => $email_hashed,
+                    'b_time' => time(),
+                    'b_ip_address' => get_ip_address(),
+                ]);
+            } // NB: Do not differentiate on the UI between an e-mail who was already unsubscribed and one that just did; spammers can abuse this to figure out potentially valid addresses.
+
+            $tpl = do_lang_tempcode('UNSUBSCRIBE_SUCCESS');
             $tpl->handle_symbol_preprocessing();
             $tpl->evaluate_echo();
 

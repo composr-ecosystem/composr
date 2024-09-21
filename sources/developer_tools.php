@@ -505,13 +505,13 @@ function make_dummy_db_row(string $table, bool $allow_null = true, array $forced
                 $primary_map[$field] = $value5;
             }
         } elseif (strpos($type, 'IP') !== false) {
-            $value6 = '192.168.' . strval(mt_rand(0, 255)) . '.' . strval(mt_rand(0, 255)); // Ensure local IP with randomness
+            $value6 = '192.168.' . strval(mt_rand(0, 255)) . '.' . strval(mt_rand(0, 255)); // Enforce local IP addresses for dummy data
             $map[$field] = $value6;
             if ($primary_field === true) {
                 $primary_map[$field] = $value6;
             }
         } elseif (strpos($type, 'URLPATH') !== false) {
-            $value7 = 'https://example.com/' . uniqid('', false); // Probably will throw a 404
+            $value7 = 'https://example.com/' . uniqid('', false); // we do not want a valid URL for dummy data
             $map[$field] = $value7;
             if ($primary_field === true) {
                 $primary_map[$field] = $value7;

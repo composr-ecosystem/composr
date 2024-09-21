@@ -1246,6 +1246,7 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'b_email_hashed' => 'SHORT_TEXT',
                 'b_time' => 'TIME',
+                'b_ip_address' => 'IP',
             ]);
             $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_time', ['b_time']);
         }

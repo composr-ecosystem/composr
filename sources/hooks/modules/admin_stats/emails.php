@@ -31,6 +31,7 @@ class Hook_admin_stats_emails extends CMSStatsProvider
      */
     public function info(bool $for_kpi = false) : ?array
     {
+        require_lang('mail');
         require_lang('email_log');
 
         return [
@@ -41,6 +42,14 @@ class Hook_admin_stats_emails extends CMSStatsProvider
                     'emails_sent__month_range' => new CMSStatsDateMonthRangeFilter('emails_sent__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
                 'pivot' => new CMSStatsDatePivot('emails_sent__pivot', $this->get_date_pivots(!$for_kpi)),
+            ],
+            'unsubscribed_emails' => [
+                'label' => do_lang_tempcode('UNSUBSCRIBED_EMAILS'),
+                'category' => 'conversions',
+                'filters' => [
+                    'unsubscribed_emails__month_range' => new CMSStatsDateMonthRangeFilter('unsubscribed_emails__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                ],
+                'pivot' => new CMSStatsDatePivot('unsubscribed_emails__pivot', $this->get_date_pivots(!$for_kpi)),
             ],
         ];
     }
@@ -55,11 +64,12 @@ class Hook_admin_stats_emails extends CMSStatsProvider
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
         $server_timezone = get_server_timezone();
+        $date_pivots = $this->get_date_pivots();
+
+        /* e-mails sent */
 
         $max = 1000;
         $start = 0;
-
-        $date_pivots = $this->get_date_pivots();
 
         $query = 'SELECT m_date_and_time FROM ' . get_table_prefix() . 'logged_mail_messages WHERE ';
         $query .= 'm_date_and_time>=' . strval($start_time) . ' AND ';
@@ -80,6 +90,36 @@ class Hook_admin_stats_emails extends CMSStatsProvider
                         $data_buckets['emails_sent'][$month][$pivot][$pivot_value] = 0;
                     }
                     $data_buckets['emails_sent'][$month][$pivot][$pivot_value]++;
+                }
+            }
+
+            $start += $max;
+        } while (!empty($rows));
+
+        /* unsubscribed e-mails */
+
+        $max = 1000;
+        $start = 0;
+
+        $query = 'SELECT b_time FROM ' . get_table_prefix() . 'unsubscribed_emails WHERE ';
+        $query .= 'b_time>=' . strval($start_time) . ' AND ';
+        $query .= 'b_time<=' . strval($end_time);
+        $query .= ' ORDER BY b_time';
+        do {
+            $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
+            foreach ($rows as $row) {
+                $timestamp = $row['b_time'];
+                $timestamp = tz_time($timestamp, $server_timezone);
+
+                $month = get_stats_month_for_timestamp($timestamp);
+
+                foreach (array_keys($date_pivots) as $pivot) {
+                    $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
+
+                    if (!isset($data_buckets['unsubscribed_emails'][$month][$pivot][$pivot_value])) {
+                        $data_buckets['unsubscribed_emails'][$month][$pivot][$pivot_value] = 0;
+                    }
+                    $data_buckets['unsubscribed_emails'][$month][$pivot][$pivot_value]++;
                 }
             }
 
@@ -118,11 +158,22 @@ class Hook_admin_stats_emails extends CMSStatsProvider
             }
         }
 
-        return [
-            'type' => null,
-            'data' => $data,
-            'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-            'y_axis_label' => do_lang_tempcode('EMAILS_SENT'),
-        ];
+        switch ($bucket) {
+            case 'emails_sent':
+                return [
+                    'type' => null,
+                    'data' => $data,
+                    'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
+                    'y_axis_label' => do_lang_tempcode('EMAILS_SENT'),
+                ];
+
+            case 'unsubscribed_emails':
+                return [
+                    'type' => null,
+                    'data' => $data,
+                    'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
+                    'y_axis_label' => do_lang_tempcode('UNSUBSCRIBED_EMAILS'),
+                ];
+        }
     }
 }

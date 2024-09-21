@@ -1,0 +1,16 @@
+Dear recipient,
+
+We received a request at [tt]{$SITE_NAME@}[/tt] to unsubscribe this e-mail address from all automated e-mails and newsletters. The request has been processed successfully, and you will not receive automated e-mails or newsletters from us anymore.
+
+Please note the following:
+ - We stored a hashed version of your e-mail address on our end so that the website software knows not to send you automated e-mails. Because it is hashed, it will be very difficult to figure out for malicious purposes.
+ - The staff and site members could still e-mail you through other means (e.g. directly through their mail client) if they personally know your e-mail address.
+ - If you have a member account on our site, please review your privacy settings. The staff, and potentially other members, might be able to see your e-mail address. You may wish to hide your e-mail address or delete your account entirely if you do not want this.
+ - If the staff use a separate service or software for sending out e-mails and newsletters, you may still receive e-mails from that. We recommend contacting the staff to be removed from those as well.
+
+If you did not authorise this request, then be aware that someone has your e-mail address and is filling it out on various websites (including ours) potentially for malicious purposes.
+
+Please [email="{$STAFF_ADDRESS_PURE#}"]contact our staff through e-mail[/email] if you have any questions or concerns.
+
+Sincerely,
+{$SITE_NAME@}
