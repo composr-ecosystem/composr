@@ -105,10 +105,10 @@ function do_notification_lang(string $codename, $parameter1 = null, $parameter2 
  * This allows notification handlers to possibly repeat the call with a customised template.
  *
  * @param  ID_TEXT $codename The codename of the template being loaded
- * @param  ?array $parameters A map of parameters for the template (key to value); you can have any number of parameters of any name, there is no set standard; having a _GUID parameter of random value is a convention (null: no parameters)
+ * @param  array $parameters A map of parameters for the template (key to value); you can have any number of parameters of any name, there is no set standard; having a _GUID parameter of random value is a convention
  * @param  ?LANGUAGE_NAME $lang The language to load the template in (templates can embed language references) (null: users own language)
- * @param  boolean $light_error Whether to not produce a stack trace if the template is missing
- * @param  ?ID_TEXT $fallback Alternate template to use if the primary one does not exist (null: none)
+ * @param  boolean $light_error Not supported; use false
+ * @param  ?ID_TEXT $fallback Not supported; use null
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
@@ -116,7 +116,7 @@ function do_notification_lang(string $codename, $parameter1 = null, $parameter2 
  * @param  ?ID_TEXT $theme Theme to use (null: current theme)
  * @return Tempcode The Tempcode for this template
  */
-function do_notification_template(string $codename, ?array $parameters = null, ?string $lang = null, bool $light_error = false, ?string $fallback = null, string $suffix = '.tpl', string $directory = 'templates', ?string $theme = null) : object
+function do_notification_template(string $codename, array $parameters = [], ?string $lang = null, bool $light_error = false, ?string $fallback = null, string $suffix = '.tpl', string $directory = 'templates', ?string $theme = null) : object
 {
     global $LAST_NOTIFICATION_TEMPLATE_CALL;
     $LAST_NOTIFICATION_TEMPLATE_CALL = [$codename, $parameters, $lang, $light_error, $fallback, $suffix, $directory, $theme];
