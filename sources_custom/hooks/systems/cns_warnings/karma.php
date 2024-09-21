@@ -165,4 +165,43 @@ class Hook_cns_warnings_karma
 
         reverse_karma(null, null, null, 'warning_punitive', strval($id));
     }
+
+        /**
+     * Return information for the standing profile tab.
+     *
+     * @param  MEMBER $member_id_of The member whose profile we are viewing
+     * @param  MEMBER $member_id_viewing The member who is viewing the profile
+     * @param  array $warning_ids Array of formal warning IDs against this member for checking against queried punitive actions
+     * @return array Array of maps with information about this punitive action
+     */
+    public function get_stepper(int $member_id_of, int $member_id_viewing, array $warning_ids) : array
+    {
+        if (!addon_installed('cns_warnings') || !addon_installed('karma')) {
+            return [];
+        }
+
+        require_code('karma');
+        require_lang('karma');
+
+        $info = [];
+        list($good_karma, $bad_karma) = get_karma($member_id_of);
+        if ($bad_karma > $good_karma) {
+            $info[] = [
+                'icon' => 'spare/social',
+                'text' => do_lang_tempcode('STANDING_KARMA_TEXT'),
+            ];
+        }
+
+        return [
+            [
+                'order' => 1,
+                'label' => do_lang('STANDING_KARMA'),
+                'explanation' => do_lang('DESCRIPTION_STANDING_KARMA'),
+                'icon' => 'spare/social',
+                'active' => !empty($info),
+                'active_color' => 'warning',
+                'info' => $info,
+            ],
+        ];
+    }
 }

@@ -137,4 +137,43 @@ class Hook_cns_warnings_syndicate
             $punitive_messages[] = do_lang('PUNITIVE_STOP_FORUM_SPAM', null, null, null, null, false);
         }
     }
+
+    /**
+     * Return information for the standing profile tab.
+     *
+     * @param  MEMBER $member_id_of The member whose profile we are viewing
+     * @param  MEMBER $member_id_viewing The member who is viewing the profile
+     * @param  array $warning_ids Array of formal warning IDs against this member for checking against queried punitive actions
+     * @return array Array of maps with information about this punitive action
+     */
+    public function get_stepper(int $member_id_of, int $member_id_viewing, array $warning_ids) : array
+    {
+        if (!addon_installed('cns_warnings') || !addon_installed('securitylogging')) {
+            return [];
+        }
+
+        $info = [];
+        foreach ($warning_ids as $warning_id) {
+            $row = $GLOBALS['SITE_DB']->query_select_value_if_there('f_warnings_punitive', 'id', ['p_warning_id' => $warning_id, 'p_action' => '_PUNITIVE_STOP_FORUM_SPAM']);
+            if ($row !== null) {
+                $info[] = [
+                    'icon' => 'menu/adminzone/security',
+                    'text' => do_lang_tempcode('STANDING_DANGER_SYNDICATE_TEXT'),
+                ];
+                break;
+            }
+        }
+
+        return [
+            [
+                'order' => 100,
+                'label' => do_lang('STANDING_DANGER'),
+                'explanation' => do_lang('DESCRIPTION_STANDING_DANGER'),
+                'icon' => 'buttons/no',
+                'active' => !empty($info),
+                'active_color' => 'danger',
+                'info' => $info,
+            ],
+        ];
+    }
 }

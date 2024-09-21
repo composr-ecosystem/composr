@@ -349,4 +349,60 @@ class Hook_cns_warnings_silencing
                 break;
         }
     }
+
+    /**
+     * Return information for the standing profile tab.
+     *
+     * @param  MEMBER $member_id_of The member whose profile we are viewing
+     * @param  MEMBER $member_id_viewing The member who is viewing the profile
+     * @param  array $warning_ids Array of formal warning IDs against this member for checking against queried punitive actions
+     * @return array Array of maps with information about this punitive action
+     */
+    public function get_stepper(int $member_id_of, int $member_id_viewing, array $warning_ids) : array
+    {
+        if (!addon_installed('cns_warnings') || get_forum_type() != 'cns') {
+            return [];
+        }
+
+        require_code('temporal');
+
+        $info = [];
+
+        // Grab all active silences
+        $privilege_restrictions = $GLOBALS['SITE_DB']->query_parameterised("SELECT * FROM {prefix}member_privileges WHERE member_id={member_id} AND the_value=0 AND active_until>{current_time}", ['member_id' => $member_id_of, 'current_time' => time()]);
+        foreach ($privilege_restrictions as $restriction) {
+            // Topic silence
+            if (($restriction['privilege'] == 'submit_lowrange_content') && ($restriction['module_the_name'] == 'topics')) {
+                $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $restriction['category_name']]);
+                $topic_name = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $restriction['category_name']]);
+                $forum_name = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => $forum_id]);
+
+                $info[] = [
+                    'icon' => 'cns_topic_modifiers/closed',
+                    'text' => do_lang_tempcode('STANDING_RESTRICTIONS_TOPIC_SILENCE_TEXT', escape_html($topic_name), escape_html($forum_name), [escape_html(get_timezoned_date_time($restriction['active_until'], false, false, $member_id_viewing))]),
+                ];
+            }
+
+            // Forum silence
+            if (($restriction['privilege'] == 'submit_lowrange_content') && ($restriction['module_the_name'] == 'forums')) {
+                $forum_name = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => $restriction['category_name']]);
+                $info[] = [
+                    'icon' => 'cns_topic_modifiers/closed',
+                    'text' => do_lang_tempcode('STANDING_RESTRICTIONS_FORUM_SILENCE_TEXT', escape_html($forum_name), escape_html(get_timezoned_date_time($restriction['active_until'], false, false, $member_id_viewing))),
+                ];
+            }
+        }
+
+        return [
+            [
+                'order' => 30,
+                'label' => do_lang('STANDING_RESTRICTIONS'),
+                'explanation' => do_lang('DESCRIPTION_STANDING_RESTRICTIONS'),
+                'icon' => 'cns_topic_modifiers/closed',
+                'active' => !empty($info),
+                'active_color' => 'warning',
+                'info' => $info,
+            ],
+        ];
+    }
 }
