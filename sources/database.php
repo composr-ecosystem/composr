@@ -475,10 +475,9 @@ function get_db_type() : string
     } else {
         $ret = 'mysqli';
     }
-    if ($ret === 'mysql' && !function_exists('mysql_connect')) {
+
+    if ($ret === 'mysql') { // LEGACY: mysql extension was removed in PHP 7; force mysqli because our minimum is PHP 7.2.
         $ret = 'mysqli';
-    } elseif ($ret === 'mysqli' && !function_exists('mysqli_connect')) {
-        $ret = 'mysql';
     }
     return $ret;
 }
