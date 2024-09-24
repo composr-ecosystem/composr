@@ -1957,7 +1957,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 }
                 if ($ptest === false) {
                     if (running_script('index')) {
-                        $temp_tpl = do_template('COMCODE_URL', ['TITLE' => $caption, 'REL' => '', 'TARGET' => '_top', 'URL' => $pl_url, 'URL_BROKEN' => true, 'CAPTION' => $caption]);
+                        $temp_tpl = do_template('COMCODE_URL', ['_GUID' => 'e35388cb0a25a334fb931a137f663992', 'TITLE' => $caption, 'REL' => '', 'TARGET' => '_top', 'URL' => $pl_url, 'URL_BROKEN' => true, 'CAPTION' => $caption]);
 
                         if ($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) {
                             if ($ignore_if_hidden) {

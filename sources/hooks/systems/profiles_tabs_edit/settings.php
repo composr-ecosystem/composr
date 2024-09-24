@@ -431,7 +431,7 @@ class Hook_profiles_tabs_edit_settings
             require_code('mail');
             require_code('mail2');
             if (!can_email_member($member_id_of)) {
-                $tpl = do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('CANNOT_RECEIVE_MAIL_MEMBER')]);
+                $tpl = do_template('RED_ALERT', ['_GUID' => '2911f8aaae7fd4412fb393a63cf8606b', 'TEXT' => do_lang_tempcode('CANNOT_RECEIVE_MAIL_MEMBER')]);
                 $text->attach($tpl);
             }
         }
