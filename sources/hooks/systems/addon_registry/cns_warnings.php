@@ -148,7 +148,7 @@ class Hook_addon_registry_cns_warnings
             'sources/hooks/systems/commandr_fs_extended_member/warnings.php',
             'sources/hooks/systems/points_transact/cns_warnings.php',
             'sources/hooks/systems/preview/warnings.php',
-            'sources/hooks/systems/profiles_tabs/warnings.php',
+            'sources/hooks/systems/profiles_tabs/standing.php',
             'sources/hooks/systems/resource_meta_aware/warning.php',
             'sources/hooks/systems/resource_meta_aware/warning_punitive.php',
             'sources_custom/hooks/systems/cns_warnings/.htaccess',

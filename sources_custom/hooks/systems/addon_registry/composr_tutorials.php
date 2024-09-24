@@ -727,6 +727,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_censor/censor_member.png',
             'data_custom/images/docs/tut_censor/censor_point_in_right_direction.png',
             'data_custom/images/docs/tut_censor/censor_post_history.png',
+            'data_custom/images/docs/tut_censor/censor_standing_tab.png',
             'data_custom/images/docs/tut_censor/censor_warning.png',
             'data_custom/images/docs/tut_censor/censor_word.png',
             'data_custom/images/docs/tut_censor/index.html',

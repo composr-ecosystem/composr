@@ -199,7 +199,7 @@ class Hook_addon_registry_health_check
             'sources/hooks/systems/config/hc_version_check.php',
             'sources/hooks/systems/config/hc_webstandards_safelist.php',
             'sources/hooks/systems/config_categories/health_check.php',
-            'sources/hooks/systems/cron/_health_check.php',
+            'sources/hooks/systems/cron/health_check.php',
             'sources/hooks/systems/health_checks/.htaccess',
             'sources/hooks/systems/health_checks/apis.php',
             'sources/hooks/systems/health_checks/cron.php',

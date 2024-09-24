@@ -137,7 +137,6 @@ class Hook_addon_registry_core_database_drivers
             'sources/database/database.ini',
             'sources/database/ibm.php',
             'sources/database/index.html',
-            'sources/database/mysql.php',
             'sources/database/mysql_pdo.php',
             'sources/database/mysqli.php',
             'sources/database/oracle.php',
