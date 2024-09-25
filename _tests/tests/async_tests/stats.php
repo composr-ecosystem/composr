@@ -26,12 +26,12 @@ class stats_test_set extends cms_test_case
 
         disable_php_memory_limit();
         cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
-
-        push_query_limiting(false);
     }
 
     public function testPreprocessRawData()
     {
+        push_query_limiting(false);
+
         require_code('stats');
         require_code('temporal');
         require_lang('stats');
@@ -184,6 +184,43 @@ class stats_test_set extends cms_test_case
         $buckets_diff = array_diff($buckets, $buckets_existing);
 
         $this->assertTrue(empty($buckets_diff), 'Expected pre-processed statistical data on these buckets but got none (maybe you need to define in this test the db tables used so dummy data can be generated): ' . implode(', ', $buckets_diff));
+
+        // Remove old preprocessed stats so we can force pre-processing again
+        $GLOBALS['SITE_DB']->query_delete('stats_preprocessed');
+        $GLOBALS['SITE_DB']->query_delete('stats_preprocessed_flat');
+
+        // Delete dummy data
+        if (count($this->dummy_data_added) > 0) {
+            foreach ($this->dummy_data_added as $table => $rows) {
+                $db = get_db_for($table);
+                foreach ($rows as $primary_map) {
+                    if ($this->debug) {
+                        $rows = $db->query_select($table, ['*'], $primary_map);
+                        $this->dump($primary_map, $table . ' primary map');
+                        $this->dump($rows, $table . ' data');
+                    }
+                    $db->query_delete($table, $primary_map);
+                }
+            }
+
+            // FUDGE: We had to fudge points lifetime so re-calculate this
+            if (addon_installed('points')) {
+                require_code('tasks');
+                call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), null, 'points_recalculate_cpf', [], true, true, false);
+            }
+        }
+
+        // Re-populate with actual statistics so stats do not show our dummy ones
+        $hook_obs = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
+        foreach ($hook_obs as $hook_name => $ob) {
+            $_buckets = $ob->info();
+            if ($_buckets === null) {
+                continue;
+            }
+            preprocess_raw_data_for($hook_name, $start_time, $end_time);
+        }
+
+        pop_query_limiting();
     }
 
     public function testGenerateFinalData()
@@ -223,34 +260,6 @@ class stats_test_set extends cms_test_case
                 $this->run_filter_tests($bucket_filters[$row['p_bucket']], $hook_obs[$bucket_hook[$row['p_bucket']]], $row['p_bucket'], '', $p_month);
             }
         }
-    }
-
-    public function tearDown()
-    {
-        // Delete dummy data
-        if (count($this->dummy_data_added) > 0) {
-            foreach ($this->dummy_data_added as $table => $rows) {
-                $db = get_db_for($table);
-                foreach ($rows as $primary_map) {
-                    if ($this->debug) {
-                        $rows = $db->query_select($table, ['*'], $primary_map);
-                        $this->dump($primary_map, $table . ' primary map');
-                        $this->dump($rows, $table . ' data');
-                    }
-                    $db->query_delete($table, $primary_map);
-                }
-            }
-
-            // FUDGE: We had to fudge points lifetime so re-calculate this
-            if (addon_installed('points')) {
-                require_code('tasks');
-                call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), null, 'points_recalculate_cpf', [], true, true, false);
-            }
-        }
-
-        pop_query_limiting();
-
-        parent::tearDown();
     }
 
     protected function run_filter_tests(array $filters, $hook, string $bucket, string $pivot, int $p_month)

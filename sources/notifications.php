@@ -107,8 +107,8 @@ function do_notification_lang(string $codename, $parameter1 = null, $parameter2 
  * @param  ID_TEXT $codename The codename of the template being loaded
  * @param  array $parameters A map of parameters for the template (key to value); you can have any number of parameters of any name, there is no set standard; having a _GUID parameter of random value is a convention
  * @param  ?LANGUAGE_NAME $lang The language to load the template in (templates can embed language references) (null: users own language)
- * @param  boolean $light_error Not supported; use false
- * @param  ?ID_TEXT $fallback Not supported; use null
+ * @param  boolean $light_error Whether to produce a light error; not supported so use false
+ * @param  ?ID_TEXT $fallback The template to use as a fallback; not supported so use null (null: none)
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in

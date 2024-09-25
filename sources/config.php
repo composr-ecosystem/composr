@@ -611,9 +611,9 @@ function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengt
  * @param  ?SHORT_TEXT $value The value (null: delete)
  * @param  boolean $elective_or_lengthy Whether this value is an elective/lengthy one. Use this for getting & setting if you don't want it to be loaded up in advance for every page view (in bulk alongside other values), or if the value may be more than 255 characters. Performance trade-off: frequently used values should not be elective, infrequently used values should be elective.
  * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
- * @return SHORT_TEXT The value just set, same as $value (just as a nicety so that Commandr users can see something "happen")
+ * @return ?SHORT_TEXT The value just set, same as $value (just as a nicety so that Commandr users can see something "happen") (null: the value was deleted)
  */
-function set_value(string $name, ?string $value, bool $elective_or_lengthy = false, bool $fail_ok = false) : string
+function set_value(string $name, ?string $value, bool $elective_or_lengthy = false, bool $fail_ok = false) : ?string
 {
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
@@ -628,12 +628,19 @@ function set_value(string $name, ?string $value, bool $elective_or_lengthy = fal
     }
 
     global $VALUE_OPTIONS_CACHE;
-    $VALUE_OPTIONS_CACHE[$name]['the_value'] = $value;
-    $VALUE_OPTIONS_CACHE[$name]['date_and_time'] = time();
-    $GLOBALS['SITE_DB']->query_insert_or_replace('values', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name], true); // Errors suppressed in case DB write access broken
+    if ($value === null) {
+        unset($VALUE_OPTIONS_CACHE[$name]);
+        $GLOBALS['SITE_DB']->query_delete('values', ['the_name' => $name], '', 1);
+    } else {
+        $VALUE_OPTIONS_CACHE[$name]['the_value'] = $value;
+        $VALUE_OPTIONS_CACHE[$name]['date_and_time'] = time();
+        $GLOBALS['SITE_DB']->query_insert_or_replace('values', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
+    }
+
     if (function_exists('persistent_cache_set')) {
         persistent_cache_set('VALUES', $VALUE_OPTIONS_CACHE);
     }
+
     return $value;
 }
 

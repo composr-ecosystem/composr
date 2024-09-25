@@ -278,27 +278,39 @@ function _cms_http_request(string $url, array $options = []) : object
     $filesystem = new HttpDownloaderFilesystem();
     $filesystem_priority = $filesystem->may_run_for($url, $options);
 
-    if (!empty($options['force_curl']) || empty($options['force_sockets']) && empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority) {
+    if (!empty($options['force_curl']) || (empty($options['force_sockets']) && empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority)) {
+        if ($curl_priority < 2) { // We cannot bypass the "no" check even if forced
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
         $test = $curl->run($url, $options);
         if ($test !== false) {
             return $curl;
         }
     }
 
-    if (!empty($options['force_sockets']) || empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority) {
+    if (!empty($options['force_sockets']) || (empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority)) {
+        if ($sockets_priority < 2) { // We cannot bypass the "no" check even if forced
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
         $test = $sockets->run($url, $options);
         if ($test !== false) {
             return $sockets;
         }
     }
 
-    if (!empty($options['force_file_wrapper']) || empty($options['force_filesystem']) && $file_wrapper_priority > $filesystem_priority) {
+    if (!empty($options['force_file_wrapper']) || (empty($options['force_filesystem']) && $file_wrapper_priority > $filesystem_priority)) {
+        if ($file_wrapper_priority < 2) { // We cannot bypass the "no" check even if forced
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
         $test = $file_wrapper->run($url, $options);
         if ($test !== false) {
             return $file_wrapper;
         }
     }
 
+    if ($filesystem_priority < 2) { // We cannot bypass the "no" check even if forced
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
     $test = $filesystem->run($url, $options);
     if ($test === false) {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));

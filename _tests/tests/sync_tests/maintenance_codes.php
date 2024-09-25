@@ -133,7 +133,7 @@ class maintenance_codes_test_set extends cms_test_case
             $matches = [];
             if (preg_match('#(\w+) automated test#', $row['Testing automation'], $matches) != 0) {
                 $test = $matches[1];
-                $this->assertTrue($this->test_exists($test), 'Could not find referenced test, ' . $test);
+                $this->assertTrue($this->existing_test($test), 'Could not find referenced test, ' . $test);
             }
         }
         $sheet_reader->close();
@@ -146,7 +146,7 @@ class maintenance_codes_test_set extends cms_test_case
         $num_matches = preg_match_all('#Automated test \(\[tt\](\w+)\[/tt\]\)#i', $c, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $test = $matches[1][$i];
-            $this->assertTrue($this->test_exists($test), 'Could not find referenced test, ' . $test);
+            $this->assertTrue($this->existing_test($test), 'Could not find referenced test, ' . $test);
         }
 
         // third_party_code test also tests some references
@@ -154,11 +154,12 @@ class maintenance_codes_test_set extends cms_test_case
 
     /**
      * Check if a given test exists.
+     * NB: Cannot start name with test or it will confuse the test suite.
      *
      * @param  ID_TEXT $test The name of the test to check
      * @return boolean Whether it exists
      */
-    protected function test_exists(string $test) : bool
+    protected function existing_test(string $test) : bool
     {
         $test_directories = ['async_tests', 'cli_tests', 'first_tests', 'regression_tests', 'sync_tests'];
         foreach ($test_directories as $dir) {

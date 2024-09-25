@@ -1452,8 +1452,8 @@ abstract class Mail_dispatcher_base
     /**
      * Inject List-Unsubscribe headers for an e-mail to a single address.
      *
-     * @param EMAIL $email_address The recipient e-mail address
-     * @param string $_headers The provisional headers to use
+     * @param  EMAIL $email_address The recipient e-mail address
+     * @param  string $_headers The provisional headers to use
      * @return string Updated headers to use including List-Unsubscribe
      */
     public function inject_unsubscribe_headers(string $email_address, string $_headers) : string

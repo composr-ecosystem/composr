@@ -118,7 +118,7 @@ function upgrader_db_upgrade_screen()
                     <button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit"><span class="js-button-label">{$l_proceed}</span></button>
                 </p>
             </div>
-	    </form>
+        </form>
 
         <script nonce="{$GLOBALS['CSP_NONCE']}">
             (function () {
@@ -149,6 +149,9 @@ function upgrader_db_upgrade_screen()
                     }
                 });
 
+                /**
+                 * Count down to when we proceed automatically.
+                 **/
                 function continueFunc() {
                     var labelEl = button.querySelector('.js-button-label');
                     if (button.countdown === 0) {

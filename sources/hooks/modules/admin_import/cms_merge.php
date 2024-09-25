@@ -149,6 +149,7 @@ class Hook_import_cms_merge
             'aggregate_type_instances' => [],
             'leader_boards' => ['cns_members', 'cns_groups'],
             'site_messages' => ['cns_groups', 'comcode_pages'],
+            'stats' => ['cns_members']
         ];
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
@@ -324,49 +325,6 @@ class Hook_import_cms_merge
     }
 
     /**
-     * Import an uploaded file from the old site to the new one.
-     * This should be called on every URLPATH db field which could contain an uploaded file. For multi fields, this should be called on every line of the field.
-     *
-     * @param  ?URLPATH $path The contents of one line of the URLPATH db field / a path relative to the upload file (null: none)
-     * @param  PATH $file_base The base directory we are importing from
-     * @return boolean Whether to treat as successful (false: consider this a broken file)
-     */
-    protected function _import_upload(?string $path, string $file_base) : bool
-    {
-        if ($path === null) { // Nothing to do, and not an error
-            return true;
-        }
-
-        if ($path == '') { // Nothing to do, and not an error
-            return true;
-        }
-
-        $path = rawurldecode($path);
-
-        require_code('files2');
-        require_code('urls');
-
-        if (!url_is_local($path)) { // Nothing to import if a remote URL; skip and treat as success
-            return true;
-        }
-
-        $old_path = $file_base . '/' . $path;
-        if (!is_file($old_path)) {
-            return false; // Not a valid file; treat as a failure
-        }
-
-        $contents = cms_file_get_contents_safe($old_path);
-        if ($contents === false) {
-            return false; // Not a valid file or could not read it; treat as a failure
-        }
-
-        $new_path = get_file_base() . '/' . $path;
-
-        // NB: We should overwrite what is already on disk if the file already exists; import uploads take priority over current ones
-        return cms_file_put_contents_safe($new_path, $contents);
-    }
-
-    /**
      * Standard import function.
      *
      * @param  object $db The database connector to import from
@@ -393,6 +351,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('welcome_email', $row['w_name'], 0);
         }
+        $this->_import_alternative_ids($db, 'welcome_email', 'welcome_email');
     }
 
     /**
@@ -453,7 +412,9 @@ class Hook_import_cms_merge
 
             import_id_remap_put('quiz', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'quiz', 'quiz');
         $this->_import_content_reviews($db, $table_prefix, 'quiz', 'quiz');
+
         $rows = $db->query_select('quiz_questions', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $i => $row) {
@@ -688,6 +649,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'usergroup_subscription', 'usergroup_sub');
 
         $max = 200;
         $start = 0;
@@ -1118,6 +1080,7 @@ class Hook_import_cms_merge
 
             i_timed_refresh();
         }
+        $this->_import_alternative_ids($db, 'author', null);
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'author', null);
         $this->_import_content_reviews($db, $table_prefix, 'author', null);
     }
@@ -1146,6 +1109,7 @@ class Hook_import_cms_merge
 
             i_timed_refresh();
         }
+        $this->_import_alternative_ids($db, 'banner_type', null);
         $this->_import_content_reviews($db, $table_prefix, 'banner_type', null);
 
         $rows = $db->query_select('banners', ['*'], [], '', null, 0, true);
@@ -1200,6 +1164,7 @@ class Hook_import_cms_merge
 
             i_timed_refresh();
         }
+        $this->_import_alternative_ids($db, 'banner', null);
         $this->_import_content_reviews($db, $table_prefix, 'banner', null);
 
         $row_start = 0;
@@ -1559,6 +1524,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('poll', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'poll', 'poll');
         $this->_import_review_supplement($db, $table_prefix, 'polls', 'poll');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'poll', 'poll');
         $this->_import_content_reviews($db, $table_prefix, 'poll', 'poll');
@@ -1593,6 +1559,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('news_category', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'news_category', 'news_category');
         $this->_import_content_reviews($db, $table_prefix, 'news_category', 'news_category');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'news_category', 'news_category');
 
@@ -1652,7 +1619,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (!empty($rows));
-
+        $this->_import_alternative_ids($db, 'news', 'news');
         $this->_import_review_supplement($db, $table_prefix, 'news', 'news');
         $this->_import_content_reviews($db, $table_prefix, 'news', 'news');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'news', 'news');
@@ -1699,6 +1666,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('newsletter', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'newsletter', 'newsletter');
 
         $rowsn = $db->query_select('newsletter_subscribers', ['*'], [], '', null, 0, true);
         if ($rowsn === null) {
@@ -1711,6 +1679,7 @@ class Hook_import_cms_merge
             $GLOBALS['SITE_DB']->query_insert('newsletter_subscribers', ['n_forename' => $row['n_forename'], 'n_surname' => $row['n_surname'], 'join_time' => $row['join_time'], 'email' => $row['email'], 'code_confirm' => $row['code_confirm'], 'pass_salt' => $row['pass_salt'], 'the_password' => $row['the_password'], 'language' => $row['language']]);
             i_timed_refresh();
         }
+        $this->_import_alternative_ids($db, 'newsletter_subscriber', null);
 
         $rows = $db->query_select('newsletter_subscribe', ['*']);
         foreach ($rows as $row) {
@@ -1793,6 +1762,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('download_category', strval($row['id']), $id);
         }
+        $this->_import_alternative_ids($db, 'download_category', 'download_category');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'download_category', 'download_category');
         $this->_import_content_reviews($db, $table_prefix, 'download_category', 'download_category');
         foreach ($rows as $row) {
@@ -1845,6 +1815,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'download', 'download');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'download', 'download');
         $this->_import_review_supplement($db, $table_prefix, 'downloads', 'download');
         $this->_import_content_reviews($db, $table_prefix, 'download', 'download');
@@ -1888,6 +1859,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('download_licence', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'download_licence', 'download_licence');
     }
 
     /**
@@ -1942,6 +1914,7 @@ class Hook_import_cms_merge
                 add_gallery($row['name'], $this->get_lang_string($db, $row['fullname']), $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['parent_id'], $row['accept_images'], $row['accept_videos'], $row['is_member_synched'], $row['layout_mode'], $row['rep_image'], $row['watermark_top_left'], $row['watermark_top_right'], $row['watermark_bottom_left'], $row['watermark_bottom_right'], $row['gallery_sort'], $row['media_sort'], $row['allow_rating'], $row['allow_comments'], false, $row['add_date'], null, '', '', false);
             }
         }
+        $this->_import_alternative_ids($db, 'gallery', null);
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'gallery', null);
         $this->_import_review_supplement($db, $table_prefix, 'galleries', null);
         $this->_import_content_reviews($db, $table_prefix, 'gallery', null);
@@ -1981,9 +1954,10 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'image', 'image');
         $this->_import_review_supplement($db, $table_prefix, 'images', 'image');
         $this->_import_content_reviews($db, $table_prefix, 'image', 'image');
-        $this->_import_catalogue_entry_linkage($db, $table_prefix, 'image', null);
+        $this->_import_catalogue_entry_linkage($db, $table_prefix, 'image', 'image');
 
         $max = 200;
         $start = 0;
@@ -2031,9 +2005,10 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'video', 'video');
         $this->_import_review_supplement($db, $table_prefix, 'videos', 'video');
         $this->_import_content_reviews($db, $table_prefix, 'video', 'video');
-        $this->_import_catalogue_entry_linkage($db, $table_prefix, 'video', null);
+        $this->_import_catalogue_entry_linkage($db, $table_prefix, 'video', 'video');
     }
 
     /**
@@ -2091,6 +2066,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows_pages !== null) && !empty($rows_pages));
+        $this->_import_alternative_ids($db, 'wiki_page', 'wiki_page');
         $this->_import_content_reviews($db, $table_prefix, 'wiki_page', 'wiki_page');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'wiki_page', 'wiki_page');
 
@@ -2133,6 +2109,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'wiki_post', 'wiki_post');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'wiki_post', 'wiki_post');
 
         if (addon_installed('actionlog')) {
@@ -2266,6 +2243,8 @@ class Hook_import_cms_merge
             $I_REFRESH_DID_SOMETHING = true;
             i_timed_refresh();
         }
+
+        $this->_import_alternative_ids($db, 'custom_comcode_tag', null);
     }
 
     /**
@@ -2348,6 +2327,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'comcode_page', null);
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'comcode_page', null);
         $this->_import_content_reviews($db, $table_prefix, 'comcode_page', null);
     }
@@ -2438,6 +2418,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('event_type', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'calendar_type', 'event_type');
         $this->_import_content_reviews($db, $table_prefix, 'calendar_type', 'event_type');
 
         $max = 200;
@@ -2501,6 +2482,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($event_rows !== null) && !empty($event_rows));
+        $this->_import_alternative_ids($db, 'event', 'event');
         $this->_import_review_supplement($db, $table_prefix, 'events', 'event');
         $this->_import_content_reviews($db, $table_prefix, 'event', 'event');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'event', 'event');
@@ -2622,6 +2604,7 @@ class Hook_import_cms_merge
             $ticket_type_id = $GLOBALS['SITE_DB']->query_insert('ticket_types', $map, true);
             import_id_remap_put('ticket_type', strval($row['id']), $ticket_type_id);
         }
+        $this->_import_alternative_ids($db, 'ticket_type', 'ticket_type');
 
         $rows = $db->query_select('tickets', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -2794,6 +2777,7 @@ class Hook_import_cms_merge
 
             i_timed_refresh();
         }
+        $this->_import_alternative_ids($db, 'zone', null);
     }
 
     /**
@@ -2849,6 +2833,7 @@ class Hook_import_cms_merge
                 attach_message(do_lang_tempcode('CANNOT_MERGE_CATALOGUES', escape_html($row['c_name'])), 'notice');
             }
         }
+        $this->_import_alternative_ids($db, 'catalogue', null);
         $this->_import_content_reviews($db, $table_prefix, 'catalogue', null);
         $this->_import_review_supplement($db, $table_prefix, 'catalogues', 'catalogue_entry');
 
@@ -2888,6 +2873,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('catalogue_category', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'catalogue_category', 'catalogue_category');
         $this->_import_content_reviews($db, $table_prefix, 'catalogue_category', 'catalogue_category');
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT id,cc_parent_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_parent_id<0');
@@ -3008,6 +2994,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'catalogue_entry', 'catalogue_entry');
         $this->_import_content_reviews($db, $table_prefix, 'catalogue_entry', 'catalogue_entry');
 
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'catalogue', null);
@@ -3073,6 +3060,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('chat', strval($id_old), $id_new);
         }
+        $this->_import_alternative_ids($db, 'chat', 'chat');
         $this->_import_content_reviews($db, $table_prefix, 'chat', 'chat');
 
         $rows = $db->query_select('chat_blocking', ['*'], [], '', null, 0, true);
@@ -3197,6 +3185,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('award_type', strval($id_old), $id_new);
         }
+        $this->_import_alternative_ids($db, 'award_type', 'award_type');
 
         $max = 200;
         $start = 0;
@@ -3789,6 +3778,7 @@ class Hook_import_cms_merge
                 i_timed_refresh();
             }
         }
+        $this->_import_alternative_ids($db, 'group', 'group');
         $this->_import_content_reviews($db, $table_prefix, 'group', 'group');
     }
 
@@ -3957,6 +3947,7 @@ class Hook_import_cms_merge
 
             $row_start += 200;
         } while (!empty($rows));
+        $this->_import_alternative_ids($db, 'member', 'member');
         $this->_import_content_reviews($db, $table_prefix, 'member', 'member');
 
         // Group membership
@@ -4085,6 +4076,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('cpf', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'cpf', 'cpf');
 
         // Import member cpf_perms
         $this->_import_f_member_cpf_perms($db, $table_prefix);
@@ -4161,6 +4153,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('forum_groupings', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'forum_grouping', 'forum_groupings');
     }
 
     /**
@@ -4235,6 +4228,7 @@ class Hook_import_cms_merge
             import_id_remap_put('forum_parenting', strval(0), 0);
         }
 
+        $this->_import_alternative_ids($db, 'forum', 'forum');
         $this->_import_content_reviews($db, $table_prefix, 'forum', 'forum');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'forum', 'forum');
 
@@ -4345,6 +4339,7 @@ class Hook_import_cms_merge
             $row_start += 200;
         } while (!empty($rows));
 
+        $this->_import_alternative_ids($db, 'topic', 'topic');
         $this->_import_content_reviews($db, $table_prefix, 'topic', 'topic');
 
         // Read logs
@@ -4473,6 +4468,7 @@ class Hook_import_cms_merge
             $row_start += 200;
         } while (!empty($rows));
 
+        $this->_import_alternative_ids($db, 'post', 'post');
         $this->_import_review_supplement($db, $table_prefix, 'post', 'post');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'post', 'post');
         $this->_import_content_reviews($db, $table_prefix, 'post', 'post');
@@ -4568,6 +4564,8 @@ class Hook_import_cms_merge
 
             i_timed_refresh();
         }
+
+        $this->_import_alternative_ids($db, 'emoticon', null);
     }
 
     /**
@@ -4621,6 +4619,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('leader_board', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'leader_board', 'leader_board');
 
         // Result sets
         if (!import_check_if_imported('leader_board_results', strval(0))) {
@@ -4709,19 +4708,18 @@ class Hook_import_cms_merge
         $rows = $db->query_select('f_multi_moderations', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
-            $name = $this->get_lang_string($db, $row['mm_name']);
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_multi_moderations', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('mm_name') => $name]);
-            if ($test === null) {
-                $move_to = ($row['mm_move_to_forum_id'] === null) ? null : import_id_remap_get('forum', strval($row['mm_move_to_forum_id']), true);
-                $multi_code = $this->convert_multi_code($row['mm_forum_multi_code']);
-                cns_make_multi_moderation($name, $row['mm_post_text'], $move_to, $row['mm_pin_state'], $row['mm_open_state'], $multi_code, $row['mm_title_suffix']);
-
-                global $I_REFRESH_DID_SOMETHING;
-                $I_REFRESH_DID_SOMETHING = true;
+            if (import_check_if_imported('multi_moderation', strval($row['id']))) {
+                continue;
             }
 
-            i_timed_refresh();
+            $name = $this->get_lang_string($db, $row['mm_name']);
+            $move_to = ($row['mm_move_to_forum_id'] === null) ? null : import_id_remap_get('forum', strval($row['mm_move_to_forum_id']), true);
+            $multi_code = $this->convert_multi_code($row['mm_forum_multi_code']);
+            $id_new = cns_make_multi_moderation($name, $row['mm_post_text'], $move_to, $row['mm_pin_state'], $row['mm_open_state'], $multi_code, $row['mm_title_suffix']);
+
+            import_id_remap_put('multi_moderation', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'multi_moderation', 'multi_moderation');
     }
 
     /**
@@ -4749,6 +4747,7 @@ class Hook_import_cms_merge
 
             import_id_remap_put('post_template', strval($row['id']), $id_new);
         }
+        $this->_import_alternative_ids($db, 'post_template', 'post_template');
     }
 
     /**
@@ -4789,6 +4788,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'warning', 'warning');
 
         // Now migrate the punitive action logs
         $max = 300;
@@ -4856,6 +4856,7 @@ class Hook_import_cms_merge
             }
             $start += $max;
         } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'warning_punitive', 'warning_punitive');
     }
 
     /**
@@ -4884,6 +4885,7 @@ class Hook_import_cms_merge
             }
             $start += 100;
         } while (!empty($rows));
+        $this->_import_alternative_ids($db, 'aggregate_type_instance', 'aggregate_type_instance');
     }
 
     /**
@@ -5029,6 +5031,7 @@ class Hook_import_cms_merge
 
             i_timed_refresh();
         }
+        $this->_import_alternative_ids($db, 'menu_item', 'menu_item');
     }
 
     /**
@@ -5137,6 +5140,104 @@ class Hook_import_cms_merge
             }
             $row_start += 200;
         } while (!empty($rows));
+        $this->_import_alternative_ids($db, 'site_message', 'site_message');
+    }
+
+    /**
+     * Standard import function.
+     *
+     * @param  object $db The database connector to import from
+     * @param  string $table_prefix The table prefix the target prefix is using
+     * @param  PATH $file_base The base directory we are importing from
+     */
+    public function import_stats(object $db, string $table_prefix, string $file_base)
+    {
+        $max = 300;
+
+        $start = 0;
+        do {
+            $rows = $db->query_select('stats_known_events', ['*'], [], '', $max, $start);
+            foreach ($rows as $row) {
+                if (import_check_if_imported('stats_known_event', $row['e_event'])) {
+                    continue;
+                }
+
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_events', 'e_count_logged', ['e_event' => $row['e_event']]);
+                if ($test !== null) {
+                    $GLOBALS['SITE_DB']->query_insert('stats_known_events', ['e_event' => $row['e_event'], 'e_count_logged' => $test]);
+                } else { // Merge counts
+                    $GLOBALS['SITE_DB']->query_update('stats_known_events', ['e_count_logged' => $test + $row['e_count_logged']], ['e_event' => $row['e_event']]);
+                }
+
+                import_id_remap_put('stats_known_event', $row['e_event'], 0);
+            }
+            $start += $max;
+        } while (($rows !== null) && !empty($rows));
+
+        $start = 0;
+        do {
+            $rows = $db->query_select('stats_known_links', ['*'], [], '', $max, $start);
+            foreach ($rows as $row) {
+                if (import_check_if_imported('stats_known_link', $row['l_url'])) {
+                    continue;
+                }
+
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_links', 'l_count_logged', ['l_url' => $row['l_url']]);
+                if ($test !== null) {
+                    $GLOBALS['SITE_DB']->query_insert('stats_known_links', ['l_url' => $row['l_url'], 'l_count_logged' => $test]);
+                } else { // Merge counts
+                    $GLOBALS['SITE_DB']->query_update('stats_known_links', ['l_count_logged' => $test + $row['l_count_logged']], ['l_url' => $row['l_url']]);
+                }
+
+                import_id_remap_put('stats_known_link', $row['l_url'], 0);
+            }
+            $start += $max;
+        } while (($rows !== null) && !empty($rows));
+
+        $start = 0;
+        do {
+            $rows = $db->query_select('stats_known_tracking', ['*'], [], '', $max, $start);
+            foreach ($rows as $row) {
+                if (import_check_if_imported('stats_known_tracking', $row['t_tracking_code'])) {
+                    continue;
+                }
+
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_tracking', 't_count_logged', ['t_tracking_code' => $row['t_tracking_code']]);
+                if ($test !== null) {
+                    $GLOBALS['SITE_DB']->query_insert('stats_known_tracking', ['t_tracking_code' => $row['t_tracking_code'], 't_count_logged' => $test]);
+                } else { // Merge counts
+                    $GLOBALS['SITE_DB']->query_update('stats_known_tracking', ['t_count_logged' => $test + $row['t_count_logged']], ['t_tracking_code' => $row['t_tracking_code']]);
+                }
+
+                import_id_remap_put('stats_known_tracking', $row['t_tracking_code'], 0);
+            }
+            $start += $max;
+        } while (($rows !== null) && !empty($rows));
+
+        $start = 0;
+        do {
+            $rows = $db->query_select('stats_kpis', ['*'], [], '', $max, $start);
+            foreach ($rows as $row) {
+                if (import_check_if_imported('kpi', $row['id'])) {
+                    continue;
+                }
+
+                $id_old = $row['id'];
+                unset($row['id']);
+
+                $submitter = import_id_remap_get('member', $id_old, true);
+                if ($submitter === null) {
+                    i_timed_refresh();
+                    continue;
+                }
+
+                $id_new = $GLOBALS['SITE_DB']->query_insert('stats_kpis', array_merge($row, ['k_submitter' => $submitter]), true);
+
+                import_id_remap_put('kpi', strval($id_old), $id_new);
+            }
+            $start += $max;
+        } while (($rows !== null) && !empty($rows));
+        $this->_import_alternative_ids($db, 'kpi', 'kpi');
     }
 
     /**
@@ -5187,7 +5288,7 @@ class Hook_import_cms_merge
         $max = 300;
         $start = 0;
         do {
-            $rows = $db->query_select('content_reviews', ['*'], ['content_type' => $content_type]);
+            $rows = $db->query_select('content_reviews', ['*'], ['content_type' => $content_type], '', $max, $start);
             if ($rows === null) {
                 return;
             }
@@ -5265,5 +5366,90 @@ class Hook_import_cms_merge
                 }
             }
         }
+    }
+
+    /**
+     * Import an uploaded file from the old site to the new one.
+     * This should be called on every URLPATH db field which could contain an uploaded file. For multi fields, this should be called on every line of the field.
+     *
+     * @param  ?URLPATH $path The contents of one line of the URLPATH db field / a path relative to the upload file (null: none)
+     * @param  PATH $file_base The base directory we are importing from
+     * @return boolean Whether to treat as successful
+     */
+    protected function _import_upload(?string $path, string $file_base) : bool
+    {
+        if ($path === null) { // Nothing to do, and not an error
+            return true;
+        }
+
+        if ($path == '') { // Nothing to do, and not an error
+            return true;
+        }
+
+        $path = rawurldecode($path);
+
+        require_code('files2');
+        require_code('urls');
+
+        if (!url_is_local($path)) { // Nothing to import if a remote URL; skip and treat as success
+            return true;
+        }
+
+        $old_path = $file_base . '/' . $path;
+        if (!is_file($old_path)) {
+            return false; // Not a valid file; treat as a failure
+        }
+
+        $contents = cms_file_get_contents_safe($old_path);
+        if ($contents === false) {
+            return false; // Not a valid file or could not read it; treat as a failure
+        }
+
+        $new_path = get_file_base() . '/' . $path;
+
+        // NB: We should overwrite what is already on disk if the file already exists; import uploads take priority over current ones
+        return cms_file_put_contents_safe($new_path, $contents);
+    }
+
+    /**
+     * Import alternative IDs of a given resource type.
+     *
+     * @param  object $db The database connector to import from
+     * @param  ID_TEXT $resource_type The value of resource_type in the db to import
+     * @param  ?ID_TEXT $import_type The import_id_remap key applicable for this resource (null: not applicable; use the same resource_id from old site)
+     */
+    protected function _import_alternative_ids(object $db, string $resource_type, ?string $import_type)
+    {
+        $max = 300;
+        $start = 0;
+        do {
+            $rows = $db->query_select('alternative_ids', ['*'], ['resource_type' => $resource_type], '', $max, $start);
+            if ($rows === null) {
+                return;
+            }
+
+            foreach ($rows as $row) {
+                if (import_check_if_imported('alternative_id__' . $resource_type, $row['resource_type'] . '__' . $row['resource_id'])) {
+                    continue;
+                }
+
+                if ($import_type !== null) {
+                    // Ignore resources which we did not import
+                    $new_id = import_id_remap_get($import_type, $row['resource_id'], true);
+                    if ($new_id === null) {
+                        import_id_remap_put('alternative_id__' . $resource_type, $row['resource_id'], 0);
+                        continue;
+                    }
+
+                    $GLOBALS['SITE_DB']->query_insert('alternative_ids', array_merge($row, ['resource_id' => $new_id]), false, true); // Suppress errors in case an alternative ID already exists for a resource
+                } else {
+                    $GLOBALS['SITE_DB']->query_insert('alternative_ids', $row, false, true); // Suppress errors in case an alternative ID already exists for a resource
+                }
+
+                import_id_remap_put('alternative_id__' . $resource_type, $row['resource_id'], 0);
+            }
+
+            $start += $max;
+        } while (($rows !== null) && !empty($rows));
     }
 }
