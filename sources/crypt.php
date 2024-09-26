@@ -260,6 +260,7 @@ function get_secure_random_number() : int
 
 /**
  * Get a secure v1 GUID using the site salt as the node.
+ * This should only be used for chronological non-sensitive data as the randomness is only applied to the clock sequence.
  *
  * @see https://github.com/charm-php/uuid
  * @return string The GUID
@@ -276,7 +277,7 @@ function get_secure_random_v1_guid() : string
     $node = substr(md5(get_site_salt()), 0, 12);
     $node[0] = dechex(hexdec($node[0]) & 1);
 
-    // Piece together time components
+    // Piece together time and clock components
     $time_low = $ts & 0xFFFFFFFF;
     $time_mid = ($ts >> 32) & 0xFFFF;
     $time_hi_and_version = ($ts >> 48) & 0x0FFF;
