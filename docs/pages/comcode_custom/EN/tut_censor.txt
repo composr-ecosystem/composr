@@ -50,7 +50,7 @@ As all these methods work on members, but only banning by IP address works for g
 [/surround]
 
 [surround]
-[media width="150" description="A warning as displayed on the account of a member" float="right"]data_custom/images/docs/tut_censor/censor_warning.png[/media]
+[media width="150" description="The standing tab of a member which lists 2 formal warnings" float="right"]data_custom/images/docs/tut_censor/censor_warning.png[/media]
 [media width="150" description="Making a warning / potentially other punitive actions" float="right"]data_custom/images/docs/tut_censor/censor_make_warning.png[/media]
 [media width="150" description="Links for member warning from their profile" float="right"]data_custom/images/docs/tut_censor/member_links.png[/media]
 All the various punishment tools are brought together for convenience on one screen named "Warn member" (Conversr only).
