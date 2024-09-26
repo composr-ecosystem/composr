@@ -835,11 +835,11 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$SESSION}</td>
-			<td>Get the session ID for the current member</td>
+			<td>Get the session ID for the current member (this is very insecure as it will expose the raw session ID of the member outside of their session cookie; consider using $SESSION_HASHED instead)</td>
 		</tr>
-		<tr style="background: #FFDDDD">
+		<tr style="background: #DDFFDD">
 			<td>{$SESSION_HASHED}</td>
-			<td>A hashed version of the session ID, used as a unique identifier without revealing the user's session</td>
+			<td>An MD5 hashed version of the session ID, used as a pseudo-unique identifier without revealing the user's actual session ID. Note that this will be salted with the site's secret salt.</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$MEMBER_OVERRIDE}</td>
