@@ -259,6 +259,37 @@ function get_secure_random_number() : int
 }
 
 /**
+ * Get a secure v1 GUID using the site salt as the node.
+ * This will not include hyphens.
+ *
+ * @return string The GUID
+ */
+function get_secure_random_v1_guid() : string
+{
+    // Use the first 12 characters in the site salt as our node decimal
+    // NB: We don't use MAC addresses because our minimum PHP is 7.2, but network interface functions require 7.3.
+    $node = hexdec(substr(get_site_salt(), 0, 12)) & 0xFFFFFFFFFFFF;
+
+    // Get time components
+    $time_low = microtime(true) * 10000 & 0xFFFFFFF;
+    $time_mid = microtime(true) * 10000 >> 4 & 0xFFFF;
+    $time_hi_and_version = microtime(true) * 10000 >> 12 | 1 << 12;
+
+    // Generate cryptographically secure random 48-bit signed number
+    // NB: Since this is getting hashed, we allow it despite tracker issue #3046
+    $random_number = random_int(pow(16, 12), pow(16, 13) - 1);
+
+    return sprintf(
+        '%08x%04x%04x%04x%012x',
+        $time_low,
+        $time_mid,
+        $time_hi_and_version,
+        $node,
+        $random_number
+    );
+}
+
+/**
  * Get obfuscate version of 'mailto:' (which will hopefully fool e-mail scavengers to not pick up these e-mail addresses).
  *
  * @return string The obfuscated 'mailto:' string
