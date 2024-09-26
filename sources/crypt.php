@@ -260,33 +260,35 @@ function get_secure_random_number() : int
 
 /**
  * Get a secure v1 GUID using the site salt as the node.
- * This will not include hyphens.
  *
+ * @see https://github.com/charm-php/uuid
  * @return string The GUID
  */
 function get_secure_random_v1_guid() : string
 {
-    // Use the first 12 characters in the site salt as our node decimal
-    // NB: We don't use MAC addresses because our minimum PHP is 7.2, but network interface functions require 7.3.
-    $node = hexdec(substr(get_site_salt(), 0, 12)) & 0xFFFFFFFFFFFF;
+    // Generate random sequence index
+    static $clock_sequence = get_secure_random_number();
 
-    // Get time components
-    $time_low = microtime(true) * 10000 & 0xFFFFFFF;
-    $time_mid = microtime(true) * 10000 >> 4 & 0xFFFF;
-    $time_hi_and_version = microtime(true) * 10000 >> 12 | 1 << 12;
+    // Get timestamp
+    $ts = intval((microtime(true) * 10000000) + mt_rand(0,9) + 0x01b21dd213814000);
 
-    // Generate cryptographically secure random 48-bit signed number
-    // NB: Since this is getting hashed, we allow it despite tracker issue #3046
-    $random_number = random_int(pow(16, 12), pow(16, 13) - 1);
+    // Use the first 12 characters of the MD5 of the site salt as the node
+    $node = substr(md5(get_site_salt()), 0, 12);
+    $node[0] = dechex(hexdec($node[0]) & 1);
 
-    return sprintf(
-        '%08x%04x%04x%04x%012x',
-        $time_low,
-        $time_mid,
-        $time_hi_and_version,
-        $node,
-        $random_number
-    );
+    // Piece together time components
+    $time_low = $ts & 0xFFFFFFFF;
+    $time_mid = ($ts >> 32) & 0xFFFF;
+    $time_hi_and_version = ($ts >> 48) & 0x0FFF;
+    $time_hi_and_version |= (1 << 12);
+    $clock_seq_hi_and_reserved = ($clock_sequence & 0x3F00) >> 8;
+    $clock_seq_hi_and_reserved |= 0x80;
+    $clock_seq_low = $clock_sequence & 0xFF;
+
+    // Increment sequence for next use
+    $clock_sequence++;
+
+    return sprintf('%08x-%04x-%04x-%02x%02x-%s', $time_low, $time_mid, $time_hi_and_version, $clock_seq_hi_and_reserved, $clock_seq_low, $node);
 }
 
 /**
