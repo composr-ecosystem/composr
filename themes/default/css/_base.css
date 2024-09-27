@@ -32,8 +32,8 @@ In mobile mode:
 {$CSS_MODE,desktop,983-infinity,mobileModeDiscard}
 
 /* Ones considering overlays are smaller */
-{$CSS_MODE,mobile__overlay,0-780,mobileModeKeep}
-{$CSS_MODE,desktop__overlay,780-infinity,mobileModeDiscard}
+{$CSS_MODE,mobile__overlay,0-640,mobileModeKeep}
+{$CSS_MODE,desktop__overlay,641-infinity,mobileModeDiscard}
 
 /* Extra ones; useful if you are providing better specificity for particular tested ranges (make sure the base-line of each range works for the rules you set; assuming we are using retina/hi-dpi properly rather than to cram more onto the screen) */
 {$CSS_MODE,smartphone,0-420,mobileModeMedia}

@@ -5,7 +5,7 @@
 
 /* General form-related styles */
 
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	.form-table, .form-table > tbody, .form-table > thead, .form-table > tbody > tr, .form-table > thead > tr, .form-table > tr, .form-table > tbody > tr > th, .form-table > thead > tr > th, .form-table > tr > th, .form-table > tbody > tr > td, .form-table > thead > tr > td, .form-table > tr > td {
 		display: block;
 		width: auto;
@@ -161,7 +161,7 @@ Curved borders would be cool, but it does not work well with the carefully defin
 	padding-left: 1em !important;
 }
 
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	th.form-table-field-name {
 		border-bottom: 0 !important;
 	}
@@ -230,12 +230,12 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 .form-table-field-input select, .form-table-field-input input, .form-table-field-input img {
 	vertical-align: middle;
 }
-/*{+START,CSS_MODE,desktop}*/
+/*{+START,CSS_MODE,desktop__overlay}*/
 	.form-table-field-input .form-control-wide {
 		width: 26em;
 	}
 /*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	.form-table-field-input .form-control-wide {
 		width: 100%;
 	}
@@ -562,12 +562,12 @@ span.validated-checkbox + input[name="validated"].input-tick {
 
 /* Form colour chooser */
 
-/*{+START,CSS_MODE,desktop}*/
+/*{+START,CSS_MODE,desktop__overlay}*/
 	.form-table .css-colour-chooser-name {
 		width: 190px;
 	}
 /*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	.form-table .css-colour-chooser-name {
 		margin-right: 20px;
 	}
@@ -577,12 +577,12 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	float: left;
 	height: 15px;
 }
-/*{+START,CSS_MODE,desktop}*/
+/*{+START,CSS_MODE,desktop__overlay}*/
 	.css-colour-strip {
 		width: 4px;
 	}
 /*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	.css-colour-strip {
 		width: 2px;
 	}
@@ -1012,7 +1012,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	width: 6em;
 }
 
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	.form-table input[type="file"] {
 		max-width: 6em;
 	}
