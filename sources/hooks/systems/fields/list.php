@@ -192,8 +192,8 @@ class Hook_fields_list extends ListFieldHook
 
                 return form_input_radio($_cf_name, $_cf_description, $input_name, $list_tpl, $field['cf_required'] == 1);
 
-            case 'inline':
             case 'dropdown':
+            case 'inline':
             case 'inline_huge':
             case 'dropdown_huge':
             default:
@@ -206,17 +206,24 @@ class Hook_fields_list extends ListFieldHook
                         $list_tpl->attach(form_input_list_entry('', !$selected, do_lang_tempcode('NA_EM')));
                     }
 
+                    $actual_default = '';
                     foreach ($list as $l => $l_nice) {
                         if (is_integer($l)) {
                             $l = strval($l);
                         }
 
-                        $list_tpl->attach(form_input_list_entry($l, false, protect_from_escaping(comcode_to_tempcode($l_nice, null, true))));
+                        $selected = ($l === $actual_value || (($actual_value === null) && ($l == do_lang('OTHER')) && ($field['cf_required'] == 1)));
+
+                        if ($selected) {
+                            $actual_default = $l;
+                        }
+
+                        $list_tpl->attach(form_input_list_entry($l, $selected, protect_from_escaping(comcode_to_tempcode($l_nice, null, true))));
                     }
 
                     $required = $field['cf_required'] == 1;
 
-                    return form_input_combo($_cf_name, $_cf_description, $input_name, $actual_value, $list_tpl, null, $required, $autocomplete);
+                    return form_input_combo($_cf_name, $_cf_description, $input_name, $actual_default, $list_tpl, null, $required, $autocomplete);
                 } else {
                     $list_tpl = new Tempcode();
 
@@ -229,7 +236,7 @@ class Hook_fields_list extends ListFieldHook
                             $l = strval($l);
                         }
 
-                        $selected = ($l === $actual_value || ($actual_value === null) && $l == do_lang('OTHER') && $field['cf_required'] == 1);
+                        $selected = ($l === $actual_value || (($actual_value === null) && ($l == do_lang('OTHER')) && ($field['cf_required'] == 1)));
 
                         $list_tpl->attach(form_input_list_entry($l, $selected, protect_from_escaping(comcode_to_tempcode($l_nice, null, true))));
                     }
