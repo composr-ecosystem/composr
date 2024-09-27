@@ -6,6 +6,11 @@ This tutorial describes all the different fields and their options.
 "Special default values" are taken from a special field option named [tt]default[/tt]. E.g. [tt]default=![/tt] for the [tt]email[/tt] fields's defaulting to the current member's e-mail address.
 The special defaults apply only to add/edit forms, they don't populate automatically for hidden fields or update into existing records if a field is added after records already exist.
 
+[b]A note about personal information and privacy:[/b]
+Instead of using generic text or numeric fields, you should ideally use the respective field types when gathering member IDs, usernames, e-mail addresses, IP addresses, or passwords. And avoid attachment support where possible as well (use a file/picture/video upload field). That way, the privacy system can efficiently search for and handle personal data when purging or downloading it.
+
+Additionally, it is your responsibility to enable the 'May contain personal information' on all fields where submitters may be including personal information. The privacy system will not handle fields which do not have this setting enabled unless explicitly mentioned for that field type in the list.
+
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Text[/title]
@@ -27,6 +32,12 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__short_trans.png[/media]
@@ -54,6 +65,12 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 
 [tt]cms_type=line|codename|integer|float|email[/tt] (which Composr styling and validation code to use; default is line)
 |-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__short_trans_multi.png[/media]
 |-
@@ -75,6 +92,12 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 |-
 ! Supported field options
 | [tt]maxlength[/tt] (the number of characters to have as a maximum; default is 255)
+|-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__short_text.png[/media]
@@ -101,6 +124,12 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 [tt]num_required[/tt] (the number of required values; default is 0 or 1 depending on if required is set)
 
 [tt]cms_type=line|codename|integer|float|email[/tt] (which Composr styling and validation code to use; default is line)
+|-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__short_text_multi.png[/media]
@@ -130,6 +159,12 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 
 [tt]maxlength[/tt] (the number of characters to have as a maximum; default is to have no limit)
 |-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__long_trans.png[/media]
 |-
@@ -158,6 +193,12 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 
 [tt]maxlength[/tt] (the number of characters to have as a maximum; default is to have no limit)
 |-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media description="Text widget" framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__long_text.png[/media]
 [media description="Huge widget" framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__long_text__huge.png[/media]
@@ -169,7 +210,7 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 
 [title="3"]posting_field[/title]
 
-Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
+Note that you are only allowed one [tt]posting_field[/tt] field per catalogue. Also, any fields which appear below the posting field will be collapsed in an 'Additional information' section.
 
 {| 15em wide
 ! Type label
@@ -183,6 +224,12 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__posting_field.png[/media]
@@ -206,6 +253,12 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 ! Supported field options
 | [i]None[/i]
 |-
+! Special field validation behaviour
+| An entry will be rejected if this field contains characters other than letters, numbers, and underscores.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | When adding there is no UI if 'RANDOM' was used.
 [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__codename.png[/media]
@@ -224,10 +277,16 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 | Up to 255 characters of text
 |-
 ! Special default values
-| [i]None[/i]
+| [tt]RANDOM[/tt]: A cryptographically-secure random password will be generated as the placeholder which matches the security requirements configured for the site
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| [i]None[/i]. Be cautious because this does not validate against password strength.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests. Ignores the 'May contain personal information' setting as passwords are always sensitive.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__password.png[/media]
@@ -251,6 +310,12 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 ! Supported field options
 | [i]None[/i]
 |-
+! Special field validation behaviour
+| The entry will be rejected of the value is not formatted as a valid e-mail address.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]E-mail address[/tt] criteria for anonymising if 'May contain personal information' is ticked/checked. [i]Highly recommended for all e-mail address fields where personal e-mail addresses may be stored.[/i]
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__email.png[/media]
 |-
@@ -273,6 +338,12 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 ! Supported field options
 | [tt]allow_wildcards=yes|no[/tt]: whether wildcards are allowed in provided IP addresses (default is no)
 |-
+! Special field validation behaviour
+| The entry will be rejected if the value is not a valid IPv4 or IPv6 address.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]IP address[/tt] criteria for anonymising if 'May contain personal information' is ticked/checked. [i]Highly recommended for all IP address fields which could contain IP addresses belonging to visitors.[/i]
+|-
 ! Back-end UI
 | TODO
 |-
@@ -294,6 +365,12 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 |-
 ! Supported field options
 | [tt]allow_wildcards=yes|no[/tt]: whether wildcards are allowed in provided IP addresses (default is no)
+|-
+! Special field validation behaviour
+| Values which are invalid IPv4 or IPv6 addresses will be automatically removed.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]IP address[/tt] criteria for anonymising if 'May contain personal information' is ticked/checked. [i]Highly recommended for all IP address fields which could contain IP addresses belonging to visitors.[/i]
 |-
 ! Back-end UI
 | TODO
@@ -318,6 +395,12 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue.
 |-
 ! Supported field options
 | [tt]range_search=on|off[/tt]: search forms will allow a range-based search
+|-
+! Special field validation behaviour
+| The entry will be rejected if this is not a valid integer.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__integer.png[/media]
@@ -345,6 +428,12 @@ NB: When adding there is no UI if 'AUTO_INCREMENT' was used.
 [tt]decimal_points=on|off[/tt]: search forms will allow a range-based search
 
 [tt]decimal_points_behaviour=dp|trim|price[/tt]: show exact number of decimal places, trim any zero decimal places off, show exact number of decimal places unless there are none
+|-
+! Special field validation behaviour
+| The entry will be rejected if this is not a valid number.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__float.png[/media]
@@ -399,6 +488,12 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 
 [tt]spreadsheet_heading[/tt] (the column from the spreadsheet file to use, if the default was set as a spreadsheet file; default is to use the first column)
 |-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__list.png[/media]
 [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__list__dropdown.png[/media]
@@ -439,6 +534,12 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 
 [tt]input_size[/tt] (the number of options shown in the list before scrolling is required, applies only to the 'inline' widget type; default is 5)
 |-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__list_multi.png[/media]
 [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__list_multi__horizontal_checkboxes.png[/media]
@@ -467,6 +568,12 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 ! Supported field options
 | [i]None[/i]
 |-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__state.png[/media]
 |-
@@ -489,6 +596,12 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 ! Supported field options
 | [i]None[/i]
 |-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__country.png[/media]
 |-
@@ -510,6 +623,12 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__region.png[/media]
@@ -534,6 +653,12 @@ By default a 'region' is the same as a 'country', but it may be overridden by ad
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will be unticked/unchecked if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600" description="If set as required it will not actually show as required as it is not possible for it to not have a value"]data_custom/images/docs/tut_fields/core_fields_backend__tick__required.png[/media]
@@ -565,6 +690,12 @@ The first image-like field will be injected into screen metadata (i.e. will come
 ! Supported field options
 | [tt]filetype_filter[/tt] (comma-separated list of file extensions; default is not to have a filter)
 |-
+! Special field validation behaviour
+| The entry will be rejected if a disallowed file was selected or uploaded.
+|-
+! Privacy (managing personal data) behaviour
+| File will be deleted if entry owner purges their data if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__upload.png[/media]
 |-
@@ -588,6 +719,12 @@ The first image-like field will be injected into screen metadata (i.e. will come
 | [tt]auto_sort=on|off[/tt] (whether to sort the entered options; default is off)
 
 [tt]filetype_filter[/tt] (comma-separated list of file extensions; default is not to have a filter)
+|-
+! Special field validation behaviour
+| Disallowed files will be removed.
+|-
+! Privacy (managing personal data) behaviour
+| Files will be deleted if entry owner purges their data if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__upload_multi.png[/media]
@@ -617,6 +754,12 @@ The first image-like field will be injected into screen metadata (i.e. will come
 
 [tt]keep_gps=on|off[/tt] (whether to keep GPS metadata in images, which is stripped by default for privacy reasons; default is off)
 |-
+! Special field validation behaviour
+| The entry will be rejected if the file is not a valid picture.
+|-
+! Privacy (managing personal data) behaviour
+| File will be deleted if entry owner purges their data if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__picture.png[/media]
 |-
@@ -645,6 +788,12 @@ The first image-like field will be injected into screen metadata (i.e. will come
 
 [tt]keep_gps=on|off[/tt] (whether to keep GPS metadata in images, which is stripped by default for privacy reasons; default is off)
 |-
+! Special field validation behaviour
+| Invalid pictures will be removed.
+|-
+! Privacy (managing personal data) behaviour
+| Files will be deleted if entry owner purges their data if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__picture_multi.png[/media]
 |-
@@ -668,6 +817,12 @@ The first image-like field will be injected into screen metadata (i.e. will come
 | [tt]width[/tt] (the width all the media will be shown at; default is to auto-detect for each individual file)
 
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
+|-
+! Special field validation behaviour
+| The entry will be rejected if the file is not a valid video.
+|-
+! Privacy (managing personal data) behaviour
+| File will be deleted if entry owner purges their data if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__video.png[/media]
@@ -693,6 +848,12 @@ The first image-like field will be injected into screen metadata (i.e. will come
 
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
 |-
+! Special field validation behaviour
+| Invalid videos will be removed.
+|-
+! Privacy (managing personal data) behaviour
+| Files will be deleted if entry owner purges their data if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__video_multi.png[/media]
 |-
@@ -716,6 +877,12 @@ NB: You can see I uploaded a non-web-safe video as the first video. We do suppor
 ! Supported field options
 | [i]None[/i]
 |-
+! Special field validation behaviour
+| The entry will be rejected if the value is not a valid URL. If the URL is broken, the entry will be allowed but a warning will be displayed.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__url.png[/media]
 |-
@@ -738,6 +905,12 @@ NB: You can see I uploaded a non-web-safe video as the first video. We do suppor
 ! Supported field options
 | [tt]auto_sort=on|off[/tt] (whether to sort the entered options; default is off)
 |-
+! Special field validation behaviour
+| Invalid URLs will be removed from the list. Broken URLs will be allowed but a warning will be displayed.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__url_multi.png[/media]
 |-
@@ -759,6 +932,12 @@ NB: You can see I uploaded a non-web-safe video as the first video. We do suppor
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| The entry will be rejected if the provided page-link does not exist.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__page_link.png[/media]
@@ -785,6 +964,12 @@ NB: You can see I uploaded a non-web-safe video as the first video. We do suppor
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
 
 [tt]is_metadata[/tt] (set to '1' if the field should take precedence for metadata over earlier picture fields [and innate images], and '0' if it should never be the metadata field)
+|-
+! Special field validation behaviour
+| [i]None[/i]
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__theme_image.png[/media]
@@ -813,6 +998,12 @@ If you have manually added new theme images and are not seeing field types for t
 ! Supported field options
 | [i]None[/i]
 |-
+! Special field validation behaviour
+| The entry will be rejected if the value is not alphanumeric.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | When adding there is no UI. When editing it looks like [tt]codename[/tt]
 |-
@@ -837,6 +1028,12 @@ If you have manually added new theme images and are not seeing field types for t
 ! Supported field options
 | [tt]strict_isbn_validation=on|off[/tt] (whether submitted values should strictly adhere to ISBN-10 or ISBN-13 checksums; default is 'off')
 |-
+! Special field validation behaviour
+| If [tt]strict_isbn_validation=on|off[/tt] is defined as on, then the entry will be rejected if the value is not a valid ISBN.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__isbn.png[/media]
 |-
@@ -858,6 +1055,12 @@ If you have manually added new theme images and are not seeing field types for t
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| The entry will be rejected if the given reference does not exist.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__reference.png[/media]
@@ -883,6 +1086,12 @@ If you have manually added new theme images and are not seeing field types for t
 ! Supported field options
 | [tt]auto_sort=on|off[/tt] (whether to sort the entered options; default is off)
 |-
+! Special field validation behaviour
+| References which do not exist will be removed from the list.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__reference_multi.png[/media]
 |-
@@ -906,6 +1115,12 @@ If you have manually added new theme images and are not seeing field types for t
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| The entry will be rejected if the content does not exist.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__content_link.png[/media]
@@ -932,6 +1147,12 @@ NB: Where we support Composr tree-list inputters (like shown for 'reference') fo
 ! Supported field options
 | [tt]auto_sort=on|off[/tt] (whether to sort the entered options; default is off)
 |-
+! Special field validation behaviour
+| Links to content which do not exist will be removed from the list.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__content_link_multi.png[/media]
 NB: Where we support Composr tree-list inputters (like shown for 'reference') for the content types that use them. This screenshot shows input for a 'poll', which is a flat structure and hence just works via a normal drop-down list.
@@ -957,6 +1178,12 @@ NB: Where we support Composr tree-list inputters (like shown for 'reference') fo
 ! Supported field options
 | [i]None[/i]
 |-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Member ID[/tt] (additional member ID fields) criteria. Ignores the 'May contain personal information' setting as member IDs are always sensitive.
+|-
+! Special field validation behaviour
+| The entry will be rejected if the given member ID does not exist.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__member.png[/media]
 |-
@@ -979,11 +1206,73 @@ NB: Where we support Composr tree-list inputters (like shown for 'reference') fo
 ! Supported field options
 | [tt]auto_sort=on|off[/tt] (whether to sort the entered options; default is off)
 |-
+! Special field validation behaviour
+| Member IDs which do not exist will be removed from the list.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Member ID[/tt] (additional member ID fields) criteria. Ignores the 'May contain personal information' setting as member IDs are always sensitive.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__member_multi.png[/media]
 |-
 ! Front-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__member_multi.png[/media]
+|}
+
+[title="3"]username[/title]
+
+{| 15em wide
+! Type label
+| A username
+|-
+! Storage format (for programmer reference)
+| Username, or null
+|-
+! Special default values
+| [tt]![/tt]: Current user's username
+|-
+! Supported field options
+| [i]None[/i]
+|-
+! Special field validation behaviour
+| [i]None[/i] (to allow specifying old usernames)
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Username[/tt] criteria. Ignores the 'May contain personal information' setting as usernames are always sensitive.
+|-
+! Back-end UI
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__username.png[/media]
+|-
+! Front-end UI
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__username.png[/media]
+|}
+
+[title="3"]username_multi[/title]
+
+{| 15em wide
+! Type label
+| Multiple usernames
+|-
+! Storage format (for programmer reference)
+| Usernames separated by linebreaks
+|-
+! Special default values
+| [tt]![/tt]: Current user's username
+|-
+! Supported field options
+| [tt]auto_sort=on|off[/tt] (whether to sort the entered options; default is off)
+|-
+! Special field validation behaviour
+| [i]None[/i] (to allow specifying old usernames)
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Username[/tt] criteria. Ignores the 'May contain personal information' setting as usernames are always sensitive.
+|-
+! Back-end UI
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__username_multi.png[/media]
+|-
+! Front-end UI
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__username_multi.png[/media]
 |}
 
 [title="3"]author[/title]
@@ -1000,6 +1289,12 @@ NB: Where we support Composr tree-list inputters (like shown for 'reference') fo
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| The entry will be rejected if the given author does not exist.
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__author.png[/media]
@@ -1024,6 +1319,12 @@ NB: Where we support Composr tree-list inputters (like shown for 'reference') fo
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| The entry will be rejected if the value is not a valid color.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__color.png[/media]
@@ -1053,6 +1354,12 @@ NB: There is no special styling by default: this field exists so as to provide a
 
 [tt]range_search=on|off[/tt]: search forms will allow a range-based search
 |-
+! Special field validation behaviour
+| The entry will be rejected if the given date and time is invalid.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__date_time.png[/media]
 |-
@@ -1080,6 +1387,12 @@ NB: There is no special styling by default: this field exists so as to provide a
 
 [tt]range_search=on|off[/tt]: search forms will allow a range-based search
 |-
+! Special field validation behaviour
+| The entry will be rejected if the given date is invalid.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__date.png[/media]
 |-
@@ -1101,6 +1414,12 @@ NB: There is no special styling by default: this field exists so as to provide a
 |-
 ! Supported field options
 | [tt]range_search=on|off[/tt]: search forms will allow a range-based search
+|-
+! Special field validation behaviour
+| The entry will be rejected if the given time is invalid.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__time.png[/media]
@@ -1124,6 +1443,12 @@ NB: There is no special styling by default: this field exists so as to provide a
 ! Supported field options
 | [i]None[/i]
 |-
+! Special field validation behaviour
+| [i]None[/i] (there are too many variations to telephone numbers that it is unreasonable to check for them)
+|-
+! Privacy (managing personal data) behaviour
+| Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked. [i]Highly recommended for all telephone fields which could contain personal numbers.[/i]
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__tel.png[/media]
 |-
@@ -1146,6 +1471,12 @@ NB: There is no special styling by default: this field exists so as to provide a
 ! Supported field options
 | [tt]in_money=on|off[/tt]: Show the tax in money, rather than as a tax code (will use the user's address for tax calculation if known, otherwise the site address)
 |-
+! Special field validation behaviour
+| The entry will be rejected if an invalid tax code was given.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
+|-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__tax_code.png[/media]
 |-
@@ -1167,6 +1498,12 @@ NB: There is no special styling by default: this field exists so as to provide a
 |-
 ! Supported field options
 | [i]None[/i]
+|-
+! Special field validation behaviour
+| The entry will be rejected if an invalid year or month was given.
+|-
+! Privacy (managing personal data) behaviour
+| Will be anonymised if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__year_month.png[/media]
