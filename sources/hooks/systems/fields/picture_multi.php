@@ -310,4 +310,16 @@ class Hook_fields_picture_multi
     {
         return ''; // Nothing to extract
     }
+
+    /**
+     * Define what type of field this should be treated as in the privacy system if marked sensitive.
+     * This method should be defined on fields which should not be treated as "additional_anonymise_fields".
+     *
+     * @param  array $field The field details
+     * @return ID_TEXT The type of field to treat this
+     */
+    public function privacy_field_type(array $field) : string
+    {
+        return 'file_fields';
+    }
 }

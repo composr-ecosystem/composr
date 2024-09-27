@@ -532,6 +532,22 @@ abstract class Hook_privacy_base
             $update[$additional_anonymise_field] = do_lang('UNKNOWN');
         }
 
+        // Anonymise file fields but only if we are owner (unless reverse logic)
+        if (($is_owner && !$reverse_logic_return) || (!$is_owner && $reverse_logic_return)) {
+            $file_fields = $table_details['file_fields'];
+            require_code('urls');
+
+            foreach ($file_fields as $file_field) {
+                $update[$file_field] = '';
+
+                // Actually delete the file if we are owner
+                if (!$reverse_logic_return && url_is_local($row[$file_field]) && is_file(get_custom_file_base() . '/' . $row[$file_field])) {
+                    @unlink(get_custom_file_base() . '/'. $row[$file_field]);
+                    sync_file(get_custom_file_base() . '/'. $row[$file_field]);
+                }
+            }
+        }
+
         if (!$reverse_logic_return) {
             // If any of our update fields are keys, then we have to delete rather than anonymise if allowed
             foreach ($update as $field => $value) {
@@ -590,10 +606,19 @@ abstract class Hook_privacy_base
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        // Delete language strings
         foreach ($metadata as $key => $type) {
+            // Delete language strings
             if (strpos($type, '_TRANS') !== false) {
                 delete_lang($row[$key], $db);
+            }
+
+            // Delete files
+            if (strpos($type, 'PATH') !== false) {
+                require_code('urls');
+                if (url_is_local($row[$key]) && is_file(get_custom_file_base() . '/' . $row[$key])) {
+                    @unlink(get_custom_file_base() . '/'. $row[$key]);
+                    sync_file(get_custom_file_base() . '/'. $row[$key]);
+                }
             }
         }
 

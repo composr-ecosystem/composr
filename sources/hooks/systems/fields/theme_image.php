@@ -214,4 +214,16 @@ class Hook_fields_theme_image
     {
         return '';
     }
+
+    /**
+     * Define what type of field this should be treated as in the privacy system if marked sensitive.
+     * This method should be defined on fields which should not be treated as "additional_anonymise_fields".
+     *
+     * @param  array $field The field details
+     * @return ID_TEXT The type of field to treat this
+     */
+    public function privacy_field_type(array $field) : string
+    {
+        return 'string_field_anonymise_only';
+    }
 }
