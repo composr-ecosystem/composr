@@ -22,20 +22,26 @@ Every type of content in Composr is classified as a particular content type. The
 
 This is a list of the content types in Composr:
  - Authors ([tt]author[/tt])
+ - Banner types ([tt]banner_type[/tt])
+ - Banners ([tt]banner[/tt])
  - Calendar events ([tt]event[/tt])
  - Catalogues ([tt]catalogue[/tt])
  - Catalogue categories ([tt]catalogue_category[/tt])
  - Catalogue entries ([tt]catalogue_entry[/tt])
+ - Chatrooms ([tt]chat[/tt])
  - Comcode pages ([tt]comcode_page[/tt])
  - Downloads ([tt]download[/tt])
  - Download categories ([tt]download_category[/tt])
+ - Event types ([tt]calendar_type[/tt])
  - Forum posts ([tt]post[/tt]) [Conversr-only]
  - Forum topics ([tt]topic[/tt]) [Conversr-only]
  - Forums ([tt]forum[/tt]) [Conversr-only]
  - Galleries ([tt]gallery[/tt])
  - Images ([tt]image[/tt])
  - Members ([tt]member[/tt])
- - News ([tt]news[/tt])
+ - News articles ([tt]news[/tt])
+ - News Categories ([tt]news_category[/tt])
+ - Polls ([tt]poll[/tt])
  - Quizzes ([tt]quiz[/tt])
  - Usergroups ([tt]group[/tt]) [Conversr-only]
  - Videos ([tt]video[/tt])
@@ -92,18 +98,23 @@ If you want to delete an award type, this is done by editing the award type and 
 
 [title="4"]Awarding some content[/title]
 
+[surround]
 [media width="150" description="Making a download as holder of the default 'Download of the week' award" float="right"]data_custom/images/docs/tut_featured/featured_dotw.png[/media]
 Now we have added a new award type linked with a particular content type, adding or editing an item of that content type will have an option to assign award to it as current holder.
+[/surround]
 
 [title="4"]Display[/title]
 
 [surround]
 [media width="150" description="A [tt]main_awards[/tt] block being viewed" float="left"]data_custom/images/docs/tut_featured/featured_award_block.png[/media]
 [media width="150" description="Adding a [tt]main_awards[/tt] block using the block construction assistant" float="left"]data_custom/images/docs/tut_featured/assistant.png[/media]
+[media width="150" description="A content which received awards" float="left"]data_custom/images/docs/tut_featured/featured_tooltip.png[/media]
 The [tt]main_awards[/tt] block can display the current award holder of any particular award. The block construction assistant makes it very easy to add the block to a page, providing a drop-down of award types for you to select from.
 
 Each award type has its own archive, in the [tt]awards[/tt] module ([tt]site:awards[/tt] page-link, About > Top content (Awards) of the default menus).
 The archive is linked from the [tt]main_awards[/tt] block also.
+
+When viewing content which received one or more awards, the title of the content will contain a trophy icon. If you hover over the trophy, you will see a tooltip listing the awards given to the content and when.
 [/surround]
 
 [title="2"]Awards vs direct content selection - which to use?[/title]

@@ -230,12 +230,35 @@ Any numbers of different polls may be shown on your website if you choose to sel
 Polls are limited to 10 answers. If you need a more complicated polling mechanism, consider a [page="_SEARCH:tut_quizzes"]survey[/page].
 [/surround]
 
+[title="3"]Topic Polls (Conversr)[/title]
+
+[surround]
+[media width="150" description="The results of a topic poll" float="right"]data_custom/images/docs/tut_feedback/feedback_topic_poll_results.png[/media]
+[media width="150" description="A topic poll on which the member can vote" float="right"]data_custom/images/docs/tut_feedback/feedback_topic_poll.png[/media]
+Topic polls in Conversr work similarly to website polls except they have more advanced functionality and operate exclusively in the Conversr forums. These polls may be ideal for more formal feedback such as voting on measures or conducting debates.
+
+Some of the features topic polls include that website polls do not are the following:
+ - Set a date and time voting closes
+ - Require making a post (reply) in the topic to vote in the poll (great if you want members to provide explanations for their vote)
+ - Control when (or if) poll results are publicly visible
+ - Control if, providing poll results are publicly visible, the public can also see which members voted for each option
+ - Control whether members may revoke / change their vote when voting is still open
+ - Control if votes are weighted by the number of life-time points members had at the time of voting (see [page="_SEARCH:tut_forums"]Discussion forums > Weighting poll results with points[/page]). This is great to give more voting power to more vetted members.
+ - Make more than 10 options
+ - Allow members to vote on more than one option, and control the minimum and maximum number of options on which a member may vote
+ - Set XML on a per-forum basis to force certain settings on all topic polls within that forum (see [page="_SEARCH:tut_adv_forums"]Advanced forum settings > Default Poll Options[/page]). This is a very powerful feature and even allows you to control the allowed options (e.g. you could force "Support" or "Oppose" options in a pro/con debate forum).
+
+See [page="_SEARCH:tut_forums"]Discussion forums[/page] for more information on topic polls.
+[/surround]
+
 [title="2"]Staff notes[/title]
 
 Content usually has a "Staff notes" field, which can be used to put notes intended only for people to see upon-edit. This can be enabled/disabled via the "Enable staff notes" configuration option.
 
 [concepts
- 1_key="Feedback"   1_value="The common title given to Composr systems for feedback that are available across different forms of content"
+ 1_key="Feedback"                 1_value="The common title given to Composr systems for feedback that are available across different forms of content"
+ 2_key="Poll (website)"           2_value="A poll which is visible on the main site; these polls could be submitted by members but are mostly facilitated by staff"
+ 3_key="Topic poll (Conversr)"    3_value="A poll which resides within a topic in the Conversr forum system; these polls are mostly facilitated by the topic author"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
@@ -246,5 +269,7 @@ Content usually has a "Staff notes" field, which can be used to put notes intend
  - [page="_SEARCH:tut_adv_news"]Advanced news[/page]
  - [page="_SEARCH:tut_adv_comcode_pages"]Using blocks[/page]
  - [page="_SEARCH:tut_quizzes"]Quizzes[/page]
+ - [page="_SEARCH:tut_forums"]Discussion forums[/page]
+ - [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page]
 
 {$SET,tutorial_tags,Feedback features,tickets,core_feedback_features,polls,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Composr helps you create a highly interactive site, with features for user interaction/feedback at your disposal.}[block]main_tutorial_rating[/block]
