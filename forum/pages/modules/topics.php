@@ -2084,7 +2084,7 @@ class Module_topics
             $_whisper_to_member = $GLOBALS['FORUM_DRIVER']->get_username($whisper_to_member, false, USERNAME_DEFAULT_BLANK);
         }
         if (cns_may_make_private_topic()) {
-            if ((($_whisper_to_member != '') || (get_option('inline_pp_advertise') == '1')) && ($forum_id !== null)) {
+            if ((($_whisper_to_member != '') || (get_option('inline_pp_advertise') == '1'))) {
                 url_default_parameters__disable();
 
                 $specialisation->attach(form_input_username(do_lang_tempcode('WHISPER'), do_lang_tempcode('DESCRIPTION_WHISPER'), 'whisper_to_member', $_whisper_to_member, false));
