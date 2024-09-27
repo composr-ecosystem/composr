@@ -341,6 +341,10 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 	max-width: 100%;
 }
 
+.input-huge-list, .input-huge-list-required {
+	width: 100%;
+}
+
 .input-dimensions {
 	display: inline-block;
 }
