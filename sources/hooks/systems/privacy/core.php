@@ -220,8 +220,8 @@ class Hook_privacy_core extends Hook_privacy_base
                 ],
                 'logged_mail_messages' => [
                     'timestamp_field' => 'm_date_and_time',
-                    'retention_days' => null,//intval(get_option('email_log_store_time')),
-                    'retention_handle_method' => PRIVACY_METHOD__LEAVE, // Happens automatically
+                    'retention_days' => intval(get_option('email_log_store_time')),
+                    'retention_handle_method' => PRIVACY_METHOD__DELETE,
                     'owner_id_field' => 'm_member_id',
                     'additional_member_id_fields' => ['m_as_member'],
                     'ip_address_fields' => [],
