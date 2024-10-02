@@ -347,7 +347,7 @@ class Hook_ecommerce_custom
             $message_raw = get_translated_text($row['c_mail_body']);
             $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
             $to_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
-            dispatch_mail($subject_line, $message_raw, [$email], $to_name, '', '', ['as_admin' => true]);
+            dispatch_mail($subject_line, $message_raw, '', [$email], $to_name, '', '', ['as_admin' => true]);
         }
 
         return false;

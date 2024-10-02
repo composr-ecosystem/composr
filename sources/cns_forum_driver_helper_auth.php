@@ -369,7 +369,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     if ($email_address == '') {
                         $email_address = get_option('staff_address');
                     }
-                    dispatch_mail(do_lang('IP_VERIFY_MAIL_SUBJECT', null, null, null, get_lang($row['id'])), $mail, [$email_address], $row['m_username'], '', '', ['priority' => 1, 'require_recipient_valid_since' => $row['m_join_time']]);
+                    dispatch_mail(do_lang('IP_VERIFY_MAIL_SUBJECT', null, null, null, get_lang($row['id'])), $mail, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email_address], $row['m_username'], '', '', ['priority' => 1, 'require_recipient_valid_since' => $row['m_join_time']]);
                 }
 
                 $SENT_OUT_VALIDATE_NOTICE = true;

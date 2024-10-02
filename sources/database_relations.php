@@ -399,7 +399,7 @@ function get_table_descriptions() : array
         'leader_board' => 'stores result sets for leader_boards',
         'leader_boards' => 'stores leader-boards for displaying top members by points in a block',
         'leader_boards_groups' => 'relational database to store which usergroups leader_boards should use for filtering',
-        'logged_mail_messages' => 'logged emails (so you can check incorrect emails aren\'t going out) / email queuing',
+        'logged_mail_messages' => 'logged emails / email queuing (for checking if e-mails are not going out and for temporary storage so e-mails can be viewed in the browser)',
         'member_category_access' => 'defines what members may access what categories (rarely used, no admin UI)',
         'member_page_access' => 'defines what members may access what pages (rarely used, no admin UI)',
         'member_privileges' => 'defines what members have what privileges (rarely used, no admin UI)',

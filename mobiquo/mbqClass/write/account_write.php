@@ -343,7 +343,7 @@ class CMSAccountWrite
                     require_code('mail');
                     $subject = do_lang('LOST_PASSWORD_RESET_ERROR_SUBJECT', get_site_name());
                     $message = '[semihtml]' . $error_msg->evaluate() . '[/semihtml]';
-                    dispatch_mail($subject, $message, [$email], null, '', '', ['bypass_queue' => true]);
+                    dispatch_mail($subject, $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email], null, '', '', ['bypass_queue' => true]);
 
                     return [$email, null];
             }

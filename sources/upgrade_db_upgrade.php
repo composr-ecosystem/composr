@@ -782,6 +782,13 @@ function database_specific() : bool
         $done_something = true;
     }
 
+    // LEGACY: (11.beta3) add m_message_extended field on logged_mail_messages
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1727902102)) {
+        $GLOBALS['SITE_DB']->add_table_field('logged_mail_messages', 'm_message_extended', 'LONG_TEXT', '');
+
+        $done_something = true;
+    }
+
     return $done_something;
 }
 

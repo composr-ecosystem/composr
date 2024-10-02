@@ -84,7 +84,7 @@ abstract class EmailIntegration
             $from_email = $sender_email;
         }
 
-        dispatch_mail($subject, $message, [$to_email], $to_displayname, $from_email, $from_displayname, ['mail_template' => 'MAIL_RAW', 'sender_email' => $sender_email, 'plain_subject' => true, 'no_cc' => true]);
+        dispatch_mail($subject, $message, '', [$to_email], $to_displayname, $from_email, $from_displayname, ['mail_template' => 'MAIL_RAW', 'sender_email' => $sender_email, 'plain_subject' => true, 'no_cc' => true]);
     }
 
     /**
@@ -1014,6 +1014,6 @@ abstract class EmailIntegration
         $from_email = $this->get_system_email();
 
         require_code('mail');
-        dispatch_mail($subject, $body, [$email_bounce_to], null, $from_email, '', ['priority' => 2]);
+        dispatch_mail($subject, $body, '', [$email_bounce_to], null, $from_email, '', ['priority' => 2]);
     }
 }

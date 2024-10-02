@@ -142,7 +142,7 @@ function do_user_export__single_ipc($member_id, $delete = false)
                 }
 
                 require_code('mail');
-                dispatch_mail('Updated member record', $message_raw, [USER_EXPORT_EMAIL]);
+                dispatch_mail('Updated member record', $message_raw, '', [USER_EXPORT_EMAIL]);
             }
         }
     }

@@ -97,7 +97,7 @@ class Hook_cron_cns_confirm_reminder
             $url = get_base_url() . '/' . $zone . 'index.php?page=join&type=step4&email=' . urlencode($row['m_email_address']) . '&code=' . urlencode($row['m_validated_email_confirm_code']);
             $url_simple = get_base_url() . '/' . $zone . 'index.php?page=join&type=step4';
             $message = do_lang('CNS_SIGNUP_TEXT', comcode_escape(get_site_name()), comcode_escape($url), [$url_simple, $row['m_email_address'], strval($row['m_validated_email_confirm_code'])], $row['m_language']);
-            dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $row['m_language']), $message, [$row['m_email_address']], $row['m_username']);
+            dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $row['m_language']), $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$row['m_email_address']], $row['m_username']);
         }
     }
 }

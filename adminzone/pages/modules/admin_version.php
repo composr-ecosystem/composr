@@ -373,6 +373,7 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'm_subject' => 'LONG_TEXT', // While data for a subject would be tied to SHORT_TEXT, a language string could bump it up higher
                 'm_message' => 'LONG_TEXT',
+                'm_message_extended' => 'LONG_TEXT',
                 'm_to_email' => 'LONG_TEXT',
                 'm_extra_cc_addresses' => 'LONG_TEXT',
                 'm_extra_bcc_addresses' => 'LONG_TEXT',
@@ -1235,6 +1236,8 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_orig_filename', 'SHORT_TEXT');
             $GLOBALS['SITE_DB']->alter_table_field('incoming_uploads', 'i_save_url', 'URLPATH');
             $GLOBALS['SITE_DB']->alter_table_field('urls_checked', 'url_message', 'SHORT_TEXT', 'response_message');
+
+            $GLOBALS['SITE_DB']->add_table_field('logged_mail_messages', 'm_message_extended', 'LONG_TEXT', '');
 
             $GLOBALS['SITE_DB']->delete_index_if_exists('logged_mail_messages', 'm_as');
         }

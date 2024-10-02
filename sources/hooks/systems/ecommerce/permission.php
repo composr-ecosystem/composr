@@ -512,7 +512,7 @@ class Hook_ecommerce_permission
                 $message_raw = str_replace('{AUTOMATIC}', $message_sub, $message_raw);
             }
 
-            dispatch_mail($subject_line, $message_raw, [$email], $to_name, '', '', ['attachments' => $attachments, 'as_admin' => true]);
+            dispatch_mail($subject_line, $message_raw, '', [$email], $to_name, '', '', ['attachments' => $attachments, 'as_admin' => true]);
         }
 
         // Cleanup

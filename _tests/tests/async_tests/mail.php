@@ -37,7 +37,7 @@ class mail_test_set extends cms_test_case
             switch ($mode) {
                 case 'MAIL':
                     require_code('mail');
-                    $dispatcher = dispatch_mail('test', 'test', ['test@example.com'], null, '', '', ['attachments' => $attachments, 'bypass_queue' => true, 'leave_attachments_on_failure' => true]);
+                    $dispatcher = dispatch_mail('test', 'test', '', ['test@example.com'], null, '', '', ['attachments' => $attachments, 'bypass_queue' => true, 'leave_attachments_on_failure' => true]);
                     if (!$dispatcher->worked) {
                         $expect_files_still = true;
                     }

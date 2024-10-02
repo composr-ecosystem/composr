@@ -50,7 +50,7 @@ function send_recommendation_email(string $name, $email_address, string $message
         $message = '(' . do_lang('NONE') . ')';
     }
 
-    dispatch_mail($subject, $message, $email_address, ($names === null) ? $email_address : $names, $recommender_email, $name);
+    dispatch_mail($subject, $message, '', $email_address, ($names === null) ? $email_address : $names, $recommender_email, $name);
 }
 
 /**

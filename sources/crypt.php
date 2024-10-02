@@ -306,9 +306,9 @@ function get_secure_random_v4_guid() : string
             return $kernel_guid;
         }
     }
-
-    $hex = bin2hex($bytes = random_bytes(16));
-    $hex .= $hex[8].$hex[13].$hex[18].$hex[23];
+    $bytes = random_bytes(16);
+    $hex = bin2hex($bytes);
+    $hex .= $hex[8] . $hex[13] . $hex[18] . $hex[23];
     $hex[8] = '-';
     $hex[13] = '-';
     $hex[14] = '4';

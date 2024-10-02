@@ -102,17 +102,17 @@ function form_to_email(?string $subject = null, string $subject_prefix = '', str
     $block_email = false;
     $hooks = find_all_hook_obs('systems', 'contact_forms', 'Hook_contact_forms_');
     foreach ($hooks as $ob) {
-        $block_email = $block_email || $ob->dispatch($subject, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts, $body_prefix, $body_suffix);
+        $block_email = $block_email || $ob->dispatch($subject, $body, '', $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts, $body_prefix, $body_suffix);
     }
 
     // Send e-mail
     if (!$block_email) {
-        dispatch_mail($subject, $body, ($to_email === null) ? null : [$to_email], $to_name, $from_email, $from_name, ['attachments' => $attachments]);
+        dispatch_mail($subject, $body, '', ($to_email === null) ? null : [$to_email], $to_name, $from_email, $from_name, ['attachments' => $attachments]);
     }
 
     // Send standard confirmation e-mail to current user
     if (($from_email != '') && (get_option('message_received_emails') == '1') && (post_param_integer('_no_confirm_email', 0) != 1)) {
-        dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $subject), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $body), [$from_email], $from_name, '', '', ['as' => get_member()]);
+        dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $subject), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $body), '', [$from_email], $from_name, '', '', ['as' => get_member()]);
     }
 }
 

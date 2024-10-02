@@ -67,7 +67,7 @@ class Hook_endpoint_misc_contact_us
         // Send standard confirmation e-mail to current user
         if ($email_from != '' && get_option('message_received_emails') == '1') {
             require_code('mail');
-            dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $title), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $post), [$email_from], ($from_name == '') ? null : $from_name, '', '', ['as' => get_member()]);
+            dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $title), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $post), '', [$email_from], ($from_name == '') ? null : $from_name, '', '', ['as' => get_member()]);
         }
 
         // Return

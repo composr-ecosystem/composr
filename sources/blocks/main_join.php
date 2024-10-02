@@ -193,7 +193,7 @@ class Block_main_join
                     }
                 }
                 require_code('mail');
-                dispatch_mail($subject, $body, [$email_address], array_key_exists('to', $map) ? $map['to'] : '', '', '', ['as_admin' => true]);
+                dispatch_mail($subject, $body, '', [$email_address], array_key_exists('to', $map) ? $map['to'] : '', '', '', ['as_admin' => true]);
 
                 return true;
             }

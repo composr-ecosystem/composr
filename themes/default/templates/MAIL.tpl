@@ -22,6 +22,7 @@
 		<div class="email-footer">
 			<div class="email-copyright">
 				<p>{$COPYRIGHT`}</p>
+				<p>{VIEW_IN_BROWSER}</p>
 			</div>
 
 			<div class="email-url">

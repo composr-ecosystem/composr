@@ -478,7 +478,7 @@ class Module_admin_cns_members
             }
 
             require_code('mail');
-            dispatch_mail($email_subject, $email_message, ($email_address == '') ? null : [$email_address], $to_name, '', '', ['bypass_queue' => true]);
+            dispatch_mail($email_subject, $email_message, '', ($email_address == '') ? null : [$email_address], $to_name, '', '', ['bypass_queue' => true]);
         }
 
         $special_links = [];

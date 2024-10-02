@@ -551,6 +551,7 @@ class Notification_dispatcher
                     dispatch_mail(
                         $wrapped_subject,
                         $wrapped_message,
+                        '',
                         [$to_email],
                         $to_name,
                         $from_email,
@@ -663,6 +664,7 @@ class Notification_dispatcher
                 dispatch_mail(
                     $subject,
                     $message,
+                    '',
                     [$to_email],
                     $to_name,
                     $from_email,
@@ -975,7 +977,7 @@ function _dispatch_notifications_notification(int $member_id_of, bool $sensitive
 
         $cm_subject = do_lang('SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
         $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), $sensitive_changes, $part_b]);
-        dispatch_mail($cm_subject, $cm_body, [$email_address], $old_username);
+        dispatch_mail($cm_subject, $cm_body, '', [$email_address], $old_username);
     }
 
     // Notify staff

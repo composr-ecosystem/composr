@@ -676,7 +676,7 @@ function unsubscribe_script()
                 require_code('lang');
                 $mail_subject = do_lang('UNSUBSCRIBED_SUBJECT');
                 $mail_body = do_notification_template('UNSUBSCRIBE_MAIL', [], null, false, null, '.txt', 'text'); // TODO: translate
-                dispatch_mail($mail_subject, $mail_body->evaluate(get_site_default_lang()), [$email], '', '', '', ['priority' => 1, 'bypass_queue' => true]);
+                dispatch_mail($mail_subject, $mail_body->evaluate(get_site_default_lang()), '', [$email], '', '', '', ['priority' => 1, 'bypass_queue' => true]);
 
                 $GLOBALS['SITE_DB']->query_insert('unsubscribed_emails', [
                     'b_email_hashed' => $email_hashed,

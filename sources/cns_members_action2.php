@@ -1322,7 +1322,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $vm_body = do_lang('MEMBER_VALIDATED', get_site_name(), $old_username, $login_url, get_lang($member_id));
 
         // Necessary to use dispatch_mail in case the member was locked out of their account
-        dispatch_mail($vm_subject, $vm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
+        dispatch_mail($vm_subject, $vm_body, '', [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
 
         $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         log_it('VALIDATE_MEMBER', strval($member_id), $current_username);
@@ -1378,12 +1378,12 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             if ($old_email_address != '') { // E-mail of security aspects that were changed to the e-mail on file (old)
                 $cm_subject = do_lang('SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
                 $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), $sensitive_changes, $part_b]);
-                dispatch_mail($cm_subject, $cm_body, [$old_email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
+                dispatch_mail($cm_subject, $cm_body, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$old_email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
             }
             if (($email_address !== null) && ($email_address !== $old_email_address)) { // When a new e-mail is specified, also e-mail the new address a vague message about their e-mail being associated with an account
                 $cm_subject = do_lang('EMAIL_ASSOCIATED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
                 $cm_body = do_lang('EMAIL_ASSOCIATED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), comcode_escape($email_address)]);
-                dispatch_mail($cm_subject, $cm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
+                dispatch_mail($cm_subject, $cm_body, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
             }
         }
 
@@ -1517,7 +1517,7 @@ function cns_delete_member(int $member_id, ?int $member_id_deleting = null)
         require_code('mail');
         $dm_subject = do_lang('ACCOUNT_DELETED_SUBJECT', comcode_escape($username), comcode_escape($by_username), [get_site_name()]);
         $dm_body = do_lang('ACCOUNT_DELETED_BODY', comcode_escape($username), comcode_escape($by_username), [get_site_name(), comcode_escape($email_address), $part_b]);
-        dispatch_mail($dm_subject, $dm_body, [$email_address], $username, '', '');
+        dispatch_mail($dm_subject, $dm_body, '', [$email_address], $username, '', '');
     }
 
     // Also notify staff
@@ -1568,7 +1568,7 @@ function cns_ban_member(int $member_id, string $reasoned_ban = '1', bool $automa
 
     require_lang('cns');
     $mail = do_lang('BAN_MEMBER_MAIL', $username, get_site_name(), [], get_lang($member_id));
-    dispatch_mail(do_lang('BAN_MEMBER_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, [$email_address], $username, '', '', ['priority' => 2, 'require_recipient_valid_since' => $join_time]);
+    dispatch_mail(do_lang('BAN_MEMBER_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, '', [$email_address], $username, '', '', ['priority' => 2, 'require_recipient_valid_since' => $join_time]);
 
     delete_cache_entry('main_members');
 
@@ -1598,7 +1598,7 @@ function cns_unban_member(int $member_id)
 
     require_lang('cns');
     $mail = do_lang('UNBAN_MEMBER_MAIL', $username, get_site_name(), [], get_lang($member_id));
-    dispatch_mail(do_lang('UNBAN_MEMBER_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, [$email_address], $username, '', '', ['priority' => 2, 'require_recipient_valid_since' => $join_time]);
+    dispatch_mail(do_lang('UNBAN_MEMBER_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, '', [$email_address], $username, '', '', ['priority' => 2, 'require_recipient_valid_since' => $join_time]);
 
     delete_cache_entry('main_members');
 
