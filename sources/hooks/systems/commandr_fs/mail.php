@@ -108,7 +108,6 @@ class Hook_commandr_fs_mail extends Resource_fs_base
             'from_email' => $row['m_from_email'],
             'from_name' => $row['m_from_name'],
             'priority' => $row['m_priority'],
-            'attachments' => unserialize($row['m_attachments']),
             'no_cc' => $row['m_no_cc'],
             'as_member' => $row['m_as_member'],
             'as_admin' => $row['m_as_admin'],
