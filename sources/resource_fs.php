@@ -230,8 +230,8 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
         }
     } else {
         $no_exists_check_for = null;
-        require_code('global4');
-        $guid = ($new_guid === null) ? generate_guid() : $new_guid;
+        require_code('crypt');
+        $guid = ($new_guid === null) ? get_secure_random_v4_guid() : $new_guid;
     }
 
     require_code('urls2');
@@ -270,6 +270,19 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
 
     if (($moniker !== $no_exists_check_for) || ($new_guid !== null)) {
         $GLOBALS['SITE_DB']->query_delete('alternative_ids', ['resource_type' => $resource_type, 'resource_id' => $resource_id], '', 1);
+
+        // Ensure we do not have duplicate GUIDs in the database
+        $guid_attempts = 0;
+        while (($GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_guid', ['resource_guid' => $guid]) !== null) && ($new_guid === null) && ($guid_attempts < 25)) {
+            require_code('crypt');
+            $guid = get_secure_random_v4_guid();
+            $guid_attempts++;
+        }
+
+        // Uh oh! We failed to make a unique GUID
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_guid', ['resource_guid' => $guid]) !== null) {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
 
         $GLOBALS['SITE_DB']->query_insert('alternative_ids', [
             'resource_type' => $resource_type,

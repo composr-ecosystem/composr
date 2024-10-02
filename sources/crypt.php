@@ -265,7 +265,7 @@ function get_secure_random_number() : int
  * @see https://github.com/charm-php/uuid
  * @return string The GUID
  */
-function get_secure_random_v1_guid() : string
+function get_secure_v1_guid() : string
 {
     // Generate random sequence index
     static $clock_sequence = get_secure_random_number();
@@ -290,6 +290,32 @@ function get_secure_random_v1_guid() : string
     $clock_sequence++;
 
     return sprintf('%08x-%04x-%04x-%02x%02x-%s', $time_low, $time_mid, $time_hi_and_version, $clock_seq_hi_and_reserved, $clock_seq_low, $node);
+}
+
+/**
+ * Generate a cryptographically secure random v4 GUID.
+ *
+ * @return string The GUID
+ */
+function get_secure_random_v4_guid() : string
+{
+    // Use the Linux kernel for a GUID if available
+    if (file_exists('/proc/sys/kernel/random/uuid')) {
+        $kernel_guid = file_get_contents('/proc/sys/kernel/random/uuid');
+        if (($kernel_guid !== false) && (strlen($kernel_guid) >= 32)) {
+            return $kernel_guid;
+        }
+    }
+
+    $hex = bin2hex($bytes = random_bytes(16));
+    $hex .= $hex[8].$hex[13].$hex[18].$hex[23];
+    $hex[8] = '-';
+    $hex[13] = '-';
+    $hex[14] = '4';
+    $hex[18] = '-';
+    $hex[19] = '89ab'[ord($bytes[9]) >> 6];
+    $hex[23] = '-';
+    return $hex;
 }
 
 /**
