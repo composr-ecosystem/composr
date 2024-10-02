@@ -113,11 +113,13 @@ class Module_mail
             $message = $email['message'];
         }
 
+        $ret = new Tempcode();
+        $ret->attach($this->title);
+
         if ($email['in_html'] == 1) {
-            $ret = new Tempcode();
             $ret->attach($email['message']);
         } else {
-            $ret = comcode_to_tempcode($message, $email['member_id'], ($email['as_admin'] == 1));
+            $ret->attach(comcode_to_tempcode($message, $email['member_id'], ($email['as_admin'] == 1)));
         }
 
         return $ret;
