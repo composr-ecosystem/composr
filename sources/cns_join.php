@@ -387,7 +387,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         $message = do_lang('CNS_SIGNUP_TEXT', comcode_escape(get_site_name()), comcode_escape($url), [$url_simple, $email_address, $validated_email_confirm_code], $language);
         require_code('mail');
         if (!$parental_consent) {
-            dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $language), $message, [$email_address], $username, '', '', ['bypass_queue' => true]);
+            dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $language), $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email_address], $username, '', '', ['bypass_queue' => true]);
         }
     }
 
@@ -419,7 +419,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         ], $language, false, null, '.txt', 'text');
 
         require_code('mail');
-        dispatch_mail(do_lang('PARENTAL_CONSENT_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), [$email_address], $username);
+        dispatch_mail(do_lang('PARENTAL_CONSENT_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), '', [$email_address], $username);
     }
 
     // Run form handlers for joining

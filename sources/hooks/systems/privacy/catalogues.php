@@ -154,19 +154,20 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                         $value = [$new_fields[$field['id']]];
                     }
 
-                    // No need to anonymise this field if it is not marked sensitive
-                    if ($field['cf_sensitive'] == 0) {
-                        continue;
-                    }
-
                     // Determine how we should treat / anonymise this field
                     $treat_as = 'additional_anonymise_fields';
                     $ob = get_fields_hook($field['cf_type']);
                     if (method_exists($ob, 'privacy_field_type')) {
                         $treat_as = $ob->privacy_field_type($field);
                         if ($treat_as === null) {
-                            $treat_as = 'additional_anonymise_fields';
+                            $treat_as = ''; // blank means do nothing on this field
                         }
+                    }
+
+                    // No need to anonymise this field if it is not marked sensitive unless it's a member ID, username, or password
+                    $forced_sensitive_fields = ['additional_member_id_fields', 'username_fields'];
+                    if (($field['cf_sensitive'] == 0) && (!in_array($treat_as, $forced_sensitive_fields)) && ($field['cf_type'] != 'password')) {
+                        continue;
                     }
 
                     // Anonymise the field value(s) depending on how we are supposed to treat it
@@ -208,7 +209,36 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                                     }
                                 }
                                 break;
-                            default:
+                            case 'file_fields':
+                                if ($is_owner) { // We delete files we want to anonymise
+                                    $_value = '';
+
+                                    require_code('urls');
+                                    if (url_is_local($_value) && is_file(get_custom_file_base() . '/' . $_value)) {
+                                        @unlink(get_custom_file_base() . '/'. $_value);
+                                        sync_file(get_custom_file_base() . '/'. $_value);
+                                    }
+                                }
+                                break;
+                            case 'string_field_anonymise_only': // Special type
+                                if ($is_owner) {
+                                    if ($field['cf_required'] == 1) {
+                                        $_value = do_lang('UNKNOWN');
+                                    } else {
+                                        $_value = '';
+                                    }
+                                }
+                                break;
+                            case 'number_field_anonymise_only': // Special type
+                                if ($is_owner) {
+                                    if ($field['cf_required'] == 1) {
+                                        $_value = '0';
+                                    } else {
+                                        $_value = '';
+                                    }
+                                }
+                                break;
+                            default: // additional_anonymise_fields
                                 if (($is_owner) || in_array($_value, $others)) {
                                     if ($field['cf_required'] == 1) {
                                         $_value = do_lang('UNKNOWN');

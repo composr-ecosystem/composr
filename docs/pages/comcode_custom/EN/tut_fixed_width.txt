@@ -1,7 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: Fixed-width layouts[/title]
 
 [surround]
-[media width="150" description="A fixed-width Composr site" float="right"]data_custom/images/docs/tut_fixed_width/fixed_width.png[/media]
+[media width="150" description="A fixed-width Composr site with a solid colour background" float="right"]data_custom/images/docs/tut_fixed_width/fixed_width.png[/media]
 Fixed-width is available as a theme option in Composr, and is off by default. This tutorial explains the implementation and pros & cons of it.
 
 Traditionally a topic of regular disagreement in web design is whether 'fixed-width' designs or 'fluid' designs are better. A fixed-width design is one where the horizontal width of the website is fixed, so that it doesn't change when different resolutions are selected.
@@ -23,6 +23,18 @@ Opponents of fixed-width argue:
 [/surround]
 
 Most modern designs are fluid and use responsive design techniques to make it look good on different widths. This is the default within Composr.
+
+[title="2"]Background options for fixed-width[/title]
+
+[surround]
+[media width="150" description="A fixed-width Composr site with a pattern background." float="right"]data_custom/images/docs/tut_fixed_width/fixed_width_pattern_background.png[/media]
+[media width="150" description="A fixed-width Composr site with a fixed background." float="right"]data_custom/images/docs/tut_fixed_width/fixed_width_fixed_background.png[/media]
+There are a few options available for the background when using a fixed-width layout:
+ - The solid colour background uses a solid, slightly-seeded colour.
+ - The pattern background uses the [tt]backgrounds/outer_background[/tt] theme image; if the image is smaller than the browser window, then it repeats in a pattern.
+ - The fixed background uses the [tt]backgrounds/outer_background[/tt] theme image. The image does not scroll even when the page is scrolled.
+ - The scrolled background uses the [tt]backgrounds/outer_background[/tt] theme image and will scroll when the visitor scrolls the page.
+[/surround]
 
 [title="2"]See Also[/title]
 

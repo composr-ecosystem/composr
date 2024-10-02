@@ -109,6 +109,7 @@ class Hook_cron_newsletter_drip_send
                 $mail_ob = dispatch_mail(
                     $subject,
                     $message_wrapped,
+                    '',
                     [$email_address],
                     [$mail['d_to_name']],
                     $from_email,

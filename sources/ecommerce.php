@@ -1957,7 +1957,7 @@ function send_transaction_mails(string $txn_id, string $item_name, bool $shipped
                 $body = $_body->evaluate(get_site_default_lang());
 
                 require_code('mail');
-                dispatch_mail($subject, $body, [$email], $to_name);
+                dispatch_mail($subject, $body, '', [$email], $to_name);
             }
         }
     } else {

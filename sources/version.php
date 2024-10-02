@@ -85,12 +85,12 @@ function cms_version_time() : int
  */
 function cms_version_time_db() : int
 {
-    return 1726889667;
+    return 1727902102;
 }
 
 /**
  * Find the status of this branch version.
- * Developers should also edit is_release_discontinued if setting this to VERSION_EOL.
+ * NB: Developers should also edit is_release_discontinued if setting this to VERSION_EOL.
  *
  * @return string A VERSION_* constant
  */

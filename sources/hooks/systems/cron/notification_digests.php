@@ -88,25 +88,31 @@ class Hook_cron_notification_digests
                         ]);
 
                         $_message = '';
+                        $_message_full = '';
                         foreach ($messages as $message) {
                             if ($message['d_read'] == 0) {
                                 if ($_message != '') {
                                     $_message .= "\n";
+                                }
+                                if ($_message_full != '') {
+                                    $_message_full .= "\n";
                                 }
                                 if (strlen($_message) + strlen($message['d_message']) < self::MAXIMUM_DIGEST_LENGTH) {
                                     $_message .= do_lang('DIGEST_EMAIL_INDIVIDUAL_MESSAGE_WRAP', comcode_escape($message['d_subject']), get_translated_text($message['d_message']), [comcode_escape(get_site_name()), get_timezoned_date_time($message['d_date_and_time'])]);
                                 } else {
                                     $_message .= do_lang('DIGEST_ITEM_OMITTED', comcode_escape($message['d_subject']), get_timezoned_date_time($message['d_date_and_time']), [comcode_escape(get_site_name())]);
                                 }
+                                $_message_full .= do_lang('DIGEST_EMAIL_INDIVIDUAL_MESSAGE_WRAP', comcode_escape($message['d_subject']), get_translated_text($message['d_message']), [comcode_escape(get_site_name()), get_timezoned_date_time($message['d_date_and_time'])]);
                             }
                             delete_lang($message['d_message']);
                         }
                         if ($_message != '') {
                             $wrapped_subject = do_lang('DIGEST_EMAIL_SUBJECT_' . strval($frequency), comcode_escape(get_site_name()));
                             $wrapped_message = do_lang('DIGEST_EMAIL_MESSAGE_WRAP', $_message, comcode_escape(get_site_name()));
+                            $wrapped_message_full = do_lang('DIGEST_EMAIL_MESSAGE_WRAP', $_message_full, comcode_escape(get_site_name()));
 
                             require_code('mail');
-                            dispatch_mail($wrapped_subject, $wrapped_message, [$to_email], $to_name, get_option('staff_address'), get_site_name(), ['as' => A_FROM_SYSTEM_UNPRIVILEGED, 'require_recipient_valid_since' => $join_time]);
+                            dispatch_mail($wrapped_subject, $wrapped_message, $wrapped_message_full, [$to_email], $to_name, get_option('staff_address'), get_site_name(), ['as' => A_FROM_SYSTEM_UNPRIVILEGED, 'require_recipient_valid_since' => $join_time]);
                         }
 
                         delete_cache_entry('_get_notifications', null, $to_member_id);

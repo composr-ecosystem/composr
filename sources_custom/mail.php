@@ -72,19 +72,20 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      *
      * @param  string $subject_line The subject of the mail in plain text
      * @param  LONG_TEXT $message_raw The message, as Comcode
+     * @param  LONG_TEXT $message_web The alternate message to use in the web version, as Comcode (blank: same as $message_raw)
      * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
      * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
-    public function dispatch(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
+    public function dispatch(string $subject_line, string $message_raw, $message_web, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
     {
         if ($from_email == '') {
             $from_email = $this->smtp_from_address;
         }
 
-        return parent::dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+        return parent::dispatch($subject_line, $message_raw, $message_web, $to_emails, $to_names, $from_email, $from_name);
     }
 
     /**

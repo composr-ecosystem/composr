@@ -707,7 +707,7 @@ function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = fals
     // Tpl
     $post = $topic['first_post'];
     if ($show_forum !== null) {
-        $hover = do_lang_tempcode('FORUM_AND_TIME_HOVER', $show_forum, protect_from_escaping(escape_html(get_timezoned_date_time($topic['first_time']))));
+        $hover = do_lang_tempcode('FORUM_AND_TIME_HOVER', $show_forum, protect_from_escaping(($topic['first_time'] === null) ? '' : escape_html(get_timezoned_date_time($topic['first_time']))));
         $breadcrumbs = breadcrumb_segments_to_tempcode(cns_forum_breadcrumbs($topic['forum_id'], null, null, false));
     } else {
         $hover = protect_from_escaping(($topic['first_time'] === null) ? '' : escape_html(get_timezoned_date_time($topic['first_time'])));

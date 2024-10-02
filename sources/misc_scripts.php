@@ -647,7 +647,7 @@ function unsubscribe_script()
             if (($nonce !== null) && ratchet_hash_verify($nonce . $email, get_site_salt(), $checksum)) {
                 $can_unsubscribe = true;
             } else { // Gracefully fall back to showing the unsubscribe form with an error at the top if verification failed
-                $text->attach(do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('COULD_NOT_UNSUBSCRIBE')]));
+                $text->attach(do_template('RED_ALERT', ['_GUID' => '51a314a2a2087ab69b08d6f5c0b6b229', 'TEXT' => do_lang_tempcode('COULD_NOT_UNSUBSCRIBE')]));
             }
         } elseif (post_param_string('csrf_token', null) !== null) { // CSRF provided; we submitted the e-mail form
             global $CSRF_TOKENS;
@@ -676,7 +676,7 @@ function unsubscribe_script()
                 require_code('lang');
                 $mail_subject = do_lang('UNSUBSCRIBED_SUBJECT');
                 $mail_body = do_notification_template('UNSUBSCRIBE_MAIL', [], null, false, null, '.txt', 'text'); // TODO: translate
-                dispatch_mail($mail_subject, $mail_body->evaluate(get_site_default_lang()), [$email], '', '', '', ['priority' => 1, 'bypass_queue' => true]);
+                dispatch_mail($mail_subject, $mail_body->evaluate(get_site_default_lang()), '', [$email], '', '', '', ['priority' => 1, 'bypass_queue' => true]);
 
                 $GLOBALS['SITE_DB']->query_insert('unsubscribed_emails', [
                     'b_email_hashed' => $email_hashed,
@@ -749,6 +749,7 @@ END;
 
     // Body
     $tpl = do_template('FORM_SCREEN', [
+        '_GUID' => '4e4d25dab1f7df6217688098daa577a4',
         'GET' => false,
         'SKIP_WEBSTANDARDS' => true,
         'HIDDEN' => $hidden,
@@ -763,7 +764,7 @@ END;
     $tpl->evaluate_echo();
 
     // Footer
-    $tpl = do_template('HTML_HEAD_POLYFILLS', ['FROM' => get_base_url() . '/data/polyfills']);
+    $tpl = do_template('HTML_HEAD_POLYFILLS', ['_GUID' => 'b11f458ef7d3dcc647e61a34eec0213c', 'FROM' => get_base_url() . '/data/polyfills']);
     $tpl->handle_symbol_preprocessing();
     $tpl->evaluate_echo();
 

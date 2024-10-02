@@ -96,7 +96,7 @@ Here are some scanner tools you can use:[list="a"]
 These tools will scan for various other issues beyond content problems, they're very useful.
 To send a test e-mail to a few services at once using Commandr:
 [code="Commandr"]
-:$emails = array('scanner_a@example.com', 'scanner_b@example.com', 'scanner_c@example.com', 'you@example.com'); require_code('mail'); dispatch_mail('Verifying delivery', 'This is a message being sent to verify that e-mails are being correctly delivered. Thank you.', $emails, null, '', '', array('bypass_queue' => true));
+:$emails = array('scanner_a@example.com', 'scanner_b@example.com', 'scanner_c@example.com', 'you@example.com'); require_code('mail'); dispatch_mail('Verifying delivery', 'This is a message being sent to verify that e-mails are being correctly delivered. Thank you.', '', $emails, null, '', '', array('bypass_queue' => true));
 [/code]
 When previewing an outgoing newsletter (if you have the [tt]newsletters[/tt] addon installed), it automatically runs a spam check.
 Some specific things to look out for when writing your content:[list="a"]

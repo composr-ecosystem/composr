@@ -359,6 +359,7 @@ class Module_contact_member
         dispatch_mail(
             do_lang('EMAIL_MEMBER_SUBJECT', get_site_name(), $subject, null, get_lang($member_id)),
             $message,
+            '',
             [$email_address],
             $to_name,
             $from_email,
@@ -378,6 +379,7 @@ class Module_contact_member
             dispatch_mail(
                 do_lang('YOUR_MESSAGE_WAS_SENT_TO_SUBJECT', $subject, $to_name),
                 do_lang('YOUR_MESSAGE_WAS_SENT_TO_BODY', $message, $to_name),
+                '',
                 [$from_email],
                 empty($from_name) ? null : $from_name,
                 '',

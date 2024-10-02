@@ -202,13 +202,9 @@ The code editor is very useful for making ad hoc changes to a live-site, but is 
 [/surround]
 
 [title="2"]PHP programming help[/title]
-
-[surround]
-[media width="150" description="PHP has an excellent reference manual" float="right"]data_custom/images/docs/tut_framework/framework_phphelp.png[/media]
 It is beyond the scope of the Composr documentation to explain how to program in PHP (although we do have a stab at it in the [page="_SEARCH:tut_programming"]Introduction to programming[/page] tutorial), or other languages that are used such as SQL or HTML. PHP includes an excellent reference guide, and there are many good tutorials on the web for HTML. Composr uses a very minimalistic form of SQL, and usually code does not need to use any directly, due to our database abstraction functions, so this should not be a problem.
 
 The Composr API guide does actually include a PHP reference that defines a subset of PHP that we allow ourselves to use in Composr. The subset is specially limited so as to avoid PHP version conflicts, and the need for PHP extensions that may not be installed.
-[/surround]
 
 [title="2"]Other advantages to our framework[/title]
 

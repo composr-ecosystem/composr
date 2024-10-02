@@ -71,6 +71,7 @@ class Hook_cron_mail_queue
             foreach ($mails as $row) {
                 $subject = $row['m_subject'];
                 $message = $row['m_message'];
+                $message_extended = $row['m_message_extended'];
                 $to_email = @unserialize($row['m_to_email']);
                 $extra_cc_addresses = ($row['m_extra_cc_addresses'] == '') ? [] : @unserialize($row['m_extra_cc_addresses']);
                 $extra_bcc_addresses = ($row['m_extra_bcc_addresses'] == '') ? [] : @unserialize($row['m_extra_bcc_addresses']);
@@ -88,6 +89,7 @@ class Hook_cron_mail_queue
                 $mail_ob = dispatch_mail(
                     $subject,
                     $message,
+                    $message_extended,
                     $to_email,
                     $to_name,
                     $from_email,
@@ -100,6 +102,7 @@ class Hook_cron_mail_queue
                         'as_admin' => ($row['m_as_admin'] == 1),
                         'in_html' => ($row['m_in_html'] == 1),
                         'coming_out_of_queue' => true,
+                        'get_guid_for_id' => $row['id'],
                         'mail_template' => $row['m_template'],
                         'extra_cc_addresses' => $extra_cc_addresses,
                         'extra_bcc_addresses' => $extra_bcc_addresses,

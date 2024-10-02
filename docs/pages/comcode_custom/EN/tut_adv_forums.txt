@@ -116,5 +116,6 @@ You may add custom fields to forums, topics, and posts (which utilise the catalo
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_forums"]Discussion forums[/page]
+ - [page="_SEARCH:tut_feedback"]Feedback and user interaction[/page]
 
 {$SET,tutorial_tags,Forum,cns_forum,Social,regular}{$SET,tutorial_add_date,May 2018}{$SET,tutorial_summary,This tutorial covers more advanced forum configuration.}[block]main_tutorial_rating[/block]

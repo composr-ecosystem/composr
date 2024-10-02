@@ -100,6 +100,7 @@ http://people.dsv.su.se/~jpalme/ietf/ietf-mail-attributes.html
  *
  * @param  string $subject_line The subject of the mail in plain text
  * @param  LONG_TEXT $message_raw The message, as Comcode
+ * @param  LONG_TEXT $message_web The alternate message to use in the web version, as Comcode (blank: same as $message_raw)
  * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
  * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
  * @param  EMAIL $from_email The reply-to address (blank: site staff address)
@@ -107,7 +108,7 @@ http://people.dsv.su.se/~jpalme/ietf/ietf-mail-attributes.html
  * @param  array $advanced_parameters A map of additional parameters. See comments within this function implementation to know what can be sent.
  * @return object Our dispatcher object, which may contain some result data
  */
-function dispatch_mail(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '', array $advanced_parameters = []) : object
+function dispatch_mail(string $subject_line, string $message_raw, string $message_web, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '', array $advanced_parameters = []) : object
 {
     $dispatcher = null;
 
@@ -195,7 +196,7 @@ function dispatch_mail(string $subject_line, string $message_raw, ?array $to_ema
         $to_emails = [$SITE_INFO['redirect_email_output']];
     }
 
-    list($worked, $error) = $dispatcher->dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+    list($worked, $error) = $dispatcher->dispatch($subject_line, $message_raw, $message_web, $to_emails, $to_names, $from_email, $from_name);
 
     $dispatcher->worked = $worked;
     $dispatcher->error = $error;
@@ -383,19 +384,20 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      *
      * @param  string $subject_line The subject of the mail in plain text
      * @param  LONG_TEXT $message_raw The message, as Comcode
+     * @param  LONG_TEXT $message_web The alternate message to use in the web version, as Comcode (blank: same as $message_raw)
      * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
      * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
-    public function dispatch(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
+    public function dispatch(string $subject_line, string $message_raw, string $message_web, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
     {
         if ($from_email == '') {
             $from_email = $this->smtp_from_address;
         }
 
-        return parent::dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+        return parent::dispatch($subject_line, $message_raw, $message_web, $to_emails, $to_names, $from_email, $from_name);
     }
 
     /**
@@ -604,6 +606,7 @@ abstract class Mail_dispatcher_base
     public $in_html = false;
     public $bypass_queue = false;
     public $coming_out_of_queue = false;
+    public $get_guid_for_id = null;
     public $mail_template = 'MAIL';
     public $extra_cc_addresses = [];
     public $extra_bcc_addresses = [];
@@ -679,6 +682,7 @@ abstract class Mail_dispatcher_base
         $this->in_html = isset($advanced_parameters['in_html']) ? $advanced_parameters['in_html'] : false; // HTML-only
         $this->bypass_queue = isset($advanced_parameters['bypass_queue']) ? $advanced_parameters['bypass_queue'] : (($this->priority < 3) || (strpos(serialize($this->attachments), 'tmpfile') !== false)); // Whether to bypass queueing
         $this->coming_out_of_queue = isset($advanced_parameters['coming_out_of_queue']) ? $advanced_parameters['coming_out_of_queue'] : false; // Whether to bypass queueing, because this code is running as a part of the queue management tools (null: auto-decide)
+        $this->get_guid_for_id = isset($advanced_parameters['get_guid_for_id']) ? $advanced_parameters['get_guid_for_id'] : null; // If coming_out_of_queue, get the GUID for this mail resource so that we can populate a link to view the e-mail in the web browser (null: not applicable)
         $this->mail_template = isset($advanced_parameters['mail_template']) ? $advanced_parameters['mail_template'] : 'MAIL'; // The template used to show the e-mail
         $this->require_recipient_valid_since = isset($advanced_parameters['require_recipient_valid_since']) ? $advanced_parameters['require_recipient_valid_since'] : null; // Implement the Require-Recipient-Valid-Since header (null: no restriction)
         $this->is_bulk = isset($advanced_parameters['is_bulk']) ? $advanced_parameters['is_bulk'] : false;
@@ -707,13 +711,14 @@ abstract class Mail_dispatcher_base
      *
      * @param  string $subject_line The subject of the mail in plain text
      * @param  LONG_TEXT $message_raw The message, as Comcode
+     * @param  LONG_TEXT $message_web The alternate message to use in the web version, as Comcode (blank: same as $message_raw)
      * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
      * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
-    public function dispatch(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
+    public function dispatch(string $subject_line, string $message_raw, string $message_web, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
     {
         // Attachments monitored for injection from the Comcode rendering system
         global $EMAIL_ATTACHMENTS;
@@ -748,13 +753,24 @@ abstract class Mail_dispatcher_base
         // Handle queue
         if ($this->coming_out_of_queue) {
             $queue_id = null;
+            $resource_guid = '';
+
+            // Get the resource GUID if we were given an ID so we can generate a link to view this e-mail in the browser
+            if ($this->get_guid_for_id !== null) {
+                require_code('resource_fs');
+                $_resource_guid = find_guid_via_id('mail', strval($this->get_guid_for_id));
+                if ($_resource_guid !== null) {
+                    $resource_guid = $_resource_guid;
+                }
+            }
         } else {
             if (!$this->in_html) {
                 inject_web_resources_context_to_comcode($message_raw);
             }
 
             $through_queue = $this->is_through_queue();
-            $queue_id = $this->log_message($through_queue, $subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+            $resource_guid = '';
+            $queue_id = $this->log_message($through_queue, $subject_line, $message_raw, $message_web, $to_emails, $to_names, $from_email, $from_name, $resource_guid);
             if ($through_queue) {
                 $this->log('QUEUED', 'Entered queue');
 
@@ -780,7 +796,7 @@ abstract class Mail_dispatcher_base
         }
 
         // Go!
-        list($_to_emails, $_to_names, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain) = $this->build_mail_components($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name, $lang, $theme);
+        list($_to_emails, $_to_names, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain) = $this->build_mail_components($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name, $lang, $theme, $resource_guid);
         list($worked, $error) = $this->_dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain);
 
         // Needs to be marked as queued, as it never sent
@@ -860,9 +876,10 @@ abstract class Mail_dispatcher_base
      * @param  string $from_name From name
      * @param  LANGUAGE_NAME $lang Language
      * @param  ID_TEXT $theme Theme
+     * @param  ID_TEXT $resource_guid The GUID of this mail message (blank: none)
      * @return array A huge ordered list of mail components
      */
-    protected function build_mail_components(string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name, string $lang, string $theme) : array
+    protected function build_mail_components(string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name, string $lang, string $theme, string $resource_guid) : array
     {
         global $EMAIL_ATTACHMENTS;
 
@@ -939,6 +956,11 @@ abstract class Mail_dispatcher_base
                     $html_evaluated = $_html_content;
                     $derive_css = (strpos($_html_content, '{CSS') !== false);
                 } else {
+                    $view_in_browser = new Tempcode();
+                    if ($resource_guid != '') {
+                        $url = build_url(['page' => 'mail', 'type' => 'view', 'id' => $resource_guid]);
+                        $view_in_browser = hyperlink($url, do_lang_tempcode('VIEW_MAIL_IN_BROWSER'), true, true);
+                    }
                     $message_html = do_template($this->mail_template, [
                         '_GUID' => 'b23069c20202aa59b7450ebf8d49cde1',
                         'CSS' => '{CSS}',
@@ -946,6 +968,7 @@ abstract class Mail_dispatcher_base
                         'LANG' => $lang,
                         'TITLE' => $subject_wrapped,
                         'CONTENT' => $_html_content,
+                        'VIEW_IN_BROWSER' => $view_in_browser,
                     ], $lang, false, 'MAIL', '.tpl', 'templates', $theme);
                 }
                 if ($derive_css) {
@@ -963,6 +986,11 @@ abstract class Mail_dispatcher_base
 
                 // Cleanup the Comcode a bit
                 $message_plain = strip_comcode($message_raw);
+                $view_in_browser_plain = '';
+                if ($resource_guid != '') {
+                    $url_plain = build_url(['page' => 'mail', 'type' => 'view', 'id' => $resource_guid])->evaluate();
+                    $view_in_browser_plain = '[url="' . do_lang('VIEW_MAIL_IN_BROWSER') . '"]' . $url_plain . '[/url]';
+                }
                 $message_plain = static_evaluate_tempcode(do_template(
                     $this->mail_template,
                     [
@@ -972,6 +1000,7 @@ abstract class Mail_dispatcher_base
                         'LANG' => $lang,
                         'TITLE' => $subject_wrapped,
                         'CONTENT' => $message_plain,
+                        'VIEW_IN_BROWSER' => $view_in_browser_plain,
                     ],
                     $lang,
                     false,
@@ -1358,25 +1387,20 @@ abstract class Mail_dispatcher_base
      * @param  boolean $queued Whether the message is to be queued rather than just logged
      * @param  string $subject_line The subject of the mail in plain text
      * @param  LONG_TEXT $message_raw The message, as Comcode
+     * @param  LONG_TEXT $message_extended The alternate Comcode to display in the web version of the message (blank: should be identical to $message_raw)
      * @param  array $to_emails The destination (recipient) e-mail addresses [array of strings]
      * @param  array $to_names The recipient names [array of strings]
      * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
+     * @param  string $resource_guid The GUID for this message, passed by reference (blank: none generated)
      * @return ?AUTO_LINK The queue ID (null: could not log)
      */
-    protected function log_message(bool $queued, string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name) : ?int
+    protected function log_message(bool $queued, string $subject_line, string $message_raw, string $message_extended, array $to_emails, array $to_names, string $from_email, string $from_name, string &$resource_guid) : ?int
     {
-        if (mt_rand(0, 100) == 1) {
-            cms_register_shutdown_function_safe(function () {
-                if (!$GLOBALS['SITE_DB']->table_is_locked('logged_mail_messages')) {
-                    $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'logged_mail_messages WHERE m_date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('email_log_store_time'))) . ' AND m_queued=0', 500/*to reduce lock times*/, 0, true); // Log it all for 2 weeks, then delete; Errors suppressed in case DB write access broken
-                }
-            });
-        }
-
-        return $GLOBALS['SITE_DB']->query_insert('logged_mail_messages', [
+        $ret = $GLOBALS['SITE_DB']->query_insert('logged_mail_messages', [
             'm_subject' => cms_mb_substr($subject_line, 0, 255),
             'm_message' => $message_raw,
+            'm_message_extended' => $message_extended,
             'm_to_email' => serialize($to_emails),
             'm_to_name' => serialize($to_names),
             'm_extra_cc_addresses' => serialize($this->extra_cc_addresses),
@@ -1398,6 +1422,20 @@ abstract class Mail_dispatcher_base
             'm_sender_email' => ($this->sender_email === null) ? '' : $this->sender_email,
             'm_plain_subject' => $this->plain_subject ? 1 : 0,
         ], true, !$queued); // No errors if we don't NEED this to work
+
+        // Generate a moniker (specifically so mail can be viewed in the browser via GUID)
+        $resource_guid = '';
+        if (($ret !== null) && ($ret !== false)) {
+            if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
+                require_code('resource_fs');
+                $parts = generate_resource_fs_moniker('mail', strval($ret), null, null, true);
+                if ($parts !== null) {
+                    $resource_guid = $parts[1];
+                }
+            }
+        }
+
+        return $ret;
     }
 
     /**
@@ -1452,8 +1490,8 @@ abstract class Mail_dispatcher_base
     /**
      * Inject List-Unsubscribe headers for an e-mail to a single address.
      *
-     * @param EMAIL $email_address The recipient e-mail address
-     * @param string $_headers The provisional headers to use
+     * @param  EMAIL $email_address The recipient e-mail address
+     * @param  string $_headers The provisional headers to use
      * @return string Updated headers to use including List-Unsubscribe
      */
     public function inject_unsubscribe_headers(string $email_address, string $_headers) : string

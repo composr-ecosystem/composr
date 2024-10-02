@@ -219,6 +219,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/enable_seo_fields.php',
             'sources/hooks/systems/config/enable_spell_check.php',
             'sources/hooks/systems/config/enable_staff_notes.php',
+            'sources/hooks/systems/config/enable_web_request_scheduler.php',
             'sources/hooks/systems/config/enveloper_override.php',
             'sources/hooks/systems/config/error_handling_deprecated.php',
             'sources/hooks/systems/config/error_handling_errors.php',

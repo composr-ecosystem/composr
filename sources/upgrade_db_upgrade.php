@@ -118,7 +118,7 @@ function upgrader_db_upgrade_screen()
                     <button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit"><span class="js-button-label">{$l_proceed}</span></button>
                 </p>
             </div>
-	    </form>
+        </form>
 
         <script nonce="{$GLOBALS['CSP_NONCE']}">
             (function () {
@@ -149,6 +149,9 @@ function upgrader_db_upgrade_screen()
                     }
                 });
 
+                /**
+                 * Count down to when we proceed automatically.
+                 **/
                 function continueFunc() {
                     var labelEl = button.querySelector('.js-button-label');
                     if (button.countdown === 0) {
@@ -739,7 +742,7 @@ function database_specific() : bool
     // LEGACY: (11.beta2) Add new privilege for recommend addon
     if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1722461012)) {
         require_code('permissions3');
-        add_privilege('RECOMMEND', 'use_own_recommend_message', true, false, true);
+        add_privilege('RECOMMEND', 'use_own_recommend_message', false, false, true);
 
         $done_something = true;
     }
@@ -767,6 +770,23 @@ function database_specific() : bool
             'b_ip_address' => 'IP',
         ]);
         $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_ip_address', ['b_ip_address']);
+
+        $done_something = true;
+    }
+
+    // LEGACY: (11.beta3) use_own_recommend_message needs to be false by default (was set to true in 11.beta2)
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1727441431)) {
+        delete_privilege('use_own_recommend_message');
+        add_privilege('RECOMMEND', 'use_own_recommend_message', false, false, true);
+
+        $done_something = true;
+    }
+
+    // LEGACY: (11.beta3) add m_message_extended field on logged_mail_messages
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1727902102)) {
+        $GLOBALS['SITE_DB']->add_table_field('logged_mail_messages', 'm_message_extended', 'LONG_TEXT', '');
+
+        $done_something = true;
     }
 
     return $done_something;

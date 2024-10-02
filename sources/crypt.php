@@ -259,6 +259,66 @@ function get_secure_random_number() : int
 }
 
 /**
+ * Get a secure v1 GUID using the site salt as the node.
+ * This should only be used for chronological non-sensitive data as the randomness is only applied to the clock sequence.
+ *
+ * @see https://github.com/charm-php/uuid
+ * @return string The GUID
+ */
+function get_secure_v1_guid() : string
+{
+    // Generate random sequence index
+    static $clock_sequence = get_secure_random_number();
+
+    // Get timestamp
+    $ts = intval((microtime(true) * 10000000) + mt_rand(0,9) + 0x01b21dd213814000);
+
+    // Use the first 12 characters of the MD5 of the site salt as the node
+    $node = substr(md5(get_site_salt()), 0, 12);
+    $node[0] = dechex(hexdec($node[0]) & 1);
+
+    // Piece together time and clock components
+    $time_low = $ts & 0xFFFFFFFF;
+    $time_mid = ($ts >> 32) & 0xFFFF;
+    $time_hi_and_version = ($ts >> 48) & 0x0FFF;
+    $time_hi_and_version |= (1 << 12);
+    $clock_seq_hi_and_reserved = ($clock_sequence & 0x3F00) >> 8;
+    $clock_seq_hi_and_reserved |= 0x80;
+    $clock_seq_low = $clock_sequence & 0xFF;
+
+    // Increment sequence for next use
+    $clock_sequence++;
+
+    return sprintf('%08x-%04x-%04x-%02x%02x-%s', $time_low, $time_mid, $time_hi_and_version, $clock_seq_hi_and_reserved, $clock_seq_low, $node);
+}
+
+/**
+ * Generate a cryptographically secure random v4 GUID.
+ *
+ * @return string The GUID
+ */
+function get_secure_random_v4_guid() : string
+{
+    // Use the Linux kernel for a GUID if available
+    if (file_exists('/proc/sys/kernel/random/uuid')) {
+        $kernel_guid = file_get_contents('/proc/sys/kernel/random/uuid');
+        if (($kernel_guid !== false) && (strlen($kernel_guid) >= 32)) {
+            return $kernel_guid;
+        }
+    }
+    $bytes = random_bytes(16);
+    $hex = bin2hex($bytes);
+    $hex .= $hex[8] . $hex[13] . $hex[18] . $hex[23];
+    $hex[8] = '-';
+    $hex[13] = '-';
+    $hex[14] = '4';
+    $hex[18] = '-';
+    $hex[19] = '89ab'[ord($bytes[9]) >> 6];
+    $hex[23] = '-';
+    return $hex;
+}
+
+/**
  * Get obfuscate version of 'mailto:' (which will hopefully fool e-mail scavengers to not pick up these e-mail addresses).
  *
  * @return string The obfuscated 'mailto:' string

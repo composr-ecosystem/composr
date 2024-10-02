@@ -252,7 +252,7 @@ class Hook_fields_date_time
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
-        return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($actual_value == ''), false, $time, $years_to_show, $min_year, null, true, null, true, $autocomplete);
+        return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($actual_value == ''), true, $time, $years_to_show, $min_year, null, true, null, true, $autocomplete);
     }
 
     /**
@@ -302,5 +302,17 @@ class Hook_fields_date_time
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
         return ''; // Dates and times have no meaning in SEO without context
+    }
+
+    /**
+     * Define what type of field this should be treated as in the privacy system if marked sensitive.
+     * This method should be defined on fields which should not be treated as "additional_anonymise_fields".
+     *
+     * @param  array $field The field details
+     * @return ID_TEXT The type of field to treat this
+     */
+    public function privacy_field_type(array $field) : string
+    {
+        return 'number_field_anonymise_only';
     }
 }

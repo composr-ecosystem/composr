@@ -3264,7 +3264,7 @@ table.scrollable-inside {
 	/*{+END}*/
 }
 
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	/* Deconstructs map table to blocks, for easy layout fit */
 
 	.map-table.responsive-blocked-table,
@@ -3318,7 +3318,7 @@ table.scrollable-inside {
 .spaced-table th, .spaced-table td, .spaced-table .fake-th, .spaced-table .fake-td {
 	padding: 0.7em;
 }
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	.spaced-table td, .spaced-table .fake-td {
 		overflow-x: auto;
 	}
@@ -3537,7 +3537,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 }
 
 /* This relies on some JavaScript running too, to set the data attributes; works great though for properly marked up thead'd tables*/
-/*{+START,CSS_MODE,mobile}*/
+/*{+START,CSS_MODE,mobile__overlay}*/
 	.responsive-table,
 	.responsive-table > caption,
 	.responsive-table > tbody,

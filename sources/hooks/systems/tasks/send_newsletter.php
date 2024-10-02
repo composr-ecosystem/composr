@@ -128,6 +128,7 @@ class Hook_task_send_newsletter
                     dispatch_mail(
                         $subject,
                         $message_wrapped,
+                        '',
                         [$email_address],
                         [$subscriber_map['name']],
                         $from_email,

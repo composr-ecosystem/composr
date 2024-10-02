@@ -104,7 +104,7 @@ class Hook_resource_meta_aware_tutorials_internal
 
             'support_spam_heuristics' => null,
 
-            'actionlog_regexp' => null,
+            'actionlog_regexp' => '\w+_TUTORIAL',
 
             'default_prominence_weight' => PROMINENCE_WEIGHT_HIGH,
             'default_prominence_flags' => 0,

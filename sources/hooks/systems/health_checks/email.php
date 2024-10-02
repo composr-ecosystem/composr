@@ -273,7 +273,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 // What if mailbox missing? Or generally e-mail not received
                 if ($manual_checks) {
                     require_code('mail');
-                    dispatch_mail('Test', 'Test e-mail from Health Check', [$email]);
+                    dispatch_mail('Test', 'Test e-mail from Health Check', '', [$email]);
                     $this->stateCheckManual('An e-mail was sent to ' . $email . ', confirm it was received');
                 }
             }
@@ -655,7 +655,7 @@ class Hook_health_check_email extends Hook_Health_Check
 
             $uniq = uniqid('', true);
             $subject = brand_name() . ' Self-Test (' . $uniq . ')';
-            dispatch_mail($subject, 'Test', [$address], null, '', '', ['bypass_queue' => true]);
+            dispatch_mail($subject, 'Test', '', [$address], null, '', '', ['bypass_queue' => true]);
 
             $wait_time = intval(get_option('hc_mail_wait_time'));
 

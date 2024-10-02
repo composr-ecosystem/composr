@@ -111,9 +111,19 @@ class Hook_fields_password
         if ($actual_value === null) {
             $actual_value = ''; // Plug anomaly due to unusual corruption
         }
+
+        // Generate random password?
+        $default = option_value_from_field_array($field, 'default', $field['cf_default']);
+        if ($new && cms_strtoupper_ascii($default) == 'RANDOM') {
+            require_code('crypt');
+            $default = get_secure_random_password();
+        } else {
+            $default = null;
+        }
+
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
-        return form_input_password($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, null, $actual_value, $autocomplete);
+        return form_input_password($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, $default, $actual_value, $autocomplete);
     }
 
     /**
@@ -144,5 +154,17 @@ class Hook_fields_password
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
         return ''; // Passwords are sensitive information
+    }
+
+    /**
+     * Define what type of field this should be treated as in the privacy system if marked sensitive.
+     * This method should be defined on fields which should not be treated as "additional_anonymise_fields".
+     *
+     * @param  array $field The field details
+     * @return ID_TEXT The type of field to treat this
+     */
+    public function privacy_field_type(array $field) : string
+    {
+        return 'string_field_anonymise_only';
     }
 }

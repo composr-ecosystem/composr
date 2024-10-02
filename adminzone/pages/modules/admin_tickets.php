@@ -424,7 +424,7 @@ class Module_admin_tickets
         }
 
         require_code('mail');
-        $dispatcher = dispatch_mail($title, $message, [$to_email], [$to_email], $reply_to, '', ['mail_template' => $template]);
+        $dispatcher = dispatch_mail($title, $message, '',  [$to_email], [$to_email], $reply_to, '', ['mail_template' => $template]);
 
         // Attach status
         if ($dispatcher->worked) {

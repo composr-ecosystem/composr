@@ -147,6 +147,9 @@ class Hook_cron_block_caching
                 if (!$DO_NOT_CACHE_THIS) {
                     if (method_exists($object, 'caching_environment')) {
                         $info = $object->caching_environment();
+                        if (!array_key_exists('special_cache_flags', $info)) {
+                            $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
+                        }
                     } else {
                         $info = [];
                         $info['cache_on'] = <<<'PHP'

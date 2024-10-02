@@ -475,10 +475,9 @@ function get_db_type() : string
     } else {
         $ret = 'mysqli';
     }
-    if ($ret === 'mysql' && !function_exists('mysql_connect')) {
+
+    if ($ret === 'mysql') { // LEGACY: mysql extension was removed in PHP 7; force mysqli because our minimum is PHP 7.2.
         $ret = 'mysqli';
-    } elseif ($ret === 'mysqli' && !function_exists('mysqli_connect')) {
-        $ret = 'mysql';
     }
     return $ret;
 }
@@ -1262,7 +1261,7 @@ abstract class DatabaseDriver
     public function failed_query_echo(string $message)
     {
         // Log to the error log so staff can investigate and have a record (especially useful when refreshing or running in steps)
-        @error_log('Composr Database: WARN ' . $message);
+        @error_log('Composr database: WARNING ' . $message);
 
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);

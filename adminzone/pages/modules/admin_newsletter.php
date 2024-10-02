@@ -1270,6 +1270,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $mail_dispatcher = dispatch_mail(
             $full_subject,
             $in_html ? $html_version->evaluate() : $text_version,
+            '',
             [$email_address],
             $name/*do_lang('NEWSLETTER_SUBSCRIBER',get_site_name())*/,
             $from_email,

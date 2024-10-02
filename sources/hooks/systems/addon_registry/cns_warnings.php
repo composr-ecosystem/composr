@@ -148,7 +148,7 @@ class Hook_addon_registry_cns_warnings
             'sources/hooks/systems/commandr_fs_extended_member/warnings.php',
             'sources/hooks/systems/points_transact/cns_warnings.php',
             'sources/hooks/systems/preview/warnings.php',
-            'sources/hooks/systems/profiles_tabs/warnings.php',
+            'sources/hooks/systems/profiles_tabs/standing.php',
             'sources/hooks/systems/resource_meta_aware/warning.php',
             'sources/hooks/systems/resource_meta_aware/warning_punitive.php',
             'sources_custom/hooks/systems/cns_warnings/.htaccess',
@@ -160,7 +160,7 @@ class Hook_addon_registry_cns_warnings
             'themes/default/images/icons_monochrome/links/warning_add.svg',
             'themes/default/images/icons_monochrome/menu/social/warnings.svg',
             'themes/default/javascript/cns_warnings.js',
-            'themes/default/templates/CNS_MEMBER_PROFILE_WARNINGS.tpl',
+            'themes/default/templates/CNS_MEMBER_PROFILE_STANDING.tpl',
             'themes/default/templates/CNS_SAVED_WARNING.tpl',
             'themes/default/templates/CNS_WARNING_HISTORY_SCREEN.tpl',
             'themes/default/templates/CNS_WARN_SPAM_URLS.tpl',
@@ -177,7 +177,7 @@ class Hook_addon_registry_cns_warnings
         return [
             'templates/CNS_SAVED_WARNING.tpl' => 'cns_saved_warning',
             'templates/CNS_WARNING_HISTORY_SCREEN.tpl' => 'administrative__cns_warning_history_screen',
-            'templates/CNS_MEMBER_PROFILE_WARNINGS.tpl' => 'cns_member_profile_warnings',
+            'templates/CNS_MEMBER_PROFILE_STANDING.tpl' => 'cns_member_profile_standing',
             'templates/CNS_WARN_SPAM_URLS.tpl' => 'cns_warn_spam_urls',
         ];
     }
@@ -189,7 +189,7 @@ class Hook_addon_registry_cns_warnings
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__cns_member_profile_warnings() : object
+    public function tpl_preview__cns_member_profile_standing() : object
     {
         $_content = do_template('COLUMNED_TABLE_SCREEN', [
             '_GUID' => 'd63195e13c89eda69b854c4c9310d9e2',
@@ -200,8 +200,26 @@ class Hook_addon_registry_cns_warnings
             'JS_FUNCTION_CALLS' => [],
         ]);
 
-        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_WARNINGS', [
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_STANDING', [
             'MEMBER_ID' => placeholder_first_admin_id(),
+            'STEPPERS' => [
+                [
+                    'LABEL' => lorem_phrase(),
+                    'ICON' => 'buttons/yes',
+                    'ACTIVE' => true,
+                ],
+                [
+                    'LABEL' => lorem_phrase(),
+                    'ICON' => 'buttons/yes',
+                    'ACTIVE' => false,
+                ]
+            ],
+            'INFO' => [
+                [
+                    'ICONS' => 'buttons/yes',
+                    'TEXT' => lorem_sentence(),
+                ]
+            ],
             'WARNINGS' => $_content,
         ]), null, '', true);
     }

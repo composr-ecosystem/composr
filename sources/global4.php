@@ -726,7 +726,8 @@ function already_in_log(string $type, ?string $a = null, ?string $b = null) : bo
 }
 
 /**
- * Generate a GUID.
+ * Generate a v4 GUID.
+ * This is not cryptographically secure. For secure GUIDs, see get_secure_random_v4_guid() in crypt.php.
  *
  * @return ID_TEXT A GUID
  */

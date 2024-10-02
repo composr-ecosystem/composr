@@ -140,11 +140,13 @@ PHP;
                 $url = (url_is_local($map['path']) ? (get_custom_base_url() . '/') : '') . $map['path'];
                 $subject = empty($map['subject']) ? do_lang('_WELCOME') : $map['subject'];
                 $body = http_get_contents($url, ['convert_to_internal_encoding' => true]);
-                $body = str_replace('{password}', $password, $body);
                 $body = str_replace('{email}', $address, $body);
                 $body = str_replace('{forename}', $forename, $body);
                 $body = str_replace('{surname}', $surname, $body);
-                dispatch_mail($subject, $body, [$address], empty($map['to']) ? null : $map['to'], '', '', ['as_admin' => true]);
+
+                $_body = str_replace('{password}', '(redacted)', $body);
+                $body = str_replace('{password}', $password, $body);
+                dispatch_mail($subject, $body, $_body, [$address], empty($map['to']) ? null : $map['to'], '', '', ['as_admin' => true]);
             }
 
             return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP_DONE', [

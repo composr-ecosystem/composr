@@ -168,4 +168,41 @@ class Hook_cns_warnings_probation
         require_code('cns_general_action2');
         cns_mod_log_it('STOP_PROBATION', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
     }
+
+    /**
+     * Return information for the standing profile tab.
+     *
+     * @param  MEMBER $member_id_of The member whose profile we are viewing
+     * @param  MEMBER $member_id_viewing The member who is viewing the profile
+     * @param  array $warning_ids Array of formal warning IDs against this member for checking against queried punitive actions
+     * @return array Array of maps with information about this punitive action
+     */
+    public function get_stepper(int $member_id_of, int $member_id_viewing, array $warning_ids) : array
+    {
+        if (!addon_installed('cns_warnings') || get_forum_type() != 'cns') {
+            return [];
+        }
+
+        $info = [];
+        $probation = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_probation_expiration_time');
+        if (($probation !== null) && ($probation > time())) {
+            require_code('temporal');
+            $info[] = [
+                'icon' => 'menu/adminzone/security',
+                'text' => do_lang_tempcode('STANDING_PROBATION_TEXT', escape_html(get_timezoned_date_time($probation, false, false, $member_id_viewing))),
+            ];
+        }
+
+        return [
+            [
+                'order' => 80,
+                'label' => do_lang('STANDING_PROBATION'),
+                'explanation' => do_lang('DESCRIPTION_STANDING_PROBATION'),
+                'icon' => 'menu/adminzone/security',
+                'active' => !empty($info),
+                'active_color' => 'warning',
+                'info' => $info,
+            ],
+        ];
+    }
 }

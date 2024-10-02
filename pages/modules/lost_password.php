@@ -361,7 +361,7 @@ class Module_lost_password
                 $lang_string = 'MAIL_NEW_PASSWORD_TEXT';
             }
             $message = do_lang($lang_string, comcode_escape($new_password), $login_url, [comcode_escape(get_site_name()), comcode_escape($username), $account_edit_url->evaluate(), comcode_escape($email)]);
-            dispatch_mail($subject, $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['require_recipient_valid_since' => $join_time]);
+            dispatch_mail($subject, $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['require_recipient_valid_since' => $join_time]);
         }
 
         // Update stored password

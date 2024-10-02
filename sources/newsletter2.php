@@ -108,7 +108,7 @@ function basic_newsletter_join(string $email, ?string $language = null, bool $ge
         $newsletter_url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
         $message = do_lang('NEWSLETTER_SIGNUP_TEXT', comcode_escape($url), comcode_escape($password), [$forename, $surname, $email, get_site_name(), $newsletter_url->evaluate()], $language);
         require_code('mail');
-        dispatch_mail(do_lang('NEWSLETTER_SIGNUP', null, null, null, $language), $message, [$email], null, '', '', ['bypass_queue' => true]);
+        dispatch_mail(do_lang('NEWSLETTER_SIGNUP', null, null, null, $language), $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email], null, '', '', ['bypass_queue' => true]);
     }
 
     // Set subscription

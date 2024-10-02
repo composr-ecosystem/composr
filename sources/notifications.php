@@ -107,8 +107,8 @@ function do_notification_lang(string $codename, $parameter1 = null, $parameter2 
  * @param  ID_TEXT $codename The codename of the template being loaded
  * @param  array $parameters A map of parameters for the template (key to value); you can have any number of parameters of any name, there is no set standard; having a _GUID parameter of random value is a convention
  * @param  ?LANGUAGE_NAME $lang The language to load the template in (templates can embed language references) (null: users own language)
- * @param  boolean $light_error Not supported; use false
- * @param  ?ID_TEXT $fallback Not supported; use null
+ * @param  boolean $light_error Whether to produce a light error; not supported so use false
+ * @param  ?ID_TEXT $fallback The template to use as a fallback; not supported so use null (null: none)
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
@@ -551,6 +551,7 @@ class Notification_dispatcher
                     dispatch_mail(
                         $wrapped_subject,
                         $wrapped_message,
+                        '',
                         [$to_email],
                         $to_name,
                         $from_email,
@@ -663,6 +664,7 @@ class Notification_dispatcher
                 dispatch_mail(
                     $subject,
                     $message,
+                    '',
                     [$to_email],
                     $to_name,
                     $from_email,
@@ -975,7 +977,7 @@ function _dispatch_notifications_notification(int $member_id_of, bool $sensitive
 
         $cm_subject = do_lang('SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
         $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), $sensitive_changes, $part_b]);
-        dispatch_mail($cm_subject, $cm_body, [$email_address], $old_username);
+        dispatch_mail($cm_subject, $cm_body, '', [$email_address], $old_username);
     }
 
     // Notify staff

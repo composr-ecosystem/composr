@@ -1305,7 +1305,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
     if (($developers) && (get_value('agency_email_address') !== null) && ($send_error_email)) {
         require_code('mail');
         $agency_email_address = get_value('agency_email_address');
-        dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, [$agency_email_address], '', '', '', ['no_cc' => true, 'as_admin' => true]);
+        dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, '', [$agency_email_address], '', '', '', ['no_cc' => true, 'as_admin' => true]);
     }
 }
 

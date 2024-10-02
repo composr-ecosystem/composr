@@ -127,10 +127,14 @@ class Hook_block_ui_renderers_core
         } elseif ($block . ':' . $parameter == 'menu:param') { // Menu blocks: Menu
             $list = new Tempcode();
             $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], [], 'ORDER BY i_menu');
+            $actual_default = '';
             foreach ($rows as $row) {
+                if ($default == $row['i_menu']) {
+                    $actual_default = $row['i_menu'];
+                }
                 $list->attach(form_input_list_entry($row['i_menu'], $has_default && $row['i_menu'] == $default));
             }
-            return form_input_combo(do_lang_tempcode('MENU'), escape_html($description), $parameter, $default, $list, null, false);
+            return form_input_combo(do_lang_tempcode('MENU'), escape_html($description), $parameter, $actual_default, $list, null, false);
         }
 
         return null;

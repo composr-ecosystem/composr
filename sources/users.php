@@ -158,6 +158,14 @@ function get_member(bool $quick_only = false) : int
         require_code('users_active_actions');
         if (function_exists('restricted_manually_enabled_backdoor')) { // May be trying to check in safe mode when doing above require_code, so recurse
             $MEMBER_CACHED = restricted_manually_enabled_backdoor();
+
+            // Is there a su operation?
+            $ks = get_param_string('keep_su', '');
+            if ($ks != '') {
+                require_code('users_inactive_occasionals');
+                $MEMBER_CACHED = try_su_login($MEMBER_CACHED);
+            }
+
             // Will have created a session in here already
             return $MEMBER_CACHED;
         }

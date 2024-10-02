@@ -358,7 +358,7 @@ class Hook_profiles_tabs_edit_settings
             $login_url = $_login_url->evaluate();
             $vm_subject = do_lang('VALIDATED_MEMBER_SUBJECT', get_site_name(), null, get_lang($member_id_of));
             $vm_body = do_lang('MEMBER_VALIDATED', get_site_name(), $username, $login_url, get_lang($member_id_of));
-            dispatch_mail($vm_subject, $vm_body, [$email_address], $username, '', '', ['require_recipient_valid_since' => $join_time]);
+            dispatch_mail($vm_subject, $vm_body, '', [$email_address], $username, '', '', ['require_recipient_valid_since' => $join_time]);
 
             attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
         }
@@ -431,7 +431,7 @@ class Hook_profiles_tabs_edit_settings
             require_code('mail');
             require_code('mail2');
             if (!can_email_member($member_id_of)) {
-                $tpl = do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('CANNOT_RECEIVE_MAIL_MEMBER')]);
+                $tpl = do_template('RED_ALERT', ['_GUID' => '2911f8aaae7fd4412fb393a63cf8606b', 'TEXT' => do_lang_tempcode('CANNOT_RECEIVE_MAIL_MEMBER')]);
                 $text->attach($tpl);
             }
         }

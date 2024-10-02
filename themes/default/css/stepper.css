@@ -85,6 +85,16 @@
 	color: {$GET,native_ui_background};
 }
 
+.stepper-item.active.warning .step-counter {
+	background-color: {$GET,warning_color};
+	color: {$GET,native_ui_foreground};
+}
+
+.stepper-item.active.danger .step-counter {
+	background-color: {$GET,danger_color};
+	color: {$GET,native_ui_background};
+}
+
 .stepper-item.completed::after {
 	position: absolute;
 	content: "";

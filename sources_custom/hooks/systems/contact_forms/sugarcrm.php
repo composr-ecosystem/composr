@@ -18,7 +18,7 @@
  */
 class Hook_contact_forms_sugarcrm
 {
-    public function dispatch($subject, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts, $body_prefix, $body_suffix)
+    public function dispatch($subject, $body, $body_web, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts, $body_prefix, $body_suffix)
     {
         if (!addon_installed('sugarcrm')) {
             return false;

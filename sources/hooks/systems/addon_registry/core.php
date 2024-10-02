@@ -860,6 +860,7 @@ class Hook_addon_registry_core
             'sources/content2.php',
             'sources/cpf_install.php',
             'sources/critical_errors.php',
+            'sources/cron.php',
             'sources/crud_module.php',
             'sources/crypt.php',
             'sources/crypt_maintenance.php',

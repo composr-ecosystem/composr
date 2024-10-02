@@ -13,7 +13,8 @@ This tutorial does not cover validation, which is covered in the [page="_SEARCH:
 
 [media width="150" description="The CAPTCHA" float="right"]data_custom/images/docs/tut_antispam/captcha.png[/media]
 CAPTCHA is the conventional tool to stop guest actions (such as joining, or posting) without first proving you're human. It can also be configured for new members.
-Composr uses a unique method behind-the-scenes to generate the CAPTCHA (the 'CSS' method), which has proven very effective.
+
+Composr uses a unique method behind-the-scenes to generate the CAPTCHA (the 'CSS' method), which has proven very effective. Composr by default also combines the use of JavaScript to make it harder for CAPTCHA harvesters to solve it (the CAPTCHA is loaded as an iframe via JavaScript so that pure web-page browser agents, such as harvesters, cannot see it).
 
 Generally-speaking, CAPTCHA will fully protect you from spam. The exception tends to be when real humans do set up accounts, then spam using them. Some spammers subcontract CAPTCHA solution to humans on low-salaries. Other spammers serve target site's CAPTCHAs out to video sites (for example) where viewers unwittingly are made to solve them in order to be allowed to watch a video.
 Therefore, we have additional controls.
@@ -24,7 +25,9 @@ Other CAPTCHA systems use scanned text, or incredibly distorted text, that often
 
 In other words, Composr's default CAPTCHA tries to be both highly secure, and reasonable for a human to use, and then we have additional protections too.
 
-We have an audio option for the CAPTCHA which is important for users with visual impairments. You can also remove the distortion effects from the CAPTCHA, which makes readability easier, but makes it much easier for a spammer to crack it.
+The default 'CSS' CAPTCHA might not render well on web browsers using a zoom. For this reason, and to provide additional accessibility, a CAPTCHA can be clicked to open it as a larger 'image' in a new tab.
+
+We have an audio option for the CAPTCHA which is important for users with visual impairments (but this is much easier to solve by spammers). You can also remove the distortion effects from the CAPTCHA, which makes readability easier, but makes it much easier for a spammer to crack it.
 
 [title="2"]Public block lists[/title]
 

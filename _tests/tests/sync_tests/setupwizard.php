@@ -29,9 +29,11 @@ class setupwizard_test_set extends cms_test_case
 
         $session_id = $this->establish_admin_callback_session();
 
+        $site_name = uniqid();
+
         $post_params = [
             'skip_9' => '0',
-            'theme_use_on_all' => '0', // Do not skip step 8 but also do not use the generated theme; we will probably delete it later
+            'theme_use_on_all' => '0', // Do not skip step 8 but also do not use the generated theme; we will delete it later
             'skip_8' => '0',
             'skip_7' => '0',
             'skip_6' => '0',
@@ -39,7 +41,7 @@ class setupwizard_test_set extends cms_test_case
             'skip_4' => '1', // We want to keep all our addons
             'skip_3' => '0',
             'installprofile' => '',
-            'site_name' => uniqid(),
+            'site_name' => $site_name,
             'description' => '',
             'site_scope' => 'defaultness',
             'keywords' => 'default, defaultness, celebration, community',
@@ -86,6 +88,10 @@ class setupwizard_test_set extends cms_test_case
         if ((!$ok) && ($this->debug)) {
             @var_dump($http->data);
         }
+
+        // Delete theme created by the setup wizard
+        require_code('themes3');
+        actual_delete_theme($site_name);
 
         $this->assertTrue($ok, 'Failed to execute final Setup Wizard step');
     }

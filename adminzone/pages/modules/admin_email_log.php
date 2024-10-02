@@ -334,8 +334,18 @@ class Module_admin_email_log
 
         if ($row['m_in_html'] == 1) {
             $fields['comcode:HTML'] = protect_from_escaping($row['m_message']);
+            if ($row['m_message_extended'] != '') {
+                $fields['MESSAGE_EXTENDED'] = protect_from_escaping($row['m_message_extended']);
+            } else {
+                $fields['MESSAGE_EXTENDED'] = do_lang_tempcode('NA_EM');
+            }
         } else {
             $fields['comcode:HTML'] = protect_from_escaping(comcode_to_tempcode($row['m_message']));
+            if ($row['m_message_extended'] != '') {
+                $fields['MESSAGE_EXTENDED'] = protect_from_escaping(comcode_to_tempcode($row['m_message_extended']));
+            } else {
+                $fields['MESSAGE_EXTENDED'] = do_lang_tempcode('NA_EM');
+            }
 
             $fields['_COMCODE'] = with_whitespace($row['m_message'], true);
         }
@@ -468,6 +478,7 @@ class Module_admin_email_log
         $fields->attach(form_input_line_multi(do_lang_tempcode('EXTRA_CC_ADDRESSES'), '', 'extra_cc_addresses_', $extra_cc_addresses, 0));
         $fields->attach(form_input_line_multi(do_lang_tempcode('EXTRA_BCC_ADDRESSES'), '', 'extra_bcc_addresses_', $extra_bcc_addresses, 0));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), '', 'message', $row['m_message'], true));
+        $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE_EXTENDED'), do_lang_tempcode('DESCRIPTION_MESSAGE_EXTENDED'), 'message_extended', $row['m_message_extended'], false));
 
         $radios = new Tempcode();
         $radios->attach(form_input_radio_entry('edit_action', 'edit', true, do_lang_tempcode('EDIT')));
@@ -506,6 +517,10 @@ class Module_admin_email_log
         switch ($action) {
             case 'delete':
                 $GLOBALS['SITE_DB']->query_delete('logged_mail_messages', ['id' => $id], '', 1);
+                if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
+                    require_code('resource_fs');
+                    expunge_resource_fs_moniker('mail', strval($id));
+                }
                 break;
 
             case 'send':
@@ -561,6 +576,7 @@ class Module_admin_email_log
                 $from_name = post_param_string('from_name');
                 $from_email = post_param_string('from_email', false, INPUT_FILTER_POST_IDENTIFIER);
                 $message = post_param_string('message');
+                $message_extended = post_param_string('message_extended', null);
 
                 $remap = [
                     'm_subject' => $subject,
@@ -572,6 +588,10 @@ class Module_admin_email_log
                     'm_to_name' => serialize($to_name),
                     'm_message' => $message,
                 ];
+
+                if ($message_extended !== null) {
+                    $remap['m_message_extended'] = $message_extended;
+                }
 
                 if ($action == 'send') {
                     $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['*'], ['id' => $id], '', 1);
@@ -586,6 +606,7 @@ class Module_admin_email_log
                     dispatch_mail(
                         $subject,
                         $message,
+                        $message_extended,
                         $to_email,
                         $to_name,
                         $from_email,
@@ -598,6 +619,7 @@ class Module_admin_email_log
                             'as_admin' => ($row['m_as_admin'] == 1),
                             'in_html' => ($row['m_in_html'] == 1),
                             'coming_out_of_queue' => true,
+                            'get_guid_for_id' => $id,
                             'extra_cc_addresses' => $extra_cc_addresses,
                             'extra_bcc_addresses' => $extra_bcc_addresses,
                             'require_recipient_valid_since' => $join_time,
@@ -633,6 +655,7 @@ class Module_admin_email_log
             foreach ($rows as $row) {
                 $subject = $row['m_subject'];
                 $message = $row['m_message'];
+                $message_extended = $row['m_message_extended'];
                 $to_email = unserialize($row['m_to_email']);
                 $extra_cc_addresses = unserialize($row['m_extra_cc_addresses']);
                 $extra_bcc_addresses = unserialize($row['m_extra_bcc_addresses']);
@@ -644,6 +667,7 @@ class Module_admin_email_log
                 dispatch_mail(
                     $subject,
                     $message,
+                    $message_extended,
                     $to_email,
                     $to_name,
                     $from_email,
@@ -656,6 +680,7 @@ class Module_admin_email_log
                         'as_admin' => ($row['m_as_admin'] == 1),
                         'in_html' => ($row['m_in_html'] == 1),
                         'coming_out_of_queue' => true,
+                        'get_guid_for_id' => $row['id'],
                         'extra_cc_addresses' => $extra_cc_addresses,
                         'extra_bcc_addresses' => $extra_bcc_addresses,
                         'require_recipient_valid_since' => $join_time,
@@ -725,7 +750,7 @@ class Module_admin_email_log
         $to_email = post_param_string('to_email');
 
         require_code('mail');
-        $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true, 'leave_attachments_on_failure' => true]);
+        $mail_ob = dispatch_mail('Testing', 'Testing', '', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true, 'leave_attachments_on_failure' => true]);
 
         return do_template('FULL_MESSAGE_SCREEN', [
             '_GUID' => 'a2dbc360e80dfc7ec8026e7f22fe2cc1',

@@ -76,7 +76,7 @@ function lost_password_emailer_step(string $username, string $email) : array
                 require_code('mail');
                 $subject = do_lang('LOST_PASSWORD_NO_ACCOUNT_SUBJECT', get_site_name());
                 $message = do_lang('LOST_PASSWORD_NO_ACCOUNT_BODY', get_site_name());
-                dispatch_mail($subject, $message, [$email], null, '', '', ['bypass_queue' => true]);
+                dispatch_mail($subject, $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email], null, '', '', ['bypass_queue' => true]);
 
                 return [$email, null];
         }
@@ -99,7 +99,7 @@ function lost_password_emailer_step(string $username, string $email) : array
                 require_code('mail');
                 $subject = do_lang('LOST_PASSWORD_RESET_ERROR_SUBJECT', get_site_name());
                 $message = '[semihtml]' . $error_msg->evaluate() . '[/semihtml]';
-                dispatch_mail($subject, $message, [$email], null, '', '', ['bypass_queue' => true]);
+                dispatch_mail($subject, $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email], null, '', '', ['bypass_queue' => true]);
 
                 return [$email, null];
         }
@@ -213,7 +213,7 @@ function send_lost_password_reset_code(string $password_reset_process, int $memb
             ],
             get_lang($member_id)
         );
-        dispatch_mail($subject, $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['bypass_queue' => true, 'require_recipient_valid_since' => $join_time]);
+        dispatch_mail($subject, $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['bypass_queue' => true, 'require_recipient_valid_since' => $join_time]);
     } else {
         $old_php_self = $_SERVER['PHP_SELF'];
         $old_server_name = $_SERVER['SERVER_NAME'];

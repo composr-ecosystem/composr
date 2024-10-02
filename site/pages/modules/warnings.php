@@ -329,21 +329,15 @@ class Module_warnings extends Standard_crud_module
         $sortables = [
             'w_time' => do_lang_tempcode('DATE'),
         ];
-        if (addon_installed('points')) {
-            $sortables['p_charged_points'] = do_lang_tempcode('POINTS');
-        }
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
         $fh = [
+            do_lang_tempcode('DATE'),
             do_lang_tempcode('USERNAME'),
             do_lang_tempcode('BY'),
-            do_lang_tempcode('DATE'),
         ];
-        if (addon_installed('points')) {
-            $fh[] = do_lang_tempcode('POINTS');
-        }
         $fh[] = do_lang_tempcode('ACTIONS');
 
         $header_row = results_header_row($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
@@ -358,14 +352,10 @@ class Module_warnings extends Standard_crud_module
             $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_issuing_member']);
 
             $map = [
+                hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id'], 'member_id' => $row['w_member_id']], '_SELF'), get_timezoned_date_time($row['w_time']), false, true, $row['w_explanation']),
                 protect_from_escaping($username),
                 protect_from_escaping($by),
-                get_timezoned_date_time($row['w_time']),
             ];
-
-            if (addon_installed('points')) {
-                $map[] = integer_format($row['p_charged_points']);
-            }
 
             $map[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])));
 
