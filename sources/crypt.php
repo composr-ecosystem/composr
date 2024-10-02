@@ -299,13 +299,6 @@ function get_secure_v1_guid() : string
  */
 function get_secure_random_v4_guid() : string
 {
-    // Use the Linux kernel for a GUID if available
-    if (file_exists('/proc/sys/kernel/random/uuid')) {
-        $kernel_guid = file_get_contents('/proc/sys/kernel/random/uuid');
-        if (($kernel_guid !== false) && (strlen($kernel_guid) >= 32)) {
-            return $kernel_guid;
-        }
-    }
     $bytes = random_bytes(16);
     $hex = bin2hex($bytes);
     $hex .= $hex[8] . $hex[13] . $hex[18] . $hex[23];
