@@ -31,10 +31,11 @@ You can delete a gallery/image/video from the bottom of its edit form. The root 
 [surround]
 [media width="150" description="A gallery in grid mode" float="right"]data_custom/images/docs/tut_galleries/gallery_not_flow_mode.png[/media]
 [media width="150" description="A gallery in carousel mode" float="right"]data_custom/images/docs/tut_galleries/gallery_flow_mode.png[/media]
+[media width="150" description="A gallery in mosaic mode" float="right"]data_custom/images/docs/tut_galleries/gallery_mosaic_mode.png[/media]
 There are three display modes for galleries:
 1) Carousel mode -- this mode allows you to see all the entries in the gallery at the same time as viewing one of the entries. This makes navigation more efficient. Note that there is a limit of 40 media files displayed in the carousel, so carousel mode is only a good option for small galleries.
 2) Grid mode -- this mode provides page browsing features so as to be able to browse through a large numbers of entries.
-3) Mosaic mode
+3) Mosaic mode -- this mode is similar to grid mode except entry information is hidden until hover. It also displays as a gradient overlay on top of the image / video.
 
 Regardless of display mode, the user can choose any of the available entries (images or videos), and the chosen entry will be presented to the user.
 
