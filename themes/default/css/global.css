@@ -5027,7 +5027,7 @@ ul.associated-links-block-group.horizontal-links > li:not(:first-child)::before,
 .horizontal-ticker li:first-child::before,
 .horizontal-links-comma li:first-child::before {
 	/* Undoes the middot/comma separator */
-	/*display: none;*/
+	display: none;
 }
 ul.associated-link,
 ul.horizontal-meta-details,

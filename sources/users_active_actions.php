@@ -332,10 +332,16 @@ function _enforce_temporary_passwords(int $member_id)
  */
 function _enforce_declarations(int $member_id)
 {
+    // Enforcement is supported when not using Conversr, but Conversr must still be installed
+    if (!addon_installed('core_cns')) {
+        return;
+    }
+
     $force_message = null;
     $redirect_url = null;
 
     $configured_declarations = trim(preg_replace('#\n+#', "\n", get_option('join_declarations')));
+
     $cpfs = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
     if ($cpfs === null) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

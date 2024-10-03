@@ -533,7 +533,7 @@ function get_member_title(int $member_id) : string
  */
 function get_group_colour(int $gid) : string
 {
-    $all_colours = ['cns-gcol-1', 'cns-gcol-2', 'cns-gcol-3', 'cns-gcol-4', 'cns-gcol-5', 'cns-gcol-6', 'cns-gcol-7', 'cns-gcol-8', 'cns-gcol-9', 'cns-gcol-10', 'cns-gcol-11', 'cns-gcol-12', 'cns-gcol-13', 'cns-gcol-14', 'cns-gcol-15'];
+    $all_colours = ['cns-gcol-1', 'cns-gcol-2', 'cns-gcol-3', 'cns-gcol-4', 'cns-gcol-5', 'cns-gcol-6', 'cns-gcol-7', 'cns-gcol-8', 'cns-gcol-9', 'cns-gcol-10', 'cns-gcol-11', 'cns-gcol-12', 'cns-gcol-13', 'cns-gcol-14', 'cns-gcol-15', 'cns-gcol-16', 'cns-gcol-17', 'cns-gcol-18'];
     return $all_colours[$gid % count($all_colours)];
 }
 

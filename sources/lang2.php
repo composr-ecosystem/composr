@@ -360,7 +360,9 @@ function find_lang_content_names(array $lang_ids) : array
             if ($field['key'] !== null) {
                 $fields_to_select[] = $field['key'];
             }
-            append_content_select_for_fields($fields_to_select, $info, ['id', 'title']);
+            if ($info !== null) {
+                append_content_select_for_fields($fields_to_select, $info, ['id', 'title']);
+            }
             $test = list_to_map($field['m_name'], $db->query('SELECT ' . implode(',', $fields_to_select) . ' FROM ' . $db->get_table_prefix() . $field['m_table'] . ' WHERE ' . $or_list));
             foreach ($lang_ids as $lang_id) {
                 if (array_key_exists($lang_id, $test)) {
