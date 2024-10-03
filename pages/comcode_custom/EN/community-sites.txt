@@ -9,7 +9,20 @@
 	<li>The views and opinions expressed on these sites do not reflect the views and opinions of Composr CMS / composr.app.</li>
 	<li>Composr CMS makes it easy for anyone to make a website. You may find sites without professional designs or with controversial topics.
 	<ul>
-		<li>That being said, we do apply a level of loose moderation. If featuring your site could get us in trouble (e.g. Dark Web sites or pornographic sites), we probably will not feature it.</li>
+		<li>
+			That being said, we do apply a level of moderation for our site showcase. If your site contains any of the following, we probably will not feature it:
+			<ul>
+				<li>Illegal content, products, or services</li>
+				<li>Viruses, trojans, malware, spyware, ransomware, adware, spam, or scams</li>
+				<li>Copyright, trademark, or intellectual property infringement</li>
+				<li>Pornography or any content not appropriate for children (unless you require age verification to see it)</li>
+				<li>Hate speech (threats or plans of harm to others)</li>
+				<li>Anything patently offensive (would offend the average person), such as discriminatory content, significant blasphemy, or significant profanity</li>
+				<li>Anything that would significantly impede on the user experience (e.g. excessive advertising)</li>
+			</ul>
+		</li>
+		<li>We also will not feature sites that do not run the Composr CMS software; the point of our site showcase is to show how others are using the software.</li>
+		<li>We also will not feature sites which do not run securely under the HTTPS protocol; this is an expectation and standard of the modern web. And it is very easy to get an SSL/TLS certificate (e.g. Let's Encrypt offers free certificates for certain use cases).</li>
 	</ul>
 	</li>
 </ul>
