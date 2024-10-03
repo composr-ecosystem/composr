@@ -45,12 +45,24 @@ class Hook_endpoint_cms_homesite_user_stats
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
         }
 
-        $website_url = substr(get_param_string('url', false, INPUT_FILTER_URL_GENERAL), 0, 255);
-        $website_name = substr(get_param_string('name', false, INPUT_FILTER_GET_COMPLEX), 0, 255);
+        $website_url = substr(get_param_string('url', $id, INPUT_FILTER_URL_GENERAL), 0, 255);
+        $website_name = substr(either_param_string('name', false, INPUT_FILTER_GET_COMPLEX), 0, 255);
+
+        if (($website_url === null) || ($website_url == '_LEGACY_')) {
+            if ($id === '_LEGACY_') { // LEGACY
+                echo serialize([]);
+                exit;
+            }
+
+            return ['success' => false, 'error_details' => 'Website URL is required'];
+        }
+
         require_code('version2');
-        $version = get_param_string('version');
-        $num_members = get_param_integer('num_members');
-        $num_hits_per_day = get_param_integer('num_hits_per_day');
+
+        $version = either_param_string('version');
+        $num_members = either_param_integer('num_members');
+        $num_hits_per_day = either_param_integer('num_hits_per_day');
+        $addons_installed = post_param_string('addons_installed', '');
 
         $GLOBALS['SITE_DB']->query_insert('logged', [
             'website_url' => $website_url,
@@ -59,6 +71,7 @@ class Hook_endpoint_cms_homesite_user_stats
             'hittime' => time(),
             'count_members' => $num_members,
             'num_hits_per_day' => $num_hits_per_day,
+            'addons_installed' => $addons_installed,
         ]);
 
         if ($id === '_LEGACY_') { // LEGACY

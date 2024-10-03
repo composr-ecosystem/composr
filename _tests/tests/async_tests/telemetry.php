@@ -66,12 +66,26 @@ class telemetry_test_set extends cms_test_case
         cms_ini_set('default_socket_timeout', '3');
 
         require_code('version2');
+        require_code('addons');
+
         $num_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
         $num_hits_per_day = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
-        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/?url=' . urlencode(get_base_url()) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()) . '&num_members=' . urlencode(strval($num_members)) . '&num_hits_per_day=' . urlencode(strval($num_hits_per_day));
+
+        preload_all_addons_info();
+        global $ADDON_INFO_CACHE;
+        $addons_installed = array_keys($ADDON_INFO_CACHE);
+
+        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/' . urlencode(get_base_url());
+        $post = [
+            'name' => get_site_name(),
+            'version' => get_version_dotted(),
+            'num_members' => $num_members,
+            'num_hits_per_day' => $num_hits_per_day,
+            'addon_installed' => serialize($addons_installed),
+        ];
 
         require_code('http');
-        $response = cms_http_request($url, ['trigger_error' => false]);
+        $response = cms_http_request($url, ['trigger_error' => false, 'post_params' => $post]);
         if ($this->debug) {
             $this->dump($response, 'HTTP response');
         }
