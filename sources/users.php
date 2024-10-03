@@ -374,22 +374,27 @@ function enforce_temporary_passwords(int $member_id)
  */
 function enforce_declarations(int $member_id)
 {
+    // Enforcement is supported when not using Conversr, but Conversr must still be installed
+    if (!addon_installed('core_cns')) {
+        return;
+    }
+
     // No enforcement if using an external connection, such as Commandr or WebDAV
     if (!running_script('index')) {
         return;
     }
 
-    // Guests should not have enforcement
+    // Cannot enforce on guests
     if ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
         return;
     }
 
-    // If we are SUed into another member, do not enforce declarations
+    // If we are SUed into another member, do not enforce declarations; members should be accepting them on their own behalf
     if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_string('keep_su', null) !== null)) {
         return;
     }
 
-    // If the member is trying to accept declarations or is on the join form, allow this
+    // Bail to prevent infinite loops if the member is either on the join page (might be reviewing the rules) or on their own member profile (might be deleting their account)
     if ((get_page_name() == 'join') || ((get_page_name() == 'members') && (get_param_string('id', '') == '') && (get_param_string('type', 'browse') == 'view'))) {
         return;
     }
