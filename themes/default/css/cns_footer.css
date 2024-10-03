@@ -83,47 +83,210 @@
 }
 
 a.cns-gcol-1, a.cns-gcol-1:visited, a.cns-gcol-1:hover {
-	color: {$GET,gcol_1};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_1};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_1_light};
+	/*{+END}*/
 }
 a.cns-gcol-2, a.cns-gcol-2:visited, a.cns-gcol-2:hover {
-	color: {$GET,gcol_2};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_2};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_2_light};
+	/*{+END}*/
 }
 a.cns-gcol-3, a.cns-gcol-3:visited, a.cns-gcol-3:hover {
-	color: {$GET,gcol_3};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_3};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_3_light};
+	/*{+END}*/
 }
 a.cns-gcol-4, a.cns-gcol-4:visited, a.cns-gcol-4:hover {
-	color: {$GET,gcol_4};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_4};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_4_light};
+	/*{+END}*/
 }
 a.cns-gcol-5, a.cns-gcol-5:visited, a.cns-gcol-5:hover {
-	color: {$GET,gcol_5};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_5};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_5_light};
+	/*{+END}*/
 }
 a.cns-gcol-6, a.cns-gcol-6:visited, a.cns-gcol-6:hover {
-	color: {$GET,gcol_6};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_6};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_6_light};
+	/*{+END}*/
 }
 a.cns-gcol-7, a.cns-gcol-7:visited, a.cns-gcol-7:hover {
-	color: {$GET,gcol_7};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_7};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_7_light};
+	/*{+END}*/
 }
 a.cns-gcol-8, a.cns-gcol-8:visited, a.cns-gcol-8:hover {
-	color: {$GET,gcol_8};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_8};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_8_light};
+	/*{+END}*/
 }
 a.cns-gcol-9, a.cns-gcol-9:visited, a.cns-gcol-9:hover {
-	color: {$GET,gcol_9};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_9};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_9_light};
+	/*{+END}*/
 }
 a.cns-gcol-10, a.cns-gcol-10:visited, a.cns-gcol-10:hover {
-	color: {$GET,gcol_10};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_10};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_10_light};
+	/*{+END}*/
 }
 a.cns-gcol-11, a.cns-gcol-11:visited, a.cns-gcol-11:hover {
-	color: {$GET,gcol_11};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_11};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_11_light};
+	/*{+END}*/
 }
 a.cns-gcol-12, a.cns-gcol-12:visited, a.cns-gcol-12:hover {
-	color: {$GET,gcol_12};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_12};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_12_light};
+	/*{+END}*/
 }
 a.cns-gcol-13, a.cns-gcol-13:visited, a.cns-gcol-13:hover {
-	color: {$GET,gcol_13};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_13};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_13_light};
+	/*{+END}*/
 }
 a.cns-gcol-14, a.cns-gcol-14:visited, a.cns-gcol-14:hover {
-	color: {$GET,gcol_14};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_14};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_14_light};
+	/*{+END}*/
 }
 a.cns-gcol-15, a.cns-gcol-15:visited, a.cns-gcol-15:hover {
-	color: {$GET,gcol_15};
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_15};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_15_light};
+	/*{+END}*/
+}
+a.cns-gcol-16, a.cns-gcol-16:visited, a.cns-gcol-16:hover {
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_16};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_16_light};
+	/*{+END}*/
+}
+a.cns-gcol-17, a.cns-gcol-17:visited, a.cns-gcol-17:hover {
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_17};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_17_light};
+	/*{+END}*/
+}
+a.cns-gcol-18, a.cns-gcol-18:visited, a.cns-gcol-18:hover {
+	/*{+START,IF,{$EQ,{$THEME_DARK},0}}*/
+		color: {$GET,gcol_18};
+	/*{+END}*/
+	/*{+START,IF,{$EQ,{$THEME_DARK},1}}*/
+		color: {$GET,gcol_18_light};
+	/*{+END}*/
+}
+
+
+.panel-bottom-inner a.cns-gcol-1, .panel-bottom-inner a.cns-gcol-1:visited, .panel-bottom-inner a.cns-gcol-1:hover {
+	color: {$GET,gcol_1_light};
+}
+.panel-bottom-inner a.cns-gcol-2, .panel-bottom-inner a.cns-gcol-2:visited, .panel-bottom-inner a.cns-gcol-2:hover {
+	color: {$GET,gcol_2_light};
+}
+.panel-bottom-inner a.cns-gcol-3, .panel-bottom-inner a.cns-gcol-3:visited, .panel-bottom-inner a.cns-gcol-3:hover {
+	color: {$GET,gcol_3_light};
+}
+.panel-bottom-inner a.cns-gcol-4, .panel-bottom-inner a.cns-gcol-4:visited, .panel-bottom-inner a.cns-gcol-4:hover {
+	color: {$GET,gcol_4_light};
+}
+.panel-bottom-inner a.cns-gcol-5, .panel-bottom-inner a.cns-gcol-5:visited, .panel-bottom-inner a.cns-gcol-5:hover {
+	color: {$GET,gcol_5_light};
+}
+.panel-bottom-inner a.cns-gcol-6, .panel-bottom-inner a.cns-gcol-6:visited, .panel-bottom-inner a.cns-gcol-6:hover {
+	color: {$GET,gcol_6_light};
+}
+.panel-bottom-inner a.cns-gcol-7, .panel-bottom-inner a.cns-gcol-7:visited, .panel-bottom-inner a.cns-gcol-7:hover {
+	color: {$GET,gcol_7_light};
+}
+.panel-bottom-inner a.cns-gcol-8, .panel-bottom-inner a.cns-gcol-8:visited, .panel-bottom-inner a.cns-gcol-8:hover {
+	color: {$GET,gcol_8_light};
+}
+.panel-bottom-inner a.cns-gcol-9, .panel-bottom-inner a.cns-gcol-9:visited, .panel-bottom-inner a.cns-gcol-9:hover {
+	color: {$GET,gcol_9_light};
+}
+.panel-bottom-inner a.cns-gcol-10, .panel-bottom-inner a.cns-gcol-10:visited, .panel-bottom-inner a.cns-gcol-10:hover {
+	color: {$GET,gcol_10_light};
+}
+.panel-bottom-inner a.cns-gcol-11, .panel-bottom-inner a.cns-gcol-11:visited, .panel-bottom-inner a.cns-gcol-11:hover {
+	color: {$GET,gcol_11_light};
+}
+.panel-bottom-inner a.cns-gcol-12, .panel-bottom-inner a.cns-gcol-12:visited, .panel-bottom-inner a.cns-gcol-12:hover {
+	color: {$GET,gcol_12_light};
+}
+.panel-bottom-inner a.cns-gcol-13, .panel-bottom-inner a.cns-gcol-13:visited, .panel-bottom-inner a.cns-gcol-13:hover {
+	color: {$GET,gcol_13_light};
+}
+.panel-bottom-inner a.cns-gcol-14, .panel-bottom-inner a.cns-gcol-14:visited, .panel-bottom-inner a.cns-gcol-14:hover {
+	color: {$GET,gcol_14_light};
+}
+.panel-bottom-inner a.cns-gcol-15, .panel-bottom-inner a.cns-gcol-15:visited, .panel-bottom-inner a.cns-gcol-15:hover {
+	color: {$GET,gcol_15_light};
+}
+.panel-bottom-inner a.cns-gcol-16, .panel-bottom-inner a.cns-gcol-16:visited, .panel-bottom-inner a.cns-gcol-16:hover {
+	color: {$GET,gcol_16_light};
+}
+.panel-bottom-inner a.cns-gcol-17, .panel-bottom-inner a.cns-gcol-17:visited, .panel-bottom-inner a.cns-gcol-17:hover {
+	color: {$GET,gcol_17_light};
+}
+.panel-bottom-inner a.cns-gcol-18, .panel-bottom-inner a.cns-gcol-18:visited, .panel-bottom-inner a.cns-gcol-18:hover {
+	color: {$GET,gcol_18_light};
+}
+
+.panel-bottom-inner a, .panel-bottom-inner .button-hyperlink {
+	color: {$GET,a.link_light};
+}
+
+.panel-bottom-inner a:hover, .panel-bottom-inner .button-hyperlink:hover {
+	color: {$GET,a.hover_light};
 }
