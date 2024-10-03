@@ -1,6 +1,6 @@
 ﻿[semihtml]<h1 class="screen-title" itemprop="name"><a id="title--CommunitySites"></a> Community Site Showcase</h1>
 
-<p>These are some of the sites who have elected to be featured on composr.app . If you would like your site to be featured, select the applicable option in step 4 when installing your Composr site. Or, if you already installed your site, please <a class="user-link" href="{$PAGE_LINK*,:contact">Contact Us</a>&nbsp;if you would like to be featured.</p>
+<p>These are some of the sites who have elected to be featured on composr.app . If you would like your site to be featured, select the applicable option in step 4 when installing your Composr site. Or, if you already installed your site, please <a class="user-link" href="{$PAGE_LINK*,:contact}">Contact Us</a>&nbsp;if you would like to be featured.</p>
 
 <p>Please be aware of the following:</p>
 
