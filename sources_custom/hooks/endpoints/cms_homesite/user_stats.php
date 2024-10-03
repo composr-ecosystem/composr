@@ -45,17 +45,8 @@ class Hook_endpoint_cms_homesite_user_stats
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
         }
 
-        $website_url = substr(get_param_string('url', $id, INPUT_FILTER_URL_GENERAL), 0, 255);
+        $website_url = substr(either_param_string('url', false, INPUT_FILTER_URL_GENERAL), 0, 255);
         $website_name = substr(post_param_string('name', get_param_string('name', false, INPUT_FILTER_GET_COMPLEX)), 0, 255);
-
-        if (($website_url === null) || ($website_url == '_LEGACY_')) {
-            if ($id === '_LEGACY_') { // LEGACY
-                echo serialize([]);
-                exit;
-            }
-
-            return ['success' => false, 'error_details' => 'Website URL is required'];
-        }
 
         require_code('version2');
 
