@@ -30,7 +30,7 @@ class Module_admin_cmsusers
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 7;
+        $info['version'] = 8;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -72,6 +72,7 @@ class Module_admin_cmsusers
                 'hittime' => 'TIME',
                 'count_members' => 'INTEGER',
                 'num_hits_per_day' => 'INTEGER',
+                'addons_installed' => 'LONG_TEXT',
             ]);
         }
 
@@ -120,6 +121,10 @@ class Module_admin_cmsusers
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('logged', 'num_members', 'INTEGER', 'count_members');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY: 11.beta3
+            $GLOBALS['SITE_DB']->add_table_field('logged', 'addons_installed', 'LONG_TEXT', '');
         }
     }
 
