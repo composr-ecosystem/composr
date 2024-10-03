@@ -34,7 +34,7 @@ function _choose_language(object $title, bool $tip = false, bool $allow_all_sele
         return user_lang();
     }
 
-    $lang = get_param_string('lang', /*get_param_string('keep_lang', null)*/null);
+    $lang = either_param_string('lang', /*get_param_string('keep_lang', null)*/null);
     if (($lang !== null) && (does_lang_exist($lang))) {
         return filter_naughty($lang);
     }

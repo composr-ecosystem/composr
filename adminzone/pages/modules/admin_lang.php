@@ -427,7 +427,7 @@ class Module_admin_lang
         $subquery = 'SELECT * FROM ' . get_table_prefix() . 'translate b WHERE a.id=b.id AND b.broken=0 AND ' . db_string_equal_to('b.language', $lang);
         $query = 'SELECT id,importance_level,text_original,language FROM ' . get_table_prefix() . 'translate a WHERE NOT EXISTS(' . $subquery . ') AND ' . db_string_not_equal_to('language', $lang) . ' AND ' . db_string_not_equal_to('text_original', '') . ' ORDER BY ' . $order_by;
         $to_translate = $GLOBALS['SITE_DB']->query($query, $max/*reasonable limit*/, $start);
-        $total = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query);
+        $total = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) AS count FROM (' . $query . ') AS subquery');
         if (empty($to_translate)) {
             inform_exit(do_lang_tempcode('NOTHING_TO_TRANSLATE'));
         }
