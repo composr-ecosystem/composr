@@ -96,9 +96,11 @@ You now need to put these files in the desired folder. This can usually be done 
 
 [surround]
 [media width="150" description="The Composr installation screen" float="right"]data_custom/images/docs/tut_install/install_step1.png[/media]
-After you upload these files, you've completed the hardest part of the installation. The next step is to open your web browser and go to [tt]http://yourbaseurl/install.php[/tt] (substitute [tt]http://yourbaseurl/[/tt] as appropriate for your domain and install path). You should be greeted with a welcome screen, asking you which language you would like to use.
+After you upload these files, you've completed the hardest part of the installation. The next step is to open your web browser and go to [tt]http://yourbaseurl/install.php[/tt] (substitute [tt]http://yourbaseurl/[/tt] as appropriate for your domain and install path). 
 
-On step two, you are shown a licence agreement. You must agree to the licence agreement before you can install Composr. You also have the opportunity to sign up for our newsletter, which will notify you by e-mail of any updates to our software. Composr will never sell or rent your e-mail address to a third party. You can read our [page=":privacy"]privacy policy[/page] for more information.
+You should be greeted with a welcome screen, asking you which language you would like to use (if you have more than one language pack downloaded). Initial server checks will also be shown to inform you of any potential compatibility issues you may face with Composr on your server.
+
+On step two, you are shown a licence agreement. You must agree to the licence agreement before you can install Composr. You also have the opportunity to sign up for our newsletter, which will notify you by e-mail of any major updates to our software or website. You are also given the option to tell our homesite (staff) whether you want your site featured on our [page=":community-sites"]site showcase[/page], and whether you want to send anonymous statistics (includes your URL, the version you are running, when the Admin Zone was last accessed, whether the site is still installed, how many members you have, and how many daily hits you have). This telemetry information can only be seen by the Composr core team. Composr will never sell or rent your e-mail address or statistics to a third party. You can read our [page=":privacy"]privacy policy[/page] for more information.
 
 On step three, you are presented with a choice to choose which forum system you would like to use for your website. We strongly recommend that you use Composr's own forum (Conversr), which if chosen will be installed at the same time as Composr. If you're using a third-party forum software, then you will need to already have it installed. Select the name of the software on the left, and then choose the appropriate version from the right-hand column.
 [/surround]
@@ -112,11 +114,13 @@ Most of the settings will have been auto-detected for you. You will definitely n
  - Administration account password
  - Database details
 
-There are no constraints on the kind of password to use, but it is a good idea to choose one that won't easily be guessed, does not appear directly in a dictionary, but that you can easily remember.
+It is highly recommended to use a very strong password for the maintenance password, administration account password, and database password as these are highly sensitive points of access. Additionally, the password for all three should be different from each other. Use a random combination of upper-case and lower-case letters, numbers, and symbols. And ideally use at least 16 characters. Be sure to save your passwords where you can find them.
 
 All of the database fields should be filled out with the information you recorded earlier in this tutorial. When you finish, click the "Install Composr" link at the bottom of the screen.
 
 Hopefully, at this point you'll receive this [url="success message" rel="lightbox"]data_custom/images/docs/tut_install/install_step5.png[/url]. If you receive any errors, return to the previous page and correct them. Click the "Proceed" button to continue through the installation. There will be a few more similar screens until you finish the installation.
+
+If Composr detects you might already have a previous installation of Composr, you will get an error like this [url="overwrite warning" rel="lightbox"]data_custom/images/docs/tut_install/install_step5_overwrite.png[/url]. Read it very carefully to understand the implications of proceeding; you do not want to use the installer to upgrade Composr because the installer will create a brand new installation of Composr (which wipes all of your content). Instead, go to [tt]yourbaseurl/upgrader.php[/tt] to upgrade Composr.
 [/surround]
 
 [surround]

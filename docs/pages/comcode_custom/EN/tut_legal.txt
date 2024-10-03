@@ -219,6 +219,7 @@ You should develop a policy about how you handle feedback. This is of particular
  1_key="Privacy policy"   1_value="A standard term applied to the document that lays out a website's privacy policy; some laws specifically refer to a privacy policy and require a separate document for it"
  2_key="COPPA"            2_value="Children's Online Privacy Protection Act; a US law that affects websites that have child members"
  3_key="GDPR"             3_value="General Data Protection Regulation; an EU privacy law that puts many responsibilities on you"
+ 4_key="Parental consent" 4_value="Composr's generic term for the settings and configuration governing children's ability to access your website and the regulations thereof"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

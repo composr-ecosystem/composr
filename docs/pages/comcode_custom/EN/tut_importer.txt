@@ -67,6 +67,8 @@ The importer system uses a concept of 'import sessions'. These are built on top 
 
 Importers define a list of features they can import, along with a dependency system to ensure that a feature can only be imported once any features that it is dependent upon have already been imported (for example, forum posts are always dependent on forum topics, and forum topics are always dependent on forums).
 
+On the screen listing each feature to import, features are listed in order according to dependencies. A feature might first depend on importing other features listed above it in the list but will never depend on any of the features listed below it. That way, unless you skip features, you shouldn't run into any dependency errors. 
+
 [title="4"]Cache-rebuild[/title]
 
 Composr is designed so that forms of redundancy, such as parsed Comcode, and various forms of tally, can be recalculated dynamically as Composr runs. Knowing this, and in order to remove load from the importer itself, these tasks are therefore usually omitted by the importer.
