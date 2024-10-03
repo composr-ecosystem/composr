@@ -19,6 +19,7 @@
 				<li>Hate speech (threats or plans of harm to others)</li>
 				<li>Anything patently offensive (would offend the average person), such as discriminatory content, significant blasphemy, or significant profanity</li>
 				<li>Anything that would significantly impede on the user experience (e.g. excessive advertising)</li>
+				<li>Deliberate spreading of false or misleading information unless clearly indicated it is satire / parody</li>
 			</ul>
 		</li>
 		<li>We also will not feature sites that do not run the Composr CMS software; the point of our site showcase is to show how others are using the software.</li>
