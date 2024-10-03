@@ -46,7 +46,7 @@ class Hook_endpoint_cms_homesite_user_stats
         }
 
         $website_url = substr(get_param_string('url', $id, INPUT_FILTER_URL_GENERAL), 0, 255);
-        $website_name = substr(either_param_string('name', false, INPUT_FILTER_GET_COMPLEX), 0, 255);
+        $website_name = substr(post_param_string('name', get_param_string('name', false, INPUT_FILTER_GET_COMPLEX)), 0, 255);
 
         if (($website_url === null) || ($website_url == '_LEGACY_')) {
             if ($id === '_LEGACY_') { // LEGACY

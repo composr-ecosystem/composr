@@ -65,6 +65,7 @@ class telemetry_test_set extends cms_test_case
         $timeout_before = ini_get('default_socket_timeout');
         cms_ini_set('default_socket_timeout', '3');
 
+        require_code('urls');
         require_code('version2');
         require_code('addons');
 
@@ -75,7 +76,7 @@ class telemetry_test_set extends cms_test_case
         global $ADDON_INFO_CACHE;
         $addons_installed = array_keys($ADDON_INFO_CACHE);
 
-        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/' . urlencode(get_base_url());
+        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/' . cms_urlencode(get_base_url());
         $post = [
             'name' => get_site_name(),
             'version' => get_version_dotted(),
