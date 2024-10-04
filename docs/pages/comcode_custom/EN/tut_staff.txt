@@ -19,7 +19,8 @@ We try and limit the first case and rely on privileges, for maximum flexibility.
 [title="3"]Private forums[/title]
 
 [surround]
-[media width="150" description="Now you don't (because I logged out and hence lost my staff permissions)" float="right"]data_custom/images/docs/tut_staff/staff_forums_2.png[/media]
+[media width="150" description="Staff topics block on the Admin Zone dashboard" float="right"]data_custom/images/docs/tut_staff/staff_forums_dashboard.png[/media]
+[media width="150" description="Now you don't (because I SU'd into a regular member account and thus lost my staff permissions)" float="right"]data_custom/images/docs/tut_staff/staff_forums_2.png[/media]
 [media width="150" description="Now you see it..." float="right"]data_custom/images/docs/tut_staff/staff_forums_1.png[/media]
 A very effective feature in running a website, where there are multiple staff involved, are forum permissions. By using a forum where only members in staff usergroups may gain access, staff can collaborate on matters relating to the operation of the site. Many members may not realise it, but often staff forums of large sites are almost as busy as the publicly accessible forums.
 
@@ -27,8 +28,10 @@ Conversr creates a default staff forum for you on installation.
 [/surround]
 
 [title="3"]Conflict detection[/title]
-
+[surround]
+[media width="150" description="Example of conflict detection on a support ticket" float="right"]data_custom/images/docs/tut_staff/conflict_detection.png[/media]
 If more than one user is editing the same thing at the same time, Composr will put out a notice informing you. You can then coordinate with the other user so that you don't overwrite each other's changes.
+[/surround]
 
 [title="3"]Staff checklist[/title]
 
@@ -104,7 +107,7 @@ Once content is reported, the report is actually created as a support ticket. Th
 
 When a user submits a report, the addon will then first check to see if the same active user (based on session ID) already reported that content. If so, it checks to see if there is still an open ticket associated with the report and will post to that ticket as a follow-up. Otherwise a new ticket will be created.
 
-The support ticket will include the content title (as a link to the content), the content type label, the content ID, the content submitter (i.e. the member who created it), and an embedded rendering of the content taken at the point of the report. It will also contain the report information supplied by the reporter.
+The support ticket will include the content title (as a link to the content), the content type label, the content ID, the content submitter (i.e. the member who created it), and an embedded rendering of the content taken at the point of the report (in case the offending member later edits or deletes the content). It will also contain the report information supplied by the reporter.
 
 We have found it often to be the case that staff will report content themselves, so that they can easily bring them (and possibly their related action) to the attention of other staff. It may also be useful for staff to report content to maintain a record of evidence in case the original content is edited or deleted.
 [/surround]

@@ -8,7 +8,7 @@ Composr includes a highly-configurable notification system for members to be ale
 
 [media width="150" description="Setting notifications" float="right"]data_custom/images/docs/tut_notifications/notifications.png[/media]
 There are a wide number of notifications that members can receive.
-Some are set to be enabled by default, and some are only available based on privileges.
+Some are set to be enabled by default, and some are only available based on privileges or configuration.
 
 Some notifications allow fine-grained control, allowing you to choose to receive them only for certain notification categories. For example, with forum topic notifications you can choose to receive them only for certain forums. This is similar to what some forum software calls 'tracking'.
 
@@ -21,8 +21,8 @@ If you enable notifications on a particular type, but also categories of that ty
 
 You can receive notifications through a number of means:
  - E-mail
- - Digest e-mail (i.e. in batches)
- - Private topics
+ - Digest e-mail (i.e. in delayed batches; requires the system scheduler to be set up and the 'Enable digest notifications' setting to be enabled in Admin Zone > Setup > Configuration > Messages)
+ - Private topics (requires the 'Enable private topic notifications' setting to be enabled in Admin Zone > Setup > Configuration > Messages)
  - {$IS_MAINTAINED,sms,SMS} (if configured, requires payment for each text message sent)
  - Web notifications
 
@@ -30,13 +30,13 @@ Note that private topic receipt is disabled for topic-derived notifications, in 
 
 [title="3"]Web notifications[/title]
 
-Web notifications are particularly cool. If you have the website open (or pinned open, which some browsers support), then visitors will be notified directly through the Composr user interface within a matter of seconds. From the list of recent/unread notifications, you can view an overlay with the full notification details, or a full page detailing all enabled web notifications from the last period of days.
+Web notifications are particularly useful. If you have the website open (or pinned open, which some browsers support), then visitors will be notified directly through the Composr user interface within a matter of seconds. From the list of recent/unread notifications, you can view an overlay with the full notification details, or a full page detailing all enabled web notifications from the last period of days.
 
 Additionally, most platforms will allow native notification display:
  - in the Windows notification center
  - in the Mac OS notification center
- - in the Internet Explorer pinned site notification area
- - [s]in the main notification area of iPhone or Android phones[/s] -- unfortunately this doesn't work at the time of writing, as background pages don't run and most mobile browsers don't support HTML5 notifications
+ - in a browser's site notification area
+ - in the main notification area of iPhone or Android phones -- This might not work on all devices
 
 (If you don't want the interface to support this, you can remove the [tt]top_notifications[/tt] block from the default [tt]GLOBAL_HTML_WRAP.tpl[/tt] template and disable web notifications.)
 
@@ -69,7 +69,8 @@ Instead, only the IDs of notification categories that the user has already monit
 
 [title="2"]Defaults[/title]
 
-Many notifications have inbuilt defaults which are set for all members until or unless they change their settings or they are changed in the &ldquo;Notification lock-down&rdquo;. Site staff can change the notification defaults (Admin Zone > Setup > Notification defaults).
+[media width="150" description="Setting notification defaults" float="right"]data_custom/images/docs/tut_notifications/defaults.png[/media]
+Many notifications have inbuilt defaults which are set for all members until or unless they change their settings or they are changed in the &ldquo;Notification defaults&rdquo;. Site staff can change the notification defaults (Admin Zone > Setup > Notification defaults).
 
 You will see the following columns:
  - Notification title (the column title is actually unlabelled, but this is what it is)
@@ -81,10 +82,10 @@ You will see the following columns:
 
 [media width="150" description="Setting notification lock-downs" float="right"]data_custom/images/docs/tut_notifications/lockdown.png[/media]
 In the Admin Zone you can define what notifications are "locked-down". You can use this to:
- - See which notifications are designed for staff only
- - See the inbuilt defaults for each notification when you hover over a &ldquo;Not locked down, free choice&rdquo; checkbox.
  - Stop any member from receiving particular notifications
  - Force members to receive particular notifications types
+
+This is particularly useful if you want to prevent your site from sending a bunch of mail when you have outgoing mail limits on your web host.
 
 Locked-down notifications will show on a member's notification settings, but the checkboxes cannot be changed. This is so members are informed which notifications they may or may not receive which they cannot change.
 
@@ -99,7 +100,7 @@ You will see the following columns:
 
 If no checkboxes are checked then the members will not be able to receive the notification at all. This is quite a common configuration, essentially allowing you to turn off a notification for the whole website.
 
-Note that the settings apply to all members (while respecting the notification permissions). We do not support usergroup-based notification lock-downs.
+Note that the settings apply to all members (while respecting the notification permissions). We do not support usergroup-based notification lock-downs. It is a feature that may be requested and sponsored if you would like to see it.
 
 [title="2"]Security[/title]
 
@@ -116,13 +117,15 @@ However, you may come into a situation where you do want some granularity. A nic
 
 Digest e-mails provide combined summaries of activity.
 
-It is possible digest e-mails could become very long. In this case, Composr would struggle to parse their Comcode. Composr therefore implements a 100kb limit per digest.
+It is possible digest e-mails could become very long. In this case, Composr would struggle to parse their Comcode, or the mail client may struggle with such large e-mails. Composr therefore implements a 256kb limit per digest.
 
 Members are informed if the limit is exceeded (while still given the subjects of each digest item). The member may then choose to change their settings to something more manageable (such as more regular, or smaller, digests).
 
+Digest e-mails are also typically viewable in the web browser in their full form providing that e-mail logging is enabled and the e-mail has not yet been cleaned up from the logs. A web version link is provided in the e-mail. This is, of course, subject to the web server's ability to handle the size of the e-mail and render it without reaching the PHP memory limit.
+
 [title="3"]Debugging[/title]
 
-Digests are sent out via the system scheduler. A member can only choose to receive digests if the system scheduler is set up and if they have configured an e-mail address.
+Digests are sent out via the system scheduler. A member can only choose to receive digests if the system scheduler is set up, if 'Enable digest notifications' is enabled in Messages configuration, and if they have configured an e-mail address.
 
 Digests are not sent out at any specific time (to avoid overloading outbound e-mail each night), but rather each member's digests are individually time-tracked using the [tt]digestives_consumed[/tt] table. For each member there is a timestamp in that table representing when each of their digest's was last sent. When the system scheduler runs it looks to see what digests are due and sends them if there's any content for them.
 

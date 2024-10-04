@@ -55,7 +55,7 @@ Forum posts are treated differently to other content, due to the prevalent probl
 
 [title="3"]A note about forum points[/title]
 
-For Conversr, points are awarded immediately when a post is made, and points can be reversed via a tickbox (checkbox) when deleting posts or topics. Note that points are not awarded for anonymous posts, whispers, nor posts in private topics because it would cause a privacy leak in the points ledger.
+For Conversr, points are awarded when a post is made, and points can be reversed via a tickbox (checkbox) when deleting posts or topics. Note that points are not awarded for anonymous posts, whispers, nor posts in private topics because it would cause a privacy leak in the points ledger (not to mention these are considered private methods which do not make any significant contribution to overall site content).
 
 For all other forums, because the forum driver cannot directly communicate with Composr, points are instead awarded daily via the system scheduler based on the change in post count. Note that points will never be debited if the post count goes down; moderators should manually charge members to resolve discrepancies.
 
@@ -81,6 +81,7 @@ To send or escrow points to another member, visit their profile and go in their 
 Members may not send points to themselves (e.g. to convert their gift points to regular points) unless they have the &ldquo;Send points to self&rdquo; privilege.
 
 If the &ldquo;Enable anonymous transactions&rdquo; configuration option is enabled (Admin Zone > Setup > Configuration > Points options), then members can also tick (check) &ldquo;Anonymous transaction&rdquo; to hide themselves as the sender in the points ledger and in notifications (except for those with the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege).
+[/surround]
 
 [title="3"]Gift points (advanced)[/title]
 
@@ -90,10 +91,17 @@ By default, members have a single point balance that they can use both to spend 
 
 For example, member A has 100 points and 25 gift points. They can spend their 100 points on things, but they cannot spend their 25 gift points. Member A wants to give Member B 50 points. Since member A only has 25 gift points, the other 25 points will be deducted from their regular points. Therefore, after the transaction, member A will have 75 regular points and 0 gift points. And member B will receive 50 regular points which they can spend.
 
-When gift points are enabled, members can be randomly rewarded for sending points to others. The amount rewarded and the chance of being rewarded can be configured (Admin Zone > Setup > Configuration > Points options > Gift points). Only non-anonymous transactions (if anonymous transactions are enabled) will qualify for this random lottery.
+When gift points are enabled, members can be randomly rewarded spendable points for sending points to others. The amount rewarded and the chance of being rewarded can be configured (Admin Zone > Setup > Configuration > Points options > Gift points). Only non-anonymous transactions (if anonymous transactions are enabled) will qualify for this random lottery.
 
 [title="3"]Points escrow[/title]
-
+[media_set]
+[media width="150" description="The form for escrowing points to another member" float="right"]data_custom/images/docs/tut_points/points_escrow.png[/media]
+[media width="150" description="An escrow in progress between two members" float="right"]data_custom/images/docs/tut_points/points_escrow_item.png[/media]
+[media width="150" description="A satisfied (completed) escrow" float="right"]data_custom/images/docs/tut_points/points_escrow_satisfied.png[/media]
+[media width="150" description="A disputed escrow" float="right"]data_custom/images/docs/tut_points/points_escrow_disputed.png[/media]
+[media width="150" description="A member with the privilege to moderate escrows and is not involved in the escrow will see a moderate button" float="right"]data_custom/images/docs/tut_points/points_escrow_moderate.png[/media]
+[media width="150" description="The form for moderating an escrow" float="right"]data_custom/images/docs/tut_points/points_escrow_moderate_form.png[/media]
+[/media_set]
 Members can also send each other points through the escrow system. This is commonly used when exchanging points with a written agreement, such as for a product or service.
 
 To escrow points to another member, go to their points profile and click the &ldquo;Send via Escrow&rdquo; button. A form loads where you can specify the number of points to escrow, the reason (short and concise explanation of what is being exchanged with the points, such as the product or service), the expiration (deadline) if applicable, and the written agreement associated with the escrow. Only those with the &ldquo;Escrow points to others&rdquo; privilege can escrow points to others, which is enabled by default for all usergroups.
@@ -107,7 +115,6 @@ Be aware that those with the &ldquo;Moderate points escrowed&rdquo; privilege ca
 If an escrow expires and neither member marked it as satisfied nor disputed, then the escrow is cancelled and the points returned to the original member.
 
 Escrows can be viewed in a table on each member's points profile. Only those with the &ldquo;Moderate points escrowed&rdquo; privilege can see all escrows. Otherwise, members can only see escrows in which they were either the sender or recipient.
-[/surround]
 
 [title="2"]Point transaction notifications[/title]
 
@@ -185,10 +192,13 @@ The eCommerce addon allows setting up custom products that may be purchased in e
 
 [surround]
 [media width="150" description="Rank ladder shown in the usergroup directory" float="right"]data_custom/images/docs/tut_points/rank.png[/media]
+[media width="150" description="A member's rank and benefits shown in their profile rank tab" float="right"]data_custom/images/docs/tut_points/rank_profile.png[/media]
 [media width="150" description="Rank configured when editing a usergroup" float="right"]data_custom/images/docs/tut_points/rank_options.png[/media]
 [concept]Conversr[/concept] has a usergroup system that allows automated or manual (with approval) progression from one usergroup to another, according to life-time points. This is configured by default such that the usergroup rank images for the usergroups involved imply a rising rank.
 
 The 'status symbol' of rank is an incentive for members to earn points (hence contributing to the site and community), but permissions may also be configured such as to give permission according to rank, simply by assigning the permissions differently for different usergroups.
+
+The 'Rank' tab on a member's profile details their current rank, how many points they need for the next rank, the benefits and privileges they unlocked, and any benefits / privileges they can unlock in a higher rank. This tab is only visible when viewing one's own profile.
 
 If you would like to use rank, but not other point features, remove view permissions to the 'points' module and edit the 'Block options' (in the configuration) to not display point details. You cannot remove the points addon if you wish to use ranks as ranks depends on points to determine a member's rank.
 [/surround]
