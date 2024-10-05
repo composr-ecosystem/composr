@@ -1149,8 +1149,12 @@ function do_site()
 
     // When someone hits the Admin Zone
     if (($ZONE !== null) && ($ZONE['zone_name'] == 'adminzone')) {
-        // Security feature admins can turn on
-        if (get_page_name() == DEFAULT_ZONE_PAGE_NAME) {
+        require_code('global4');
+
+        if (!already_in_log('ACCESSED_ADMIN_ZONE', get_session_id(true))) {
+            log_it('ACCESSED_ADMIN_ZONE', get_session_id(true));
+
+            // Security feature admins can turn on
             require_code('notifications');
             $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
             $subject = do_lang('AFA_NOTIFICATION_MAIL_SUBJECT', $current_username, get_site_name(), get_ip_address());

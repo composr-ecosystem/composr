@@ -478,6 +478,15 @@ class Hook_actionlog_core extends Hook_actionlog
                     'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
                 ],
             ],
+            'ACCESSED_ADMIN_ZONE' => [
+                'flags' => ACTIONLOG_FLAG__GDPR,
+                'cma_hook' => 'zone',
+                'identifier_index' => null,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'VIEW' => 'adminzone:',
+                ],
+            ],
         ];
     }
 
