@@ -28,9 +28,12 @@ Google Analytics is easy to set up in Composr as we have support built-in: you j
 
 [title="2"]The administration module[/title]
 
+[surround]
+[media width="150" description="An example statistics page: Content growth" float="right"]data_custom/images/docs/tut_statistics/statistics_page.png[/media]
 The Composr stats administration module resides in Admin Zone > Audit > Site statistics.
 
 Be aware that hits coming from the web server itself will be filtered from the stats, so if you are running a web server on your own computer you may not see any results if nobody else has used your website yet.
+[/surround]
 
 [title="3"]Installing {$IS_MAINTAINED,ip_geocoding,geo-location data}[/title]
 
@@ -417,19 +420,31 @@ Every graph has the option to download the data the graph is generated from, in 
 
 No default graphs or data tables provided by Composr statistics reveal personal information about users -- everything is anonymous. This puts the system in line with GDPR (EU privacy legislation).
 
+This happens because statistics graphs do not directly use data from the site to render the statistics. Instead, a scheduled task regularly takes site data and generates from it 'data buckets' which the statistics graphs then use. These 'data buckets' only contain data which is necessary to render the statistics and graphs; they do not contain personal information.
+
 [title="3"]Pre-computed statistics[/title]
 
 All statistics are generated from pre-computed data, which is itself based on raw data.
 The pre-computation happens in the system scheduler, daily. The system scheduler is therefore required for Composr statistics.
 
 Why do we do this? There are a number of reasons:
-1) We can not hold onto raw data forever, due to GDPR (EU privacy legislation), yet we want to be able to see statistics going all the way back.
+1) We can not hold onto raw data forever, due to GDPR (EU privacy legislation), yet we want to be able to see statistics going as far back as possible.
 2) Some graphs require fairly complicated computations that should not be performed in real-time (for example doing geolocation of users, or tracing behaviour across user sessions).
 3) We want to be able to process huge numbers of records without performance degradation.
 4) Generally, we want statistics to be as snappy as possible, so that you feel comfortable dipping in and out of them, and setting different filters. If there's friction, you'll likely not spend as much time looking at your numbers as you should.
 5) We want generated data to be readily available in other parts of Composr.
 
+[title="4"]Limitations[/title]
+
 One limitation to the pre-computation is that it does limit the amount of filtering possible to what we have built into our data structures. For example, you can set date ranges but only aligned to months.
+
+Another limitation, to preserve site stability, is that statistics from over 31 days in the past will not be pre-processed. We have found sites will completely lock up even on performant dedicated servers (mainly because of the heavy use of database table locking in the process of pre-processing) if statistics have to pre-process multiple months of data. This means you could experience a gap in your data if any of the following occur:
+ - The system scheduler stops working for 31 or more consecutive days
+ - The statistics module repeatedly fails to pre-process data over the course of 31 or more consecutive days
+ - You manually delete existing statistical data from Admin Zone > Tools > Cleanup Tools, or from the database
+ - You use the site importer (imported content from over 31 days ago will not be factored in the statistics)
+ - You run the automated test suite for stats ([tt]testing_platform[/tt] non-bundled addon)
+Once statistics have been pre-processed, they will remain in the system unless manually cleared even if they are older than 31 days. It is only if statistics do not get pre-processed for over 31 days that they will not end up in the module.
 
 [title="3"]Time zones[/title]
 
@@ -440,27 +455,41 @@ Some graphs allow showing hour-by-hour stats and also filtering by country, in w
 
 [title="3"]View counts[/title]
 
-[media width="150" description="View statistics are shown for various forms of content" float="right"]data_custom/images/docs/tut_statistics/statistics_news_item_stats.png[/media]
+[surround]
+[media width="150" description="View statistics are shown for various forms of content" float="left"]data_custom/images/docs/tut_statistics/statistics_news_item_stats.png[/media]
 All content will automatically store download/view statistics as appropriate, which will usually be displayed on the respective entry screen.
 An example of this would be news entries: each news entry records how many times it is viewed, and displays this number on its view screen.
 
 The [tt]main_multi_content[/tt] block can also be used to draw out content based on popularity.
+[/surround]
 
 [title="3"]The statistics block[/title]
 
+[surround]
 [media width="150" description="The [tt]side_stats[/tt] block" float="left"]data_custom/images/docs/tut_statistics/side_stats.png[/media]
 The [tt]side_stats[/tt] block shows various figures that relate to your website's activity and archive size. The exact details shown are configurable (in the main Composr configuration) from quite a wide selection.
+[/surround]
+
+[title="3"]The statistics graph block[/title]
+
+[surround]
+[media width="150" description="The [tt]main_staff_stats_graph[/tt] block" float="left"]data_custom/images/docs/tut_statistics/main_staff_stats_graph.png[/media]
+The [tt]main_staff_stats_graph[/tt] block allows you to place a statistics graph anywhere on your site. This is typically used for putting your most-tracked metrics on the Admin Zone dashboard. But you could also put public graphs on your site to showcase community statistics, transparency, or basically anything you want.
+
+Do not be fooled by the name [tt]main_staff_stats_graph[/tt]; a visitor does not have to be a staff member to see the graph (no permissions checking is done) unless it is placed on a restricted page (e.g. the Admin Zone dashboard).
+[/surround]
 
 [title="3"]Real-time analytics[/title]
 
 [surround]
-[media width="150" description="Real-time analytics" float="right"]data_custom/images/docs/tut_statistics/realtime_rain.png[/media]
+[media width="150" description="Real-time analytics" float="left"]data_custom/images/docs/tut_statistics/realtime_rain.png[/media]
 {!realtime_rain:DOC_REALTIME_RAIN}
 
 Access Real-time analytics from:
 Admin Zone > Audit > What's happening now (RTR)
 
 It is a good way to visualise how people are using the site. This works best when the site has multiple online users performing options, but you can move the timeline back to when stuff was happening previously (i.e. view activity from a historic viewpoint).
+[/surround]
 
 [title="3"]Browsing basic logs[/title]
 
