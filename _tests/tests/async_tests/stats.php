@@ -39,21 +39,28 @@ class stats_test_set extends cms_test_case
 
         $dummy_data = [
             // 'table_name' => [array of forced field=>value maps; one row will be created for each array item],
-            'actionlogs' => [[]],
+            'actionlogs' => [
+                [],
+                ['the_type' => 'ACCESSED_ADMIN_ZONE']
+            ],
             'f_moderator_logs' => [[]],
             'banner_clicks' => [[]],
             'f_topics' => [
+                [],
                 ['_ALLOW_NULL_' => false],
                 ['_ALLOW_NULL_' => false, 't_forum_id' => null],
             ],
             'f_posts' => [
+                [],
                 ['_ALLOW_NULL_' => false, 'p_whisper_to_member' => null],
                 ['p_whisper_to_member' => 2],
             ],
             'f_poll_votes' => [
+                [],
                 ['pv_revoked' => 0],
             ],
             'f_members' => [
+                [],
                 ['m_dob_year' => 2000, 'm_dob_month' => 1, 'm_dob_day' => 1],
                 ['m_cache_num_posts' => 10],
             ],
@@ -63,6 +70,7 @@ class stats_test_set extends cms_test_case
             'stats_known_tracking' => [[]],
             'stats_events' => [[]],
             'stats' => [
+                [],
                 ['member_id' => 2],
                 ['browser' => 'Mozilla Firefox'],
                 ['referer' => 'https://example.com'],
@@ -71,6 +79,7 @@ class stats_test_set extends cms_test_case
             'stats_link_tracker' => [[]],
             'stats_known_links' => [[]],
             'newsletter_subscribers' => [
+                [],
                 ['code_confirm' => 0],
             ],
             'points_ledger' => [[]],
@@ -80,10 +89,12 @@ class stats_test_set extends cms_test_case
             'failedlogins' => [[]],
             'hackattack' => [[]],
             'sitemap_cache' => [
+                [],
                 ['_ALLOW_NULL_' => false, 'page_link' => ':' . uniqid()],
             ],
             'ecom_subscriptions' => [[]],
             'ecom_transactions' => [
+                [],
                 ['t_status' => 'Completed'],
             ],
             'usersonline_track' => [[]],
