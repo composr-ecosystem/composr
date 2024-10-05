@@ -141,9 +141,9 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
                     foreach (array_keys($date_pivots) as $pivot) {
                         $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
                         if (!isset($data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value])) {
-                            $data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value] = 0;
+                            $data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value][$type] = 0;
                         }
-                        $data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value]++;
+                        $data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value][$type]++;
                     }
                     continue;
                 }
