@@ -67,8 +67,18 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 'filters' => [
                     'recorded_punishments__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishments__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                     'recorded_punishments__country' => new CMSStatsListFilter('recorded_punishments__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()),
+                    'recorded_punishments__reason' => new CMSStatsTextFilter('recorded_punishments__reason', do_lang_tempcode('REASON'), ''),
                 ],
-                'pivot' => new CMSStatsDatePivot('moderation__pivot', $this->get_date_pivots(!$for_kpi)),
+                'pivot' => new CMSStatsDatePivot('recorded_punishments__pivot', $this->get_date_pivots(!$for_kpi)),
+            ],
+            'recorded_punishment_reasons' => [
+                'label' => do_lang_tempcode('WARNINGS_BY_REASON'),
+                'category' => 'moderation',
+                'filters' => [
+                    'recorded_punishment_reasons__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishment_reasons__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'recorded_punishment_reasons__country' => new CMSStatsListFilter('recorded_punishment_reasons__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()),
+                ],
+                'pivot' => null,
             ],
         ];
         if (has_geolocation_data()) {
@@ -77,6 +87,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 'category' => 'moderation',
                 'filters' => [
                     'recorded_punishment_countries__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishment_countries__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'recorded_punishment_countries__reason' => new CMSStatsTextFilter('recorded_punishment_countries__reason', do_lang_tempcode('REASON'), ''),
                 ],
                 'pivot' => null,
             ];
@@ -101,7 +112,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
 
         $date_pivots = $this->get_date_pivots();
 
-        $query = 'SELECT w_time,m_ip_address FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings w JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m ON m.id=w.w_member_id  WHERE ';
+        $query = 'SELECT w_time,w_explanation,m_ip_address FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings w JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m ON m.id=w.w_member_id  WHERE ';
         $query .= 'w_time>=' . strval($start_time) . ' AND ';
         $query .= 'w_time<=' . strval($end_time);
         $query .= ' ORDER BY w_time';
@@ -118,20 +129,27 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                     $country = '';
                 }
 
+                $explanation = $row['w_explanation'];
+
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                    if (!isset($data_buckets['recorded_punishments'][$month][$pivot][$pivot_value][$country])) {
-                        $data_buckets['recorded_punishments'][$month][$pivot][$pivot_value][$country] = 0;
+                    if (!isset($data_buckets['recorded_punishments'][$month][$pivot][$pivot_value][$country][$explanation])) {
+                        $data_buckets['recorded_punishments'][$month][$pivot][$pivot_value][$country][$explanation] = 0;
                     }
-                    $data_buckets['recorded_punishments'][$month][$pivot][$pivot_value][$country]++;
+                    $data_buckets['recorded_punishments'][$month][$pivot][$pivot_value][$country][$explanation]++;
                 }
 
+                if (!isset($data_buckets['recorded_punishment_reasons'][$month][''][$country][$explanation])) {
+                    $data_buckets['recorded_punishment_reasons'][$month][''][$country][$explanation] = 0;
+                }
+                $data_buckets['recorded_punishment_reasons'][$month][''][$country][$explanation]++;
+
                 if (has_geolocation_data()) {
-                    if (!isset($data_buckets['recorded_punishment_countries'][$month][''][$country])) {
-                        $data_buckets['recorded_punishment_countries'][$month][''][$country] = 0;
+                    if (!isset($data_buckets['recorded_punishment_countries'][$month][''][$country][$explanation])) {
+                        $data_buckets['recorded_punishment_countries'][$month][''][$country][$explanation] = 0;
                     }
-                    $data_buckets['recorded_punishment_countries'][$month][''][$country]++;
+                    $data_buckets['recorded_punishment_countries'][$month][''][$country][$explanation]++;
                 }
             }
 
@@ -165,18 +183,26 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
+
                     foreach ($_data as $pivot_value => $__) {
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
-                        foreach ($__ as $country => $total_punishments) {
+                        foreach ($__ as $country => $___) {
                             if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
                                 continue;
                             }
 
-                            if (!isset($data[$pivot_value])) {
-                                $data[$pivot_value] = 0;
+                            foreach ($___ as $explanation => $total_punishments) {
+                                if ((!empty($filters[$bucket . '__reason'])) && ($filters[$bucket . '__reason'] != $explanation)) {
+                                    continue;
+                                }
+
+                                if (!isset($data[$pivot_value])) {
+                                    $data[$pivot_value] = 0;
+                                }
+
+                                $data[$pivot_value] += $total_punishments;
                             }
-                            $data[$pivot_value] += $total_punishments;
                         }
                     }
                 }
@@ -186,6 +212,44 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
                     'y_axis_label' => do_lang_tempcode('COUNT_NEW'),
+                ];
+
+            case 'recorded_punishment_reasons':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+                $data = [];
+
+                $where = [
+                    'p_bucket' => $bucket,
+                    'p_pivot' => $pivot,
+                ];
+                $extra = '';
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
+                $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
+
+                foreach ($data_rows as $data_row) {
+                    $_data = @unserialize($data_row['p_data']);
+                    foreach ($_data as $country => $___) {
+                        if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
+                            continue;
+                        }
+
+                        foreach ($___ as $explanation => $total_punishments) {
+                            if (!isset($data[$explanation])) {
+                                $data[$explanation] = 0;
+                            }
+
+                            $data[$explanation] += $total_punishments;
+                        }
+                    }
+                }
+
+                return [
+                    'type' => self::GRAPH_BAR_CHART,
+                    'data' => $data,
+                    'x_axis_label' => do_lang_tempcode('REASON'),
+                    'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
                 ];
 
             case 'recorded_punishment_countries':
