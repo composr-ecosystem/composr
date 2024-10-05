@@ -2344,11 +2344,18 @@ function log_stats(?string $page_link, int $pg_time)
 
     set_throw_errors(false);
 
+    /*
+        NB: We cannot always assume the scheduler is running, so randomly clear the stats if it hasn't in the last hour.
+        This, however, is not enough for GDPR compliance; we need the Cron as well.
+    */
     if (mt_rand(0, 100) == 1) {
-        cms_register_shutdown_function_safe(function () {
-            require_code('stats');
-            cleanup_stats();
-        });
+        $last_cron = get_value('last_cron');
+        if (($last_cron === null) || (intval($last_cron) < time() - 60 * 60)) {
+            cms_register_shutdown_function_safe(function () {
+                require_code('stats');
+                cleanup_stats();
+            });
+        }
     }
 
     global $SITE_INFO;
