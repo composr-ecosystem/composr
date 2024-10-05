@@ -2323,7 +2323,7 @@ function log_stats(?string $page_link, int $pg_time)
         'date_and_time' => $time,
         'page_link' => $page_link,
         'post' => $post,
-        'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
+        'referer_url' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
         'ip' => $ip,
         'member_id' => $member_id,
         'session_id' => get_pseudo_session_id(),
