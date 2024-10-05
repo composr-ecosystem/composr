@@ -29,6 +29,7 @@ class Hook_endpoint_cms_homesite_newsletter
     {
         return [
             'authorization' => false,
+            'log_stats_event' => 'cms_homesite/newsletter',
         ];
     }
 

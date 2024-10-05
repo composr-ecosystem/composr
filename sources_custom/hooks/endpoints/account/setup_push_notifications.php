@@ -29,6 +29,7 @@ class Hook_endpoint_account_setup_push_notifications
     {
         return [
             'authorization' => ['member'],
+            'log_stats_event' => 'account/setup_push_notifications',
         ];
     }
 

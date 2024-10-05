@@ -29,6 +29,7 @@ class Hook_endpoint_account_login
     {
         return [
             'authorization' => false,
+            'log_stats_event' => 'account/login',
         ];
     }
 

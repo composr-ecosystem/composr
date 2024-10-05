@@ -29,6 +29,7 @@ class Hook_endpoint_content_commandr_fs
     {
         return [
             'authorization' => ['member'],
+            'log_stats_event' => 'content/commandr_fs',
         ];
     }
 

@@ -29,6 +29,7 @@ class Hook_endpoint_account_lost_password
     {
         return [
             'authorization' => false,
+            'log_stats_event' => 'account/lost_password',
         ];
     }
 
