@@ -2319,20 +2319,30 @@ function log_stats(?string $page_link, int $pg_time)
     global $IS_ACTUALLY;
     $member_id = ($IS_ACTUALLY === null) ? get_member() : $IS_ACTUALLY;
 
-    $GLOBALS['SITE_DB']->query_insert('stats', [
-        'date_and_time' => $time,
-        'page_link' => $page_link,
-        'post' => $post,
-        'referer_url' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
-        'ip' => $ip,
-        'member_id' => $member_id,
-        'session_id' => get_pseudo_session_id(),
-        'browser' => cms_mb_substr(get_browser_string(), 0, 255),
-        'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
-        'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
-        'milliseconds' => intval($pg_time),
-        'tracking_code' => cms_mb_substr(get_param_string('_t', ''), 0, 80),
-    ], false, true); // Errors suppressed in case DB write access broken
+    // We want to suppress DB errors for logging stats but still log/relay the error
+    require_code('failure');
+    set_throw_errors(true);
+
+    try {
+        $GLOBALS['SITE_DB']->query_insert('stats', [
+            'date_and_time' => $time,
+            'page_link' => $page_link,
+            'post' => $post,
+            'referer_url' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
+            'ip' => $ip,
+            'member_id' => $member_id,
+            'session_id' => get_pseudo_session_id(),
+            'browser' => cms_mb_substr(get_browser_string(), 0, 255),
+            'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
+            'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
+            'milliseconds' => intval($pg_time),
+            'tracking_code' => cms_mb_substr(get_param_string('_t', ''), 0, 80),
+        ], false);
+    } catch (Exception $e) {
+        // cms_error_log(brand_name() . ' database: WARNING ' . $e->getMessage()); // DB already logs it
+    }
+
+    set_throw_errors(false);
 
     if (mt_rand(0, 100) == 1) {
         cms_register_shutdown_function_safe(function () {
