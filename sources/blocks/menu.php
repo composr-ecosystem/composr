@@ -104,7 +104,7 @@ class Block_menu
         $javascript_highlighting = ((isset($map['javascript_highlighting']) ? $map['javascript_highlighting'] : '1') == '1');
 
         require_code('menus');
-        list($content, $root, $flattened) = build_menu($type, $menu, false, !$javascript_highlighting, $tray_status);
+        list($content, $root, $flattened) = build_menu($type, $menu, $silent_failure, !$javascript_highlighting, $tray_status);
         if ($flattened) {
             $LANGS_REQUESTED = $bak; // We've flattened with apply_quick_caching, we don't need to load up all those language files next time
         }

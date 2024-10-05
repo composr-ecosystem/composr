@@ -29,6 +29,7 @@ class Hook_endpoint_cms_homesite_personal_upgrader
     {
         return [
             'authorization' => false,
+            'log_stats_event' => 'cms_homesite/personal_upgrader',
         ];
     }
 

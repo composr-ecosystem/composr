@@ -1149,8 +1149,12 @@ function do_site()
 
     // When someone hits the Admin Zone
     if (($ZONE !== null) && ($ZONE['zone_name'] == 'adminzone')) {
-        // Security feature admins can turn on
-        if (get_page_name() == DEFAULT_ZONE_PAGE_NAME) {
+        require_code('global4');
+
+        if (!already_in_log('ACCESSED_ADMIN_ZONE', get_session_id(true))) {
+            log_it('ACCESSED_ADMIN_ZONE', get_session_id(true));
+
+            // Security feature admins can turn on
             require_code('notifications');
             $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
             $subject = do_lang('AFA_NOTIFICATION_MAIL_SUBJECT', $current_username, get_site_name(), get_ip_address());
@@ -2315,26 +2319,43 @@ function log_stats(?string $page_link, int $pg_time)
     global $IS_ACTUALLY;
     $member_id = ($IS_ACTUALLY === null) ? get_member() : $IS_ACTUALLY;
 
-    $GLOBALS['SITE_DB']->query_insert('stats', [
-        'date_and_time' => $time,
-        'page_link' => $page_link,
-        'post' => $post,
-        'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
-        'ip' => $ip,
-        'member_id' => $member_id,
-        'session_id' => get_pseudo_session_id(),
-        'browser' => cms_mb_substr(get_browser_string(), 0, 255),
-        'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
-        'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
-        'milliseconds' => intval($pg_time),
-        'tracking_code' => cms_mb_substr(get_param_string('_t', ''), 0, 80),
-    ], false, true); // Errors suppressed in case DB write access broken
+    // We want to suppress DB errors for logging stats but still log/relay the error
+    require_code('failure');
+    set_throw_errors(true);
 
+    try {
+        $GLOBALS['SITE_DB']->query_insert('stats', [
+            'date_and_time' => $time,
+            'page_link' => $page_link,
+            'post' => $post,
+            'referer_url' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
+            'ip' => $ip,
+            'member_id' => $member_id,
+            'session_id' => get_pseudo_session_id(),
+            'browser' => cms_mb_substr(get_browser_string(), 0, 255),
+            'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
+            'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
+            'milliseconds' => intval($pg_time),
+            'tracking_code' => cms_mb_substr(get_param_string('_t', ''), 0, 80),
+        ], false);
+    } catch (Exception $e) {
+        // cms_error_log(brand_name() . ' database: WARNING ' . $e->getMessage()); // DB already logs it
+    }
+
+    set_throw_errors(false);
+
+    /*
+        NB: We cannot always assume the scheduler is running, so randomly clear the stats if it hasn't in the last hour.
+        This, however, is not enough for GDPR compliance; we need the Cron as well.
+    */
     if (mt_rand(0, 100) == 1) {
-        cms_register_shutdown_function_safe(function () {
-            require_code('stats');
-            cleanup_stats();
-        });
+        $last_cron = get_value('last_cron');
+        if (($last_cron === null) || (intval($last_cron) < time() - 60 * 60)) {
+            cms_register_shutdown_function_safe(function () {
+                require_code('stats');
+                cleanup_stats();
+            });
+        }
     }
 
     global $SITE_INFO;

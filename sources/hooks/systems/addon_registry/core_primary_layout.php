@@ -291,6 +291,7 @@ class Hook_addon_registry_core_primary_layout
             'TITLE' => lorem_phrase(),
             'CONTENT' => $message_raw,
             'CSS' => '{CSS}',
+            'VIEW_IN_BROWSER' => placeholder_link(),
         ];
 
         $_tpl = do_lorem_template($tpl, $map);

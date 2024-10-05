@@ -29,6 +29,7 @@ class Hook_endpoint_misc_contact_us
     {
         return [
             'authorization' => false,
+            'log_stats_event' => 'misc/contact_us',
         ];
     }
 

@@ -95,6 +95,15 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
                 'pivot' => new CMSStatsDatePivot('actionlog_activity__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
+            'actionlog_adminzone' => [
+                'label' => do_lang_tempcode('STATS_ACTIONLOG_ADMINZONE'),
+                'category' => 'security',
+                'filters' => [
+                    'actionlog_adminzone__month_range' => new CMSStatsDateMonthRangeFilter('actionlog_adminzone__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                ],
+                'pivot' => new CMSStatsDatePivot('actionlog_adminzone__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_LOW_IS_GOOD,
+            ],
         ];
     }
 
@@ -127,6 +136,18 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $type = $row['the_type'];
+
+                if ($type == 'ACCESSED_ADMIN_ZONE') { // NB: special handling
+                    foreach (array_keys($date_pivots) as $pivot) {
+                        $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
+                        if (!isset($data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value])) {
+                            $data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value][$type] = 0;
+                        }
+                        $data_buckets['actionlog_adminzone'][$month][$pivot][$pivot_value][$type]++;
+                    }
+                    continue;
+                }
+
                 if ($this->should_skip_type($type, '')) {
                     continue;
                 }

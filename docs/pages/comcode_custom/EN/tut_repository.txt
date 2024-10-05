@@ -43,6 +43,7 @@ The default meta-filesystems are as follows, and are all mounted as subdirectori
  - [tt]members[/tt]: A listing of every member registered on the system, with their account/profile settings and usergroups
  - [tt]raw[/tt]: A raw listing of the actual Composr installation directory
  - [tt]root[/tt]: A listing of the Composr installation directory, taking source code overrides into account with higher precedence than original files (featuring automatically overriding when files are edited)
+	- Caveat: This does not take into account [tt]contentious_overrides[/tt] hooks because these overrides often implement logic to determine when the override applies. This makes it impractical to compile.
  - [tt]var[/tt]: Structured website resources/content, separated by resource type on level 1, with category structure as further folders (generally-speaking), and entries as files
 
 The [tt]var[/tt] meta-filesystem is perhaps the most interesting because if Webdav is installed, you can use this to import/export/copy resources/content into and between websites using your normal desktop file manager. This is extremely useful. In actuality, [tt]var[/tt] is not actually a meta-filesystem in its own right, each directory underneath it is actually implemented as a separate meta-filesystem.
@@ -51,6 +52,10 @@ The [tt]var[/tt] meta-filesystem is perhaps the most interesting because if Webd
 
 [media width="150" description="WebDAV software" float="right"]data_custom/images/docs/tut_repository/os_webdav.jpg[/media]
 WebDAV is a web-based-filesystem protocol that most operating systems support (theoretically). This lets you access the repository as a normal folder on your computer. Composr uses a PHP WebDAV-library called SabreDAV to bind Commandr-fs to WebDAV. To get this, you'll need to install the WebDAV non-bundled addon.
+
+[box="Deprecation notice"]
+Unfortunately, SabreDAV is not maintained any longer and does not work on PHP 8 or above. It is currently beyond the Core Development Team's resources to maintain or fork SabreDAV ourselves or to implement an alternative library. As such, WebDAV functionality is all but broken in Composr v11. If you would like to help us change that, please consider [page="docs:tut_software_feedback"]sponsoring a developer[/page] to do so, or do it yourself and make a merge request on our [url="GitLab"]https://gitlab.com/composr-foundation/composr[/url].
+[/box]
 
 Be aware that some operating systems do not support WebDAV very well in practice. The SabreDAV team have excellent documentation illustrating issues that are outside our control, and in most cases third-party software can be used for a better experience:
  - On Mac [url="Finder has some slowness issues"]http://sabre.io/dav/clients/finder/[/url]. Cyberduck works well, but doesn't currently provide a way to mount to a folder. Yummy FTP Pro works on HTTP but not HTTPS.

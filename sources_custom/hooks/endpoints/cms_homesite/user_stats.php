@@ -29,6 +29,7 @@ class Hook_endpoint_cms_homesite_user_stats
     {
         return [
             'authorization' => false,
+            'log_stats_event' => 'cms_homesite/user_stats',
         ];
     }
 

@@ -16,10 +16,10 @@ We intentionally do not try and 'compete' with Google Analytics. There is signif
   - Integration with Google Search Console (for SEO hints).
   - Google Analytics has access to insights from Google's own marketing. For example, it can show statistics of genders of visitors.
  - Cons:
-  - Google Analytics ultimately only knows about web visit to URLs, unless you do custom programming or complex configuration. Composr statistics has much more contextual information (e.g. knowing how Composr pages work), and can draw graphs for things beyond just web visits (e.g. sales).
+  - Google Analytics ultimately only knows about web visits to URLs, unless you do custom programming or complex configuration. Composr statistics has much more contextual information (e.g. knowing how Composr pages work), and can draw graphs for things beyond just web visits (e.g. sales).
   - Google Analytics uses JavaScript to initiate tracking. Composr does tracking server-side, not relying on JavaScript, and thus not subject to web browser configuration/blocking. While Composr by default does require JavaScript to display pages, views will still be logged even if JavaScript is not enabled by users.
   - Google Analytics uses tracking cookies, which is a privacy concern and questionable under legislation such as GDPR. Composr doesn't use anything beyond regular IP addresses, session IDs, and member IDs.
-  - Google Analytics is a product of a large multi-national corporation that makes money through targeted advertising, and has a number of major controversies around it. Composr statistics is hosted only on your own website and under your complete personal control.
+  - Google Analytics is a product of a large multi-national corporation that makes money through targeted advertising, and has a number of major controversies around it (e.g. it is highly probable your analytics data is being sold to third-party data brokers or used for targeted advertising in Google AdSense). Composr statistics is hosted only on your own website and under your complete personal control.
   - Google Analytics is closed source. Composr statistics is just another bundled Composr addon, and therefore fully Open Source.
 
 Basic users may be happy with only Composr statistics, especially given the privacy and freedom around big-tech marketing. Expert marketers will likely want the power of Google Analytics, there is no doubting it is an extremely powerful tool and a professional standard.
@@ -28,9 +28,12 @@ Google Analytics is easy to set up in Composr as we have support built-in: you j
 
 [title="2"]The administration module[/title]
 
+[surround]
+[media width="150" description="An example statistics page: Content growth" float="right"]data_custom/images/docs/tut_statistics/statistics_page.png[/media]
 The Composr stats administration module resides in Admin Zone > Audit > Site statistics.
 
 Be aware that hits coming from the web server itself will be filtered from the stats, so if you are running a web server on your own computer you may not see any results if nobody else has used your website yet.
+[/surround]
 
 [title="3"]Installing {$IS_MAINTAINED,ip_geocoding,geo-location data}[/title]
 
@@ -44,7 +47,7 @@ Once the geo-location data is installed, all the extra statistics can be used.
 
 [title="2"]Categories and Graphs[/title]
 
-The statistics module splits up the graphs into a number of categories. The exact categories and graphs available depend what addons you have installed, and to some extent your configuration -- at the time of writing the complete total is 69.
+The statistics module splits up the graphs into a number of categories. The exact categories and graphs available depend what addons you have installed, and to some extent your configuration -- at the time of writing, there are over 65.
 
 There are a large number of different graphs available for viewing, and most of them function in an obvious way. This documentation section will highlight some specifics that are not so obvious.
 
@@ -56,39 +59,85 @@ You can set time-based graphs to tally records (pivot) in different ways. There 
 
 Time series show as a line graph, while flow patterns show as a bar chart.
 
+[title="3"]Audience: demographics[/title]
+
+Demographics graphs give you an idea who your users are. It may help you have an idea who you need to work harder for -- be that attracting new audiences, or doubling down on what you now understand as your core audience.
+
+At the time of writing, only age and requested language are available analytics. This is because these are the only built-in pieces of demographic information Composr gathers from members. Gender, for example, is not a built-in field but can rather be implemented as a Custom Profile Field (which statistics do not track). The same is true for location fields. You could write your own statistics hooks to track CPFs if you desired.
+
+[title="3"]Audience: technical[/title]
+
+These graphs get into the more technical aspects of your audience, such as what devices they are using to access your site, what operating systems they run, and more. You can utilise these statistics to make decisions, for example, on your theme's design and behaviour to accommodate the most people.
+
+[title="3"]Content growth[/title]
+
+This category presents two different ways to measure your site's content growth over time:
+ - Action logs, which is primarily an indication of how often content is getting added, updated / revised, and removed (unlike the Action Logs graph in Feedback and engagement, this graph focuses specifically on content-based actions)
+ - sitemap, which is primarily an indication of physical content growth on your site
+
+[title="3"]Conversions[/title]
+
+This is a very important category which indicates when visitors show interest (or lack thereof) in your site / company / products. There are various activities that indicate a visitor's interest:
+ - when they sign up for your newsletter
+ - when they create an account (joining)
+ - when they purchase a usergroup subscription
+ - when they click on tracking links / codes you publish (especially in newsletters or on external sites)
+
+This category also tracks when visitors request to be unsubscribed from all e-mails from your site. This usually indicates the urgent need to improve e-mail marketing efforts and to be less spammy.
+
+[title="3"]Economic activity[/title]
+
+These graphs give a general overview of your site's economy. This includes points, banners, and eCommerce.
+
+[title="3"]Feedback and engagement[/title]
+
+These graphs give you an overview of the engagement between you / your site and your members. It also lists your top members based on views, forum posts, and points.
+
+The Action Log graph in particular gives you a broad idea of how engaging your members are with the site and how many times they perform an action.
+
+[title="3"]Forum[/title]
+
+The forum category is better thought as a sub-category of Feedback and engagement. It showcases the activity within your forums: the number of new topics and posts created, and votes in topic polls.
+
 [title="3"]Hits[/title]
 
 Most of the graphs under the 'Hits' category only show hits from user agents that look like real humans (i.e. real humans using a web browser).
 
+The 'Views per day of content existing' graph tallies and displays top content results based on average number of views per day to existing content. This is different from 'Content views' which tallies overall view counts to a piece of content.
+
 The 'Unique views' graph only counts hits to the website once for any particular user, even if they have viewed multiple pages. A 'user' is defined by member ID for logged in users, or by IP address for non-logged-in users. As the web is inherently transactional, and we do not use tracking cookies in Composr, the unique measurement algorithm will never be completely imperfect. For example, a user may be on a connection that has changing IP addresses.
 
-The 'Alexa links' graph shows the number of inbound links as measured by Amazon's Alexa web analytics service (different from the Alexa personal assistant).
+[title="3"]Inter-member engagement[/title]
 
-[title="3"]Demographics[/title]
+These graphs are better thought as a sub-category of Feedback and engagement. They showcase how much your members are interacting with each other through Private Topics and Posts, and through sending each other points.
 
-Demographics graphs give you an idea who your users are. It may help you have an idea who you need to work harder for -- be that attracting new audiences, or doubling down on what you now understand as your core audience.
+[title="3"]Punitive actions[/title]
 
-Information about what operating systems and web browsers are used will help you know what to test your website in.
+These graphs give you an overview of the number of warnings issued over time and the frequency of punitive actions taken.
 
-[title="3"]Sessions[/title]
-
-There are various graphs that will tell you about user sessions. These are telling you about the broader flow of users, and in particular how they enter and exit your website. This is important information to help you understand your users, and perhaps see what needs further work.
-
-[title="3"]Referrers[/title]
+[title="3"]Referrers and referrals[/title]
 
 There are various graphs that show referrers to your website, broken down in different ways. A referrer is a web page from another website that is linking to you.
 
 Such data is invaluable in finding out what advertising is working (and conversely which advertising schemes aren't working), potential partners, the nature of your traffic, etc.
 
-The 'Alexa ranking' graph shows the world ranking of the website by traffic as measured by Amazon's Alexa web analytics service (different from the Alexa personal assistant).
+This category also includes invitations for when invites are enabled on your site.
 
-[title="3"]Activity[/title]
+[title="3"]Search traffic[/title]
 
-There are activity statistics of various kinds, broadly:
-1) Activity from staff (to give a sense if momentum is being maintained)
-2) Activity from users (highlighting user engagement, basically)
+These graphs give you an overview of what people are searching for (and how often) on your site.
 
-A graph of number of comments on content is available for Conversr users, if the "Strongly tie content to the forum" option is enabled.
+[title="3"]Security[/title]
+
+These graphs outline logged security issues such as hack attacks and failed logins.
+
+[title="3"]Server performance[/title]
+
+These graphs can give you an overview of how well your site is performing from a server perspective (e.g. page speeds, e-mails queued or sent). These graphs are very broad. For more detailed, thorough, and automatic checks, we recommend using the [tt]health_check[/tt] addon (bundled by default).
+
+[title="3"]Session behaviours[/title]
+
+There are various graphs that will tell you about user sessions. These are telling you about the broader flow of users, and in particular how they enter and exit your website. This is important information to help you understand your users, and perhaps see what needs further work and what are strong points.
 
 [title="3"]Performance[/title]
 
@@ -371,19 +420,31 @@ Every graph has the option to download the data the graph is generated from, in 
 
 No default graphs or data tables provided by Composr statistics reveal personal information about users -- everything is anonymous. This puts the system in line with GDPR (EU privacy legislation).
 
+This happens because statistics graphs do not directly use data from the site to render the statistics. Instead, a scheduled task regularly takes site data and generates from it 'data buckets' which the statistics graphs then use. These 'data buckets' only contain data which is necessary to render the statistics and graphs; they do not contain personal information.
+
 [title="3"]Pre-computed statistics[/title]
 
 All statistics are generated from pre-computed data, which is itself based on raw data.
 The pre-computation happens in the system scheduler, daily. The system scheduler is therefore required for Composr statistics.
 
 Why do we do this? There are a number of reasons:
-1) We can not hold onto raw data forever, due to GDPR (EU privacy legislation), yet we want to be able to see statistics going all the way back.
+1) We can not hold onto raw data forever, due to GDPR (EU privacy legislation), yet we want to be able to see statistics going as far back as possible.
 2) Some graphs require fairly complicated computations that should not be performed in real-time (for example doing geolocation of users, or tracing behaviour across user sessions).
 3) We want to be able to process huge numbers of records without performance degradation.
 4) Generally, we want statistics to be as snappy as possible, so that you feel comfortable dipping in and out of them, and setting different filters. If there's friction, you'll likely not spend as much time looking at your numbers as you should.
 5) We want generated data to be readily available in other parts of Composr.
 
+[title="4"]Limitations[/title]
+
 One limitation to the pre-computation is that it does limit the amount of filtering possible to what we have built into our data structures. For example, you can set date ranges but only aligned to months.
+
+Another limitation, to preserve site stability, is that statistics from over 31 days in the past will not be pre-processed. We have found sites will completely lock up even on performant dedicated servers (mainly because of the heavy use of database table locking in the process of pre-processing) if statistics have to pre-process multiple months of data. This means you could experience a gap in your data if any of the following occur:
+ - The system scheduler stops working for 31 or more consecutive days
+ - The statistics module repeatedly fails to pre-process data over the course of 31 or more consecutive days
+ - You manually delete existing statistical data from Admin Zone > Tools > Cleanup Tools, or from the database
+ - You use the site importer (imported content from over 31 days ago will not be factored in the statistics)
+ - You run the automated test suite for stats ([tt]testing_platform[/tt] non-bundled addon)
+Once statistics have been pre-processed, they will remain in the system unless manually cleared even if they are older than 31 days. It is only if statistics do not get pre-processed for over 31 days that they will not end up in the module.
 
 [title="3"]Time zones[/title]
 
@@ -394,27 +455,41 @@ Some graphs allow showing hour-by-hour stats and also filtering by country, in w
 
 [title="3"]View counts[/title]
 
-[media width="150" description="View statistics are shown for various forms of content" float="right"]data_custom/images/docs/tut_statistics/statistics_news_item_stats.png[/media]
+[surround]
+[media width="150" description="View statistics are shown for various forms of content" float="left"]data_custom/images/docs/tut_statistics/statistics_news_item_stats.png[/media]
 All content will automatically store download/view statistics as appropriate, which will usually be displayed on the respective entry screen.
 An example of this would be news entries: each news entry records how many times it is viewed, and displays this number on its view screen.
 
 The [tt]main_multi_content[/tt] block can also be used to draw out content based on popularity.
+[/surround]
 
 [title="3"]The statistics block[/title]
 
+[surround]
 [media width="150" description="The [tt]side_stats[/tt] block" float="left"]data_custom/images/docs/tut_statistics/side_stats.png[/media]
 The [tt]side_stats[/tt] block shows various figures that relate to your website's activity and archive size. The exact details shown are configurable (in the main Composr configuration) from quite a wide selection.
+[/surround]
+
+[title="3"]The statistics graph block[/title]
+
+[surround]
+[media width="150" description="The [tt]main_staff_stats_graph[/tt] block" float="left"]data_custom/images/docs/tut_statistics/main_staff_stats_graph.png[/media]
+The [tt]main_staff_stats_graph[/tt] block allows you to place a statistics graph anywhere on your site. This is typically used for putting your most-tracked metrics on the Admin Zone dashboard. But you could also put public graphs on your site to showcase community statistics, transparency, or basically anything you want.
+
+Do not be fooled by the name [tt]main_staff_stats_graph[/tt]; a visitor does not have to be a staff member to see the graph (no permissions checking is done) unless it is placed on a restricted page (e.g. the Admin Zone dashboard).
+[/surround]
 
 [title="3"]Real-time analytics[/title]
 
 [surround]
-[media width="150" description="Real-time analytics" float="right"]data_custom/images/docs/tut_statistics/realtime_rain.png[/media]
+[media width="150" description="Real-time analytics" float="left"]data_custom/images/docs/tut_statistics/realtime_rain.png[/media]
 {!realtime_rain:DOC_REALTIME_RAIN}
 
 Access Real-time analytics from:
 Admin Zone > Audit > What's happening now (RTR)
 
 It is a good way to visualise how people are using the site. This works best when the site has multiple online users performing options, but you can move the timeline back to when stuff was happening previously (i.e. view activity from a historic viewpoint).
+[/surround]
 
 [title="3"]Browsing basic logs[/title]
 

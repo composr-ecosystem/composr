@@ -29,6 +29,7 @@ Such laws include, but are not limited to:
  - EU regulation required registering with a 'data commissioner'
  - California privacy regulation (California Online Privacy Protection Act, California Consumer Privacy Act)
  - US COPPA regulation (see the Child protection section)
+ - CAN-SPAM (see the Mail section)
  - Other regulations on a state or regional basis
 
 {!DOC_GDPR}
@@ -75,6 +76,43 @@ The privacy purging system uses intelligence to ensure only data pertaining to t
 It is highly recommended you have enabled [tt]Use a task queue[/tt] under Admin Zone > Setup > Configuration > Performance options. This is because downloading or purging data can be resource-intensive on a server.
 
 It is your obligation to fulfill a member's request to download or purge their data in accordance with the laws of your jurisdiction. It is also your obligation to ensure, when requested, the personal data of members is also purged from server logs, backups, and anywhere the privacy system cannot cover.
+
+[title="2"]Mail[/title]
+
+Your site likely sends out e-mail. As such, you are probably subject to laws and regulations governing an e-mail recipient's right to unsubscribe from any or all e-mail at any time (e.g. CAN-SPAM) especially if you send out commercial or marketing material. Such laws may include required regulations such as the following:
+ - Define a 'List-unsubscribe' header in every e-mail sent out; it must point either to an e-mail address one can contact to request unsubscription, or to a URL that can process an unsubscription request automatically.
+  - For manual requests, you are often given a limited number of days in which you must fulfill the request (e.g. 10 days).
+ - Additionally include an Unsubscribe link in the body of the e-mails sent out (especially if they are commercial in nature).
+ - Unsubscribe pages might have to follow these regulations:
+  - The page clearly indicates that the user is unsubscribing from e-mails sent by the site.
+  - It allows recipients to unsubscribe without collecting any personal data (other than an e-mail address).
+  - The process is fulfilled directly on that page (e.g. you cannot make users go through multiple pages to unsubscribe).
+  - No commercial or marketing material on the page, and no calls to action.
+  - The page must indicate that the process was successful, or give an error if it was not.
+ - If a confirmation e-mail is sent out, the e-mail must not contain any commercial or marketing material, nor can it contain any calls to action.
+ - After the confirmation e-mail, no other e-mail should be sent out under any circumstance unless the user explicitly re-subscribes.
+ - It is permitted to allow users a choice from what to unsubscribe. And it is expected their choices are adhered.
+
+Composr has a couple built-in mechanisms to aid in compliance; and these work out-of-the-box without any configuration necessary. First, Composr has a global unsubscribe endpoint located at [tt]yourbaseurl/data/unsubscribe.php[/tt]. This is a simple web interface that allows someone to unsubscribe from all e-mails sent by your site. And it only asks for an e-mail address (which is stored in a hashed format to protect the user's privacy). This acts as a low-level global blocklist; every e-mail sent by your site is checked against this blocklist in the mail dispatcher, and if an e-mail address matches, that e-mail address will not receive the e-mail (no matter what it is or its priority).
+
+Composr also supports the List-unsubscribe mail header. This can be configured with the 'List-unsubscribe target' and 'List-unsubscribe post' options. By default, it points to the unsubscribe endpoint mentioned above (and also supports one-click unsubscribe from a recipient's mail client). But it can be changed if, for example, you use an external newsletter software for sending out e-mails. We generally do not recommend ever changing this; your newsletter software should have its own unsubscribe mechanism.
+
+Additionally, Composr's newsletter system allows subscribers to unsubscribe from any or all newsletters while still receiving other e-mails (e.g. notifications). Newsletters by default contain their own unsubscribe link. And subscribers can change their settings through the [tt]site:newsletter[/tt] module.
+
+[title="3"]Removing an unsubscribed e-mail address[/title]
+
+If a user who previously unsubscribed from all e-mails wants to be removed from the blocklist, you will need to do this manually. We intentionally do not provide an interface for it so that it is hard for malicious visitors or site staff to remove unsubscribed e-mail addresses. First, run this PHP code (such as in [tt]data_custom/execute_temp.php[/tt], or in Commandr):
+
+[code="PHP"]
+require_code('crypt');
+echo hash_hmac('sha256', 'PLACE_EMAIL_ADDRESS_HERE', get_site_salt());
+[/code]
+
+This will echo a hash. Find this hash within the [tt]b_email_hashed[/tt] column of your site database's [tt]unsubscribed_emails[/tt] table, and remove the row. Or, run the following PHP code:
+
+[code="PHP"]
+$GLOBALS['SITE_DB']->query_delete('unsubscribed_emails', ['b_email_hashed' => 'PLACE_HASH_HERE']);
+[/code]
 
 [title="2"]Accessibility[/title]
 
@@ -227,5 +265,6 @@ You should develop a policy about how you handle feedback. This is of particular
  - [page="_SEARCH:tut_staff_advice"]Advice for choosing and managing staff[/page]
  - [url="Children's Online Privacy Protection Act (wikipedia)"]https://en.wikipedia.org/wiki/Children's_Online_Privacy_Protection_Act[/url]
  - [page="_SEARCH:tut_do"]Dos and Do-nots of a (Composr) website[/page]
+ - [page="_SEARCH:tut_newsletter"]Running a newsletter[/page]
 
 {$SET,tutorial_tags,Advice & Guidance,novice,core_privacy,content_privacy}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Guidance on the legal and social issues that webmasters need to understood.}[block]main_tutorial_rating[/block]

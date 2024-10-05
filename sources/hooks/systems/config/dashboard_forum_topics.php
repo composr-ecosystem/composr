@@ -56,6 +56,6 @@ class Hook_config_dashboard_forum_topics
             return null;
         }
 
-        return '0';
+        return '1';
     }
 }

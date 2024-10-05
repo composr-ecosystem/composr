@@ -129,7 +129,7 @@ Positive advice:[list="1"]
 [*] [url="DMARC Wizard"]https://dmarcian.com/dmarc-inspector/[/url] and [url="DMARC Inspector"]https://dmarcian.com/dmarc-inspector/[/url]
 [/list]
 [*] [b]Include a physical mailing address[/b] in your newsletter footer. To be compliant with the US CAN-SPAM act you need to do this for commercial mailings (read as "advertising e-mail"). ISPs can't know if you are sending a commercial e-mail so are not likely to penalise you much if you don't, but you never know.
-[*] [b]Enable a [tt]List-Unsubscribe[/tt] header[/b]. You can do this by setting the "List-Unsubscribe target" configuration option (Admin Zone > Setup > Configuration > Messages > E-mail settings: miscellaneous).
+[*] [b]Configure a [tt]List-Unsubscribe[/tt] header[/b]. You can do this by setting the "List-Unsubscribe target" configuration option (Admin Zone > Setup > Configuration > Messages > E-mail settings: miscellaneous). This is set by default to Composr's built-in unsubscribe page, so generally you do not have to change this.
 [*] If you find [tt]X-Authentication-Warning[/tt] headers are being included in outgoing e-mails you may need to edit your [tt]/etc/mail/trusted-users[/tt] file. Exact advice depends on your SMTP server.
 [*] Set up Google's [url="Postmaster Tools"]https://postmaster.google.com[/url].
 [/list]

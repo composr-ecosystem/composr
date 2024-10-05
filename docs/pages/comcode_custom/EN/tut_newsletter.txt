@@ -19,6 +19,7 @@ A count will be given, counting all targetable members in the usergroup. Targeta
  - not banned
  - allows staff e-mails (unless the "Allow members to opt-out of staff e-mails" option is not enabled)
  - has a configured e-mail address
+ - has not unsubscribed through the global unsubscribe endpoint at [tt]data/unsubscribe.php[/tt]
 It only shows usergroups that have at least one targetable member.
 
 If you only ever e-mail members, it is better to ask them to join target usergroups rather than target newsletters. i.e. You may be best off never asking users to join a newsletter directly.
@@ -71,6 +72,16 @@ The block list is useful for situations such as:
  - You maintain a manual list of users who have unsubscribed and you are very careful to not send to them, even if someone re-subscribes them.
  - You want to block a list of e-mail addresses you know belong to competitors.
 You may add additional columns to the CSV spreadsheet file, which will be ignored. You can use this for keeping notes, for example.
+
+[title="3"]Data and Privacy Protection Laws[/title]
+[surround]
+[media width="150" description="The interface for globally unsubscribing from all mail" float="right"]data_custom/images/docs/tut_newsletter/mail_unsubscribe.png[/media]
+The blocklist CSV mentioned above is usually not, however, a satisfactory mechanism for adhering to local privacy and data protection laws (e.g. CAN-SPAM). These laws typically require that you provide an easy and intuitive way for users to unsubscribe themselves from e-mails. While they usually do not specifically require that the process is automatic, laws often define how many days a site administrator has to comply with a request. Even so, it is recommended that the process is automatic.
+
+Fortunately, Composr offers two built-in mechanisms for this which are both automatic:
+ - Newsletters have their own unsubscribe link provided in the e-mail. This allows members to unsubscribe themselves from all newsletters but still allows them to receive other e-mails from the site (e.g. notifications).
+ - All mail sent from a Composr site by default (in the MAIL template) includes a link to [tt]data/unsubscribe.php[/tt]. This simplified interface allows users to unsubscribe from [b]all[/b] e-mails sent by your site; think of it as a global blocklist. Also by default, the "List-unsubscribe target" configuration option will point to this endpoint so that mail clients can provide a one-click "Unsubscribe" button to recipients.
+[/surround]
 
 [title="2"]Sending newsletters[/title]
 
@@ -256,6 +267,7 @@ Welcome e-mails allow you to automatically send out e-mails to new members. This
 
  - [page="_SEARCH:tut_news"]Releasing news & running a Blog[/page]
  - [page="_SEARCH:tut_email"]Understanding and configuring e-mail[/page]
+ - [page="_SEARCH:tut_legal"]Legal and social responsibilities[/page]
  - https://www.litmus.com/
 
 {$SET,tutorial_tags,Newsletters,newsletter,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to send out news bulletins to newsletter subscribers, and to members of your community.}[block]main_tutorial_rating[/block]

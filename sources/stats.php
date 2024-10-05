@@ -1522,7 +1522,6 @@ function log_stats_event(string $event)
 
 /**
  * Cleanup old stats.
- * We cannot just do this in Cron, because we can't rely on Cron running.
  */
 function cleanup_stats()
 {
