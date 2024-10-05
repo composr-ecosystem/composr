@@ -289,7 +289,7 @@ class Module_warnings extends Standard_crud_module
         // Use defined defaults as dropdown options
         $combo_options = new Tempcode();
         $selection_items = do_lang('EXPLANATORY_TEXT_DEFAULT_LIST');
-        foreach (explode(',', $selection_items) as $selection_item) {
+        foreach (explode('|', $selection_items) as $selection_item) {
             $combo_options->attach(form_input_list_entry($selection_item, ($explanation == $selection_item), protect_from_escaping($selection_item)));
         }
         $fields->attach(form_input_combo(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON_WARNING'), 'explanation', $explanation, $combo_options));
