@@ -1,0 +1,158 @@
+﻿[semihtml]{$REQUIRE_CSS,composr_homesite__download}
+<div class="cntRow">
+<div class="cntLeft">
+<div class="cntLRow">
+<h1 class="screen-title" itemprop="name"><a id="title--DownloadComposr"></a> Download Composr</h1>
+
+<p><strong>Looking for version 10?</strong> Head on over to <a class="user-link" href="https://compo.sr/download.htm" rel="external" target="_blank" title="Compo.sr (this link will open in a new window)">Compo.sr</a></p>
+
+<p><strong>Please <a class="user-link" href="{$PAGE_LINK*,:catalogues:category:6}" title="FAQ">read the version 11 alpha / beta FAQ</a> before downloading or upgrading.</strong></p>
+
+[box="Did You Know?"]
+ <p>When a new version of Composr CMS v11 is available, we change the background image and the colours of the composr.app site.</p>
+[/box]
+
+<p><strong>The first step is to transfer the installation files to your server.</strong></p>
+<strong>[block cache="0"]cms_homesite_download[/block]</strong>
+
+<h2 style="margin-bottom:0"><strong>For Developers</strong></h2>
+<strong> </strong>
+
+<h3 class="colrBl"><strong>Git read access</strong></h3>
+<strong> </strong>
+
+<div class="sept"><strong>&nbsp;</strong></div>
+<strong> </strong>
+
+<p><strong><a href="http://git-scm.com/">Git</a> is the revision control system we use to collaborate on Composr.</strong></p>
+<strong> </strong>
+
+<p><strong>You can access the repository on <a href="{$COMPOSR_REPOS_URL*}">GitLab</a>. Version 11 is on the &quot;v11&quot; branch.</strong></p>
+<strong> </strong>
+
+<p><strong>We often commit fixes to Git before patch releases come out.</strong></p>
+<strong> </strong>
+
+<p><strong>Be aware that the Git repository also has many non-bundled addons in it. We develop them in there, to keep them up-to-date. There is a script called [tt]delete_alien_files.php[/tt] which will erase them. You need to first delete the [tt]sources_custom/hooks/systems/addon_registry/*.php[/tt] files of any addons you don&#39;t want, then run the script, then run the commands the script says (after reviewing), then install.</strong></p>
+<strong> </strong>
+
+<h3 class="colrBl"><strong>Git write access</strong></h3>
+<strong> </strong>
+
+<div class="sept"><strong>&nbsp;</strong></div>
+<strong> </strong>
+
+<p><strong>We <a class="user-link" href="{$BASE_URL*}/contact/contribute_code.htm">accept and encourage external contributions</a>.</strong></p>
+<strong> </strong>
+
+<p><strong>We will provide write-access to Git as appropriate (essentially when someone shows a serious commitment to the project in the form of high-quality code).</strong></p>
+<strong> </strong></div>
+</div>
+
+<div class="cntRight">
+<div class="cntRRow">
+<div class="niceBox">
+<h3 class="niceBoxHead"><strong>Are you upgrading from a previous version 11 release?</strong></h3>
+
+<div class="niceBoxInner">
+<p><strong>Instead of using this page, you should login to your Admin Zone. You&#39;ll see a link to upgrade there.</strong></p>
+
+<p><strong><strong>We highly advise against upgrading from version 10 at this time.</strong> Version 11 is still bleeding edge and intended for testing purposes only; the upgrader will likely break your v10 site.</strong></p>
+</div>
+</div>
+</div>
+<strong><!--
+		<div class="cntRRow">
+			<div class="niceBoxWt">
+				<h3 class="niceBoxHead2">
+					Looking for addons and themes?
+				</h3>
+
+				<div class="niceBoxInner">
+					<p>Go to our <a href="{$PAGE_LINK*,site:community}">community section</a>.</p>
+				</div>
+			</div>
+		</div>
+		--> </strong>
+
+<div class="cntRRow">
+<div class="niceBoxWt">
+<h3 class="niceBoxHead2"><strong>Hosting requirements</strong></h3>
+
+<div class="niceBoxInner">
+<ul class="liRcol">
+	<li><strong>PHP 7.2 or higher, with the following supported: </strong>
+
+	<ul>
+		<li><strong>Memory limit 128MB or more</strong></li>
+		<li><strong>Ctype</strong></li>
+		<li><strong>cURL</strong></li>
+		<li><strong>GD2</strong></li>
+		<li><strong>Hash</strong></li>
+		<li><strong>Intl</strong></li>
+		<li><strong>Json</strong></li>
+		<li><strong>Posix</strong></li>
+		<li><strong>Sodium</strong></li>
+		<li><strong>Unicode</strong></li>
+		<li><strong>Unzip</strong></li>
+		<li><strong>XML</strong></li>
+		<li><strong>Zlib</strong></li>
+	</ul>
+	<strong> </strong></li>
+	<li><strong>MySQL 5.5.3 or higher (not tested above 8.0)</strong></li>
+	<li><strong>You can also use MariaDB (not tested above 10.6)</strong></li>
+	<li><strong>Apache or IIS recommended</strong></li>
+	<li><strong>Nginx can be used in combination with Apache</strong></li>
+	<li><strong>200MB of disk space</strong></li>
+</ul>
+
+<p><strong>For more information and recommendations, see our <a class="user-link" href="{$PAGE_LINK*,docs:tut_webhosting:browse}">webhosting tutorial</a>.</strong></p>
+</div>
+</div>
+</div>
+<strong> </strong>
+
+<div class="cntRRow">
+<div class="niceBoxWt">
+<h3 class="niceBoxHead2"><strong>Forum integration</strong></h3>
+
+<div class="niceBoxInner">
+<p><strong>Composr has its own forum and member system (Conversr), but can also integrate with some third party ones out-of-the-box:</strong></p>
+
+<ul class="liRcol">
+	<li><strong><abbr title="Invision Board">IPB</abbr> 3</strong></li>
+	<li><strong>MyBB</strong></li>
+	<li><strong>phpBB 3</strong></li>
+	<li><strong><abbr title="Simple Machine Forum">SMF</abbr> 2</strong></li>
+	<li><strong><abbr title="vBulletin">vB</abbr> 3</strong></li>
+	<li><strong>WowBB 2</strong></li>
+</ul>
+</div>
+</div>
+</div>
+<strong> </strong>
+
+<div class="cntRRow">
+<div class="niceBoxWt">
+<h3 class="niceBoxHead2"><strong>Other integration</strong></h3>
+
+<div class="niceBoxInner">
+<p><strong>Conversr can integrate with an <abbr title="Lightweight Directory Access Protocol">LDAP</abbr> server, facilitating tie in with [tooltip param="i.e. tie in with Windows networks"]Active Directory[/tooltip] and [tooltip param="i.e. tie in with Linux networks"]OpenLDAP[/tooltip] logins.</strong></p>
+
+<p><strong>Conversr can also integrate with [tooltip param="Systems that use the web browser to perform the login itself, via a standard popup authentication box"]HTTP authentication systems[/tooltip], facilitating integration with any login system that uses this mechanism.</strong></p>
+
+<p><strong>A powerful framework and a number of programming tools are provided, to accelerate integration with other scripts and web-apps.</strong></p>
+</div>
+</div>
+</div>
+<strong> </strong></div>
+</div>
+<strong> <script {$CSP_NONCE_HTML}>//<![CDATA[
+	function showHide(elementid) {
+		if (document.getElementById(elementid).style.display == 'none') {
+			document.getElementById(elementid).style.display = '';
+		} else {
+			document.getElementById(elementid).style.display = 'none';
+		}
+	}
+//]]></script></strong>[/semihtml]
