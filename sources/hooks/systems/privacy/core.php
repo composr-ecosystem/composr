@@ -99,6 +99,10 @@ class Hook_privacy_core extends Hook_privacy_base
                     'heading' => do_lang('INFORMATION_STORAGE'),
                     'explanation' => do_lang_tempcode('PERSONAL_DATA_DELETION_EXPLANATION', protect_from_escaping($deletion_exemptions)),
                 ],
+                [
+                    'heading' => do_lang('GENERAL'),
+                    'explanation' => do_lang_tempcode('MAIL_UNSUBSCRIBE_EXPLANATION'),
+                ],
             ],
 
             'general' => [
