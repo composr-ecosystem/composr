@@ -29,6 +29,8 @@ class Hook_privacy_cms_homesite extends Hook_privacy_base
             return null;
         }
 
+        require_lang('cms_homesite');
+
         return [
             'label' => 'cms_homesite:CMS_SITES_INSTALLED',
 
@@ -38,6 +40,10 @@ class Hook_privacy_cms_homesite extends Hook_privacy_base
             ],
 
             'positive' => [
+                [
+                    'heading' => do_lang('PRIVACY_DATA_BREACH'),
+                    'explanation' => do_lang_tempcode('PRIVACY_DATA_BREACH_EXPLANATION', escape_html(get_site_name())),
+                ]
             ],
 
             'general' => [
