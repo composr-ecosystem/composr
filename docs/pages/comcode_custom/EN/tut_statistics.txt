@@ -210,6 +210,7 @@ Here are the inbuilt events...
 | JavaScript
 | Yes
 | No
+(the banners module tracks clicks)
 |-
 | Click Comcode link
 | [tt]URL[/tt]
@@ -217,6 +218,7 @@ Here are the inbuilt events...
 | JavaScript
 | Yes
 | No
+(In statistics, See Hits > Content views)
 |-
 | Click system links put out for many things (the [tt]HYPERLINK.tpl[/tt] template)
 | [tt]URL[/tt]
@@ -224,6 +226,7 @@ Here are the inbuilt events...
 | JavaScript
 | Yes
 | No
+(In statistics, See Hits > Content views, and Hits > Popular Pages)
 |-
 | Download a download
 | [tt]Download[/tt]
@@ -231,6 +234,7 @@ Here are the inbuilt events...
 | JavaScript
 | Yes
 | No
+(In statistics, See Feedback and Engagement > Downloads; also the downloads module tracks this)
 |-
 | Download an attachment
 | [tt]Attachment[/tt]
@@ -266,6 +270,7 @@ Here are the inbuilt events...
 | JavaScript
 | Yes
 | No
+(In statistics, see Feedback and Engagement > Support Tickets)
 |-
 | Send contact message
 | [tt]<catalogueName>[/tt]
@@ -287,6 +292,7 @@ Here are the inbuilt events...
 | [i]Depends[/i]
 | Yes
 | Yes
+(also in statistics, see Conversions > Joining)
 |-
 | Do a social interaction (e.g. a like or a share)
 | [tt]social__facebook_like[/tt]
@@ -330,6 +336,14 @@ Here are the inbuilt events...
 | [i]Depends[/i]
 | Yes
 | Yes
+|-
+| Make a request to an API endpoint (/data/endpoint.php)
+| [tt]API Endpoint[/tt]
+| [tt]<path>[/tt]
+| Server-side
+| No
+| Sometimes
+(it depends on the API endpoint being called and how it is called)
 |}
 
 Note there are some discrepancies:
