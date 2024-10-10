@@ -542,14 +542,12 @@ function stats_generate_spreadsheet(string $spreadsheet_graph_name, ?string &$fi
 function _stats_get_graph_context(array $graph_details, array $filters = [], $pivot = null, bool $for_kpi = false) : array
 {
     if (($pivot === null) && ($graph_details['pivot'] !== null)) {
-        $pivot = $graph_details['pivot']->read_value($for_kpi);
+        $_filters = [];
+        $pivot = $graph_details['pivot']->read_value($_filters, $for_kpi);
     }
     foreach ($graph_details['filters'] as $filter) {
         if ($filter !== null) {
-            $filter_name = $filter->filter_name;
-            if (!isset($filters[$filter_name])) {
-                $filters[$filter_name] = $filter->read_value($for_kpi);
-            }
+            $filter->read_value($filters, $for_kpi);
         }
     }
     return [$filters, $pivot];
@@ -1180,13 +1178,22 @@ abstract class CMSStatsFilter
 
 
     /**
-     * Read the current filter value.
+     * Read in and/or post-process filter value.
      *
-     * @return mixed The filter value
+     * @param  array $filters An array of our current filters; passed by reference and modified as they are read in
+     * @param  ?boolean $for_kpi Whether we want this for a KPI (null: an object was initiated)
+     * @return mixed The filter
      */
-    public function read_value()
+    public function read_value(array &$filters, ?bool $for_kpi = null)
     {
-        return either_param_string($this->filter_name, $this->default);
+        if (isset($filters[$this->filter_name])) {
+            $default = $filters[$this->filter_name];
+        } else {
+            $default = $this->default;
+        }
+
+        $filters[$this->filter_name] = either_param_string($this->filter_name, $default);
+        return $filters[$this->filter_name];
     }
 
     /**
@@ -1231,7 +1238,8 @@ class CMSStatsTextFilter extends CMSStatsFilter
     public function ui_component(object &$hidden) : object
     {
         require_code('form_templates');
-        return form_input_line(do_lang_tempcode('_FILTER', $this->label/*Tempcode*/), new Tempcode(), $this->filter_name, $this->read_value(), $this->default != '');
+        $filters = [];
+        return form_input_line(do_lang_tempcode('_FILTER', $this->label/*Tempcode*/), new Tempcode(), $this->filter_name, $this->read_value($filters), $this->default != '');
     }
 }
 
@@ -1267,17 +1275,32 @@ class CMSStatsTickFilter extends CMSStatsFilter
         $hidden->attach(form_input_hidden($this->filter_name, '0'));
 
         require_code('form_templates');
-        return form_input_tick(do_lang_tempcode('_FILTER', $this->label/*Tempcode*/), new Tempcode(), $this->filter_name, $this->read_value());
+        $filters = [];
+        return form_input_tick(do_lang_tempcode('_FILTER', $this->label/*Tempcode*/), new Tempcode(), $this->filter_name, $this->read_value($filters));
     }
 
     /**
-     * Read the current filter value.
+     * Read in and/or post-process filter value.
      *
-     * @return mixed The filter value
+     * @param  array $filters An array of our current filters; passed by reference and modified as they are read in
+     * @param  ?boolean $for_kpi Whether we want this for a KPI (null: an object was initiated)
+     * @return mixed The filter
      */
-    public function read_value()
+    public function read_value(array &$filters, ?bool $for_kpi = null)
     {
-        return either_param_integer($this->filter_name, 1) == 1;
+        if (isset($filters[$this->filter_name])) {
+            $default = $filters[$this->filter_name];
+            if ($default === true) {
+                $default = '1';
+            } elseif ($default === false) {
+                $default = '0';
+            }
+        } else {
+            $default = '1';
+        }
+
+        $filters[$this->filter_name] = either_param_integer($this->filter_name, intval($default)) == 1;
+        return $filters[$this->filter_name];
     }
 }
 
@@ -1316,9 +1339,10 @@ class CMSStatsListFilter extends CMSStatsFilter
     {
         require_code('form_templates');
         $list = new Tempcode();
-        $list->attach(form_input_list_entry('', '' == $this->read_value(), ''));
+        $filters = [];
+        $list->attach(form_input_list_entry('', '' == $this->read_value($filters), ''));
         foreach ($this->list as $key => $val) {
-            $list->attach(form_input_list_entry($key, $key == $this->read_value(), $val));
+            $list->attach(form_input_list_entry($key, $key == $this->read_value($filters), $val));
         }
         return form_input_list(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $list, null, false, false);
     }
@@ -1381,7 +1405,8 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
 
         require_lang('dates');
 
-        $value = $this->read_value();
+        $filters = [];
+        $value = $this->read_value($filters);
 
         if ($this->for_kpi) {
             $_options = [
@@ -1468,17 +1493,24 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
     }
 
     /**
-     * Read the current filter value.
+     * Read in and/or post-process filter value.
      *
-     * @param  ?boolean $for_kpi Whether this is for setting up a KPI (null: as object was initiated)
-     * @return mixed The filter value
+     * @param  array $filters An array of our current filters; passed by reference and modified as they are read in
+     * @param  ?boolean $for_kpi Whether we want this for a KPI (null: an object was initiated)
+     * @return mixed The filter
      */
-    public function read_value(?bool $for_kpi = null)
+    public function read_value(array &$filters, ?bool $for_kpi = null)
     {
+        if (isset($filters[$this->filter_name])) {
+            $default = $filters[$this->filter_name];
+        } else {
+            $default = $this->default;
+        }
+
         $ret = mixed();
 
         if ($this->for_kpi) {
-            $ret = either_param_integer($this->filter_name, $this->default);
+            $ret = either_param_integer($this->filter_name, $default);
 
             $wants_for_non_kpi = ($for_kpi !== null) && (!$for_kpi);
             if ($wants_for_non_kpi) {
@@ -1486,11 +1518,20 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
                 $ret = [$current_month - $ret - 1, $current_month];
             }
 
+            $filters[$this->filter_name] = $ret;
             return $ret;
         }
 
-        $start = either_param_integer($this->filter_name . '__start', $this->default[0]);
-        $end = either_param_integer($this->filter_name . '__end', $this->default[1]);
+        $start = either_param_integer($this->filter_name . '__start', $default[0]);
+        $end = either_param_integer($this->filter_name . '__end', $default[1]);
+
+        if ($end <= 0) { // An end of 0 means now; negative values mean abs(value) months into the future
+            $end = get_stats_month_for_timestamp(time()) + abs($end);
+        }
+
+        if ($start < 0) { // Negative start means we go back that many months in the past from end
+            $start = $end + $start;
+        }
 
         $wants_for_kpi = ($for_kpi !== null) && ($for_kpi);
         if ($wants_for_kpi) {
@@ -1499,6 +1540,7 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
             $ret = [$start, $end];
         }
 
+        $filters[$this->filter_name] = $ret;
         return $ret;
     }
 }
@@ -1537,8 +1579,9 @@ class CMSStatsDatePivot extends CMSStatsFilter
     {
         require_code('form_templates');
         $list = new Tempcode();
+        $filters = [];
         foreach ($this->pivot_values as $key => $val) {
-            $list->attach(form_input_list_entry($key, $key == $this->read_value(), $val));
+            $list->attach(form_input_list_entry($key, $key == $this->read_value($filters), $val));
         }
         return form_input_list($this->label, new Tempcode(), $this->filter_name, $list);
     }
