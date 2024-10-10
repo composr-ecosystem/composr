@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Backing up your Composr Installation[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Composr backup" float="right"]data_custom/images/docs/sup_backing_up_your_composr_installation/3684c16497aa5a2dd3d5b6969f24a1c7.png[/media]
 A task which you should not overlook is backing up your Composr website. Should anything happen to your website without a backup, it can result in a loss of a huge amount of data. How often you need to run a backup will vary depending on how busy your site is and how many posts are made.
 

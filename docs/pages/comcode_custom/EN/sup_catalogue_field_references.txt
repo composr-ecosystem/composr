@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Catalogue field references[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 This tutorial shows some advanced usage of catalogue field references. It will show you how to create a reference from one catalogue to another, and then extract individual fields for display.
 
 [contents]decimal,lower-alpha[/contents]

@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: How to Conduct an Upgrade in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="The upgrader screen" float="right"]data_custom/images/docs/sup_how_to_conduct_an_upgrade_in_composr/f559c1c2d04fd47a9c4a8f8f2cec4362.png[/media]
 [media width="150" description="Generating an upgrade link from a news post" float="right"]data_custom/images/docs/sup_how_to_conduct_an_upgrade_in_composr/548a50de96ce065e02e056688b18c71f.png[/media]
 [media width="150" description="Upgrade link is found in composr.app news posts" float="right"]data_custom/images/docs/sup_how_to_conduct_an_upgrade_in_composr/5b111f854937fa6e26e1bfc6abe46de9.png[/media]

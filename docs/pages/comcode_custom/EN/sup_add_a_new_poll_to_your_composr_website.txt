@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Add a New Poll to Your Composr Website[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Add poll form" float="right"]data_custom/images/docs/sup_add_a_new_poll_to_your_composr_website/ccf46c52f7912cbb5e71cf06ffc14ff8.jpg[/media]
 [media width="150" float="right" description="Managing polls"]data_custom/images/docs/sup_add_a_new_poll_to_your_composr_website/972d8c178f0494d74020cf61ee46be1a.jpg[/media]
 Adding a poll to a community based site is probably one of the most common tasks you will need to complete. Polls can be a fun addition or used as a more important vote for an award or something similar. Either way Composr makes the process easy and straight forward to undertake.

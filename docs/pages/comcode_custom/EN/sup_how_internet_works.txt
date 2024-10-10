@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: How the Internet actually works[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written in the 2000s. But many of the core principles outlined still apply.[/box]
+
 In this tutorial I will explain how the Internet works, all the way from what goes through the wires and how the wires across the globe connect, to how meaningful activities are performed on your computer.
 
 Unlike other Internet tutorials/articles, I won't try to explain the history behind the Internet of today -- it's complex enough, and like me, you probably don't care very much. I also won't be confusing you with highly technical explanations.

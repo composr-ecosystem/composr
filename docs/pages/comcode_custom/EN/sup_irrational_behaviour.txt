@@ -1,12 +1,14 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Learn to embrace irrational behaviour in your customers[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written with ocProducts, Ltd (a now defunct company) in mind. As of version 11, Composr CMS is not commercially-backed (but companies and individuals can hire each other to develop Composr features).[/box]
+
 [title="2"]Snap decisions[/title]
 
 A reality that anybody working in marketing has to get to grips with is that people generally make snap decisions about things, and those snap decisions often lead to what seems like very irrational behaviour.
 
 People are often "lazy", "disengaged", "don't think things through", "selfish", have "hidden agendas", "take stuff for granted", and "prejudiced". For any one of these traits it is not universal, but the percentages will be pretty high. If you are marketing to a lot of people and can't build one-on-one relationships with each person, you'll spend a lot of time dealing with these issues.
 
-It's easy to judge, but what you have to realise is that [b]these customer[/b] [i][b]are[/b][/i] [b]in the right[/b] in the way they think and it is up to you to relate to them, not the other way around.
+It's easy to judge, but what you have to realise is that [b]these customers[/b] [i][b]are[/b][/i] [b]in the right[/b] in the way they think and it is up to you to relate to them, not the other way around.
 
 [title="2"]Internal justifications[/title]
 

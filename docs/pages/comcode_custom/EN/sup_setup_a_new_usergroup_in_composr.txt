@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Setup a New Usergroup in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Usergroup form (1)" float="right"]data_custom/images/docs/sup_setup_a_new_usergroup_in_composr/e2be9cb2b752024ea3e7c383a0d7a985.png[/media]
 Depending on the make-up of your Composr site there is a likelihood that you may need to create a new Composr usergroup for your members. There are a few popular reasons why you may choose to do this such as creating a new rank on a community based site or creating a private members group. It's a quite simple process to create a new usergroup which I will detail below.
 

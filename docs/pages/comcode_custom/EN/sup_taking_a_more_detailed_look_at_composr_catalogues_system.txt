@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Taking a More Detailed Look at Composr Catalogues System[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Catalogues screen" float="right"]data_custom/images/docs/sup_taking_a_more_detailed_look_at_composr_catalogues_system/230ba37f1077fd7ae9cea85f9edac780.png[/media]
 Composr's inbuilt catalogue system is a very useful tool and can be used for a wide range of tasks relating to the display of information on your Composr website.
 

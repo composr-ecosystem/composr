@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Adding Banners to Your Composr Website[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 Banners make up a key part of many websites and Composr has a banner system which allows you to display a number of banners in any of your site panels, regular pages, or templates.
 
 In this tutorial we will cover adding to a page (or panel -- which is a kind of page), not templates. We will do it using the [tt]main_banner_wave[/tt] block, which displays all banners added within a banner type as one continual set.

@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Sending E-mail Newsletters in Composr Part 1[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Newsletter administration icons in Composr" float="right"]data_custom/images/docs/sup_sending_email_newsletters_in_composr_part_1/cdb6183ff5a84b607f3680621ba8c408.png[/media]
 While e-marketing has taken more of a backseat in recent years to social media, it is still an important part of any digital marketing mix. Composr has an inbuilt e-mail newsletter system which will allow you to send out either custom built newsletters or an automatic newsletter based on the content you have added to your website. This article will be split into two tutorials as there is quite a lot of information, and it makes it easier to digest and find the relevant information. This tutorial deals with manually created e-mails and the second tutorial deals with e-mails which have the content automatically generated from content posted on your website already.
 

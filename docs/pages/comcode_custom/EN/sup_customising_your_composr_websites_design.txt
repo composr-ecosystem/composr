@@ -1,8 +1,8 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Customising Your Composr Website's Design[/title]
 
-How knowledgeable you are in CSS and HTML will determine how detailed a customisation you will be able to make. This tutorial aims to make it easier to find your way around the files you need to edit.
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10). Version 11 introduces a completely re-designed interface with much more powerful tools.[/box]
 
-[b]The themeing tools have been totally redesigned since this tutorial was written. The new tools are used in a similar way, but much more powerful and stream-lined.[/b]
+How knowledgeable you are in CSS and HTML will determine how detailed a customisation you will be able to make. This tutorial aims to make it easier to find your way around the files you need to edit.
 
 [title="2"]The Theme Wizard[/title]
 

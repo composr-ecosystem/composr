@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Configure the News Display in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 I've answered a few queries recently about changing the make-up and configuration of the news block within Composr and I thought this would be good subject to cover in a little more depth. I want to cover some of the simple configure options of the [tt]main_news[/tt] block in Composr
 
 [title="2"]The Main News Block[/title]

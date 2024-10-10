@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Project pricing[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written with ocProducts, Ltd (a now defunct company) in mind. As of version 11, Composr CMS is not commercially-backed (but companies and individuals can hire each other to develop Composr features).[/box]
+
 [media description="" width="410" float="right" framed="0"]data_custom/images/docs/sup_pricing/image.jpg[/media]
 This tutorial is written to give an idea of how the web design industry is structured. It should be of interest to web design companies, as well as to people looking for a web design company to get a better idea of what kind of company to be talking to, what kind of process to go through, and the kind of price range you should plan to receive quotes for when you put out a website RFP (request for proposals).
 

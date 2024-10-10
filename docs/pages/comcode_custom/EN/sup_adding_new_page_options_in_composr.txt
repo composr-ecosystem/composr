@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Adding New Page Options in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Adding a new page in Composr" float="right"]data_custom/images/docs/sup_adding_new_page_options_in_composr/cfa67582aa27e434f94dd87342c3d05a.jpg[/media]
 Adding a new page is one of the most common tasks you will need to do with any website. This process is quite simple but I want to go through all of the options you have when creating a new page to make sure you don't miss anything.
 

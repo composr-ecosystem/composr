@@ -1,5 +1,7 @@
 [title sub="Written by Jim Davidson, Sponsored by Arvixe hosting"]Composr Supplementary: Composr Custom Profile Fields (CPF)[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [title="2"]What are CPFs and why would you use them?[/title]
 
 Composr CPF's are a powerful way to collect member information, you can create extremely complex signup forms but for now we will concentrate on some simple additions by creating form fields that allow the user to enter simple text, select an option from a dropdown list and make a selection from radio buttons.

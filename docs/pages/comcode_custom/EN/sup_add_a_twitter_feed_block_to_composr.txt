@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Add a Twitter Feed Block to Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Twitter addon" float="right"]data_custom/images/docs/sup_add_a_twitter_feed_block_to_composr/b74982619fe12e468ba00a9c59ff6766.png[/media]
 There are many reasons why you might want to add a Twitter block to your Composr website. For a personal blog you may want to share your latest tweets and likewise a business may want to highlight their Twitter account to encourage people to follow them. Composr offers a Twitter addon block for this. This tutorial will show you how to add it to your website.
 

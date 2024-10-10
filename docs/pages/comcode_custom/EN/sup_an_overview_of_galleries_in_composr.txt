@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: An Overview of Galleries in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Viewing a gallery image in Composr" float="right"]data_custom/images/docs/sup_an_overview_of_galleries_in_composr/97351cdb4a76efab304ccf68af4b7c32.png[/media]
 Like many other key elements of popular websites, Composr Galleries are included as a core feature of the CMS. The Gallery in Composr supports both Images and Videos.
 

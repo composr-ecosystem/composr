@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Install a Theme in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Browsing through contributed themes on composr.app" float="right"]data_custom/images/docs/sup_install_a_theme_in_composr/6841cbb6631964ec480f959050484f25.jpg[/media]
 Depending on the purpose of your site, you have a number of options in regard to changing the look and feel of your website. There is the Theme Wizard that makes changes to the colour scheme of the default theme or you can manually edit the HTML and CSS.
 

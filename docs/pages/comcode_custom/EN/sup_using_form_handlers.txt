@@ -64,7 +64,7 @@ Whether the member is validated (1) or not (0).
 [title="3"]Hooks: catalogue_entry[/title]
 These hooks are triggered when a catalogue entry is added, edited, or deleted. They are also triggered when a content type supporting custom fields is added, edited, or deleted (and the relevant custom fields are passed through). These hooks support three methods: [tt]add[/tt], [tt]edit[/tt], and [tt]delete[/tt], called when the relevant action is performed on an entry.
 
-[tt]WIP[/tt]
+[tt]TODO: WIP[/tt]
 
 [concepts
  0_key="Form handler"   0_value="A hook designed to post-process data from member registrations or catalogue entries. One example is to send the data through another software or webhook."

@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Setup a Private Members Forum in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Composr members only forum" float="right"]data_custom/images/docs/sup_setup_a_private_members_forum_in_composr/83c9a18ac46abb35f7d65a27ac5e587c.png[/media]
 If you are an owner or moderator for a large community such as a Games community or a Music community, then Composr has a great many features which you are likely to find very useful. Composr works extremely well as a base for a community website and a common task you may face is wanting to set up a private members area of the website.
 

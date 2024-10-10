@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Facebook Support / Open Graph[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated; the Facebook API has significantly changed since Meta took over, and the Composr CMS core developer team has not maintained the plugin for supporting Facebook due to lack of sponsorship.[/box]
+
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/sup_facebook/fb_composr.jpg[/media]
 This tutorial describes {$IS_MAINTAINED,facebook,Composr Facebook integration}. It mostly describes functionality supplied by the non-bundled Facebook Support addon.
 

@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Project Management[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written with ocProducts, Ltd (a now defunct company) in mind. As of version 11, Composr CMS is not commercially-backed (but companies and individuals can hire each other to develop Composr features).[/box]
+
 [media description="" width="410" float="right" framed="0"]data_custom/images/docs/sup_project_management/roles.png[/media]
 This tutorial is written primarily to explain to web design companies how to properly set up the ongoing management of a project at the negotiation stage. Most problems in managing a project are unwittingly set up before the project even started. However it will also be interesting for clients to see what kind of problems could come up on projects if they don't make sure that everything is fully thought through at the start.
 

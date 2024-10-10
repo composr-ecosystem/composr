@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Web design glossary[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written in the 2000s. Technology changes rapidly, and this glossary has not been updated to keep up. If you would like to help us update it, please go to Support > Contact Us > Other (free options).[/box]
+
 We don't blame you if you get a little bit baffled by all the terminology involved in modern web design.
 
 Here are the top ~100 buzzwords that will help you understand what web designers are talking about.

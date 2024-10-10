@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Set Up a Workflow in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 For larger enterprises and companies the ability to have multiple levels of sign off for website content can be important. The Composr workflow addon handles this, although currently by default the addon only affects galleries (extensions can be made by a programmer to allow it to be used for all content types).
 
 The workflow addon for Composr extends the standard yes/no validation system which is included in Composr as standard. This is incredibly useful if you need to have different heads of department sign off different elements of content. If you just need the content to be signed off by one of a group of people than the normal validation system will work for you.

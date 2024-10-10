@@ -776,6 +776,10 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
         if ($include_of_types) {
             $ret['day_of_week'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('DAY'));
         }
+        $ret['week_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('_WEEK'));
+        if ($include_of_types) {
+            $ret['week_of_year'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('_WEEK'));
+        }
         $ret['month_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('MONTH'));
         if ($include_of_types) {
             $ret['month_of_year'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('MONTH'));
@@ -835,11 +839,18 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return cms_date('Y-m-d', $timestamp);
             case 'day_of_week':
                 return intval(cms_date('w', $timestamp));
+            case 'week_series':
+                return intval(floor($timestamp / 7 / 24 / 60 / 60));
+            case 'week_of_year':
+                return intval(cms_date('W', $timestamp));
             case 'month_series':
                 return get_stats_month_for_timestamp($timestamp);
             case 'month_of_year':
                 return intval(cms_date('m', $timestamp));
             case 'quarter_series':
+                $month = get_stats_month_for_timestamp($timestamp);
+                return intval(floor($month / 4.0));
+            case 'quarter_of_year':
                 $month = floatval(cms_date('m', $timestamp));
                 return intval(floor($month / 4.0));
             case 'year_series':
@@ -888,6 +899,34 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
             case 'day_of_week':
                 for ($i = 0; $i <= 6; $i++) {
+                    $pivot_value = $i;
+                    $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                    $data[$pivot_value] = 0;
+                }
+                break;
+
+            case 'week_series':
+                for ($i = $start_month; $i <= $end_month; $i++) {
+                    $year = 1970 + intval(floor(floatval($i) / 12.0));
+                    $month = ($i % 12) + 1;
+
+                    // Gather the timestamp range for this month
+                    $start_timestamp = cms_mktime(0, 0, 0, $month, 1, $year);
+                    $end_timestamp = cms_mktime(0, 0, 0, $month + 1, 1, $year) - 1; // -1 so we end on 11:59:59pm the last day of the month instead of possibly accidentally counting an extra week
+
+                    // Calculate the weeks in this month
+                    $first_week = date('W', $start_timestamp);
+                    $last_week = date('W', $end_timestamp);
+                    for ($j = $first_week; $j <= $last_week; $j++) {
+                        $pivot_value = intval($start_timestamp / 60 / 60 / 24 / 7) + ($j - $first_week);
+                        $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                        $data[$pivot_value] = 0;
+                    }
+                }
+                break;
+
+            case 'week_of_year':
+                for ($i = 1; $i <= 53; $i++) {
                     $pivot_value = $i;
                     $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
                     $data[$pivot_value] = 0;
@@ -1007,6 +1046,15 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 ];
                 return do_lang($dows[$pivot_value]);
 
+            case 'week_series':
+                $timestamp = $pivot_value * 7 * 24 * 60 * 60; // Convert weeks into seconds
+                $year = intval(cms_date('Y', $timestamp));
+                $week = intval(cms_date('W', $timestamp));
+                return strval($year) . '-W' . str_pad(strval($week), 2, '0', STR_PAD_LEFT);
+
+            case 'week_of_year':
+                return do_lang('WEEK', comcode_escape(strval($pivot_value)));
+
             case 'month_series':
                 $year = 1970 + intval(floor(floatval($pivot_value) / 12.0));
                 $month = ($pivot_value % 12) + 1;
@@ -1030,6 +1078,10 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return do_lang($months[$pivot_value - 1]);
 
             case 'quarter_series':
+                $year = floor($pivot_value / 4);
+                return strval($year) . ' Q' . strval(($pivot_value + 1) % 4);
+
+            case 'quarter_of_year':
                 return 'Q' . strval($pivot_value + 1);
         }
 

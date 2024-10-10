@@ -1,5 +1,7 @@
 [title sub="Written by Chris Warburton"]Composr Supplementary: A PHP/Composr coding primer[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 This tutorial will explain the fundamentals of PHP and Composr programming, with a focus around building mini-blocks in Composr.
 It will work through various practical examples, building up key theoretical understanding in the process.
 

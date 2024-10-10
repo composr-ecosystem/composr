@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Editing Site-Wide Privileges in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Choosing a privileges section to manage" float="right"]data_custom/images/docs/sup_editing_site_wide_permissions_in_composr/17268a4ed6de3a9eee84ac94dbf9644b.jpg[/media]
 I've previously written about [page="_SEARCH:sup_setup_a_new_usergroup_in_composr"]creating a new usergroup[/page] but usually when you are creating a new usergroup you will want to customise the permissions for all of the members within the new group. While you can copy the setting from another group when creating the usergroup, often this won't be sufficient because if those permissions were sufficient, you'd usually just put users in that group rather than creating a new one! This is how to quickly go through all of the permissions for all of your usergroups and tailor them to your needs.
 

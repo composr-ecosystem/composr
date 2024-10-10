@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Making an addon (part 1)[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 A Composr addon is simply a set of new files that together achieve some goal.
 
 The core developers really want to encourage users of Composr to start making addons and releasing them in an Open Source code ecosystem. In order to get the ball rolling we've done a number of things:

@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Editing Menus in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Choosing a menu to edit" float="right"]data_custom/images/docs/sup_editing_menus_in_composr/2345b8f8816ee40d6bd1f39cf73bf545.jpg[/media]
 Your primary site menu is how most site visitors will find their way around your website and as such it's important you are able to edit it to reflect the key areas of your Composr website. This tutorial will guide you through from creating a new menu from scratch and populating it with links.
 

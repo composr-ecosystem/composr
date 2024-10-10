@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis and Chris Graham, Sponsored by Arvixe hosting"]Composr Supplementary: Updating the Members Listing in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="The member directory with boxes" float="right"]data_custom/images/docs/sup_updating_the_members_listing_in_composr/0983a9f464db031362356f731ece828d.jpg[/media]
 [media width="150" description="The default look of the member directory" float="right"]data_custom/images/docs/sup_updating_the_members_listing_in_composr/3866360e8d6b1f5af2c3a16c74b0909c.jpg[/media]
 Once your Composr community-based site gets to a certain size you might want to change how your members list is displayed. The standard listing utilises a list style with Username, Primary usergroup, Number of posts and Join date, which can be sorted by which ever data type you prefer. You can see an example of this on the right.

@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Setting Up a Map of Your Composr User's Locations[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Member map" float="right"]data_custom/images/docs/sup_setting_up_a_map_of_your_composr_users_locations/41b4f04ecba1fcb62cefc6da2e694f6e.jpg[/media]
 Something I have been asked to add on a few occasions for community based forums is a map of the site user's locations. For a larger community this can be a chance to show the variety in locations of their members. Composr has an addon created specifically for this purpose. To add a map of your Users locations there are a few steps to follow:
 [list="1"]

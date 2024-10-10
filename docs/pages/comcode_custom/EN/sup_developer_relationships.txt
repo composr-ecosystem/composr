@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Maintaining a good agency relationship[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written with ocProducts, Ltd (a now defunct company) in mind. As of version 11, Composr CMS is not commercially-backed (but companies and individuals can hire each other to develop Composr features).[/box]
+
 [media description="" width="450" float="right" framed="0"]data_custom/images/docs/sup_developer_relationships/crazy_day.png[/media]
 Any good relationship is a two-way thing, [page="_SEARCH:sup_choosing_a_developer"]you should hold your web developer to high standards[/page], but treating them with some reasonable respect is also vital to maintaining a good agency relationship.
 

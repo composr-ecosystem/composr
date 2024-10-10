@@ -1,5 +1,7 @@
 [title sub="Written by temp1024 and Chris Graham"]Composr Supplementary: ModSecurity[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 {$IS_MAINTAINED,platform_modsecurity,ModSecurity} is an "application firewall" which is often installed by Linux-based Apache webhosts.
 
 It's a mixed blessing. By its very nature, it provides limitations on what web systems can do. So in some sense, it breaks standards-based behaviour of web servers. It does this though to raise security, by blocking what it perceives to be malicious server requests, and that's a good thing.
