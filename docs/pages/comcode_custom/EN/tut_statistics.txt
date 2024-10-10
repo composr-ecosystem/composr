@@ -490,7 +490,16 @@ The [tt]side_stats[/tt] block shows various figures that relate to your website'
 [media width="150" description="The [tt]main_staff_stats_graph[/tt] block" float="left"]data_custom/images/docs/tut_statistics/main_staff_stats_graph.png[/media]
 The [tt]main_staff_stats_graph[/tt] block allows you to place a statistics graph anywhere on your site. This is typically used for putting your most-tracked metrics on the Admin Zone dashboard. But you could also put public graphs on your site to showcase community statistics, transparency, or basically anything you want.
 
+The [tt]param[/tt] of the block is the name of the graph you want. These are defined in the [tt]hooks/modules/admin_stats[/tt] hooks under info() (the array keys).
+
 Do not be fooled by the name [tt]main_staff_stats_graph[/tt]; a visitor does not have to be a staff member to see the graph (no permissions checking is done) unless it is placed on a restricted page (e.g. the Admin Zone dashboard).
+
+There are some other parameters you may be able to specify depending on the graph and their available pivots and filters:
+ - [tt]pivot[/tt]: The codename of the pivot to use for this graph (see CMSStatsProvider::get_date_pivots() in sources/stats.php for common ones you can use)
+ - [tt]<filterName>[/tt]: Apply a filter to the graph. The <filterName> is based on what is available for the graph as defined in the info function under 'filters' (strip the graph name and the double underscore; for example, to define a 'graph_name__enabled_only' filter, just use 'enabled_only' as the key)
+  - [tt]month_range[/tt]: This filter behaves differently; you must use [tt]month_range__start[tt] and [tt]month_range__end[/tt] instead. The value is the month number since epoch. There are also special numbers you can use:
+   - [tt]month_range__end[/tt]: If you define 0, then the graph will end at the end of the current month. Negative numbers will look ahead that many months into the future from now (though generally you would not want to do that).
+	- [tt]month_range__start[/tt]: A negative number means that many months in the past compared to the end. For example, -12 means the graph will start 12 months since end. Be very cautious about this; the graph will try to render points even if the stats do not go back that far. If you specify too far in the past (e.g. you set this to 0), you could encounter server crashes or out-of-memory errors.
 [/surround]
 
 [title="3"]Real-time analytics[/title]
