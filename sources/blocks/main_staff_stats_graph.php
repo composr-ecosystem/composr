@@ -78,7 +78,7 @@ PHP;
         $standard = get_standard_block_parameters();
 
         $filters = [];
-        $filters[$graph_name . '__month_range'] = [0, 0]; // Default to showing the entire available timeline
+        $filters[$graph_name . '__month_range'] = [-12, 0]; // Default to showing one year
         foreach ($map as $key => $val) {
             if (($key != 'block') && ($key != 'param') && ($key != 'month_range') && (!in_array($key, $standard))) {
                 $filters[$graph_name . '__' . $key] = $val;
