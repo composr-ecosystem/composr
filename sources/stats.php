@@ -785,6 +785,9 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
             $ret['month_of_year'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('MONTH'));
         }
         $ret['quarter_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('CALENDAR_QUARTER'));
+        if ($include_of_types) {
+            $ret['quarter_of_year'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('CALENDAR_QUARTER'));
+        }
         $ret['year_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('YEAR'));
         return $ret;
     }
@@ -849,10 +852,11 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return intval(cms_date('m', $timestamp));
             case 'quarter_series':
                 $month = get_stats_month_for_timestamp($timestamp);
-                return intval(floor($month / 4.0));
+                return intval(floor($month / 3.0));
             case 'quarter_of_year':
-                $month = floatval(cms_date('m', $timestamp));
-                return intval(floor($month / 4.0));
+                $_month = get_stats_month_for_timestamp($timestamp);
+                $month = ($_month % 12);
+                return intval($month / 3);
             case 'year_series':
                 return intval(cms_date('Y', $timestamp));
         }
@@ -951,12 +955,20 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
             case 'quarter_series':
                 for ($i = $start_month; $i <= $end_month; $i++) {
-                    if (($i % 4 == 0) || (empty($data))) {
-                        $quarter = $i / 4;
+                    if (($i % 3 == 0) || (empty($data))) {
+                        $quarter = intval($i / 3);
                         $pivot_value = $quarter;
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
                         $data[$pivot_value] = 0;
                     }
+                }
+                break;
+
+            case 'quarter_of_year':
+                for ($i = 0; $i <= 3; $i++) {
+                    $pivot_value = $i;
+                    $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                    $data[$pivot_value] = 0;
                 }
                 break;
 
@@ -1078,8 +1090,10 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return do_lang($months[$pivot_value - 1]);
 
             case 'quarter_series':
-                $year = floor($pivot_value / 4);
-                return strval($year) . ' Q' . strval(($pivot_value + 1) % 4);
+                $_year = 1970.0 + floor($pivot_value * 3.0) / 12.0;
+                $year = intval($_year);
+                $quarter = intval(($_year - $year) * 4) + 1;
+                return strval($year) . ' Q' . strval($quarter);
 
             case 'quarter_of_year':
                 return 'Q' . strval($pivot_value + 1);
