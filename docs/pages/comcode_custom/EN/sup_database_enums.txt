@@ -1,6 +1,6 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Using Enums with MySQL[/title]
 
-We haven't used ENUMs in Composr as they're not well-standard in SQL. However that shouldn't stop you using them in your own code if you wish to (everyone here uses MySQL anyway to be honest).
+We haven't used ENUMs in Composr as they're not well-standard in SQL. However that shouldn't stop you using them in your own code if you wish to.
 
 The actual data types coming out of / going into, MySQL for select/insert/update queries, will be strings or integers, so there's actually going to be no complexity in terms of actual input of data values.
 

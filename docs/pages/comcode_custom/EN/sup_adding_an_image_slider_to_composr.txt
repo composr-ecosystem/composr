@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Adding an Image Slider to Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Unslider" float="right"]data_custom/images/docs/sup_adding_an_image_slider_to_composr/a2c951921f40c37a7451e94648bda624.png[/media]
 Many websites now make use of sliders to convey information to their visitors. It's incredibly common especially in the world of eCommerce as it allows several items to be displayed in the same space while sliding between them. To achieve this in Composr it is just a case of needing to install a specific addon. The addon is titled Unslider and is simple to set up and use which I will go into below.
 

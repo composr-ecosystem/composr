@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Sending E-mail Newsletters in Composr Part 2[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Setting content for a periodic newsletter in Composr (2)" float="right"]data_custom/images/docs/sup_sending_email_newsletters_in_composr_part_2/e4de1fef69c64aeab7efa38e2e7aad48.png[/media]
 [media width="150" description="Setting content for a periodic newsletter in Composr (1)" float="right"]data_custom/images/docs/sup_sending_email_newsletters_in_composr_part_2/d4de1fef69c64aeab7efa38e2e7aad48.png[/media]
 This is part 2 of how to send an e-mail newsletter through the Composr system. This part deals with the automated content creation for your e-mail newsletters. Part one dealt with building a custom e-mail with fresh content to send to your website members and this tutorial deals with importing the content which you have already added to your Composr website. If you have not read [page="_SEARCH:sup_sending_email_newsletters_in_composr_part_1"]part one[/page] yet, I recommend reading that part first.

@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Add Shoutboxes to Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Shoutbox block options" float="right"]data_custom/images/docs/sup_add_shoutboxes_to_composr/b26649fcbe9c9b88151e0ec84e3812f5.png[/media]
 A shoutbox is a popular addition to many community websites and is very easy to add as long as you have the chatroom addon installed in your Composr website. The shoutbox addon is primarily designed to be a side block which means it was originally designed to work best in one of your website side panels.
 

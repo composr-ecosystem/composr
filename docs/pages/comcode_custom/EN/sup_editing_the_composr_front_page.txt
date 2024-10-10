@@ -1,5 +1,7 @@
 [title sub="Written by Jim Davidson, Sponsored by Arvixe hosting"]Composr Supplementary: Practical page editing (a walk through)[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 In Composr, the front page is your home page e.g. [tt]http://yourbaseurl/index.php[/tt] and will look like this...
 
 [media thumb="1" description="Page prior to editing"]data_custom/images/docs/sup_editing_the_composr_front_page/3849400613dd438a681cd470a8d13cde.png[/media]

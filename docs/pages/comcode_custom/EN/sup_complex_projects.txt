@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: How to approach complex projects[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written with ocProducts, Ltd (a now defunct company) in mind. As of version 11, Composr CMS is not commercially-backed (but companies and individuals can hire each other to develop Composr features).[/box]
+
 [media description="" width="410" float="right" framed="0"]data_custom/images/docs/sup_complex_projects/good_approach.png[/media]
 Composr is designed as a tool to lower the investment (be it time or money) needed for making advanced websites. Typically it might reduce that investment by around 50%, but it varies greatly from one project to another.
 

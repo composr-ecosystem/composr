@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Using the if_in_group in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 One thing I love about Composr is the infinite customisation ability of the software, and a very useful piece of code is the [tt]if_in_group[/tt] tag which allows you to specify different things to happen depending on which group the user is in. You can display a message to guests and a different message to members. The tag allows you to use Composr's Comcode to display blocks of information or different content to your members.
 
 An example of this is you might want to display a gallery on the homepage to premium members but not anyone else. (You could also do this with permissions.)

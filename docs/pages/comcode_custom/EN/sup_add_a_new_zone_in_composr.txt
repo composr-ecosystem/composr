@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Add a New Zone in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Add new zone form" float="right"]data_custom/images/docs/sup_add_a_new_zone_in_composr/0b91c18c872c56132c4c3070cb4b08d6.png[/media]
 Zones are a key element to the structure of any Composr built website and are a great way of sectioning off your content into different areas. For example a games related website might have a zone for PC games, one for Xbox games, another for PS3, and so on. A business site may have sections dedicated to the different spheres of influence it deals with.
 

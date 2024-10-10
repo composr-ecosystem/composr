@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Professional upgrading[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written with ocProducts, Ltd (a now defunct company) in mind. As of version 11, Composr CMS is not commercially-backed (but companies and individuals can hire each other to develop Composr features).[/box]
+
 This tutorial provides a professional process for updating customer website(s). Steps here may also be useful for professional website "tune ups".
 
 It is only intended for programmers who are experienced in the use of Composr.

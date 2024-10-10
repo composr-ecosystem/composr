@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Setting Timed Content for Composr on a cPanel host[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 Being able to set up timed content on your Composr website is possibly something you will want to do at some point during your website's lifespan. This might be so you can schedule content to go live while you are away, or in the case of a news site you may have an embargo on news until a specific time.
 
 These instructions should work for most cPanel hosting.

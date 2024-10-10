@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Writing mini-modules[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 The Composr mini-module feature lets you create new Composr pages very easily. You don't need to code to any particular structure or API, just write plain PHP and output as normal from it. You have full access to Composr's APIs for when you need to interface with the rest of Composr.
 
 This very practical tutorial shows you how via a number of simple examples.

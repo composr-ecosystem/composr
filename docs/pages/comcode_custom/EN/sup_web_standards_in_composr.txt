@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Web Standards in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media description="Previewing some content, finding the [tt]<b>[/tt] tag is not acceptable (prohibited by accessibility standards, deprecated in HTML)" width="150" float="right" thumb="1"]data_custom/images/docs/sup_web_standards_in_composr/preview.png[/media]
 An important part of Composr is the strength in which it follows web standards, and has led the way in several areas, including being the first large CMS to fully support Dublin core since 2009. Composr was the first to offer full ATAG accessibility support for the authoring tools built into the system, and also the first CMS to support Schema.org Microdata as standard, which was implemented shortly after the announcement of the standard.
 

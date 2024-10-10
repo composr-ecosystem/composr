@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: How to Install an Addon in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Composr Import addons screen" float="right"]data_custom/images/docs/sup_how_to_install_an_addon_in_composr/1edbd3b3ee87d425c87035a92fa6bcbc.png[/media]
 Composr has an astonishingly comprehensive range of core installed features. On top of this there is a [page="site:downloads:browse:addons"]directory of extra Composr features[/page] and functionality available. In many cases Composr will already include most features you need, but these extra features have been kept as non-bundled addons so the core software doesn't suffer from being bloated. Many of these addons are features which some people will find very useful but not everyone!
 

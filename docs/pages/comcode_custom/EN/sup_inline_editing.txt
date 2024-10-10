@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Inline editing in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 {$IS_MAINTAINED,inline_editing,Inline editing} is achieved in Composr via an internal framework called fractional editing.
 By default inline editing is implemented for some content titles (when shown as screen titles), and for some member profile fields.
 

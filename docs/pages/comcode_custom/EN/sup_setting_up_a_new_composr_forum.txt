@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Setting Up a New Composr Forum[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [surround]
 [media width="150" description="Composr forum" float="right"]data_custom/images/docs/sup_setting_up_a_new_composr_forum/58f0c14238520080101db3e8785848a9.png[/media]
 One of Composr's core features is the forum. While forum usage might be on the wane in some areas due to the prevalence of Social Media, forums are and continue to be a key feature within Composr, and a large part of many online communities.

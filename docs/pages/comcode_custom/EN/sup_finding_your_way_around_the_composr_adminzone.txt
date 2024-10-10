@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Finding Your Way Around the Composr Admin Zone[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 One of Composr's biggest strengths is its large amount of features. However, to a new user the Admin Zone may initially look a little overwhelming. This tutorial is a brief look at the different screens to help you find your way around when you have installed a new Composr website. I'm not going to go into great detail for every single option within the Admin Zone or you will end up reading a 10,000 word essay! This tutorial is to show you where the most common options are.
 
 [title="2"]The Dashboard Screen[/title]

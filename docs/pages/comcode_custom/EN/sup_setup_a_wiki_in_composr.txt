@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Setup a Wiki in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Adding pages to a wiki via the tree editor" float="right"]data_custom/images/docs/sup_setup_a_wiki_in_composr/5967390f4593a5ce594771bbb0c4fc5c.jpg[/media]
 There are a wide range of reasons why you might want to add a wiki style section to your website. Wikis are great for large community driven websites for sharing information. They can be used to house tutorials in an easy to find way. Obviously the most famous example of a wiki site is Wikipedia which is one of the top 10 most visited websites in the world, and the content is completely community driven.
 

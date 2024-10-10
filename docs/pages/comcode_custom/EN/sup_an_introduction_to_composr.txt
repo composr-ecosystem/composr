@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: An Introduction to Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Composr Logo" float="right"]data_custom/images/docs/sup_an_introduction_to_composr/175x175.png[/media]
 I thought as my first Composr tutorial it would be beneficial to give a brief overview of Composr. Part two will be a tour of the main Admin Zone screens to help new users find their way around. Composr has a large amount of bundled features and this is one of its biggest strengths. Having these features included in the software from the start gives Composr a distinct advantage over other Content management systems (CMS).
 

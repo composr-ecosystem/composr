@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Set Up Short URLs in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Adding a zone, setting the zone codename" float="right"]data_custom/images/docs/sup_set_up_short_urls_in_composr/933b938b372c8052e33f15462f109f03.png[/media]
 Most Website users expect easy to read website URLs, which also help a great deal with Search Engine Optimisation. This 'How To' deals with how to set up the Short URLs in Composr. Short URLs are easier to remember and follow than having code numbers for pages. There are multiple "schemes" for short URLs built-in to Composr. Whichever option you want to use requires the same initial process.
 

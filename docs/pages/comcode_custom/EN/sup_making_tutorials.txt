@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Making supplementary tutorials for Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 This tutorial will show you how to add a new supplementary tutorial to Composr.
 You will need commit access to do this, which is given out to established community members.
 If you do not yet have commit access then you can submit a merge request, however. This isn't directly described in this tutorial, [url="but GitLab has a tutorial"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url].

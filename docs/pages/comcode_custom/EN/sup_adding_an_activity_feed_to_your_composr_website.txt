@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Adding an Activity Feed to your Composr Website[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Activity feed" float="right"]data_custom/images/docs/sup_adding_an_activity_feed_to_your_composr_website/5f3cffdcb87391fefa9fb791afc602bb.jpg[/media]
 While social media has in some senses replaced many functions of traditional community or forum based websites, there is still a case for a separate community based site. I personally am an advocate of a synergy between social media and a community based website. In any large group of people you will have some who don't want to use social media and some who will not want to sign up to another website. Composr boasts several addons which will help bridge the worlds. For example there is an addon that lets users sign in using Facebook.
 

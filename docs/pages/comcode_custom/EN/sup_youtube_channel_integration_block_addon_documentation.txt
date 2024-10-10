@@ -1,5 +1,7 @@
 [title sub="Written by Jason Verhagen"]Composr Supplementary: YouTube Channel Integration Block Addon Documentation[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 This YouTube Channel Integration Block addon will allow you to integrate the contents of individual YouTube channels and playlists with your Composr website. This documentation supplements the [page="_SEARCH:sup_integrating_a_youtube_channel_to_composr"]Integrating a YouTube Channel to Composr[/page] tutorial by providing the step-by-step details needed to get a YouTube API key as well as providing the details needed to create custom templates.
 
 [title="2"]Prerequisite[/title]

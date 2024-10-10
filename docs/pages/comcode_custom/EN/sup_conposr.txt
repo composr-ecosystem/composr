@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Supplementary: Conposr and Conposr++[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as Conposr is not regularly maintained.[/box]
+
 Composr CMS is a huge system, designed for sites with fairly sophisticated content management and social media needs.
 
 However, Composr CMS is also a framework for general programming.

@@ -1,5 +1,7 @@
 [title sub="Written by temp1024"]Composr Supplementary: Cloning your site[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 Have you ever wanted to know exactly what impact a specific upgrade, patch, addon, or change will have on your live site but were too afraid to try?
 
 With the following instructions you can now find out exactly by creating a clone of your site and applying the changes to the clone.

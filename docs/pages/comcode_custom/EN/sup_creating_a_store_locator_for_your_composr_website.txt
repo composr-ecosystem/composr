@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Creating a Store Locator for Your Composr Website[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [surround]
 [media width="150" description="Adding our Catalogue" float="right" thumb="1"]data_custom/images/docs/sup_creating_a_store_locator_for_your_composr_website/dd7a698ac9d7b71854c6c3fa11676a8b.png[/media]
 Composr has a huge number of possibilities available via its impressive choice of built-in features. On top of the inbuilt features there is also a great range of additional optional features created by both the Composr team and other community members. One of these is DataMappr which makes adding a store locator to your website a simple process. A store locator is very useful for any retail business.

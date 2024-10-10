@@ -1,5 +1,7 @@
 [title sub="Written by Jim Davidson, Sponsored by Arvixe hosting"]Composr Supplementary: Add a Sub Forum to your Composr Forum[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 Forums can be small or large, but you need to think about the structure and the user experience. Thankfully Composr makes it very easy for us to create forums and sub-forums. In [page="_SEARCH:sup_changing_the_composr_forums"]my last tutorial we edited an existing forum[/page] and added a new one called Composr templates. Now I could add another forum called Composr template suggestions and it would be nice if it were a sub-forum of our Composr templates forum so let's create a sub-forum.
 
 There are so many ways to do so many things in Composr but knowing the quick routes is a key to your success. Go to Admin Zone > Structure > Forums > Add forum.

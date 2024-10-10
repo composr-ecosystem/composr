@@ -1,5 +1,7 @@
 [title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Stopping Spammers in Composr[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10).[/box]
+
 [media width="150" description="Configuration options (2)" float="right"]data_custom/images/docs/sup_stopping_spammers_in_composr/41d5492eee8bc0536ebb464f4a4e3d7a.jpg[/media]
 [media width="150" description="Configuration options (1)" float="right"]data_custom/images/docs/sup_stopping_spammers_in_composr/31d5492eee8bc0536ebb464f4a4e3d7a.jpg[/media]
 One thing every website has to contend with eventually will be stopping spammers from making your users' life a misery by constantly posting content or creating loads of work which you need to clean up. I wanted to go through some of the options you have to help make this a lot easier and how to save yourself a lot of time and hassle in the long run.

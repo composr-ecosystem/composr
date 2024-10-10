@@ -1,5 +1,7 @@
 [title sub="Written by Raji"]Composr Supplementary: Using Chrome development tools to help with themeing[/title]
 
+[box="Potentially Outdated Tutorial"]This supplementary tutorial might be outdated as it was written for a previous version of Composr CMS (version 10) and Chrome.[/box]
+
 Web browsers often have integrated web development tools that are very useful for debugging and testing web designs, as well as additional third-party extensions that may be installed. These browser tools vary with the jobs that they perform: some of them helps us to diagnose issues with CSS, HTML and JavaScript, while others evaluate the accessibility of our website. The most popular browsers such as Firefox, Microsoft Edge, Google Chrome come with excellent tools.
 
 This tutorial will focus on Google Chrome which has (arguably) the best tools of any web browser. Most other browsers have similar features, but not quite as refined or powerful.
