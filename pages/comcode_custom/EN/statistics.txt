@@ -10,22 +10,22 @@ These graphs outline the general activity levels on the site and within the comm
 
 [box="Unique Views"]
 This graph shows the number of unique devices or IP addresses who have visited the site.
-[block="total_unique_views"]main_staff_stats_graph[/block]
+[block="total_unique_views" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Actions"]
 This graph shows the number of actions that took place on site which have been logged. Examples of actions include but are not limited to adding/editing/deleting content, editing one's profile, and making forum posts. Usually, this is an indication of how much activity took place on the site on a given day.
-[block="actionlog_activity"]main_staff_stats_graph[/block]
+[block="actionlog_activity" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Downloads"]
 This graph shows the number of times someone downloaded something on a given day.
-[block="downloads"]main_staff_stats_graph[/block]
+[block="downloads" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Points"]
 This graph shows the total number of points which have been sent, received / earned, or spent / charged in any way in a given day. Note that there could be a wide range of spikes especially if some members earned a lot of points on a specific day.
-[block="points_transacted"]main_staff_stats_graph[/block]
+[block="points_transacted" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [title="2"]Content[/title]
@@ -33,21 +33,21 @@ This graph shows the total number of points which have been sent, received / ear
 These graphs showcase statistics involving content growth on our site.
 
 [box="Members"]
-This graph shows how many new accounts were created on a given day (new members who joined).
-[block="members"]main_staff_stats_graph[/block]
+This graph shows how many new accounts were created on a given week (new members who joined).
+[block="members" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Forums"]
 This graph shows how many new (public) forum topics were created.
-[block="public_topics"]main_staff_stats_graph[/block]
+[block="public_topics" month_range__start="-12"]main_staff_stats_graph[/block]
 
 This graph shows how many new (public) forum posts and comments were made.
-[block="public_posts"]main_staff_stats_graph[/block]
+[block="public_posts" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [box="New Content"]
 This graph tallies how many new items were discovered in the sitemap. This is usually an indication of how many new pieces of content were created on a given day.
-[block="sitemap_growth"]main_staff_stats_graph[/block]
+[block="sitemap_growth" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [title="2"]Transparency[/title]
@@ -55,14 +55,14 @@ This graph tallies how many new items were discovered in the sitemap. This is us
 These graphs provide a bit of transparency into the operations of composr.app .
 
 [box="Security Incidences Halted"]
-This graph shows the number of security incidences which have been stopped by the Composr software on composr.app. These can include failed login attempts, hack attempts, and blocked attempts to spam. These only include incidences halted by the Composr software on composr.app and not by the server running the site or by the third-party Web Application Firewall.
-[block="security_incidents"]main_staff_stats_graph[/block]
+This graph shows the number of security incidences which have been stopped by the Composr software on composr.app by week. These can include failed login attempts and hack attempts. These only include incidences halted by the Composr software on composr.app and not by the server running the site or by the third-party Web Application Firewall.
+[block="security_incidents" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Warnings"]
-This graph shows the total number of warnings that have been issued by day.
-[block="recorded_punishments"]main_staff_stats_graph[/block]
+This graph shows the total number of warnings that have been issued by week.
+[block="recorded_punishments" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
 
-This graph shows a breakdown of the warnings / punishments staff have issued according to reason.
-[block="recorded_punishment_reasons"]main_staff_stats_graph[/block]
+This graph shows a breakdown of the warnings / punishments staff have issued in the past year according to reason.
+[block="recorded_punishment_reasons" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
