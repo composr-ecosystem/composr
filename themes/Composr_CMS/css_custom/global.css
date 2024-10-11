@@ -1,0 +1,92 @@
+﻿/*
+ {$BRAND_NAME`}
+ Copyright (c) ocProducts, 2004-2023
+*/
+
+/*
+This is Composr's main CSS file. It defines core styles for core functionality and common re-used styles.
+See _base.css for responsive design breakpoints and some SET commands.
+See _colours.css for colours.
+
+The CSS is written to CSS3/HTML5 standards.
+* Parts that are still considered experimental on some browsers are surrounded using the Tempcode 'BETA_CSS_PROPERTY' symbol, which automatically injects CSS prefixes for all major browsers.
+
+Most sizes are defined in 'em' units. 1em is roughly 10px, depending on font size. If a size is not defined in 'em' then it is probably due to it being dependent on the size of some related image.
+'em' units are great because they scale very well. If you reduce the font size, the spacings will reduce as well, in proportion.
+
+When editing theme CSS we recommend you comment out code you're removing and heavily comment your own changes - this will make it much easier for you to upgrade your theme to new versions.
+Composr minifies outputted CSS, so there is no performance penalty for doing this.
+
+You can also build your CSS by using a Tempcode INCLUDE to the original file but only implementing your changes in your file. This makes upgrading a LOT easier.
+CSS is expressive enough to let you undo things pretty well, if you need to undo core styles.
+This (if you remove the slashes) is how you'd do a Tempcode include from your overridden global.css file:
+\{+START,INCLUDE,global,.css,css\}\{+END\}
+*/
+
+/*{+START,INCLUDE,global,.css,css}{+END}*/
+
+/*
+=========================
+===Overridden Elements===
+=========================
+*/
+
+#main-website #main-website-inner .global-middle-outer {
+	min-height: 450px;
+	padding: 1em;
+	background-color: {$COLOR_RGBA,{$GET,WB},0.95};
+}
+
+body#main-website #main-website-inner, html > body div.global-middle-faux {
+	background-color: {$GET,main_background};
+
+	/*{+START,IF,{$THEME_OPTION,inner_background}}*/
+		background: url('{$IMG_INLINE;,backgrounds/inner_background}');
+		background-size: cover;
+		background-attachment: fixed;
+	/*{+END}*/
+}
+
+/*
+=========================
+=======New Elements======
+=========================
+*/
+
+@media (min-width: 800px) {
+	.cntLeft {
+		/*{+START,IF,{$NOT,{$MOBILE}}}*/
+			float:left;
+			width:66%;
+		/*{+END}*/
+		overflow:hidden;
+	}
+	.cntRight {
+		/*{+START,IF,{$NOT,{$MOBILE}}}*/
+			float:right;
+			width:33%;
+		/*{+END}*/
+		overflow:hidden;
+	}
+	.cntLRow {
+		/*{+START,IF,{$NOT,{$MOBILE}}}*/
+			float:left;
+		/*{+END}*/
+		padding-bottom:10px;
+	}
+	.cntRRow {
+		float:left;
+		padding-bottom:10px;
+	}
+}
+
+.cntLeft h1 { padding-bottom:10px; display:block; }
+h2.leftH3Like, .cntLeft h2.h3Like, .cntLeft h3 { font-size:20px !important; font-weight:bold; color:#677EA4; padding:5px 0px 10px 0px; display:block; }
+.cntLeft p { font-size:14px; line-height:22px; color:#666666; text-align:justify; padding-bottom:10px; }
+.cntLeft p.noJustify { text-align:left; }
+
+.cntRow p + h1 { margin-top:10px; }
+.cntRow h1 { margin:0; padding-bottom:20px; display:block; }
+.cntRow h2 { font-size:24px; font-weight:bold; padding-bottom:10px; display:block; }
+.cntRow h3 { font-size:18px; font-weight:bold; padding-bottom:5px; display:block; }
+.cntRow>h3>a { color:white !important; }

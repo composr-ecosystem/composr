@@ -1,0 +1,11 @@
+/*
+ {$BRAND_NAME`}
+ Copyright (c) Christopher Graham, 2004-2024
+*/
+
+{$THEMEWIZARD_COLOR,#6ff77f,cns_personal_post_background,50% 00FF00 + 50% area_2_background}
+{$THEMEWIZARD_COLOR,#000000,cns_personal_post_text,100% BW}
+{$THEMEWIZARD_COLOR,#ef777f,emphasis_background,50% FF0000 + 50% area_2_background}
+{$THEMEWIZARD_COLOR,#180c0d,emphasis_text,10% emphasis_background + 90% BW}
+{$THEMEWIZARD_COLOR,#ef777f,cns_polls_background,50% FF0000 + 50% area_2_background}
+{$THEMEWIZARD_COLOR,#180c0d,cns_polls_text,10% cns_polls_background + 90% BW}

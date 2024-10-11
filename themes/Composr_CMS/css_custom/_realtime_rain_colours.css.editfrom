@@ -1,0 +1,10 @@
+/*
+ {$BRAND_NAME`}
+ Copyright (c) Christopher Graham, 2004-2024
+*/
+
+{$THEMEWIZARD_COLOR,#ffffff,bubble_hover_link,100% #FFFFFF}
+{$THEMEWIZARD_COLOR,#000000,bubble_link,100% #000000}
+{$THEMEWIZARD_COLOR,#ffffff,bubble_text,100% #FFFFFF}
+{$THEMEWIZARD_COLOR,#333333,bubblescape,100% #333333}
+{$THEMEWIZARD_COLOR,#3a3a3a,bubblescape_outside,100% #3A3A3A}
