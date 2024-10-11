@@ -171,6 +171,7 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                     }
 
                     // Anonymise the field value(s) depending on how we are supposed to treat it
+                    $_value = mixed();
                     foreach ($value as &$_value) {
                         switch ($treat_as) {
                             case 'additional_member_id_fields':
@@ -178,11 +179,16 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                                     if ($field['cf_required'] == 1) {
                                         $_value = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                                     } else {
-                                        $_value = '';
+                                        $_value = null;
                                     }
                                 }
                                 break;
+
                             case 'ip_address_fields':
+                                if (!is_string($_value)) {
+                                    break;
+                                }
+
                                 if (($is_owner) || ((count($ip_addresses) > 0) && (in_array($_value, $ip_addresses)))) {
                                     if ($field['cf_required'] == 1) {
                                         $_value = '0.0.0.0';
@@ -191,7 +197,12 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                                     }
                                 }
                                 break;
+
                             case 'email_fields':
+                                if (!is_string($_value)) {
+                                    break;
+                                }
+
                                 if (($is_owner) || (($email_address != '') && ($_value === $email_address))) {
                                     if ($field['cf_required'] == 1) {
                                         $_value = 'anonymous@example.com';
@@ -200,7 +211,12 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                                     }
                                 }
                                 break;
+
                             case 'username_fields':
+                                if (!is_string($_value)) {
+                                    break;
+                                }
+
                                 if (($is_owner) || (($username != '') && ($_value === $username))) {
                                     if ($field['cf_required'] == 1) {
                                         $_value = do_lang('GUEST');
@@ -209,18 +225,30 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                                     }
                                 }
                                 break;
-                            case 'file_fields':
-                                if ($is_owner) { // We delete files we want to anonymise
-                                    $_value = '';
 
+                            case 'file_fields':
+                                if (!is_string($_value)) {
+                                    break;
+                                }
+
+                                if ($is_owner) {
                                     require_code('urls');
+
+                                    // We delete local files we want to anonymise from the database
                                     if (url_is_local($_value) && is_file(get_custom_file_base() . '/' . $_value)) {
-                                        @unlink(get_custom_file_base() . '/'. $_value);
-                                        sync_file(get_custom_file_base() . '/'. $_value);
+                                        @unlink(get_custom_file_base() . '/' . $_value);
+                                        sync_file(get_custom_file_base() . '/' . $_value);
                                     }
+
+                                    $_value = '';
                                 }
                                 break;
+
                             case 'string_field_anonymise_only': // Special type
+                                if (!is_string($_value)) {
+                                    break;
+                                }
+
                                 if ($is_owner) {
                                     if ($field['cf_required'] == 1) {
                                         $_value = do_lang('UNKNOWN');
@@ -229,7 +257,12 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                                     }
                                 }
                                 break;
+
                             case 'number_field_anonymise_only': // Special type
+                                if (!is_string($_value) || !is_numeric($_value)) {
+                                    break;
+                                }
+
                                 if ($is_owner) {
                                     if ($field['cf_required'] == 1) {
                                         $_value = '0';
@@ -238,7 +271,12 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                                     }
                                 }
                                 break;
+
                             default: // additional_anonymise_fields
+                                if (!is_string($_value)) {
+                                    break;
+                                }
+
                                 if (($is_owner) || in_array($_value, $others)) {
                                     if ($field['cf_required'] == 1) {
                                         $_value = do_lang('UNKNOWN');

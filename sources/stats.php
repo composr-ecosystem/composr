@@ -917,8 +917,8 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                     $end_timestamp = cms_mktime(0, 0, 0, $month + 1, 1, $year) - 1; // -1 so we end on 11:59:59pm the last day of the month instead of possibly accidentally counting an extra week
 
                     // Calculate the weeks in this month
-                    $first_week = date('W', $start_timestamp);
-                    $last_week = date('W', $end_timestamp);
+                    $first_week = intval(date('W', $start_timestamp));
+                    $last_week = intval(date('W', $end_timestamp));
                     for ($j = $first_week; $j <= $last_week; $j++) {
                         $pivot_value = intval($start_timestamp / 60 / 60 / 24 / 7) + ($j - $first_week);
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);

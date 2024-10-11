@@ -80,9 +80,10 @@ if ($type == 'submit') {
     $view_state = ($severities[$severity] == '95') ? '50' : '10';
 
     // Get category ID
+    // TODO: Need to add back in ORDER BY id once we figure out why it's failing sql_compat and how to fix it
     $category = array_search($_category, $_categories);
     if (($category === false) || ($category === '')) {
-        $_category = $GLOBALS['SITE_DB']->query('SELECT id FROM mantis_category_table WHERE status=0 ORDER BY id LIMIT 1');
+        $_category = $GLOBALS['SITE_DB']->query('SELECT id FROM mantis_category_table WHERE status=0 LIMIT 1');
         $category = $_category[0]['id'];
     }
 
@@ -349,7 +350,7 @@ if ($type == 'submit') {
                 ],
             ],
             'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
-            'next' => build_url(['page' => '_SELF', 'type' => 'submit'], '_SEARCH'),
+            'next' => build_url(['page' => '_SELF', 'type' => 'submit']),
         ],
 
         'bug' => [
@@ -409,7 +410,7 @@ if ($type == 'submit') {
                 ],
             ],
             'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
-            'next' => build_url(['page' => '_SELF', 'type' => 'submit'], '_SEARCH'),
+            'next' => build_url(['page' => '_SELF', 'type' => 'submit']),
         ],
 
         'security' => [
@@ -473,7 +474,7 @@ if ($type == 'submit') {
                 ],
             ],
             'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
-            'next' => build_url(['page' => '_SELF', 'type' => 'submit'], '_SEARCH'),
+            'next' => build_url(['page' => '_SELF', 'type' => 'submit']),
         ],
 
         'doc_issue' => [
@@ -564,7 +565,7 @@ if ($type == 'submit') {
                 ],
             ],
             'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
-            'next' => build_url(['page' => '_SELF', 'type' => 'submit'], '_SEARCH'),
+            'next' => build_url(['page' => '_SELF', 'type' => 'submit']),
         ],
 
         'doc_fix' => [
@@ -608,7 +609,7 @@ if ($type == 'submit') {
                 ],
             ],
             'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
-            'next' => build_url(['page' => '_SELF', 'type' => 'submit'], '_SEARCH'),
+            'next' => build_url(['page' => '_SELF', 'type' => 'submit']),
         ],
     ];
 

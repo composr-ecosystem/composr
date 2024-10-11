@@ -200,26 +200,35 @@ class Hook_addon_registry_cns_warnings
             'JS_FUNCTION_CALLS' => [],
         ]);
 
+        $steppers = [
+            [
+                'LABEL' => lorem_word(),
+                'EXPLANATION' => lorem_sentence(),
+                'ICON' => placeholder_img_code(),
+                'ACTIVE' => false,
+                'ACTIVE_COLOR' => 'warning',
+            ],
+            [
+                'LABEL' => lorem_word(),
+                'EXPLANATION' => lorem_sentence(),
+                'ICON' => placeholder_img_code(),
+                'ACTIVE' => true,
+                'ACTIVE_COLOR' => 'danger',
+            ],
+        ];
+
+        $info = [
+            [
+                'ICONS' => 'buttons/yes',
+                'TEXT' => lorem_sentence(),
+            ],
+        ];
+
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_STANDING', [
             'MEMBER_ID' => placeholder_first_admin_id(),
-            'STEPPERS' => [
-                [
-                    'LABEL' => lorem_phrase(),
-                    'ICON' => 'buttons/yes',
-                    'ACTIVE' => true,
-                ],
-                [
-                    'LABEL' => lorem_phrase(),
-                    'ICON' => 'buttons/yes',
-                    'ACTIVE' => false,
-                ]
-            ],
-            'INFO' => [
-                [
-                    'ICONS' => 'buttons/yes',
-                    'TEXT' => lorem_sentence(),
-                ]
-            ],
+            'SIMPLE_STEPPER' => '0',
+            'STEPPERS' => $steppers,
+            'INFO' => $info,
             'WARNINGS' => $_content,
         ]), null, '', true);
     }

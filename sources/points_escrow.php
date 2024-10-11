@@ -772,7 +772,7 @@ function escrow_update_receiving_member(int $id, int $receiving_member)
     $GLOBALS['SITE_DB']->query_update('escrow', ['update_date_and_time' => time(), 'receiving_member' => $receiving_member], ['id' => $id], '', 1);
 
     escrow_log_it('LOG_ESCROW_UPDATED_RECEIVING_MEMBER', $id, $receiving_member);
-    log_it('LOG_ESCROW_UPDATED_RECEIVING_MEMBER', $id);
+    log_it('LOG_ESCROW_UPDATED_RECEIVING_MEMBER', strval($id));
 }
 
 /**

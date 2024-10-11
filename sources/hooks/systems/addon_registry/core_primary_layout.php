@@ -172,6 +172,7 @@ class Hook_addon_registry_core_primary_layout
             'text/MAIL_SUBJECT.txt' => 'mail_subject',
             'templates/MAIL.tpl' => 'mail',
             'templates/MAIL_RAW.tpl' => 'mail_raw',
+            'templates/UNSUBSCRIBE_MAIL.txt' => 'unsubscribe_mail',
             'templates/GLOBAL_HTML_WRAP.tpl' => 'global_html_wrap',
             'templates/JAVASCRIPT_NEED.tpl' => 'global_html_wrap',
             'templates/JAVASCRIPT_NEED_FULL.tpl' => 'javascript_need_full',
@@ -271,6 +272,19 @@ class Hook_addon_registry_core_primary_layout
     {
         return $this->do_mail_template_preview('MAIL_RAW');
     }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__unsubscribe_mail() : object
+    {
+        return lorem_globalise(do_lorem_template('UNSUBSCRIBE_MAIL', [], null, false, null, '.txt', 'text'), null, '', true);
+    }
+
 
     /**
      * Get an e-mail template preview.

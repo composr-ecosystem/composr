@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: Fixed-width layouts[/title]
 
+[contents]decimal,lower-alpha[/contents]
+
 [surround]
 [media width="150" description="A fixed-width Composr site with a solid colour background" float="right"]data_custom/images/docs/tut_fixed_width/fixed_width.png[/media]
 Fixed-width is available as a theme option in Composr, and is off by default. This tutorial explains the implementation and pros & cons of it.

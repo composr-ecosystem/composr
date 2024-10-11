@@ -197,10 +197,10 @@ class Hook_privacy_core extends Hook_privacy_base
                     'owner_id_field' => null,
                     'additional_member_id_fields' => [],
                     'ip_address_fields' => ['b_ip_address'],
-                    'email_fields' => [],
+                    'email_fields' => ['b_email_hashed'/*get_selection_sql will allow search by e-mail despite it being hashed*/],
                     'username_fields' => [],
                     'file_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['b_email_hashed'/*must also be defined here to allow search by hash*/],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'removal_default_handle_method_member_override' => null,
@@ -236,7 +236,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'removal_default_handle_method_member_override' => null,
-                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'rating' => [
                     'timestamp_field' => 'rating_time',
@@ -624,6 +624,32 @@ class Hook_privacy_core extends Hook_privacy_base
                 ],
             ],
         ];
+    }
+
+    /**
+     * Get selection SQL for a particular search.
+     * You should run fill_in_missing_privacy_criteria before running this.
+     *
+     * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details from the info function for the given table
+     * @param  integer $table_action A PRIVACY_METHOD_* constant which we plan to execute on this table
+     * @param  boolean $purge_retention Whether to only return records which should no longer be retained (false: do not consider retention period)
+     * @param  ID_TEXT $username Username to search for (blank: none)
+     * @param  array $ip_addresses List of IP addresses to search for
+     * @param  ?MEMBER $member_id Member ID to search for (null: none)
+     * @param  string $email_address E-mail address to search for (blank: none)
+     * @param  array $others List of other strings to search for, via additional-anonymise-fields
+     * @return string The stem of the SQL query (blank: do not run this search as there are no filters)
+     */
+    public function get_selection_sql(string $table_name, array $table_details, int $table_action, bool $purge_retention = false, string $username = '', array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = []) : string
+    {
+        // E-mail addresses are stored in hashed format in unsubscribed_emails
+        if (($table_name == 'unsubscribed_emails') && ($email_address != '')) {
+            require_code('crypt');
+            $email_address = hash_hmac('sha256', $email_address, get_site_salt());
+        }
+
+        return parent::get_selection_sql($table_name, $table_details, $table_action, $purge_retention, $username, $ip_addresses, $member_id, $email_address, $others);
     }
 
     /**

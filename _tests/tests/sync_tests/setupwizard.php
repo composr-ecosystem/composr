@@ -63,6 +63,7 @@ class setupwizard_test_set extends cms_test_case
             'block_SITE_side_stats' => 'PANEL_RIGHT',
             'block_SITE_side_users_online' => 'PANEL_RIGHT',
             'rules' => 'balanced',
+            'join_declarations' => '',
             'dark' => '1',
             'seed_hex' => '#784468',
             'label_for__site_closed' => 'Closed site',

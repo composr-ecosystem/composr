@@ -1260,9 +1260,6 @@ abstract class DatabaseDriver
      */
     public function failed_query_echo(string $message)
     {
-        // Log to the error log so staff can investigate and have a record (especially useful when refreshing or running in steps)
-        @error_log('Composr database: WARNING ' . $message);
-
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);
         }

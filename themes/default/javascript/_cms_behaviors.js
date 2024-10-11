@@ -70,7 +70,7 @@
 
                 // Add broken link indications
                 /*{+START,SET,icon_status_warn}{+START,INCLUDE,ICON}NAME=status/warn{+END}{+END}*/
-                if (anchor.classList.contains('js-broken-link')) {
+                if (anchor.classList.contains('broken-link')) {
                     $dom.append(anchor, '{$GET;^,icon_status_warn}');
                     if ((anchor.title) && (anchor.title !== '')) {
                         anchor.title += ' ({!critical_error:BROKEN_LINK;^})';

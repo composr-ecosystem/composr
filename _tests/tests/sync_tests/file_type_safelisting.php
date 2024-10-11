@@ -293,6 +293,8 @@ class file_type_safelisting_test_set extends cms_test_case
 
     public function testCodebookRef()
     {
+        // TODO: We don't do this anymore as the full list exceeds the allowed character size of 255.
+        /*
         $path = get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt';
         $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
@@ -308,6 +310,7 @@ class file_type_safelisting_test_set extends cms_test_case
         sort($file_types_expected);
 
         $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
+        */
     }
 
     public function testHtaccessRealFileList()

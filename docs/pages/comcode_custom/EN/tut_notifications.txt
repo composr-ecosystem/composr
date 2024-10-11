@@ -85,7 +85,7 @@ In the Admin Zone you can define what notifications are "locked-down". You can u
  - Stop any member from receiving particular notifications
  - Force members to receive particular notifications types
 
-This is particularly useful if you want to prevent your site from sending a bunch of mail when you have outgoing mail limits on your web host.
+This is particularly useful if you want to prevent your site from sending a bunch of mail when you have outgoing mail limits on your webhost.
 
 Locked-down notifications will show on a member's notification settings, but the checkboxes cannot be changed. This is so members are informed which notifications they may or may not receive which they cannot change.
 
