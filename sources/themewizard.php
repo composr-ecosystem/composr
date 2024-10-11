@@ -197,7 +197,7 @@ function check_themewizard_theme(string $source_theme, string $algorithm, string
         warn_exit($error);
     }
 
-    if (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0') {
+    if (($algorithm != 'hsv') && (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0')) {
         $algorithm = 'hsv';
         attach_message(do_lang_tempcode('EQUATIONS_NOT_SUPPORTED'), 'notice');
     }
