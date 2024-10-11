@@ -293,9 +293,16 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
         if ((preg_match('#^images(_custom)?/(.*)\.(' . implode('|', $THEME_IMAGE_EXTENSIONS) . ')$#', $file, $matches) != 0) && (isset($theme_images_to_skip_path_map['themes/' . $theme . '/' . $file]))) {
             continue;
         }
-        if ((preg_match('#^css(_custom)?/(\w+)\.css$#', $file, $matches) != 0) && (isset($css_files_to_skip_flipped[$matches[1]]))) {
-            continue;
+
+        $matches = [];
+        if (preg_match('#^css(_custom)?/(\w+)\.css$#', $file, $matches) != 0) {
+            $match_key = count($matches) - 1;
+            $file_key = $matches[$match_key] . '.css';
+            if (in_array($file_key, $css_files_to_skip_flipped)) {
+                continue;
+            }
         }
+
         if (($file == 'theme.ini') && (!$include_themeini)) {
             continue;
         }
