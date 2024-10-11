@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// This test supports debug
+
 /**
  * Composr test case class (unit testing).
  */
@@ -85,10 +87,18 @@ class leader_board_test_set extends cms_test_case
         $process = calculate_leader_board($rows[0], time(), $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'rank: The leader-board did not generate a new result set when it should have in testLeaderBoardRanks().');
+            if ($this->debug) {
+                $this->dump($forced_period_start, 'forced_period_start');
+            }
         } else {
             $results = get_leader_board($this->leaderboards['rank'], $process);
             if (empty($results)) {
                 $this->assertTrue(false, 'rank: We expected at least one member in the result set, but we got none, in testLeaderBoardRanks().');
+                if ($this->debug) {
+                    $this->dump($forced_period_start, 'forced_period_start');
+                    $this->dump($this->leaderboards['rank'], 'id');
+                    $this->dump($process, 'process');
+                }
             } else {
                 // Sort the results according to specified rank
                 sort_maps_by($results, 'lb_rank');
@@ -356,16 +366,27 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['one_member']), 'Failed to create one_member leader-board');
 
         // The generated leader-board should only contain one member in the results (also test for a non voting power leader-board)
-        $forced_period_start = strtotime('first day of this month');
+        $forced_period_start = cms_mktime(0, 0, 0, null, 1, null);
         $forced_time = strtotime('+1 month', $forced_period_start);
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['one_member']], '', 1);
         $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'one_member: The leader-board did not generate a new result set when it should have in testLeaderBoardOneMember().');
+            if ($this->debug) {
+                $this->dump($forced_period_start, 'forced_period_start');
+                $this->dump($forced_time, 'forced_time');
+                $this->dump($rows[0], 'row');
+            }
         } else {
             $results = get_leader_board($this->leaderboards['one_member'], $process);
             if (empty($results)) {
                 $this->assertTrue(false, 'one_member: The leader-board did not return a result set when we expected one in testLeaderBoardOneMember().');
+                if ($this->debug) {
+                    $this->dump($forced_period_start, 'forced_period_start');
+                    $this->dump($forced_time, 'forced_time');
+                    $this->dump($rows[0], 'row');
+                }
+                return;
             }
             $count = count($results);
             $this->assertTrue(($count == 1), 'one_member: The leader-board returned ' . strval($count) . ' members when we expected 1. testLeaderBoardOneMember().');

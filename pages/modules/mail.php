@@ -101,7 +101,7 @@ class Module_mail
             warn_exit(do_lang_tempcode('MISSING_RESOURCE__MAIL'));
         }
 
-        $this->title = do_template('SCREEN_TITLE', ['AWARDS' => [], 'TITLE' => $email['label'], 'SUB' => null]);
+        $this->title = do_template('SCREEN_TITLE', ['_GUID' => 'b98c574d9dd8b312846b742df20e7a67', 'AWARDS' => [], 'TITLE' => $email['label'], 'SUB' => null]);
 
         require_code('comcode');
 

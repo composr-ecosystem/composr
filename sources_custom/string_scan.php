@@ -10257,6 +10257,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_notifications
         MODULE_TRANS_NAME_report_content
         MODULE_TRANS_NAME_shopping
+        MODULE_TRANS_NAME_mail
         MONTH
         MONTHLY
         MORE
@@ -12159,6 +12160,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNSUBSCRIBE_SUCCESS
         VIEW_MAIL_IN_BROWSER
         _WEEK
+        FIELD_PASSWORD_VIEW_ON_EDIT
     ')));
 
     // Remove blank lines

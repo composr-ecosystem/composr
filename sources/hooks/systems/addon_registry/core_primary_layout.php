@@ -153,6 +153,7 @@ class Hook_addon_registry_core_primary_layout
             'themes/default/templates/SCREEN_TITLE.tpl',
             'themes/default/text/MAIL.txt',
             'themes/default/text/MAIL_SUBJECT.txt',
+            'themes/default/text/UNSUBSCRIBE_MAIL.txt',
         ];
     }
 
