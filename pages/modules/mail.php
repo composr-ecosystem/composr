@@ -116,8 +116,16 @@ class Module_mail
         $ret = new Tempcode();
         $ret->attach($this->title);
 
-        if ($email['in_html'] == 1) {
-            $ret->attach($email['message']);
+        // This is a public page, so we cannot safely disable PHP memory limit for large e-mails. Instead, we're going to render them raw.
+        $too_long = (strlen($message) >= (1024 * 100));
+
+        if (($email['in_html'] == 1) || ($too_long)) {
+            if ($too_long) {
+                $ret->attach(escape_html(comcode_escape($message))); // Prevent any HTML or Comcode from processing; we want everything raw
+                attach_message(do_lang_tempcode('MAIL_TOO_LONG'), 'notice');
+            } else {
+                $ret->attach($message);
+            }
         } else {
             $ret->attach(comcode_to_tempcode($message, $email['member_id'], ($email['as_admin'] == 1)));
         }

@@ -12161,6 +12161,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VIEW_MAIL_IN_BROWSER
         _WEEK
         FIELD_PASSWORD_VIEW_ON_EDIT
+        VIEW_MAIL_IN_BROWSER_2
+        MAIL_TOO_LONG
     ')));
 
     // Remove blank lines

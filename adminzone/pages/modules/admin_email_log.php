@@ -255,6 +255,8 @@ class Module_admin_email_log
      */
     public function view() : object
     {
+        disable_php_memory_limit(); // We could be displaying a very large e-mail
+
         $id = get_param_integer('id');
 
         require_code('mail');

@@ -11,9 +11,12 @@
 	</div>
 	<hr class="spaced-rule" />
 	<div class="email-footer">
-		<div class="email-copyright">
-			<p>{VIEW_IN_BROWSER}</p>
-		</div>
+		{+START,IF_NON_EMPTY,{VIEW_IN_BROWSER}}
+			<div class="email-copyright">
+				<p>{VIEW_IN_BROWSER}</p>
+				<p>{!mail:VIEW_MAIL_IN_BROWSER_2}</p>
+			</div>
+		{+END}
 		<div class="email-url">
 			<a href="{$FIND_SCRIPT*,unsubscribe}">{!UNSUBSCRIBE}</a>
 		</div>
