@@ -22,7 +22,10 @@
 		<div class="email-footer">
 			<div class="email-copyright">
 				<p>{$COPYRIGHT`}</p>
-				<p>{VIEW_IN_BROWSER}</p>
+				{+START,IF_NON_EMPTY,{VIEW_IN_BROWSER}}
+					<p>{VIEW_IN_BROWSER}</p>
+					<p>{!mail:VIEW_MAIL_IN_BROWSER_2}</p>
+				{+END}
 			</div>
 
 			<div class="email-url">

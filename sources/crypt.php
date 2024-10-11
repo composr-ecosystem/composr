@@ -268,10 +268,11 @@ function get_secure_random_number() : int
 function get_secure_v1_guid() : string
 {
     // Generate random sequence index
-    static $clock_sequence = get_secure_random_number();
+    static $clock_sequence = 0;
+    $clock_sequence = get_secure_random_number();
 
     // Get timestamp
-    $ts = intval((microtime(true) * 10000000) + mt_rand(0,9) + 0x01b21dd213814000);
+    $ts = intval((microtime(true) * 10000000) + mt_rand(0, 9) + 0x01b21dd213814000);
 
     // Use the first 12 characters of the MD5 of the site salt as the node
     $node = substr(md5(get_site_salt()), 0, 12);

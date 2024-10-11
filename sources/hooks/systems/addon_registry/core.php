@@ -1011,6 +1011,7 @@ class Hook_addon_registry_core
             'sources/hooks/systems/preview/index.html',
             'sources/hooks/systems/resource_meta_aware/.htaccess',
             'sources/hooks/systems/resource_meta_aware/index.html',
+            'sources/hooks/systems/resource_meta_aware/mail.php',
             'sources/hooks/systems/site_html_pages/.htaccess',
             'sources/hooks/systems/site_html_pages/index.html',
             'sources/hooks/systems/sitemap/.htaccess',

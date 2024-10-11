@@ -25,6 +25,9 @@
  */
 function init__upgrade_shared_installs()
 {
+    // TODO
+    fatal_exit('FUNCTIONALITY REMOVED: because database upgrading now happens in steps, you must upgrade each site manually');
+
     require_code('upgrade_db_upgrade');
     require_lang('upgrade');
 }
@@ -137,7 +140,11 @@ function automate_upgrade__safe()
     clear_caches_1();
     clear_caches_2();
     version_specific();
-    upgrade_addons($from_cms_version);
+
+    // TODO: The below will not work because it now happens in steps
+    $offset = 2;
+    upgrade_addons($from_cms_version, $offset);
+
     rebuild_zone_files();
 
     // Conversr

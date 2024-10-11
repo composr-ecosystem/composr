@@ -287,8 +287,10 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
             break;
 
         case 'month':
+            // TODO: #6001 month operations are extremely unreliable; this has been disabled until it can be fixed
+            /*
             $start = $recent;
-            // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
+            // Do not generate leader-boards from 2 or more months ago; just skip to the current week
             if ((intval(date('Y', $now)) * 12 + intval(date('m', $now))) - (intval(date('Y', $recent)) * 12 + intval(date('m', $recent))) >= 2) {
                 if ($rolling) {
                     $start = strtotime('-1 month', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
@@ -300,6 +302,8 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
             }
             $end = strtotime('+1 month', $start);
             break;
+            */
+            return [null, null];
 
         case 'year':
             $start = $recent;

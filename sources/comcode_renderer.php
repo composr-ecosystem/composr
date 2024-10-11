@@ -718,9 +718,9 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
         }
 
         if (wysiwyg_comcode_markup_style($tag, $attributes, $embed, $html_errors) != WYSIWYG_COMCODE__HTML) {
-            $_temp_tpl = add_wysiwyg_comcode_markup($tag, $attributes, $embed, ($in_semihtml) || ($is_all_semihtml), null, $html_errors);
-            if ($_temp_tpl !== null) {
-                $temp_tpl = make_string_tempcode($_temp_tpl);
+            $_temp_html = add_wysiwyg_comcode_markup($tag, $attributes, $embed, ($in_semihtml) || ($is_all_semihtml), null, $html_errors);
+            if ($_temp_html !== null) {
+                $temp_tpl = make_string_tempcode($_temp_html);
                 return $temp_tpl;
             }
         }

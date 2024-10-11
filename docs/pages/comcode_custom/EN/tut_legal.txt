@@ -80,7 +80,7 @@ It is your obligation to fulfill a member's request to download or purge their d
 [title="2"]Mail[/title]
 
 Your site likely sends out e-mail. As such, you are probably subject to laws and regulations governing an e-mail recipient's right to unsubscribe from any or all e-mail at any time (e.g. CAN-SPAM) especially if you send out commercial or marketing material. Such laws may include required regulations such as the following:
- - Define a 'List-unsubscribe' header in every e-mail sent out; it must point either to an e-mail address one can contact to request unsubscription, or to a URL that can process an unsubscription request automatically.
+ - Define a 'List-Unsubscribe' header in every e-mail sent out; it must point either to an e-mail address one can contact to request unsubscription, or to a URL that can process an unsubscription request automatically.
   - For manual requests, you are often given a limited number of days in which you must fulfill the request (e.g. 10 days).
  - Additionally include an Unsubscribe link in the body of the e-mails sent out (especially if they are commercial in nature).
  - Unsubscribe pages might have to follow these regulations:
@@ -95,7 +95,7 @@ Your site likely sends out e-mail. As such, you are probably subject to laws and
 
 Composr has a couple built-in mechanisms to aid in compliance; and these work out-of-the-box without any configuration necessary. First, Composr has a global unsubscribe endpoint located at [tt]yourbaseurl/data/unsubscribe.php[/tt]. This is a simple web interface that allows someone to unsubscribe from all e-mails sent by your site. And it only asks for an e-mail address (which is stored in a hashed format to protect the user's privacy). This acts as a low-level global blocklist; every e-mail sent by your site is checked against this blocklist in the mail dispatcher, and if an e-mail address matches, that e-mail address will not receive the e-mail (no matter what it is or its priority).
 
-Composr also supports the List-unsubscribe mail header. This can be configured with the 'List-unsubscribe target' and 'List-unsubscribe post' options. By default, it points to the unsubscribe endpoint mentioned above (and also supports one-click unsubscribe from a recipient's mail client). But it can be changed if, for example, you use an external newsletter software for sending out e-mails. We generally do not recommend ever changing this; your newsletter software should have its own unsubscribe mechanism.
+Composr also supports the List-Unsubscribe mail header. This can be configured with the 'List-Unsubscribe target' and 'List-Unsubscribe-Post data' options. By default, it points to the unsubscribe endpoint mentioned above (and also supports one-click unsubscribe from a recipient's mail client). But it can be changed if, for example, you use an external newsletter software for sending out e-mails. We generally do not recommend ever changing this; your newsletter software should have its own unsubscribe mechanism.
 
 Additionally, Composr's newsletter system allows subscribers to unsubscribe from any or all newsletters while still receiving other e-mails (e.g. notifications). Newsletters by default contain their own unsubscribe link. And subscribers can change their settings through the [tt]site:newsletter[/tt] module.
 

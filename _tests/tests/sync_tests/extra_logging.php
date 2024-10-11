@@ -85,6 +85,9 @@ class extra_logging_test_set extends cms_test_case
         cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
         $url = build_url(['page' => 'home', 'cache' => 0], 'adminzone');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
+        if ($this->debug) {
+            $this->dump($data, 'adminzone page with no cache');
+        }
         $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Over time limit @'), 'Expected an over time limit log but did not get one.');
 
         set_value('monitor_slow_urls', '0');
@@ -102,7 +105,7 @@ class extra_logging_test_set extends cms_test_case
         cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
         $url = build_url(['page' => ''], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Expected Memory usage above memory_tracking but did not get one'));
+        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Memory usage above memory_tracking'), 'Expected Memory usage above memory_tracking but did not get one');
 
         set_value('memory_tracking', '0');
     }

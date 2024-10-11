@@ -86,10 +86,7 @@ class Hook_fields_password
      */
     public function render_field_value(array &$field, $ev, int $i, ?array $only_fields, ?string $table = null, ?int $id = null, ?string $id_field = null, ?string $field_id_field = null, ?string $url_field = null, ?int $submitter = null, $ev_pure = null)
     {
-        if (is_object($ev)) {
-            return $ev;
-        }
-        return escape_html($ev);
+        return do_lang_tempcode('FIELD_PASSWORD_VIEW_ON_EDIT'); // Do not render passwords; they are sensitive information.
     }
 
     // ======================
@@ -108,22 +105,18 @@ class Hook_fields_password
      */
     public function get_field_inputter(string $_cf_name, string $_cf_description, array $field, ?string $actual_value, bool $new) : ?object
     {
-        if ($actual_value === null) {
-            $actual_value = ''; // Plug anomaly due to unusual corruption
-        }
-
         // Generate random password?
         $default = option_value_from_field_array($field, 'default', $field['cf_default']);
-        if ($new && cms_strtoupper_ascii($default) == 'RANDOM') {
+        if ($actual_value !== null) {
+            $default = $actual_value;
+        } elseif ($new && cms_strtoupper_ascii($default) == 'RANDOM') {
             require_code('crypt');
             $default = get_secure_random_password();
-        } else {
-            $default = null;
         }
 
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
-        return form_input_password($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, $default, $actual_value, $autocomplete);
+        return form_input_password($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, null, $default, $autocomplete);
     }
 
     /**

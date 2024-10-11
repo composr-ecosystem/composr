@@ -85,7 +85,7 @@ function upgrader_db_upgrade_screen()
     } elseif (($offset >= 2) && ($offset < 1000000)) {
         echo '<h3>' . do_lang('_UPGRADER_UPGRADE_MODULES') . '</h3>';
 
-        $done = upgrade_addons($version_database_cns, ($offset));
+        $done = upgrade_addons($version_database_cns, $offset);
         if ($done != '') {
             echo do_lang('UPGRADER_UPGRADE_MODULES', $done);
         }
@@ -796,7 +796,7 @@ function database_specific() : bool
  * Upgrade all addons, modules, and blocks.
  *
  * @param  float $from_cms_version From which version of the software we are upgrading
- * @param  integer $offset The offset of modules / blocks / addons (passed by reference)
+ * @param  integer $offset The offset of modules / blocks / addons, passed by reference and must be no lower than 2
  * @return string List of upgraded/installed modules/blocks (we only run one at a time)
  */
 function upgrade_addons(float $from_cms_version, int &$offset) : string

@@ -542,8 +542,8 @@ abstract class Hook_privacy_base
 
                 // Actually delete the file if we are owner
                 if (!$reverse_logic_return && url_is_local($row[$file_field]) && is_file(get_custom_file_base() . '/' . $row[$file_field])) {
-                    @unlink(get_custom_file_base() . '/'. $row[$file_field]);
-                    sync_file(get_custom_file_base() . '/'. $row[$file_field]);
+                    @unlink(get_custom_file_base() . '/' . $row[$file_field]);
+                    sync_file(get_custom_file_base() . '/' . $row[$file_field]);
                 }
             }
         }
@@ -616,8 +616,8 @@ abstract class Hook_privacy_base
             if (strpos($type, 'PATH') !== false) {
                 require_code('urls');
                 if (url_is_local($row[$key]) && is_file(get_custom_file_base() . '/' . $row[$key])) {
-                    @unlink(get_custom_file_base() . '/'. $row[$key]);
-                    sync_file(get_custom_file_base() . '/'. $row[$key]);
+                    @unlink(get_custom_file_base() . '/' . $row[$key]);
+                    sync_file(get_custom_file_base() . '/' . $row[$key]);
                 }
             }
         }

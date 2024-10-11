@@ -377,6 +377,26 @@ class lang_spelling_test_set extends cms_test_case
             $ob->assertTrue(false, 'The phrase \'Open source\' was used in ' . $path . '. This should be changed to \'Open Source\'.');
         }
 
+        // Wrong way of writing "List-Unsubscribe" or "List-Unsubscribe-Post"
+        if (stripos($string, 'list unsubscribe') !== false) {
+            $ob->assertTrue(false, 'The phrase \'list unsubscribe\' (case insensitive) was used in ' . $path . '. This should be changed to \'List-Unsubscribe\'.');
+        }
+        if (strpos($string, 'list-unsubscribe') !== false) {
+            $ob->assertTrue(false, 'The phrase \'list-unsubscribe\' was used in ' . $path . '. This should be changed to \'List-Unsubscribe\'.');
+        }
+        if (strpos($string, 'List-unsubscribe') !== false) {
+            $ob->assertTrue(false, 'The phrase \'List-unsubscribe\' was used in ' . $path . '. This should be changed to \'List-Unsubscribe\'.');
+        }
+        if (stripos($string, 'unsubscribe post') !== false) {
+            $ob->assertTrue(false, 'The phrase \'unsubscribe post\' (case insensitive) was used in ' . $path . '. The full phrase should be \'List-Unsubscribe-Post\'.');
+        }
+        if (strpos($string, 'unsubscribe-post') !== false) {
+            $ob->assertTrue(false, 'The phrase \'unsubscribe-post\' was used in ' . $path . '. The full phrase should be \'List-Unsubscribe-Post\'.');
+        }
+        if (strpos($string, 'Unsubscribe-post') !== false) {
+            $ob->assertTrue(false, 'The phrase \'Unsubscribe-post\' was used in ' . $path . '. The full phrase should be \'List-Unsubscribe-Post\'.');
+        }
+
         // Super-[moderator|admin]
         if ((stripos($string, 'super moderator') !== false) && (!in_array($file, ['vb3.php', 'tut_nuances.txt'/*MyBB-specific option*/]))) {
             $ob->assertTrue(false, 'The phrase \'super moderator\' was used in ' . $path . '. This should be changed to \'super-moderator\'.');

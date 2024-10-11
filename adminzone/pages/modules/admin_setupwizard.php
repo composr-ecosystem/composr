@@ -1400,12 +1400,17 @@ class Module_admin_setupwizard
             $rf = $this->get_rules_file(post_param_string('rules'));
             cms_file_put_contents_safe($full_path, $rf, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
-            // Set default declarations
-            if (get_option('join_declarations') == '') {
+            // Set default declarations if declarations not already set or we specified our own to set
+            $join_declarations = post_param_string('join_declarations', null);
+            if ((get_option('join_declarations') == '') || ($join_declarations !== null)) {
                 require_lang('cns');
                 require_lang('cns_config');
                 require_code('temporal');
-                set_option('join_declarations', do_lang('I_AGREE_RULES') . "\n" . do_lang('I_AGREE_PRIVACY') . "\n" . do_lang('I_AGREE_UPDATES', escape_html(get_timezoned_date(time(), false))));
+                $option_value = do_lang('I_AGREE_RULES') . "\n" . do_lang('I_AGREE_PRIVACY') . "\n" . do_lang('I_AGREE_UPDATES', escape_html(get_timezoned_date(time(), false)));
+                if ($join_declarations !== null) {
+                    $option_value = $join_declarations;
+                }
+                set_option('join_declarations', $option_value);
             }
         }
 

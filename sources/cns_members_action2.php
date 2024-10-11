@@ -1505,6 +1505,7 @@ function cns_delete_member(int $member_id, ?int $member_id_deleting = null)
     delete_value('cns_newest_member_username');
 
     // Must use cns_mod_log_it instead of log_it because we need to define the member who did the deleting
+    require_code('cns_general_action2');
     cns_mod_log_it('DELETE_MEMBER', strval($member_id), $username, '', $member_id_deleting);
 
     // E-mail the member to inform them their account was deleted

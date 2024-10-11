@@ -80,7 +80,7 @@ The blocklist CSV mentioned above is usually not, however, a satisfactory mechan
 
 Fortunately, Composr offers two built-in mechanisms for this which are both automatic:
  - Newsletters have their own unsubscribe link provided in the e-mail. This allows members to unsubscribe themselves from all newsletters but still allows them to receive other e-mails from the site (e.g. notifications).
- - All mail sent from a Composr site by default (in the MAIL template) includes a link to [tt]data/unsubscribe.php[/tt]. This simplified interface allows users to unsubscribe from [b]all[/b] e-mails sent by your site; think of it as a global blocklist. Also by default, the "List-unsubscribe target" configuration option will point to this endpoint so that mail clients can provide a one-click "Unsubscribe" button to recipients.
+ - All mail sent from a Composr site by default (in the MAIL template) includes a link to [tt]data/unsubscribe.php[/tt]. This simplified interface allows users to unsubscribe from [b]all[/b] e-mails sent by your site; think of it as a global blocklist. Also by default, the "List-Unsubscribe target" configuration option will point to this endpoint so that mail clients can provide a one-click "Unsubscribe" button to recipients.
 [/surround]
 
 [title="2"]Sending newsletters[/title]

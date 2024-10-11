@@ -297,11 +297,14 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
             if (function_exists('error_clear_last')) {
                 error_clear_last();
             }
+
+            $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST); // Some servers can be very slow
             $_worked = @mail($to_line, $subject_wrapped, str_replace(chr(0), '', $sending_message), $signed_headers . $headers, $additional);
             if ((!$worked) && (cms_error_get_last() != '')) {
                 $error = cms_error_get_last();
                 $worked = false;
             }
+            cms_set_time_limit($old);
         }
 
         return [$worked, $error];
@@ -958,7 +961,7 @@ abstract class Mail_dispatcher_base
                 } else {
                     $view_in_browser = new Tempcode();
                     if ($resource_guid != '') {
-                        $url = build_url(['page' => 'mail', 'type' => 'view', 'id' => $resource_guid]);
+                        $url = build_url(['page' => 'mail', 'id' => $resource_guid]);
                         $view_in_browser = hyperlink($url, do_lang_tempcode('VIEW_MAIL_IN_BROWSER'), true, true);
                     }
                     $message_html = do_template($this->mail_template, [
@@ -988,7 +991,7 @@ abstract class Mail_dispatcher_base
                 $message_plain = strip_comcode($message_raw);
                 $view_in_browser_plain = '';
                 if ($resource_guid != '') {
-                    $url_plain = build_url(['page' => 'mail', 'type' => 'view', 'id' => $resource_guid])->evaluate();
+                    $url_plain = build_url(['page' => 'mail', 'id' => $resource_guid])->evaluate();
                     $view_in_browser_plain = '[url="' . do_lang('VIEW_MAIL_IN_BROWSER') . '"]' . $url_plain . '[/url]';
                 }
                 $message_plain = static_evaluate_tempcode(do_template(

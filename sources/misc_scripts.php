@@ -683,7 +683,7 @@ function unsubscribe_script()
                     'b_time' => time(),
                     'b_ip_address' => get_ip_address(),
                 ]);
-            } // NB: Do not differentiate on the UI between an e-mail who was already unsubscribed and one that just did; spammers can abuse this to figure out potentially valid addresses.
+            }
 
             $tpl = do_lang_tempcode('UNSUBSCRIBE_SUCCESS');
             $tpl->handle_symbol_preprocessing();
@@ -698,13 +698,14 @@ function unsubscribe_script()
     $_title = do_lang('UNSUBSCRIBE');
     $title = get_screen_title('UNSUBSCRIBE');
 
-    $privacy_policy = build_url(['page' => 'privacy'], '_SEARCH');
-    $text->attach(do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT', escape_html(get_site_name()), escape_html($privacy_policy->evaluate()), escape_html(get_option('staff_address'))));
+    $privacy_policy = build_url(['page' => 'privacy']);
+    $body_text = do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT', escape_html(get_site_name()), escape_html($privacy_policy->evaluate()), escape_html(get_option('staff_address')));
+    $text->attach($body_text);
 
     $fields = new Tempcode();
     $hidden = new Tempcode();
 
-    $fields->attach(form_input_email(do_lang_tempcode('YOUR_EMAIL_ADDRESS'), do_lang_tempcode('UNSUBSCRIBE_FORM_TEXT'), 'email', $email, true));
+    $fields->attach(form_input_email(do_lang_tempcode('YOUR_EMAIL_ADDRESS'), $body_text, 'email', $email, true));
     if (addon_installed('captcha')) {
         require_code('captcha');
         if (use_captcha()) {

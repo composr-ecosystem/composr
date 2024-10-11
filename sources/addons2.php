@@ -1150,7 +1150,7 @@ function find_updated_addons() : array
     require_code('tar');
     $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     foreach ($addons as $addon_name => $info) {
-        if (!is_file(get_custom_file_base() . '/imports/addons/'. $addon_name . '.tar')) {
+        if (!is_file(get_custom_file_base() . '/imports/addons/' . $addon_name . '.tar')) {
             create_addon(
                 $addon_name . '.tar',
                 $info['files'],

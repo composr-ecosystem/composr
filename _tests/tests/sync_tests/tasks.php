@@ -52,7 +52,10 @@ class tasks_test_set extends cms_test_case
         $session_id = $this->establish_admin_callback_session();
         $url = build_url(['page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv'], 'adminzone');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => [get_session_cookie() => $session_id]]);
-        $this->assertTrue(strpos($data, 'test@example.com') !== false);
+        $this->assertTrue(strpos($data, 'test@example.com') !== false, 'Did not find test@example.com in the exported newsletter spreadsheet');
+        if ($this->debug) {
+            $this->dump($data, 'newsletter spreadsheet');
+        }
 
         file_put_contents($tmp_path, $data);
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
