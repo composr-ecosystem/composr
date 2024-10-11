@@ -940,14 +940,15 @@ function make_install_sql()
     global $SITE_INFO;
 
     // Where to build database to
-    $database = 'make_release';
+    $database = uniqid('cmsmr_', false); // In case make release was previously run, we should randomise the DB name
     $username = 'root';
     $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';
-    $table_prefix = 'cms_';
+    $table_prefix = 'cms_'; // DO NOT CHANGE
 
     // Build database
     require_code('install_headless');
-    $_GET['debug'] = '1';
+    // Un-comment to show results of install
+    //$_GET['debug'] = '1';
     $test = do_install_to($database, $username, $password, $table_prefix, true, 'cns', null, null, null, null, null, [], false);
     if (!$test) {
         warn_exit(protect_from_escaping('Failed to execute installer, while building <kbd>install.sql</kbd>. It\'s likely that recursive write file permissions need setting.'));
@@ -986,43 +987,43 @@ function make_install_sql()
 
     // Not with forced charsets or other contextual noise
     if (strpos($contents, "\n" . 'SET') !== false) {
-        warn_exit('install.sql: Contains unwanted context');
+        warn_exit('install.sql: Contains unwanted context (SET)');
     }
     if (preg_match('#\d+ SET #', $contents) != 0) {
-        warn_exit('install.sql: Contains unwanted context');
+        warn_exit('install.sql: Contains unwanted context (SET)');
     }
 
     // Old way of specifying table types
     if (strpos($contents, ' TYPE=') !== false) {
-        warn_exit('install.sql: Change TYPE= to ENGINE=');
+        warn_exit('install.sql: Table types must be defined as ENGINE= not TYPE=');
     }
 
     // Not with bundled addons
     if (strpos($contents, 'CREATE TABLE cms_workflow_') !== false) {
-        warn_exit('install.sql: Contains non-bundled addons');
+        warn_exit('install.sql: Detected the workflow non-bundled addon');
     }
 
     // Not with wrong table prefixes / multiple installs
     if (preg_match('#CREATE TABLE cms\d+_#', $contents) != 0) {
-        warn_exit('install.sql: Contains a version-prefixed install');
+        warn_exit('install.sql: The table prefix must be cms_ not one with a version in it');
     }
     if (preg_match('#CREATE TABLE cms_#', $contents) == 0) {
-        warn_exit('install.sql: Does not contain a standard-prefixed install');
+        warn_exit('install.sql: The table prefix must be cms_');
     }
 
     // Not having been run
     if (preg_match('#INSERT INTO cms_cache#i', $contents) != 0) {
-        warn_exit('install.sql: Contains cache data');
+        warn_exit('install.sql: Attempted to insert cache data into the database; the headless site may have been loaded when it should not have');
     }
     if (preg_match('#INSERT INTO cms_stats#i', $contents) != 0) {
-        warn_exit('install.sql: Contains stat data - site should not have been loaded ever yet');
+        warn_exit('install.sql: Attempted to insert stats data into the database; the headless site may have been loaded when it should not have');
     }
 
     // Out-dated version
     $v = float_to_raw_string(cms_version_number());
     $version_marker = '\'version\', \'' . $v . '\'';
     if (strpos($contents, $version_marker) === false) {
-        warn_exit('install.sql: Contains wrong version (you need to rebuild it for each non-patch update)');
+        warn_exit('install.sql: Wrong version generated; it should have been ' . $version_marker);
     }
 
     // Do split...

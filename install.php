@@ -1696,9 +1696,9 @@ function step_5_ftp() : array
             warn_exit(do_lang_tempcode('DOUBLE_INSTALL_DO'));
         }
         @unlink(get_file_base() . '/cms_inst_tmp/tmp');
+    } elseif ($conn !== false) {
+        test_htaccess($conn);
     }
-
-    test_htaccess(is_suexec_like() ? null : $conn);
 
     $log = new Tempcode();
     if ($done_all) {

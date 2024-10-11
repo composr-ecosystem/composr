@@ -9,6 +9,9 @@
 {+END}{+END}
 
 <ol>
+	{$,cleaning up}
+	<li>{!MAKE_RELEASE_STEP4_DB}</li>
+
 	{$,publishing the build}
 	<li>{!MAKE_RELEASE_STEP4_UPLOAD,{COMMAND_TO_TRY*},{NEW_VERSION_DOTTED*}}</li>
 	<li>{!MAKE_RELEASE_STEP4_TAG,{$REPLACE*, ,-,{NEW_VERSION_DOTTED}}}</li>

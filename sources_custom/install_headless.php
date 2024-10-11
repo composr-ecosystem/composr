@@ -42,12 +42,17 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
         $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 200.0 : 30.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200', '503'/*site closed*/])) && (strpos($data, '<!--ERROR-->') === false);
+        $error = '';
+        if (!$success) {
+            require_code('failure');
+            $error = clean_installer_output_for_code_display($data);
+            @cms_error_log('Composr: ERROR headless install index test failed. ' . escape_html($error));
+        }
 
         if (/*(!$success) && */(isset($_GET['debug']))) {
             @var_dump($url);
             @var_dump($http_result->message);
             @var_dump($http_result->message_b);
-            $error = clean_installer_output_for_code_display($data);
             @var_dump(escape_html($error));
             cms_flush_safe();
 
@@ -193,7 +198,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         ],
     ];
 
-    foreach ($stages as $stage) {
+    foreach ($stages as $i => $stage) {
         list($get, $post) = $stage;
         $url = get_base_url() . '/install.php?keep_safe_mode=' . ($safe_mode ? '1' : '0');
         if (!empty($get)) {
@@ -202,12 +207,17 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 240.0 : 50.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200'])) && (strpos($data, '<!--ERROR-->') === false);
+        $error = '';
+        if (!$success) {
+            require_code('failure');
+            $error = clean_installer_output_for_code_display($data);
+            @cms_error_log('Composr: ERROR failed to install headless on stage ' . strval($i + 1) . '. ' . escape_html($error));
+        }
 
         if (/*(!$success) && */(isset($_GET['debug']))) {
             @var_dump($url);
             @var_dump($http_result->message);
             @var_dump($http_result->message_b);
-            $error = clean_installer_output_for_code_display($data);
             @var_dump(escape_html($error));
             cms_flush_safe();
 
