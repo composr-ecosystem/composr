@@ -1,0 +1,33 @@
+{
+    "name": "infection/abstract-testframework-adapter",
+    "type": "library",
+    "description": "Abstract Test Framework Adapter for Infection",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Maks Rafalko",
+            "email": "maks.rafalko@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.8",
+        "friendsofphp/php-cs-fixer": "^2.17",
+        "phpunit/phpunit": "^9.5"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Infection\\AbstractTestFramework\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Infection\\AbstractTestFramework\\": "tests/"
+        }
+    }
+}

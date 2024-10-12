@@ -1,0 +1,78 @@
+{
+    "runner.path": "NothingBench.php",
+    "runner.executor": "debug"
+}
+---
+phpbench run --report=overview --iterations=4
+---
+Overview
+========
+
+Suites
++-----------+---------------------+------+------------+--------+------------+------+----------+----------+
+| suite     | date                | php  | vcs branch | xdebug | iterations | revs | mode     | net_time |
++-----------+---------------------+------+------------+--------+------------+------+----------+----------+
+| <current> | xxxx-xx-xx xx-xx-xx | null | null       | null   | 4          | 4    | 10.000μs | 40.000μs |
++-----------+---------------------+------+------------+--------+------------+------+----------+----------+
+
+Average iteration times aggregated by benchmark
+
+10.0μs    │ █ 
+8.8μs     │ █ 
+7.5μs     │ █ 
+6.3μs     │ █ 
+5.0μs     │ █ 
+3.8μs     │ █ 
+2.5μs     │ █ 
+1.3μs     │ █ 
+          └───
+            1 
+
+[█ <current>] 
+
+1: NothingBench 
+
+Average peak memory aggregated by benchmark
+
+100b      │ █ 
+88b       │ █ 
+75b       │ █ 
+63b       │ █ 
+50b       │ █ 
+38b       │ █ 
+25b       │ █ 
+13b       │ █ 
+          └───
+            1 
+
+[█ <current>] 
+
+1: NothingBench 
+
+By Benchmark
+
+10.0μs    │ █ 
+8.8μs     │ █ 
+7.5μs     │ █ 
+6.3μs     │ █ 
+5.0μs     │ █ 
+3.8μs     │ █ 
+2.5μs     │ █ 
+1.3μs     │ █ 
+          └───
+            1 
+
+[█ NothingBench] 
+
+1: <current> 
+
+Table
+=====
+
+<current>
++--------------+-----------------+--------+----------+----------+----------+--------+---------+
+| benchmark    | subject         | memory | min      | max      | mode     | rstdev | stdev   |
++--------------+-----------------+--------+----------+----------+----------+--------+---------+
+| NothingBench | benchNothing () | 100b   | 10.000μs | 10.000μs | 10.000μs | ±0.00% | 0.000μs |
++--------------+-----------------+--------+----------+----------+----------+--------+---------+
+

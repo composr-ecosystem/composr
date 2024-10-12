@@ -1,0 +1,24 @@
+{
+}
+---
+{
+    "title": "Good day",
+    "components": [
+        {
+             "component": "table_aggregate",
+             "row": {
+                 "greeting": "\"Hello\""
+             }
+        }
+    ]
+}
+---
+Good day
+========
+
++----------+
+| greeting |
++----------+
+| Hello    |
++----------+
+

@@ -30,6 +30,7 @@ Masonry,,https://github.com/desandro/masonry,No,Yes,Re-sync regularly,21st Feb 2
 MediaElement.js,,https://github.com/mediaelement/mediaelement,Yes,Yes,Re-sync regularly,21st Feb 2024,7.0.3,IE11+,N/A,N/A,From 'build' directory. Files strewn around.
 modalwindow.js,,,No,Yes,No action,N/A,N/A,N/A,N/A,N/A,Original website dead; consider replacing with another library (perhaps Bootstrap's implementation)
 Modernizr,,https://modernizr.com/,No,Yes,Re-sync regularly,21st Feb 2024,3.6.0,N/A,N/A,N/A,
+OpenSpout,,https://github.com/openspout/openspout,Yes,No,Re-sync regularly,12th Oct 2024,4.26.0,PHP 8.2+,spreadsheets,N/A,Replace all files in openspout and install the composer package
 Osano Cookie Consent,,https://github.com/osano/cookieconsent,No,Yes,Re-sync regularly,21st Feb 2024,4,IE10+,N/A,N/A,From build directory
 PDF.js,,https://github.com/mozilla/pdf.js,Yes,No,Re-sync regularly,21st Feb 2024,4.0.379,IE11+,N/A,N/A,Disable print/download buttons each time in viewer.html. Don't include web/compressed.tracemonkey-pldi-09.pdf
 PHP,php,https://github.com/php,Yes,N/A,"Maintain our github fork, re-sync if our origin version is no longer meeting our minimum requirements",20th Oct 2020,8.0.0 RC2,N/A,N/A,N/A,
@@ -42,7 +43,6 @@ SimpleTest,,https://github.com/simpletest/simpletest,Yes,No,Re-sync regularly,21
 Skitter,,https://github.com/thiagosf/skitter,No,Yes,Re-sync regularly,21st Feb 2024,5.1.7,IE9+,N/A,N/A,"dist folder (CSS, unminified JS), images folder, unminify CSS (https://www.freeformatter.com/css-beautifier.html), update image references in CSS to use $IMG symbol. Put https://github.com/gdsmith/jquery.easing/blob/master/jquery.easing.js at top of skitter.js"
 SoundManager2,,https://github.com/scottschiller/SoundManager2,No,Yes,Re-sync regularly,5th Apr 2020,2.97a.20170601,IE5+,N/A,N/A,Maybe replace with simpler API in future
 Spectrum,,https://github.com/bgrins/spectrum,No,Yes,Re-sync regularly. Remove when browsers don't need it,21st Feb 2024,1.8.0,IE9+,N/A,N/A,Drop when we drop IE11 support. In JS file some settings are remapped as language strings.
-Spout,,http://opensource.box.com/spout/,No,No,Re-sync regularly,21st Feb 2024,3.3.0,PHP 7.1+,spreadsheets,N/A,Discontinued; consider an alternative option for PHP 8 compatibility
 Stemmer,,https://tartarus.org/martin/PorterStemmer/php.txt,No,Yes,No action,N/A,N/A,N/A,lang_stemmer,N/A,
 SugarCRM REST API Wrapper Class,sugarcrm,https://github.com/asakusuma/SugarCRM-REST-API-Wrapper-Class,No,No,No action,N/A,N/A,PHP 5.3.0+,N/A,SugarCRM,Heavily forked specifically for Composr. Different SugarCRM versions and forks may differ in APIs and we try and make them all work as possible. Making a unit test is not practical as there is no public test site.
 Text_Diff,,https://pear.php.net/package/Text_Diff,No,Yes,No action,20th Apr 2021,1.2.2,N/A,diff,N/A,"The newer Horde-maintained version has a lot of dependencies, over-complex for a simple diff library. For what we've used we had to comment some assert calls for PHP 7.2 compatibility, changed some 'each' to 'current'/'next' for PHP 8.0 compatibility, and made some changes for the CQC to pass."

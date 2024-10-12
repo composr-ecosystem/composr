@@ -38,7 +38,7 @@ class Module_mail
         $info['version'] = 1;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'core';
+        $info['addon'] = 'commandr';
         return $info;
     }
 

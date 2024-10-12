@@ -1,0 +1,14 @@
+/composer.lock
+/vendor
+/docs/build
+/build
+/.phpbench.sqlite
+/phpunit.xml
+/phpbench.json
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+/tests/Workspace
+/coverage
+/.phpbench
+/.phpunit.cache
+/**/*.pyc

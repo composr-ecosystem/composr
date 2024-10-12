@@ -14,11 +14,11 @@
  */
 
 /**
- * Spout spreadsheet writer.
+ * OpenSpout spreadsheet writer.
  *
  * @package core
  */
-class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
+class CMS_CSV_Writer_OpenSpout extends CMS_Spreadsheet_Writer
 {
     protected $writer = null;
 
@@ -33,7 +33,7 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
     public function __construct(?string &$path, string $filename, int $algorithm = 3, ?string $charset = null)
     {
         require_code('files');
-        require_code('spout/Autoloader/autoload');
+        require_code('openspout/vendor/autoload');
 
         if ($path === null) {
             $path = cms_tempnam();
@@ -48,12 +48,11 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
         $ext = get_file_extension($filename);
         switch ($ext) {
             case 'ods':
-                $this->writer = Box\Spout\Writer\Common\Creator\WriterEntityFactory::createODSWriter();
+                $this->writer = new \OpenSpout\Writer\ODS\Writer();
                 break;
 
             case 'xlsx':
-                $this->writer = Box\Spout\Writer\Common\Creator\WriterEntityFactory::createXLSXWriter();
-                $this->writer->setShouldUseInlineStrings(false); // Inline strings are buggy in Excel, line-breaks don't initially show, until a new input within Excel shifts it to shared strings mode
+                $this->writer = new \OpenSpout\Writer\XLSX\Writer();
                 break;
 
             default:
@@ -91,8 +90,15 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
         $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
 
-        $__row = Box\Spout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($_row);
-        $this->writer->addRow($__row);
+        // Convert data to proper cells
+        $cells = [];
+        foreach ($_row as $val) {
+            $cells[] = \OpenSpout\Common\Entity\Cell::fromValue($val);
+        }
+
+        // Save row
+        $actual_row = new \OpenSpout\Common\Entity\Row($cells);
+        $this->writer->addRow($actual_row);
 
         cms_ini_set('ocproducts.type_strictness', $before);
     }

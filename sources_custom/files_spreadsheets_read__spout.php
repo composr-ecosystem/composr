@@ -14,11 +14,11 @@
  */
 
 /**
- * Spout spreadsheet reader.
+ * OpenSpout spreadsheet reader.
  *
  * @package core
  */
-class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
+class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
 {
     protected $reader = null;
     protected $row_iterator = null;
@@ -34,7 +34,7 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
      */
     public function __construct(string $path, string $filename, int $algorithm = 3, bool $trim = true, ?string $default_charset = '')
     {
-        require_code('spout/Autoloader/autoload');
+        require_code('openspout/vendor/autoload');
 
         $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
@@ -42,11 +42,11 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
         $ext = get_file_extension($filename);
         switch ($ext) {
             case 'ods':
-                $this->reader = Box\Spout\Reader\Common\Creator\ReaderEntityFactory::createODSReader();
+                $this->reader = new \OpenSpout\Reader\ODS\Reader();
                 break;
 
             case 'xlsx':
-                $this->reader = Box\Spout\Reader\Common\Creator\ReaderEntityFactory::createXLSXReader();
+                $this->reader = new \OpenSpout\Reader\XLSX\Reader();
                 break;
 
             default:
@@ -99,9 +99,14 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
             return false;
         }
 
-        $row = $this->row_iterator->current();
+        $_row = $this->row_iterator->current();
         $this->row_iterator->next();
-        $cells = @array_map('strval', $row->getCells());
+        $_cells = $_row->getCells();
+
+        $cells = [];
+        foreach ($_cells as $cell) {
+            $cells[] = @strval($cell->getValue());
+        }
 
         cms_ini_set('ocproducts.type_strictness', $before);
 

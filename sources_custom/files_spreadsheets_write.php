@@ -79,7 +79,7 @@ function spreadsheet_open_write(?string &$path, ?string $filename = null, int $a
         case 'xlsx':
         case 'ods':
             require_code('files_spreadsheets_write__spout');
-            return new CMS_CSV_Writer_Spout($path, $filename, $algorithm, $charset);
+            return new CMS_CSV_Writer_OpenSpout($path, $filename, $algorithm, $charset);
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));

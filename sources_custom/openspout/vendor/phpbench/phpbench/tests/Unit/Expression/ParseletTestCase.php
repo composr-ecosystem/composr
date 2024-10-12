@@ -1,0 +1,80 @@
+<?php
+
+namespace PhpBench\Tests\Unit\Expression;
+
+use Generator;
+use PhpBench\Expression\Ast\Node;
+use PhpBench\Expression\Evaluator;
+use PhpBench\Expression\Printer;
+
+abstract class ParseletTestCase extends ParserTestCase
+{
+    /**
+     * @dataProvider provideParse
+     */
+    public function testParse(string $expr, Node $expected): void
+    {
+        self::assertEquals($expected, $this->parse($expr));
+    }
+
+    /**
+     * @param parameters $params
+     */
+    public function evaluate(Node $node, array $params = []): Node
+    {
+        return $this->container()->get(
+            Evaluator::class
+        )->evaluate($node, $params);
+    }
+
+    public function print(Node $node): string
+    {
+        return $this->container()->get(Printer::class)->print($node);
+    }
+
+    /**
+     * @dataProvider provideEvaluate
+     *
+     * @param parameters $params
+     */
+    public function testEvaluate(string $expr, array $params, string $expected): void
+    {
+        self::assertEquals(
+            $expected,
+            $this->print($this->evaluate($this->parse($expr), $params))
+        );
+    }
+
+    protected static function providePrintFromEvaluate(): Generator
+    {
+        foreach (static::provideEvaluate() as [$expr, $params]) {
+            yield [$expr, $params];
+        }
+    }
+
+    /**
+     * @dataProvider providePrint
+     *
+     * @param parameters $params
+     */
+    public function testPrint(string $expr, array $params = [], string $expected = null): void
+    {
+        $result = $this->print($this->parse($expr));
+        self::assertEquals($expected ?: $expr, $result);
+    }
+
+    /**
+     * @return Generator<mixed>
+     */
+    abstract public static function provideParse(): Generator;
+
+    /**
+     * @return Generator<mixed>
+     */
+    abstract public static function provideEvaluate(): Generator;
+
+    /**
+     * @return Generator<mixed>
+     */
+    abstract public static function providePrint(): Generator;
+}
