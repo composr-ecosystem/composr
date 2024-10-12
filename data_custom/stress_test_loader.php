@@ -512,7 +512,7 @@ function do_work()
             'url' => get_base_url(),
             'data_post' => '',
             'user_agent' => '',
-            'referer' => '',
+            'referer_url' => '',
             'user_os' => '',
             'member_id' => db_get_first_id(),
             'date_and_time' => time(),

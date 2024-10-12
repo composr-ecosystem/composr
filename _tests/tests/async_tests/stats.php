@@ -73,7 +73,7 @@ class stats_test_set extends cms_test_case
                 [],
                 ['member_id' => 2],
                 ['browser' => 'Mozilla Firefox'],
-                ['referer' => 'https://example.com'],
+                ['referer_url' => 'https://example.com'],
             ],
             'f_invites' => [[]],
             'stats_link_tracker' => [[]],

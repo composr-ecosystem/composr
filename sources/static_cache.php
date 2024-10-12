@@ -409,7 +409,7 @@ function static_cache(int $mode)
                     'date_and_time' => time(),
                     'page_link' => $page_link,
                     'post' => '',
-                    'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
+                    'referer_url' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
                     'ip' => get_ip_address(),
                     'member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                     'session_id' => get_pseudo_session_id(),

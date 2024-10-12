@@ -212,7 +212,7 @@ class Hook_addon_registry_securitylogging
         return lorem_globalise(do_lorem_template('HACK_ATTEMPT_MAIL', [
             'STACK_TRACE' => lorem_phrase(),
             'USER_AGENT' => lorem_phrase(),
-            'REFERER' => lorem_phrase(),
+            'REFERER_URL' => lorem_phrase(),
             'USER_OS' => lorem_phrase(),
             'REASON' => lorem_phrase(),
             'IP' => placeholder_ip(),
@@ -256,7 +256,7 @@ class Hook_addon_registry_securitylogging
         return lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'USER_AGENT' => lorem_phrase(),
-            'REFERER' => lorem_phrase(),
+            'REFERER_URL' => lorem_phrase(),
             'USER_OS' => lorem_phrase(),
             'REASON' => lorem_phrase(),
             'IP' => lorem_phrase(),

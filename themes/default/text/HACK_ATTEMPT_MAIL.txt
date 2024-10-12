@@ -5,7 +5,7 @@
 {!MEMBER_ID@}: [tt]{ID@}[/tt]
 {!USERNAME@}: [tt]{USERNAME@}[/tt]
 {!USER_AGENT}: [tt]{USER_AGENT@}[/tt]
-{!REFERER}: {REFERER@}
+{!REFERER}: {REFERER_URL@}
 {!USER_OS}: [tt]{USER_OS@}[/tt]
 {!DATE_TIME@}: [tt]{DATE@}[/tt]
 {!URL@}: {URL@}

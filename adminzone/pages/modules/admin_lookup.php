@@ -461,7 +461,7 @@ class Module_admin_lookup
             $fields['POST_DATA'] = $row['post'];
         }
 
-        $fields['REFERER'] = $row['referer'];
+        $fields['REFERER'] = $row['referer_url'];
 
         $fields['USER_AGENT'] = $row['browser'];
 

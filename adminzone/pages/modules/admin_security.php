@@ -65,7 +65,7 @@ class Module_admin_security
                 'url' => 'URLPATH',
                 'data_post' => 'LONG_TEXT',
                 'user_agent' => 'SHORT_TEXT',
-                'referer' => 'SHORT_TEXT',
+                'referer_url' => 'URLPATH',
                 'user_os' => 'SHORT_TEXT',
                 'member_id' => 'MEMBER',
                 'date_and_time' => 'TIME',
@@ -95,7 +95,10 @@ class Module_admin_security
             $GLOBALS['SITE_DB']->add_table_field('hackattack', 'silent_to_staff_log', 'BINARY');
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY: 11 beta4
+        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY: 11.beta4
+            // Database consistency
+            $GLOBALS['SITE_DB']->alter_table_field('hackattack', 'referer', 'URLPATH', 'referer_url');
+
             // We are using scores instead of percents now as it is easier to understand in configuration
             $GLOBALS['SITE_DB']->alter_table_field('hackattack', 'percentage_score', 'INTEGER', 'risk_score');
 
@@ -326,7 +329,7 @@ class Module_admin_security
             '_GUID' => '6c5543151af09c79bf204bea5df61dde',
             'TITLE' => $this->title,
             'USER_AGENT' => $row['user_agent'],
-            'REFERER' => $row['referer'],
+            'REFERER_URL' => $row['referer_url'],
             'USER_OS' => $row['user_os'],
             'REASON' => $reason,
             'IP' => hyperlink($lookup_url, $row['ip'], false, true),

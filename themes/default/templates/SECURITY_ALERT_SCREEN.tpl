@@ -31,10 +31,10 @@
 		<tr>
 			<th>{!REFERER}</th>
 			<td>
-				{+START,IF_NON_EMPTY,{REFERER}}
-					{REFERER*} {$*,Do not make this a clickable URL or you risk creating an attack vector}
+				{+START,IF_NON_EMPTY,{REFERER_URL}}
+					{REFERER_URL*} {$*,Do not make this a clickable URL or you risk creating an attack vector}
 				{+END}
-				{+START,IF_EMPTY,{REFERER}}
+				{+START,IF_EMPTY,{REFERER_URL}}
 					{!NONE_EM}
 				{+END}
 			</td>
