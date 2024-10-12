@@ -385,8 +385,14 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
     // Ban
     $spam_ban_threshold = intval(get_option('spam_ban_threshold'));
     if (intval($confidence_level * 100.0) >= $spam_ban_threshold) {
-        require_code('failure');
-        $ban_happened = add_ip_ban($user_ip, do_lang('IP_BAN_LOG_AUTOBAN_ANTISPAM', $blocked_by), time() + 60 * intval(get_option('spam_cache_time')));
+        if ((!is_our_server($user_ip)) && (!is_unbannable_bot_dns($user_ip)) && (!is_unbannable_bot_ip($user_ip))) {
+            require_code('failure');
+            $ban_happened = add_ip_ban($user_ip, do_lang('IP_BAN_LOG_AUTOBAN_ANTISPAM', $blocked_by), time() + 60 * intval(get_option('spam_cache_time')));
+            $was_bannable = true; // NB: We still want hack attack log to add risk score to a bannable IP even if it was already banned / not banned
+        } else {
+            $ban_happened = false; // Do not ban IP addresses belonging to our own server or to known trusted bots
+            $was_bannable = false;
+        }
 
         if ($ban_happened) {
             require_code('notifications');
@@ -395,7 +401,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
 
-        log_hack_attack_and_exit('ANTISPAM', 'ban', float_to_raw_string($confidence_level));
+        log_hack_attack_and_exit('ANTISPAM', 'ban', float_to_raw_string($confidence_level), (($was_bannable) ? 10 : 0));
 
         warn_exit(do_lang_tempcode('STOPPED_BY_ANTISPAM', escape_html($user_ip), escape_html($blocked_by)));
     }
@@ -409,7 +415,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
             $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BLOCK', $user_ip, $blocked_by, [float_format($confidence_level), $additional_criteria], get_site_default_lang());
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
 
-            log_hack_attack_and_exit('ANTISPAM', 'block', float_to_raw_string($confidence_level));
+            log_hack_attack_and_exit('ANTISPAM', 'block', float_to_raw_string($confidence_level), intval(ceil($confidence_level * 10.0)));
 
             warn_exit(do_lang_tempcode('STOPPED_BY_ANTISPAM', escape_html($user_ip), escape_html($blocked_by)));
         }
