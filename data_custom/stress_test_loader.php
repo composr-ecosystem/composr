@@ -520,7 +520,7 @@ function do_work()
             'reason' => 'ASCII_ENTITY_URL_HACK',
             'reason_param_a' => '',
             'reason_param_b' => '',
-            'percentage_score' => 100,
+            'risk_score' => 1,
             'silent_to_staff_log' => 0,
         ]);
     }
