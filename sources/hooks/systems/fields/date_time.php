@@ -164,7 +164,7 @@ class Hook_fields_date_time
                 }
                 $time = cms_mktime(intval($time_bits[0]), intval($time_bits[1]), intval($time_bits[2]), intval($date_bits[1]), intval($date_bits[2]), @intval($date_bits[0]));
             }
-            $ev = get_timezoned_date_time($time, false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $ev = get_timezoned_date_time($time, false, false);
         }
         return escape_html($ev);
     }
@@ -270,7 +270,7 @@ class Hook_fields_date_time
         $stub = 'field_' . strval($id);
 
         require_code('temporal2');
-        list($year, $month, $day, $hour, $minute) = post_param_date_components($stub);
+        list($year, $month, $day, $hour, $minute) = post_param_date_components_utc($stub);
         if ($year === null) {
             return $editing ? STRING_MAGIC_NULL : '';
         }

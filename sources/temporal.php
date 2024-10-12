@@ -314,7 +314,7 @@ function get_timezoned_date(int $timestamp, bool $use_contextual_dates = true, b
  * @param  boolean $include_time Whether to include the time in the output
  * @param  TIME $timestamp Input timestamp
  * @param  boolean $use_contextual_dates Whether contextual dates will be used
- * @param  boolean $utc_time Whether to work in UTC time
+ * @param  boolean $utc_time Whether to work in UTC time (false: $timestamp is in UTC)
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current member). Use $GLOBALS['FORUM_DRIVER']->get_guest_id() for server times
  * @return string Formatted time
  */

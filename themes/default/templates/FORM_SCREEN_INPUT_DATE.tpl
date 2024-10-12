@@ -10,3 +10,7 @@
 	<label class="accessibility-hidden" for="{NAME*}_time">{!TIME}</label>
 	<input name="{NAME*}_time" id="{NAME*}_time" type="time" size="5"{+START,IF_PASSED,TABINDEX} tabindex="{TABINDEX*}"{+END} value="{+START,IF_NON_EMPTY,{HOUR}}{$GET*,time_value}{+END}" class="form-control input-time{$?,{REQUIRED},-required}" data-tpl="formScreenInputDate" data-tpl-params="{+START,PARAMS_JSON,NAME}{_*}{+END}"{+START,IF,{READ_ONLY}} readonly="readonly"{+END} />
 {+END}
+
+{+START,IF_PASSED,TIMEZONE}
+	<input name="{NAME*}_timezone" id="{NAME*}_timezone" type="hidden" value="{TIMEZONE*}" />
+{+END}
