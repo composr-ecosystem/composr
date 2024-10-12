@@ -420,7 +420,7 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
     // Reverse points
     if (addon_installed('points')) {
         require_code('points2');
-        points_transactions_reverse_all(null, null, null, 'topic_poll', 'vote', strval($poll['id']));
+        points_transactions_reverse_all(null, null, $member_id, 'topic_poll', 'vote', strval($poll['id']));
     }
 
     // Log the revocation
