@@ -49,7 +49,7 @@
 		</tr>
 		<tr>
 			<th>{!RISK}</th>
-			<td>{PERCENTAGE_SCORE*}%</td>
+			<td>{RISK_SCORE*}</td>
 		</tr>
 	</tbody>
 </table>

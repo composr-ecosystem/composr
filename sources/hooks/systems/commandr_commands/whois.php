@@ -78,6 +78,13 @@ class Hook_commandr_command_whois
 
         $ip_list = new Tempcode();
         foreach ($known_ip_addresses as $row) {
+            // Tack on risk score
+            if (addon_installed('securitylogging')) {
+                $row['risk_score'] = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $row['ip']]));
+            } else {
+                $row['risk_score'] = null;
+            }
+
             $date = get_timezoned_date_time($row['date_and_time']);
             $lookup_url = build_url(['page' => 'admin_lookup', 'param' => $row['ip']], get_module_zone('admin_lookup'));
             $ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', [
@@ -87,6 +94,7 @@ class Hook_commandr_command_whois
                 '_DATE' => strval($row['date_and_time']),
                 'IP' => $row['ip'],
                 'BANNED' => in_array($row['ip'], $all_banned),
+                'RISK_SCORE' => (($row['risk_score'] !== null) ? integer_format($row['risk_score']) : null),
             ]));
         }
 

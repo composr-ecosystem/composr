@@ -1,18 +1,37 @@
 <advancedBans>
 	<!-- Zero low-scored, because it may well just be false-positive from an anti-spam partner and because our spam confidence thresholds already can result in their own banning / Common so silence it to staff -->
-	<hackattack codename="ANTISPAM" silent_to_user="true" percentage_score="0" syndicate_as_spammer="true" silent_to_staff_notifications="true" silent_to_staff_log="true" />
+	<hackattack codename="ANTISPAM" silent_to_user="true" risk_score="0" syndicate_as_spammer="true" silent_to_staff_notifications="true" silent_to_staff_log="true" />
 
 	<!-- Silent to user because we have a normal CAPTCHA-failed error message / Common so silence it to staff -->
-	<hackattack codename="CAPTCHAFAIL_HACK" silent_to_user="true" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" />
+	<hackattack codename="CAPTCHAFAIL_HACK" silent_to_user="true" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" risk_score="10" />
 
-	<!-- Very low-scored, because it may well just be user-error /  Silent to user because we have a normal CAPTCHA-failed error message / Common so silence it to staff -->
-	<hackattack codename="CAPTCHAFAIL" silent_to_user="true" percentage_score="1" silent_to_staff_notifications="true" silent_to_staff_log="true" />
+	<!-- Very low-scored, because it may well just be user-error / Silent to user because we have a normal CAPTCHA-failed error message / Common so silence it to staff -->
+	<hackattack codename="CAPTCHAFAIL" silent_to_user="true" risk_score="1" silent_to_staff_notifications="true" silent_to_staff_log="true" />
 
-	<!-- Common spam so silence it to staff -->
-	<hackattack codename="BLACKHOLE_SPAM_HACK" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" />
+	<!-- Common and almost always intentional spam; silence it to staff but syndicate it as spam -->
+	<hackattack codename="BLACKHOLE_SPAM_HACK" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" risk_score="10" />
 
-	<!-- Very high-scored, enough to cause an instant ban by default, because we do not want to allow too much brute forcing; also see brute_force_login_minutes and brute_force_threshold options -->
-	<hackattack codename="BRUTEFORCE_LOGIN_HACK" percentage_score="1000" />
+	<!-- Other hack attack codes without special parameters; they are defined here just so it is easy if you want to configure their score -->
+	<hackattack codename="BRUTEFORCE_LOGIN_HACK" risk_score="100" /><!-- Very high-scored, because we do not want to allow too much brute forcing (a hack attack is only triggered after so many attempts in so many minutes); also see brute_force_login_minutes and brute_force_threshold options -->
+	<hackattack codename="DODGY_GET_HACK" risk_score="10" /><!-- Very unlikely, but possible, a suspicious GET parameter could be a false-positive -->
+	<hackattack codename="EVIL_POSTED_FORM_HACK" risk_score="20" /><!-- Posts from external websites without the CSRF token on behalf of a member are almost always hacks -->
+	<hackattack codename="VOTE_CHEAT" risk_score="5" /><!-- An attempt at giving an invalid rating is almost always intentional, but this is a low-damage attack -->
+	<hackattack codename="SCRIPT_UPLOAD_HACK" risk_score="30" /><!-- Could be innocent but this is an extremely dangerous hack attack as scripts can be executed server-side -->
+	<hackattack codename="ASCII_ENTITY_URL_HACK" risk_score="8" /><!-- Putting entity-encoded HTML in a Comcode html block; usually innocent but could be used to try bypassing filters -->
+	<hackattack codename="SCRIPT_URL_HACK" risk_score="20" /><!-- Almost definitely a hack attack as an attempt was made to inject script into a URL via Comcode -->
+	<hackattack codename="SCRIPT_URL_HACK_2" risk_score="20" /><!-- Almost definitely a hack attack as an attempt was made to inject script into a URL -->
+	<hackattack codename="TRY_TO_DOWNLOAD_SCRIPT" risk_score="20" /><!-- An attempt was made to add a download pointing to a PHP script, which is almost certainly an attempt to get its contents -->
+	<hackattack codename="DOWNLOAD_PRIVATE_URL_HACK" risk_score="10" /><!-- An attempt was made to make available a private file from another website as a download; could be a false-positive under some weird configurations -->
+	<hackattack codename="TICKET_OTHERS_HACK" risk_score="10" /><!-- Trying to access support tickets belonging to other members; normally always intentional but a member might have copied the wrong ID if another member for whatever reason shared their tickets -->
+	<hackattack codename="ORDERBY_HACK" risk_score="10" /><!-- Could be a bug / false positive, but also could be an SQL injection attack -->
+	<hackattack codename="BYPASS_VALIDATION_HACK" risk_score="5" /><!-- Trying to bypass validation is almost always intentional but is usually a low-risk attack -->
+	<hackattack codename="HEADER_SPLIT_HACK" risk_score="25" /><!-- A URL contained a new line; almost always a header-split attack attempt which are very dangerous -->
+	<hackattack codename="EVAL_HACK" risk_score="25" /><!-- Tried to put invalid characters in a strictly alphanumeric parameter to try and get something to eval; could be a bug but very likely to be a high-risk hack-attack -->
+	<hackattack codename="PATH_HACK" risk_score="10" /><!-- Almost certainly intentional (though slight chance it's a bug); trying to go to a different directory on the server -->
+	<hackattack codename="PHP_DOWNLOAD_INNOCENT" risk_score="100" /><!-- Should never happen and indicates the site was compromised; this should ideally auto-ban the IP in case they were the ones who did it -->
+	<hackattack codename="HACK_ATTACK_PASSWORD_CHANGE" risk_score="10" /><!-- Almost always an attempt to gain access to a member account -->
+	<hackattack codename="SQL_INJECTION_HACK" risk_score="20" /><!-- Tried to UNION something; definitely an SQL injection attack attempt -->
+	<hackattack codename="HACK_ATTACK" risk_score="10" /><!-- Generic hack-attacks, usually from non-bundled addons -->
 
 	<!-- See hack_ban_threshold option to know how many normalised hack-attacks until a ban happens -->
 </advancedBans>

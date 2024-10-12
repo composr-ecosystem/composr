@@ -35,7 +35,7 @@ class Module_admin_security
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 5;
+        $info['version'] = 6;
         $info['update_require_upgrade'] = true;
         $info['locked'] = true;
         $info['min_cms_version'] = 11.0;
@@ -73,7 +73,7 @@ class Module_admin_security
                 'reason' => 'ID_TEXT',
                 'reason_param_a' => 'SHORT_TEXT',
                 'reason_param_b' => 'SHORT_TEXT',
-                'percentage_score' => 'INTEGER',
+                'risk_score' => 'INTEGER',
                 'silent_to_staff_log' => 'BINARY',
             ]);
             $GLOBALS['SITE_DB']->create_index('hackattack', 'otherhacksby', ['ip']);
@@ -91,8 +91,29 @@ class Module_admin_security
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('hackattack', 'percentage_score', 'INTEGER', 100);
+            $GLOBALS['SITE_DB']->add_table_field('hackattack', 'percentage_score', 'INTEGER', 10);
             $GLOBALS['SITE_DB']->add_table_field('hackattack', 'silent_to_staff_log', 'BINARY');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY: 11 beta4
+            // We are using scores instead of percents now as it is easier to understand in configuration
+            $GLOBALS['SITE_DB']->alter_table_field('hackattack', 'percentage_score', 'INTEGER', 'risk_score');
+
+            // Multiply Hack-attack risk score ban threshold by 10; we are no longer dividing by 100 when checking for auto-bans
+            $hack_threshold = intval(get_option('hack_ban_threshold'));
+            set_option('hack_ban_threshold', strval($hack_threshold * 10));
+
+            // All current records should be divided by 10 because generally risk scores are about 1/10 of what percentages were
+            $start = 0;
+            $max = 200;
+            $rows = [];
+            do {
+                $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['id', 'risk_score'], [], '', $max, $start);
+                foreach ($rows as $row) {
+                    $GLOBALS['SITE_DB']->query_update('hackattack', ['risk_score' => intval(ceil($row['risk_score'] / 10))], ['id' => $row['id']]);
+                }
+                $start += $max;
+            } while (!empty($rows));
         }
     }
 
@@ -202,7 +223,7 @@ class Module_admin_security
         // Failed logins...
 
         $start = get_param_integer('failed_start', 0);
-        $max = get_param_integer('failed_max', 50);
+        $max = get_param_integer('failed_max', 25);
 
         $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'ip' => do_lang_tempcode('IP_ADDRESS')];
         $test = explode(' ', get_param_string('failed_sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
@@ -312,8 +333,8 @@ class Module_admin_security
             'USERNAME' => hyperlink($member_url, $username, false, true),
             'POST' => $post,
             'URL' => $row['url'],
-            '_PERCENTAGE_SCORE' => strval($row['percentage_score']),
-            'PERCENTAGE_SCORE' => integer_format($row['percentage_score']),
+            '_RISK_SCORE' => strval($row['risk_score']),
+            'RISK_SCORE' => integer_format($row['risk_score']),
         ]);
     }
 }
