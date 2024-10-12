@@ -35,7 +35,20 @@ function internalise_own_screen(object $screen_content, ?int $refresh_time = nul
         return $screen_content;
     }
 
+    $page = get_page_name();
+    $zone = get_page_zone($page);
+
+    // Process redirects in case we are using a redirect on a module
+    require_code('site');
+    $redirect = _request_page__redirects($page, $zone);
+    if (($redirect !== false) && (array_key_exists(0, $redirect)) && ($redirect[0] == 'REDIRECT')) {
+        $zone = $redirect[1]['r_to_zone'];
+        $page = $redirect[1]['r_to_page'];
+    }
+
     $params = '';
+    $params .= '?zone=' . urlencode($zone);
+    $params .= '&page=' . urlencode($page);
     foreach ($_GET as $key => $param) {
         if (is_integer($key)) {
             $key = strval($key);
@@ -44,7 +57,7 @@ function internalise_own_screen(object $screen_content, ?int $refresh_time = nul
         if (!is_string($param)) {
             continue;
         }
-        if (($key == 'ajax') || ($key == 'zone') || ($key == 'utheme')) {
+        if (($key == 'ajax') || ($key == 'zone') || ($key == 'utheme') || ($key == 'page')) {
             continue;
         }
         if ((substr($key, 0, 5) == 'keep_') && (skippable_keep($key, $param))) {
@@ -59,7 +72,6 @@ function internalise_own_screen(object $screen_content, ?int $refresh_time = nul
     if (get_param_string('utheme', '') != '') {
         $params .= '&utheme=' . urlencode(get_param_string('utheme', $GLOBALS['FORUM_DRIVER']->get_theme()));
     }
-    $params .= '&zone=' . urlencode(get_zone_name());
     if (get_param_integer('refreshing', 0) == 0) {
         $params .= '&refreshing=1';
     }

@@ -332,14 +332,7 @@ function change_detection_script()
 
     $refresh_if_changed = either_param_string('refresh_if_changed');
 
-    $object = get_hook_ob('systems', 'change_detection', filter_naughty_harsh($page), 'Hook_change_detection_', true);
-
-    // TODO: redirects from one module to another cause problems, so for now, softly exit with no change if the wrong page was given. (#5764)
-    if ($object === null) {
-        echo '0';
-        cms_safe_exit_flow();
-        return;
-    }
+    $object = get_hook_ob('systems', 'change_detection', filter_naughty_harsh($page), 'Hook_change_detection_');
 
     $result = $object->run($refresh_if_changed);
     echo $result ? '1' : '0';
