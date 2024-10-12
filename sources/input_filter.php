@@ -1044,6 +1044,7 @@ class Advanced_banning_loader
                         'silent_to_user' => array_key_exists('silent_to_user', $attributes) ? ($attributes['silent_to_user'] == 'true') : null,
                         'silent_to_staff_notifications' => array_key_exists('silent_to_staff_notifications', $attributes) ? ($attributes['silent_to_staff_notifications'] == 'true') : null,
                         'silent_to_staff_log' => array_key_exists('silent_to_staff_log', $attributes) ? ($attributes['silent_to_staff_log'] == 'true') : null,
+                        'percentage_score' => @cms_empty_safe($attributes['percentage_score']) ? null : intval($attributes['percentage_score']), // LEGACY: removed in 11 beta4
                         'risk_score' => @cms_empty_safe($attributes['risk_score']) ? null : intval($attributes['risk_score']),
                         'syndicate_as_spammer' => array_key_exists('syndicate_as_spammer', $attributes) ? ($attributes['syndicate_as_spammer'] == 'true') : null,
                     ];

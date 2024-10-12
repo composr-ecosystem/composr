@@ -626,8 +626,11 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
             if ($specifier['silent_to_staff_log'] !== null) {
                 $silent_to_staff_log = $specifier['silent_to_staff_log'];
             }
+            if ($specifier['percentage_score'] !== null) { // LEGACY: replaced by risk_score in 11 beta4
+                $risk_score = intval(ceil(intval($specifier['percentage_score']) / 10));
+            }
             if ($specifier['risk_score'] !== null) {
-                $risk_score = $specifier['risk_score'];
+                $risk_score = intval($specifier['risk_score']);
             }
         }
     }
