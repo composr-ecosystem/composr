@@ -59,7 +59,7 @@ class Hook_privacy_securitylogging extends Hook_privacy_base
                     'email_fields' => [],
                     'username_fields' => [],
                     'file_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['referer_url'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'removal_default_handle_method_member_override' => PRIVACY_METHOD__LEAVE, // Security

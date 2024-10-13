@@ -875,10 +875,10 @@ class Module_purchase
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE');
             } elseif ($discounted_price === 0.00/*discounted via points to zero*/) {
                 $_discounted_price = currency_convert_wrap(0.00, $currency);
-                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount, 0))]);
+                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
             } elseif ($discounted_price !== null/*discounted via points*/) {
                 $_discounted_price = currency_convert_wrap($discounted_price, $currency);
-                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_WITH_DISCOUNT', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount, 0))]);
+                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_WITH_DISCOUNT', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
             } else {
                 $_discounted_price = do_lang('NA');
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FULL_PRICE', $_full_price);
@@ -1269,7 +1269,7 @@ class Module_purchase
                         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                     }
 
-                    $confirmation_box = do_lang_tempcode('BUYING_FOR_POINTS_CONFIRMATION', escape_html($item_name), escape_html(integer_format($points_for_discount, 0)));
+                    $confirmation_box = do_lang_tempcode('BUYING_FOR_POINTS_CONFIRMATION', escape_html($item_name), escape_html(integer_format($points_for_discount)));
 
                     require_css('points');
                     $icon = 'menu/social/points';
@@ -1489,7 +1489,7 @@ class Module_purchase
 
             if ($points_for_discount !== null) {
                 // Paying with points
-                $message = do_lang_tempcode('POINTS_PURCHASE', escape_html(integer_format($points_for_discount, 0)));
+                $message = do_lang_tempcode('POINTS_PURCHASE', escape_html(integer_format($points_for_discount)));
                 $memo = post_param_string('memo', do_lang('POINTS'));
                 $currency = 'points';
             } else {
@@ -1682,7 +1682,7 @@ class Module_purchase
             require_code('points');
             $points_balance = points_balance(get_member());
             if (($points_balance < $points_for_discount) && (!has_privilege(get_member(), 'send_points_to_self'))) {
-                return warn_screen($this->title, do_lang_tempcode('CANT_AFFORD', escape_html(integer_format($points_for_discount, 0)), escape_html(integer_format($points_balance, 0))));
+                return warn_screen($this->title, do_lang_tempcode('CANT_AFFORD', escape_html(integer_format($points_for_discount)), escape_html(integer_format($points_balance))));
             }
         }
 

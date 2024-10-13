@@ -1,0 +1,236 @@
+name: "CI"
+
+on:
+    pull_request:
+    push:
+        branches:
+            - 'master'
+
+env:
+    fail-fast: true
+    TZ: "Europe/Paris"
+    REQUIRED_PHP_EXTENSIONS: "dom, iconv, json, pcre, reflection, spl, tokenizer, xdebug"
+
+jobs:
+    composer-validate:
+        name: "Composer validate (${{ matrix.php-version }})"
+
+        runs-on: "ubuntu-latest"
+
+        strategy:
+            matrix:
+                php-version:
+                    - '8.1'
+
+        steps:
+            -
+                name: "Checkout code"
+                uses: "actions/checkout@v3"
+
+            -
+                name: "Install PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    coverage: "none"
+                    php-version: "${{ matrix.php-version }}"
+                    tools: composer:v2
+            -
+                name: "Validate composer.json"
+                run: "composer validate --strict --no-check-lock"
+
+    composer-normalize:
+        needs:
+            - "composer-validate"
+
+        name: "Composer Normalize (${{ matrix.php-version }})"
+
+        runs-on: "ubuntu-latest"
+
+        strategy:
+            matrix:
+                php-version:
+                    - '8.1'
+
+        steps:
+            -
+                name: "Checkout code"
+                uses: "actions/checkout@v3"
+
+            -
+                name: "Install PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    coverage: "none"
+                    extensions: "${{ env.REQUIRED_PHP_EXTENSIONS }}"
+                    php-version: "${{ matrix.php-version }}"
+                    tools: composer:v2
+
+            -
+                name: "Composer install"
+                uses: "ramsey/composer-install@v3"
+                with:
+                    composer-options: "--no-scripts"
+
+            -
+                name: "Run composer normalize"
+                run: "composer normalize --dry-run --indent-size=4 --indent-style=space"
+
+    php-cs-fixer:
+        needs:
+            - "composer-validate"
+
+        name: "PHP-CS-Fixer (${{ matrix.php-version }})"
+
+        runs-on: "ubuntu-latest"
+
+        strategy:
+            matrix:
+                php-version:
+                    - '8.1'
+
+        steps:
+            -
+                name: "Checkout code"
+                uses: "actions/checkout@v3"
+
+            -
+                name: "Install PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    coverage: "none"
+                    extensions: "${{ env.REQUIRED_PHP_EXTENSIONS }}"
+                    php-version: "${{ matrix.php-version }}"
+                    tools: composer:v2
+
+            -
+                name: "Composer install"
+                uses: "ramsey/composer-install@v3"
+                with:
+                    composer-options: "--no-scripts"
+
+            -
+                name: "Run friendsofphp/php-cs-fixer"
+                run: "vendor/bin/php-cs-fixer fix --dry-run --diff --verbose"
+
+    phpstan:
+        needs:
+            - "composer-validate"
+
+        name: "PHPStan (${{ matrix.php-version }})"
+
+        runs-on: "ubuntu-latest"
+
+        strategy:
+            matrix:
+                php-version:
+                    - '8.1'
+
+        steps:
+            -
+                name: "Checkout code"
+                uses: "actions/checkout@v3"
+
+            -
+                name: "Install PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    coverage: "none"
+                    extensions: "${{ env.REQUIRED_PHP_EXTENSIONS }}"
+                    php-version: "${{ matrix.php-version }}"
+                    tools: composer:v2
+
+            -
+                name: "Composer install"
+                uses: "ramsey/composer-install@v3"
+                with:
+                    composer-options: "--no-scripts"
+
+            -
+                name: "Run phpstan/phpstan"
+                run: "vendor/bin/phpstan analyse -c phpstan.neon.dist"
+
+    tests:
+        needs:
+            - "composer-validate"
+
+        name: "PHP ${{ matrix.php-version }} + ${{ matrix.dependency }}"
+
+        runs-on: ubuntu-latest
+
+        continue-on-error: ${{ matrix.allow-failures }}
+
+        strategy:
+            matrix:
+                php-version:
+                    - '8.1'
+                    - '8.2'
+                dependency:
+                    - 'lowest'
+                    - 'highest'
+                with-examples: ['yes']
+                allow-failures: [false]
+                composer-options: ['']
+                include:
+                    - php-version: '8.1'
+                      dependency: 'lowest'
+                      with-examples: 'no'
+                      allow-failures: false
+                      coverage: xdebug
+                      composer-options: ''
+                    - php-version: '8.3'
+                      dependency: 'lowest'
+                      with-examples: 'no'
+                      allow-failures: true
+                      flags: php-*'
+                      coverage: xdebug
+                      composer-options: '--ignore-platform-req=php*'
+                    - php-version: '8.3'
+                      dependency: 'highest'
+                      with-examples: 'no'
+                      allow-failures: true
+                      flags: php-*'
+                      coverage: xdebug
+                      composer-options: '--ignore-platform-req=php*'
+
+        steps:
+            - name: "Checkout code"
+              uses: actions/checkout@v3
+
+            - name: "Install PHP with extensions"
+              uses: shivammathur/setup-php@2.7.0
+              with:
+                  extensions: "${{ env.REQUIRED_PHP_EXTENSIONS }}"
+                  php-version: ${{ matrix.php-version }}
+                  tools: composer:v2
+
+            - name: "Add PHPUnit matcher"
+              run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+            - name: "Remove friendsofphp/php-cs-fixer"
+              run: composer remove --dev friendsofphp/php-cs-fixer --no-update
+
+            - name: "Composer install"
+              uses: "ramsey/composer-install@v3"
+              with:
+                  dependency-versions: "${{ matrix.dependency }}"
+                  composer-options: "${{ matrix.composer-options }}"
+
+            - name: PHP Info
+              run: php --version
+
+            - name: "Run tests with PHPUnit"
+              run: vendor/bin/phpunit
+              env:
+                  SKIP_XDEBUG_TESTS: "${{ matrix.skip_xdebug_tests }}"
+
+            - name: "Run benchmarks with PHPBench"
+              run: bin/phpbench run --report=env --progress=dots
+
+            - if: matrix.with-examples == 'yes'
+              run: bin/phpbench run --profile=examples --report=env --progress=dots --iterations=1 --revs=1
+
+            - if: matrix.with-examples == 'yes'
+              run: bin/phpbench run --profile=examples --iterations=1 --revs=1 --report=catordog --executor=acme
+
+            - if: matrix.with-examples == 'yes'
+              run: bin/phpbench cats --profile=examples

@@ -1,0 +1,124 @@
+{
+    "name": "infection/infection",
+    "type": "library",
+    "description": "Infection is a Mutation Testing framework for PHP. The mutation adequacy score can be used to measure the effectiveness of a test set in terms of its ability to detect faults.",
+    "keywords": [
+        "mutation testing",
+        "mutation framework",
+        "testing",
+        "coverage",
+        "unit testing",
+        "mutant"
+    ],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Maks Rafalko",
+            "email": "maks.rafalko@gmail.com",
+            "homepage": "https://twitter.com/maks_rafalko"
+        },
+        {
+            "name": "Oleg Zhulnev",
+            "homepage": "https://github.com/sidz"
+        },
+        {
+            "name": "Gert de Pagter",
+            "homepage": "https://github.com/BackEndTea"
+        },
+        {
+            "name": "Théo FIDRY",
+            "email": "theo.fidry@gmail.com",
+            "homepage": "https://twitter.com/tfidry"
+        },
+        {
+            "name": "Alexey Kopytko",
+            "email": "alexey@kopytko.com",
+            "homepage": "https://www.alexeykopytko.com"
+        },
+        {
+            "name": "Andreas Möller",
+            "email": "am@localheinz.com",
+            "homepage": "https://localheinz.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*",
+        "composer-runtime-api": "^2.0",
+        "colinodell/json5": "^2.2 || ^3.0",
+        "composer/xdebug-handler": "^2.0 || ^3.0",
+        "fidry/cpu-core-counter": "^0.4.0 || ^0.5.0 || ^1.0",
+        "infection/abstract-testframework-adapter": "^0.5.0",
+        "infection/extension-installer": "^0.1.0",
+        "infection/include-interceptor": "^0.2.5",
+        "infection/mutator": "^0.4",
+        "justinrainbow/json-schema": "^5.3",
+        "nikic/php-parser": "^5.0",
+        "ondram/ci-detector": "^4.1.0",
+        "sanmai/later": "^0.1.1",
+        "sanmai/pipeline": "^5.1 || ^6",
+        "sebastian/diff": "^3.0.2 || ^4.0 || ^5.0 || ^6.0",
+        "symfony/console": "^5.4 || ^6.0 || ^7.0",
+        "symfony/filesystem": "^5.4 || ^6.0 || ^7.0",
+        "symfony/finder": "^5.4 || ^6.0 || ^7.0",
+        "symfony/process": "^5.4 || ^6.0 || ^7.0",
+        "thecodingmachine/safe": "^2.1.2",
+        "webmozart/assert": "^1.11"
+    },
+    "conflict": {
+        "phpunit/php-code-coverage": ">9,<9.1.4 || >9.2.17,<9.2.21",
+        "antecedent/patchwork": "<2.1.25",
+        "dg/bypass-finals": "<1.4.1"
+    },
+    "require-dev": {
+        "ext-simplexml": "*",
+        "fidry/makefile": "^1.0",
+        "helmich/phpunit-json-assert": "^3.0",
+        "phpstan/extension-installer": "^1.1.0",
+        "phpstan/phpstan": "^1.10.15",
+        "phpstan/phpstan-phpunit": "^1.0.0",
+        "phpstan/phpstan-strict-rules": "^1.1.0",
+        "phpstan/phpstan-webmozart-assert": "^1.0.2",
+        "phpunit/phpunit": "^10.5",
+        "rector/rector": "^1.0",
+        "sidz/phpstan-rules": "^0.4",
+        "symfony/yaml": "^5.4 || ^6.0 || ^7.0",
+        "thecodingmachine/phpstan-safe-rule": "^1.2.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "infection/extension-installer": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Infection\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Infection\\Benchmark\\": "tests/benchmark",
+            "Infection\\Tests\\": "tests/phpunit"
+        },
+        "classmap": [
+            "tests/autoloaded"
+        ],
+        "files": [
+            "tests/phpunit/Helpers.php"
+        ]
+    },
+    "bin": [
+        "bin/infection"
+    ],
+    "support": {
+        "issues": "https://github.com/infection/infection/issues"
+    }
+}

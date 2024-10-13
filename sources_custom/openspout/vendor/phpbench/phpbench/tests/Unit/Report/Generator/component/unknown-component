@@ -1,0 +1,17 @@
+{
+}
+---
+{
+    "title": "Good day",
+    "description": "This is the description",
+    "components": [
+        {
+             "component": "unknown",
+             "row": {
+                 "greeting": "\"Hello\""
+             }
+        }
+    ]
+}
+---
+component service "unknown" does not exist. Registered component services: "section", "table_aggregate", "bar_chart_aggregate", "text"

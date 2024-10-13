@@ -201,9 +201,9 @@ function find_security_alerts(array $where = []) : array
     require_lang('security');
 
     $start = get_param_integer('alert_start', 0);
-    $max = get_param_integer('alert_max', 50);
+    $max = get_param_integer('alert_max', 25);
 
-    $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'ip' => do_lang_tempcode('IP_ADDRESS')];
+    $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'risk_score' => do_lang_tempcode('RISK'), 'ip' => do_lang_tempcode('IP_ADDRESS')];
     $test = explode(' ', get_param_string('alert_sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
     if (count($test) == 1) {
         $test[1] = 'DESC';
@@ -218,7 +218,7 @@ function find_security_alerts(array $where = []) : array
 
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('hackattack', 'COUNT(*)', $where);
 
-    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND percentage_score>=80 AND silent_to_staff_log=0 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND risk_score>=1 AND silent_to_staff_log=0 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
     $result_entries = new Tempcode();
     foreach ($rows as $row) {
@@ -241,7 +241,7 @@ function find_security_alerts(array $where = []) : array
         $_row = [
             hyperlink($member_url, $username, false, true),
             hyperlink($full_url, $date, false, true),
-            integer_format($row['percentage_score']),
+            integer_format($row['risk_score']),
             hyperlink($lookup_url, $row['ip'], false, true),
             $reason
         ];
@@ -491,8 +491,8 @@ function find_user_metadata(bool $include_referer = true, ?int $member_id = null
                 //$h[$l_session_id] = $myrow['session_id'];
             }
 
-            if (($myrow['referer'] != '') && (($advanced) || (/*external referer*/@cms_parse_url_safe($myrow['referer'], PHP_URL_HOST) != get_base_url_hostname()))) {
-                $h[$l_referer] = $myrow['referer'];
+            if (($myrow['referer_url'] != '') && (($advanced) || (/*external referer*/@cms_parse_url_safe($myrow['referer_url'], PHP_URL_HOST) != get_base_url_hostname()))) {
+                $h[$l_referer] = $myrow['referer_url'];
             }
 
             $h[$l_tracking_code] = $myrow['tracking_code'];

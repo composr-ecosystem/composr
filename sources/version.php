@@ -85,7 +85,7 @@ function cms_version_time() : int
  */
 function cms_version_time_db() : int
 {
-    return 1728671740;
+    return 1728772485;
 }
 
 /**

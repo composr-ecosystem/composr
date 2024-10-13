@@ -1,0 +1,26 @@
+{
+    "subjects": [
+        "one",
+        "two"
+    ],
+    "basetime": 0,
+    "iterations": [
+        10
+    ]
+}
+---
+{
+    "cols": [
+        "subject",
+        "benchmark",
+        "mode"
+    ]
+}
+---
++---------+-----------+----------+
+| subject | benchmark | mode     |
++---------+-----------+----------+
+| one     | TestBench | 10.000μs |
+| two     | TestBench | 10.000μs |
++---------+-----------+----------+
+

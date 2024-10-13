@@ -1,0 +1,28 @@
+{
+    "report.generators": {
+         "my-report": {
+             "generator": "expression",
+             "break": ["benchmark"],
+             "cols": ["benchmark","subject", "set", "revs", "its", "mem_peak", "mode", "rstdev"]
+         }
+    }
+}
+---
+phpbench run --report=my-report --executor=debug MultipleSubjects.php NothingBench.php --progress=none
+---
+MultipleSubjectBench
++---------------+-----+------+-----+----------+----------+--------+
+| subject       | set | revs | its | mem_peak | mode     | rstdev |
++---------------+-----+------+-----+----------+----------+--------+
+| benchSubject1 |     | 1    | 1   | 100b     | 10.000μs | ±0.00% |
+| benchSubject2 |     | 1    | 1   | 100b     | 10.000μs | ±0.00% |
+| benchSubject3 |     | 1    | 1   | 100b     | 10.000μs | ±0.00% |
++---------------+-----+------+-----+----------+----------+--------+
+
+NothingBench
++--------------+-----+------+-----+----------+----------+--------+
+| subject      | set | revs | its | mem_peak | mode     | rstdev |
++--------------+-----+------+-----+----------+----------+--------+
+| benchNothing |     | 1    | 1   | 100b     | 10.000μs | ±0.00% |
++--------------+-----+------+-----+----------+----------+--------+
+

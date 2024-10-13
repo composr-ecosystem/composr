@@ -1,0 +1,2 @@
+first(["one", "two"]) = "one"
+first([]) = null

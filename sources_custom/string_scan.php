@@ -1510,6 +1510,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AUTOMATIC_META_EXTRACTION
         AUTO_BAN_DOS_MESSAGE
         AUTO_BAN_HACK_MESSAGE
+        AUTO_BAN_HACK_REASON
         AUTO_BAN_SUBJECT
         AUTO_EVENT_TITLE
         AUTO_FILL
@@ -5943,6 +5944,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVESTIGATE_USER_BY_IP
         INVESTIGATE_USER_BY_MEMBER_ID
         INVESTIGATE_USER_BY_USERNAME
+        INVESTIGATE_USER_BY_EMAIL_ADDRESS
         INVITES_ENABLED
         INVITES_PER_DAY
         INVOICES

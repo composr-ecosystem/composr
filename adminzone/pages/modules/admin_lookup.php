@@ -108,7 +108,9 @@ class Module_admin_lookup
 
             if (is_numeric($param)) {
                 $this->title = get_screen_title('INVESTIGATE_USER_BY_MEMBER_ID');
-            } elseif (strpos($param, '.') !== false) {
+            } elseif ((strpos($param, '.') !== false) && (strpos($param, '@') !== false)) {
+                $this->title = get_screen_title('INVESTIGATE_USER_BY_EMAIL_ADDRESS');
+            } elseif ((substr_count($param, '.') == 3) || (substr_count($param, ':') >= 2)) {
                 $this->title = get_screen_title('INVESTIGATE_USER_BY_IP');
             } else {
                 $this->title = get_screen_title('INVESTIGATE_USER_BY_USERNAME');
@@ -235,6 +237,14 @@ class Module_admin_lookup
                 $bits[count($bits) - 1] = '*';
                 $ip_masked = implode('.', $bits);
             }
+
+            // Tack on risk score
+            if (addon_installed('securitylogging')) {
+                $row['risk_score'] = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $row['ip']]));
+            } else {
+                $row['risk_score'] = null;
+            }
+
             if (!array_key_exists($ip_masked, $groups)) {
                 $groups[$ip_masked] = [];
             }
@@ -279,6 +289,7 @@ class Module_admin_lookup
                     '_DATE' => strval($row['date_and_time']),
                     'IP' => $row['ip'],
                     'BANNED' => in_array($row['ip'], $all_banned),
+                    'RISK_SCORE' => (($row['risk_score'] !== null) ? integer_format($row['risk_score']) : null),
                 ]));
                 if (in_array($row['ip'], $all_banned)) {
                     $one_sub_is_banned = true;
@@ -367,6 +378,12 @@ class Module_admin_lookup
             }
         }
 
+        // Tack on risk score
+        $risk_score = null;
+        if (($ip != '') && (addon_installed('securitylogging'))) {
+            $risk_score = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip]));
+        }
+
         // Display it all...
 
         $tpl = do_template('LOOKUP_SCREEN', [
@@ -389,6 +406,7 @@ class Module_admin_lookup
 
             'MEMBER_ID' => strval($member_id),
             'IP' => $ip,
+            'RISK_SCORE' => (($risk_score !== null) ? integer_format($risk_score) : null),
             'USERNAME' => $username,
             'EMAIL_ADDRESS' => $email_address,
 
@@ -443,7 +461,7 @@ class Module_admin_lookup
             $fields['POST_DATA'] = $row['post'];
         }
 
-        $fields['REFERER'] = $row['referer'];
+        $fields['REFERER'] = $row['referer_url'];
 
         $fields['USER_AGENT'] = $row['browser'];
 

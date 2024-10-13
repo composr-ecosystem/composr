@@ -1607,12 +1607,13 @@ function fatal_exit($text, bool $log_error = true, int $http_status = 500)
  * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
  * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
+ * @param  integer $risk_score The default risk score for this hack attack; could be overridden by advanced banning
  * @exits
  */
-function log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '')
+function log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '', int $risk_score = 10)
 {
     require_code('failure');
-    _log_hack_attack_and_exit($reason, $reason_param_a, $reason_param_b);
+    _log_hack_attack_and_exit($reason, $reason_param_a, $reason_param_b, $risk_score);
 }
 
 /**

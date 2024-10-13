@@ -165,6 +165,12 @@ function cns_delete_poll(int $poll_id, string $reason = '', bool $check_perms = 
     $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', ['pa_poll_id' => $poll_id]);
     $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', ['pv_poll_id' => $poll_id]);
 
+    // Also reverse all points for this poll
+    if (addon_installed('points')) {
+        require_code('points2');
+        points_transactions_reverse_all(true, null, null, 'topic_poll', '', strval($poll_id));
+    }
+
     require_code('cns_general_action2');
     cns_mod_log_it('DELETE_TOPIC_POLL', strval($topic_id) . ':' . strval($poll_id), $name, $reason);
 
@@ -420,7 +426,7 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
     // Reverse points
     if (addon_installed('points')) {
         require_code('points2');
-        points_transactions_reverse_all(null, null, null, 'topic_poll', 'vote', strval($poll['id']));
+        points_transactions_reverse_all(null, null, $member_id, 'topic_poll', 'vote', strval($poll['id']));
     }
 
     // Log the revocation

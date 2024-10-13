@@ -2450,10 +2450,11 @@ function _form_input_date(string $name, bool $required, bool $null_default, bool
     $_default_time = filter_form_field_default($name, ($default_time === null) ? '' : strval($default_time));
     $default_time = ($_default_time == '') ? null : intval($_default_time);
 
+    if ($timezone === null) {
+        $timezone = get_users_timezone();
+    }
+
     if (($default_time !== null) && ($handle_timezone)) {
-        if ($timezone === null) {
-            $timezone = get_users_timezone();
-        }
         $default_time = tz_time($default_time, $timezone);
     }
 
@@ -2526,6 +2527,8 @@ function _form_input_date(string $name, bool $required, bool $null_default, bool
         'MAX_DATE_DAY' => ($year_end === null) ? '' : '31',
         'MAX_DATE_MONTH' => ($year_end === null) ? '' : '12',
         'MAX_DATE_YEAR' => ($year_end === null) ? '' : strval($year_end),
+
+        'TIMEZONE' => $timezone,
 
         'AUTOCOMPLETE' => $autocomplete,
         'READ_ONLY' => $read_only ? strval(1) : strval(0)

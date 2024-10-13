@@ -73,7 +73,7 @@ class stats_test_set extends cms_test_case
                 [],
                 ['member_id' => 2],
                 ['browser' => 'Mozilla Firefox'],
-                ['referer' => 'https://example.com'],
+                ['referer_url' => 'https://example.com'],
             ],
             'f_invites' => [[]],
             'stats_link_tracker' => [[]],
@@ -139,6 +139,10 @@ class stats_test_set extends cms_test_case
             $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_lifetime', 1000);
         }
 
+        if (addon_installed('cms_homesite')) {
+            $dummy_data['relayed_errors'] = [[], ['resolved' => 0], ['resolved' => 1]];
+        }
+
         // Remove old preprocessed stats so we can force pre-processing again
         $GLOBALS['SITE_DB']->query_delete('stats_preprocessed');
         $GLOBALS['SITE_DB']->query_delete('stats_preprocessed_flat');
@@ -189,6 +193,9 @@ class stats_test_set extends cms_test_case
         foreach ($rows as $row) {
             $buckets_existing[] = $row['p_bucket'];
         }
+
+        // Exceptions
+        $buckets_existing[] = 'tracker_issue_activity'; // We cannot populate dummy data on MantisBT because we do not track its database meta
 
         $buckets = array_unique($buckets);
         $buckets_existing = array_unique($buckets_existing);

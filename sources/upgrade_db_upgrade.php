@@ -789,6 +789,13 @@ function database_specific() : bool
         $done_something = true;
     }
 
+    // LEGACY: (11.beta4) referer also changed in hackattack table
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1728772485)) {
+        $GLOBALS['SITE_DB']->alter_table_field('hackattack', 'referer', 'URLPATH', 'referer_url');
+
+        $done_something = true;
+    }
+
     return $done_something;
 }
 

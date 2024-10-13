@@ -212,7 +212,7 @@ class Hook_addon_registry_securitylogging
         return lorem_globalise(do_lorem_template('HACK_ATTEMPT_MAIL', [
             'STACK_TRACE' => lorem_phrase(),
             'USER_AGENT' => lorem_phrase(),
-            'REFERER' => lorem_phrase(),
+            'REFERER_URL' => lorem_phrase(),
             'USER_OS' => lorem_phrase(),
             'REASON' => lorem_phrase(),
             'IP' => placeholder_ip(),
@@ -256,15 +256,15 @@ class Hook_addon_registry_securitylogging
         return lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'USER_AGENT' => lorem_phrase(),
-            'REFERER' => lorem_phrase(),
+            'REFERER_URL' => lorem_phrase(),
             'USER_OS' => lorem_phrase(),
             'REASON' => lorem_phrase(),
             'IP' => lorem_phrase(),
             'USERNAME' => lorem_word(),
             'POST' => lorem_phrase(),
             'URL' => placeholder_url(),
-            '_PERCENTAGE_SCORE' => placeholder_number(),
-            'PERCENTAGE_SCORE' => placeholder_number(),
+            '_RISK_SCORE' => placeholder_number(),
+            'RISK_SCORE' => placeholder_number(),
         ]), null, '', true);
     }
 
@@ -285,6 +285,7 @@ class Hook_addon_registry_securitylogging
                 '_DATE' => placeholder_date(),
                 'IP' => placeholder_ip(),
                 'BANNED' => do_lang_tempcode('YES'),
+                'RISK_SCORE' => placeholder_number(),
             ]));
         }
 
@@ -304,6 +305,7 @@ class Hook_addon_registry_securitylogging
             'MEMBER_BANNED' => lorem_phrase(),
             'MEMBER_ID' => placeholder_numeric_id(),
             'IP' => placeholder_ip(),
+            'RISK_SCORE' => placeholder_number(),
             'EMAIL_ADDRESS' => lorem_phrase(),
             'USERNAME' => lorem_word(),
             'SEARCH_URL' => placeholder_url(),

@@ -719,14 +719,15 @@ function _get_specify_url(int $member_id, string $specify_name, string $upload_f
             }
         }
 
-        // Its not in the upload folder, so maybe we aren't allowed to download it
+        // Are we allowed to download it? (NB: we already checked against bad file extensions in get_url)
         if (
             (
-                (substr($url[0], 0, strlen($upload_folder) + 1) != $upload_folder . '/') &&
-                (substr($url[0], 0, strlen('data/images/') + 1) != 'data/images/') &&
+                (substr($url[0], 0, strlen($upload_folder) + 1) != $upload_folder . '/') && // Not in the uploads folder
+                (substr($url[0], 0, strlen('data/images/') + 1) != 'data/images/') && // Not in the images folder
+                (substr($url[0], 0, strlen('data_custom/images/') + 1) != 'data_custom/images/') && // Not in the custom images folder
                 (preg_match('#^[^\?\.]*\.(m4v|mp4|f4v|mpeg|mpg|webm|ogv|png|gif|jpg|jpeg|jpe)$#', $url[0]) == 0)/*Streaming/compression plugins can mess up our script detection so safelist some formats*/
             ) ||
-            (strpos($url[0], '..') !== false)
+            (strpos($url[0], '..') !== false) // Always check against URLs containing a directory traversal
         ) {
             $myfile = @fopen(get_custom_file_base() . '/' . rawurldecode($url[0]), 'rb');
             if ($myfile !== false) {
@@ -742,7 +743,7 @@ function _get_specify_url(int $member_id, string $specify_name, string $upload_f
                 $missing_ok = true;
             } else {
                 if (substr($shouldbe, 0, 8000) !== substr($actuallyis->data, 0, 8000)) {
-                    log_hack_attack_and_exit('TRY_TO_DOWNLOAD_SCRIPT');
+                    log_hack_attack_and_exit('DOWNLOAD_PRIVATE_URL_HACK');
                 }
             }
         }

@@ -51,7 +51,7 @@ foreach ($advertiser_sessions as $session) {
     echo '<b>Tracking information for <u>' . $from . '</u> visitor</b> (' . $session['ip'] . ')...<br />';
     $places = $GLOBALS['SITE_DB']->query('SELECT the_page,date_and_time,referer FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE member_id=' . strval($user) . ' AND date_and_time>=' . strval($session['date_and_time']) . ' ORDER BY date_and_time');
     foreach ($places as $place) {
-        echo '<p>' . escape_html($place['the_page']) . ' at ' . date('Y-m-d H:i:s', $place['date_and_time']) . ' (from ' . escape_html(substr($place['referer'], 0, 200)) . ')</p>';
+        echo '<p>' . escape_html($place['the_page']) . ' at ' . date('Y-m-d H:i:s', $place['date_and_time']) . ' (from ' . escape_html(substr($place['referer_url'], 0, 200)) . ')</p>';
     }
 
     $ip = $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'ip', array('the_page' => 'site/pages/modules/join.php', 'member_id' => $user), '', 1);

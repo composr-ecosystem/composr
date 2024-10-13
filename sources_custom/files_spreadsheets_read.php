@@ -56,7 +56,7 @@ function spreadsheet_open_read(string $path, ?string $filename = null, int $algo
         case 'xlsx':
         case 'ods':
             require_code('files_spreadsheets_read__spout');
-            return new CMS_Spout_Reader($path, $filename, $algorithm, $trim, $default_charset);
+            return new CMS_OpenSpout_Reader($path, $filename, $algorithm, $trim, $default_charset);
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));

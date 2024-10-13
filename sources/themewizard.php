@@ -97,11 +97,15 @@ function load_themewizard_params_from_theme(string $theme, bool $guess_images_if
 /**
  * Find whether a theme is dark.
  *
- * @param  ID_TEXT $theme The theme name
+ * @param  ?ID_TEXT $theme The theme name (null: the current theme)
  * @return boolean Whether the theme is dark
  */
-function find_theme_dark(string $theme) : bool
+function find_theme_dark(?string $theme = null) : bool
 {
+    if ($theme === null) {
+        $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
+    }
+
     global $THEME_DARK_CACHE;
     if (isset($THEME_DARK_CACHE[$theme])) {
         return $THEME_DARK_CACHE[$theme];

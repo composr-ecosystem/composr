@@ -601,16 +601,16 @@ function _log_hack_attack_matches(array $specifier, string $reason, string $reas
  * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
  * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
+ * @param  integer $risk_score The default risk score for this hack attack; could be overridden by advanced banning
  * @ignore
  * @exits
  */
-function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '')
+function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '', int $risk_score = 10)
 {
     // Default control settings
     $silent_to_user = false;
     $silent_to_staff_notifications = false;
     $silent_to_staff_log = false;
-    $percentage_score = 100;
 
     // Read control from XML
     require_code('input_filter');
@@ -626,8 +626,11 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
             if ($specifier['silent_to_staff_log'] !== null) {
                 $silent_to_staff_log = $specifier['silent_to_staff_log'];
             }
-            if ($specifier['percentage_score'] !== null) {
-                $percentage_score = $specifier['percentage_score'];
+            if ($specifier['percentage_score'] !== null) { // LEGACY: replaced by risk_score in 11 beta4
+                $risk_score = intval(ceil(intval($specifier['percentage_score']) / 10));
+            }
+            if ($specifier['risk_score'] !== null) {
+                $risk_score = intval($specifier['risk_score']);
             }
         }
     }
@@ -667,17 +670,19 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     // Automatic ban needed?...
 
-    $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', ['ip' => $ip]) + $percentage_score) / 100.0;
+    $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip]) + $risk_score);
     $hack_threshold = intval(get_option('hack_ban_threshold'));
+
+    // Super administrators do not get risk scores
     if ((array_key_exists('FORUM_DRIVER', $GLOBALS)) && (function_exists('get_member')) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
-        $count = 0.0;
+        $count = 0;
     }
 
     $post = json_encode($_POST);
 
     $new_row = [
         'user_agent' => cms_mb_substr(get_browser_string(), 0, 255),
-        'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
+        'referer_url' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
         'user_os' => cms_mb_substr(get_os_string(), 0, 255),
         'reason' => $reason,
         'reason_param_a' => cms_mb_substr($reason_param_a, 0, 255),
@@ -687,12 +692,12 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
         'member_id' => $id,
         'date_and_time' => time(),
         'ip' => $ip,
-        'percentage_score' => $percentage_score,
+        'risk_score' => $risk_score,
         'silent_to_staff_log' => $silent_to_staff_log ? 1 : 0,
     ];
 
     $ip_ban_todo = null;
-    if (($count >= floatval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
+    if (($count >= intval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
 
         if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {
@@ -726,7 +731,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
             // Add ban...
 
-            $ban_happened = add_ip_ban($ip, $full_reason);
+            $ban_happened = add_ip_ban($ip, do_lang('AUTO_BAN_HACK_REASON'));
 
             // Prepare notification text...
 
@@ -761,7 +766,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
                 '_GUID' => '6253b3c42c5e6c70d20afa9d1f5b40bd',
                 'STACK_TRACE' => $stack_trace,
                 'USER_AGENT' => get_browser_string(),
-                'REFERER' => $_SERVER['HTTP_REFERER'],
+                'REFERER_URL' => $_SERVER['HTTP_REFERER'],
                 'USER_OS' => get_os_string(),
                 'REASON' => $reason_full,
                 'IP' => $ip,

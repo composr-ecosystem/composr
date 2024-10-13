@@ -284,8 +284,9 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
     if ($poll_id !== null) {
         require_code('cns_polls_action');
         require_code('cns_polls_action2');
-        cns_delete_poll($poll_id, '', false);
+        cns_delete_poll($poll_id, $reason, false);
     }
+
     $GLOBALS['FORUM_DB']->query_delete('f_topics', ['id' => $topic_id], '', 1);
     $GLOBALS['FORUM_DB']->query_delete('f_read_logs', ['l_topic_id' => $topic_id]);
     require_code('notifications');

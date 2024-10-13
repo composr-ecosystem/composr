@@ -52,6 +52,6 @@ class Hook_config_hack_ban_threshold
      */
     public function get_default() : ?string
     {
-        return '5';
+        return '50';
     }
 }

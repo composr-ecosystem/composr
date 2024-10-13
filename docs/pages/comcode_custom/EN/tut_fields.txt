@@ -1338,10 +1338,10 @@ NB: There is no special styling by default: this field exists so as to provide a
 
 {| 15em wide
 ! Type label
-| A date/time
+| A date and time (converts to a member's timezone automatically)
 |-
 ! Storage format (for programmer reference)
-| yyyy-mm-dd hh:mm, or blank
+| yyyy-mm-dd hh:mm, or blank (input is assumed in member's time zone and converted to UTC before storage)
 |-
 ! Special default values
 | [i]Y-X[/i], where X is a number (whatever year the current year would be if X was subtracted)

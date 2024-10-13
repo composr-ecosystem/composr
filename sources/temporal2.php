@@ -90,6 +90,7 @@ function _get_timezone_list() : array
 
 /**
  * Sanitise a POST inputted date, and get the date/time components.
+ * This does not support time zones. Use post_param_date_components_tz instead.
  *
  * @param  ID_TEXT $stub The stub of the parameter name (stub_year, stub_month, stub_day, stub_hour, stub_minute)
  * @param  ?integer $year Default year (null: none)
@@ -102,7 +103,6 @@ function post_param_date_components(string $stub, ?int $year = null, ?int $month
 {
     $default_ret = [$year, $month, $day, 0, 0, 0];
 
-    $timezone = post_param_string('timezone', get_users_timezone());
     if ($get_also) {
         $date = either_param_string($stub, null);
         if ($date !== null) { // HTML5 input style
@@ -233,7 +233,7 @@ function _post_param_date(string $stub, bool $get_also = false, bool $do_timezon
 {
     require_code('temporal');
 
-    $timezone = post_param_string('timezone', get_users_timezone());
+    $timezone = post_param_string($stub . '_timezone', get_users_timezone());
 
     list($year, $month, $day, $hour, $minute, $seconds) = post_param_date_components($stub, null, null, null, $get_also);
     if ($year === null) {
@@ -246,4 +246,26 @@ function _post_param_date(string $stub, bool $get_also = false, bool $do_timezon
     }
 
     return $time;
+}
+
+/**
+ * Sanitise a POST inputted date with a timezone, and get the UTC date components for the inputted date.
+ *
+ * @param  ID_TEXT $stub The stub of the parameter name (stub_year, stub_month, stub_day, stub_hour, stub_minute)
+ * @param  boolean $get_also Whether to allow over get parameters also
+ * @return array The date/time components (null: no input date was chosen)
+ */
+function post_param_date_components_utc(string $stub, bool $get_also = false) : ?array
+{
+    $timestamp = _post_param_date($stub, $get_also, true);
+    if ($timestamp === null) {
+        return null;
+    }
+
+    require_code('temporal');
+
+    $date = cms_date('Y-n-j-G-i-s', $timestamp);
+    list($year, $month, $day, $hour, $minute, $second) = explode("-", $date);
+
+    return [intval($year), intval($month), intval($day), intval($hour), intval($minute), intval($second)];
 }

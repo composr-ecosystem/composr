@@ -88,17 +88,61 @@ function _parse_color_pool_string(string $str) : array
  */
 function _generate_graph_color_pool(array &$color_pool)
 {
-    // Useful tool: http://phrogz.net/css/distinct-colors.html
+    // Add 3 colours based on theme and seed
+    require_code('themewizard');
+    require_code('themes2');
+    $seed = find_theme_seed();
+    $dark = find_theme_dark();
+    list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $GLOBALS['FORUM_DRIVER']->get_theme(), 'equations');
+    for ($i = 20; $i <= 90; $i += 35) {
+        $expression = strval($i) . '% BW + ' . strval(100 - $i) . '% seed';
+        $tree = parse_themewizard_css_colour_expression($expression);
+        $result = execute_themewizard_css_colour_expression($tree, $colours);
+        if ($result !== null) {
+            $color_pool[] = '#' . $result;
+        }
+    }
 
-    $color_pool[] = '#d15858';
-    $color_pool[] = '#d18658';
-    $color_pool[] = '#d1b558';
-    $color_pool[] = '#58d17c';
-    $color_pool[] = '#58c9d1';
-    $color_pool[] = '#589bd1';
-    $color_pool[] = '#586cd1';
-    $color_pool[] = '#a158d1';
-    $color_pool[] = '#d158a5';
+    // Now add colours based on Material Design
+    if ($dark) {
+        $color_pool[] = '#FF8A80';
+        $color_pool[] = '#FF80AB';
+        $color_pool[] = '#EA80FC';
+        $color_pool[] = '#B388FF';
+        $color_pool[] = '#8C9EFF';
+        $color_pool[] = '#82B1FF';
+        $color_pool[] = '#80D8FF';
+        $color_pool[] = '#84FFFF';
+        $color_pool[] = '#A7FFEB';
+        $color_pool[] = '#B9F6CA';
+        $color_pool[] = '#CCFF90';
+        $color_pool[] = '#F4FF81';
+        $color_pool[] = '#FFFF8D';
+        $color_pool[] = '#FFE57F';
+        $color_pool[] = '#FFD180';
+        $color_pool[] = '#FF9E80';
+        $color_pool[] = '#D7CCC8';
+        $color_pool[] = '#CFD8DC';
+    } else {
+        $color_pool[] = '#D50000';
+        $color_pool[] = '#C51162';
+        $color_pool[] = '#AA00FF';
+        $color_pool[] = '#6200EA';
+        $color_pool[] = '#304FFE';
+        $color_pool[] = '#2962FF';
+        $color_pool[] = '#0091EA';
+        $color_pool[] = '#00B8D4';
+        $color_pool[] = '#00BFA5';
+        $color_pool[] = '#00C853';
+        $color_pool[] = '#64DD17';
+        $color_pool[] = '#AEEA00';
+        $color_pool[] = '#FFD600';
+        $color_pool[] = '#FFAB00';
+        $color_pool[] = '#FF6D00';
+        $color_pool[] = '#DD2C00';
+        $color_pool[] = '#3E2723';
+        $color_pool[] = '#263238';
+    }
 }
 
 /**

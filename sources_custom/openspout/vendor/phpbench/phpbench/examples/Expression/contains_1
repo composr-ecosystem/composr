@@ -1,0 +1,3 @@
+contains([2, 3, 4], 1) = false
+contains([1, 3, 4], 1) = true
+contains([1, "hello", 4], "hello") = true

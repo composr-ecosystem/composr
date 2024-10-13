@@ -1,0 +1,22 @@
+parameters:
+    level: 6
+    paths:
+        - lib
+        - examples/Extension
+        - extensions/xdebug/lib
+        - tests
+    excludePaths:
+        - tests/Workspace
+        - tests/Unit/Reflection/reflector
+        - tests/Unit/Benchmark/findertest
+        - tests/System/benchmarks
+        - tests/Unit/Executor/benchmarks
+        - lib/Path/Path.php
+    typeAliases:
+        parameters: 'array<string,mixed>'
+        tableRowArray: 'array<string,\PhpBench\Expression\Ast\Node>'
+        tableColumnDefinition: 'array<string,mixed>'
+    stubFiles:
+        - phpstan/Container.stub
+includes:
+    - phpstan-baseline.neon

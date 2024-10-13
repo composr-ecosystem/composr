@@ -153,7 +153,7 @@ class Hook_fields_date
                 }
                 $time = cms_mktime(0, 0, 0, intval($date_bits[1]), intval($date_bits[2]), @intval($date_bits[0]));
             }
-            $ev = get_timezoned_date($time, false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $ev = get_timezoned_date($time, false, true);
         }
         return escape_html($ev);
     }
@@ -230,7 +230,7 @@ class Hook_fields_date
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
-        return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($actual_value == ''), false, $time, $years_to_show, $min_year, null, true, null, true, $autocomplete);
+        return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($actual_value == ''), false, $time, $years_to_show, $min_year, null, true, null, false, $autocomplete);
     }
 
     /**

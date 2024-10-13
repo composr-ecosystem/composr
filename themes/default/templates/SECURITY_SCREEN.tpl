@@ -4,10 +4,6 @@
 <div data-tpl="securityScreen">
 	{TITLE}
 
-	<h2>{!FAILED_LOGINS}</h2>
-
-	{FAILED_LOGINS}
-
 	<h2>{!SECURITY_ALERTS}</h2>
 
 	<p>
@@ -25,4 +21,8 @@
 			</p>
 		</form>
 	{+END}
+
+	<h2>{!FAILED_LOGINS}</h2>
+
+	{FAILED_LOGINS}
 </div>

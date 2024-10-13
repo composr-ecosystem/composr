@@ -222,16 +222,16 @@ The following types of alert (hack-attack codenames) are defined:
  - [tt]ASCII_ENTITY_URL_HACK[/tt], The user introduced HTML into a Comcode HTML tag that used ASCII-encoded entities. This is likely to be innocent, but is blocked because it can be used to trick JavaScript filtration
  - [tt]SCRIPT_URL_HACK[/tt] / [tt]SCRIPT_URL_HACK_2[/tt], This is highly likely to be a hack attempt, as a user explicitly specified a URL which was code and not a real URL
  - [tt]BLACKHOLE_SPAM_HACK[/tt], This is a blocked spam attempt, where the anti-spam blackhole feature was activated -- this would only happen if a spam bot was posting and can be detected early, so doesn't go through the spam heuristics system
- - [tt]TRY_TO_DOWNLOAD_SCRIPT[/tt], The user tried to add a download with a manual URL that links to private files that are not meant to be downloadable. This may be an honest mistake -- but if it is [tt]_config.php[/tt], then it is very likely to be a hack attempt. A more detailed explanation follows further in this tutorial
+ - [tt]DOWNLOAD_PRIVATE_URL_HACK[/tt], The user tried to add a download with a manual URL that links to private files that are not meant to be downloadable. This may be an honest mistake. A more detailed explanation follows further in this tutorial
+ - [tt]TRY_TO_DOWNLOAD_SCRIPT[/tt], The user tried to add a download with a manual URL that links to a PHP file. This is very likely to be a hack attempt to try downloading potentially sensitive code (e.g. [tt]_config.php[/tt] or [tt]data_custom/errorlog.php[/tt]). A more detailed explanation follows further in this tutorial
  - [tt]TICKET_OTHERS_HACK[/tt], The user tried to access support tickets from another user. This is either a bug (we know of no way it would happen normally), or a hack attempt
- - [tt]TICKET_SYSTEM_WEIRD[/tt], The user tried to access a support ticket with an non-standard name. This is either a bug, or a hack attempt; if it is a hack attempt, it is probably not one that would get anywhere even if it was not blocked
  - [tt]ORDERBY_HACK[/tt], Tried to change the SQL ordering attribute, perhaps for SQL injection
  - [tt]BYPASS_VALIDATION_HACK[/tt], The user tried to specify that their content be validated even though they had no form option to specify it as such. The user is therefore very likely to be trying to hack the site by specifying options that don't exist for them in the hope they will go unfiltered
  - [tt]HEADER_SPLIT_HACK[/tt], A URL was submitted that contains a blank line. The submitter of the content with this URL is very likely to be a hacker, as there is no conventional way this situation could be come by
  - [tt]EVAL_HACK[/tt], The EVAL command would have executed arbitrary code if it was not blocked. This is extremely likely to be a hack attempt and should be taken seriously
  - [tt]PATH_HACK[/tt], Tried to use a file path redirection to get outside intended directory
  - [tt]PHP_DOWNLOAD_INNOCENT[/tt], Somehow a PHP file got referenced in the download system. This should have been filtered by 'TRY_TO_DOWNLOAD_SCRIPT', but was not. This is a serious security breach if it happens
- - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details 30 times over a 15 minute period [or as configured] (brute-force attack)
+ - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details a certain number of times over a certain period as configured (brute-force attack)
  - [tt]ANTISPAM[/tt], The user came up against anti-spam heuristics or an integrated anti-spam service
  - [tt]CAPTCHAFAIL[/tt], The user failed filling in the CAPTCHA
  - [tt]CAPTCHAFAIL_HACK[/tt], The user failed filling in the CAPTCHA while simultaneously posting code that looks like it is from other software (the very clearest spam signal)
@@ -239,17 +239,28 @@ The following types of alert (hack-attack codenames) are defined:
  - [tt]SQL_INJECTION_HACK[/tt], The user seemed to be trying to extract database data using an SQL [tt]UNION[/tt] operator (a very clear hacker signal when Composr is not expecting it to be used)
  - [tt]HACK_ATTACK[/tt], A generic hack-attack has been raised with no further explanation given
 
-After a number ("Hack-attack ban threshold" configuration option) of hack-attack attempts an IP address will be banned, if the "Enable auto-banning" configuration option (Admin Zone > Setup > Configuration > Security options > General) is enabled.
+After an IP address accumulates a certain amount from risk scores ("Hack-attack risk score ban threshold" configuration option) it will be banned, if the "Enable auto-banning" configuration option (Admin Zone > Setup > Configuration > Security options > General) is enabled.
 Similarly and more specifically there are a number of options specifically attached to the brute force login detection for automatic bans.
 
 [title="4"]The "TRY_TO_DOWNLOAD_SCRIPT" error in detail[/title]
 
 The full error is:
 [quote]
-Tried to add a downloaded file that points to a script: so they could get the script contents (e.g. passwords)
+{!critical_error:TRY_TO_DOWNLOAD_SCRIPT@}
 [/quote]
 
-The error is saying that the server tried to check the URL was valid but that it found the downloaded file was different to what there was on disk. That suggests to Composr that there's a security issue, that some kind of script is behind the URL, and therefore to not allow a 'trusted' relative URL to it because direct access could bypass security layers. If you really do want to link to a script you can via an absolute URL &ndash; Composr never trusts absolute URLs.
+This error is saying that the server tried to check the URL was valid but that it pointed to a PHP file. This tells Composr it is almost certainly not a file meant for download, and that someone may be trying to download sensitive information (such as PHP files containing configuration, passwords, or errors).
+
+Unlike "DOWNLOAD_PRIVATE_URL_HACK", this is almost certainly a hack-attack attempt and should be treated seriously!
+
+[title="4"]The "DOWNLOAD_PRIVATE_URL_HACK" error in detail[/title]
+
+The full error is:
+[quote]
+{!critical_error:DOWNLOAD_PRIVATE_URL_HACK@}
+[/quote]
+
+The error is saying that the server tried to check the URL was valid but that it found the downloaded file was different to what there was on disk. That suggests to Composr that there's a security issue, that some kind of script is behind the URL or the file is not supposed to be accessed publicly, and therefore to not allow a 'trusted' relative URL to it because direct access could bypass security layers.
 
 This error could also be caused by some server configuration issue too. For example:
 1) If the server cannot download files from itself properly to check, and whatever it does manage to access is returning HTTP '200' (file found) messages. This seems unlikely but it can be surprising what weird situations happen "in the wild".
@@ -271,7 +282,7 @@ Each rule can take the following attributes:
   - [tt]silent_to_user[/tt] -- set to [tt]true[/tt] if the user should not be told a hack-attack was raised (optional, default false)
   - [tt]silent_to_staff_notifications[/tt] -- set to [tt]true[/tt] if the staff should not be sent a notification (optional, default false)
   - [tt]silent_to_staff_log[/tt] -- set to [tt]true[/tt] if the hack-attack should not show in the UI browser of the logs (optional, default false)
-  - [tt]percentage_score[/tt] -- set to a number if the hack-attack should be scaled when counting the total that have happened before an automatic ban will happening, e.g. 50 for 50% relative importance (optional, default 100)
+  - [tt]risk_score[/tt] -- set to a score according to how severe this hack-attack is perceived (10 or more is almost certainly an intentional hack-attack); once an IP address reaches the "Hack-attack risk score ban threshold", they are auto-banned (optional, default 10)
   - [tt]syndicate_as_spammer[/tt] -- set to [tt]true[/tt] if the hack-attack is related to spam and thus any ban should be syndicated out to any anti-spam partners (optional, default false)
 
 [title="3"]Failed logins[/title]

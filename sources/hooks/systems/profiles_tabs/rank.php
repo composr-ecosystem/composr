@@ -298,7 +298,7 @@ class Hook_profiles_tabs_rank
             if ($groups[$i]['RANK_THRESHOLD'] === null) {
                 $groups[$i]['RANK_THRESHOLD'] = '';
             } else {
-                $groups[$i]['RANK_THRESHOLD'] = integer_format($groups[$i]['RANK_THRESHOLD']); // TODO: small number format
+                $groups[$i]['RANK_THRESHOLD'] = integer_format($groups[$i]['RANK_THRESHOLD'], 0);
             }
         }
 

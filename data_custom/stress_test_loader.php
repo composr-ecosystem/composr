@@ -512,7 +512,7 @@ function do_work()
             'url' => get_base_url(),
             'data_post' => '',
             'user_agent' => '',
-            'referer' => '',
+            'referer_url' => '',
             'user_os' => '',
             'member_id' => db_get_first_id(),
             'date_and_time' => time(),
@@ -520,7 +520,7 @@ function do_work()
             'reason' => 'ASCII_ENTITY_URL_HACK',
             'reason_param_a' => '',
             'reason_param_b' => '',
-            'percentage_score' => 100,
+            'risk_score' => 1,
             'silent_to_staff_log' => 0,
         ]);
     }
