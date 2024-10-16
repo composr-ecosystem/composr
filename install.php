@@ -1447,6 +1447,8 @@ function step_5_ftp() : array
         exit(do_lang('INST_POST_ERROR'));
     }
 
+    $conn = false;
+
     if (!is_suexec_like()) {
         if (!function_exists('ftp_connect')) {
             warn_exit(do_lang_tempcode('NO_PHP_FTP'));
@@ -1462,7 +1464,6 @@ function step_5_ftp() : array
             $port = intval($_port);
         }
 
-        $conn = false;
         if (function_exists('ftp_ssl_connect')) {
             $conn = @ftp_ssl_connect($ftp_domain, $port);
         }
