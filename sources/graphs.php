@@ -89,17 +89,19 @@ function _parse_color_pool_string(string $str) : array
 function _generate_graph_color_pool(array &$color_pool)
 {
     // Add 3 colours based on theme and seed
-    require_code('themewizard');
-    require_code('themes2');
-    $seed = find_theme_seed();
-    $dark = find_theme_dark();
-    list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $GLOBALS['FORUM_DRIVER']->get_theme(), 'equations');
-    for ($i = 20; $i <= 90; $i += 35) {
-        $expression = strval($i) . '% BW + ' . strval(100 - $i) . '% seed';
-        $tree = parse_themewizard_css_colour_expression($expression);
-        $result = execute_themewizard_css_colour_expression($tree, $colours);
-        if ($result !== null) {
-            $color_pool[] = '#' . $result;
+    if (addon_installed('themewizard')) {
+        require_code('themewizard');
+        require_code('themes2');
+        $seed = find_theme_seed();
+        $dark = find_theme_dark();
+        list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $GLOBALS['FORUM_DRIVER']->get_theme(), 'equations');
+        for ($i = 20; $i <= 90; $i += 35) {
+            $expression = strval($i) . '% BW + ' . strval(100 - $i) . '% seed';
+            $tree = parse_themewizard_css_colour_expression($expression);
+            $result = execute_themewizard_css_colour_expression($tree, $colours);
+            if ($result !== null) {
+                $color_pool[] = '#' . $result;
+            }
         }
     }
 

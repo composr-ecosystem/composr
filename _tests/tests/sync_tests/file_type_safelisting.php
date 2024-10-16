@@ -436,7 +436,7 @@ class file_type_safelisting_test_set extends cms_test_case
         }
 
         $matches = [];
-        $num_matches = preg_match_all('#^\*\.(\w+) (text|binary)#m', $c, $matches);
+        $num_matches = preg_match_all('#^\*\.([\w\-]+) (text|binary)#m', $c, $matches);
         $found = [];
         for ($i = 0; $i < $num_matches; $i++) {
             $ext = $matches[1][$i];

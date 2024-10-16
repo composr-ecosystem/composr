@@ -120,7 +120,7 @@ class lang_misc_test_set extends cms_test_case
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
         foreach ($files as $path) {
-            if (preg_match('#^(data/ace|data/ckeditor|tracker)/#', $path) != 0) {
+            if (preg_match('#^(data/ace|data/ckeditor|tracker|sources\_custom/openspout)/#', $path) != 0) {
                 continue;
             }
 

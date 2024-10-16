@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// Use debug to automatically fix some issues
+
 /**
  * Composr test case class (unit testing).
  */
@@ -125,6 +127,7 @@ class standard_dir_files_test_set extends cms_test_case
         $contents_count = 0;
 
         require_code('files');
+        require_code('files2');
 
         $dh = opendir($dir);
         if ($dh !== false) {
@@ -151,7 +154,7 @@ class standard_dir_files_test_set extends cms_test_case
 
         if ($contents_count > 0) {
             if (
-                (preg_match('#^data/ckeditor(/|$)#', $dir_stub) == 0) && // We do not bother for CKEditor, it is none interesting and they do not ship these files themselves - and we want upgrading to be easy
+                //(preg_match('#^data/ckeditor(/|$)#', $dir_stub) == 0) && // Actually, we have to run for CKEditor because despite them not shipping these files, if we do not put them in ourselves, it opens the door to file index attacks.
                 (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) // Not in codechecker (we need to call CQC)
             ) {
                 if (
@@ -162,7 +165,8 @@ class standard_dir_files_test_set extends cms_test_case
                     $git_msg = ' ; git add -f "' . $dir . '/index.html"';
                     if ($this->debug) {
                         if (!$ok) {
-                            echo $msg . "\n";
+                            cms_file_put_contents_safe($dir . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                            $this->dump($dir, 'Attempted adding index.html into:');
                         }
                     } else {
                         $this->assertTrue($ok, $msg . $git_msg);
@@ -193,7 +197,9 @@ class standard_dir_files_test_set extends cms_test_case
                 $git_msg = ' ; git add "' . $dir . '/.htaccess"';
                 if ($this->debug) {
                     if (!$ok) {
-                        echo $msg . "\n";
+                        $contents = cms_file_get_contents_safe(get_file_base() . '/' . $best_htaccess);
+                        cms_file_put_contents_safe($dir . '/.htaccess', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                        $this->dump($dir, 'Attempted adding .htaccess into:');
                     }
                 } else {
                     $this->assertTrue($ok, $msg . $git_msg);

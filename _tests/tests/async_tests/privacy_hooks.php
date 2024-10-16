@@ -373,7 +373,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'authors' => ['url'],
                     'banners' => ['site_url'],
                     'download_downloads' => ['url_redirect'],
-                    'hackattack' => ['url'],
+                    'hackattack' => ['url', 'referer_url'],
                     'logged' => ['website_url'],
                     'may_feature' => ['url'],
                     'relayed_errors' => ['website_url'],
