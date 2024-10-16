@@ -20,6 +20,9 @@ class critical_error_display_test_set extends cms_test_case
 {
     public function testCriticalErrorScreen()
     {
+        $info = 'This test may fail if you have a PHP cache enabled and it does not pick up on renaming of the config file.';
+        $this->dump($info, 'INFO');
+
         $e_path = get_file_base() . '/_critical_error.html';
         file_put_contents($e_path, 'xxx123');
 

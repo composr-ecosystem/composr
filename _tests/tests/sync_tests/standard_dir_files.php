@@ -119,6 +119,10 @@ class standard_dir_files_test_set extends cms_test_case
 
     public function testStandardDirFiles()
     {
+        if (!$this->debug) {
+            echo 'You can automatically fix testStandardDirFiles issues when specifying 1 for debug.' . "\n\n";
+        }
+
         $this->do_dir(get_file_base(), '');
     }
 
