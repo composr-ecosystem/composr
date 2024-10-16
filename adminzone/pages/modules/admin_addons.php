@@ -446,7 +446,7 @@ class Module_admin_addons
 
                 // Safety limit
                 if (count($file_list) > 299) {
-                    $_file_list = ['Too many to list'];
+                    $_file_list = [do_lang('ADDON_TOO_MANY_FILES')];
                 } else {
                     $_file_list = $file_list;
                 }
@@ -501,7 +501,7 @@ class Module_admin_addons
 
                 // Safety limit
                 if (count($file_list) > 299) {
-                    $_file_list = ['Too many to list'];
+                    $_file_list = [do_lang('ADDON_TOO_MANY_FILES')];
                 } else {
                     $_file_list = $file_list;
                 }
