@@ -213,6 +213,7 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/hooks/endpoints/cms_homesite/tracker_sponsorship.php',
             'sources_custom/hooks/endpoints/cms_homesite/user_stats.php',
             'sources_custom/hooks/endpoints/cms_homesite/version.php',
+            'sources_custom/hooks/modules/admin_stats/cms_homesite.php',
             'sources_custom/hooks/systems/addon_registry/cms_homesite.php',
             'sources_custom/hooks/systems/health_checks/gitlab.php',
             'sources_custom/hooks/systems/notifications/tracker_issue_added.php',

@@ -1836,7 +1836,6 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 
 .global-message strong {
 	text-shadow: 1px 0px 0px {$GET,message_highlighted_part};
-	font-weight: normal;
 }
 
 .global-message p {

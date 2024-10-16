@@ -450,7 +450,7 @@ class filtering_test_set extends cms_test_case
                 $_POST['filter_' . $key . '_hour'] = 3;
                 $_POST['filter_' . $key . '_minute'] = 33;
                 $_POST['filter_' . $key . '_seconds'] = 20;
-                $_POST['timezone'] = 'UTC';
+                $_POST['filter_' . $key . '_timezone'] = 'UTC';
             } else {
                 $_POST['filter_' . $key] = $val;
             }

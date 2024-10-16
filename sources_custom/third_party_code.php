@@ -43,7 +43,7 @@ function list_untouchable_third_party_directories()
         'sources_custom/geshi',
         'sources_custom/getid3',
         'sources_custom/sabredav',
-        'sources_custom/spout',
+        'sources_custom/openspout',
         'sources_custom/swift_mailer',
         'sources_custom/Transliterator',
         'sources_custom/hybridauth',

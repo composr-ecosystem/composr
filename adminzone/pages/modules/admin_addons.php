@@ -444,12 +444,19 @@ class Module_admin_addons
                 $description = $row['description'];
                 $file_list = $row['files'];
 
+                // Safety limit
+                if (count($file_list) > 299) {
+                    $_file_list = [do_lang('ADDON_TOO_MANY_FILES')];
+                } else {
+                    $_file_list = $file_list;
+                }
+
                 $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', [
                     '_GUID' => '9a06f5a9c9e3085c10ab7fb17c3efcd1',
                     'UPDATED_ADDONS' => $updated,
                     'DESCRIPTION' => $description,
                     'DESCRIPTION_PARSED' => static_evaluate_tempcode(comcode_to_tempcode($description)),
-                    'FILE_LIST' => $file_list,
+                    'FILE_LIST' => $_file_list,
                     'COLOUR' => $colour,
                     'STATUS' => $status,
                     'NAME' => $addon_name,
@@ -490,6 +497,14 @@ class Module_admin_addons
                 $addon_tpl = null;
 
                 $category = $addon_info['category'];
+                $file_list = $addon_info['files'];
+
+                // Safety limit
+                if (count($file_list) > 299) {
+                    $_file_list = [do_lang('ADDON_TOO_MANY_FILES')];
+                } else {
+                    $_file_list = $file_list;
+                }
 
                 if ($do_caching) {
                     $cache_identifier = $addon_name;
@@ -522,7 +537,6 @@ class Module_admin_addons
                     }
                     $status = do_lang_tempcode('STATUS_NOT_INSTALLED');
                     $description = $addon_info['description'];
-                    $file_list = $addon_info['files'];
                     if ($addon_info['version'] == '(version-synched)') {
                         $addon_info['version'] = float_to_raw_string(cms_version_number());
                     }
@@ -532,7 +546,7 @@ class Module_admin_addons
                         'UPDATED_ADDONS' => false,
                         'DESCRIPTION' => $description,
                         'DESCRIPTION_PARSED' => comcode_to_tempcode($description),
-                        'FILE_LIST' => $file_list,
+                        'FILE_LIST' => $_file_list,
                         'COLOUR' => $colour,
                         'STATUS' => $status,
                         'NAME' => $addon_name,

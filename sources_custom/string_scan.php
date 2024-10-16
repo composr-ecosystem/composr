@@ -8599,6 +8599,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _STATS_ENDPOINT
         _UPGRADER_DATABASE_UPGRADE
         _UPGRADER_UPGRADE_MODULES
+        DOWNLOAD_PRIVATE_URL_HACK
+        ADDON_TOO_MANY_FILES
     ')));
 
     $non_admin_files = [

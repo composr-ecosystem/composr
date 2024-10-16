@@ -253,7 +253,7 @@ function _post_param_date(string $stub, bool $get_also = false, bool $do_timezon
  *
  * @param  ID_TEXT $stub The stub of the parameter name (stub_year, stub_month, stub_day, stub_hour, stub_minute)
  * @param  boolean $get_also Whether to allow over get parameters also
- * @return array The date/time components (null: no input date was chosen)
+ * @return ?array The date/time components (null: no input date was chosen)
  */
 function post_param_date_components_utc(string $stub, bool $get_also = false) : ?array
 {

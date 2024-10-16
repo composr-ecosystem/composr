@@ -25,7 +25,7 @@
 	<exclude-pattern>sources_custom/geshi.php</exclude-pattern>
 	<exclude-pattern>sources_custom/getid3</exclude-pattern>
 	<exclude-pattern>sources_custom/sabredav</exclude-pattern>
-	<exclude-pattern>sources_custom/spout</exclude-pattern>
+	<exclude-pattern>sources_custom/openspout</exclude-pattern>
 	<exclude-pattern>sources_custom/sugar_crm_lib.php</exclude-pattern>
 	<exclude-pattern>sources_custom/swift_mailer</exclude-pattern>
 	<exclude-pattern>sources_custom/Transliterator</exclude-pattern>
