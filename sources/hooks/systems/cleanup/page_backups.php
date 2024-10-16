@@ -57,6 +57,8 @@ class Hook_cleanup_page_backups
             $zones = find_all_zones(false, false, false, $start, 50);
             foreach ($zones as $zone) {
                 foreach ($langs as $lang) {
+                    $path = get_custom_file_base() . '/' . filter_naughty($zone) . '/pages/comcode/' . filter_naughty($lang);
+                    $this->process($path);
                     $path = get_custom_file_base() . '/' . filter_naughty($zone) . '/pages/comcode_custom/' . filter_naughty($lang);
                     $this->process($path);
                 }
@@ -68,18 +70,28 @@ class Hook_cleanup_page_backups
         require_code('themes2');
         $themes = array_keys(find_all_themes());
         foreach ($themes as $theme) {
+            $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/templates';
+            $this->process($path);
             $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/templates_custom';
             $this->process($path);
 
+            $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/javascript';
+            $this->process($path);
             $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/javascript_custom';
             $this->process($path);
 
+            $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/xml';
+            $this->process($path);
             $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/xml_custom';
             $this->process($path);
 
+            $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/text';
+            $this->process($path);
             $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/text_custom';
             $this->process($path);
 
+            $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css';
+            $this->process($path);
             $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom';
             $this->process($path);
         }
