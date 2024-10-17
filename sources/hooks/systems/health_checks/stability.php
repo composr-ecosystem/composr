@@ -44,6 +44,7 @@ class Hook_health_check_stability extends Hook_Health_Check
         $this->process_checks_section('testPageIntegrity', 'Page integrity (tests the configured/contextual pages only)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testBlockIntegrity', 'Block integrity (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testErrorLog', 'Error log', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testCriticalErrors', 'Critical errors directory', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
     }
@@ -233,5 +234,37 @@ class Hook_health_check_stability extends Hook_Health_Check
         } else {
             $this->stateCheckSkipped('Could not find the error log');
         }
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testCriticalErrors(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
+            return;
+        }
+        if (!is_dir(get_custom_file_base() . '/critical_errors')) {
+            $this->log('Skipped; critical_errors directory does not exist.');
+            return;
+        }
+
+        require_code('files');
+        require_code('files2');
+
+        $size = get_directory_size(get_file_base() . '/critical_errors');
+        $this->assertTrue($size < (1024 * 4)/*allow 4kb as sometimes empty directories still occupy a little space*/, 'Critical errors directory is non-empty @ ' . clean_file_size($size));
     }
 }
