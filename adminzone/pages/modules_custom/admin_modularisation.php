@@ -135,7 +135,7 @@ class Module_admin_modularisation
         $list = [];
         $list_action = null;
         $count = 0;
-        $max = 250; // Save on resource use and POST size
+        $max = 1000; // Save on resource use and POST size
         foreach ($problems as $i => $problem) {
             list($issue, $file, $addon, $description) = $problem;
 
@@ -184,6 +184,7 @@ class Module_admin_modularisation
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'FIELDS' => $fields,
             'URL' => $post_url,
+            'MODSECURITY_WORKAROUND' => true,
         ]);
     }
 

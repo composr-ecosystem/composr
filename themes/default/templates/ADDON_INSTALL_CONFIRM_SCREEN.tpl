@@ -3,7 +3,7 @@
 
 {WARNINGS}
 
-<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
+<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post" data-submit-modsecurity-workaround="1">
 	{$INSERT_FORM_POST_SECURITY}
 
 	<div class="box box---addon-install-confirm-screen"><div class="box-inner">
