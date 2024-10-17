@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Critical Error</title>
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                background-color: #f0f0f0;
+            }
+    
+            .error-container {
+                margin: 100px auto;
+                padding: 20px;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            }
+    
+            h1 {
+                color: #ff4444;
+            }
+    
+            p {
+                color: #666666;
+                margin-bottom: 20px;
+            }
+    
+            button {
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+    
+            button:hover {
+                background-color: #0069d9;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="error-container">
+            <h1>Critical Error</h1>
+            <p>Uh oh! It seems something has gone terribly wrong. This incident has been logged for the Composr staff.</p>
+            <p>You may wish to <a target="_blank" rel="noopener noreferrer" href="https://composr.app/report-issue.htm">report this on our tracker</a> or, if you cannot do that, e-mail us at <a href="mailto:support@composr.app">support@composr.app</a> .</p>
+            <p>Please include this error code in your report: <strong id="error_code">ERROR_CODE</strong></p>
+        </div>
+
+        <script>
+            // Get the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+    
+            // Get the error_code parameter
+            const errorCode = urlParams.get('error_code');
+    
+            // Display the error code in the paragraph element
+            document.getElementById('error_code').textContent = errorCode;
+        </script>
+    </body>
+</html>
