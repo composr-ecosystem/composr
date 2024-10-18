@@ -454,7 +454,7 @@ ul.news-entry-meta-details-col-end li {
 	right: 0;
 	padding: 20px;
 	padding-bottom: 0;
-	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
+	background-image: linear-gradient(to bottom, {$COLOR_RGBA,{$GET,WB},0.4}, {$COLOR_RGBA,{$GET,WB},0.8});
 	max-height: 100%;
 }
 
@@ -464,7 +464,7 @@ ul.news-entry-meta-details-col-end li {
 
 .block-main-news-slider .slide-news-item-details-inner {
 	display: block;
-	color: {$GET,WB};
+	color: {$GET,BW};
 }
 
 .block-main-news-slider .slide-news-item-details-inner:hover {
