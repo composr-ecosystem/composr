@@ -51,7 +51,7 @@ class Hook_cron_points_posts
      */
     public function run(?int $last_run)
     {
-        if ((!addon_installed('points')) || (get_forum_type() == 'cns')) { // Conversr awards points instantly
+        if ((!addon_installed('points')) || (!addon_installed('cns_forum')) || (get_forum_type() == 'cns')) { // Conversr awards points instantly
             return;
         }
 

@@ -29,10 +29,14 @@ class Hook_points_chat_message__add
      *
      * @param  ?MEMBER $member_id_of The ID of the member who is being viewed (null: was run from the admin ledger)
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
-     * @return array List containing label for use with aggregate point tables
+     * @return ?array List containing label for use with aggregate point tables (null: hook disabled)
      */
-    public function points_profile(?int $member_id_of, ?int $member_id_viewing) : array
+    public function points_profile(?int $member_id_of, ?int $member_id_viewing) : ?array
     {
+        if (!addon_installed('chat')) {
+            return null;
+        }
+
         return [
             'label' => do_lang('chat:COUNT_CHATPOSTS'),
         ];

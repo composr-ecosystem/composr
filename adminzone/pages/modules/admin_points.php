@@ -431,6 +431,9 @@ class Module_admin_points
         $labels = [];
         foreach ($hook_obs as $name => $hook_ob) {
             $data = $hook_ob->points_profile(null, null);
+            if ($data === null) {
+                continue;
+            }
             $selected = (($_filter_t_type != '') && (in_array($name, $filter_t_type)));
             $labels[] = [
                 'label' => $data['label'],

@@ -285,12 +285,16 @@ class Hook_profiles_tabs_rank
         $maximum_avatar_dimensions = strval(cns_get_member_best_group_property($member_id_of, 'max_avatar_width')) . ' x ' . strval(cns_get_member_best_group_property($member_id_of, 'max_avatar_height'));
 
         // Personal gallery entries
-        if (has_privilege($member_id_of, 'high_personal_gallery_limit', '')) {
-            $personal_galleries_images = intval(get_option('max_personal_gallery_images_high'));
-            $personal_galleries_videos = intval(get_option('max_personal_gallery_videos_high'));
-        } else {
-            $personal_galleries_images = intval(get_option('max_personal_gallery_images_low'));
-            $personal_galleries_videos = intval(get_option('max_personal_gallery_videos_low'));
+        $personal_galleries_images = null;
+        $personal_galleries_videos = null;
+        if (addon_installed('galleries')) {
+            if (has_privilege($member_id_of, 'high_personal_gallery_limit', '')) {
+                $personal_galleries_images = intval(get_option('max_personal_gallery_images_high'));
+                $personal_galleries_videos = intval(get_option('max_personal_gallery_videos_high'));
+            } else {
+                $personal_galleries_images = intval(get_option('max_personal_gallery_images_low'));
+                $personal_galleries_videos = intval(get_option('max_personal_gallery_videos_low'));
+            }
         }
 
         // We must now convert RANK_THRESHOLD to string for the template
@@ -334,10 +338,10 @@ class Hook_profiles_tabs_rank
             'CAN_UPLOAD_AVATARS' => has_privilege($member_id_of, 'own_avatars', '') ? '1' : '0',
             'MAXIMUM_AVATAR_DIMENSIONS' => $maximum_avatar_dimensions,
             'INFINITE_PERSONAL_GALLERY_ENTRIES' => (has_privilege($member_id_of, 'no_personal_gallery_limit', '')) ? '1' : '0',
-            'PERSONAL_GALLERY_ENTRIES_IMAGES' => integer_format($personal_galleries_images),
-            '_PERSONAL_GALLERY_ENTRIES_IMAGES' => strval($personal_galleries_images),
-            'PERSONAL_GALLERY_ENTRIES_VIDEOS' => integer_format($personal_galleries_videos),
-            '_PERSONAL_GALLERY_ENTRIES_VIDEOS' => strval($personal_galleries_videos),
+            'PERSONAL_GALLERY_ENTRIES_IMAGES' => (($personal_galleries_images !== null) ? integer_format($personal_galleries_images) : null),
+            '_PERSONAL_GALLERY_ENTRIES_IMAGES' => (($personal_galleries_images !== null) ? strval($personal_galleries_images) : null),
+            'PERSONAL_GALLERY_ENTRIES_VIDEOS' => (($personal_galleries_videos !== null) ? integer_format($personal_galleries_videos) : null),
+            '_PERSONAL_GALLERY_ENTRIES_VIDEOS' => (($personal_galleries_videos !== null) ? strval($personal_galleries_videos) : null),
             'GIFT_POINTS' => integer_format($gift_points),
             '_GIFT_POINTS' => strval($gift_points),
             'GIFT_POINTS_PER_DAY' => integer_format($gift_points_day),

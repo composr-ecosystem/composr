@@ -154,6 +154,10 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
  */
 function cns_may_edit_post_by(int $post_id, ?int $post_time, ?int $resource_owner, ?int $forum_id, ?int $member_id = null, ?bool $topic_is_closed = null, ?string &$reason = null) : bool
 {
+    if (!addon_installed('cns_forum')) {
+        return false;
+    }
+
     if ($member_id === null) {
         $member_id = get_member();
     }
@@ -227,6 +231,10 @@ function cns_may_edit_post_by(int $post_id, ?int $post_time, ?int $resource_owne
  */
 function cns_may_delete_post_by(int $post_id, ?int $post_time, ?int $resource_owner, ?int $forum_id, ?int $member_id = null, ?bool $topic_is_closed = null, ?string &$reason = null) : bool
 {
+    if (!addon_installed('cns_forum')) {
+        return false;
+    }
+
     if ($member_id === null) {
         $member_id = get_member();
     }

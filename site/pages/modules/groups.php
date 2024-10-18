@@ -814,7 +814,7 @@ class Module_groups
         require_javascript('ajax_people_lists');
 
         $forum_id = null;
-        if ($club) {
+        if ($club && addon_installed('cns_clubs')) {
             $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum_id' => intval(get_option('club_forum_parent_forum'))];
             $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);
         }

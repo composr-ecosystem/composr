@@ -100,7 +100,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         return null;
     }
 
-    $use_voting_power = ((get_forum_type() == 'cns') && (get_option('enable_poll_point_weighting') == '1') && ($row['lb_calculate_voting_power'] == 1));
+    $use_voting_power = ((addon_installed('cns_forum')) && (get_forum_type() == 'cns') && (get_option('enable_poll_point_weighting') == '1') && ($row['lb_calculate_voting_power'] == 1));
     if ($use_voting_power) {
         $total_voting_power = 0.0;
         require_code('cns_polls_action2');

@@ -757,7 +757,7 @@ function _get_specify_url(int $member_id, string $specify_name, string $upload_f
             $meta_details = get_webpage_meta_details($url[0]);
             require_code('hooks/systems/media_rendering/oembed');
             $oembed_ob = object_factory('Hook_media_rendering_oembed');
-            if ((!empty($meta_details['t_mime_type'])) && ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details)) || $oembed_ob->recognises_url($url[0])) {
+            if ((addon_installed('galleries')) && (!empty($meta_details['t_mime_type'])) && ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details)) || $oembed_ob->recognises_url($url[0])) {
                 $oembed = $oembed_ob->get_oembed_data_result($url[0], ['width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')]);
                 if (($oembed !== null) && ($oembed['type'] == 'photo')) {
                     $url[0] = preg_replace('#.*(https?://)#', '${1}', array_key_exists('url', $oembed) ? $oembed['url'] : $oembed['thumbnail_url']); // Get thumbnail, but strip noembed.com (for example) resizer-proxy prefix if there
