@@ -298,6 +298,8 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/disposable_values/cns_topic_count.php',
             'sources/hooks/systems/notifications/cns.php',
             'sources/hooks/systems/notifications/cns_staff.php',
+            'sources/hooks/systems/points/member__join.php',
+            'sources/hooks/systems/points/member__visit.php',
             'sources/hooks/systems/preview/cns_emoticon.php',
             'sources/hooks/systems/privacy/core_cns.php',
             'sources/hooks/systems/profiles_tabs/.htaccess',

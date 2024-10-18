@@ -255,6 +255,7 @@ class Hook_addon_registry_cns_forum
             'sources/hooks/systems/notifications/cns_pts.php',
             'sources/hooks/systems/notifications/cns_topic.php',
             'sources/hooks/systems/page_groupings/cns_forum.php',
+            'sources/hooks/systems/points/post__add.php',
             'sources/hooks/systems/points/topic_poll__vote.php',
             'sources/hooks/systems/preview/cns_post.php',
             'sources/hooks/systems/profiles_tabs/posts.php',
