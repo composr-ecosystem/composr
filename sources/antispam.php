@@ -396,12 +396,12 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
 
         if ($ban_happened) {
             require_code('notifications');
-            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BAN', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BAN', $user_ip, $blocked_by, [float_format($confidence_level), $additional_criteria], get_site_default_lang());
+            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BAN', $user_ip, $blocked_by, float_format($confidence_level * 100.0), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BAN', $user_ip, $blocked_by, [float_format($confidence_level * 100.0), $additional_criteria], get_site_default_lang());
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
 
-        log_hack_attack_and_exit('ANTISPAM', 'ban', float_to_raw_string($confidence_level), (($was_bannable) ? 10 : 0));
+        log_hack_attack_and_exit('ANTISPAM', 'ban', float_format($confidence_level * 100.0), (($was_bannable) ? 10 : 0));
 
         warn_exit(do_lang_tempcode('STOPPED_BY_ANTISPAM', escape_html($user_ip), escape_html($blocked_by)));
     }
@@ -411,11 +411,11 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         $spam_block_threshold = intval(get_option('spam_block_threshold'));
         if (intval($confidence_level * 100.0) >= $spam_block_threshold) {
             require_code('notifications');
-            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BLOCK', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BLOCK', $user_ip, $blocked_by, [float_format($confidence_level), $additional_criteria], get_site_default_lang());
+            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BLOCK', $user_ip, $blocked_by, float_format($confidence_level * 100.0), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BLOCK', $user_ip, $blocked_by, [float_format($confidence_level * 100.0), $additional_criteria], get_site_default_lang());
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
 
-            log_hack_attack_and_exit('ANTISPAM', 'block', float_to_raw_string($confidence_level), intval(ceil($confidence_level * 10.0)));
+            log_hack_attack_and_exit('ANTISPAM', 'block', float_format($confidence_level * 100.0), intval(ceil($confidence_level * 10.0)));
 
             warn_exit(do_lang_tempcode('STOPPED_BY_ANTISPAM', escape_html($user_ip), escape_html($blocked_by)));
         }
@@ -427,11 +427,11 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         global $SPAM_REMOVE_VALIDATION;
         $SPAM_REMOVE_VALIDATION = true;
 
-        // Only send notification if this was a POST request
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Only send notification if this was a POST request and contains interesting POST fields
+        if (($_SERVER['REQUEST_METHOD'] == 'POST') && (has_interesting_post_fields())) {
             require_code('notifications');
-            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, [float_format($confidence_level), $additional_criteria], get_site_default_lang());
+            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level * 100.0), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, [float_format($confidence_level * 100.0), $additional_criteria], get_site_default_lang());
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
     }
