@@ -30,7 +30,7 @@ abstract class Property extends Node
      *
      * This is only used in vcards
      *
-     * @var string
+     * @var string|null
      */
     public $group;
 
@@ -52,9 +52,23 @@ abstract class Property extends Node
      * In case this is a multi-value property. This string will be used as a
      * delimiter.
      *
-     * @var string|null
+     * @var string
      */
     public $delimiter = ';';
+
+    /**
+     * The line number in the original iCalendar / vCard file
+     *   that corresponds with the current node
+     *   if the node was read from a file.
+     */
+    public $lineIndex;
+
+    /**
+     * The line string from the original iCalendar / vCard file
+     *   that corresponds with the current node
+     *   if the node was read from a file.
+     */
+    public $lineString;
 
     /**
      * Creates the generic property.
@@ -67,7 +81,7 @@ abstract class Property extends Node
      * @param array             $parameters List of parameters
      * @param string            $group      The vcard property group
      */
-    public function __construct(Component $root, $name, $value = null, array $parameters = [], $group = null)
+    public function __construct(Component $root, $name, $value = null, array $parameters = [], $group = null, ?int $lineIndex = null, ?string $lineString = null)
     {
         $this->name = $name;
         $this->group = $group;
@@ -80,6 +94,14 @@ abstract class Property extends Node
 
         if (!is_null($value)) {
             $this->setValue($value);
+        }
+
+        if (!is_null($lineIndex)) {
+            $this->lineIndex = $lineIndex;
+        }
+
+        if (!is_null($lineString)) {
+            $this->lineString = $lineString;
         }
     }
 
@@ -276,6 +298,7 @@ abstract class Property extends Node
      *
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $parameters = [];
@@ -317,7 +340,7 @@ abstract class Property extends Node
      *
      * @param Xml\Writer $writer XML writer
      */
-    public function xmlSerialize(Xml\Writer $writer)
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $parameters = [];
 
@@ -387,6 +410,7 @@ abstract class Property extends Node
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($name)
     {
         if (is_int($name)) {
@@ -413,6 +437,7 @@ abstract class Property extends Node
      *
      * @return Node
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($name)
     {
         if (is_int($name)) {
@@ -433,6 +458,7 @@ abstract class Property extends Node
      * @param string $name
      * @param mixed  $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($name, $value)
     {
         if (is_int($name)) {
@@ -453,6 +479,7 @@ abstract class Property extends Node
      *
      * @param string $name
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($name)
     {
         if (is_int($name)) {

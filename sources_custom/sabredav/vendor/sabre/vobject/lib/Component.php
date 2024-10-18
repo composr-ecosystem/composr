@@ -28,7 +28,7 @@ class Component extends Node
     /**
      * A list of properties and/or sub-components.
      *
-     * @var array
+     * @var array<string, Component|Property>
      */
     protected $children = [];
 
@@ -43,12 +43,12 @@ class Component extends Node
      * an iCalendar object, this may be something like CALSCALE:GREGORIAN. To
      * ensure that this does not happen, set $defaults to false.
      *
-     * @param string $name     such as VCALENDAR, VEVENT
-     * @param bool   $defaults
+     * @param string|null $name     such as VCALENDAR, VEVENT
+     * @param bool        $defaults
      */
     public function __construct(Document $root, $name, array $children = [], $defaults = true)
     {
-        $this->name = strtoupper($name);
+        $this->name = isset($name) ? strtoupper($name) : '';
         $this->root = $root;
 
         if ($defaults) {
@@ -160,9 +160,9 @@ class Component extends Node
                     return;
                 }
             }
-        }
 
-        throw new \InvalidArgumentException('The item you passed to remove() was not a child of this component');
+            throw new \InvalidArgumentException('The item you passed to remove() was not a child of this component');
+        }
     }
 
     /**
@@ -238,7 +238,7 @@ class Component extends Node
                 return array_filter(
                     $result,
                     function ($child) use ($group) {
-                        return $child instanceof Property && strtoupper($child->group) === $group;
+                        return $child instanceof Property && (null !== $child->group ? strtoupper($child->group) : '') === $group;
                     }
                 );
             }
@@ -249,7 +249,7 @@ class Component extends Node
         $result = [];
         foreach ($this->children as $childGroup) {
             foreach ($childGroup as $child) {
-                if ($child instanceof Property && strtoupper($child->group) === $group) {
+                if ($child instanceof Property && (null !== $child->group ? strtoupper($child->group) : '') === $group) {
                     $result[] = $child;
                 }
             }
@@ -339,6 +339,7 @@ class Component extends Node
      *
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $components = [];
@@ -367,7 +368,7 @@ class Component extends Node
      *
      * @param Xml\Writer $writer XML writer
      */
-    public function xmlSerialize(Xml\Writer $writer)
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $components = [];
         $properties = [];
@@ -431,7 +432,7 @@ class Component extends Node
      *
      * @param string $name
      *
-     * @return Property
+     * @return Property|null
      */
     public function __get($name)
     {

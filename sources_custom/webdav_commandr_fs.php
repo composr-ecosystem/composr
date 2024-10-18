@@ -103,7 +103,7 @@ namespace webdav_commandr_fs {
         /**
          * Returns the last modification time, as a unix timestamp
          *
-         * @return int
+         * @return ?int The last modification time (null: no path specified)
          */
         public function getLastModified()
         {
@@ -390,7 +390,7 @@ namespace webdav_commandr_fs {
 
             throw new \Sabre\DAV\Exception\NotFound('Could not find ' . $this->path);
 
-            return null;
+            return 0;
         }
 
         /**

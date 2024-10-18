@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Sabre\HTTP;
 
-use InvalidArgumentException;
-
 /**
  * PHP SAPI.
  *
@@ -26,7 +24,7 @@ use InvalidArgumentException;
  * * php://output
  *
  * You can choose to either call all these methods statically, but you can also
- * instantiate this as an object to allow for polymorhpism.
+ * instantiate this as an object to allow for polymorphism.
  *
  * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
@@ -49,7 +47,7 @@ class Sapi
             $serverArr['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'] ?? 'CLI';
         }
 
-        // Changes by ChrisG...
+        // Composr: close the resource when we are done with it
 
         $phpInput = fopen('php://input', 'r');
 
@@ -97,41 +95,39 @@ class Sapi
         if (null !== $contentLength) {
             $output = fopen('php://output', 'wb');
             if (is_resource($body) && 'stream' == get_resource_type($body)) {
-                if (PHP_INT_SIZE > 4) {
-                    // use the dedicated function on 64 Bit systems
-                    // a workaround to make PHP more possible to use mmap based copy, see https://github.com/sabre-io/http/pull/119
-                    $left = (int) $contentLength;
-                    // copy with 4MiB chunks
-                    $chunk_size = 4 * 1024 * 1024;
-                    stream_set_chunk_size($output, $chunk_size);
-                    // If this is a partial response, flush the beginning bytes until the first position that is a multiple of the page size.
-                    $contentRange = $response->getHeader('Content-Range');
-                    // Matching "Content-Range: bytes 1234-5678/7890"
-                    if (null !== $contentRange && preg_match('/^bytes\s([0-9]+)-([0-9]+)\//i', $contentRange, $matches)) {
-                        // 4kB should be the default page size on most architectures
-                        $pageSize = 4096;
-                        $offset = (int) $matches[1];
-                        $delta = ($offset % $pageSize) > 0 ? ($pageSize - $offset % $pageSize) : 0;
-                        if ($delta > 0) {
-                            $left -= stream_copy_to_stream($body, $output, min($delta, $left));
-                        }
+                // a workaround to make PHP more possible to use mmap based copy, see https://github.com/sabre-io/http/pull/119
+                $left = (int) $contentLength;
+                // copy with 4MiB chunks
+                $chunk_size = 4 * 1024 * 1024;
+                stream_set_chunk_size($output, $chunk_size);
+                // If this is a partial response, flush the beginning bytes until the first position that is a multiple of the page size.
+                $contentRange = $response->getHeader('Content-Range');
+                // Matching "Content-Range: bytes 1234-5678/7890"
+                if (null !== $contentRange && preg_match('/^bytes\s([0-9]+)-([0-9]+)\//i', $contentRange, $matches)) {
+                    // 4kB should be the default page size on most architectures
+                    $pageSize = 4096;
+                    $offset = (int) $matches[1];
+                    $delta = ($offset % $pageSize) > 0 ? ($pageSize - $offset % $pageSize) : 0;
+                    if ($delta > 0) {
+                        $left -= stream_copy_to_stream($body, $output, min($delta, $left));
                     }
-                    while ($left > 0) {
-                        $copied = stream_copy_to_stream($body, $output, min($left, $chunk_size));
-                        // stream_copy_to_stream($src, $dest, $maxLength) must return the number of bytes copied or false in case of failure
-                        // But when the $maxLength is greater than the total number of bytes remaining in the stream,
-                        // It returns the negative number of bytes copied
-                        // So break the loop in such cases.
-                        if ($copied <= 0) {
-                            break;
-                        }
-                        $left -= $copied;
+                }
+                while ($left > 0) {
+                    $copied = stream_copy_to_stream($body, $output, min($left, $chunk_size));
+                    // stream_copy_to_stream($src, $dest, $maxLength) must return the number of bytes copied or false in case of failure
+                    // But when the $maxLength is greater than the total number of bytes remaining in the stream,
+                    // It returns the negative number of bytes copied
+                    // So break the loop in such cases.
+                    if ($copied <= 0) {
+                        break;
                     }
-                } else {
-                    // workaround for 32 Bit systems to avoid stream_copy_to_stream
-                    while (!feof($body)) {
-                        fwrite($output, fread($body, 8192));
+                    // Abort on client disconnect.
+                    // With ignore_user_abort(true), the script is not aborted on client disconnect.
+                    // To avoid reading the entire stream and dismissing the data afterward, check between the chunks if the client is still there.
+                    if (1 === ignore_user_abort() && 1 === connection_aborted()) {
+                        break;
                     }
+                    $left -= $copied;
                 }
             } else {
                 fwrite($output, $body, (int) $contentLength);
@@ -162,6 +158,7 @@ class Sapi
         $hostName = 'localhost';
 
         foreach ($serverArray as $key => $value) {
+            $key = (string) $key;
             switch ($key) {
                 case 'SERVER_PROTOCOL':
                     if ('HTTP/1.0' === $value) {
@@ -177,7 +174,7 @@ class Sapi
                     $url = $value;
                     break;
 
-                // These sometimes show up without a HTTP_ prefix
+                    // These sometimes show up without a HTTP_ prefix
                 case 'CONTENT_TYPE':
                     $headers['Content-Type'] = $value;
                     break;
@@ -185,21 +182,21 @@ class Sapi
                     $headers['Content-Length'] = $value;
                     break;
 
-                // mod_php on apache will put credentials in these variables.
-                // (fast)cgi does not usually do this, however.
+                    // mod_php on apache will put credentials in these variables.
+                    // (fast)cgi does not usually do this, however.
                 case 'PHP_AUTH_USER':
                     if (isset($serverArray['PHP_AUTH_PW'])) {
                         $headers['Authorization'] = 'Basic '.base64_encode($value.':'.$serverArray['PHP_AUTH_PW']);
                     }
                     break;
 
-                // Similarly, mod_php may also screw around with digest auth.
+                    // Similarly, mod_php may also screw around with digest auth.
                 case 'PHP_AUTH_DIGEST':
                     $headers['Authorization'] = 'Digest '.$value;
                     break;
 
-                // Apache may prefix the HTTP_AUTHORIZATION header with
-                // REDIRECT_, if mod_rewrite was used.
+                    // Apache may prefix the HTTP_AUTHORIZATION header with
+                    // REDIRECT_, if mod_rewrite was used.
                 case 'REDIRECT_HTTP_AUTHORIZATION':
                     $headers['Authorization'] = $value;
                     break;
@@ -222,7 +219,7 @@ class Sapi
                         // Normalizing it to be prettier
                         $header = strtolower(substr($key, 5));
 
-                        // Transforming dashes into spaces, and uppercasing
+                        // Transforming dashes into spaces, and upper-casing
                         // every first letter.
                         $header = ucwords(str_replace('_', ' ', $header));
 
@@ -235,11 +232,11 @@ class Sapi
         }
 
         if (null === $url) {
-            throw new InvalidArgumentException('The _SERVER array must have a REQUEST_URI key');
+            throw new \InvalidArgumentException('The _SERVER array must have a REQUEST_URI key');
         }
 
         if (null === $method) {
-            throw new InvalidArgumentException('The _SERVER array must have a REQUEST_METHOD key');
+            throw new \InvalidArgumentException('The _SERVER array must have a REQUEST_METHOD key');
         }
         $r = new Request($method, $url, $headers);
         $r->setHttpVersion($httpVersion);

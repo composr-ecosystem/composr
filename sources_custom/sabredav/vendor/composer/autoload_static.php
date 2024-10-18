@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitab4ed952e5df20feecdc436f3e1da65d
+class ComposerStaticInit4692e45a597799d548cbd60a4ac5e0ad
 {
     public static $files = array (
         '383eaff206634a77a1be54e64e6459c7' => __DIR__ . '/..' . '/sabre/uri/lib/functions.php',
@@ -24,10 +24,7 @@ class ComposerStaticInitab4ed952e5df20feecdc436f3e1da65d
             'Sabre\\Uri\\' => 10,
             'Sabre\\HTTP\\' => 11,
             'Sabre\\Event\\' => 12,
-            'Sabre\\DAV\\' => 10,
-            'Sabre\\DAVACL\\' => 13,
-            'Sabre\\CardDAV\\' => 14,
-            'Sabre\\CalDAV\\' => 13,
+            'Sabre\\' => 6,
         ),
         'P' => 
         array (
@@ -56,33 +53,27 @@ class ComposerStaticInitab4ed952e5df20feecdc436f3e1da65d
         array (
             0 => __DIR__ . '/..' . '/sabre/event/lib',
         ),
-        'Sabre\\DAV\\' => 
+        'Sabre\\' => 
         array (
-            0 => __DIR__ . '/..' . '/sabre/dav/lib/DAV',
-        ),
-        'Sabre\\DAVACL\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/sabre/dav/lib/DAVACL',
-        ),
-        'Sabre\\CardDAV\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/sabre/dav/lib/CardDAV',
-        ),
-        'Sabre\\CalDAV\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/sabre/dav/lib/CalDAV',
+            0 => __DIR__ . '/../..' . '/lib',
+            1 => __DIR__ . '/../..' . '/tests/Sabre',
         ),
         'Psr\\Log\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+            0 => __DIR__ . '/..' . '/psr/log/src',
         ),
+    );
+
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitab4ed952e5df20feecdc436f3e1da65d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitab4ed952e5df20feecdc436f3e1da65d::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4692e45a597799d548cbd60a4ac5e0ad::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4692e45a597799d548cbd60a4ac5e0ad::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4692e45a597799d548cbd60a4ac5e0ad::$classMap;
 
         }, null, ClassLoader::class);
     }

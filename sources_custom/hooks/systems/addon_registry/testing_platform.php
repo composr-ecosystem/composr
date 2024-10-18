@@ -917,7 +917,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/sync_tests/__debrand_epic.php',
             '_tests/tests/sync_tests/__lang_spelling_epic.php',
             '_tests/tests/sync_tests/__special_links.php',
-            '_tests/tests/sync_tests/__webdav.php',
+            '_tests/tests/sync_tests/webdav.php',
             '_tests/tests/sync_tests/_api_cloudinary.php',
             '_tests/tests/sync_tests/_api_confluence.php',
             '_tests/tests/sync_tests/_api_ecommerce_shipping.php',
