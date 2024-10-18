@@ -22,6 +22,10 @@ function init__password_censor()
 
 function password_censor($auto = false, $display = true, $days_ago = 30)
 {
+    if (!addon_installed('tickets')) {
+        exit('tickets addon not installed');
+    }
+
     @header('X-Robots-Tag: noindex');
 
     if ($display) {
