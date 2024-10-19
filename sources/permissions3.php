@@ -75,6 +75,7 @@ function get_false_permissions() : array
         ['GENERAL_SETTINGS', 'sees_javascript_error_alerts'],
         ['GENERAL_SETTINGS', 'see_software_docs'],
         ['GENERAL_SETTINGS', 'see_not_validated'],
+        ['GENERAL_SETTINGS', 'jump_to_not_validated'],
         ['GENERAL_SETTINGS', 'may_enable_staff_notifications'],
         ['GENERAL_SETTINGS', 'bypass_flood_control'],
         ['GENERAL_SETTINGS', 'remove_page_split'],
@@ -100,7 +101,6 @@ function get_true_permissions() : array
         ['_FEEDBACK', 'rate'],
         ['_FEEDBACK', 'comment'],
         ['VOTE', 'vote_in_polls'],
-        ['GENERAL_SETTINGS', 'jump_to_not_validated'],
         ['_COMCODE', 'reuse_others_attachments'],
         ['GENERAL_SETTINGS', 'see_php_errors'],
     ];

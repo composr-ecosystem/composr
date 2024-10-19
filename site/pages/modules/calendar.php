@@ -1565,9 +1565,8 @@ class Module_calendar
         // Validation
         $warning_details = new Tempcode();
         if (($event['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || (($event['e_submitter'] != get_member()) && ($event['e_member_calendar'] != get_member())))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated('event', strval($id), get_member(), [$event['e_submitter'], $event['e_member_calendar']]);
 
             $warning_details->attach(do_template('WARNING_BOX', [
                 '_GUID' => '332faacba974e648a67e5e91ffd3d8e5',

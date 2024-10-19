@@ -717,9 +717,8 @@ class Module_downloads
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated('download', strval($id), get_member(), [$myrow['submitter']]);
 
             $warning_details->attach(do_template('WARNING_BOX', [
                 '_GUID' => '5b1781b8fbb1ef9b8f47693afcff02b9',

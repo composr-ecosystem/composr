@@ -59,7 +59,9 @@ function has_post_access(int $post_id, ?int $member_id = null, ?array $post_deta
     }
 
     if (addon_installed('validation')) {
-        if (($post_details['p_validated'] == 0) && (!has_privilege($member_id, 'jump_to_not_validated'))) {
+        require_code('validation');
+
+        if (!check_jump_to_not_validated('post', strval($post_id), $member_id, [], true)) {
             return false;
         }
     }

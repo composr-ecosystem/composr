@@ -1934,9 +1934,8 @@ function render_catalogue_entry_screen(int $id) : object
 
     // Validation
     if (($entry['ce_validated'] == 0) && (addon_installed('validation'))) {
-        if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($entry['ce_submitter'] != get_member()))) {
-            access_denied('PRIVILEGE', 'jump_to_not_validated');
-        }
+        require_code('validation');
+        check_jump_to_not_validated('catalogue_entry', strval($id), get_member(), [$entry['ce_submitter']]);
 
         $map['WARNINGS'] = do_template('WARNING_BOX', [
             '_GUID' => 'bf604859a572ca53e969bec3d91f9cfb',

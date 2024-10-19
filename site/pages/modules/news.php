@@ -648,9 +648,8 @@ class Module_news
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated('news', strval($id), get_member(), [$myrow['submitter']]);
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '5fd82328dc2ac9695dc25646237065b0',

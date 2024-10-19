@@ -280,10 +280,9 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
             decache_private_topics(get_member());
         }
         // Check validated
-        if (($topic_info['t_validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ($check_perms) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+        if (($topic_info['t_validated'] == 0) && (addon_installed('validation') && ($check_perms))) {
+            require_code('validation');
+            check_jump_to_not_validated('topic', strval($topic_id), get_member(), [$topic_info['t_cache_first_member_id']]);
         }
 
         if (get_param_integer('threaded', null) === null) {

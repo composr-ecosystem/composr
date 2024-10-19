@@ -64,7 +64,7 @@ class Module_admin_validation
     {
         if ($upgrade_from === null) {
             add_privilege('SUBMISSION', 'see_not_validated');
-            add_privilege('SUBMISSION', 'jump_to_not_validated', true);
+            add_privilege('SUBMISSION', 'jump_to_not_validated');
         }
         if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
             rename_privilege('see_unvalidated', 'see_not_validated');
