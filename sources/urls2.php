@@ -238,8 +238,9 @@ function _url_to_filename(string $url_full) : string
     $_new_name = hash_hmac('sha256', $url_full, get_site_salt(), true);
     $new_name = str_replace(['+','/','='], ['-','_',''], base64_encode($_new_name));
 
-    if (strpos($new_name, '.') !== false) {
-        $new_name .= '.' . get_file_extension($url_full);
+    $ext = get_file_extension($url_full);
+    if ($ext != '') {
+        $new_name .= '.' . $ext;
     }
 
     return $new_name;
