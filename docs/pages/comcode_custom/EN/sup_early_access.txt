@@ -1,0 +1,125 @@
+[title sub="Written by Patrick Schmalstig"]Composr Supplementary: Early access codes for sharing early content and designs[/title]
+
+[surround]
+[media width="150" description="Viewing all early access codes in the system" float="right"]data_custom/images/docs/sup_early_access/view_screen.png[/media]
+The {$IS_MAINTAINED,early_access,early access non-bundled addon} expands upon the bundled [tt]validation[/tt] addon to provide a mechanism for sharing early content to select individuals via a code. Codes can either grant access to content which has not been validated or to content / designs hidden behind the [tt]$HAS_TRIGGER_ACCESS[/tt] Tempcode symbol.
+[/surround]
+
+[contents]decimal,lower-alpha[/contents]
+
+[title="2"]Installing the early access addon[/title]
+The early access non-bundled addon requires that you first have installed the validation addon (which is bundled and installed with Composr by default).
+
+After ensuring you have the validation addon installed, you can install early access by following these steps:
+[list="1"]
+[*] Go to the Admin Zone
+[*] Navigate to the Structure section of the Admin Zone menu
+[*] Choose the Addons icon
+[*] Scroll down and choose "Import non-bundled addon(s)"
+[*] Click Download and choose the Admin Utilities category
+[*] Choose Early access
+[*] Scroll down and click the "Import non-bundled addon(s)" button
+[*] The next screen shows all of the files which will be edited or installed. Check this list carefully if you have manually edited files to make sure nothing is being overwritten which will break your site. Special care was considered with the early access addon to prevent this scenario as much as possible. If you are happy you can click Proceed.
+[/list]
+
+Once installed, you can begin creating early access codes immediately. It is located in the Admin Zone under Tools > Early access codes.
+
+[title="3"]Post-installation guidelines[/title]
+
+[surround]
+[media width="150" description="Turning off the 'See not validated content, if directed to it' privilege" float="right"]data_custom/images/docs/sup_early_access/privileges.png[/media]
+You should consider the following before using this addon:
+ - The privilege "See not validated content, if directed to it" should be disabled for everyone except the highest-level staff (it is disabled by default as of Composr 11 beta5, but sites running on or who upgraded from earlier versions may still have this privilege on for everyone). Anyone with this privilege will be able to see early access content without providing an access code (except content hidden under the [tt]$HAS_TRIGGER_ACCESS[/tt] Tempcode symbol). You can change this in the Admin Zone > Security > Global privileges > Submission.
+ - The early access system is pointless on any content which is already validated (unless you are using [tt]$HAS_TRIGGER_ACCESS[/tt] within that content). If you want to restrict complete access to a piece of content except those with an early access code, the content must be marked not validated.
+ - The early access system does not bypass other permission / privilege checks. If the viewer fails another required check, they will not be allowed access to the content even with an early access code. For example, if a piece of content is marked not visible to guests in the permissions, then viewers must be logged in to see it even if they are using an early access code.
+[/surround]
+
+[title="2"]Early access codes[/title]
+
+[media_set]
+[media width="150" description="Trying to access restricted content with no / an invalid access code"]data_custom/images/docs/sup_early_access/no_access.png[/media]
+[media width="150" description="Accessing a restricted Comcode page with an unlimited early access code"]data_custom/images/docs/sup_early_access/early_access.png[/media]
+[media width="150" description="Trying to access restricted content, but our code expired"]data_custom/images/docs/sup_early_access/expired_access.png[/media]
+[media width="150" description="This access code has a limited number of views"]data_custom/images/docs/sup_early_access/limited_access.png[/media]
+[/media_set]
+
+At the core of the addon is an [concept]Early access code[/concept]. These operate like temporary passwords you (or rather, whomever you distribute them to) provide in the URL to get access to certain restricted content. To grant early access to anything, you need to create a code. The code can define what content can be accessed with it, when, and how many times.
+
+[title="3"]Step 1: Create your content[/title]
+
+Before you can create your early access code, you first need to create the content to which you will assign an early access code.
+
+If you are creating content which you want to restrict entire access, then create it while setting validated to off. Or, add [tt]$HAS_TRIGGER_ACCESS[/tt] Tempcode where necessary to hide specific content behind trigger tags (see below for more information).
+
+Remember that permissions and other privileges still apply even to those using an early access code.
+
+[title="3"]Step 2: Create (or edit) your access code[/title]
+
+[surround]
+[media width="150" description="Adding a new early access code" float="right"]data_custom/images/docs/sup_early_access/add_code.png[/media]
+Next, create your access code (or edit an existing one to add your new content to it). You can do this by going in the Admin Zone under Tools > Early access codes.
+
+When adding or editing an access code, you are given these options:
+[list]
+[*][tt]Early access code[/tt]
+This is a codename (alphanumeric) field allowing you to specify your own code to use. Note that you cannot specify a code already in use. You can leave this blank to generate a random code consisting of 13 characters (numbers and lower-case letters). The random code will be presented to you (as a link) when saving. Also note that once set, this cannot be edited.
+[*][tt]Label[/tt]
+This is a short and descriptive label to help you identify what this access code is for. You might describe the content, or the people who will be using it.
+[*][concept][tt]Trigger access tag[/tt][/concept]
+This is a codename (alphanumeric) which can be used with the [tt]$HAS_TRIGGER_ACCESS[/tt] Tempcode symbol. For example, if you specify 'foobar', then when someone uses this access code, they will see any content which was protected under [tt]$HAS_TRIGGER_ACCESS[/tt] with the 'foobar' parameter. Leave this blank if you will not be using this with the Tempcode symbol.
+[*][tt]Content[/tt]
+This is a multiple-selection list box. It will contain a list of all your non-validated content. Select any and all content you want those using this access code to be able to access. You can leave this blank if you are solely using this for the Trigger access tag.
+[*][tt]From[/tt]
+Optionally, specify a date and time (in your configured time zone) at which this access code will become active. The code cannot be used / will not grant any access before this date and time. Leave blank for it to go active immediately.
+[*][tt]To[/tt]
+Likewise, you can specify a date and time (in your configured time zone) for this access code to expire. The access code will not grant any access after this date and time. Leave blank to have no expiration.
+[*][tt]Maximum views[/tt]
+You can specify how many times this access code may be used to access restricted content. Every time the access code is used and grants someone access to restricted content, that counts as a 'view'. After this many views, the code can no-longer be used. Leave blank for no limit. You can see how many views each code has registered so far under Tools > Early access codes > Early access codes (or View early access codes).
+Note: While we try to be careful about not counting multiple views on the same page load, this could still happen through AJAX (e.g. if you have early access content inside a block deferred for loading, or inside an internalised screen such as pagination).
+Note: When editing a code, the current view count does not reset on saving. So if you want to add more views, you will need to blank this value, or make it higher than the current view count.
+[/list]
+[/surround]
+
+[title="3"]Step 3: Distribute your early access code[/title]
+
+[surround]
+[media width="150" description="Using an access code in the URL" float="right"]data_custom/images/docs/sup_early_access/attached_code.png[/media]
+[media width="150" description="Copying a link to our homepage with the access code attached" float="right"]data_custom/images/docs/sup_early_access/sharing_code.png[/media]
+Once you save, you will be presented with instructions on how to use it. This includes putting the 'keep_access_code' parameter in the URL along with the access code. You are also given a hyperlink to your website with the access code present. You can right-click this link and copy its address, and then share it with anyone you want to have the access code.
+[/surround]
+
+[title="2"]The $HAS_TRIGGER_ACCESS symbol (Advanced)[/title]
+
+You can also hide parts of your content or design from the public and restrict them to those using specific access codes. This is done through the use of the [tt]$HAS_TRIGGER_ACCESS[/tt] Tempcode symbol. This symbol takes any number of parameters which are [tt]Trigger access tag[/tt]s. If someone is using an access code with a [tt]Trigger access tag[/tt] attached to it, and it matches any of the tags defined with [tt]$HAS_TRIGGER_ACCESS[/tt], then this symbol will return 1 (true). Otherwise, it will return 0 (false).
+
+Here is an example:
+[code="Tempcode"]
+	<p>Foo</p>
+	{+START,IF,{$HAS_TRIGGER_ACCESS,abc123,def456}}
+		<p>bar</p>
+	{+END}
+[/code]
+
+In this example, if a viewer is using an early access code that has a [tt]Trigger access tag[/tt] of either 'abc123' or 'def456', then they will see both a paragraph with Foo and a paragraph with bar. Everyone else (e.g. those not using an access code or whose access code does not have a [tt]Trigger access tag[/tt] matching 'abc123' or 'def456') will only see a paragraph of Foo, but they will not see a paragraph of bar.
+
+This is a very powerful feature that can be used to hide parts of content from those without certain access codes. It can also be used to hide entire designs except for those with the appropriate access code. This is very useful when working on experimental site designs or content that need reviewed by an internal or external department.
+
+[title="3"]Granting or denying global access to a trigger access tag (Advanced)[/title]
+
+At some point, you may wish to make content under a specific tag go live for everyone and no-longer require an access code. But because this is a Tempcode symbol, it may be a bother searching everywhere for it to remove it. We have a low-level convention available for you that can quickly override [tt]$HAS_TRIGGER_ACCESS[/tt] which you can run via Commandr:
+[code="Commandr"]
+set_value trigger_access_tag__NAMEOFTAG 1
+[/code]
+
+In this command, replace [tt]NAMEOFTAG[/tt] with the name of the [tt]Trigger access tag[/tt] you want to go live for everyone. When this value is set to '1', then anyone regardless of access code use can see content guarded by the [tt]NAMEOFTAG[/tt] tag. If set to '0' (or does not exist), then only those with the proper access code can see it. If set to '-1', then no one can see it.
+
+Note that in [tt]$HAS_TRIGGER_ACCESS[/tt], if any defined tags have a 'trigger_access_tag__' value set to '-1', this overrides everything else and automatically makes the symbol return 0 (false).
+
+Also note that this overrides early access codes, so the value will still be in the database even if all relevant access codes have been deleted / modified and no access code has the tag anymore. Because these values are not elective, it should be used sparingly.
+
+[concepts
+ 0_key="Early access code"   0_value="A code which can be specified in the URL as a keep_access_code parameter to grant access to restricted or early content"
+ 1_key="Trigger access tag"  1_value="A tag used with the $HAS_TRIGGER_ACCESS Tempcode symbol which can define content or designs only visible to those using certain early access codes"
+]Concepts[/concepts]
+
+{$SET,tutorial_tags,Administration,Content,Design & Themeing,early_access,regular}{$SET,tutorial_add_date,Oct 2024}{$SET,tutorial_summary,This tutorial covers how you can distribute early access codes for early access to restricted site content and designs.}[block]main_tutorial_rating[/block]
