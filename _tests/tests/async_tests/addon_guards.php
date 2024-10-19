@@ -178,7 +178,7 @@ class addon_guards_test_set extends cms_test_case
                                 break;
                             case 'get_option':
                                 if (strpos($extra, 'true') !== false) { // We specified missing is okay
-                                    continue;
+                                    continue 2;
                                 }
                                 $included_file = 'sources/hooks/systems/config/' . $include . '.php';
                                 break;

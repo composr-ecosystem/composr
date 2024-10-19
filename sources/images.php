@@ -277,9 +277,9 @@ function do_image_thumb(string $url, $caption = '', bool $js_tooltip = false, bo
             $new_name .= strval($width) . '_' . strval($height) . '_';
         }
         if ($only_make_smaller) {
-            $new_name .= 'only_smaller_';
+            $new_name .= 'os_';
         }
-        $new_name .= url_to_filename($url);
+        $new_name = url_to_filename($new_name . $url);
 
         $thumb_path = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
 

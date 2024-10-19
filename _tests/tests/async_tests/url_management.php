@@ -24,7 +24,33 @@ class url_management_test_set extends cms_test_case
     {
         parent::setUp();
 
+        $this->backup_url_scheme = get_option('url_scheme');
+
         $GLOBALS['SITE_INFO']['block_url_schemes'] = '0';
+    }
+
+    public function testGetFileExtension()
+    {
+        require_code('global3');
+
+        // Param to test => expected extension
+        $tests = [
+            'image.png' => 'png',
+            'image.jpg' => 'jpg',
+            'stuff/image.gif' => 'gif',
+            'not/a/file' => '',
+            'ambiguous/path.jpg/file.mov' => 'mov',
+            'has/query-string/params.txt?key=value&key2=value2' => 'txt',
+            'has/hash.pdf#go-here' => 'pdf',
+            'actually/not/a/file.html/something' => '',
+            'path/traversal/../foobar' => '',
+            'throw/everything/../together.htm/book.mp4?foo=bar&stuff=more-stuff#header1' => 'mp4'
+        ];
+
+        foreach ($tests as $test => $expected) {
+            $ext = get_file_extension($test);
+            $this->assertTrue($ext == $expected, 'Expected extension \'' . $expected . '\' on ' . $test . ', but got \'' . $ext . '\'');
+        }
     }
 
     public function testUrlToPageLink()
@@ -33,8 +59,6 @@ class url_management_test_set extends cms_test_case
         $zone = (get_option('single_public_zone') == '1') ? '' : 'site';
 
         $expected = $zone . ':downloads:browse:testxx123:foo=bar';
-
-        $this->backup_url_scheme = get_option('url_scheme');
 
         set_option('url_scheme', 'RAW');
         $test = url_to_page_link(get_base_url() . '/' . $zone_pathed . 'index.php?page=downloads&type=browse&id=testxx123&&foo=bar', false, false);

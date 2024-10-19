@@ -287,6 +287,7 @@ function brand_name() : string
  */
 function get_file_extension(?string $name, ?string $mime_type = null) : string
 {
+    // Get mime extension if we can
     if ($mime_type !== null) {
         require_code('mime_types');
         $ext = get_ext_from_mime_type($mime_type);
@@ -299,11 +300,33 @@ function get_file_extension(?string $name, ?string $mime_type = null) : string
         return '';
     }
 
+    // Check if we have a dot
     $dot_pos = strrpos($name, '.');
     if ($dot_pos === false) {
         return '';
     }
-    return cms_strtolower_ascii(substr($name, $dot_pos + 1));
+
+    // Get everything after the last dot
+    $parts = explode('.', $name);
+    $ext = array_pop($parts);
+
+    // Path separators after the last dot mean what we are looking at is actually not a file (or a file with no extension)
+    if (strpos($ext, '/') !== false) {
+        return '';
+    }
+    if (strpos($ext, '\\') !== false) {
+        return '';
+    }
+
+    // If any query-string type characters exist, remove it plus everything after.
+    $bad_parts = ['?', '&', '#'];
+    foreach ($bad_parts as $part) {
+        if (strpos($ext, $part) !== false) {
+            $ext = substr($ext, 0, strpos($ext, $part));
+        }
+    }
+
+    return cms_strtolower_ascii($ext);
 }
 
 /**
