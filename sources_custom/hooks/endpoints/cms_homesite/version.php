@@ -166,7 +166,7 @@ class Hook_endpoint_cms_homesite_version
 
         if ($id === '_LEGACY_') { // LEGACY
             echo $output;
-            exit;
+            exit();
         }
 
         return [
@@ -225,20 +225,19 @@ class Hook_endpoint_cms_homesite_version
         $_upgrade_url = escape_html($upgrade_url);
         $link_pos_id = strval($i);
         $upgrade_icon = do_template('ICON', ['_GUID' => '083acd2905f7296c7a41e0db83e19cef', 'NAME' => 'menu/adminzone/tools/upgrade'])->evaluate();
-        $output .= <<<HTML
+        $output .= '
             <div class="version vertical-alignment">
                 <!-- Version number and notes -->
-                <span class="version-number">$version_number</span> (released $version_released ago)
-                <span class="version-note">$note</span>
+                <span class="version-number">' . $version_number . '</span> (released ' . $version_released . ' ago)
+                <span class="version-note">' . $note . '</span>
                 <!-- Output upgrader link -->
-                <form style="display: inline" action="../$_upgrade_script" target="_blank" method="post">
-                <span class="version-button" id="link-pos-$link_pos_id">
-                    <button class="btn btn-primary btn-scri menu--adminzone--tools--upgrade" type="submit" title="Upgrade to $version_number">$upgrade_icon Launch upgrader</button>
-                </span>
+                <form style="display: inline" action="../' . $_upgrade_script . '" target="_blank" method="post">
+                    <span class="version-button" id="link-pos-' . $link_pos_id . '">
+                        <button class="btn btn-primary btn-scri menu--adminzone--tools--upgrade" type="submit" title="Upgrade to ' . $version_number . '">' . $upgrade_icon . ' Launch upgrader</button>
+                    </span>
                 </form>
                 <!-- Version News link -->
-                <span class="version-news-link">[ <a onclick="window.open(this.href,null,'status=yes,toolbar=no,location=no,menubar=no,resizable=yes,scrollbars=yes,width=976,height=600'); return false;" target="_blank" title="$version_number news post (this link will open in a new window)" href="$_upgrade_url">view news post</a> ]</span>
-            </div>
-        HTML;
+                <span class="version-news-link">[ <a onclick="window.open(this.href,null,\'status=yes,toolbar=no,location=no,menubar=no,resizable=yes,scrollbars=yes,width=976,height=600\'); return false;" target="_blank" title="' . $version_number . ' news post (this link will open in a new window)" href="' . $_upgrade_url . '">view news post</a> ]</span>
+            </div>';
     }
 }

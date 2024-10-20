@@ -62,13 +62,13 @@ Next, create your access code (or edit an existing one to add your new content t
 When adding or editing an access code, you are given these options:
 [list]
 [*][tt]Early access code[/tt]
-This is a codename (alphanumeric) field allowing you to specify your own code to use. Note that you cannot specify a code already in use. You can leave this blank to generate a random code consisting of 13 characters (numbers and lower-case letters). The random code will be presented to you (as a link) when saving. Also note that once set, this cannot be edited.
+This is a codename (alphanumeric) field allowing you to specify your own code to use. Note that you cannot specify a code already in use. You can leave this blank to generate a random code consisting of 13 characters (numbers and lower case letters). The random code will be presented to you (as a link) when saving. Also note that once set, this cannot be edited.
 [*][tt]Label[/tt]
 This is a short and descriptive label to help you identify what this access code is for. You might describe the content, or the people who will be using it.
 [*][concept][tt]Trigger access tag[/tt][/concept]
 This is a codename (alphanumeric) which can be used with the [tt]$HAS_TRIGGER_ACCESS[/tt] Tempcode symbol. For example, if you specify 'foobar', then when someone uses this access code, they will see any content which was protected under [tt]$HAS_TRIGGER_ACCESS[/tt] with the 'foobar' parameter. Leave this blank if you will not be using this with the Tempcode symbol.
 [*][tt]Content[/tt]
-This is a multiple-selection list box. It will contain a list of all your non-validated content. Select any and all content you want those using this access code to be able to access. You can leave this blank if you are solely using this for the Trigger access tag.
+This is a multiple-selection list box. It will contain a list of all your content which has not been validated. Select any and all content you want those using this access code to be able to access. You can leave this blank if you are solely using this for the Trigger access tag.
 [*][tt]From[/tt]
 Optionally, specify a date and time (in your configured time zone) at which this access code will become active. The code cannot be used / will not grant any access before this date and time. Leave blank for it to go active immediately.
 [*][tt]To[/tt]

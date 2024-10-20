@@ -4399,7 +4399,7 @@ function file_get_contents(string $filename, bool $use_include_path = false, $co
  * @param  ?string $charset Character set to decode to (null: default)
  * @return string The decoded text
  */
-function html_entity_decode(string $input, int $quote_style, ?string $charset = null) : string
+function html_entity_decode(string $input, int $quote_style/*NB: we require this parameter for our standards*/, ?string $charset = null) : string
 {
     return '';
 }

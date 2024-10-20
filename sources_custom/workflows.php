@@ -481,7 +481,7 @@ function workflow_update_handler() : object
 
     // Grab the names of our workflow approval points
     $approval_points = get_all_approval_points($workflow_id);
-    if ($approval_points == array()) {
+    if (count($approval_points) == 0) {
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($content_id)), do_lang_tempcode('WORKFLOW')));
     }
 
@@ -679,7 +679,7 @@ function workflow_update_handler() : object
     }
 
     // We cannot pass send_to_members to the notification dispatcher as it's in the incorrect format; fix this.
-    $actual_send_to_members = array();
+    $actual_send_to_members = [];
     foreach ($send_to_members as $member_id => $status) {
         if ($status != 1) {
             continue;

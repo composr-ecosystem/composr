@@ -47,8 +47,7 @@ if (!function_exists('init__notifications')) {
                 require_code('password_censor');
                 \$message = _password_censor(\$message, PASSWORD_CENSOR__INTERACTIVE_SCAN);
             }
-            ",
-        );
+            ");
 
         return $in;
     }

@@ -22,6 +22,8 @@ class _backups_test_set extends cms_test_case
 {
     public function testBackup()
     {
+        global $SITE_INFO;
+
         if (!is_cli()) {
             warn_exit('This test should be run on the command line: php _tests/index.php cli_tests/_backups');
         }
@@ -79,7 +81,7 @@ class _backups_test_set extends cms_test_case
         $username = ((!isset($SITE_INFO['mysql_root_password'])) || (strpos(get_db_type(), 'mysql') === false)) ? get_db_site_user() : 'root';
         $can_use_own_db = ($username == 'root');
         $database = ($can_use_own_db) ? 'cms_backup_test' : get_db_site();
-        $table_prefix = ($can_use_own_db) ? 'backup_' : 'bt' . $GLOBALS['SITE_DB']->get_table_prefix();
+        $table_prefix = (($can_use_own_db) ? 'backup_' : ('bt' . $GLOBALS['SITE_DB']->get_table_prefix()));
         $password = (isset($SITE_INFO['mysql_root_password'])) ? $SITE_INFO['mysql_root_password'] : get_db_site_password();
 
         require_code('database/' . get_db_type());

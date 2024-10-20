@@ -388,12 +388,14 @@ class Module_admin_push_bugfix
         } else {
             $git_command = $GIT_PATH . ' show --pretty="format:" --name-only ' . $git_commit_id;
             $git_result = shell_exec($git_command . ' 2>&1');
-            $_fixed_files = explode("\n", $git_result);
+            $__fixed_files = explode("\n", $git_result);
 
             $fixed_files = [];
-            foreach ($_fixed_files as $file) {
-                if ($file != '') {
-                    $fixed_files[] = $file;
+            if ($__fixed_files !== false) {
+                foreach ($__fixed_files as $file) {
+                    if ($file != '') {
+                        $fixed_files[] = $file;
+                    }
                 }
             }
         }

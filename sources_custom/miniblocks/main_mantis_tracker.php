@@ -111,7 +111,7 @@ $select .= ',(SELECT COUNT(*) FROM mantis_bug_monitor_table y WHERE y.bug_id=a.i
 $select .= ',(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2) AS points_raised';
 $select .= ',CAST(c.value AS FLOAT) as hours';
 if ($s_points_per_hour !== null) {
-    $select .= ',CAST(c.value AS DECIMAL)*' . float_to_raw_string($s_points_per_hour) . ' AS currency_needed';
+    $select .= ',CAST(c.value AS DECIMAL)*' . strval($s_points_per_hour) . ' AS currency_needed';
 }
 
 $table = 'mantis_bug_table a JOIN mantis_bug_text_table b ON b.id=a.bug_text_id JOIN mantis_custom_field_string_table c ON c.bug_id=a.id AND field_id=' . $cms_hours_field . ' JOIN mantis_category_table d ON d.id=a.category_id';
@@ -148,7 +148,7 @@ if (isset($map['sort'])) {
         case 'sponsorship_progress':
             $where .= ' AND (SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)<>0';
             if ($s_points_per_hour !== null) {
-                $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)/CAST(c.value AS DECIMAL)*' . float_to_raw_string($s_points_per_hour) . ' ' . $direction;
+                $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)/CAST(c.value AS DECIMAL)*' . strval($s_points_per_hour) . ' ' . $direction;
             }
             break;
     }

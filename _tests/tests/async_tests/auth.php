@@ -148,7 +148,8 @@ class auth_test_set extends cms_test_case
         }
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         set_option('ip_strict_for_sessions', $this->ip_strict_for_sessions);
 
         parent::tearDown();

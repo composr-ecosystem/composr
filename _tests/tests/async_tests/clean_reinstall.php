@@ -22,6 +22,7 @@ class clean_reinstall_test_set extends cms_test_case
     {
         return; // No sense running this test as all our assertions are commented out
 
+        /*
         require_code('files2');
 
         disable_php_memory_limit();
@@ -34,6 +35,7 @@ class clean_reinstall_test_set extends cms_test_case
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $files[$i] = $c;
         }
+        */
 
         /*
         Not realistic to test anymore now that we have optimised ourselves to delete via arrays. If we moved to hooks that would be better.

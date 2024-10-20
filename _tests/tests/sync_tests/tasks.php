@@ -41,6 +41,10 @@ class tasks_test_set extends cms_test_case
             return;
         }
 
+        // Disable the task queue
+        $old_config = get_option('tasks_background');
+        set_option('tasks_background', '0');
+
         $tmp_path = cms_tempnam();
 
         cms_file_put_contents_safe($tmp_path, "Email,Name\ntest@example.com,Test", FILE_WRITE_BOM);
@@ -59,6 +63,8 @@ class tasks_test_set extends cms_test_case
 
         file_put_contents($tmp_path, $data);
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
+
+        set_option('tasks_background', $old_config);
     }
 
     public function testCatalogueSpreadsheet()

@@ -72,7 +72,7 @@ class Hook_endpoint_cms_homesite_addon_manifest
         if ($_id === null) {
             if ($id === '_LEGACY_') { // LEGACY
                 echo serialize([]);
-                exit;
+                exit();
             }
             return [];
         }
@@ -107,10 +107,10 @@ class Hook_endpoint_cms_homesite_addon_manifest
                         $hash = @hash_file('crc32', $url);
                     }
                     if ($last_date === false) {
-                        $last_date = $result[0]['edit_date'] !== null ? intval($result[0]['edit_date']) : false;
+                        $last_date = (($result[0]['edit_date'] !== null) ? intval($result[0]['edit_date']) : false);
                     }
                     if ($last_date === false) {
-                        $last_date = $result[0]['add_date'] !== null ? intval($result[0]['add_date']) : false;
+                        $last_date = (($result[0]['add_date'] !== null) ? intval($result[0]['add_date']) : false);
                     }
                     if ($last_date === false) {
                         continue;
@@ -132,7 +132,7 @@ class Hook_endpoint_cms_homesite_addon_manifest
 
         if ($id === '_LEGACY_') { // LEGACY
             echo serialize($addon_times);
-            exit;
+            exit();
         }
 
         return $addon_times;

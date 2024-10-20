@@ -143,7 +143,7 @@ class installer_test_set extends cms_test_case
         $username = ((!isset($SITE_INFO['mysql_root_password'])) || (strpos(get_db_type(), 'mysql') === false)) ? get_db_site_user() : 'root';
         $can_use_own_db = ($username == 'root');
         $database = ($can_use_own_db) ? 'cms__test' : get_db_site();
-        $table_prefix = ($can_use_own_db) ? 'installer_' : 't' . $GLOBALS['SITE_DB']->get_table_prefix();
+        $table_prefix = (($can_use_own_db) ? 'installer_' : ('t' . $GLOBALS['SITE_DB']->get_table_prefix()));
         $password = (isset($SITE_INFO['mysql_root_password'])) ? $SITE_INFO['mysql_root_password'] : get_db_site_password();
 
         if ($can_use_own_db) {

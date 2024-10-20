@@ -18,7 +18,6 @@
  */
 class stats_test_set extends cms_test_case
 {
-
     protected $dummy_data_added = [];
     public function setUp()
     {
@@ -90,7 +89,7 @@ class stats_test_set extends cms_test_case
             'hackattack' => [[]],
             'sitemap_cache' => [
                 [],
-                ['_ALLOW_NULL_' => false, 'page_link' => ':' . uniqid()],
+                ['_ALLOW_NULL_' => false, 'page_link' => ':' . uniqid('', false)],
             ],
             'ecom_subscriptions' => [[]],
             'ecom_transactions' => [
@@ -136,7 +135,7 @@ class stats_test_set extends cms_test_case
             $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 3, 'receiving_member' => 2, 'amount_gift_points' => 1];
 
             // FUDGE: so we can test top members by points (which uses CPF and not database)
-            $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_lifetime', 1000);
+            $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_lifetime', '1000');
         }
 
         if (addon_installed('cms_homesite')) {
@@ -259,7 +258,7 @@ class stats_test_set extends cms_test_case
             }
             foreach (array_keys($_buckets) as $bucket) {
                 $bucket_hook[$bucket] = $hook_name;
-                $bucket_filters[$bucket] = isset($_buckets['filters']) && is_array($_buckets['filters']) ? $_buckets['filters'] : [];
+                $bucket_filters[$bucket] = (((isset($_buckets['filters'])) && (is_array($_buckets['filters']))) ? $_buckets['filters'] : []);
             }
         }
 

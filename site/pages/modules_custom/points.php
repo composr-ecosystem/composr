@@ -37,8 +37,7 @@ function init__site__pages__modules_custom__points($in)
         if (\$give_reason_pre != '') {
             \$reason = \$give_reason_pre . \": \" . \$reason;
         }
-        ",
-    );
+        ");
 
     return $in;
 }

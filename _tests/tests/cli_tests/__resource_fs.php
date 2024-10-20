@@ -91,7 +91,7 @@ class __resource_fs_test_set extends cms_test_case
         require_code('developer_tools');
 
         if ($this->name_to_use === null) {
-            $this->name_to_use = uniqid('test_');
+            $this->name_to_use = uniqid('test_', false);
         }
 
         if ($this->paths === null) {
@@ -367,7 +367,6 @@ class __resource_fs_test_set extends cms_test_case
 
     public function testDelete()
     {
-        return;
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
             if (is_cli()) {
                 echo 'TESTING (Delete) ' . $commandr_fs_hook . '...' . "\n";

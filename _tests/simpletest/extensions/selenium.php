@@ -26,12 +26,12 @@ class SeleniumTestCase extends UnitTestCase
 
         if (empty($this->browser)) {
             trigger_error('browser property must be set in ' . get_class($this));
-            exit;
+            exit();
         }
 
         if (empty($this->browserUrl)) {
             trigger_error('browserUrl property must be set in ' . get_class($this));
-            exit;
+            exit();
         }
     }
 

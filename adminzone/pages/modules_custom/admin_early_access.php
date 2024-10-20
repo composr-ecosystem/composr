@@ -354,7 +354,7 @@ class Module_admin_early_access extends Standard_crud_module
         require_code('early_access2');
         add_early_access_code($access_code, $label, $trigger_access, $date_from, $date_to, $views_allowed, $content);
 
-        $hyperlink = hyperlink(page_link_to_tempcode_url(':home:keep_access_code=' . protect_url_parameter($access_code)), do_lang_tempcode('EARLY_ACCESS_CODE_USE_HYPERLINK'), true, false);
+        $hyperlink = hyperlink(page_link_to_tempcode_url(':home:keep_access_code=' . urlencode($access_code)), do_lang_tempcode('EARLY_ACCESS_CODE_USE_HYPERLINK'), true, false);
         $usage = do_lang_tempcode('EARLY_ACCESS_CODE_USE', protect_from_escaping($hyperlink), escape_html($access_code));
 
         return [$access_code, $usage];
@@ -390,7 +390,7 @@ class Module_admin_early_access extends Standard_crud_module
         require_code('early_access2');
         edit_early_access_code($id, $label, $trigger_access, $date_from, $date_to, $views_allowed, $content);
 
-        $hyperlink = hyperlink(page_link_to_tempcode_url(':home:keep_access_code=' . protect_url_parameter($id)), do_lang_tempcode('EARLY_ACCESS_CODE_USE_HYPERLINK'), true, false);
+        $hyperlink = hyperlink(page_link_to_tempcode_url(':home:keep_access_code=' . urlencode($id)), do_lang_tempcode('EARLY_ACCESS_CODE_USE_HYPERLINK'), true, false);
         $usage = do_lang_tempcode('EARLY_ACCESS_CODE_USE', protect_from_escaping($hyperlink), escape_html($id));
 
         return $usage;

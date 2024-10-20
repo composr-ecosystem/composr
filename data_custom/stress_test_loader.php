@@ -713,6 +713,7 @@ function do_work()
                 break;
             case 4:
                 $page_links[] = '_SEARCH:home';
+                // no break
             case 6: // Also add on 4 so we have a 2-item array
                 $page_links[] = 'cms:_WILD:add';
                 break;
@@ -727,6 +728,7 @@ function do_work()
             case 4:
             case 5:
                 $groups[] = 2;
+                // no break
             case 7: // Also include 4 and 5 for a multi-item array
                 $groups[] = 3;
                 break;

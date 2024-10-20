@@ -18,14 +18,13 @@
  */
 class http_base_test_set extends cms_test_case
 {
-
     protected $http_faux_loopback = null;
     public function setUp()
     {
         parent::setUp();
 
         $this->http_faux_loopback = get_value('http_faux_loopback');
-        set_value('http_faux_loopback', '^' . preg_quote(get_base_url(),'#') . '.*\.(html)\??');
+        set_value('http_faux_loopback', '^' . preg_quote(get_base_url(), '#') . '.*\.(html)\??');
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     }

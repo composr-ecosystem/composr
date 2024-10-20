@@ -29,7 +29,7 @@ class setupwizard_test_set extends cms_test_case
 
         $session_id = $this->establish_admin_callback_session();
 
-        $site_name = uniqid();
+        $site_name = uniqid('', false);
 
         $post_params = [
             'skip_9' => '0',

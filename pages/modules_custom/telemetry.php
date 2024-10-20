@@ -109,7 +109,7 @@ class Module_telemetry
         require_code('temporal');
 
         $fields = [
-            'STATUS' => $error['resolved'] == 1 ? do_lang_tempcode('RELAYED_ERROR_CLOSED', protect_from_escaping($issue_tracker)) : do_lang_tempcode('RELAYED_ERROR_OPEN'),
+            'STATUS' => (($error['resolved'] == 1) ? do_lang_tempcode('RELAYED_ERROR_CLOSED', protect_from_escaping($issue_tracker)) : do_lang_tempcode('RELAYED_ERROR_OPEN')),
             'FIRST_REPORTED' => get_timezoned_date_time($error['first_date_and_time'], false),
             'LAST_REPORTED' => get_timezoned_date_time($error['last_date_and_time'], false),
             'TIMES_REPORTED' => integer_format($error['error_count']),

@@ -295,13 +295,14 @@ if (!empty($issues_found)) {
 echo '<p>Done version ' . escape_html($version_pretty) . '!</p>';
 
 echo '<ul>';
-foreach ($urls as $_title => $url) {
-    if (is_object($_title)) {
-        $title = $_title->evaluate();
+
+foreach ($urls as $_link_title => $link_url) {
+    if (is_object($_link_title)) {
+        $link_title = $_link_title->evaluate();
     } else {
-        $title = $_title;
+        $link_title = strval($_link_title);
     }
-    echo '<li><a href="' . escape_html($url) . '">' . $title . '</a></li>';
+    echo '<li><a href="' . escape_html($link_url) . '">' . $link_title . '</a></li>';
 }
 echo '</ul>';
 

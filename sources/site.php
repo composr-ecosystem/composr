@@ -987,9 +987,6 @@ function do_site()
                 continue;
             }
 
-            if ($GLOBALS['XSS_DETECT']) {
-                ocp_mark_as_escaped($message_text);
-            }
             attach_message($message_text, $message['r_type']);
         }
         if (!empty($messages)) {

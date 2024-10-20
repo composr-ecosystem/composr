@@ -308,10 +308,8 @@ class privacy_hooks_test_set extends cms_test_case
                 }
 
                 // Table => [table field names]
-                $exceptions = [
-                ];
+                $exceptions = [];
                 if (($found_tables[$table]['removal_default_handle_method'] == PRIVACY_METHOD__ANONYMISE) || (($found_tables[$table]['allowed_handle_methods'] & PRIVACY_METHOD__ANONYMISE) != 0)) {
-
                     if (($found_tables[$table]['owner_id_field'] !== null) && ((!isset($exceptions[$table])) || (!in_array($found_tables[$table]['owner_id_field'], $exceptions[$table])))) {
                         if (($found_tables[$table]['allowed_handle_methods'] & PRIVACY_METHOD__DELETE) != 0) {
                             // This is ugly but we don't have any other way to put out a warning

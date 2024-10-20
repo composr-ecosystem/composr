@@ -234,13 +234,18 @@ class Module_admin_modularisation
             }
             $fields->attach(form_input_multi_list($list_action, do_lang_tempcode($current_section . '_TEXT'), 'modularisation_action_' . $current_section, $_list, null, 10));
         } else { // Not actionable; just display issues as text
-            $_list->attach('<ul>');
+            $_list_2 = '<ul>';
             foreach ($list as $item) {
-                list($value, $text) = $item;
-                $_list->attach('<li>' . $text . '</li>');
+                list($value, $_text) = $item;
+                if (is_object($_text)) {
+                    $text = $_text->evaluate();
+                } else {
+                    $text = escape_html($_text);
+                }
+                $_list_2 .= '<li>' . $text . '</li>';
             }
-            $_list->attach('</ul>');
-            $fields->attach(form_input_text(do_lang_tempcode($current_section . '_ACTION'), do_lang_tempcode($current_section . '_TEXT'), 'modularisation_' . $current_section, $_list, false, true));
+            $_list_2 .= '</ul>';
+            $fields->attach(form_input_text(do_lang_tempcode($current_section . '_ACTION'), do_lang_tempcode($current_section . '_TEXT'), 'modularisation_' . $current_section, $_list_2, false, true));
         }
     }
 

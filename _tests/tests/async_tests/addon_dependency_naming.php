@@ -34,6 +34,7 @@ class addon_dependency_naming_test_set extends cms_test_case
             'PHP zip extension',
             'PHP mbstring extension',
             'PHP pdo_mysql extension',
+            'PHP fileinfo extension',
         ];
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');

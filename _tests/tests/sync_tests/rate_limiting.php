@@ -42,7 +42,7 @@ class rate_limiting_test_set extends cms_test_case
             }
 
             if ($this->debug) {
-                var_dump($i, $result->data);
+                $this->dump($result->data, 'Iteration ' . strval($i));
             }
         }
 

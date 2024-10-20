@@ -67,7 +67,7 @@ function add_early_access_code(string $access_code, string $label, string $trigg
 }
 
 /**
- * Create an early access code.
+ * Edit an early access code.
  *
  * @param  ID_TEXT $access_code The access code we are editing
  * @param  SHORT_TEXT $label The contextual label for this code
