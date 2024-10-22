@@ -48,8 +48,8 @@ class Hook_endpoint_cms_homesite_errorservice
         require_code('errorservice');
 
         $version = get_param_string('version', $id);
-        $error_message = post_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);
-        $error_message = html_entity_decode($error_message);
+        $_error_message = post_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);
+        $error_message = html_entity_decode($_error_message, ENT_QUOTES | ENT_SUBSTITUTE);
 
         $output = get_problem_match_nearest($error_message);
         if ($output !== null) {

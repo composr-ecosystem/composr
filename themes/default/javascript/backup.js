@@ -60,7 +60,7 @@
             progressTicker.height = '20';
             progressTicker.style.verticalAlign = 'middle';
             progressTicker.style.marginRight = '20px';
-            button.parentNode.insertBefore(progressTicker);
+            button.parentNode.insertBefore(progressTicker, null);
 
             $cms.loadSnippet('backup_size&max_size=' + encodeURIComponent(maxSizeField.value)).then(function (size) {
                 $cms.ui.alert($util.format('{!backups:CALCULATED_SIZE;^}', [size]));

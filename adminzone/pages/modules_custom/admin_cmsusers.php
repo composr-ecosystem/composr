@@ -310,11 +310,11 @@ class Module_admin_cmsusers
             if ($rt['HITTIME_2'] < 365) { // Do not check install status of sites inactive for more than a year; no use
                 $active = get_value_newer_than('testing__' . $r['website_url'] . '/data/installed.php', time() - 60 * 60 * 24, true);
                 if ($active === null) {
-                    $test = cms_http_request($r['website_url'] . '/data/installed.php', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => (1024 * 4), 'ua' => get_brand_base_url() . ' install stats', 'timeout' => 3.0]);
-                    if ($test->data === 'Yes') {
+                    $test_2 = cms_http_request($r['website_url'] . '/data/installed.php', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => (1024 * 4), 'ua' => get_brand_base_url() . ' install stats', 'timeout' => 3.0]);
+                    if ($test_2->data === 'Yes') {
                         $active = do_lang('YES');
                     } else {
-                        $active = @strval($test->message);
+                        $active = @strval($test_2->message);
                         if ($active == '') {
                             $active = do_lang('NO');
                         } else {
@@ -392,7 +392,7 @@ class Module_admin_cmsusers
         // Filter parameters
         $filter_website = get_param_string('filter_website', '');
         $filter_error_message = get_param_string('filter_error_message', '');
-        $filter_show_resolved = get_param_string('filter_show_resolved', 0);
+        $filter_show_resolved = get_param_integer('filter_show_resolved', 0);
         //$filter_from = post_param_date('filter_from', true);
         //$filter_to = post_param_date('filter_to', true);
 

@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    points
+ * @package    core_cns
  */
 
 /**
@@ -29,9 +29,9 @@ class Hook_points_member__visit
      *
      * @param  ?MEMBER $member_id_of The ID of the member who is being viewed (null: was run from the admin ledger)
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
-     * @return array List containing label for use with aggregate point tables
+     * @return ?array List containing label for use with aggregate point tables (null: hook disabled)
      */
-    public function points_profile(?int $member_id_of, ?int $member_id_viewing) : array
+    public function points_profile(?int $member_id_of, ?int $member_id_viewing) : ?array
     {
         return [
             'label' => do_lang('COUNT_VISITS'),

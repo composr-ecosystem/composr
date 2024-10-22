@@ -23,7 +23,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
     if (strpos($db_type, 'mysql') !== false) {
         if (get_db_site_user() == 'root') {
             $GLOBALS['SITE_DB']->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
-        } else if ($username == 'root') {
+        } elseif ($username == 'root') {
             require_code('database/' . $db_type);
             $db_driver = object_factory('Database_Static_' . $db_type, false, [$table_prefix]);
             $db = new DatabaseConnector(get_db_site(), get_db_site_host(), $username, $password, $table_prefix, false, $db_driver);

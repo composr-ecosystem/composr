@@ -39,27 +39,27 @@ function _redirect_screen(?object $title, $url, $text = null, bool $intermediary
     global $ATTACHED_MESSAGES_RAW;
 
     foreach ($ATTACHED_MESSAGES_RAW as $message) {
-        $_message = is_object($message[0]) ? $message[0]->evaluate() : escape_html($message[0]);
+        $_message = is_object($message[0]) ? $message[0]->evaluate() : $message[0];
         if (($_message != '') && ($_message != do_lang('_REDIRECTING')) && (strpos($_message, 'cancel_sw_warn') === false)) {
-            $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
+            $map = [
                 'r_session_id' => get_session_id(),
-                'r_message' => $_message,
                 'r_type' => $message[1],
                 'r_time' => time(),
-            ]);
+            ] + insert_lang('r_message', $_message, 5, null, true, null, null, true, null, null, true, true);
+            $GLOBALS['SITE_DB']->query_insert('messages_to_render', $map);
         }
     }
 
     // Even if we have $FORCE_META_REFRESH we want to relay $text if provided --- our delay may be as low zero so it won't always be read in time
     if ($text !== null) {
-        $_message = is_object($text) ? $text->evaluate() : escape_html($text);
+        $_message = is_object($text) ? $text->evaluate() : $text;
         if ((function_exists('get_session_id')) && ($_message != '') && ($_message != do_lang('_REDIRECTING')) && (strpos($_message, 'cancel_sw_warn') === false)) {
-            $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
+            $map = [
                 'r_session_id' => get_session_id(),
-                'r_message' => $_message,
                 'r_type' => $msg_type,
                 'r_time' => time(),
-            ]);
+            ] + insert_lang('r_message', $_message, 5, null, true, null, null, true, null, null, true, true);
+            $GLOBALS['SITE_DB']->query_insert('messages_to_render', $map);
         }
     }
 

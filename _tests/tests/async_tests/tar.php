@@ -137,7 +137,7 @@ class tar_test_set extends cms_test_case
 
     public function testSuperLongFilenameTar()
     {
-        $file1 = str_repeat(uniqid(), 10) . '.txt'; // Should be 133 characters
+        $file1 = str_repeat(uniqid('', false), 10) . '.txt'; // Should be 133 characters
         $to_write1 = 'test' . uniqid('', true);
 
         $path = cms_tempnam();
@@ -171,7 +171,7 @@ class tar_test_set extends cms_test_case
     public function testBigFileTar()
     {
         $file1 = 'bigfile.txt';
-        $to_write1 = str_repeat(uniqid(), 1024); // Should be about 13kb
+        $to_write1 = str_repeat(uniqid('', false), 1024); // Should be about 13kb
 
         $path = cms_tempnam();
 

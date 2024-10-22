@@ -648,9 +648,8 @@ class Module_news
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated('news', strval($id), get_member(), [$myrow['submitter']]);
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '5fd82328dc2ac9695dc25646237065b0',
@@ -727,7 +726,8 @@ class Module_news
         $next_article_title = null;
 
         // Find a previous article
-        $prev_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], ' AND date_and_time<' . strval($myrow['date_and_time']), 100/*Performance*/);
+        // TODO: Does not work when multiple articles have the same date_and_time
+        $prev_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['news_category' => $category], ' AND date_and_time<=' . strval($myrow['date_and_time']), 100/*Performance*/);
         sort_maps_by($prev_articles, '!date_and_time');
         foreach ($prev_articles as $prev_article) {
             // Validation
@@ -738,7 +738,7 @@ class Module_news
             }
 
             $_prev_article_title = $prev_article['title'];
-            if (!cms_empty_safe($_prev_article_title)) {
+            if (!cms_empty_safe($_prev_article_title) && ($id != $prev_article['id'])) {
                 $prev_article_title = get_translated_text($_prev_article_title);
                 $prev_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $prev_article['id']], '_SELF');
                 break;
@@ -746,7 +746,8 @@ class Module_news
         }
 
         // Find a next article
-        $next_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], ' AND date_and_time>=' . strval($myrow['date_and_time']), 101/*Performance*/, 1);
+        // TODO: Does not work when multiple articles have the same date_and_time
+        $next_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['news_category' => $category], ' AND date_and_time>=' . strval($myrow['date_and_time']), 101/*Performance*/, 1);
         sort_maps_by($next_articles, 'date_and_time');
         foreach ($next_articles as $next_article) {
             // Validation
@@ -757,7 +758,7 @@ class Module_news
             }
 
             $_next_article_title = $next_article['title'];
-            if (!cms_empty_safe($_next_article_title)) {
+            if (!cms_empty_safe($_next_article_title) && ($id != $next_article['id'])) {
                 $next_article_title = get_translated_text($_next_article_title);
                 $next_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $next_article['id']], '_SELF');
                 break;

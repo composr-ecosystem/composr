@@ -2594,7 +2594,7 @@ class Module_topics
 
         if ($forum_id !== null) {
             $topic_validated = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_validated', ['id' => $topic_id]);
-            if (($topic_validated == 0) && (!has_privilege(get_member(), 'jump_to_not_validated'))) {
+            if ((addon_installed('validation')) && ($topic_validated == 0) && (!has_privilege(get_member(), 'jump_to_not_validated'))) {
                 $map = ['page' => 'forumview', 'id' => $forum_id];
                 $test = get_param_string('kfs' . strval($forum_id), null, INPUT_FILTER_GET_COMPLEX);
                 if (($test !== null) && ($test !== '0')) {

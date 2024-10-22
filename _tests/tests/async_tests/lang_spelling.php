@@ -173,9 +173,9 @@ class lang_spelling_test_set extends cms_test_case
             }
         }
 
-        // These are both bad English
+        // These are all bad English forms of "not validated"
         if (preg_match('#([^A-Za-z]+)(unvalidated|un-validated|unvalidate|un-validate|nonvalidated|non-validated)([^A-Za-z]+)#', $string) != 0) {
-            $ob->assertTrue(false, 'A misspelling of \'not validated\' occurred in ' . $path . '. Be mindful of grammar; you may need to say \'(subject) which is/are not validated\'.');
+            $ob->assertTrue(false, 'You must use \'not validated\', in ' . $path . ' (not un[-]validate[d] or non[-]validate[d]). Be mindful of grammar; you may need to use \'not validated\' in a relative clause (e.g. \'content which is not validated\', not \'not validated content\').');
         }
 
         // Hyphen wanted (we want our canonical way)

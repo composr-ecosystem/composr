@@ -40,25 +40,11 @@ class StringUtil
      */
     public static function convertToUTF8($str)
     {
-        $encoding = mb_detect_encoding($str, ['UTF-8', 'ISO-8859-1', 'WINDOWS-1252'], true);
-
-        switch ($encoding) {
-            case 'ISO-8859-1':
-                // Altered by ChrisG for PHP 8.2+
-                require_code('character_sets');
-                $newStr = convert_to_internal_encoding($str, $encoding, 'utf-8');
-                break;
-            /* Unreachable code. Not sure yet how we can improve this
-             * situation.
-            case 'WINDOWS-1252' :
-                $newStr = iconv('cp1252', 'UTF-8', $str);
-                break;
-             */
-            default:
-                 $newStr = $str;
+        if (!mb_check_encoding($str, 'UTF-8') && mb_check_encoding($str, 'ISO-8859-1')) {
+            $str = mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');
         }
 
         // Removing any control characters
-        return preg_replace('%(?:[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F])%', '', $newStr);
+        return preg_replace('%(?:[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F])%', '', $str);
     }
 }

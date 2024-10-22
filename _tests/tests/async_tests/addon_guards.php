@@ -43,7 +43,6 @@ class addon_guards_test_set extends cms_test_case
         'systems/payment_gateway' => 'ecommerce',
         'systems/realtime_rain' => 'realtime_rain',
         'systems/referrals' => 'referrals',
-        'systems/points' => 'points',
         'systems/ecommerce_tax' => 'ecommerce',
     ];
 
@@ -60,7 +59,6 @@ class addon_guards_test_set extends cms_test_case
             // These contain no code
             '(sources|sources_custom)/hooks/systems/disposable_values/\w+\.php',
             '(sources|sources_custom)/hooks/systems/non_active_urls/\w+\.php',
-            '(sources|sources_custom)/hooks/systems/points/\w+\.php',
 
             // Not an actual PHP script
             'data_custom/errorlog.php',
@@ -122,6 +120,8 @@ class addon_guards_test_set extends cms_test_case
 
     public function testAddonGuardsImplicitCodeCalls()
     {
+        // TODO: add checks for template symbols
+        // TODO: make code scanning more concise; scan by function, not by entire file, so we are less likely to miss a missing guard because one exists in another function
         $files_in_addons = [];
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
@@ -154,9 +154,10 @@ class addon_guards_test_set extends cms_test_case
                     $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                     $matches = [];
-                    $num_matches = preg_match_all('#(require_lang|require_code|require_css|require_javascript|do_template)\(\'([^\']*)\'[\),]#', $c, $matches);
+                    $num_matches = preg_match_all('#(require_lang|require_code|require_css|require_javascript|do_template|get_option)\(\'([^\']*)\'(,[^\),]*)?#', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $include = $matches[2][$i];
+                        $extra = $matches[3][$i];
 
                         $type = $matches[1][$i];
                         switch ($type) {
@@ -175,6 +176,12 @@ class addon_guards_test_set extends cms_test_case
                             case 'do_template':
                                 $included_file = 'themes/default/templates/' . $include . '.tpl';
                                 break;
+                            case 'get_option':
+                                if (strpos($extra, 'true') !== false) { // We specified missing is okay
+                                    continue 2;
+                                }
+                                $included_file = 'sources/hooks/systems/config/' . $include . '.php';
+                                break;
                         }
 
                         if (isset($files_in_addons[$included_file])) {
@@ -189,7 +196,7 @@ class addon_guards_test_set extends cms_test_case
                                 $search_for = 'addon_installed(\'' . $file_in_addon . '\')';
                                 $ok = (strpos($c, $search_for) !== false);
                                 if (!$ok) {
-                                    if ($file_in_addon == 'news_shared') {
+                                    if ($file_in_addon == 'news_shared') { // news_shared should also accept news
                                         $search_for = 'addon_installed(\'news\')';
                                         $ok = (strpos($c, $search_for) !== false);
                                     }
@@ -206,24 +213,24 @@ class addon_guards_test_set extends cms_test_case
                                     }
                                 }
 
-                                $error_message = 'Cannot find a guard for the ' . $file_in_addon . ' addon in ' . $path . ' [' . $addon_name . '], due to ' . $matches[0][$i];
+                                $error_message = 'Cannot find a guard for the ' . $file_in_addon . ' addon in ' . $path . ' [' . $addon_name . '], due to ' . $matches[1][$i] . '(\'' . $matches[2][$i] . '\'';
 
                                 if (in_array($error_message, [
-                                    'Cannot find a guard for the google_appengine addon in sources/global.php [core], due to require_code(\'google_appengine\')',
-                                    'Cannot find a guard for the chat addon in sources/global2.php [core], due to require_code(\'chat_poller\')',
-                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to require_javascript(\'catalogues\')',
-                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to do_template(\'CATALOGUE_ADDING_SCREEN\',',
-                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to do_template(\'CATALOGUE_EDITING_SCREEN\',',
-                                    'Cannot find a guard for the backup addon in sources/minikernel.php [core], due to do_template(\'RESTORE_HTML_WRAP\',',
-                                    'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\',',
-                                    'Cannot find a guard for the backup addon in sources/minikernel.php [core], due to do_template(\'RESTORE_HTML_WRAP\',',
-                                    'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\',',
-                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action.php [core_cns], due to require_lang(\'cns_post_templates\')',
-                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action.php [core_cns], due to require_lang(\'cns_welcome_emails\')',
-                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_post_templates\')',
-                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_post_templates\')',
-                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_welcome_emails\')',
-                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_welcome_emails\')',
+                                    'Cannot find a guard for the google_appengine addon in sources/global.php [core], due to require_code(\'google_appengine\'',
+                                    'Cannot find a guard for the chat addon in sources/global2.php [core], due to require_code(\'chat_poller\'',
+                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to require_javascript(\'catalogues\'',
+                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to do_template(\'CATALOGUE_ADDING_SCREEN\'',
+                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to do_template(\'CATALOGUE_EDITING_SCREEN\'',
+                                    'Cannot find a guard for the backup addon in sources/minikernel.php [core], due to do_template(\'RESTORE_HTML_WRAP\'',
+                                    'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\'',
+                                    'Cannot find a guard for the backup addon in sources/minikernel.php [core], due to do_template(\'RESTORE_HTML_WRAP\'',
+                                    'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\'',
+                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action.php [core_cns], due to require_lang(\'cns_post_templates\'',
+                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action.php [core_cns], due to require_lang(\'cns_welcome_emails\'',
+                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_post_templates\'',
+                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_post_templates\'',
+                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_welcome_emails\'',
+                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_welcome_emails\'',
                                 ])) {
                                     continue; // Exceptions
                                 }

@@ -436,7 +436,7 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
     }
 
     // Award points when necessary (otherwise it is awarded in cns_validate_post)
-    if (($post_counts === 1) && (addon_installed('points')) && (!running_script('install')) && (!get_mass_import_mode()) && ($validated == 1) && (!$anonymous) && ($whisper_to_member === null) && (!$is_pt)) {
+    if (($post_counts === 1) && (addon_installed('points')) && (addon_installed('cns_forum')) && (!running_script('install')) && (!get_mass_import_mode()) && ($validated == 1) && (!$anonymous) && ($whisper_to_member === null) && (!$is_pt)) {
         $post_points = intval(get_option('points_posting'));
         if ($post_points > 0) {
             require_code('points2');

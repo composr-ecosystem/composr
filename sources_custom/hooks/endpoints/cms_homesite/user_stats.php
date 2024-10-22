@@ -64,7 +64,7 @@ class Hook_endpoint_cms_homesite_user_stats
 
         if ($id === '_LEGACY_') { // LEGACY
             echo serialize([]);
-            exit;
+            exit();
         }
 
         return [];

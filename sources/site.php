@@ -285,12 +285,13 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     }
 
     if ($GLOBALS['REFRESH_URL'][0] != '') {
-        $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
+        $map = [
             'r_session_id' => get_session_id(),
-            'r_message' => is_object($message) ? _sanitise_error_msg($message->evaluate()) : escape_html(_sanitise_error_msg($message)),
             'r_type' => $type,
             'r_time' => time(),
-        ]);
+        ];
+        $map += insert_lang('r_message', $message_eval, 5, null, true, null, null, true, null, null, true, true);
+        $GLOBALS['SITE_DB']->query_insert('messages_to_render', $map);
     }
 
     $am_looping--;
@@ -981,14 +982,22 @@ function do_site()
     if (get_param_integer('redirected', 0) == 1) {
         $messages = $GLOBALS['SITE_DB']->query_select('messages_to_render', ['r_message', 'r_type', 'r_time'], ['r_session_id' => get_session_id(),], 'ORDER BY r_time DESC');
         foreach ($messages as $message) {
-            if ($GLOBALS['XSS_DETECT']) {
-                ocp_mark_as_escaped($message['r_message']);
+            $message_text = get_translated_tempcode('messages_to_render', $message, 'r_message');
+            if ($message_text === null) { // Ignore look-up errors and just skip the message
+                continue;
             }
-            attach_message(protect_from_escaping($message['r_message']), $message['r_type']);
+
+            attach_message($message_text, $message['r_type']);
         }
         if (!empty($messages)) {
-            $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'messages_to_render WHERE ' . db_string_equal_to('r_session_id', get_session_id()) . ' OR r_time<' . strval(time() - 60 * 60));
+            $GLOBALS['SITE_DB']->query_delete('messages_to_render', ['r_session_id' => get_session_id()], ' OR r_time<' . strval(time() - 60 * 60));
         }
+    }
+
+    // Site message(s)
+    if (running_script('index') && addon_installed('site_messaging')) {
+        require_code('site_messaging');
+        show_site_messages();
     }
 
     $out_evaluated = null;
@@ -1048,12 +1057,6 @@ function do_site()
                 attach_message(do_lang_tempcode('SETUPWIZARD_NOT_RUN', escape_html($setupwizard_url->evaluate()), escape_html($cancel_sw_url->evaluate())), 'notice');
             }
         }
-    }
-
-    // Site message(s)
-    if (running_script('index') && addon_installed('site_messaging')) {
-        require_code('site_messaging');
-        show_site_messages();
     }
 
     // Warning if dev-mode is on

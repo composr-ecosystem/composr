@@ -91,7 +91,7 @@ function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro
     url_default_parameters__disable();
     $hidden->attach($_hidden);
 
-    if ($intro_message_if_enabled) {
+    if ($intro_message_if_enabled && addon_installed('cns_forum')) {
         $forum_id = get_option('intro_forum_id');
         if ($forum_id != '') {
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'b8197832e4467b08e953535202235501', 'TITLE' => do_lang_tempcode('INTRODUCE_YOURSELF')]));
@@ -445,7 +445,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     dispatch_notification('cns_new_member', null, do_lang('NEW_MEMBER_NOTIFICATION_MAIL_SUBJECT', $username, get_site_name(), null, get_site_default_lang()), $message, null, A_FROM_SYSTEM_PRIVILEGED);
 
     // Intro post
-    if ($intro_message_if_enabled) {
+    if ($intro_message_if_enabled && addon_installed('cns_forum')) {
         $forum_id = get_option('intro_forum_id');
         if ($forum_id != '') {
             if (!is_numeric($forum_id)) {

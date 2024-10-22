@@ -53,7 +53,6 @@ function get_tracker_issues($ids, $version = null, $previous_version = null)
         $reporter = $issue['reporter'];
         $handler = $issue['handler'];
         $issue_titles[$issue['category']][$issue['id']] = [$summary, $reporter, $handler];
-
     }
     ksort($issue_titles);
 
@@ -84,7 +83,7 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
             '" . db_escape_string($tracker_additional) . "'
         )
     ";
-    $text_id = $GLOBALS['SITE_DB']->_query(trim($query), null, null, false, true, null, '', false);
+    $text_id = $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true);
 
     ensure_version_exists_in_tracker($version);
 

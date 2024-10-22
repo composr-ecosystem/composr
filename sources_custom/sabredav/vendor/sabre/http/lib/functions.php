@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Sabre\HTTP;
 
-use DateTime;
-use InvalidArgumentException;
-
 /**
  * A collection of useful helpers for parsing or generating various HTTP
  * headers.
@@ -29,7 +26,7 @@ use InvalidArgumentException;
  * See:
  *   http://tools.ietf.org/html/rfc7231#section-7.1.1.1
  *
- * @return bool|DateTime
+ * @return bool|\DateTime
  */
 function parseDate(string $dateString)
 {
@@ -65,7 +62,7 @@ function parseDate(string $dateString)
     }
 
     try {
-        return new DateTime($dateString, new \DateTimeZone('UTC'));
+        return new \DateTime($dateString, new \DateTimeZone('UTC'));
     } catch (\Exception $e) {
         return false;
     }
@@ -74,7 +71,7 @@ function parseDate(string $dateString)
 /**
  * Transforms a DateTime object to a valid HTTP/1.1 Date header value.
  */
-function toDate(DateTime $dateTime): string
+function toDate(\DateTime $dateTime): string
 {
     // We need to clone it, as we don't want to affect the existing
     // DateTime.
@@ -171,9 +168,9 @@ function negotiateContentType($acceptHeaderValue, array $availableOptions)
 
             // Does this entry win?
             if (
-                ($proposal['quality'] > $lastQuality) ||
-                ($proposal['quality'] === $lastQuality && $specificity > $lastSpecificity) ||
-                ($proposal['quality'] === $lastQuality && $specificity === $lastSpecificity && $optionIndex < $lastOptionIndex)
+                ($proposal['quality'] > $lastQuality)
+                || ($proposal['quality'] === $lastQuality && $specificity > $lastSpecificity)
+                || ($proposal['quality'] === $lastQuality && $specificity === $lastSpecificity && $optionIndex < $lastOptionIndex)
             ) {
                 $lastQuality = $proposal['quality'];
                 $lastSpecificity = $specificity;
@@ -331,8 +328,8 @@ function parseMimeType(string $str): array
     if (2 !== count($mimeType)) {
         // Illegal value
         var_dump($mimeType);
-        die();
-        throw new InvalidArgumentException('Not a valid mime-type: '.$str);
+        exit;
+        // throw new InvalidArgumentException('Not a valid mime-type: '.$str);
     }
     list($type, $subType) = $mimeType;
 
@@ -349,7 +346,7 @@ function parseMimeType(string $str): array
         // The quality parameter, if it appears, also marks the end of
         // the parameter list. Anything after the q= counts as an
         // 'accept extension' and could introduce new semantics in
-        // content-negotation.
+        // content-negotiation.
         if ('q' !== $partName) {
             $parameters[$partName] = $part;
         } else {
@@ -404,13 +401,9 @@ function decodePath(string $path): string
 function decodePathSegment(string $path): string
 {
     $path = rawurldecode($path);
-    $encoding = mb_detect_encoding($path, ['UTF-8', 'ISO-8859-1']);
 
-    switch ($encoding) {
-        case 'ISO-8859-1':
-            // Altered by ChrisG for PHP 8.2+
-            require_code('character_sets');
-            $path = convert_to_internal_encoding($path, $encoding, 'utf-8');
+    if (!mb_check_encoding($path, 'UTF-8') && mb_check_encoding($path, 'ISO-8859-1')) {
+        $path = mb_convert_encoding($path, 'UTF-8', 'ISO-8859-1');
     }
 
     return $path;

@@ -291,6 +291,11 @@ class VCard extends VObject\Document
                     $this->FN = (string) $this->ORG;
                     $repaired = true;
 
+                // Otherwise, the NICKNAME property may work
+                } elseif (isset($this->NICKNAME)) {
+                    $this->FN = (string) $this->NICKNAME;
+                    $repaired = true;
+
                 // Otherwise, the EMAIL property may work
                 } elseif (isset($this->EMAIL)) {
                     $this->FN = (string) $this->EMAIL;
@@ -373,7 +378,7 @@ class VCard extends VObject\Document
     /**
      * Returns a preferred field.
      *
-     * VCards can indicate wether a field such as ADR, TEL or EMAIL is
+     * VCards can indicate whether a field such as ADR, TEL or EMAIL is
      * preferred by specifying TYPE=PREF (vcard 2.1, 3) or PREF=x (vcard 4, x
      * being a number between 1 and 100).
      *
@@ -445,6 +450,7 @@ class VCard extends VObject\Document
      *
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         // A vcard does not have sub-components, so we're overriding this
@@ -467,7 +473,7 @@ class VCard extends VObject\Document
      *
      * @param Xml\Writer $writer XML writer
      */
-    public function xmlSerialize(Xml\Writer $writer)
+    public function xmlSerialize(Xml\Writer $writer): void
     {
         $propertiesByGroup = [];
 

@@ -30,13 +30,13 @@ Masonry,,https://github.com/desandro/masonry,No,Yes,Re-sync regularly,21st Feb 2
 MediaElement.js,,https://github.com/mediaelement/mediaelement,Yes,Yes,Re-sync regularly,21st Feb 2024,7.0.3,IE11+,N/A,N/A,From 'build' directory. Files strewn around.
 modalwindow.js,,,No,Yes,No action,N/A,N/A,N/A,N/A,N/A,Original website dead; consider replacing with another library (perhaps Bootstrap's implementation)
 Modernizr,,https://modernizr.com/,No,Yes,Re-sync regularly,21st Feb 2024,3.6.0,N/A,N/A,N/A,
-OpenSpout,,https://github.com/openspout/openspout,Yes,No,Re-sync regularly,12th Oct 2024,4.26.0,PHP 8.2+,spreadsheets,N/A,Replace all files in openspout and install the composer package
+OpenSpout,,https://github.com/openspout/openspout,Yes,No,Re-sync regularly,12th Oct 2024,4.26.0,PHP 8.2+,spreadsheets,N/A,"Replace all files in openspout and install the composer package (remove all require-dev packages)"
 Osano Cookie Consent,,https://github.com/osano/cookieconsent,No,Yes,Re-sync regularly,21st Feb 2024,4,IE10+,N/A,N/A,From build directory
 PDF.js,,https://github.com/mozilla/pdf.js,Yes,No,Re-sync regularly,21st Feb 2024,4.0.379,IE11+,N/A,N/A,Disable print/download buttons each time in viewer.html. Don't include web/compressed.tracemonkey-pldi-09.pdf
 PHP,php,https://github.com/php,Yes,N/A,"Maintain our github fork, re-sync if our origin version is no longer meeting our minimum requirements",20th Oct 2020,8.0.0 RC2,N/A,N/A,N/A,
 php-mail-signature,,https://github.com/louisameline/php-mail-signature,Yes,Yes,Re-sync regularly,N/A,1.2,PHP 5.3+,N/A,N/A,"DKIM support. Lots of modifications, so must re-sync by hand from commits"
 Plupload,,https://github.com/moxiecode/plupload,No,Yes,Re-sync regularly,9th Apr 2020,3.1.2,N/A,N/A,N/A,"Consider ripping out and replacing with pure ""HTML5"" solution. Use dev versions of movie and plupload code into plupload.js, but set MXI_DEBUG to false. Do /s/(return|param|type) \{([\w\|]+)\}/\1 \2/"
-SabreDAV,,https://github.com/sabre-io/dav,Yes,No,Re-sync regularly,30th Mar 2020,4.1.0,PHP 7.1+,__webdav,N/A,"SabreDAV lost its corporate sponsor when the founder left (even though the sponsor company still says they maintain it), and is not maintained by volunteers. cd sources_custom/sabredav ; composer require sabre/dav. Delete any directories named: examples, tests, bin. Grep old code for fork changes labelled 'ChrisG'."
+SabreDAV,,https://github.com/sabre-io/dav,Yes,No,Re-sync regularly,18th Oct 2024,4.6.0,PHP 7.1+,webdav,N/A,"cd sources_custom/sabredav ; composer require sabre/dav. Delete any directories named: examples, tests, bin. Grep old code (including in vendor) for fork changes labelled 'Composr'."
 Select2,,https://github.com/select2/select2,Yes,Yes,Re-sync regularly,21st Feb 2024,4.0.13,IE9+,N/A,N/A,select2.full.js. Keep Tempcode wrapping around the JS. Language strings are inserted into the JS.
 Sew,,https://github.com/andrewsnowden/jquery-sew,No,Yes,No action,N/A,N/A,IE9+,N/A,N/A,Heavily-forked and patched with third party changes.
 SimpleTest,,https://github.com/simpletest/simpletest,Yes,No,Re-sync regularly,21st Feb 2024,1.2.0,PHP 7.1+,N/A,N/A,Made some cms_ini_set changes

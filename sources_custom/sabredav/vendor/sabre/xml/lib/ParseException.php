@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Sabre\Xml;
 
-use
-    Exception;
+use Exception;
 
 /**
  * This is a base exception for any exception related to parsing xml files.
@@ -14,6 +13,6 @@ use
  * @author Evert Pot (http://evertpot.com/)
  * @license http://sabre.io/license/ Modified BSD License
  */
-class ParseException extends Exception
+class ParseException extends \Exception
 {
 }

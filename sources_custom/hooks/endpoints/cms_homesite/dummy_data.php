@@ -53,13 +53,13 @@ class Hook_endpoint_cms_homesite_dummy_data
 
         // Send the appropriate headers
         header('Content-Type: application/octet-stream');
-        header('Content-Length: ' . $size);
+        header('Content-Length: ' . strval($size));
         header('Content-Disposition: attachment; filename="dummy_data.txt"');
 
         // Output the dummy data
         echo $dummy_data;
 
         // Non-standard output; we must terminate
-        exit;
+        exit();
     }
 }

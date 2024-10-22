@@ -41,8 +41,7 @@ function init__site__pages__modules_custom__quiz($in)
             points_debit_member(get_member(), \"Entered the test, '\" . \$title . \"'\", \$cost, 0, 0, false, 0, 'quiz', 'enter_test', strval(\$quiz['id']));
             \$points_difference -= \$cost;
         }
-        ",
-    );
+        ");
 
     // Remove cost from awarded points
     insert_code_after__by_command(
@@ -55,8 +54,7 @@ function init__site__pages__modules_custom__quiz($in)
             \$cost = intval(floor(\$quiz['q_points_for_passing'] / 2));
             \$points_difference -= \$cost;
         }
-        ",
-    );
+        ");
 
     return $in;
 }

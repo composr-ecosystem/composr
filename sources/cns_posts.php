@@ -59,7 +59,9 @@ function has_post_access(int $post_id, ?int $member_id = null, ?array $post_deta
     }
 
     if (addon_installed('validation')) {
-        if (($post_details['p_validated'] == 0) && (!has_privilege($member_id, 'jump_to_not_validated'))) {
+        require_code('validation');
+
+        if (!check_jump_to_not_validated('post', strval($post_id), $member_id, [], true)) {
             return false;
         }
     }
@@ -154,6 +156,10 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
  */
 function cns_may_edit_post_by(int $post_id, ?int $post_time, ?int $resource_owner, ?int $forum_id, ?int $member_id = null, ?bool $topic_is_closed = null, ?string &$reason = null) : bool
 {
+    if (!addon_installed('cns_forum')) {
+        return false;
+    }
+
     if ($member_id === null) {
         $member_id = get_member();
     }
@@ -227,6 +233,10 @@ function cns_may_edit_post_by(int $post_id, ?int $post_time, ?int $resource_owne
  */
 function cns_may_delete_post_by(int $post_id, ?int $post_time, ?int $resource_owner, ?int $forum_id, ?int $member_id = null, ?bool $topic_is_closed = null, ?string &$reason = null) : bool
 {
+    if (!addon_installed('cns_forum')) {
+        return false;
+    }
+
     if ($member_id === null) {
         $member_id = get_member();
     }

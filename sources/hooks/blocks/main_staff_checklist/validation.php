@@ -34,9 +34,11 @@ class Hook_checklist_validation
             return [];
         }
 
+        require_code('validation');
+
         // Validate/delete submissions
 
-        list($num_not_validated_1, $num_not_validated_2) = $this->get_num_not_validated();
+        list($num_not_validated_1, $num_not_validated_2) = get_count_content_needing_validation();
         if ($num_not_validated_1 >= 1) {
             $status = 0;
         } else {
@@ -55,40 +57,5 @@ class Hook_checklist_validation
         ]);
 
         return [[$tpl, null, $num_not_validated_1, null]];
-    }
-
-    /**
-     * Get the number of items which are not validated.
-     *
-     * @return array A pair: Number of major things, number of minor things
-     */
-    public function get_num_not_validated() : array
-    {
-        require_code('content');
-
-        $sum = 0;
-        $sum2 = 0;
-
-        $_hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
-        foreach ($_hooks as $object) {
-            $info = $object->info();
-            if ($info === null) {
-                continue;
-            }
-            if ($info['validated_field'] === null) {
-                continue;
-            }
-
-            $db = $info['db'];
-            $amount = $db->query_select_value($info['table'], 'COUNT(*)', [$info['validated_field'] => 0]);
-
-            if (!empty($info['validation_is_minor'])) {
-                $sum2 += $amount;
-            } else {
-                $sum += $amount;
-            }
-        }
-
-        return [$sum, $sum2];
     }
 }

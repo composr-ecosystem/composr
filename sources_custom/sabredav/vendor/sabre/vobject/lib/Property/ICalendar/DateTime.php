@@ -131,7 +131,7 @@ class DateTime extends Property
      *
      * @return \DateTimeImmutable
      */
-    public function getDateTime(DateTimeZone $timeZone = null)
+    public function getDateTime(?DateTimeZone $timeZone = null)
     {
         $dt = $this->getDateTimes($timeZone);
         if (!$dt) {
@@ -153,7 +153,7 @@ class DateTime extends Property
      * @return \DateTimeImmutable[]
      * @return \DateTime[]
      */
-    public function getDateTimes(DateTimeZone $timeZone = null)
+    public function getDateTimes(?DateTimeZone $timeZone = null)
     {
         // Does the property have a TZID?
         $tzid = $this['TZID'];
@@ -184,7 +184,7 @@ class DateTime extends Property
      * Sets the property as multiple date-time objects.
      *
      * The first value will be used as a reference for the timezones, and all
-     * the otehr values will be adjusted for that timezone
+     * the other values will be adjusted for that timezone
      *
      * @param DateTimeInterface[] $dt
      * @param bool isFloating If set to true, timezones will be ignored
@@ -300,6 +300,7 @@ class DateTime extends Property
      * @param string $name
      * @param mixed  $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($name, $value)
     {
         parent::offsetSet($name, $value);

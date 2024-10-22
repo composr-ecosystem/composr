@@ -7,7 +7,7 @@ namespace Sabre\Xml;
 /**
  * XML parsing and writing service.
  *
- * You are encouraged to make a instance of this for your application and
+ * You are encouraged to make an instance of this for your application and
  * potentially extend it, as a central API point for dealing with xml and
  * configuring the reader and writer.
  *
@@ -105,22 +105,30 @@ class Service
      *
      * @param string|resource $input
      *
-     * @throws ParseException
-     *
      * @return array|object|string
+     *
+     * @throws ParseException
      */
-    public function parse($input, string $contextUri = null, string &$rootElementName = null)
+    public function parse($input, ?string $contextUri = null, ?string &$rootElementName = null)
     {
-        if (is_resource($input)) {
+        if (!is_string($input)) {
             // Unfortunately the XMLReader doesn't support streams. When it
             // does, we can optimize this.
-            $input = (string) stream_get_contents($input);
-
-            // If input is an empty string, then its safe to throw exception
-            if ('' === $input) {
-                throw new ParseException('The input element to parse is empty. Do not attempt to parse');
+            if (is_resource($input)) {
+                $input = (string) stream_get_contents($input);
+            } else {
+                // Input is not a string and not a resource.
+                // Therefore, it has to be a closed resource.
+                // Effectively empty input has been passed in.
+                $input = '';
             }
         }
+
+        // If input is empty, then it's safe to throw an exception
+        if (empty($input)) {
+            throw new ParseException('The input element to parse is empty. Do not attempt to parse');
+        }
+
         $r = $this->getReader();
         $r->contextUri = $contextUri;
         $r->XML($input, null, $this->options);
@@ -148,22 +156,30 @@ class Service
      * @param string|string[] $rootElementName
      * @param string|resource $input
      *
-     * @throws ParseException
-     *
      * @return array|object|string
+     *
+     * @throws ParseException
      */
-    public function expect($rootElementName, $input, string $contextUri = null)
+    public function expect($rootElementName, $input, ?string $contextUri = null)
     {
-        if (is_resource($input)) {
+        if (!is_string($input)) {
             // Unfortunately the XMLReader doesn't support streams. When it
             // does, we can optimize this.
-            $input = (string) stream_get_contents($input);
-
-            // If input is empty string, then its safe to throw exception
-            if ('' === $input) {
-                throw new ParseException('The input element to parse is empty. Do not attempt to parse');
+            if (is_resource($input)) {
+                $input = (string) stream_get_contents($input);
+            } else {
+                // Input is not a string and not a resource.
+                // Therefore, it has to be a closed resource.
+                // Effectively empty input has been passed in.
+                $input = '';
             }
         }
+
+        // If input is empty, then it's safe to throw an exception
+        if (empty($input)) {
+            throw new ParseException('The input element to parse is empty. Do not attempt to parse');
+        }
+
         $r = $this->getReader();
         $r->contextUri = $contextUri;
         $r->XML($input, null, $this->options);
@@ -202,7 +218,7 @@ class Service
      *
      * @return string
      */
-    public function write(string $rootElementName, $value, string $contextUri = null)
+    public function write(string $rootElementName, $value, ?string $contextUri = null)
     {
         $w = $this->getWriter();
         $w->openMemory();
@@ -215,9 +231,9 @@ class Service
     }
 
     /**
-     * Map an xml element to a PHP class.
+     * Map an XML element to a PHP class.
      *
-     * Calling this function will automatically setup the Reader and Writer
+     * Calling this function will automatically set up the Reader and Writer
      * classes to turn a specific XML element to a PHP class.
      *
      * For example, given a class such as :
@@ -264,7 +280,7 @@ class Service
      *
      * @throws \InvalidArgumentException
      */
-    public function writeValueObject($object, string $contextUri = null)
+    public function writeValueObject($object, ?string $contextUri = null)
     {
         if (!isset($this->valueObjectMap[get_class($object)])) {
             throw new \InvalidArgumentException('"'.get_class($object).'" is not a registered value object class. Register your class with mapValueObject.');

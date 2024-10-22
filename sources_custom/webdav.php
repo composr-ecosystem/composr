@@ -82,7 +82,7 @@ function webdav_script()
 
     if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) { // If already admin (e.g. backdoor_ip), no need for access check
         $auth_backend = new webdav_commandr_fs\Auth();
-        $auth_plugin = new DAV\Auth\Plugin($auth_backend, get_site_name()/*the auth realm*/);
+        $auth_plugin = new DAV\Auth\Plugin($auth_backend);
         $server->addPlugin($auth_plugin);
     }
 
@@ -96,7 +96,7 @@ function webdav_script()
     $plugin = new DAV\Browser\Plugin();
     $server->addPlugin($plugin);
 
-    $server->exec();
+    $server->start();
 
     // Close off log
     if ($WEBDAV_LOG_FILE !== null) {

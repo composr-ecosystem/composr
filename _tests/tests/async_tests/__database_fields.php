@@ -124,7 +124,7 @@ class __database_fields_test_set extends cms_test_case
 
                         $ok = ((strpos($name, '_id') === false) || ((strpos($name, 'group') !== false) && (strpos($name, 'grouping') === false)) || (strpos($name, 'user') !== false) || (strpos($name, 'member') !== false));
                         $this->assertTrue($ok, $table . '/' . $name . ': Column is type ' . $type . ' but contains \'_id\' in the name. you should fix the name or use type AUTO_LINK instead.');
-                    // No break; we should also check for the next conditions for these types
+                        // no break
                     case 'LONG_TRANS':
                     case 'SHORT_TRANS':
                     case 'UINTEGER':

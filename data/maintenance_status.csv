@@ -130,7 +130,7 @@ facebook_media,Facebook media (video embed),Composr Core Development Team,,Could
 tapatalk,Tapatalk,,,Could potentially break due to third-party changes.,Yes,
 google_maps,"Google maps (DataMappr, UserMappr)",Composr Core Development Team,,Could potentially break due to third-party changes.,Yes,
 hybridauth,Hybridauth login and syndication,Composr Core Development Team,,"Could potentially break due to third-party changes, but we rely on the Hybridauth project to fix any issues and are involved in that project.",Yes,
-webdav,WebDav access for The Repository,,,No longer maintained by SabreDAV. Does not work on PHP 8 or above.,Yes,__webdav automated test.
+webdav,WebDav access for The Repository,Composr Core Development Team,,Could potentially break due to third-party changes.,Yes,webdav automated test.
 os_windows,Windows servers,Composr Core Development Team,Composr Core Development Team,,No,
 os_linux,Linux servers,Composr Core Development Team,Composr Core Development Team,,No,
 os_macos,Mac OS servers,Composr Core Development Team, ,Not regularly tested due to needing a testing platform.,No,
@@ -155,3 +155,4 @@ ratings_structure,Ratings structure,,,Not regularly tested. Only available via c
 ffmpeg_thumbs,FFMPEG thumbnail generation,,,Not regularly tested. Could potentially break due to third-party changes.,No,
 long_google_cookies,full Google Analytics cookies,Composr Core Development Team,Composr Core Development Team,Not regularly tested. Could potentially break due to third-party changes.,No,
 karma,Karma non-bundled addon,"PDStig, LLC","PDStig, LLC",,Yes,
+early_access,Early access non-bundled addon,,,Not regularly tested. Needs a sponsor for regular maintenance.,Yes,

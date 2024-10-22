@@ -714,9 +714,8 @@ class Module_galleries
             // If else, then we have no probe_type, and thus won't be able to show anything
         }
         if (($row !== null) && ($row['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($row['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated($probe_type, strval($probe_id), get_member(), [$row['submitter']]);
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '5500ce574232db1e1577b3d69bbc0d6d',
@@ -1348,9 +1347,8 @@ class Module_galleries
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated('image', strval($id), get_member(), [$myrow['submitter']]);
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => 'c32faacba974e648a67e5e91ffd3d8e5',
@@ -1472,9 +1470,8 @@ class Module_galleries
 
         // Validation
         if (($myrow['validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($myrow['submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated('video', strval($id), get_member(), [$myrow['submitter']]);
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => 'b32faacba974e648a67e5e91ffd3d8e5',

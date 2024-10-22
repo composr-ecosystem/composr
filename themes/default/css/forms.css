@@ -740,7 +740,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 /*{+END}*/
 
 .btn-comcode {
-	color: {$GET,WB} !important;
+	color: {$GET,button_primary_text} !important;
 	position: relative;
 	overflow: hidden;
 	padding: 2px 4px;

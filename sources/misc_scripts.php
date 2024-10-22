@@ -515,7 +515,7 @@ function thumb_script()
     if ($box_size == $thumb_width) {
         $new_name = url_to_filename($url_full);
     } else {
-        $new_name = md5($url_full . '?box_size=' . strval($box_size)) . '.jpg';
+        $new_name = url_to_filename($url_full . '?box_size=' . strval($box_size));
     }
 
     $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;

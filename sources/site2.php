@@ -96,7 +96,8 @@ function get_page_warning_details(string $zone, string $codename, object $edit_u
 {
     $warning_details = new Tempcode();
     if ((!has_privilege(get_member(), 'jump_to_not_validated')) && (addon_installed('validation'))) {
-        access_denied('PRIVILEGE', 'jump_to_not_validated');
+        require_code('validation');
+        check_jump_to_not_validated('comcode_page', $zone . ':' . $codename, get_member(), []);
     }
     $uv_warning = do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'NOT_VALIDATED_TEXT_NON_DIRECT' : 'NOT_VALIDATED_TEXT', 'comcode_page'); // Wear sun cream
     if (!$edit_url->is_empty()) {

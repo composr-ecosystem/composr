@@ -338,7 +338,11 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'list', 'cf_options' => 'widget=radio'], ['cf_type' => 'radiolist']);
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'integer', 'cf_options' => 'default=AUTO_INCREMENT'], ['cf_type' => 'auto_increment']);
 
-        $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_allows_anonymous_posts', 'BINARY', intval(get_option('is_on_anonymous_posts')));
+        $is_on_anonymous_posts = get_option('is_on_anonymous_posts', true);
+        if ($is_on_anonymous_posts === null) {
+            $is_on_anonymous_posts = '0';
+        }
+        $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_allows_anonymous_posts', 'BINARY', intval($is_on_anonymous_posts));
 
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_auto_mark_read', 'BINARY', 1);
 

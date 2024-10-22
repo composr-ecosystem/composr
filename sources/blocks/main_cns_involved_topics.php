@@ -90,11 +90,12 @@ class Block_main_cns_involved_topics
         }
 
         $forum1 = null;//$GLOBALS['FORUM_DRIVER']->forum_id_from_name(get_option('comments_forum_name'));
-        $tf = get_option('ticket_forum_name', true);
-        if ($tf !== null) {
-            $forum2 = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($tf);
-        } else {
-            $forum2 = null;
+        $forum2 = null;
+        if (addon_installed('tickets')) {
+            $tf = get_option('ticket_forum_name', true);
+            if ($tf !== null) {
+                $forum2 = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($tf);
+            }
         }
         */
 

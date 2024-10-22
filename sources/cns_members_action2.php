@@ -2031,6 +2031,10 @@ function cns_check_name_valid(?string &$username, ?int $member_id = null, ?strin
  */
 function cns_member_choose_title(string $new_title, ?int $member_id = null)
 {
+    if (!addon_installed('cns_member_titles')) {
+        return;
+    }
+
     if ($member_id === null) {
         $member_id = get_member();
     }

@@ -517,9 +517,8 @@ class Module_quiz
 
         // Validation
         if (($quiz['q_validated'] == 0) && (addon_installed('validation'))) {
-            if ((!has_privilege(get_member(), 'jump_to_not_validated')) && ((is_guest()) || ($quiz['q_submitter'] != get_member()))) {
-                access_denied('PRIVILEGE', 'jump_to_not_validated');
-            }
+            require_code('validation');
+            check_jump_to_not_validated('quiz', strval($quiz_id), get_member(), [$quiz['q_submitter']]);
 
             $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => 'fc690dedf8601cc456e011931dfec595',

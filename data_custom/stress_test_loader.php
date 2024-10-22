@@ -85,6 +85,7 @@ function do_work()
         'polls',
         'quizzes',
         'shopping',
+        'site_messaging',
         'tickets',
         'wiki',
     ];
@@ -666,6 +667,79 @@ function do_work()
         ]);
     }
     echo 'FINISHED: Shopping Orders' . "\n";
+
+    // Site messaging
+    echo 'STARTING: Site messages' . "\n";
+    require_code('site_messaging2');
+    for ($j = $GLOBALS['SITE_DB']->query_select_value('site_messages', 'COUNT(*)'); $j < $num_wanted; $j++) {
+        // Alternate message type
+        switch ($j % 3) {
+            case 0:
+                $type = 'inform';
+                break;
+            case 1:
+                $type = 'notice';
+                break;
+            case 2:
+                $type = 'warn';
+                break;
+        }
+
+        // Alternate message start and/or end times
+        switch ($j % 4) {
+            case 0:
+                $start = null;
+                $end = null;
+                break;
+            case 1:
+                $start = time() + mt_rand(-1000000, 1000000);
+                $end = null;
+                break;
+            case 2:
+                $start = time() + mt_rand(-1000000, 1000000);
+                $end = $start + mt_rand(0, 500000);
+                break;
+            case 3:
+                $start = null;
+                $end = time() + mt_rand(-1000000, 1000000);
+                break;
+        }
+
+        // Alternate page links
+        $page_links = [];
+        switch ($j % 7) {
+            case 2:
+                $page_links[] = 'adminzone:_WILD';
+                break;
+            case 4:
+                $page_links[] = '_SEARCH:home';
+                // no break
+            case 6: // Also add on 4 so we have a 2-item array
+                $page_links[] = 'cms:_WILD:add';
+                break;
+        }
+
+        // Alternate groups
+        $groups = [];
+        switch ($j % 9) {
+            case 1:
+                $groups[] = 1;
+                break;
+            case 4:
+            case 5:
+                $groups[] = 2;
+                // no break
+            case 7: // Also include 4 and 5 for a multi-item array
+                $groups[] = 3;
+                break;
+            case 8:
+                $groups[] = 4;
+                break;
+        }
+
+        add_site_message(random_line(), random_text(), $type, (($j % 2 == 0) ? 1 : 0), $start, $end, $groups, $page_links);
+    }
+    echo 'FINISHED: Site messages' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();

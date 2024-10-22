@@ -64,7 +64,6 @@ function init__continuous_integration()
             // Is not expected to pass
             'cli_tests/__health_check',
             'sync_tests/__debrand_epic',
-            'sync_tests/__webdav',
 
             // Messes with _config.php but we do not run in parallel
             /*'sync_tests/rate_limiting',

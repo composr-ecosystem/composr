@@ -89,7 +89,7 @@ class FreeBusyGenerator
      * @param mixed             $objects
      * @param DateTimeZone      $timeZone
      */
-    public function __construct(DateTimeInterface $start = null, DateTimeInterface $end = null, $objects = null, DateTimeZone $timeZone = null)
+    public function __construct(?DateTimeInterface $start = null, ?DateTimeInterface $end = null, $objects = null, ?DateTimeZone $timeZone = null)
     {
         $this->setTimeRange($start, $end);
 
@@ -126,7 +126,7 @@ class FreeBusyGenerator
     /**
      * Sets the input objects.
      *
-     * You must either specify a valendar object as a string, or as the parse
+     * You must either specify a vcalendar object as a string, or as the parse
      * Component.
      * It's also possible to specify multiple objects as an array.
      *
@@ -158,7 +158,7 @@ class FreeBusyGenerator
      * @param DateTimeInterface $start
      * @param DateTimeInterface $end
      */
-    public function setTimeRange(DateTimeInterface $start = null, DateTimeInterface $end = null)
+    public function setTimeRange(?DateTimeInterface $start = null, ?DateTimeInterface $end = null)
     {
         if (!$start) {
             $start = new DateTimeImmutable(Settings::$minDate);
@@ -362,7 +362,6 @@ class FreeBusyGenerator
             foreach ($object->getBaseComponents() as $component) {
                 switch ($component->name) {
                     case 'VEVENT':
-
                         $FBTYPE = 'BUSY';
                         if (isset($component->TRANSP) && ('TRANSPARENT' === strtoupper($component->TRANSP))) {
                             break;

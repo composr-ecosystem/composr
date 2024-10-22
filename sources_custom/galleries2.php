@@ -35,9 +35,7 @@ function init__galleries2($code)
         "
         require_code('workflows');
         handle_position_in_workflow_auto(\$validated, 'image', strval(\$id), 'gallery', \$cat, \$title);
-
-        ",
-    );
+        ");
 
     // ...and add_video...
     insert_code_before__by_command(
@@ -47,9 +45,7 @@ function init__galleries2($code)
         "
         require_code('workflows');
         handle_position_in_workflow_auto(\$validated, 'video', strval(\$id), 'gallery', \$cat, \$title);
-
-        ",
-    );
+        ");
 
     // ...and add gallery...
     insert_code_before__by_command(
@@ -59,9 +55,7 @@ function init__galleries2($code)
         "
         require_code('workflows');
         handle_position_in_workflow_auto(1, 'gallery', \$name, 'gallery', \$parent_id, \$fullname);
-
-        ",
-    );
+        ");
 
     // Editing is a bit different; we switch the workflow if needed.
 
@@ -73,9 +67,7 @@ function init__galleries2($code)
         "
         require_code('workflows');
         handle_position_in_workflow_edit(\$validated, 'image', strval(\$id), 'gallery', \$cat, \$title);
-
-        ",
-    );
+        ");
 
     // ...videos...
     insert_code_before__by_command(
@@ -85,9 +77,7 @@ function init__galleries2($code)
         "
         require_code('workflows');
         handle_position_in_workflow_edit(\$validated, 'video', strval(\$id), 'gallery', \$cat, \$title);
-
-        ",
-    );
+        ");
 
     // ...and galleries
     insert_code_before__by_command(
@@ -97,9 +87,7 @@ function init__galleries2($code)
         "
         require_code('workflows');
         handle_position_in_workflow_edit(1, 'gallery', \$name, 'gallery', \$parent_id, \$fullname);
-
-        ",
-    );
+        ");
 
     // Now we add removal code for the delete functions.
     // We do this for images...
@@ -112,8 +100,7 @@ function init__galleries2($code)
         if (get_workflow_of_content('image', strval(\$id)) !== null) {
             remove_content_from_workflows('image', strval(\$id));
         }
-        ",
-    );
+        ");
 
     // ...videos...
     insert_code_after__by_command(
@@ -125,8 +112,7 @@ function init__galleries2($code)
         if (get_workflow_of_content('video', strval(\$id)) !== null) {
             remove_content_from_workflows('video', strval(\$id));
         }
-        ",
-    );
+        ");
 
     // ...and galleries.
     insert_code_after__by_command(
@@ -138,8 +124,7 @@ function init__galleries2($code)
         if (get_workflow_of_content('gallery', \$name) !== null) {
             remove_content_from_workflows('gallery', \$name);
         }
-        ",
-    );
+        ");
 
     return $code;
 }

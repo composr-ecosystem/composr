@@ -43,6 +43,7 @@ class rootkit_detection_test_set extends cms_test_case
         $this->assertTrue(false, 'Run the rootkit detection manually at rootkit_detection.php; this test does not work.');
         return;
 
+        /*
         require_code('crypt_maintenance');
 
         $post_params = [
@@ -65,6 +66,7 @@ class rootkit_detection_test_set extends cms_test_case
         if ($this->debug) {
             $this->dump($result, 'Rootkit Detection results');
         }
+        */
     }
 
     public function tearDown()

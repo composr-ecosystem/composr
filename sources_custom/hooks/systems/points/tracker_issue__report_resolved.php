@@ -24,10 +24,14 @@ class Hook_points_tracker_issue__report_resolved
      *
      * @param  ?MEMBER $member_id_of The ID of the member who is being viewed (null: was run from the admin ledger)
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
-     * @return array List containing label for use with aggregate point tables
+     * @return ?array List containing label for use with aggregate point tables (null: hook disabled)
      */
-    public function points_profile(?int $member_id_of, ?int $member_id_viewing) : array
+    public function points_profile(?int $member_id_of, ?int $member_id_viewing) : ?array
     {
+        if (!addon_installed('cms_homesite')) {
+            return null;
+        }
+
         return [
             'label' => do_lang('cms_homesite:REPORTING_TRACKER_ISSUES'),
         ];

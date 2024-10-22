@@ -1,1 +1,0 @@
-frame(["column1"], [["value1"],["value2"]])[column1 = "value1"] = frame(["column1"], [["value1"]])

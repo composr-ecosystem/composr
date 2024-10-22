@@ -281,7 +281,7 @@ class VCalendar extends VObject\Document
      *
      * @return VCalendar
      */
-    public function expand(DateTimeInterface $start, DateTimeInterface $end, DateTimeZone $timeZone = null)
+    public function expand(DateTimeInterface $start, DateTimeInterface $end, ?DateTimeZone $timeZone = null)
     {
         $newChildren = [];
         $recurringEvents = [];
@@ -309,7 +309,7 @@ class VCalendar extends VObject\Document
 
         foreach ($this->children() as $child) {
             if ($child instanceof Property && 'PRODID' !== $child->name) {
-                // We explictly want to ignore PRODID, because we want to
+                // We explicitly want to ignore PRODID, because we want to
                 // overwrite it with our own.
                 $newChildren[] = clone $child;
             } elseif ($child instanceof Component && 'VTIMEZONE' !== $child->name) {

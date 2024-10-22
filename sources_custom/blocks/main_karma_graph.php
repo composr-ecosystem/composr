@@ -38,19 +38,6 @@ class Block_main_karma_graph
         return $info;
     }
 
-    public function caching_environment()
-     {
-         $info = [];
-         $info['cache_on'] = <<<'PHP'
-         [
-            get_member(),
-            isset($map['param']) ? $map['param'] : null,
-         ]
-         PHP;
-         $info['ttl'] = 5;
-         return $info;
-     }
-
     /**
      * Execute the block.
      *
@@ -112,12 +99,12 @@ class Block_main_karma_graph
 
         if ($can_view_bad_karma) {
             if ($large_is_bad) {
-                $karma_small_percent = $karma[1] > 0 ? ($karma[0] / $karma[1]) : 1.0;
+                $karma_small_percent = (($karma[1] > 0) ? ($karma[0] / $karma[1]) : 1.0);
                 if ($karma[0] <= 0) {
                     $karma_small_percent = 0.0;
                 }
             } else {
-                $karma_small_percent = $karma[0] > 0 ? ($karma[1] / $karma[0]) : 1.0;
+                $karma_small_percent = (($karma[0] > 0) ? ($karma[1] / $karma[0]) : 1.0);
                 if ($karma[1] <= 0) {
                     $karma_small_percent = 0.0;
                 }

@@ -93,7 +93,7 @@ class Hook_fields_state
             return '';
         }
 
-        if (get_option('business_country') == 'US') { // Some tax services may need exact states, and Americans are a bit pampered, so show an explicit list
+        if (get_option('business_country', true) === 'US') { // Some tax services may need exact states, and Americans are a bit pampered, so show an explicit list
             require_code('locations');
 
             global $USA_STATE_LIST;
@@ -128,8 +128,8 @@ class Hook_fields_state
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
-        $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country') == 'US');
-        if (get_option('business_country') == 'US') { // Some tax services need exact states, and Americans are a bit pampered, so show an explicit list
+        $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country', true) === 'US');
+        if (get_option('business_country', true) === 'US') { // Some tax services need exact states, and Americans are a bit pampered, so show an explicit list
             require_code('locations');
             $state_list = new Tempcode();
             $state_list->attach(form_input_list_entry('', '' == $actual_value, do_lang_tempcode('NA_EM')));
@@ -156,7 +156,7 @@ class Hook_fields_state
         $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
 
         // Validation (when using a U.S. state)
-        if (($value != '') && ($value != STRING_MAGIC_NULL) && (get_option('business_country') == 'US')) {
+        if (($value != '') && ($value != STRING_MAGIC_NULL) && (get_option('business_country', true) === 'US')) {
             require_code('locations');
 
             global $USA_STATE_LIST;

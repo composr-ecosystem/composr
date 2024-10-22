@@ -168,6 +168,7 @@ class Hook_endpoint_cms_homesite_telemetry
                     $id = $GLOBALS['SITE_DB']->query_insert('relayed_errors', $map, true);
                     return ['success' => true, 'relayed_error_id' => $id];
                 }
+                break;
 
             case 'key':
                 require_code('global3');

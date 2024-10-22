@@ -69,7 +69,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $escrow_details = points_get_escrow($member_id_of, $member_id_viewing);
     $points_lifetime = points_lifetime($member_id_of);
 
-    if (get_option('enable_poll_point_weighting') == '1') {
+    if (get_option('enable_poll_point_weighting', true) === '1') {
         require_code('cns_polls_action2');
         $_voting_power = float_to_raw_string(cns_points_to_voting_power($points_balance), 10);
         $voting_power = float_format(cns_points_to_voting_power($points_balance), 3);

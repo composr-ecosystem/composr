@@ -59,7 +59,7 @@ class Hook_endpoint_cms_homesite_release_details
         if (!is_numeric($id)) {
             if ($legacy) { // LEGACY
                 echo json_encode(['', '', '']);
-                exit;
+                exit();
             }
 
             return [
@@ -93,7 +93,7 @@ class Hook_endpoint_cms_homesite_release_details
 
             if ($legacy) { // LEGACY
                 echo json_encode([$notes, $tar_url, $changes]);
-                exit;
+                exit();
             }
 
             return [
@@ -105,7 +105,7 @@ class Hook_endpoint_cms_homesite_release_details
 
         if ($legacy) { // LEGACY
             echo json_encode(['', '', '']);
-            exit;
+            exit();
         }
 
         return [

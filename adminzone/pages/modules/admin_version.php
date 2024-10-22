@@ -35,7 +35,7 @@ class Module_admin_version
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 20;
+        $info['version'] = 21;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -265,7 +265,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_table('messages_to_render', [
                 'id' => '*AUTO',
                 'r_session_id' => 'ID_TEXT',
-                'r_message' => 'LONG_TEXT',
+                'r_message' => 'LONG_TRANS__COMCODE',
                 'r_type' => 'ID_TEXT',
                 'r_time' => 'TIME',
             ]);
@@ -1252,6 +1252,10 @@ class Module_admin_version
                 'b_ip_address' => 'IP',
             ]);
             $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_time', ['b_time']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 21)) { // LEGACY: 11.beta5
+            $GLOBALS['SITE_DB']->alter_table_field('messages_to_render', 'r_message', 'LONG_TRANS__COMCODE');
         }
     }
 

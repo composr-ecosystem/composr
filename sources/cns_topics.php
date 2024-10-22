@@ -131,11 +131,10 @@ function cns_may_access_topic(int $topic_id, ?int $member_id = null, ?array $top
     }
 
     if ($check_validation) {
-        if (addon_installed('validation')) {
-            if (($topic_info['t_validated'] == 0) && (addon_installed('validation'))) {
-                if ((!has_privilege($member_id, 'jump_to_not_validated')) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != $member_id))) {
-                    return false;
-                }
+        if (($topic_info['t_validated'] == 0) && (addon_installed('validation'))) {
+            require_code('validation');
+            if (!check_jump_to_not_validated('topic', strval($topic_id), get_member(), [$topic_info['t_cache_first_member_id']], true)) {
+                return false;
             }
         }
     }

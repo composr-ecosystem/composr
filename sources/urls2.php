@@ -234,21 +234,16 @@ function _build_keep_post_fields(array $exclude = [], bool $force_everything = f
  */
 function _url_to_filename(string $url_full) : string
 {
-    $bad_chars = ['!', '/', '\\', '?', '*', '<', '>', '|', '"', ':', '%', '!', ';', '~', ' '];
-    $new_name = $url_full;
-    foreach ($bad_chars as $bad_char) {
-        $good_char = '~' . strval(ord($bad_char));
-        if ($bad_char == ':') {
-            $good_char = ';'; // So page_links save nicely
-        }
-        $new_name = str_replace($bad_char, $good_char, $new_name);
+    require_code('crypt');
+    $_new_name = hash_hmac('sha256', $url_full, get_site_salt(), true);
+    $new_name = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($_new_name));
+
+    $ext = get_file_extension($url_full);
+    if ($ext != '') {
+        $new_name .= '.' . $ext;
     }
 
-    if (strpos($new_name, '.') === false) {
-        return md5($new_name);
-    }
-
-    return md5($new_name) . '.' . get_file_extension($new_name);
+    return $new_name;
 }
 
 /**

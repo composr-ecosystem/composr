@@ -287,7 +287,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes+' . strval(count($votes)) . '), po_cache_voting_power=(po_cache_voting_power+' . float_to_raw_string($total_voting_power_adjust, 10) . ') WHERE id=' . strval($poll_id), 1);
 
     // Award points
-    if (addon_installed('points')) {
+    if (addon_installed('points') && addon_installed('cns_forum')) {
         $points_voting_cns = intval(get_option('points_voting_cns'));
         if ($points_voting_cns > 0) {
             require_code('points2');
@@ -543,6 +543,14 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
  */
 function cns_points_to_voting_power(int $points, array $overrides = []) : float
 {
+    // Default to 1 if any necessary addons are not installed
+    if (!addon_installed('cns_forum')) {
+        return 1.0;
+    }
+    if (!addon_installed('points')) {
+        return 1.0;
+    }
+
     $ceiling = isset($overrides['topic_polls_weighting_ceiling']) ? $overrides['topic_polls_weighting_ceiling'] : get_option('topic_polls_weighting_ceiling'); // Could be blank
     $offset = isset($overrides['topic_polls_weighting_offset']) ? intval($overrides['topic_polls_weighting_offset']) : intval(get_option('topic_polls_weighting_offset'));
     $multiplier = isset($overrides['topic_polls_weighting_multiplier']) ? abs(floatval($overrides['topic_polls_weighting_multiplier'])) : abs(floatval(get_option('topic_polls_weighting_multiplier')));
@@ -580,6 +588,14 @@ function cns_points_to_voting_power(int $points, array $overrides = []) : float
  */
 function cns_calculate_poll_voting_power_text(int $points, array $overrides = []) : array
 {
+    // Return defaults if necessary addons are not installed
+    if (!addon_installed('cns_forum')) {
+        return [new Tempcode(), new Tempcode(), 1.0];
+    }
+    if (!addon_installed('points')) {
+        return [new Tempcode(), new Tempcode(), 1.0];
+    }
+
     require_lang('cns_polls');
 
     $ceiling = isset($overrides['topic_polls_weighting_ceiling']) ? $overrides['topic_polls_weighting_ceiling'] : get_option('topic_polls_weighting_ceiling'); // Could be blank

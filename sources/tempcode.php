@@ -1011,7 +1011,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
             $ret = $__data;
         }
         if (($SHOW_EDIT_LINKS) && ($codename !== 'PARAM_INFO') && ($codename !== 'TEMPLATE_EDIT_LINK')) {
-            $edit_url = build_url(['page' => 'admin_themes', 'type' => 'edit_templates', 'theme' => $theme, 'f0file' => $directory . '/' . $codename], get_module_zone('admin_themes'));
+            $edit_url = build_url(['page' => 'admin_themes', 'type' => 'edit_templates', 'theme' => $theme, 'f0file' => $directory . '/' . $codename . $suffix], get_module_zone('admin_themes'));
 
             $parameters2 = [];
             foreach ($parameters as $k => $v) {

@@ -18,7 +18,6 @@
  */
 class telemetry_test_set extends cms_test_case
 {
-
     public function testErrorTelemetry()
     {
         require_code('version');

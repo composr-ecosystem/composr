@@ -441,23 +441,24 @@ class Module_admin_make_release
 
         $new_version = $this->get_new_version();
 
+        $release_description = null;
         if (strpos($new_version, 'alpha') !== false) {
-            $release_description = do_lang_tempcode('DESCRIPTION_RELEASE_ALPHA');
+            $release_description = do_lang('DESCRIPTION_RELEASE_ALPHA');
             $default_necessity = 'unrecommended';
         } elseif (strpos($new_version, 'beta') !== false) {
-            $release_description = do_lang_tempcode('DESCRIPTION_RELEASE_BETA');
+            $release_description = do_lang('DESCRIPTION_RELEASE_BETA');
             $default_necessity = 'unrecommended';
         } elseif (strpos($new_version, 'RC') !== false) {
-            $release_description = do_lang_tempcode('DESCRIPTION_RELEASE_RC');
+            $release_description = do_lang('DESCRIPTION_RELEASE_RC');
             $default_necessity = 'unrecommended';
         } elseif (substr_count($new_version, '.') == 2) {
-            $release_description = do_lang_tempcode('DESCRIPTION_RELEASE_PATCH');
+            $release_description = do_lang('DESCRIPTION_RELEASE_PATCH');
             $default_necessity = 'not-needed';
         } elseif (substr_count($new_version, '.') == 1) {
-            $release_description = do_lang_tempcode('DESCRIPTION_RELEASE_MINOR');
+            $release_description = do_lang('DESCRIPTION_RELEASE_MINOR');
             $default_necessity = 'advised';
         } else {
-            $release_description = do_lang_tempcode('DESCRIPTION_RELEASE_GOLD');
+            $release_description = do_lang('DESCRIPTION_RELEASE_GOLD');
             $default_necessity = 'advised';
         }
 
@@ -478,7 +479,7 @@ class Module_admin_make_release
         $radios->attach(form_input_radio_entry('needed', 'suggested', $default_necessity == 'suggested', do_lang_tempcode('MAKE_RELEASE_STEP2_UPGRADE_NECESSITY_SUGGESTED')));
         $radios->attach(form_input_radio_entry('needed', 'advised', $default_necessity == 'advised', do_lang_tempcode('MAKE_RELEASE_STEP2_UPGRADE_NECESSITY_ADVISED')));
         $fields->attach(form_input_radio(do_lang_tempcode('MAKE_RELEASE_STEP2_UPGRADE_NECESSITY'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_UPGRADE_NECESSITY'), 'needed', $radios, true));
-        $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP2_CRITERIA'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_CRITERIA'), 'criteria', ($default_necessity == 'unrecommended') ? do_lang_tempcode('CRITERIA_LIVE_SITES') : '', false));
+        $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP2_CRITERIA'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_CRITERIA'), 'criteria', ($default_necessity == 'unrecommended') ? do_lang('CRITERIA_LIVE_SITES') : '', false));
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP2_JUSTIFICATION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_JUSTIFICATION'), 'justification', '', false));
 
         // Build options
