@@ -796,11 +796,12 @@ function decache_gallery_blocks()
  * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit) (blank: implicit)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @param  array $regions The regions (empty: not region-limited)
+ * @param  boolean $watermark Whether to apply watermarks to this image
  * @return AUTO_LINK The ID of the new entry
  */
-function add_image($title, string $cat, $description, string $url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, ?int $submitter = null, ?int $add_date = null, ?int $edit_date = null, int $views = 0, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '', array $regions = []) : int
+function add_image($title, string $cat, $description, string $url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, ?int $submitter = null, ?int $add_date = null, ?int $edit_date = null, int $views = 0, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '', array $regions = [], bool $watermark = true) : int
 {
-    if ((get_param_string('type', null) !== '__import') && (is_string($title))) {
+    if ((get_param_string('type', null) !== '__import') && (get_param_string('type', null) !== '__orphaned') && (is_string($title))) {
         require_code('global4');
         prevent_double_submit('ADD_IMAGE', null, $title);
     }
@@ -831,9 +832,8 @@ function add_image($title, string $cat, $description, string $url, int $validate
         }
 
         $maximum_dimension = intval(get_option('maximum_image_size'));
-        $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
-        handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), $filename, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
+        handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), $filename, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
     }
 
     $map = [
@@ -943,8 +943,9 @@ function add_image($title, string $cat, $description, string $url, int $validate
  * @param  ?MEMBER $submitter Submitter (null: do not change)
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
+ * @param  boolean $watermark Whether to apply watermarks to this image
  */
-function edit_image(int $id, string $title, string $cat, string $description, string $url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $meta_keywords, string $meta_description, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false)
+function edit_image(int $id, string $title, string $cat, string $description, string $url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $meta_keywords, string $meta_description, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false, bool $watermark = true)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -994,9 +995,8 @@ function edit_image(int $id, string $title, string $cat, string $description, st
         }
 
         $maximum_dimension = intval(get_option('maximum_image_size'));
-        $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
-        handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), $filename, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
+        handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), $filename, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
     }
 
     $update_map = [
@@ -2137,7 +2137,7 @@ function add_gallery_media_wrap(string $url, string $_cat, int $member_id, int $
             }
         }
 
-        $id = add_image($title, $cat, '', $url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
+        $id = add_image($title, $cat, '', $url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time, null, 0, null, '', '', [], $watermark);
         $path = convert_url_to_path($url);
         if ($path !== null) {
             $exif = get_exif_data($path, $filename);

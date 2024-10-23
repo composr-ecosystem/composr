@@ -1946,7 +1946,7 @@ class Hook_import_cms_merge
                 $regions = collapse_1d_complexity('region', $db->query_select('content_regions', ['region'], ['content_type' => 'image', 'content_id' => strval($row['id'])]));
 
                 $title = $this->get_lang_string($db, $row['title']);
-                $id_new = add_image($title, $row['cat'], $this->get_lang_string($db, $row['the_description']), $row['url'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $submitter, $row['add_date'], $row['edit_date'], $row['image_views'], $id, '', '', $regions);
+                $id_new = add_image($title, $row['cat'], $this->get_lang_string($db, $row['the_description']), $row['url'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $submitter, $row['add_date'], $row['edit_date'], $row['image_views'], $id, '', '', $regions, false); // No watermark in case the imported image already has one
 
                 $this->_import_content_privacy($db, 'image', strval($row['id']), strval($id_new));
 
