@@ -385,8 +385,9 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
     // Ban
     $spam_ban_threshold = intval(get_option('spam_ban_threshold'));
     if (intval($confidence_level * 100.0) >= $spam_ban_threshold) {
+        require_code('global3');
+        require_code('failure');
         if ((!is_our_server($user_ip)) && (!is_unbannable_bot_dns($user_ip)) && (!is_unbannable_bot_ip($user_ip))) {
-            require_code('failure');
             $ban_happened = add_ip_ban($user_ip, do_lang('IP_BAN_LOG_AUTOBAN_ANTISPAM', $blocked_by), time() + 60 * intval(get_option('spam_cache_time')));
             $was_bannable = true; // NB: We still want hack attack log to add risk score to a bannable IP even if it was already banned / not banned
         } else {
