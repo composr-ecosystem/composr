@@ -146,6 +146,8 @@ It is very important to note that watermarks will appear on your full image ever
 
 Watermarks are applied using a reverse tree structure. That means for each corner, Composr will start from the immediate child gallery and navigate up to each parent until it finds a watermark for that corner (or determines none of the galleries have one set). For example, let's say you have a gallery called 'Parent gallery', which has a top-left watermark set. You also have a sub-gallery under that called 'Child gallery', which defines a top-right watermark. When you add an image into 'Child gallery', it will have both the 'Child gallery' watermark in the top-right corner and the 'Parent gallery' watermark in the top-left corner. Let's say 'Parent gallery' and 'Child gallery' both define a top-left watermark. When you add an image under 'Child gallery', it will have the 'Child gallery' watermark since children take priority (but if you added an image under 'Parent gallery', it would have the 'Parent gallery' watermark instead).
 
+Note that watermarks cannot be added to animated images.
+
 [title="2"]e-cards[/title]
 
 When viewing an image visitors will have an option (if the [tt]recommend[/tt] addon is installed) to send the image as an e-card. This is a good form of website promotion, as the e-card also functions as a kind of website recommendation.
