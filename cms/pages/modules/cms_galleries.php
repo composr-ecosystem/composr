@@ -1198,7 +1198,6 @@ class Module_cms_galleries extends Standard_crud_module
             $where = db_string_equal_to('name', $cat) . ' AND ';
         }
         $where .= '(' . db_string_not_equal_to('watermark_top_left', '');
-        $where .= ' OR ' . db_string_not_equal_to('watermark_top_left', '');
         $where .= ' OR ' . db_string_not_equal_to('watermark_top_right', '');
         $where .= ' OR ' . db_string_not_equal_to('watermark_bottom_left', '');
         $where .= ' OR ' . db_string_not_equal_to('watermark_bottom_right', '') . ')';
