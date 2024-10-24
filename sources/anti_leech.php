@@ -54,8 +54,11 @@ function check_anti_leech()
 {
     if (get_option('anti_leech') == '1') {
         if (has_regular_anti_leech_protection()) {
+            require_code('crypt');
+            $salt = get_site_salt();
+
             // Safe to apply anti-leech protection using sessions
-            if ((get_param_string('for_session', '') != md5(get_session_id())) && ($_SERVER['HTTP_REFERER'] != ''/*not a download manager*/)) {
+            if ((get_param_string('for_session', '') != md5(get_session_id() . $salt)) && ($_SERVER['HTTP_REFERER'] != ''/*not a download manager*/)) {
                 warn_exit(do_lang_tempcode('LEECH_BLOCK'));
             }
         } else {
