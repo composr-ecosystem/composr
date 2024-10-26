@@ -10,7 +10,9 @@
 	</thead>
 	<tbody>
 		{+START,LOOP,BRANCHES}
-			<tr>
+			{$SET,cycle,{$CYCLE,results_table_zebra,zebra-0,zebra-1}}
+
+			<tr class="{$GET,cycle} {ROW_CLASS*}">
 				<td>{BRANCH*}</td>
 				<td>{GIT_BRANCH*}</td>
 				<td>{VERSION*}</td>

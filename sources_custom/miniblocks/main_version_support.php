@@ -21,6 +21,8 @@ if (!addon_installed('cms_homesite')) {
 
 require_code('cms_homesite');
 require_code('temporal');
+require_code('version');
+
 $branches = get_composr_branches();
 if ((!$GLOBALS['DEV_MODE']) && (count($branches) == 0)) {
     // We want this condition to be logged instead of just returning a red alert
@@ -30,12 +32,32 @@ if ((!$GLOBALS['DEV_MODE']) && (count($branches) == 0)) {
 
 $_branches = [];
 foreach ($branches as $branch) {
+    switch ($branch['status']) {
+        case VERSION_ALPHA:
+        case VERSION_BETA:
+            $class = 'error';
+            break;
+        case VERSION_MAINLINE:
+        case VERSION_SUPPORTED:
+            $class = 'debug';
+            break;
+        case VERSION_LTM:
+            $class = 'warning';
+            break;
+        case VERSION_EOL:
+            $class = 'disabled';
+            break;
+        default:
+            $class = '';
+    }
+
     $_branches[] = [
         'GIT_BRANCH' => $branch['git_branch'],
         'BRANCH' => $branch['branch'],
         'STATUS' => $branch['status'],
         'VERSION' => $branch['version'],
         'VERSION_TIME' => get_timezoned_date_time_tempcode($branch['version_time']),
+        'ROW_CLASS' => $class,
     ];
 }
 
