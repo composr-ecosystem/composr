@@ -76,9 +76,29 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
                 'category' => 'cms_homesite',
                 'filters' => [
                     'tracker_issue_activity__month_range' => new CMSStatsDateMonthRangeFilter('tracker_issue_activity__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
-                    'tracker_issue_activity__type' => new CMSStatsListFilter('tracker_issue_activity__type', do_lang_tempcode('TRACKER_ISSUE_TYPES'), $tracker_issue_types),
+                    'tracker_issue_activity__type' => new CMSStatsListFilter('tracker_issue_activity__type', do_lang_tempcode('TRACKER_ISSUE_STATUS'), $tracker_issue_types),
                 ],
                 'pivot' => new CMSStatsDatePivot('tracker_issue_activity__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ];
+
+            // Get tracker categories
+            $_categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0 ORDER BY name'));
+            $categories = [];
+            $categories[''] = do_lang('ALL');
+            foreach ($_categories as $id => $_category) {
+                $categories[strval($id)] = $_category;
+            }
+            $categories = array_unique($categories);
+
+            $ret['tracker_issues'] = [
+                'label' => do_lang_tempcode('TRACKER_ISSUES'),
+                'category' => 'cms_homesite',
+                'filters' => [
+                    'tracker_issues__month_range' => new CMSStatsDateMonthRangeFilter('tracker_issues__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'tracker_issues__type' => new CMSStatsListFilter('tracker_issues__type', do_lang_tempcode('TRACKER_ISSUE_CATEGORY'), $categories),
+                ],
+                'pivot' => new CMSStatsDatePivot('tracker_issues__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ];
         }
@@ -139,41 +159,83 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
 
         /* tracker issue activity */
 
-        $max = 1000;
-        $start = 0;
+        if (addon_installed('cms_homesite_tracker')) {
+            $max = 1000;
+            $start = 0;
 
-        $query = 'SELECT `status`,`last_updated` FROM mantis_bug_table WHERE ';
-        $query .= '`last_updated`>=' . strval($start_time) . ' AND ';
-        $query .= '`last_updated`<=' . strval($end_time);
-        $query .= ' ORDER BY `last_updated`';
-        do {
-            $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
-            foreach ($rows as $row) {
-                $timestamp = $row['last_updated'];
-                $timestamp = tz_time($timestamp, $server_timezone);
+            $query = 'SELECT `status`,`last_updated` FROM mantis_bug_table WHERE ';
+            $query .= '`last_updated`>=' . strval($start_time) . ' AND ';
+            $query .= '`last_updated`<=' . strval($end_time);
+            $query .= ' ORDER BY `last_updated`';
+            do {
+                $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
+                foreach ($rows as $row) {
+                    $timestamp = $row['last_updated'];
+                    $timestamp = tz_time($timestamp, $server_timezone);
 
-                $status = strval($row['status']);
+                    $status = strval($row['status']);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                    $month = get_stats_month_for_timestamp($timestamp);
 
-                foreach (array_keys($date_pivots) as $pivot) {
-                    $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
+                    foreach (array_keys($date_pivots) as $pivot) {
+                        $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                    if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status])) {
-                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status] = 0;
+                        if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status])) {
+                            $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status] = 0;
+                        }
+                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status]++;
+
+                        // For all
+                        if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][''])) {
+                            $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][''] = 0;
+                        }
+                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['']++;
                     }
-                    $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status]++;
-
-                    // For all
-                    if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][''])) {
-                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][''] = 0;
-                    }
-                    $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['']++;
                 }
-            }
 
-            $start += $max;
-        } while (!empty($rows));
+                $start += $max;
+            } while (!empty($rows));
+        }
+
+        /* tracker issues */
+
+        if (addon_installed('cms_homesite_tracker')) {
+            $max = 1000;
+            $start = 0;
+
+            $query = 'SELECT `status`,`date_submitted`,`category_id` FROM mantis_bug_table WHERE ';
+            $query .= '`date_submitted`>=' . strval($start_time) . ' AND ';
+            $query .= '`date_submitted`<=' . strval($end_time);
+            $query .= ' ORDER BY `date_submitted`';
+            do {
+                $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
+                foreach ($rows as $row) {
+                    $timestamp = $row['date_submitted'];
+                    $timestamp = tz_time($timestamp, $server_timezone);
+
+                    $category = strval($row['category_id']);
+
+                    $month = get_stats_month_for_timestamp($timestamp);
+
+                    foreach (array_keys($date_pivots) as $pivot) {
+                        $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
+
+                        if (!isset($data_buckets['tracker_issues'][$month][$pivot][$pivot_value][$category])) {
+                            $data_buckets['tracker_issues'][$month][$pivot][$pivot_value][$category] = 0;
+                        }
+                        $data_buckets['tracker_issues'][$month][$pivot][$pivot_value][$category]++;
+
+                        // For all
+                        if (!isset($data_buckets['tracker_issues'][$month][$pivot][$pivot_value][''])) {
+                            $data_buckets['tracker_issues'][$month][$pivot][$pivot_value][''] = 0;
+                        }
+                        $data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['']++;
+                    }
+                }
+
+                $start += $max;
+            } while (!empty($rows));
+        }
     }
 
     /**
@@ -265,6 +327,46 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
                     'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+                ];
+
+            case 'tracker_issues':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+                $data = $this->fill_data_by_date_pivots($pivot, $range[0], $range[1]);
+
+                $where = [
+                    'p_bucket' => $bucket,
+                    'p_pivot' => $pivot,
+                ];
+                $extra = '';
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
+                $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
+                foreach ($data_rows as $data_row) {
+                    $_data = @unserialize($data_row['p_data']);
+
+                    foreach ($_data as $pivot_value => $__) {
+                        $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+
+                        foreach ($__ as $category => $value) {
+                            if (($category != '') && (!empty($filters[$bucket . '__type'])) && ($filters[$bucket . '__type'] != $category)) {
+                                continue;
+                            }
+
+                            if (!isset($data[$pivot_value])) {
+                                $data[$pivot_value] = 0;
+                            }
+
+                            $data[$pivot_value] += $value;
+                        }
+                    }
+                }
+
+                return [
+                    'type' => null,
+                    'data' => $data,
+                    'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
+                    'y_axis_label' => do_lang_tempcode('COUNT_NEW'),
                 ];
         }
 
