@@ -392,7 +392,7 @@ function do_page(string $given_password, string $path)
         $path = substr($path, 1);
     }
     if (strpos($path, '..') !== false) {
-        exit('Suspected hacking attempt');
+        exit('Internal error');
     }
 
     $type = array_key_exists('type', $_GET) ? $_GET['type'] : 'gui';
