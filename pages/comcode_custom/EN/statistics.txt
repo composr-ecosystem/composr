@@ -54,6 +54,23 @@ This graph tallies how many new items were discovered in the sitemap. This is us
 [block="sitemap_growth" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
+[title="2"]Development[/title]
+
+These graphs showcase statistics involving the development of Composr CMS.
+
+[box="Relayed Errors"]
+Some webmasters of Composr CMS sites have elected to automatically relay some errors to us through telemetry. This graph shows the number of errors that have been reported to us by week. Note that errors are often reported more than once and by multiple websites; the graph counts each report even if it is a duplicate.
+[block="relayed_errors" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[/box]
+
+[box="Issue Tracker Activity"]
+This graph showcases the number of tracker issues each week which have been updated / have seen activity.
+[block="tracker_issue_activity" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+
+This graph showcases the number of new tracker issues which have been created each week.
+[block="tracker_issues" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[/box]
+
 [title="2"]Transparency[/title]
 
 These graphs provide a bit of transparency into the operations of composr.app .
