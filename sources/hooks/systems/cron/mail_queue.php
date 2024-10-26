@@ -65,61 +65,126 @@ class Hook_cron_mail_queue
             intval(get_option('max_queued_mails_per_cron_cycle'))
         );
 
-        if (!empty($mails)) {
-            require_code('mail');
+        if (empty($mails)) {
+            return;
+        }
 
-            foreach ($mails as $row) {
-                $subject = $row['m_subject'];
-                $message = $row['m_message'];
-                $message_extended = $row['m_message_extended'];
-                $to_email = @unserialize($row['m_to_email']);
-                $extra_cc_addresses = ($row['m_extra_cc_addresses'] == '') ? [] : @unserialize($row['m_extra_cc_addresses']);
-                $extra_bcc_addresses = ($row['m_extra_bcc_addresses'] == '') ? [] : @unserialize($row['m_extra_bcc_addresses']);
-                $to_name = @unserialize($row['m_to_name']);
-                $from_email = $row['m_from_email'];
-                $from_name = $row['m_from_name'];
-                $join_time = $row['m_join_time'];
-                $sender_email = ($row['m_sender_email'] == '') ? null : $row['m_sender_email'];
-                $plain_subject = $row['m_plain_subject'];
+        require_code('mail');
 
-                if ((!is_array($to_email)) && ($to_email !== null)) {
-                    continue;
+        foreach ($mails as $row) {
+            // Mail retry checking
+            $tried_before = get_value_newer_than('mail_queue_fail_count__' . strval($row['id']), (time() - (60 * 60)), true);
+            if ($tried_before !== null) {
+                continue; // We already tried sending this mail within the last hour, and it failed. Wait until one hour has passed before trying again.
+            }
+
+            // Mail lock checking
+            $lock_time = get_value('mail_queue_lock__' . strval($row['id']), null, true);
+            if ($lock_time !== null) {
+                if (intval($lock_time) < (time() - (60 * 5))) { // Consider mail locked for 5 minutes as permanently failed
+                    $this->fail_to_file($row);
+                    delete_value('mail_queue_fail_count__' . strval($row['id']), true);
+                    delete_value('mail_queue_lock__' . strval($row['id']), true);
                 }
+                continue; // Ignore locked mail
+            }
 
-                $mail_ob = dispatch_mail(
-                    $subject,
-                    $message,
-                    $message_extended,
-                    $to_email,
-                    $to_name,
-                    $from_email,
-                    $from_name,
-                    [
-                        'priority' => $row['m_priority'],
-                        'attachments' => unserialize($row['m_attachments']),
-                        'no_cc' => ($row['m_no_cc'] == 1),
-                        'as' => $row['m_as_member'],
-                        'as_admin' => ($row['m_as_admin'] == 1),
-                        'in_html' => ($row['m_in_html'] == 1),
-                        'coming_out_of_queue' => true,
-                        'get_guid_for_id' => $row['id'],
-                        'mail_template' => $row['m_template'],
-                        'extra_cc_addresses' => $extra_cc_addresses,
-                        'extra_bcc_addresses' => $extra_bcc_addresses,
-                        'require_recipient_valid_since' => $join_time,
-                        'sender_email' => $sender_email,
-                        'plain_subject' => $plain_subject == 1,
-                        'leave_attachments_on_failure' => true,
-                    ]
-                );
-                $success = $mail_ob->worked;
+            set_value('mail_queue_lock__' . strval($row['id']), strval(time()), true);
 
-                if ($success) {
-                    $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['id' => $row['id']], '', 1);
+            $subject = $row['m_subject'];
+            $message = $row['m_message'];
+            $message_extended = $row['m_message_extended'];
+            $to_email = @unserialize($row['m_to_email']);
+            $extra_cc_addresses = ($row['m_extra_cc_addresses'] == '') ? [] : @unserialize($row['m_extra_cc_addresses']);
+            $extra_bcc_addresses = ($row['m_extra_bcc_addresses'] == '') ? [] : @unserialize($row['m_extra_bcc_addresses']);
+            $to_name = @unserialize($row['m_to_name']);
+            $from_email = $row['m_from_email'];
+            $from_name = $row['m_from_name'];
+            $join_time = $row['m_join_time'];
+            $sender_email = ($row['m_sender_email'] == '') ? null : $row['m_sender_email'];
+            $plain_subject = $row['m_plain_subject'];
+
+            if ((!is_array($to_email)) && ($to_email !== null)) { // Invalid
+                $this->fail_to_file($row);
+                delete_value('mail_queue_fail_count__' . strval($row['id']), true);
+                delete_value('mail_queue_lock__' . strval($row['id']), true);
+                continue;
+            }
+
+            $mail_ob = dispatch_mail(
+                $subject,
+                $message,
+                $message_extended,
+                $to_email,
+                $to_name,
+                $from_email,
+                $from_name,
+                [
+                    'priority' => $row['m_priority'],
+                    'attachments' => unserialize($row['m_attachments']),
+                    'no_cc' => ($row['m_no_cc'] == 1),
+                    'as' => $row['m_as_member'],
+                    'as_admin' => ($row['m_as_admin'] == 1),
+                    'in_html' => ($row['m_in_html'] == 1),
+                    'coming_out_of_queue' => true,
+                    'get_guid_for_id' => $row['id'],
+                    'mail_template' => $row['m_template'],
+                    'extra_cc_addresses' => $extra_cc_addresses,
+                    'extra_bcc_addresses' => $extra_bcc_addresses,
+                    'require_recipient_valid_since' => $join_time,
+                    'sender_email' => $sender_email,
+                    'plain_subject' => $plain_subject == 1,
+                    'leave_attachments_on_failure' => true,
+                ]
+            );
+            $success = $mail_ob->worked;
+
+            if ($success) {
+                $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['id' => $row['id']], '', 1);
+                delete_value('mail_queue_fail_count__' . strval($row['id']), true);
+            } else { // Set us up for a retry
+                $fail_count = intval(get_value('mail_queue_fail_count__' . strval($row['id']), '0', true));
+                $fail_count++;
+                if ($fail_count > 4) { // We already tried 5 times; consider this a permanent failure to prevent getting flagged as spam
+                    $this->fail_to_file($row);
+                    delete_value('mail_queue_fail_count__' . strval($row['id']), true);
+                } else {
+                    set_value('mail_queue_fail_count__' . strval($row['id']), strval($fail_count), true);
                 }
             }
 
-            delete_cache_entry('main_staff_checklist');
+            delete_value('mail_queue_lock__' . strval($row['id']), true);
         }
+
+        delete_cache_entry('main_staff_checklist');
+    }
+
+    /**
+     * Mark an e-mail as failed, dump the message to a file, and erase from the database (in case of potential out-of-memory errors in mail queue screen)
+     *
+     * @param array $row The database row of the queued mail that failed
+     */
+    protected function fail_to_file(array $row)
+    {
+        require_code('files');
+        $filename = uniqid('mail_queue_failed_' . strval($row['id']) . '_', false) . '.log';
+
+        // Dump the contents of the mail row to a file
+        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/' . $filename, json_encode($row, JSON_PRETTY_PRINT), FILE_WRITE_FAILURE_SILENT | FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+
+        // Update the database to indicate the failure, erasing the original message in case this was an out-of-memory issue
+        $GLOBALS['SITE_DB']->query_update('logged_mail_messages', [
+            'm_queued' => 0,
+            'm_subject' => do_lang('MAIL_ERROR_PREFIX', comcode_escape($row['m_subject'])),
+            'm_message' => 'data_custom/' . $filename,
+            'm_in_html' => 0,
+            'm_message_extended' => '',
+        ], ['id' => $row['id']], '', 1);
+
+        // Notify staff
+        require_code('notifications');
+        require_code('comcode');
+        require_lang('mail');
+        dispatch_notification('error_occurred', 'error_occurred_mail', do_lang('MAIL_QUEUE_FAIL_SUBJECT'), do_lang('MAIL_QUEUE_FAIL_MESSAGE', comcode_escape($row['m_subject']), comcode_escape($filename)));
     }
 }
