@@ -30,7 +30,18 @@ if ((!$GLOBALS['DEV_MODE']) && (count($branches) == 0)) {
     return do_template('RED_ALERT', ['_GUID' => 'g4l3co9a92efbejkrfbekrjfberkjfberjk', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]);
 }
 
+// LEGACY: since some people still use v9
+// FUDGE
+$branches[] = [
+    'git_branch' => '',
+    'branch' => '9.x',
+    'status' => 'EOL',
+    'version' => '9.0.37',
+    'version_time' => null
+];
+
 $_branches = [];
+
 foreach ($branches as $branch) {
     switch ($branch['status']) {
         case VERSION_ALPHA:
@@ -56,7 +67,7 @@ foreach ($branches as $branch) {
         'BRANCH' => $branch['branch'],
         'STATUS' => $branch['status'],
         'VERSION' => $branch['version'],
-        'VERSION_TIME' => get_timezoned_date_time_tempcode($branch['version_time']),
+        'VERSION_TIME' => (($branch['version_time'] !== null) ? get_timezoned_date_time_tempcode($branch['version_time']) : new Tempcode()),
         'ROW_CLASS' => $class,
     ];
 }
