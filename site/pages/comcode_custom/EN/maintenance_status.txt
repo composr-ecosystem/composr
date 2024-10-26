@@ -11,12 +11,13 @@ As based on our policy described in our [page="docs:tut_software_feedback"]Probl
 [block]main_version_support[/block]
 
 Branch statuses:
- - [b]Alpha[/b]: Not all planned features have been implemented yet. Bugs, including critical ones and security issues, are expected. Do not use in production.
- - [b]Beta[/b]: All planned features have been implemented, but bugs are still expected. Not recommended for production.
- - [b]Mainline[/b]: This branch is receiving bug fixes and periodic new features. Most suitable for production.
- - [b]Supported[/b]: This branch is only receiving bug fixes. Can be used for production, but consider upgrading in the future.
- - [b]Long-term maintenance[/b]: This branch is only receiving fixes for critical bugs or security vulnerabilities that affect multiple people. Can be used in production, but consider upgrading in the near future.
- - [b]EOL[/b]: End of life. This branch is not receiving any more updates and may contain bugs and security issues. Not suitable for production; you should upgrade to a supported version as soon as possible.
+ - [b][font color="red"]Alpha[/font][/b]: Not all planned features have been implemented yet. Bugs, including critical ones and security issues, are expected. Do not use in production; it will probably not work well.
+ - [b][font color="red"]Beta[/font][/b]: All planned features have been implemented (although that does not necessarily mean more won't be added), but bugs and potential security issues are still expected. The branch could be used in production at your own risk, but it is not recommended.
+  - Release Candidate versions also fall under the beta status.
+ - [b][font color="green"]Mainline[/font][/b]: This branch is stable and is receiving bug fixes and periodic new features. Most suitable for production where you would like the latest and greatest.
+ - [b][font color="green"]Supported[/font][/b]: This branch is considered "final". It is still receiving bug fixes, but it is not receiving any new features. Most suitable for production where stability (especially of the API) is critical.
+ - [b][font color="GoldenRod"]Long-term maintenance[/font][/b]: This branch is only receiving fixes for critical bugs or security vulnerabilities that affect multiple people. Can be used in production, but you might encounter bugs which won't be fixed by the core team. Consider upgrading as soon as possible.
+ - [b][font color="Gray"]EOL[/font][/b]: End of life. This branch is not receiving any more updates (including bug fixes) and may contain bugs and security issues. Do not use for production; you should promptly upgrade.
 
 [title="2"]Feature maintenance[/title]
 

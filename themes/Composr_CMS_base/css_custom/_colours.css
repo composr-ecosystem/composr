@@ -55,12 +55,19 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#ffffc9,yellow_highlight_background,100% #FFFFC9}
 {$THEMEWIZARD_COLOR,#cc3333,red_highlight_background,100% CC3333}
 {$THEMEWIZARD_COLOR,#e7981e,orange_highlight_text,100% E7981E}
-{$THEMEWIZARD_COLOR,#ff8888,light_error_border,100% FF8888}
-{$THEMEWIZARD_COLOR,#fff2f2,light_error_background,95% WB + 5% FF0000}
+{$THEMEWIZARD_COLOR,#dc3545,light_error_border,100% danger_color}
+{$THEMEWIZARD_COLOR,#fcebed,light_error_background_1,90% WB + 10% danger_color}
+{$THEMEWIZARD_COLOR,#fae1e3,light_error_background_2,85% WB + 15% danger_color}
+{$THEMEWIZARD_COLOR,#ffc107,light_warning_border,100% warning_color}
+{$THEMEWIZARD_COLOR,#fff9e7,light_warning_background_1,90% WB + 10% warning_color}
+{$THEMEWIZARD_COLOR,#fff6da,light_warning_background_2,85% WB + 15% warning_color}
+{$THEMEWIZARD_COLOR,#28a745,light_success_border,100% success_color}
+{$THEMEWIZARD_COLOR,#eaf7ed,light_success_background_1,90% WB + 10% success_color}
+{$THEMEWIZARD_COLOR,#dff2e3,light_success_background_2,85% WB + 15% success_color}
 {$THEMEWIZARD_COLOR,#cc0000,red_highlight_text,80% FF0000 + 20% 000000}
 {$THEMEWIZARD_COLOR,#007a00,green_highlight_text,100% 007A00}
-{$THEMEWIZARD_COLOR,#fbe1dd,required_background,60% (area_4_background hue_to 0) + 40% area_background}
-{$THEMEWIZARD_COLOR,#fbe7e0,required_2_background,40% (area_4_background hue_to 0) + 60% area_background}
+{$THEMEWIZARD_COLOR,#f3e0e4,required_background,60% (area_4_background hue_to 0) + 40% area_background}
+{$THEMEWIZARD_COLOR,#f0e5ec,required_2_background,40% (area_4_background hue_to 0) + 60% area_background}
 {$THEMEWIZARD_COLOR,#000000,dark_shadow,100% BW}
 
 /* For standard elements */
