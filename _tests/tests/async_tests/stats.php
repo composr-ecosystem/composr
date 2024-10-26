@@ -195,6 +195,7 @@ class stats_test_set extends cms_test_case
 
         // Exceptions
         $buckets_existing[] = 'tracker_issue_activity'; // We cannot populate dummy data on MantisBT because we do not track its database meta
+        $buckets_existing[] = 'tracker_issues'; // We cannot populate dummy data on MantisBT because we do not track its database meta
 
         $buckets = array_unique($buckets);
         $buckets_existing = array_unique($buckets_existing);
