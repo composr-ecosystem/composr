@@ -1,7 +1,7 @@
 {!HACK_ATTACK_INFO}
 
 {!REASON@}: [tt]{REASON@}[/tt]
-{!IP_ADDRESS@}: [tt][page="adminzone:admin_lookup:results:param={IP&}"]{IP@}[/page][/tt]
+{!IP_ADDRESS@}: [page="adminzone:admin_lookup:results:param={IP&}"][tt]{IP@}[/tt][/page]
 {!MEMBER_ID@}: [tt]{ID@}[/tt]
 {!USERNAME@}: [tt]{USERNAME@}[/tt]
 {!USER_AGENT}: [tt]{USER_AGENT@}[/tt]
