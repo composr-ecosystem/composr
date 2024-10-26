@@ -993,12 +993,7 @@ class Module_cms_galleries extends Standard_crud_module
         $allow_comments = post_param_integer('allow_comments', 0);
         $notes = post_param_string('notes', '');
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
-
-        // Images cleanup pipeline
-        $maximum_dimension = intval(get_option('maximum_image_size'));
         $watermark = (post_param_integer('watermark', 0) == 1);
-        $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
-        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
 
         list(
             $url,
@@ -1023,7 +1018,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
-        $id = add_image($title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
+        $id = add_image($title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions, $watermark);
 
         set_url_moniker('image', strval($id));
 
@@ -1078,12 +1073,7 @@ class Module_cms_galleries extends Standard_crud_module
             make_member_gallery_if_needed($cat);
             $this->check_images_allowed($cat);
         }
-
-        // Images cleanup pipeline
-        $maximum_dimension = intval(get_option('maximum_image_size'));
         $watermark = (post_param_integer('watermark', 0) == 1);
-        $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
-        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
 
         list(
             $url,
@@ -1145,7 +1135,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
-        edit_image($id, $title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
+        edit_image($id, $title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true, $watermark);
 
         if ((!fractional_edit()) && (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat])) && (post_param_integer('rep_image', 0) == 1)) {
             $GLOBALS['SITE_DB']->query_update('galleries', ['rep_image' => $url], ['name' => $cat], '', 1);
@@ -1193,24 +1183,12 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function has_at_least_one_watermark(?string $cat = null) : bool
     {
-        $where = '';
-        if ($cat !== null) {
-            $where = db_string_equal_to('name', $cat) . ' AND ';
+        require_code('galleries2');
+        $watermarks = find_gallery_watermarks($cat);
+        if ($watermarks === null) {
+            return false;
         }
-        $where .= '(' . db_string_not_equal_to('watermark_top_left', '');
-        $where .= ' OR ' . db_string_not_equal_to('watermark_top_left', '');
-        $where .= ' OR ' . db_string_not_equal_to('watermark_top_right', '');
-        $where .= ' OR ' . db_string_not_equal_to('watermark_bottom_left', '');
-        $where .= ' OR ' . db_string_not_equal_to('watermark_bottom_right', '') . ')';
-        $gals = $GLOBALS['SITE_DB']->query('SELECT name FROM ' . get_table_prefix() . 'galleries WHERE ' . $where);
-        foreach ($gals as $guy) {
-            $cat = $guy['name'];
-            if (has_category_access(get_member(), 'galleries', $cat)) {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 
     /**

@@ -23,7 +23,8 @@
  */
 class Hook_cron_notification_digests
 {
-    protected const MAXIMUM_DIGEST_LENGTH = 1024 * 256;
+    protected const MAXIMUM_DIGEST_LENGTH = 1024 * 512; // After this many characters in a digest e-mail, remaining entries will be deferred to another
+    protected const MAXIMUM_DIGEST_RECORDS = 100; // If a digest exceeds this many entries, the remaining ones will be deferred to another e-mail
 
     /**
      * Get info from this hook.
@@ -61,9 +62,10 @@ class Hook_cron_notification_digests
             A_MONTHLY_EMAIL_DIGEST => 60 * 60 * 24 * 31,
         ] as $frequency => $time_span) {
             $start = 0;
+            $max = 10;
             do {
                 // Find where not tint-in-tin
-                $members = $GLOBALS['SITE_DB']->query('SELECT DISTINCT d_to_member_id FROM ' . get_table_prefix() . 'digestives_consumed c JOIN ' . get_table_prefix() . 'digestives_tin t ON c.c_member_id=t.d_to_member_id AND c.c_frequency=t.d_frequency WHERE c_time<' . strval(time() - $time_span) . ' AND c_frequency=' . strval($frequency), 100, $start);
+                $members = $GLOBALS['SITE_DB']->query('SELECT DISTINCT d_to_member_id FROM ' . get_table_prefix() . 'digestives_consumed c JOIN ' . get_table_prefix() . 'digestives_tin t ON c.c_member_id=t.d_to_member_id AND c.c_frequency=t.d_frequency WHERE c_time<' . strval(time() - $time_span) . ' AND c_frequency=' . strval($frequency), $max, $start);
 
                 foreach ($members as $member) {
                     require_lang('notifications');
@@ -76,64 +78,74 @@ class Hook_cron_notification_digests
                     $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($to_member_id);
                     $join_time = $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($to_member_id);
 
-                    $messages = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['d_subject', 'd_message', 'd_date_and_time', 'd_read'], [
-                        'd_to_member_id' => $to_member_id,
-                        'd_frequency' => $frequency,
-                    ], 'ORDER BY d_date_and_time');
-
-                    if (!empty($messages)) {
-                        $GLOBALS['SITE_DB']->query_delete('digestives_tin', [
+                    $max_b = 10; // Intentionally low because some messages may be huge with stack traces
+                    $start_b = 0;
+                    $actual_entries = 0;
+                    $finished_digest = true;
+                    $_message = '';
+                    do {
+                        $messages = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['id', 'd_subject', 'd_message', 'd_date_and_time', 'd_read'], [
                             'd_to_member_id' => $to_member_id,
                             'd_frequency' => $frequency,
-                        ]);
+                        ], 'ORDER BY d_date_and_time', $max_b, $start_b);
 
-                        $_message = '';
-                        $_message_full = '';
-                        foreach ($messages as $message) {
-                            if ($message['d_read'] == 0) {
-                                if ($_message != '') {
-                                    $_message .= "\n";
-                                }
-                                if ($_message_full != '') {
-                                    $_message_full .= "\n";
-                                }
-                                if (strlen($_message) + strlen($message['d_message']) < self::MAXIMUM_DIGEST_LENGTH) {
+                        if (!empty($messages)) {
+                            foreach ($messages as $message) {
+                                if ($message['d_read'] == 0) {
+                                    if ($_message != '') {
+                                        $_message .= "\n";
+                                    }
                                     $_message .= do_lang('DIGEST_EMAIL_INDIVIDUAL_MESSAGE_WRAP', comcode_escape($message['d_subject']), get_translated_text($message['d_message']), [comcode_escape(get_site_name()), get_timezoned_date_time($message['d_date_and_time'])]);
-                                } else {
-                                    $_message .= do_lang('DIGEST_ITEM_OMITTED', comcode_escape($message['d_subject']), get_timezoned_date_time($message['d_date_and_time']), [comcode_escape(get_site_name())]);
+
+                                    $actual_entries++;
                                 }
-                                $_message_full .= do_lang('DIGEST_EMAIL_INDIVIDUAL_MESSAGE_WRAP', comcode_escape($message['d_subject']), get_translated_text($message['d_message']), [comcode_escape(get_site_name()), get_timezoned_date_time($message['d_date_and_time'])]);
+                                delete_lang($message['d_message']);
+
+                                $GLOBALS['SITE_DB']->query_delete('digestives_tin', ['id' => $message['id']]);
+
+                                // Have we reached our limit for this e-mail?
+                                if (strlen($_message) >= self::MAXIMUM_DIGEST_LENGTH) {
+                                    $finished_digest = false;
+                                    break 2;
+                                }
+                                if ($actual_entries >= self::MAXIMUM_DIGEST_RECORDS) {
+                                    $finished_digest = false;
+                                    break 2;
+                                }
                             }
-                            delete_lang($message['d_message']);
-                        }
-                        if ($_message != '') {
-                            $wrapped_subject = do_lang('DIGEST_EMAIL_SUBJECT_' . strval($frequency), comcode_escape(get_site_name()));
-                            $wrapped_message = do_lang('DIGEST_EMAIL_MESSAGE_WRAP', $_message, comcode_escape(get_site_name()));
-                            $wrapped_message_full = do_lang('DIGEST_EMAIL_MESSAGE_WRAP', $_message_full, comcode_escape(get_site_name()));
-
-                            require_code('mail');
-                            dispatch_mail($wrapped_subject, $wrapped_message, $wrapped_message_full, [$to_email], $to_name, get_option('staff_address'), get_site_name(), ['as' => A_FROM_SYSTEM_UNPRIVILEGED, 'require_recipient_valid_since' => $join_time]);
                         }
 
-                        delete_cache_entry('_get_notifications', null, $to_member_id);
+                        $start_b += $max_b;
+                    } while (!empty($messages));
+
+                    if ($_message != '') {
+                        $wrapped_subject = do_lang('DIGEST_EMAIL_SUBJECT_' . strval($frequency), comcode_escape(get_site_name()));
+                        $wrapped_message = do_lang('DIGEST_EMAIL_MESSAGE_WRAP', $_message, comcode_escape(get_site_name()));
+
+                        require_code('mail');
+                        dispatch_mail($wrapped_subject, $wrapped_message, '', [$to_email], $to_name, get_option('staff_address'), get_site_name(), ['as' => A_FROM_SYSTEM_UNPRIVILEGED, 'require_recipient_valid_since' => $join_time]);
                     }
 
-                    $GLOBALS['SITE_DB']->query_update(
-                        'digestives_consumed',
-                        [
-                            'c_time' => time(),
-                        ],
-                        [
-                            'c_member_id' => $to_member_id,
-                            'c_frequency' => $frequency,
-                        ],
-                        '',
-                        1
-                    );
+                    delete_cache_entry('_get_notifications', null, $to_member_id);
+
+                    If ($finished_digest) {
+                        $GLOBALS['SITE_DB']->query_update(
+                            'digestives_consumed',
+                            [
+                                'c_time' => time(),
+                            ],
+                            [
+                                'c_member_id' => $to_member_id,
+                                'c_frequency' => $frequency,
+                            ],
+                            '',
+                            1
+                        );
+                    }
                 }
 
-                $start += 100;
-            } while (count($members) == 100);
+                $start += $max;
+            } while (count($members) == $max);
         }
     }
 }

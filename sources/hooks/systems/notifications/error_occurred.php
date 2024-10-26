@@ -52,6 +52,7 @@ class Hook_notification_error_occurred extends Hook_notification__Staff
         $page_links[] = ['id' => 'error_occurred_missing_reference', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_reference')];
         $page_links[] = ['id' => 'error_occurred_missing_resource', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_resource')];
         $page_links[] = ['id' => 'error_occurred_rss', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_rss')];
+        $page_links[] = ['id' => 'error_occurred_mail', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_mail')];
         $page_links[] = ['id' => 'error_occurred', 'title' => do_lang('GENERAL')];
 
         if (addon_installed('health_check')) {

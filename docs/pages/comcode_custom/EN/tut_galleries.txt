@@ -62,6 +62,12 @@ The following image formats can be used:
  - [tt].png[/tt] -- well compressed, with no accuracy loss. My personal favourite choice if bandwidth is not generally constrained. Soon will be able to do animation too via [url="APNG"]http://caniuse.com/#feat=apng[/url].
  - [tt].gif[/tt] -- useful if you need animation, but limited to 256 colours and poor compression. Generally a poor choice, use video or APNG instead.
 
+[title="3"]Nuance of using a File/Media Library image[/title]
+
+If you choose a 'File/Media Library' image to add to a gallery (or on the edit image screen), Composr will not use this file directly. Instead, it will be copied to uploads/galleries. This is so Composr can apply cleanup tools to the image (such as adding watermarks) without editing the original file in your file/media library.
+
+If you were to go back and edit this image, the 'Image' field will have a 'URL' file pointing to uploads/galleries instead of the File/Media library image you chose. This is because Composr is using the copied and edited version of the image and not the one from the file/media library.
+
 [title="2"]Videos[/title]
 
 Galleries have powerful video support. Composr will analyse the file types of uploaded videos and use carefully crafted templates that use the best way to display that file type. For example, h.264 files will be displayed with a HTML5 video player.
@@ -142,9 +148,11 @@ On some browsers, alt-clicking on the slideshow will activate the browser full s
 
 When you add or edit a gallery you may choose watermarks to be automatically added to any of the 4 corners of any added images that you select to be watermarked. A watermark is just a semi-transparent image that is overlaid across images as an official mark, or to prevent unauthorised reproduction. If you wish to place a watermark on an edge, you simply make a corner watermark image that includes enough transparency to change the location for the main image to be placed.
 
-Watermarks will appear on your full image where-ever it is displayed. Composr will not save a copy of images without the watermarks applied. They are applied permanently when you add/edit new image files. You will therefore want to ensure you keep your own media archive should you wish to change how you do watermarking later on.
+It is very important to note that watermarks will appear on your full image everywhere it is displayed. Composr will not save any copies of your image without the watermarks being applied; they are applied permanently when you add/edit new image files. You will therefore want to ensure you keep the original files without the watermarks in your own archive should you wish to change how you do watermarking later on. There is one exception to this; if you select a File/Media Library image, Composr will copy that image into 'uploads/galleries' and apply the watermark on that image. That way, your original file in the file/media library is preserved.
 
-Watermarks are actually 'inherited' in the tree structure: in other words, when adding an image, watermarks will be chosen from the first gallery back down towards the root gallery that actually defines watermarks.
+Watermarks are applied using a reverse tree structure. That means for each corner, Composr will start from the immediate child gallery and navigate up to each parent until it finds a watermark for that corner (or determines none of the galleries have one set). For example, let's say you have a gallery called 'Parent gallery', which has a top-left watermark set. You also have a sub-gallery under that called 'Child gallery', which defines a top-right watermark. When you add an image into 'Child gallery', it will have both the 'Child gallery' watermark in the top-right corner and the 'Parent gallery' watermark in the top-left corner. Let's say 'Parent gallery' and 'Child gallery' both define a top-left watermark. When you add an image under 'Child gallery', it will have the 'Child gallery' watermark since children take priority (but if you added an image under 'Parent gallery', it would have the 'Parent gallery' watermark instead).
+
+Note that watermarks cannot be added to animated images.
 
 [title="2"]e-cards[/title]
 
