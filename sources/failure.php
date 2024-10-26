@@ -707,6 +707,8 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
         'silent_to_staff_log' => $silent_to_staff_log ? 1 : 0,
     ];
 
+    require_lang('security');
+
     $ip_ban_todo = null;
     if (($count >= intval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
@@ -729,6 +731,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
                 }
 
                 $full_reason = do_lang($row['reason'], '[tt]' . comcode_escape($row['reason_param_a']) . '[/tt]', '[tt]' . comcode_escape($row['reason_param_b']) . '[/tt]', null, get_site_default_lang());
+                $full_reason .= ' (' . do_lang('RISK') . ' [tt]' . integer_format($row['risk_score']) . '[/tt])';
                 $summary .= "\n" . '[*]' . $full_reason . "\n[tt]" . comcode_escape($row['url']) . "[/tt]\n" . get_timezoned_date_time($row['date_and_time']);
             }
             $summary .= "\n" . '[/list]';
