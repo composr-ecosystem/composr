@@ -82,6 +82,16 @@ class Hook_content_meta_aware_banner extends Hook_CMA
             'edit_time_field' => 'edit_date',
             'date_field' => 'add_date',
             'validated_field' => 'validated',
+            'additional_sort_fields' => [
+                'b_type' => [
+                    'ASC' => 'r.b_type ASC,r.name ASC',
+                    'DESC' => 'r.b_type ASC,r.name DESC',
+                ],
+                'deployment_agreement' => null,
+                'campaign_remaining' => null,
+                'display_likelihood' => null,
+                'expiry_date' => null,
+            ],
 
             'seo_type_code' => null,
 

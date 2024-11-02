@@ -213,18 +213,11 @@ class Module_cms_banners extends Standard_crud_module
         require_lang('banners');
 
         $current_ordering = get_param_string('sort', 'b_type ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        if ($current_ordering == 'b_type ASC') {
-            $current_ordering = 'b_type ASC,name ASC';
-        }
         $sortables = [
             'name' => do_lang_tempcode('CODENAME'),
             'b_type' => do_lang_tempcode('BANNER_TYPE'),
             'deployment_agreement' => do_lang_tempcode('DEPLOYMENT_AGREEMENT'),
-            //'campaign_remaining' => do_lang_tempcode('HITS_ALLOCATED'),
+            'campaign_remaining' => do_lang_tempcode('HITS_ALLOCATED'),
             'display_likelihood' => do_lang_tempcode('DISPLAY_LIKELIHOOD'),
             'expiry_date' => do_lang_tempcode('EXPIRY_DATE'),
             'add_date' => do_lang_tempcode('ADDED'),
@@ -232,12 +225,10 @@ class Module_cms_banners extends Standard_crud_module
         if (addon_installed('validation')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('banner', $current_ordering);
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_banners') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
 
         $has_expiry_dates = false; // Save space by default
         foreach ($rows as $row) {
@@ -248,9 +239,9 @@ class Module_cms_banners extends Standard_crud_module
 
         $hr = [
             do_lang_tempcode('CODENAME'),
-            do_lang_tempcode('TYPE'),
+            do_lang_tempcode('BANNER_TYPE'),
             do_lang_tempcode('DEPLOYMENT_AGREEMENT'),
-            //do_lang_tempcode('HITS_ALLOCATED'),     Save space by not putting in
+            do_lang_tempcode('HITS_ALLOCATED'),
             do_lang_tempcode('_DISPLAY_LIKELIHOOD'),
         ];
         if ($has_expiry_dates) {
@@ -285,7 +276,7 @@ class Module_cms_banners extends Standard_crud_module
                 hyperlink(build_url(['page' => 'banners', 'type' => 'view', 'source' => $row['name']], get_module_zone('banners')), do_template('COMCODE_TELETYPE', ['_GUID' => '25c57dd13c0801ad64f5bb8e6c9860f3', 'CONTENT' => escape_html($row['name'])]), false, false),
                 ($row['b_type'] == '') ? do_lang('_DEFAULT') : $row['b_type'],
                 $deployment_agreement,
-                //integer_format($row['campaign_remaining']),
+                integer_format($row['campaign_remaining']),
                 strval($row['display_likelihood']),
             ];
             if ($has_expiry_dates) {
@@ -730,7 +721,6 @@ class Module_cms_banners_cat extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'id ASC', INPUT_FILTER_GET_COMPLEX);
-        list($sortable, $sort_order) = [substr($current_ordering, 0, strrpos($current_ordering, ' ')), substr($current_ordering, strrpos($current_ordering, ' ') + 1)];
         $sortables = [
             'id' => do_lang_tempcode('CODENAME'),
             't_is_textual' => do_lang_tempcode('BANNER_IS_TEXTUAL'),
@@ -738,11 +728,9 @@ class Module_cms_banners_cat extends Standard_crud_module
             't_image_height' => do_lang_tempcode('HEIGHT'),
             't_max_file_size' => do_lang_tempcode('MAX_SIZE'),
             't_comcode_inline' => do_lang_tempcode('COMCODE_INLINE'),
+            'entries_count' => do_lang_tempcode('COUNT_TOTAL'),
         ];
-        $sortables['(SELECT COUNT(*) FROM ' . get_table_prefix() . 'banners WHERE b_type=r.id)'] = do_lang_tempcode('COUNT_TOTAL');
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('banner_type', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('CODENAME'),
@@ -758,7 +746,7 @@ class Module_cms_banners_cat extends Standard_crud_module
         $fields = new Tempcode();
 
         require_code('files');
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

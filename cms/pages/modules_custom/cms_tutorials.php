@@ -147,10 +147,6 @@ class Module_cms_tutorials extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 't_add_date DESC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             't_title' => do_lang_tempcode('TITLE'),
             't_author' => do_lang_tempcode('AUTHOR'),
@@ -159,9 +155,7 @@ class Module_cms_tutorials extends Standard_crud_module
             't_add_date' => do_lang_tempcode('DATE'),
             't_pinned' => do_lang_tempcode('cns:PINNED'),
         ];
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('tutorials_external', $current_ordering);
 
         $fh = [
             do_lang_tempcode('TITLE'),
@@ -178,7 +172,7 @@ class Module_cms_tutorials extends Standard_crud_module
         $fields = new Tempcode();
 
         require_code('form_templates');
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_link = build_url($url_map + ['id' => $row['id']], '_SELF');
 

@@ -82,6 +82,14 @@ class Hook_resource_meta_aware_cpf extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'cf_include_in_main_search' => null,
+                'cf_allow_template_search' => null,
+                'cf_owner_view' => null,
+                'cf_owner_set' => null,
+                'cf_public_view' => null,
+                'cf_required' => null,
+            ],
 
             'seo_type_code' => null,
 

@@ -72,11 +72,16 @@ class Hook_resource_meta_aware_tutorials_external
             'views_field' => 't_views',
             'order_field' => null,
             'submitter_field' => 't_submitter',
-            'author_field' => null,
+            'author_field' => null, // NB: t_author is not an actual reference to a CMS author
             'add_time_field' => 't_add_date',
             'edit_time_field' => 't_edit_date',
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                't_author' => null, // NB: t_author is not an actual reference to a CMS author
+                't_media_type' => null,
+                't_pinned' => null,
+            ],
 
             'seo_type_code' => null,
 

@@ -82,6 +82,16 @@ class Hook_content_meta_aware_comcode_page extends Hook_CMA
             'edit_time_field' => 'p_edit_date',
             'date_field' => 'p_add_date',
             'validated_field' => 'p_validated',
+            'additional_sort_fields' => [
+                'page_title' => [ // No SQL; cms_comcode_pages manages sorting because of field translation
+                    'ASC' => '',
+                    'DESC' => '',
+                ],
+                'page_link' => [
+                    'ASC' => 'r.the_zone ASC,r.the_page ASC',
+                    'DESC' => 'r.the_zone DESC,r.the_page DESC',
+                ],
+            ],
 
             'seo_type_code' => 'comcode_page',
 

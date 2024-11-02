@@ -254,8 +254,8 @@ class Module_cms_catalogues extends Standard_crud_module
         if (get_value('disable_cat_cat_perms') === '1') {
             $this->permissions_module_require_b = null;
             $this->permissions_cat_name_b = null;
-            $this->cat_crud_module->permissions_module_require = null;
-            $this->cat_crud_module->permissions_cat_name = null;
+            //$this->cat_crud_module->permissions_module_require = null;
+            //$this->cat_crud_module->permissions_cat_name = null;
         }
 
         require_lang('fields');
@@ -351,12 +351,8 @@ class Module_cms_catalogues extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'title ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
-            'title' => do_lang_tempcode('TITLE'),
             'cc_id' => do_lang_tempcode('CATEGORY'),
             'ce_add_date' => do_lang_tempcode('ADDED'),
             'ce_views' => do_lang_tempcode('COUNT_VIEWS'),
@@ -365,9 +361,7 @@ class Module_cms_catalogues extends Standard_crud_module
         if (addon_installed('validation')) {
             $sortables['ce_validated'] = do_lang_tempcode('VALIDATED');
         }
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('catalogue_entry', $current_ordering);
 
         $fh = [];
         $fh[] = do_lang_tempcode('TITLE');
@@ -385,7 +379,7 @@ class Module_cms_catalogues extends Standard_crud_module
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_catalogues') ? null : get_member();
         $catalogue_name = get_param_string('catalogue_name');
-        list($rows, $max_rows) = $this->get_entry_rows(false, ($current_ordering == 'title ASC' || $current_ordering == 'title DESC') ? 'ce_add_date ASC' : $current_ordering, ($only_owned === null) ? ['c_name' => $catalogue_name] : ['c_name' => $catalogue_name, 'ce_submitter' => $only_owned]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? ['c_name' => $catalogue_name] : ['c_name' => $catalogue_name, 'ce_submitter' => $only_owned]);
         $_fields = [];
         $cat_titles = [];
         foreach ($rows as $row) {
@@ -1290,17 +1284,11 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'cc_title ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             'cc_title' => do_lang_tempcode('TITLE'),
             'cc_add_date' => do_lang_tempcode('ADDED'),
         ];
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('catalogue_category', $current_ordering);
 
         $fh = [do_lang_tempcode('TITLE'), do_lang_tempcode('ADDED')];
         $fh[] = do_lang_tempcode('ACTIONS');
@@ -1310,7 +1298,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
 
         $catalogue_name = get_param_string('catalogue_name');
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ['c_name' => $catalogue_name]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ['c_name' => $catalogue_name]);
         $news_cat_titles = [];
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');

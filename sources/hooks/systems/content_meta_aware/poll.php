@@ -82,6 +82,13 @@ class Hook_content_meta_aware_poll extends Hook_CMA
             'edit_time_field' => 'edit_date',
             'date_field' => 'date_and_time',
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'current' => [
+                    'ASC' => 'r.is_current ASC,r.add_time ASC',
+                    'DESC' => 'r.is_current DESC,r.add_time DESC',
+                ],
+                'count_votes' => 'r.votes1+r.votes2+r.votes3+r.votes4+r.votes5+r.votes6+r.votes7+r.votes8+r.votes9+r.votes10',
+            ],
 
             'seo_type_code' => null,
 

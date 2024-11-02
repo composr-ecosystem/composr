@@ -87,6 +87,7 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
             'edit_time_field' => 'ce_edit_date',
             'date_field' => 'ce_add_date',
             'validated_field' => 'ce_validated',
+            'additional_sort_fields' => null,
 
             'seo_type_code' => 'catalogue_entry',
 

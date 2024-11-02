@@ -82,6 +82,14 @@ class Hook_content_meta_aware_banner_type extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                't_is_textual' => null,
+                't_image_width' => null,
+                't_image_height' => null,
+                't_max_file_size' => null,
+                't_comcode_inline' => null,
+                'entries_count' => '(SELECT COUNT(*) FROM ' . get_table_prefix() . 'banners b WHERE b.b_type=r.id)',
+            ],
 
             'seo_type_code' => null,
 

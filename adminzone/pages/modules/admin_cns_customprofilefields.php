@@ -409,10 +409,6 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         require_code('templates_results_table');
         $form_id = 'selection_table';
         $current_ordering = get_param_string('sort', $index_focused_view ? 'cf_include_in_main_search DESC' : 'cf_order ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [];
         $sortables['cf_name'] = do_lang_tempcode('NAME');
         if ($index_focused_view) {
@@ -425,12 +421,11 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             $sortables['cf_required'] = do_lang_tempcode('REQUIRED');
         }
         $sortables['cf_order'] = do_lang_tempcode('ORDER');
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('cpf', $current_ordering);
 
         $num_cpfs = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'COUNT(*)');
 
+        // Only allow ordering if using default sorting; otherwise it won't work correctly
         $standard_ordering = (($current_ordering == 'cf_order ASC') && ($num_cpfs < 200));
 
         $fh = [];
@@ -475,7 +470,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         }
 
         // Load rows, according to pagination
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
 
         // Save sorting changes
         if ($standard_ordering) {

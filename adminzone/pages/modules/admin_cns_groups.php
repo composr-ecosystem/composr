@@ -359,8 +359,7 @@ class Module_admin_cns_groups extends Standard_crud_module
     {
         require_code('templates_results_table');
 
-        $default_order = 'g_promotion_threshold ASC,r.id ASC';
-        $current_ordering = get_param_string('sort', $default_order, INPUT_FILTER_GET_COMPLEX);
+        $default_order = 'g_order ASC';
         $sortables = [
             'g_name' => do_lang_tempcode('NAME'),
             'g_is_presented_at_install' => do_lang_tempcode('IS_PRESENTED_AT_INSTALL'),
@@ -369,26 +368,16 @@ class Module_admin_cns_groups extends Standard_crud_module
         ];
         if (addon_installed('points')) {
             $sortables = array_merge($sortables, [
-                'g_promotion_threshold ASC,r.id' => do_lang_tempcode('PROMOTION_TARGET'),
+                'g_promotion_threshold' => do_lang_tempcode('PROMOTION_TARGET'),
             ]);
+            $default_order = 'g_promotion_threshold ASC';
         }
         $sortables = array_merge($sortables, [
             'g_is_super_admin' => do_lang_tempcode('SUPER_ADMIN'),
             'g_order' => do_lang_tempcode('ORDER'),
         ]);
-        if ($current_ordering == 'g_promotion_threshold ASC,r.id ASC') {
-            list($sortable, $sort_order) = ['g_promotion_threshold ASC,r.id', 'ASC'];
-        } elseif (($current_ordering == 'g_promotion_threshold DESC,r.id DESC') || ($current_ordering == 'g_promotion_threshold ASC,r.id DESC')) {
-            list($sortable, $sort_order) = ['g_promotion_threshold DESC,r.id', 'DESC'];
-        } else {
-            if (strpos($current_ordering, ' ') === false) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-            }
-            list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-            if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-                log_hack_attack_and_exit('ORDERBY_HACK');
-            }
-        }
+        $current_ordering = get_param_string('sort', $default_order, INPUT_FILTER_GET_COMPLEX);
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('group', $current_ordering);
 
         $_header_row = [
             do_lang_tempcode('NAME'),
@@ -414,7 +403,7 @@ class Module_admin_cns_groups extends Standard_crud_module
 
         $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_private_club' => 0]);
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ['g_is_private_club' => 0]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ['g_is_private_club' => 0]);
         $changed = false;
         foreach ($rows as $row) {
             $new_order = post_param_integer('order_' . strval($row['id']), null);

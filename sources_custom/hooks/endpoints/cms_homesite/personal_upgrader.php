@@ -64,6 +64,10 @@ class Hook_endpoint_cms_homesite_personal_upgrader
 
         // Uh oh! We probably do not have a stable version up.
         if ($to_version_dotted === null) {
+            if ($id === '_LEGACY_') { // LEGACY
+                warn_exit(protect_from_escaping('Internal Error: We do not know what version you want to upgrade to, and there are no stable versions in the system (which we use as the default). Please generate an upgrade file from ' . get_brand_base_url() . ', in the news article for the newest release. You can then use this in the upgrader when transferring across new / updated files. You may have to re-load the upgrader manually by going to baseurl/upgrader.php so you do not get this error again.'));
+                exit();
+            }
             return ['success' => false, 'error_details' => 'Internal Error: We do not know what version you want to upgrade to, and there are no stable versions in the system (which we use as the default). Please generate an upgrade file from ' . get_brand_base_url() . ', in the news article for the newest release. You can then use this in the upgrader when transferring across new / updated files. You may have to re-load the upgrader manually by going to baseurl/upgrader.php so you do not get this error again.'];
         }
 

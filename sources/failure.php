@@ -668,6 +668,17 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     $url = $_SERVER['REQUEST_URI'];
 
+    // Prevent accidental lock-out by, for example, a rogue AJAX script on Composr repeating the request several times quickly
+    $test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) FROM {prefix}hackattack WHERE reason=\'{reason}\' AND ip=\'{ip}\' AND date_and_time>={date_and_time} AND user_agent=\'{user_agent}\' AND risk_score>0', [
+        'reason' => $reason, // No tolerance if they triggered a different type of hack
+        'ip' => $ip, // No tolerance if they changed IP addresses
+        'date_and_time' => (time() - 3), // Allow a very modest 3 seconds grace; we don't want to be too tolerant in case it's a DoS attack
+        'user_agent' => cms_mb_substr(get_browser_string(), 0, 255), // No tolerance if they changed devices
+    ]);
+    if ($test > 0) {
+        $risk_score = 0; // We still want to proceed with logging and blocking, but don't add any score to the hack attack.
+    }
+
     // Automatic ban needed?...
 
     $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip]) + $risk_score);
@@ -696,6 +707,8 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
         'silent_to_staff_log' => $silent_to_staff_log ? 1 : 0,
     ];
 
+    require_lang('security');
+
     $ip_ban_todo = null;
     if (($count >= intval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
@@ -718,6 +731,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
                 }
 
                 $full_reason = do_lang($row['reason'], '[tt]' . comcode_escape($row['reason_param_a']) . '[/tt]', '[tt]' . comcode_escape($row['reason_param_b']) . '[/tt]', null, get_site_default_lang());
+                $full_reason .= ' (' . do_lang('RISK') . ' [tt]' . integer_format($row['risk_score']) . '[/tt])';
                 $summary .= "\n" . '[*]' . $full_reason . "\n[tt]" . comcode_escape($row['url']) . "[/tt]\n" . get_timezoned_date_time($row['date_and_time']);
             }
             $summary .= "\n" . '[/list]';
@@ -813,7 +827,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     }
 
     require_code('critical_errors');
-    critical_error('EMERGENCY', 'Suspected hack attempt averted');
+    critical_error('EMERGENCY', 'Your request is suspicious and has been blocked and logged by the Web Application Firewall. Your IP address, user agent, referrer, and request details have been included in the log. <strong>Do not refresh this page.</strong> Repeat suspicious requests may result in your device getting automatically banned. If you believe this is a mistake, please promptly contact the site staff. If you got here from a link on an external website, demand that they fix or remove the links immediately.');
 }
 
 /**

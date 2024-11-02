@@ -66,9 +66,14 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
         $version_parts_a = explode('.', $from_version_dotted);
         $a = intval($version_parts_a[0]);
 
-        if (get_base_url() == 'https://composr.app' || get_base_url() == 'https://www.composr.app') {
+        if ((get_base_url() == 'https://composr.app') || (get_base_url() == 'https://www.composr.app')) {
             if (($a == 10) && ($b >= 11)) { // TODO: remove when v11 is stable
                 attach_message('It is strongly recommended not to upgrade a version 10 site to version 11 until version 11 enters beta status. You will likely break your site! Proceed at your own risk and only if you are just testing and have taken proper backups.', 'warn');
+            }
+
+            // LEGACY: Cannot upgrade <11.alpha4 to 11.beta or higher; must first upgrade to 11.alpha4
+            if ((strpos($from_version_pretty, '11 alpha') === 0) && ($from_version_pretty != '11 alpha4') && (strpos($to_version_pretty, '11 alpha') === false)) {
+                return [null, 'You need to upgrade to 11 alpha4 first before upgrading to a later release. This is because changes made in the upgrader will corrupt your site if you immediately skip 11 alpha4. Please go to <a href="https://composr.app/news/view/releases/composr-11-alpha4.htm?blog=0">this news article</a> (Make a Composr upgrader box) to upgrade to 11 alpha4. After upgrading fully to 11 alpha4, run the upgrader again normally, and you should be able to then upgrade to the latest release.'];
             }
         }
     }

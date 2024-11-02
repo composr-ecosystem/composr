@@ -274,7 +274,7 @@ class _broken_links_test_set extends cms_test_case
         if (preg_match('#^https://twitter\.com/intent/tweet\?text=#', $url) != 0) {
             return;
         }
-        if (preg_match('#^https://compo\.sr/uploads/website_specific/compo\.sr/scripts/build_personal_upgrader\.php#', $url) != 0) {
+        if (preg_match('#^https://compo\.sr/uploads/website_specific/compo\.sr/scripts/build_personal_upgrader\.php#', $url) != 0) { // LEGACY
             return;
         }
         if (in_array($url, [

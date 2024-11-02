@@ -83,6 +83,7 @@ class Hook_content_meta_aware_wiki_post extends Hook_CMA
             'date_field' => 'date_and_time',
             'validated_field' => 'validated',
             'validation_is_minor' => true,
+            'additional_sort_fields' => null,
 
             'seo_type_code' => null,
 

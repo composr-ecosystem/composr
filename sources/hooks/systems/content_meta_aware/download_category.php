@@ -82,6 +82,7 @@ class Hook_content_meta_aware_download_category extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => 'add_date',
             'validated_field' => null,
+            'additional_sort_fields' => null,
 
             'seo_type_code' => 'downloads_category',
 

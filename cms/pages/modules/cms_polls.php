@@ -154,30 +154,18 @@ class Module_cms_polls extends Standard_crud_module
     {
         require_code('templates_results_table');
 
-        // TODO: broken (and cannot be fixed to the point we do not trigger hacks)
-        $default_order = 'is_current DESC,add_time DESC';
+        $default_order = 'current DESC';
         $current_ordering = get_param_string('sort', $default_order, INPUT_FILTER_GET_COMPLEX);
-        if ($current_ordering == 'is_current DESC,add_time DESC') {
-            list($sortable, $sort_order) = ['is_current DESC,add_time', 'DESC'];
-        } elseif ($current_ordering == 'is_current DESC,add_time ASC') {
-            list($sortable, $sort_order) = ['is_current DESC,add_time', 'ASC'];
-        } else {
-            if (strpos($current_ordering, ' ') === false) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-            }
-            list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        }
+
         $sortables = [
             'question' => do_lang_tempcode('QUESTION'),
             'add_time' => do_lang_tempcode('ADDED'),
-            'is_current DESC,add_time' => do_lang_tempcode('CURRENT'),
+            'current' => do_lang_tempcode('CURRENT'),
             'submitter' => do_lang_tempcode('metadata:OWNER'),
             'poll_views' => do_lang_tempcode('COUNT_VIEWS'),
-            'votes1+votes2+votes3+votes4+votes5+votes6+votes7+votes8+votes9+votes10' => do_lang_tempcode('COUNT_TOTAL'),
+            'count_votes' => do_lang_tempcode('COUNT_TOTAL'),
         ];
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('poll', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('QUESTION'),
@@ -193,7 +181,7 @@ class Module_cms_polls extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_polls') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, (($only_owned === null) ? [] : ['submitter' => $only_owned]));
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, (($only_owned === null) ? [] : ['submitter' => $only_owned]));
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

@@ -84,6 +84,16 @@ class Hook_content_meta_aware_group extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'g_is_presented_at_install' => null,
+                'g_is_default' => null,
+                'g_open_membership' => null,
+                'g_promotion_threshold' => [
+                    'ASC' => 'r.g_promotion_threshold ASC,r.id ASC',
+                    'DESC' => 'r.g_promotion_threshold DESC,r.id DESC',
+                ],
+                'g_is_super_admin' => null,
+            ],
 
             'seo_type_code' => null,
 

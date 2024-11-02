@@ -97,6 +97,7 @@ class Hook_content_meta_aware_topic extends Hook_CMA
             'date_field' => 't_cache_first_time',
             'validated_field' => 't_validated',
             'validation_is_minor' => true,
+            'additional_sort_fields' => null,
 
             'seo_type_code' => 'topic',
 
