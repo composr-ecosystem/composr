@@ -5755,3 +5755,26 @@ function _sanitise_error_msg(string $text) : string
     // Strip paths, for security reasons
     return str_replace([get_custom_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '/', get_file_base() . '\\'], ['', '', '', ''], $text);
 }
+
+/**
+ * Validate the given URL sorting parameters and transform them into usable information.
+ * This should be used on all sortables interfaces.
+ *
+ * @param  ID_TEXT $content_type The content type on which we are sorting
+ * @param  string $url_sort The URL sort string
+ * @param  ?array $allowed_sorts List of allowed sort types (null: default set for the content type)
+ * @param  boolean $strict_error Provide a hack-attack error on invalid input
+ * @return array A tuple: The SQL-style sort order, The sort direction, the sort type based on the URL sort string
+ */
+function process_sorting_params(string $content_type, string $url_sort, ?array $allowed_sorts = null, bool $strict_error = true) : array
+{
+    require_code('content');
+
+    $object = get_content_object($content_type);
+    $info = $object->info();
+    if ($info === null) {
+        warn_exit(do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type)));
+    }
+
+    return handle_abstract_sorting($url_sort, $info, $allowed_sorts, $strict_error);
+}

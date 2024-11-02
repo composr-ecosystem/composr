@@ -463,6 +463,7 @@ function content_rows_for_multi_type(array $content_types, ?int $days = null, $e
     $current_time = time();
 
     $sort_order_field_missing = false;
+    $sort_strict_error = (count($content_types) == 1); // Only throw hack attacks on sorting if we provided one content type; otherwise we need some tolerance as specified sorts might not apply to all types
 
     foreach ($content_types as $content_type) {
         if (array_key_exists($content_type, $infos)) {
@@ -479,7 +480,7 @@ function content_rows_for_multi_type(array $content_types, ?int $days = null, $e
         $_filter = is_array($filter) ? (array_key_exists($content_type, $filter) ? $filter[$content_type] : '') : $filter;
         $_extra_where = is_array($extra_where) ? (array_key_exists($content_type, $extra_where) ? $extra_where[$content_type] : '') : $extra_where;
         $_extra_join = is_array($extra_join) ? (array_key_exists($content_type, $extra_join) ? $extra_join[$content_type] : '') : $extra_join;
-        list($rows, $max_rows, $pinned_rows) = content_rows_for_type($content_type, $days, $_extra_where, $_extra_join, $sort, $_start, $_max, $_select, $_select_b, $_filter, $check_perms, $pinned, $allowed_sorts, $member_id, $info);
+        list($rows, $max_rows, $pinned_rows) = content_rows_for_type($content_type, $days, $_extra_where, $_extra_join, $sort, $_start, $_max, $_select, $_select_b, $_filter, $check_perms, $pinned, $allowed_sorts, $member_id, $info, $sort_strict_error);
         foreach ($rows as $row) {
             $row['content_type'] = $content_type;
 
@@ -543,9 +544,10 @@ function content_rows_for_multi_type(array $content_types, ?int $days = null, $e
  * @param  ?array $allowed_sorts List of allowed sorts (null: auto-detected for content type)
  * @param  ?MEMBER $member_id Member ID to run as (null: current member)
  * @param  ?array $info Info map for content type (null: look up)
+ * @param  boolean $sort_strict_error Throw a hack attack if the provided $_url_sort is not allowed
  * @return array A tuple: Rows, Max count, Pinned rows
  */
-function content_rows_for_type(string $content_type, ?int $days, string $extra_where, string $extra_join, string $_url_sort, int $start, ?int $max, string $select = '', string $select_b = '', string $filter = '', bool $check_perms = true, ?array $pinned = [], ?array $allowed_sorts = null, ?int $member_id = null, ?array $info = null) : array
+function content_rows_for_type(string $content_type, ?int $days, string $extra_where, string $extra_join, string $_url_sort, int $start, ?int $max, string $select = '', string $select_b = '', string $filter = '', bool $check_perms = true, ?array $pinned = [], ?array $allowed_sorts = null, ?int $member_id = null, ?array $info = null, bool $sort_strict_error = true) : array
 {
     require_code('content');
 
@@ -730,7 +732,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
     // Put query together
     $lang_fields = find_lang_fields($info['table'], 'r');
     $query = ' FROM ' . get_table_prefix() . $info['table'] . ' r' . $extra_join . ' WHERE 1=1' . $extra_where;
-    list($sql_sort, $dir, $url_sort) = handle_abstract_sorting($_url_sort, $info);
+    list($sql_sort, $dir, $url_sort) = handle_abstract_sorting($_url_sort, $info, null, $sort_strict_error);
 
     // Run queries
     $max_rows = $info['db']->query_value_if_there('SELECT COUNT(DISTINCT r.' . $first_id_field . ') ' . $query, false, true);
@@ -738,9 +740,11 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
         $rows = []; // Optimisation
     } else {
         $full_query = 'SELECT DISTINCT r.*';
+        /*
         if ($_url_sort != 'random') {
             $full_query .= ',' . $sql_sort . ' AS sort_order';
         }
+        */
         $full_query .= $query . ' ORDER BY ' . $sql_sort;
         $rows = $info['db']->query($full_query, $max, $start, false, true, $lang_fields);
     }
@@ -796,12 +800,27 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
     if ($allowed_sorts === null) {
         $allowed_sorts = [];
 
+        $allowed_sorts[] = 'id';
+        $allowed_sorts[] = $first_id_field; // Allow sorting by ID (first field)
+
         if (isset($info['order_field'])) {
             $allowed_sorts[] = 'natural';
+            $allowed_sorts[] = $info['order_field']; // Also allow by direct column name
         }
 
         if ($info['add_time_field'] !== null) {
             $allowed_sorts[] = 'recent';
+            $allowed_sorts[] = $info['add_time_field']; // Also allow by direct column name
+        }
+
+        if ($info['edit_time_field'] !== null) {
+            $allowed_sorts[] = 'updated';
+            $allowed_sorts[] = $info['edit_time_field']; // Also allow by direct column name
+        }
+
+        if ($info['parent_category_field'] !== null) {
+            $allowed_sorts[] = 'category';
+            $allowed_sorts[] = $info['parent_category_field']; // Also allow by direct column name
         }
 
         if ((isset($info['prominence_custom_sort'])) || ($info['add_time_field'] !== null)) {
@@ -810,6 +829,7 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
 
         if ((isset($info['title_field'])) && (!is_array($info['title_field'])) && (strpos($info['title_field'], ':') === false)) {
             $allowed_sorts[] = 'title';
+            $allowed_sorts[] = $info['title_field']; // Also allow by direct column name (should not directly use dereferenced field)
         }
 
         $allowed_sorts = array_merge($allowed_sorts, [
@@ -819,6 +839,31 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
 
         if (isset($info['views_field'])) {
             $allowed_sorts[] = 'views';
+            $allowed_sorts[] = $info['views_field']; // Also allow by direct column name
+        }
+
+        if (isset($info['submitter_field'])) {
+            $allowed_sorts[] = 'submitter';
+            $allowed_sorts[] = $info['submitter_field']; // Also allow by direct column name
+        }
+
+        if (isset($info['additional_sort_fields'])) {
+            $allowed_sorts = array_merge($allowed_sorts, array_keys($info['additional_sort_fields']));
+        }
+
+        if (isset($info['validated_field']) && addon_installed('validation')) {
+            $allowed_sorts[] = 'validated';
+            $allowed_sorts[] = $info['validated_field']; // Also allow by direct column name
+        }
+
+        if (isset($info['author_field']) && addon_installed('authors')) {
+            $allowed_sorts[] = 'author';
+            $allowed_sorts[] = $info['author_field']; // Also allow by direct column name
+        }
+
+        if ($info['image_field'] !== null) {
+            $allowed_sorts[] = 'image';
+            $allowed_sorts[] = $info['image_field']; // Also allow by direct column name
         }
 
         if ($feedback_type !== null) {
@@ -830,9 +875,21 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
     }
 
     list($url_sort, $dir) = read_abstract_sorting_params($url_sort, $allowed_sorts, $strict_error);
+    $append_dir = true;
 
-    if ($url_sort == 'recent') {
+    if ((is_array($info['additional_sort_fields'])) && (isset($info['additional_sort_fields'][$url_sort])) && ($info['additional_sort_fields'][$url_sort] !== null)) { // Custom SQL specified for this sort
+        if (is_array($info['additional_sort_fields'][$url_sort])) { // Different SQL specified for ASC versus DESC
+            $sql_sort = $info['additional_sort_fields'][$url_sort][$dir];
+            $append_dir = false; // In this case, we always explicitly define ASC and DESC in the custom SQL
+        } else {
+            $sql_sort = $info['additional_sort_fields'][$url_sort];
+        }
+    } elseif ($url_sort == 'id') {
+        $sql_sort = 'r.' . $first_id_field;
+    } elseif ($url_sort == 'recent') {
         $sql_sort = 'r.' . $info['add_time_field'];
+    } elseif ($url_sort == 'updated') {
+        $sql_sort = 'r.' . $info['edit_time_field'];
     } elseif ($url_sort == 'prominence') {
         if (isset($info['prominence_custom_sort'])) {
             $sql_sort = $info['prominence_custom_sort'];
@@ -840,7 +897,7 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
         } else {
             $sql_sort = 'r.' . $info['add_time_field'];
         }
-    } elseif ($url_sort == 'title') {
+    } elseif ((isset($info['title_field'])) && (($url_sort == 'title') || ($url_sort == $info['title_field']))) {
         if ($info['title_field_dereference']) {
             $sql_sort = $GLOBALS['SITE_DB']->translate_field_ref($info['title_field']);
         } else {
@@ -850,6 +907,16 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
         $sql_sort = 'r.' . $info['order_field'];
     } elseif ($url_sort == 'views') {
         $sql_sort = 'r.' . $info['views_field'];
+    } elseif ($url_sort == 'validated') {
+        $sql_sort = 'r.' . $info['validated_field'];
+    } elseif ($url_sort == 'category') {
+        $sql_sort = 'r.' . $info['parent_category_field'];
+    } elseif ($url_sort == 'image') {
+        $sql_sort = 'r.' . $info['image_field'];
+    } elseif ($url_sort == 'submitter') {
+        $sql_sort = 'r.' . $info['submitter_field']; // TODO: find a way we can sort by username instead of member ID; will be complicated given forum drivers
+    } elseif ($url_sort == 'author') {
+        $sql_sort = 'r.' . $info['author_field'];
     } elseif ($url_sort == 'average_rating') {
         $sql_sort = '(SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $feedback_type) . ' AND rating_for_id=r.' . $first_id_field . ')';
     } elseif ($url_sort == 'compound_rating') {
@@ -866,6 +933,10 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
         $sql_sort = 'r.' . $url_sort;
     }
 
+    if ($append_dir) {
+        $sql_sort .= ' ' . $dir;
+    }
+
     return [$sql_sort, $dir, $url_sort];
 }
 
@@ -880,8 +951,10 @@ function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_
 function read_abstract_sorting_params(string $_url_sort, ?array $allowed_sorts, bool $strict_error = true) : array
 {
     $banal_default_sorts = [
+        'id',
         'natural',
         'recent',
+        'updated',
         'prominence',
         'title',
         'random',
@@ -889,6 +962,11 @@ function read_abstract_sorting_params(string $_url_sort, ?array $allowed_sorts, 
         'views',
         'average_rating',
         'compound_rating',
+        'validated',
+        'category',
+        'image',
+        'submitter',
+        'author',
     ];
 
     $parts = explode(' ', $_url_sort, 2);
@@ -898,9 +976,26 @@ function read_abstract_sorting_params(string $_url_sort, ?array $allowed_sorts, 
     list($url_sort, $dir) = $parts;
     if (($allowed_sorts !== null) && (!in_array($url_sort, $allowed_sorts))) {
         if (($strict_error) && (!in_array($url_sort, $banal_default_sorts))) {
-            // log_hack_attack_and_exit('ORDERBY_HACK'); TODO: MANTIS #5909
+            log_hack_attack_and_exit('ORDERBY_HACK');
         }
-        $url_sort = $allowed_sorts[0];
+
+        // Determine a banal fall-back we can use
+        if (in_array('natural', $allowed_sorts)) {
+            $url_sort = 'natural';
+            $dir = 'ASC';
+        } elseif (in_array('title', $allowed_sorts)) {
+            $url_sort = 'title';
+            $dir = 'ASC';
+        } elseif (in_array('prominence', $allowed_sorts)) {
+            $url_sort = 'prominence';
+            $dir = 'DESC';
+        } elseif (in_array('recent', $allowed_sorts)) {
+            $url_sort = 'recent';
+            $dir = 'DESC';
+        } else {
+            $url_sort = 'fixed_random';
+            $dir = 'ASC';
+        }
     }
     if (!in_array($dir, ['ASC', 'DESC'])) {
         if ($strict_error) {

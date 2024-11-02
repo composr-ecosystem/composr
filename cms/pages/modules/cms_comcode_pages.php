@@ -400,24 +400,21 @@ class Module_cms_comcode_pages
         }
 
         // Sorting
-        $current_ordering = get_param_string('sort', 'page ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
+        $current_ordering = get_param_string('sort', 'page_link ASC', INPUT_FILTER_GET_COMPLEX);
         $sortables = [
             'page_title' => do_lang_tempcode('TITLE'),
-            'page' => do_lang_tempcode('PAGE'),
-            'zone' => do_lang_tempcode('ZONE'),
+            'the_page' => do_lang_tempcode('PAGE'),
+            'the_zone' => do_lang_tempcode('ZONE'),
             'page_link' => do_lang_tempcode('PAGE_LINK'),
-            'edit_date' => do_lang_tempcode('EDITED'),
-            'submitter' => do_lang_tempcode('metadata:OWNER'),
+            'p_edit_date' => do_lang_tempcode('EDITED'),
+            'p_submitter' => do_lang_tempcode('metadata:OWNER'),
         ];
         if (get_value('disable_comcode_page_order') !== '1') {
-            $sortables['order'] = do_lang_tempcode('ORDER');
+            $sortables['p_order'] = do_lang_tempcode('ORDER');
         }
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('comcode_page', $current_ordering);
+        if ($sortable == 'page_title') {
+            $sql_sort = $GLOBALS['SITE_DB']->translate_field_ref('cc_page_title') . ' ' . $sort_order;
         }
 
         // Get file details
@@ -432,29 +429,12 @@ class Module_cms_comcode_pages
             $find_via_query = false;
         } elseif (
             ($total_known_pages < 300) &&
-            ($GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages c LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON c.the_page=a.the_page AND c.the_zone=a.the_zone', 'c.the_page', ['a.the_page' => null]) !== null)
+            ($GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages r LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON r.the_page=a.the_page AND r.the_zone=a.the_zone', 'r.the_page', ['a.the_page' => null]) !== null)
         ) {
             $find_via_query = false;
         }
         if ($find_via_query) { // Lots of pages so do it via querying
             $found_via_query = true;
-
-            // Sorting
-            $orderer = 'MAX(p_add_date,p_edit_date) ASC';
-            switch ($sortable) {
-                case 'page_title':
-                    $orderer = $GLOBALS['SITE_DB']->translate_field_ref('cc_page_title') . ' ' . $sort_order;
-                    break;
-                case 'page':
-                    $orderer = 'c.the_page ' . $sort_order;
-                    break;
-                case 'zone':
-                    $orderer = 'c.the_zone ' . $sort_order;
-                    break;
-                case 'page_link':
-                    $orderer = 'c.the_zone ' . $sort_order . ',c.the_page ' . $sort_order;
-                    break;
-            }
 
             // Where map
             $where_map = '1=1';
@@ -468,9 +448,9 @@ class Module_cms_comcode_pages
                                 $where_map .= ' OR ';
                             }
                             if (($zone_editability_pair[1] & COMCODE_EDIT_ANY) == 0) {
-                                $where_map .= '(' . db_string_equal_to('c.the_zone', $zone_editability_pair[0]) . ' AND p_submitter=' . strval(get_member()) . ')';
+                                $where_map .= '(' . db_string_equal_to('r.the_zone', $zone_editability_pair[0]) . ' AND p_submitter=' . strval(get_member()) . ')';
                             } else {
-                                $where_map .= db_string_equal_to('c.the_zone', $zone_editability_pair[0]);
+                                $where_map .= db_string_equal_to('r.the_zone', $zone_editability_pair[0]);
                             }
                         }
                         $where_map .= ')';
@@ -486,8 +466,8 @@ class Module_cms_comcode_pages
             if ($filter !== null) {
                 $where_map .= ' AND (';
                 $search_fields = [
-                    'c.the_zone',
-                    'c.the_page',
+                    'r.the_zone',
+                    'r.the_page',
                     'p_parent_page',
                     $GLOBALS['SITE_DB']->translate_field_ref('cc_page_title'),
                     $GLOBALS['SITE_DB']->translate_field_ref('string_index'),
@@ -505,7 +485,7 @@ class Module_cms_comcode_pages
                 $where_map .= ')';
             }
             if ($zone_filter !== null) {
-                $where_map .= ' AND c.the_zone IN (';
+                $where_map .= ' AND r.the_zone IN (';
                 foreach ($zone_filter as $i => $zone) {
                     if ($i != 0) {
                         $where_map .= ',';
@@ -516,11 +496,11 @@ class Module_cms_comcode_pages
             }
 
             // Do queries
-            $ttable = get_table_prefix() . 'comcode_pages c LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON c.the_page=a.the_page AND c.the_zone=a.the_zone';
-            $sql = 'SELECT c.*,cc_page_title FROM ' . $ttable . ' WHERE ' . $where_map . ' ORDER BY ' . $orderer;
+            $ttable = get_table_prefix() . 'comcode_pages r LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON r.the_page=a.the_page AND r.the_zone=a.the_zone';
+            $sql = 'SELECT r.*,cc_page_title FROM ' . $ttable . ' WHERE ' . $where_map . ' ORDER BY ' . $sql_sort;
             $lang_fields = ['cc_page_title' => '?SHORT_TRANS', 'string_index' => 'LONG_TRANS'];
             $page_rows = $GLOBALS['SITE_DB']->query($sql, $max, $start, false, false, $lang_fields);
-            $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM (SELECT DISTINCT c.the_zone,c.the_page FROM ' . $ttable . ' WHERE ' . $where_map . ') x', false, false, $lang_fields);
+            $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM (SELECT DISTINCT r.the_zone,r.the_page FROM ' . $ttable . ' WHERE ' . $where_map . ') x', false, false, $lang_fields);
 
             // Put together metadata
             $files_list = [];
@@ -560,7 +540,7 @@ class Module_cms_comcode_pages
             // We need to separately read from DB to work out metadata?
             $db_row = null;
             if ($path_bits[1] === null) {
-                $db_rows = $GLOBALS['SITE_DB']->query_select('comcode_pages c LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON c.the_page=a.the_page AND c.the_zone=a.the_zone', ['c.*', 'cc_page_title'], ['c.the_zone' => $zone, 'c.the_page' => $page], '', 1);
+                $db_rows = $GLOBALS['SITE_DB']->query_select('comcode_pages r LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON r.the_page=a.the_page AND r.the_zone=a.the_zone', ['r.*', 'cc_page_title'], ['r.the_zone' => $zone, 'r.the_page' => $page], '', 1);
                 $db_row = isset($db_rows[0]) ? $db_rows[0] : null;
             } else { // Ah, no we got everything from DB in one go
                 $db_row = $path_bits[1];
@@ -595,14 +575,14 @@ class Module_cms_comcode_pages
             // Put into array
             $rows[] = [
                 'page_title' => $page_title,
-                'page' => $page,
-                'zone' => $zone,
+                'the_page' => $page,
+                'the_zone' => $zone,
                 'page_link' => $page_link,
-                'order' => $order,
-                'parent_page' => $parent_page,
-                'submitter' => $submitter,
-                'edit_date' => $edit_date,
-                'validated' => $validated,
+                'p_order' => $order,
+                'p_parent_page' => $parent_page,
+                'p_submitter' => $submitter,
+                'p_edit_date' => $edit_date,
+                'p_validated' => $validated,
                 'page_path' => $page_path,
             ];
         }
@@ -610,9 +590,9 @@ class Module_cms_comcode_pages
         // Search filtering
         if ($filter !== null) {
             $search_fields = [
-                'zone',
-                'page',
-                'parent_page',
+                'the_zone',
+                'the_page',
+                'p_parent_page',
                 'page_title',
             ];
             foreach ($rows as $i => $row) {
@@ -698,9 +678,9 @@ class Module_cms_comcode_pages
                 $translations_found = [];
                 foreach ($langs as $_lang => $language_full_name) {
                     foreach (['comcode_custom', 'comcode'] as $page_type) {
-                        foreach ((($row['zone'] == '') && (get_option('single_public_zone') == '1')) ? ['', 'site'] : [$row['zone']] as $_zone) {
+                        foreach ((($row['the_zone'] == '') && (get_option('single_public_zone') == '1')) ? ['', 'site'] : [$row['the_zone']] as $_zone) {
                             foreach (array_unique([get_custom_file_base(), get_file_base()]) as $file_base) {
-                                $test_path = $file_base . (($_zone == '') ? '' : ('/' . $_zone)) . '/pages/' . $page_type . '/' . $_lang . '/' . $row['page'] . '.txt';
+                                $test_path = $file_base . (($_zone == '') ? '' : ('/' . $_zone)) . '/pages/' . $page_type . '/' . $_lang . '/' . $row['the_page'] . '.txt';
                                 if (is_file($test_path)) {
                                     $translations_found[$_lang] = filemtime($test_path);
                                     continue 4;
@@ -716,43 +696,43 @@ class Module_cms_comcode_pages
                 }
             }
 
-            $view_url = build_url(['page' => $row['page']], $row['zone']);
+            $view_url = build_url(['page' => $row['the_page']], $row['the_zone']);
             $edit_url = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => $row['page_link'], 'lang' => $lang], '_SELF');
-            $clone_url = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => /*new page-link only has zone specified initially*/$row['zone'] . ':', 'restore_from_path' => $row['page_path'], 'lang' => $lang], '_SELF');
+            $clone_url = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => /*new page-link only has zone specified initially*/$row['the_zone'] . ':', 'restore_from_path' => $row['page_path'], 'lang' => $lang], '_SELF');
 
             $page_path = $row['page_path'];
 
             $wrappable_page_link__tempcode = do_template('COMCODE_TELETYPE', ['_GUID' => 'bf4dbed562e189c84aa33c17d06c2791', 'CONTENT' => $row['page_link']]);
             if (get_value('disable_comcode_page_order') !== '1') {
-                if (($row['order'] !== null) && ($row['order'] != ORDER_AUTOMATED_CRITERIA)) {
-                    $wrappable_page_link__tempcode->attach(escape_html(' (' . do_lang('ORDER') . ' #' . integer_format($row['order']) . ')'));
+                if (($row['p_order'] !== null) && ($row['p_order'] != ORDER_AUTOMATED_CRITERIA)) {
+                    $wrappable_page_link__tempcode->attach(escape_html(' (' . do_lang('ORDER') . ' #' . integer_format($row['p_order']) . ')'));
                 }
             }
             $page_hyperlink = hyperlink($edit_url, escape_html($row['page_title']), false, false, protect_from_escaping($wrappable_page_link__tempcode));
 
-            $zone_name = $row['zone'];
+            $zone_name = $row['the_zone'];
 
             $page__tempcode = do_template('COMCODE_TELETYPE', [
                 '_GUID' => '56e1af60e09524c20fc62dd55cda1eb9',
-                'CONTENT' => escape_html($row['page']),
+                'CONTENT' => escape_html($row['the_page']),
             ]);
 
-            if ($row['submitter'] === null) {
+            if ($row['p_submitter'] === null) {
                 $username = do_lang('UNKNOWN');
             } else {
-                $username = protect_from_escaping($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['submitter']));
+                $username = protect_from_escaping($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['p_submitter']));
             }
 
-            $raw_edit_date = $row['edit_date'];
+            $raw_edit_date = $row['p_edit_date'];
             $edit_date = make_string_tempcode(escape_html(get_timezoned_date($raw_edit_date, false)));
             $edit_date->attach(' &ndash; ');
             $edit_date->attach(do_lang_tempcode('_AGO', escape_html(display_time_period(time() - $raw_edit_date))));
             $edit_date__tempcode = do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb728', 'TITLE' => protect_from_escaping($edit_date), 'CONTENT' => date('Y-m-d', $raw_edit_date)]);
 
-            if ($row['validated'] === null) {
+            if ($row['p_validated'] === null) {
                 $validated = do_lang_tempcode('YES');
             } else {
-                $validated = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                $validated = ($row['p_validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
 
             $actions = do_template('COMCODE_PAGE_EDIT_ACTIONS', [

@@ -301,15 +301,12 @@ class Module_admin_aggregate_types extends Standard_crud_module
         if (strpos($current_ordering, ' ') === false) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
-            'aggregate_label' => do_lang_tempcode('TITLE'),
+            'aggregate_label' => do_lang_tempcode('LABEL'),
             'aggregate_type' => do_lang_tempcode('TYPE'),
-            'add_time' => do_lang_tempcode('DATE'),
+            'add_time' => do_lang_tempcode('TIME'),
         ];
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('aggregate_type_instance', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('LABEL'),
@@ -320,7 +317,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

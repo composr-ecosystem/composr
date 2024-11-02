@@ -83,6 +83,9 @@ class Hook_content_meta_aware_calendar_type extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'count_entries' => '(SELECT COUNT(*) FROM ' . get_table_prefix() . 'calendar_events e WHERE e.e_type=r.id)'
+            ],
 
             'seo_type_code' => 'calendar_type',
 

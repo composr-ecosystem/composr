@@ -82,6 +82,9 @@ class Hook_resource_meta_aware_aggregate_type_instance extends Hook_CMA
             'edit_time_field' => 'edit_time',
             'date_field' => 'add_time',
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'aggregate_type' => null,
+            ],
 
             'seo_type_code' => null,
 

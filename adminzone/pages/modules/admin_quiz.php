@@ -501,14 +501,9 @@ class Module_admin_quiz
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
         $sortables = ['q_time' => do_lang_tempcode('DATE')];
-        $test = explode(' ', get_param_string('sort', 'q_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        $current_ordering = get_param_string('sort', 'q_time DESC', INPUT_FILTER_GET_COMPLEX);
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('quiz', $current_ordering);
+
         $where = [];
         if ($id !== null) {
             $where['q_quiz_id'] = $id;
@@ -518,7 +513,7 @@ class Module_admin_quiz
             $where['q_member'] = $member_id;
         }
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', $where);
-        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz_id', ['e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.q_name', 'q.q_type'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz_id', ['e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.q_name', 'q.q_type'], $where, 'ORDER BY ' . str_replace('r.', '', $sql_sort), $max, $start);
         if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }

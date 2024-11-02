@@ -1583,4 +1583,19 @@ class Forum_driver_ipb3 extends Forum_driver_base
         $this->MEMBER_ROWS_CACHED[$member_id] = array_key_exists(0, $rows) ? $rows[0] : null;
         return $this->MEMBER_ROWS_CACHED[$member_id];
     }
+
+    /**
+     * Returns the SQL query to use in an ORDER BY when sorting by a member (actually, username, but we only know the ID).
+     *
+     * @param  ID_TEXT $field The name of the r.* field containing the member ID
+     * @param  boolean $use_displayname Whether we want the display name instead of the username
+     * @return ?string The SQL query (null: this driver does not support sorting by member)
+     */
+    public function get_username_sort_query(string $field, bool $use_displayname = false) : ?string
+    {
+        if ($use_displayname) {
+            return '(SELECT members_display_name FROM ' . $this->db->table_prefix . 'members m WHERE m.member_id=r.' . $field . ')';
+        }
+        return '(SELECT name FROM ' . $this->db->table_prefix . 'members m WHERE m.member_id=r.' . $field . ')';
+    }
 }

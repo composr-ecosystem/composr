@@ -82,6 +82,12 @@ class Hook_resource_meta_aware_usergroup_subscription extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                's_price' => null,
+                's_length' => null,
+                's_group_id' => null,
+                's_enabled' => null,
+            ],
 
             'seo_type_code' => null,
 

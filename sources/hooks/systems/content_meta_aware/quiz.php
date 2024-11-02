@@ -84,6 +84,9 @@ class Hook_content_meta_aware_quiz extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => 'q_add_date',
             'validated_field' => 'q_validated',
+            'additional_sort_fields' => [
+                'q_type' => null,
+            ],
 
             'seo_type_code' => null,
 

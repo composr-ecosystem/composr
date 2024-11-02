@@ -78,6 +78,7 @@ class Hook_resource_meta_aware_menu_item extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => null,
 
             'seo_type_code' => null,
 

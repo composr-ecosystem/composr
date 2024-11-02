@@ -258,23 +258,13 @@ class Module_cms_calendar extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'e_title ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             'e_title' => do_lang_tempcode('TITLE'),
-            'e_start_year,e_start_month,e_start_day,e_start_hour,e_start_minute' => do_lang_tempcode('DATE_TIME'),
+            'start_time' => do_lang_tempcode('DATE_TIME'),
             'e_type' => do_lang_tempcode('TYPE'),
             'validated' => do_lang_tempcode('VALIDATED'),
         ];
-        if (($sortable == 'e_start_year,e_start_month,e_start_day,e_start_hour,e_start_minute') && ($sort_order == 'DESC')) {
-            $sortable = 'e_start_year DESC,e_start_month DESC,e_start_day DESC,e_start_hour DESC,e_start_minute';
-        } else {
-            if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-                log_hack_attack_and_exit('ORDERBY_HACK');
-            }
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('event', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
@@ -287,7 +277,7 @@ class Module_cms_calendar extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_lowrange_content', 'cms_calendar') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, (($only_owned === null) ? [] : ['e_submitter' => $only_owned]));
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, (($only_owned === null) ? [] : ['e_submitter' => $only_owned]));
         $types = [];
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
@@ -1512,16 +1502,11 @@ class Module_cms_calendar_cat extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 't_title ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             't_title' => do_lang_tempcode('TITLE'),
+            'count_entries' => do_lang_tempcode('COUNT_TOTAL'),
         ];
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('calendar_type', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
@@ -1531,7 +1516,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
 
         $fields = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

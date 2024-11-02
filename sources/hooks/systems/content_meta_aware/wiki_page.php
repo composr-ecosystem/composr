@@ -82,6 +82,7 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
             'edit_time_field' => 'edit_date',
             'date_field' => 'add_date',
             'validated_field' => null,
+            'additional_sort_fields' => null,
 
             'seo_type_code' => 'wiki_page',
 

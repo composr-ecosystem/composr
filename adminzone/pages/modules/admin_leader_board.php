@@ -197,22 +197,16 @@ class Module_admin_leader_board extends Standard_crud_module
         $hr[] = do_lang_tempcode('ACTIONS');
 
         $current_ordering = get_param_string('sort', 'lb_title ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             'lb_title' => do_lang_tempcode('TITLE'),
         ];
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('leader_board', $current_ordering);
 
         $header_row = results_header_row($hr, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

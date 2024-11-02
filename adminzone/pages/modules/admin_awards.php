@@ -255,7 +255,6 @@ class Module_admin_awards extends Standard_crud_module
         if (strpos($current_ordering, ' ') === false) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             'a_title' => do_lang_tempcode('TITLE'),
             'a_content_type' => do_lang_tempcode('CONTENT_TYPE'),
@@ -263,15 +262,13 @@ class Module_admin_awards extends Standard_crud_module
         if (addon_installed('points')) {
             $sortables['a_points'] = do_lang_tempcode('POINTS');
         }
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('award_type', $current_ordering);
 
         $header_row = results_header_row($hr, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

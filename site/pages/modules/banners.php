@@ -315,15 +315,11 @@ class Module_banners
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'name ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             'name' => do_lang_tempcode('CODENAME'),
             'b_type' => do_lang_tempcode('BANNER_TYPE'),
             'deployment_agreement' => do_lang_tempcode('DEPLOYMENT_AGREEMENT'),
-            //'campaign_remaining' => do_lang_tempcode('HITS_ALLOCATED'),
+            'campaign_remaining' => do_lang_tempcode('HITS_ALLOCATED'),
             'display_likelihood' => do_lang_tempcode('DISPLAY_LIKELIHOOD'),
             'expiry_date' => do_lang_tempcode('EXPIRY_DATE'),
             'add_date' => do_lang_tempcode('ADDED'),
@@ -331,9 +327,7 @@ class Module_banners
         if (addon_installed('validation')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('banner', $current_ordering);
 
         $hr = [
             do_lang_tempcode('CODENAME'),
@@ -362,7 +356,7 @@ class Module_banners
         }
         $max = get_param_integer('banner_max', 20);
         $start = get_param_integer('banner_start', 0);
-        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], ($only_owned === null) ? [] : ['submitter' => $only_owned], 'ORDER BY ' . $current_ordering, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], ($only_owned === null) ? [] : ['submitter' => $only_owned], 'ORDER BY ' . str_replace('r.', '', $sql_sort), $max, $start);
         foreach ($rows as $row) {
             $view_url = build_url($url_map + ['source' => $row['name']], '_SELF');
 

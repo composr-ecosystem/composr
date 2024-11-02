@@ -359,15 +359,10 @@ class Module_admin_site_messaging
             'm_start_date_time' => do_lang_tempcode('START'),
             'm_end_date_time' => do_lang_tempcode('EXPIRY_DATE'),
         ];
-        $test = explode(' ', get_param_string('sort', 'id DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-        $rows = $GLOBALS['SITE_DB']->query_select('site_messages', ['id', 'm_type', 'm_title', 'm_start_date_time', 'm_end_date_time'], [], ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $current_ordering = get_param_string('sort', 'id ASC', INPUT_FILTER_GET_COMPLEX);
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('site_message', $current_ordering);
+
+        $rows = $GLOBALS['SITE_DB']->query_select('site_messages', ['id', 'm_type', 'm_title', 'm_start_date_time', 'm_end_date_time'], [], 'ORDER BY ' . str_replace('r.', '', $sql_sort), $max, $start);
 
         // Build results table
         $result_entries = new Tempcode();

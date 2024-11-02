@@ -813,12 +813,9 @@ class Module_admin_zones
 
         require_code('templates_results_table');
 
-        $current_ordering = 'name ASC';
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
+        $current_ordering = 'zone_name ASC';
         $sortables = [];
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('zone', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('NAME'),

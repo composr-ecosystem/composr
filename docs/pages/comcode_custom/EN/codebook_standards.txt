@@ -342,6 +342,20 @@ These rules are very standard, but if broken then code-overriding may not work c
 | Remember to sort things. Sometimes this needs doing in PHP code, and sometimes it needs doing in your queries ([tt]ORDER BY[/tt]). If doing it in PHP code consider you usually will want to do a "natural" sort, to consider whether case-insensitivity needs enabling, and to consider Unicode-safe sorting (handled by the [tt]cms_mb_*sort[/tt] functions). Typically you should order data records by date, and never by ID (because IDs may not be sequential, especially on exotic database backends). You should never assume that data comes out of the database in the same order as it goes in.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use content sorting standards when sorting resources[/color]
+| Stability: so obscure sorting works (e.g. the [tt]main_multi_content[/tt] block)
+| All development
+| Manually
+| When sorting resources which have a resource or content hook, use the [tt]process_sorting_params[/tt] function to parse and validate sorting. Relevant content and resource hooks should define all sortable fields not already defined by [tt]handle_abstract_sorting[/tt] (or if they must override the default SQL) in their [tt]additional_sort_fields[/tt] property. These fields should be defined as a map of sortable name to its custom sorting SQL (null: key is the name of the field, and we want to sort directly on that) (direction is suffixed automatically) (field names for the relevant table should start with [tt]r.[/tt]). Value can also be a map of ASC and DESC to define different custom SQL for ASC versus DESC sorting (you will need to explicitly define the direction in the values in this case), or to leave blank if a module handles the sorting itself. One of the values returned from [tt]process_sorting_params[/tt] is the SQL sorting query which can be used directly in a CRUD module's [tt]get_entry_rows[/tt]. If using it directly on a query, and the query does not map the resource table to [tt]r[/tt], then you will need to do [tt]str_replace('r.', '', $sql_sort)[/tt] on the sorting SQL query when putting it on the [tt]end[/tt] parameter (do not forget '[tt]ORDER BY [/tt]' before it!).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Never use SQL queries as names of sortables[/color]
+| Security
+| All development
+| Manually
+| Never use raw SQL queries as the name of sortables (simple field names are allowed). This exposes the query in the URL and is a security risk. Instead, make a custom name and define it, along with your SQL, in the resource or content hook's [tt]additional_sort_fields[/tt] property.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Remember to apply pagination wherever appropriate[/color]
 | Performance
 | All development

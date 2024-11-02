@@ -86,6 +86,9 @@ class Hook_content_meta_aware_video extends Hook_CMA
             'edit_time_field' => 'edit_date',
             'date_field' => 'add_date',
             'validated_field' => 'validated',
+            'additional_sort_fields' => [
+                'url' => null,
+            ],
 
             'seo_type_code' => 'video',
 

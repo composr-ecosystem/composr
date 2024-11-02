@@ -82,6 +82,13 @@ class Hook_resource_meta_aware_custom_comcode_tag extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'tag_title' => null,
+                'tag_dangerous_tag' => null,
+                'tag_block_tag' => null,
+                'tag_textual_tag' => null,
+                'tag_enabled' => null,
+            ],
 
             'seo_type_code' => null,
 

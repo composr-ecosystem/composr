@@ -1614,14 +1614,11 @@ class Module_admin_newsletter extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'title ASC', INPUT_FILTER_GET_COMPLEX);
-        list($sortable, $sort_order) = [substr($current_ordering, 0, strrpos($current_ordering, ' ')), substr($current_ordering, strrpos($current_ordering, ' ') + 1)];
         $sortables = [
             'title' => do_lang_tempcode('TITLE'),
+            'count_subscribers' => do_lang_tempcode('COUNT_MEMBERS'),
         ];
-        $sortables['(SELECT COUNT(*) FROM ' . get_table_prefix() . 'newsletter_subscribers n JOIN ' . get_table_prefix() . 'newsletter_subscribe s ON n.id=s.newsletter_id WHERE code_confirm=0)'] = do_lang_tempcode('COUNT_MEMBERS');
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('newsletter', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
@@ -1631,12 +1628,12 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $num_readers = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers n JOIN ' . get_table_prefix() . 'newsletter_subscribe s ON n.id=s.newsletter_id', 'COUNT(*)', ['code_confirm' => 0]);
-
+            $_num_readers = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) AS num_readers FROM {prefix}newsletter_subscribe s JOIN {prefix}newsletter_subscribers n ON n.email=s.email WHERE n.code_confirm=0 AND s.newsletter_id={newsletter_id}', ['newsletter_id' => $row['id']]);
+            $num_readers = $_num_readers[0]['num_readers'];
             $result_entries->attach(results_entry([get_translated_text($row['title']), integer_format($num_readers, 0), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 

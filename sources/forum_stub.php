@@ -644,4 +644,13 @@ abstract class Forum_driver_base
         cms_eatcookie($pass_cookie_name);
         unset($_COOKIE[$pass_cookie_name]);
     }
+
+    /**
+     * Returns the SQL query to use in an ORDER BY when sorting by a member (actually, username, but we only know the ID).
+     *
+     * @param  ID_TEXT $field The name of the r.* field containing the member ID
+     * @param  boolean $use_displayname Whether we want the display name instead of the username
+     * @return ?string The SQL query (null: this driver does not support sorting by member)
+     */
+    abstract public function get_username_sort_query(string $field, bool $use_displayname = false) : ?string;
 }

@@ -251,10 +251,6 @@ class Module_cms_news extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             'title' => do_lang_tempcode('TITLE'),
             'news_category' => do_lang_tempcode('MAIN_CATEGORY'),
@@ -262,12 +258,7 @@ class Module_cms_news extends Standard_crud_module
             'news_views' => do_lang_tempcode('COUNT_VIEWS'),
             'submitter' => do_lang_tempcode('metadata:OWNER'),
         ];
-        if (addon_installed('validation')) {
-            $sortables['validated'] = do_lang_tempcode('VALIDATED');
-        }
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('news', $current_ordering);
 
         $fh = [do_lang_tempcode('TITLE'), do_lang_tempcode('MAIN_CATEGORY')];
         $fh[] = do_lang_tempcode('ADDED');
@@ -282,7 +273,7 @@ class Module_cms_news extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_highrange_content', 'cms_news') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
         $news_cat_titles = [];
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
@@ -967,14 +958,11 @@ class Module_cms_news_cat extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'nc_title ASC', INPUT_FILTER_GET_COMPLEX);
-        list($sortable, $sort_order) = [substr($current_ordering, 0, strrpos($current_ordering, ' ')), substr($current_ordering, strrpos($current_ordering, ' ') + 1)];
         $sortables = [
             'nc_title' => do_lang_tempcode('TITLE'),
+            'entries_count' => do_lang_tempcode('COUNT_TOTAL'),
         ];
-        $sortables['((SELECT COUNT(*) FROM ' . get_table_prefix() . 'news WHERE news_category=r.id) + (SELECT COUNT(*) FROM ' . get_table_prefix() . 'news_category_entries WHERE news_entry_category=r.id))'] = do_lang_tempcode('COUNT_TOTAL');
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('news_category', $current_ordering);
 
         $columns = [];
         $columns[] = do_lang_tempcode('TITLE');
@@ -988,7 +976,7 @@ class Module_cms_news_cat extends Standard_crud_module
 
         $fields = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

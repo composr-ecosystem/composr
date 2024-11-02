@@ -165,18 +165,13 @@ class Module_admin_email_log
             disable_php_memory_limit();
         }
         $sortables = ['m_date_and_time' => do_lang_tempcode('DATE_TIME'), 'm_to_name' => do_lang_tempcode('FROM'), 'm_from_name' => do_lang_tempcode('TO'), 'm_subject' => do_lang_tempcode('SUBJECT')];
-        $test = explode(' ', get_param_string('sort', 'm_date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        $current_ordering = get_param_string('sort', 'm_date_and_time DESC', INPUT_FILTER_GET_COMPLEX);
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('mail', $current_ordering);
+
         require_code('templates_results_table');
         $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('SUBJECT')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['id', 'm_date_and_time', 'm_queued', 'm_from_email', 'm_from_name', 'm_to_email', 'm_to_name', 'm_subject'], [], 'ORDER BY  ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['id', 'm_date_and_time', 'm_queued', 'm_from_email', 'm_from_name', 'm_to_email', 'm_to_name', 'm_subject'], [], 'ORDER BY  ' . str_replace('r.', '', $sql_sort), $max, $start);
         foreach ($rows as $row) {
             send_http_output_ping();
 

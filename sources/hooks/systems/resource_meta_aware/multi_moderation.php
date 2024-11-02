@@ -82,6 +82,10 @@ class Hook_resource_meta_aware_multi_moderation extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'mm_pin_state' => null,
+                'mm_open_state' => null,
+            ],
 
             'seo_type_code' => null,
 

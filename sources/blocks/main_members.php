@@ -295,7 +295,7 @@ PHP;
         }
 
         inform_non_canonical_parameter($block_id . '_sort');
-        $sort = get_param_string($block_id . '_sort', array_key_exists('sort', $map) ? $map['sort'] : 'm_join_time DESC');
+        $current_ordering = get_param_string($block_id . '_sort', array_key_exists('sort', $map) ? $map['sort'] : 'm_join_time DESC');
         $sortables = [
             'm_username' => do_lang_tempcode('USERNAME'),
             'm_cache_num_posts' => do_lang_tempcode('COUNT_POSTS'),
@@ -303,40 +303,16 @@ PHP;
             'm_last_visit_time' => do_lang_tempcode('LAST_VISIT_TIME'),
             'm_profile_views' => do_lang_tempcode('PROFILE_VIEWS'),
             'random' => do_lang_tempcode('RANDOM'),
-            'm_total_sessions' => do_lang_tempcode('LOGIN_FREQUENCY'),
+            'total_sessions' => do_lang_tempcode('LOGIN_FREQUENCY'),
         ];
-        if (strpos($sort, ' ') === false) {
-            $sort .= ' ASC';
-        }
-        list($sortable, $sort_order) = explode(' ', $sort, 2);
-        switch ($sort) {
-            case 'random ASC':
-            case 'random DESC':
-                $sort = db_function('RAND') . ' ASC';
-                break;
-            case 'm_total_sessions ASC':
-                $sort = 'm_total_sessions/(' . strval(time()) . '-m_join_time) ASC';
-                break;
-            case 'm_total_sessions DESC':
-                $sort = 'm_total_sessions/(' . strval(time()) . '-m_join_time) DESC';
-                break;
-            case 'm_join_time':
-            case 'm_last_visit_time':
-                $sort .= ',' . 'id ' . $sort_order; // Also order by ID, in case lots joined at the same time
-                break;
-            default:
-                if (!isset($sortables[preg_replace('# (ASC|DESC)$#', '', $sort)])) {
-                    $sort = 'm_join_time DESC';
-                }
-                break;
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('member', $current_ordering, null, false);
 
         $sql = 'SELECT DISTINCT r.* FROM ';
         $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r';
         $main_sql .= $extra_join_sql;
         $main_sql .= ' WHERE ' . $where;
         $sql .= $main_sql;
-        $sql .= ' ORDER BY ' . $sort;
+        $sql .= ' ORDER BY ' . $sql_sort;
         $count_sql = 'SELECT COUNT(DISTINCT r.id) FROM ' . $main_sql;
 
         inform_non_canonical_parameter($block_id . '_max');

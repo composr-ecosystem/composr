@@ -182,14 +182,9 @@ class Module_cms_cns_groups extends Standard_crud_module
         $current_ordering = get_param_string('sort', $default_order, INPUT_FILTER_GET_COMPLEX);
         $sortables = [
             'g_name' => do_lang_tempcode('NAME'),
+            'g_open_membership' => do_lang_tempcode('OPEN_MEMBERSHIP'),
         ];
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('group', $current_ordering);
 
         $header_row = results_header_row([
             do_lang_tempcode('NAME'),
@@ -200,7 +195,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_private_club' => 1]);
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($count > 300 || (!has_privilege(get_member(), 'control_usergroups'))) ? ['g_group_lead_member' => get_member(), 'g_is_private_club' => 1] : ['g_is_private_club' => 1]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($count > 300 || (!has_privilege(get_member(), 'control_usergroups'))) ? ['g_group_lead_member' => get_member(), 'g_is_private_club' => 1] : ['g_is_private_club' => 1]);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

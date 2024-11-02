@@ -82,6 +82,10 @@ class Hook_resource_meta_aware_award_type extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'a_content_type' => null,
+                'a_points' => null,
+            ],
 
             'seo_type_code' => null,
 

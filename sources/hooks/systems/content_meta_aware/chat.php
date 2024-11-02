@@ -82,6 +82,12 @@ class Hook_content_meta_aware_chat extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                'messages' => [ // FUDGE: no SQL because cms_chat handles sorting
+                    'ASC' => '',
+                    'DESC' => '',
+                ],
+            ],
 
             'seo_type_code' => null,
 

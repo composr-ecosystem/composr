@@ -244,19 +244,14 @@ class Module_cms_chat
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
         $sortables = ['room_name' => do_lang_tempcode('CHATROOM_NAME'), 'messages' => do_lang_tempcode('MESSAGES')];
-        $test = explode(' ', either_param_string('sort', 'room_name DESC'));
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        $current_ordering = either_param_string('sort', 'room_name DESC');
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('chat', $current_ordering);
+
         require_code('templates_results_table');
         $header_row = results_header_row([do_lang_tempcode('CHATROOM_NAME'), do_lang_tempcode('CHATROOM_OWNER'), do_lang_tempcode('CHATROOM_LANG'), do_lang_tempcode('MESSAGES')], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', ['is_im' => 0]);
-        $sort_clause = ($sortable == 'room_name') ? ('ORDER BY room_name ' . $sort_order) : '';
+        $sort_clause = ($sortable == 'room_name') ? ' ORDER BY ' . str_replace('r.', '', $sql_sort) : '';
         $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['is_im' => 0], $sort_clause, $max, $start);
         if ($sortable == 'messages') {
             usort($rows, ['Module_cms_chat', '_sort_chat_browse_rows']);

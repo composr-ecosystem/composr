@@ -82,6 +82,9 @@ class Hook_resource_meta_aware_newsletter extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'additional_sort_fields' => [
+                 'count_subscribers' => '(SELECT COUNT(*) FROM ' . get_table_prefix() . 'newsletter_subscribe s JOIN ' . get_table_prefix() . 'newsletter_subscribers n ON n.email=s.email WHERE n.code_confirm=0 AND s.newsletter_id=r.id)',
+            ],
 
             'seo_type_code' => null,
 

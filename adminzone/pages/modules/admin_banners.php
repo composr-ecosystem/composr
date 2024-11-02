@@ -119,15 +119,9 @@ class Module_admin_banners
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
-        $sortables = ['name' => do_lang_tempcode('NAME'), 'add_date' => do_lang_tempcode('DATE_TIME')];
-        $test = explode(' ', get_param_string('sort', 'name ASC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        $sortables = ['name' => do_lang_tempcode('NAME'), 'add_date' => do_lang_tempcode('ADDED')];
+        $current_sorting = get_param_string('sort', 'name ASC', INPUT_FILTER_GET_COMPLEX);
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('banner', $current_sorting);
 
         $__sum = $GLOBALS['SITE_DB']->query_select_value('banners', 'SUM(views_from)');
         $_sum = @intval($__sum);
@@ -144,7 +138,7 @@ class Module_admin_banners
         }
         $header_row = results_header_row($_header_row, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], [], '', $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], [], ' ORDER BY ' . str_replace('r.', '', $sql_sort), $max, $start);
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)');
         $result_entries = new Tempcode();
         foreach ($rows as $myrow) {

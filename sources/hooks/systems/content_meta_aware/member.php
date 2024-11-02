@@ -78,7 +78,7 @@ class Hook_content_meta_aware_member extends Hook_CMA
 
             'support_url_monikers' => (get_option('username_profile_links') == '0'),
 
-            'views_field' => null,
+            'views_field' => 'm_profile_views',
             'order_field' => null,
             'submitter_field' => 'id',
             'author_field' => null,
@@ -86,6 +86,11 @@ class Hook_content_meta_aware_member extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => 'm_join_time',
             'validated_field' => 'm_validated',
+            'additional_sort_fields' => [
+                'm_cache_num_posts' => null,
+                'm_last_visit_time' => null,
+                'total_sessions' => 'r.m_total_sessions/(' . strval(time()) . '-r.m_join_time)',
+            ],
 
             'seo_type_code' => null,
 

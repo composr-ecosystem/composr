@@ -173,17 +173,12 @@ class Module_cms_quiz extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'q_name ASC', INPUT_FILTER_GET_COMPLEX);
-        if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
             'q_name' => do_lang_tempcode('TITLE'),
             'q_type' => do_lang_tempcode('TYPE'),
+            'q_add_date' => do_lang_tempcode('DATE'),
         ];
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
+        list($sql_sort, $sort_order, $sortable) = process_sorting_params('quiz', $current_ordering);
 
         $_header_row = [
             do_lang_tempcode('TITLE'),
@@ -198,7 +193,7 @@ class Module_cms_quiz extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 

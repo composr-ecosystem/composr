@@ -82,6 +82,11 @@ class Hook_resource_meta_aware_site_message extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => 'm_validated',
+            'additional_sort_fields' => [
+                'm_type' => null,
+                'm_start_date_time' => null,
+                'm_end_date_time' => null,
+            ],
 
             'seo_type_code' => null,
 
