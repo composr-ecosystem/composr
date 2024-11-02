@@ -57,9 +57,20 @@ class Hook_endpoint_cms_homesite_personal_upgrader
         require_code('cms_homesite');
         require_code('cms_homesite_make_upgrader');
 
+        $from_version_dotted = get_param_string('from', $id); // From can be specified as ID
+
         $to_version_dotted = get_param_string('to', null);
         if ($to_version_dotted === null) {
             $to_version_dotted = get_latest_version_dotted();
+        }
+
+        // LEGACY: Cannot upgrade <11.alpha4 to 11.beta or higher; must first upgrade to 11.alpha4
+        if (($from_version_dotted !== null) && (strpos($from_version_dotted, '11.alpha') !== false) && ($from_version_dotted != '11.alpha4') && (($to_version_dotted === null) || strpos($to_version_dotted, '11.alpha') === false)) {
+            if ($id === '_LEGACY_') { // LEGACY
+                warn_exit(protect_from_escaping('You need to upgrade to 11 alpha4 first before upgrading to a later release. This is because changes made in the upgrader will corrupt your site if you immediately skip 11 alpha4. Please go to <a href="https://composr.app/news/view/releases/composr-11-alpha4.htm?blog=0">this news article</a> (Make a Composr upgrader box) to upgrade to 11 alpha4. After upgrading fully to 11 alpha4, run the upgrader again normally, and you should be able to then upgrade to the latest release.'));
+                exit();
+            }
+            return ['success' => false, 'error_details' => 'You need to upgrade to 11 alpha4 first before upgrading to a later release. This is because changes made in the upgrader will corrupt your site if you immediately skip 11 alpha4. Please go to <a href="https://composr.app/news/view/releases/composr-11-alpha4.htm?blog=0">this news article</a> (Make a Composr upgrader box) to upgrade to 11 alpha4. After upgrading fully to 11 alpha4, run the upgrader again normally, and you should be able to then upgrade to the latest release.'];
         }
 
         // Uh oh! We probably do not have a stable version up.
@@ -70,8 +81,6 @@ class Hook_endpoint_cms_homesite_personal_upgrader
             }
             return ['success' => false, 'error_details' => 'Internal Error: We do not know what version you want to upgrade to, and there are no stable versions in the system (which we use as the default). Please generate an upgrade file from ' . get_brand_base_url() . ', in the news article for the newest release. You can then use this in the upgrader when transferring across new / updated files. You may have to re-load the upgrader manually by going to baseurl/upgrader.php so you do not get this error again.'];
         }
-
-        $from_version_dotted = get_param_string('from', $id); // From can be specified as ID
 
         // LEGACY
         $addon_name_remap = [
