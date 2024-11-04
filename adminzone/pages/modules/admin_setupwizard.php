@@ -562,7 +562,7 @@ class Module_admin_setupwizard
             'apache_config_files',
             'code_editor',
             'helper_scripts',
-            'weather',
+            //'weather', // Requires an API key to run, and is quite niche, so let's leave it be
             'xml_fields',
             'users_online_block',
             'news_shared',
@@ -600,6 +600,7 @@ class Module_admin_setupwizard
             'user_mappr', // this will be downloaded as it is not bundled
             'facebook_support', // this will be downloaded as it is not bundled
             'hybridauth', // this will be downloaded as it is not bundled
+            'karma', // This will be downloaded as it is not bundled
         ];
         if (GOOGLE_APPENGINE) {
             $addon_list_advanced_off_by_default[] = 'google_appengine';
