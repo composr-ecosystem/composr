@@ -33,6 +33,10 @@ class Hook_ajax_tree_choose_download_category
      */
     public function run(?string $id, array $options, ?string $default = null) : string
     {
+        if (!addon_installed('downloads')) {
+            return '<result></result>';
+        }
+
         require_code('downloads');
         require_lang('downloads');
 
@@ -106,6 +110,10 @@ class Hook_ajax_tree_choose_download_category
      */
     public function simple(?string $id, array $options, ?string $it = null) : object
     {
+        if (!addon_installed('downloads')) {
+            return new Tempcode();
+        }
+
         require_code('downloads');
 
         $compound_list = array_key_exists('compound_list', $options) ? $options['compound_list'] : false;

@@ -33,6 +33,10 @@ class Hook_ajax_tree_choose_wiki_page
      */
     public function run(?string $id, array $options, ?string $default = null) : string
     {
+        if (!addon_installed('wiki')) {
+            return '<result></result>';
+        }
+
         require_code('wiki');
         require_lang('wiki');
 
@@ -115,6 +119,10 @@ class Hook_ajax_tree_choose_wiki_page
      */
     public function simple(?string $id, array $options, ?string $it = null) : object
     {
+        if (!addon_installed('wiki')) {
+            return new Tempcode();
+        }
+
         require_lang('wiki');
         require_code('wiki');
 

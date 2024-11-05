@@ -33,6 +33,10 @@ class Hook_ajax_tree_choose_download
      */
     public function run(?string $id, array $options, ?string $default = null) : string
     {
+        if (!addon_installed('downloads')) {
+            return '<result></result>';
+        }
+
         require_code('downloads');
 
         if ((!is_numeric($id)) && ($id != '')) { // This code is actually for the homesite, for the addon directory
@@ -179,6 +183,10 @@ class Hook_ajax_tree_choose_download
      */
     public function simple(?string $id, array $options, ?string $it = null) : object
     {
+        if (!addon_installed('downloads')) {
+            return new Tempcode();
+        }
+
         require_code('downloads');
 
         $only_owned = array_key_exists('only_owned', $options) ? (($options['only_owned'] === null) ? null : intval($options['only_owned'])) : null;

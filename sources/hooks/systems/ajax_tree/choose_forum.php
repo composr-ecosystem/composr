@@ -33,6 +33,10 @@ class Hook_ajax_tree_choose_forum
      */
     public function run(?string $id, array $options, ?string $default = null) : string
     {
+        if (!addon_installed('cns_forum')) {
+            return '<result></result>';
+        }
+
         require_code('cns_forums');
         require_code('cns_forums2');
 
@@ -151,6 +155,10 @@ class Hook_ajax_tree_choose_forum
      */
     public function simple(?string $id, array $options, ?string $it = null) : object
     {
+        if (!addon_installed('cns_forum')) {
+            return new Tempcode();
+        }
+
         require_code('cns_forums2');
 
         $compound_list = array_key_exists('compound_list', $options) ? $options['compound_list'] : false;

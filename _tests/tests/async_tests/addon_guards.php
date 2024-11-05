@@ -55,7 +55,7 @@ class addon_guards_test_set extends cms_test_case
 
     public function testAddonGuardsCohesion()
     {
-        $info = 'testAddonGuardsCohesion is intentionally an aggressive test. But compliance is expected to ensure utmost Composr stability in the event of orphaned addon files existing. Consider reviewing the defined exceptions periodically.';
+        $info = 'testAddonGuardsCohesion: This is an aggressive test; consider reviewing the defined exceptions periodically for accuracy.';
         $this->dump($info, 'INFO');
 
         require_code('files2');
@@ -64,12 +64,8 @@ class addon_guards_test_set extends cms_test_case
 
         // Full file exceptions
         $exceptions = [
+            // Purely informational
             '(sources|sources_custom)/hooks/systems/addon_registry/\w+\.php',
-            '(sources|sources_custom)/hooks/systems/ajax_tree/\w+\.php',
-
-            // These contain no code
-            '(sources|sources_custom)/hooks/systems/disposable_values/\w+\.php',
-            '(sources|sources_custom)/hooks/systems/non_active_urls/\w+\.php',
 
             // Not an actual PHP script
             'data_custom/errorlog.php',
@@ -86,7 +82,7 @@ class addon_guards_test_set extends cms_test_case
         */
         $class_controllers = [
             'Hook_\w+' => 'info',
-            'Module_\w+' => 'pre_run', // We do not want get_entry_points because that will mess things up when pre_run is not defined
+            'Module_\w+' => 'pre_run', // We do not want get_entry_points because that will mess things up when pre_run is not defined; check get_entry_points manually
 
             'Hook_actionlog_\w+' => 'get_handlers',
             'Hook_commandr_fs_\w+' => 'is_active',
