@@ -75,6 +75,10 @@ class Hook_commandr_fs_home
      */
     public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $new_dir_name = filter_naughty($new_dir_name);
         $path = get_custom_file_base() . '/uploads/filedump';
         foreach ($meta_dir as $meta_dir_section) {
@@ -102,6 +106,10 @@ class Hook_commandr_fs_home
      */
     public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $dir_name = filter_naughty($dir_name);
         $path = get_custom_file_base() . '/uploads/filedump';
         foreach ($meta_dir as $meta_dir_section) {
@@ -131,6 +139,10 @@ class Hook_commandr_fs_home
      */
     public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $file_name = filter_naughty($file_name);
         $path = get_custom_file_base() . '/uploads/filedump';
         foreach ($meta_dir as $meta_dir_section) {
@@ -157,6 +169,10 @@ class Hook_commandr_fs_home
      */
     public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $file_name = filter_naughty($file_name);
         $path = get_custom_file_base() . '/uploads/filedump';
         foreach ($meta_dir as $meta_dir_section) {
@@ -182,6 +198,10 @@ class Hook_commandr_fs_home
      */
     public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $file_name = filter_naughty($file_name);
         $path = get_custom_file_base() . '/uploads/filedump';
         foreach ($meta_dir as $meta_dir_section) {

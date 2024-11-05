@@ -32,6 +32,10 @@ class Hook_sitemap_stats_category extends Hook_sitemap_base
      */
     public function handles_page_link(string $page_link, int $options) : int
     {
+        if (!addon_installed('stats')) {
+            return SITEMAP_NODE_NOT_HANDLED;
+        }
+
         $matches = [];
         if (preg_match('#^([^:]*):admin_stats(:(browse|category|graph)|$)#', $page_link, $matches) != 0) {
             $zone = $matches[1];

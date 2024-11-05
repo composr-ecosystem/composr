@@ -588,6 +588,10 @@ PHP;
      */
     public function letters_to_numbers(string $val) : int
     {
+        if (!addon_installed('visualisation')) {
+            return 0;
+        }
+
         $letters = [
             'A',
             'B',

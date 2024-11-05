@@ -193,6 +193,10 @@ class Hook_content_meta_aware_news_category extends Hook_CMA
  */
 function generate_news_category_image_url(array $row) : string
 {
+    if (!addon_installed('news')) {
+        return '';
+    }
+
     require_code('news');
     return get_news_category_image_url($row['nc_img']);
 }

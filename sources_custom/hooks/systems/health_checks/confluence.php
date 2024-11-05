@@ -56,6 +56,10 @@ class Hook_health_check_confluence extends Hook_Health_Check
      */
     public function testConfluenceConnection(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
+        if (!addon_installed('confluence')) {
+            $this->log('Skipped; confluence not installed.');
+            return;
+        }
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $this->log('Skipped; we are running from installer.');
             return;

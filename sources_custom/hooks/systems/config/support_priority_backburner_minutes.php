@@ -21,9 +21,9 @@ class Hook_config_support_priority_backburner_minutes
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'SUPPORT_PRIORITY_BACKBURNER_MINUTES',

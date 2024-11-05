@@ -26,9 +26,9 @@ class Hook_config_chat_max_messages_to_show
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'CHAT_MAX_MESSAGES_TO_SHOW',

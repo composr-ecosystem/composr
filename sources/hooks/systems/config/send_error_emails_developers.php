@@ -26,9 +26,9 @@ class Hook_config_send_error_emails_developers
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'SEND_ERROR_EMAILS_DEVELOPERS',

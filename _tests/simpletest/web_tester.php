@@ -636,6 +636,7 @@ class WebTestCase extends SimpleTestCase
      */
     public function ignoreErrors()
     {
+        return;
         $this->ignore_errors = true;
     }
 

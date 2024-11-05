@@ -26,9 +26,9 @@ class Hook_config_recaptcha_site_key
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'RECAPTCHA_SITE_KEY',

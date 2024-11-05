@@ -30,6 +30,10 @@ class Hook_sw_banners
      */
     public function get_current_settings() : array
     {
+        if (!addon_installed('banners')) {
+            return [];
+        }
+
         $settings = [];
         $settings['have_default_banners_donation'] = has_predefined_content('banners', 'have_default_banners_donation') ? '1' : '0';
         $settings['have_default_banners_advertising'] = has_predefined_content('banners', 'have_default_banners_advertising') ? '1' : '0';

@@ -26,9 +26,9 @@ class Hook_config_header_classic_text_colour
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'HEADER_CLASSIC_TEXT_COLOUR',

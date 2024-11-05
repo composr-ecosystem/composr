@@ -178,6 +178,10 @@ class Hook_content_meta_aware_quiz extends Hook_CMA
  */
 function generate_quiz_content_type_label(array $row) : object
 {
+    if (!addon_installed('quizzes')) {
+        return new Tempcode();
+    }
+
     if (!array_key_exists('q_type', $row)) {
         return do_lang_tempcode('quiz:QUIZ');
     }
@@ -192,6 +196,10 @@ function generate_quiz_content_type_label(array $row) : object
  */
 function generate_quiz_content_type_universal_label(array $row) : string
 {
+    if (!addon_installed('quizzes')) {
+        return 'Quiz';
+    }
+
     $type = 'Quiz';
     if (!array_key_exists('q_type', $row)) {
         return $type;

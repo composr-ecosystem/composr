@@ -194,6 +194,10 @@ class Hook_content_meta_aware_download extends Hook_CMA
  */
 function generate_download_entry_image_url(array $row) : string
 {
+    if (!addon_installed('downloads')) {
+        return '';
+    }
+
     if ($row['rep_image'] != '') {
         $image_url = $row['rep_image'];
         if (url_is_local($image_url)) {

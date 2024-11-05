@@ -26,9 +26,9 @@ class Hook_config_tax_api_service
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         $tax_hooks = find_all_hooks('systems', 'ecommerce_tax');
         return [

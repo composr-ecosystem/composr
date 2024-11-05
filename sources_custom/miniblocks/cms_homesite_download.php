@@ -13,10 +13,74 @@
  * @package    cms_homesite
  */
 
-if (!function_exists('do_release')) {
+i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
+
+class Miniblock_cms_homesite_download
+{
+
     /**
-     * Get template variables for a release.
+     * Execute the miniblock.
      *
+     * @return Tempcode The UI
+     */
+    public function run()
+    {
+        if (!addon_installed('cms_homesite')) {
+            return do_template('RED_ALERT', ['_GUID' => 'o107q0s4tzjnq3djhc3e38wwfdywx1h7', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
+        }
+
+        if (!addon_installed('downloads')) {
+            return do_template('RED_ALERT', ['_GUID' => 'gal8hu40ptk3dlran4bwiodqrpb41jqs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
+        }
+
+        require_lang('cms_homesite');
+        require_code('cms_homesite');
+        require_lang('downloads');
+
+        // Put together details about releases
+        $latest_version_pretty = get_latest_version_pretty();
+        if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
+            $latest_version_pretty = '1337';
+        }
+        $releases_tpl_map = [];
+        $release_quick = null;
+        $release_manual = null;
+        $latest = null;
+        if ($latest_version_pretty !== null) {
+            $latest = $latest_version_pretty;
+
+            $release_quick = $this->do_release($latest, 'quick', 'QUICK_');
+            $release_manual = $this->do_release($latest, 'manual', 'MANUAL_');
+
+            if ($release_quick !== null) {
+                $releases_tpl_map += $release_quick;
+            }
+            if ($release_manual !== null) {
+                $releases_tpl_map += $release_manual;
+            }
+        }
+
+        $release_bleedingquick = $this->do_release(null, 'bleeding-edge, quick', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
+        $release_bleedingmanual = $this->do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
+
+        if ($release_bleedingquick !== null) {
+            $releases_tpl_map += $release_bleedingquick;
+        }
+        if ($release_bleedingmanual !== null) {
+            $releases_tpl_map += $release_bleedingmanual;
+        }
+
+        if (empty($releases_tpl_map)) {
+            $latest = do_lang('NA');
+            $releases_tpl = paragraph(do_lang_tempcode('CMS_BETWEEN_VERSIONS'));
+        } else {
+            $releases_tpl = do_template('CMS_DOWNLOAD_RELEASES', $releases_tpl_map);
+        }
+
+        return do_template('CMS_DOWNLOAD_BLOCK', ['_GUID' => '4c4952e40ed96ab52461adce9989832d', 'RELEASES' => $releases_tpl, 'VERSION' => $latest]);
+    }
+
+    /**
      * @param  ?SHORT_TEXT $version_pretty Version we want (null: don't care)
      * @param  string $type_wanted Installer/etc type
      * @set "" "manual" "bleeding-edge" "bleeding-edge manual"
@@ -24,8 +88,16 @@ if (!function_exists('do_release')) {
      * @param  ?string $version_must_be_newer_than The version this must be newer than (null: no check)
      * @return ?array Map of template variables (null: could not find)
      */
-    function do_release(?string $version_pretty, string $type_wanted, string $prefix, ?string $version_must_be_newer_than = null) : ?array
+    protected function do_release(?string $version_pretty, string $type_wanted, string $prefix, ?string $version_must_be_newer_than = null) : ?array
     {
+        if (!addon_installed('cms_homesite')) {
+            return null;
+        }
+
+        if (!addon_installed('downloads')) {
+            return null;
+        }
+
         $latest_version_pretty = get_latest_version_pretty();
         if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
             $latest_version_pretty = '1337';
@@ -69,58 +141,5 @@ if (!function_exists('do_release')) {
     }
 }
 
-i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
-
-if (!addon_installed('cms_homesite')) {
-    return do_template('RED_ALERT', ['_GUID' => 'o107q0s4tzjnq3djhc3e38wwfdywx1h7', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
-}
-
-if (!addon_installed('downloads')) {
-    return do_template('RED_ALERT', ['_GUID' => 'gal8hu40ptk3dlran4bwiodqrpb41jqs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
-}
-
-require_lang('cms_homesite');
-require_code('cms_homesite');
-require_lang('downloads');
-
-// Put together details about releases
-$latest_version_pretty = get_latest_version_pretty();
-if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
-    $latest_version_pretty = '1337';
-}
-$releases_tpl_map = [];
-$release_quick = null;
-$release_manual = null;
-$latest = null;
-if ($latest_version_pretty !== null) {
-    $latest = $latest_version_pretty;
-
-    $release_quick = do_release($latest, 'quick', 'QUICK_');
-    $release_manual = do_release($latest, 'manual', 'MANUAL_');
-
-    if ($release_quick !== null) {
-        $releases_tpl_map += $release_quick;
-    }
-    if ($release_manual !== null) {
-        $releases_tpl_map += $release_manual;
-    }
-}
-
-$release_bleedingquick = do_release(null, 'bleeding-edge, quick', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
-$release_bleedingmanual = do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
-
-if ($release_bleedingquick !== null) {
-    $releases_tpl_map += $release_bleedingquick;
-}
-if ($release_bleedingmanual !== null) {
-    $releases_tpl_map += $release_bleedingmanual;
-}
-
-if (empty($releases_tpl_map)) {
-    $latest = do_lang('NA');
-    $releases_tpl = paragraph(do_lang_tempcode('CMS_BETWEEN_VERSIONS'));
-} else {
-    $releases_tpl = do_template('CMS_DOWNLOAD_RELEASES', $releases_tpl_map);
-}
-
-return do_template('CMS_DOWNLOAD_BLOCK', ['_GUID' => '4c4952e40ed96ab52461adce9989832d', 'RELEASES' => $releases_tpl, 'VERSION' => $latest]);
+$miniblock = new Miniblock_cms_homesite_download();
+return $miniblock->run();

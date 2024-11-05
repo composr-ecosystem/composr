@@ -30,6 +30,10 @@ class Hook_sw_galleries
      */
     public function get_current_settings() : array
     {
+        if (!addon_installed('galleries')) {
+            return [];
+        }
+
         $settings = [];
 
         $test = $GLOBALS['SITE_DB']->query_select_value('group_privileges', 'COUNT(*)', ['privilege' => 'have_personal_category', 'the_page' => 'cms_galleries']);

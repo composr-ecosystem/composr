@@ -26,9 +26,9 @@ class Hook_config_fast_custom_index__count_estimate // TODO: renamed; needs upgr
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'FAST_CUSTOM_INDEX__COUNT_ESTIMATE',

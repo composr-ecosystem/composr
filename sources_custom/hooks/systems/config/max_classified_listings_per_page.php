@@ -21,9 +21,9 @@ class Hook_config_max_classified_listings_per_page
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'MAX_CLASSIFIED_LISTINGS_PER_PAGE',

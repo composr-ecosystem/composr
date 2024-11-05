@@ -39,6 +39,10 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
      */
     public function handles_page_link(string $page_link, int $options) : int
     {
+        if (!addon_installed('catalogues')) {
+            return SITEMAP_NODE_NOT_HANDLED;
+        }
+
         $matches = [];
         if (preg_match('#^([^:]*):([^:]*)#', $page_link, $matches) != 0) {
             $zone = $matches[1];

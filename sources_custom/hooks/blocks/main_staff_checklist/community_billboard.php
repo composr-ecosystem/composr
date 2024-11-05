@@ -75,7 +75,7 @@ class Hook_checklist_community_billboard
      *
      * @return integer Number in queue
      */
-    public function get_num_community_billboard_queue() : int
+    protected function get_num_community_billboard_queue() : int
     {
         $c = $GLOBALS['SITE_DB']->query_select_value('community_billboard', 'COUNT(*)', ['activation_time' => null]);
         if ($c === null) {

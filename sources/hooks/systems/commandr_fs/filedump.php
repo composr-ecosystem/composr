@@ -113,6 +113,10 @@ class Hook_commandr_fs_filedump
      */
     public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $new_dir_name = filter_naughty($new_dir_name);
 
         list($path, $subpath) = $this->get_complete_path($meta_dir);
@@ -138,6 +142,10 @@ class Hook_commandr_fs_filedump
      */
     public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $dir_name = filter_naughty($dir_name);
 
         list($path, $subpath) = $this->get_complete_path($meta_dir);
@@ -173,6 +181,10 @@ class Hook_commandr_fs_filedump
      */
     public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $file_name = filter_naughty($file_name);
 
         list($path, $subpath) = $this->get_complete_path($meta_dir);
@@ -221,6 +233,10 @@ class Hook_commandr_fs_filedump
      */
     public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $file_name = filter_naughty($file_name);
 
         list($path, $subpath) = $this->get_complete_path($meta_dir);
@@ -270,6 +286,10 @@ class Hook_commandr_fs_filedump
      */
     public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         $file_name = filter_naughty($file_name);
 
         list($path, $subpath) = $this->get_complete_path($meta_dir);

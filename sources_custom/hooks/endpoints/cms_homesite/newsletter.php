@@ -23,10 +23,17 @@ class Hook_endpoint_cms_homesite_newsletter
      *
      * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
      * @param  ?string $id Standard ID parameter (null: not-set)
-     * @return array Info about the hook
+     * @return ?array Info about the hook (null: endpoint is disabled)
      */
-    public function info(?string $type, ?string $id) : array
+    public function info(?string $type, ?string $id) : ?array
     {
+        if (!addon_installed('cms_homesite')) {
+            return null;
+        }
+        if (!addon_installed('newsletter')) {
+            return null;
+        }
+
         return [
             'authorization' => false,
             'log_stats_event' => 'cms_homesite/newsletter',
@@ -42,13 +49,6 @@ class Hook_endpoint_cms_homesite_newsletter
      */
     public function run(?string $type, ?string $id) : array
     {
-        if (!addon_installed('cms_homesite')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
-        }
-        if (!addon_installed('newsletter')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('newsletter')));
-        }
-
         $url = get_param_string('url', false, INPUT_FILTER_URL_GENERAL);
         $email = get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER);
         $advertise_on = get_param_integer('advertise_on', 0);

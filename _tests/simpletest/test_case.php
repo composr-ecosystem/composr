@@ -282,6 +282,9 @@ class SimpleTestCase
      */
     public function exception($exception)
     {
+        if (! isset($this->reporter)) {
+            trigger_error('Can only make assertions within test methods');
+        }
         $this->reporter->paintException($exception);
     }
 

@@ -113,6 +113,9 @@ class Hook_ecommerce_giftr
         if (!addon_installed('points')) {
             return ECOMMERCE_PRODUCT_INTERNAL_ERROR;
         }
+        if (!addon_installed('giftr')) {
+            return ECOMMERCE_PRODUCT_INTERNAL_ERROR;
+        }
 
         $gift_id = intval(preg_replace('#^GIFTR_#', '', $type_code));
         $rows = $GLOBALS['SITE_DB']->query_select('giftr', ['*'], ['id' => $gift_id], '', 1);

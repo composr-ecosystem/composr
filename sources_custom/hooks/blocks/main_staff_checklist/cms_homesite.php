@@ -57,7 +57,7 @@ class Hook_checklist_cms_homesite
      *
      * @return array A pair: Number of major things, number of minor things
      */
-    public function get_num_relayed_errors() : array
+    protected function get_num_relayed_errors() : array
     {
         $_sum = $GLOBALS['SITE_DB']->query_select_value('relayed_errors', 'COUNT(*)', ['resolved' => 0]);
         $sum = @intval($_sum);

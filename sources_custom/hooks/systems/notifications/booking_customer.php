@@ -39,6 +39,10 @@ class Hook_notification_booking_customer extends Hook_Notification
      */
     public function list_handled_codes() : array
     {
+        if (!addon_installed('booking')) {
+            return [];
+        }
+
         $list = [];
         $list['booking_customer'] = [do_lang('booking:BOOKINGS'), do_lang('booking:NOTIFICATION_TYPE_booking_customer')];
         return $list;

@@ -26,9 +26,9 @@ class Hook_config_downloads_default_sort_order
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'DOWNLOADS_DEFAULT_SORT_ORDER',

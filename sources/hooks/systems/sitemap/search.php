@@ -32,6 +32,10 @@ class Hook_sitemap_search extends Hook_sitemap_base
      */
     public function handles_page_link(string $page_link, int $options) : int
     {
+        if (!addon_installed('search')) {
+            return SITEMAP_NODE_NOT_HANDLED;
+        }
+
         $matches = [];
         if (preg_match('#^([^:]*):search(:browse)?(:|$)#', $page_link, $matches) != 0) {
             $zone = $matches[1];

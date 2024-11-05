@@ -126,5 +126,12 @@ class Block_bottom_rss
  */
 function block_bottom_rss__cache_on(array $map) : array
 {
+    if (!addon_installed('syndication_blocks')) {
+        return [];
+    }
+    if (!addon_installed('news')) {
+        return [];
+    }
+
     return [array_key_exists('param', $map) ? $map['param'] : '', array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10];
 }

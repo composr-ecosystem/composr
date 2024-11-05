@@ -26,9 +26,9 @@ class Hook_config_days_to_keep__permission_checks_log
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'DAYS_TO_KEEP__PERMISSION_CHECKS_LOG',

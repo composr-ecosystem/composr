@@ -21,9 +21,9 @@ class Hook_config_jestr_emoticon_magnet_shown_for
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'JESTER_EMOTICON_MAGNET_SHOWN_FOR',

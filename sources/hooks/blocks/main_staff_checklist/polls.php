@@ -83,6 +83,10 @@ class Hook_checklist_polls
      */
     public function get_num_poll_queue() : int
     {
+        if (!addon_installed('polls')) {
+            return 0;
+        }
+
         $c = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'poll WHERE votes1+votes2+votes3+votes4+votes5+votes6+votes7+votes8+votes9+votes10=0 AND is_current=0');
         if ($c === null) {
             return 0;

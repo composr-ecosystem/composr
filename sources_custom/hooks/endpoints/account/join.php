@@ -23,10 +23,18 @@ class Hook_endpoint_account_join
      *
      * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
      * @param  ?string $id Standard ID parameter (null: not-set)
-     * @return array Info about the hook
+     * @return ?array Info about the hook (null: endpoint is disabled)
      */
-    public function info(?string $type, ?string $id) : array
+    public function info(?string $type, ?string $id) : ?array
     {
+        if (!addon_installed('composr_mobile_sdk')) {
+            return null;
+        }
+
+        if (get_forum_type() != 'cns') {
+            return null;
+        }
+
         return [
             'authorization' => false,
             'log_stats_event' => 'account/join',
@@ -42,14 +50,6 @@ class Hook_endpoint_account_join
      */
     public function run(?string $type, ?string $id) : array
     {
-        if (!addon_installed('composr_mobile_sdk')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
-        if (get_forum_type() != 'cns') {
-            warn_exit(do_lang_tempcode('NO_CNS'));
-        }
-
         require_code('cns_join');
         cns_require_all_forum_stuff();
         list($message, $member_id) = cns_join_actual('', false); // TODO: GDPR Need a method to require declaration acceptance before an account is created

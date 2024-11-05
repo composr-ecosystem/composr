@@ -26,9 +26,9 @@ class Hook_config_activity_show_stats_count_page_views_today
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'PAGE_VIEWS_TODAY',
