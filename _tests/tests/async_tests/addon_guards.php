@@ -141,6 +141,8 @@ class addon_guards_test_set extends cms_test_case
             $modules_files = get_directory_contents(get_file_base() . '/' . $zone . '/pages', $zone . '/pages', null, true, true, ['php']);
         }
 
+        $has_nots = [];
+
         $files = array_merge($hooks_files, $hooks_custom_files, $blocks_files, $blocks_custom_files, $miniblocks_custom_files, $modules_files);
 
         foreach ($files as $path) {
@@ -238,8 +240,38 @@ class addon_guards_test_set extends cms_test_case
                     $has = (strpos($code, 'addon_installed(\'' . addslashes($addon_name) . '\')') !== false) || (strpos($code, 'addon_installed__messaged(\'' . addslashes($addon_name) . '\'') !== false);
 
                     // For cns_forum, it is also acceptable to run a get_forum_type() check on 'cns' as the guard.
-                    if ((!$has) && ($addon_name == 'cns_forum') && ((strpos($code, 'get_forum_type() != \'cns\'') !== false) || (strpos($code, 'get_forum_type() == \'cns\'') !== false))) {
+                    if (($addon_name == 'cns_forum') && ((strpos($code, 'get_forum_type() != \'cns\'') !== false) || (strpos($code, 'get_forum_type() == \'cns\'') !== false))) {
                         $has = true;
+                    } else {
+                        // Check if our guard is a negative guard
+                        if ($has) {
+                            $has_not = (strpos($code, '!addon_installed(\'' . addslashes($addon_name) . '\')') !== false) || (strpos($code, '!addon_installed__messaged(\'' . addslashes($addon_name) . '\'') !== false);
+
+                            // Exception: if the addon_guard is part of a return statement, it's acceptable we do not have a negative guard.
+                            if ($has_not === false) {
+                                $prev_newline = false;
+                                $has_line = strpos($code, 'addon_installed(\'' . addslashes($addon_name) . '\')');
+                                if ($has_line === false) {
+                                    $has_line = strpos($code, 'addon_installed__messaged(\'' . addslashes($addon_name) . '\')');
+                                }
+                                if ($has_line !== false) {
+                                    $prev_newline = strrpos($code, "\n", $has_line);
+                                    if ($prev_newline === false) {
+                                        $prev_newline = 0;
+                                    }
+                                    if (strpos(trim(substr($code, $prev_newline, ($has_line - $prev_newline))), 'return') === 0) {
+                                        $has_not = true;
+                                    }
+                                }
+                            }
+
+                            if ($has_not === false) {
+                                if (!isset($has_nots[$path])) {
+                                    $has_nots[$path . ' (' . $addon_name . ')'] = [];
+                                }
+                                $has_nots[$path . ' (' . $addon_name . ')'][] = $class_name . '::' . $function_name;
+                            }
+                        }
                     }
 
                     if (
@@ -255,6 +287,10 @@ class addon_guards_test_set extends cms_test_case
             }
 
             unset($file_api);
+        }
+
+        if (!empty($has_nots)) {
+            $this->dump($has_nots, 'These paths => functions have a positive addon guard. Consider changing them to a negative one with a return statement towards the top of the function.');
         }
     }
 
