@@ -141,8 +141,6 @@ class addon_guards_test_set extends cms_test_case
             $modules_files = get_directory_contents(get_file_base() . '/' . $zone . '/pages', $zone . '/pages', null, true, true, ['php']);
         }
 
-        $has_nots = [];
-
         $files = array_merge($hooks_files, $hooks_custom_files, $blocks_files, $blocks_custom_files, $miniblocks_custom_files, $modules_files);
 
         foreach ($files as $path) {
@@ -265,12 +263,7 @@ class addon_guards_test_set extends cms_test_case
                                 }
                             }
 
-                            if ($has_not === false) {
-                                if (!isset($has_nots[$path])) {
-                                    $has_nots[$path . ' (' . $addon_name . ')'] = [];
-                                }
-                                $has_nots[$path . ' (' . $addon_name . ')'][] = $class_name . '::' . $function_name;
-                            }
+                            $this->assertTrue($has_not, 'Should probably have a negative addon guard for ' . $addon_name . ' towards the top of the function, not a positive one, in ' . $path . ' for ' . $class_name . '::' . $function_name);
                         }
                     }
 
@@ -287,10 +280,6 @@ class addon_guards_test_set extends cms_test_case
             }
 
             unset($file_api);
-        }
-
-        if (!empty($has_nots)) {
-            $this->dump($has_nots, 'These paths => functions have a positive addon guard. Consider changing them to a negative one with a return statement towards the top of the function.');
         }
     }
 
