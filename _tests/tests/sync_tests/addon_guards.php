@@ -349,7 +349,6 @@ class addon_guards_test_set extends cms_test_case
         ];
 
         // TODO: add checks for template symbols
-        // TODO: make code scanning more concise; scan by function, not by entire file, so we are less likely to miss a missing guard because one exists in another function
         $files_in_addons = [];
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
