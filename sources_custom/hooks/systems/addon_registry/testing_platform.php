@@ -685,7 +685,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/async_tests/_email_spam_check.php',
             '_tests/tests/async_tests/_third_party_code.php',
             '_tests/tests/async_tests/addon_dependency_naming.php',
-            '_tests/tests/async_tests/addon_guards.php',
+            '_tests/tests/sync_tests/addon_guards.php',
             '_tests/tests/async_tests/addon_hook_quality.php',
             '_tests/tests/async_tests/addon_references.php',
             '_tests/tests/async_tests/addon_screenshots.php',
