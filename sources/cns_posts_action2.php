@@ -26,8 +26,14 @@
  */
 function cns_get_safe_specified_poster_name(?bool $is_required_good_value = null) : string
 {
-    if ($is_required_good_value === null) {
-        $is_required_good_value = (get_option('force_guest_names', true) === '1');
+    if (addon_installed('cns_forum')) {
+        if ($is_required_good_value === null) {
+            $is_required_good_value = (get_option('force_guest_names') == '1');
+        }
+    } else {
+        if ($is_required_good_value === null) {
+            $is_required_good_value = false;
+        }
     }
 
     if (($is_required_good_value) && (is_guest())) {

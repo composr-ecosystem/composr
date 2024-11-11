@@ -153,7 +153,10 @@ class Module_admin_setupwizard
             return $this->step7(); // rules
         }
         if ($type == 'step8') {
-            return $this->step8(); // Theme Wizard
+            if ($this->has_themewizard_step()) {
+                return $this->step8();
+            }
+            return $this->step9(); // Skip step 8 if the theme wizard is not installed
         }
         if ($type == 'step9') {
             return $this->step9(); // close-status

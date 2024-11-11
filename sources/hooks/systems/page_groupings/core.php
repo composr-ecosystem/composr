@@ -68,7 +68,7 @@ class Hook_page_groupings_core
             addon_installed('actionlog') ? ['audit', 'menu/adminzone/audit/actionlog', ['admin_actionlog', ['type' => 'browse'], get_module_zone('admin_actionlog')], do_lang_tempcode('actionlog:VIEW_ACTIONLOGS'), 'actionlog:DOC_ACTIONLOG'] : null,
             addon_installed('securitylogging') ? ['audit', 'menu/adminzone/audit/security_log', ['admin_security', ['type' => 'browse'], get_module_zone('admin_security')], do_lang_tempcode('security:SECURITY_LOG'), 'security:DOC_SECURITY_LOG'] : null,
             ['audit', 'menu/adminzone/audit/email_log', ['admin_email_log', ['type' => 'browse'], get_module_zone('admin_email_log')], do_lang_tempcode('email_log:EMAIL_LOG'), 'email_log:DOC_EMAIL_LOG'],
-            (!addon_installed('actionlog') || get_option('store_revisions') == '0') ? null : ['audit', 'admin/revisions', ['admin_revisions', ['type' => 'browse'], get_module_zone('admin_revisions')], do_lang_tempcode('actionlog:REVISIONS'), 'actionlog:DOC_REVISIONS'],
+            (addon_installed('actionlog') && get_option('store_revisions', true) === '1') ? ['audit', 'admin/revisions', ['admin_revisions', ['type' => 'browse'], get_module_zone('admin_revisions')], do_lang_tempcode('actionlog:REVISIONS'), 'actionlog:DOC_REVISIONS'] : null,
             (!addon_installed('content_reviews')) ? null : ['audit', 'menu/adminzone/audit/content_reviews', ['admin_content_reviews', ['type' => 'browse'], get_module_zone('admin_content_reviews')], do_lang_tempcode('content_reviews:CONTENT_REVIEWS'), 'content_reviews:DOC_CONTENT_REVIEWS'],
 
             ['style', 'menu/adminzone/style/themes/themes', ['admin_themes', ['type' => 'browse'], get_module_zone('admin_themes')], do_lang_tempcode('themes:THEMES'), 'themes:DOC_THEMES'],

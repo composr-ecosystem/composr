@@ -553,11 +553,11 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
         ];
     }
 
-    $has_banners = addon_installed('banners');
-    if (function_exists('get_option')) {
-        $b_all = (get_option('admin_banners', true) == '1');
-    } else {
-        $b_all = false;
+    $b_all = false;
+    if (function_exists('get_option') && function_exists('addon_installed')) {
+        if (addon_installed('banners')) {
+            $b_all = (get_option('admin_banners') == '1');
+        }
     }
 
     // Special textcode
@@ -1342,7 +1342,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                                 }
 
                                 // Advertising
-                                if ((empty($GLOBALS['IN_MINIKERNEL_VERSION'])) && (addon_installed('banners')) && (!$semiparse_mode) && (!$in_code_tag) && ($has_banners) && (($b_all) || (!has_privilege($source_member, 'banner_free')))) {
+                                if ((empty($GLOBALS['IN_MINIKERNEL_VERSION'])) && (addon_installed('banners')) && (!$semiparse_mode) && (!$in_code_tag) && (($b_all) || (!has_privilege($source_member, 'banner_free')))) {
                                     // Pick up correctly, including permission filtering
                                     if ($ADVERTISING_BANNERS_CACHE === null) {
                                         $ADVERTISING_BANNERS_CACHE = [];

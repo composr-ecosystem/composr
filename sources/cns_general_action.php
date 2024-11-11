@@ -29,6 +29,11 @@
  */
 function cns_make_post_template(string $title, string $text, string $forum_multi_code, int $use_default_forums) : int
 {
+    $errormsg = null;
+    if (!addon_installed__messaged('cns_post_templates', $errormsg)) {
+        warn_exit($errormsg);
+    }
+
     require_code('global4');
     prevent_double_submit('ADD_POST_TEMPLATE', null, $title);
 
@@ -105,6 +110,11 @@ function cns_make_emoticon(string $code, string $theme_img_code, int $relevance_
  */
 function cns_make_welcome_email(string $name, string $subject, string $text, int $send_after_hours, ?int $newsletter = null, ?int $usergroup = null, string $usergroup_type = '') : int
 {
+    $errormsg = null;
+    if (!addon_installed__messaged('welcome_emails', $errormsg)) {
+        warn_exit($errormsg);
+    }
+
     require_code('global4');
     prevent_double_submit('ADD_WELCOME_EMAIL', null, $subject);
 

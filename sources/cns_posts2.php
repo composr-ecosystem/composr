@@ -37,6 +37,10 @@ function render_post_box(array $row, bool $use_post_title = false, bool $give_co
         return new Tempcode();
     }
 
+    if (!addon_installed('cns_forum')) { // Templates rely on cns_forum to render
+        return new Tempcode();
+    }
+
     require_lang('cns');
     require_css('cns');
 
@@ -231,6 +235,7 @@ function render_post_box(array $row, bool $use_post_title = false, bool $give_co
         'PREVIEWING' => true,
         'RATING' => $rating,
     ];
+
     $_post = do_template('CNS_TOPIC_POST', $map);
     $tpl = do_template('CNS_POST_BOX', [
         '_GUID' => ($guid != '') ? $guid : '9456f4fe4b8fb1bf34f606fcb2bcc9d7',

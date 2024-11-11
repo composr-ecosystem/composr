@@ -50,6 +50,9 @@ class addon_guards_test_set extends cms_test_case
     {
         parent::setUp();
 
+        disable_php_memory_limit();
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
         require_code('phpdoc');
     }
 
@@ -59,8 +62,6 @@ class addon_guards_test_set extends cms_test_case
         $this->dump($info, 'INFO');
 
         require_code('files2');
-
-        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         // Full file exceptions
         $exceptions = [
@@ -127,6 +128,13 @@ class addon_guards_test_set extends cms_test_case
 
             'Hook_sitemap_\w+\:\:get_privilege_page',
             'Hook_contentious_overrides_nested_cpf_spreadsheet_lists::injectFormSelectChainingForm' // JavaScript within PHP
+        ];
+
+        // Function exceptions which should allow positive guards, defined as a regex of class::function (class is __global if none).
+        $function_positive_guard_exceptions = [
+             // Complex return structures
+            'Hook_health_check_\w+\:\:run',
+            'Hook_preview_\w+\:\:applies',
         ];
 
         $hooks_files = get_directory_contents(get_file_base() . '/sources/hooks', 'sources/hooks', null, true, true, ['php']);
@@ -241,8 +249,16 @@ class addon_guards_test_set extends cms_test_case
                     if (($addon_name == 'cns_forum') && ((strpos($code, 'get_forum_type() != \'cns\'') !== false) || (strpos($code, 'get_forum_type() == \'cns\'') !== false))) {
                         $has = true;
                     } else {
+                        // Exceptions by class::function expressions
+                        $skip_negative_check = false;
+                        foreach ($function_positive_guard_exceptions as $exception) {
+                            if (preg_match('#^' . $exception . '$#', $class_name . '::' . $function_name) != 0) {
+                                $skip_negative_check = true;
+                            }
+                        }
+
                         // Check if our guard is a negative guard
-                        if ($has) {
+                        if (($has === true) && ($skip_negative_check === false)) {
                             $has_not = (strpos($code, '!addon_installed(\'' . addslashes($addon_name) . '\')') !== false) || (strpos($code, '!addon_installed__messaged(\'' . addslashes($addon_name) . '\'') !== false);
 
                             // Exception: if the addon_guard is part of a return statement, it's acceptable we do not have a negative guard.
@@ -263,7 +279,7 @@ class addon_guards_test_set extends cms_test_case
                                 }
                             }
 
-                            $this->assertTrue($has_not, 'Should probably have a negative addon guard for ' . $addon_name . ' towards the top of the function, not a positive one, in ' . $path . ' for ' . $class_name . '::' . $function_name);
+                            $this->assertTrue($has_not, 'Package addon guard ' . $addon_name . ' should be a negative guard (not a positive one) placed towards the top of the function, which returns if the addon is not installed, in ' . $path . ' for ' . $class_name . '::' . $function_name);
                         }
                     }
 
@@ -285,6 +301,53 @@ class addon_guards_test_set extends cms_test_case
 
     public function testAddonGuardsImplicitCodeCalls()
     {
+        $info = 'testAddonGuardsImplicitCodeCalls: This is an aggressive test; consider reviewing the defined exceptions periodically for accuracy. Also note this test does not support short form if statements.';
+        $this->dump($info, 'INFO');
+
+        // Functions that we must check to ensure they are addon-guarded (be sure to modify $included_file code if you change this)
+        $functions_needing_guarded = [
+            'require_lang',
+            'require_code',
+            'require_css',
+            'require_javascript',
+            'do_template',
+            'get_option',
+        ];
+
+        /*
+            This is a map of class expressions to a comma-delimited list of functions where we define
+            globally-applicable addon guards. It is assumed that any / all addon guards defined in
+            any of the given functions for matched classes, regardless how they are asserted, will
+            completely disable the rest of the class if the addon is not installed. Therefore,
+            if an addon guard is defined in any matched functions, it will make tests in all other
+            functions for that class (and for that addon) pass automatically.
+        */
+        $class_controllers = [
+            'Hook_\w+' => 'info',
+            'Module_\w+' => 'pre_run,run,run_start', // Not perfect; may need manual review
+
+            'Hook_profiles_tabs_\w+' => 'is_active',
+            'Hook_preview_\w+' => 'applies',
+            'Hook_ecommerce_\w+' => 'is_available',
+            'Module_admin_setupwizard' => 'has_themewizard_step', // Does not actually disable the class, but we use it in place of checking for the themewizard addon
+        ];
+
+        // Map of path::class_name::function_name to an array of addons which we always consider guarded even if not explicitly defined
+        $exceptions = [
+            // global3 isn't initialised yet so we cannot check addon_installed
+            'sources/global2.php::__global::init__global2' => ['chat'],
+
+            // TODO: cannot yet get test to work correctly for $missing_ok
+            'sources/hooks/systems/page_groupings/core.php::Hook_page_groupings_core::run' => ['actionlog'],
+            'sources/cns_install.php::__global::install_cns' => ['cns_forum'],
+            'sources/cns_posts.php::__global::cns_may_edit_post_by' => ['tickets'],
+            'sources/cns_posts.php::__global::cns_may_delete_post_by' => ['tickets'],
+
+            'sources/minikernel.php::__global::fatal_exit' => ['backup', 'installer'], // Loaded explicitly
+            'sources/minikernel.php::__global::warn_exit' => ['backup', 'installer'], // Loaded explicitly
+            'sources/cns_welcome_emails.php::__global::cns_prepare_welcome_email' => ['newsletter'], // Too complex to refactor for the test
+        ];
+
         // TODO: add checks for template symbols
         // TODO: make code scanning more concise; scan by function, not by entire file, so we are less likely to miss a missing guard because one exists in another function
         $files_in_addons = [];
@@ -303,6 +366,8 @@ class addon_guards_test_set extends cms_test_case
             $dependencies = $ob->get_dependencies();
             $requires = $dependencies['requires'];
 
+            $debug = [];
+
             foreach ($files as $path) {
                 if ($path == 'data_custom/execute_temp.php') {
                     continue;
@@ -311,100 +376,334 @@ class addon_guards_test_set extends cms_test_case
                     continue;
                 }
 
+                // TODO: this will not even work in exceptions, so we have to explicitly define it here and skip it
+                if ($path == 'sources/hooks/modules/admin_setupwizard_installprofiles/community.php') {
+                    continue;
+                }
+
                 if (!is_file(get_file_base() . '/' . $path)) {
                     continue;
                 }
 
                 if ((substr($path, -4) == '.php') && (preg_match('#(^_tests/|^data_custom/stress_test_loader\.php$|^sources/hooks/modules/admin_import/)#', $path) == 0)) {
-                    $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
+                    $file_api = get_php_file_api($path, true, false, false, true);
 
-                    $matches = [];
-                    $num_matches = preg_match_all('#(require_lang|require_code|require_css|require_javascript|do_template|get_option)\(\'([^\']*)\'(,[^\),]*)?#', $c, $matches);
-                    for ($i = 0; $i < $num_matches; $i++) {
-                        $include = $matches[2][$i];
-                        $extra = $matches[3][$i];
-
-                        $type = $matches[1][$i];
-                        switch ($type) {
-                            case 'require_lang':
-                                $included_file = 'lang/EN/' . $include . '.ini';
-                                break;
-                            case 'require_code':
-                                $included_file = 'sources/' . $include . '.php';
-                                break;
-                            case 'require_css':
-                                $included_file = 'themes/default/css/' . $include . '.css';
-                                break;
-                            case 'require_javascript':
-                                $included_file = 'themes/default/javascript/' . $include . '.js';
-                                break;
-                            case 'do_template':
-                                $included_file = 'themes/default/templates/' . $include . '.tpl';
-                                break;
-                            case 'get_option':
-                                if (strpos($extra, 'true') !== false) { // We specified missing is okay
-                                    continue 2;
-                                }
-                                $included_file = 'sources/hooks/systems/config/' . $include . '.php';
-                                break;
+                    foreach ($file_api as $class_name => $class_info) {
+                        // Skip classes with no defined functions (e.g. abstracts)
+                        if (!isset($class_info['functions']) || empty($class_info['functions'])) {
+                            continue;
                         }
 
-                        if (isset($files_in_addons[$included_file])) {
-                            $file_in_addon = $files_in_addons[$included_file];
-                            if (
-                                ($file_in_addon != $addon_name) &&
-                                (substr($file_in_addon, 0, 5) != 'core_') &&
-                                ($file_in_addon != 'core') &&
-                                (strpos($path, $file_in_addon) === false) && // looks like a hook for this addon
-                                ((!in_array($file_in_addon, $requires)) && ((!in_array('news', $requires)) || ($file_in_addon != 'news_shared')))
-                            ) {
-                                $search_for = 'addon_installed(\'' . $file_in_addon . '\')';
-                                $ok = (strpos($c, $search_for) !== false);
-                                if (!$ok) {
-                                    if ($file_in_addon == 'news_shared') { // news_shared should also accept news
-                                        $search_for = 'addon_installed(\'news\')';
-                                        $ok = (strpos($c, $search_for) !== false);
-                                    }
-                                }
-                                if (!$ok) {
-                                    $matches_hook_details = [];
-                                    if (preg_match('#^\w+/hooks/(\w+)/(\w+)/\w+\.php$#', $path, $matches_hook_details) != 0) {
-                                        $hook_type = $matches_hook_details[1];
-                                        $hook_subtype = $matches_hook_details[2];
+                        // Find global addon guards
+                        $global_guards = [];
+                        foreach ($class_controllers as $class_exp => $controllers) {
+                            if (preg_match('#^' . $class_exp . '$#', $class_name) != 0) {
+                                $funcs = explode(',', $controllers);
+                                foreach ($funcs as $func) {
+                                    if (isset($class_info['functions'][$func])) {
+                                        // Ignore functions without code defined (e.g. abstracts or just empty functions)
+                                        if ((!isset($class_info['functions'][$func]['code'])) || ($class_info['functions'][$func]['code'] === null)) {
+                                            continue;
+                                        }
+                                        $c = '<?php ' . "\n" . $class_info['functions'][$func]['code']; // Must be valid PHP code when we tokenise it
 
-                                        if ((array_key_exists($hook_type . '/' . $hook_subtype, $this->hook_ownership)) && ($file_in_addon == $this->hook_ownership[$hook_type . '/' . $hook_subtype])) {
-                                            $ok = true;
+                                        $debug[$path . '::' . $class_name . '::' . $func][] = 'SEARCHING for global addon_guards';
+
+                                        // Tokenise and prepare
+                                        $tokens = token_get_all($c);
+                                        $tracking_call = '';
+                                        foreach ($tokens as $token) {
+                                            if (is_array($token)) {
+                                                list($token_id, $token_text) = $token;
+
+                                                if (($token_id == T_STRING)) { // could be an addon_installed check
+                                                    if ($tracking_call == '') {
+                                                        if (($token_text == 'addon_installed') || ($token_text == 'addon_installed__messaged') || ($token_text == '!addon_installed') || ($token_text == '!addon_installed__messaged')) {
+                                                            $tracking_call = 'addon_installed';
+                                                            $debug[$path . '::' . $class_name . '::' . $func][] = 'In addon guard call';
+                                                        }
+                                                        if (($token_text == 'get_forum_type')) { // cns checks also work for cns_forum
+                                                            $tracking_call = 'get_forum_type';
+                                                            $debug[$path . '::' . $class_name . '::' . $func][] = 'In get_forum_type call';
+                                                        }
+                                                    }
+                                                } elseif (($token_id == T_CONSTANT_ENCAPSED_STRING)) { // could be the addon in a guard check
+                                                    if ($tracking_call == 'addon_installed') {
+                                                        $addon = preg_replace('/\'(\w+)\'/', '$1', $token_text);
+                                                        $debug[$path . '::' . $class_name . '::' . $func][] = 'FOUND global addon guard ' . $addon;
+                                                        $global_guards[] = $addon;
+
+                                                        // news is also an acceptable guard for news_shared
+                                                        if ($addon == 'news') {
+                                                            $global_guards[] = 'news_shared';
+                                                        }
+
+                                                        $tracking_call = '';
+                                                    }
+                                                    if (($tracking_call == 'get_forum_type') && (preg_replace('/\'(\w+)\'/', '$1', $token_text) == 'cns')) { // cns checks also work for cns_forum
+                                                        $addon = 'cns_forum';
+                                                        $debug[$path . '::' . $class_name . '::' . $func][] = 'FOUND global addon guard ' . $addon;
+                                                        $global_guards[] = $addon;
+                                                        $tracking_call = '';
+                                                    }
+                                                    $tracking_call = ''; // False positive
+                                                }
+                                            } else {
+                                                $token_text = $token;
+                                                if (($tracking_call == 'addon_installed') && ($token_text == ')')) { // False positive
+                                                    $tracking_call = '';
+                                                }
+                                            }
                                         }
                                     }
                                 }
+                            }
+                        }
 
-                                $error_message = 'Cannot find a guard for the ' . $file_in_addon . ' addon in ' . $path . ' [' . $addon_name . '], due to ' . $matches[1][$i] . '(\'' . $matches[2][$i] . '\'';
+                        foreach ($class_info['functions'] as $function_name => $function_info) {
+                            // Ignore functions without code defined (e.g. abstracts or just empty functions)
+                            if ((!isset($function_info['code'])) || ($function_info['code'] === null)) {
+                                continue;
+                            }
+                            $c = '<?php ' . "\n" . $function_info['code']; // Must be valid PHP code when we tokenise it
 
-                                if (in_array($error_message, [
-                                    'Cannot find a guard for the google_appengine addon in sources/global.php [core], due to require_code(\'google_appengine\'',
-                                    'Cannot find a guard for the chat addon in sources/global2.php [core], due to require_code(\'chat_poller\'',
-                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to require_javascript(\'catalogues\'',
-                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to do_template(\'CATALOGUE_ADDING_SCREEN\'',
-                                    'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to do_template(\'CATALOGUE_EDITING_SCREEN\'',
-                                    'Cannot find a guard for the backup addon in sources/minikernel.php [core], due to do_template(\'RESTORE_HTML_WRAP\'',
-                                    'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\'',
-                                    'Cannot find a guard for the backup addon in sources/minikernel.php [core], due to do_template(\'RESTORE_HTML_WRAP\'',
-                                    'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\'',
-                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action.php [core_cns], due to require_lang(\'cns_post_templates\'',
-                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action.php [core_cns], due to require_lang(\'cns_welcome_emails\'',
-                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_post_templates\'',
-                                    'Cannot find a guard for the cns_post_templates addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_post_templates\'',
-                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_welcome_emails\'',
-                                    'Cannot find a guard for the welcome_emails addon in sources/cns_general_action2.php [core_cns], due to require_lang(\'cns_welcome_emails\'',
-                                ])) {
-                                    continue; // Exceptions
+                            // Save time and memory by skipping this function if we aren't calling anything that needs a guard
+                            $matches = [];
+                            $num_matches = preg_match_all('#(' . implode('|', $functions_needing_guarded) . ')\(\'([^\']*)\'#', $c, $matches);
+                            if ($num_matches == 0) {
+                                continue;
+                            }
+
+                            // Tokenise and prepare
+                            $tokens = token_get_all($c);
+                            $active_guards = [];
+                            $guard_buffer = [];
+                            $condition_buffer = '';
+                            $in_if = false;
+                            $active_call_braces = 0;
+                            $active_call = '';
+                            $active_call_param = '';
+                            $active_call_param_2 = '';
+
+                            $debug[$path . '::' . $class_name . '::' . $function_name] = [];
+
+                            foreach ($tokens as $token) {
+                                if (is_array($token)) {
+                                    list($token_id, $token_text) = $token;
+
+                                    // Start of an if or elseif; reset things and begin tracking conditions
+                                    if (($token_id == T_IF) || ($token_id == T_ELSEIF)) {
+                                        $in_if = true;
+                                        $guard_buffer = [];
+                                        $condition_buffer = '';
+                                        $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_COND (code block stack is ' . count($active_guards) . ' items)';
+                                    } elseif ($in_if) { // Still tracking if conditions; add to buffer
+                                        $condition_buffer .= $token_text;
+                                    } elseif (($token_id == T_STRING)) { // could be a call to a function we want to track
+                                        if (in_array($token_text, $functions_needing_guarded)) {
+                                            $active_call_braces = 0;
+                                            $active_call = $token_text;
+                                            $active_call_param = '';
+                                            $active_call_param_2 = '';
+                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'TRACKING ' . $token_text;
+                                        }
+                                    } elseif (($token_id == T_CONSTANT_ENCAPSED_STRING)) { // could be a parameter to a function we are tracking
+                                        if ($active_call != '') {
+                                            if ($active_call_param == '') {
+                                                $active_call_param = preg_replace('/\'(\w+)\'/', '$1', $token_text);
+                                                $debug[$path . '::' . $class_name . '::' . $function_name][] = 'TRACKING PARAM 1: ' . $token_text;
+                                            } elseif ($active_call_param_2 == '') {
+                                                $value = preg_replace('/\'(\w+)\'/', '$1', $token_text);
+                                                if (($active_call == 'get_option') && (!in_array($value, ['false', 'true']))) { // If we got weirdness in get_option then ignore it
+                                                    $active_call = '';
+                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'IGNORED get_option as we either have a complex parameter 1 or an invalid parameter 2';
+                                                } else {
+                                                    $active_call_param_2 = $value;
+                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'TRACKING PARAM 2: ' . $token_text;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        $debug[$path . '::' . $class_name . '::' . $function_name][] = 'generic ' . token_name($token_id) . ' ' . $token_text;
+                                    }
+                                } else {
+                                    $token_text = $token;
+
+                                    if ($token_text == '{') {
+                                        if (trim($condition_buffer) != '') { // We probably just finished up collecting if conditions, so process them
+                                            // Search for addon_installed conditions and note the addons contained in them
+                                            $matches = [];
+                                            if (preg_match_all('/(addon|\!addon)_installed\(\'(\w+)\'/', $condition_buffer, $matches) > 0) {
+                                                foreach ($matches[0] as $i => $match) {
+                                                    if (strpos($match, '!') !== 0) {
+                                                        $guard_buffer[] = $matches[2][$i];
+
+                                                        // news_shared can also be guarded with news
+                                                        if ($matches[2][$i] == 'news') {
+                                                            $guard_buffer[] = 'news_shared';
+                                                        }
+                                                    } elseif (count($active_guards) > 0) { // We assume a negated guard will always return, so this behaves the same as a positive guard on its parent
+                                                        $active_guards[count($active_guards) - 1][] = $matches[2][$i];
+                                                        // news_shared can also be guarded with news
+                                                        if ($matches[2][$i] == 'news') {
+                                                            $active_guards[count($active_guards) - 1][] = 'news_shared';
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // Search for addon_installed__messaged conditions and note the addons contained in them
+                                            $matches = [];
+                                            if (preg_match_all('/(addon|\!addon)_installed__messaged\(\'(\w+)\'/', $condition_buffer, $matches) > 0) {
+                                                foreach ($matches[0] as $i => $match) {
+                                                    if (strpos($match, '!') !== 0) {
+                                                        $guard_buffer[] = $matches[2][$i];
+
+                                                        // news_shared can also be guarded with news
+                                                        if ($matches[2][$i] == 'news') {
+                                                            $guard_buffer[] = 'news_shared';
+                                                        }
+                                                    } elseif (count($active_guards) > 0) { // We assume a negated guard will always return, so this behaves the same as a positive guard on its parent
+                                                        $active_guards[count($active_guards) - 1][] = $matches[2][$i];
+                                                        // news_shared can also be guarded with news
+                                                        if ($matches[2][$i] == 'news') {
+                                                            $active_guards[count($active_guards) - 1][] = 'news_shared';
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // special: get_forum_type() == 'cns' is also a guard for cns_forum
+                                            if (strpos($condition_buffer, 'get_forum_type() == \'cns\'') !== false) {
+                                                $guard_buffer[] = 'cns_forum';
+                                            }
+
+                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_CODE_BLOCK (buffer): ' . $condition_buffer;
+                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_CODE_BLOCK (guards): ' . implode(',', $guard_buffer);
+                                        } else {
+                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_CODE_BLOCK';
+                                        }
+
+                                        // Push active guards for this code block and then reset buffers
+                                        $condition_buffer = '';
+                                        $active_guards[] = $guard_buffer;
+                                        $guard_buffer = [];
+                                        $in_if = false;
+                                    } elseif ($token_text == '}') {
+                                        // Pop off the end of the active guards array as these guards are not in effect anymore
+                                        if (!empty($active_guards)) {
+                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'END_CODE_BLOCK';
+                                            array_pop($active_guards);
+                                        }
+                                    } elseif ($in_if) { // Still tracking if conditions; add to buffer
+                                        $condition_buffer .= $token_text;
+                                    } elseif ($active_call != '') { // Tracking a function call
+                                        if ($token_text == '(') {
+                                            $active_call_braces++;
+                                        } elseif ($token_text == ')') {
+                                            $active_call_braces--;
+                                            if ($active_call_braces == 0) {
+                                                $debug[$path . '::' . $class_name . '::' . $function_name][] = 'EXECUTE ADDON GUARD TEST ON ' . $active_call;
+                                                $included_file = '';
+                                                switch ($active_call) {
+                                                    case 'require_lang':
+                                                        $included_file = 'lang/EN/' . $active_call_param . '.ini';
+                                                        break;
+                                                    case 'require_code':
+                                                        $included_file = 'sources/' . $active_call_param . '.php';
+                                                        break;
+                                                    case 'require_css':
+                                                        $included_file = 'themes/default/css/' . $active_call_param . '.css';
+                                                        break;
+                                                    case 'require_javascript':
+                                                        $included_file = 'themes/default/javascript/' . $active_call_param . '.js';
+                                                        break;
+                                                    case 'do_template':
+                                                        $included_file = 'themes/default/templates/' . $active_call_param . '.tpl';
+                                                        break;
+                                                    case 'get_option':
+                                                        if (strpos($active_call_param_2, 'true') === false) { // We did not specify missing is okay
+                                                            $included_file = 'sources/hooks/systems/config/' . $active_call_param . '.php';
+                                                        }
+                                                        break;
+                                                }
+
+                                                if (($included_file != '') && isset($files_in_addons[$included_file])) {
+                                                    $file_in_addon = $files_in_addons[$included_file];
+                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'Call belongs to addon ' . $file_in_addon;
+                                                    if (
+                                                        ($file_in_addon != $addon_name) &&
+                                                        (substr($file_in_addon, 0, 5) != 'core_') &&
+                                                        ($file_in_addon != 'core') &&
+                                                        (strpos($path, $file_in_addon) === false) && // looks like a hook for this addon
+                                                        ((!in_array($file_in_addon, $requires)) && ((!in_array('news', $requires)) || ($file_in_addon != 'news_shared')))
+                                                    ) {
+                                                        $found_guard = false;
+
+                                                        // Explicit exceptions
+                                                        if (isset($exceptions[$path . '::' . $class_name . '::' . $function_name]) && (in_array($file_in_addon, $exceptions[$path . '::' . $class_name . '::' . $function_name]))) {
+                                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'EXCEPTION defined for addon guard ' . $file_in_addon;
+                                                            $found_guard = true;
+                                                        }
+
+                                                        // Look in global addon guards
+                                                        if (!$found_guard) {
+                                                            foreach ($global_guards as $active_guard) {
+                                                                if ($file_in_addon == $active_guard) {
+                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'FOUND global addon guard ' . $file_in_addon;
+                                                                    $found_guard = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // Look within our active addon guard stack
+                                                        if (!$found_guard) {
+                                                            foreach ($active_guards as $_active_guards) {
+                                                                if (in_array($file_in_addon, $_active_guards)) {
+                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'FOUND addon guard ' . $file_in_addon;
+                                                                    $found_guard = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // Check explicit hook ownership
+                                                        if (!$found_guard) {
+                                                            $matches_hook_details = [];
+                                                            if (preg_match('#^\w+/hooks/(\w+)/(\w+)/\w+\.php$#', $path, $matches_hook_details) != 0) {
+                                                                $hook_type = $matches_hook_details[1];
+                                                                $hook_subtype = $matches_hook_details[2];
+
+                                                                if ((array_key_exists($hook_type . '/' . $hook_subtype, $this->hook_ownership)) && ($file_in_addon == $this->hook_ownership[$hook_type . '/' . $hook_subtype])) {
+                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'FOUND hook ownership ' . $file_in_addon;
+                                                                    $found_guard = true;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        $this->assertTrue($found_guard, 'The call to ' . $active_call . '(\'' . $active_call_param . '\') in ' . $path . '::' . $class_name . '::' . $function_name . ' seems to be missing an addon guard for ' . $file_in_addon);
+                                                    }
+                                                }
+
+                                                // Reset function tracking
+                                                $active_call = '';
+                                                $active_call_param = '';
+                                                $active_call_param_2 = '';
+                                            }
+                                        }
+                                    } else {
+                                        $debug[$path . '::' . $class_name . '::' . $function_name][] = 'generic2 ' . $token_text;
+                                    }
                                 }
-
-                                $this->assertTrue($ok, $error_message);
                             }
                         }
                     }
                 }
+            }
+
+            if ($this->debug) {
+                $this->dump($debug, 'DEBUG');
             }
         }
     }

@@ -759,7 +759,7 @@ abstract class Mail_dispatcher_base
             $resource_guid = '';
 
             // Get the resource GUID if we were given an ID so we can generate a link to view this e-mail in the browser
-            if ($this->get_guid_for_id !== null) {
+            if (($this->get_guid_for_id !== null) && (addon_installed('commandr'))) {
                 require_code('resource_fs');
                 $_resource_guid = find_guid_via_id('mail', strval($this->get_guid_for_id));
                 if ($_resource_guid !== null) {

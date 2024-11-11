@@ -110,10 +110,6 @@ class Hook_ecommerce_gambling
             return ECOMMERCE_PRODUCT_INTERNAL_ERROR;
         }
 
-        if (!addon_installed('points')) {
-            return ECOMMERCE_PRODUCT_DISABLED;
-        }
-
         if (get_option('is_on_gambling_buy') == '0') {
             return ECOMMERCE_PRODUCT_DISABLED;
         }

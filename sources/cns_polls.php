@@ -140,7 +140,11 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         return null;
     }
 
-    $point_weighting = ((get_option('enable_poll_point_weighting', true) === '1') && ($poll_info[0]['po_point_weighting'] == 1) && addon_installed('points'));
+    if (addon_installed('points') && addon_installed('cns_forum')) {
+        $point_weighting = ((get_option('enable_poll_point_weighting') == '1') && ($poll_info[0]['po_point_weighting'] == 1));
+    } else {
+        $point_weighting = false;
+    }
 
     // Fetch / calculate voting powers for this poll when applicable
     if ($point_weighting) {

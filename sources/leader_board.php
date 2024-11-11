@@ -100,27 +100,28 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         return null;
     }
 
-    $use_voting_power = ((addon_installed('cns_forum')) && (get_forum_type() == 'cns') && (get_option('enable_poll_point_weighting') == '1') && ($row['lb_calculate_voting_power'] == 1));
-    if ($use_voting_power) {
-        $total_voting_power = 0.0;
-        require_code('cns_polls_action2');
+    $total_voting_power = 0.0;
+    $use_voting_power = false;
+    if (get_forum_type() == 'cns') {
+        $use_voting_power = ((get_option('enable_poll_point_weighting') == '1') && ($row['lb_calculate_voting_power'] == 1));
+        if ($use_voting_power) {
+            require_code('cns_polls_action2');
 
-        // Calculate total site-wide voting power so we can derive voting control values
-        $member_id = null;
-        do {
-            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
-            foreach ($rows as $mrow) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($mrow);
+            // Calculate total site-wide voting power so we can derive voting control values
+            $member_id = null;
+            do {
+                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
+                foreach ($rows as $mrow) {
+                    $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($mrow);
 
-                if (is_guest($member_id)) {
-                    continue;
+                    if (is_guest($member_id)) {
+                        continue;
+                    }
+
+                    $total_voting_power += cns_points_to_voting_power(points_balance($member_id));
                 }
-
-                $total_voting_power += cns_points_to_voting_power(points_balance($member_id));
-            }
-        } while (count($rows) > 0);
-    } else {
-        $total_voting_power = null;
+            } while (count($rows) > 0);
+        }
     }
 
     $limit = $row['lb_member_count']; // The number to show on the leader-board

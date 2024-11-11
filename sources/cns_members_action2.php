@@ -572,7 +572,13 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
     // DOB
     if (cns_field_editable('dob', $special_type)) {
-        $can_edit_birthday = cns_can_edit_birthday($member_id);
+        // If we have points installed and are awarding birthday points, then birthdays cannot be edited except by another staff member
+        if (addon_installed('points')) {
+            $can_edit_birthday = cns_can_edit_birthday($member_id);
+        } else {
+            $can_edit_birthday = true;
+        }
+
         $default_time = ($dob_month === null) ? null : usertime_to_utctime(cms_mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
         if (get_option_with_overrides('dobs', $adjusted_config_options) >= (($member_id === null) ? '2' : '1')) {
             $dob_required = member_field_is_required($member_id, 'dob');
@@ -2754,6 +2760,10 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
  */
 function cns_can_edit_birthday(?int $member_id) : bool
 {
+    if (!addon_installed('points')) {
+        return true;
+    }
+
     $can_edit_birthday = true;
     $_birthday_points = get_option('points_birthday', true);
     $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);

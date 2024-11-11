@@ -913,7 +913,7 @@ abstract class Standard_crud_module
         $submit_icon = ($this->type_code == 'category') ? 'admin/add_one_category' : 'admin/add';
 
         $cancel_url = build_url(['page' => '_SELF', 'clear_autosave' => 1], '_SELF');
-        if ((get_param_string('type', 'add') == 'add_catalogue') && (method_exists($this, 'get_field_fields'))) {
+        if ((addon_installed('catalogues')) && (get_param_string('type', 'add') == 'add_catalogue') && (method_exists($this, 'get_field_fields'))) {
             require_javascript('catalogues');
 
             // New field
@@ -1553,7 +1553,7 @@ abstract class Standard_crud_module
             }
         }
 
-        if ((get_param_string('type', '_edit') == '_edit_catalogue') && (method_exists($this, 'get_field_fields'))) {
+        if ((addon_installed('catalogues')) && (get_param_string('type', '_edit') == '_edit_catalogue') && (method_exists($this, 'get_field_fields'))) {
             require_javascript('catalogues');
 
             // Existing fields

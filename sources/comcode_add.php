@@ -768,6 +768,10 @@ function _find_comcode_tag_embed_required(string $tag) : bool
 function _try_for_special_comcode_tag_all_params_ui(string $tag, string $actual_tag, object &$fields, object &$fields_advanced, object $hidden, bool &$done_tag_contents, array $defaults, array $params, array &$js_function_calls, bool $preview) : bool
 {
     if ($tag == 'currency') {
+        if (!addon_installed('ecommerce')) {
+            return false;
+        }
+
         $default = array_key_exists('param', $defaults) ? $defaults['param'] : get_param_string('default_param', get_option('currency'));
         $list = new Tempcode();
         require_code('currency');

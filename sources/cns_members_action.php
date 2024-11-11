@@ -182,14 +182,27 @@ function cns_make_member(string $username, string $password, string $email_addre
     if ($auto_monitor_contrib_content === null) {
         $auto_monitor_contrib_content = (get_option('allow_auto_notifications') == '0') ? 0 : 1;
     }
-    if ($smart_topic_notification === null) {
-        $smart_topic_notification = (get_option('smart_topic_notification_default') == '1') ? 1 : 0;
-    }
-    if ($mailing_list_style === null) {
-        $mailing_list_style = (get_option('mailing_list_style_default') == '1') ? 1 : 0;
-    }
-    if ($sound_enabled === null) {
-        $sound_enabled = ((addon_installed('cns_forum')) && (get_option('sound_enabled_default') == '1')) ? 1 : 0;
+
+    if (addon_installed('cns_forum')) {
+        if ($smart_topic_notification === null) {
+            $smart_topic_notification = (get_option('smart_topic_notification_default') == '1') ? 1 : 0;
+        }
+        if ($mailing_list_style === null) {
+            $mailing_list_style = (get_option('mailing_list_style_default') == '1') ? 1 : 0;
+        }
+        if ($sound_enabled === null) {
+            $sound_enabled = (get_option('sound_enabled_default') == '1') ? 1 : 0;
+        }
+    } else {
+        if ($smart_topic_notification === null) {
+            $smart_topic_notification = 0;
+        }
+        if ($mailing_list_style === null) {
+            $mailing_list_style = 0;
+        }
+        if ($sound_enabled === null) {
+            $sound_enabled = 0;
+        }
     }
 
     $doing_email_option = (get_option('member_email_receipt_configurability') == '2') && (addon_installed('cns_contact_member'));

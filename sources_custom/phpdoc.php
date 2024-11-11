@@ -1145,6 +1145,7 @@ function test_value_matches_type(string $phpdoc_type, string $function_name, str
             }
             break;
         case 'MINIID_TEXT':
+        case 'TOKEN':
             if ((!is_string($value)) || (strlen($value) > 40)) {
                 _fail_test_value_matches_type($phpdoc_type, $function_name, $name, $value);
             }
@@ -1208,11 +1209,11 @@ function test_value_matches_type(string $phpdoc_type, string $function_name, str
  * @param  string $phpdoc_type The phpdoc type involved
  * @param  string $function_name The function involved
  * @param  string $name The parameter name involved
- * @param  string $value The value involved
+ * @param  mixed $value The parameters value involved (cannot be null)
  */
-function _fail_test_value_matches_type(string $phpdoc_type, string $function_name, string $name, string $value)
+function _fail_test_value_matches_type(string $phpdoc_type, string $function_name, string $name, $value)
 {
-    $str = 'A type value (' . (is_string($value) ? $value : strval($value)) . ') was used with the function ' . $function_name . ' (parameter ' . $name . '), causing a type mismatch error';
+    $str = 'In the function ' . $function_name . ', the parameter ' . $name . ' expected a type of ' . $phpdoc_type . ' but instead got a value of type ' . gettype($value) . ', causing a type mismatch error. (' . serialize($value) . ')';
     attach_message($str, 'warn');
 }
 

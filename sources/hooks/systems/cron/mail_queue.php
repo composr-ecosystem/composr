@@ -160,9 +160,9 @@ class Hook_cron_mail_queue
     }
 
     /**
-     * Mark an e-mail as failed, dump the message to a file, and erase from the database (in case of potential out-of-memory errors in mail queue screen)
+     * Mark an e-mail as failed, dump the message to a file, and erase from the database (in case of potential out-of-memory errors in mail queue screen).
      *
-     * @param array $row The database row of the queued mail that failed
+     * @param  array $row The database row of the queued mail that failed
      */
     protected function fail_to_file(array $row)
     {

@@ -214,7 +214,7 @@ class Module_members
         if ($type == 'view') {
             return $this->profile();
         }
-        if ($type == 'unsub') {
+        if (($type == 'unsub') && (addon_installed('newsletter'))) {
             return $this->newsletter_unsubscribe();
         }
 

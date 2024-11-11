@@ -274,8 +274,6 @@ PHP;
             $tmp['blog'] = $blogs;
         }
         $archive_url = build_url($tmp, $zone);
-        $_is_on_rss = get_option('is_rss_advertised', true);
-        $is_on_rss = ($_is_on_rss === null) ? 0 : intval($_is_on_rss); // Set to zero if we don't want to show RSS links
         $submit_url = new Tempcode();
 
         if ((($blogs !== 1) || (has_privilege(get_member(), 'have_personal_category', 'cms_news'))) && (has_actual_page_access(null, ($blogs === 1) ? 'cms_blogs' : 'cms_news', null, null)) && (has_submit_permission(($blogs === 1) ? 'mid' : 'high', get_member(), get_ip_address(), ($blogs === 1) ? 'cms_blogs' : 'cms_news'))) {

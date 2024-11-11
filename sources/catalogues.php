@@ -431,7 +431,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
 
     // Possibly some extra stuff for shopping carts
     $extra_map = [];
-    if ($is_ecomm) {
+    if (($is_ecomm) && addon_installed('shopping')) {
         require_lang('shopping');
         $i = 0;
         for ($i = 0; $i < $num_entries; $i++) {
