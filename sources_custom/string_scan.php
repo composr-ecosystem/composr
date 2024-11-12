@@ -10479,6 +10479,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_POSTS
         NO_POSTS_YET
         NO_PT_FROM_ALLOW
+        _NO_PT_FROM_ALLOW
         NO_PASSWORD_RESET_ACCESS
         NO_RESULTS
         NO_RESULTS_DAYS
