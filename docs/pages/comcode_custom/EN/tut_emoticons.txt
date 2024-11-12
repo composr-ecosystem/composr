@@ -1,6 +1,6 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: The Composr emoticon system[/title]
 
-{!cns:DOC_EMOTICONS}
+{$IS_MAINTAINED,emoticons,Emoticons} (also known as smilies) are little images used to convey 'emotion' within text. These are an important part of informal communication on the Internet, as body language and tone are not available to (sub-consciously) transmit the same information.\n\nWithout use of emoticons, it can be impossible (unless the writer took great care to express themselves fully) to gauge unwritten details, such as the importance of what is being written, or the writer's emotional perspective on it.
 
 If you are using a third-party forum, that forum will be responsible for management of emoticons, and Composr will use those from the forum.
 

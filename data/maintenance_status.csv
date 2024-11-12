@@ -156,3 +156,4 @@ ffmpeg_thumbs,FFMPEG thumbnail generation,,,Not regularly tested. Could potentia
 long_google_cookies,full Google Analytics cookies,Composr Core Development Team,Composr Core Development Team,Not regularly tested. Could potentially break due to third-party changes.,No,
 karma,Karma non-bundled addon,"PDStig, LLC","PDStig, LLC",,Yes,
 early_access,Early access non-bundled addon,,,Not regularly tested. Needs a sponsor for regular maintenance.,Yes,
+emoticons,Emoticons,Composr Core Development Team,Composr Core Development Team,Emoticons can appear within text if their codenames exist within text. Spell check might warn of misspelled words in emoticon codenames when saving a page with emoticons on it.,No,
