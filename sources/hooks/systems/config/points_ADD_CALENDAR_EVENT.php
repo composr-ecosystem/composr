@@ -55,6 +55,6 @@ class Hook_config_points_ADD_CALENDAR_EVENT
             return null;
         }
 
-        return '100';
+        return addon_installed('points') ? '100' : null;
     }
 }
