@@ -62,7 +62,7 @@ class Block_main_staff_checklist
         [
         ]
 PHP;
-        $info['ttl'] = 60 * 5;
+        $info['ttl'] = 10; // Needs to be short given due times
         return $info;
     }
 
@@ -95,10 +95,8 @@ PHP;
             require_lang('staff_checklist');
             $tasks = [
                 do_lang('CHECKLIST_INITIAL_TASK_CONTENT'),
-                '[page="adminzone:admin_health_check"]' . do_lang('CHECKLIST_HEALTH_CHECK') . '[/page]',
                 '[url="' . do_lang('CHECKLIST_INITIAL_TASK_UPTIME_MONITOR') . '"]https://uptimerobot.com/[/url]',
-                (brand_name() == 'Composr') ? '[html]<p style="margin: 0">Facebook user? Like Composr on Facebook:</p><iframe src="https://composr.app/uploads/website_specific/cms_homesite/facebook.html" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:330px; height:20px;" allowTransparency="true"></iframe>[/html]' : '',
-                (brand_name() == 'Composr') ? '[page="adminzone:admin_version"]Consider helping out with the Composr project[/page]' : '',
+                (brand_name() == 'Composr') ? '[page="adminzone:admin_version"]Consider contributing to the Composr project[/page]' : '',
             ];
             foreach ($tasks as $task) {
                 $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', [
