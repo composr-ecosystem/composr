@@ -280,7 +280,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                     unset($cron_hooks[$hook]);
                     continue;
                 }
-                if (!isset($cron_progression[$hook]) && ($info['enabled_by_default'] === false)) { // New hook must be manually enabled
+                if (!isset($cron_progression[$hook]) && ((!isset($info['enabled_by_default'])) || ($info['enabled_by_default'] === false))) { // New hook must be manually enabled
                     if ($verbose) {
                         $log_message = loggable_date() . ' Skipping ' . $hook . ' as it is disabled by default and has not yet been enabled' . "\n";
                         $ret .= $log_message;
