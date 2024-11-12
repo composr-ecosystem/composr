@@ -46,6 +46,13 @@ class addon_guards_test_set extends cms_test_case
         'systems/ecommerce_tax' => 'ecommerce',
     ];
 
+    // A list of expressions of class::function where we require use of !addon_installed__messaged, not !addon_installed.
+    protected $must_use_messaged = [
+        'Block_\w+\:\:run',
+        'Module_\w+\:\:(pre_run|run_start|run)',
+        '__global:\:\w+_script', // We assume entry point scripts always use a *_script function
+    ];
+
     public function setUp()
     {
         parent::setUp();
@@ -60,6 +67,9 @@ class addon_guards_test_set extends cms_test_case
     {
         $info = 'testAddonGuardsCohesion: This is an aggressive test; consider reviewing the defined exceptions periodically for accuracy.';
         $this->dump($info, 'INFO');
+
+        $info = 'testAddonGuardsCohesion: This test does not check entry-point scripts to ensure use of !addon_installed__messaged; you must check those manually.';
+        $this->dump($info, 'NOTICE');
 
         require_code('files2');
 
@@ -243,6 +253,14 @@ class addon_guards_test_set extends cms_test_case
                         continue;
                     }
 
+                    // Check for improper use of !addon_installed regardless of addon
+                    foreach ($this->must_use_messaged as $check) {
+                        if (preg_match('#^' . $check . '$#', $class_name . '::' . $function_name) != 0) {
+                            $ok = (strpos($code, '!addon_installed(') === false);
+                            $this->assertTrue($ok, 'Must use !addon_installed__messaged, not !addon_installed, in ' . $path . ' for ' . $class_name . '::' . $function_name);
+                        }
+                    }
+
                     $has = (strpos($code, 'addon_installed(\'' . addslashes($addon_name) . '\')') !== false) || (strpos($code, 'addon_installed__messaged(\'' . addslashes($addon_name) . '\'') !== false);
 
                     // For cns_forum, it is also acceptable to run a get_forum_type() check on 'cns' as the guard.
@@ -330,6 +348,7 @@ class addon_guards_test_set extends cms_test_case
             'Hook_preview_\w+' => 'applies',
             'Hook_ecommerce_\w+' => 'is_available',
             'Module_admin_setupwizard' => 'has_themewizard_step', // Does not actually disable the class, but we use it in place of checking for the themewizard addon
+            'Hook_rss_\w+' => 'has_access', // Careful! Make sure run is calling this.
         ];
 
         // Map of path::class_name::function_name to an array of addons which we always consider guarded even if not explicitly defined
@@ -359,13 +378,13 @@ class addon_guards_test_set extends cms_test_case
             }
         }
 
+        $debug = [];
+
         foreach ($addons as $addon_name => $ob) {
             $files = $ob->get_file_list();
 
             $dependencies = $ob->get_dependencies();
             $requires = $dependencies['requires'];
-
-            $debug = [];
 
             foreach ($files as $path) {
                 if ($path == 'data_custom/execute_temp.php') {
@@ -530,43 +549,25 @@ class addon_guards_test_set extends cms_test_case
 
                                     if ($token_text == '{') {
                                         if (trim($condition_buffer) != '') { // We probably just finished up collecting if conditions, so process them
-                                            // Search for addon_installed conditions and note the addons contained in them
-                                            $matches = [];
-                                            if (preg_match_all('/(addon|\!addon)_installed\(\'(\w+)\'/', $condition_buffer, $matches) > 0) {
-                                                foreach ($matches[0] as $i => $match) {
-                                                    if (strpos($match, '!') !== 0) {
-                                                        $guard_buffer[] = $matches[2][$i];
+                                            // Search for addon_installed and addon_installed__messaged conditions and note the addons contained in them
+                                            $expressions = ['/(addon|\!addon)_installed\(\'(\w+)\'/', '/(addon|\!addon)_installed__messaged\(\'(\w+)\'/'];
+                                            foreach ($expressions as $expression) {
+                                                $matches = [];
+                                                if (preg_match_all($expression, $condition_buffer, $matches) > 0) {
+                                                    foreach ($matches[0] as $i => $match) {
+                                                        if (strpos($match, '!') !== 0) {
+                                                            $guard_buffer[] = $matches[2][$i];
 
-                                                        // news_shared can also be guarded with news
-                                                        if ($matches[2][$i] == 'news') {
-                                                            $guard_buffer[] = 'news_shared';
-                                                        }
-                                                    } elseif (count($active_guards) > 0) { // We assume a negated guard will always return, so this behaves the same as a positive guard on its parent
-                                                        $active_guards[count($active_guards) - 1][] = $matches[2][$i];
-                                                        // news_shared can also be guarded with news
-                                                        if ($matches[2][$i] == 'news') {
-                                                            $active_guards[count($active_guards) - 1][] = 'news_shared';
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            // Search for addon_installed__messaged conditions and note the addons contained in them
-                                            $matches = [];
-                                            if (preg_match_all('/(addon|\!addon)_installed__messaged\(\'(\w+)\'/', $condition_buffer, $matches) > 0) {
-                                                foreach ($matches[0] as $i => $match) {
-                                                    if (strpos($match, '!') !== 0) {
-                                                        $guard_buffer[] = $matches[2][$i];
-
-                                                        // news_shared can also be guarded with news
-                                                        if ($matches[2][$i] == 'news') {
-                                                            $guard_buffer[] = 'news_shared';
-                                                        }
-                                                    } elseif (count($active_guards) > 0) { // We assume a negated guard will always return, so this behaves the same as a positive guard on its parent
-                                                        $active_guards[count($active_guards) - 1][] = $matches[2][$i];
-                                                        // news_shared can also be guarded with news
-                                                        if ($matches[2][$i] == 'news') {
-                                                            $active_guards[count($active_guards) - 1][] = 'news_shared';
+                                                            // news_shared can also be guarded with news
+                                                            if ($matches[2][$i] == 'news') {
+                                                                $guard_buffer[] = 'news_shared';
+                                                            }
+                                                        } elseif (count($active_guards) > 0) { // We assume a negated guard will always return, so this behaves the same as a positive guard on its parent
+                                                            $active_guards[count($active_guards) - 1][] = $matches[2][$i];
+                                                            // news_shared can also be guarded with news
+                                                            if ($matches[2][$i] == 'news') {
+                                                                $active_guards[count($active_guards) - 1][] = 'news_shared';
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -576,9 +577,12 @@ class addon_guards_test_set extends cms_test_case
                                             if (strpos($condition_buffer, 'get_forum_type() == \'cns\'') !== false) {
                                                 $guard_buffer[] = 'cns_forum';
                                             }
+                                            if ((count($active_guards) > 0) && (strpos($condition_buffer, 'get_forum_type() != \'cns\'') !== false)) { // We assume a negated guard will always return, so this behaves the same as a positive guard on its parent
+                                                $active_guards[count($active_guards) - 1][] = 'cns_forum';
+                                            }
 
                                             $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_CODE_BLOCK (buffer): ' . $condition_buffer;
-                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_CODE_BLOCK (guards): ' . implode(',', $guard_buffer);
+                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_CODE_BLOCK (active guards): ' . json_encode($active_guards, JSON_PRETTY_PRINT);
                                         } else {
                                             $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_CODE_BLOCK';
                                         }
@@ -629,19 +633,21 @@ class addon_guards_test_set extends cms_test_case
 
                                                 if (($included_file != '') && isset($files_in_addons[$included_file])) {
                                                     $file_in_addon = $files_in_addons[$included_file];
-                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'Call belongs to addon ' . $file_in_addon;
+                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'BELONGS to addon ' . $file_in_addon;
                                                     if (
-                                                        ($file_in_addon != $addon_name) &&
-                                                        (substr($file_in_addon, 0, 5) != 'core_') &&
-                                                        ($file_in_addon != 'core') &&
-                                                        (strpos($path, $file_in_addon) === false) && // looks like a hook for this addon
-                                                        ((!in_array($file_in_addon, $requires)) && ((!in_array('news', $requires)) || ($file_in_addon != 'news_shared')))
+                                                        ($file_in_addon != $addon_name) && // No need to guard against itself
+                                                        (substr($file_in_addon, 0, 5) != 'core_') && // Core addons will always be installed
+                                                        ($file_in_addon != 'core') && // Core addons will always be installed
+                                                        (
+                                                            (!in_array($file_in_addon, $requires)) && // No need to guard if the addon was marked required
+                                                            ((!in_array('news', $requires)) || ($file_in_addon != 'news_shared')) // news / news_shared
+                                                        )
                                                     ) {
                                                         $found_guard = false;
 
                                                         // Explicit exceptions
                                                         if (isset($exceptions[$path . '::' . $class_name . '::' . $function_name]) && (in_array($file_in_addon, $exceptions[$path . '::' . $class_name . '::' . $function_name]))) {
-                                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'EXCEPTION defined for addon guard ' . $file_in_addon;
+                                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'EXCEPTION defined for addon';
                                                             $found_guard = true;
                                                         }
 
@@ -649,7 +655,7 @@ class addon_guards_test_set extends cms_test_case
                                                         if (!$found_guard) {
                                                             foreach ($global_guards as $active_guard) {
                                                                 if ($file_in_addon == $active_guard) {
-                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'FOUND global addon guard ' . $file_in_addon;
+                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'GUARDED globally';
                                                                     $found_guard = true;
                                                                     break;
                                                                 }
@@ -660,7 +666,7 @@ class addon_guards_test_set extends cms_test_case
                                                         if (!$found_guard) {
                                                             foreach ($active_guards as $_active_guards) {
                                                                 if (in_array($file_in_addon, $_active_guards)) {
-                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'FOUND addon guard ' . $file_in_addon;
+                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'GUARDED';
                                                                     $found_guard = true;
                                                                     break;
                                                                 }
@@ -675,13 +681,19 @@ class addon_guards_test_set extends cms_test_case
                                                                 $hook_subtype = $matches_hook_details[2];
 
                                                                 if ((array_key_exists($hook_type . '/' . $hook_subtype, $this->hook_ownership)) && ($file_in_addon == $this->hook_ownership[$hook_type . '/' . $hook_subtype])) {
-                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'FOUND hook ownership ' . $file_in_addon;
+                                                                    $debug[$path . '::' . $class_name . '::' . $function_name][] = 'GUARDED via hook ownership';
                                                                     $found_guard = true;
                                                                 }
                                                             }
                                                         }
 
+                                                        if (!$found_guard) {
+                                                            $debug[$path . '::' . $class_name . '::' . $function_name][] = 'NOT GUARDED!!!';
+                                                        }
+
                                                         $this->assertTrue($found_guard, 'The call to ' . $active_call . '(\'' . $active_call_param . '\') in ' . $path . '::' . $class_name . '::' . $function_name . ' seems to be missing an addon guard for ' . $file_in_addon);
+                                                    } else {
+                                                        $debug[$path . '::' . $class_name . '::' . $function_name][] = 'NO GUARD NEEDED; either is itself, a core addon, or listed as a required dependency';
                                                     }
                                                 }
 
@@ -700,10 +712,10 @@ class addon_guards_test_set extends cms_test_case
                     }
                 }
             }
+        }
 
-            if ($this->debug) {
-                $this->dump($debug, 'DEBUG');
-            }
+        if ($this->debug) {
+            $this->dump($debug, 'DEBUG');
         }
     }
 }

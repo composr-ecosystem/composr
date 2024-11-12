@@ -68,9 +68,8 @@ class Block_bottom_rss
         if (!addon_installed__messaged('syndication_blocks', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news')) {
-            return do_template('RED_ALERT', ['_GUID' => 'v8iz3vqc9lpgf554antlpja9ewhunyvm', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
+        if (!addon_installed__messaged('news', $error_msg)) {
+            return $error_msg;
         }
 
         $block_id = get_block_id($map);

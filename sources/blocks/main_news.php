@@ -130,9 +130,8 @@ PHP;
         if (!addon_installed__messaged('news', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', ['_GUID' => 'd791iqh0ytnpf0azwolpxojd881q9ir2', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
+        if (!addon_installed__messaged('news_shared', $error_msg)) {
+            return $error_msg;
         }
 
         require_lang('cns');

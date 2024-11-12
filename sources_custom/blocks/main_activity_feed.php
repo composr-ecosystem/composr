@@ -188,7 +188,7 @@ PHP;
                     'IS_PUBLIC' => $is_public,
                     'LANG_STRING' => $lang_string,
                     'ADDON' => $row['a_addon'],
-                    'ADDON_ICON' => (($row['a_addon'] == '') || (!addon_installed($row['a_addon']))) ? '' : find_addon_icon($row['a_addon']),
+                    'ADDON_ICON' => (($row['a_addon'] != '') && (addon_installed($row['a_addon']))) ? find_addon_icon($row['a_addon']) : '',
                     'MESSAGE' => $message,
                     'AVATAR' => $member_avatar,
                     'MEMBER_ID' => strval($row['a_member_id']),

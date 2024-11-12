@@ -130,10 +130,14 @@ class maintenance_codes_test_set extends cms_test_case
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
         while (($row = $sheet_reader->read_row()) !== false) {
+            // Disallow plural
+            $this->assertTrue((strpos($row['Testing automation'], 'automated tests') === false), 'You should list each test individually as \'directory/test automated test\' in ' . $row['Codename']);
+
             $matches = [];
-            if (preg_match('#(\w+) automated test#', $row['Testing automation'], $matches) != 0) {
-                $test = $matches[1];
-                $this->assertTrue($this->existing_test($test), 'Could not find referenced test, ' . $test);
+            if (preg_match_all('#([\/\w]+) automated test#', $row['Testing automation'], $matches) != 0) {
+                foreach ($matches[1] as $test) {
+                    $this->assertTrue($this->existing_test($test), 'Could not find referenced test in maintenance status CSV file, ' . $test);
+                }
             }
         }
         $sheet_reader->close();
@@ -143,12 +147,11 @@ class maintenance_codes_test_set extends cms_test_case
         $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
         $matches = [];
-        $num_matches = preg_match_all('#Automated test \(\[tt\](\w+)\[/tt\]\)#i', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $test = $matches[1][$i];
-            $this->assertTrue($this->existing_test($test), 'Could not find referenced test, ' . $test);
+        if (preg_match_all('#Automated test \[tt\]([\w\/]+)\[\/tt\]#i', $c, $matches) != 0) {
+            foreach ($matches[1] as $test) {
+                $this->assertTrue($this->existing_test($test), 'Could not find referenced test in codebook standards, ' . $test);
+            }
         }
-
         // third_party_code test also tests some references
     }
 
@@ -161,11 +164,18 @@ class maintenance_codes_test_set extends cms_test_case
      */
     protected function existing_test(string $test) : bool
     {
+        /*
         $test_directories = ['async_tests', 'cli_tests', 'first_tests', 'regression_tests', 'sync_tests'];
         foreach ($test_directories as $dir) {
             if (is_file(get_file_base() . '/_tests/tests/' . $dir . '/' . $test . '.php')) {
                 return true;
             }
+        }
+        */
+
+        // Actually we want references to include the base test directory
+        if (is_file(get_file_base() . '/_tests/tests/' . $test . '.php')) {
+            return true;
         }
 
         return false;

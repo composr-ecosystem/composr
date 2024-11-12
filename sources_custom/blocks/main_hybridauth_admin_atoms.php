@@ -75,11 +75,12 @@ PHP;
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
-        $block_id = get_block_id($map);
-
-        if (!addon_installed('hybridauth')) {
-            return do_template('RED_ALERT', ['_GUID' => '1002b1292dfbc985f873480eb60407c6', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('hybridauth'))]);
+        $errormsg = new Tempcode();
+        if (!addon_installed__messaged('hybridauth', $errormsg)) {
+            return $errormsg;
         }
+
+        $block_id = get_block_id($map);
 
         require_code('hybridauth_admin');
         require_lang('hybridauth');

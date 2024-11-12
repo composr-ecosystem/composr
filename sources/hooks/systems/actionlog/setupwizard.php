@@ -33,6 +33,9 @@ class Hook_actionlog_setupwizard extends Hook_actionlog
         if (!addon_installed('setupwizard')) {
             return [];
         }
+        if (!addon_installed('actionlog')) {
+            return [];
+        }
 
         require_lang('actionlog');
 

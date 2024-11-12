@@ -66,8 +66,9 @@ PHP;
      */
     public function run(array $map) : object
     {
-        if (!addon_installed('stats')) {
-            return do_template('RED_ALERT', ['_GUID' => 'bbf4b0ec01e74e1dd8d0be2bc13f2232', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('stats'))]);
+        $errormsg = new Tempcode();
+        if (!addon_installed__messaged('stats', $errormsg)) {
+            return $errormsg;
         }
 
         require_code('stats');

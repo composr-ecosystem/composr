@@ -78,9 +78,8 @@ PHP;
         if (!addon_installed__messaged('image_slider', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('galleries')) {
-            return do_template('RED_ALERT', ['_GUID' => 'cer2r1bqzio6b98ksizgsptqnvidthq6', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))]);
+        if (!addon_installed__messaged('galleries', $error_msg)) {
+            return $error_msg;
         }
 
         require_css('skitter');

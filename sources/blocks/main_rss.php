@@ -68,9 +68,8 @@ class Block_main_rss
         if (!addon_installed__messaged('syndication_blocks', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news')) {
-            return do_template('RED_ALERT', ['_GUID' => 'u0z4xtei5rorsx4ahx6gxuol8y64yi29', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
+        if (!addon_installed__messaged('news', $error_msg)) {
+            return $error_msg;
         }
 
         require_lang('news');

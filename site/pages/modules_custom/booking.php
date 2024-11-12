@@ -208,12 +208,11 @@ class Module_booking
         if (!addon_installed__messaged('booking', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('calendar')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('calendar')));
+        if (!addon_installed__messaged('calendar', $error_msg)) {
+            return $error_msg;
         }
-        if (!addon_installed('ecommerce')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce')));
+        if (!addon_installed__messaged('ecommerce', $error_msg)) {
+            return $error_msg;
         }
 
         $type = get_param_string('type', 'browse');

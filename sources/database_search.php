@@ -189,13 +189,15 @@ function can_use_fast_custom_index(string $hook, ?object $db = null, ?string $in
 
     // Positive, should use for these reasons...
 
-    if ($search_query !== null) {
-        $_trigger_ngrams = get_option('fast_custom_index__enable_for_ngrams');
-        $trigger_ngrams = ($_trigger_ngrams == '') ? [] : array_map('cms_mb_strtolower', array_map('trim', explode(',', $_trigger_ngrams)));
+    if (addon_installed('search')) {
+        if ($search_query !== null) {
+            $_trigger_ngrams = get_option('fast_custom_index__enable_for_ngrams');
+            $trigger_ngrams = ($_trigger_ngrams == '') ? [] : array_map('cms_mb_strtolower', array_map('trim', explode(',', $_trigger_ngrams)));
 
-        if (!empty($trigger_ngrams)) {
-            if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_ngrams))) {
-                return true; // We will use the fast custom index if there's certain trigger ngrams
+            if (!empty($trigger_ngrams)) {
+                if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_ngrams))) {
+                    return true; // We will use the fast custom index if there's certain trigger ngrams
+                }
             }
         }
     }
@@ -228,7 +230,11 @@ function can_use_fast_custom_index(string $hook, ?object $db = null, ?string $in
         return ($default_choice == '1'); // Explicitly specified by config for current language
     }
 
-    return (get_option('fast_custom_index__enable') == '1');
+    if (addon_installed('search')) {
+        return (get_option('fast_custom_index__enable') == '1');
+    }
+
+    return false;
 }
 
 /**
@@ -278,19 +284,22 @@ class Fast_custom_index
 
         // Load configuration
         global $SEARCH_CONFIG_OVERRIDE;
+        $allow_fuzzy_search = false;
+        $scale_by_commonality = false;
+        $use_imprecise_ordering = false;
         if (isset($SEARCH_CONFIG_OVERRIDE['fast_custom_index__allow_fuzzy_search'])) {
             $allow_fuzzy_search = ($SEARCH_CONFIG_OVERRIDE['fast_custom_index__allow_fuzzy_search'] == '1');
-        } else {
+        } elseif (addon_installed('search')) {
             $allow_fuzzy_search = (get_option('fast_custom_index__allow_fuzzy_search') == '1');
         }
         if (isset($SEARCH_CONFIG_OVERRIDE['fast_custom_index__scale_by_commonality'])) {
             $scale_by_commonality = ($SEARCH_CONFIG_OVERRIDE['fast_custom_index__scale_by_commonality'] == '1');
-        } else {
+        } elseif (addon_installed('search')) {
             $scale_by_commonality = (get_option('fast_custom_index__scale_by_commonality') == '1');
         }
         if (isset($SEARCH_CONFIG_OVERRIDE['fast_custom_index__use_imprecise_ordering'])) {
             $use_imprecise_ordering = ($SEARCH_CONFIG_OVERRIDE['fast_custom_index__use_imprecise_ordering'] == '1');
-        } else {
+        } elseif (addon_installed('search')) {
             $use_imprecise_ordering = (get_option('fast_custom_index__use_imprecise_ordering') == '1');
         }
 
@@ -936,7 +945,12 @@ class Fast_custom_index
      */
     public static function max_ngram_size(string $lang) : int
     {
-        return intval(get_value('fast_custom_index__max_ngram_size__' . $lang, get_option('fast_custom_index__max_ngram_size')));
+        $default = '1'; // FUDGE: Hard-coded default if search is not installed
+        if (addon_installed('search')) {
+            $default = get_option('fast_custom_index__max_ngram_size');
+        }
+
+        return intval(get_value('fast_custom_index__max_ngram_size__' . $lang, $default));
     }
 
     /**
@@ -992,6 +1006,9 @@ class Fast_custom_index
     {
         static $ob = null;
         if ($ob === null) {
+            if (!addon_installed('search')) {
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
             require_code('crc24');
             $ob = new CRC24();
         }
@@ -2988,6 +3005,12 @@ function generate_text_summary(string $_temp_summary, array $words_searched, ?in
  */
 function build_search_results_interface(array $results, int $start, int $max, string $direction, bool $general_search = false) : object
 {
+    // Search is needed for the templates
+    $errormsg = new Tempcode();
+    if (!addon_installed__messaged('search', $errormsg)) {
+        return $errormsg;
+    }
+
     require_code('content');
 
     $out = new Tempcode();

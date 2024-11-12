@@ -211,35 +211,35 @@ Write comments in the standard way
 Blank lines at the end of files
 | Portability
 | Product development only
-| Automated test ([tt]basic_code_formatting.php[/tt])
+| Automated test [tt]async_tests/basic_code_formatting[/tt]
 | There is a Unix standard that text files should have a terminating line break. As various tools enforce this we standardise on a single line-break for most files. A few exceptions are defined within the automated test for the rare cases where we can't do this.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Unix line endings
 | Consistency
 | Product development only
-| Automated test ([tt]basic_code_formatting.php[/tt])
+| Automated test [tt]async_tests/basic_code_formatting[/tt]
 | We work in Unix line-ending format, not Windows.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 No trailing whitespace
 | Consistency
 | Product development only
-| Automated test ([tt]basic_code_formatting.php[/tt])
+| Automated test [tt]async_tests/basic_code_formatting[/tt]
 | Unless there's a good reason, we don't want floating white-space on the end of lines of code. It's messy.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 No BOM markers
 | Stability
 | All development
-| Automated test ([tt]basic_code_formatting.php[/tt])
+| Automated test [tt]async_tests/basic_code_formatting[/tt]
 | Many programs are not compatible with byte-order-markers.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Use ASCII
 | Stability
 | Composr development +
-| Automated test ([tt]basic_code_formatting.php[/tt])
+| Automated test [tt]async_tests/basic_code_formatting[/tt]
 | In order to avoid having to configure IDEs and text editors on what character set to use, and problems with Composr running on different character sets, just make it so your code files don't require any specific character set. Certainly don't have your code outputting non-ASCII characters directly -- encode such characters in some smarter way, e.g. using HTML entities.
 |}
 
@@ -295,7 +295,7 @@ Use short array syntax
 Align functions precisely in code
 | Modularity: So Composr code-overriding can work on it
 | Composr development +
-| Automated test ([tt]_override_issues.php[/tt])
+| Automated test [tt]sync_tests/override_issues[/tt]
 | Functions must not be indented in code, and methods must be indented by exactly 4 spaces. There must be exactly one space after the [tt]function[/tt] keyword and no tabs. Braces must go on the next line with the same indentation as the function and the closing brace must match too. The contents of the function must be 4 spaces deeper.
 These rules are very standard, but if broken then code-overriding may not work correctly because Composr assumes them while doing efficient function-level overriding (there is no full PHP parser involved).
 |-
@@ -520,7 +520,7 @@ Template GUIDs must be unique
 Put standard [tt]index.html[/tt] and [tt].htaccess[/tt] files in new directories
 | Security: stops probing/tunnelling
 | Composr development +
-| Automated test ([tt]standard_dir_files.php[/tt])
+| Automated test [tt]sync_tests/standard_dir_files[/tt]
 | Almost all directories should contain an empty [tt]index.html[/tt] (to stop directory browsing on web servers that have it enabled). Most directories should also contain the small [tt].htaccess[/tt] file (copy it from another deep directory) that we use to block direct file access. If you strictly need to block access to a directory for security reasons you should also update [tt]web.config[/tt] to reflect that (for IIS users).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -611,7 +611,7 @@ Don't write code that'll output PHP 'notice' errors
 Allow initialisation functions to run twice
 | Stability
 | Product development only
-| Automated test ([tt]_override_issues.php[/tt])
+| Automated test [tt]sync_tests/override_issues[/tt]
 | If a developer overrides a [tt].php[/tt] file then the initialisation function of the original will also run. The person doing the override doesn't usually understand this and accommodate for it, so make sure you check that you are not doing anything that can't run twice. Usually this just involves guarding [tt]define[/tt] calls.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -701,42 +701,42 @@ Use the correct redirection APIs
 All files must be associated with an addon
 | Modularity
 | Product development only
-| Automated test ([tt]modularisation.php[/tt])
+| Automated test [tt]first_tests/modularisation[/tt]
 | Every file intended to be distributed with Composr must be registered in one addon, installation / uninstallation / integrity-scans. To do this list it in the obvious position within one of the [tt]sources/hooks/systems/addon_registry[/tt] files. If it is a PHP file it should have a matching [tt]@package[/tt] line at the top of the file.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Manage any interdependencies between addons[/color]
 | Modularity: so addons may be uninstalled freely
 | Product development only
-| Manually, Automated test ([tt]addon_references.php[/tt]) helps a bit, Automated test ([tt]addon_guards.php[/tt]) helps a bit
+| Manually, Automated test [tt]async_tests/addon_references[/tt] helps a bit, Automated test [tt]sync_tests/addon_guards[/tt] helps a bit
 | Dependencies should be properly handled via hooks, using the [tt]get_dependencies[/tt] function in the [tt]addon_registry[/tt] hook (i.e. say addons only work if some other addon is also there), and via code that uses the [tt]addon_installed[/tt] function to guard off the dependency. For example, if you used the [tt]galleries[/tt] addon in some feature in the [tt]downloads[/tt] addon, you would make sure the [tt]downloads[/tt] addon did not break if the [tt]galleries[/tt] addon was uninstalled (instead you'd write code to turn off the feature if the dependency was not met, or return an error message via the [tt]ADDON_MISSING[/tt] language string).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Hooks should not crash for missing dependencies
 | Integrity
 | Product development only
-| Automated test ([tt]addon_guards.php[/tt])
+| Automated test [tt]sync_tests/addon_guards[/tt]
 | Hooks should not crash for missing dependencies (including the files owner addon), they should just exit cleanly.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Blocks should not crash for missing dependencies
 | Integrity
 | Product development only
-| Automated test ([tt]addon_guards.php[/tt])
+| Automated test [tt]sync_tests/addon_guards[/tt]
 | Blocks should not crash for missing dependencies (including the files owner addon), they should just put out an error as the block output. The [tt]addon_installed__messaged[/tt] function may be used for the check on the files owner addon.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Modules should not crash for missing dependencies
 | Integrity
 | Product development only
-| Automated test ([tt]addon_guards.php[/tt])
+| Automated test [tt]sync_tests/addon_guards[/tt]
 | Modules should not crash for missing dependencies (including the files owner addon), they should just put out an error. The [tt]addon_installed__messaged[/tt] function may be used for the check on the files owner addon.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Entry-point scripts should not crash for missing dependencies
 | Integrity
 | Product development only
-| Automated test ([tt]addon_guards.php[/tt])
+| Automated test [tt]sync_tests/addon_guards[/tt]
 | Entry-point scripts should not crash for missing dependencies (including the files owner addon), they should just put out an error.
 |}
 
@@ -972,7 +972,7 @@ Be type-strict
 Avoid complex SQL
 | Portability
 | Product development only
-| Automated test ([tt]_installer_xml_db.php[/tt], [tt]database_unsupported_sql.php[/tt])
+| Automated test [tt]cli_tests/_installer_xml_db[/tt], Automated test [tt]async_tests/database_unsupported_sql[/tt]
 | You cannot use SQL syntax that is not widely supported, unless the [tt]db_function[/tt] function supports it. Expressions on aggregate functions are not allowed.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -986,7 +986,7 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 ]Don't use ` symbols in your SQL and don't use keywords for table/field names
 | Portability: they are MySQL-specific
 | Product development only
-| Automated test ([tt]_installer_xml_db.php[/tt]), table creation code checks
+| Automated test [tt]cli_tests/_installer_xml_db[/tt], table creation code checks
 | You will have been forced to choose field names that don't require escaping anyway.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1000,7 +1000,7 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 Use [tt]db_string_equal_to[/tt]
 | Portability: Oracle
 | Product development only
-| Automated test ([tt]database_unsupported_sql.php[/tt])
+| Automated test [tt]async_tests/database_unsupported_sql[/tt]
 | Do not build string equalities into WHERE clauses directly (e.g. [tt]WHERE foo='bar'[/tt]), use the [tt]db_string_equal_to[/tt] function (e.g. [tt]WHERE ' . db_string_equal_to('foo', 'bar')[/tt]).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1070,7 +1070,7 @@ No null strings
 Define [tt]privacy[/tt] hooks, Manually
 | GDPR
 | Composr development +
-| Automated test ([tt]privacy_hooks.php[/tt])
+| Automated test [tt]async_tests/privacy_hooks[/tt]
 | Any member-ID, IP address, e-mail address, or human-name fields need to be managed for GDPR purposes. This includes support for downloading (serialising), deleting, and anonymising. Serialised content should be understandable without further context, so things like category titles may need to be included (if important) rather than IDs. Database records often should not be deleted without further consideration, so proper deletion API calls should be codified.
 |}
 
@@ -1182,7 +1182,7 @@ Use [tt]_SCREEN[/tt] templates
 Implement screen previews for new templates and maintain them with template changes
 | Testability
 | Product development only
-| Automated test ([tt]template_previews.php[/tt])
+| Automated test [tt]sync_tests/_template_previews[/tt]
 | Previews allow themers to confirm a theme works on all screens, and allow us to do mass-checks of HTML.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1403,7 +1403,7 @@ Specific guidance for input forms...
 List block parameters
 | Usability for webmasters
 | Product development only
-| Automated test ([tt]blocks.php[/tt])
+| Automated test [tt]async_tests/blocks[/tt]
 | Define all block parameters in the block code itself (in the [tt]info[/tt] function for the block) then document all block parameters via inserting the language strings in language files for the addon the block is a part of (see how it's done for existing blocks for examples).
 |}
 
@@ -1452,21 +1452,21 @@ List block parameters
 Use terminology with consistency
 | Usability
 | Product development only
-| Automated test ([tt]lang_spelling.php[/tt])
+| Automated test [tt]async_tests/lang_spelling[/tt]
 | Apply consistency to your terminology. Sometimes multi-word proper nouns are given hyphens (e.g. "multi-word"), sometimes concatenation is used (e.g. "multiword"), sometimes abbreviation is used by just using the first letters placed together as capitals (e.g. "MW"), and sometimes each word is given in capitals (e.g. "Multi Word"). All this inconsistency is ingrained in English, but for any single term, reference it in a uniform way. We do not usually use the antiquated form of abbreviations using dots (e.g. "M.W.").
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Don't pollute [tt]global.ini[/tt][/color]
 | Technical debt
 | Product development only
-| Manually, Automated test to limit [tt].ini[/tt] file size ([tt]lang_ini_size.php[/tt])
+| Manually, Automated test to limit [tt].ini[/tt] file size ([tt]lang_ini_size[/tt]
 | If phrases are not general to the rest of Composr, then put them in a language file that can be individually included by a module.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Most lang strings support HTML, some do not: be aware
 | Stability
 | Product development only
-| Automated test ([tt]lang_html_safe.php[/tt])
+| Automated test [tt]async_tests/lang_html_safe[/tt]
 | You may assume language strings can contain HTML. There are only a few exceptions where this is not true. Theoretically the burden usually lies on code removing HTML formatting that is there and can't be used, rather than the other-way-around. Practically, there are some cases where HTML entities are allowed but not HTML tags (e.g. if a language string is used for a [tt]title[/tt] attribute), and you will just need to use your judgement and test if you change an existing language string to include HTML tags. The flip-side to HTML being allowed is that you must encode things like the ampersand symbol as entities.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1480,7 +1480,7 @@ Most lang strings support HTML, some do not: be aware
 Don't use the name "Composr", use the phrase "the software"
 | Debranding
 | Product development only
-| Automated test ([tt]lang_spelling.php[/tt])
+| Automated test [tt]async_tests/lang_spelling[/tt]
 | 
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1508,7 +1508,7 @@ End form field descriptions with a full stop
 Encode pluralisation in language strings
 | Usability
 | Composr development +
-| Automated test ([tt]lang_misc.php[/tt])
+| Automated test [tt]async_tests/lang_misc[/tt]
 | Use the [tt]There are {1} {1|thing|things}[/tt] syntax to use the correct word pluralisation form depending on if the language string parameter is a singular number or not.
 Non-English languages may invent their own syntax, which is outside the scope of these coding standards.
 |-
@@ -1516,7 +1516,7 @@ Non-English languages may invent their own syntax, which is outside the scope of
 Encode article+noun vowel rule correctly in language strings
 | Usability
 | Composr development +
-| Automated test ([tt]lang_misc.php[/tt])
+| Automated test [tt]async_tests/lang_misc[/tt]
 | Use the [tt]{1|A|An} {1}[/tt] syntax to use the correct article word depending on if the language string parameter starts with a vowel or not.
 Non-English languages may invent their own syntax, which is outside the scope of these coding standards.
 |-
@@ -1531,7 +1531,7 @@ Non-English languages may invent their own syntax, which is outside the scope of
 Define administrative split
 | Internationalisation: ease of
 | Product development only
-| Automated test ([tt]lang_administrative_split.php[/tt])
+| Automated test [tt]lang_administrative_split[/tt]
 | The [tt]sources_custom/string_scan.php[/tt] lists which language strings are and are not administrative. This is done so that translation can be focused on the non-administrative strings only.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1561,7 +1561,7 @@ Respect the Queen of England ;), but also do not confuse Americans...
 [color="red"]Do not use American spellings such as [i]color[/i] or [i]center[/i] or [i]license[/i][/color]
 | Consistent UI
 | Product development only
-| Manually, Automated test in [tt]verbose[/tt] mode ([tt]lang_spelling.php[/tt])
+| Manually, Automated test in [tt]verbose[/tt] mode ([tt]lang_spelling[/tt]
 | Composr originates from the UK. We have special processing to support American English automatically. We only allow American spellings in a code-context, but this exemption also stops us automatically scanning for violations.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1575,7 +1575,7 @@ Respect the Queen of England ;), but also do not confuse Americans...
 Say "tick (check)" rather than just "tick" or just "check"
 | Internationalisation
 | Product development only
-| Automated test ([tt]lang_spelling.php[/tt])
+| Automated test [tt]async_tests/lang_spelling[/tt]
 | The word "tick" in British English is "check" in American English (referring to the square 'tickbox'/'checkbox' on HTML forms). Due to this disparity, write both like "tick (check)".
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1650,7 +1650,7 @@ Use [tt]CHANGE[/tt] and [tt]PER_PAGE[/tt] where appropriate
 [color="red"]Use tabs for HTML code[/color]
 | Performance
 | Product development only
-| [tt].editorconfig[/tt] / Automated test ([tt]basic_code_formatting.php[/tt])
+| [tt].editorconfig[/tt] / Automated test [tt]async_tests/basic_code_formatting[/tt]
 | HTML code (e.g. in templates) should be written using tab for indentations rather than spaces, unlike most other file types in Composr. This is to reduce page size slightly (while JavaScript and CSS is minified, HTML is not due to the overhead and risk of doing so).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1694,21 +1694,21 @@ Use the Tempcode escaping syntax correctly
 Meet WCAG (Web Content Accessibility Guidelines) and {$IS_MAINTAINED,standard_accessibility,ATAG}
 | Accessibility
 | Composr development +
-| Automated test ([tt]template_previews.php[/tt])
+| Automated test [tt]sync_tests/_template_previews[/tt]
 | Meet WCAG (Web Content Accessibility Guidelines) 1 level 3, and WCAG 2 (read them!). Write semantic markup. Always use the [tt]<p>[/tt] element to mark true paragraphs if they are not alone in a table cell, and if they are always going to be just one single paragraph. Images should not be wrapped in paragraphs. Short lines may be wrapped in paragraphs as/if you wish.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 No deprecated tags or attributes
 | Accessibility
 | Composr development +
-| Automated test ([tt]template_previews.php[/tt])
+| Automated test [tt]sync_tests/_template_previews[/tt]
 | Meet WCAG (Web Content Accessibility Guidelines) 1 level 3, and WCAG 2 (read them!). Write semantic markup. Always use the [tt]<p>[/tt] element to mark true paragraphs if they are not alone in a table cell, and if they are always going to be just one single paragraph. Images should not be wrapped in paragraphs. Short lines may be wrapped in paragraphs as/if you wish.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Write to XHTML5
 | Accessibility
 | Product development only
-| Firefox HTML validator extension / Automated test ([tt]template_previews.php[/tt])
+| Firefox HTML validator extension / Automated test [tt]sync_tests/_template_previews[/tt]
 | We don't actually output XHTML mime-type, or write JavaScript as XHTML-compatible, but we do have the actual markup be XHTML-compatible for better readability and tooling-parsability.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1729,7 +1729,7 @@ Write to XHTML5
 Avoid the [tt]style[/tt] attribute ("inline styles")
 | Technical debt
 | Product development only
-| Automated test ([tt]template_previews.php[/tt])
+| Automated test [tt]sync_tests/_template_previews[/tt]
 | Don't use the HTML style attribute except where you need to pass in styles contingent on template parameters.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1759,7 +1759,7 @@ Do not provide a choice of "open in new-window" and "open in same-window" links 
 Use [tt]{!LINK_NEW_WINDOW}[/tt]
 | Accessibility
 | Composr development +
-| Automated test ([tt]template_previews.php[/tt])
+| Automated test [tt]sync_tests/_template_previews[/tt]
 | When links are sent to new windows, remember to use [tt]{!LINK_NEW_WINDOW}[/tt] in the link title attribute. The purpose of the link should precede [tt]{!LINK_NEW_WINDOW}[/tt], so that the link title makes sense when read out alone.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1843,7 +1843,7 @@ Use standardised field [tt][name][/tt]s when autofill is desired
 Use comment encapsulation
 | Tooling: syntax highlighting
 | Product development only
-| Automated test ([tt]comment_encapsulation.php[/tt])
+| Automated test [tt]comment_encapsulation[/tt]
 | Tempcode directives should use comment encapsulation so that syntax highlighting in text editors works.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1881,7 +1881,7 @@ Use comment encapsulation
 [color="red"]Use tabs for CSS code[/color]
 | Consistency
 | Product development only
-| [tt].editorconfig[/tt] / Automated test ([tt]basic_code_formatting.php[/tt])
+| [tt].editorconfig[/tt] / Automated test [tt]async_tests/basic_code_formatting[/tt]
 | To keep things tidy we use tabs for indentation rather than spaces.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1895,7 +1895,7 @@ Use comment encapsulation
 Use reliable CSS
 | Compatibility with user computers, Standards compliance
 | Product development only
-| Automated test ([tt]template_previews.php[/tt])
+| Automated test [tt]sync_tests/_template_previews[/tt]
 | Only use standards-compliant CSS that works across all supported browsers. Test on all [page="_SEARCH:tut_browsers"]the browsers that we support[/page].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1978,14 +1978,14 @@ It works a lot better, is easier to understand, and the way our theme is built, 
 Don't leave cruft lying around
 | Technical debt, performance
 | Composr development +
-| Automated test ([tt]css_file.php[/tt]), or Firefox "Dustme selectors" addon
+| Automated test [tt]css_file[/tt], or Firefox "Dustme selectors" addon
 | Don't leave old unused styles in the CSS files.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Don't break the Theme Wizard
 | Themeing
 | Product development only
-| Automated test ([tt]missing_colour_equations.php[/tt])
+| Automated test [tt]missing_colour_equations[/tt]
 | If colours are added to the CSS then a proper Theme Wizard colour equation should also be added (see how it works for other colours for examples). The best thing to do is usually to re-use an existing colour definition -- not only does that make the colour palette consistent, it stops you needing to calculate a new equation. We made our calculations using Photoshop, by adding white/black layers above the [tt]seed[/tt] color and adjusting its opacity.
 [tt]/*{$,hardcoded_ok}*/[/tt] may be put next to a colour for very rare exceptions.
 |-
@@ -2000,7 +2000,7 @@ Don't break the Theme Wizard
 Use relative font sizes
 | Accessibility
 | Product development only
-| Automated test ([tt]web_resources.php[/tt])
+| Automated test [tt]web_resources[/tt]
 | We want output to be easily scalable, so write sizes using [tt]em[/tt]. It's really easy: if you want something smaller, use something like [tt]0.85em[/tt] and something bigger like [tt]1.1em[/tt]. The advantage to scaling is a themer can easily knock the whole theme's font sizing up, and also it is possible to proportional down-scale content for embed contexts. There is a tool to convert the default theme to [tt]px[/tt] units for designers who prefer it (professional designers have good reason to want to do pixel-perfect designs).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2014,7 +2014,7 @@ Use relative font sizes
 Use [tt]BETA_CSS_PROPERTY[/tt] instead of vendor prefixing
 | Future proofing
 | Composr development +
-| Automated test ([tt]css_beta.php[/tt])
+| Automated test [tt]css_beta[/tt]
 | Rather than setting up multiple vendor prefixes for CSS properties that need them, use the [tt]{$BETA_CSS_PROPERTY,...}[/tt] symbol around just one normal call to the CSS property as it would ideally be written in the future. This allows PHP code to automatically add vendor prefixing and make dynamic modifications should there be some kind of standards change in the future. Don't mark stuff beta if it works unprefixed on all supported browsers.
 |}
 
@@ -2067,7 +2067,7 @@ Stability checks defined for ESLint
 Do not use inline JavaScript
 | Security
 | Composr development +
-| Automated test ([tt]template_previews.php[/tt])
+| Automated test [tt]sync_tests/_template_previews[/tt]
 | We use CSP to avoid XSS vulnerabilities, so inline JS is blocked.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2081,7 +2081,7 @@ Do not use synchronous XmlHttpRequest
 Fix any strict warnings
 | Standards compliance, future proofing
 | Product development only
-| JavaScript files should have [tt]use strict;[/tt] in, automated test ([tt]js_strict_mode.php[/tt])
+| JavaScript files should have [tt]use strict;[/tt] in, automated test ([tt]js_strict_mode[/tt]
 | Our ESLint rules enforce some type strictness, with the exception that comparison to [tt]null[/tt] is weak and will intentionally also match [tt]undefined[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2116,14 +2116,14 @@ Fix any strict warnings
 Reference language strings in a safe way
 | Stability
 | All development
-| Automated test ([tt]js_lang_references.php[/tt])
+| Automated test [tt]js_lang_references[/tt]
 | Any language strings that are not in either [tt]global.ini[/tt] or [tt]critical_error.ini[/tt] must be referenced using the full [tt]{!file:CODENAME}[/tt] syntax. This is because we cannot assume what language files have already been explicitly loaded before any individual JavaScript file is evaluated.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Be careful with global functions and variables
 | Stability
 | Composr development +
-| Automated test ([tt]web_resources.php[/tt])
+| Automated test [tt]web_resources[/tt]
 | Generally do not use globals, but if you must then reference global variables and functions that are defined outside any particular [tt].js[/tt] file by explicitly prefixing them with [tt]window.[/tt]. This allows JavaScript code scanners to detect undeclared variables because there's no longer an ambiguity.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2137,14 +2137,14 @@ Be careful with global functions and variables
 [color="red"]Make images relative[/color]
 | Stability
 | Product development only
-| Automated test ([tt]js_standards.php[/tt])
+| Automated test [tt]js_standards[/tt]
 | Calls to [tt]{$IMG}[/tt] must be wrapped with [tt]$util.srl()[/tt]. This is because they need to be turned from absolute URLs to relative URLs, just in case a JavaScript file is cached under HTTP but used under HTTPS (it would generate a security error).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use relative base URLs[/color]
 | Stability
 | Product development only
-| Automated test ([tt]js_standards.php[/tt])
+| Automated test [tt]js_standards[/tt]
 | Use the relative version of the base URL ([tt]$util.rel($cms.getBaseUrl())[/tt]), just in case a JavaScript file is cached under HTTP but used under HTTPS (it would generate a security error) -- or if the JavaScript is working across multiple domains (another potential security error). When Composr runs on multiple domains all URLs will work on all domains, with the exception of page URLs.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2158,7 +2158,7 @@ Be careful with global functions and variables
 [color="red"]Do not encode page-links directly in JavaScript files[/color]
 | Stability
 | Product development only
-| Automated test ([tt]js_standards.php[/tt])
+| Automated test [tt]js_standards[/tt]
 | Use of [tt]{$PAGE_LINK}[/tt] will encode [tt]keep_[/tt] parameters, including potential session IDs. It must therefore be passed into JavaScript via an HTML [tt]data-[/tt] attribute, or you must generate with the [tt]{$PAGE_LINK}[/tt] parameter to avoid [tt]keep_[/tt] parameters and manually attach them using [tt]$cms.keep()[/tt] (being very careful on whether the existing URL does or doesn't have a [tt]?[/tt] in already, which may vary by URL scheme).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2217,7 +2217,7 @@ Be careful with global functions and variables
 [color="red"]Usually use SVG (or PNG) files[/color]
 | Performance
 | Composr development +
-| Manually, Automated test ([tt]svg_quality[/tt]
+| Manually, Automated test [tt]svg_quality[/tt]
 | Use SVG images in most cases, PNG images in rarer cases (e.g. avatars and emoticons), GIF when animation is needed (with a APNG versions too), or JPEG if there is zero chance of the image needing any transparency and never likely to be edited again (i.e. only use it at a post-development optimisation stage) and it compresses better as JPEG.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2231,21 +2231,21 @@ Be careful with global functions and variables
 [color="red"]Organise theme images neatly[/color]
 | Consistency
 | Product development only
-| Manually, Automated test ([tt]theme_images[/tt]
+| Manually, Automated test [tt]theme_images[/tt]
 | Square theme images generally should be classified somewhere under the [tt]icons[/tt] theme image directory. All icons must be square. Generally try and keep a neat directory structure, rather than littering theme images at the top level.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Icons are multi-purpose[/color]
 | Themeing
 | Product development only
-| Automated test ([tt]modularisation[/tt])
+| Automated test [tt]first_tests/modularisation[/tt])
 | You will likely create new icons for very specific purposes. However, icons (especially SVG icons) are also an excellent resource for webmasters to use in their designs (regardless of what addons they've installed). For this reason every icon must be packaged both for the specific addon it is associated with, and the general purpose [tt]core_all_icons[/tt] addon.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Compress images and strip gamma from PNG files
 | Performance, compatibility
 | Composr development +
-| Automated test checks compression ratios ([tt]image_compression.php[/tt]), Automated test checks SVG quality ([tt]theme_images.php[/tt])
+| Automated test checks compression ratios ([tt]image_compression[/tt], Automated test checks SVG quality ([tt]theme_images[/tt]
 | Pass PNG images through a compression program such as PNGGauntlet or PNGThing, and strip gamma settings in the process (needed for colour compatibility on some browsers). Strip any unneeded code from SVG files.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2312,20 +2312,20 @@ If you make a Composr tutorial that doesn't meet the normal rules (e.g. a video 
 | Communication
 | Product development only
 | Manually
-| If you've added a non-trivial feature it will need to be added to the Composr website's feature-list eventually ([tt]cms_homesite_featuretray.php[/tt]), and also announced.
+| If you've added a non-trivial feature it will need to be added to the Composr website's feature-list eventually ([tt]cms_homesite_featuretray[/tt], and also announced.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Provide addon screenshots
 | Communication
 | Composr development +
-| Automated test ([tt]addon_screenshots.php[/tt])
+| Automated test [tt]addon_screenshots[/tt]
 | Every non-bundled addon that is non-development addon must have a screenshot in [tt]data_custom/images/addon_screenshots[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use standardised navigation paths[/color]
 | Communication: consistency
 | Product development only
-| Manually, Automated test ([tt]tutorial_nav_paths.php[/tt])
+| Manually, Automated test [tt]tutorial_nav_paths[/tt]
 | Navigation paths should be a bit like breadcrumbs starting from the Admin Zone, e.g. "Admin Zone > Setup > Configuration" or "Admin Zone > Content > Downloads"; or breadcrumbs on the default menu written like "Content > Quizzes on the default menus". Don't describe the navigation paths using prose.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2430,7 +2430,7 @@ Use standardised commit messages
 Appropriate branch naming
 | Consistency
 | Composr development
-| Automated test ([tt]sensible_git_branches[/tt])
+| Automated test [tt]sensible_git_branches[/tt])
 | The current stable version branch should be in the {$STABLE_BRANCH_NAME} branch, and any other version branch should be in [tt]v<version-number>[/tt].
 |}
 

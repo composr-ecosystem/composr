@@ -579,12 +579,11 @@ class Module_tracker
         if (!addon_installed__messaged('cms_homesite_tracker', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('calendar')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('calendar')));
+        if (!addon_installed__messaged('calendar', $error_msg)) {
+            return $error_msg;
         }
-        if (!addon_installed('ecommerce')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce')));
+        if (!addon_installed__messaged('ecommerce', $error_msg)) {
+            return $error_msg;
         }
 
         if (strpos(get_db_type(), 'mysql') === false) {

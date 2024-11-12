@@ -68,9 +68,8 @@ PHP;
         if (!addon_installed__messaged('data_mappr', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('catalogues')) {
-            return do_template('RED_ALERT', ['_GUID' => 'xulrf07ih9l80h4vjwdi4uxjgfg41hor', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('catalogues'))]);
+        if (!addon_installed__messaged('catalogues', $error_msg)) {
+            return $error_msg;
         }
 
         require_code('catalogues');

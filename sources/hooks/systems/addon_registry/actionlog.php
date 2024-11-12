@@ -152,6 +152,7 @@ class Hook_addon_registry_actionlog
             'themes/default/templates/REVISIONS_SCREEN.tpl',
             'themes/default/templates/REVISIONS_WRAP.tpl',
             'themes/default/templates/REVISION_UNDO.tpl',
+            'sources/actionlog.php',
         ];
     }
 

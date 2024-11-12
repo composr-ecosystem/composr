@@ -93,8 +93,9 @@ PHP;
 
         $blank_if_empty = isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false;
 
-        if (!addon_installed('galleries')) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '8692692a208449e3862d6ff482dce94b', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))]);
+        $errormsg = new Tempcode();
+        if (!addon_installed__messaged('galleries', $errormsg)) {
+            return $errormsg;
         }
 
         $block_id = get_block_id($map);

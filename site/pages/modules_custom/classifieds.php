@@ -132,12 +132,11 @@ class Module_classifieds
         if (!addon_installed__messaged('classified_ads', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('catalogues')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('catalogues')));
+        if (!addon_installed__messaged('catalogues', $error_msg)) {
+            return $error_msg;
         }
-        if (!addon_installed('ecommerce')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce')));
+        if (!addon_installed__messaged('ecommerce', $error_msg)) {
+            return $error_msg;
         }
 
         require_lang('classifieds');

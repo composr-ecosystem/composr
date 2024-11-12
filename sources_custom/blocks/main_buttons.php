@@ -127,9 +127,8 @@ PHP;
         if (!addon_installed__messaged('charity_banners', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('banners')) {
-            return do_template('RED_ALERT', ['_GUID' => 'j05vou1q81t19l4untjdfy6v9wcib4ig', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('banners'))]);
+        if (!addon_installed__messaged('banners', $error_msg)) {
+            return $error_msg;
         }
 
         require_css('banners');

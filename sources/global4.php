@@ -31,8 +31,8 @@
  */
 function init__global4()
 {
-    global $ADMIN_LOGGING_ON;
-    $ADMIN_LOGGING_ON = true;
+    global $ADMIN_ACTIONLOG_ON;
+    $ADMIN_ACTIONLOG_ON = true;
 
     global $RELATED_WARNING_ID;
     $RELATED_WARNING_ID = null;
@@ -617,6 +617,16 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
         }
     }
 
+    // Addon not installed
+    if (!addon_installed('actionlog')) {
+        return null;
+    }
+
+    // No more logging if site closed (possibly)
+    if ((get_option('site_closed') != '0') && (get_option('stats_when_closed') == '0')) {
+        return null;
+    }
+
     // Cache clearing
     static $logged = 0;
     $logged++;
@@ -633,21 +643,10 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
         }
     }
 
-    // No more logging if site closed (possibly)
-    if ((get_option('site_closed') != '0') && (get_option('stats_when_closed') == '0')) {
-        return null;
-    }
-
-    // Run hooks, if any exist
-    $hooks = find_all_hook_obs('systems', 'upon_action_logging', 'Hook_upon_action_logging_');
-    foreach ($hooks as $ob) {
-        $ob->run($type, $a, $b);
-    }
-
     // Add to log
     $log_id = null;
-    global $ADMIN_LOGGING_ON;
-    if ($ADMIN_LOGGING_ON) {
+    global $ADMIN_ACTIONLOG_ON;
+    if ($ADMIN_ACTIONLOG_ON) {
         $ip = get_ip_address();
         $log_id = $GLOBALS['SITE_DB']->query_insert('actionlogs', [
             'the_type' => $type,
@@ -672,13 +671,19 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
         }
     }
 
+    // Run hooks, if any exist
+    $hooks = find_all_hook_obs('systems', 'upon_action_logging', 'Hook_upon_action_logging_');
+    foreach ($hooks as $ob) {
+        $ob->run($type, $a, $b);
+    }
+
     // Tidy up auto-save
     require_code('autosave');
     clear_cms_autosave();
 
     // Notification
     require_code('actionlog');
-    if ((!get_mass_import_mode()) && ($ADMIN_LOGGING_ON) && ((get_handler_flags($type) & ACTIONLOG_FLAG__GDPR) == 0)) {
+    if ((!get_mass_import_mode()) && ($ADMIN_ACTIONLOG_ON) && ((get_handler_flags($type) & ACTIONLOG_FLAG__GDPR) == 0)) {
         if ($logged < 10) { // Be extra sure it's not some kind of import, causing spam
             if (addon_installed('actionlog')) {
                 if (do_lang($type, null, null, null, null, false) === null) {

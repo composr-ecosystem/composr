@@ -830,7 +830,6 @@ class Hook_addon_registry_core
             'site/pages/modules_custom/index.html',
             'sources/.htaccess',
             'sources/abstract_file_manager.php',
-            'sources/actionlog.php',
             'sources/ajax.php',
             'sources/anti_leech.php',
             'sources/antispam.php',

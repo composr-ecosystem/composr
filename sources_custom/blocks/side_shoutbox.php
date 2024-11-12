@@ -52,9 +52,8 @@ class Block_side_shoutbox
         if (!addon_installed__messaged('shoutr', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('chat')) {
-            return do_template('RED_ALERT', ['_GUID' => 'y8h6nmz8sgqyr3pyc0u3utctjxqomeje', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('chat'))]);
+        if (!addon_installed__messaged('chat', $error_msg)) {
+            return $error_msg;
         }
 
         require_lang('chat');

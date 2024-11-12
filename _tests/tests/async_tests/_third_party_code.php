@@ -357,11 +357,18 @@ class _third_party_code_test_set extends cms_test_case
      */
     protected function test_exists(string $test) : bool
     {
+        /*
         $test_directories = ['async_tests', 'cli_tests', 'first_tests', 'regression_tests', 'sync_tests'];
         foreach ($test_directories as $dir) {
             if (is_file(get_file_base() . '/_tests/tests/' . $dir . '/' . $test . '.php')) {
                 return true;
             }
+        }
+        */
+
+        // Actually we want references to include the base test directory
+        if (is_file(get_file_base() . '/_tests/tests/' . $test . '.php')) {
+            return true;
         }
 
         return false;
