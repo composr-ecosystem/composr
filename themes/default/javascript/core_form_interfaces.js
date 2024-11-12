@@ -481,20 +481,30 @@
     };
 
     $cms.templates.formScreenInputUsernameMulti = function formScreenInputUsernameMulti(params, container) {
-        $dom.on(container, 'focus', '.js-focus-update-ajax-member-list', function (e, input) {
-            if (input.value === '') {
-                $cms.form.updateAjaxMemberList(input, null, true, e);
+        // We must assign functions rather than create event listeners so ensureNextField copies them
+        var usernameOnFocus = function (event) {
+            var usernameField = event.target;
+            if (usernameField.value === '') {
+                $cms.form.updateAjaxMemberList(usernameField, null, true, event);
             }
+        };
+        var usernameOnKeyup = function (event) {
+            var usernameField = event.target;
+            $cms.form.updateAjaxMemberList(usernameField, null, false, event);
+        };
+        var focusUpdateAjaxMemberListFields = document.querySelectorAll('.js-focus-update-ajax-member-list');
+        focusUpdateAjaxMemberListFields.forEach(function (input) {
+            input.onfocus = usernameOnFocus;
+        });
+        var keyupUpdateAjaxMemberListFields = document.querySelectorAll('.js-keyup-update-ajax-member-list');
+        keyupUpdateAjaxMemberListFields.forEach(function (input) {
+            input.onkeyup = usernameOnKeyup;
         });
 
-        $dom.on(container, 'keyup', '.js-keyup-update-ajax-member-list', function (e, input) {
-            $cms.form.updateAjaxMemberList(input, null, false, e);
-        });
-
+        // These are handled at the container level and therefore can use event listeners as normal
         $dom.on(container, 'change', '.js-change-ensure-next-field', function (e, input) {
             ensureNextField(input);
         });
-
         $dom.on(container, 'keypress', '.js-keypress-ensure-next-field', function (e, input) {
             ensureNextField(input);
         });
