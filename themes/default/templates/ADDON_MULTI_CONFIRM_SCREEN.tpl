@@ -20,7 +20,7 @@
 {+END}
 
 <div class="clearfix">
-	<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
+	<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post" data-submit-modsecurity-workaround="1">
 		{$INSERT_FORM_POST_SECURITY}
 
 		{HIDDEN}

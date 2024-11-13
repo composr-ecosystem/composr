@@ -748,6 +748,8 @@ class Module_admin_addons
 
         $url = build_url(['page' => '_SELF', 'type' => '_multi_action'], '_SELF');
 
+        require_javascript('core_form_interfaces');
+
         return do_template('ADDON_MULTI_CONFIRM_SCREEN', [
             '_GUID' => 'bd6b7e012825bb0c873a76a9f4b19cf1',
             'TITLE' => $this->title,
@@ -881,6 +883,8 @@ class Module_admin_addons
         if ($info['version'] == '(version-synched)') {
             $info['version'] = float_to_raw_string(cms_version_number());
         }
+
+        require_javascript('core_form_interfaces');
 
         return do_template('ADDON_INSTALL_CONFIRM_SCREEN', [
             '_GUID' => '79b8c0e900a498cfb166392163295a07',
