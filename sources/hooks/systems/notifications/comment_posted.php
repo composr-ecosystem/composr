@@ -64,7 +64,7 @@ class Hook_notification_comment_posted extends Hook_Notification
         $num_done = 0;
         foreach ($categories as $i => $c) {
             $matches = [];
-            if (preg_match('#^([^_]*)_(.*)$#', preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $c['id']), $matches) != 0) {
+            if (preg_match('#^([^_]*)_(.*)$#', preg_replace('#^catalogue_entry__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogue_entry_', $c['id']), $matches) != 0) {
                 $details = get_details_behind_feedback_code($matches[1], $matches[2]);
                 $new_title = $details[0];
                 if (!cms_empty_safe($new_title)) {
@@ -125,7 +125,7 @@ class Hook_notification_comment_posted extends Hook_Notification
         list($_members, $maybe_more) = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         if ($category !== null) { // Check permissions for content
             $matches = [];
-            if (preg_match('#^catalogues__(.*)_(\d+)$#', $category, $matches) != 0) {
+            if (preg_match('#^catalogue_entry__(.*)_(\d+)$#', $category, $matches) != 0) {
                 list($type_id, $id) = [$matches[1], $matches[2]];
             } else {
                 list($type_id, $id) = explode('_', $category, 2);

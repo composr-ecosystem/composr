@@ -103,8 +103,8 @@ function find_overridden_comment_forum(string $feedback_code, ?string $category_
  */
 function _real_feedback_type(string $content_type) : string
 {
-    if (substr($content_type, 0, 12) == 'catalogues__') {
-        return 'catalogues';
+    if (substr($content_type, 0, 17) == 'catalogue_entry__') {
+        return 'catalogue_entry';
     }
     return $content_type;
 }
@@ -422,7 +422,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
             }
         }
 
-        // Work out possible errors that mighr prevent rating being allowed
+        // Work out possible errors that might prevent rating being allowed
         $error = new Tempcode();
         $allow_rating = true;
         $rate_url = new Tempcode();
@@ -597,7 +597,9 @@ function actualise_credit_rating_points(string $content_type, string $content_id
             require_code('points2');
             require_lang('points');
 
-            list($title) = content_get_details($content_type, $content_id);
+            $real_feedback_type = _real_feedback_type($content_type);
+
+            list($title) = content_get_details($real_feedback_type, $content_id);
 
             // All feedback ledger records will have a t_type_id format of content_type:content_id
             points_credit_member($member_id, do_lang('ACTIVITY_RATED', $content_type, $title), $points_rating, 0, null, 0, 'feedback', 'add', $content_type . ':' . $content_id);

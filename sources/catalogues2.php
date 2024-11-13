@@ -1428,7 +1428,7 @@ function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, 
         strval($id),
         $self_url,
         $title,
-        process_overridden_comment_forum('catalogues__' . $catalogue_name, strval($id), strval($category_id), strval($old_category_id))
+        process_overridden_comment_forum('catalogue_entry__' . $catalogue_name, strval($id), strval($category_id), strval($old_category_id))
     );
 
     require_code('sitemap_xml');
