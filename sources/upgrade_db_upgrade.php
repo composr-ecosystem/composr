@@ -796,6 +796,13 @@ function database_specific() : bool
         $done_something = true;
     }
 
+    // LEGACY: (11.beta5) incorrect content type in ratings for catalogue entries
+    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1731538424)) {
+        $GLOBALS['SITE_DB']->query_update('rating', ['rating_for_type' => 'catalogue_entry'], ['rating_for_type' => 'catalogues']);
+
+        $done_something = true;
+    }
+
     return $done_something;
 }
 
