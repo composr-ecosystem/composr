@@ -189,14 +189,7 @@ function render_post_box(array $row, bool $use_post_title = false, bool $give_co
     }
 
     // Emphasis? PP to?
-    $emphasis = new Tempcode();
-    if ($row['p_is_emphasised'] == 1) {
-        $emphasis = do_lang_tempcode('IMPORTANT');
-    } elseif ($row['p_whisper_to_member'] !== null) {
-        $pp_to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($row['p_whisper_to_member'], true);
-        $pp_to_username = $GLOBALS['FORUM_DRIVER']->get_username($row['p_whisper_to_member']);
-        $emphasis = do_lang('PP_TO', $pp_to_displayname, $pp_to_username);
-    }
+    list($post_class, $emphasis) = cns_get_post_emphasis($row, null);
 
     // Feedback
     require_code('feedback');
@@ -212,7 +205,7 @@ function render_post_box(array $row, bool $use_post_title = false, bool $give_co
         'TOPIC_FIRST_POSTER' => '',
         'POST_ID' => strval($row['id']),
         'URL' => $post_url,
-        'CLASS' => ($row['p_is_emphasised'] == 1) ? 'cns-post-emphasis' : (($row['p_whisper_to_member'] !== null) ? 'cns-post-personal' : ''),
+        'CLASS' => $post_class,
         'EMPHASIS' => $emphasis,
         'FIRST_UNREAD' => '',
         'POSTER_TITLE' => $poster_title,

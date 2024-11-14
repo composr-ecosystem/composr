@@ -9,3 +9,5 @@
 {$THEMEWIZARD_COLOR,#180c0d,emphasis_text,10% emphasis_background + 90% BW}
 {$THEMEWIZARD_COLOR,#ef777f,cns_polls_background,50% FF0000 + 50% area_2_background}
 {$THEMEWIZARD_COLOR,#180c0d,cns_polls_text,10% cns_polls_background + 90% BW}
+{$THEMEWIZARD_COLOR,#efd883,cns_private_topic_post_background,50% FFC107 + 50% area_2_background}
+{$THEMEWIZARD_COLOR,#000000,cns_private_topic_post_text,100% BW}
