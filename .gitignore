@@ -1,5 +1,6 @@
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
 /_tests/codechecker/checker.ini
+/_tests/assets/keys.csv
 /Icon?
 /cgi-bin
 *.bak

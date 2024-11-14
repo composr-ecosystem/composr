@@ -16,6 +16,12 @@
 
 			<p>The first step is to transfer the installation files to your server.</p>
 
+			[box="Version 11 upgrade information"]
+				The official website for version 11 is [url]https://composr.app[/url]. This site will also provide bleeding-edge releases of version 11.
+
+				To assist users with the upgrade and transition from v10 to v11, compo.sr will also host the first stable version of v11 when it is released (so v10 sites can upgrade through the Admin Zone dashboard). However, from that point forward, v11 updates will only be available on composr.app. Once you upgrade to v11, your site will begin checking for updates from composr.app instead, so you will receive v11 updates from then on.
+			[/box]
+
 			[block]composr_homesite_download[/block]
 
 			<h2 style="margin:30px 0 0 0">Cloud &amp; <abbr title="Software as a Service">SaaS</abbr> hosting</h2>
