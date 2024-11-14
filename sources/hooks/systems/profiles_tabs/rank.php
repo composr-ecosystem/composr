@@ -77,7 +77,7 @@ class Hook_profiles_tabs_rank
         sort($promotion_groups, SORT_NUMERIC);
 
         require_code('points');
-        $cache_identifier = serialize([$member_id_of, points_lifetime($member_id_of), $promotion_groups]);
+        $cache_identifier = serialize([$member_id_of, points_rank($member_id_of), $promotion_groups]);
 
         // Try the cache first because this hook uses quite a bit of resources and database queries
         require_code('caches');
@@ -163,7 +163,7 @@ class Hook_profiles_tabs_rank
 
         // How many points until we advance to the next rank?
         if ((isset($groups[$rank + 1])) && ($groups[$rank + 1]['RANK_THRESHOLD'] !== null)) {
-            $num_points_advance = $groups[$rank + 1]['RANK_THRESHOLD'] - points_lifetime($member_id_of);
+            $num_points_advance = $groups[$rank + 1]['RANK_THRESHOLD'] - points_rank($member_id_of);
         } else {
             $num_points_advance = 0;
         }

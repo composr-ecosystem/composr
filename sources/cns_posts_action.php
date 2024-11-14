@@ -540,7 +540,7 @@ function cns_force_update_member_post_count(int $member_id, ?int $member_post_co
     // Flush points cache for total points
     if (addon_installed('points')) {
         require_code('points');
-        points_flush_runtime_cache(null, 'points_lifetime');
+        points_flush_runtime_cache(null, 'points_rank');
     }
 }
 

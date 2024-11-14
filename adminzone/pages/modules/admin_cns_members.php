@@ -666,7 +666,7 @@ class Module_admin_cns_members
             $rows = $GLOBALS['FORUM_DB']->query($sql, 500, $start);
             foreach ($rows as $row) {
                 if (addon_installed('points') && ($max_points > 0)) {
-                    if (points_lifetime($row['id']) > $max_points) {
+                    if (points_rank($row['id']) > $max_points) {
                         continue;
                     }
                 }

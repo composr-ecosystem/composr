@@ -41,9 +41,10 @@ function init__points2()
  * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
  * @param  ?TIME $time The time this transaction occurred (null: now)
+ * @param  boolean $is_ranked Whether the points should also be added to the receiving member's rank points
  * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function points_credit_member(int $member_id, string $reason, int $total_points, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : ?int
+function points_credit_member(int $member_id, string $reason, int $total_points, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, bool $is_ranked = true) : ?int
 {
     if (is_guest($member_id)) { // Disallow debiting from the system to the system; makes no sense
         return null;
@@ -52,7 +53,7 @@ function points_credit_member(int $member_id, string $reason, int $total_points,
         return null;
     }
 
-    $id = points_transact($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, 0, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time);
+    $id = points_transact($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, 0, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time, false, $is_ranked);
 
     return $id;
 }
@@ -72,9 +73,10 @@ function points_credit_member(int $member_id, string $reason, int $total_points,
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
  * @param  ?TIME $time The time this transaction occurred (null: now)
  * @param  boolean $force Whether to force this debit to occur even if the member does not have enough points
+ * @param  boolean $is_ranked Whether the points should also be removed from the member's rank points; unlike other APIs, this is false by default as most debits are purchases
  * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function points_debit_member(int $member_id, string $reason, int $total_points, ?int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, bool $force = false) : ?int
+function points_debit_member(int $member_id, string $reason, int $total_points, ?int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, bool $force = false, bool $is_ranked = false) : ?int
 {
     if (is_guest($member_id)) { // Disallow debiting from the system to the system; makes no sense
         return null;
@@ -83,7 +85,7 @@ function points_debit_member(int $member_id, string $reason, int $total_points, 
         return null;
     }
 
-    $id = points_transact($member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time, $force);
+    $id = points_transact($member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time, $force, $is_ranked);
 
     return $id;
 }
@@ -104,9 +106,10 @@ function points_debit_member(int $member_id, string $reason, int $total_points, 
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
  * @param  ?TIME $time The time this transaction occurred (null: now)
  * @param  boolean $force Whether to force this transaction to occur even if the sender does not have enough points
+ * @param  boolean $is_ranked Whether the points should affect rank points for the sending member if a debit, else the reciving member
  * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
  */
-function points_transact(int $sending_member, int $receiving_member, string $reason, int $total_points, ?int $amount_gift_points = null, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, bool $force = false) : ?int
+function points_transact(int $sending_member, int $receiving_member, string $reason, int $total_points, ?int $amount_gift_points = null, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, bool $force = false, bool $is_ranked = true) : ?int
 {
     // Negative transactions are never allowed; 0 transactions are ignored.
     if ($total_points <= 0) {
@@ -126,13 +129,13 @@ function points_transact(int $sending_member, int $receiving_member, string $rea
     list($actual_points, $actual_gift_points) = $points_to_process;
 
     // Log / process the transaction
-    $id = _points_transact($sending_member, $receiving_member, $reason, $actual_points, $actual_gift_points, $anonymous, LEDGER_STATUS_NORMAL, $locked, null, $t_type, $t_subtype, $t_type_id, $time);
+    $id = _points_transact($sending_member, $receiving_member, $reason, $actual_points, $actual_gift_points, $anonymous, LEDGER_STATUS_NORMAL, $locked, null, $t_type, $t_subtype, $t_type_id, $time, ($is_ranked ? 1 : 0));
 
     // Run post-transaction hooks
     $hook_obs = find_all_hook_obs('systems', 'points_transact', 'Hook_points_transact__');
     foreach ($hook_obs as $name => $hook_ob) {
         if (method_exists($hook_ob, 'points_transact')) {
-            $hook_ob->points_transact($id, $sending_member, $receiving_member, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time, $force);
+            $hook_ob->points_transact($id, $sending_member, $receiving_member, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time, $force, $is_ranked);
         }
     }
 
@@ -194,8 +197,13 @@ function points_refund(int $sending_member, int $receiving_member, string $reaso
     $points_to_process = _points_refund_calculate($total_points, $amount_gift_points);
     list($actual_points, $actual_gift_points) = $points_to_process;
 
+    $is_ranked = 0; // Refunds by default should not affect rank points unless we are reversing a ledger which did affect rank points
+    if ($linked_ledger !== null) {
+        $is_ranked = $linked_ledger['is_ranked'];
+    }
+
     // Actualise the transaction
-    $id = _points_transact($sending_member, $receiving_member, $reason, $actual_points, $actual_gift_points, $anonymous, $status, (($status == LEDGER_STATUS_REVERSING) ? 1 : 0), $linked_ledger, $t_type, $t_subtype, $t_type_id, $time);
+    $id = _points_transact($sending_member, $receiving_member, $reason, $actual_points, $actual_gift_points, $anonymous, $status, (($status == LEDGER_STATUS_REVERSING) ? 1 : 0), $linked_ledger, $t_type, $t_subtype, $t_type_id, $time, $is_ranked);
 
     // Run post-transaction hooks
     $hook_obs = find_all_hook_obs('systems', 'points_transact', 'Hook_points_transact__');
@@ -250,10 +258,11 @@ function points_refund(int $sending_member, int $receiving_member, string $reaso
  * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
  * @param  ?TIME $time The time this transaction occurred (null: now)
+ * @param  BINARY $is_ranked Whether the points should affect rank points for the sending member if a debit, else the reciving member
  * @return AUTO_LINK The ID of the point transaction in the ledger
  * @ignore
  */
-function _points_transact(int $sending_member, int $receiving_member, string $reason, int $amount_points, int $amount_gift_points, int $anonymous = 0, int $status = 0, int $locked = 0, ?array $linked_ledger = null, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : int
+function _points_transact(int $sending_member, int $receiving_member, string $reason, int $amount_points, int $amount_gift_points, int $anonymous = 0, int $status = 0, int $locked = 0, ?array $linked_ledger = null, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, int $is_ranked = 1) : int
 {
     if ($time === null) {
         $time = time();
@@ -272,6 +281,7 @@ function _points_transact(int $sending_member, int $receiving_member, string $re
         't_type' => $t_type,
         't_subtype' => $t_subtype,
         't_type_id' => $t_type_id,
+        'is_ranked' => $is_ranked,
     ];
     $map += insert_lang_comcode('reason', $reason, 4);
     $id = $GLOBALS['SITE_DB']->query_insert('points_ledger', $map, true);
@@ -284,16 +294,24 @@ function _points_transact(int $sending_member, int $receiving_member, string $re
         case LEDGER_STATUS_NORMAL:
             _points_adjust_cpf($sending_member, 'points_balance', -$amount_points);
             _points_adjust_cpf($receiving_member, 'points_balance', $amount_total);
-            if (!is_guest($receiving_member)) {
-                _points_adjust_cpf($receiving_member, 'points_lifetime', $amount_total);
+            if ($is_ranked == 1) {
+                if (!is_guest($receiving_member)) { // Receiving member earns the rank points
+                    _points_adjust_cpf($receiving_member, 'points_rank', $amount_total);
+                } else { // Sending member loses the rank points
+                    _points_adjust_cpf($sending_member, 'points_rank', -$amount_total);
+                }
             }
             break;
         case LEDGER_STATUS_REVERSING:
         case LEDGER_STATUS_REFUND:
             _points_adjust_cpf($sending_member, 'points_balance', -$amount_total);
             _points_adjust_cpf($receiving_member, 'points_balance', $amount_points);
-            if (!is_guest($sending_member)) {
-                _points_adjust_cpf($sending_member, 'points_lifetime', -$amount_total);
+            if ($is_ranked == 1) {
+                if (!is_guest($sending_member)) { // Sending member loses the rank points (because they received them originally)
+                    _points_adjust_cpf($sending_member, 'points_rank', -$amount_total);
+                } else { // Receiving member gets back the rank points (because they lost them originally)
+                    _points_adjust_cpf($receiving_member, 'points_rank', $amount_total);
+                }
             }
             break;
         default: // LEDGER_STATUS_REVERSED (should never be added as a new transaction) or a non-valid status
@@ -504,14 +522,14 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
  *
  * @param  MEMBER $member_id The member to adjust
  * @param  ID_TEXT $field_name The custom field to adjust
- * @set points_balance points_lifetime
+ * @set points_balance points_rank
  * @param  integer $adjustment By how much to adjust the field (use a negative number to subtract)
  * @ignore
  */
 function _points_adjust_cpf(int $member_id, string $field_name, int $adjustment) : void
 {
     // Check for invalid field
-    if (!in_array($field_name, ['points_balance', 'points_lifetime'])) {
+    if (!in_array($field_name, ['points_balance', 'points_rank'])) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 

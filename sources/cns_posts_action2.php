@@ -104,7 +104,7 @@ function cns_member_handle_promotion(?int $member_id = null)
     }
 
     require_code('points');
-    $points_lifetime = points_lifetime($member_id);
+    $points_rank = points_rank($member_id);
     $groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id, false, true);
 
     $or_list = '';
@@ -114,7 +114,7 @@ function cns_member_handle_promotion(?int $member_id = null)
         }
         $or_list .= 'id=' . strval($id);
     }
-    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target_group,g_promotion_threshold FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target_group IS NOT NULL AND NOT EXISTS (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_approvals WHERE ga_new_group_id=g_promotion_target_group AND ga_status<>0) AND g_promotion_threshold<=' . strval($points_lifetime) . ' ORDER BY g_promotion_threshold');
+    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target_group,g_promotion_threshold FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target_group IS NOT NULL AND NOT EXISTS (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_approvals WHERE ga_new_group_id=g_promotion_target_group AND ga_status<>0) AND g_promotion_threshold<=' . strval($points_rank) . ' ORDER BY g_promotion_threshold');
     $promotes_today = [];
     foreach ($promotions as $promotion) {
         $_p = $promotion['g_promotion_target_group'];

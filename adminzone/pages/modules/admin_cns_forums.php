@@ -934,7 +934,7 @@ class Module_admin_cns_forums extends Standard_crud_module
             $x_labels[] = integer_format($i);
         }
 
-        $text->attach(graph_line_chart($datasets, $x_labels, 'life-time points', 'voting power', [], [], null, '300px'));
+        $text->attach(graph_line_chart($datasets, $x_labels, 'rank points', 'voting power', [], [], null, '300px'));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '1eadb98e94da438f95bddb9886f43cab',

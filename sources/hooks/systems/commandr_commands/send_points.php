@@ -40,7 +40,7 @@ class Hook_commandr_command_send_points
         require_lang('points');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('send_points', ['h', 'a'], [true, true, true, true]), '', ''];
+            return ['', do_command_help('send_points', ['h', 'a', 'nr'], [true, true, true, true]), '', ''];
         }
 
         if (!array_key_exists(0, $parameters)) {
@@ -62,6 +62,7 @@ class Hook_commandr_command_send_points
 
         $amount_gift_points = (((array_key_exists(3, $parameters)) && ($parameters[3] != 'null')) ? intval($parameters[3]) : null);
         $anonymous = ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))) ? 1 : 0;
+        $is_ranked = (array_key_exists('nr', $options));
 
         // If parameter 4 is not provided, this is a system credit
         if (!array_key_exists(4, $parameters)) {
@@ -69,12 +70,12 @@ class Hook_commandr_command_send_points
             if (!(array_key_exists('a', $options)) && !(array_key_exists('anonymous', $options))) {
                 $parameters[1] .= ' (' . do_lang('SENT_BY', $GLOBALS['FORUM_DRIVER']->get_username(get_member())) . ')';
             }
-            points_credit_member(intval($parameters[0]), $parameters[1], intval($parameters[2]), $anonymous);
+            points_credit_member(intval($parameters[0]), $parameters[1], intval($parameters[2]), $anonymous, true, 0, 'points', 'credit', '', null, $is_ranked);
             return ['', '', do_lang('SUCCESS'), ''];
         }
 
         $member_id_sender = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[4]);
-        points_transact($member_id_sender, $member_id, $parameters[1], intval($parameters[2]), $amount_gift_points, $anonymous);
+        points_transact($member_id_sender, $member_id, $parameters[1], intval($parameters[2]), $amount_gift_points, $anonymous, true, 0, '', '', '', null, false, $is_ranked);
 
         return ['', '', do_lang('SUCCESS'), ''];
     }

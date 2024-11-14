@@ -233,13 +233,13 @@ function member_personal_links_and_details(int $member_id) : array
                 'VALUE' => integer_format($points_spent, 0),
             ]));
         }
-        if (get_option('points_show_personal_stats_points_lifetime') == '1') {
-            $points_lifetime = points_lifetime($member_id);
+        if (get_option('points_show_personal_stats_points_rank') == '1') {
+            $points_rank = points_rank($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                 '_GUID' => '3e6183abf9054574c0cd292d25a4fe5c',
-                'KEY' => do_lang_tempcode('COUNT_LIFETIME_POINTS'),
-                'RAW_VALUE' => strval($points_lifetime),
-                'VALUE' => integer_format($points_lifetime, 0),
+                'KEY' => do_lang_tempcode('COUNT_RANK_POINTS'),
+                'RAW_VALUE' => strval($points_rank),
+                'VALUE' => integer_format($points_rank, 0),
             ]));
         }
         if (get_option('enable_gift_points') == '1') {

@@ -67,6 +67,7 @@
 						<option value="">({!POINTS_CHOOSE_ACTION})</option>
 						<option value="send"{+START,IF,{$EQ,send,{DEFAULT__TRANS_TYPE}}} selected="selected"{+END}>{!SEND_LONG}</option>
 						<option value="credit"{+START,IF,{$EQ,credit,{DEFAULT__TRANS_TYPE}}} selected="selected"{+END}>{!CREDIT_LONG}</option>
+						<option value="credit-notranked"{+START,IF,{$EQ,credit-notranked,{DEFAULT__TRANS_TYPE}}} selected="selected"{+END}>{!CREDIT_NOT_RANKED_LONG}</option>
 						<option value="debit"{+START,IF,{$EQ,debit,{DEFAULT__TRANS_TYPE}}} selected="selected"{+END}>{!DEBIT_LONG}</option>
 					</select>
 					<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="send-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" value="{DEFAULT__SEND_AMOUNT*}" />

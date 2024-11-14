@@ -67,7 +67,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $points_sent = points_sent($member_id_of);
     $gift_points_balance = gift_points_balance($member_id_of);
     $escrow_details = points_get_escrow($member_id_of, $member_id_viewing);
-    $points_lifetime = points_lifetime($member_id_of);
+    $points_rank = points_rank($member_id_of);
 
     if (get_option('enable_poll_point_weighting', true) === '1') {
         require_code('cns_polls_action2');
@@ -260,8 +260,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             'PROFILE_URL' => $profile_url,
             'USERNAME' => $username,
 
-            '_POINTS_LIFETIME' => strval($points_lifetime),
-            'POINTS_LIFETIME' => integer_format($points_lifetime),
+            '_POINTS_RANK' => strval($points_rank),
+            'POINTS_RANK' => integer_format($points_rank),
             '_POINTS_BALANCE' => strval($points_balance),
             'POINTS_BALANCE' => integer_format($points_balance),
             '_GIFT_POINTS_BALANCE' => strval($gift_points_balance),
@@ -270,8 +270,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             'VOTING_POWER' => $voting_power,
             '_POINTS_RECEIVED_AGGREGATE' => strval($aggregate_totals['received']),
             'POINTS_RECEIVED_AGGREGATE' => integer_format($aggregate_totals['received']),
-            '_POINTS_RECEIVED' => strval($points_lifetime - $aggregate_totals['received']),
-            'POINTS_RECEIVED' => integer_format($points_lifetime - $aggregate_totals['received']),
+            '_POINTS_RECEIVED' => strval($points_rank - $aggregate_totals['received']),
+            'POINTS_RECEIVED' => integer_format($points_rank - $aggregate_totals['received']),
             '_POINTS_SENT_AGGREGATE' => strval($aggregate_totals['sent']),
             'POINTS_SENT_AGGREGATE' => integer_format($aggregate_totals['sent']),
             '_POINTS_SENT' => strval($points_sent - $aggregate_totals['sent']),

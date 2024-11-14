@@ -938,7 +938,7 @@ function _cpfs_internal_use_only() : array
 
     $ret = [];
 
-    $fields_to_find = ['cms_points_balance', 'cms_points_lifetime']; // FUDGE
+    $fields_to_find = ['cms_points_balance', 'cms_points_rank']; // FUDGE
 
     foreach ($fields_to_find as $field) {
         $cpf_id = find_cms_cpf_field_id($field);

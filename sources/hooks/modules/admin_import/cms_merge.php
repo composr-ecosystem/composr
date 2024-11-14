@@ -1249,7 +1249,9 @@ class Hook_import_cms_merge
                     't_subtype' => $row['t_subtype'],
                     't_type_id' => '', // FUDGE: Currently blanking this because it may refer to an improperly mapped content ID
 
-                    'status' => $row['status']
+                    'status' => $row['status'],
+                    'locked' => $row['locked'],
+                    'is_ranked' => $row['is_ranked'],
                 ];
                 $map += insert_lang_comcode('reason', $this->get_lang_string($db, $row['reason']), 4);
                 $id_new = $GLOBALS['SITE_DB']->query_insert('points_ledger', $map, true);
