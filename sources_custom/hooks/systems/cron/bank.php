@@ -75,7 +75,7 @@ class Hook_cron_bank
                 require_lang('bank');
 
                 $restore_amount = round(floatval($deposit['amount']) * (1.0 + floatval($bank_dividend) / 100.0));
-                points_credit_member($deposit['member_id'], do_lang('RESTORED_DEPOSIT'), intval($restore_amount), 0, true, 0, 'bank', 'deposit', strval($deposit['id']));
+                points_credit_member($deposit['member_id'], do_lang('RESTORED_DEPOSIT'), intval($restore_amount), 0, true, 0, 'bank', 'deposit', strval($deposit['id']), null, false);
 
                 $GLOBALS['SITE_DB']->query_delete('bank', ['id' => $deposit['id']], '', 1);
             }

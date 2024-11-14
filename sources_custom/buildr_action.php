@@ -571,7 +571,7 @@ function delete_item_wrap(string $name)
     // Refund them
     require_code('points2');
     $price = get_product_price_points('mud_item');
-    points_credit_member($attempt_member, do_lang('W_DELETE_BUILDR', $name), intval(0.7 * $price));
+    points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $attempt_member, do_lang('W_DELETE_BUILDR', $name), intval(0.7 * $price), 0, 0, null, true, 'buildr_item', 'delete', $name);
 
     // Remove item from all rooms and people
     $GLOBALS['SITE_DB']->query_delete('w_items', ['name' => $name]);
@@ -606,7 +606,7 @@ function delete_room_wrap(int $member_id)
     // Refund them
     require_code('points2');
     $price = get_product_price_points('mud_room');
-    points_credit_member($attempt_member, do_lang('W_DELETE_ROOM_BUILDR', $name), intval(0.7 * $price));
+    points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $attempt_member, do_lang('W_DELETE_ROOM_BUILDR', $name), intval(0.7 * $price), 0, 0, null, true, 'buildr_room', 'delete', $name);
 
     delete_room($x, $y, $realm);
 }
@@ -652,7 +652,7 @@ function delete_portal_wrap(int $member_id, int $dest_realm)
     // Refund them
     require_code('points2');
     $price = get_product_price_points('mud_portal');
-    points_credit_member($attempt_member, do_lang('W_DELETE_PORTAL_BUILDR', $name), intval(0.7 * $price));
+    points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $attempt_member, do_lang('W_DELETE_PORTAL_BUILDR', $name), intval(0.7 * $price), 0, 0, null, true, 'buildr_portal', 'delete', '');
 
     delete_portal($x, $y, $realm, $dest_realm);
 }

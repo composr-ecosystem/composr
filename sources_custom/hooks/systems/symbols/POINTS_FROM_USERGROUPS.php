@@ -36,7 +36,7 @@ class Hook_symbol_POINTS_FROM_USERGROUPS
 
         require_code('points');
         $member_id = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member();
-        $value = strval(points_lifetime($member_id) - non_overridden__points_lifetime($member_id));
+        $value = strval(points_rank($member_id) - non_overridden__points_rank($member_id));
         return $value;
     }
 }

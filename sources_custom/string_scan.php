@@ -8338,6 +8338,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AMEND_POINT_TRANSACTION
         _VIEW_POINT_TRANSACTION
         CREDIT_LONG
+        CREDIT_NOT_RANKED_LONG
         DEBIT_LONG
         SEND_LONG
         LEDGER_STATUS_2_UNLINKED
@@ -8601,6 +8602,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _UPGRADER_UPGRADE_MODULES
         DOWNLOAD_PRIVATE_URL_HACK
         ADDON_TOO_MANY_FILES
+        _RANK_POINTS
     ')));
 
     $non_admin_files = [
@@ -8817,7 +8819,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNT_ONFORUMS
         COUNT_ONSITE
         COUNT_ONSITE_RECORD
-        COUNT_LIFETIME_POINTS
+        COUNT_RANK_POINTS
         COUNT_POINTS_BALANCE
         COUNT_POSTSCOUNT
         COUNT_POSTSTODAY
@@ -10055,7 +10057,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEFT_CHATROOM
         LESS
         LICENCE_WAS_ACCEPTED
-        LIFETIME_POINTS
+        RANK_POINTS
         LIKED_BY
         LIKES
         QUESTIONS
@@ -10940,7 +10942,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_payment_card_start_date
         SPECIAL_CPF__cms_payment_cardholder_name
         SPECIAL_CPF__cms_payment_card_type
-        SPECIAL_CPF__cms_points_lifetime
+        SPECIAL_CPF__cms_points_rank
         SPECIAL_CPF__cms_points_balance
         SPECIAL_CPF__cms_post_code
         SPECIAL_CPF__cms_role

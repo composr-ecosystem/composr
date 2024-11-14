@@ -155,21 +155,21 @@ When editing poll answers, the votes will be maintained; you should generally on
 
 [title="3"]Weighting poll results with points[/title]
 
-A site-wide setting can be enabled to allow poll results to be weighted according to the number of life-time points each voter had at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for topic polls.
+A site-wide setting can be enabled to allow poll results to be weighted according to the number of rank points each voter had at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for topic polls.
 
 When the site-wide setting is enabled, individual polls can then have point-weighting enabled or disabled (they will be disabled by default).
 
-Point weighting works by assigning a [b]voting power[/b] to every vote based on the number of life-time points the voter had at the time they voted.
+Point weighting works by assigning a [b]voting power[/b] to every vote based on the number of rank points the voter had at the time they voted.
 
 The formula used to weigh poll results and generate a voting power is as follows:
 
-[html]<kbd>[/html]{!cns_polls:VOTING_POWER_EQUATION,&lt;maximum&gt;,&lt;offset&gt;,&lt;multiplier&gt;,&lt;life-time points&gt;,&lt;root base&gt;}[html]</kbd>[/html]
+[html]<kbd>[/html]{!cns_polls:VOTING_POWER_EQUATION,&lt;maximum&gt;,&lt;offset&gt;,&lt;multiplier&gt;,&lt;rank points&gt;,&lt;root base&gt;}[html]</kbd>[/html]
  - [b]root base[/b], [b]multiplier[/b], [b]offset[/b], and [b]maximum[/b] are configurable values in the Forum / Point-weighting for topic polls options.
- - First, the formula takes the root of the member's life-time points at the time of voting (e.g. If the root base is 2, it will take the square root. If it is 3, it will take the cubic root.).
+ - First, the formula takes the root of the member's rank points at the time of voting (e.g. If the root base is 2, it will take the square root. If it is 3, it will take the cubic root.).
  - Then, the formula multiplies the results by the absolute value of the configured multiplier.
  - Next, the offset is added to the result (offset can be negative to subtract instead).
  - Finally, the formula ensures voting power is not higher than the defined maximum (if defined), and not lower than 0.
- - When a member's life-time points are 0 or negative, their voting power will be 0 (e.g. their vote has no effect on the poll results).
+ - When a member's rank points are 0 or negative, their voting power will be 0 (e.g. their vote has no effect on the poll results).
  - If the points addon is not installed, everyone has a voting power of 1 (e.g. the behaviour is the same as a non-weighted poll).
 
 There are a couple nuances with the weighted voting system:
