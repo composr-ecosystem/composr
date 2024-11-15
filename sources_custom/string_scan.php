@@ -8603,6 +8603,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOWNLOAD_PRIVATE_URL_HACK
         ADDON_TOO_MANY_FILES
         _RANK_POINTS
+        ENABLE_MAIL_QUEUE_LARGE_WARNING
+        CONFIG_OPTION_enable_mail_queue_large_warning
     ')));
 
     $non_admin_files = [
@@ -12170,6 +12172,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FIELD_PASSWORD_VIEW_ON_EDIT
         VIEW_MAIL_IN_BROWSER_2
         MAIL_TOO_LONG
+        MAIL_QUEUE_LARGE
     ')));
 
     // Remove blank lines

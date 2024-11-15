@@ -262,25 +262,28 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         }
     }
 
-    $message_tpl = do_template('MESSAGE', [
-        '_GUID' => 'ec843c8619d21fbeeb512686ea300a17',
-        'TYPE' => $type,
-        'MESSAGE' => is_string($message) ? escape_html($message) : $message,
-    ]);
+    // FUDGE: No messages on the slideshow overlay as it messes with the full-screen layout
+    if (!function_exists('get_page_name') || (get_page_name() != 'galleries') || (get_param_integer('slideshow', 0) == 0)) {
+        $message_tpl = do_template('MESSAGE', [
+            '_GUID' => 'ec843c8619d21fbeeb512686ea300a17',
+            'TYPE' => $type,
+            'MESSAGE' => is_string($message) ? escape_html($message) : $message,
+        ]);
 
-    if ($put_in_helper_panel) {
-        set_helper_panel_text($message_tpl, true, false);
-    } else {
-        if ($GLOBALS['TEMPCODE_OUTPUT_STARTED']) {
-            if ($LATE_ATTACHED_MESSAGES === null) {
-                $LATE_ATTACHED_MESSAGES = new Tempcode();
-            }
-            $LATE_ATTACHED_MESSAGES->attach($message_tpl);
+        if ($put_in_helper_panel) {
+            set_helper_panel_text($message_tpl, true, false);
         } else {
-            if ($ATTACHED_MESSAGES === null) {
-                $ATTACHED_MESSAGES = new Tempcode();
+            if ($GLOBALS['TEMPCODE_OUTPUT_STARTED']) {
+                if ($LATE_ATTACHED_MESSAGES === null) {
+                    $LATE_ATTACHED_MESSAGES = new Tempcode();
+                }
+                $LATE_ATTACHED_MESSAGES->attach($message_tpl);
+            } else {
+                if ($ATTACHED_MESSAGES === null) {
+                    $ATTACHED_MESSAGES = new Tempcode();
+                }
+                $ATTACHED_MESSAGES->attach($message_tpl);
             }
-            $ATTACHED_MESSAGES->attach($message_tpl);
         }
     }
 
@@ -978,28 +981,6 @@ function handle_moniker_deprecation_redirect(string $zone, array $moniker_row, b
  */
 function do_site()
 {
-    // Any messages to output?
-    if (get_param_integer('redirected', 0) == 1) {
-        $messages = $GLOBALS['SITE_DB']->query_select('messages_to_render', ['r_message', 'r_type', 'r_time'], ['r_session_id' => get_session_id(),], 'ORDER BY r_time DESC');
-        foreach ($messages as $message) {
-            $message_text = get_translated_tempcode('messages_to_render', $message, 'r_message');
-            if ($message_text === null) { // Ignore look-up errors and just skip the message
-                continue;
-            }
-
-            attach_message($message_text, $message['r_type']);
-        }
-        if (!empty($messages)) {
-            $GLOBALS['SITE_DB']->query_delete('messages_to_render', ['r_session_id' => get_session_id()], ' OR r_time<' . strval(time() - 60 * 60));
-        }
-    }
-
-    // Site message(s)
-    if (running_script('index') && addon_installed('site_messaging')) {
-        require_code('site_messaging');
-        show_site_messages();
-    }
-
     $out_evaluated = null;
     global $ZONE;
 
@@ -1035,6 +1016,47 @@ function do_site()
         $RECORD_TEMPLATES_USED = true;
     }
 
+    // Any messages to output?
+    if (get_param_integer('redirected', 0) == 1) {
+        $messages = $GLOBALS['SITE_DB']->query_select('messages_to_render', ['r_message', 'r_type', 'r_time'], ['r_session_id' => get_session_id(),], 'ORDER BY r_time DESC');
+        foreach ($messages as $message) {
+            $message_text = get_translated_tempcode('messages_to_render', $message, 'r_message');
+            if ($message_text === null) { // Ignore look-up errors and just skip the message
+                continue;
+            }
+
+            attach_message($message_text, $message['r_type']);
+        }
+        if (!empty($messages)) {
+            $GLOBALS['SITE_DB']->query_delete('messages_to_render', ['r_session_id' => get_session_id()], ' OR r_time<' . strval(time() - 60 * 60));
+        }
+    }
+
+    // Site message(s)
+    if (running_script('index') && addon_installed('site_messaging')) {
+        require_code('site_messaging');
+        show_site_messages();
+    }
+
+    // Public warning about a backed-up mail queue?
+    if ((get_option('mail_queue') == '1') && (get_option('enable_mail_queue_large_warning') == '1')) {
+        $count_queued = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_queued' => 1]);
+        $batch_size = intval(get_option('max_queued_mails_per_cron_cycle'));
+
+        if ($count_queued >= ($batch_size * 3)) {
+            attach_message(do_lang_tempcode('MAIL_QUEUE_LARGE'), 'warn');
+        }
+    }
+
+    // Warning if dev-mode is on
+    if (($GLOBALS['DEV_MODE']) && (get_param_integer('wide_high', 0) == 0) && (get_param_integer('keep_hide_dev_mode_message', 0) == 0)) {
+        static $done_message = false;
+        if (!$done_message) {
+            attach_message(do_lang_tempcode('DEV_MODE_ON'), 'notice');
+            $done_message = true;
+        }
+    }
+
     // Allow the site to be closed
     $site_closed = get_option('site_closed');
     if (($site_closed != '0') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
@@ -1056,15 +1078,6 @@ function do_site()
                 $cancel_sw_url = get_self_url(false, true, ['cancel_sw_warn' => 1]);
                 attach_message(do_lang_tempcode('SETUPWIZARD_NOT_RUN', escape_html($setupwizard_url->evaluate()), escape_html($cancel_sw_url->evaluate())), 'notice');
             }
-        }
-    }
-
-    // Warning if dev-mode is on
-    if (($GLOBALS['DEV_MODE']) && (get_param_integer('wide_high', 0) == 0) && (get_param_integer('keep_hide_dev_mode_message', 0) == 0)) {
-        static $done_message = false;
-        if (!$done_message) {
-            attach_message(do_lang_tempcode('DEV_MODE_ON'), 'notice');
-            $done_message = true;
         }
     }
 
@@ -1154,10 +1167,11 @@ function do_site()
     if (($ZONE !== null) && ($ZONE['zone_name'] == 'adminzone')) {
         require_code('global4');
 
+        // Log the access if this session did not already hit the Admin Zone
         if (!already_in_log('ACCESSED_ADMIN_ZONE', get_session_id(true))) {
             log_it('ACCESSED_ADMIN_ZONE', get_session_id(true));
 
-            // Security feature admins can turn on
+            // Security feature admins can turn on for notifications
             require_code('notifications');
             $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
             $subject = do_lang('AFA_NOTIFICATION_MAIL_SUBJECT', $current_username, get_site_name(), get_ip_address());
@@ -1165,7 +1179,7 @@ function do_site()
             dispatch_notification('core_staff:adminzone_dashboard_accessed', null, $subject, $mail);
         }
 
-        // Tracks very basic details of what sites use the software
+        // Send very basic software details to homesite if enabled
         if ((!is_local_machine()) && (get_option('call_home') == '1') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) === null)) {
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
