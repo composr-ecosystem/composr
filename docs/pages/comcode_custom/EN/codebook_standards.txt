@@ -1549,7 +1549,7 @@ Do not use problematic language
 | Instead of saying "blacklist", say "blocklist" or "exclusion-list" or "deny-list". Instead of saying "whitelist", say "safelist" or "inclusion-list" or "allow-list". This is to reduce subconcious suggestion that black=bad and white=good.
 |}
 
-Respect the Queen of England ;), but also do not confuse Americans...
+Respect the King of England ;), but also do not confuse Americans...
 {|
 ! Standard
 ! Reason
@@ -1561,7 +1561,7 @@ Respect the Queen of England ;), but also do not confuse Americans...
 [color="red"]Do not use American spellings such as [i]color[/i] or [i]center[/i] or [i]license[/i][/color]
 | Consistent UI
 | Product development only
-| Manually, Automated test in [tt]verbose[/tt] mode ([tt]lang_spelling[/tt]
+| Manually, Automated test in [tt]verbose[/tt] mode [tt]async_tests/lang_spelling[/tt]
 | Composr originates from the UK. We have special processing to support American English automatically. We only allow American spellings in a code-context, but this exemption also stops us automatically scanning for violations.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
