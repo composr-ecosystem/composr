@@ -198,7 +198,7 @@ class Hook_translation_google_translate
         // Now check the language actually exists...
 
         require_code('http');
-        $errormsg = null;
+        $errormsg = new Tempcode();
         $result = unserialize(cache_and_carry([$this, '_google_translate_api_request'], [$url, null, &$errormsg]));
 
         if (!isset($result['data']['languages'])) {

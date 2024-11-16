@@ -29,7 +29,7 @@
  */
 function cns_edit_post_template(int $id, string $title, string $text, string $forum_multi_code, int $use_default_forums)
 {
-    $errormsg = null;
+    $errormsg = new Tempcode();
     if (!addon_installed__messaged('cns_post_templates', $errormsg)) {
         warn_exit($errormsg);
     }
@@ -57,7 +57,7 @@ function cns_edit_post_template(int $id, string $title, string $text, string $fo
  */
 function cns_delete_post_template(int $id)
 {
-    $errormsg = null;
+    $errormsg = new Tempcode();
     if (!addon_installed__messaged('cns_post_templates', $errormsg)) {
         warn_exit($errormsg);
     }
@@ -229,7 +229,7 @@ function cns_get_num_emoticons_on_disk() : int
  */
 function cns_edit_welcome_email(int $id, string $name, string $subject, string $text, int $send_after_hours, ?int $newsletter, ?int $usergroup, string $usergroup_type)
 {
-    $errormsg = null;
+    $errormsg = new Tempcode();
     if (!addon_installed__messaged('welcome_emails', $errormsg)) {
         warn_exit($errormsg);
     }
@@ -266,7 +266,7 @@ function cns_edit_welcome_email(int $id, string $name, string $subject, string $
  */
 function cns_delete_welcome_email(int $id)
 {
-    $errormsg = null;
+    $errormsg = new Tempcode();
     if (!addon_installed__messaged('welcome_emails', $errormsg)) {
         warn_exit($errormsg);
     }

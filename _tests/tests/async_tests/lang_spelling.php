@@ -272,13 +272,13 @@ class lang_spelling_test_set extends cms_test_case
             $ob->assertTrue(false, 'The phrase \'e-commerce\' was used in ' . $path . '. This should be changed to \'eCommerce\'.');
         }
         if (preg_match('#user[ -]group#', $string) != 0) {
-            $ob->assertTrue(false, 'The term \'user-group\' was used in ' . $path . '. This should be changed to \'usergroup\'.');
+            $ob->assertTrue(false, 'The term \'user group\' or \'user-group\' was used in ' . $path . '. This should be changed to \'group\' or \'usergroup\'.');
         }
         if (preg_match('#chat[ -]room#i', $string) != 0) {
             $ob->assertTrue(false, 'The phrase \'chat room\' or \'chat-room\' was used in ' . $path . '. This should be changed to \'chatroom\'.');
         }
         if (preg_match('#user[ -]name[^d]#i', $string) != 0) {
-            $ob->assertTrue(false, 'The term \'user name\' was used in ' . $path . '. This should be changed to \'username\'.');
+            $ob->assertTrue(false, 'The term \'user name\' or \'user-name\' was used in ' . $path . '. This should be changed to \'username\'.');
         }
         if (preg_match('#web[ -]site#i', $string) != 0) {
             $ob->assertTrue(false, 'The phrase \'web site\' or \'web-site\' was used in ' . $path . '. This should be changed to \'website\'.');
@@ -433,6 +433,48 @@ class lang_spelling_test_set extends cms_test_case
             (!in_array($file, ['cns_install.php']))
         ) {
             $ob->assertTrue(false, 'The word tick was used in ' . $path . ' without being followed by check in parentheses in the conventional way.');
+        }
+
+        // Usability when the value use_tos_lang is 1
+        $matches = [];
+        if (
+            (preg_match_all('/(\S*)?(\s|\=)rules(\s?\(?)/i', $string, $matches) != 0) &&
+            (strpos($file, '.ini') !== false) // We only require this for language files
+        ) {
+            $ok = false;
+
+            // If we have a bracket after rules, we probably defined Terms of Service
+            foreach ($matches[3] as $after_rules) {
+                if (trim($after_rules) == '(') {
+                    $ok = true;
+                    break;
+                }
+            }
+
+            // There are certain cases where we do not have to define Terms of Service depending on what came before the word rules
+            if (!$ok) {
+                foreach ($matches[1] as $lookahead) {
+                    $lookahead = str_replace('\'s', '', $lookahead); // Do not consider "'s"
+                    $lookahead = str_replace('s\'', '', $lookahead); // Do not consider "s'"
+
+                    // Exceptions where we do not want to assert Terms of Service after rules (because we refer to something else)
+                    if (in_array(cms_strtolower_ascii(trim($lookahead)), [
+                        'forum', // Forum rules are different from site rules
+                        'introduction', // Same as forum rules
+                        'comcode', // Specific to Comcode
+                        'css', // CSS rules is another way of saying directives
+                        'style', // CSS style rules is another way of saying directives
+                        'tax',
+                        'posting', // Specific for comments
+                        'any', // generalised and not specific to site rules
+                        'redirect', // htaccess
+                    ])) {
+                        $ok = true;
+                        break;
+                    }
+                }
+            }
+            $ob->assertTrue($ok, 'The word rules (which was probably referencing the site rules) was used in ' . $path . ' without being followed by Terms of Service in parentheses in the conventional way.');
         }
 
         $common_spelling_mistakes = [

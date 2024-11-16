@@ -29,7 +29,7 @@
  */
 function cns_make_post_template(string $title, string $text, string $forum_multi_code, int $use_default_forums) : int
 {
-    $errormsg = null;
+    $errormsg = new Tempcode();
     if (!addon_installed__messaged('cns_post_templates', $errormsg)) {
         warn_exit($errormsg);
     }
@@ -110,7 +110,7 @@ function cns_make_emoticon(string $code, string $theme_img_code, int $relevance_
  */
 function cns_make_welcome_email(string $name, string $subject, string $text, int $send_after_hours, ?int $newsletter = null, ?int $usergroup = null, string $usergroup_type = '') : int
 {
-    $errormsg = null;
+    $errormsg = new Tempcode();
     if (!addon_installed__messaged('welcome_emails', $errormsg)) {
         warn_exit($errormsg);
     }

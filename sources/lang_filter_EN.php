@@ -225,6 +225,15 @@ class LangFilter_EN extends LangFilter
                 $remapping['other webmasters'] = 'other ' . preg_quote(brand_name(), '#') . ' users';
             }
 
+            // Rules versus Terms of Service
+            if (get_value('use_tos_lang', '0') == '1') {
+                $remapping['rules (Terms of Service)'] = 'Terms of Service';
+                $remapping['Rules (Terms of Service)'] = 'Terms of Service';
+            } else {
+                $remapping['rules (Terms of Service)'] = 'rules';
+                $remapping['Rules (Terms of Service)'] = 'Rules';
+            }
+
             // Fix bad contextualisation
             $remapping['on Yesterday'] = 'Yesterday';
             $remapping['on Today'] = 'Today';

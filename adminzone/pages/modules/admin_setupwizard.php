@@ -1416,6 +1416,14 @@ class Module_admin_setupwizard
                 }
                 set_option('join_declarations', $option_value);
             }
+
+            // Change language to Terms of Service if using the corporate template
+            if (post_param_string('rules') == 'corporate') {
+                set_value('use_tos_lang', '1');
+
+                require_code('caches3');
+                erase_cached_language();
+            }
         }
 
         $block_options = null;

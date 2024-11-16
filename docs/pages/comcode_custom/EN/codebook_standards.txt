@@ -1428,7 +1428,7 @@ List block parameters
 | Don't hard-code English text into your code, unless it is only designed for programmers to ever see.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"][i]Do Not Capitalise words just for the Effect[/i][/color]
+[color="red"][i]Do Not CAPITALISE words just for the Effect[/i][/color]
 | Usability
 | Composr development +
 | Manually
@@ -1548,6 +1548,13 @@ Do not use problematic language
 | Manually
 | Instead of saying "blacklist", say "blocklist" or "exclusion-list" or "deny-list". Instead of saying "whitelist", say "safelist" or "inclusion-list" or "allow-list". This is to reduce subconcious suggestion that black=bad and white=good.
 |}
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+When referring to the site rules, say "rules (Terms of Service)" rather than just "rules" or "Terms of Service"
+| Usability
+| Product development only
+| Automated test [tt]async_tests/lang_spelling[/tt]
+| This standard is only required for language string files. The Setup Wizard features a corporate "Terms of Service" template. When selected (or the value of [tt]use_tos_lang[/tt] is set to '1'), Composr should change use of the word "Rules" to "Terms of Service" automatically.
 
 Respect the King of England ;), but also do not confuse Americans...
 {|
