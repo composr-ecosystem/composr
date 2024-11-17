@@ -460,6 +460,37 @@ Reinstalls must be handled correctly
 | If a module is reinstalled, it should not give errors about existing tables or privileges. For this to work, the uninstall function must fully uninstall what the install function creates.
 |}
 
+[title="3"]Cryptography[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not use hashing in cryptographic randomness[/color]
+| Security
+| Product development only
+| Manually
+| When developing cryptographic functions in [tt]crypt.php[/tt] to generate randomness of some kind, do not use hashing algorithms in the process. Hashing algorithms, particularly MD5, carry the risk of clashes (when two or more strings evaluate to the same hash). Furthermore, they defeat the purpose of cryptography because they increase the risk of hackers being able to predict the randomness.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Always use cryptographically-secure entropy when generating cryptographically-secure randomness[/color]
+| Security
+| Product development only
+| Manually
+| When developing cryptographic functions in [tt]crypt.php[/tt] to generate randomness of some kind, use cryptographically-secure entropy in every step of the process involving randomness. If even one random number/string/etc is not generated with cryptographically-secure entropy, the entire process is compromised and left open to prediction by hackers. 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not use the site salt on non-volatile data (e.g. passwords)[/color]
+| Stability
+| Product development only
+| Manually
+| When hashing passwords or other non-volatile data, do not salt them with the site salt. Instead, generate a specific salt (such as for the member) and store that along with the hashed password. Using the site salt can cause lock-outs in the rare event the site salt gets changed or re-generated. The site salt is more appropriate for URL hashes (e.g. verification), cookies, hashed session IDs, caches, and temporary files or data.
+|}
+
 [title="2"]Front-end programming[/title]
 
 [title="3"]Spelling/grammar/lexicon[/title]

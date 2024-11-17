@@ -120,20 +120,17 @@ function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cos
 
 
 /**
- * Get the site-wide salt. It should be something hard for a hacker to get, so we depend on data gathered both from the database and file-system.
+ * Gets or cryptographically generates the site-wide salt.
+ * This should be used to salt sensitive site data or to generate verification hashes. The site salt is enforced to at least 32 characters and will be re-generated if it is less than that.
  *
  * @return ID_TEXT The salt
  */
 function get_site_salt() : string
 {
     $site_salt = get_value('site_salt');
-    if ($site_salt === null) {
-        $site_salt = get_secure_random_hash();
+    if (($site_salt === null) || (strlen($site_salt) < 32)) {
+        $site_salt = get_secure_random_string(32, CRYPT_BASE64);
         set_value('site_salt', $site_salt);
-    }
-
-    if (strlen($site_salt) != 32) { // LEGACY: v10 used the md5 of 13 characters, which is not secure. But changing existing site salts is too breaking to do.
-        return md5($site_salt);
     }
 
     return $site_salt;
@@ -145,7 +142,7 @@ function get_site_salt() : string
  *
  * @param  integer $string_length The length of the string
  * @param  string $character_map A CRYPT_* constant defining the character map to use; the string length should be a power of 2
- * @return string The paeudo-random string
+ * @return string The pseudo-random string
  */
 function get_secure_random_string(int $string_length = 13, string $character_map = '23456789abcdefghijkmnpqrstuvwxyz') : string
 {
@@ -158,17 +155,6 @@ function get_secure_random_string(int $string_length = 13, string $character_map
         $random_string .= $character_map[$random_index];
     }
     return $random_string;
-}
-
-/**
- * Generate a cryptographically secure pseudo-random MD5 hash.
- * This does not actually use the md5 function which is insecure. Each character is cryptographically generated.
- *
- * @return string The pseudo-random MD5 hash
- */
-function get_secure_random_hash() : string
-{
-    return get_secure_random_string(32, CRYPT_BASE16);
 }
 
 /**

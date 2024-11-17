@@ -310,7 +310,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             }
         }
 
-        // LEGACY: Transform old style v10 passwords into v11 passwords
+        // LEGACY: Transform old style v10 passwords into v11 passwords (v10 ones were not hashed securely)
         if ($needs_rehash) {
             require_code('crypt');
             $password_salt = get_secure_random_string(32, CRYPT_BASE64);
