@@ -5689,6 +5689,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_UPGRADER_TITLE
         UPGRADER_UPGRADE_CNS
         UPGRADER_UPGRADE_MODULES
+        _UPGRADER_UPGRADE_DB_SPECIFIC
+        UPGRADER_UPGRADE_DB_DONE
         UPGRADER_UPGRADE_STEPS
         UPGRADER_UPGRADING
         UPGRADER_UP_INFO_1

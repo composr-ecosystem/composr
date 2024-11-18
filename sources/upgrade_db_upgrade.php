@@ -91,13 +91,15 @@ function upgrader_db_upgrade_screen()
         }
     } elseif ($offset == 1000000) {
         echo '<h3>' . do_lang('UPGRADER_UPGRADE_DB_SPECIFIC') . '</h3>';
+        echo '<p>' . do_lang('_UPGRADER_UPGRADE_DB_SPECIFIC') . '</p>';
 
         // Database-specific upgrade
         $database_upgrade = database_specific();
         set_value('db_version', strval(cms_version_time_db()), true);
         clear_caches_2();
 
-        echo do_lang('SUCCESS');
+        echo '<p>' . do_lang('SUCCESS') . '</p>';
+        echo '<p><strong>' . do_lang('UPGRADER_UPGRADE_DB_DONE') . '</strong></p>';
     }
 
     // Add a self-executing proceed button
