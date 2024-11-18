@@ -30,7 +30,7 @@
 			<div class="installer-main-inner">
 				<div class="box box---installer-html-wrap">
 					<div class="box-inner">
-						<h1>{!INSTALLER,Composr}: {!INSTALLER_STEP,{STEP},10}</h1>
+						<h1>{!INSTALLER,Composr}: {!INSTALLER_STEP,{STEP},9}</h1>
 
 						<div id="extra-errors"></div>
 

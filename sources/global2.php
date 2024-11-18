@@ -408,6 +408,7 @@ function init__global2()
     if (!$MICRO_AJAX_BOOTUP) {
         require_code('temporal'); // Date/time functions
 
+        require_code('global3');
         convert_request_data_encodings(get_param_integer('known_utf8', 0) == 1);
 
         if (!$MICRO_BOOTUP) {
@@ -1072,6 +1073,7 @@ function prepare_backend_response(?string $content_type = 'text/xml', int $setti
     }
 
     if (($settings & BACKEND_RESPONSE_AJAX) != 0) {
+        require_code('global3');
         convert_request_data_encodings(true);
 
         global $KNOWN_AJAX;
@@ -2415,29 +2417,6 @@ function sync_file_move(string $old, string $new)
 {
     require_code('files2');
     _sync_file_move($old, $new);
-}
-
-/**
- * Performs lots of magic to make sure data encodings are converted correctly. Input, and output too (as often stores internally in UTF or performs automatic dynamic conversions from internal to external charsets).
- *
- * @param  boolean $known_utf8 Whether we know we are working in utf-8. This is the case for AJAX calls.
- */
-function convert_request_data_encodings(bool $known_utf8 = false)
-{
-    global $VALID_ENCODING, $CONVERTED_ENCODING;
-    $VALID_ENCODING = true;
-
-    if ($CONVERTED_ENCODING) {
-        return; // Already done it
-    }
-
-    if (preg_match('#^[\x00-\x7F]*$#', serialize($_POST) . serialize($_GET) . serialize($_FILES)) != 0) { // Simple case, all is ASCII
-        $CONVERTED_ENCODING = true;
-        return;
-    }
-
-    require_code('character_sets');
-    _convert_request_data_encodings($known_utf8);
 }
 
 /**

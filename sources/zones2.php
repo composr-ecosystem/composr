@@ -504,7 +504,7 @@ function reinstall_module(string $zone, string $module) : bool
         $info['min_cms_version'] = cms_version_number();
         $info['addon'] = do_lang('NA');
     } else {
-        $info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $module_path);
+        $info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $module_path . '::info()');
     }
 
     if ($functions[2] !== null) {
@@ -513,7 +513,7 @@ function reinstall_module(string $zone, string $module) : bool
         if (is_array($functions[2])) {
             call_user_func_array($functions[2][0], $functions[2][1]);
         } else {
-            cms_eval($functions[2], $module_path);
+            cms_eval($functions[2], $module_path . '::uninstall()');
         }
 
         cms_set_time_limit($old);
@@ -543,7 +543,7 @@ function reinstall_module(string $zone, string $module) : bool
         if (is_array($functions[1])) {
             call_user_func_array($functions[1][0], $functions[1][1]);
         } else {
-            cms_eval($functions[1], $module_path);
+            cms_eval($functions[1], $module_path . '::install()');
         }
 
         cms_set_time_limit($old);

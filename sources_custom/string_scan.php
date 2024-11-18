@@ -5410,6 +5410,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXTRA_CC_ADDRESSES
         EXTRA_SUBSCRIPTION_MAIL
         ZERO_CONTENT_LANG_STRING
+        NOT_STRING_CONTENT_LANG_STRING
+        NOT_INTEGER_CONTENT_LANG_STRING
         FAILED_LOGINS
         FAILED_TO_UPLOAD_BACKUP_BODY
         FAILED_TO_UPLOAD_BACKUP_SUBJECT
@@ -5909,6 +5911,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INSERT_SYMBOL
         INSTALLED_ADDON
         INSTALLED_BLOCK
+        MORE_TO_INSTALL
         INSTALLED_CNS
         DELETED_ATTACHMENTS
         DROPPED_TABLES

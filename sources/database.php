@@ -274,6 +274,7 @@ function reload_lang_fields(bool $full = false, ?string $only_table = null, ?arr
 function find_lang_fields(string $table, ?string $alias = null) : array
 {
     global $TABLE_LANG_FIELDS_CACHE;
+
     $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
     if ($alias !== null) {
         foreach ($lang_fields as $lang_field => $lang_field_type) {

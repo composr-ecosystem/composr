@@ -226,12 +226,14 @@ class LangFilter_EN extends LangFilter
             }
 
             // Rules versus Terms of Service
-            if (get_value('use_tos_lang', '0') == '1') {
-                $remapping['rules (Terms of Service)'] = 'Terms of Service';
-                $remapping['Rules (Terms of Service)'] = 'Terms of Service';
-            } else {
-                $remapping['rules (Terms of Service)'] = 'rules';
-                $remapping['Rules (Terms of Service)'] = 'Rules';
+            if (function_exists('get_value')) {
+                if (get_value('use_tos_lang', '0') == '1') {
+                    $remapping['rules (Terms of Service)'] = 'Terms of Service';
+                    $remapping['Rules (Terms of Service)'] = 'Terms of Service';
+                } else {
+                    $remapping['rules (Terms of Service)'] = 'rules';
+                    $remapping['Rules (Terms of Service)'] = 'Rules';
+                }
             }
 
             // Fix bad contextualisation

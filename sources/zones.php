@@ -1050,7 +1050,7 @@ function find_all_hooks(string $type, string $subtype, bool $check_custom = true
     $doing_custom_scan = (!isset($GLOBALS['DOING_USERS_INIT'])) && // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
         ((!in_safe_mode()) ||
             (($subtype == 'addon_registry') &&
-                (($GLOBALS['RELATIVE_PATH'] === '_tests') || (running_script('upgrader')) || ($page == 'admin-addons')) // These conditions must allow loading non-bundled addon hooks even in safe mode
+                (($GLOBALS['RELATIVE_PATH'] === '_tests') || (running_script('upgrader')) || (running_script('install')) || ($page == 'admin-addons')) // These conditions must allow loading non-bundled addon hooks even in safe mode
             )
         );
 

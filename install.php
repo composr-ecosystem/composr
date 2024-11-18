@@ -111,24 +111,6 @@ require_code('zones');
 require_code('comcode');
 require_code('themes');
 
-if (!array_key_exists('type', $_GET)) {
-    if (empty($_GET)) {
-        header('Content-Type: text/html; charset=utf-8');
-    }
-
-    echo '<' . '!' . 'DOCTYPE html' . '>' . "\n";
-    if (empty($_GET)) { // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
-        echo '<' . 'script' . '>
-            window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
-            window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
-        </' . 'script' . '>';
-    }
-}
-
-if (!array_key_exists('type', $_GET)) {
-    send_http_output_ping();
-}
-
 global $CACHE_TEMPLATES;
 if (is_writable(get_file_base() . '/themes/default/templates_cached/' . user_lang())) {
     $CACHE_TEMPLATES = true;
@@ -189,19 +171,23 @@ if (intval($_GET['step']) == 4) { // Define settings
     $PASSWORD_PROMPT = do_lang_tempcode('CONFIRM_MAINTENANCE_PASSWORD');
 }
 
-if (intval($_GET['step']) == 5) {
+if (intval($_GET['step']) == 5) { // File extraction / core install
     $content = step_5();
 }
 
-if (intval($_GET['step']) == 6) {
+if (intval($_GET['step']) == 6) { // Conversr install
     $content = step_6();
 }
 
-if (intval($_GET['step']) == 7) {
+if (intval($_GET['step']) == 7) { // Forum drivers / Critical modules/addons/blocks install
     $content = step_7();
 }
 
-if (intval($_GET['step']) == 8) {
+if (intval($_GET['step']) == 8) { // Install rest of modules / addons / blocks (will re-execute every 10 seconds with offset)
+    if (!array_key_exists('offset', $_GET)) {
+        $_GET['offset'] = '0';
+    }
+
     $content = step_8();
 }
 
@@ -211,10 +197,6 @@ if (intval($_GET['step']) == 9) {
 
 if (intval($_GET['step']) == 10) {
     $content = step_10();
-}
-
-if (intval($_GET['step']) == 11) {
-    $content = step_11();
 }
 
 if ($DEFAULT_FORUM === null) {
@@ -240,6 +222,22 @@ $out_final = do_template('INSTALLER_HTML_WRAP', [
 ]);
 unset($css_nocache);
 unset($content);
+
+// We have to do header and script handling down here so errors thrown by installer steps do not get blocked out by "headers already sent".
+if (!array_key_exists('type', $_GET)) {
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<' . '!' . 'DOCTYPE html' . '>' . "\n";
+
+    if (empty($_GET)) {
+        // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
+        echo '<' . 'script' . '>
+            window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
+            window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
+        </' . 'script' . '>';
+    }
+
+    send_http_output_ping();
+}
 $out_final->evaluate_echo();
 
 global $DATADOTCMS_FILE;
@@ -841,6 +839,7 @@ function step_4() : object
     $user_cookie = $PROBED_FORUM_CONFIG['cookie_member_id'];
     $pass_cookie = $PROBED_FORUM_CONFIG['cookie_member_hash'];
     $multi_lang_content = ((file_exists(get_file_base() . '/.git')/*randomise in dev mode*/) && ($db_type != 'xml')) ? mt_rand(0, 1) : 0;
+    $multi_lang_content = 0; // TODO: content translations are broken; see #6063
     $domain = preg_replace('#:.*#', '', get_request_hostname());
 
     $forum_driver_specifics = $GLOBALS['FORUM_DRIVER']->install_specifics();
@@ -911,9 +910,11 @@ function step_4() : object
             $domain = $SITE_INFO['domain'];
         }
         if ((!file_exists(get_file_base() . '/.git')) || ($use_msn == 1)) {
+            /* TODO: #6063
             if (isset($SITE_INFO['multi_lang_content'])) {
                 $multi_lang_content = intval($SITE_INFO['multi_lang_content']);
             }
+            */
         }
     }
 
@@ -1133,7 +1134,10 @@ function step_4() : object
         }
     }
 
-    $options->attach(make_tick(do_lang_tempcode('MULTI_LANG_CONTENT'), is_maintained_description('multi_lang_content', example('', 'MULTI_LANG_CONTENT_TEXT')), 'multi_lang_content', $multi_lang_content));
+    // TODO: #6063
+    $options->attach('<p>Content translations are currently not available in v11; see <a href="https://compo.sr/tracker/view.php?id=6063" target="_blank">tracker issue 6063</a></p>');
+    //$options->attach(make_tick(do_lang_tempcode('MULTI_LANG_CONTENT'), is_maintained_description('multi_lang_content', example('', 'MULTI_LANG_CONTENT_TEXT')), 'multi_lang_content', $multi_lang_content));
+
     $general_advanced_options = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'g051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
 
     $temp = new Tempcode();
@@ -1204,11 +1208,13 @@ function step_5() : object
         $_POST['cns_table_prefix'] = array_key_exists('table_prefix', $_POST) ? $_POST['table_prefix'] : get_default_table_prefix();
     }
 
+    /* TODO: See #6063
     // Checkbox fields that need to be explicitly saved, as the default is not 0
     $multi_lang_content = post_param_integer('multi_lang_content', 0);
     if ($multi_lang_content == 0) {
         $_POST['multi_lang_content'] = '0';
     }
+    */
 
     // Cleanup base URL
     $_POST['base_url'] = normalise_idn_url($_POST['base_url']);
@@ -2469,8 +2475,8 @@ function step_7() : object
 
     $time_start = microtime(true);
 
-    // We must install these modules first
-    foreach (['admin_version', 'admin_permissions'] as $module) {
+    // We must install these modules first (if you change these, add as an exception in step 8!)
+    foreach (['admin_version', 'admin_permissions', 'admin_addons'] as $module) {
         $time_before = microtime(true);
         if (reinstall_module('adminzone', $module)) {
             $time_after = microtime(true);
@@ -2483,52 +2489,13 @@ function step_7() : object
         }
     }
 
-    $modules = find_all_modules('adminzone');
-    foreach ($modules as $module => $type) {
-        if (($module != 'admin_version') && ($module != 'admin_permissions')) {
-            send_http_output_ping();
-
-            $time_before = microtime(true);
-            if (reinstall_module('adminzone', $module)) {
-                $time_after = microtime(true);
-                $time = $time_after - $time_before;
-                if (get_param_integer('keep_show_timings', 0) == 1) {
-                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
-                } else {
-                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
-                }
-            }
-        }
-    }
-
-    set_option('send_error_emails_developers', strval(post_param_integer('send_error_emails_developers', 0)));
-    set_option('call_home', (post_param_integer('advertise_on', 0) != 0) ? '1' : '0');
-
-    require_code('addons2');
-    $addons = find_all_hooks('systems', 'addon_registry');
-    foreach ($addons as $addon_name => $place) {
-        send_http_output_ping();
-
-        //if ($place == 'sources_custom') continue;  Now we are actually installing custom addons too
-
-        $time_before = microtime(true);
-        reinstall_addon_soft($addon_name);
-        $time_after = microtime(true);
-        $time = $time_after - $time_before;
-        if (get_param_integer('keep_show_timings', 0) == 1) {
-            $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time) . ' seconds')])];
-        } else {
-            $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))])];
-        }
-    }
-
     $time_end = microtime(true);
     if (get_param_integer('keep_show_timings', 0) == 1) {
         $time = $time_end - $time_start;
         $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab4', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time) . ' seconds')])];
     }
 
-    sort_maps_by($log, '!time');
+    //sort_maps_by($log, '!time'); // Actually this is confusing; we should keep order as-is for chronological display
     $_log = new Tempcode();
     foreach ($log as $l) {
         $_log->attach($l['out']);
@@ -2547,35 +2514,187 @@ function step_7() : object
 }
 
 /**
+ * Build a chronological array dictating in what order we should install addons, modules, and blocks.
+ *
+ * @param  array $addons_to_install A list of addons we want to install
+ * @return array A list of addon|module|block, name, and optionally extra parameters such as zone.
+ */
+function step_8_build_install_order(array $addons_to_install) : array
+{
+    $ret = [];
+    $_addons_to_process = $addons_to_install;
+    $addons_to_process = [];
+
+    // Re-build addon order; we want core first, followed by core_* addons, followed by everything else
+    if (in_array('core', $_addons_to_process)) {
+        $addons_to_process[] = 'core';
+    }
+    foreach ($_addons_to_process as $addon) {
+        if (strpos($addon, 'core_') === 0) {
+            $addons_to_process[] = $addon;
+        }
+    }
+    foreach ($_addons_to_process as $addon) { // Non-core addons
+        if (strpos($addon, 'core') === 0) {
+            continue;
+        }
+        $addons_to_process[] = $addon;
+    }
+
+    while (count($addons_to_process) > 0) {
+        $before_count = count($addons_to_process);
+
+        // Get addon information
+        foreach ($addons_to_process as $key => $addon) {
+            $hook = get_hook_ob('systems', 'addon_registry', $addon, 'Hook_addon_registry_');
+            $dependencies = $hook->get_dependencies();
+            if (isset($dependencies['requires'])) {
+                foreach ($dependencies['requires'] as $requires) {
+                    if (in_array($requires, $addons_to_process)) { // Cannot process this addon yet as dependent addons have not yet been processed
+                        continue 2;
+                    }
+                }
+            }
+
+            // Mark addon for installation
+            $ret[] = ['addon', $addon];
+
+            // Look for modules and blocks from this addon to install
+            $files = $hook->get_file_list();
+            foreach ($files as $file) {
+                $matches = [];
+                if (preg_match('/(\w*)\/pages\/(modules|modules_custom)\/(\w*)\.php/', $file, $matches) != 0) {
+                    list($match, $zone, $module_type, $module_name) = $matches;
+                    $ret[] = ['module', $module_name, $zone];
+                }
+
+                $matches = [];
+                if (preg_match('/(sources|sources_custom)\/blocks\/(\w*)\.php/', $file, $matches) != 0) {
+                    list($match, $block_type, $block_name) = $matches;
+                    $ret[] = ['block', $block_name];
+                }
+            }
+
+            unset($addons_to_process[$key]); // Indicate we processed this addon
+            unset($files); // Free up memory
+        }
+
+        if (count($addons_to_process) == $before_count) {
+            var_dump($addons_to_process);
+            fatal_exit('Cyclic dependency error');
+        }
+    }
+
+    return $ret;
+}
+
+/**
  * Eighth installation step.
  *
  * @return Tempcode Progress report / UI
  */
 function step_8() : object
 {
+    $time_start = microtime(true);
+
     big_installation_common();
 
     $log = [];
+    $was_finished = true;
 
-    $time_start = microtime(true);
+    $offset = get_param_integer('offset', 0);
+    $_offset = 0;
 
-    foreach ((get_option('single_public_zone') == '1') ? [''] : ['', 'site'] as $zone) {
-        $modules = find_all_modules($zone);
-        foreach ($modules as $module => $type) {
-            send_http_output_ping();
+    require_code('addons2');
 
-            $time_before = microtime(true);
+    // If we just started this step, we need to populate all our addons / blocks / modules for temporary storage to maintain offsets properly
+    if ($offset == 0) {
+        $addons = find_all_hooks('systems', 'addon_registry');
 
-            if (reinstall_module($zone, $module)) {
+        $data = step_8_build_install_order(array_keys($addons));
+
+        cms_file_put_contents_safe(get_file_base() . '/data_custom/installer_step_8.bin', serialize($data));
+    } else {
+        $_data = cms_file_get_contents_safe(get_file_base() . '/data_custom/installer_step_8.bin');
+        $data = unserialize($_data);
+    }
+
+    foreach ($data as $key => $to_install) {
+        $_offset = $key;
+
+        if ($key < $offset) { // Already installed
+            continue;
+        }
+
+        send_http_output_ping();
+
+        $time_before = microtime(true);
+        if (($time_before - $time_start) >= 10.0) { // Actually, do not proceed if we spent 10 or more seconds; proceed on next execution
+            $was_finished = false;
+            break;
+        }
+
+        switch ($to_install[0]) {
+            case 'addon':
+                $addon_name = $to_install[1];
+
+                reinstall_addon_soft($addon_name);
+
                 $time_after = microtime(true);
                 $time = $time_after - $time_before;
                 if (get_param_integer('keep_show_timings', 0) == 1) {
-                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time) . ' seconds')])];
                 } else {
-                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))])];
                 }
-            }
+                break;
+
+            case 'module':
+                $module = $to_install[1];
+                $zone = $to_install[2];
+
+                if (in_array($module, ['admin_version', 'admin_permissions', 'admin_addons'])) { // Done in step 7
+                    continue;
+                }
+
+                if (reinstall_module($zone, $module)) {
+                    $time_after = microtime(true);
+                    $time = $time_after - $time_before;
+                    if (get_param_integer('keep_show_timings', 0) == 1) {
+                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
+                    } else {
+                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
+                    }
+                }
+                break;
+
+            case 'block':
+                $block = $to_install[1];
+
+                if (reinstall_block($block)) {
+                    $time_after = microtime(true);
+                    $time = $time_after - $time_before;
+                    if (get_param_integer('keep_show_timings', 0) == 1) {
+                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'da7e6b0948b6aa5702123808a4ca894f', 'SOMETHING' => protect_from_escaping('Block installation of ' . escape_html($block) . ' took ' . float_format($time) . ' seconds')])];
+                    } else {
+                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))])];
+                    }
+                }
+                break;
         }
+    }
+
+    if ($was_finished === true) { // Final tasks; we are done with this step
+        //@unlink(get_file_base() . '/data_custom/installer_step_8.bin');
+
+        set_option('send_error_emails_developers', strval(post_param_integer('send_error_emails_developers', 0)));
+        set_option('call_home', (post_param_integer('advertise_on', 0) != 0) ? '1' : '0');
+
+        $url = prepare_installer_url('install.php?step=9');
+    } else { // We have more to do
+        $time = microtime(true) - $time_start;
+        $url = prepare_installer_url('install.php?step=8&offset=' . strval($_offset));
+        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['SOMETHING' => do_lang_tempcode('MORE_TO_INSTALL')])];
     }
 
     $time_end = microtime(true);
@@ -2584,13 +2703,11 @@ function step_8() : object
         $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab5', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time) . ' seconds')])];
     }
 
-    sort_maps_by($log, '!time');
+    // sort_maps_by($log, '!time'); // Actually this is confusing; we should keep order as-is for chronological display
     $_log = new Tempcode();
     foreach ($log as $l) {
         $_log->attach($l['out']);
     }
-
-    $url = prepare_installer_url('install.php?step=9');
 
     return do_template('INSTALLER_STEP_LOG', [
         '_GUID' => '27fad5aa7f96d26a51e6afb6b7e5c7b1',
@@ -2603,7 +2720,7 @@ function step_8() : object
 }
 
 /**
- * Ninth installation step.
+ * Ninth installation step: wrapper and special interface.
  *
  * @return Tempcode Progress report / UI
  */
@@ -2611,86 +2728,9 @@ function step_9() : object
 {
     big_installation_common();
 
-    $log = [];
-
-    $time_start = microtime(true);
-
-    foreach (['forum', 'cms'] as $zone) {
-        if (!is_file(get_file_base() . '/' . $zone . '/index.php')) {
-            continue;
-        }
-
-        $modules = find_all_modules($zone);
-        foreach ($modules as $module => $type) {
-            send_http_output_ping();
-
-            $time_before = microtime(true);
-
-            if (reinstall_module($zone, $module)) {
-                $time_after = microtime(true);
-                $time = $time_after - $time_before;
-                if (get_param_integer('keep_show_timings', 0) == 1) {
-                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
-                } else {
-                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'c1d95b9713006acb491b44ff6c79099c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
-                }
-            }
-        }
-    }
-
-    $blocks = find_all_blocks();
-    foreach ($blocks as $block => $type) {
-        send_http_output_ping();
-
-        $time_before = microtime(true);
-
-        if (reinstall_block($block)) {
-            $time_after = microtime(true);
-            $time = $time_after - $time_before;
-            if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'da7e6b0948b6aa5702123808a4ca894f', 'SOMETHING' => protect_from_escaping('Block installation of ' . escape_html($block) . ' took ' . float_format($time) . ' seconds')])];
-            } else {
-                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))])];
-            }
-        }
-    }
-
-    $time_end = microtime(true);
-    if (get_param_integer('keep_show_timings', 0) == 1) {
-        $time = $time_end - $time_start;
-        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab6', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time) . ' seconds')])];
-    }
-
-    sort_maps_by($log, '!time');
-    $_log = new Tempcode();
-    foreach ($log as $l) {
-        $_log->attach($l['out']);
-    }
-
-    $url = prepare_installer_url('install.php?step=10');
-
-    return do_template('INSTALLER_STEP_LOG', [
-        '_GUID' => 'b20121b8f4f84dd8e625e3b821c753b3',
-        'PREVIOUS_STEP' => '8',
-        'CURRENT_STEP' => '9',
-        'URL' => $url,
-        'LOG' => $_log,
-        'HIDDEN' => build_keep_post_fields(),
-    ]);
-}
-
-/**
- * Tenth installation step: wrapper and special interface.
- *
- * @return Tempcode Progress report / UI
- */
-function step_10() : object
-{
-    big_installation_common();
-
     $log = new Tempcode();
-    $log->attach(step_10_populate_database());
-    $log->attach(step_10_forum_stuff());
+    $log->attach(step_9_populate_database());
+    $log->attach(step_9_forum_stuff());
 
     // We can consider the database up-to-date at this point
     require_code('version');
@@ -2727,9 +2767,9 @@ function step_10() : object
     require_code('caches3');
     erase_cached_templates();
 
-    $url = prepare_installer_url('install.php?step=11&type=finish');
+    $url = prepare_installer_url('install.php?step=10&type=finish');
 
-    return do_template('INSTALLER_STEP_10', [
+    return do_template('INSTALLER_STEP_9', [
         '_GUID' => '0e50bc1b9934c32fb62fb865a3971a9b',
         'PREVIOUS_STEP' => '9',
         'CURRENT_STEP' => '10',
@@ -2741,11 +2781,11 @@ function step_10() : object
 }
 
 /**
- * Tenth installation step: main.
+ * Ninth installation step: main.
  *
  * @return Tempcode Progress report / UI
  */
-function step_10_populate_database() : object
+function step_9_populate_database() : object
 {
     $log = [];
 
@@ -2753,36 +2793,9 @@ function step_10_populate_database() : object
     global $ADD_MENU_COUNTER;
     $ADD_MENU_COUNTER = 100;
 
-    $zones = find_all_zones();
-    // FUDGE: Installing from Git
-    if (file_exists(get_file_base() . '/docs')) {
-        $zones[] = 'docs';
-    }
-    if (file_exists(get_file_base() . '/buildr')) {
-        $zones[] = 'buildr';
-    }
-    foreach (array_unique($zones)/*in case find_all_zones did find docs*/ as $zone) {
-        if (($zone != 'site') && ($zone != 'adminzone') && ($zone != 'forum') && ($zone != 'cms') && (($zone != '') || (get_option('single_public_zone') == '0'))) {
-            $modules = find_all_modules($zone);
-            foreach (array_keys($modules) as $module) {
-                send_http_output_ping();
-
-                $time_before = microtime(true);
-                if (reinstall_module($zone, $module)) {
-                    $time_after = microtime(true);
-                    $time = $time_after - $time_before;
-                    if (get_param_integer('keep_show_timings', 0) == 1) {
-                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd0146689fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
-                    } else {
-                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '25eb1c88fe122ec5a817f334d5f6bc5e', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
-                    }
-                }
-            }
-        }
-    }
     //$log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '6a160da6fd9031e90b37a40aea149137', 'SOMETHING' => do_lang('TABLES_CREATED', 'Composr'])));
 
-    sort_maps_by($log, '!time');
+    //sort_maps_by($log, '!time'); // Actually this is confusing; we should keep order as-is for chronological display
     $_log = new Tempcode();
     foreach ($log as $l) {
         $_log->attach($l['out']);
@@ -2792,11 +2805,11 @@ function step_10_populate_database() : object
 }
 
 /**
- * Tenth installation step: forum part.
+ * Ninth installation step: forum part.
  *
  * @return Tempcode Progress report / UI
  */
-function step_10_forum_stuff() : object
+function step_9_forum_stuff() : object
 {
     $log = new Tempcode();
 
@@ -2817,11 +2830,11 @@ function step_10_forum_stuff() : object
 }
 
 /**
- * Eleventh installation step: directs to proper place inside Composr, with a pre-set admin login.
+ * Tenth installation step: directs to proper place inside Composr, with a pre-set admin login.
  *
  * @return Tempcode Redirect screen
  */
-function step_11() : object
+function step_10() : object
 {
     big_installation_common();
     reload_lang_fields();
