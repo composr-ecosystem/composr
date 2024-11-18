@@ -2685,7 +2685,7 @@ function step_8() : object
     }
 
     if ($was_finished === true) { // Final tasks; we are done with this step
-        //@unlink(get_file_base() . '/data_custom/installer_step_8.bin');
+        @unlink(get_file_base() . '/data_custom/installer_step_8.bin');
 
         set_option('send_error_emails_developers', strval(post_param_integer('send_error_emails_developers', 0)));
         set_option('call_home', (post_param_integer('advertise_on', 0) != 0) ? '1' : '0');
