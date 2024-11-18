@@ -10,12 +10,12 @@ When the developers make a release they will state whether they recommend users 
 
 Upgrades may be roughly categorised under:
  - [b]patch releases[/b] -- these are likely to involve bug fixes, with very few, if any new features. Any new features would have been implemented solely to provide important functionality that was obviously missing. Patch releases are very easy to upgrade to
- - or, [b]feature releases[/b] -- these are likely to include many new features; the quantity of new features will depend on the difference in version numbers between releases. Minor releases are usually easy to upgrade to
+ - or, [b]feature releases[/b] -- these are likely to include new features; the quantity of new features will vary. Minor releases are usually easy to upgrade to but may have a few things to consider
  - or, [b]major releases[/b] -- these are likely to involve many architectural changes, as well as new features; major releases are less common, as they need to perform additional testing for them which takes a long length of time -- they therefore try to avoid architectural changes other than in large batches
 
 [surround]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/dont.png[/media]
-It is recommended that you do not 'jump over' major releases (e.g. v2 to v4, jumping over v3) that you do not feel you need (or did not have time to upgrade to), as the chance is higher of an upgrade process bug being present in unusual upgrade jumps. In theory, it should work without issue, as the process has been designed very carefully, but in practice, it is very easy for a very minor glitch to cause major problems that need manual resolution: in such an event, the developers would fix the problem, either directly, or by mass provision of a script, but it would be an inconvenience and could take some time.
+It is recommended that you do not 'jump over' major releases (e.g. v2 to v4, jumping over v3) that you do not feel you need (or did not have time to upgrade to), as the chance is much higher of an upgrade process bug being present in unusual upgrade jumps (especially since the core developers likely do not maintain those older versions anymore).
 [/surround]
 
 [title="2"]Some words of caution[/title]
@@ -49,7 +49,7 @@ The upgrade process involves a number of stages (the upgrader will step you thro
 
 Pre-steps:
 [list="1"]
-[*] get to the upgrader, either via the upgrade link from the top-right of the Admin Zone dashboard (which may take up to 3 hours to update), or going to [tt]http://yourbaseurl/upgrader.php[/tt]
+[*] get to the upgrader, either via the upgrade link from the top-right of the Admin Zone dashboard (which may take up to 3 hours to update due to cache), or going to [tt]http://yourbaseurl/upgrader.php[/tt]
 [*] log in to the upgrader using your maintenance password (the one you set when you installed, different to your admin login)
 [/list]
 
@@ -69,15 +69,20 @@ Steps:
  - resolving any conflicts with templates, as necessary (for example, if there was a change in the verbatim version of a template, and the upgraded website had also changed that template, then changes might [depending on importance] need to be incorporated manually)
  - removing any files from previous versions of Composr that are no longer required
  - removing any files relating to bundled addons that you have previously uninstalled
-[*] upgrading your database; this is the most key step, which upgrades all modules and blocks, as well as doing some cross-system updates, and updating Conversr -- if any errors happen they'll be displayed and you should note them down and report them, but Composr will generally try and continue anyway if there are minor errors happening
+[*] upgrading your database; this is the most key step, which upgrades all addons, modules, and blocks, as well as doing some cross-system updates, and updating Conversr 
+ - as upgrades can be very resource-intensive (especially for major upgrades which may call for restructuring of large amounts of site data), the database upgrade process runs one addon, module, and block at a time, to help reduce the risk of server time-outs (but at the cost of the database upgrader taking longer to complete). The database upgrader will tell you when it is done.
+ - if any errors happen they'll be displayed for a short time (and also logged to your error log so you can refer back to them again), but Composr will generally try and continue anyway if there are minor errors happening.
+ - Database errors are common on the last "bleeding-edge" step because this often contains SQL queries which may have already been run by the upgrade of an addon, module, or block. They can usually be ignored on this step. This step is there if we had to modify the upgrade code in an addon/module/block (without bumping its version number), and therefore some sites already on that module/block/addon version won't normally get the upgrade.
 [*] performing an {$IS_MAINTAINED,theme_upgrader,automatic theme upgrade} (if available for the version jump you're doing -- we usually have this disabled because it is not something we can support well currently; instead we recommend using https://composr.app/themeing-changes.htm to help you do it manually, and also using the "Theme Wizard files" Website cleanup tool)
+[*] Running another file integrity scan (for minor/major upgrades) to be extra sure all issues were addressed
+[*] If you use an [tt].htaccess[/tt] file, comparing it with [tt]recommended.htaccess[/tt] (which may have changed) and merging in changes
 [*] clearing caches
 [*] re-opening your website
 [/list]
 
 [title="2"]Browser cache[/title]
 
-Often browsers will cache CSS and JavaScript files, even when changed on the server. Usually completely restarting the browser will make it recheck cache times. If you get JavaScript errors after upgrading, chances are fair that you need to empty your browser cache.
+Often browsers will cache CSS and JavaScript files, even when changed on the server. Usually completely restarting the browser will make it recheck cache times. If you get JavaScript errors after upgrading, chances are fair that you need to empty your browser cache. If your site runs on a CDN, such as Cloudflare, you may also need to purge the cache there.
 
 [title="2"]Assistance[/title]
 
@@ -104,6 +109,7 @@ The integrity checker will display the following kinds of file (if any):
  - Overrides blocking original files ("The following files have been superseded by new versions")
  - Modified files:
   - Newer than the original ("These files do not match the ones bundled with your version, but claim to be newer")
+   - These can happen if you apply hotfixes from the tracker
   - Older than the original ("These files are outdated")
   - Older than the original, [i]and[/i] with an override blocking the original ("The following non-overridden files are outdated")
  - Files that maybe shouldn't be there:
@@ -111,21 +117,21 @@ The integrity checker will display the following kinds of file (if any):
   - Files from non-installed addons
   - Files that have since been moved
 
-If you want to prove to yourself how it works, create a random php file named [tt]testfile.php[/tt] in the [tt]sources[/tt] directory of Composr and run the integrity checker again. Now it will list the new [tt]testfile.php[/tt] file in the results.
+If you want to prove to yourself how it works, create a random php file named [tt]somerandomname.php[/tt] in the [tt]sources[/tt] directory of Composr and run the integrity checker again. Now it will list the new [tt]somerandomname.php[/tt] file in the results (because this file does not belong to any addon).
 
-This is very useful for upgrading because it helps identify old files that need removing. Generally though it is useful to make sure unexpected files don't lay around within the system causing potential problems.
+This is very useful for upgrading because it helps identify old files that need removing. Generally though it is also useful to make sure unexpected files don't lay around within the system causing potential problems.
 
 The integrity checker has the ability to get rid of the alien files by quarantining them (moving them under an [tt]_old[/tt] directory). Check (tick) the checkbox next to the file name and press the "Automatically handle those ticked (checked) – quarantine/move as needed" button placed below the list of files.
 
-Obviously you should be careful quarantining files, as there may be legitimate reasons you have put alien files there. The upgrader is smart enough to recognise files from old versions and automatically tick (check) those, leaving the ones totally unrecognised unticked (unchecked).
+Obviously you should be careful quarantining files, as there may be legitimate reasons you have put alien files there (e.g. domain ownership validation files, Project Honey Pot integration scripts, custom code). The upgrader is smart enough to recognise files from old versions and automatically tick (check) those, leaving the ones totally unrecognised unticked (unchecked).
 
 [title="2"]Upgrade packages[/title]
 
-Generally you upgrade using the package generated from the news announcement of the new version. A custom package for the version you are upgrading from will be generated. It is not safe to extract these packages manually because they contain the files for all non-bundled addons, regardless of what you still have installed or not. You do not want to get files from non-installed addons back into your system, it can cause many issues. When you install the package from within the upgrader it is smart enough to know what to extract, verses what to package into the non-bundled addon TARs that were archived to disk when you uninstalled those addons.
+Generally you upgrade using the package generated from the news announcement of the new version. A custom package for the version you are upgrading from will be generated. It is not safe to extract these packages manually because they contain the files for all addons, regardless of what you still have installed or not. You do not want to get files from non-installed addons back into your system, it can cause many issues. When you install the package from within the upgrader it is smart enough to know what to extract, verses what to package into the addon TARs that were archived to disk when you uninstalled those addons.
 
 In the file transfer step of the upgrader you can see there is also a link to generate a custom upgrader specifically for your site. This link is more customised than the above because the package is generated with knowledge of what bundled addons you have installed, and thus it is possible to manually extract it safely. The package also contains a full set of non-bundled addon TARs so that you know anything you reinstall will be for the version you are currently running, not an older version.
 
-We may very rarely provide something called an "omni-upgrader", which can be used to upgrade from any version. We did this when we switched from ocPortal to Composr, as our entire infrastructure got cycled over, breaking the normal upgrade workflow.
+We may very rarely provide something called an "omni-upgrader", which can be used to upgrade from any version. We did this when we switched from ocPortal to Composr (v9 to v10), as our entire infrastructure got cycled over, breaking the normal upgrade workflow. For v10 to v11, however, an omni-upgrader is not provided because v10 sites (from 10.0.48 beta onwards) are able to upgrade to v11 as normal through the upgrader.
 
 [title="2"]Auxiliary features[/title]
 
@@ -143,8 +149,8 @@ There are some extra features in the upgrader that aren't a part of the normal f
 
 If the upgrader times out trying to download the upgrade package then try:
 1) manually downloading it to your machine
-2) uploading it to your server, to create a server-held URL
-3) substituting your server's URL with the auto-generated one
+2) uploading it to your server (such as in exports)
+3) substituting the auto-generated URL with the local relative path to the file (e.g. [tt]/exports/upgrade_file.cms[/tt])
 
 [title="3"]Other transfer/extraction issues[/title]
 
