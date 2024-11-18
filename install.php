@@ -73,7 +73,9 @@ $CURRENT_SHARE_USER = null;
 $GLOBALS['DEV_MODE'] = false;
 $GLOBALS['SEMI_DEV_MODE'] = true;
 
-@ob_end_clean(); // Reset to have no output buffering by default (we'll use it internally, taking complete control)
+// Reset output buffering (but keep it on or we will get headers already set errors when anything tries to echo such as failed database queries)
+@ob_end_clean();
+ob_start();
 
 // Are we in a special version of PHP?
 define('GOOGLE_APPENGINE', isset($_SERVER['APPLICATION_ID']));
@@ -145,6 +147,21 @@ if ($minor != '') {
 
 global $PASSWORD_PROMPT;
 $PASSWORD_PROMPT = new Tempcode();
+
+if (!array_key_exists('type', $_GET)) {
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<' . '!' . 'DOCTYPE html' . '>' . "\n";
+
+    if (empty($_GET)) {
+        // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
+        echo '<' . 'script' . '>
+            window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
+            window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
+        </' . 'script' . '>';
+    }
+
+    send_http_output_ping();
+}
 
 if (!array_key_exists('step', $_GET)) {
     $_GET['step'] = '1';
@@ -222,22 +239,6 @@ $out_final = do_template('INSTALLER_HTML_WRAP', [
 ]);
 unset($css_nocache);
 unset($content);
-
-// We have to do header and script handling down here so errors thrown by installer steps do not get blocked out by "headers already sent".
-if (!array_key_exists('type', $_GET)) {
-    header('Content-Type: text/html; charset=utf-8');
-    echo '<' . '!' . 'DOCTYPE html' . '>' . "\n";
-
-    if (empty($_GET)) {
-        // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
-        echo '<' . 'script' . '>
-            window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
-            window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
-        </' . 'script' . '>';
-    }
-
-    send_http_output_ping();
-}
 $out_final->evaluate_echo();
 
 global $DATADOTCMS_FILE;
@@ -2660,7 +2661,7 @@ function step_8() : object
                 $zone = $to_install[2];
 
                 if (in_array($module, ['admin_version', 'admin_permissions', 'admin_addons'])) { // Done in step 7
-                    continue;
+                    continue 2;
                 }
 
                 if (reinstall_module($zone, $module)) {

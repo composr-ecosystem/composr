@@ -1573,7 +1573,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     if ($type == 'warn') {
         warn_exit($message);
     } else {
-        // echo $message . "<br />\n"; // TODO: breaks the installer (headers already sent)
+        echo '<p class="red-alert">' . $message . "</p>\n";
     }
     return '';
 }

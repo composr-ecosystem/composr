@@ -1264,7 +1264,7 @@ abstract class DatabaseDriver
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);
         }
-        echo $message . "<br />\n";
+        echo '<p class="red-alert">' . $message . "</p>\n";
 
         // Bomb out anyway if we have a bunch of failed queries; usually indicates something seriously wrong.
         $this->echoed_failed_queries++;
