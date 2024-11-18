@@ -21,7 +21,9 @@ Instead of using this page, you should go to your Admin Zone dashboard to upgrad
 [title="2"]Download / Transfer Files[/title]
 
 Transfer the installation files to your server. Here are our latest available versions of Composr CMS:
+[box]
 [block cache="0"]cms_homesite_download[/block]
+[/box]
 
 [box="Did You Know?"]
  When a new version of Composr CMS v11 is released, we change the background image and the colours of the composr.app site.
