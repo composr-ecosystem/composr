@@ -17,6 +17,6 @@ Require all denied
 
 <IfModule mod_headers.c>
 Header set X-Content-Type-Options "nosniff"
-Header set Content-Security-Policy "default-src 'none'"
+Header set Content-Security-Policy "media-src 'self'; img-src 'self'"
 Header set X-XSS-Protection "1"
 </IfModule>

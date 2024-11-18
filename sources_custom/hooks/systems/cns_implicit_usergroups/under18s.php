@@ -25,6 +25,10 @@ class Hook_implicit_usergroups_under18s
      */
     public function get_bound_group_ids() : array
     {
+        if (!addon_installed('under18s')) {
+            return [];
+        }
+
         require_code('cns_groups');
         $probation_group_id = get_probation_group(); // Customise as required
         if ($probation_group_id === null) {

@@ -5410,6 +5410,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXTRA_CC_ADDRESSES
         EXTRA_SUBSCRIPTION_MAIL
         ZERO_CONTENT_LANG_STRING
+        NOT_STRING_CONTENT_LANG_STRING
+        NOT_INTEGER_CONTENT_LANG_STRING
         FAILED_LOGINS
         FAILED_TO_UPLOAD_BACKUP_BODY
         FAILED_TO_UPLOAD_BACKUP_SUBJECT
@@ -5687,6 +5689,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_UPGRADER_TITLE
         UPGRADER_UPGRADE_CNS
         UPGRADER_UPGRADE_MODULES
+        _UPGRADER_UPGRADE_DB_SPECIFIC
+        UPGRADER_UPGRADE_DB_DONE
         UPGRADER_UPGRADE_STEPS
         UPGRADER_UPGRADING
         UPGRADER_UP_INFO_1
@@ -5909,6 +5913,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INSERT_SYMBOL
         INSTALLED_ADDON
         INSTALLED_BLOCK
+        MORE_TO_INSTALL
         INSTALLED_CNS
         DELETED_ATTACHMENTS
         DROPPED_TABLES
@@ -8338,6 +8343,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AMEND_POINT_TRANSACTION
         _VIEW_POINT_TRANSACTION
         CREDIT_LONG
+        CREDIT_NOT_RANKED_LONG
         DEBIT_LONG
         SEND_LONG
         LEDGER_STATUS_2_UNLINKED
@@ -8601,6 +8607,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _UPGRADER_UPGRADE_MODULES
         DOWNLOAD_PRIVATE_URL_HACK
         ADDON_TOO_MANY_FILES
+        _RANK_POINTS
+        ENABLE_MAIL_QUEUE_LARGE_WARNING
+        CONFIG_OPTION_enable_mail_queue_large_warning
     ')));
 
     $non_admin_files = [
@@ -8817,7 +8826,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNT_ONFORUMS
         COUNT_ONSITE
         COUNT_ONSITE_RECORD
-        COUNT_LIFETIME_POINTS
+        COUNT_RANK_POINTS
         COUNT_POINTS_BALANCE
         COUNT_POSTSCOUNT
         COUNT_POSTSTODAY
@@ -10055,7 +10064,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEFT_CHATROOM
         LESS
         LICENCE_WAS_ACCEPTED
-        LIFETIME_POINTS
+        RANK_POINTS
         LIKED_BY
         LIKES
         QUESTIONS
@@ -10479,6 +10488,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_POSTS
         NO_POSTS_YET
         NO_PT_FROM_ALLOW
+        _NO_PT_FROM_ALLOW
         NO_PASSWORD_RESET_ACCESS
         NO_RESULTS
         NO_RESULTS_DAYS
@@ -10939,7 +10949,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_payment_card_start_date
         SPECIAL_CPF__cms_payment_cardholder_name
         SPECIAL_CPF__cms_payment_card_type
-        SPECIAL_CPF__cms_points_lifetime
+        SPECIAL_CPF__cms_points_rank
         SPECIAL_CPF__cms_points_balance
         SPECIAL_CPF__cms_post_code
         SPECIAL_CPF__cms_role
@@ -12167,6 +12177,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FIELD_PASSWORD_VIEW_ON_EDIT
         VIEW_MAIL_IN_BROWSER_2
         MAIL_TOO_LONG
+        MAIL_QUEUE_LARGE
     ')));
 
     // Remove blank lines

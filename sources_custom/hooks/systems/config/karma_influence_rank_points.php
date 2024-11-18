@@ -16,21 +16,21 @@
 /**
  * Hook class.
  */
-class Hook_config_karma_influence_lifetime_points
+class Hook_config_karma_influence_rank_points
 {
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
-            'human_name' => 'KARMA_INFLUENCE_LIFETIME_POINTS',
+            'human_name' => 'KARMA_INFLUENCE_RANK_POINTS',
             'type' => 'integer',
             'category' => 'FEATURE',
             'group' => 'KARMIC_INFLUENCE',
-            'explanation' => 'CONFIG_OPTION_karma_influence_lifetime_points',
+            'explanation' => 'CONFIG_OPTION_karma_influence_rank_points',
             'shared_hosting_restricted' => '0',
             'order_in_category_group' => 6,
             'list_options' => '',

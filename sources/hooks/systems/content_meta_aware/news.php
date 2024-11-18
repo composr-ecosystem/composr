@@ -158,6 +158,10 @@ class Hook_content_meta_aware_news extends Hook_CMA
  */
 function generate_news_image_url(array $row) : string
 {
+    if (!addon_installed('news')) {
+        return '';
+    }
+
     if ($row['news_image_url'] != '') {
         $ret = $row['news_image_url'];
         if (url_is_local($ret)) {

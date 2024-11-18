@@ -137,6 +137,9 @@ class Hook_syndication_activity_feed
      */
     public function read_get_syndication_option_fields(?string $content_type) : array
     {
+        if (!addon_installed('activity_feed')) {
+            return [];
+        }
         if (!addon_installed('hybridauth')) {
             return [];
         }

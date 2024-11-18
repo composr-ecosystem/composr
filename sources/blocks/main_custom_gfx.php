@@ -82,6 +82,10 @@ class Block_main_custom_gfx
      */
     public function _do_image(string $cache_id, array &$map, string $img_path)
     {
+        if (!addon_installed__messaged('custom_comcode', $error_msg)) {
+            return $error_msg;
+        }
+
         if (!array_key_exists('font_size', $map)) {
             $map['font_size'] = '8';
         }

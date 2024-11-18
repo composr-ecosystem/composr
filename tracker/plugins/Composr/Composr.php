@@ -215,8 +215,6 @@ class ComposrPlugin extends MantisPlugin {
             return $ret;
         }
 
-        // TODO: bug_sponsorship_list_view_inc; convert to using points escrow
-
         // Composr specific welcome message
         if (is_page_name( 'my_view_page.php' )) {
             require_api('lang_api.php');
@@ -722,10 +720,9 @@ class ComposrPlugin extends MantisPlugin {
 
     // TODO: antispam measure that is more effective than renaming bugnote_text (does not stop paid human spammers)
     // TODO: Prevent guests from editing guest issues
-    // TODO: Make bug_sponsorship_list_view_inc.php nicer; MantisBT has it all wonky and does not conform with other widget layouts
 
     /**
-     * Retrieve the contents of a remote URL.
+     * Retrieve the contents of a remote URL (better than MantisBT's built-in method).
      * First tries using built-in PHP modules (OpenSSL and cURL), then attempts
      * system call as last resort.
      * @param string $p_url The URL to fetch.

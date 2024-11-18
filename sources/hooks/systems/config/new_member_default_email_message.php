@@ -26,9 +26,9 @@ class Hook_config_new_member_default_email_message
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'NEW_MEMBER_DEFAULT_EMAIL_MESSAGE',

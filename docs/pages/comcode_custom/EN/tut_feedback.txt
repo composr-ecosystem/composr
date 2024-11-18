@@ -243,7 +243,7 @@ Some of the features topic polls include that website polls do not are the follo
  - Control when (or if) poll results are publicly visible
  - Control if, providing poll results are publicly visible, the public can also see which members voted for each option
  - Control whether members may revoke / change their vote when voting is still open
- - Control if votes are weighted by the number of life-time points members had at the time of voting (see [page="_SEARCH:tut_forums"]Discussion forums > Weighting poll results with points[/page]). This is great to give more voting power to more vetted members.
+ - Control if votes are weighted by the number of rank points members had at the time of voting (see [page="_SEARCH:tut_forums"]Discussion forums > Weighting poll results with points[/page]). This is great to give more voting power to more vetted members.
  - Make more than 10 options
  - Allow members to vote on more than one option, and control the minimum and maximum number of options on which a member may vote
  - Set XML on a per-forum basis to force certain settings on all topic polls within that forum (see [page="_SEARCH:tut_adv_forums"]Advanced forum settings > Default Poll Options[/page]). This is a very powerful feature and even allows you to control the allowed options (e.g. you could force "Support" or "Oppose" options in a pro/con debate forum).

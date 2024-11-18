@@ -33,6 +33,10 @@ class Hook_ajax_tree_choose_filedump_file
      */
     public function run(?string $id, array $options, ?string $default = null) : string
     {
+        if (!addon_installed('filedump')) {
+            return '<result></result>';
+        }
+
         if ($id === null) {
             $id = '';
         }
@@ -119,6 +123,10 @@ class Hook_ajax_tree_choose_filedump_file
      */
     public function simple(?string $id, array $options, ?string $it = null) : object
     {
+        if (!addon_installed('filedump')) {
+            return new Tempcode();
+        }
+
         $out = new Tempcode();
 
         if (has_actual_page_access(null, 'filedump')) {

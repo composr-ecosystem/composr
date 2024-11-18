@@ -170,7 +170,7 @@ class Hook_task_import_catalogue
      * @param  boolean $allow_trackbacks Whether trackbacks are allowed for this resource
      * @return ?array Return to propagate [immediate exit] (null: nothing to propagate)
      */
-    public function import_spreadsheet_line(string $catalogue_name, array $spreadsheet_data, ?int $catalogue_root, array $fields, array &$categories, array $spreadsheet_field_titles, string $key_field, string $new_handling, string $delete_handling, string $update_handling, array &$matched_ids, string $notes_field, string $meta_keywords_field, string $meta_description_field, bool $allow_rating, bool $allow_comments, bool $allow_trackbacks) : ?array
+    protected function import_spreadsheet_line(string $catalogue_name, array $spreadsheet_data, ?int $catalogue_root, array $fields, array &$categories, array $spreadsheet_field_titles, string $key_field, string $new_handling, string $delete_handling, string $update_handling, array &$matched_ids, string $notes_field, string $meta_keywords_field, string $meta_description_field, bool $allow_rating, bool $allow_comments, bool $allow_trackbacks) : ?array
     {
         $notes = '';
         $meta_keywords = '';

@@ -26,9 +26,9 @@ class Hook_config_privacy_upon_member_delete
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'PRIVACY_UPON_MEMBER_DELETE',

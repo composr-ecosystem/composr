@@ -405,7 +405,7 @@ class Notification_dispatcher
 
         $testing = (get_param_integer('keep_debug_notifications', 0) == 1);
 
-        if (($this->notification_code == 'cns_topic') && (isset($this->extra['post_id']))) { // FUDGE
+        if ((get_forum_type() == 'cns') && ($this->notification_code == 'cns_topic') && (isset($this->extra['post_id']))) { // FUDGE
             require_code('mail_integration');
             require_code('cns_forum_email_integration');
 
@@ -733,18 +733,22 @@ function _notification_setting_available(int $setting, ?int $member_id = null, ?
             break;
 
         case A_INSTANT_SMS:
-            $system_wide = (addon_installed('sms')) && (get_option('sms_api_id') != '');
-            if ($system_wide && $member_id !== null) {
-                require_code('permissions');
-                if (has_privilege($member_id, 'use_sms')) {
-                    require_code('sms');
-                    $cpf_values = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
-                    if ($cpf_values !== null) {
-                        if (array_key_exists('mobile_phone_number', $cpf_values)) {
-                            $for_member = (cleanup_mobile_number($cpf_values['mobile_phone_number']) != '');
+            if (addon_installed('sms')) {
+                $system_wide = (get_option('sms_api_id') != '');
+                if (($system_wide) && ($member_id !== null)) {
+                    require_code('permissions');
+                    if (has_privilege($member_id, 'use_sms')) {
+                        require_code('sms');
+                        $cpf_values = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
+                        if ($cpf_values !== null) {
+                            if (array_key_exists('mobile_phone_number', $cpf_values)) {
+                                $for_member = (cleanup_mobile_number($cpf_values['mobile_phone_number']) != '');
+                            }
                         }
                     }
                 }
+            } else {
+                $system_wide = false;
             }
             break;
 

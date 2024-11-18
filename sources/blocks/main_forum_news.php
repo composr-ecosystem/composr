@@ -79,9 +79,8 @@ PHP;
         if (!addon_installed__messaged('forum_blocks', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', ['_GUID' => 'ivs1rzweo698vmevkjwl2nfas9pg60nm', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
+        if (!addon_installed__messaged('news_shared', $error_msg)) {
+            return $error_msg;
         }
 
         if (has_no_forum()) {
@@ -164,7 +163,10 @@ PHP;
 
             $id = $myrow['id'];
             $date = get_timezoned_date_time_tempcode($myrow[$date_key]);
-            $author_url = (((array_key_exists('member_based', $map)) && ($map['member_based'] == '1')) || (!addon_installed('authors'))) ? new Tempcode() : build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));
+            $author_url = new Tempcode();
+            if ((addon_installed('authors')) && ($map['member_based'] != '1') && (!array_key_exists('member_based', $map))) {
+                $author_url = build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));;
+            }
             $author = $myrow['firstusername'];
             $news_title = escape_html($myrow['title']);
             if (is_object($myrow['firstpost'])) {

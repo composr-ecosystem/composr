@@ -184,6 +184,10 @@ class Hook_content_meta_aware_video extends Hook_CMA
  */
 function generate_video_entry_video_details(array $row) : array
 {
+    if (!addon_installed('galleries')) {
+        return ['', 0, 0, 'application/octet-stream'];
+    }
+
     $url = $row['url'];
 
     $extension = get_file_extension($url);

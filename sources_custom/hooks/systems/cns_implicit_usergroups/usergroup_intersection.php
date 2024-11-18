@@ -25,11 +25,19 @@ class Hook_implicit_usergroups_usergroup_intersection
      */
     public function get_bound_group_ids() : array
     {
+        if (!addon_installed('usergroup_intersection')) {
+            return [];
+        }
+
         return [203]; // Change this to the ID of the target usergroup
     }
 
     public function get_intersected_group_ids()
     {
+        if (!addon_installed('usergroup_intersection')) {
+            return [];
+        }
+
         return [12, 2]; // Change this to the IDs of the usergroups we're doing the intersection of
     }
 

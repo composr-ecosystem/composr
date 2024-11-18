@@ -26,9 +26,9 @@ class Hook_config_search_results_per_page
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'SEARCH_RESULTS_PER_PAGE',

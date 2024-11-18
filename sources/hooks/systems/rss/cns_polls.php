@@ -37,6 +37,9 @@ class Hook_rss_cns_polls
         if (get_forum_type() != 'cns') {
             return false;
         }
+        if (!addon_installed('polls')) { // TODO: Actually this hook needs modified so it (templates) does not depend on website polls
+            return false;
+        }
 
         if (!has_actual_page_access($member_id, 'forumview')) {
             return false;

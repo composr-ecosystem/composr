@@ -194,7 +194,7 @@ Karma and its API can be further extended for additional functionality. For exam
             'sources_custom/hooks/systems/config/karma_influence_additional.php',
             'sources_custom/hooks/systems/config/karma_influence_forum_posts.php',
             'sources_custom/hooks/systems/config/karma_influence_karma.php',
-            'sources_custom/hooks/systems/config/karma_influence_lifetime_points.php',
+            'sources_custom/hooks/systems/config/karma_influence_rank_points.php',
             'sources_custom/hooks/systems/config/karma_influence_multiplier.php',
             'sources_custom/hooks/systems/config/karma_influence_points.php',
             'sources_custom/hooks/systems/config/karma_influence_use_voting_power.php',

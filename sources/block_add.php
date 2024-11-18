@@ -44,34 +44,24 @@ function block_helper_script()
 
     if ($type == 'step1') { // Ask for block
         // Find what addons all our block files are in, and icons if possible
-        $hooks = find_all_hooks('systems', 'addon_registry');
-        $hook_keys = array_keys($hooks);
-        $hook_files = [];
-        foreach ($hook_keys as $hook) {
-            $path = get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
-            if (!file_exists($path)) {
-                $path = get_file_base() . '/sources/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
+        $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
+        foreach ($hooks as $addon_name => &$obj) {
+            if (!method_exists($obj,'get_file_list')) {
+                continue;
             }
-            $hook_files[$hook] = $path;
-        }
-        unset($hook_keys);
-        $addon_icons = [];
-        $addons_blocks = [];
-        foreach ($hook_files as $addon_name => $hook_path) {
-            $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
-            $matches = [];
-            if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) {
-                $addon_files = cms_eval($matches[1], $hook_path);
-                if ($addon_files === false) {
-                    $addon_files = []; // Some kind of PHP error
-                }
-                foreach ($addon_files as $file) {
-                    if ((substr($file, 0, 21) == 'sources_custom/blocks/') || (substr($file, 0, 15) == 'sources/blocks/')) {
-                        $addons_blocks[basename($file, '.php')] = $addon_name;
-                    }
+
+            $addon_files = $obj->get_file_list();
+            foreach ($addon_files as $file) {
+                if ((substr($file, 0, 22) == 'sources_custom/blocks/') || (substr($file, 0, 15) == 'sources/blocks/')) {
+                    $addons_blocks[basename($file, '.php')] = $addon_name;
                 }
             }
+
             $addon_icons[$addon_name] = find_addon_icon($addon_name);
+
+            // Free up memory
+            unset($files);
+            unset($obj);
         }
 
         // Find where blocks have been used
@@ -126,7 +116,7 @@ function block_helper_script()
                 $addon_icon = null;
             }
 
-            $this_block_type = (($addon_name === null) || (strpos($addon_name, 'block') !== false) || ($addon_name == 'core')) ? substr($block, 0, (strpos($block, '_') === false) ? strlen($block) : strpos($block, '_')) : $addon_name;
+            $this_block_type = (($addon_name === null) || ($addon_name == 'core')) ? substr($block, 0, (strpos($block, '_') === false) ? strlen($block) : strpos($block, '_')) : $addon_name;
             if (!array_key_exists($this_block_type, $block_types)) {
                 $block_types[$this_block_type] = new Tempcode();
             }

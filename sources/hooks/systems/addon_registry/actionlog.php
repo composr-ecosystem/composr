@@ -131,6 +131,7 @@ class Hook_addon_registry_actionlog
             'adminzone/pages/modules/admin_actionlog.php',
             'adminzone/pages/modules/admin_revisions.php',
             'lang/EN/actionlog.ini',
+            'sources/actionlog.php',
             'sources/hooks/modules/admin_stats/actionlogs.php',
             'sources/hooks/systems/actionlog/actionlog.php',
             'sources/hooks/systems/addon_registry/actionlog.php',

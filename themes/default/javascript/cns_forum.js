@@ -57,10 +57,10 @@
                     $cms.loadSnippet('pt_rules&username=' + usernameField.value.trim()).then(function (result) {
                         if (result === '-1') {
                             // Missing member
-                            $cms.ui.alert('{!MEMBER_NO_EXIST;^}');
+                            $cms.ui.alert('{!MEMBER_NO_EXIST;^}'.replace(/\\{1\\}/, $cms.filter.html(usernameField.value.trim())));
                         } else if (result === '-2') {
                             // Permission denied
-                            $cms.ui.alert('{!cns:NO_PT_FROM_ALLOW;^}');
+                            $cms.ui.alert('{!cns:_NO_PT_FROM_ALLOW;^}'.replace(/\\{1\\}/, $cms.filter.html(usernameField.value.trim())));
                         } else if (result !== '') {
                             // Rules
                             $cms.ui.confirm('{!cns:PT_RULES_PAGE_INTRO;^,xxx}'.replace(/xxx/, usernameField.value.trim()) + '<br /><br />' + result, function (result2) {
@@ -72,7 +72,7 @@
                     });
                 }
             };
-            usernameField.onchange = checkPtUsername; // We use onchange because that can be replicated via ensureNextField
+            usernameField.onblur = checkPtUsername; // We use onblur because that can be replicated via ensureNextField
         }
 
         var extraChecks = [];

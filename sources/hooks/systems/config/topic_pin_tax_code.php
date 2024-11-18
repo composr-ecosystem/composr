@@ -26,9 +26,9 @@ class Hook_config_topic_pin_tax_code
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'PRICE_topic_pin_tax_code',

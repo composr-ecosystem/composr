@@ -150,15 +150,15 @@ function cns_organise_into_tree(array &$all_forums, int $forum_id) : array
 /**
  * Gets a list of subordinate forums of a certain forum.
  *
- * @param  AUTO_LINK $forum_id The ID of the forum we are finding subordinate forums of
+ * @param  ?AUTO_LINK $forum_id The ID of the forum we are finding subordinate forums of (null: private topic)
  * @param  ?string $create_or_list The field name to use in the OR list (null: do not make an OR list, return an array)
  * @param  ?array $tree The forum tree structure (null: unknown, it will be found using cns_organise_into_tree)
  * @param  boolean $ignore_permissions Whether to ignore permissions in this
  * @return mixed The list (is either a true list, or an OR list)
  */
-function cns_get_all_subordinate_forums(int $forum_id, ?string $create_or_list = null, ?array $tree = null, bool $ignore_permissions = false)
+function cns_get_all_subordinate_forums(?int $forum_id, ?string $create_or_list = null, ?array $tree = null, bool $ignore_permissions = false)
 {
-    if ($forum_id === null) {
+    if (($forum_id === null) || (!addon_installed('cns_forum'))) {
         if ($create_or_list === null) {
             return [$forum_id];
         } else {
@@ -361,6 +361,9 @@ function cns_forum_breadcrumbs($end_point_forum, $this_name = null, ?int $parent
  */
 function cns_forum_allows_anonymous_posts(?int $forum_id) : bool
 {
+    if (get_forum_type() != 'cns') {
+        return false;
+    }
     if ($forum_id === null) {
         return (get_option('is_on_anonymous_posts') == '1');
     }

@@ -464,20 +464,20 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
                     require_code('tickets');
                     if (is_ticket_forum($forum_id)) {
                         $is_ticket = true;
+
+                        require_lang('tickets');
+                        require_code('feedback');
+                        $ticket_id = extract_topic_identifier($out['description']);
+                        $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', ['ticket_id' => $ticket_id]);
+                        $ticket_type_name = null;
+                        if ($ticket_type_id !== null) {
+                            $ticket_type_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'ticket_type_name', ['id' => $ticket_id]);
+                        }
+                        $out['title'] = do_lang_tempcode('_VIEW_SUPPORT_TICKET', escape_html($out['title']), ($ticket_type_name === null) ? do_lang('UNKNOWN') : escape_html(get_translated_text($ticket_type_name)));
+                        $_postdetails['p_title'] = '';
                     }
                 }
-                if ($is_ticket) {
-                    require_lang('tickets');
-                    require_code('feedback');
-                    $ticket_id = extract_topic_identifier($out['description']);
-                    $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', ['ticket_id' => $ticket_id]);
-                    $ticket_type_name = null;
-                    if ($ticket_type_id !== null) {
-                        $ticket_type_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'ticket_type_name', ['id' => $ticket_id]);
-                    }
-                    $out['title'] = do_lang_tempcode('_VIEW_SUPPORT_TICKET', escape_html($out['title']), ($ticket_type_name === null) ? do_lang('UNKNOWN') : escape_html(get_translated_text($ticket_type_name)));
-                    $_postdetails['p_title'] = '';
-                } else {
+                if (!$is_ticket) {
                     $out['title'] = protect_from_escaping(do_lang('SPACER_TOPIC_TITLE_WRAP', escape_html($out['title']), '', '', $spacer_post_lang));
                     $_postdetails['p_title'] = do_lang('SPACER_TOPIC_TITLE_WRAP', $_postdetails['p_title'], '', '', $spacer_post_lang);
                 }
@@ -716,7 +716,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
     if ($rendering_context == 'tickets') {
         if ((array_key_exists('message_comcode', $_postdetails)) && ($_postdetails['message_comcode'] !== null)) {
             $ticket_id = get_param_string('id', null);
-            if ($ticket_id !== null) {
+            if (($ticket_id !== null) && (addon_installed('tickets'))) {
                 require_lang('tickets');
                 require_code('tickets');
                 $ticket_owner = check_ticket_access($ticket_id);
@@ -869,17 +869,24 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
  * Get post emphasis Tempcode.
  *
  * @param  array $_postdetails Map of post info
- * @return Tempcode The Tempcode
+ * @param  ?array $topic_info Map of topic info (null: not available or not running Conversr)
+ * @return array A pair of emphasis class to use and the text Tempcode
  */
-function cns_get_post_emphasis(array $_postdetails) : object
+function cns_get_post_emphasis(array $_postdetails, ?array $topic_info) : array
 {
     $emphasis = new Tempcode();
+    $post_class = '';
     if ($_postdetails['is_emphasised']) {
         $emphasis = do_lang_tempcode('IMPORTANT');
+        $post_class = 'cns-post-emphasis';
     } elseif (array_key_exists('whisper_to_member', $_postdetails)) {
         $pp_to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['whisper_to_member'], true);
         $pp_to_username = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['whisper_to_member']);
         $emphasis = do_lang_tempcode('PP_TO', escape_html($pp_to_displayname), escape_html($pp_to_username));
+        $post_class = 'cns-post-personal';
+    } elseif (($topic_info !== null) && ($topic_info['forum_id'] === null)) {
+        $emphasis = do_lang_tempcode('PRIVATE_TOPIC');
+        $post_class = 'cns-post-private-topic';
     }
-    return $emphasis;
+    return [$post_class, $emphasis];
 }

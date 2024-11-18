@@ -153,7 +153,10 @@ class Module_admin_setupwizard
             return $this->step7(); // rules
         }
         if ($type == 'step8') {
-            return $this->step8(); // Theme Wizard
+            if ($this->has_themewizard_step()) {
+                return $this->step8();
+            }
+            return $this->step9(); // Skip step 8 if the theme wizard is not installed
         }
         if ($type == 'step9') {
             return $this->step9(); // close-status
@@ -562,7 +565,7 @@ class Module_admin_setupwizard
             'apache_config_files',
             'code_editor',
             'helper_scripts',
-            'weather',
+            //'weather', // Requires an API key to run, and is quite niche, so let's leave it be
             'xml_fields',
             'users_online_block',
             'news_shared',
@@ -600,6 +603,7 @@ class Module_admin_setupwizard
             'user_mappr', // this will be downloaded as it is not bundled
             'facebook_support', // this will be downloaded as it is not bundled
             'hybridauth', // this will be downloaded as it is not bundled
+            'karma', // This will be downloaded as it is not bundled
         ];
         if (GOOGLE_APPENGINE) {
             $addon_list_advanced_off_by_default[] = 'google_appengine';
@@ -1411,6 +1415,14 @@ class Module_admin_setupwizard
                     $option_value = $join_declarations;
                 }
                 set_option('join_declarations', $option_value);
+            }
+
+            // Change language to Terms of Service if using the corporate template
+            if (post_param_string('rules') == 'corporate') {
+                set_value('use_tos_lang', '1');
+
+                require_code('caches3');
+                erase_cached_language();
             }
         }
 

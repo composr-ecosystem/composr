@@ -274,6 +274,7 @@ function reload_lang_fields(bool $full = false, ?string $only_table = null, ?arr
 function find_lang_fields(string $table, ?string $alias = null) : array
 {
     global $TABLE_LANG_FIELDS_CACHE;
+
     $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
     if ($alias !== null) {
         foreach ($lang_fields as $lang_field => $lang_field_type) {
@@ -1263,7 +1264,7 @@ abstract class DatabaseDriver
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);
         }
-        echo $message . "<br />\n";
+        echo '<p class="red-alert">' . $message . "</p>\n";
 
         // Bomb out anyway if we have a bunch of failed queries; usually indicates something seriously wrong.
         $this->echoed_failed_queries++;

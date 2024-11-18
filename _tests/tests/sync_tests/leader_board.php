@@ -561,8 +561,8 @@ class leader_board_test_set extends cms_test_case
 
         // Determine our current points for the member
         points_flush_runtime_cache();
-        $current_points = points_lifetime($member, null, false);
-        $past_points = points_lifetime($member, $forced_period_start, false);
+        $current_points = points_rank($member, null, false);
+        $past_points = points_rank($member, $forced_period_start, false);
         $earned_points = ($current_points - $past_points);
 
         // Process a dummy point transaction; amount should be absurdly high to ensure member is at the top of the results in our test

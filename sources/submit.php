@@ -48,6 +48,10 @@ function content_validated(string $content_type, string $content_id) : bool
  */
 function send_content_validated_notification(string $content_type, string $content_id, int $points_credited = 0)
 {
+    if (!addon_installed('validation')) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
     require_code('content');
     list($content_title, $submitter_id, , , , $content_url_safe) = content_get_details($content_type, $content_id);
 
@@ -75,6 +79,10 @@ function send_content_validated_notification(string $content_type, string $conte
  */
 function send_validation_request(string $type, string $table, bool $non_integer_id, string $id, object $url, ?int $member_id = null)
 {
+    if (!addon_installed('validation')) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
     require_code('content');
     require_code('notifications');
     require_lang('validation');

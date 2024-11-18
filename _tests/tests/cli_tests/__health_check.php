@@ -40,6 +40,8 @@ class __health_check_test_set extends cms_test_case
             $sections_to_run = [$this->only];
         }
 
+        set_value('last_run__health_check', strval(time()), true);
+
         $has_fails = false;
         $categories = run_health_check($has_fails, $sections_to_run, true, true, true, false, true);
 

@@ -661,10 +661,14 @@ class Hook_health_check_security extends Hook_Health_Check
             $this->log('Skipped; running on specific page links.');
             return;
         }
+        if (!addon_installed('captcha')) {
+            $this->assertTrue(false, 'The captcha addon is not installed -- you could get attacked by spam bots');
+            return;
+        }
 
         $hostname = get_base_url_hostname();
         $intranet = ((is_local_machine($hostname)) || (preg_match('#^\w+$#', $hostname) != 0));
-        $ok = ((addon_installed('captcha')) && (get_option('use_captchas') == '1')) || ($intranet);
+        $ok = (get_option('use_captchas') == '1') || ($intranet);
         $this->assertTrue($ok, 'CAPTCHA is not enabled -- you could get attacked by spam bots');
     }
 }

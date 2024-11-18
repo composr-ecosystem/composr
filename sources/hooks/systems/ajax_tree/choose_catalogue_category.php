@@ -33,6 +33,10 @@ class Hook_ajax_tree_choose_catalogue_category
      */
     public function run(?string $id, array $options, ?string $default = null) : string
     {
+        if (!addon_installed('catalogues')) {
+            return '<result></result>';
+        }
+
         require_code('catalogues');
         require_lang('catalogues');
 
@@ -121,6 +125,10 @@ class Hook_ajax_tree_choose_catalogue_category
      */
     public function simple(?string $id, array $options, ?string $it = null) : object
     {
+        if (!addon_installed('catalogues')) {
+            return new Tempcode();
+        }
+
         require_code('catalogues');
 
         $catalogue_name = array_key_exists('catalogue_name', $options) ? $options['catalogue_name'] : null;

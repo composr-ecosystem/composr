@@ -112,7 +112,7 @@ class Hook_task_import_ftp_downloads
      * @param  boolean $make_subfolders Whether we add hierarchically (as opposed to a flat category fill)
      * @return integer Number of downloads added
      */
-    public function ftp_recursive_downloads_scan($conn_id, string $url, string $directory, int $dest_cat, bool $make_subfolders) : int
+    protected function ftp_recursive_downloads_scan($conn_id, string $url, string $directory, int $dest_cat, bool $make_subfolders) : int
     {
         task_log($this, 'Processing ' . $directory . ' directory for files');
 

@@ -30,6 +30,10 @@ class Hook_sw_wordfilter
      */
     public function get_current_settings() : array
     {
+        if (!addon_installed('wordfilter')) {
+            return [];
+        }
+
         $settings = [];
         $settings['have_default_wordfilter'] = has_predefined_content('wordfilter', 'have_default_wordfilter') ? '1' : '0';
         return $settings;

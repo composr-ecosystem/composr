@@ -99,15 +99,15 @@ function get_product_price_points(string $item) : int
 }
 
 /**
- * Get the total points a member has ever received (life-time points).
- * Some of these points may have already been spent. Also, when a member is charged points for a warning, it will decrease this value as it is considered a de-ranking.
+ * Get the total number of points the member has received which contribute towards ranks.
+ * Some of these points may have already been spent.
  *
  * @param  MEMBER $member_id The member
  * @param  ?TIME $timestamp Time to get for (null: now)
  * @param  boolean $cache Whether to retrieve from the CPF (always false if $timestamp is not null)
  * @return integer The number of points the member has
  */
-function points_lifetime(int $member_id, ?int $timestamp = null, bool $cache = true) : int
+function points_rank(int $member_id, ?int $timestamp = null, bool $cache = true) : int
 {
     if (!has_privilege($member_id, 'use_points')) {
         return 0;
@@ -119,8 +119,8 @@ function points_lifetime(int $member_id, ?int $timestamp = null, bool $cache = t
             $values = [];
         }
 
-        if (array_key_exists('points_lifetime', $values)) {
-            return intval($values['points_lifetime']);
+        if (array_key_exists('points_rank', $values)) {
+            return intval($values['points_rank']);
         }
 
         return 0;

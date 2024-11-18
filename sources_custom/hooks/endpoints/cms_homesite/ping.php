@@ -23,10 +23,14 @@ class Hook_endpoint_cms_homesite_ping
      *
      * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
      * @param  ?string $id Standard ID parameter (null: not-set)
-     * @return array Info about the hook
+     * @return ?array Info about the hook (null: endpoint is disabled)
      */
-    public function info(?string $type, ?string $id) : array
+    public function info(?string $type, ?string $id) : ?array
     {
+        if (!addon_installed('cms_homesite')) {
+            return null;
+        }
+
         return [
             'authorization' => false,
         ];
@@ -41,10 +45,6 @@ class Hook_endpoint_cms_homesite_ping
      */
     public function run(?string $type, ?string $id) : array
     {
-        if (!addon_installed('cms_homesite')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
-        }
-
-        return [];
+        return ['success' => true];
     }
 }

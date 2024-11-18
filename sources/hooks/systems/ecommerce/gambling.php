@@ -110,10 +110,6 @@ class Hook_ecommerce_gambling
             return ECOMMERCE_PRODUCT_INTERNAL_ERROR;
         }
 
-        if (!addon_installed('points')) {
-            return ECOMMERCE_PRODUCT_DISABLED;
-        }
-
         if (get_option('is_on_gambling_buy') == '0') {
             return ECOMMERCE_PRODUCT_DISABLED;
         }
@@ -192,7 +188,7 @@ class Hook_ecommerce_gambling
         // Actuate
         if ($winnings > 0) {
             require_code('points2');
-            points_credit_member($member_id, do_lang('GAMBLING_WINNINGS'), $winnings, 0, null, 0, 'ecommerce', 'gamble_win');
+            points_credit_member($member_id, do_lang('GAMBLING_WINNINGS'), $winnings, 0, null, 0, 'ecommerce', 'gamble_win', '', null, false); // No ranking for gambling; that is unfair
         }
 
         // Show an instant message so the member knows how it worked out (plus buying via points, so will definitely be seen)

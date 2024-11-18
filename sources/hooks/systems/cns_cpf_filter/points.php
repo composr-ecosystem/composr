@@ -34,6 +34,6 @@ class Hook_cns_cpf_filter_points
             return [];
         }
 
-        return ['points_balance' => true, 'points_lifetime' => true];
+        return ['points_balance' => true, 'points_rank' => true];
     }
 }

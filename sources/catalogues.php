@@ -431,7 +431,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
 
     // Possibly some extra stuff for shopping carts
     $extra_map = [];
-    if ($is_ecomm) {
+    if (($is_ecomm) && addon_installed('shopping')) {
         require_lang('shopping');
         $i = 0;
         for ($i = 0; $i < $num_entries; $i++) {
@@ -1049,13 +1049,13 @@ function get_catalogue_entry_map(array $entry, ?array $catalogue = null, string 
     $self_url = build_url($url_map, $zone, [], false, false, true);
     if (($feedback_details) || ($only_fields !== [0])) {
         require_code('feedback');
-        $map['RATING'] = ($entry['allow_rating'] == 1) ? display_rating($self_url, $c_value, 'catalogues__' . $catalogue_name, strval($id), $separate_view_screen ? 'RATING_INLINE_STATIC' : 'RATING_INLINE_DYNAMIC', $entry['ce_submitter']) : new Tempcode();
+        $map['RATING'] = ($entry['allow_rating'] == 1) ? display_rating($self_url, $c_value, 'catalogue_entry__' . $catalogue_name, strval($id), $separate_view_screen ? 'RATING_INLINE_STATIC' : 'RATING_INLINE_DYNAMIC', $entry['ce_submitter']) : new Tempcode();
     }
     $map['ALLOW_RATING'] = ($entry['allow_rating'] == 1);
     if ($feedback_details) {
         require_code('feedback');
         list($map['RATING_DETAILS'], $map['COMMENT_DETAILS'], $map['TRACKBACK_DETAILS']) = embed_feedback_systems(
-            'catalogues__' . $catalogue_name,
+            'catalogue_entry__' . $catalogue_name,
             strval($id),
             $entry['allow_rating'],
             $entry['allow_comments'],
@@ -1064,7 +1064,7 @@ function get_catalogue_entry_map(array $entry, ?array $catalogue = null, string 
             $entry['ce_submitter'],
             $self_url,
             $c_value,
-            find_overridden_comment_forum('catalogues__' . $catalogue_name, strval($entry['cc_id'])),
+            find_overridden_comment_forum('catalogue_entry__' . $catalogue_name, strval($entry['cc_id'])),
             $entry['ce_add_date']
         );
     }

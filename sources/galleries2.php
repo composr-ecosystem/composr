@@ -1862,27 +1862,15 @@ function delete_gallery(string $name)
     delete_lang($rows[0]['fullname']);
     delete_lang($rows[0]['the_description']);
 
-    // Images and videos are deleted, because we are deleting the _gallery_, not just a category (nobody is going to be deleting galleries with the expectation of moving the image to a different one in bulk - unlike download categories, for example).
-    do {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+    // Images and videos are deleted (in the background), because we are deleting the _gallery_, not just a category (nobody is going to be deleting galleries with the expectation of moving the image to a different one in bulk - unlike download categories, for example).
+    require_code('tasks');
+    $count_images = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', ['cat' => $name]);
+    $count_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', ['cat' => $name]);
+    $bypass_queue = (($count_images + $count_videos) < 100);
 
-        send_http_output_ping();
+    require_lang('galleries');
+    call_user_func_array__long_task(do_lang('MASS_DELETE_GALLERY_MEDIA', comcode_escape($name)), null, 'delete_gallery_media', [$name], true, $bypass_queue);
 
-        $images = $GLOBALS['SITE_DB']->query_select('images', ['id'], ['cat' => $name], '', 200);
-        foreach ($images as $image) {
-            delete_image($image['id'], false);
-        }
-    } while (!empty($images));
-    do {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
-
-        send_http_output_ping();
-
-        $videos = $GLOBALS['SITE_DB']->query_select('videos', ['id'], ['cat' => $name], '', 200);
-        foreach ($videos as $video) {
-            delete_video($video['id'], false);
-        }
-    } while (!empty($videos));
     //... but the subgalleries remain
     $GLOBALS['SITE_DB']->query_update('galleries', ['parent_id' => $rows[0]['parent_id']], ['parent_id' => $name]);
 

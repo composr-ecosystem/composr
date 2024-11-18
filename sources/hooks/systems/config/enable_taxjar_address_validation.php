@@ -26,9 +26,9 @@ class Hook_config_enable_taxjar_address_validation
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'ENABLE_TAXJAR_ADDRESS_VALIDATION',

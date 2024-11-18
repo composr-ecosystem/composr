@@ -21,14 +21,10 @@ class Hook_config_git_live_branch
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details()
+    public function get_details() : array
     {
-        if (!addon_installed('git_status')) {
-            return null;
-        }
-
         return [
             'human_name' => 'GIT_LIVE_BRANCH',
             'type' => 'line',
@@ -49,8 +45,12 @@ class Hook_config_git_live_branch
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
+        if (!addon_installed('git_status')) {
+            return null;
+        }
+
         return 'master';
     }
 }

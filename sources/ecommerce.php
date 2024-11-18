@@ -1728,7 +1728,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
     }
 
     // Charge points if required
-    if (($t_status === null) && ($status == 'Completed') && ($check_amounts) && ($expected_price_points !== null) && ($expected_price_points != 0)) {
+    if ((addon_installed('points')) && ($t_status === null) && ($status == 'Completed') && ($check_amounts) && ($expected_price_points !== null) && ($expected_price_points != 0)) {
         require_code('points2');
         points_debit_member($member_id_paying, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name), $expected_price_points, 0, 0, false, 0, 'ecommerce', 'purchase', strval($txn_id));
     }

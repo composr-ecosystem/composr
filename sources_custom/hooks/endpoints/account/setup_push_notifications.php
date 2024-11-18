@@ -23,10 +23,18 @@ class Hook_endpoint_account_setup_push_notifications
      *
      * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
      * @param  ?string $id Standard ID parameter (null: not-set)
-     * @return array Info about the hook
+     * @return ?array Info about the hook (null: endpoint is disabled)
      */
-    public function info(?string $type, ?string $id) : array
+    public function info(?string $type, ?string $id) : ?array
     {
+        if (!addon_installed('composr_mobile_sdk')) {
+            return null;
+        }
+
+        if (is_guest(get_member())) {
+            return null;
+        }
+
         return [
             'authorization' => ['member'],
             'log_stats_event' => 'account/setup_push_notifications',
@@ -42,16 +50,7 @@ class Hook_endpoint_account_setup_push_notifications
      */
     public function run(?string $type, ?string $id) : array
     {
-        if (!addon_installed('composr_mobile_sdk')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
-        if (is_guest(get_member())) {
-            access_denied('NOT_AS_GUEST');
-        }
-
         // Store a device notification token (i.e. identification of a device, so we can send notifications to it).
-
         $token_type = either_param_string('device'); // iOS|android
         $token = either_param_string('token');
 

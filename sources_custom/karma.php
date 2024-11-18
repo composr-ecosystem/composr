@@ -110,9 +110,9 @@ function get_karmic_influence(?int $member_id = null) : float
     if (addon_installed('points')) {
         require_code('points');
 
-        // Lifetime points
-        if (floatval(get_option('karma_influence_lifetime_points')) != 0.0) {
-            $karmic_influence += floatval(points_lifetime($member_id)) / floatval(get_option('karma_influence_lifetime_points'));
+        // Rank points
+        if (floatval(get_option('karma_influence_rank_points')) != 0.0) {
+            $karmic_influence += floatval(points_rank($member_id)) / floatval(get_option('karma_influence_rank_points'));
         }
 
         // Points balance

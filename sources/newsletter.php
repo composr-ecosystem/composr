@@ -373,7 +373,7 @@ function verify_unsunscribe_hash(string $provided_hash, string $hash) : bool
         require_code('crypt');
         return ratchet_hash_verify($provided_hash, 'xunsub', $needed_hash);
     */
-    return hash_equals($provided_hash, get_unsubscribe_hash($hash));
+    return hash_equals(get_unsubscribe_hash($hash), $provided_hash);
 }
 
 /**

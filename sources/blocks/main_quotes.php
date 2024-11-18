@@ -115,7 +115,7 @@ PHP;
      * @param  PATH $filename The filename
      * @return string The random line
      */
-    public function get_random_line(string $filename) : string
+    protected function get_random_line(string $filename) : string
     {
         $myfile_charset = null;
         $myfile = @cms_fopen_text_read(filter_naughty($filename, true), $myfile_charset, true);

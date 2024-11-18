@@ -77,9 +77,8 @@ PHP;
         if (!addon_installed__messaged('forum_blocks', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', ['_GUID' => 'b4w69dc3o41hpa6uypivb8ag6xkgrown', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
+        if (!addon_installed__messaged('news_shared', $error_msg)) {
+            return $error_msg;
         }
 
         if (has_no_forum()) {

@@ -127,7 +127,7 @@ class Hook_health_check_apis extends Hook_Health_Check
             require_code('hooks/systems/geocoding/' . $service);
             $ob = object_factory('Hook_geocoding_' . $service);
             if ($ob->is_available()) {
-                $errormsg = null;
+                $errormsg = new Tempcode();
                 $result = geocode('Berlin, DE', $errormsg, $service);
                 if ($errormsg !== null) {
                     $this->assertTrue(false, $service . ' error doing forward geocoding: ' . $errormsg->evaluate());
@@ -143,7 +143,7 @@ class Hook_health_check_apis extends Hook_Health_Check
             require_code('hooks/systems/geocoding/' . $service);
             $ob = object_factory('Hook_geocoding_' . $service);
             if ($ob->is_available(true)) {
-                $errormsg = null;
+                $errormsg = new Tempcode();
                 $address = reverse_geocode(52.516667, 13.388889, $errormsg, $service);
                 if ($errormsg !== null) {
                     $this->assertTrue(false, $service . ' error doing reverse geocoding of Berlin: ' . $errormsg->evaluate());
@@ -155,7 +155,7 @@ class Hook_health_check_apis extends Hook_Health_Check
                     }
                 }
 
-                $errormsg = null;
+                $errormsg = new Tempcode();
                 $address = reverse_geocode(64.133333, -21.933333, $errormsg, $service);
                 if ($errormsg !== null) {
                     $this->assertTrue(false, $service . ' error doing reverse geocoding of Raycevick: ' . $errormsg->evaluate());
@@ -201,7 +201,7 @@ class Hook_health_check_apis extends Hook_Health_Check
 
         foreach ($hooks as $hook) {
             $translation_object = get_translation_object_for_hook($hook);
-            $errormsg = null;
+            $errormsg = new Tempcode();
             if (has_translation($from, $to, $translation_object, $errormsg)) {
                 $GLOBALS['SITE_DB']->query_delete('translation_cache');
 

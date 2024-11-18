@@ -1332,6 +1332,7 @@ class Hook_addon_registry_galleries
     {
         if ((($content === null) || (in_array('have_default_homepage_hero_slides', $content))) && (!has_predefined_content('galleries', 'have_default_homepage_hero_slides'))) {
             require_lang('homepage_hero_slider');
+            require_code('galleries');
             require_code('galleries2');
             require_code('lang3');
 

@@ -1573,7 +1573,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     if ($type == 'warn') {
         warn_exit($message);
     } else {
-        echo $message . "<br />\n";
+        echo '<p class="red-alert">' . $message . "</p>\n";
     }
     return '';
 }
@@ -1618,4 +1618,36 @@ function current_fatalistic() : int
     }
 
     return 0;
+}
+
+/**
+ * Disable the PHP memory limit. Do not use this carelessly, use it if a screen is a bit fat or in an importer, don't use it assuming memory is infinite.
+ * This caps at 256MB in minikernel.
+ */
+function disable_php_memory_limit()
+{
+    if ((function_exists('get_value')) && (get_value('memory_limit_simulate_hard') === '1')) {
+        return;
+    }
+
+    if (!php_function_allowed('ini_set')) {
+        return false;
+    }
+
+    global $DISABLED_MEMORY_LIMIT;
+    $DISABLED_MEMORY_LIMIT = true;
+
+    $shl = @ini_get('suhosin.memory_limit');
+    if (($shl === false) || ($shl == '') || ($shl == '0')) {
+        // Progressively relax more and more (some PHP installs may block at some point)
+        ini_set('memory_limit', '128M');
+        ini_set('memory_limit', '256M');
+        //cms_ini_set('memory_limit', '512M'); // Let's not get too crazy in minikernel
+        //cms_ini_set('memory_limit', '-1');
+    } else {
+        if (is_numeric($shl)) {
+            $shl .= 'M'; // Units are in MB for this, while PHP's memory limit setting has it in bytes
+        }
+        ini_set('memory_limit', $shl);
+    }
 }

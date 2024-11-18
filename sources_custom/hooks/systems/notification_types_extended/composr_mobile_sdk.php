@@ -155,6 +155,10 @@ class Hook_notification_types_extended_composr_mobile_sdk
      */
     public function dispatch_notification_to_member(int $to_member_id, int $setting, string $notification_code, ?string $code_category, string $subject, string $message, int $from_member_id, int $priority, bool &$no_cc, array $attachments, bool $use_real_from) : bool
     {
+        if (!addon_installed('composr_mobile_sdk')) {
+            return false;
+        }
+
         if (get_option('enable_notifications_instant_ios') === '1') {
             if (_notification_setting_available(A_INSTANT_IOS, $to_member_id)) {
                 $message = strip_comcode($message);

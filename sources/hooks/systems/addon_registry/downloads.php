@@ -263,6 +263,10 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_and_images_simple_box() : object
     {
+        if (!addon_installed('galleries')) {
+            return new Tempcode();
+        }
+
         require_lang('galleries'); // EDIT_IMAGE
 
         $cells = new Tempcode();

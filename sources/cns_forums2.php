@@ -105,14 +105,16 @@ function cns_create_selection_list_forum_groupings(?int $avoid = null, ?int $it 
  */
 function cns_create_selection_list_topic_tree(?int $it = null) : object
 {
-    $tree = cns_get_topic_tree();
-
     $out = '';
-    foreach ($tree as $forum) {
-        foreach ($forum['entries'] as $topic_id => $ttitle) {
-            $selected = ($topic_id == $it);
-            $line = do_template('CNS_FORUM_TOPIC_LIST_LINE', ['_GUID' => 'd58e4176ef0efefa85c83a8b9fa2de51', 'PRE' => $forum['breadcrumbs'], 'TOPIC_TITLE' => $ttitle]);
-            $out .= '<option value="' . strval($topic_id) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
+
+    if (addon_installed('cns_forum')) {
+        $tree = cns_get_topic_tree();
+        foreach ($tree as $forum) {
+            foreach ($forum['entries'] as $topic_id => $ttitle) {
+                $selected = ($topic_id == $it);
+                $line = do_template('CNS_FORUM_TOPIC_LIST_LINE', ['_GUID' => 'd58e4176ef0efefa85c83a8b9fa2de51', 'PRE' => $forum['breadcrumbs'], 'TOPIC_TITLE' => $ttitle]);
+                $out .= '<option value="' . strval($topic_id) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
+            }
         }
     }
 
@@ -202,42 +204,44 @@ function cns_get_topic_tree(?int $forum_id = null, ?string $breadcrumbs = null, 
  */
 function create_selection_list_forum_tree(?int $member_id = null, ?int $base_forum = null, ?array $selected_forum = null, bool $use_compound_list = false, ?int $levels = null, ?int $updated_since = null) : object
 {
-    $tree = cns_get_forum_tree($member_id, $base_forum, '', null, null, $use_compound_list, $levels, $updated_since !== null, $updated_since);
-    if ($use_compound_list) {
-        list($tree) = $tree;
-    }
-
-    // Flatten out
-    for ($i = 0; $i < count($tree); $i++) {
-        array_splice($tree, $i + 1, 0, $tree[$i]['children']);
-    }
-
     $real_out = ''; // XHTMLXHTML
-    foreach ($tree as $t) {
-        if (($updated_since !== null) && (($t['updated_since'] === null) || ($t['updated_since'] < $updated_since))) {
-            continue;
+
+    if (addon_installed('cns_forum')) {
+        $tree = cns_get_forum_tree($member_id, $base_forum, '', null, null, $use_compound_list, $levels, $updated_since !== null, $updated_since);
+        if ($use_compound_list) {
+            list($tree) = $tree;
         }
 
-        $selected = false;
-        if ($selected_forum !== null) {
-            foreach ($selected_forum as $s) {
-                if ((is_integer($s)) && ($s == $t['id'])) {
-                    $selected = true;
-                }
-                if ((is_string($s)) && ($s == $t['title'])) {
-                    $selected = true;
+        // Flatten out
+        for ($i = 0; $i < count($tree); $i++) {
+            array_splice($tree, $i + 1, 0, $tree[$i]['children']);
+        }
+        foreach ($tree as $t) {
+            if (($updated_since !== null) && (($t['updated_since'] === null) || ($t['updated_since'] < $updated_since))) {
+                continue;
+            }
+
+            $selected = false;
+            if ($selected_forum !== null) {
+                foreach ($selected_forum as $s) {
+                    if ((is_integer($s)) && ($s == $t['id'])) {
+                        $selected = true;
+                    }
+                    if ((is_string($s)) && ($s == $t['title'])) {
+                        $selected = true;
+                    }
                 }
             }
+
+            $line = do_template('CNS_FORUM_LIST_LINE', [
+                '_GUID' => '2fb4bd9ed5c875de6155bef588c877f9',
+                'PRE' => $t['breadcrumbs'],
+                'NAME' => $t['title'],
+                'CAT_BIT' => $t['second_cat'],
+            ]);
+
+            $real_out .= '<option value="' . (!$use_compound_list ? strval($t['id']) : $t['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . $line->evaluate() . '</option>' . "\n";
         }
-
-        $line = do_template('CNS_FORUM_LIST_LINE', [
-            '_GUID' => '2fb4bd9ed5c875de6155bef588c877f9',
-            'PRE' => $t['breadcrumbs'],
-            'NAME' => $t['title'],
-            'CAT_BIT' => $t['second_cat'],
-        ]);
-
-        $real_out .= '<option value="' . (!$use_compound_list ? strval($t['id']) : $t['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . $line->evaluate() . '</option>' . "\n";
     }
 
     if ($GLOBALS['XSS_DETECT']) {

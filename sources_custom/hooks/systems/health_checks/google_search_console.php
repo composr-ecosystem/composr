@@ -57,6 +57,10 @@ class Hook_health_check_google_search_console extends Hook_Health_Check
      */
     public function testGoogleSearchConsoleConnection(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
+        if (!addon_installed('google_search_console')) {
+            $this->log('Skipped; google_search_console not installed.');
+            return;
+        }
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $this->log('Skipped; we are running from installer.');
             return;

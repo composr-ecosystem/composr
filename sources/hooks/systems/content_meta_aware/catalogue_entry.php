@@ -197,6 +197,10 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
  */
 function generate_catalogue_entry_title(array $row, int $render_type = 1, bool $resource_fs_style = false)
 {
+    if (!addon_installed('catalogues')) {
+        return null;
+    }
+
     $catalogue_name = $row['c_name'];
     $fields = null;
 
@@ -260,6 +264,10 @@ function generate_catalogue_entry_title(array $row, int $render_type = 1, bool $
  */
 function generate_catalogue_entry_image_url(array $row) : string
 {
+    if (!addon_installed('catalogues')) {
+        return '';
+    }
+
     require_code('catalogues');
 
     $unique_key_num = null;
@@ -324,6 +332,10 @@ function generate_catalogue_entry_image_url(array $row) : string
  */
 function generate_catalogue_entry_content_type_label(array $row) : object
 {
+    if (!addon_installed('catalogues')) {
+        return new Tempcode();
+    }
+
     if (!array_key_exists('c_name', $row)) {
         return do_lang_tempcode('catalogues:CATALOGUE_ENTRY');
     }
@@ -342,6 +354,10 @@ function generate_catalogue_entry_content_type_label(array $row) : object
  */
 function generate_catalogue_entry_content_type_universal_label(array $row) : string
 {
+    if (!addon_installed('catalogues')) {
+        return 'Catalogue entry';
+    }
+
     if (!array_key_exists('c_name', $row)) {
         return 'Catalogue entry';
     }

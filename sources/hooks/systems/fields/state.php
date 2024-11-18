@@ -128,13 +128,15 @@ class Hook_fields_state
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
-        $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country', true) === 'US');
-        if (get_option('business_country', true) === 'US') { // Some tax services need exact states, and Americans are a bit pampered, so show an explicit list
-            require_code('locations');
-            $state_list = new Tempcode();
-            $state_list->attach(form_input_list_entry('', '' == $actual_value, do_lang_tempcode('NA_EM')));
-            $state_list->attach(create_usa_state_selection_list([$actual_value]));
-            return form_input_list($_cf_name, $_cf_description, $input_name, $state_list, null, false, $field['cf_required'] == 1, null, 5, $autocomplete);
+        if (addon_installed('ecommerce')) {
+            $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country') == 'US');
+            if ($definitely_usa) { // Some tax services need exact states, and Americans are a bit pampered, so show an explicit list
+                require_code('locations');
+                $state_list = new Tempcode();
+                $state_list->attach(form_input_list_entry('', '' == $actual_value, do_lang_tempcode('NA_EM')));
+                $state_list->attach(create_usa_state_selection_list([$actual_value]));
+                return form_input_list($_cf_name, $_cf_description, $input_name, $state_list, null, false, $field['cf_required'] == 1, null, 5, $autocomplete);
+            }
         }
 
         return form_input_line($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, null, 'text', null, null, null, null, $autocomplete);

@@ -26,9 +26,9 @@ class Hook_config_comments_to_show_in_thread
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'COMMENTS_TO_SHOW_IN_THREAD',

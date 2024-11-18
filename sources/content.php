@@ -200,7 +200,7 @@ function convert_cms_type_codes(string $type_has, string $type_id, string $type_
 {
     $real_type_wanted = $type_wanted;
 
-    $type_id = preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $type_id);
+    $type_id = preg_replace('#^catalogue_entry__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogue_entry_', $type_id);
 
     // Search content-meta-aware hooks
     $found_type_id = '';
@@ -235,7 +235,7 @@ function convert_cms_type_codes(string $type_has, string $type_id, string $type_
  */
 function convert_cms_type_codes_multiple(string $type_has, string $type_id) : array
 {
-    $type_id = preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $type_id);
+    $type_id = preg_replace('#^catalogue_entry__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogue_entry_', $type_id);
 
     // Search content-meta-aware hooks
     $found_type_ids = [];

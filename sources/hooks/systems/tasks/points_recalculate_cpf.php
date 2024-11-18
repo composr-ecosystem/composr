@@ -50,23 +50,22 @@ class Hook_task_points_recalculate_cpf
 
                 // task_log($this, 'Re-calculating points_balance for member ID ' . strval($member_id), $start, null);
 
+                // Calculate balance by combining received and sent points
                 $data = points_ledger_calculate(LEDGER_TYPE_RECEIVED | LEDGER_TYPE_SENT, $member_id);
-
                 list(, $r_points, $r_gift_points) = $data['received'];
                 $points_received = ($r_points + $r_gift_points);
-
                 list(, $points_used, ) = $data['sent'];
-
-                // Points charged from warnings should be considered a punishment against life-time points (as life-time points is used in ranks)
-                $_warning_points = points_ledger_calculate(LEDGER_TYPE_SPENT, $member_id, null, ' AND (' . db_string_equal_to('t_type', 'warning') . ') AND (' . db_string_equal_to('t_subtype', 'add') . ')');
-                list(, $t_points, $t_gift_points) = $_warning_points['spent'];
-                $warning_points = ($t_points + $t_gift_points);
-
-                $points_lifetime = @intval($points_received) - @intval($warning_points);
-                $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_lifetime', strval($points_lifetime));
-
                 $points_balance = @intval($points_received - $points_used);
                 $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_balance', strval($points_balance));
+
+                // Calculate rank points by combining received and spent points which are marked to affect rank
+                $data = points_ledger_calculate(LEDGER_TYPE_RECEIVED | LEDGER_TYPE_SPENT, $member_id, null, ' AND is_ranked=1');
+                list(, $r_points, $r_gift_points) = $data['received'];
+                $points_received = ($r_points + $r_gift_points);
+                list(, $points_spent, $gift_points_spent) = $data['spent'];
+                $points_spent = ($points_spent + $gift_points_spent);
+                $points_rank = @intval($points_received) - @intval($points_spent);
+                $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_rank', strval($points_rank));
             }
         } while (count($rows) > 0);
 

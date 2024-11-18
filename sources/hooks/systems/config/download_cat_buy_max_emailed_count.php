@@ -26,9 +26,9 @@ class Hook_config_download_cat_buy_max_emailed_count
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'DOWNLOAD_CAT_BUY_MAX_EMAILED_COUNT',

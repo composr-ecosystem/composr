@@ -330,6 +330,7 @@ function convert_to_internal_encoding(?string $data, ?string $input_charset, ?st
 
     global $VALID_ENCODING;
 
+    require_code('global3');
     convert_request_data_encodings(); // In case it hasn't run yet. We need $VALID_ENCODING to be set.
 
     if ((cms_strtolower_ascii($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered($data)) && (in_array(cms_strtoupper_ascii($internal_charset), ['ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP']))) { // Preferred as it will use sub entities where there's no equivalent character

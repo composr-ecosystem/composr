@@ -123,6 +123,10 @@ class Hook_resource_meta_aware_tutorials_internal
  */
 function generate_tutorials_entry_title(array $row, int $render_type = 1, bool $resource_fs_style = false)
 {
+    if (!addon_installed('composr_tutorials')) {
+        return null;
+    }
+
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);
     $ret = $data['title'];
@@ -148,6 +152,10 @@ function generate_tutorials_entry_title(array $row, int $render_type = 1, bool $
  */
 function generate_tutorials_entry_description(array $row, int $render_type = 1, bool $resource_fs_style = false)
 {
+    if (!addon_installed('composr_tutorials')) {
+        return null;
+    }
+
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);
     $ret = $data['summary'];
@@ -171,6 +179,10 @@ function generate_tutorials_entry_description(array $row, int $render_type = 1, 
  */
 function generate_tutorials_entry_image_url(array $row) : string
 {
+    if (!addon_installed('composr_tutorials')) {
+        return '';
+    }
+
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);
     return find_theme_image($data['icon']);

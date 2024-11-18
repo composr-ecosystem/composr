@@ -33,6 +33,10 @@ class Hook_ajax_tree_choose_gallery
      */
     public function run(?string $id, array $options, ?string $default = null) : string
     {
+        if (!addon_installed('galleries')) {
+            return '<result></result>';
+        }
+
         require_code('galleries');
         require_lang('galleries');
 
@@ -135,6 +139,10 @@ class Hook_ajax_tree_choose_gallery
      */
     public function simple(?string $id, array $options, ?string $it = null) : object
     {
+        if (!addon_installed('galleries')) {
+            return new Tempcode();
+        }
+
         $must_accept_images = array_key_exists('must_accept_images', $options) ? $options['must_accept_images'] : false;
         $must_accept_videos = array_key_exists('must_accept_videos', $options) ? $options['must_accept_videos'] : false;
         $filter = array_key_exists('filter', $options) ? $options['filter'] : null;

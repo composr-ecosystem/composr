@@ -114,6 +114,12 @@ function endpoint_script()
         $ob = get_hook_ob('endpoints', $hook_type, $hook, 'Hook_endpoint_' . $hook_type . '_');
         $info = $ob->info($type, $id);
 
+        // Disabled hook; throw a generic not found error
+        if ($info === null) {
+            require_lang('critical_error');
+            warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_STATUS_NOT_FOUND', escape_html('/data/endpoint.php/' . $rest_path)));
+        }
+
         // Process authorization if the endpoint requires it
         if (isset($info['authorization']) && ($info['authorization'] !== false)) {
             $authorized = false;

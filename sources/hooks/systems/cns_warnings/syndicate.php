@@ -47,7 +47,7 @@ class Hook_cns_warnings_syndicate
      */
     public function generate_text(array $row) : string
     {
-        if (!addon_installed('cns_warnings')) {
+        if (!addon_installed('cns_warnings') || !addon_installed('securitylogging')) {
             return '';
         }
 

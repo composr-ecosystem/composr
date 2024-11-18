@@ -329,12 +329,13 @@ class Module_admin_points
         if ($has_gift_points !== null) {
             $map[] = do_lang_tempcode('GIFT_POINTS');
         }
-        $map = array_merge($map, [do_lang_tempcode('POINTS'), do_lang_tempcode('SENDER'), do_lang_tempcode('RECIPIENT'), do_lang_tempcode('REASON'), do_lang_tempcode('STATUS'), do_lang_tempcode('ACTIONS')]);
+        $map = array_merge($map, [do_lang_tempcode('POINTS'), do_lang_tempcode('_RANK_POINTS'), do_lang_tempcode('SENDER'), do_lang_tempcode('RECIPIENT'), do_lang_tempcode('REASON'), do_lang_tempcode('STATUS'), do_lang_tempcode('ACTIONS')]);
         $header_row = results_header_row($map, $sortables, 'ledger_sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time'], false);
             $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
             $_date = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id']], '_SELF'), $date, false, true);
+            $is_ranked = ($myrow['is_ranked'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
 
             if (is_guest($myrow['receiving_member'])) {
                 $to = do_lang_tempcode('USER_SYSTEM');
@@ -399,7 +400,7 @@ class Module_admin_points
             } else {
                 $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . strval($myrow['status']));
             }
-            $map = array_merge($map, [integer_format($myrow['amount_points']), $from, $to, $reason, $status, $actions]);
+            $map = array_merge($map, [integer_format($myrow['amount_points']), $is_ranked, $from, $to, $reason, $status, $actions]);
 
             $result_entries->attach(results_entry($map, true));
         }
@@ -620,6 +621,8 @@ class Module_admin_points
         $to_name = is_guest($row['receiving_member']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], true);
         $_to_name = (is_guest($row['receiving_member'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['receiving_member']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
+        $is_ranked = ($row['is_ranked'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+
         // Mask sender if we do not have permission to trace anonymous transactions
         if (($row['anonymous'] == 1) && (!has_privilege($member_id_viewing, 'trace_anonymous_points_transactions'))) {
             $_from_name = do_lang_tempcode('ANONYMOUS');
@@ -657,6 +660,7 @@ class Module_admin_points
             'STATUS' => $status,
             'POINTS' => integer_format($row['amount_points']),
             'GIFT_POINTS' => integer_format($row['amount_gift_points']),
+            '_RANK_POINTS' => $is_ranked,
             'FROM' => $_from_name,
             'TO' => $_to_name,
             'REASON' => $reason,

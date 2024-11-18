@@ -69,7 +69,7 @@ Bad karma can be assigned as a punitive action for getting warned. You can also 
 [*][b]polls[/b]
 Good karma can be assigned for voting in a poll.
 [*][b]points[/b]
-Members can be assigned good karma when another member sends them points. Additionally, a member's points balance, voting power, and/or life-time points can be factors as to how much karmic influence a member has.
+Members can be assigned good karma when another member sends them points. Additionally, a member's points balance, voting power, and/or rank points can be factors as to how much karmic influence a member has.
 [*][b]giftr[/b]
 Members can be assigned good karma when other members send them virtual gifts.
 [*][b]idolisr[/b]

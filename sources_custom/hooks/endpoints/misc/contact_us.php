@@ -23,10 +23,17 @@ class Hook_endpoint_misc_contact_us
      *
      * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
      * @param  ?string $id Standard ID parameter (null: not-set)
-     * @return array Info about the hook
+     * @return ?array Info about the hook (null: endpoint is disabled)
      */
-    public function info(?string $type, ?string $id) : array
+    public function info(?string $type, ?string $id) : ?array
     {
+        if (!addon_installed('composr_mobile_sdk')) {
+            return null;
+        }
+        if (!addon_installed('tickets')) {
+            return null;
+        }
+
         return [
             'authorization' => false,
             'log_stats_event' => 'misc/contact_us',
@@ -42,14 +49,6 @@ class Hook_endpoint_misc_contact_us
      */
     public function run(?string $type, ?string $id) : array
     {
-        if (!addon_installed('composr_mobile_sdk')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
-        if (!addon_installed('tickets')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
         // Gather input
         $id = uniqid('', true);
         $category = post_param_string('category', do_lang('GENERAL'));

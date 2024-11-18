@@ -26,7 +26,7 @@
 
 					<dl class="meta-details-list">
 						{+START,IF,{$ADDON_INSTALLED,points}}
-							<dt class="field-name"><abbr title="{!LIFETIME_POINTS,{$INTEGER_FORMAT*,{$POINTS_BALANCE},0}}">{!POINTS}</abbr>:</dt> <dd><a {+START,IF_PASSED,NUM_POINTS_ADVANCE} title="{!GROUP_ADVANCE,{NUM_POINTS_ADVANCE*}}"{+END} href="{$PAGE_LINK*,site:points:member:{$MEMBER}}">{NUM_POINTS*}</a></dd>
+							<dt class="field-name"><abbr title="{!RANK_POINTS,{$INTEGER_FORMAT*,{$POINTS_BALANCE},0}}">{!POINTS}</abbr>:</dt> <dd><a {+START,IF_PASSED,NUM_POINTS_ADVANCE} title="{!GROUP_ADVANCE,{NUM_POINTS_ADVANCE*}}"{+END} href="{$PAGE_LINK*,site:points:member:{$MEMBER}}">{NUM_POINTS*}</a></dd>
 						{+END}
 						<dt class="field-name">{!COUNT_POSTS}:</dt> <dd>{NUM_POSTS*}</dd>
 						<dt class="field-name">{$?,{$MOBILE},{!USERGROUP},{!PRIMARY_GROUP}}:</dt> <dd>{PRIMARY_GROUP*}</dd>

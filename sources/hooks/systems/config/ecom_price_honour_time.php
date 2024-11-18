@@ -26,9 +26,9 @@ class Hook_config_ecom_price_honour_time
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'ECOM_PRICE_HONOUR_TIME',

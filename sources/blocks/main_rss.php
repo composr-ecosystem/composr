@@ -68,9 +68,8 @@ class Block_main_rss
         if (!addon_installed__messaged('syndication_blocks', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news')) {
-            return do_template('RED_ALERT', ['_GUID' => 'u0z4xtei5rorsx4ahx6gxuol8y64yi29', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
+        if (!addon_installed__messaged('news', $error_msg)) {
+            return $error_msg;
         }
 
         require_lang('news');
@@ -273,5 +272,12 @@ class Block_main_rss
  */
 function block_main_rss__cache_on(array $map) : array
 {
+    if (!addon_installed('syndication_blocks')) {
+        return [];
+    }
+    if (!addon_installed('news')) {
+        return [];
+    }
+
     return [cron_installed(true) ? null : $GLOBALS['FORUM_DRIVER']->is_staff(get_member()), array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10, array_key_exists('title', $map) ? $map['title'] : '', array_key_exists('copyright', $map) ? $map['copyright'] : '', array_key_exists('param', $map) ? $map['param'] : ''];
 }

@@ -769,7 +769,11 @@ END;
     $tpl->handle_symbol_preprocessing();
     $tpl->evaluate_echo();
 
-    foreach (['global', 'core_form_interfaces', 'checking'] as $js_file) {
+    $js_files = ['global', 'core_form_interfaces', 'checking'];
+    if (addon_installed('captcha')) {
+        $js_files[] = 'captcha';
+    }
+    foreach ($js_files as $js_file) {
         $js_path = javascript_enforce($js_file, 'default');
         if ($js_path != '') {
             echo "<script nonce=\"" . $GLOBALS['CSP_NONCE'] . "\">";

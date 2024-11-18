@@ -51,6 +51,10 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
      */
     public function handles_page_link(string $page_link, int $options) : int
     {
+        if (!addon_installed('calendar')) {
+            return SITEMAP_NODE_NOT_HANDLED;
+        }
+
         if (preg_match('#^\w+:calendar:browse$#', $page_link) != 0) { // We don't actually support taking no-category in here, entry_point can handle that case
             return SITEMAP_NODE_NOT_HANDLED;
         }

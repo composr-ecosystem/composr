@@ -67,6 +67,10 @@ class Hook_implicit_usergroups_usergroup_field_match
      */
     public function get_bound_group_ids() : array
     {
+        if (!addon_installed('usergroup_field_match')) {
+            return [];
+        }
+
         return array_keys($this->_get_structure());
     }
 

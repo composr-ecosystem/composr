@@ -30,6 +30,10 @@ class Hook_sw_catalogues
      */
     public function get_current_settings() : array
     {
+        if (!addon_installed('catalogues')) {
+            return [];
+        }
+
         $settings = [];
         $settings['have_default_catalogues_projects'] = has_predefined_content('catalogues', 'have_default_catalogues_projects') ? '1' : '0';
         $settings['have_default_catalogues_faqs'] = has_predefined_content('catalogues', 'have_default_catalogues_faqs') ? '1' : '0';

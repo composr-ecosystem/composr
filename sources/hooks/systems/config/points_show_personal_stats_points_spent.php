@@ -26,9 +26,9 @@ class Hook_config_points_show_personal_stats_points_spent
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'COUNT_POINTS_SPENT',

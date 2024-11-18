@@ -50,7 +50,7 @@ class Hook_symbol_PROVIDE_WITH_TRANSLATION
 
         $from = empty($param[2]) ? null : $param[2];
 
-        $errormsg = null;
+        $errormsg = new Tempcode();
         $text_translated = translate_text($text, $context, $from, user_lang(), null, $errormsg);
 
         if ($errormsg !== null) {

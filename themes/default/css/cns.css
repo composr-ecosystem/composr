@@ -287,7 +287,7 @@ div.cns-table-footer > div > div {
 	color: {$GET,box_title_text} !important;
 }
 
-.cns-post-emphasis, .cns-post-personal, .cns-post-poll {
+.cns-post-emphasis, .cns-post-personal, .cns-post-poll, .cns-post-private-topic {
 	font-size: 0.85em;
 	font-weight: bold;
 	text-align: center;
@@ -306,6 +306,11 @@ div.cns-table-footer > div > div {
 .cns-post-poll, div.cns-post-poll.cns-forum-box-left { /* Extra selector clause to give precedence over th.de-th and .cns-forum-box-left */
 	background-color: {$GET,cns_polls_background} !important;
 	color: {$GET,cns_polls_text};
+}
+
+.cns-post-private-topic, div.cns-private-topic.cns-forum-box-left { /* Extra selector clause to give precedence over th.de-th and .cns-forum-box-left */
+	background-color: {$GET,cns_private_topic_post_background} !important;
+	color: {$GET,cns_private_topic_post_text};
 }
 
 .cns-topic-poll {

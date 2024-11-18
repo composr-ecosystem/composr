@@ -135,7 +135,7 @@ class stats_test_set extends cms_test_case
             $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 3, 'receiving_member' => 2, 'amount_gift_points' => 1];
 
             // FUDGE: so we can test top members by points (which uses CPF and not database)
-            $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_lifetime', '1000');
+            $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_rank', '1000');
         }
 
         if (addon_installed('cms_homesite')) {

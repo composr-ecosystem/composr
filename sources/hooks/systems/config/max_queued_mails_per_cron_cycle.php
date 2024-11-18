@@ -26,9 +26,9 @@ class Hook_config_max_queued_mails_per_cron_cycle
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'MAX_QUEUED_MAILS_PER_CRON_CYCLE',

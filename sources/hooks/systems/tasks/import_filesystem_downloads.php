@@ -78,7 +78,7 @@ class Hook_task_import_filesystem_downloads
      * @param  boolean $make_subfolders Whether we add hierarchically (as opposed to a flat category fill)
      * @return integer Number of downloads added
      */
-    public function filesystem_recursive_downloads_scan(string $server_path, string $server_url, int $dest_cat, bool $make_subfolders) : int
+    protected function filesystem_recursive_downloads_scan(string $server_path, string $server_url, int $dest_cat, bool $make_subfolders) : int
     {
         $num_added = 0;
 

@@ -164,7 +164,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
     if (($need === null) || (in_array('points', $need)) || (in_array('num_points_advance', $need))) {
         if (addon_installed('points')) {
             require_code('points');
-            $num_points = points_lifetime($member_id);
+            $num_points = points_rank($member_id);
             $member_info['points'] = $num_points;
         }
     }

@@ -47,6 +47,10 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function get_addon_list() : array
     {
+        if (!addon_installed('news')) {
+            return [[], []];
+        }
+
         return [
             ['newsletter'],
             [],
@@ -62,6 +66,10 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function field_defaults() : array
     {
+        if (!addon_installed('news')) {
+            return [];
+        }
+
         return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '1',
@@ -87,6 +95,10 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function default_blocks() : array
     {
+        if (!addon_installed('news')) {
+            return [];
+        }
+
         return [
             BLOCK_POSITION_MAIN => [
                 'main_news',
@@ -109,6 +121,10 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function block_options() : array
     {
+        if (!addon_installed('news')) {
+            return [];
+        }
+
         return [
             'side_calendar' => [
                 'type' => 'listing',

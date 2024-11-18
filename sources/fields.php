@@ -517,7 +517,7 @@ function get_bound_content_entry_wrap(string $content_type, string $id) : ?int
 {
     $catalogue_entry_id = get_bound_content_entry($content_type, $id);
 
-    if ($catalogue_entry_id === null) {
+    if (($catalogue_entry_id === null) && (addon_installed('catalogues'))) {
         require_code('catalogues2');
 
         $first_cat = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => '_' . $content_type]);

@@ -608,6 +608,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_bulkhelper[/tt] -- set this to '1' to disable the feature that asks you if you are bulk-adding records
   - [tt]disable_news_repimages[/tt] -- set this to '1' to disable rep-images for news categories
   - [tt]blogs_tab_enabled[/tt] -- set this to '0' for the Conversr member profile blogs tab to be disabled (if you want blogs, but just not on member profiles)
+  - [tt]use_tos_lang[/tt] -- Set to '1' if you want your site to say "Terms of Service" opposed to "rules" when referring to the website rules (clear your language cache after changing this value)
  - Low-level tuning:
   - [tt]commercial_spellchecker[/tt] -- set this to '1' if you want to enable the WYSIWYG editor's spellcheck.net spellchecker
   - [tt]disable_kid_gloves_html[/tt] -- set this to '1' if you want to completely disable the kid-gloves HTML escaping mode, i.e. avoid the need to make declarations in your overrides. You may want to use this if you override various files but aren't really writing custom code and don't really understand how to make the declarations

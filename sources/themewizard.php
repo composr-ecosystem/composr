@@ -287,7 +287,8 @@ function themewizard_find_css_sheets(string $source_theme, ?string $seed = null,
     require_code('themes2');
     require_code('files2');
 
-    if (($seed !== null) && ($dark !== null) && ($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
+    // NB: If we are running the equation calculator (snippet), we have to process even if seed/dark is the same because we need to load THEMEWIZARD_COLOR variables
+    if ((!running_script('snippet')) && ($seed !== null) && ($dark !== null) && ($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
         // Nothing to do
         return [];
     }
@@ -818,7 +819,7 @@ function _parse_themewizard_css_colour_expression(array $tokens) : ?array
 
     // Either we have a single token
     if (count($tokens) == 1) {
-        return $tokens[0];
+        return [$tokens[0]];
     }
 
     // Or we have a length of more than 3 tokens, in which case we pivot

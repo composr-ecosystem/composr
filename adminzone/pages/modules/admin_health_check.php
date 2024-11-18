@@ -139,6 +139,8 @@ class Module_admin_health_check
         $sections = create_selection_list_health_check_sections($sections_to_run);
 
         if (post_param_integer('submitting', 0) == 1) {
+            set_value('last_run__health_check', strval(time()), true);
+
             $has_fails = false;
             $categories = run_health_check($has_fails, $sections_to_run, $show_passes, $show_skips, $show_manual_checks, $automatic_repair);
 

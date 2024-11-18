@@ -20,7 +20,7 @@
 				<tr><th class="de-th">{!USERNAME}:</th><td><a href="{$MEMBER_PROFILE_URL*,{MEMBER_ID}}">{USERNAME*}</a></td></tr>
 				<tr><th class="de-th">{!cns:SPECIFIC_FORUM_POSTS}:</th><td>{POSTS*}</td></tr>
 				{+START,IF_NON_EMPTY,{POINTS}}
-					<tr><th class="de-th"><abbr title="{!LIFETIME_POINTS,{$INTEGER_FORMAT*,{$POINTS_BALANCE,{MEMBER_ID}},0}}">{!POINTS}</abbr>:</th><td>{POINTS*}</td></tr>
+					<tr><th class="de-th"><abbr title="{!RANK_POINTS,{$INTEGER_FORMAT*,{$POINTS_BALANCE,{MEMBER_ID}},0}}">{!POINTS}</abbr>:</th><td>{POINTS*}</td></tr>
 				{+END}
 				<tr><th class="de-th">{!JOIN_DATE}:</th><td>{JOIN_DATE*}</td></tr>
 				{+START,IF,{$NOT,{$MATCH_KEY_MATCH,_WILD:galleries}}}

@@ -1256,6 +1256,9 @@ class Module_admin_version
 
         if (($upgrade_from !== null) && ($upgrade_from < 21)) { // LEGACY: 11.beta5
             $GLOBALS['SITE_DB']->alter_table_field('messages_to_render', 'r_message', 'LONG_TRANS__COMCODE'); // TODO: Conversion to a Comcode type does not work; meta is changed but columns are not created
+
+            // This has been broken in v10 and v11 for quite some time now; 'catalogues' is not a valid content type and actually referred to entries.
+            $GLOBALS['SITE_DB']->query_update('rating', ['rating_for_type' => 'catalogue_entry'], ['rating_for_type' => 'catalogues']);
         }
     }
 

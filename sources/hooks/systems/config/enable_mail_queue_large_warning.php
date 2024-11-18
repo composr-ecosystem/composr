@@ -15,32 +15,33 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    points
+ * @package    core_configuration
  */
 
 /**
  * Hook class.
  */
-class Hook_config_points_show_personal_stats_points_lifetime
+class Hook_config_enable_mail_queue_large_warning
 {
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
-            'human_name' => 'COUNT_LIFETIME_POINTS',
+            'human_name' => 'ENABLE_MAIL_QUEUE_LARGE_WARNING',
             'type' => 'tick',
-            'category' => 'BLOCKS',
-            'group' => 'PERSONAL_BLOCK',
-            'explanation' => null,
+            'category' => 'MESSAGES',
+            'group' => 'MAIL_QUEUE',
+            'explanation' => 'CONFIG_OPTION_enable_mail_queue_large_warning',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 4,
             'required' => true,
             'public' => false,
-            'addon' => 'points',
+            'addon' => 'core_configuration',
         ];
     }
 
@@ -51,10 +52,6 @@ class Hook_config_points_show_personal_stats_points_lifetime
      */
     public function get_default() : ?string
     {
-        if (!addon_installed('points')) {
-            return null;
-        }
-
-        return '1';
+        return '0';
     }
 }

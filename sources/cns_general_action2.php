@@ -29,6 +29,11 @@
  */
 function cns_edit_post_template(int $id, string $title, string $text, string $forum_multi_code, int $use_default_forums)
 {
+    $errormsg = new Tempcode();
+    if (!addon_installed__messaged('cns_post_templates', $errormsg)) {
+        warn_exit($errormsg);
+    }
+
     $GLOBALS['FORUM_DB']->query_update('f_post_templates', [
         't_title' => $title,
         't_text' => $text,
@@ -52,6 +57,11 @@ function cns_edit_post_template(int $id, string $title, string $text, string $fo
  */
 function cns_delete_post_template(int $id)
 {
+    $errormsg = new Tempcode();
+    if (!addon_installed__messaged('cns_post_templates', $errormsg)) {
+        warn_exit($errormsg);
+    }
+
     $title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_post_templates', 't_title', ['id' => $id]);
     if ($title === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post_template'));
@@ -219,6 +229,11 @@ function cns_get_num_emoticons_on_disk() : int
  */
 function cns_edit_welcome_email(int $id, string $name, string $subject, string $text, int $send_after_hours, ?int $newsletter, ?int $usergroup, string $usergroup_type)
 {
+    $errormsg = new Tempcode();
+    if (!addon_installed__messaged('welcome_emails', $errormsg)) {
+        warn_exit($errormsg);
+    }
+
     $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', ['id' => $id]);
     if ($_subject === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
@@ -251,6 +266,11 @@ function cns_edit_welcome_email(int $id, string $name, string $subject, string $
  */
 function cns_delete_welcome_email(int $id)
 {
+    $errormsg = new Tempcode();
+    if (!addon_installed__messaged('welcome_emails', $errormsg)) {
+        warn_exit($errormsg);
+    }
+
     $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', ['id' => $id]);
     if ($_subject === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));

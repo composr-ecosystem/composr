@@ -26,9 +26,9 @@ class Hook_config_hc_cron_threshold
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'HC_CRON_THRESHOLD',
@@ -56,6 +56,18 @@ class Hook_config_hc_cron_threshold
             return null;
         }
 
-        return strval(5 * 60);
+        return strval(6 * 60);
+    }
+
+    /**
+     * Code to run after the option is saved, if the value was changed or we are not formally setting it.
+     *
+     * @param  string $new_value The new value
+     */
+    public function postsave_handler(string $new_value)
+    {
+        // Clear the checklist cache so we have an updated account of when health check is due
+        require_code('caches');
+        delete_cache_entry('main_staff_checklist');
     }
 }

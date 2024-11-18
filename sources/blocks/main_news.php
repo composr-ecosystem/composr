@@ -130,9 +130,8 @@ PHP;
         if (!addon_installed__messaged('news', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', ['_GUID' => 'd791iqh0ytnpf0azwolpxojd881q9ir2', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
+        if (!addon_installed__messaged('news_shared', $error_msg)) {
+            return $error_msg;
         }
 
         require_lang('cns');
@@ -392,8 +391,7 @@ PHP;
             $tmp['blog'] = $blogs;
         }
         $archive_url = build_url($tmp, $zone);
-        $_is_on_rss = get_option('is_rss_advertised', true);
-        $is_on_rss = ($_is_on_rss === null) ? 0 : intval($_is_on_rss); // Set to zero if we don't want to show RSS links
+
         $submit_url = new Tempcode();
         $management_page = ($blogs === 1) ? 'cms_blogs' : 'cms_news';
         if ((($blogs !== 1) || (has_privilege(get_member(), 'have_personal_category', 'cms_news'))) && (has_actual_page_access(null, $management_page, null, null)) && (has_submit_permission(($blogs === 1) ? 'mid' : 'high', get_member(), get_ip_address(), $management_page))) {
@@ -424,11 +422,13 @@ PHP;
         // Feed URLs
         $atom_url = new Tempcode();
         $rss_url = new Tempcode();
-        if ($is_on_rss == 1) {
-            $atom_url = make_string_tempcode(find_script('backend') . '?type=atom&mode=news&select=' . urlencode($select));
-            $atom_url->attach(symbol_tempcode('KEEP'));
-            $rss_url = make_string_tempcode(find_script('backend') . '?type=rss2&mode=news&select=' . urlencode($select));
-            $rss_url->attach(symbol_tempcode('KEEP'));
+        if (addon_installed('syndication_blocks')) {
+            if (get_option('is_rss_advertised') == '1') {
+                $atom_url = make_string_tempcode(find_script('backend') . '?type=atom&mode=news&select=' . urlencode($select));
+                $atom_url->attach(symbol_tempcode('KEEP'));
+                $rss_url = make_string_tempcode(find_script('backend') . '?type=rss2&mode=news&select=' . urlencode($select));
+                $rss_url->attach(symbol_tempcode('KEEP'));
+            }
         }
 
         // Wipe out management/feed URLs if no links was requested

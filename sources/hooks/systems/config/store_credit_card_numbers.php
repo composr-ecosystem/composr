@@ -26,9 +26,9 @@ class Hook_config_store_credit_card_numbers
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'STORE_CREDIT_CARD_NUMBERS',

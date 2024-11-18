@@ -73,7 +73,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
         }
 
         // Award points when necessary and if not already awarded
-        if (($post_counts === 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_posting_member'])) && ($post_info[0]['p_whisper_to_member'] === null) && ($topic_info[0]['t_pt_from_member'] === null)) {
+        if (($post_counts === 1) && (addon_installed('points')) && (addon_installed('cns_forum')) && (!is_guest($post_info[0]['p_posting_member'])) && ($post_info[0]['p_whisper_to_member'] === null) && ($topic_info[0]['t_pt_from_member'] === null)) {
             $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
             if ($already_awarded === null) {
                 $post_points = intval(get_option('points_posting'));
@@ -173,8 +173,14 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
     require_code('cns_general_action2');
     $moderatorlog_id = cns_mod_log_it('EDIT_POST', strval($post_id), $title, $reason);
     if ((addon_installed('actionlog')) && (addon_installed('cns_forum'))) {
-        $ticket_forum = get_option('ticket_forum_name', true);
-        if (($ticket_forum === null) || ($forum_id != $GLOBALS['FORUM_DRIVER']->forum_id_from_name($ticket_forum))) {
+        // Check if this is the tickets forum; tickets do not support revisions
+        $can_log_revision = true;
+        if (addon_installed('tickets')) {
+            $ticket_forum = get_option('ticket_forum_name');
+            $can_log_revision = ($forum_id != $GLOBALS['FORUM_DRIVER']->forum_id_from_name($ticket_forum));
+        }
+
+        if ($can_log_revision) {
             require_code('revisions_engine_database');
             $revision_engine = new RevisionEngineDatabase(true);
             $revision_engine->add_revision(
@@ -242,7 +248,7 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
     }
 
     // Award points when necessary and if not already awarded
-    if (($validated == 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_posting_member'])) && ($post_info[0]['p_whisper_to_member'] === null) && ($topic_info[0]['t_pt_from_member'] === null)) {
+    if (($validated == 1) && (addon_installed('points')) && (addon_installed('cns_forum')) && (!is_guest($post_info[0]['p_posting_member'])) && ($post_info[0]['p_whisper_to_member'] === null) && ($topic_info[0]['t_pt_from_member'] === null)) {
         $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
         if ($already_awarded === null) {
             $post_points = intval(get_option('points_posting'));
@@ -488,41 +494,41 @@ function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, str
         }
     }
 
-    // Is it a support ticket move?
-    if (addon_installed('tickets')) {
-        require_code('tickets');
-        $is_support_ticket = (is_ticket_forum($from_forum_id)) && (is_ticket_forum($to_forum_id));
-    } else {
-        $is_support_ticket = false;
-    }
-
     // Create topic, if this is a split
     if ($to_topic_id === null) {
         if ($to_forum_id === null) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        if ($is_support_ticket) {
-            // For support tickets, we need to make the spacer post
-            require_lang('tickets');
+        // Is it a support ticket move?
+        $is_support_ticket = false;
+        if (addon_installed('tickets')) {
             require_code('tickets');
-            require_code('tickets2');
-            $member_id = get_member();
-            foreach ($posts as $post) {
-                $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_posting_member', ['id' => $posts[0]]);
-                if ($member_id != get_member()) {
-                    break;
+            $is_support_ticket = (is_ticket_forum($from_forum_id)) && (is_ticket_forum($to_forum_id));
+
+            if ($is_support_ticket) {
+                // For support tickets, we need to make the spacer post
+                require_lang('tickets');
+                require_code('tickets');
+                require_code('tickets2');
+                $member_id = get_member();
+                foreach ($posts as $post) {
+                    $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_posting_member', ['id' => $posts[0]]);
+                    if ($member_id != get_member()) {
+                        break;
+                    }
                 }
+                $ticket_id = ticket_generate_new_id($member_id);
+                $ticket_type = $GLOBALS['SITE_DB']->query_select_value('tickets', 'ticket_type', ['topic_id' => $from_topic_id]);
+                if ($title === null) {
+                    $title = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', ['id' => $posts[0]]);
+                }
+                $ticket_url = ticket_add_post($ticket_id, $ticket_type, $title, '', false, $member_id);
+                $to_topic_id = $GLOBALS['LAST_TOPIC_ID'];
+                $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts SET p_time=' . strval(time()) . ' WHERE ' . $or_list, null, 0, false, true);
             }
-            $ticket_id = ticket_generate_new_id($member_id);
-            $ticket_type = $GLOBALS['SITE_DB']->query_select_value('tickets', 'ticket_type', ['topic_id' => $from_topic_id]);
-            if ($title === null) {
-                $title = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', ['id' => $posts[0]]);
-            }
-            $ticket_url = ticket_add_post($ticket_id, $ticket_type, $title, '', false, $member_id);
-            $to_topic_id = $GLOBALS['LAST_TOPIC_ID'];
-            $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts SET p_time=' . strval(time()) . ' WHERE ' . $or_list, null, 0, false, true);
-        } else {
+        }
+        if (!$is_support_ticket) {
             require_code('cns_topics_action');
             $to_topic_id = cns_make_topic($to_forum_id);
         }

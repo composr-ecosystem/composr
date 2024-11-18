@@ -195,6 +195,10 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
  */
 function generate_catalogue_category_content_type_label(array $row) : object
 {
+    if (!addon_installed('catalogues')) {
+        return new Tempcode();
+    }
+
     if (!array_key_exists('c_name', $row)) {
         return do_lang_tempcode('catalogues:CATALOGUE_CATEGORY');
     }
@@ -211,6 +215,10 @@ function generate_catalogue_category_content_type_label(array $row) : object
  */
 function generate_catalogue_category_content_type_universal_label(array $row) : string
 {
+    if (!addon_installed('catalogues')) {
+        return 'Catalogue category';
+    }
+
     if (!array_key_exists('c_name', $row)) {
         return 'Catalogue category';
     }

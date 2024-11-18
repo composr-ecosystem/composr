@@ -32,7 +32,7 @@ class Module_points
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 11;
+        $info['version'] = 12;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -66,7 +66,7 @@ class Module_points
         delete_privilege($privileges);
 
         $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_balance');
-        $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_lifetime');
+        $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_rank');
     }
 
     /**
@@ -93,6 +93,7 @@ class Module_points
                 'status' => 'INTEGER', // See LEDGER_STATUS_* in points.php
                 'linked_ledger_id' => '?AUTO_LINK',
                 'locked' => 'BINARY', // 1 = status cannot be changed
+                'is_ranked' => 'BINARY', // Whether this transaction counts towards the member's rank points (to system = affects sender negatively; from system or transaction between members = affects recipient)
 
                 // FUDGE: These fields are not preserved in cms_merge at this time (e.g. auto-reversing from content deletion will not work)
                 't_type' => 'ID_TEXT', // Content type or category of transaction
@@ -196,7 +197,8 @@ class Module_points
                         't_subtype' => '',
                         't_type_id' => 'chargelog',
                         'status' => $status,
-                        'locked' => 0
+                        'locked' => 0,
+                        'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
                     ];
                     $map += insert_lang_comcode('reason', $chargelog['reason'], 3);
                     $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -240,6 +242,7 @@ class Module_points
                             't_type_id' => 'points_gained_given',
                             'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL, // Refunding gained points back to the system
                             'locked' => 0,
+                            'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
                         ];
                         $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Gained-Given discrepancy', 4);
                         $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -278,6 +281,7 @@ class Module_points
                                 't_type_id' => 'points_used',
                                 'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
+                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
                             ];
                             $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
                             $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -299,6 +303,7 @@ class Module_points
                                 't_type_id' => 'gift_points_used',
                                 'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
+                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
                             ];
                             $map += insert_lang_comcode('reason', 'Upgrader: Fixing Gift-Points-Used discrepancy', 4);
                             $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -363,6 +368,7 @@ class Module_points
                                 't_type_id' => $field,
                                 'status' => LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
+                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
                             ];
                             if (intval($row[$field_id]) < 0) { // Never have negative points
                                 $sending_member = $map['sending_member'];
@@ -436,7 +442,7 @@ class Module_points
             add_privilege('POINTS', 'amend_point_transactions', false);
 
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_lifetime', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_rank', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 11) && ($upgrade_from >= 9)) { // LEGACY
@@ -444,6 +450,20 @@ class Module_points
             $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_type', 'ID_TEXT');
             $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_id', 'ID_TEXT');
             $GLOBALS['SITE_DB']->alter_table_field('escrow', 'receiving_member', '?MEMBER');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY: 11.beta5; account for new is_ranked field and rename to rank points
+            // Life-time points changed to rank points
+            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('points_lifetime', 'points_rank', 20, 1, 0, 0, 0, '', 'integer');
+            rename_config_option('points_show_personal_stats_points_lifetime', 'points_show_personal_stats_points_rank');
+
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'is_ranked', 'BINARY', 1);
+
+            // By default, debits to the system do not affect rank points (they're usually purchases)
+            $GLOBALS['SITE_DB']->query_update('points_ledger', ['is_ranked' => 0], ['receiving_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
+
+            // ...but charges from warnings do!
+            $GLOBALS['SITE_DB']->query_update('points_ledger', ['is_ranked' => 1], ['t_type' => 'warning', 't_subtype' => 'add']);
         }
     }
 
@@ -835,7 +855,7 @@ class Module_points
                     $worked = true;
                 }
             }
-            if ($trans_type == 'credit') {
+            if (($trans_type == 'credit') || (($trans_type == 'credit-notranked'))) {
                 if (has_privilege($member_id_viewing, 'moderate_points')) {
                     // Do not allow crediting negative points
                     if ($amount <= 0) {
@@ -856,7 +876,7 @@ class Module_points
                     }
 
                     require_code('points2');
-                    points_credit_member($member_id_of, $reason, $amount, 0, true, 0, 'points', 'credit', '');
+                    points_credit_member($member_id_of, $reason, $amount, 0, true, 0, 'points', 'credit', '', null, ($trans_type == 'credit'));
                     $balance = points_balance($member_id_of);
 
                     $message = do_lang_tempcode('MEMBER_HAS_BEEN_CREDITED', escape_html($member_of), escape_html(integer_format($amount)), escape_html(integer_format($balance)));

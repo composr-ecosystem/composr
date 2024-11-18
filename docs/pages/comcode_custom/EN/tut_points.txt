@@ -31,7 +31,7 @@ Methods of earning points include:
 
 Most methods of earning points may be altered in the configuration (Admin Zone > Setup > Configuration > Points options), so that the number of points earned from various activities is appropriate for your website.
 
-There is a distinction between the point count for points available for spending ([concept]points balance[/concept]), and the point count for the total points ever earned (which contributes to rank and leader-board position) ([concept]life-time points[/concept]). This will usually be made explicit, but sometimes context will let users easily identify what is the appropriate meaning.
+There is a distinction between the point count for points available for spending ([concept]points balance[/concept]), and total points ever received which contribute to a member's rank ([concept]rank points[/concept]). This will usually be made explicit, but sometimes context will let users easily identify what is the appropriate meaning.
 
 [title="3"]A note about daily visit points[/title]
 
@@ -155,7 +155,7 @@ There exists an API method to [concept]refund[/concept] any amount of points (su
 
 [title="3"]Voting power in Topic Polls[/title]
 
-Site administrators can enable the ability to weigh poll votes on Conversr Topic Polls based on the number of life-time points a voter had at the time of voting. This means members with more life-time points have a greater effect / voting power on a poll's results when they vote. 
+Site administrators can enable the ability to weigh poll votes on Conversr Topic Polls based on the number of rank points a voter had at the time of voting. This means members with more rank points have a greater effect / voting power on a poll's results when they vote. 
 
 This is covered more in-depth on the [page="_SEARCH:tut_forums"]Forums page[/page].
 
@@ -194,7 +194,7 @@ The eCommerce addon allows setting up custom products that may be purchased in e
 [media width="150" description="Rank ladder shown in the usergroup directory" float="right"]data_custom/images/docs/tut_points/rank.png[/media]
 [media width="150" description="A member's rank and benefits shown in their profile rank tab" float="right"]data_custom/images/docs/tut_points/rank_profile.png[/media]
 [media width="150" description="Rank configured when editing a usergroup" float="right"]data_custom/images/docs/tut_points/rank_options.png[/media]
-[concept]Conversr[/concept] has a usergroup system that allows automated or manual (with approval) progression from one usergroup to another, according to life-time points. This is configured by default such that the usergroup rank images for the usergroups involved imply a rising rank.
+[concept]Conversr[/concept] has a usergroup system that allows automated or manual (with approval) progression from one usergroup to another, according to rank points. This is configured by default such that the usergroup rank images for the usergroups involved imply a rising rank.
 
 The 'status symbol' of rank is an incentive for members to earn points (hence contributing to the site and community), but permissions may also be configured such as to give permission according to rank, simply by assigning the permissions differently for different usergroups.
 
@@ -239,7 +239,7 @@ The point system is designed to provide high levels of transparency, as a legiti
 
 [title="3"]Public ledger[/title]
 
-Assuming members have the &ldquo;View others' point ledger&rdquo; privilege (which they do by default), the ledger is publicly available. Members can view each other's ledger on the points profile. And those with access to the Admin Zone can view the combined ledger at Admin Zone > Audit > Points ledger. When a member does not have this privilege, they can only see point tallies for life-time points, points balance, gift points balance, points sent, and points spent on members' profiles.
+Assuming members have the &ldquo;View others' point ledger&rdquo; privilege (which they do by default), the ledger is publicly available. Members can view each other's ledger on the points profile. And those with access to the Admin Zone can view the combined ledger at Admin Zone > Audit > Points ledger. When a member does not have this privilege, they can only see point tallies for rank points, points balance, gift points balance, points sent, and points spent on members' profiles.
 
 An exception:
 Senders are not visible for anonymous transactions (if enabled) unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
@@ -273,11 +273,11 @@ The only time a member can have a negative gift points balance is if they get de
 [title="3"]Points are calculated from the ledger but there is some caching[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-The ledger serves as the real source of truth for calculating how many points a member has. While the number of points a member has in their balance and the number of life-time points a member received is tallied in a custom field, these fields cannot be edited on the UI and only serve as a non-volatile cache.
+The ledger serves as the real source of truth for calculating how many points a member has. While the number of points a member has in their balance and the number of rank points a member received is tallied in a custom field, these fields cannot be edited on the UI and only serve as a non-volatile cache.
 
-[title="4"]Syncing issues with Points balance and Life-time points[/title]
+[title="4"]Syncing issues with points balance and rank points[/title]
 
-It is conceivable for a member's life-time points and/or points balance to get out of sync with the ledger. This would only happen due to a bug or to manipulating the ledger outside of the Composr API (e.g. the database). Should this happen, you can trigger a re-calculation of these values (custom fields) in the Admin Zone > Tools > Cleanup tools and tick (check) &ldquo;Points Cache&rdquo;. Re-calculation is a resource-intensive process and therefore only done when triggered through the Cleanup tools. Otherwise, the custom field values are adjusted when point transactions are made.
+It is conceivable for a member's rank points and/or points balance to get out of sync with the ledger. This would only happen due to a bug or to manipulating the ledger outside of the Composr API (e.g. the database). Should this happen, you can trigger a re-calculation of these values (custom fields) in the Admin Zone > Tools > Cleanup tools and tick (check) &ldquo;Points Cache&rdquo;. Re-calculation is a resource-intensive process and therefore only done when triggered through the Cleanup tools. Otherwise, the custom field values are adjusted when point transactions are made.
 
 [title="3"]Gift Points are calculated dynamically[/title]
 
@@ -288,7 +288,7 @@ This means a member's gift points balance can change when their usergroups chang
 [concepts
 1_key="Points"                1_value="Points are a virtual currency and economy; members can utilise them for voting power, purchases, rewarding each other, or other things as defined by site staff"
 2_key="Gift points"           2_value="Gift points accumulate over time and exist only as points to send to other members where they convert to regular (spendable) points. This is only applicable if they are enabled in the configuration. If not enabled, members can only send each other regular points."
-3_key="Life-time points"      3_value="The total number of points a member ever received, but not necessarily the number they have available in their balance; this is mainly used for ranking purposes"
+3_key="Rank points"      		3_value="The number of points a member ever received which contribute towards their rank. This is not the number they have left to spend; a member may have spent some of these already. Additionally, sometimes received points might not count towards rank points (e.g. a staff member might award points for a financial donation but doesn't want that to boost their rank necessarily). And rank points may be lost if the content which earned those points is deleted by a staff member. Additionally, when a member is charged points from a warning, those points are taken away both from their balance and their rank points as punishment."
 4_key="Points balance"        4_value="The number of points currently available for a member to use"
 5_key="Gift Points balance"   5_value="The number of points currently available for a member to send to other members before that member's regular points balance is used"
 6_key="Transact"              6_value="To transfer (move) points from one member (or the system) to another member (or the system)"
@@ -312,7 +312,7 @@ This means a member's gift points balance can change when their usergroups chang
 24_key="Points Used"          24_value="A tally of the number of points a member transacted, whether it was sending or spending or escrowing points, or being debited or charged points."
 25_key="Points Received"      25_value="A tally of the number of points transacted to a member from other members or the system (credits). The opposite of Points Used."
 26_key="Dispute"              26_value="To mark the agreement of a points escrow as not satisfied according to what was written, thereby requiring review by someone with the privilege to moderate escrows"
-27_key="Rank"                 27_value="Rank is a usergroup membership determined by Life-time points, and is a status symbol or a way of assigning greater privileges to higher status members"
+27_key="Rank"                 27_value="Rank is a usergroup membership determined by rank points, and is a status symbol or a way of assigning greater privileges to higher status members"
 28_key="Leader-board"         28_value="The point leader-board shows top members by points using configurable options and is re-calculated on a specified frequency"
 29_key="Buildr"               29_value="A Composr addon that provides a simple virtual world environment to interact in; points are the currency of Buildr"
 ]Concepts[/concepts]

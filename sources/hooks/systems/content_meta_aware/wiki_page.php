@@ -160,6 +160,10 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
  */
 function generate_wiki_page_entry_description(array $row, int $render_type = 1, bool $resource_fs_style = false)
 {
+    if (!addon_installed('wiki')) {
+        return null;
+    }
+
     $ret = get_translated_text($row['the_description']);
 
     // FUDGE: Wiki+ page descriptions may be unreasonably long

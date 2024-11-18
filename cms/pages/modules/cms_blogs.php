@@ -527,6 +527,10 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         if ($schedule !== null) {
+            if (!addon_installed('calendar')) {
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
+
             require_code('calendar');
             $parameters = [];
             $start_year = intval(date('Y', $schedule));

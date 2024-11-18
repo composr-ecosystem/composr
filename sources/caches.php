@@ -592,7 +592,7 @@ function has_caching_for(string $type, ?string $name = null) : bool
         }
     }
 
-    $setting = (get_option('is_on_' . $type . '_cache') == '1');
+    $setting = (get_option('is_on_' . $type . '_cache', true) === '1');
 
     $positive = (get_param_integer('keep_cache', 0) == 1) || (get_param_integer('cache', 0) == 1) || (get_param_integer('keep_cache_' . $type . 's', 0) == 1) || (get_param_integer('cache_' . $type . 's', 0) == 1);
 

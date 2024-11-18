@@ -23,8 +23,8 @@
 		{+END}
 
 		<div class="points-box box">
-			<p class="intro">{!COUNT_LIFETIME_POINTS}:</p>
-			<p><span class="figure">{POINTS_LIFETIME*}</span></p>
+			<p class="intro">{!COUNT_RANK_POINTS}:</p>
+			<p><span class="figure">{POINTS_RANK*}</span></p>
 		</div>
 
 		{+START,IF_EMPTY,{SENT_TABLE_AGGREGATE}{SENT_TABLE}}

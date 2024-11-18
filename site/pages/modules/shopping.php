@@ -279,10 +279,6 @@ class Module_shopping
             return $error_msg;
         }
 
-        if (!addon_installed('shopping')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('shopping')));
-        }
-
         $type = get_param_string('type', 'browse');
 
         require_javascript('core_form_interfaces');

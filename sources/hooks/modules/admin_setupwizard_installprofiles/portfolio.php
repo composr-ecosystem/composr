@@ -47,6 +47,10 @@ class Hook_admin_setupwizard_installprofiles_portfolio
      */
     public function get_addon_list() : array
     {
+        if (!addon_installed('galleries')) {
+            return [[], []];
+        }
+
         return [
             ['random_quotes', 'polls', 'news'],
             [],
@@ -62,6 +66,10 @@ class Hook_admin_setupwizard_installprofiles_portfolio
      */
     public function field_defaults() : array
     {
+        if (!addon_installed('galleries')) {
+            return [];
+        }
+
         return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '0',
@@ -88,6 +96,10 @@ class Hook_admin_setupwizard_installprofiles_portfolio
      */
     public function default_blocks() : array
     {
+        if (!addon_installed('galleries')) {
+            return [];
+        }
+
         return [
             BLOCK_POSITION_MAIN => [
                 'main_quotes',

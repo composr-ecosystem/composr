@@ -60,6 +60,8 @@ class Hook_cron_health_check
         $skips = ($cron_notify_regardless == '1');
         $manual_checks = false;
 
+        set_value('last_run__health_check', strval(time()), true);
+
         $has_fails = false;
         $categories = run_health_check($has_fails, $sections_to_run, $passes, $skips, $manual_checks, false, null);
 

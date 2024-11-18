@@ -56,6 +56,10 @@ class Hook_health_check_cloudinary extends Hook_Health_Check
      */
     public function testCloudinaryConnection(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
+        if (!addon_installed('cloudinary')) {
+            $this->log('Skipped; cloudinary not installed.');
+            return;
+        }
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $this->log('Skipped; we are running from installer.');
             return;

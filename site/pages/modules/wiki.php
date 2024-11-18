@@ -355,7 +355,7 @@ class Module_wiki
             $this->num_posts = $num_posts;
         }
 
-        if ($type == 'revisions') {
+        if (($type == 'revisions') && addon_installed('actionlog')) {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('WIKI')]]);
 
             $this->title = get_screen_title('actionlog:REVISIONS');
@@ -425,7 +425,7 @@ class Module_wiki
         if ($type == 'random') {
             return $this->random();
         }
-        if ($type == 'revisions') {
+        if (($type == 'revisions') && addon_installed('actionlog')) {
             return $this->revisions();
         }
         if ($type == 'merge') {

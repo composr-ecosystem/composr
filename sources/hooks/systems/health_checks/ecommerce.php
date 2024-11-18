@@ -68,6 +68,11 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
      */
     public function testCurrencyConnection(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
+        if (!addon_installed('ecommerce')) {
+            $this->log('Skipped; ecommerce not installed.');
+            return;
+        }
+
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $this->log('Skipped; we are running from installer.');
             return;
@@ -95,6 +100,11 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
      */
     public function testShippoConnection(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
+        if (!addon_installed('ecommerce')) {
+            $this->log('Skipped; ecommerce not installed.');
+            return;
+        }
+
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $this->log('Skipped; we are running from installer.');
             return;
@@ -156,6 +166,11 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
      */
     public function testTaxServiceConnections(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
+        if (!addon_installed('ecommerce')) {
+            $this->log('Skipped; ecommerce not installed.');
+            return;
+        }
+
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $this->log('Skipped; we are running from installer.');
             return;

@@ -70,6 +70,7 @@ class Hook_task_export_points_ledger
                 $data_point[do_lang('DATE')] = get_timezoned_date_time($row['date_and_time'], false);
                 $data_point[do_lang('GIFT_POINTS')] = $row['amount_gift_points'];
                 $data_point[do_lang('POINTS')] = $row['amount_points'];
+                $data_point[do_lang('_RANK_POINTS')] = $row['is_ranked'];
                 $data_point[do_lang('SENDER')] = $GLOBALS['FORUM_DRIVER']->get_username($row['sending_member'], ($member_id === null), USERNAME_DEFAULT_DELETED);
                 $data_point[do_lang('RECIPIENT')] = $GLOBALS['FORUM_DRIVER']->get_username($row['receiving_member'], ($member_id === null), USERNAME_DEFAULT_DELETED);
                 $data_point[do_lang('REASON')] = get_translated_text($row['reason']);

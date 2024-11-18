@@ -26,9 +26,9 @@ class Hook_config_minutes_between_sends
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'MINUTES_BETWEEN_SENDS',

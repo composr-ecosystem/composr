@@ -1088,7 +1088,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
         case 'b':
             if ($semiparse_mode) {
-                $temp_tpl = make_string_tempcode('<b>' . $embed->evaluate() . '</b>');
+                $temp_tpl = make_string_tempcode('<strong>' . $embed->evaluate() . '</strong>');
                 break;
             }
             $temp_tpl = do_template('COMCODE_BOLD', ['_GUID' => 'acbc4fds910703f81b619sf74ac24c91', 'CONTENT' => $embed]);
@@ -1123,7 +1123,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
         case 'i':
             if ($semiparse_mode) {
-                $temp_tpl = make_string_tempcode('<i>' . $embed->evaluate() . '</i>');
+                $temp_tpl = make_string_tempcode('<em>' . $embed->evaluate() . '</em>');
                 break;
             }
             $temp_tpl = do_template('COMCODE_ITALICS', ['_GUID' => '4321a1fe3825418e57a29410183c0c60', 'CONTENT' => $embed]);

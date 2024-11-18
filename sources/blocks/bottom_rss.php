@@ -68,9 +68,8 @@ class Block_bottom_rss
         if (!addon_installed__messaged('syndication_blocks', $error_msg)) {
             return $error_msg;
         }
-
-        if (!addon_installed('news')) {
-            return do_template('RED_ALERT', ['_GUID' => 'v8iz3vqc9lpgf554antlpja9ewhunyvm', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
+        if (!addon_installed__messaged('news', $error_msg)) {
+            return $error_msg;
         }
 
         $block_id = get_block_id($map);
@@ -126,5 +125,12 @@ class Block_bottom_rss
  */
 function block_bottom_rss__cache_on(array $map) : array
 {
+    if (!addon_installed('syndication_blocks')) {
+        return [];
+    }
+    if (!addon_installed('news')) {
+        return [];
+    }
+
     return [array_key_exists('param', $map) ? $map['param'] : '', array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10];
 }

@@ -498,7 +498,7 @@ class Module_topicview
                     decache_private_topics(get_member());
                 }
 
-                $emphasis = cns_get_post_emphasis($_postdetails);
+                list($post_class, $emphasis) = cns_get_post_emphasis($_postdetails, $topic_info);
 
                 require_code('feedback');
                 if (!array_key_exists('whisper_to_member', $_postdetails) && get_value('disable_post_rating', '0', true) !== '1') {
@@ -522,7 +522,7 @@ class Module_topicview
                     'TOPIC_FIRST_POSTER' => ($topic_info['first_poster'] === null) ? '' : strval($topic_info['first_poster']),
                     'POST_ID' => $is_spacer_post ? '' : ((get_option('seq_post_ids') == '1') ? strval($start + $array_id + 1) : strval($_postdetails['id'])),
                     'URL' => $post_url,
-                    'CLASS' => $_postdetails['is_emphasised'] ? 'cns-post-emphasis' : (array_key_exists('whisper_to_member', $_postdetails) ? 'cns-post-personal' : ''),
+                    'CLASS' => $post_class,
                     'EMPHASIS' => $emphasis,
                     'FIRST_UNREAD' => $first_unread,
                     'POSTER_TITLE' => $is_spacer_post ? '' : $_postdetails['poster_title'],

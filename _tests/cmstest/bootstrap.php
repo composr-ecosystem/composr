@@ -470,6 +470,7 @@ class CMSHtmlReporter extends SimpleReporter
         array_shift($breadcrumb);
         echo implode(' -&gt; ', $breadcrumb);
         echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
+        ob_flush();
     }
 
     /**
@@ -489,6 +490,7 @@ class CMSHtmlReporter extends SimpleReporter
                 '] in [' . $exception->getFile() .
                 ' line ' . $exception->getLine() . ']';
         echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
+        ob_flush();
     }
 
     /**

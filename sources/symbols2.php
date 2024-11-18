@@ -2067,13 +2067,13 @@ function ecv2_TIME_PERIOD(string $lang, array $escaped, array $param) : string
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv2_TOTAL_POINTS(string $lang, array $escaped, array $param) : string
+function ecv2_RANK_POINTS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(points_lifetime(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
+        $value = strval(points_rank(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {

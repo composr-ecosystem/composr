@@ -591,6 +591,10 @@ class Block_youtube_channel
  */
 function block_youtube_channel__cache_on(array $map) : array
 {
+    if (!addon_installed('youtube_channel_integration_block')) {
+        return [];
+    }
+
     return [
         array_key_exists('max_videos', $map) ? intval($map['max_videos']) : 25,
         array_key_exists('start_video', $map) ? intval($map['start_video']) : 1,

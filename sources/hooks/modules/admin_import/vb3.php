@@ -1437,6 +1437,8 @@ class Hook_import_vb3
                     't_subtype' => 'admin_import',
                     't_type_id' => 'vb3',
                     'status' => LEDGER_STATUS_NORMAL,
+                    'locked' => 0,
+                    'is_ranked' => 0,
                 ];
                 $map += insert_lang_comcode('reason', $reason, 4);
                 $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);

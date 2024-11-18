@@ -156,7 +156,7 @@ index 70069923c..3cf08b8ae 100644
  	{FIELDS_TABULAR}
 +
 +	<td>
-+		{$RATING,catalogues__links,{ID},{SUBMITTER},{$SELF_URL},{FIELD_1_PLAIN},RATING_INLINE_DYNAMIC}
++		{$RATING,catalogue_entry__links,{ID},{SUBMITTER},{$SELF_URL},{FIELD_1_PLAIN},RATING_INLINE_DYNAMIC}
 +	</td>
  </tr>
  

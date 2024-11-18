@@ -31,7 +31,7 @@ function init__feedback()
 
     global $RATINGS_STRUCTURE;
     $RATINGS_STRUCTURE = [
-        'catalogues__links' => [
+        'catalogue_entry__links' => [
             RATING_TYPE__LIKE_DISLIKE,
             [
                 '' => '',

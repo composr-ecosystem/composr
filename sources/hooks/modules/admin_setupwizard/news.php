@@ -30,6 +30,10 @@ class Hook_sw_news
      */
     public function get_current_settings() : array
     {
+        if (!addon_installed('news')) {
+            return [];
+        }
+
         $settings = [];
 
         $test = $GLOBALS['SITE_DB']->query_select_value('group_privileges', 'COUNT(*)', ['privilege' => 'have_personal_category', 'the_page' => 'cms_news']);
@@ -121,6 +125,10 @@ class Hook_sw_news
      */
     public function get_blocks() : array
     {
+        if (!addon_installed('news')) {
+            return [];
+        }
+
         return [
             'main_news' => [BLOCK_POSITION_MAIN, null],
             'side_news_archive' => [BLOCK_POSITION_PANEL, null],

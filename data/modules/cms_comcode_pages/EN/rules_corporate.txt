@@ -1,36 +1,211 @@
-[title="2"]Usage[/title]
+[box]
+[b]This is an incomplete template! You must review and modify this template after completing the Setup Wizard![/b] Ideally, for a corporate setting, you would have a legal team to manage this.
 
-This is a company website, and it must be used in coordination with this. The company and staff are not responsible for content placed on this website by ordinary members: no liability is accepted for the possible results of this content, and no warranty is provided for it.
+By using corporate, the language for "rules" will also be changed to "Terms of Service" in Composr.
+[/box]
 
-You must not:
- - post any sexually suggestive content
- - post any obscene content or use obscene language (including language designed to avoid the word filter)
- - post any discriminatory content
- - post any dangerous content
- - use the website as a forum for controversial topics, such as debates
- - post off-topic or irrelevant material, or post any material multiple times without good reason from the point of view of the staff
- - incite (directly or indirectly) any illegal activity (be it covered by criminal or civil law)
- - post any copyrighted material for which you have no right to do so
- - post information relating to, related to, or links directing to, any company in direct or near-direct competition with our own
- - use this website to advertise
- - pose as, or wilfully act as, a member of staff
- - attempt to hack into this website
- - use the features of this website to subvert the company or staff
+Effective Date: [tt]Insert Date[/tt]
 
-[title="2"]External content[/title]
+Welcome to {$SITE_NAME} (“we,” “our,” “us”). By accessing or using {$SITE_NAME} (the “Website”), you agree to comply with and be bound by these Terms of Service. If you do not agree, please do not use this Website.
 
-Advertisements are not under the complete control of this site and we do not take full responsibility for their content.
+[contents][/contents]
 
-Linked sites are outside the control of us and we disclaim any responsibility for their content.
+[title="2"]I. Acceptance of the Terms of Service[/title]
+[list="1"]
+[*]This Terms of Service shall govern your use of our Website and all services. By using our website or services, you accept this Terms of Service in full; accordingly, if you do not accept this Terms of Service or any part of this Terms of Service, you must not use our website nor services for any reason.
+[*]By using our website or agreeing to this Terms of Service, you consent to our use of cookies and the processing of user data in accordance with the terms of our [page=":privacy"]Privacy Policy[/page].
+[*]This Terms of Service, together with our Privacy Policy, shall constitute the entire agreement between you and us in relation to your use of our website and shall supersede all previous agreements between you and us in relation to your use of our website.
+[*]We reserve the right to modify the Terms of Service at any time. Changes will be posted on this page with a revised "Effective Date." Continued use of the Website after changes are made signifies your acceptance of the updated Terms of Service.
+[/list]
 
-[title="2"]Our rights[/title]
+[title="2"]II. Eligibility[/title]
+[list="1"]
+[*]To use this Website, you must:
+ - Be at least 13 years old [tt](change according to your local laws)[/tt]
+ - Comply with all applicable laws, including refraining from using our Website if the laws in your area prohibit you from using our Website.
+[*]To register an account on our Website, you must:
+ - Be at least 16 years old [tt](change according to your COPPA settings)[/tt], or have a legal guardian submit a COPPA form to us which you will receive upon registration.
+ - Provide accurate and truthful information.
+[/list]
 
-We reserve the rights to:
- - remove or change posted content as we feel appropriate, with no warnings, explanation or mention.
- - monitor the usage of this site, including all content, whether publicly viewable or not
- - change these rules at any time, without warning
- - ban any member without explanation if any of these rules are deemed as broken by the staff
+[title="2"]III. Intellectual Property[/title]
+[list="1"]
+[*]Subject to the express provisions of this Terms of Service, we, together with our licensors, own and control all the copyright and other intellectual property rights in our Website and the material on our Website; and all the copyright and other intellectual property rights in our Website and the material on our Website are reserved.
+[*]By submitting content to the Website, you grant to us a worldwide, irrevocable, non-exclusive, royalty-free license to reproduce, store, and use or publish your content on and in relation to this Website. 
+[*]By submitting content to the Website, you waive all your moral rights in your content to the maximum extent permitted by applicable law.
+[/list]
 
-[title="2"]Privacy[/title]
+[title="2"]IV. Acceptable Use[/title]
+[list="1"]
+[*]You may, subject to the other provisions of these Terms of Service:
+ - view pages from our Website in a web browser;
+ - download pages from our Website for caching in a web browser;
+ - stream audio and video files from our Website;
+ - use our Website services by means of a web browser;
+ - download content from our Website where an explicit “download” link or button is made available and your account has the privilege to download the content;
+ - submit useful content to our Website where tools are made available to submit content
+[*]You may only use our website for your own personal use, and you must not use our website for any other purposes.
+[*]Unless you own or control the relevant rights in the material, you must not:
+ - republish material from our Website including republication on our Website or another website in whole or in part;
+ - sell, rent or sub-license material from our Website;
+ - exploit material from our Website for a commercial purpose; or
+ - redistribute material from our Website without the prior written and documented consent of those who own the relevant rights to the material.
+[*]You must not:
+ - use our Website in any way or take any action that causes, or may cause, damage to, or impairment of the performance, availability or accessibility of the Website or the servers running the Website;
+ - use our Website in any way that is unlawful, illegal, fraudulent or harmful, or in connection with any unlawful, illegal, fraudulent or harmful purpose or activity;
+ - use our Website to copy, store, host, transmit, send, use, publish or distribute any material which consists of (or is linked to) any spyware, computer virus, Trojan horse, worm, keystroke logger, rootkit or other malicious computer software;
+ - conduct any systematic or automated data collection activities (including without limitation scraping, data mining, data extraction and data harvesting) on or in relation to our Website;
+ - access or otherwise interact with our Website using any robot, spider or other automated means, except for the purpose of search engine indexing;
+ - violate the directives set out in the robots.txt file for our Website;
+ - use data collected from our Website for any direct marketing activity (including without limitation email marketing, SMS marketing, telemarketing and direct mailing);
+ - use a TOR browser, proxy, VPN, or other IP address masking tool, or use an alternate account, in an attempt to evade disciplinary measures or access restrictions; nor
+ - print, record, or otherwise capture and distribute any [raw] content from our website which cannot reasonably be accessed by a visitor who is not logged in;
+ - attempt to circumvent any restrictions put in place on your permissions, privileges, or use of our Website or your account;
+ - register more than one account per entity (person or company);
+[/list]
 
-Acceptance of these rules implies acceptance of the [page=":privacy"]privacy policy[/page] (which includes details of how this website uses cookies).
+[title="2"]V. Community Guidelines[/title]
+[tt]Edit according to your moderation needs[/tt]
+[list="1"]
+[*]You must not:
+ - submit any sexually suggestive content;
+ - submit any violent or disturbing content, or incite violence;
+ - submit any obscene content or use obscene language (including language designed to avoid word filters);
+ - submit any discriminatory content or content that would violate discrimination legislation;
+ - use our Website to discuss controversial topics (such as, but not limited to, religion and politics) or conduct debates;
+ - submit off-topic or irrelevant material, or submit any material multiple times without good reason from the point of view of the staff;
+ - incite (directly or indirectly) any illegal activity (be it covered by criminal or civil law);
+ - submit any copyrighted material for which you do not have the rights;
+ - share information relating / related to, or links directing to, any company in direct or near-direct competition with our own;
+ - advertise, unless you have gone through official channels for advertising on our Website if they are offered;
+ - pose as, or wilfully act as, any other member or staff on our Website;
+ - use the features of this website to subvert the company or staff;
+ - harass any member of our Website;
+ - submit misinformation, disinformation, or misleading content;
+ - submit any content that infringes on any right of confidence, right of privacy or right under data protection legislation;
+ - submit content in contempt or breach of any court order;
+ - submit any content that breaches any contractual obligations or Non-Disclosure Agreements (NDAs);
+ - submit any content regarding, or discuss, the consumption, purchase, or participation in drugs or harmful substances, alcohol, weapons, tobacco, gambling, or products made from endangered species;
+ - submit any content which could cause harm if acted upon;
+ - submit spam;
+ - submit anything which disrupts the user interface of the website for others (e.g. very large images or forum signatures);
+ - use our Website for professional, legal, or medical advice to which we are not authorized or do not have the proper credentials to provide;
+ - violate the Private Topic guidelines set forth by any member which you send a Private Topic, unless abiding by their guidelines in itself would violate this Terms of Service;
+ - violate any guidelines presented to you when entering specific forums;
+ - exploit our Website in any way for your personal benefit, including but not limited to exploiting rewards or reputation systems in place;
+ - submit any content which has been generated, in full or in part, by Artificial Intelligence (AI);
+ - use special characters (e.g. non-ASCII) which disrupt the Website, its functionality, or its appearance;
+[*]When you encounter content which you confidently believe violates the Terms of Service, it is your responsibility to report it to staff using the "Report this" links or report buttons. If these features are not available, you can contact staff using the methods listed on the Terms of Service instead.
+[/list]
+
+[title="2"]VI. Goods and Services[/title]
+[tt]You can remove this section if you do not offer any paid goods or services[/tt]
+[list="1"]
+[*]You agree to provide payment for goods and services you purchase by the date and time they are due.
+[*]We reserve the right to suspend or cancel services, or to charge late fees, for payments not made on time.
+[*]Members are entitled to a refund period of [refund days] days. Should a product or service blatantly violate the Terms of Service or is otherwise defective beyond your ability to use as advertised, you may contact us within [refund days] of purchase for a full refund.
+[*]When purchasing something, if presented with additional Terms specific to that item, by proceeding with the transaction, you agree to the Terms of purchasing that item in full, excluding any provisions that directly violate this Terms of Service.
+[*]Some downloads may require agreement to a licence. When downloading a file, you agree to the licence except for provisions that violate this Terms of Service.
+[*]Our Website has a virtual currency system called “points”. Points have no monetary value outside of the Website and cannot be traded in for legal tender. However, they can be used for acquiring certain features, obtaining discounts, rewarding others, and “escrowing” others for their personal services on or outside our Website.
+[/list]
+
+[title="2"]VII. Your Rights[/title]
+[list="1"]
+[*]You are hereby granted the rights outlined in this section of the Terms of Service which shall not be infringed.
+[*]You have the right to delete your account on our Website at any time and for any reason. You may delete your account by going to your account profile > Edit > Delete. If this does not work, please contact a staff member using a contact method outlined in these Terms of Service.
+ - You understand that deleting your account does not automatically delete all of the content you published on our Website; such content will be made anonymous (marked as "Guest"). There may be an option to purge your data when you delete your account. If not, you can contact staff through any method on this Terms of Service.
+[*]You have the right to contact a staff member through a method listed on the Terms of Service and indicate to them that you [i]actually[/i] read the Terms of Service (supply the secret phrase "iridium"). They will reward you with 250 points. [tt]Some companies offer a sneaky reward for actually reading the ToS; modify or remove as you wish, and you may want to change the secret phrase each time the ToS gets updated[/tt]
+[*]You have the right to download or purge your personal data collected by us on the Website. You can go to your account profile > Edit > Privacy. If the staff have disabled your ability to download or purge your data from your profile, you still have the right to request a download or purge of your data by contacting the staff using any method outlined in this Terms of Service.
+ - There is an exception: We are not obligated to purge data which is necessary for us to maintain the safety and security of the Website or to uphold any legal requirements. For example, we will not purge logged security incidences from your IP address, IP bans, or (unless you delete your account and agree to an IP ban) warnings / moderation logs pertaining to you.
+[/list]
+
+[title="2"]VIII. Our Rights[/title]
+[list="1"]
+[*]We may, at any time in our sole discretion, when we reasonably believe such action will serve the best interests of our Website or company as a whole, with or without notice:
+ - ban your account and/or IP address;
+ - delete your account;
+ - restrict your account’s privileges;
+ - edit your account details;
+ - purge or anonymize your data.
+[*]Without prejudice to our other rights under the Terms of Service, if you breach the Terms of Service in any way, or if we reasonably suspect with clear and convincing evidence that you have breached the Terms of Service in any way, we may, at our sole discretion, with or without notice:
+ - issue a warning against your account, which may or may not include a message sent to your Private Topics [tt](remove if not applicable)[/tt];
+ - assign bad karma on your profile [tt](remove if not applicable)[/tt];
+ - edit or delete the offending content;
+ - restrict your privileges temporarily or permanently;
+ - ban your account and/or IP address;
+ - revoke rewards or ranks from your account [tt](remove if not applicable)[/tt];
+ - report you to spam blocklists such as Stop Forum Spam or Tornevall [tt](remove if not applicable)[/tt];
+ - file a police report with authorities if criminal activity is suspected;
+ - investigate the contents of your account, including Private Topics;
+ - where you spam or advertise other websites on ours, inform the webmasters of those websites to stop doing business with you.
+[*]We may, at any time in our sole discretion, with or without notice or explanation:
+ - remove or change any content as we feel appropriate;
+ - change the price of any of our paid goods or services;
+ - suspend, modify, or discontinue the sales or operations of any of our goods or services;
+ - shut down our Website, either partially or fully, temporarily or permanently;
+ - monitor the usage of our Website, including all content, whether publicly viewable or not;
+ - collect statistics and analytics about the usage of our Website, or the behavior and demographics of any of its visitors;
+ - lawfully advertise or market relevant or targeted products or services, either from our company or from a third party, in a manner which is not considered spam;
+[/list]
+
+[title="2"]IX. Limitations of Liability[/title]
+[list="1"]
+[*]Nothing in this Terms of Service shall:
+ - limit or exclude any liability for death or personal injury resulting from negligence;
+ - limit or exclude any liability for fraud or fraudulent misrepresentation;
+ - limit any liabilities in any way that is not permitted under applicable law; or
+ - exclude any liabilities that may not be excluded under applicable law.
+[*]These limitations govern all liabilities arising under the Terms of Service or relating to the subject matter of the Terms of Service, including liabilities arising in contract, in tort (including negligence) and for breach of statutory duty, except to the extent expressly provided otherwise in the Terms of Service.
+[*]To the extent that our Website and the information and services on our Website are provided free of charge, we will not be liable for any loss or damage of any nature.
+[*]We will not be liable to you in respect of any losses arising out of any event or events beyond our reasonable control.
+[*]We will not be liable to you in respect of any business losses, including (without limitation) loss of or damage to profits, income, revenue, use, production, anticipated savings, business, contracts, commercial opportunities or goodwill.
+[*]We will not be liable to you in respect of any loss or corruption of any data, database or software.
+[*]We will not be liable to you in respect of any special, indirect or consequential loss or damage.
+[*]We will not be liable to you in respect of any loss or damage resulting from others’ knowledge of your use of our Website or services.
+[*]We will not be liable to you in respect of any loss or damage resulting from using any third-party website which may be linked on our Website.
+[*]We will not be liable to you in respect of any loss or damage which took place outside of our Website.
+[/list]
+
+[title="2"]X. Disclaimer of Warranties[/title]
+[list="1"]
+[*]We exclude all representations and warranties relating to the subject matter of the Terms of Service, our Website and the use of our Website.
+[*]We exclude all representations and warranties relating to the views and opinions expressed on our Website or about our Website.
+[*]We do not warrant or represent:
+ - the completeness or accuracy of the information published on our Website;
+ - that the material on the Website is up to date; or
+ - that the Website or any service on the Website will remain available.
+[*]We reserve the right to discontinue or alter any or all of our Website services, and to stop publishing our Website, at any time in our sole discretion without notice or explanation; and save to the extent expressly provided otherwise in the Terms of Service, you will not be entitled to any compensation or other payment upon the discontinuance or alteration of any Website services, or if we stop publishing the website.
+[/list]
+
+[title="2"]XI. Assignment of Rights and Obligations[/title]
+[list="1"]
+[*]You hereby agree that we may assign, transfer, sub-contract or otherwise deal with our rights and/or obligations under the Terms of Service.
+[*]You may not without our prior written consent assign, transfer, sub-contract or otherwise deal with any of your rights and/or obligations under the Terms of Service.
+[*]A contract under the Terms of Service is for our benefit and your benefit, and is not intended to benefit or be enforceable by any third party.
+[/list]
+
+[title="2"]XII. Severability[/title]
+[list="1"]
+[*]If a provision of the Terms of Service is determined by any court or other competent authority to be unlawful and/or unenforceable, the other lawful and enforceable provisions will continue in effect.
+[*]If any unlawful and/or unenforceable provision of the Terms of Service would be lawful or enforceable if part of it were deleted, that part will be deemed to be deleted, and the rest of the provision will continue in effect. 
+[/list]
+
+[title="2"]XIII. Statutory and Regulatory Disclosures[/title]
+[tt]Remove this section if the Website is not owned and operated by a parent company; in most corporate cases, a company owns the Website, so this section is needed.[/tt]
+[list="1"]
+[*]{$SITE_NAME} is owned and operated by [tt]insert company here, and explanation of subsidiaries[/tt].
+[*][tt]Insert any other disclosures here which you are legally required to disclose[/tt]
+[/list]
+
+[title="2"]XIV. Laws and Jurisdictions[/title]
+[list="1"]
+[*]The Terms of Service shall be governed by and construed in accordance with the laws of [tt]insert applicable territories here[/tt].
+[*]Any disputes relating to the Terms of Service shall be subject to the exclusive jurisdiction of the Courts of [tt]insert applicable courts / jurisdictions here[/tt].
+[/list]
+
+[title="2"]XV. Contact Information[/title]
+You can contact us:
+ - by creating a [page="_SEARCH:tickets"]Support Ticket[/page] on our Website [tt](remove if not using Support Tickets)[/tt];
+ - by sending an e-mail to [tt]insert e-mail address[/tt];
+ - by sending a letter to [tt]insert physical address where you receive mail[/tt];
+ - by calling us at [tt]insert phone number[/tt] or sending a fax to [tt]insert fax number[/tt].

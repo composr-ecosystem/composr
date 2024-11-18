@@ -160,9 +160,9 @@ class Hook_cron_mail_queue
     }
 
     /**
-     * Mark an e-mail as failed, dump the message to a file, and erase from the database (in case of potential out-of-memory errors in mail queue screen)
+     * Mark an e-mail as failed, dump the message to a file, and erase from the database (in case of potential out-of-memory errors in mail queue screen).
      *
-     * @param array $row The database row of the queued mail that failed
+     * @param  array $row The database row of the queued mail that failed
      */
     protected function fail_to_file(array $row)
     {
@@ -170,13 +170,13 @@ class Hook_cron_mail_queue
         $filename = uniqid('mail_queue_failed_' . strval($row['id']) . '_', false) . '.log';
 
         // Dump the contents of the mail row to a file
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/' . $filename, json_encode($row, JSON_PRETTY_PRINT), FILE_WRITE_FAILURE_SILENT | FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failed_mail/' . $filename, json_encode($row, JSON_PRETTY_PRINT), FILE_WRITE_FAILURE_SILENT | FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
 
         // Update the database to indicate the failure, erasing the original message in case this was an out-of-memory issue
         $GLOBALS['SITE_DB']->query_update('logged_mail_messages', [
             'm_queued' => 0,
             'm_subject' => do_lang('MAIL_ERROR_PREFIX', comcode_escape($row['m_subject'])),
-            'm_message' => 'data_custom/' . $filename,
+            'm_message' => 'data_custom/failed_mail/' . $filename,
             'm_in_html' => 0,
             'm_message_extended' => '',
         ], ['id' => $row['id']], '', 1);

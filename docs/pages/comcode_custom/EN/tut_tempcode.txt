@@ -489,8 +489,8 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 			<td>Get some member data from what the <kbd>cns_read_in_member_profile</kbd> function can provide. See the function implementation to see what is supported. Returns blank if it can't get a match. If you leave out the member ID it will use the current member</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$TOTAL_POINTS,3}</td>
-			<td>Get the total points the specified member has</td>
+			<td>{$RANK_POINTS,3}</td>
+			<td>Get the number of rank points the member has</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$POINTS_SPENT,3}</td>

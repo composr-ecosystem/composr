@@ -26,9 +26,9 @@ class Hook_config_one_per_email_address
     /**
      * Gets the details relating to the config option.
      *
-     * @return ?array The details (null: disabled)
+     * @return array The details
      */
-    public function get_details() : ?array
+    public function get_details() : array
     {
         return [
             'human_name' => 'ONE_PER_EMAIL_ADDRESS',

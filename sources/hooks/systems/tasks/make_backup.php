@@ -51,6 +51,10 @@ class Hook_task_make_backup
      */
     public function log(string $message)
     {
+        if (!addon_installed('backup')) {
+            return;
+        }
+
         static $i = 0;
 
         task_log($this, $message);
