@@ -112,11 +112,34 @@ Most of the settings will have been auto-detected for you. You will definitely n
  - Administration account password
  - Database details
 
-There are no constraints on the kind of password to use, but it is a good idea to choose one that won't easily be guessed, does not appear directly in a dictionary, but that you can easily remember.
+There are no constraints on the kind of password to use, but it is a good idea to choose a very strong / random password for each (which you do not use anywhere else) and store them in a password manager or write them down.
 
 All of the database fields should be filled out with the information you recorded earlier in this tutorial. When you finish, click the "Install Composr" link at the bottom of the screen.
 
 Hopefully, at this point you'll receive this [url="success message" rel="lightbox"]data_custom/images/docs/tut_install/install_step5.png[/url]. If you receive any errors, return to the previous page and correct them. Click the "Proceed" button to continue through the installation. There will be a few more similar screens until you finish the installation.
+[/surround]
+
+[surround]
+The installer will proceed through additional steps as follows:
+ - Step 5:
+  - Extract files (Quick installer only)
+  - Upload files (FTP only)
+  - Delete previous installation if it exists
+  - Save configuration file [tt]_config.php[/tt]
+  - Install the core parts of the Composr system
+ - Step 6:
+  - Install Conversr (this is usually installed even if you won't be using it as some components of Conversr are necessary for Composr to work)
+ - Step 7:
+  - Install critical modules: admin_version (contains a lot of core database tables), admin_addons (so we can install addons), admin_permissions (so addons can install permissions)
+ - Step 8:
+  - Install addons, modules, and blocks.
+  - This step can take a few minutes. To help prevent server time-outs, the installer will try stopping after about every 10 seconds and refreshing.
+  - Note that the installer will only install addons which have an addon_registry hook, and modules / blocks which belong to any of those addons. If you have any addons, modules, or blocks you are developing which are not in / do not have an addon_registry hook, they will not be installed automatically by the installer. This is because the installer needs to know the dependency structure of the addons, modules, and blocks it installs for a stable installation. You can manually install the rest of your in-development addons, modules, and blocks later.
+ - Step 9:
+  - Internal maintenance; success screen.
+ - Step 10 (internal only):
+  - Triggered when you make your selection of what you want to do next.
+  - This performs additional final maintenance like installing some custom fields or configuration options.
 [/surround]
 
 [surround]
