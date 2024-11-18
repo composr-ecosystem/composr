@@ -1666,6 +1666,8 @@ function _access_denied(string $class, string $param, bool $force_login)
         require_code('site');
         if ((get_value('no_tech_login_messages') !== '1') && (!is_guest())) {
             attach_message($message, 'warn');
+        } elseif ((is_guest()) && ($_message !== null)) { // Make sure guests see match-key access denied messages on the login screen
+            attach_message($_message, 'warn');
         }
         $echo = globalise($middle, null, '', true);
         $echo->evaluate_echo();

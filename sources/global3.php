@@ -2471,12 +2471,12 @@ function sort_maps_by__strlen(array $rows, $sort_key)
 /**
  * Helper function for usort to sort a list by string length.
  *
- * @param  string $a The first string to compare
- * @param  string $b The second string to compare
+ * @param  mixed $a The first string or array of strings to compare
+ * @param  mixed $b The second string or array of strings to compare
  * @return integer The comparison result (0 for equal, -1 for less, 1 for more)
  * @ignore
  */
-function _strlen_sort(string $a, string $b) : int
+function _strlen_sort($a, $b) : int
 {
     if (!isset($a)) {
         $a = '';
@@ -2497,12 +2497,12 @@ function _strlen_sort(string $a, string $b) : int
 /**
  * Helper function for usort to sort a list by string length in reverse order.
  *
- * @param  string $a The first string to compare
- * @param  string $b The second string to compare
+ * @param  string $a The first string or array of strings to compare
+ * @param  string $b The second string or array of strings to compare
  * @return integer The comparison result (0 for equal, -1 for less, 1 for more)
  * @ignore
  */
-function _strlen_reverse_sort(string $a, string $b) : int
+function _strlen_reverse_sort($a, $b) : int
 {
     if (!isset($a)) {
         $a = '';
