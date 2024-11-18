@@ -2568,6 +2568,12 @@ function step_8_build_install_order(array $addons_to_install) : array
                     $ret[] = ['module', $module_name, $zone];
                 }
 
+                // Welcome zone
+                if (preg_match('/^pages\/(modules|modules_custom)\/(\w*)\.php/', $file, $matches) != 0) {
+                    list($match, $module_type, $module_name) = $matches;
+                    $ret[] = ['module', $module_name, ''];
+                }
+
                 $matches = [];
                 if (preg_match('/(sources|sources_custom)\/blocks\/(\w*)\.php/', $file, $matches) != 0) {
                     list($match, $block_type, $block_name) = $matches;
