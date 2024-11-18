@@ -840,7 +840,6 @@ class Hook_addon_registry_core
             'sources/blocks.php',
             'sources/blocks/.htaccess',
             'sources/blocks/index.html',
-            'sources/blocks/main_comcode_page_children.php',
             'sources/blocks/main_content.php',
             'sources/blocks/main_content_filtering.php',
             'sources/blocks/main_db_notes.php',

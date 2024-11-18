@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    core
+ * @package    core_comcode_pages
  */
 
 /**
@@ -38,7 +38,7 @@ class Block_main_comcode_page_children
         $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
-        $info['addon'] = 'core';
+        $info['addon'] = 'core_comcode_pages';
         $info['parameters'] = ['param', 'zone'];
         return $info;
     }

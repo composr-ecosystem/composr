@@ -152,6 +152,7 @@ class Hook_addon_registry_core_comcode_pages
             'data/modules/cms_comcode_pages/index.html',
             'data_custom/modules/cms_comcode_pages/.htaccess',
             'data_custom/modules/cms_comcode_pages/index.html',
+            'sources/blocks/main_comcode_page_children.php',
             'sources/hooks/modules/admin_newsletter/comcode_pages.php',
             'sources/hooks/modules/search/comcode_pages.php',
             'sources/hooks/systems/addon_registry/core_comcode_pages.php',
