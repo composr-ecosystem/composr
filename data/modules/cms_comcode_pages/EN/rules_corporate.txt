@@ -78,7 +78,7 @@ Welcome to {$SITE_NAME} (“we,” “our,” “us”). By accessing or using {
  - submit any copyrighted material for which you do not have the rights;
  - share information relating / related to, or links directing to, any company in direct or near-direct competition with our own;
  - advertise, unless you have gone through official channels for advertising on our Website if they are offered;
- - pose as, or wilfully act as, any other member or staff on our Website;
+ - pose as, or willfully act as, any other member or staff on our Website;
  - use the features of this website to subvert the company or staff;
  - harass any member of our Website;
  - submit misinformation, disinformation, or misleading content;
