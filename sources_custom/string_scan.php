@@ -12178,6 +12178,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VIEW_MAIL_IN_BROWSER_2
         MAIL_TOO_LONG
         MAIL_QUEUE_LARGE
+        REDIRECT_LOOP
     ')));
 
     // Remove blank lines
