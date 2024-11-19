@@ -335,17 +335,23 @@ function has_page_access(int $member_id, string $page, string $zone, bool $at_no
     $all_page_access_needed[$page_access_needed] = true;
     foreach ($all_page_access_needed as $_page_access_needed => $_) {
         list($_zone, $_page) = explode(':', $_page_access_needed);
-        $where .= ' OR ' . db_string_equal_to('zone_name', $_zone) . ' AND ' . db_string_equal_to('page_name', $_page);
+        $where .= ' OR (' . db_string_equal_to('zone_name', $_zone) . ' AND ' . db_string_equal_to('page_name', $_page) . ')';
         if (addon_installed('match_key_permissions')) {
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like('\_WILD:' . $_page . ':%') . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like($_zone . ':' . $_page . ':%') . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like('\_WILD:\_WILD:%') . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like($_zone . ':\_WILD:%') . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like('\_WILD:' . $_page) . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like($_zone . ':' . $_page) . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like('\_WILD:\_WILD') . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like($_zone . ':\_WILD') . '\'';
-            $where .= ' OR ' . db_string_equal_to('zone_name', '/') . ' AND page_name LIKE \'' . db_encode_like($_zone) . '\'';
+            $where .= ' OR (' . db_string_equal_to('zone_name', '/') . ' AND (';
+            $where .= 'page_name LIKE \'' . db_encode_like('\_WILD:' . $_page . ':%') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:' . $_page . ':%') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like($_zone . ':' . $_page . ':%') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD:%') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:\_WILD:%') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like($_zone . ':\_WILD:%') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:' . $_page) . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:' . $_page) . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like($_zone . ':' . $_page) . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:\_WILD') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like($_zone . ':\_WILD') . '\'';
+            $where .= ' OR page_name LIKE \'' . db_encode_like($_zone) . '\'';
+            $where .= '))';
         }
     }
     $where .= ')';

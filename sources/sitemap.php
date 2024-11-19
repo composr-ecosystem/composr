@@ -513,15 +513,28 @@ abstract class Hook_sitemap_base
                 }
                 if ($HAS_MANY_MATCH_KEYS) {
                     $pg_where = '1=0';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:' . $page . ':%') . '\'';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':' . $page . ':%') . '\'';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD:%') . '\'';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':\_WILD:%') . '\'';
+                    if (addon_installed('match_key_permissions')) {
+                        $pg_where .= ' OR (' . db_string_equal_to('zone_name', '/') . ' AND (';
+                        $pg_where .= 'page_name LIKE \'' . db_encode_like('\_WILD:' . $page . ':%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:' . $page . ':%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':' . $page . ':%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD:%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:\_WILD:%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':\_WILD:%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:' . $page) . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:' . $page) . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':' . $page) . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:\_WILD') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':\_WILD') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone) . '\'';
+                        $pg_where .= '))';
+                    }
                     $perhaps = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'group_page_access WHERE (' . $pg_where . ') AND (' . $groups . ')', null, 0, false, true);
                 } else {
                     // Optimisation, for when there are not a lot of match keys
                     if ($MATCH_KEYS_CACHED === null) {
-                        $pg_where = 'page_name LIKE \'' . db_encode_like('%:%') . '\'';
+                        $pg_where = 'zone_name LIKE \'' . db_encode_like('/') . '\' AND page_name LIKE \'' . db_encode_like('%:%') . '\'';
                         $MATCH_KEYS_CACHED = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'group_page_access WHERE (' . $pg_where . ') AND (' . $groups . ')', null, 0, false, true);
                     }
                     $perhaps = $MATCH_KEYS_CACHED;

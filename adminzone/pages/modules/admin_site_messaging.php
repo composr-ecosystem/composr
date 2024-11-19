@@ -85,7 +85,7 @@ class Module_admin_site_messaging
             $GLOBALS['SITE_DB']->create_table('site_messages_pages', [
                 'id' => '*AUTO',
                 'message_id' => 'AUTO_LINK',
-                'page_link' => 'SHORT_TEXT',
+                'page_link' => 'SHORT_TEXT', // Match-keys
             ]);
         }
     }
@@ -336,7 +336,7 @@ class Module_admin_site_messaging
             $form->attach(form_input_multi_list(do_lang_tempcode('USERGROUPS'), do_lang_tempcode('DESCRIPTION_SITE_MESSAGE_USERGROUPS'), 'groups', $_list));
         }
 
-        $form->attach(form_input_line_multi(do_lang_tempcode('PAGE_LINKS'), do_lang_tempcode('DESCRIPTION_SITE_MESSAGE_PAGE_LINKS'), 'page_links', $page_links, 0));
+        $form->attach(form_input_line_multi(do_lang_tempcode('MATCH_KEYS'), do_lang_tempcode('DESCRIPTION_SITE_MESSAGE_MATCH_KEYS'), 'page_links', $page_links, 0));
 
         return [$form, $hidden];
     }

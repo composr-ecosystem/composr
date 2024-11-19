@@ -114,7 +114,7 @@ class Module_admin_permissions
             // What usergroups may NOT view this page (default is that any page may be viewed if a user can access its zone)
             $GLOBALS['SITE_DB']->create_table('group_page_access', [
                 'page_name' => '*ID_TEXT',
-                'zone_name' => '*ID_TEXT',
+                'zone_name' => '*ID_TEXT', // NB: '/' means page_name is a match-key
                 'group_id' => '*GROUP',
             ]);
             foreach (array_keys($usergroups) as $id) {
@@ -689,6 +689,8 @@ class Module_admin_permissions
      */
     public function set_match_keys_access() : object
     {
+        require_code('urls');
+
         // Delete to cleanup
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_page_access WHERE ' . db_string_equal_to('zone_name', '/'));
         $mkeylang = collapse_2d_complexity('id', 'k_message', $GLOBALS['SITE_DB']->query_select('match_key_messages', ['id', 'k_message']));
@@ -700,13 +702,13 @@ class Module_admin_permissions
                 $key = strval($key);
             }
 
-            // See if we can tidy it back to a page-link (assuming it's not one already)
-            $page_link = url_to_page_link($val, true);
-            if ($page_link != '') {
-                $val = $page_link;
-            }
-
             if ((substr($key, 0, 4) == 'key_') && ($val != '')) {
+                // See if we can tidy it back to a page-link (assuming it's not one already)
+                $page_link = url_to_page_link($val, true);
+                if ($page_link != '') {
+                    $val = $page_link;
+                }
+
                 foreach (array_keys($groups) as $gid) {
                     if (post_param_integer('p_' . substr($key, 4) . '__' . strval($gid), 0) == 1) {
                         $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => '/', 'page_name' => $val, 'group_id' => $gid], '', 1); // In case of row duplication in UI
@@ -716,6 +718,12 @@ class Module_admin_permissions
             }
 
             if ((substr($key, 0, 5) == 'mkey_') && ($val != '')) {
+                // See if we can tidy it back to a page-link (assuming it's not one already)
+                $page_link = url_to_page_link($val, true);
+                if ($page_link != '') {
+                    $val = $page_link;
+                }
+
                 $id = substr($key, 5);
                 if ((substr($id, 0, 4) == 'new_') || (!array_key_exists(intval($id), $mkeylang))) {
                     $GLOBALS['SITE_DB']->query_insert('match_key_messages', [

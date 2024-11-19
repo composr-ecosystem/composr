@@ -548,7 +548,7 @@ function get_page_permissions_for_environment(string $zone, string $page, ?objec
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, true);
 
-    // View access
+    // View access (we do not check match-keys here as those are considered an override to permissions)
     $access = [];
     foreach (array_keys($groups) as $id) {
         $access[$id] = 0;
