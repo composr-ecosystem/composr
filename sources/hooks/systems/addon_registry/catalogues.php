@@ -855,6 +855,7 @@ class Hook_addon_registry_catalogues
     {
         if ((($content === null) || (in_array('have_default_catalogues_projects', $content))) && (!has_predefined_content('catalogues', 'have_default_catalogues_projects'))) {
             require_lang('catalogues');
+            require_code('catalogues'); // Needed for the constants
             require_code('permissions2');
             require_code('catalogues2');
             require_code('lang3');

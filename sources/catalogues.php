@@ -31,7 +31,6 @@ function init__catalogues()
     global $CAT_FIELDS_CACHE;
     $CAT_FIELDS_CACHE = [];
 
-    // We do not actually necessarily use these constants in the code (they're based on an extensive of an old BINARY field): but they're here for reference so as to understand the codes
     if (!defined('C_DT_FIELDMAPS')) {
         define('C_DT_FIELDMAPS', 0);
         define('C_DT_TITLELIST', 1);
