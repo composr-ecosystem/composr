@@ -236,6 +236,8 @@ abstract class Hook_sitemap_base
      */
     protected function _request_page_details(string $page, string $zone, ?string $page_type = null)
     {
+        static $redirect_count = 0;
+
         require_code('site');
         $details = _request_page($page, $zone, $page_type);
         if ($details !== false) {
@@ -244,7 +246,14 @@ abstract class Hook_sitemap_base
                     return false;
                 }
 
-                $details = _request_page($details[1]['r_to_page'], $details[1]['r_to_zone'], $page_type, null, true);
+                // Prevent infinite redirect loops
+                $redirect_count++;
+                if ($redirect_count > 10) {
+                    require_lang('critical_error');
+                    warn_exit(do_lang_tempcode('REDIRECT_LOOP'), false, true); // Log it in case it is a software bug
+                }
+
+                $details = $this->_request_page_details($details[1]['r_to_page'], $details[1]['r_to_zone'], $page_type);
             }
         }
         return $details;
