@@ -137,13 +137,16 @@ function restricted_manually_enabled_backdoor() : int
                 $GLOBALS['SESSION_CONFIRMED'] = 1;
             }
 
+            $is_invisible = (get_param_integer('keep_su_online', 0) == 0);
+            $IS_VIA_BACKDOOR = true;
+
             if ($su !== null) {
                 $ret = $su;
-                create_session($ret, 1, false, $create_cookie);
+                create_session($ret, 1, $is_invisible, $create_cookie);
                 return $ret;
             } else {
                 $ret = intval($ks);
-                create_session($ret, 1, false, $create_cookie);
+                create_session($ret, 1, $is_invisible, $create_cookie);
                 return $ret;
             }
         } else {
