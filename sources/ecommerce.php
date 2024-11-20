@@ -568,20 +568,24 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
  * @param  REAL $shipping_tax Transaction shipping tax in money
  * @param  ID_TEXT $currency The currency to use
  * @param  integer $price_points Transaction price in points
- * @param  ?ID_TEXT $payment_gateway The payment gateway the payment will go via (null: autodetect)
- * @return Tempcode The button
+ * @param  ?ID_TEXT $payment_gateway The payment gateway the payment will go via (null: autodetect) (false: none, usually used for manual transactions)
+ * @return ?Tempcode The button (null: $payment_gateway was false, so payment is handled manually)
  */
-function make_transaction_button(string $type_code, string $item_name, string $purchase_id, float $price, array $tax_derivation, float $tax, array $tax_tracking, float $shipping_cost, float $shipping_tax, string $currency, int $price_points = 0, ?string $payment_gateway = null) : object
+function make_transaction_button(string $type_code, string $item_name, string $purchase_id, float $price, array $tax_derivation, float $tax, array $tax_tracking, float $shipping_cost, float $shipping_tax, string $currency, int $price_points = 0, ?string $payment_gateway = null) : ?object
 {
     if ($payment_gateway === null) {
         $payment_gateway = get_option('payment_gateway');
+    } elseif ($payment_gateway !== false) {
+        require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
+        $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+        $trans_expecting_id = $payment_gateway_object->generate_trans_id();
+    } else {
+        require_code('crypt');
+        $trans_expecting_id = get_secure_random_string();
     }
-    require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
-    $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
 
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $shipping_tax);
 
-    $trans_expecting_id = $payment_gateway_object->generate_trans_id();
     $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
         'id' => $trans_expecting_id,
         'e_type_code' => $type_code,
@@ -604,6 +608,10 @@ function make_transaction_button(string $type_code, string $item_name, string $p
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
     ]);
     store_shipping_address($trans_expecting_id);
+
+    if ($payment_gateway === false) {
+        return null;
+    }
 
     return $payment_gateway_object->make_transaction_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $currency);
 }
@@ -780,7 +788,8 @@ function perform_local_payment() : bool
     $payment_gateway = get_option('payment_gateway');
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
-    return (get_option('use_local_payment') == '1') && (method_exists($payment_gateway_object, 'do_local_transaction'));
+    $payment_gateway_config = $payment_gateway_object->get_config();
+    return ((($payment_gateway_config['local_only'] === true) || (get_option('use_local_payment') == '1')) && (method_exists($payment_gateway_object, 'do_local_transaction')));
 }
 
 /**
@@ -1507,7 +1516,8 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
 function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_id = null, ?string $type_code = null, ?string $item_name = null, ?string $purchase_id = null, bool $is_subscription = false, string $status = 'Completed', string $reason = '', ?float $price = null, ?float $tax = null, ?float $shipping = null, ?float $transaction_fee = null, ?string $currency = null, bool $check_amounts = true, string $parent_txn_id = '', string $pending_reason = '', string $memo = '', string $period = '', ?int $member_id_paying = null, string $payment_gateway = '', bool $silent_fail = false, bool $send_notifications = true) : ?array
 {
     if ($txn_id === null) {
-        $txn_id = uniqid('trans', true);
+        require_code('crypt');
+        $txn_id = 'tx-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
         $t_status = null;
     } else {
         // Grab the t_status of the $txn_id, mainly used for determining when the transaction was already processed.
@@ -1730,7 +1740,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
     // Charge points if required
     if ((addon_installed('points')) && ($t_status === null) && ($status == 'Completed') && ($check_amounts) && ($expected_price_points !== null) && ($expected_price_points != 0)) {
         require_code('points2');
-        points_debit_member($member_id_paying, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name), $expected_price_points, 0, 0, false, 0, 'ecommerce', 'purchase', strval($txn_id));
+        points_debit_member($member_id_paying, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name), $expected_price_points, 0, 0, false, 0, 'ecommerce', 'purchase', strval($txn_id), null, true/*should force so if the member tries to cheat by spending points, at least they'll end up in the negative*/);
     }
     $price_points = (($expected_price_points !== null) ? $expected_price_points : 0);
 

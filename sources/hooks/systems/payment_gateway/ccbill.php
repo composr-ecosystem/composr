@@ -75,6 +75,7 @@ class Hook_payment_gateway_ccbill
     {
         return [
             'supports_remote_memo' => false,
+            'local_only' => false,
         ];
     }
 

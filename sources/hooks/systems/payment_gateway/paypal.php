@@ -39,6 +39,7 @@ class Hook_payment_gateway_paypal
     {
         return [
             'supports_remote_memo' => true,
+            'local_only' => false,
         ];
     }
 

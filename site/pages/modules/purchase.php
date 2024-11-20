@@ -368,7 +368,8 @@ class Module_purchase
                             $type_code = 'topic_pin';
                             break;
                     }
-                    $txn_id = 'manual-' . substr(uniqid('', true), 0, 10);
+                    require_code('crypt');
+                    $txn_id = 'man-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
                     $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
                         'id' => $txn_id,
                         't_type_code' => $type_code,
@@ -870,9 +871,12 @@ class Module_purchase
             if (!$can_purchase) {
                 $_discounted_price = do_lang('NA');
                 $written_price = do_lang_tempcode('NA_EM');
-            } elseif ($full_price === 0.00/*free without any need for discount*/) {
+            } elseif (($full_price === 0.00) && ($points_for_discount === null)/*free without any need for discount*/) {
                 $_discounted_price = do_lang('NA');
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE');
+            } elseif (($full_price === 0.00) && ($points_for_discount !== null)/*Points only*/) {
+                $_discounted_price = do_lang('NA');
+                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
             } elseif ($discounted_price === 0.00/*discounted via points to zero*/) {
                 $_discounted_price = currency_convert_wrap(0.00, $currency);
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
@@ -1262,7 +1266,12 @@ class Module_purchase
             }
         }
 
+        $icon = 'buttons/proceed';
+
         if ($price == 0.00) { // Free/point-based product
+            $button = '';
+            $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
+
             if ($confirmation_box === null) {
                 if ($points_for_discount !== null) {
                     if (!addon_installed('points')) {
@@ -1273,30 +1282,34 @@ class Module_purchase
 
                     require_css('points');
                     $icon = 'menu/social/points';
+
+                    $button = make_transaction_button($type_code, $item_name, $purchase_id, $price, [], 0.00, [], 0.00, 0.00, $currency, $points_for_discount, 'points');
+                    $finish_url = null; // Button handles the transaction
                 } else {
                     $confirmation_box = do_lang_tempcode('BUYING_FOR_FREE_CONFIRMATION', escape_html($item_name));
 
                     $icon = 'buttons/proceed';
+                    $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code, 'points' => 1, 'purchase_id' => $purchase_id], '_SELF', ['include_message' => null], true);
                 }
             }
 
             // No form
-            $result = do_template('ECOM_PURCHASE_STAGE_TRANSACT', [
-                '_GUID' => '76ecddb8d2429ed02412943e47dff5d9',
+            $result = do_template('ECOM_PURCHASE_STAGE_PAY', [
                 'TITLE' => $this->title,
+                'TRANSACTION_BUTTON' => $button,
+                'CURRENCY' => $currency,
                 'ITEM_NAME' => $item_name,
                 'TYPE_CODE' => $type_code,
                 'PURCHASE_ID' => $purchase_id,
-                'FIELDS' => null,
-                'HIDDEN' => '',
-                'LOGOS' => '',
-                'PAYMENT_PROCESSOR_LINKS' => '',
+                'LENGTH' => ($length === null) ? '' : strval($length),
+                'LENGTH_UNITS' => $length_units,
+                'PRICE' => float_to_raw_string($price),
                 'TEXT' => $text,
                 'CONFIRMATION_BOX' => $confirmation_box,
+                'LOGOS' => '',
+                'PAYMENT_PROCESSOR_LINKS' => '',
             ]);
 
-            $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
-            $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'points' => 1, 'purchase_id' => $purchase_id, 'type_code' => $type_code], '_SELF', ['include_message' => null], true);
             $submit_name = do_lang_tempcode('MAKE_PAYMENT');
         } elseif (perform_local_payment()) { // Handle the transaction internally
             if ($confirmation_box === null) {
@@ -1481,6 +1494,7 @@ class Module_purchase
             $item_name = $details['item_name'];
 
             $purchase_id = get_param_string('purchase_id');
+            $trans_expecting_id = get_param_string('trans_expecting_id');
 
             list($discounted_price, $discounted_tax_code, $points_for_discount) = get_discounted_price($details);
             if (($discounted_price === null) && ($details['price'] !== 0.00)) {
@@ -1489,21 +1503,34 @@ class Module_purchase
 
             if ($points_for_discount !== null) {
                 // Paying with points
+                $errormsg = new Tempcode();
+                if (!addon_installed__messaged('points', $errormsg)) {
+                    return $errormsg;
+                }
+
                 $message = do_lang_tempcode('POINTS_PURCHASE', escape_html(integer_format($points_for_discount)));
                 $memo = post_param_string('memo', do_lang('POINTS'));
-                $currency = 'points';
+
+                // handle_confirmed_transaction by nature is executed when a transaction is already complete, so we need to verify points balance here
+                require_code('points');
+                if (points_balance(get_member()) < $points_for_discount) {
+                    require_lang('points');
+                    warn_exit(do_lang_tempcode('LACKING_POINTS', escape_html(integer_format($points_for_discount - points_balance(get_member())))));
+                }
             } else {
                 // Completely free
                 $message = do_lang_tempcode('FREE_PURCHASE');
                 $memo = post_param_string('memo', do_lang('FREE'));
-                $currency = get_option('currency');
             }
             $price = 0.00;
+
+            $currency = get_option('currency');
 
             $status = 'Completed';
             $reason = '';
             $pending_reason = '';
-            $txn_id = 'manual-' . substr(uniqid('', true), 0, 10);
+            require_code('crypt');
+            $txn_id = 'tx-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
             $parent_txn_id = '';
             $is_subscription = ($details['type'] == PRODUCT_SUBSCRIPTION);
             if ($is_subscription) {
@@ -1512,7 +1539,7 @@ class Module_purchase
                 $period = '';
             }
 
-            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
+            handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 
             global $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE;
             if ($ECOMMERCE_SPECIAL_SUCCESS_MESSAGE !== null) {

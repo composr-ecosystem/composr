@@ -476,7 +476,8 @@ class Module_admin_ecommerce_reports
         $status = 'Completed';
         $reason = '';
         $pending_reason = '';
-        $txn_id = 'manual-' . substr(uniqid('', true), 0, 10);
+        require_code('crypt');
+        $txn_id = 'man-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
         $parent_txn_id = '';
 
         $item_name = $details['item_name'];

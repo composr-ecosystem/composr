@@ -260,10 +260,10 @@ class Hook_ecommerce_banners
                 break;
 
             case 'BANNER_UPGRADE_HITS':
-                return [null, null, []];
+                return [null, null, null, []];
 
             case 'BANNER_UPGRADE_IMPORTANCE':
-                return [null, null, []];
+                return [null, null, null, []];
         }
 
         ecommerce_attach_memo_field_if_needed($fields);
