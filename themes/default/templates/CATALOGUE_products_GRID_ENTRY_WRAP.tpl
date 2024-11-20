@@ -1,5 +1,5 @@
 <section class="box box---catalogue-products-grid-entry-wrap"><div class="box-inner">
-	<h3><span class="name">{FIELD_0}</span></h3>
+	<h3><span class="name">{$TRUNCATE_LEFT,{FIELD_0},30,1,1,0,0.5}</span></h3>
 
 	{+START,IF_NON_EMPTY,{FIELD_7}}
 		<div class="catalogue-entry-box-thumbnail">
