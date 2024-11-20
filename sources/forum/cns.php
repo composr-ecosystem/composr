@@ -1061,10 +1061,7 @@ class Forum_driver_cns extends Forum_driver_base
         }
 
         if ((!addon_installed('cns_member_photos')) || (!has_privilege(get_member(), 'view_member_photos')) || (!$privacy_ok)) {
-            if (!addon_installed('cns_member_avatars')) {
-                return '';
-            }
-            return $this->get_member_avatar_url($member_id);
+            return '';
         }
 
         $pic = $this->get_member_row_field($member_id, 'm_photo_url');
