@@ -91,7 +91,7 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
 
             'seo_type_code' => 'catalogue_entry',
 
-            'feedback_type_code' => 'catalogues',
+            'feedback_type_code' => 'catalogue_entry',
 
             'search_hook' => 'catalogue_entries',
             'rss_hook' => 'catalogues',

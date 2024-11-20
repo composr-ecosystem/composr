@@ -1,9 +1,9 @@
 {$REQUIRE_JAVASCRIPT,core_feedback_features}
 {$,If may rate}
 {+START,IF,{ALLOW_RATING}}
-	<div data-tpl="ratingForm" data-tpl-params="{+START,PARAMS_JSON,ERROR,ALL_RATING_CRITERIA,CONTENT_TYPE,ID}{_*}{+END}">
+	<div data-tpl="ratingForm" data-tpl-params="{+START,PARAMS_JSON,ERROR,ALL_RATING_CRITERIA,FEEDBACK_TYPE,CONTENT_TITLE,ID}{_*}{+END}">
 		{+START,LOOP,ALL_RATING_CRITERIA}
-			{$SET-,identifier,{CONTENT_TYPE*}--{TYPE*}--{ID*}}
+			{$SET-,identifier,{FEEDBACK_TYPE*}--{TYPE*}--{ID*}}
 
 			<div class="rating-outer">
 				<div class="rating-type-title">

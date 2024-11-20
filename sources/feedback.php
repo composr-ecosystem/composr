@@ -98,29 +98,29 @@ function find_overridden_comment_forum(string $feedback_code, ?string $category_
 /**
  * We allow the feedback type to be over-specified in some places, to allow more configurability - but need to narrow it down in some places.
  *
- * @param  ID_TEXT $content_type Content type
+ * @param  ID_TEXT $feedback_type Content type
  * @return ID_TEXT Fixed content type
  */
-function _real_feedback_type(string $content_type) : string
+function _real_feedback_type(string $feedback_type) : string
 {
-    if (substr($content_type, 0, 17) == 'catalogue_entry__') {
+    if (substr($feedback_type, 0, 17) == 'catalogue_entry__') {
         return 'catalogue_entry';
     }
-    return $content_type;
+    return $feedback_type;
 }
 
 /**
  * Find who submitted a piece of feedbackable content.
  *
- * @param  ID_TEXT $content_type Content type
+ * @param  ID_TEXT $feedback_type Content type
  * @param  ID_TEXT $content_id Content ID
  * @return array A tuple: Content title (null means unknown), Submitter (null means unknown), URL (for use within current browser session), URL (for use in e-mails / sharing), Content meta aware info array, Content row, Content object
  */
-function get_details_behind_feedback_code(string $content_type, string $content_id) : array
+function get_details_behind_feedback_code(string $feedback_type, string $content_id) : array
 {
     require_code('content');
 
-    $real_feedback_type = _real_feedback_type($content_type);
+    $real_feedback_type = _real_feedback_type($feedback_type);
 
     $real_content_type = convert_cms_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
     if ($real_content_type != '') {
@@ -139,7 +139,7 @@ function get_details_behind_feedback_code(string $content_type, string $content_
 /**
  * Main wrapper function to embed miscellaneous feedback systems into a module output.
  *
- * @param  ID_TEXT $content_type The type (downloads, etc) that this feedback is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this feedback is for
  * @param  ID_TEXT $content_id Content ID
  * @param  BINARY $allow_rating Whether rating is allowed
  * @param  integer $allow_comments Whether comments/reviews is allowed (reviews allowed=2)
@@ -153,9 +153,9 @@ function get_details_behind_feedback_code(string $content_type, string $content_
  * @param  ?TIME $time Time of comment topic (null: now)
  * @return array Tuple: Rating details, Comment details, Trackback details
  */
-function embed_feedback_systems(string $content_type, string $content_id, int $allow_rating, int $allow_comments, int $allow_trackbacks, int $validated, ?int $submitter, $content_url, string $content_title, ?string $forum, ?int $time = null) : array
+function embed_feedback_systems(string $feedback_type, string $content_id, int $allow_rating, int $allow_comments, int $allow_trackbacks, int $validated, ?int $submitter, $content_url, string $content_title, ?string $forum, ?int $time = null) : array
 {
-    $real_feedback_type = _real_feedback_type($content_type);
+    $real_feedback_type = _real_feedback_type($feedback_type);
 
     // Sign up original poster for notifications
     if ((get_forum_type() == 'cns') && ($submitter !== null)) {
@@ -173,21 +173,21 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
         }
     }
 
-    actualise_rating($allow_rating == 1, $content_type, $content_id, $content_url, $content_title);
+    actualise_rating($allow_rating == 1, $feedback_type, $content_id, $content_url, $content_title);
     if ((post_param_string('title', null) !== null) || ($validated == 1)) {
         if (post_param_string('_block_id', '') == 'non_block') {
-            actualise_post_comment($allow_comments >= 1, $content_type, $content_id, $content_url, $content_title, $forum, true, null, false, true, false, null, null, $time);
+            actualise_post_comment($allow_comments >= 1, $feedback_type, $content_id, $content_url, $content_title, $forum, true, null, false, true, false, null, null, $time);
         }
     }
-    $rating_details = get_rating_box($content_url, $content_title, $content_type, $content_id, $allow_rating == 1, $submitter);
-    $comment_details = get_comments($content_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
-    $trackback_details = get_trackbacks($content_type, $content_id, $allow_trackbacks == 1);
+    $rating_details = get_rating_box($content_url, $content_title, $feedback_type, $content_id, $allow_rating == 1, $submitter);
+    $comment_details = get_comments($feedback_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
+    $trackback_details = get_trackbacks($feedback_type, $content_id, $allow_trackbacks == 1);
 
     if (is_object($content_url)) {
         $content_url = $content_url->evaluate();
     }
 
-    $serialized_options = json_encode([$content_type, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time]);
+    $serialized_options = json_encode([$feedback_type, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time]);
     require_code('crypt');
     $hash = ratchet_hash($serialized_options, get_site_salt()); // A little security, to ensure $serialized_options is not tampered with
 
@@ -199,7 +199,7 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
             '_GUID' => '2949df9b0bf71aa6b703a67a5d0c5de9',
             'OPTIONS' => $serialized_options,
             'HASH' => $hash,
-            'CONTENT_TYPE' => $content_type,
+            'FEEDBACK_TYPE' => $feedback_type,
             'IS_THREADED' => true,
             'SELF_URL_ENCODED' => $self_url_encoded,
         ]));
@@ -221,7 +221,7 @@ function post_comment_script()
     if (!is_array($_options)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
-    list($content_type, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time) = $_options;
+    list($feedback_type, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time) = $_options;
 
     $content_id = strval($content_id);
 
@@ -237,7 +237,7 @@ function post_comment_script()
 
     if ($just_get_comments === 0) {
         // Post comment
-        actualise_post_comment($allow_comments >= 1, $content_type, $content_id, $content_url, $content_title, $forum, true, null, false, true, false, null, null, $time);
+        actualise_post_comment($allow_comments >= 1, $feedback_type, $content_id, $content_url, $content_title, $forum, true, null, false, true, false, null, null, $time);
     }
 
     $self_url = get_param_string('self_url', null, INPUT_FILTER_URL_GENERAL);
@@ -250,7 +250,7 @@ function post_comment_script()
     }
 
     // Get new comments state
-    $comment_details = get_comments($content_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
+    $comment_details = get_comments($feedback_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
 
     $self_url_encoded = static_evaluate_tempcode(protect_url_parameter(get_self_url(true)));
 
@@ -260,7 +260,7 @@ function post_comment_script()
             '_GUID' => 'da533e0f637e4c90ca7ef5a9a23f3203',
             'OPTIONS' => $options,
             'HASH' => $hash,
-            'CONTENT_TYPE' => $content_type,
+            'FEEDBACK_TYPE' => $feedback_type,
             'IS_THREADED' => true,
             'SELF_URL_ENCODED' => $self_url_encoded,
         ]));
@@ -286,16 +286,16 @@ function post_comment_script()
  *
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
- * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  boolean $allow_rating Whether this resource allows rating (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
  * @param  ?MEMBER $submitter Content owner (null: none)
  * @return Tempcode Tempcode for complete rating box
  */
-function get_rating_box($content_url, ?string $content_title, string $content_type, string $content_id, bool $allow_rating, ?int $submitter = null) : object
+function get_rating_box($content_url, ?string $content_title, string $feedback_type, string $content_id, bool $allow_rating, ?int $submitter = null) : object
 {
     if ($allow_rating) {
-        return display_rating($content_url, $content_title, $content_type, $content_id, 'RATING_BOX', $submitter);
+        return display_rating($content_url, $content_title, $feedback_type, $content_id, 'RATING_BOX', $submitter);
     }
 
     return new Tempcode();
@@ -306,20 +306,20 @@ function get_rating_box($content_url, ?string $content_title, string $content_ty
  *
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
- * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  ID_TEXT $display_tpl The template to use to display the rating box
  * @param  ?MEMBER $submitter Content owner (null: none)
  * @return Tempcode Tempcode for complete trackback box
  */
-function display_rating($content_url, ?string $content_title, string $content_type, string $content_id, string $display_tpl = 'RATING_INLINE_STATIC', ?int $submitter = null) : object
+function display_rating($content_url, ?string $content_title, string $feedback_type, string $content_id, string $display_tpl = 'RATING_INLINE_STATIC', ?int $submitter = null) : object
 {
     if ($display_tpl == 'RATING_INLINE_STATIC') {
         $form_tpl = null;
     } else {
         $form_tpl = 'RATING_FORM';
     }
-    $rating_data = get_rating_simple_array($content_url, $content_title, $content_type, $content_id, $form_tpl, $submitter);
+    $rating_data = get_rating_simple_array($content_url, $content_title, $feedback_type, $content_id, $form_tpl, $submitter);
 
     if ($rating_data === null) {
         return new Tempcode();
@@ -333,20 +333,20 @@ function display_rating($content_url, ?string $content_title, string $content_ty
  *
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
- * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  ?ID_TEXT $form_tpl The template to use to display the rating box (null: none)
  * @param  ?MEMBER $submitter Content owner (null: none)
  * @return ?array Current rating information (ready to be passed into a template). RATING is the rating (out of 10), NUM_RATINGS is the number of ratings so far, RATING_FORM is the Tempcode of the rating box (null: rating disabled)
  */
-function get_rating_simple_array($content_url, ?string $content_title, string $content_type, string $content_id, ?string $form_tpl = 'RATING_FORM', ?int $submitter = null) : ?array
+function get_rating_simple_array($content_url, ?string $content_title, string $feedback_type, string $content_id, ?string $form_tpl = 'RATING_FORM', ?int $submitter = null) : ?array
 {
     if (get_option('is_on_rating') == '1') {
-        $real_feedback_type = _real_feedback_type($content_type);
+        $real_feedback_type = _real_feedback_type($feedback_type);
 
         static $rating_details_cache = [];
-        if (isset($rating_details_cache[$content_type][$content_id][$form_tpl])) {
-            return $rating_details_cache[$content_type][$content_id][$form_tpl];
+        if (isset($rating_details_cache[$feedback_type][$content_id][$form_tpl])) {
+            return $rating_details_cache[$feedback_type][$content_id][$form_tpl];
         }
 
         $liked_by = null;
@@ -354,10 +354,10 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
         // Work out structure first
         global $RATINGS_STRUCTURE;
         $all_rating_criteria = [];
-        if (array_key_exists($content_type, $RATINGS_STRUCTURE)) {
-            $likes = ($RATINGS_STRUCTURE[$content_type][0] == RATING_TYPE__LIKE_DISLIKE);
-            foreach ($RATINGS_STRUCTURE[$content_type][1] as $r => $t) {
-                $rating_for_type = $content_type;
+        if (array_key_exists($feedback_type, $RATINGS_STRUCTURE)) {
+            $likes = ($RATINGS_STRUCTURE[$feedback_type][0] == RATING_TYPE__LIKE_DISLIKE);
+            foreach ($RATINGS_STRUCTURE[$feedback_type][1] as $r => $t) {
+                $rating_for_type = $feedback_type;
                 if ($r != '') {
                     $rating_for_type .= '_' . $r;
                 }
@@ -365,7 +365,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
             }
         } else {
             $likes = (get_option('likes') == '1');
-            $all_rating_criteria[$content_type] = ['TITLE' => '', 'TYPE' => '', '_NUM_RATINGS' => '0', 'NUM_RATINGS' => '0', 'RATING' => '0'];
+            $all_rating_criteria[$feedback_type] = ['TITLE' => '', 'TYPE' => '', '_NUM_RATINGS' => '0', 'NUM_RATINGS' => '0', 'RATING' => '0'];
         }
 
         // Fill in structure
@@ -373,7 +373,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
         $overall_num_ratings = 0;
         $overall_rating = 0.0;
         foreach ($all_rating_criteria as $i => $rating_criteria) {
-            $rating_for_type = $content_type;
+            $rating_for_type = $feedback_type;
             if ($rating_criteria['TYPE'] != '') {
                 $rating_for_type .= '_' . $rating_criteria['TYPE'];
             }
@@ -450,7 +450,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
             'CONTENT_TITLE' => $content_title,
             'ALLOW_RATING' => $allow_rating,
             'ERROR' => $error,
-            'CONTENT_TYPE' => $content_type,
+            'FEEDBACK_TYPE' => $feedback_type,
             'ID' => $content_id,
             'URL' => $rate_url,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
@@ -461,7 +461,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
             'SIMPLISTIC' => (count($all_rating_criteria) == 1),
             'LIKES' => $likes,
             'LIKED_BY' => $liked_by,
-        ] + $all_rating_criteria[$content_type]/*so can assume single rating criteria if want and reference that directly*/;
+        ] + $all_rating_criteria[$feedback_type]/*so can assume single rating criteria if want and reference that directly*/;
         if ($form_tpl === null) {
             $rating_form = new Tempcode();
         } else {
@@ -470,7 +470,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
         $ret = $tpl_params + [
             'RATING_FORM' => $rating_form,
         ];
-        $rating_details_cache[$content_type][$content_id][$form_tpl] = $ret;
+        $rating_details_cache[$feedback_type][$content_id][$form_tpl] = $ret;
         return $ret;
     }
     return null;
@@ -545,12 +545,12 @@ function already_rated(array $rating_for_types, string $content_id, ?array &$pre
  * It performs full checking of inputs, and will log a hackattack if the rating is not between 1 and 10.
  *
  * @param  boolean $allow_rating Whether this resource allows rating (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
  */
-function actualise_rating(bool $allow_rating, string $content_type, string $content_id, $content_url, ?string $content_title)
+function actualise_rating(bool $allow_rating, string $feedback_type, string $content_id, $content_url, ?string $content_title)
 {
     if ((get_option('is_on_rating') == '0') || (!$allow_rating)) {
         return;
@@ -558,23 +558,23 @@ function actualise_rating(bool $allow_rating, string $content_type, string $cont
 
     global $RATINGS_STRUCTURE;
     $all_rating_criteria = [];
-    if (array_key_exists($content_type, $RATINGS_STRUCTURE)) {
-        $all_rating_criteria = array_keys($RATINGS_STRUCTURE[$content_type][1]);
+    if (array_key_exists($feedback_type, $RATINGS_STRUCTURE)) {
+        $all_rating_criteria = array_keys($RATINGS_STRUCTURE[$feedback_type][1]);
     } else {
         $all_rating_criteria[] = '';
     }
 
     foreach ($all_rating_criteria as $type) {
         // Has there actually been any rating?
-        $rating = post_param_integer('rating__' . $content_type . '__' . $type . '__' . $content_id, null);
+        $rating = post_param_integer('rating__' . $feedback_type . '__' . $type . '__' . $content_id, null);
         if ($rating === null) {
             return;
         }
 
-        actualise_specific_rating($rating, get_page_name(), get_member(), $content_type, $type, $content_id, $content_url, $content_title);
+        actualise_specific_rating($rating, get_page_name(), get_member(), $feedback_type, $type, $content_id, $content_url, $content_title);
     }
 
-    actualise_credit_rating_points($content_type, $content_id);
+    actualise_credit_rating_points($feedback_type, $content_id);
 
     // Ok, so just thank 'em
     attach_message(do_lang_tempcode('THANKYOU_FOR_RATING'), 'inform');
@@ -583,10 +583,10 @@ function actualise_rating(bool $allow_rating, string $content_type, string $cont
 /**
  * Credit points to the current member for rating.
  *
- * @param  ID_TEXT $content_type The type of content that was rated
+ * @param  ID_TEXT $feedback_type The type of content (downloads, etc) that was rated
  * @param  ID_TEXT $content_id The ID of the content that was rated
  */
-function actualise_credit_rating_points(string $content_type, string $content_id)
+function actualise_credit_rating_points(string $feedback_type, string $content_id)
 {
     $member_id = get_member();
 
@@ -597,12 +597,14 @@ function actualise_credit_rating_points(string $content_type, string $content_id
             require_code('points2');
             require_lang('points');
 
-            $real_feedback_type = _real_feedback_type($content_type);
+            // We need the content type to get the title
+            $real_feedback_type = _real_feedback_type($feedback_type);
+            $real_content_type = convert_cms_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
 
-            list($title) = content_get_details($real_feedback_type, $content_id);
+            list($title) = content_get_details($real_content_type, $content_id);
 
             // All feedback ledger records will have a t_type_id format of content_type:content_id
-            points_credit_member($member_id, do_lang('ACTIVITY_RATED', $content_type, $title), $points_rating, 0, null, 0, 'feedback', 'add', $content_type . ':' . $content_id);
+            points_credit_member($member_id, do_lang('ACTIVITY_RATED', $real_content_type, $title), $points_rating, 0, null, 0, 'feedback', 'add', $feedback_type . ':' . $content_id);
             attach_message(do_lang('SUBMIT_AWARD', integer_format(intval($points_rating), 0)));
         }
     }
@@ -615,13 +617,13 @@ function actualise_credit_rating_points(string $content_type, string $content_id
  * @range 1 10
  * @param  ID_TEXT $page_name The page name the rating is on
  * @param  MEMBER $member_id The member doing the rating
- * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $type The second level type (probably blank)
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know)
  */
-function actualise_specific_rating(?int $rating, string $page_name, int $member_id, string $content_type, string $type, string $content_id, $content_url, ?string $content_title)
+function actualise_specific_rating(?int $rating, string $page_name, int $member_id, string $feedback_type, string $type, string $content_id, $content_url, ?string $content_title)
 {
     if ($rating !== null) {
         if (($rating > 10) || ($rating < 1)) {
@@ -629,9 +631,9 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
         }
     }
 
-    $real_feedback_type = _real_feedback_type($content_type);
+    $real_feedback_type = _real_feedback_type($feedback_type);
 
-    $rating_for_type = $content_type . (($type == '') ? '' : ('_' . $type));
+    $rating_for_type = $feedback_type . (($type == '') ? '' : ('_' . $type));
 
     if (!has_privilege($member_id, 'rate', $page_name)) {
         return;
@@ -646,7 +648,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
         }
     }
 
-    list($_content_title, $submitter, , $safe_content_url, $cma_info, $content_row, $cma_ob) = get_details_behind_feedback_code($content_type, $content_id);
+    list($_content_title, $submitter, , $safe_content_url, $cma_info, $content_row, $cma_ob) = get_details_behind_feedback_code($feedback_type, $content_id);
     if ($content_title === null) {
         $content_title = $_content_title;
     }
@@ -666,11 +668,12 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
             $content_type_title = static_evaluate_tempcode($cma_ob->get_content_type_label($content_row));
 
             // Special case. Would prefer not to hard-code, but important for usability
-            if (($content_type == 'post') && ($content_title == '') && (get_forum_type() == 'cns')) {
+            if (($feedback_type == 'posts') && ($content_title == '') && (get_forum_type() == 'cns')) {
                 $content_title = do_lang('POST_IN', $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($content_id)])]));
             }
 
             $real_content_type = convert_cms_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
+            list($title) = content_get_details($real_content_type, $content_id);
 
             if (($submitter !== null) && (!is_guest($submitter))) {
                 // Credit points
@@ -683,7 +686,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
                             require_lang('points');
 
                             // Note we pass null for sending notifications, which mean they are not sent. The member will be notified in the like notification.
-                            points_credit_member($submitter, do_lang('CONTENT_LIKED'), $points_liked, 0, null, 0, 'feedback', 'add', $real_content_type . ':' . strval($content_id));
+                            points_credit_member($submitter, do_lang('CONTENT_LIKED', $real_content_type, $title), $points_liked, 0, null, 0, 'feedback', 'received', $feedback_type . ':' . strval($content_id));
                         }
                     }
                 }
@@ -755,7 +758,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
 /**
  * Get the Tempcode containing all the comments posted, and the comments posting form for the specified resource.
  *
- * @param  ID_TEXT $content_type The feedback type (downloads, etc) that this commenting is for
+ * @param  ID_TEXT $feedback_type The feedback type (downloads, etc) that this commenting is for
  * @param  boolean $allow_comments Whether this resource allows comments (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
  * @param  ID_TEXT $content_id The ID of the type that this commenting is for
  * @param  boolean $invisible_if_no_comments Whether the comment box will be invisible if there are not yet any comments (and you're not staff)
@@ -770,10 +773,10 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
  * @param  ?Tempcode $hidden Hidden form fields for commenting form (null: none)
  * @return Tempcode The Tempcode for the comment topic
  */
-function get_comments(string $content_type, bool $allow_comments, string $content_id, bool $invisible_if_no_comments = false, ?string $forum = null, ?string $post_warning = null, $_comments = null, bool $explicit_allow = false, ?bool $reverse = null, ?int $highlight_by_user = null, bool $allow_reviews = false, ?int $num_to_show_limit = null, ?object $hidden = null) : object
+function get_comments(string $feedback_type, bool $allow_comments, string $content_id, bool $invisible_if_no_comments = false, ?string $forum = null, ?string $post_warning = null, $_comments = null, bool $explicit_allow = false, ?bool $reverse = null, ?int $highlight_by_user = null, bool $allow_reviews = false, ?int $num_to_show_limit = null, ?object $hidden = null) : object
 {
     if (((get_option('is_on_comments') == '1') && (get_forum_type() != 'none') && ((get_forum_type() != 'cns') || (addon_installed('cns_forum'))) && (($allow_reviews) || ($allow_comments))) || ($explicit_allow)) {
-        $real_feedback_type = _real_feedback_type($content_type);
+        $real_feedback_type = _real_feedback_type($feedback_type);
 
         if ($forum === null) {
             $forum = get_option('comments_forum_name');
@@ -807,7 +810,7 @@ function extract_topic_identifier(string $full_text) : string
  * Add comments to the specified resource.
  *
  * @param  boolean $allow_comments Whether this resource allows comments (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The feedback type (downloads, etc) that this commenting is for
+ * @param  ID_TEXT $feedback_type The feedback type (downloads, etc) that this commenting is for
  * @param  ID_TEXT $content_id The ID of the type that this commenting is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
@@ -822,7 +825,7 @@ function extract_topic_identifier(string $full_text) : string
  * @param  ?TIME $time Time of comment topic (null: now)
  * @return boolean Whether a hidden post has been made
  */
-function actualise_post_comment(bool $allow_comments, string $content_type, string $content_id, $content_url, ?string $content_title, ?string $forum = null, bool $do_captcha = true, ?int $validated = null, bool $explicit_allow = false, bool $show_success_message = true, bool $private = false, ?string $post_title = null, ?string $post = null, ?int $time = null) : bool
+function actualise_post_comment(bool $allow_comments, string $feedback_type, string $content_id, $content_url, ?string $content_title, ?string $forum = null, bool $do_captcha = true, ?int $validated = null, bool $explicit_allow = false, bool $show_success_message = true, bool $private = false, ?string $post_title = null, ?string $post = null, ?int $time = null) : bool
 {
     if (!$explicit_allow) {
         if ((get_option('is_on_comments') == '0') || (!$allow_comments)) {
@@ -838,7 +841,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         return false;
     }
 
-    $real_feedback_type = _real_feedback_type($content_type);
+    $real_feedback_type = _real_feedback_type($feedback_type);
 
     $forum_tie = (get_option('is_on_strong_forum_tie') == '1');
 
@@ -912,7 +915,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
     $_parent_id = post_param_string('parent_id', '');
     $parent_id = ($_parent_id == '') ? null : intval($_parent_id);
 
-    list(, $submitter, , $safe_content_url, $cma_info, $content_row, $cma_ob) = get_details_behind_feedback_code($content_type, $content_id);
+    list(, $submitter, , $safe_content_url, $cma_info, $content_row, $cma_ob) = get_details_behind_feedback_code($feedback_type, $content_id);
 
     if (get_forum_type() == 'cns') {
         require_code('cns_posts_action2');
@@ -963,8 +966,8 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         if ((get_forum_type() == 'cns') && ($GLOBALS['LAST_POST_ID'] !== null)) {
             $extra_review_ratings = [];
             global $REVIEWS_STRUCTURE;
-            if (array_key_exists($content_type, $REVIEWS_STRUCTURE)) {
-                $reviews_rating_criteria = $REVIEWS_STRUCTURE[$content_type];
+            if (array_key_exists($feedback_type, $REVIEWS_STRUCTURE)) {
+                $reviews_rating_criteria = $REVIEWS_STRUCTURE[$feedback_type];
             } else {
                 $reviews_rating_criteria[] = '';
             }
@@ -1070,14 +1073,14 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
  * Update the spacer post of a comment topic, after an edit.
  *
  * @param  boolean $allow_comments Whether this resource allows comments (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The feedback type (downloads, etc) that this commenting is for
+ * @param  ID_TEXT $feedback_type The feedback type (downloads, etc) that this commenting is for
  * @param  ID_TEXT $content_id The ID of the type that this commenting is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
  * @param  ?string $forum The name of the forum to use (null: default comment forum)
  * @param  ?AUTO_LINK $post_id ID of spacer post (null: unknown)
  */
-function update_spacer_post(bool $allow_comments, string $content_type, string $content_id, $content_url, ?string $content_title, ?string $forum = null, ?int $post_id = null)
+function update_spacer_post(bool $allow_comments, string $feedback_type, string $content_id, $content_url, ?string $content_title, ?string $forum = null, ?int $post_id = null)
 {
     if ((get_option('is_on_comments') == '0') || (!$allow_comments)) {
         return;
@@ -1086,7 +1089,7 @@ function update_spacer_post(bool $allow_comments, string $content_type, string $
         return;
     }
 
-    $real_feedback_type = _real_feedback_type($content_type);
+    $real_feedback_type = _real_feedback_type($feedback_type);
 
     $home_link = ($content_title === null) ? new Tempcode() : hyperlink($content_url, $content_title, false, true);
 
@@ -1118,7 +1121,7 @@ function update_spacer_post(bool $allow_comments, string $content_type, string $
             $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $post_id]);
         }
 
-        $spacer_title = ($content_title === null) ? ($real_feedback_type . '_' . $content_id) : ($content_title . ' (#' . $content_type . '_' . $content_id . ')');
+        $spacer_title = ($content_title === null) ? ($real_feedback_type . '_' . $content_id) : ($content_title . ' (#' . $feedback_type . '_' . $content_id . ')');
         $spacer_post = '[semihtml]' . do_lang('SPACER_POST', $home_link->evaluate(), '', '', $lang) . '[/semihtml]';
 
         if (get_forum_type() == 'cns') {
@@ -1133,13 +1136,13 @@ function update_spacer_post(bool $allow_comments, string $content_type, string $
 /**
  * Get the Tempcode containing all the trackbacks received, and the trackback posting form for the specified resource.
  *
- * @param  ID_TEXT $content_type The type (downloads, etc) that this trackback is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this trackback is for
  * @param  ID_TEXT $content_id The ID of the type that this trackback is for
  * @param  boolean $allow_trackback Whether this resource allows trackback (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
  * @param  ID_TEXT $type The type of details being fetched (currently: blank or XML)
  * @return Tempcode Tempcode for complete trackback box
  */
-function get_trackbacks(string $content_type, string $content_id, bool $allow_trackback, string $type = '') : object
+function get_trackbacks(string $feedback_type, string $content_id, bool $allow_trackback, string $type = '') : object
 {
     if (($type != '') && ($type != 'xml')) {
         $type = '';
@@ -1148,7 +1151,7 @@ function get_trackbacks(string $content_type, string $content_id, bool $allow_tr
     if ((get_option('is_on_trackbacks') == '1') && ($allow_trackback)) {
         require_lang('trackbacks');
 
-        $real_feedback_type = _real_feedback_type($content_type);
+        $real_feedback_type = _real_feedback_type($feedback_type);
 
         $trackbacks = $GLOBALS['SITE_DB']->query_select('trackbacks', ['*'], ['trackback_for_type' => $real_feedback_type, 'trackback_for_id' => $content_id], 'ORDER BY trackback_time DESC', intval(get_option('general_safety_listing_limit')));
 
@@ -1222,11 +1225,11 @@ function get_trackbacks(string $content_type, string $content_id, bool $allow_tr
  * Add trackbacks to the specified resource.
  *
  * @param  boolean $allow_trackbacks Whether this resource allows trackback (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The type (downloads, etc) that this trackback is for
+ * @param  ID_TEXT $feedback_type The type (downloads, etc) that this trackback is for
  * @param  ID_TEXT $content_id The ID of the type that this trackback is for
  * @return boolean Whether trackbacks are on
  */
-function actualise_post_trackback(bool $allow_trackbacks, string $content_type, string $content_id) : bool
+function actualise_post_trackback(bool $allow_trackbacks, string $feedback_type, string $content_id) : bool
 {
     if ((get_option('is_on_trackbacks') == '0') || (!$allow_trackbacks)) {
         return false;
@@ -1243,7 +1246,7 @@ function actualise_post_trackback(bool $allow_trackbacks, string $content_type, 
     $excerpt = post_param_string('excerpt', '');
     $name = post_param_string('blog_name', $url);
 
-    $real_feedback_type = _real_feedback_type($content_type);
+    $real_feedback_type = _real_feedback_type($feedback_type);
 
     $GLOBALS['SITE_DB']->query_insert('trackbacks', ['trackback_for_type' => $real_feedback_type, 'trackback_for_id' => $content_id, 'trackback_ip_address' => get_ip_address(), 'trackback_time' => time(), 'trackback_url' => $url, 'trackback_title' => $title, 'trackback_excerpt' => $excerpt, 'trackback_name' => $name]);
 

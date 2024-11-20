@@ -383,7 +383,7 @@
         for (var key in params.allRatingCriteria) {
             rating = objVal(params.allRatingCriteria[key]);
 
-            applyRatingHighlightAndAjaxCode((rating.likes === 1), rating.rating, params.contentType, params.id, rating.type, rating.rating, rating.contentUrl, rating.contentTitle, true);
+            applyRatingHighlightAndAjaxCode((rating.likes === 1), rating.rating, params.feedbackType, params.id, rating.type, rating.rating, rating.contentUrl, params.contentTitle, true);
         }
     };
 
@@ -435,15 +435,15 @@
         });
     };
 
-    function applyRatingHighlightAndAjaxCode(likes, initialRating, contentType, id, type, rating, contentUrl, contentTitle, initialisationPhase, visualOnly) {
-        contentType = strVal(contentType);
+    function applyRatingHighlightAndAjaxCode(likes, initialRating, feedbackType, id, type, rating, contentUrl, contentTitle, initialisationPhase, visualOnly) {
+        feedbackType = strVal(feedbackType);
         id = strVal(id);
         type = strVal(type);
         rating = Number(rating) || 0;
         visualOnly = Boolean(visualOnly);
 
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(function (number) {
-            var bit = $dom.$('#rating-bar-' + number + '--' + contentType + '--' + type + '--' + id);
+            var bit = $dom.$('#rating-bar-' + number + '--' + feedbackType + '--' + type + '--' + id);
             if (!bit) {
                 return;
             }
@@ -456,10 +456,10 @@
             }
 
             bit.addEventListener('mouseover', function () {
-                applyRatingHighlightAndAjaxCode(likes, initialRating, contentType, id, type, number, contentUrl, contentTitle, false);
+                applyRatingHighlightAndAjaxCode(likes, initialRating, feedbackType, id, type, number, contentUrl, contentTitle, false);
             });
             bit.addEventListener('mouseout', function () {
-                applyRatingHighlightAndAjaxCode(likes, initialRating, contentType, id, type, initialRating, contentUrl, contentTitle, false);
+                applyRatingHighlightAndAjaxCode(likes, initialRating, feedbackType, id, type, initialRating, contentUrl, contentTitle, false);
             });
 
             if (visualOnly) {
@@ -501,7 +501,7 @@
                 _replaceSpot.appendChild(loadingImage);
 
                 // AJAX call
-                var snippetRequest = 'rating&type=' + encodeURIComponent(type) + '&id=' + encodeURIComponent(id) + '&content_type=' + encodeURIComponent(contentType) + '&template=' + encodeURIComponent(template) + '&content_url=' + encodeURIComponent($cms.protectURLParameter(contentUrl)) + '&content_title=' + encodeURIComponent(contentTitle);
+                var snippetRequest = 'rating&type=' + encodeURIComponent(type) + '&id=' + encodeURIComponent(id) + '&feedback_type=' + encodeURIComponent(feedbackType) + '&template=' + encodeURIComponent(template) + '&content_url=' + encodeURIComponent($cms.protectURLParameter(contentUrl)) + '&content_title=' + encodeURIComponent(contentTitle);
 
                 $cms.loadSnippet(snippetRequest, 'rating=' + encodeURIComponent(number)).then(function (message) {
                     $dom.replaceWith(_replaceSpot, (template === '') ? ('<strong>' + message + '</strong>') : message);
