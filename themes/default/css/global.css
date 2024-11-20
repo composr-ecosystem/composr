@@ -1000,7 +1000,7 @@ header .toplevel-link img.icon {
 	/*{+START,IF_EMPTY,{$THEME_OPTION,header_classic_text_colour}}*/
 		color: {$GET,seed} !important;
 	/*{+END}*/
-	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+	/*{+START,IF,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}}}*/
 		background: url('{$IMG_INLINE,{$THEME_OPTION,header_classic_image}}') no-repeat;
 		background-size: cover;
 	/*{+END}*/
@@ -1008,7 +1008,7 @@ header .toplevel-link img.icon {
 }
 
 /*{+START,CSS_MODE,desktop}*/
-	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+	/*{+START,IF,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}}}*/
 		.header-classic .logo-link {
 			height: {$IMG_HEIGHT,{$IMG,{$THEME_OPTION,header_classic_image}}}px;
 		}
