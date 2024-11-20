@@ -1834,6 +1834,10 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 	color: {$GET,danger_color};
 }
 
+.global-message-notice .global-message-icon {
+	color: {$GET,warning_color};
+}
+
 .global-message strong {
 	text-shadow: 1px 0px 0px {$GET,message_highlighted_part};
 }
@@ -2870,6 +2874,11 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .box---message-warn {
 	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
 	background-color: {$GET,light_error_background_1};
+}
+
+.box---message-notice {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_warning_border},transparent};
+	background-color: {$GET,light_warning_background_1};
 }
 
 /* Expanding and contracting, mostly for boxes but not necessarily always */
