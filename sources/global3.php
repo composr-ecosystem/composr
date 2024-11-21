@@ -3062,10 +3062,17 @@ function cron_installed(bool $absolutely_sure = false) : bool
         }
     }
 
+    // Crude to allow web request Cron, but we will
+    $web_request_scheduler = get_option('enable_web_request_scheduler');
+    if ($web_request_scheduler == '1') {
+        return true;
+    }
+
     $last_cron = get_value('last_cron');
     if ($last_cron === null) {
         return false;
     }
+
     return intval($last_cron) > (time() - 60 * 60 * 5);
 }
 
@@ -5804,4 +5811,28 @@ function convert_request_data_encodings(bool $known_utf8 = false)
 
     require_code('character_sets');
     _convert_request_data_encodings($known_utf8);
+}
+
+/**
+ * Randomly shuffle the order of an array's items while preserving its keys.
+ *
+ * @param  array $array The array to be shuffled, passed by reference
+ * @return boolean Always returns true
+ */
+function cms_shuffle_assoc(array &$array) : bool
+{
+    // Shuffle the keys
+    $keys = array_keys($array);
+    shuffle($keys);
+
+    // Build a new array with the order of the shuffled keys
+    $new_array = [];
+    foreach($keys as $key) {
+        $new_array[$key] = $array[$key];
+    }
+
+    // Assign the new array to our original array
+    $array = $new_array;
+
+    return true;
 }

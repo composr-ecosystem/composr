@@ -402,7 +402,7 @@ class Module_cms_quiz extends Standard_crud_module
 
         $num_results = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz_id' => $id]);
         if ($num_results > 0) {
-            attach_message(do_lang_tempcode('QUIZ_EDIT_SKEW_RESULTS', escape_html(integer_format($num_results))), 'warn');
+            attach_message(do_lang_tempcode('QUIZ_EDIT_SKEW_RESULTS', escape_html(integer_format($num_results))), 'notice');
         }
 
         $text = load_quiz_questions_to_string($id);

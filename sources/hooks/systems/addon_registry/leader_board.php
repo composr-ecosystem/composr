@@ -104,7 +104,7 @@ class Hook_addon_registry_leader_board
     public function get_dependencies() : array
     {
         return [
-            'requires' => ['points'],
+            'requires' => ['points', 'system scheduler'],
             'recommends' => [
                 'cns_forum', // for voting power display via cns_polls
             ],

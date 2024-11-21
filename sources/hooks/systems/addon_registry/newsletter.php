@@ -105,7 +105,7 @@ class Hook_addon_registry_newsletter
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['system scheduler'],
             'conflicts_with' => [],
         ];
     }

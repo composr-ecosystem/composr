@@ -51,6 +51,13 @@ class Hook_config_tasks_background
      */
     public function get_default() : ?string
     {
+        // Actually the task queue itself handles cases where Cron is not available
+        /*
+        if (!cron_installed()) {
+            return null;
+        }
+        */
+
         if (GOOGLE_APPENGINE) {
             return '1';
         }

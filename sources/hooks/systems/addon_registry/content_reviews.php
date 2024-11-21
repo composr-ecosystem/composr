@@ -107,6 +107,7 @@ class Hook_addon_registry_content_reviews
             'requires' => [
                 'validation',
                 'commandr',
+                'system scheduler'
             ],
             'recommends' => [],
             'conflicts_with' => [],

@@ -104,7 +104,7 @@ class Hook_addon_registry_welcome_emails
     public function get_dependencies() : array
     {
         return [
-            'requires' => [],
+            'requires' => ['system scheduler'],
             'recommends' => [],
             'conflicts_with' => [],
         ];
