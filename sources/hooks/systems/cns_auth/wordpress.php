@@ -39,7 +39,7 @@ class Hook_cns_auth_wordpress
     public function auth(string $username, int $member_id, string $password_raw, array $row) : ?object
     {
         if (!addon_installed('import')) {
-            return do_lang_tempcode('INTERNAL_ERROR');
+            return do_lang_tempcode('INTERNAL_ERROR', escape_html('0a80df590beeac2c3de15a0482c66972'));
         }
 
         if (class_exists('PasswordHash')) { // 'if' just there for code quality checker

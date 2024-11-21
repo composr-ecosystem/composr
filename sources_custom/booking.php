@@ -416,14 +416,14 @@ function booking_date_available(int $bookable_id, int $day, int $month, int $yea
     // Check bookable exists
     $_bookable_row = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => $bookable_id], '', 1);
     if (!array_key_exists(0, $_bookable_row)) {
-        return do_lang_tempcode('INTERNAL_ERROR');
+        return do_lang_tempcode('INTERNAL_ERROR', escape_html('960ecd275782f2271580a9110ae74249'));
     }
     $bookable_row = $_bookable_row[0];
     $codes_in_total = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', ['bookable_id' => $bookable_id]);
 
     // Check bookable enabled
     if ($bookable_row['enabled'] == 0) {
-        return do_lang_tempcode('INTERNAL_ERROR');
+        return do_lang_tempcode('INTERNAL_ERROR', escape_html('75598373f6a46b3f584c3f741fd0703a'));
     }
 
     // Check bookable time is in active period

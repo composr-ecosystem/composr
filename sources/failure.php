@@ -310,7 +310,7 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
 
         default:
             if ((!has_privilege(get_member(), 'see_php_errors')) && (!$GLOBALS['DEV_MODE'])) {
-                $errstr = do_lang('INTERNAL_ERROR');
+                $errstr = do_lang('INTERNAL_ERROR', comcode_escape('72e6bbb313db37062b97acbe7a5e8771'));
             }
             break;
     }

@@ -81,7 +81,7 @@ class Hook_payment_gateway_points
 
         require_lang('ecommerce');
 
-        return do_template('BUTTON_SCREEN', ['_GUID' => '8c928f1f703e9ba232a7033adee19a31', 'TITLE' => do_lang_tempcode('MAKE_PAYMENT'), 'IMG' => 'buttons/proceed', 'IMMEDIATE' => false, 'URL' => $url]);
+        return do_template('BUTTON_SCREEN', ['_GUID' => 'df2ac8b483822c1ce0f7a8d7322ebd84', 'TITLE' => do_lang_tempcode('MAKE_PAYMENT'), 'IMG' => 'buttons/proceed', 'IMMEDIATE' => false, 'URL' => $url]);
     }
 
     /**

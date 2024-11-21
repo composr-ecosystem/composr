@@ -34,7 +34,7 @@ class Hook_commandr_command_themewizard_find_color
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('themewizard')) {
-            return ['', '', '', do_lang('INTERNAL_ERROR')];
+            return ['', '', '', do_lang('INTERNAL_ERROR', comcode_escape('bba08277549bb0ef7c143a0ecd40b520'))];
         }
 
         require_lang('themes');

@@ -203,7 +203,7 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             erase_block_cache();
         }
         if ($result === false) {
-            $result = [null, do_lang_tempcode('INTERNAL_ERROR')];
+            $result = [null, do_lang_tempcode('INTERNAL_ERROR', escape_html('2ff9c408d65c440206e47c80e632d1e5'))];
         }
         task_log(null, 'Finished task ' . $hook);
         task_log_close();
@@ -409,7 +409,7 @@ function dispatch_task_notification(string $task_title, int $requester, $result)
 
         if ($result === false) {
             $mime_type = null;
-            $content_result = do_lang('INTERNAL_ERROR');
+            $content_result = do_lang('INTERNAL_ERROR', comcode_escape('a7b2cebb8d092f939346f2aed91a939d'));
         } else {
             list($mime_type, $content_result) = $result;
         }

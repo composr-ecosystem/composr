@@ -34,7 +34,7 @@ class Hook_commandr_command_send_chatmessage
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('chat')) {
-            return ['', '', '', do_lang('INTERNAL_ERROR')];
+            return ['', '', '', do_lang('INTERNAL_ERROR', comcode_escape('6e3995139872b2b893561f1b71890063'))];
         }
 
         require_lang('chat');

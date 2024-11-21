@@ -1347,7 +1347,7 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
                 $REQUEST_BLOCK_NEST_LEVEL++;
                 if ($REQUEST_BLOCK_NEST_LEVEL > 40) { // 100 caused xdebug error, but the software will have some overhead in both error handler and other code to get to here. We want xdebug error to not show, but of course to provide the same benefits as that error.
                     $REQUEST_BLOCK_NEST_LEVEL = 0;
-                    $BLOCKS_CACHE[serialize($param)] = do_lang_tempcode('INTERNAL_ERROR');
+                    $BLOCKS_CACHE[serialize($param)] = do_lang_tempcode('INTERNAL_ERROR', escape_html('367033934c586f56e84baf2ef4028a97'));
                     attach_message(do_lang_tempcode('STOPPED_RECURSIVE_RESOURCE_INCLUDE', escape_html(is_string($param[0]) ? $param[0] : 'block'), escape_html(do_lang('BLOCK'))), 'warn', false, true);
                     return;
                 }

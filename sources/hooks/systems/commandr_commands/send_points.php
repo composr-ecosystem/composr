@@ -34,7 +34,7 @@ class Hook_commandr_command_send_points
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('points')) {
-            return ['', '', '', do_lang('INTERNAL_ERROR')];
+            return ['', '', '', do_lang('INTERNAL_ERROR', comcode_escape('ece0aff53e046ce8d276771250d09d1b'))];
         }
 
         require_lang('points');

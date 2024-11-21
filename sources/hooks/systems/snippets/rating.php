@@ -31,7 +31,7 @@ class Hook_snippet_rating
     public function run() : object
     {
         if (get_option('is_on_rating') == '0') {
-            return do_lang_tempcode('INTERNAL_ERROR');
+            return do_lang_tempcode('INTERNAL_ERROR', escape_html('1a08cb7c8a94a1335e33e70f48a47f22'));
         }
 
         // Has there actually been any rating?

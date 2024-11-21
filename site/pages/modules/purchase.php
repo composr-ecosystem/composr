@@ -1295,6 +1295,7 @@ class Module_purchase
 
             // No form
             $result = do_template('ECOM_PURCHASE_STAGE_PAY', [
+                '_GUID' => '291dda22b4c04d6da282b78b068274eb',
                 'TITLE' => $this->title,
                 'TRANSACTION_BUTTON' => $button,
                 'CURRENCY' => $currency,

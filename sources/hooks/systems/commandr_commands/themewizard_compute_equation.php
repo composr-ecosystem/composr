@@ -34,7 +34,7 @@ class Hook_commandr_command_themewizard_compute_equation
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('themewizard')) {
-            return ['', '', '', do_lang('INTERNAL_ERROR')];
+            return ['', '', '', do_lang('INTERNAL_ERROR', comcode_escape('16b443b2a32a1a0611e0336c8db192b1'))];
         }
 
         require_lang('themes');

@@ -2701,7 +2701,7 @@ function step_8() : object
     } else { // We have more to do
         $time = microtime(true) - $time_start;
         $url = prepare_installer_url('install.php?step=8&offset=' . strval($_offset));
-        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['SOMETHING' => do_lang_tempcode('MORE_TO_INSTALL')])];
+        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'ed67f2107a69514ef74683609c2f53e0', 'SOMETHING' => do_lang_tempcode('MORE_TO_INSTALL')])];
     }
 
     $time_end = microtime(true);
