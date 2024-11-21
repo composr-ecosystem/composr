@@ -1588,7 +1588,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
 
     // Check we have what we need
     if ($type_code === null || $item_name === null || $purchase_id === null || $price === null || $tax === null || $shipping === null || $currency === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a7c99c46f56f5b3fb58ce975855c815b')));
     }
 
     // Try and locate the product

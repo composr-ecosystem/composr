@@ -388,7 +388,7 @@ function edit_download_category(int $category_id, string $category, ?int $parent
         }
         $_under_category_id = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'parent_id', ['id' => $under_category_id]);
         if ($under_category_id === $_under_category_id) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('01014b1155ab555188da30df656d7917')));
         }
         $under_category_id = $_under_category_id;
     }

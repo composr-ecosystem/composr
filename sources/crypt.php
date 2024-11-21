@@ -211,7 +211,7 @@ function get_secure_random_password(?int $strength = null, string $username = ''
 
         // Exceeded the allowed number of characters? Bail out with an error.
         if (count($password) > min(255, intval(get_option('maximum_password_length')))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6c32a7b68e395de297a68d879343e734')));
             break;
         }
 

@@ -233,10 +233,10 @@ class Module_admin_svg_sprites
         $theme_image = 'icons' . (($monochrome === 1) ? '_monochrome' : '') . '_sprite';
         $sprite_url = find_theme_image($theme_image, false, true);
         if ($sprite_url == '') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d0cc19ef644056de81b996e6b1d7c35b')));
         }
         if (!url_is_local($sprite_url)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6d5a220f9e6f51f7b3c62ea6a4026986')));
         }
         $_sprite_path = rawurldecode($sprite_url);
         $sprite_path = get_custom_file_base() . '/' . $_sprite_path;

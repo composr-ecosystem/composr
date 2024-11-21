@@ -82,7 +82,7 @@ PHP;
         }
 
         if (has_no_forum()) {
-            return do_template('RED_ALERT', ['_GUID' => 'zgjxqjszggspvsjqhu2rbj21p145laoe', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
+            return do_template('RED_ALERT', ['_GUID' => 'f1665d0139bf5a40ae38749079b890cd', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_css('news');

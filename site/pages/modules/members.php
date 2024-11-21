@@ -279,7 +279,7 @@ class Module_members
 
         $_subscriber = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $_subscriber)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9498c25ff8565e30a55d797df7797d2e')));
         }
         $subscriber = $_subscriber[0];
 

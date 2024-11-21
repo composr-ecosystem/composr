@@ -1183,7 +1183,7 @@ function find_updated_addons() : array
     $addon_data = @json_decode($_addon_data, true);
     if (($addon_data === null) || (!$addon_data['success'])) {
         return [];
-        //warn_exit(do_lang('INTERNAL_ERROR'));
+        //warn_exit(do_lang('INTERNAL_ERROR', comcode_escape('a1a699cb5dd65a23b8d2a331e0c4ae2e')));
     }
 
     $available_addons = find_available_addons(true, true, $addons, false, true);

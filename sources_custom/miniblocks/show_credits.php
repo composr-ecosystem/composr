@@ -16,25 +16,25 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('cms_homesite_support_credits')) {
-    return do_template('RED_ALERT', ['_GUID' => 'wa5gwck9phhenhofls4kivfdr3ux1bx0', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_support_credits'))]);
+    return do_template('RED_ALERT', ['_GUID' => '89c903c3bb7a548e87bb1965a87ee527', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_support_credits'))]);
 }
 
 if (!addon_installed('tickets')) {
-    return do_template('RED_ALERT', ['_GUID' => 'qyafd17p7tq4q0slzl365g6vwudnqe32', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('tickets'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'cd74f185a75b518290c97a39e7b3d298', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('tickets'))]);
 }
 if (!addon_installed('ecommerce')) {
-    return do_template('RED_ALERT', ['_GUID' => 'p4vhb2m889tb0q03v2rbviei51yh6xzo', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
+    return do_template('RED_ALERT', ['_GUID' => '6bfadb11bb945d2c93a24407943d988c', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
 }
 if (!addon_installed('points')) {
-    return do_template('RED_ALERT', ['_GUID' => 'urci1ytb83ij5qeb4nomnvzqx5vzcam5', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
+    return do_template('RED_ALERT', ['_GUID' => '26c105b0494d5e1e9205c3d3929fe9e1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
 }
 
 if (get_forum_type() != 'cns') {
-    return do_template('RED_ALERT', ['_GUID' => '3c5pw1foncj4v8j2zwbqp0dg6jjezppx', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+    return do_template('RED_ALERT', ['_GUID' => 'f0697248d1df590c82286e3122447761', 'TEXT' => do_lang_tempcode('NO_CNS')]);
 }
 
 if (strpos(get_db_type(), 'mysql') === false) {
-    return do_template('RED_ALERT', ['_GUID' => '9qjvy42zmboz6uhe4khpgk71yjt4g11e', 'TEXT' => 'This works with MySQL only']);
+    return do_template('RED_ALERT', ['_GUID' => '6097150b7ba557b9a137a83a88eabbb8', 'TEXT' => 'This works with MySQL only']);
 }
 
 $existing_customer = !is_guest() && ($GLOBALS['SITE_DB']->query_select_value_if_there('credit_purchases', 'num_credits', ['member_id' => get_member()]) !== null);

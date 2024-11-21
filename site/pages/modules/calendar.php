@@ -594,7 +594,7 @@ class Module_calendar
                 $date = $id;
                 $explode = explode('-', $id);
                 if (count($explode) != 3) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5ce8e1a6ef8b53e7bb758419a4db037b')));
                 }
                 $main = $this->view_calendar_view_day($id, $explode, $member_id, $filter);
                 $timestamp = cms_mktime(0, 0, 0, intval($explode[1]), intval($explode[2]), intval($explode[0]));
@@ -618,7 +618,7 @@ class Module_calendar
                 $self_encompassing = ($id == get_week_number_for(utctime_to_usertime()));
                 $explode = explode('-', $id);
                 if (count($explode) != 2) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('77931c7486c25df485f36a1a3875c91c')));
                 }
                 list($start_month, $start_day, $start_year) = date_from_week_of_year(intval($explode[0]), intval($explode[1]));
                 $date = strval($start_year) . '-' . strval($start_month) . '-01';
@@ -644,7 +644,7 @@ class Module_calendar
                 $date = $id . '-01';
                 $explode = explode('-', $id);
                 if (count($explode) != 2) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('457214a7b90a538aaa8f4058e16c24d0')));
                 }
                 $main = $this->view_calendar_view_month($id, $explode, $member_id, $filter);
                 $timestamp = cms_mktime(0, 0, 0, intval($explode[1]), 1, intval($explode[0]));
@@ -681,7 +681,7 @@ class Module_calendar
                 $date = $id . '-01-01';
                 $explode = explode('-', $id);
                 if (count($explode) != 1) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('919595c1b6c6530daa4dd9b035f02d05')));
                 }
                 $main = $this->view_calendar_view_year($id, $explode, $member_id, $filter);
                 $timestamp = cms_mktime(0, 0, 0, 1, 1, intval($id));
@@ -699,7 +699,7 @@ class Module_calendar
 
                 break;
             default:
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9da22e84932e5cd1aef6b2d42287f23d')));
         }
 
         // Nofollow stuff
@@ -1228,7 +1228,7 @@ class Module_calendar
         $period_end = cms_mktime(0, 0, 0, intval($explode[1]) + 1, 1, intval($explode[0]));
         $_days = intval(round(floatval($period_end - $period_start) / floatval(60 * 60 * 24)));
         if ($_days == 0) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('586b67df51e35587853ca63bee42623d')));
         }
 
         $happenings = calendar_matches(get_member(), $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start, $period_end, $filter, true, get_param_integer('private', null));
@@ -1248,7 +1248,7 @@ class Module_calendar
         $week_count = intval(get_week_number_for($period_start, true));
         $day_of_week = date('D', $period_start);
         if (!isset($ex_array[$day_of_week])) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('459eda412cfe580097a2c431e4f56acb')));
         }
         for ($x = 0; $x < $ex_array[$day_of_week]; $x++) {
             $days->attach(do_template('CALENDAR_MONTH_DAY', ['_GUID' => '783ff6377292cc0400638c8857446a16', 'CURRENT' => false, 'DAY_URL' => '', 'CLASS' => '', 'DAY' => '', 'ENTRIES' => $empty_entry]));

@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('cms_homesite')) {
-    return do_template('RED_ALERT', ['_GUID' => 'g4l3co9a92o8mbdsq1luqo3mqdftv7x8', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
+    return do_template('RED_ALERT', ['_GUID' => '20e69ec0a5965c4a9c3c8a8d55943b0e', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
 }
 
 require_code('cms_homesite');
@@ -27,7 +27,7 @@ $branches = get_composr_branches();
 if ((!$GLOBALS['DEV_MODE']) && (count($branches) == 0)) {
     // We want this condition to be logged instead of just returning a red alert
     attach_message('Expected branch maintenance status data but did not get any. Is the git repository initialized or the GitLab credentials specified and valid?', 'warn', false, true);
-    return do_template('RED_ALERT', ['_GUID' => 'g4l3co9a92efbejkrfbekrjfberkjfberjk', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]);
+    return do_template('RED_ALERT', ['_GUID' => '23a59bf5854a5b7a8d0eeeb93889911a', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR', escape_html('012c072cc29f58d9b4f66c6830af0bdb'))]);
 }
 
 // LEGACY: since some people still use v9

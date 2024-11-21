@@ -324,7 +324,7 @@ function comcode_helper_script()
             break;
 
         default:
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('69dbedacbbe055a6b66da59469563348')));
     }
 
     $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => 'c1f229be68a1137c5b418b0d5d8a7ccf', 'TITLE' => do_lang_tempcode('COMCODE_HELPER'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content]);

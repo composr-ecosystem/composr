@@ -213,7 +213,7 @@ class Hook_fields_upload_multi
                 $_value = $temp[0];
                 if ($_value != '') {
                     if (strpos($_value, '::') !== false) { // Required for security, else someone may be able to delete any file by putting "::" at the end of a matching filename they upload and then delete
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('34d778647fd25e71b5b8b68ae51ab84f')));
                     }
 
                     $_value .= '::' . $temp[2];

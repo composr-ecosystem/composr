@@ -314,12 +314,12 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
 
     // Cannot mark an escrow satisfied if it is not active
     if (($row['status'] < ESCROW_STATUS_PENDING)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f647821bd42455369edd89aadcd70a68')));
     }
 
     // Cannot mark an escrow satisfied if we still do not know to whom the points are going
     if ($row['receiving_member'] === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9e3c3042ad33526eb3f2f090230ef5c2')));
     }
 
     // Mark the escrow satisfied
@@ -329,7 +329,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
     } elseif ($row['receiving_member'] === $member_id) {
         $map['recipient_status'] = 1;
     } else { // This should never happen!
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a3f36917d20d51b7a805f82c27126883')));
     }
     $GLOBALS['SITE_DB']->query_update('escrow', $map, ['id' => $id], '', 1);
 
@@ -361,7 +361,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
 function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = true, ?bool $send_notifications = true) : array
 {
     if ($amount !== null && $amount <= 0) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('14d5918767855124a26bb7d5381553f0')));
     }
     if ($amount === null || $amount > $row['amount']) {
         $amount = $row['amount'];
@@ -379,7 +379,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     $reason = get_translated_text($row['reason']);
 
     if ($receiving_member === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9a3e932b33f35d169204675e6e91e9a0')));
     }
 
     $username = $GLOBALS['FORUM_DRIVER']->get_username($sending_member, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
@@ -483,7 +483,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
 
     // Cannot mark an escrow cancelled if it is not active
     if (($row['status'] < ESCROW_STATUS_PENDING)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0012c75e086155e69e2f56b0b3701402')));
     }
 
     $escrow_reason = get_translated_tempcode('escrow', $row, 'reason');
@@ -560,7 +560,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
 
     // Cannot dispute a non-active escrow
     if ($row['status'] < ESCROW_STATUS_PENDING) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('50c7d608364b59eca6fd26a04ee244b7')));
     }
 
     $escrow = get_translated_tempcode('escrow', $row, 'reason');
@@ -612,7 +612,7 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
 
     // Invalid action
     if (!in_array($action, ['amend', 'complete', 'cancel'])) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cafb3c5440975f0ba6b19db4871199be')));
     }
 
     $escrow_reason = get_translated_tempcode('escrow', $row, 'reason');
@@ -766,7 +766,7 @@ function escrow_update_receiving_member(int $id, int $receiving_member)
     $row = $_row[0];
 
     if ($row['receiving_member'] !== null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4e7a457978d05b5c95121a14671c3486')));
     }
 
     $GLOBALS['SITE_DB']->query_update('escrow', ['update_date_and_time' => time(), 'receiving_member' => $receiving_member], ['id' => $id], '', 1);
@@ -786,7 +786,7 @@ function escrow_update_receiving_member(int $id, int $receiving_member)
 function cancel_all_escrows_by_content(string $content_type, string $content_id, string $reason) : array
 {
     if (($content_type == '') || ($content_id == '')) { // These cannot be blank
-        warn_exit(do_lang('INTERNAL_ERROR'));
+        warn_exit(do_lang('INTERNAL_ERROR', comcode_escape('7291be14516f59cab614d1cec15c7d75')));
     }
 
     $ret = [];
@@ -811,7 +811,7 @@ function cancel_all_escrows_by_content(string $content_type, string $content_id,
 function complete_all_escrows_by_content(int $receiving_member, string $content_type, string $content_id) : array
 {
     if (($content_type == '') || ($content_id == '')) { // These cannot be blank
-        warn_exit(do_lang('INTERNAL_ERROR'));
+        warn_exit(do_lang('INTERNAL_ERROR', comcode_escape('aab15df46ada52418e6388049e299e33')));
     }
 
     $ret = [];

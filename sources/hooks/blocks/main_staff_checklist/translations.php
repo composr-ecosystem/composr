@@ -42,9 +42,9 @@ class Hook_checklist_translations
         $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM (SELECT id FROM ' . get_table_prefix() . 'translate WHERE broken=0 AND importance_level<=3 GROUP BY id HAVING COUNT(*)<' . strval($num_langs) . ') t');
 
         if ($cnt > 0) {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'k578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => '7ca8f6bcdb7153858ea84cff7ee46de2']);
         } else {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'l578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'b4bb27752c3c5528abd66af4fd7a30d1']);
         }
 
         $url = build_url(['page' => 'admin_lang', 'type' => 'content'], get_module_zone('admin_lang'));

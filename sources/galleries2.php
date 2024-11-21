@@ -1692,7 +1692,7 @@ function edit_gallery(string $old_name, string $name, string $fullname, string $
         }
         $_under_category_id = $GLOBALS['SITE_DB']->query_select_value('galleries', 'parent_id', ['name' => $under_category_id]);
         if ($under_category_id == $_under_category_id) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('34b509b5c8d3564eb54eab9347aed051')));
         }
         $under_category_id = $_under_category_id;
     }
@@ -1933,7 +1933,7 @@ function make_member_gallery_if_needed(string $cat)
         }
         $_parent_info = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_images', 'accept_videos', 'layout_mode', 'fullname'], ['name' => $parent_id], '', 1);
         if (!array_key_exists(0, $_parent_info)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0125e52a83765467b8225160d0429636')));
         }
         $parent_info = $_parent_info[0];
 
@@ -1966,7 +1966,7 @@ function get_potential_gallery_title(string $cat) : ?string
         $parent_id = $parts[2];
         $_parent_info = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_images', 'accept_videos', 'layout_mode', 'fullname'], ['name' => $parent_id], '', 1);
         if (!array_key_exists(0, $_parent_info)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6135f6563f565cefbae493a261a46085')));
         }
         $parent_info = $_parent_info[0];
 

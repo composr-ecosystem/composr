@@ -49,7 +49,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
     }
 
     if (count($line) < 2) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('836f2c93248b59c7a5efd95a796e46be')));
     }
 
     $label = array_shift($line);

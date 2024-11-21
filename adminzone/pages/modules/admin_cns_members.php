@@ -737,7 +737,7 @@ class Module_admin_cns_members
         $_lurkers = [];
         foreach ($lurkers as $id => $username) {
             if (is_guest($id)) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('069cc2a06f1451f993876ab9c3d89539')));
             }
 
             $_lurkers[] = ['ID' => strval($id), 'USERNAME' => $username, 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($id, true)];

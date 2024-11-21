@@ -84,7 +84,7 @@ PHP;
         }
 
         if (has_no_forum()) {
-            return do_template('RED_ALERT', ['_GUID' => '5oomi6o1lipy2tch6rkgd7k9p3a6h2c8', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
+            return do_template('RED_ALERT', ['_GUID' => 'df050e80ebdb5f46a9c5699a25d3dc58', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         $block_id = get_block_id($map);

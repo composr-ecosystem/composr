@@ -541,7 +541,7 @@ class Module_admin_workflow extends Standard_crud_module
                 $map += insert_lang('workflow_name', $name, 3);
                 $workflow_id = $GLOBALS['SITE_DB']->query_insert('workflows', $map, true);
             } else {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8136afcdad9455dc9bec1505e4062106')));
             }
         } else {
             $old_name = $GLOBALS['SITE_DB']->query_select_value('workflows', 'workflow_name', ['id' => $workflow_id]);

@@ -347,7 +347,7 @@ function _enforce_declarations(int $member_id)
 
     $cpfs = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
     if ($cpfs === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a966ba0601b450398abcc3484d38ab09')));
     }
     if (!isset($cpfs['agreed_declarations'])) {
         $cpfs['agreed_declarations'] = '';

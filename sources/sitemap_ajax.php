@@ -639,7 +639,7 @@ function sitemap_script_saving()
                     }
                 }
                 if (!isset($p['permission_module'])) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c916e8ce93ba54a1be7c80d5739b22a8')));
                 }
                 $permission_module = $p['permission_module'];
                 $category = $p['category_name'];

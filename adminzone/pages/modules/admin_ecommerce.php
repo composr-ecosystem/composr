@@ -332,7 +332,7 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         $fields->attach(form_input_tick(do_lang_tempcode('ENABLED'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_ENABLED'), 'enabled', $enabled == 1));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'a03ec5b2afe5be764bd10694fc401fex', 'TITLE' => do_lang_tempcode('SUBSCRIPTION_EVENT_EMAILS')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9c23b15a50c75fe2bac86736cbf49136', 'TITLE' => do_lang_tempcode('SUBSCRIPTION_EVENT_EMAILS')]));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MAIL_START'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_MAIL_START'), 'mail_start', $mail_start, true, null, true));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MAIL_END'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_MAIL_END'), 'mail_end', $mail_end, true, null, true));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MAIL_UHOH'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_MAIL_UHOH'), 'mail_uhoh', $mail_uhoh, false, null, true));
@@ -380,7 +380,7 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 's_title ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3cef57a4751a525cb4b056a8a6c8be69')));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [

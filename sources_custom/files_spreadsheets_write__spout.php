@@ -56,7 +56,7 @@ class CMS_CSV_Writer_OpenSpout extends CMS_Spreadsheet_Writer
                 break;
 
             default:
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('bc44dac5ec94559c99316e85edea3e9a')));
         }
 
         $this->writer->openToFile($path);
@@ -73,7 +73,7 @@ class CMS_CSV_Writer_OpenSpout extends CMS_Spreadsheet_Writer
     protected function _write_row(array $row, ?array $metadata = null)
     {
         if ($this->writer === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e10ed0fbbb6a53b7a947e48e46248689')));
         }
 
         require_code('character_sets');

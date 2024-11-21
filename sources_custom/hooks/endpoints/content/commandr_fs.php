@@ -85,7 +85,7 @@ class Hook_endpoint_content_commandr_fs
                 if (!$exists) {
                     $test = $commandr_fs->write_file($path_arr, post_param_string('data'));
                     if (!$test) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f1cb6551759b5b93afa970777da1d5ac')));
                     }
                 } else {
                     warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($id)));
@@ -96,7 +96,7 @@ class Hook_endpoint_content_commandr_fs
                 if ($exists) {
                     $test = $commandr_fs->write_file($path_arr, post_param_string('data'));
                     if (!$test) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0cc72b57ca065e6583239936470bb7ca')));
                     }
                 } else {
                     warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($id)));
@@ -107,7 +107,7 @@ class Hook_endpoint_content_commandr_fs
                 if ($exists) {
                     $test = $commandr_fs->remove_file($path_arr);
                     if (!$test) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0ddda529994553aba6ef0fb0cce374af')));
                     }
                 } else {
                     warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($id)));
@@ -157,7 +157,7 @@ class Hook_endpoint_content_commandr_fs
                                 ];
                             }
                         } else {
-                            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ae5e08eee4275d1db1c8d2d881419838')));
                         }
                     }
                 } else {

@@ -151,7 +151,7 @@ class Hook_cns_warnings_karma_logs
             foreach ($_POST['karma_reverse'] as $log_id) {
                 $_row = $GLOBALS['SITE_DB']->query_select('karma', ['*'], ['id' => intval($log_id)], '', 1);
                 if (!array_key_exists(0, $_row)) { // Sanity check
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('131734ae9d1750e8a9bc0147f1ee79c8')));
                 }
                 $row = $_row[0];
 

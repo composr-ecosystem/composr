@@ -154,7 +154,7 @@ class Hook_cns_warnings_probation
         }
 
         if (get_forum_type() != 'cns') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('08c35fb23fb75a87bf728eefcc760c47')));
         }
 
         $member_id = intval($punitive_action['p_member_id']);

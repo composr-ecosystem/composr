@@ -177,7 +177,7 @@ function portal(int $member_id, int $dest_realm)
     list($realm, $x, $y) = get_loc_details($member_id);
     $portals = $GLOBALS['SITE_DB']->query_select('w_portals', ['*'], ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm], '', 1);
     if (!array_key_exists(0, $portals)) {
-        buildr_refresh_with_message(do_lang_tempcode('INTERNAL_ERROR'), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('INTERNAL_ERROR', escape_html('23be823acc7c59179d0a95458bc0d6ff')), 'warn');
     }
     $text = comcode_to_tempcode($portals[0]['p_text'], $portals[0]['owner']);
     $dest_x = $portals[0]['end_location_x'];
@@ -186,7 +186,7 @@ function portal(int $member_id, int $dest_realm)
     // Check $end_location_realm exists
     $name = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'name', ['location_x' => $dest_x, 'location_y' => $dest_y, 'location_realm' => $dest_realm]);
     if ($name === null) {
-        buildr_refresh_with_message(do_lang_tempcode('INTERNAL_ERROR'), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('INTERNAL_ERROR', escape_html('444eeef93a71565aad2b14259fa6ab8f')), 'warn');
     }
 
     // Move member there

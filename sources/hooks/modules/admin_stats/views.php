@@ -1218,7 +1218,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                         break;
 
                     default:
-                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6e32e7f641775168bafdf0cf49ac48b7')));
                 }
 
                 return [
@@ -1498,7 +1498,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('11f6ccbda65856098498a9f31b8b9581')));
 
         return [];
     }

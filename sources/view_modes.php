@@ -432,7 +432,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
 
         require_code('themes_meta_tree');
         if (!isset($out->metadata)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('fa270471a2e2575e93646f0cd6b19a31')));
         }
         $collected_templates = [
             'templates/HTML_HEAD.tpl' => true, // FUDGE. Due to the Tempcode inlining optimisation, this might not be picked up on, but is an important template - so we'll force it into here

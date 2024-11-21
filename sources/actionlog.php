@@ -93,13 +93,13 @@ abstract class Hook_actionlog
                         }
                         if ($success) {
                             if (!isset($page_link[0])) {
-                                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('065ecd1786215916a43247d2574bb575')));
                             }
 
                             switch ($page_link[0]) {
                                 case 'FORUM_DRIVER__PROFILE_URL':
                                     if (count($page_link) != 2) {
-                                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('eefba954eb9155dbb3a5f4fafccc4432')));
                                     }
 
                                     if (is_numeric($page_link[1])) {
@@ -109,7 +109,7 @@ abstract class Hook_actionlog
                                     break;
 
                                 default:
-                                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4e499386bd1b53c5b76057b4b435e7a7')));
                             }
                         }
                     } else {

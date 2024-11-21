@@ -64,7 +64,7 @@ class Block_main_custom_gfx
         $type_id = empty($map['param']) ? 'rollover_button' : $map['param'];
 
         if ((!file_exists(get_file_base() . '/sources/hooks/blocks/main_custom_gfx/' . filter_naughty_harsh($type_id) . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/blocks/main_custom_gfx/' . filter_naughty_harsh($type_id) . '.php'))) {
-            return do_template('RED_ALERT', ['_GUID' => '9fnvnqrcmgmrv8b7dppw87mabedtuh9m', 'TEXT' => do_lang_tempcode('NO_SUCH_RENDERER', escape_html($type_id))]);
+            return do_template('RED_ALERT', ['_GUID' => '744c63f4467e540bbef32c14ced503ad', 'TEXT' => do_lang_tempcode('NO_SUCH_RENDERER', escape_html($type_id))]);
         }
 
         require_code('hooks/blocks/main_custom_gfx/' . filter_naughty_harsh($type_id, true), true);
@@ -111,7 +111,7 @@ class Block_main_custom_gfx
             $path = ((strpos($img_path, '/default/images/') !== false) ? get_file_base() : get_custom_file_base()) . '/' . $img_path;
             $img = cms_imagecreatefrom($path);
             if ($img === false) {
-                return do_template('RED_ALERT', ['_GUID' => 'h8b1p9evu0ibhnjl0ze2ny4x0gxgcpwq', 'TEXT' => do_lang_tempcode('CORRUPT_FILE', escape_html($img_path))]);
+                return do_template('RED_ALERT', ['_GUID' => '02356835986b5ddf9098e3ca2ab2e9a6', 'TEXT' => do_lang_tempcode('CORRUPT_FILE', escape_html($img_path))]);
             }
 
             imagealphablending($img, true);

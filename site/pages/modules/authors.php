@@ -145,7 +145,7 @@ class Module_authors
             $author = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         }
         if (empty($author)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // Really don't want to have to search on this
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a649f72f4cd75009b211812de11c8ffb'))); // Really don't want to have to search on this
         }
 
         if ((get_value('disable_awards_in_titles') !== '1') && (addon_installed('awards'))) {

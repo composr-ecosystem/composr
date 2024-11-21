@@ -50,7 +50,7 @@ class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
                 break;
 
             default:
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a407077f74ab56ee87e5100a778000e1')));
         }
 
         if (function_exists('libxml_disable_entity_loader')) {
@@ -88,7 +88,7 @@ class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
     protected function _read_row()
     {
         if ($this->reader === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('94edd48cc8a155ffb052e79bc086fb5c')));
         }
 
         $before = ini_get('ocproducts.type_strictness');

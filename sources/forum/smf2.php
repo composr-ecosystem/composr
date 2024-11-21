@@ -947,7 +947,7 @@ class Forum_driver_smf2 extends Forum_driver_base
 
         // If the setting is not specified, we have to bail on error since get_emo_dir cannot return null.
         if ($url === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0999ee4a2de05d188be3d080ad912e4f')));
         }
 
         return $url . '/';

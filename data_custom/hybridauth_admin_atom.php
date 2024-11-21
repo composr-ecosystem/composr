@@ -54,7 +54,7 @@ $before_xss_detect = ini_get('ocproducts.xss_detect');
 cms_ini_set('ocproducts.xss_detect', '0');
 
 if ((empty($get)) && (empty($_POST))) {
-    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d8581a76d6315aef8ecfa0a8df51295e')));
 }
 
 list($hybridauth, $admin_storage, $providers) = initiate_hybridauth_admin();

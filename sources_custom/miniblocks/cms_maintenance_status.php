@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('cms_homesite')) {
-    return do_template('RED_ALERT', ['_GUID' => 'rltg3g7ssx2l3oux03qnqnwhwgj8vrcs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
+    return do_template('RED_ALERT', ['_GUID' => '4129a34799505dd6943a32b343ab48f1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
 }
 
 $nonbundled_addons = isset($map['include_non_bundled']) ? cms_strtolower_ascii($map['include_non_bundled']) : 'exclude';

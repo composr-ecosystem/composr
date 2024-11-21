@@ -37,9 +37,9 @@ class Hook_checklist_usergroup_membership
         $cnt = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_status' => 0]);
 
         if ($cnt > 0) {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'o578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => '473a0fe87a185fc0b35c5e23607be778']);
         } else {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'p578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => '982e1f2815775fd1a4379d8f87cbb938']);
         }
 
         $url = build_url(['page' => 'groups', 'type' => 'browse'], get_module_zone('groups'));

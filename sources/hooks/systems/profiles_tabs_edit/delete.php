@@ -60,7 +60,7 @@ class Hook_profiles_tabs_edit_delete
         $delete_account = post_param_integer('delete', 0);
         if ($delete_account == 1) {
             if (is_guest($member_id_of)) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('fa546941ec3c5c798c7a6990d2b22612')));
             }
 
             // Queue the task

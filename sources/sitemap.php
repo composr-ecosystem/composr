@@ -879,7 +879,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             if ($zone == '_SEARCH') {
                 $zone = $matches[1];
             } else {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6a1aa790ebfc5de8b1eafa5939c5965e')));
             }
         }
         $page = $matches[2];

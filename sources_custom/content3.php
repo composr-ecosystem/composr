@@ -160,7 +160,7 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
             if ($rows[0]['c_name'] != $this->catalogue) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4e8f0737587c5f18a031a5b461b5ddf8')));
             }
 
             $this->properties = $rows[0];
@@ -196,7 +196,7 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
         }
 
         if (!isset($this->field_refs[$property_label])) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2ef83294a6ee545b95799e3a31e826ef')));
         }
 
         $__val = $this->field_refs[$property_label];

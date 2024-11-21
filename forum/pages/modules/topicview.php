@@ -515,7 +515,7 @@ class Module_topicview
                 }
 
                 $rendered_post = do_template('CNS_TOPIC_POST', [
-                    '_GUID' => 'sacd09wekfofpw2f',
+                    '_GUID' => '1d3b7f7b7f565a8294dde05e68ad0728',
                     'GIVE_CONTEXT' => false,
                     'ID' => $is_spacer_post ? '' : strval($_postdetails['id']),
                     'TOPIC_FIRST_POST_ID' => ($topic_info['first_post_id'] === null) ? '' : strval($topic_info['first_post_id']),

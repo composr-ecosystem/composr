@@ -309,7 +309,7 @@ function sort_imports_by_dependencies(array $imports, ?array $dependencies = nul
         if ($silent_fail) {
             return null;
         }
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('551ae9687c04595d9c044d00e1367663')));
     }
 
     return $_imports;

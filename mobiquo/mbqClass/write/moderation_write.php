@@ -387,7 +387,7 @@ class CMSModerationWrite
         }
 
         if (!addon_installed('cns_warnings')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('600acc29f9905a0498e74de82229f2ec')));
         }
 
         if (!cns_may_warn_members()) {
@@ -451,7 +451,7 @@ class CMSModerationWrite
         }
 
         if (!addon_installed('cns_warnings')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0b79c65520c15b298d378ca8f48a96a6')));
         }
 
         if (!cns_may_warn_members()) {

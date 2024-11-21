@@ -397,7 +397,7 @@ function final_attachments_from_preview(string $id, ?object $db = null)
     // Clean up the any attachments added at the preview stage
     $posting_ref_id = post_param_integer('posting_ref_id', null);
     if ($posting_ref_id < 0) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('927e16b16f335061b43808fe0df7f102')));
     }
     if ($posting_ref_id !== null) {
         $db->query_delete('attachment_refs', ['r_referer_type' => 'null', 'r_referer_id' => strval(-$posting_ref_id)], '', 1);

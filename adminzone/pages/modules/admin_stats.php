@@ -619,7 +619,7 @@ class Module_admin_stats extends Standard_crud_module
             }
         }
 
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3d10991a1d6b52dd850127e7e1c0dcc5')));
     }
 
     /**

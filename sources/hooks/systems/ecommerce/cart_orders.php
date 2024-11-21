@@ -292,7 +292,7 @@ class Hook_ecommerce_cart_orders
         }
 
         if (!addon_installed('shopping')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('94c491ea8ffd5565b5096fbb32ffe6dd')));
         }
 
         // Copy cart into an order

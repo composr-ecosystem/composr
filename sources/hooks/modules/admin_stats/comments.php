@@ -250,6 +250,6 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('94469dd17f8452eea3bb965c3b99bb51')));
     }
 }

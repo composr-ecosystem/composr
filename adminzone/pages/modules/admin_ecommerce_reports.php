@@ -456,7 +456,7 @@ class Module_admin_ecommerce_reports
             } elseif ($details['price'] !== null) {
                 $price = $details['price'];
             } else {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8d717d776a0d5208ba13e64f1fcf2ce1')));
             }
         }
 

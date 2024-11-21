@@ -299,7 +299,7 @@ function form_input_list_group($title, object $entries) : object
         return $entries2;
     }
 
-    return do_template('FORM_SCREEN_INPUT_LIST_GROUP', ['_GUID' => 'dx76a2685d0fba5f819ef160b0816d03', 'TITLE' => $title, 'ENTRIES' => $entries]);
+    return do_template('FORM_SCREEN_INPUT_LIST_GROUP', ['_GUID' => 'd4df8dba5fd055ec84af7cb6cd95332c', 'TITLE' => $title, 'ENTRIES' => $entries]);
 }
 
 /**

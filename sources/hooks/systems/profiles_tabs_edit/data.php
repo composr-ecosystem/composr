@@ -64,11 +64,11 @@ class Hook_profiles_tabs_edit_data
         $actualise = post_param_integer('data_action', null);
         if ($actualise !== null) {
             if ($member_id_of != $member_id_viewing) { // Not as staff (they should use the Admin Zone)
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('74a76bc5cb66587f9e5128f2abb7c688')));
             }
 
             if (is_guest($member_id_of)) { // Not as guest
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5fc7a495d7315899b338a6c0ad4d9ec9')));
             }
 
             $values = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id_of);
@@ -80,7 +80,7 @@ class Hook_profiles_tabs_edit_data
 
             if ($actualise == 1) { // Download
                 if (!$can_download) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dcf50b0fa9ae50d1bf788fdd0c956549')));
                 }
 
                 $table_actions = [];
@@ -109,7 +109,7 @@ class Hook_profiles_tabs_edit_data
 
             if ($actualise == 2) { // Purge
                 if (!$can_purge) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('fd5bb8c8ba0052dc8a94caa10d0512b7')));
                 }
 
                 $table_actions = [];

@@ -339,7 +339,7 @@ function build_preview(bool $multi_return = false)
                 $tempcodecss = false;
                 $posting_ref_id = post_param_integer('posting_ref_id', null);
                 if ($posting_ref_id < 0) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7141bdd981855caa9287ea782dd1d1f6')));
                 }
                 $post_bits = do_comcode_attachments($val, ($attachment_type === null) ? 'null' : $attachment_type, ($posting_ref_id === null) ? '' : strval(-$posting_ref_id), true, $db);
                 $new_post_value = $post_bits['comcode'];

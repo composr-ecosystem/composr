@@ -219,7 +219,7 @@ function post_comment_script()
     $options = either_param_string('options', false, INPUT_FILTER_NONE);
     $_options = @json_decode($options, true);
     if (!is_array($_options)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b0b2b3c19f9d57dcbcda24eba4bf5f87')));
     }
     list($feedback_type, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time) = $_options;
 

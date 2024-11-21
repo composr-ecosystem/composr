@@ -77,7 +77,7 @@ $http_message_b = null;
 
 if ($posting_day !== null) {
     if ($content_type != 'blogpost') {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('310e9c58a1f15dbca6973e8d896beea7')));
     }
 
     // Searches for a blog post. The only way we can reference these is via $blog_title+$posting_day query, as we cannot get IDs for direct querying through a confluence_get_mappings search

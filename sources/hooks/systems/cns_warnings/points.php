@@ -151,7 +151,7 @@ class Hook_cns_warnings_points
             warn_exit($error);
         }
         if (get_forum_type() != 'cns') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('db798a025d1e5fd7b256869fe55ad32f')));
         }
 
         require_code('points2');

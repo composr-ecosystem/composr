@@ -49,7 +49,7 @@ require($FILE_BASE . '/sources/global.php');
 
 require_code('lorem');
 $global = do_template('STANDALONE_HTML_WRAP', [
-    '_GUID' => 'ge818a6fb0870f0b211e8e52adb23f26',
+    '_GUID' => '8cda2a378b835264a4fd604313aaf8ab',
     'TITLE' => lorem_phrase(),
     'FRAME' => true,
     'TARGET' => '_self',

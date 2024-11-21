@@ -141,7 +141,7 @@ function get_first_default_group() : int
 function cns_get_all_default_groups(bool $include_primary = false, bool $include_all_configured_default_groups = false) : array
 {
     if ((!$include_primary) && ($include_all_configured_default_groups)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('854ffd82988c51d385ffc69c0b98bdad')));
     }
 
     static $all_default_groups_cache = [];

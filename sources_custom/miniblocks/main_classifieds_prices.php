@@ -16,14 +16,14 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('classified_ads')) {
-    return do_template('RED_ALERT', ['_GUID' => 'y1h3lkkxrcy2mjehmt7na6n0p6c4ed23', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('classified_ads'))]);
+    return do_template('RED_ALERT', ['_GUID' => '9f069bc8cd075e8bb0e6d653208a0a8c', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('classified_ads'))]);
 }
 
 if (!addon_installed('catalogues')) {
-    return do_template('RED_ALERT', ['_GUID' => 'xosodjlsl900rswpx7vw68a7xg2tgjod', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('catalogues'))]);
+    return do_template('RED_ALERT', ['_GUID' => '2bb675ffc41f5df9a3ade64d25c1d755', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('catalogues'))]);
 }
 if (!addon_installed('ecommerce')) {
-    return do_template('RED_ALERT', ['_GUID' => 'hf9170z7ri5420765w7qecb5lkqr7i4t', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
+    return do_template('RED_ALERT', ['_GUID' => '3316b32121235a6890629b838cd400bc', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
 }
 
 require_lang('classifieds');

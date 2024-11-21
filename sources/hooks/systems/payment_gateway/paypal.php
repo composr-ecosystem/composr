@@ -141,7 +141,7 @@ class Hook_payment_gateway_paypal
     public function make_cart_transaction_button(string $trans_expecting_id, array $items, float $shipping_cost, string $currency, int $order_id) : object
     {
         if (!addon_installed('shopping')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e0278b3b5f0752aab51f9e2f5a8eae40')));
         }
 
         // For PayPal, we must calculate the total tax for the cart. If we specify tax per item, PayPal multiplies it by the item quantity. And compensating for that would create rounding errors.

@@ -308,7 +308,7 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
     }
 
     $attachment_template = do_template('ATTACHMENT', [
-        '_GUID' => 'c3b38ca70cbd1c5f9cf91bcae9ed11ds',
+        '_GUID' => '985c8c2376885bc08169d195ed804042',
         'POSTING_FIELD_NAME' => $posting_field_name,
         'I' => '__num_attachments__',
         'SYNDICATION_JSON' => $syndication_json,
@@ -2810,7 +2810,7 @@ function alternate_fields_set__start(string $set_name) : object
 {
     global $DOING_ALTERNATE_FIELDS_SET;
     if ($DOING_ALTERNATE_FIELDS_SET !== null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b3a494624e145fad8791952cae1061ab')));
     }
     $DOING_ALTERNATE_FIELDS_SET = $set_name;
     return new Tempcode();
@@ -2849,7 +2849,7 @@ function alternate_fields_set__end(string $set_name, $pretty_name, $description,
     ]);
 
     if ($DOING_ALTERNATE_FIELDS_SET === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c46dd55a98d95f259df987a1a46696a1')));
     }
     $DOING_ALTERNATE_FIELDS_SET = null;
 

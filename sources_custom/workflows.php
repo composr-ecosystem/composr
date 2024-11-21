@@ -630,7 +630,7 @@ function workflow_update_handler() : object
     // Grab information about the hook
     $info = $ob->info();
     if ($info === null) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6aa46c0a6bf3588a954ccb5a7e37fd00')));
     }
     $content_table = $info['table'];
     $content_id_field = $info['id_field'];

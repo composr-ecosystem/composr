@@ -28,7 +28,7 @@ class CMSSocialWrite
         cms_verify_parameters_phpdoc();
 
         if (!addon_installed('points')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('656a86d4d14d5191a9649901234f43cf')));
         }
 
         if (is_guest()) {
@@ -43,11 +43,11 @@ class CMSSocialWrite
 
         $user_id = $post_rows[0]['p_posting_member'];
         if ($user_id == get_member()) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('24bf69fd38d75f21868e893a83361e0d')));
         }
 
         if (!has_post_access($post_id, null, $post_rows[0])) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('49697915743254ac9cda8ed501d1c63e')));
         }
 
         require_code('points2');
@@ -69,7 +69,7 @@ class CMSSocialWrite
         }
 
         if (!addon_installed('chat')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cda3f1d3fba855d380354422e6ce1495')));
         }
 
         require_code('chat2');
@@ -90,7 +90,7 @@ class CMSSocialWrite
         }
 
         if (!addon_installed('chat')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('22e07fa14d4458209eff98285e47d478')));
         }
 
         require_code('chat2');
@@ -137,11 +137,11 @@ class CMSSocialWrite
 
         $user_id = $post_rows[0]['p_posting_member'];
         if ($user_id == get_member()) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8b1201c11f1451dfbce9e61d2951e39c')));
         }
 
         if (!has_post_access($post_id, null, $post_rows[0])) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f9ba41713f3f5c0a91440335452e86b8')));
         }
 
         $forum_id = $post_rows[0]['p_cache_forum_id'];

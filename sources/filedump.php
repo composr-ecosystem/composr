@@ -55,7 +55,7 @@ function find_broken_filedump_links() : array
 function update_filedump_links(string $from, string $to)
 {
     if ($to == '') {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5790c6383f48503296dec8b17429f693')));
     }
     if (substr($to, 0, 1) != '/') {
         $to = '/' . $to;

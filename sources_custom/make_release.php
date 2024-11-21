@@ -1186,7 +1186,7 @@ function guid_scan($path)
         return null;
     }
 
-    global $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE;
+    global $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE, $GUID_ERRORS_INVALID;
 
     $GUID_SCAN_PATH = $path;
 
@@ -1194,6 +1194,7 @@ function guid_scan($path)
 
     $GUID_ERRORS_MISSING = [];
     $GUID_ERRORS_DUPLICATE = [];
+    $GUID_ERRORS_INVALID = [];
     $out = $GUID_ORIGINAL_CONTENTS;
 
     // Template GUIDs
@@ -1206,8 +1207,9 @@ function guid_scan($path)
     return [
         'errors_missing' => $GUID_ERRORS_MISSING,
         'errors_duplicate' => $GUID_ERRORS_DUPLICATE,
+        'errors_invalid' => $GUID_ERRORS_INVALID,
         'new_contents' => $out,
-        'changes' => !empty($GUID_ERRORS_MISSING) || !empty($GUID_ERRORS_DUPLICATE),
+        'changes' => !empty($GUID_ERRORS_MISSING) || !empty($GUID_ERRORS_DUPLICATE) || !empty($GUID_ERRORS_INVALID),
     ];
 }
 
@@ -1226,9 +1228,9 @@ function _guid_scan_callback__template($match)
     return $full_match_line;
     */
 
-    global $GUID_LANDSCAPE, $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $FOUND_GUID, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE;
+    global $GUID_LANDSCAPE, $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $FOUND_GUID, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE, $GUID_ERRORS_INVALID;
 
-    $new_guid = generate_guid();
+    $new_guid = str_replace('-', '', generate_guid());
 
     if (!array_key_exists($template_name, $GUID_LANDSCAPE)) {
         $GUID_LANDSCAPE[$template_name] = [];
@@ -1241,9 +1243,17 @@ function _guid_scan_callback__template($match)
     if (($first_param_value !== null) && ($first_param_name == '_GUID')) {
         $guid_value = str_replace("'", '', $first_param_value);
 
-        // Handle duplicated or invalid GUIDs
-        if ((array_key_exists($guid_value, $FOUND_GUID)) || (!looks_like_guid($guid_value))) {
-            $error_msg = 'Repair duplicated or invalid GUID needed for ' . $template_name . ' in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+        // Handle invalid GUIDs
+        if (!looks_like_guid($guid_value)) {
+            $error_msg = 'Repair invalid GUID needed for ' . $template_name . ' in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+            $GUID_ERRORS_INVALID[] = $error_msg;
+            $GUID_LANDSCAPE[$template_name][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
+            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'" . $remaining_of_line;
+        }
+
+        // Handle duplicated GUIDs
+        if (array_key_exists($guid_value, $FOUND_GUID)) {
+            $error_msg = 'Repair duplicated GUID needed for ' . $template_name . ' in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
             if ($FOUND_GUID[$guid_value] != $template_name) {
                 $error_msg .= ' (from a call to the ' . $FOUND_GUID[$guid_value] . ' template)';
             }
@@ -1272,8 +1282,8 @@ function _guid_scan_callback__template($match)
 function _guid_scan_callback__internal_error($match)
 {
     $full_match_line = $match[0];
-    $is_tempcode = ($match[1] === '_tempcode');
-    $params = $match[2];
+    $is_tempcode = isset($match[1]) ? ($match[1] === '_tempcode') : false;
+    $params = isset($match[2]) ? $match[2] : '';
 
     /*
     For debugging:
@@ -1281,9 +1291,9 @@ function _guid_scan_callback__internal_error($match)
     return $full_match_line;
     */
 
-    global $GUID_LANDSCAPE, $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $FOUND_GUID, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE;
+    global $GUID_LANDSCAPE, $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $FOUND_GUID, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE, $GUID_ERRORS_INVALID;
 
-    $new_guid = generate_guid();
+    $new_guid = str_replace('-', '', generate_guid());
 
     if (!array_key_exists('INTERNAL_ERROR', $GUID_LANDSCAPE)) {
         $GUID_LANDSCAPE['INTERNAL_ERROR'] = [];
@@ -1298,9 +1308,20 @@ function _guid_scan_callback__internal_error($match)
         if (array_key_exists(0, $inner_matches[2])) { // We only care about the first parameter
             $guid_value = $inner_matches[2][0];
 
-            // Handle duplicated or invalid GUIDs
-            if ((array_key_exists($guid_value, $FOUND_GUID)) || (!looks_like_guid($guid_value))) {
-                $error_msg = 'Repair duplicated or invalid GUID needed for an INTERNAL_ERROR in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+            // Handle invalid GUIDs
+            if (!looks_like_guid($guid_value)) {
+                $error_msg = 'Repair invalid GUID needed for an INTERNAL_ERROR in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+                $GUID_ERRORS_INVALID[] = $error_msg;
+                $GUID_LANDSCAPE['INTERNAL_ERROR'][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
+
+                // Build up our new call
+                $replacement = preg_replace('/(escape_html|comcode_escape)\(\'([\w-]*)\'/', "$1('" . $new_guid . "'", $params, 1);
+                return preg_replace('/(escape_html|comcode_escape)\(\'([\w-]*)\'/', $replacement, $full_match_line, 1);
+            }
+
+            // Handle duplicated GUIDs
+            if (array_key_exists($guid_value, $FOUND_GUID)) {
+                $error_msg = 'Repair duplicated GUID needed for an INTERNAL_ERROR in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
                 $GUID_ERRORS_DUPLICATE[] = $error_msg;
                 $GUID_LANDSCAPE['INTERNAL_ERROR'][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
 

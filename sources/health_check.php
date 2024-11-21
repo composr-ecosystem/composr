@@ -379,7 +379,7 @@ abstract class Hook_Health_Check
             }
         } else {
             if (strpos($section_label, ',') !== false) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // We cannot have commas in section labels because we store label sets in comma-separated lists
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9f3a998df6db56e3828a9111c5fab93a'))); // We cannot have commas in section labels because we store label sets in comma-separated lists
             }
             if (array_key_exists($section_label, $this->results)) {
                 fatal_exit('Duplicate section: ' . $section_label);

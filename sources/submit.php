@@ -49,7 +49,7 @@ function content_validated(string $content_type, string $content_id) : bool
 function send_content_validated_notification(string $content_type, string $content_id, int $points_credited = 0)
 {
     if (!addon_installed('validation')) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('577079bcc5ed5050b9ddcc9cf497ab22')));
     }
 
     require_code('content');
@@ -80,7 +80,7 @@ function send_content_validated_notification(string $content_type, string $conte
 function send_validation_request(string $type, string $table, bool $non_integer_id, string $id, object $url, ?int $member_id = null)
 {
     if (!addon_installed('validation')) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f3723d966e8b5889afbcf6495191f248')));
     }
 
     require_code('content');
@@ -90,7 +90,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
     $content_type = convert_cms_type_codes('table', $table, 'content_type');
     $cma_ob = get_content_object($content_type);
     if (!is_object($cma_ob)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a37d9eec627f5924939c5788a5d2ce1a')));
     }
 
     $row = $cma_ob->get_row($non_integer_id ? $id : strval($id));

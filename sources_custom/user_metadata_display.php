@@ -16,7 +16,7 @@
 function user_metadata_display_script()
 {
     if (!addon_installed('securitylogging')) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('44f265b57370528cbf5ebe84915045e3')));
     }
 
     $member_id = get_param_integer('member_id', get_member());

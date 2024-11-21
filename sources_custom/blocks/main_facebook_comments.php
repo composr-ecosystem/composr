@@ -54,17 +54,17 @@ class Block_main_facebook_comments
         }
 
         if (!function_exists('curl_init')) {
-            return do_template('RED_ALERT', ['_GUID' => 'b5fbhxvxzef9uon2oc9q6ihh6xq0ccig', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
+            return do_template('RED_ALERT', ['_GUID' => 'e03a52a9ff035dfa9916be2134673904', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
         }
         if (!function_exists('session_status')) {
-            return do_template('RED_ALERT', ['_GUID' => '2kii599c4uz2g43k69ogp53wob87650o', 'TEXT' => 'PHP session extension missing']);
+            return do_template('RED_ALERT', ['_GUID' => 'b32914479b935519b84b14883a5a8e30', 'TEXT' => 'PHP session extension missing']);
         }
 
         $block_id = get_block_id($map);
 
         $appid = get_option('facebook_appid');
         if ($appid == '') {
-            return do_template('RED_ALERT', ['_GUID' => 'mcpdkezerhqqwxa3qas36jainejuetb8', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')]);
+            return do_template('RED_ALERT', ['_GUID' => '2f69086d0dac56b49a24d1e56a3a0abe', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')]);
         }
         return do_template('BLOCK_MAIN_FACEBOOK_COMMENTS', [
             '_GUID' => '99de0fd4bc8b3f57d4f9238b798bfcbf',

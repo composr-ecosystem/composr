@@ -598,7 +598,7 @@ class Hook_ecommerce_email
 
                 $pop3_details = $GLOBALS['SITE_DB']->query_select('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['details', 'details2'], ['member_id' => $member_id], ' AND t_type_code LIKE \'POP3%\'', 1);
                 if (!array_key_exists(0, $pop3_details)) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('938fe00e4ab159f996319932d1a29cad')));
                 }
 
                 $prefix = $pop3_details[0]['details'];

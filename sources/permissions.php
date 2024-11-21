@@ -117,7 +117,7 @@ function handle_permission_check_logging(int $member_id, string $op, array $para
 
 /**
  * Show a helpful access-denied page. Has a login ability if it senses that logging in could curtail the error.
- * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). warn_exit(do_lang_tempcode('INTERNAL_ERROR')) is for those situations, or log_hack_attack_and_exit.
+ * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2f0fe728dbd35900956a1f764b81dd35'))) is for those situations, or log_hack_attack_and_exit.
  *
  * @param  ID_TEXT $class The class of error (e.g. PRIVILEGE). This is a language string codename.
  * @param  string $param The parameter given to the error message
@@ -703,7 +703,7 @@ function enforce_personal_access(int $member_id, ?string $privilege = null, ?str
     }
 
     if (is_guest($member_id)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d17551a0f7d55912ab78d282e9577ca3')));
     }
     if ((!has_privilege($member_viewing, 'assume_any_member')) && (($privilege2 === null) || (!has_privilege($member_viewing, $privilege2)))) {
         if (($member_id != $member_viewing) || (($privilege !== null) && (!has_privilege($member_viewing, $privilege)))) {
@@ -803,7 +803,7 @@ function has_privilege(int $member_id, string $privilege, ?string $page = null, 
         if ($cats !== null) {
             if ($GLOBALS['DEV_MODE']) {
                 if (count($cats) % 2 != 0) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f7b5e5173a43574e99ba430e7ce3ebcb')));
                 }
             }
 

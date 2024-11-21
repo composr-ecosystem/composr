@@ -52,7 +52,7 @@ function gravatar_script(bool $from_driver = false)
 
     if (($f !== false) && ($f->data !== null)) {
         if (substr($f->download_mime_type, 0, 6) != 'image/') {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f6dde22124ab5af7bfff7fa6cbd68949')));
         } else {
             $is_error = false;
         }
@@ -573,12 +573,12 @@ function external_url_proxy_script()
 
     // Don't allow loops
     if (strpos($url, 'external_url_proxy.php') !== false) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('922a4ff8ce135a078d4cf3647cabfe7f')));
     }
 
     // Don't allow non-HTTP(S)
     if (preg_match('#^https?://#', $url) == 0) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('23413ca1b17e55b79fbb5bf9b15f22e2')));
     }
 
     // No time-limits wanted

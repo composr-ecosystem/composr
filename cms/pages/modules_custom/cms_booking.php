@@ -231,7 +231,7 @@ class Module_cms_booking extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'sort_order ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7f82589a39755299a3bdc37b42321d61')));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
@@ -492,7 +492,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'sort_order ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e50609f873c959e48149d3583c65c7c8')));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
@@ -693,7 +693,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'blacked_from_year,blacked_from_month,blacked_from_day ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4cbd37a1cad95f16802d24e681724863')));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [
@@ -1235,7 +1235,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
         }
 
         if ($i === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b74348f7549e51bea1630ac3d2534a34')));
         }
 
         if (get_option('member_booking_only') == '0') {

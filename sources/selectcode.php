@@ -138,7 +138,7 @@ function selectcode_to_sqlfragment(string $filter, string $field_name, ?string $
 
     if ($parent_spec__table_name === null) {
         if (($parent_spec__parent_name !== null) || ($parent_spec__field_name !== null)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f8f153cc45b15b3a8955989ebf59ebdb')));
         }
         $category_field_name = null;
     }
@@ -274,11 +274,11 @@ function _selectcode_to_generic(string $filter, ?string $field_name, ?string $ta
 
     if ($parent_spec__table_name !== null) {
         if (($category_field_name === null) || ($parent_spec__field_name === null)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ed68ef3917325e668eebf7bd0d91943e')));
         }
     } else {
         if (($parent_spec__parent_name !== null) || ($category_field_name !== null) || ($parent_spec__field_name !== null)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e8b9a73295a35fc4ac3ac86f294605e5')));
         }
     }
 
@@ -481,7 +481,7 @@ function _selectcode_eq(string $field_name, string $var, bool $numeric) : string
 {
     if ($numeric) {
         if (!is_numeric($var)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5bfa2c1f7e745ef3be579880dc7bfd1f')));
         }
         return $field_name . '=' . strval(intval($var));
     }

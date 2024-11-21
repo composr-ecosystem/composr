@@ -61,7 +61,7 @@ class Block_main_cns_involved_topics
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', ['_GUID' => '3wdm0cx063l7qs0mtk5qhq1kwczp8q5e', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+            return do_template('RED_ALERT', ['_GUID' => 'ea53dd9b1d3a5da1a5073f05f1fcaef2', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         $block_id = get_block_id($map);

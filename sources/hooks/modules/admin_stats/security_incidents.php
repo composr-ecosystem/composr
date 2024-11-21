@@ -282,6 +282,6 @@ class Hook_admin_stats_security_incidents extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('935fdd2a812e55df94196faad20c5371')));
     }
 }

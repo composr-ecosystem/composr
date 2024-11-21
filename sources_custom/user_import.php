@@ -58,7 +58,7 @@ function do_user_import()
     global $USER_IMPORT_WANTED;
     $header_row = $sheet_reader->read_row();
     if ($header_row === false) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b75833b69e7f518b926d67d553319a0b')));
     }
     foreach ($USER_IMPORT_WANTED as $local_key => $remote_key) {
         $remote_index = array_search($remote_key, $header_row);

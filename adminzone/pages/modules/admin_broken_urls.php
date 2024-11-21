@@ -330,7 +330,7 @@ class Module_admin_broken_urls
         require_code('caches');
         $_urls = get_cache_entry('broken_urls_choose', serialize([$identifier]));
         if ($_urls === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('60de356d121d5d1e82a728c0e3ce90ad')));
         }
 
         require_code('tasks');

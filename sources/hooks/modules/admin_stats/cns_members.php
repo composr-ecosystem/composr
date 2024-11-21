@@ -344,7 +344,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
 
                     default:
                         $y_axis_label = new Tempcode();
-                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d19f7e9d0cae5124bd53f48088284f2c')));
                 }
 
                 return [
@@ -355,6 +355,6 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e4ea4767cb295139b3602cd41914f4cf')));
     }
 }

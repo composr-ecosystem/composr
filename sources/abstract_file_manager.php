@@ -521,7 +521,7 @@ function _get_dir_tree(string $base, string $at = '') : array
         }
         closedir($dh);
     } else {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d4ca8f79d7825c96a101ea06c361b68e')));
     }
     return $out;
 }

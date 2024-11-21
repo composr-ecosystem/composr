@@ -201,7 +201,7 @@ function actual_add_theme(string $name, bool $include_themeini = true)
 function actual_rename_theme(string $theme, string $to)
 {
     if ($theme == 'default') {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('bae33ece72665fe1b968680596fe15ea')));
     }
 
     if ((file_exists(get_custom_file_base() . '/themes/' . $to)) || ($to == 'default' || $to == 'admin')) {
@@ -244,7 +244,7 @@ function actual_rename_theme(string $theme, string $to)
 function actual_copy_theme(string $theme, string $to, array $theme_images_to_skip = [], array $css_files_to_skip = [], bool $include_themeini = true)
 {
     if ($theme == 'default') {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4f48eebc89015802b331d0d1278a93b3')));
     }
 
     $theme_images_to_skip_path_map = [];
@@ -338,7 +338,7 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
 function actual_delete_theme(string $theme)
 {
     if ($theme == 'default') {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('83bcef69fc3b5fe0a975907181bc2244')));
     }
 
     global $USER_THEME_CACHE;

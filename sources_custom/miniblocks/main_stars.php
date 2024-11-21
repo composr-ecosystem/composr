@@ -20,7 +20,7 @@ if (!addon_installed('idolisr')) {
 }
 
 if (!addon_installed('points')) {
-    return do_template('RED_ALERT', ['_GUID' => 'zm4ccp3vsxc8wj32w3e4ejtrkn35705x', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'bb4a4551202152db9ce6de12433c48c6', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
 }
 
 require_code('cns_groups');

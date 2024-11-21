@@ -40,7 +40,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
     }
 
     if (count($line) < 2) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cada4af2015259b4a496fcbad19913b0')));
     }
 
     $data[] = [

@@ -1425,7 +1425,7 @@ class Module_admin_permissions
             if ($next_key >= count($array_keys)) {
                 $next_key = 0;
                 if ($infinite_loop) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9739466ba4ec51ff9e59fd8b7fd79d54')));
                 } else {
                     $infinite_loop = true;
                 }

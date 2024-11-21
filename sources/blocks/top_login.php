@@ -77,7 +77,7 @@ PHP;
         }
 
         if (get_forum_type() == 'none') {
-            return do_template('RED_ALERT', ['_GUID' => '8wj7a899zxqp7vnxaio4hamm6p3j651d', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
+            return do_template('RED_ALERT', ['_GUID' => '55a5da36b8c75c3cab0065bbe71b1b4c', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_css('personal_stats');

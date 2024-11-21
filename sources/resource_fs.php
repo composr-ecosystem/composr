@@ -281,7 +281,7 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
 
         // Uh oh! We failed to make a unique GUID
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_guid', ['resource_guid' => $guid]) !== null) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8d360921a1ef555ba084d6d6ce0e445e')));
         }
 
         $GLOBALS['SITE_DB']->query_insert('alternative_ids', [

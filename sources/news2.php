@@ -268,7 +268,7 @@ function add_news(string $title, string $news, ?string $author = null, int $vali
         $main_news_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', ['nc_owner' => $submitter]);
         if ($main_news_category_id === null) {
             if ((!has_privilege(get_member(), 'have_personal_category', 'cms_news')) && (!running_script('stress_test_loader'))) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7cc2f0deebb65f1a9acdc70665cedbf7')));
             }
 
             $map = [

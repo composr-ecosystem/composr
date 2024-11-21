@@ -66,7 +66,7 @@ function tracked_redirect_script()
         $hash = get_param_string('hash', false, INPUT_FILTER_GET_COMPLEX);
         require_code('crypt');
         if (!ratchet_hash_verify($url, get_site_salt(), $hash)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('eaea003159b8553baad2f829d41b9813')));
         }
     }
 
@@ -116,7 +116,7 @@ function gather_kpis(?string $pivot_filter = null) : array
 
         $filters = json_decode($kpi_row['k_filters'], true);
         if (!is_array($filters)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('933d0b01b58d5a5ea70a31ecb0728172')));
         }
 
         $pivot = ($kpi_row['k_pivot'] == '') ? null : $kpi_row['k_pivot'];
@@ -290,7 +290,7 @@ function stats_generate_graph(string $graph_name, array $filters = [], $pivot = 
             break;
 
         default:
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f81db5ac18ea5772bd6101cdf98637dd')));
     }
 
     return $graph_rendered;
@@ -512,7 +512,7 @@ function stats_generate_spreadsheet(string $spreadsheet_graph_name, ?string &$fi
     list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot);
     $graph_final_details = $hook_ob->generate_final_data($spreadsheet_graph_name, ($pivot === null) ? '' : $pivot, $filters);
     if ($graph_final_details === null) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d287c7484b025692b12e98c44e31b86f')));
     }
 
     $x_axis_label = $graph_final_details['x_axis_label']->evaluate();
@@ -859,7 +859,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return intval(cms_date('Y', $timestamp));
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3ad7fc19c15355a88480afc058c36e78')));
     }
 
     /**
@@ -982,7 +982,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 break;
 
             default:
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b7e50ce76c7f534d9b736f432fcb0072')));
         }
         return $data;
     }
@@ -1025,7 +1025,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
         }
 
         // If we reach this point, then $_range_value was invalid.
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e4d7c28853cb5b6da6d4a315774aae54')));
         return [];
     }
 

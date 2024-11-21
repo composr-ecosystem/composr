@@ -106,7 +106,7 @@ function get_order_field(string $entry_type, ?string $category_type, ?int $curre
     $ob = get_content_object($entry_type);
     $info = $ob->info();
     if ($info === null) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6f4e39fda93a5ef7aacb14cd9382889a')));
     }
 
     $db_order_field = $info['order_field'];
@@ -1130,7 +1130,7 @@ function predefined_content_changes_ui(string $addon, object $title, object $url
         }
 
         $choose_action = do_template('COLUMNED_TABLE_ROW_CELL_TICK', [
-            '_GUID' => 'c355b82d286c3f10180b8a0ecddf070g',
+            '_GUID' => 'def07bc3e5b7547d8b23c64253e504b4',
             'LABEL' => do_lang_tempcode('CHOOSE'),
             'NAME' => 'select__' . $codename,
             'VALUE' => '1',

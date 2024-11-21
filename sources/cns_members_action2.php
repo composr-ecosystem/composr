@@ -497,7 +497,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     $hidden = new Tempcode();
 
     if ($member_id === $GLOBALS['CNS_DRIVER']->get_guest_id()) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d9343d1793595470a889a2db4b301813')));
     }
 
     $fields = new Tempcode();
@@ -1554,7 +1554,7 @@ function cns_delete_member(int $member_id, ?int $member_id_deleting = null)
 function cns_ban_member(int $member_id, string $reasoned_ban = '1', bool $automatic = false)
 {
     if ($reasoned_ban == '0') {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('515848cfdbbd51f785f7ef2b9a6716b4')));
     }
 
     $previous_value = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned');

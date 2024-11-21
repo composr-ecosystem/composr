@@ -199,10 +199,10 @@ class Hook_ecommerce_classifieds
             // Check this is a valid purchase for the product
             $classified_price_catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_classifieds_prices', 'c_catalogue_name', ['id' => intval($matches[1])]);
             if ($classified_price_catalogue_name != $entry_catalogue_name) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0966c92feac451e5a8805a3278952900')));
             }
         } else { // Bizarre if this happened
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a68a245bfef6563698d679076aefc560')));
         }
 
         return [strval($entry_id), null];

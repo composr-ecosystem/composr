@@ -154,7 +154,7 @@ PHP;
         $select = isset($map['select']) ? $map['select'] : '';
         $select_b = isset($map['select_b']) ? $map['select_b'] : '';
         if ($select == '*' || $select == '>' || $select_b == '*' || $select_b == '>') {
-            return do_template('RED_ALERT', ['_GUID' => 'nktad4b52ustiuhzvqzin9htz4g26vow', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
+            return do_template('RED_ALERT', ['_GUID' => '864d21a1a71c57e59b03edb696472211', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR', escape_html('7801761e1e3b5c7cbd371b5fdce62569'))]); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
         }
         $filter = isset($map['filter']) ? $map['filter'] : '';
         $days = empty($map['days']) ? null : intval($map['days']);

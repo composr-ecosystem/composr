@@ -37,7 +37,7 @@ class CMSPmWrite
         }
 
         if (!addon_installed('tickets')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b70fb8be3ea75ebfb74c5ce58d866765')));
         }
 
         require_code('report_content');
@@ -113,7 +113,7 @@ class CMSPmWrite
 
             case self::TAPATALK_MESSAGE_REPLY:
                 if ($post_id === null) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e47b2bce2ec15d31945cb4fdadb40876')));
                 }
                 if (!has_post_access($post_id)) {
                     access_denied('I_ERROR');
@@ -131,7 +131,7 @@ class CMSPmWrite
 
             case self::TAPATALK_MESSAGE_FORWARD:
                 if ($post_id === null) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f1dd84b5ccb251d280f021e57c5c3835')));
                 }
                 $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);
                 if (!isset($post_details[0])) {

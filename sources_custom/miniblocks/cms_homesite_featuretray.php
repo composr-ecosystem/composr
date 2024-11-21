@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('cms_homesite')) {
-    return do_template('RED_ALERT', ['_GUID' => 'nvs4uiit60bctm7u2ya1bkopk8xkyyyu', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
+    return do_template('RED_ALERT', ['_GUID' => '6117c986d2ff5acaa6c87d093e4c9b72', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
 }
 
 $_download_page_url = build_url(['page' => 'download'], 'site');

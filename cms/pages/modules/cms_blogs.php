@@ -528,7 +528,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         if ($schedule !== null) {
             if (!addon_installed('calendar')) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4cac6bf47dad5a62bdf3cb5434f79cb9')));
             }
 
             require_code('calendar');
@@ -561,7 +561,7 @@ class Module_cms_blogs extends Standard_crud_module
         if (post_param_string('main_news_category') != 'personal') {
             $main_news_category = post_param_integer('main_news_category', INTEGER_MAGIC_NULL);
         } else {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('84babed8d55e57169459394fed239cfd')));
         }
 
         $news_category = [];

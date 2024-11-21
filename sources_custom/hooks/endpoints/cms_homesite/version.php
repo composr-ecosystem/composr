@@ -80,7 +80,7 @@ class Hook_endpoint_cms_homesite_version
 
             $differs_at = $this->find_biggest_branch_differ_position($long_dotted_number_with_qualifier, $other_long_dotted_number_with_qualifier);
             if ($differs_at === null) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cca2eb5f8ad756f28441bb83b7fe0906')));
             }
 
             if (($other_qualifier !== null) && ($qualifier === null)) {

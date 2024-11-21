@@ -343,7 +343,7 @@ class Self_learning_cache
             }
             cms_file_put_contents_safe($this->path, $contents, $flags);
         } else {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d5cbb686151e52c59b3a742a28478fdc')));
         }
     }
 
@@ -366,7 +366,7 @@ class Self_learning_cache
                 @unlink($this->path);
             }
         } else {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d8330d84a71c500f98e471b07cf646c3')));
         }
 
         $this->data = null;

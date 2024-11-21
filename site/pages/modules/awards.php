@@ -108,7 +108,7 @@ class Module_awards
             $ob = get_content_object($award_type_row['a_content_type']);
             $info = $ob->info();
             if ($info === null) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ab2bfcdb55dc523386b879839287c345')));
             }
 
             $this->title = get_screen_title('_AWARD', true, [escape_html(get_translated_text($award_type_row['a_title']))]);

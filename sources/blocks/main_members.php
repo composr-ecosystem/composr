@@ -108,7 +108,7 @@ PHP;
     public function run(array $map) : object
     {
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', ['_GUID' => 'lnxrdzazqbcnmcg8ubo3y915wcef6t13', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+            return do_template('RED_ALERT', ['_GUID' => 'd30716fca10455608693e81bf6c5234e', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         $block_id = get_block_id($map);

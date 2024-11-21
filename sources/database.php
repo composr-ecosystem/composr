@@ -1007,7 +1007,7 @@ abstract class DatabaseDriver
      */
     public function full_text_assemble(string $content) : string
     {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('13f37954ea7556c69fefccbed546b4bc')));
         return ''; // Not implemented
     }
 
@@ -1153,7 +1153,7 @@ abstract class DatabaseDriver
                 break;
 
             default:
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0ff97b4287de58c7b66188697bf1b527')));
         }
 
         return 'CAST(' . $field . ' AS ' . $_type . ')';
@@ -1362,7 +1362,7 @@ abstract class DatabaseDriver
             case 'UPPER':
             case 'LOWER':
                 if (count($args) != 1) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b21e947e52fe56d2ae6eca30422395be')));
                 }
                 switch (get_db_type()) {
                     // Supported on all
@@ -1371,7 +1371,7 @@ abstract class DatabaseDriver
 
             case 'REPLACE':
                 if (count($args) != 3) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('80eecdf43f3b51adbbf6c94484ee0420')));
                 }
                 switch (get_db_type()) {
                     // Supported on all http://troels.arvin.dk/db/rdbms/#functions-REPLACE
@@ -1380,7 +1380,7 @@ abstract class DatabaseDriver
 
             case 'SUBSTR':
                 if (count($args) != 2 && count($args) != 3) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('450cab95859a5e6ea423e2b72b758d8d')));
                 }
                 switch (get_db_type()) {
                     case 'sqlserver':
@@ -1395,7 +1395,7 @@ abstract class DatabaseDriver
 
             case 'INSTR':
                 if (count($args) != 2) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5a6e247d261451009206d153dee7bc78')));
                 }
 
                 switch (get_db_type()) {
@@ -1410,7 +1410,7 @@ abstract class DatabaseDriver
 
             case 'LENGTH':
                 if (count($args) != 1) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7ab1ab76179d5c60a0a7802378d71274')));
                 }
                 switch (get_db_type()) {
                     case 'mysql':
@@ -1428,7 +1428,7 @@ abstract class DatabaseDriver
 
             case 'RAND':
                 if (!empty($args)) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c5a7b0170f7e5671af8becd4e52154a5')));
                 }
                 switch (get_db_type()) {
                     case 'postgresql':
@@ -1439,7 +1439,7 @@ abstract class DatabaseDriver
 
             case 'COALESCE':
                 if (count($args) != 2) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('36fbbd9d3757531495b9e1f5761497bb')));
                 }
                 switch (get_db_type()) {
                     default:
@@ -1490,7 +1490,7 @@ abstract class DatabaseDriver
 
             case 'MOD':
                 if (count($args) != 2) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('54c4d9a73bc55a5187015a8905f6e966')));
                 }
                 switch (get_db_type()) {
                     case 'postgresql':
@@ -1505,7 +1505,7 @@ abstract class DatabaseDriver
 
             case 'MD5':
                 if (count($args) != 1) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e7ada32f648a5860b04989d32ca095fa')));
                 }
                 switch (get_db_type()) {
                     case 'oracle':
@@ -1522,7 +1522,7 @@ abstract class DatabaseDriver
 
             case 'REVERSE':
                 if (count($args) != 1) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d4b887dc20665c838d69ac3a3db73785')));
                 }
                 switch (get_db_type()) {
                     case 'db2':
@@ -1532,7 +1532,7 @@ abstract class DatabaseDriver
 
             case 'GROUP_CONCAT':
                 if (count($args) != 2) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1165066576cb56d5bb6e6b7f0b0b0f67')));
                 }
                 switch (get_db_type()) {
                     case 'oracle':
@@ -1555,7 +1555,7 @@ abstract class DatabaseDriver
 
             case 'X_ORDER_BY_BOOLEAN':
                 if (count($args) != 1) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6f341173c31556478fa860b92a6f5cba')));
                 }
                 switch (get_db_type()) {
                     case 'sqlserver':

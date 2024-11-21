@@ -1764,7 +1764,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $ob = get_content_object($content_type);
             $info = $ob->info();
             if ($info === null) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('519fd1ccae3a567ca45003de1ab5c32a')));
             }
 
             $title = do_lang('CUSTOM_FIELDS_FOR', do_lang($info['content_type_label']));

@@ -1041,7 +1041,7 @@ class Module_points
         $id = escrow_points($member_id_viewing, $member_id_of, $amount, $reason, $agreement, $expiry_time);
 
         if ($id === null) {
-            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR'));
+            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR', escape_html('68c1ef0bb63658a196e377c6f51718b6')));
         }
 
         // Show it worked / Refresh

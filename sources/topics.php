@@ -222,7 +222,7 @@ class CMS_Topic
             // Show it all
             $sort = $this->_get_sort_order($reverse);
             return do_template('COMMENTS_WRAPPER', [
-                '_GUID' => 'a89cacb546157d34vv0994ef91b2e707',
+                '_GUID' => '5e5218887a995a66bc7f0ab7c2869f24',
                 'PAGINATION' => $pagination,
                 'TYPE' => $content_type,
                 'ID' => $content_id,
@@ -297,7 +297,7 @@ class CMS_Topic
             if (get_forum_type() == 'cns') {
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (!array_key_exists(0, $_topic_info)) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('96f11d8478315f36a514aedcf1b2f2c5')));
                 }
                 $topic_info = $_topic_info[0];
             }

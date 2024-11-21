@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('calculatr')) {
-    return do_template('RED_ALERT', ['_GUID' => 'r26bp8s01wwiv031jmdakpfk3ohyrq8v', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calculatr'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'c4839ee5a0a65c2ab8beba18412c677a', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calculatr'))]);
 }
 
 load_csp(['csp_allow_eval_js' => '1']);

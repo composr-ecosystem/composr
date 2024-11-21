@@ -198,7 +198,7 @@ function rss_backend_script()
     push_query_limiting(false);
 
     if ((!file_exists(get_file_base() . '/sources/hooks/systems/rss/' . $mode . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/rss/' . $mode . '.php'))) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8b2cb1058ab75243b94a1db66939609e')));
     }
 
     // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(

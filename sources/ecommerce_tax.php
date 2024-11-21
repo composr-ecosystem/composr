@@ -66,7 +66,7 @@ function get_tax_service_hook(?string $tax_service = null, bool $fail_ok = false
     }
 
     if (!$fail_ok) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('caeaf8cee2d15e84b46da831a4927bfd')));
     }
 
     return null;
@@ -160,7 +160,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
 
     // The software tax hook should never be removed; error if it was
     if (!hook_exists('systems', 'ecommerce_tax', 'core')) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ae8b348efdc35898a55491c256b93dbd')));
     }
 
     // Set configured tax service first so shipping tax takes precedence with this service

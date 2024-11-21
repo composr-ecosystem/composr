@@ -206,6 +206,6 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8b7bdc2cdb7f5b55accedb56961aae08')));
     }
 }

@@ -106,7 +106,7 @@ class ForumEmailIntegration extends EmailIntegration
             }
         }
 
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8abf0794696b54fe8854775b1e529c0f')));
         return '';
     }
 
@@ -127,7 +127,7 @@ class ForumEmailIntegration extends EmailIntegration
             }
         }
 
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('00a5d6fac65c531292193694c61fafcb')));
         return '';
     }
 

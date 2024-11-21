@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('group_points')) {
-    return do_template('RED_ALERT', ['_GUID' => 'tl49gdaw7tr37siemgg8nx85kh4uqpqd', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('group_points'))]);
+    return do_template('RED_ALERT', ['_GUID' => '94ecc8a1fb685ce99ec2efe53bf9daf6', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('group_points'))]);
 }
 
 if (!addon_installed('points')) {

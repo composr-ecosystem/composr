@@ -57,7 +57,7 @@ class Block_main_bottom_bar
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', ['_GUID' => '0tcc11s4mxymww9ubl49vqig0m8y72wh', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+            return do_template('RED_ALERT', ['_GUID' => '917fee10193752fd9cdb56e5dbbb9afb', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_code('cns_general');
@@ -155,7 +155,7 @@ class Block_main_bottom_bar
         }
 
         return do_template('BLOCK_MAIN_BOTTOM_BAR', [
-            '_GUID' => 'sdflkdlfd303frksdf',
+            '_GUID' => 'a217f0f571f951e99b320c106846611e',
             'BLOCK_ID' => $block_id,
             'NEWEST_MEMBER_PROFILE_URL' => $GLOBALS['CNS_DRIVER']->member_profile_url($stats['newest_member_id'], true),
             'NEWEST_MEMBER_USERNAME' => $stats['newest_member_username'],

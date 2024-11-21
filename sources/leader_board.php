@@ -322,7 +322,7 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
             break;
 
         default:
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('986708b7d3d75791913340b704789197')));
     }
 
     // Re-set PHP timezone back to its previous setting

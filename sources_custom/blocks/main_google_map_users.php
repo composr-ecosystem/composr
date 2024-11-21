@@ -82,7 +82,7 @@ PHP;
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', ['_GUID' => 'rly9gj7499putj5n2emik09qx1h3w1kg', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+            return do_template('RED_ALERT', ['_GUID' => '224f0c56a36f5f03b8f380ebe6ed7eaa', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_lang('google_map_users');

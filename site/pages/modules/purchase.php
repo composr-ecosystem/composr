@@ -1114,7 +1114,7 @@ class Module_purchase
         if ($discounted_price === null) {
             $price = $details['price'];
             if ($price === null) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('550b5102b0625ee3818399fe07b85cea')));
             }
         } else {
             $price = $discounted_price;
@@ -1193,7 +1193,7 @@ class Module_purchase
         if ($discounted_price === null) {
             $price = $details['price'];
             if ($price === null) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e85ad95460b653e28c7a92bc27e7d42b')));
             }
         } else {
             $price = $discounted_price;
@@ -1275,7 +1275,7 @@ class Module_purchase
             if ($confirmation_box === null) {
                 if ($points_for_discount !== null) {
                     if (!addon_installed('points')) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f9da6096c690568d880fbdbac53fbd33')));
                     }
 
                     $confirmation_box = do_lang_tempcode('BUYING_FOR_POINTS_CONFIRMATION', escape_html($item_name), escape_html(integer_format($points_for_discount)));
@@ -1385,7 +1385,7 @@ class Module_purchase
                     break;
                 case PRODUCT_ORDERS:
                     if (!addon_installed('shopping')) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('55f28bc39a615880bf6898ce1546e76a')));
                     }
 
                     require_code('shopping');
@@ -1499,7 +1499,7 @@ class Module_purchase
 
             list($discounted_price, $discounted_tax_code, $points_for_discount) = get_discounted_price($details);
             if (($discounted_price === null) && ($details['price'] !== 0.00)) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // Not discounted to free and not free, we should not be here
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0bd939cf853c5df6889b4e4c1680475b'))); // Not discounted to free and not free, we should not be here
             }
 
             if ($points_for_discount !== null) {
@@ -1638,7 +1638,7 @@ class Module_purchase
     {
         list(, $product_object) = find_product_details($type_code);
         if (!method_exists($product_object, 'is_available')) {
-            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR'));
+            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR', escape_html('d1f8a34e4a955a3984070c3ec489c74b')));
         }
 
         $availability_status = $product_object->is_available($type_code, get_member(), 1, true);
@@ -1660,7 +1660,7 @@ class Module_purchase
                 return warn_screen($this->title, do_lang_tempcode('ECOMMERCE_PRODUCT_MISSING'));
 
             case ECOMMERCE_PRODUCT_INTERNAL_ERROR:
-                return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR'));
+                return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR', escape_html('bb5a280fc2b05a84bf6986e0b4be211a')));
 
             case ECOMMERCE_PRODUCT_NO_GUESTS:
                 if ((is_guest()) && (get_forum_type() != 'cns')) {
@@ -1703,7 +1703,7 @@ class Module_purchase
 
         if ($points_for_discount !== null) {
             if (!addon_installed('points')) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('54b8975e56fe5ef58ea83e9d48ea03f0')));
             }
 
             // Can't afford the points?
@@ -1715,7 +1715,7 @@ class Module_purchase
         }
 
         if (($discounted_price === null) && ($details['price'] === null)) {
-            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR')); // Cannot buy with money and not available with points for some reason
+            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR', escape_html('4e8a61b61b78522fbecd3b204d73c6ad'))); // Cannot buy with money and not available with points for some reason
         }
 
         return null;

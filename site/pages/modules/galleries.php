@@ -1253,7 +1253,7 @@ class Module_galleries
             }
 
             $carousel_entries->attach(do_template('GALLERY_SLIDESHOW_CAROUSEL_ENTRY', [
-                '_GUID' => 'ff75c904zx7fe857484874483ed65f5a',
+                '_GUID' => '25472ea4b7e7598aa1886d68133e74be',
                 'INDEX' => strval($i),
                 'DESCRIPTION' => $entry_description,
                 '_TITLE' => $entry_title,
@@ -1276,7 +1276,7 @@ class Module_galleries
         }
 
         return do_template('GALLERY_SLIDESHOW_SCREEN', [
-            '_GUID' => 'idkcfef2d71a4d8086d5351ede7731fe',
+            '_GUID' => 'd8040bf8bbc251168fb96bba9fa192c3',
             'SLIDESHOW_ID' => $slideshow_id,
             '_TOTAL_ITEMS' => strval($total_items),
             'TOTAL_ITEMS' => integer_format($total_items),

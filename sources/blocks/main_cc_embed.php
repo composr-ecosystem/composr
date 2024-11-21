@@ -203,7 +203,7 @@ PHP;
         $is_ecommerce = is_ecommerce_catalogue($catalogue_name, $catalogue);
         if ($is_ecommerce) {
             if (get_forum_type() != 'cns') {
-                return do_template('RED_ALERT', ['_GUID' => '9k0v50crqhabzsxv9l2pq3dcxjketh6a', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+                return do_template('RED_ALERT', ['_GUID' => 'e477192e0a3455d2a95e698d8adbb529', 'TEXT' => do_lang_tempcode('NO_CNS')]);
             }
         }
 

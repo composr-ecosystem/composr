@@ -351,7 +351,7 @@ function actual_rename_zone_lite(string $zone, string $new_zone, bool $dont_both
 function actual_delete_zone(string $zone, bool $force = false, bool $skip_afm = false)
 {
     if ($zone == '') {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7cdde6a361f25586b95c17ac79b9be84')));
     }
 
     if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
@@ -930,7 +930,7 @@ function get_page_type_file_extension(string $type) : string
     } elseif (substr($type, 0, 4) == 'html') {
         $ext = 'htm';
     } else {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('44d48006f6045069b12fce6591b3ca8b')));
     }
     return $ext;
 }
@@ -1009,7 +1009,7 @@ function delete_cms_page(string $zone, string $page, string $type = 'comcode_cus
         }
     } else {
         if ($only_lang !== null) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('183ba384acad55f8b89c73d1f7311a77')));
         }
 
         $_path = zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page, true);

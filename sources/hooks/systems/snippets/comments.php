@@ -31,7 +31,7 @@ class Hook_snippet_comments
     public function run() : object
     {
         if (get_option('is_on_comments') == '0') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a33597747b575767b9e9625cb5e7f3e0')));
         }
 
         $serialized_options = get_param_string('serialized_options', false, INPUT_FILTER_GET_COMPLEX);
@@ -39,7 +39,7 @@ class Hook_snippet_comments
 
         require_code('crypt');
         if (!ratchet_hash_verify($serialized_options, get_site_salt(), $hash)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('612cdd3a673c56779ece352780967923')));
         }
 
         list($topic_id, $num_to_show_limit, $allow_comments, $invisible_if_no_comments, $forum, $reverse, $may_reply, $highlight_by_user, $allow_reviews) = json_decode($serialized_options, true);

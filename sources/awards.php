@@ -67,7 +67,7 @@ function give_award(int $award_id, string $content_id, ?int $time = null)
     $object = get_content_object($awards[0]['a_content_type']);
     $info = $object->info();
     if ($info === null) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9babaf12b08d5173a4291f0a08e24e7e')));
     }
     if ((array_key_exists('submitter_field', $info)) && ($info['submitter_field'] !== null)) {
         require_code('content');

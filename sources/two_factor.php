@@ -152,7 +152,7 @@ function adjust_htaccess()
     } else {
         $end_pos = strpos($contents, $final_line, $start_pos);
         if ($end_pos === false) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Should never happen, things would crash if so! But we can't proceed
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('87fde62550f25942ac44d38925cb9fc1'))); // Should never happen, things would crash if so! But we can't proceed
         }
 
         $contents = trim(substr($contents, 0, $start_pos) . implode("\n", $lines) . substr($contents, $end_pos + strlen($final_line))) . "\n";

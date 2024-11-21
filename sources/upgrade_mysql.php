@@ -37,7 +37,7 @@ function init__upgrade_mysql()
 function upgrader_mysql_repair_screen() : string
 {
     if (strpos(get_db_type(), 'mysql') === false) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('71f9a8be0bcd52e49fd35b81e531d476')));
     }
 
     require_code('database_repair');
@@ -53,7 +53,7 @@ function upgrader_mysql_repair_screen() : string
 function upgrader_criticise_mysql_fields_screen() : string
 {
     if (strpos(get_db_type(), 'mysql') === false) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b8bb3f4ba8bf52099856804f86cfeeb0')));
     }
 
     $out = '<h2>' . do_lang('CORRECT_MYSQL_SCHEMA_ISSUES') . '</h2>';

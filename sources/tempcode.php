@@ -1356,7 +1356,7 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
                 foreach ($param as &$_param) {
                     $block_parts = explode('=', $_param, 2);
                     if (!isset($block_parts[1])) {
-                        $BLOCKS_CACHE[serialize($param)] = make_string_tempcode(do_lang('INTERNAL_ERROR') . ' (bad block parameter: ' . escape_html($_param) . ')');
+                        $BLOCKS_CACHE[serialize($param)] = make_string_tempcode(do_lang('INTERNAL_ERROR', comcode_escape('30eb7286ffef52298b48c89a440c5535')) . ' (bad block parameter: ' . escape_html($_param) . ')');
                         return;
                     }
                     list($key, $val) = $block_parts;

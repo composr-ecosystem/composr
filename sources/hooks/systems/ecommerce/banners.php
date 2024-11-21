@@ -383,7 +383,7 @@ class Hook_ecommerce_banners
                 $banner_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details2', ['details' => do_lang('BANNER', null, null, null, get_site_default_lang()), 'member_id' => $member_id, 't_type_code' => 'BANNER_ACTIVATE']);
                 $curhit = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'campaign_remaining', ['name' => $banner_name]);
                 if ($curhit === null) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8f1d790433c4556fa16c280c431c48f7')));
                 }
                 $afthit = $curhit + $extrahit;
                 $GLOBALS['SITE_DB']->query_update('banners', ['campaign_remaining' => $afthit], ['name' => $banner_name], '', 1);
@@ -398,7 +398,7 @@ class Hook_ecommerce_banners
                 $banner_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details2', ['details' => do_lang('BANNER', null, null, null, get_site_default_lang()), 'member_id' => $member_id, 't_type_code' => 'BANNER_ACTIVATE']);
                 $curimp = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'display_likelihood', ['name' => $banner_name]);
                 if ($curimp === null) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('eeab4d0dd24e53a08cce21c5a40fa97e')));
                 }
                 $aftimp = $curimp + $extraimp;
                 $GLOBALS['SITE_DB']->query_update('banners', ['display_likelihood' => $aftimp], ['name' => $banner_name], '', 1);

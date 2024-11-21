@@ -417,7 +417,7 @@ function _render_google_analytics_chart($metric, $id, $days, $under_tab, $access
             break;
 
         default:
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2f56dc0fe68f538e8c67be6f8170d793')));
     }
 
     return do_template('GOOGLE_ANALYTICS', [

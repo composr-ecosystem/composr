@@ -253,7 +253,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                 if ($poll_info[0]['po_vote_revocation'] == 0) {
                     // Guests cannot view results if they cannot vote, view_poll_results_before_voting is not set, and vote revocation is off.
                     if (is_guest() && $poll_info[0]['po_guests_can_vote'] == 0) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('84e82e36eca858a5b340df87e989190c')));
                     }
                     $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', [
                         'pv_poll_id' => $poll_id,

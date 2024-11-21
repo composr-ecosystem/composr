@@ -115,7 +115,7 @@ class Hook_profiles_tabs_rank
             $group = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [], ' AND g_promotion_threshold IS NOT NULL ORDER BY g_promotion_threshold ASC');
         }
         if ($group === null) { // Still nothing? Error because the rank tab should not have been visible.
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d78189a27b4659d7b696701c3877a69b')));
         }
 
         // Populate our rank ladder

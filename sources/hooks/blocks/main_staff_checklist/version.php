@@ -39,9 +39,9 @@ class Hook_checklist_version
         $num_addons_outdated = (cms_version_minor() == 'custom') ? 0 : count(find_updated_addons());
 
         if (($version_outdated) || ($num_addons_outdated > 0)) {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'm578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'b3488fc872355a07a29dcd67cc9f5994']);
         } else {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'n578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => '609a60ec88415b66a6318dcd752703ba']);
         }
 
         if ($version_outdated) {

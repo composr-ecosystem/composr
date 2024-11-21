@@ -66,7 +66,7 @@ function disable_content_translation()
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
     if (!multi_lang_content()) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1a3df0b21b3557b09cad74758c55b733')));
     }
 
     cms_disable_time_limit();
@@ -151,7 +151,7 @@ function enable_content_translation()
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
     if (multi_lang_content()) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c84d8c8f19b25a91838042d750d85487')));
     }
 
     cms_disable_time_limit();

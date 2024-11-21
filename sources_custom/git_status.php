@@ -40,7 +40,7 @@ function git_status_to_str($git_status)
             break;
 
         default:
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('361469fa9f535e599739e04d1d0ceab8')));
     }
     return $git_status_str;
 }

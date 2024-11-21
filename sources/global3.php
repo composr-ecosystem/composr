@@ -2308,7 +2308,7 @@ function get_page_name() : string
     $getting_page_name = true;
     $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX);
     if (strlen($page) > 80) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('af9ff824131551eb8ed3c53d45b99e0d')));
     }
     if (($page == '') && ($ZONE !== null)) {
         $page = $ZONE['zone_default_page'];
@@ -5146,7 +5146,7 @@ function cms_unpack_to_uinteger(string $str, ?int $bytes = null, bool $little_en
             $result = unpack($little_endian ? 'V' : 'N', $str);
             break;
         default:
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('51d7436056d356a595e7e7427bff4c79')));
     }
     return $result[1];
 }

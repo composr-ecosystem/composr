@@ -998,7 +998,7 @@ function get_hook_ob(string $type, string $subtype, string $hook, string $classn
 
     $ob = object_factory(class_exists(str_replace('Hook_', 'Hx_', $classname_prefix) . $hook) ? (str_replace('Hook_', 'Hx_', $classname_prefix) . $hook) : ($classname_prefix . $hook), true);
     if ((!$fail_ok) && ($ob === null)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f45146eaa359580bb0d10db80263e9c3')));
     }
 
     return $ob;
@@ -1975,7 +1975,7 @@ function _check_block_installation_status(object $object, string $codename) : ?o
                 (($installed_hack_version < $this_hack_version) && (array_key_exists('hack_require_upgrade', $info)))
             ) {
                 $error_msg = do_lang_tempcode('OUTDATED_ADDON_REMEDIES', escape_html($codename), escape_html(find_script('upgrader')));
-                return do_template('RED_ALERT', ['_GUID' => '7jsfqaeaaf07kawlhnvteul10wm34bcu', 'TEXT' => $error_msg]);
+                return do_template('RED_ALERT', ['_GUID' => '3225d17e50d65388a72b82b61f163acc', 'TEXT' => $error_msg]);
             }
 
             // See if the module is not compatible with this version of the software
@@ -1990,13 +1990,13 @@ function _check_block_installation_status(object $object, string $codename) : ?o
                         protect_from_escaping(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
                     ]
                     );
-                return do_template('RED_ALERT', ['_GUID' => 'lcdsdlkcnwsdoweirhf34u4f3iugfh', 'TEXT' => $error_msg]);
+                return do_template('RED_ALERT', ['_GUID' => '8b44b7e8192c512a847b2c90d9d92350', 'TEXT' => $error_msg]);
             }
         } else {
             $_error_msg = do_lang('MISSING_BLOCK', escape_html($codename));
             $addon_manage_url = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
             $error_msg = do_lang_tempcode('BROKEN_ADDON_REMEDIES', $_error_msg, escape_html(find_script('upgrader')), escape_html(static_evaluate_tempcode($addon_manage_url)));
-            return do_template('RED_ALERT', ['_GUID' => 'bolznyf0jx9omujol6xbmqetlcuo7d6b', 'TEXT' => $error_msg]);
+            return do_template('RED_ALERT', ['_GUID' => '7bed09ffcbf2550eb97f4585ee47c16f', 'TEXT' => $error_msg]);
         }
     }
 

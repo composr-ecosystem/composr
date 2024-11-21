@@ -178,7 +178,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
                         if ($subforum['last_member_id'] !== null) {
                             if (!is_guest($subforum['last_member_id'])) {
                                 $poster = do_template('CNS_USER_MEMBER', [
-                                    '_GUID' => '39r932rwefldjfldjlf',
+                                    '_GUID' => '3ae17589f854523d89a48cd4bfc61b6c',
                                     'FIRST' => true,
                                     'USERNAME' => $subforum['last_username'],
                                     'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($subforum['last_member_id'], true),
@@ -195,7 +195,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
                         $topic_url->attach('#first-unread');
 
                         $latest = do_template('CNS_FORUM_LATEST', [
-                            '_GUID' => 'dlfsdfkoewfdlfsldfk',
+                            '_GUID' => 'a6ed75d4cccc581199a0826a4498d7c4',
                             'DATE' => ($subforum['last_time'] === null) ? do_lang_tempcode('NA_EM') : protect_from_escaping(escape_html(get_timezoned_date_time($subforum['last_time']))),
                             'DATE_RAW' => ($subforum['last_time'] === null) ? '' : strval($subforum['last_time']),
                             'TOPIC_URL' => $topic_url,
@@ -272,7 +272,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
                     }
 
                     $forums->attach(do_template('CNS_FORUM_IN_GROUPING', [
-                        '_GUID' => 'slkfjof9jlsdjcsd',
+                        '_GUID' => '7decc6e4a82c538e987a8fe7283c79ba',
                         'ID' => strval($subforum['id']),
                         'NEW_POST_OR_NOT' => $new_post_or_not,
                         'LANG_NEW_POST_OR_NOT' => do_lang('POST_INDICATOR_' . $new_post_or_not),

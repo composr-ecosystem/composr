@@ -268,7 +268,7 @@ function content_get_details(string $content_type, string $content_id, bool $res
 {
     $cma_ob = get_content_object($content_type);
     if (!is_object($cma_ob)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a2eab02a77d754c190b8b1ba480d63dc')));
     }
     $cma_info = $cma_ob->info();
 

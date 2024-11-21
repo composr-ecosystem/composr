@@ -57,7 +57,7 @@ class Block_main_member_bar
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', ['_GUID' => '22lg0bjjoy2j1jl25n4t1sh9xsgzj8no', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+            return do_template('RED_ALERT', ['_GUID' => 'cc45c8273cf053c59baed0c144520328', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_css('cns');
@@ -86,7 +86,7 @@ class Block_main_member_bar
             $private_topic_url = build_url(['page' => 'members', 'type' => 'view', 'id' => ($member_id == get_member()) ? null : $member_id], get_module_zone('members'), [], true, false, false, 'tab--pts');
 
             $bar = do_template('CNS_MEMBER_BAR', [
-                '_GUID' => 's3kdsadf0p3wsjlcfksdj',
+                '_GUID' => '4403fb4914d35018b3e5cfc98d353cb7',
                 'AVATAR_URL' => isset($member_info['avatar']) ? $member_info['avatar'] : '',
                 'PROFILE_URL' => $profile_url,
                 'USERNAME' => $member_info['username'],

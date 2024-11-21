@@ -598,7 +598,7 @@ class Module_tickets
 
             $_temp = explode('_', $ticket_id, 2);
             if (!isset($_temp[1])) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // Normal topic, not a ticket!
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('eb64179a8edb5d0ca334e9bbdb803c4c'))); // Normal topic, not a ticket!
             }
 
             $ticket_owner = intval($_temp[0]);
@@ -642,7 +642,7 @@ class Module_tickets
             if (get_forum_type() == 'cns') {
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (!array_key_exists(0, $_topic_info)) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5f0a24f9d4bc5a0786ff0905d30127e3')));
                 }
                 $topic_info = $_topic_info[0];
             }

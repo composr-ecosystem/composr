@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('member_filedumps')) {
-    return do_template('RED_ALERT', ['_GUID' => '2w60cngyu9f26bseweyg40lix71r65ug', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('member_filedumps'))]);
+    return do_template('RED_ALERT', ['_GUID' => '71ecad21f32d5ea28e6b95a20ef205c3', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('member_filedumps'))]);
 }
 
 require_code('files2');

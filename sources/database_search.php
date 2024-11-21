@@ -1007,7 +1007,7 @@ class Fast_custom_index
         static $ob = null;
         if ($ob === null) {
             if (!addon_installed('search')) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5ab078c94ad759f787e5f2d56a17b4e3')));
             }
             require_code('crc24');
             $ob = new CRC24();

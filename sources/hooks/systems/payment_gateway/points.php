@@ -103,7 +103,7 @@ class Hook_payment_gateway_points
     public function make_subscription_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, string $currency, int $length, string $length_units) : object
     {
         // Points do not support subscriptions
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d7dcee765a4c5055984ef68c91710d00')));
         return new Tempcode(); // Make IDEs happy
     }
 
@@ -117,7 +117,7 @@ class Hook_payment_gateway_points
     public function make_cancel_button(string $purchase_id) : object
     {
         // Points do not support subscriptions
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cd7776169b2b524eb64fa76fb4d09c6b')));
         return new Tempcode(); // Make IDEs happy
     }
 

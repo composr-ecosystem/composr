@@ -90,6 +90,6 @@ class Hook_snippet_profile_tab
 
         call_user_func_array('set_execution_context', $former_context);
 
-        return do_template('INLINE_WIP_MESSAGE', ['_GUID' => 'aae58043638dac785405a42e9578202b', 'MESSAGE' => do_lang_tempcode('INTERNAL_ERROR')]);
+        return do_template('INLINE_WIP_MESSAGE', ['_GUID' => 'aae58043638dac785405a42e9578202b', 'MESSAGE' => do_lang_tempcode('INTERNAL_ERROR', escape_html('1a05d3d5d13e5042b6ddf6045747dd35'))]);
     }
 }

@@ -29,7 +29,7 @@ class CMSPostWrite
         cms_verify_parameters_phpdoc();
 
         if (!addon_installed('tickets')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('605a2fc294e25b81b03b7584f2b96fed')));
         }
 
         require_code('report_content');

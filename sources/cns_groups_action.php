@@ -284,7 +284,7 @@ function cns_make_rank_set(string $rank_set) : array
             return [$member_group_0];
     }
 
-    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('01686b9ed7b15a109174dd9027b71dcb')));
 }
 
 /**

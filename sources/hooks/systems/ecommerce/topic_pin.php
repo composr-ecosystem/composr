@@ -206,7 +206,7 @@ class Hook_ecommerce_topic_pin
         if (get_forum_type() == 'cns') {
             $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $topic_id]);
             if ($topic_title === null) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('12fdd16c74fb59cb88270f20ba72a00e')));
             }
         } else {
             $topic_title = strval($topic_id);

@@ -152,7 +152,7 @@ class Hook_cron_cns_welcome_emails
                     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('logged_mail_messages', 'm_date_and_time', ['m_subject' => $subject, 'm_to_email' => serialize([$member['m_email_address']])]);
                     if ($test !== null) {
                         if ($test > $member['m_join_time']) {
-                            fatal_exit(do_lang('INTERNAL_ERROR') . ' [' . $member['m_email_address'] . ']');
+                            fatal_exit(do_lang('INTERNAL_ERROR', comcode_escape('a5afd5fabd7d5c509eaa461bfab0ba44')) . ' [' . $member['m_email_address'] . ']');
                         }
                         // otherwise they probably just resubscribed and hence bumped their time
                     }

@@ -1139,7 +1139,7 @@ function step_4() : object
     $options->attach('<p>Content translations are currently not available in v11; see <a href="https://compo.sr/tracker/view.php?id=6063" target="_blank">tracker issue 6063</a></p>');
     //$options->attach(make_tick(do_lang_tempcode('MULTI_LANG_CONTENT'), is_maintained_description('multi_lang_content', example('', 'MULTI_LANG_CONTENT_TEXT')), 'multi_lang_content', $multi_lang_content));
 
-    $general_advanced_options = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'g051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
+    $general_advanced_options = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '86df54c51d135e258b577aec4176aa99', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
 
     $temp = new Tempcode();
     if (!GOOGLE_APPENGINE) {
@@ -2100,7 +2100,7 @@ function step_5_uninstall() : object
         }
         $sitedb->drop_table_if_exists('db_meta');
         $sitedb->drop_table_if_exists('db_meta_indices');
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'ci3u3uocbociu3g98fcucg3ovc', 'SOMETHING' => do_lang_tempcode('DROPPED_TABLES')]));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '8dc89b69c6f851f6a5aa69f3c532a2ae', 'SOMETHING' => do_lang_tempcode('DROPPED_TABLES')]));
     }
 
     unset($sitedb);
@@ -2652,7 +2652,7 @@ function step_8() : object
                 if (get_param_integer('keep_show_timings', 0) == 1) {
                     $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time) . ' seconds')])];
                 } else {
-                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))])];
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'd89346673cfa5bc7928dcce6c75f0946', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))])];
                 }
                 break;
 

@@ -227,7 +227,7 @@ function member_personal_links_and_details(int $member_id) : array
         if (get_option('points_show_personal_stats_points_spent') == '1') {
             $points_spent = points_used($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
-                '_GUID' => '6241e58edfdsf735f3a2618fd7fff',
+                '_GUID' => 'bd40d6fd68085ffb8ee11676a0ab295c',
                 'KEY' => do_lang_tempcode('COUNT_POINTS_SPENT'),
                 'RAW_VALUE' => strval($points_spent),
                 'VALUE' => integer_format($points_spent, 0),
@@ -246,7 +246,7 @@ function member_personal_links_and_details(int $member_id) : array
             if (get_option('points_show_personal_stats_gift_points_balance') == '1') {
                 $gift_points_balance = gift_points_balance($member_id);
                 $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
-                    '_GUID' => '6241e5ssd45ddsdsdsa2618fd7fff',
+                    '_GUID' => 'bb92370d206b5d84848f9d70c9957075',
                     'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_BALANCE'),
                     'RAW_VALUE' => strval($gift_points_balance),
                     'VALUE' => integer_format($gift_points_balance, 0),
@@ -255,7 +255,7 @@ function member_personal_links_and_details(int $member_id) : array
             if (get_option('points_show_personal_stats_gift_points_sent') == '1') {
                 $gift_points_sent = gift_points_sent($member_id);
                 $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
-                    '_GUID' => '6241eddsd4sdddssdsa2618fd7fff',
+                    '_GUID' => '8e8e7ab33c4f50e4ac92ce322622d1f1',
                     'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_SENT'),
                     'RAW_VALUE' => strval($gift_points_sent),
                     'VALUE' => integer_format($gift_points_sent, 0),
@@ -273,7 +273,7 @@ function member_personal_links_and_details(int $member_id) : array
                 $group_url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $group_id], get_module_zone('groups'));
                 $hyperlink = hyperlink($group_url, $usergroups[$group_id], false, true);
                 $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE_COMPLEX', [
-                    '_GUID' => 'sas41eddsd4sdddssdsa2618fd7fff',
+                    '_GUID' => '3a3b89d5b86d599d9b1cd3b42622a351',
                     'KEY' => do_lang_tempcode('USERGROUP'),
                     'RAW_VALUE' => $group_url,
                     'VALUE' => $hyperlink,
@@ -299,7 +299,7 @@ function member_personal_links_and_details(int $member_id) : array
             $last_visit = $GLOBALS['FORUM_DRIVER']->mrow_lastvisit($row);
         }
         $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
-            '_GUID' => 'sas41eddsdsdsdsdsa2618fd7fff',
+            '_GUID' => '00377309a83255139cd0ac3fcbcb3611',
             'KEY' => do_lang_tempcode('LAST_HERE'),
             'RAW_VALUE' => strval($last_visit),
             'VALUE' => get_timezoned_date_time($last_visit),
@@ -317,7 +317,7 @@ function member_personal_links_and_details(int $member_id) : array
                 $expiry_time = $subscription['expiry_time'];
                 if (($expiry_time !== null) && (($expiry_time - time()) < ($manual_subscription_expiry_notice * 24 * 60 * 60)) && ($expiry_time >= time())) {
                     require_lang('ecommerce');
-                    $expiry_date = ($expiry_time === null) ? do_lang('INTERNAL_ERROR') : get_timezoned_date($expiry_time, false);
+                    $expiry_date = ($expiry_time === null) ? do_lang('INTERNAL_ERROR', comcode_escape('fc1ea5ef769951ebb3bff7a05020a111')) : get_timezoned_date($expiry_time, false);
                     $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                         '_GUID' => '2675d56aa278616aa9f00b051ca084fc',
                         'KEY' => do_lang_tempcode('SUBSCRIPTION_EXPIRY_MESSAGE', escape_html($subscription['item_name'])),
