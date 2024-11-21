@@ -1194,8 +1194,13 @@ function guid_scan($path)
     $GUID_ERRORS_MISSING = [];
     $GUID_ERRORS_DUPLICATE = [];
     $out = $GUID_ORIGINAL_CONTENTS;
-    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => ('[^']+')(.*)#", '_guid_scan_callback', $out); // First sweep. Bind template calls with a simple initial string value for the first parameter (the GUID hopefully) - finds us all the existing GUIDs
-    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)()(.*)' => #", '_guid_scan_callback', $out); // Second sweep. Bind all remaining template calls - allows us to look at each call
+
+    // Template GUIDs
+    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => ('[^']+')(.*)#", '_guid_scan_callback__template', $out); // First sweep. Bind template calls with a simple initial string value for the first parameter (the GUID hopefully) - finds us all the existing GUIDs
+    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)()(.*)' => #", '_guid_scan_callback__template', $out); // Second sweep. Bind all remaining template calls - allows us to look at each call
+
+    // Internal error GUIDs
+    $out = preg_replace_callback("#do_lang(_tempcode)?\('INTERNAL\_ERROR'(.*)\)#", '_guid_scan_callback__internal_error', $out);
 
     return [
         'errors_missing' => $GUID_ERRORS_MISSING,
@@ -1205,7 +1210,7 @@ function guid_scan($path)
     ];
 }
 
-function _guid_scan_callback($match)
+function _guid_scan_callback__template($match)
 {
     $full_match_line = $match[0];
     $template_name = $match[1];
@@ -1257,6 +1262,81 @@ function _guid_scan_callback($match)
             $GUID_LANDSCAPE[$template_name][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
             return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'," . (($whitespace !== '') ? $whitespace : ' ') . "'" . $first_param_name . $remaining_of_line . "' => ";
         }
+    }
+
+    return $full_match_line;
+}
+
+function _guid_scan_callback__internal_error($match)
+{
+    $full_match_line = $match[0];
+    $is_tempcode = ($match[1] === '_tempcode');
+    $params = $match[2];
+
+    /*
+    For debugging:
+    echo $full_match_line . '<br />';
+    return $full_match_line;
+    */
+
+    global $GUID_LANDSCAPE, $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $FOUND_GUID, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE;
+
+    $new_guid = md5(uniqid('', true));
+
+    if (!array_key_exists('INTERNAL_ERROR', $GUID_LANDSCAPE)) {
+        $GUID_LANDSCAPE['INTERNAL_ERROR'] = [];
+    }
+
+    $match_pos = strpos($GUID_ORIGINAL_CONTENTS, $full_match_line);
+    $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0, $match_pos), "\n") + 1;
+
+    // First sweep (GUID exists)
+    $inner_matches = [];
+    if (preg_match_all('/(escape_html|comcode_escape)\(\'([\w-]*)\'\)/', $params, $inner_matches) != 0) {
+        if (array_key_exists(0, $inner_matches[2])) { // We only care about the first parameter
+            $guid_value = $inner_matches[2][0];
+
+            // Handle duplicated GUIDs
+            if (array_key_exists($guid_value, $FOUND_GUID)) {
+                $error_msg = 'Repair duplicated GUID needed for an INTERNAL_ERROR in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+                $GUID_ERRORS_DUPLICATE[] = $error_msg;
+                $GUID_LANDSCAPE['INTERNAL_ERROR'][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
+
+                // Build up our new call
+                $ret = 'do_lang';
+                if ($is_tempcode) {
+                    $ret .= '_tempcode';
+                }
+                $ret .= "('INTERNAL_ERROR'";
+                $ret .= preg_replace('/(escape_html|comcode_escape)\(\'([\w-]*)\'\)/', "$1('" . $new_guid . "')", $params, 1);
+                $ret .= ')';
+                return $ret;
+            }
+
+            // Record GUIDs
+            $FOUND_GUID[$guid_value] = 'INTERNAL_ERROR';
+            $GUID_LANDSCAPE['INTERNAL_ERROR'][] = [$GUID_SCAN_PATH, $line_num, $guid_value];
+        }
+    }
+
+    // Second sweep (missing GUIDs)
+    if ($params == '') {
+        $GUID_ERRORS_MISSING[] = 'Insert needed for INTERNAL_ERROR in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+        $GUID_LANDSCAPE['INTERNAL_ERROR'][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
+
+        // Build up our new call
+        $ret = 'do_lang';
+        if ($is_tempcode) {
+            $ret .= '_tempcode';
+        }
+        $ret .= "('INTERNAL_ERROR', ";
+        if ($is_tempcode) {
+            $ret .= "escape_html('" . $new_guid . "')";
+        } else {
+            $ret .= "comcode_escape('" . $new_guid . "')";
+        }
+        $ret .= ')';
+        return $ret;
     }
 
     return $full_match_line;
