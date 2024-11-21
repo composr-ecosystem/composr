@@ -21,7 +21,7 @@ We have the ability to change the regularity a banner is shown on the network. I
 
 {+START,IF,{$ADDON_INSTALLED,ecommerce}}[title="2"]Purchasing[/title]
 
-You may [page="_SEARCH:purchase:message:banners"]purchase a banner[/page] and hits for it.
+You may [page="_SEARCH:purchase:browse:category=banners"]purchase a banner[/page] and hits for it.
 {+END}
 [title="2"]Commercial[/title]
 
