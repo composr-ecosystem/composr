@@ -169,7 +169,7 @@ class Module_authors
             } else {
                 $message = do_lang_tempcode('NO_SUCH_AUTHOR', escape_html($author));
             }
-            attach_message($message, 'inform');
+            attach_message($message, 'warn');
 
             $details = ['author' => $author, 'url' => '', 'member_id' => get_author_id_from_name($author), 'the_description' => null, 'skills' => null];
         } else {

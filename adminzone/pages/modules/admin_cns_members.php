@@ -682,7 +682,7 @@ class Module_admin_cns_members
                 }
 
                 if (count($out) == 500) {
-                    attach_message(do_lang_tempcode('TOO_MANY_LURKERS'), 'warn');
+                    attach_message(do_lang_tempcode('TOO_MANY_LURKERS'), 'notice');
                     return $out;
                 }
 

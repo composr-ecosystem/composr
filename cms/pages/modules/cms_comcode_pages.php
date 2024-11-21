@@ -1339,7 +1339,7 @@ class Module_cms_comcode_pages
             foreach ($categories as $category_label => $sections) {
                 foreach ($sections['SECTIONS'] as $section_label => $results) {
                     foreach ($results['RESULTS'] as $result) {
-                        attach_message($result['MESSAGE'], 'warn');
+                        attach_message($result['MESSAGE'], 'notice');
                     }
                 }
             }

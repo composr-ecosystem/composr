@@ -18,7 +18,7 @@ function handle_confluence_page_error_result($id, $result, $http_message, $http_
     if ($http_message == '404') {
         $title = get_screen_title('Could not find documentation page', false);
         $url = build_url(['page' => '_SELF'], '_SELF');
-        attach_message('Could not find documentation page ' . confluence_current_page() . ', redirected to main page', 'notice');
+        attach_message('Could not find documentation page ' . confluence_current_page() . ', redirected to main page', 'warn');
         $tpl = redirect_screen($title, $url);
         $tpl->evaluate_echo();
         return;

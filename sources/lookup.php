@@ -89,7 +89,7 @@ function lookup_user($param, ?string &$username, ?int &$member_id, ?string &$ip,
                     $also->attach($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_id, '', false));
                 }
             }
-            attach_message(do_lang_tempcode('MEMBERS_ALSO_ON_IP', $also), 'inform');
+            attach_message(do_lang_tempcode('MEMBERS_ALSO_ON_IP', $also), 'notice');
         }
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);

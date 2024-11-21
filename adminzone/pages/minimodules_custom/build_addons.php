@@ -98,7 +98,7 @@ foreach ($addons as $name => $place) {
         $directory = [];
 
         if (!$done_message) {
-            attach_message(comcode_to_tempcode('At least one addon file isn\'t on disk already. If this build is updating addons already released for this major/minor version you should put the addons in [tt]exports/addons[/tt] so that mtimes can be set properly, then refresh.'), 'warn');
+            attach_message(comcode_to_tempcode('At least one addon file isn\'t on disk already. If this build is updating addons already released for this major/minor version you should put the addons in [tt]exports/addons[/tt] so that mtimes can be set properly, then refresh.'), 'notice');
             $done_message = true;
         }
     }

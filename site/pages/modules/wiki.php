@@ -626,7 +626,7 @@ class Module_wiki
         }
 
         if ($num_posts >= intval(get_option('general_safety_listing_limit'))) {
-            attach_message(do_lang_tempcode('TOO_MANY_WIKI_POSTS'), 'warn');
+            attach_message(do_lang_tempcode('TOO_MANY_WIKI_POSTS'), 'notice');
         }
 
         $buttons = $this->_render_screen_buttons($chain, $id, $num_posts < intval(get_option('general_safety_listing_limit')));

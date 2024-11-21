@@ -181,7 +181,7 @@ function publish_addon($addon_name, $version_branch, $cat_id)
                 }
             }
         } else {
-            attach_message(do_lang_tempcode('MISSING_ADDON', escape_html($addon_name)));
+            attach_message(do_lang_tempcode('MISSING_ADDON', escape_html($addon_name)), 'warn');
         }
     }
 }
@@ -243,7 +243,7 @@ function publish_theme($file, $version_branch, $cat_id)
                 }
             }
         } else {
-            attach_message(do_lang_tempcode('MISSING_ADDON', escape_html($file)));
+            attach_message(do_lang_tempcode('MISSING_ADDON', escape_html($file)), 'warn');
         }
     }
 }

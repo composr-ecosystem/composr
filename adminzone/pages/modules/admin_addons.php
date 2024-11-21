@@ -1313,9 +1313,9 @@ class Module_admin_addons
             foreach ($files as $path) {
                 if (preg_match('#^sources(_custom)?/hooks/systems/addon_registry/[^/]+\.php$#', $path) != 0) {
                     if ($addon_name != '') {
-                        attach_message('Multiple addon_registry hooks were selected - that is a bad idea.', 'warn');
+                        attach_message('Multiple addon_registry hooks were selected - that is a very bad idea.', 'warn');
                     } else {
-                        attach_message('Defaults have been selected from the chosen addon_registry hook. If you change them the hook itself will not be changed, so it will become inconsistent - edit the hook instead and refresh.', 'warn');
+                        attach_message('Defaults have been selected from the chosen addon_registry hook. If you change them the hook itself will not be changed, so it will become inconsistent - edit the hook instead and refresh.', 'notice');
                     }
 
                     $existing_addon_info = read_addon_info(basename($path, '.php'), false, null, null, $path);

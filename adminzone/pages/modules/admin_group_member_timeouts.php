@@ -72,7 +72,7 @@ class Module_admin_group_member_timeouts
     public function pre_run() : ?object
     {
         if (!cron_installed()) {
-            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
+            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'notice');
         }
 
         $type = get_param_string('type', 'browse');

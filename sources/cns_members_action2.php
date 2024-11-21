@@ -758,11 +758,11 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
             if ($validated == 0) {
                 if (($_validated == 1) && (addon_installed('validation'))) {
                     $validated = 1;
-                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                 }
             } elseif (($validated == 1) && ($_validated == 1) && ($member_id !== null)) {
                 $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($member_id)]);
-                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
             if (get_option_with_overrides('enable_highlight_name', $adjusted_config_options) == '1') {
                 $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('ecommerce') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));

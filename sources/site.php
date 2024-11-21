@@ -1044,7 +1044,7 @@ function do_site()
         $batch_size = intval(get_option('max_queued_mails_per_cron_cycle'));
 
         if ($count_queued >= ($batch_size * 3)) {
-            attach_message(do_lang_tempcode('MAIL_QUEUE_LARGE'), 'warn');
+            attach_message(do_lang_tempcode('MAIL_QUEUE_LARGE'), 'notice');
         }
     }
 

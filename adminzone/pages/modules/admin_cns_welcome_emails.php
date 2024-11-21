@@ -189,7 +189,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
     public function browse() : object
     {
         if (!cron_installed()) {
-            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
+            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'notice');
         }
 
         require_code('templates_donext');

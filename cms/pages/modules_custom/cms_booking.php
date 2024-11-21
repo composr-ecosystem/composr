@@ -958,7 +958,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
-        attach_message(do_lang_tempcode('EASIER_TO_EDIT_BOOKING_VIA_MEMBER', escape_html(static_evaluate_tempcode(build_url(['page' => 'members'], get_module_zone('members'))))), 'inform', true);
+        attach_message(do_lang_tempcode('EASIER_TO_EDIT_BOOKING_VIA_MEMBER', escape_html(static_evaluate_tempcode(build_url(['page' => 'members'], get_module_zone('members'))))), 'notice', true);
 
         require_code('templates_results_table');
 

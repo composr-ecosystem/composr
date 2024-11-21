@@ -395,7 +395,7 @@ function create_selection_list_news(?int $it, ?int $only_owned = null, bool $edi
     }
 
     if (count($rows) == intval(get_option('general_safety_listing_limit'))) {
-        attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__RECENT_ONLY', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');
+        attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__RECENT_ONLY', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'notice');
     }
 
     $out = new Tempcode();

@@ -861,7 +861,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
         $all_privileges = collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name']));
         foreach ($all_privileges as $privilege_name) {
             if (!array_key_exists($privilege_name, $privilege_addons)) {
-                attach_message('Privilege ' . $privilege_name . ' in meta database could not be sourced.', 'notice', false, true);
+                attach_message('Privilege ' . $privilege_name . ' in meta database could not be sourced.', 'warn', false, true);
             }
         }
     }

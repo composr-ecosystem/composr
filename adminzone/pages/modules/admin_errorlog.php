@@ -448,7 +448,7 @@ class Module_admin_errorlog
         } else {
             // Not configured or not running?
             $last_cron = get_value('last_cron');
-            if (($last_cron === null) || (intval($last_cron) < time() - 60 * 60 * 24)) {
+            if (($last_cron === null) || (intval($last_cron) < time() - 60 * 60 * 5)) {
                 attach_message(do_lang_tempcode('CRON_NOT_RUNNING', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
             }
         }

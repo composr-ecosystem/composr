@@ -75,7 +75,7 @@ function suggest_fatalistic()
             $st = do_lang_tempcode('WARN_TO_STACK_TRACE_3', escape_html($stack_trace_url->evaluate()));
         }
         require_code('site');
-        attach_message($st, 'inform');
+        attach_message($st, 'warn');
     }
 }
 

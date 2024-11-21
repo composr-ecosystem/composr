@@ -597,7 +597,7 @@ class Module_groups
         // Check for pending approval into this usergroup
         $pending = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'id', ['ga_new_group_id' => $id, 'ga_member_id' => get_member(), 'ga_status' => 0]);
         if ($pending !== null) {
-            attach_message(do_lang_tempcode('GROUP_REQUEST_PENDING'), 'inform');
+            attach_message(do_lang_tempcode('GROUP_REQUEST_PENDING'), 'notice');
         }
 
         // Leadership

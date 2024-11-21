@@ -256,7 +256,7 @@ class Module_admin_points
             if ($member_id !== null) {
                 $end .= ' AND (sending_member=' . strval($member_id) . ' OR receiving_member=' . strval($member_id) . ')';
             } else {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username), 'warn');
             }
         }
         if ($filter_type !== 'all') {

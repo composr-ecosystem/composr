@@ -2145,7 +2145,7 @@ class Module_topics
                 if ($topic_info['t_validated'] == 0) {
                     $topic_info['t_validated'] = get_param_integer('validated', 0);
                     if (($topic_info['t_validated'] == 1) && (addon_installed('validation'))) {
-                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                     }
                 }
 
@@ -3506,7 +3506,7 @@ class Module_topics
 
         if (($topic_info['t_cache_first_post_id'] == $post_id) && ((cns_may_moderate_forum($topic_info['t_forum_id'])) || ($topic_info['t_cache_first_member_id'] == get_member()))) {
             $edit_topic_url = build_url(['page' => '_SELF', 'type' => 'edit_topic', 'id' => $topic_info['id']], '_SELF');
-            attach_message(do_lang_tempcode('EDITING_FIRST_TOPIC_POST', escape_html($edit_topic_url->evaluate())), 'inform');
+            attach_message(do_lang_tempcode('EDITING_FIRST_TOPIC_POST', escape_html($edit_topic_url->evaluate())), 'notice');
         }
 
         $hidden_fields = new Tempcode();
@@ -3548,7 +3548,7 @@ class Module_topics
                 if ($post_details[0]['p_validated'] == 0) {
                     $post_details[0]['p_validated'] = get_param_integer('validated', 0);
                     if (($post_details[0]['p_validated'] == 1) && (addon_installed('validation'))) {
-                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                     }
                 }
                 $moderation_options[] = [
@@ -3798,7 +3798,7 @@ class Module_topics
                 if ($topic_info['t_validated'] == 0) {
                     $topic_info['t_validated'] = get_param_integer('validated', 0);
                     if (($topic_info['t_validated'] == 1) && (addon_installed('validation'))) {
-                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                     }
                 }
                 $moderation_options[] = [

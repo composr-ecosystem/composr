@@ -357,7 +357,7 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
         $enable_message = protect_from_escaping(str_replace('{1}', do_lang('UNKNOWN'), $enable_message->evaluate()));
 
         if (notifications_enabled($notification_code, $notification_category)) {
-            attach_message($disable_message, 'warn');
+            attach_message($disable_message, 'notice');
         } else {
             attach_message($enable_message, 'inform');
         }
