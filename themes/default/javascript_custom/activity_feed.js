@@ -311,7 +311,7 @@
                 }
             }
             if (!succeeded) {
-                jQuery('#activities-general-notify').text('{!INTERNAL_ERROR;^}');
+                jQuery('#activities-general-notify').text('{!INTERNAL_ERROR;^,519eab7583204dddb599b9be46e2c9ed}');
             }
             window.sAjaxUpdateLocking = 0;
         }

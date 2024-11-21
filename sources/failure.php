@@ -1603,7 +1603,7 @@ function _look_for_match_key_message(string $natural_text, bool $only_if_zone = 
 
 /**
  * Show a helpful access-denied page. Has a login ability if it senses that logging in could curtail the error.
- * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c959cfd7c8eb5cb8ab8092dba682341f'))) is for those situations, or log_hack_attack_and_exit.
+ * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). Using warn_exit with INTERNAL_ERROR is for those situations, or log_hack_attack_and_exit.
  *
  * @param  ID_TEXT $class The class of error (e.g. PRIVILEGE)
  * @param  string $param The parameter given to the error message

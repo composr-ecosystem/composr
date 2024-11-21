@@ -425,7 +425,7 @@
                 if (xhr.status !== 500) {
                     $cms.ui.alert('{!permissions:PERMISSIONS_TREE_EDITOR_SAVED;^}');
                 } else {
-                    $cms.ui.alert('{!INTERNAL_ERROR;^}');
+                    $cms.ui.alert('{!INTERNAL_ERROR;^,9b2eed24ff534c9b8df3eaca81c30efa}');
                 }
             });
             return;

@@ -1180,8 +1180,8 @@ function guid_scan($path)
         return null;
     }
     if (in_array($path, [
-        'adminzone/pages/minimodules_custom/plug_guid.php',
-        'sources_custom/make_release.php',
+        'adminzone/pages/minimodules_custom/plug_guid.php', // Don't accidentally try to fix our preg code
+        'sources_custom/make_release.php', // Don't accidentally try to fix our preg code
     ])) {
         return null;
     }
