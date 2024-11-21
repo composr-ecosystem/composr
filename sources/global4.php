@@ -922,3 +922,28 @@ function is_possibly_apache() : bool
 
     return false;
 }
+
+/**
+ * Determine if a given string looks like it could be a GUID.
+ *
+ * @param  string $potential The string to check
+ * @return boolean Whether it looks like a GUID
+ */
+function looks_like_guid(string $potential) : bool
+{
+    // Pass 1: with hyphens
+    $pattern_a = '/^\{?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\}?$/';
+    $passes = (preg_match($pattern_a, $potential) == 1);
+    if ($passes) {
+        return true;
+    }
+
+    // Pass 2: without hyphens
+    $pattern_a = '/^\{?[0-9a-fA-F]{32}\}?$/';
+    $passes = (preg_match($pattern_a, $potential) == 1);
+    if ($passes) {
+        return true;
+    }
+
+    return false;
+}
