@@ -1216,6 +1216,7 @@ function step_5() : object
         $_POST['multi_lang_content'] = '0';
     }
     */
+    $_POST['multi_lang_content'] = '0';
 
     // Cleanup base URL
     $_POST['base_url'] = normalise_idn_url($_POST['base_url']);
