@@ -152,6 +152,15 @@ class maintenance_codes_test_set extends cms_test_case
                 $this->assertTrue($this->existing_test($test), 'Could not find referenced test in codebook standards, ' . $test);
             }
         }
+
+        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards_obscure.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+
+        $matches = [];
+        if (preg_match_all('#Automated test \[tt\]([\w\/]+)\[\/tt\]#i', $c, $matches) != 0) {
+            foreach ($matches[1] as $test) {
+                $this->assertTrue($this->existing_test($test), 'Could not find referenced test in codebook standards obscure, ' . $test);
+            }
+        }
         // third_party_code test also tests some references
     }
 

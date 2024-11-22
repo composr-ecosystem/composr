@@ -42,11 +42,14 @@ function block_helper_script()
 
     $content = new Tempcode();
 
+    $addons_blocks = [];
+    $addon_icons = [];
+
     if ($type == 'step1') { // Ask for block
         // Find what addons all our block files are in, and icons if possible
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($hooks as $addon_name => &$obj) {
-            if (!method_exists($obj,'get_file_list')) {
+            if (!method_exists($obj, 'get_file_list')) {
                 continue;
             }
 
@@ -60,7 +63,7 @@ function block_helper_script()
             $addon_icons[$addon_name] = find_addon_icon($addon_name);
 
             // Free up memory
-            unset($files);
+            unset($addon_files);
             unset($obj);
         }
 

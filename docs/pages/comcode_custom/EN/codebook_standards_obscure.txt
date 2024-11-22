@@ -115,7 +115,7 @@ Block access when closed
 No .php files in writable directories
 | Portability
 | Product development only
-| Automated test ([tt]suphp.php[/tt])
+| Automated test [tt]async_tests/suphp[/tt]
 | suPHP will not allow .php files in directories with group/other write permissions.
 |}
 
@@ -287,7 +287,7 @@ Stay within common denominator of limits
 Blocks should not exit
 | Stability
 | Product development only
-| Automated test ([tt]blocks.php[/tt])
+| Automated test [tt]async_tests/blocks[/tt]
 | If a block hits an error condition it must return an error message, not call a function like [tt]warn_exit[/tt]. An error on a block can't be a fatal thing.
 |}
 
@@ -456,7 +456,7 @@ You [b]may[/b] assume...
 Reinstalls must be handled correctly
 | Stability
 | Product development only
-| Automated test ([tt]_installer.php[/tt])
+| Automated test [tt]cli_tests/installer[/tt]
 | If a module is reinstalled, it should not give errors about existing tables or privileges. For this to work, the uninstall function must fully uninstall what the install function creates.
 |}
 
@@ -508,7 +508,7 @@ Reinstalls must be handled correctly
 [color="red"]Don't spell things [i]rong[/i] or use incorrect grammar[/color]
 | Usability
 | Composr development +
-| Automated test ([tt]lang_spelling.php[/tt]), Automated test ([tt]_lang_spelling.php[/tt]), Automated test ([tt]lang_grammar.php[/tt])
+| Automated test [tt]async_tests/lang_spelling[/tt], Automated test [tt]sync_tests/__lang_spelling_epic[/tt], Automated test [tt]async_tests/lang_grammar[/tt]
 | 
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -581,14 +581,14 @@ Exclude robots appropriately
 Use modern DOM (so no [tt]document.all[/tt], or [tt]window.images[/tt])
 | Standards compliance
 | Product development only
-| Automated test ([tt]web_resources.php[/tt])
+| Automated test [tt]sync_tests/web_resources[/tt]
 | [tt]document.all[/tt], [tt]form.foo[/tt], etc, are all non-standard (even though they're commonplace) -- use [tt]getElementById[/tt] etc.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Don't use any deprecated methods (so no [tt]escape[/tt])
 | Standards compliance
 | Product development only
-| Automated test ([tt]web_resources.php[/tt])
+| Automated test [tt]sync_tests/web_resources[/tt]
 | Instead of escape, use [tt]encodeURIComponent[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -619,91 +619,91 @@ Don't use any deprecated methods (so no [tt]escape[/tt])
 Use top-level heading correctly
 | Communication
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | The top level heading must be structured correctly, including attributing the tutorial author. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Include a table of contents
 | Communication
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | Include a table of contents after the introduction paragraph and before subsequent titles. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Include a sensible title structure
 | Communication
 | Product development only
-| Automated test ([tt]tutorial_title_structure.php[/tt])
+| Automated test [tt]async_tests/tutorial_title_structure[/tt]
 | Have a title structure that uses the title levels sensibly.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Standardised image linking
 | Communication, consistency
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt]), Automated test ([tt]tutorial_image_consistency.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt], Automated test [tt]async_tests/tutorial_image_consistency[/tt]
 | Include images via Comcode [tt]media[/tt] tags to files in [tt]data_custom/images/docs/<tutorial_name>[/tt]. Typically use floating to put images to the right of text content, and use the [tt]surround[/tt] Comcode tag to hold things together. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Meet minimum image density
 | Communication: visual learners appreciate images
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | Have a reasonable number of images per tutorial.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Define a keyword table
 | Communication
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | Define new keywords in a table near the bottom of the tutorial. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Have a See Also list
 | Communication: strong cross-linking
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | Provide a list of other tutorials to reference. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Link to other tutorials using the [tt]_SEARCH[/tt] zone
 | Stability
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | By linking using the [tt]_SEARCH[/tt] zone we allow tutorials to run from different contexts, but also to link to tutorials within the same zone as they are in when possible (so we can host multiple copies of the documentation with correct internal cross-linking).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Use code tags correctly
 | Communication: syntax highlighting
 | Product development only
-| Automated test ([tt]tutorials_codebox.php[/tt])
+| Automated test [tt]async_tests/tutorials_codebox[/tt]
 | Any Comcode [tt]code[/tt] tag must specify the language of the code, which must be one of the languages listed in the automated test (we try and match ones we can syntax highlight).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Supply tutorial tags
 | Communication: strong cross-linking
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt]), Automated test ([tt]tutorials_all_linked.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt], Automated test [tt]async_tests/tutorials_all_linked[/tt]
 | Provide a list of applicable tags for the tutorial at the bottom. At least one of these should be the title of a broad documentation category (the first of which is where the icon is drawn from). Tags that do not refer to a documentation category must refer to a Composr addon codename. If you refer to an addon, the addon's registry hook must refer back in it's list of tutorials. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Include a tutorial date
 | Communication
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | Include the date the tutorial was written on. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Include a rating block
 | Product feedback
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | Include a rating block. Refer to existing tutorials for an example.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Include a summary
 | Communication: use on indexes
 | Product development only
-| Automated test ([tt]tutorial_quality.php[/tt])
+| Automated test [tt]async_tests/tutorial_quality[/tt]
 | Include a summary. Refer to existing tutorials for an example.
 |}
 

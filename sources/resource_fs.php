@@ -1067,7 +1067,7 @@ function remap_portable_as_resource_id(string $resource_type, $portable_data)
     //$resource_id = $portable_data['id']; Would not be portable between sites
 
     // Ideally, find via GUID
-    $resource_id = array_key_exists('guid', $portable_data) ? find_id_via_guid($portable_data['guid']) : null;
+    $resource_id = ((array_key_exists('guid', $portable_data)) && ($portable_data['guid'] !== null)) ? find_id_via_guid($portable_data['guid']) : null;
     if ($resource_id !== null) {
         return $resource_id;
     }

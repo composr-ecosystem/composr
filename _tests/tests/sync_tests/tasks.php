@@ -41,6 +41,11 @@ class tasks_test_set extends cms_test_case
             return;
         }
 
+        if ($GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(*)') >= 100) {
+            $this->assertTrue(false, 'Test will not work on databases with a lot of members');
+            return;
+        }
+
         // Disable the task queue
         $old_config = get_option('tasks_background');
         set_option('tasks_background', '0');
@@ -54,7 +59,7 @@ class tasks_test_set extends cms_test_case
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
 
         $session_id = $this->establish_admin_callback_session();
-        $url = build_url(['page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv'], 'adminzone');
+        $url = build_url(['page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv', 'max' => 100], 'adminzone');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => [get_session_cookie() => $session_id]]);
         $this->assertTrue(strpos($data, 'test@example.com') !== false, 'Did not find test@example.com in the exported newsletter spreadsheet');
         if ($this->debug) {
@@ -106,7 +111,7 @@ class tasks_test_set extends cms_test_case
             return;
         }
 
-        if ($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)') > 1000) {
+        if ($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)') >= 250) {
             $this->assertTrue(false, 'Test will not work on databases with a lot of calendar events');
             return;
         }
@@ -207,10 +212,10 @@ class tasks_test_set extends cms_test_case
         $this->clean_event_rows_for_comparison($last_rows_after);
 
         $ok = ($last_rows_before == $last_rows_after);
-        $this->assertTrue($ok, 'Our test events changed during the export/import cycle)');
+        $this->assertTrue($ok, 'Our test events changed during the export/import cycle');
         if ((!$ok) && ($this->debug)) {
-            @var_dump($last_rows_before);
-            @var_dump($last_rows_after);
+            $this->dump($last_rows_before, 'BEFORE');
+            $this->dump($last_rows_after, 'AFTER');
         }
 
         foreach ($_last_rows_after as $row) {
@@ -238,7 +243,7 @@ class tasks_test_set extends cms_test_case
             return;
         }
 
-        if ($GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(*)') > 1000) {
+        if ($GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(*)') > 100) {
             $this->assertTrue(false, 'Test will not work on databases with a lot of users');
         }
 
@@ -270,7 +275,7 @@ class tasks_test_set extends cms_test_case
         require_code('files2');
 
         $files = get_directory_contents(get_file_base(), get_file_base(), IGNORE_ACCESS_CONTROLLERS | IGNORE_FLOATING | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
-        $exceptions = [
+        $exceptions = [ // Also using "$send_notification" as the $send_notification parameter triggers an exception for that call
             'exports/', // TODO: No idea why bitmask is not ignoring this
             'sync_tests/tasks.php', // Test should ignore itself
         ];
@@ -294,7 +299,7 @@ class tasks_test_set extends cms_test_case
                 $send_notification = !isset($params[6]) || strtolower($params[6]) == 'true';
 
                 if (isset($params[6]) && ($params[6] == '$send_notification')) {
-                    continue; // No testing in cases where we use the $send_notification variable
+                    continue; // No testing in cases where we use a $send_notification variable for $send_notification
                 }
 
                 $has_potential_return = ((strpos($line, '= call_user_func_array__long_task') !== false) || strpos($line, 'return call_user_func_array__long_task') !== false);

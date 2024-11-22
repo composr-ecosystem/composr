@@ -1947,9 +1947,10 @@ class DatabaseConnector
     }
 
     /**
-     * Do a named-parameter query, like "SELECT * FROM foo WHERE a='{value}';" with ['value' => 'b'].
+     * Do a named-parameter query, like "SELECT * FROM foo WHERE " . db_string_equal_to('a', '{value}') . ";" with ['value' => 'b'].
      * Assumes nothing looking like {example} is in the query already.
      * Also supports {prefix} for encoding the table prefix.
+     * You must still use db_string_equal_to and db_string_not_equal_to in the query where applicable.
      * Lots of programmers like to do queries like this as it reduces the chance of accidentally forgetting to escape a parameter inserted directly/manually within a longer query.
      * Usually we use APIs like query_select, which avoids the need for SQL all-together, but this doesn't work for all patterns of query.
      *

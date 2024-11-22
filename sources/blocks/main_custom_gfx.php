@@ -82,6 +82,7 @@ class Block_main_custom_gfx
      */
     public function _do_image(string $cache_id, array &$map, string $img_path)
     {
+        $error_msg = new Tempcode();
         if (!addon_installed__messaged('custom_comcode', $error_msg)) {
             return $error_msg;
         }

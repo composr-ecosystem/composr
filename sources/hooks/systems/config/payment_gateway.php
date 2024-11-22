@@ -72,8 +72,16 @@ class Hook_config_payment_gateway
     public function field_inputter(string $name, array $myrow, string $config_field_name, object $human_name, object $explanation) : object
     {
         $list = new Tempcode();
-        $all_payment_gateways = find_all_hooks('systems', 'payment_gateway');
-        foreach (array_keys($all_payment_gateways) as $payment_gateway) {
+        $all_payment_gateways = find_all_hook_obs('systems', 'payment_gateway', 'Hook_payment_gateway_');
+        foreach ($all_payment_gateways as $payment_gateway => $ob) {
+            if ($ob->is_available() === false) {
+                continue;
+            }
+            $config = $ob->get_config();
+            if (isset($config['internal_only']) && ($config['internal_only'] === true)) {
+                continue;
+            }
+
             $list->attach(form_input_list_entry($payment_gateway, $payment_gateway == get_option($name)));
         }
         return form_input_list($human_name, $explanation, $config_field_name, $list);

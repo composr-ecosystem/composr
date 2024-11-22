@@ -439,7 +439,8 @@ class lang_spelling_test_set extends cms_test_case
         $matches = [];
         if (
             (preg_match_all('/(\S*)?(\s|\=)rules(\s?\(?)/i', $string, $matches) != 0) &&
-            (strpos($file, '.ini') !== false) // We only require this for language files
+            (strpos($file, '.ini') !== false) && // We only require this for language files
+            (!in_array($file, ['config.ini'])) // ...but not config.ini
         ) {
             $ok = false;
 

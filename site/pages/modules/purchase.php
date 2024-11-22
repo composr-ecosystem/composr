@@ -1174,6 +1174,9 @@ class Module_purchase
         $payment_gateway = get_option('payment_gateway');
         require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
         $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+        if ($payment_gateway_object->is_available() === false) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('57f6d8ebe053506e86a7a91c90f78b6e')));
+        }
 
         $test = $this->_check_availability($type_code);
         if ($test !== null) {
@@ -1269,7 +1272,7 @@ class Module_purchase
         $icon = 'buttons/proceed';
 
         if ($price == 0.00) { // Free/point-based product
-            $button = '';
+            $button = new Tempcode();
             $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
 
             if ($confirmation_box === null) {
@@ -1452,6 +1455,9 @@ class Module_purchase
         $payment_gateway = get_option('payment_gateway');
         require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
         $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+        if ($payment_gateway_object->is_available() === false) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('34ad104e99c85855ba58e5b5103b4281')));
+        }
 
         // Note: Some payment gateways do not support passing in your own finish / redirect URL with a type_code parameter in the button form
         $type_code = get_param_string('type_code', null);

@@ -669,7 +669,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     $url = $_SERVER['REQUEST_URI'];
 
     // Prevent accidental lock-out by, for example, a rogue AJAX script on Composr repeating the request several times quickly
-    $test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) FROM {prefix}hackattack WHERE reason=\'{reason}\' AND ip=\'{ip}\' AND date_and_time>={date_and_time} AND user_agent=\'{user_agent}\' AND risk_score>0', [
+    $test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) FROM {prefix}hackattack WHERE ' . db_string_equal_to('reason', '{reason}') . ' AND ' . db_string_equal_to('ip', '{ip}') . ' AND date_and_time>={date_and_time} AND ' . db_string_equal_to('user_agent', '{user_agent}') . ' AND risk_score>0', [
         'reason' => $reason, // No tolerance if they triggered a different type of hack
         'ip' => $ip, // No tolerance if they changed IP addresses
         'date_and_time' => (time() - 3), // Allow a very modest 3 seconds grace; we don't want to be too tolerant in case it's a DoS attack

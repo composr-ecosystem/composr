@@ -120,7 +120,7 @@ class Hook_addon_registry_backup
     {
         return [
             'requires' => [],
-            'recommends' => ['system scheduler'],
+            'recommends' => ['System scheduler'],
             'conflicts_with' => [],
         ];
     }

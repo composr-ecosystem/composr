@@ -156,6 +156,7 @@ class Hook_addon_registry_core_feedback_features
             'sources/hooks/systems/notifications/like.php',
             'sources/hooks/systems/page_groupings/trackbacks.php',
             'sources/hooks/systems/points/feedback__add.php',
+            'sources/hooks/systems/points/feedback__received.php',
             'sources/hooks/systems/preview/comments.php',
             'sources/hooks/systems/rss/comments.php',
             'sources/hooks/systems/snippets/comments.php',

@@ -31,6 +31,10 @@ class Hook_task_delete_gallery_media
      */
     public function run(string $name) : ?array
     {
+        if (!addon_installed('galleries')) {
+            return null;
+        }
+
         require_code('galleries2');
 
         do {

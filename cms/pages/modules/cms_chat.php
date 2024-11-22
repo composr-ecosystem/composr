@@ -251,7 +251,7 @@ class Module_cms_chat
         $header_row = results_header_row([do_lang_tempcode('CHATROOM_NAME'), do_lang_tempcode('CHATROOM_OWNER'), do_lang_tempcode('CHATROOM_LANG'), do_lang_tempcode('MESSAGES')], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', ['is_im' => 0]);
-        $sort_clause = ($sortable == 'room_name') ? ' ORDER BY ' . str_replace('r.', '', $sql_sort) : '';
+        $sort_clause = (($sortable == 'room_name') ? (' ORDER BY ' . str_replace('r.', '', $sql_sort)) : '');
         $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['is_im' => 0], $sort_clause, $max, $start);
         if ($sortable == 'messages') {
             usort($rows, ['Module_cms_chat', '_sort_chat_browse_rows']);

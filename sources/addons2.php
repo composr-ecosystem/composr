@@ -769,7 +769,7 @@ function has_feature(string $dependency) : bool
         return true;
     }
 
-    // Some other features (referenced in automated test, addon_dependency_naming.php)
+    // Some other features (referenced in automated test, addon_dependency_naming.php; note these are lower-case and you must use the casing specified in the tests)
     if (($dependency == 'mysql') && (strpos(get_db_type(), 'mysql') !== false)) {
         return true;
     }

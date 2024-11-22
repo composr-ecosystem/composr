@@ -23,6 +23,11 @@
  */
 function show_site_messages()
 {
+    // Don't show site messages when fatalistic is on; warn messages will trigger stack traces
+    if (current_fatalistic() != 0) {
+        return;
+    }
+
     // Try the cache first
     require_code('caches');
     $_messages = get_cache_entry('site_messages', serialize([]));

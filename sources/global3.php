@@ -2497,8 +2497,8 @@ function _strlen_sort($a, $b) : int
 /**
  * Helper function for usort to sort a list by string length in reverse order.
  *
- * @param  string $a The first string or array of strings to compare
- * @param  string $b The second string or array of strings to compare
+ * @param  mixed $a The first string or array of strings to compare
+ * @param  mixed $b The second string or array of strings to compare
  * @return integer The comparison result (0 for equal, -1 for less, 1 for more)
  * @ignore
  */

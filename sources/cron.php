@@ -418,7 +418,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
             }
 
             // Safety limit (20 seconds, unless we are calling as part of a web request)
-            if (($time_elapsed >= 20) || ((get_option('enable_web_request_scheduler') == 1) && ($time_elapsed >= 8))) {
+            if (($time_elapsed >= 20) || ((get_option('enable_web_request_scheduler') == '1') && ($time_elapsed >= 8))) {
                 $log_message = loggable_date() . ' ENDING EARLY; we reached the execution time limit.' . "\n";
                 if ($verbose) {
                     $ret .= $log_message;

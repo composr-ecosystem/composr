@@ -25,7 +25,6 @@
  */
 class Hook_payment_gateway_points
 {
-
     /**
      * Get a standardised config map.
      *
@@ -36,7 +35,18 @@ class Hook_payment_gateway_points
         return [
             'supports_remote_memo' => false,
             'local_only' => false,
+            'internal_only' => true,
         ];
+    }
+
+    /**
+     * Whether this payment gateway is available for use.
+     *
+     * @return boolean Whether it is available
+     */
+    public function is_available() : bool
+    {
+        return (addon_installed('points') && addon_installed('ecommerce'));
     }
 
     /**
@@ -66,10 +76,6 @@ class Hook_payment_gateway_points
      */
     public function make_transaction_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, float $shipping_cost, string $currency) : object
     {
-        if (!addon_installed('ecommerce')) {
-            return new Tempcode();
-        }
-
         $url = build_url([
             'page' => 'purchase',
             'type' => 'finish',

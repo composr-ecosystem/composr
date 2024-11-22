@@ -1867,9 +1867,10 @@ function delete_gallery(string $name)
     $count_images = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', ['cat' => $name]);
     $count_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', ['cat' => $name]);
     $bypass_queue = (($count_images + $count_videos) < 100);
+    $send_notification = !$bypass_queue; // NB: so we bypass the tasks automated test
 
     require_lang('galleries');
-    call_user_func_array__long_task(do_lang('MASS_DELETE_GALLERY_MEDIA', comcode_escape($name)), null, 'delete_gallery_media', [$name], true, $bypass_queue);
+    call_user_func_array__long_task(do_lang('MASS_DELETE_GALLERY_MEDIA', comcode_escape($name)), null, 'delete_gallery_media', [$name], true, $bypass_queue, $send_notification);
 
     //... but the subgalleries remain
     $GLOBALS['SITE_DB']->query_update('galleries', ['parent_id' => $rows[0]['parent_id']], ['parent_id' => $name]);

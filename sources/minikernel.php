@@ -1631,7 +1631,7 @@ function disable_php_memory_limit()
     }
 
     if (!php_function_allowed('ini_set')) {
-        return false;
+        return;
     }
 
     global $DISABLED_MEMORY_LIMIT;

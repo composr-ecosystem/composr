@@ -165,7 +165,7 @@ PHP;
             $date = get_timezoned_date_time_tempcode($myrow[$date_key]);
             $author_url = new Tempcode();
             if ((addon_installed('authors')) && ($map['member_based'] != '1') && (!array_key_exists('member_based', $map))) {
-                $author_url = build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));;
+                $author_url = build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));
             }
             $author = $myrow['firstusername'];
             $news_title = escape_html($myrow['title']);

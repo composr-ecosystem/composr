@@ -236,7 +236,7 @@ class Module_admin_karma
         if ($filter_username !== null) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
             if ($member_id === null) {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username), 'warn');
+                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)), 'warn');
             }
         }
 

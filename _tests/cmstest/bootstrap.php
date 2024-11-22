@@ -464,13 +464,9 @@ class CMSHtmlReporter extends SimpleReporter
      */
     public function paintError($message)
     {
-        parent::paintError($message);
-        echo '<span class="fail">Exception</span>: ';
-        $breadcrumb = $this->getTestList();
-        array_shift($breadcrumb);
-        echo implode(' -&gt; ', $breadcrumb);
-        echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
-        ob_flush();
+        // Forcefully dump and terminate on exceptions because ob cache messes with the output and then we do not see the exception otherwise
+        var_dump($message);
+        exit();
     }
 
     /**
@@ -480,17 +476,9 @@ class CMSHtmlReporter extends SimpleReporter
      */
     public function paintException($exception)
     {
-        parent::paintException($exception);
-        echo '<span class="fail">Exception</span>: ';
-        $breadcrumb = $this->getTestList();
-        array_shift($breadcrumb);
-        echo implode(' -&gt; ', $breadcrumb);
-        $message = 'Unexpected exception of type [' . get_class($exception) .
-                '] with message [' . $exception->getMessage() .
-                '] in [' . $exception->getFile() .
-                ' line ' . $exception->getLine() . ']';
-        echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
-        ob_flush();
+        // Forcefully dump and terminate on exceptions because ob cache messes with the output and then we do not see the exception otherwise
+        var_dump($exception);
+        exit();
     }
 
     /**

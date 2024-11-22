@@ -173,6 +173,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/notifications/points.php',
             'sources/hooks/systems/notifications/points_transaction_staff.php',
             'sources/hooks/systems/page_groupings/points.php',
+            'sources/hooks/systems/payment_gateway/points.php',
             'sources/hooks/systems/points/.htaccess',
             'sources/hooks/systems/points/comcode_page__add.php',
             'sources/hooks/systems/points/index.html',

@@ -43,6 +43,7 @@ get_product_dispatch_type                   (optional and only for cart items)
 
 systems/payment_gateways hooks are structured like this...
 
+is_available                                (required)
 get_config                                  (required)
 get_transaction_fee                         (optional)
 get_logos                                   (optional)
@@ -426,6 +427,9 @@ function get_transaction_fee(float $amount, string $type_code, string $payment_g
 
     // Fall back to payment gateway hooks
     $payment_gateway_object = get_hook_ob('systems', 'payment_gateway', $payment_gateway, 'Hook_payment_gateway_', $fail_ok);
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dfb7d5fe027d5a7fa5d64fa62034df8c')));
+    }
     if (($payment_gateway_object !== null) && (method_exists($payment_gateway_object, 'get_transaction_fee'))) {
         return $payment_gateway_object->get_transaction_fee($amount, $type_code);
     }
@@ -568,21 +572,21 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
  * @param  REAL $shipping_tax Transaction shipping tax in money
  * @param  ID_TEXT $currency The currency to use
  * @param  integer $price_points Transaction price in points
- * @param  ?ID_TEXT $payment_gateway The payment gateway the payment will go via (null: autodetect) (false: none, usually used for manual transactions)
- * @return ?Tempcode The button (null: $payment_gateway was false, so payment is handled manually)
+ * @param  ?ID_TEXT $payment_gateway The payment gateway the payment will go via (null: autodetect)
+ * @return Tempcode The button
  */
-function make_transaction_button(string $type_code, string $item_name, string $purchase_id, float $price, array $tax_derivation, float $tax, array $tax_tracking, float $shipping_cost, float $shipping_tax, string $currency, int $price_points = 0, ?string $payment_gateway = null) : ?object
+function make_transaction_button(string $type_code, string $item_name, string $purchase_id, float $price, array $tax_derivation, float $tax, array $tax_tracking, float $shipping_cost, float $shipping_tax, string $currency, int $price_points = 0, ?string $payment_gateway = null) : object
 {
     if ($payment_gateway === null) {
         $payment_gateway = get_option('payment_gateway');
-    } elseif ($payment_gateway !== false) {
-        require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
-        $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
-        $trans_expecting_id = $payment_gateway_object->generate_trans_id();
-    } else {
-        require_code('crypt');
-        $trans_expecting_id = get_secure_random_string();
     }
+
+    require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
+    $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('32468791408d539abeac4a8330d0f8de')));
+    }
+    $trans_expecting_id = $payment_gateway_object->generate_trans_id();
 
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $shipping_tax);
 
@@ -608,10 +612,6 @@ function make_transaction_button(string $type_code, string $item_name, string $p
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
     ]);
     store_shipping_address($trans_expecting_id);
-
-    if ($payment_gateway === false) {
-        return null;
-    }
 
     return $payment_gateway_object->make_transaction_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $currency);
 }
@@ -642,6 +642,9 @@ function make_subscription_button(string $type_code, string $item_name, string $
     }
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e101e0b2b11956bc952b8b3eafb785b7')));
+    }
 
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax);
 
@@ -687,6 +690,9 @@ function make_cancel_button(string $purchase_id, string $payment_gateway) : ?obj
     }
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        return null;
+    }
     if (!method_exists($payment_gateway_object, 'make_cancel_button')) {
         return null;
     }
@@ -788,6 +794,9 @@ function perform_local_payment() : bool
     $payment_gateway = get_option('payment_gateway');
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        return false;
+    }
     $payment_gateway_config = $payment_gateway_object->get_config();
     return ((($payment_gateway_config['local_only'] === true) || (get_option('use_local_payment') == '1')) && (method_exists($payment_gateway_object, 'do_local_transaction')));
 }
@@ -824,6 +833,9 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
 
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ba25dcccf8885d02af56a80e6898fb2e')));
+    }
 
     if (!method_exists($payment_gateway_object, 'do_local_transaction')) {
         warn_exit(do_lang_tempcode('LOCAL_PAYMENT_NOT_SUPPORTED', escape_html($payment_gateway)));
@@ -1253,6 +1265,9 @@ function ecommerce_attach_memo_field_if_needed(?object &$fields)
             $payment_gateway = get_option('payment_gateway');
             require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
             $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+            if ($payment_gateway_object->is_available() === false) {
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('22b8ff7bbb1250cfb8f90d1d01876bc2')));
+            }
             $config = $payment_gateway_object->get_config();
             $get_memo = !$config['supports_remote_memo'];
         }
@@ -1449,6 +1464,9 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
     $payment_gateway = get_param_string('from', get_option('payment_gateway'));
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('96a7078f18e85f72b79512936102b80d')));
+    }
 
     ob_start();
 

@@ -105,7 +105,7 @@ class Hook_addon_registry_calendar
     {
         return [
             'requires' => [],
-            'recommends' => ['system scheduler'],
+            'recommends' => ['System scheduler'],
             'conflicts_with' => [],
         ];
     }

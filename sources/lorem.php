@@ -833,7 +833,7 @@ function placeholder_comments(?object $placeholder_comments_form = null) : objec
         'OPTIONS' => '',
         'IS_THREADED' => false,
         'HASH' => '',
-        'CONTENT_TYPE' => lorem_word(),
+        'FEEDBACK_TYPE' => lorem_word(),
         'SELF_URL_ENCODED' => placeholder_url(),
     ]));
 
@@ -887,11 +887,11 @@ function placeholder_trackbacks_wrapper(int $num_trackbacks = 3) : object
 /**
  * Get placeholder ratings.
  *
- * @param  ID_TEXT $content_type The content type
+ * @param  ID_TEXT $feedback_type The feedback type
  * @param  ID_TEXT $template The template to use
  * @return Tempcode The ratings
  */
-function placeholder_rating(string $content_type, string $template = 'RATING_BOX') : object
+function placeholder_rating(string $feedback_type, string $template = 'RATING_BOX') : object
 {
     $all_rating_criteria = [];
     $all_rating_criteria[] = [
@@ -903,7 +903,7 @@ function placeholder_rating(string $content_type, string $template = 'RATING_BOX
     ];
     $rating_form = do_lorem_template('RATING_FORM', [
         'LIKES' => true,
-        'CONTENT_TYPE' => $content_type,
+        'FEEDBACK_TYPE' => $feedback_type,
         'ID' => placeholder_codename(),
         'URL' => placeholder_url(),
         'ALLOW_RATING' => true,
@@ -921,7 +921,7 @@ function placeholder_rating(string $content_type, string $template = 'RATING_BOX
         '_OVERALL_NUM_RATINGS' => placeholder_number(),
         'OVERALL_NUM_RATINGS' => placeholder_number(),
         'LIKES' => true,
-        'CONTENT_TYPE' => $content_type,
+        'FEEDBACK_TYPE' => $feedback_type,
         'ID' => placeholder_codename(),
         'HAS_RATINGS' => true,
         'ALL_RATING_CRITERIA' => $all_rating_criteria,
