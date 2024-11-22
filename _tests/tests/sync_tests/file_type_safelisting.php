@@ -316,6 +316,9 @@ class file_type_safelisting_test_set extends cms_test_case
     public function testHtaccessRealFileList()
     {
         $path = get_file_base() . '/recommended.htaccess';
+        if (!file_exists($path)) {
+            $this->assertTrue(false, 'This test requires recommended.htaccess');
+        }
         $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
         $file_types = [];

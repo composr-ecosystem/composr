@@ -277,7 +277,7 @@ class tasks_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), get_file_base(), IGNORE_ACCESS_CONTROLLERS | IGNORE_FLOATING | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
         $exceptions = [ // Also using "$send_notification" as the $send_notification parameter triggers an exception for that call
             'exports/', // TODO: No idea why bitmask is not ignoring this
-            'sync_tests/tasks.php', // Test should ignore itself
+            '_tests/tests/sync_tests/tasks.php', // Test should ignore itself
         ];
         foreach ($files as $path) {
             // Exceptions
