@@ -274,9 +274,9 @@ class Module_admin_leader_board extends Standard_crud_module
         $timeframes->attach(form_input_list_entry('week', $timeframe == 'week', do_lang_tempcode('LEADER_BOARD_TIME_FRAME_week')));
 
         // TODO: #6001 month operations are extremely unreliable; this has been disabled until it can be fixed
-        // $timeframes->attach(form_input_list_entry('month', $timeframe == 'month', do_lang_tempcode('LEADER_BOARD_TIME_FRAME_month')));
-        require_code('comcode');
-        attach_message(comcode_to_tempcode('Monthly leader-boards have been temporarily disabled until they can be fixed. See [url="Tracker issue #6001"]https://composr.app/tracker/view.php?id=6001[/url]'), 'notice');
+        $timeframes->attach(form_input_list_entry('month', $timeframe == 'month', do_lang_tempcode('LEADER_BOARD_TIME_FRAME_month')));
+        //require_code('comcode');
+        //attach_message(comcode_to_tempcode('Monthly leader-boards have been temporarily disabled until they can be fixed. See [url="Tracker issue #6001"]https://composr.app/tracker/view.php?id=6001[/url]'), 'notice');
 
         $timeframes->attach(form_input_list_entry('year', $timeframe == 'year', do_lang_tempcode('LEADER_BOARD_TIME_FRAME_year')));
         $fields->attach(form_input_list(do_lang_tempcode('LEADER_BOARD_TIME_FRAME'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_TIME_FRAME'), 'timeframe', $timeframes));

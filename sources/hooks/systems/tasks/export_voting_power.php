@@ -65,7 +65,7 @@ class Hook_task_export_voting_power
                 }
 
                 // Calculate voting power
-                $points = points_balance($member_id);
+                $points = points_rank($member_id);
                 $voting_power = cns_points_to_voting_power($points);
 
                 $data[] = [

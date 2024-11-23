@@ -71,8 +71,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
     if (get_option('enable_poll_point_weighting', true) === '1') {
         require_code('cns_polls_action2');
-        $_voting_power = float_to_raw_string(cns_points_to_voting_power($points_balance), 10);
-        $voting_power = float_format(cns_points_to_voting_power($points_balance), 3);
+        $_voting_power = float_to_raw_string(cns_points_to_voting_power($points_rank), 10);
+        $voting_power = float_format(cns_points_to_voting_power($points_rank), 3);
     } else {
         $_voting_power = '';
         $voting_power = '';

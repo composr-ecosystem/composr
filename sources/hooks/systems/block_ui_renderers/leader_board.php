@@ -63,7 +63,7 @@ class Hook_block_ui_renderers_leader_board
             foreach ($rows as $row) {
                 $list->attach(form_input_list_entry(strval($row['id']), $has_default && strval($row['id']) == $default, $row['lb_title']));
             }
-            return form_input_list(do_lang_tempcode('BLOCK_main_leader_board_PARAM_param_TITLE'), do_lang_tempcode('BLOCK_main_leader_board_PARAM_param'), $parameter, $list);
+            return form_input_list(do_lang_tempcode('BLOCK_main_leader_board_PARAM_param_TITLE'), do_lang_tempcode('BLOCK_main_leader_board_PARAM_param'), $parameter, $list, null, false, false);
         }
         return null;
     }

@@ -179,14 +179,18 @@ PHP;
         require_css('leader_board');
         require_code('points');
 
-        if (!array_key_exists('param', $map)) {
+        if (!array_key_exists('param', $map)) { // Get the first leader-board if none defined
             $boards = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id', 1);
         } else {
             $boards = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => intval($map['param'])], '', 1);
         }
 
         if (empty($boards)) {
-            return do_template('RED_ALERT', ['_GUID' => '4c1a7f62c19ac80998fa1634454317bc', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'leader_board')]);
+            // Only error on a leader-board not existing if we explicitly requested one; otherwise just return blank
+            if (array_key_exists('param', $map)) {
+                return do_template('RED_ALERT', ['_GUID' => '4c1a7f62c19ac80998fa1634454317bc', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'leader_board')]);
+            }
+            return new Tempcode();
         }
 
         $board = $boards[0];

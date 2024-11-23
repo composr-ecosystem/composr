@@ -126,7 +126,7 @@ function points_rank(int $member_id, ?int $timestamp = null, bool $cache = true)
         return 0;
     }
 
-    $end = '';
+    $end = ' AND is_ranked=1'; // Only consider points which affect rank
     if ($timestamp !== null) {
         $end .= ' AND date_and_time<=' . strval($timestamp);
     }
@@ -136,8 +136,8 @@ function points_rank(int $member_id, ?int $timestamp = null, bool $cache = true)
     list(, $t_points, $t_gift_points) = $_points['received'];
     $points = ($t_points + $t_gift_points);
 
-    // Points charged from warnings should be considered a punishment against life-time points (as life-time points is used in ranks)
-    $_points = points_ledger_calculate(LEDGER_TYPE_SPENT, $member_id, null, ' AND (' . db_string_equal_to('t_type', 'warning') . ') AND (' . db_string_equal_to('t_subtype', 'add') . ')');
+    // Ranked points spent (e.g. warnings) should be considered a punishment, so subtract these
+    $_points = points_ledger_calculate(LEDGER_TYPE_SPENT, $member_id, null, $end);
     list(, $t_points, $t_gift_points) = $_points['spent'];
     $points -= ($t_points + $t_gift_points);
 
@@ -204,7 +204,7 @@ function points_spent(int $member_id) : int
 }
 
 /**
- * Get the number of points a member has to spend.
+ * Get the number of points a member has to transact.
  *
  * @param  MEMBER $member_id The member
  * @return integer The number of points the member has to spend
@@ -370,14 +370,14 @@ function points_url(int $member_id, bool $skip_keep = false, ?int $send_amount =
 }
 
 /**
- * Calculate the number of active transactions and number of points for the specified criteria.
+ * This is a low-level function to calculate the number of points directly from the ledger for the given criteria.
  * This function accounts (adjusts) for reversed and refunded transactions as well.
  *
  * @param  integer $types The calculations we want to return (see LEDGER_TYPE_*)
  * @param  MEMBER $primary_member The member to calculate (received: The member receiving the points) (sent and spent: the member using the points)
- * @param  ?MEMBER $secondary_member Optionally filter to a secondary member (received: The member who sent the points to the primary member) (sent: The member who received the points from the primary member) (spent: ignored; always the system) (null: any member)
+ * @param  ?MEMBER $secondary_member Optionally filter to a secondary member (received: The member who sent the points to the primary member) (sent: The member who received the points from the primary member) (spent: always the system) (null: any member)
  * @param  LONG_TEXT $where Optionally add additional WHERE to the SQL (should start with ' AND')
- * @return array List of Tuples; key is a type from $types, value is the tuple of [count of active transactions matching criteria, number of points, number of gift points]
+ * @return array Map; key is a type based on $types, value is the tuple of [count of active transactions matching criteria, number of points, number of gift points]
  */
 function points_ledger_calculate(int $types, int $primary_member, ?int $secondary_member = null, string $where = '') : array
 {

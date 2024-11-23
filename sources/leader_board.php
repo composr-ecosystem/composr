@@ -54,7 +54,7 @@ function get_leader_board_calculation_count() : int
     $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], '');
     foreach ($rows as $row) {
         list($start, $end) = _get_next_leader_board_timeframe($row);
-        if ($start !== null && $end !== null) {
+        if (($start !== null) && ($end !== null)) {
             $count++;
         }
     }
@@ -96,7 +96,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
 
     // Calculate our result set times
     list($start, $end) = _get_next_leader_board_timeframe($row, $forced_time, $forced_period_start);
-    if ($start === null || $end === null) {
+    if (($start === null) || ($end === null)) {
         return null;
     }
 
@@ -118,7 +118,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
                         continue;
                     }
 
-                    $total_voting_power += cns_points_to_voting_power(points_balance($member_id));
+                    $total_voting_power += cns_points_to_voting_power(points_rank($member_id, $end));
                 }
             } while (count($rows) > 0);
         }
@@ -131,15 +131,20 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
     $usergroups = $GLOBALS['SITE_DB']->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => $row['id']]);
     $usergroups = collapse_1d_complexity('lb_group', $usergroups);
 
-    // Calculate points earned within the range (accounting for refunds), grouping by member
-    $_points_earned = $GLOBALS['SITE_DB']->query_select('points_ledger', ['receiving_member', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_NORMAL], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY receiving_member');
+    // Calculate points earned within the range (accounting for refunds and charged points from warnings), grouping by member
+    $_points_earned = $GLOBALS['SITE_DB']->query_select('points_ledger', ['receiving_member', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_NORMAL, 'is_ranked' => 1], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY receiving_member');
     $points_earned = list_to_map('receiving_member', $_points_earned);
-    $_points_refunded = $GLOBALS['SITE_DB']->query_select('points_ledger', ['sending_member', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_REFUND], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY sending_member');
+    $_points_refunded = $GLOBALS['SITE_DB']->query_select('points_ledger', ['sending_member', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_REFUND, 'is_ranked' => 1], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY sending_member');
     $points_refunded = list_to_map('sending_member', $_points_refunded);
+    $_points_charged = $GLOBALS['SITE_DB']->query_select('points_ledger', ['sending_member', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => LEDGER_STATUS_NORMAL, 'is_ranked' => 1, 'receiving_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY sending_member');
+    $points_charged = list_to_map('sending_member', $_points_charged);
     foreach ($points_earned as $member_id => $prow) {
         $points_earned[$member_id]['total_points'] = (@intval($prow['points']) + @intval($prow['gift_points']));
         if (isset($points_refunded[$member_id])) {
             $points_earned[$member_id]['total_points'] -= (@intval($points_refunded[$member_id]['points']) + @intval($points_refunded[$member_id]['gift_points']));
+        }
+        if (isset($points_charged[$member_id])) {
+            $points_earned[$member_id]['total_points'] -= (@intval($points_charged[$member_id]['points']) + @intval($points_charged[$member_id]['gift_points']));
         }
     }
 
@@ -180,7 +185,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         }
 
         if ($use_voting_power) {
-            $voting_power = cns_points_to_voting_power(points_balance($v['member_id']));
+            $voting_power = cns_points_to_voting_power(points_rank($v['member_id'], $end));
             $voting_control = (($total_voting_power > 0.0) ? (($voting_power / $total_voting_power) * 100) : 100);
         } else {
             $voting_power = null;
@@ -235,90 +240,96 @@ function get_leader_board(int $id, ?int $timestamp = null) : array
  */
 function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, ?int $forced_period_start = null) : array
 {
+    require_code('temporal');
+
     // Determine the timestamp of the most recent result set. If there are no result sets, we start at the timestamp the leader-board was created.
+    $recent = null;
     if ($forced_period_start !== null) {
         $recent = $forced_period_start;
     } else {
         $recent = most_recent_leader_board($row['id']);
-        if ($recent === null) {
-            $recent = 0; // Forces us to retroactively generate a first result set right away for new leader-boards; date will be fixed in the switch below.
-        }
     }
-
-    $now = ($forced_time !== null) ? $forced_time : time();
-    $start = null;
-    $end = $now;
-
-    $rolling = ($row['lb_rolling'] == 1);
-
-    $ssw = (get_option('ssw') == '1');
 
     // Set PHP to site timezone temporarily
     $old_timezone = @date_default_timezone_get();
     date_default_timezone_set(get_site_timezone());
 
+    $now = ($forced_time !== null) ? $forced_time : time();
+    $start = 0;
+    $end = $now;
+
+    $rolling = ($row['lb_rolling'] == 1); // Use the leader-board creation time as our epoch instead of Unix to base our time frames?
+    $epoch = ($rolling) ? $row['lb_creation_date_and_time'] : 0;
+
+    $ssw = (get_option('ssw') == '1'); // Week starts on a Sunday opposed to Monday?
+
     // Calculate the expected start and end time for our result set
     switch ($row['lb_timeframe']) {
         case 'week':
-            $start = $recent;
-            if ($ssw) {
-                // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
-                if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
-                    if ($rolling) {
-                        $start = strtotime('-1 week', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
-                    } else {
-                        $start = strtotime('last sunday -1 week', $now);
-                    }
-                } elseif (!$rolling) {
-                    $start = strtotime('sunday', $recent);
-                }
-            } else {
-                // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
-                if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
-                    if ($rolling) {
-                        $start = strtotime('-1 week', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
-                    } else {
-                        $start = strtotime('last monday -1 week', $now);
-                    }
-                } elseif (!$rolling) {
-                    $start = strtotime('monday', $recent);
-                }
+            // If no recent, then use 2 weeks since creation of the leader-board as our starting point
+            if ($recent === null) {
+                $recent = $row['lb_creation_date_and_time'] - (60 * 60 * 24 * 7 * 2);
             }
-            $end = strtotime('+1 week', $start);
+
+            // Do not generate more than 2 weeks ago; just skip the missed generations to save on resources.
+            if (($now - $recent) > (60 * 60 * 24 * 7 * 2)) {
+                $recent = $now - (60 * 60 * 24 * 7 * 2);
+            }
+
+            // Special ssw handling (but only if not rolling); adjust epoch day accordingly
+            if ($rolling === false) {
+                $_week = intval(cms_date('w', $epoch));
+                if ($ssw) {
+                    $day_adjustment = 0 - $_week;
+                } else {
+                    $day_adjustment = 0 - $_week - 6; // Adjustment must always be negative so $epoch is never more than our timestamp
+                }
+                $epoch = $epoch + ($day_adjustment * (60 * 60 * 24));
+            }
+
+            // Calculate our start and end timestamps
+            $start_index = to_epoch_interval_index($recent, 'weeks', $epoch);
+            $end_index = $start_index + 1;
+            $start = from_epoch_interval_index($start_index, 'weeks', $epoch);
+            $end = from_epoch_interval_index($end_index, 'weeks', $epoch);
             break;
 
         case 'month':
-            // TODO: #6001 month operations are extremely unreliable; this has been disabled until it can be fixed
-            /*
-            $start = $recent;
-            // Do not generate leader-boards from 2 or more months ago; just skip to the current week
-            if ((intval(date('Y', $now)) * 12 + intval(date('m', $now))) - (intval(date('Y', $recent)) * 12 + intval(date('m', $recent))) >= 2) {
-                if ($rolling) {
-                    $start = strtotime('-1 month', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
-                } else {
-                    $start = strtotime('first day of this month -1 month', $now);
-                }
-            } elseif (!$rolling) {
-                $start = strtotime('first day of this month', $recent);
+            // If no recent, then use 63 days since creation of the leader-board as our starting point
+            if ($recent === null) {
+                $recent = $row['lb_creation_date_and_time'] - (60 * 60 * 24 * 63);
             }
-            $end = strtotime('+1 month', $start);
-            break;
-            */
-            return [null, null];
 
-        case 'year':
-            $start = $recent;
-            // Do not generate leader-boards from 2 or more years ago; just generate the most recent one
-            if (intval(date('Y', $now)) - intval(date('Y', $recent)) >= 2) {
-                if ($rolling) {
-                    $start = strtotime('-1 year', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
-                } else {
-                    $start = strtotime('January 1 -1 year', $now);
-                }
-            } elseif (!$rolling) {
-                $start = strtotime('January 1', $recent);
+            // Calculate our initial start and end timestamps
+            $start_index = to_epoch_interval_index($recent, 'months', $epoch);
+            $end_index = $start_index + 1;
+            $start = from_epoch_interval_index($start_index, 'months', $epoch);
+            $end = from_epoch_interval_index($end_index, 'months', $epoch);
+
+            // Do not generate more than 63 days ago; just skip the missed generations to save on resources.
+            if (($now - $start) > (60 * 60 * 24 * 63)) {
+                $start_index = to_epoch_interval_index(($now - (60 * 60 * 24 * 63)), 'months', $epoch);
+                $end_index = $start_index + 1;
+                $start = from_epoch_interval_index($start_index, 'months', $epoch);
+                $end = from_epoch_interval_index($end_index, 'months', $epoch);
             }
-            $end = strtotime('+1 year', $start);
+            break;
+        case 'year':
+            // If no recent, then use 2 years since creation of the leader-board as our starting point
+            if ($recent === null) {
+                $recent = intval(floatval($row['lb_creation_date_and_time']) - (60.0 * 60.0 * 24.0 * 365.25 * 2.0));
+            }
+
+            // Do not generate more than 2 years ago; just skip the missed generations to save on resources.
+            if (floatval($now - $recent) > (60.0 * 60.0 * 24.0 * 365.25 * 2.0)) {
+                $recent = intval(floatval($now) - (60.0 * 60.0 * 24.0 * 365.25 * 2.0));
+            }
+
+            // Calculate our start and end timestamps
+            $start_index = to_epoch_interval_index($recent, 'years', $epoch);
+            $end_index = $start_index + 1;
+            $start = from_epoch_interval_index($start_index, 'years', $epoch);
+            $end = from_epoch_interval_index($end_index, 'years', $epoch);
             break;
 
         default:
@@ -328,8 +339,12 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
     // Re-set PHP timezone back to its previous setting
     date_default_timezone_set($old_timezone);
 
-    // Do not generate if it is too soon unless the leader-board does not have a result set yet
-    if (($now < $end) || ($recent == 0)) {
+    if ($end < 0) { // Cannot store negative times in the database
+        return _get_next_leader_board_timeframe($row, $now, $end + 1);
+    }
+
+    // Do not generate if it is too soon
+    if (($now < $end) && ($recent !== null)) {
         return [null, null];
     }
 

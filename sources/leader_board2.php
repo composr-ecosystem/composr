@@ -31,9 +31,10 @@
  * @param  BINARY $include_staff Whether or not to include staff in the leader-board
  * @param  ?array $usergroups Only allow members in one or more of the defined usergroup IDs to be in the leader-board (null: do nothing) (empty array: no usergroup filtering)
  * @param  BINARY $calculate_voting_power Whether this leader-board should also calculate voting power and control percentages for leaders to display
+ * @param  TIME $creation_time The forced creation time of the leader-board (null: do not force / use current time)
  * @return AUTO_LINK The ID of the new leader-board
  */
-function add_leader_board(string $title, string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups = [], int $calculate_voting_power = 0) : int
+function add_leader_board(string $title, string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups = [], int $calculate_voting_power = 0, ?int $creation_time = null) : int
 {
     // Cannot have less than one member
     if ($member_count < 1) {
@@ -57,7 +58,7 @@ function add_leader_board(string $title, string $board_type, int $member_count, 
     $id = $GLOBALS['SITE_DB']->query_insert('leader_boards', [
         'lb_title' => $title,
         'lb_type' => $board_type,
-        'lb_creation_date_and_time' => time(),
+        'lb_creation_date_and_time' => (($creation_time === null) ? time() : $creation_time),
         'lb_member_count' => $member_count,
         'lb_timeframe' => $timeframe,
         'lb_rolling' => $rolling,
