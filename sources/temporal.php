@@ -544,7 +544,7 @@ function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day,
 
 /**
  * Convert an epoch timestamp to an epoch interval index.
- * For example, if you set $interval to "days", then the return value will be the number of full days from epoch to $timestamp.
+ * In other words, this will return the number of *full* $intervals from $epoch to $timestamp.
  * Note that when using Unix epoch, weeks start on a Thursday given that is when epoch starts. Set $epoch to 345600 to start on a Monday, or 259200 for Sunday.
  *
  * @param  TIME $timestamp The timestamp which we want to convert to an interval index
@@ -610,14 +610,15 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
             }
             break;
         default: // Should never happen
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('44444')));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4c161875f90b5be7bd0adc59a2756a20')));
     }
 
     return $interval;
 }
 
 /**
- * Convert an epoch interval index (e.g. from to_epoch_interval_index) to an epoch timestamp.
+ * Convert a zero-based epoch interval index (e.g. from to_epoch_interval_index) to an epoch timestamp.
+ * In other words, add $index number of $intervals to $epoch.
  * Note that when using Unix epoch, weeks start on a Thursday given that is when epoch starts. Set $epoch to 345600 to start on a Monday, or 259200 for Sunday.
  *
  * @param  integer $index The interval index
@@ -691,7 +692,7 @@ function from_epoch_interval_index(int $index, string $interval, int $epoch = 0)
             $timestamp = cms_mktime($start_hour, $start_minute, $start_second, $start_month, $start_day, ($start_year + $index));
             break;
         default: // Should never happen
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('22222')));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5bd3c836a6dd509491fea68e58593f4c')));
     }
 
     return $timestamp;
