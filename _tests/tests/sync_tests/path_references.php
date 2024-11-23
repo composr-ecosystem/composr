@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class _path_references_test_set extends cms_test_case
+class path_references_test_set extends cms_test_case
 {
     public function testPathReferences()
     {

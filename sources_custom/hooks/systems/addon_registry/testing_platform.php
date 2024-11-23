@@ -973,7 +973,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/sync_tests/override_issues.php',
             '_tests/tests/sync_tests/override_notes_consistency.php',
             '_tests/tests/sync_tests/overused_globals.php',
-            '_tests/tests/sync_tests/_path_references.php',
+            '_tests/tests/sync_tests/path_references.php',
             '_tests/tests/sync_tests/phpdoc.php',
             '_tests/tests/sync_tests/points.php',
             '_tests/tests/sync_tests/privilege_existence.php',
