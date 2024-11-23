@@ -7,7 +7,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset={$CHARSET*}" />
 		<meta name="GENERATOR" content="Composr" />
 		<meta name="description" content="Composr installer" />
-		<link rel="icon" href="{$BRAND_BASE_URL*}/favicon.ico" type="image/x-icon" />
+		<link rel="icon" href="{RESOURCE_BASE_URL*}themes/default/images/favicon.ico" type="image/x-icon" />
 		<link {$CSP_NONCE_HTML} href="{RESOURCE_BASE_URL*}themes/default/css/global.css" rel="stylesheet" />
 		<link {$CSP_NONCE_HTML} href="{RESOURCE_BASE_URL*}themes/default/css/forms.css" rel="stylesheet" />
 		<link {$CSP_NONCE_HTML} href="{RESOURCE_BASE_URL*}themes/default/css/install.css" rel="stylesheet" />

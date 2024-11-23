@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class path_references_test_set extends cms_test_case
+class _path_references_test_set extends cms_test_case
 {
     public function testPathReferences()
     {
@@ -54,6 +54,7 @@ class path_references_test_set extends cms_test_case
                 '_tests/tests/sync_tests/standard_dir_files.php',
 
                 'sources/mime_types.php', // Not actual file paths
+                'sources/aggregate_types.php',
 
                 // Third party imports referencing files relative to their own forum
                 'sources/hooks/modules/admin_import/mybb.php',
@@ -71,17 +72,34 @@ class path_references_test_set extends cms_test_case
 
             // Reference exceptions (full)
             $r_exceptions = [
-                'data_custom/execute_temp.php', // Does not exist by default
-                'data_custom/latest_activity.txt', // Activity feed
-                'data_custom/rate_limiter.php', // Does not exist by default
-                'sources_custom/critical_errors.php', // Might not exist (used by de-branding)
-                'Could not find data_custom/upgrader.cms.tmp', // Temporary file / weirdness
-                '0;\' . escape_html(basename($dir_name)) . \'/browse.htm', // Weirdness
-                'text_custom/*.txt', // Wildcard
-                'HTTP/1.1', // Not actually a file path
-                'Alexa/Archive.org', // User agent
-                'Text/Diff.php', // require
+                // Files that do not exist by default in a Composr install
+                'data_custom/execute_temp.php',
+                'data_custom/latest_activity.txt',
+                'data_custom/rate_limiter.php',
+                'sources_custom/critical_errors.php',
+                'Could not find data_custom/upgrader.cms.tmp',
+                'lang_custom/langs.ini',
+
+                // Wildcard files that cannot be tested
+                'text_custom/*.txt',
+
+                // Paths with variables in them, so cannot be tested
+                '0;\' . escape_html(basename($dir_name)) . \'/browse.htm',
+
+                // Paths that exist, but not relative to Composr and are not special template / image codes
+                'Text/Diff.php',
+
+                // Rewrite URLs, not paths
+                's/ID.htm',
+                'PAGE/TYPE.htm',
+
+                // Not actually files
+                'HTTP/1.1',
+                'Alexa/Archive.org',
                 'You have a [tt]backdoor_ip[/tt] setting left defined in _config.php',
+                'access.usergroup / access.member',
+                'privilege.usergroup / privilege.member',
+                'Parts of the implementation are copyright to Quoord systems (the Tapatalk company). See mobiquo/license_agreement.txt',
             ];
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
@@ -90,7 +108,7 @@ class path_references_test_set extends cms_test_case
             foreach ($regexps as $regexp) {
                 $num_matches = preg_match_all($regexp, $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
-                    $_path = urldecode($matches[1][$i]);
+                    $_path = trim(urldecode($matches[1][$i]));
                     if (preg_match('#^(' . implode('|', $r_directory_exceptions) . ')/#', $_path) != 0) {
                         continue;
                     }
@@ -111,12 +129,14 @@ class path_references_test_set extends cms_test_case
 
                     // Replacements for common file path Tempcode and variables
                     $rep = [
-                        '{$BASE_URL*}' => '', // The same as root, so just remove it
-                        '{$BRAND_BASE_URL*}' => '', // The brand site should have the same structure, so treat the same as BASE_URL
+                        // Base URLs; should always point to the root of the software, so just remove them
+                        '{$BASE_URL*}' => '',
+                        '{$BRAND_BASE_URL*}' => '',
+                        '{RESOURCE_BASE_URL*}' => '', // installer
                         '\' . get_base_url() . \'' => '',
                         '\' . get_brand_base_url() . \'' => '',
 
-                        '{FROM*}' => 'themes/default/javascript', // themes/default/templates/HTML_HEAD_POLYFILLS.tpl
+                        '{FROM*}' => 'data/polyfills/', // themes/default/templates/HTML_HEAD_POLYFILLS.tpl
                     ];
                     foreach ($rep as $search => $replace) {
                         $_path = str_replace($search, $replace, $_path);

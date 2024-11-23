@@ -173,7 +173,7 @@ class Hook_addon_registry_core_primary_layout
             'text/MAIL_SUBJECT.txt' => 'mail_subject',
             'templates/MAIL.tpl' => 'mail',
             'templates/MAIL_RAW.tpl' => 'mail_raw',
-            'templates/UNSUBSCRIBE_MAIL.txt' => 'unsubscribe_mail',
+            'text/UNSUBSCRIBE_MAIL.txt' => 'unsubscribe_mail',
             'templates/GLOBAL_HTML_WRAP.tpl' => 'global_html_wrap',
             'templates/JAVASCRIPT_NEED.tpl' => 'global_html_wrap',
             'templates/JAVASCRIPT_NEED_FULL.tpl' => 'javascript_need_full',
