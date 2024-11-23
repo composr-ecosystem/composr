@@ -2611,6 +2611,7 @@ function step_8() : object
     $was_finished = true;
 
     $offset = get_param_integer('offset', 0);
+    $keep_going = (get_param_integer('keep_going', 0) == 1); // If specified, we will not break step 8 up into parts (necessary for headless installs)
     $_offset = 0;
 
     require_code('addons2');
@@ -2637,7 +2638,7 @@ function step_8() : object
         send_http_output_ping();
 
         $time_before = microtime(true);
-        if (($time_before - $time_start) >= 10.0) { // Actually, do not proceed if we spent 10 or more seconds; proceed on next execution
+        if ((($time_before - $time_start) >= 10.0) && (!$keep_going)) { // Actually, do not proceed if we spent 10 or more seconds; proceed on next execution
             $was_finished = false;
             break;
         }
