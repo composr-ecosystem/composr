@@ -161,7 +161,7 @@ class stats_test_set extends cms_test_case
             }
         }
 
-        $p_month = get_stats_month_for_timestamp(time());
+        $p_month = to_epoch_interval_index(time(), 'months');
         $server_timezone = get_server_timezone();
 
         $today = cms_date('Y-m-d');
@@ -247,7 +247,7 @@ class stats_test_set extends cms_test_case
         require_code('temporal');
         require_lang('stats');
 
-        $p_month = get_stats_month_for_timestamp(time());
+        $p_month = to_epoch_interval_index(time(), 'months');
 
         $bucket_hook = [];
         $bucket_filters = [];

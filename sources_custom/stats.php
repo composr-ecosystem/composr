@@ -24,6 +24,8 @@
  */
 function get_google_search_console_data(?int $_start_month = null, ?int $_end_month = null, ?string $keyword = null, ?string $url = null) : ?array
 {
+    require_code('temporal');
+
     $sz = serialize([$_start_month, $_end_month, $keyword]);
 
     static $result = [];
@@ -43,14 +45,14 @@ function get_google_search_console_data(?int $_start_month = null, ?int $_end_mo
     $url = 'https://www.googleapis.com/webmasters/v3/sites/' . rawurlencode($url) . '/searchAnalytics/query?access_token=' . urlencode($access_token);
 
     if ($_start_month === null) {
-        $_start_month = get_stats_month_for_timestamp(time() - 365 * 24 * 60 * 60);
+        $_start_month = (to_epoch_interval_index(time(), 'months') - 12);
     }
     $start_year = 1970 + intval(round(floatval($_start_month) / 12.0));
     $start_month = ($_start_month % 12) + 1;
     $start_day = 1;
 
     if ($_end_month === null) {
-        $_end_month = get_stats_month_for_timestamp(time());
+        $_end_month = to_epoch_interval_index(time(), 'months');
     }
     $end_year = 1970 + intval(round(floatval($_end_month) / 12.0));
     $end_month = ($_end_month % 12) + 1;
