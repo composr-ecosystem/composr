@@ -23,44 +23,146 @@ class path_references_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $regexps = [
-            '#\'([^\':/]+/[^\':]+\.\w+)\'#',
-            '#\"([^\":/]+/[^\":]+\.\w+)\'#',
+            '#\'([^\'/:]+/[^\'/:]+\.\w+)\'#', // Matches single-quoted paths
+            '#\"([^\"/:]+/[^\"/:]+\.\w+)\"#', // Matches double-quoted paths
         ];
 
         require_code('third_party_code');
         require_code('files2');
+        require_code('themes');
+        require_code('themes2');
+
         $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php', 'tpl']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
+                'sources/diff/Diff',
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
             $exceptions = array_merge(list_untouchable_third_party_files(), [
+                '_tests/tests/async_tests/file_security.php', // Tests against invalid paths
+                '_tests/tests/async_tests/should_ignore_file.php', // Also tests against an invalid file
+                '_tests/tests/async_tests/tar.php', // Testing a zero-byte file which does not exist
+                '_tests/tests/async_tests/emoticons.php', // Testing emoticons which do not exist
+                '_tests/tests/async_tests/gallery_images.php', // Testing gallery images which do not exist
+                '_tests/tests/async_tests/tutorial_image_consistency.php', // Does its own path splitting
+                '_tests/tests/async_tests/url_management.php', // Invalid URL test
+                '_tests/tests/async_tests/zip.php', // Creating ZIP files
+                '_tests/tests/sync_tests/standard_dir_files.php',
+
+                'sources/mime_types.php', // Not actual file paths
+
+                // Third party imports referencing files relative to their own forum
+                'sources/hooks/modules/admin_import/mybb.php',
+                'sources/hooks/modules/admin_import/vb3.php',
             ]);
             if (in_array($path, $exceptions)) {
                 continue;
             }
 
+            // Reference directory exceptions
+            $r_directory_exceptions = [
+                'caches', // Temporary
+                'temp', // Temporary
+            ];
+
+            // Reference exceptions (full)
+            $r_exceptions = [
+                'data_custom/execute_temp.php', // Does not exist by default
+                'data_custom/latest_activity.txt', // Activity feed
+                'data_custom/rate_limiter.php', // Does not exist by default
+                'sources_custom/critical_errors.php', // Might not exist (used by de-branding)
+                'Could not find data_custom/upgrader.cms.tmp', // Temporary file / weirdness
+                '0;\' . escape_html(basename($dir_name)) . \'/browse.htm', // Weirdness
+                'text_custom/*.txt', // Wildcard
+                'HTTP/1.1', // Not actually a file path
+                'Alexa/Archive.org', // User agent
+                'Text/Diff.php', // require
+                'You have a [tt]backdoor_ip[/tt] setting left defined in _config.php',
+            ];
+
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
             $matches = [];
-            $missing_paths = [];
             foreach ($regexps as $regexp) {
                 $num_matches = preg_match_all($regexp, $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $_path = urldecode($matches[1][$i]);
-                    if (!file_exists(get_file_base() . '/' . $_path)) {
-                        // We can't test if every reference exists, as we don't know what is not supposed to exist automatically (for many reasons) -- but we can find case sensitivity issues
+                    if (preg_match('#^(' . implode('|', $r_directory_exceptions) . ')/#', $_path) != 0) {
+                        continue;
+                    }
+
+                    if (in_array($_path, $r_exceptions)) {
+                        continue;
+                    }
+
+                    // Directory traversal; cannot test for these because we do not necessarily know the file base in these contexts
+                    if ((strpos($_path, './') === 0) || (strpos($_path, '../') === 0)) {
+                        continue;
+                    }
+
+                    // Log files are always temporary and not created by default
+                    if (strpos($_path, '.log') !== false) {
+                        continue;
+                    }
+
+                    // Replacements for common file path Tempcode and variables
+                    $rep = [
+                        '{$BASE_URL*}' => '', // The same as root, so just remove it
+                        '{$BRAND_BASE_URL*}' => '', // The brand site should have the same structure, so treat the same as BASE_URL
+                        '\' . get_base_url() . \'' => '',
+                        '\' . get_brand_base_url() . \'' => '',
+
+                        '{FROM*}' => 'themes/default/javascript', // themes/default/templates/HTML_HEAD_POLYFILLS.tpl
+                    ];
+                    foreach ($rep as $search => $replace) {
+                        $_path = str_replace($search, $replace, $_path);
+                    }
+
+                    // Replacements for *only* the start of a string
+                    /*
+                    $rep_start = [
+                    ];
+                    foreach ($rep_start as $search => $replace) {
+                        if (strpos($_path, $search) === 0) {
+                            $_path = $replace . substr($_path, strlen($search));
+                        }
+                    }
+                    */
+
+                    // First check if the file exists as-is
+                    $_full_path = get_file_base() . '/' . $_path;
+                    $ok = file_exists($_full_path);
+
+                    // Maybe it's a theme image code? (Only check default and admin themes)
+                    if (!$ok) {
+                        $image = find_theme_image($_path, true, true, 'default', 'EN', null, true);
+                        $ok = (($image !== null) && file_exists($image));
+                    }
+                    if (!$ok) {
+                        $image = find_theme_image($_path, true, true, 'admin', 'EN', null, true);
+                        $ok = (($image !== null) && file_exists($image));
+                    }
+
+                    // Maybe it's a template code? (Only check default and admin themes)
+                    if (!$ok) {
+                        $template = find_template_path(basename($_path), dirname($_path), 'default');
+                        $ok = (($template !== null) && file_exists($template));
+                    }
+                    if (!$ok) {
+                        $template = find_template_path(basename($_path), dirname($_path), 'admin');
+                        $ok = (($template !== null) && file_exists($template));
+                    }
+
+                    // It probably does not exist at this point
+                    if (!$ok) {
                         $this->assertTrue(!file_exists(get_file_base() . '/' . cms_strtolower_ascii($_path)) && !file_exists(get_file_base() . '/' . cms_strtoupper_ascii($_path)), $_path . ' has case sensitivity issues');
-                        $missing_paths[$path] = $_path;
+                        $this->assertTrue(false, 'Possible missing file referenced: ' . $_path . ', in ' . $path);
                     }
                 }
-            }
-            if (count($missing_paths) > 0) {
-                $this->dump($missing_paths, 'Possible missing file references [file containing reference => reference]:');
             }
         }
     }

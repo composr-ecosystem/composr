@@ -86,7 +86,7 @@ function get_karmic_influence(?int $member_id = null) : float
     if ((get_option('karma_influence_use_voting_power') == '1') && addon_installed('points')) {
         require_code('cns_polls_action2');
         require_code('points');
-        $karmic_influence += cns_points_to_voting_power(points_balance($member_id));
+        $karmic_influence += cns_points_to_voting_power(points_rank($member_id));
         $karmic_influence = $karmic_influence * floatval(get_option('karma_influence_multiplier'));
         return ($karmic_influence < 0.0) ? 0.0 : $karmic_influence;
     }

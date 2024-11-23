@@ -5059,6 +5059,19 @@ function sodium_crypto_box_secretkey(string $key_pair) : string
     return '';
 }
 
+/**
+ * Calculate the number of days in a given month and year.
+ *
+ * @param  integer $calendar The calendar to use (see PHP's CAL_* constants)
+ * @param  integer $month The month number which we are calculating, starting with 1
+ * @param  integer $year The year which we are calculating
+ * @return integer The number of days in the month
+ */
+function cal_days_in_month(int $calendar, int $month, int $year): int
+{
+    return 0;
+}
+
 /*
 
 Various things are disabled for various reasons. You may use them, if you use php_function_allowed
