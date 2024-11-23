@@ -78,6 +78,8 @@ class Hook_admin_stats_links extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        require_code('temporal');
+
         $server_timezone = get_server_timezone();
 
         $max = 1000;
@@ -101,7 +103,7 @@ class Hook_admin_stats_links extends CMSStatsProvider
                 $timestamp = $link_row['c_date_and_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 $country_code = geolocate_ip($link_row['c_ip_address']);
                 if ($country_code === null) {

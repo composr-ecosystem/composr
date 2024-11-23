@@ -67,6 +67,8 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        require_code('temporal');
+
         $server_timezone = get_server_timezone();
 
         $date_pivots = $this->get_date_pivots();
@@ -84,7 +86,7 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
                 $timestamp = $row['rating_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 $rating_for_type = $row['rating_for_type'];
                 $rating = $row['rating'];

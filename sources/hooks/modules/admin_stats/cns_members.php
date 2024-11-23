@@ -120,6 +120,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
         require_code('locations');
+        require_code('temporal');
 
         $server_timezone = get_server_timezone();
 
@@ -138,7 +139,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                 $timestamp = $row['m_join_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 $country = geolocate_ip($row['m_ip_address']);
                 if ($country === null) {

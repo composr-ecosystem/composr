@@ -141,6 +141,8 @@ class Hook_admin_stats_events extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        require_code('temporal');
+
         $server_timezone = get_server_timezone();
 
         $max = 1000;
@@ -167,7 +169,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 $timestamp = $event_row['e_date_and_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 $country_code = $event_row['e_country_code'];
                 $event = $event_row['e_event'];
@@ -212,7 +214,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 }
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 $session_id = $session_row['session_id'];
 

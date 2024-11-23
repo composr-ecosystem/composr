@@ -622,18 +622,6 @@ function stats_find_graph_details(string $graph_name, bool $for_kpi = false) : ?
 }
 
 /**
- * Get the month number of a timestamp, starting from 1970.
- *
- * @param  TIME $timestamp Timestamp
- * @return integer Month number
- */
-function get_stats_month_for_timestamp(int $timestamp) : int
-{
-    list($year, $month) = array_map('intval', explode('-', cms_date('Y-m', $timestamp)));
-    return ($year - 1970) * 12 + ($month - 1);
-}
-
-/**
  * Base stats hook class.
  *
  * @package stats
@@ -829,37 +817,42 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      *
      * @param  string $pivot Pivot type
      * @param  TIME $timestamp Timestamp
-     * @return mixed Pivot value
+     * @return integer Pivot value
      */
-    protected function calculate_date_pivot_value(string $pivot, int $timestamp)
+    protected function calculate_date_pivot_value(string $pivot, int $timestamp) : int
     {
+        require_code('temporal');
+
         switch ($pivot) {
             case 'hour_of_day':
                 return intval(cms_date('H', $timestamp));
             case 'day_series':
-                return cms_date('Y-m-d', $timestamp);
+                return to_epoch_interval_index($timestamp, 'days');
             case 'day_of_week':
                 return intval(cms_date('w', $timestamp));
             case 'week_series':
-                return intval(floor($timestamp / 7 / 24 / 60 / 60));
+                // Proper Monday week start handling (we have to use Monday regardless of ssw because PHP only allows that)
+                $epoch = 345600;
+                return to_epoch_interval_index($timestamp, 'weeks', $epoch);
             case 'week_of_year':
                 return intval(cms_date('W', $timestamp));
             case 'month_series':
-                return get_stats_month_for_timestamp($timestamp);
+                return to_epoch_interval_index($timestamp, 'months');
             case 'month_of_year':
                 return intval(cms_date('m', $timestamp));
             case 'quarter_series':
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
                 return intval(floor($month / 3.0));
             case 'quarter_of_year':
-                $_month = get_stats_month_for_timestamp($timestamp);
+                $_month = to_epoch_interval_index($timestamp, 'months');
                 $month = ($_month % 12);
                 return intval($month / 3);
             case 'year_series':
-                return intval(cms_date('Y', $timestamp));
+                return to_epoch_interval_index($timestamp, 'years');
         }
 
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3ad7fc19c15355a88480afc058c36e78')));
+        return 0;
     }
 
     /**
@@ -888,11 +881,13 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
             case 'day_series':
                 for ($i = $start_month; $i <= $end_month; $i++) {
-                    $year = 1970 + intval(floor(floatval($i) / 12.0));
-                    $month = ($i % 12) + 1;
-                    $days_in_month = intval(date('t', cms_mktime(0, 0, 0, $month, 1, $year)));
+                    $timestamp = from_epoch_interval_index($i, 'months');
+                    $start_days = to_epoch_interval_index($timestamp, 'days');
+
+                    list($year, $month) = array_map('intval', explode('-', cms_date('Y-m', $timestamp)));
+                    $days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
                     for ($j = 1; $j <= $days_in_month; $j++) {
-                        $pivot_value = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($j), 2, '0', STR_PAD_LEFT);
+                        $pivot_value = $start_days + ($j - 1);
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
                         $data[$pivot_value] = 0;
                     }
@@ -909,18 +904,22 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
             case 'week_series':
                 for ($i = $start_month; $i <= $end_month; $i++) {
-                    $year = 1970 + intval(floor(floatval($i) / 12.0));
-                    $month = ($i % 12) + 1;
+                    $timestamp = from_epoch_interval_index($i, 'months');
+                    list($year, $month) = array_map('intval', explode('-', cms_date('Y-m', $timestamp)));
 
                     // Gather the timestamp range for this month
                     $start_timestamp = cms_mktime(0, 0, 0, $month, 1, $year);
                     $end_timestamp = cms_mktime(0, 0, 0, $month + 1, 1, $year) - 1; // -1 so we end on 11:59:59pm the last day of the month instead of possibly accidentally counting an extra week
 
+                    // Proper Monday week start handling (we have to use Monday regardless of ssw because PHP only allows that)
+                    $epoch = 345600;
+
                     // Calculate the weeks in this month
-                    $first_week = intval(date('W', $start_timestamp));
-                    $last_week = intval(date('W', $end_timestamp));
+                    $first_week = to_epoch_interval_index($start_timestamp, 'weeks', $epoch);
+                    $last_week = to_epoch_interval_index($end_timestamp, 'weeks', $epoch);
+
                     for ($j = $first_week; $j <= $last_week; $j++) {
-                        $pivot_value = intval($start_timestamp / 60 / 60 / 24 / 7) + ($j - $first_week);
+                        $pivot_value = $j;
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
                         $data[$pivot_value] = 0;
                     }
@@ -937,6 +936,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
             case 'month_series':
                 for ($i = $start_month; $i <= $end_month; $i++) {
+                    // No special handling needed because buckets are already handled by month
                     $pivot_value = $i;
                     $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
                     $data[$pivot_value] = 0;
@@ -973,7 +973,8 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
             case 'year_series':
                 for ($i = $start_month; $i <= $end_month; $i++) {
                     if (($i % 12 == 0) || (empty($data))) {
-                        $year = 1970 + intval(floor(floatval($i) / 12.0));
+                        $timestamp = from_epoch_interval_index($i, 'months');
+                        $year = to_epoch_interval_index($timestamp, 'years');
                         $pivot_value = $year;
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
                         $data[$pivot_value] = 0;
@@ -1031,6 +1032,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
     /**
      * Make a date pivot value look nice.
+     * TODO: make $pivot_value type integer when LEGACY code is removed.
      *
      * @param  string $pivot Current pivot
      * @param  mixed $pivot_value Pivot value
@@ -1043,6 +1045,15 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
         switch ($pivot) {
             case 'hour_of_day':
                 return trim(cms_date('ga', cms_mktime($pivot_value)));
+
+            case 'day_series':
+                // LEGACY
+                if (is_string($pivot_value)) {
+                    return $pivot_value;
+                }
+
+                $timestamp = from_epoch_interval_index($pivot_value, 'days');
+                return cms_date('Y-m-d', $timestamp);
 
             case 'day_of_week':
                 $dows = [
@@ -1057,7 +1068,9 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return do_lang($dows[$pivot_value]);
 
             case 'week_series':
-                $timestamp = $pivot_value * 7 * 24 * 60 * 60; // Convert weeks into seconds
+                // Proper Monday week start handling (we have to use Monday regardless of ssw because PHP only allows that)
+                $epoch = 345600;
+                $timestamp = from_epoch_interval_index($pivot_value, 'weeks', $epoch);
                 $year = intval(cms_date('Y', $timestamp));
                 $week = intval(cms_date('W', $timestamp));
                 return strval($year) . '-W' . str_pad(strval($week), 2, '0', STR_PAD_LEFT);
@@ -1066,9 +1079,8 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return do_lang('WEEK', comcode_escape(strval($pivot_value)));
 
             case 'month_series':
-                $year = 1970 + intval(floor(floatval($pivot_value) / 12.0));
-                $month = ($pivot_value % 12) + 1;
-                return strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT);
+                $timestamp = from_epoch_interval_index($pivot_value, 'months');
+                return cms_date('Y-m', $timestamp);
 
             case 'month_of_year':
                 $months = [
@@ -1088,13 +1100,21 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
                 return do_lang($months[$pivot_value - 1]);
 
             case 'quarter_series':
-                $_year = 1970.0 + floor($pivot_value * 3.0) / 12.0;
-                $year = intval($_year);
-                $quarter = intval(($_year - $year) * 4) + 1;
-                return strval($year) . ' Q' . strval($quarter);
+                $timestamp = from_epoch_interval_index($pivot_value * 3, 'months');
+                $quarter = ($pivot_value % 4) + 1;
+                return cms_date('Y', $timestamp) . ' Q' . strval($quarter);
 
             case 'quarter_of_year':
                 return 'Q' . strval($pivot_value + 1);
+
+            case 'year_series':
+                // LEGACY
+                if ($pivot_value >= 1970) {
+                    return strval($pivot_value);
+                }
+
+                $timestamp = from_epoch_interval_index($pivot_value, 'years');
+                return cms_date('Y', $timestamp);
         }
 
         return is_integer($pivot_value) ? strval($pivot_value) : $pivot_value;
@@ -1141,17 +1161,19 @@ abstract class CMSStatsRedirect extends CMSStatsHookBase
  */
 function find_known_stats_date_month_bounds() : array
 {
+    require_code('temporal');
+
     static $min_month = null, $max_month = null;
     if ($min_month === null) {
         $min_month = $GLOBALS['SITE_DB']->query_select_value('stats_preprocessed', 'MIN(p_month)');
         if ($min_month === null) {
-            $min_month = get_stats_month_for_timestamp(time());
+            $min_month = to_epoch_interval_index(time(), 'months');
         }
     }
     if ($max_month === null) {
         $max_month = $GLOBALS['SITE_DB']->query_select_value('stats_preprocessed', 'MAX(p_month)');
         if ($max_month === null) {
-            $max_month = get_stats_month_for_timestamp(time());
+            $max_month = to_epoch_interval_index(time(), 'months');
         }
     }
     return [$min_month, $max_month];
@@ -1477,9 +1499,11 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
      */
     public function set_default($default, ?bool $for_kpi = null)
     {
+        require_code('temporal');
+
         if ($for_kpi !== null) {
             if (($for_kpi) && (!$this->for_kpi)) {
-                $current_month = get_stats_month_for_timestamp(time());
+                $current_month = to_epoch_interval_index(time(), 'months');
                 $this->default = [$current_month - $default - 1, $current_month];
                 return;
             } elseif ((!$for_kpi) && ($this->for_kpi)) {
@@ -1501,6 +1525,8 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
      */
     public function read_value(array &$filters, ?bool $for_kpi = null)
     {
+        require_code('temporal');
+
         if (isset($filters[$this->filter_name])) {
             $default = $filters[$this->filter_name];
         } else {
@@ -1514,7 +1540,7 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
 
             $wants_for_non_kpi = ($for_kpi !== null) && (!$for_kpi);
             if ($wants_for_non_kpi) {
-                $current_month = get_stats_month_for_timestamp(time());
+                $current_month = to_epoch_interval_index(time(), 'months');
                 $ret = [$current_month - $ret - 1, $current_month];
             }
 
@@ -1526,7 +1552,7 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
         $end = either_param_integer($this->filter_name . '__end', $default[1]);
 
         if ($end <= 0) { // An end of 0 means now; negative values mean abs(value) months into the future
-            $end = get_stats_month_for_timestamp(time()) + abs($end);
+            $end = to_epoch_interval_index(time(), 'months') + abs($end);
         }
 
         if ($start < 0) { // Negative start means we go back that many months in the past from end
@@ -1657,6 +1683,8 @@ function cleanup_stats()
  */
 function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $end_time = null)
 {
+    require_code('temporal');
+
     if ($end_time === null) {
         $end_time = time();
     }
@@ -1682,7 +1710,7 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
 
     $months = [];
     for ($timestamp = $start_time; $timestamp < $end_time; $timestamp += 60 * 60 * 24 * 28) {
-        $month = get_stats_month_for_timestamp($timestamp);
+        $month = to_epoch_interval_index($timestamp, 'months');
         $months[$month] = true;
     }
 
