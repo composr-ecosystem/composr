@@ -142,7 +142,7 @@ PHP;
 
             // Find/validate path
             if (!is_spreadsheet_readable($file)) {
-                return do_template('RED_ALERT', ['_GUID' => '9kalmcrafmbg3hi4162gursqzdf6q43j', 'TEXT' => 'We only accept spreadsheet files, for security reasons.']);
+                return do_template('RED_ALERT', ['_GUID' => 'bd164caaf23e58579ad89c1a5c034786', 'TEXT' => 'We only accept spreadsheet files, for security reasons.']);
             }
             $path = get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($file);
             if (!is_file($path)) {
@@ -221,7 +221,7 @@ PHP;
             $sheet_reader->close();
 
             if (!isset($_rows[0])) {
-                return do_template('RED_ALERT', ['_GUID' => '006kvk6di5j0d4x1h83eb90k8vbbx03m', 'TEXT' => 'Empty spreadsheet file.']);
+                return do_template('RED_ALERT', ['_GUID' => '49cb9981981e5cb3b649f809cffe9f48', 'TEXT' => 'Empty spreadsheet file.']);
             }
 
             // Work out header
@@ -232,7 +232,7 @@ PHP;
             }
 
             if (count($header_row) < 2) {
-                return do_template('RED_ALERT', ['_GUID' => '37odjvkieql3atnq0mjb9yves78wc6yo', 'TEXT' => 'We expect at least two headers in the spreadsheet.']);
+                return do_template('RED_ALERT', ['_GUID' => '50c95ab14a4e59c7b3c70d4ba7b83c38', 'TEXT' => 'We expect at least two headers in the spreadsheet.']);
             }
 
             // Prepare initial header templating
@@ -251,7 +251,7 @@ PHP;
             }
         } else { // Database table...
             if (stripos($file, 'f_members') !== false) {
-                return do_template('RED_ALERT', ['_GUID' => '71d6xnfv3fnomqo2jo4xqlm8n98xngwk', 'TEXT' => 'Security filter disallows display of the ' . escape_html($file) . ' table.']);
+                return do_template('RED_ALERT', ['_GUID' => '2289bd818c545ca79e5fb2d16528bc87', 'TEXT' => 'Security filter disallows display of the ' . escape_html($file) . ' table.']);
             }
 
             if ($max_rows === null) {

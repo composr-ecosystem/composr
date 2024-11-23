@@ -1339,7 +1339,7 @@ class Module_cms_comcode_pages
             foreach ($categories as $category_label => $sections) {
                 foreach ($sections['SECTIONS'] as $section_label => $results) {
                     foreach ($results['RESULTS'] as $result) {
-                        attach_message($result['MESSAGE'], 'warn');
+                        attach_message($result['MESSAGE'], 'notice');
                     }
                 }
             }
@@ -1613,7 +1613,7 @@ class Module_cms_comcode_pages
         check_privilege('mass_import');
 
         if ((!is_dir(get_custom_file_base() . '/.git')) || (!php_function_allowed('shell_exec')) || (!php_function_allowed('escapeshellarg'))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d27bece2bd9157f1957ce5ae8af15e5e')));
         }
 
         if (post_param_integer('confirm', 0) == 0) {

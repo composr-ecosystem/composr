@@ -155,7 +155,7 @@ class Hook_cns_warnings_karma
             warn_exit($error);
         }
         if (get_forum_type() != 'cns') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('46d19251686d54b08de0454cec666e82')));
         }
 
         require_code('karma2');

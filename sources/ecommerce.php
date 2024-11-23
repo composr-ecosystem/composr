@@ -43,6 +43,7 @@ get_product_dispatch_type                   (optional and only for cart items)
 
 systems/payment_gateways hooks are structured like this...
 
+is_available                                (required)
 get_config                                  (required)
 get_transaction_fee                         (optional)
 get_logos                                   (optional)
@@ -426,6 +427,9 @@ function get_transaction_fee(float $amount, string $type_code, string $payment_g
 
     // Fall back to payment gateway hooks
     $payment_gateway_object = get_hook_ob('systems', 'payment_gateway', $payment_gateway, 'Hook_payment_gateway_', $fail_ok);
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dfb7d5fe027d5a7fa5d64fa62034df8c')));
+    }
     if (($payment_gateway_object !== null) && (method_exists($payment_gateway_object, 'get_transaction_fee'))) {
         return $payment_gateway_object->get_transaction_fee($amount, $type_code);
     }
@@ -576,12 +580,16 @@ function make_transaction_button(string $type_code, string $item_name, string $p
     if ($payment_gateway === null) {
         $payment_gateway = get_option('payment_gateway');
     }
+
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('32468791408d539abeac4a8330d0f8de')));
+    }
+    $trans_expecting_id = $payment_gateway_object->generate_trans_id();
 
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $shipping_tax);
 
-    $trans_expecting_id = $payment_gateway_object->generate_trans_id();
     $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
         'id' => $trans_expecting_id,
         'e_type_code' => $type_code,
@@ -634,6 +642,9 @@ function make_subscription_button(string $type_code, string $item_name, string $
     }
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e101e0b2b11956bc952b8b3eafb785b7')));
+    }
 
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax);
 
@@ -679,6 +690,9 @@ function make_cancel_button(string $purchase_id, string $payment_gateway) : ?obj
     }
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        return null;
+    }
     if (!method_exists($payment_gateway_object, 'make_cancel_button')) {
         return null;
     }
@@ -780,7 +794,11 @@ function perform_local_payment() : bool
     $payment_gateway = get_option('payment_gateway');
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
-    return (get_option('use_local_payment') == '1') && (method_exists($payment_gateway_object, 'do_local_transaction'));
+    if ($payment_gateway_object->is_available() === false) {
+        return false;
+    }
+    $payment_gateway_config = $payment_gateway_object->get_config();
+    return ((($payment_gateway_config['local_only'] === true) || (get_option('use_local_payment') == '1')) && (method_exists($payment_gateway_object, 'do_local_transaction')));
 }
 
 /**
@@ -815,6 +833,9 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
 
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ba25dcccf8885d02af56a80e6898fb2e')));
+    }
 
     if (!method_exists($payment_gateway_object, 'do_local_transaction')) {
         warn_exit(do_lang_tempcode('LOCAL_PAYMENT_NOT_SUPPORTED', escape_html($payment_gateway)));
@@ -1244,6 +1265,9 @@ function ecommerce_attach_memo_field_if_needed(?object &$fields)
             $payment_gateway = get_option('payment_gateway');
             require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
             $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+            if ($payment_gateway_object->is_available() === false) {
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('22b8ff7bbb1250cfb8f90d1d01876bc2')));
+            }
             $config = $payment_gateway_object->get_config();
             $get_memo = !$config['supports_remote_memo'];
         }
@@ -1440,6 +1464,9 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
     $payment_gateway = get_param_string('from', get_option('payment_gateway'));
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('96a7078f18e85f72b79512936102b80d')));
+    }
 
     ob_start();
 
@@ -1507,7 +1534,8 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
 function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_id = null, ?string $type_code = null, ?string $item_name = null, ?string $purchase_id = null, bool $is_subscription = false, string $status = 'Completed', string $reason = '', ?float $price = null, ?float $tax = null, ?float $shipping = null, ?float $transaction_fee = null, ?string $currency = null, bool $check_amounts = true, string $parent_txn_id = '', string $pending_reason = '', string $memo = '', string $period = '', ?int $member_id_paying = null, string $payment_gateway = '', bool $silent_fail = false, bool $send_notifications = true) : ?array
 {
     if ($txn_id === null) {
-        $txn_id = uniqid('trans', true);
+        require_code('crypt');
+        $txn_id = 'tx-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
         $t_status = null;
     } else {
         // Grab the t_status of the $txn_id, mainly used for determining when the transaction was already processed.
@@ -1578,7 +1606,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
 
     // Check we have what we need
     if ($type_code === null || $item_name === null || $purchase_id === null || $price === null || $tax === null || $shipping === null || $currency === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a7c99c46f56f5b3fb58ce975855c815b')));
     }
 
     // Try and locate the product
@@ -1730,7 +1758,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
     // Charge points if required
     if ((addon_installed('points')) && ($t_status === null) && ($status == 'Completed') && ($check_amounts) && ($expected_price_points !== null) && ($expected_price_points != 0)) {
         require_code('points2');
-        points_debit_member($member_id_paying, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name), $expected_price_points, 0, 0, false, 0, 'ecommerce', 'purchase', strval($txn_id));
+        points_debit_member($member_id_paying, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name), $expected_price_points, 0, 0, false, 0, 'ecommerce', 'purchase', strval($txn_id), null, true/*should force so if the member tries to cheat by spending points, at least they'll end up in the negative*/);
     }
     $price_points = (($expected_price_points !== null) ? $expected_price_points : 0);
 

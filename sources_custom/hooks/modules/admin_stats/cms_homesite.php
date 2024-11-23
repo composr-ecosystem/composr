@@ -115,6 +115,8 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        require_code('temporal');
+
         $server_timezone = get_server_timezone();
 
         $date_pivots = $this->get_date_pivots();
@@ -136,7 +138,7 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
 
                 $resolved = strval($row['resolved']);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
@@ -175,7 +177,7 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
 
                     $status = strval($row['status']);
 
-                    $month = get_stats_month_for_timestamp($timestamp);
+                    $month = to_epoch_interval_index($timestamp, 'months');
 
                     foreach (array_keys($date_pivots) as $pivot) {
                         $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
@@ -215,7 +217,7 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
 
                     $category = strval($row['category_id']);
 
-                    $month = get_stats_month_for_timestamp($timestamp);
+                    $month = to_epoch_interval_index($timestamp, 'months');
 
                     foreach (array_keys($date_pivots) as $pivot) {
                         $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
@@ -370,6 +372,6 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('45c7df6e0f45531285abf135c3143815')));
     }
 }

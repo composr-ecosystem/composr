@@ -76,7 +76,7 @@ class Hook_commandr_command_antispam_check
                     $ret .= do_lang('ANTISPAM_RESPONSE_ACTIVE_UNKNOWN_STALE');
                     break;
                 default:
-                    $ret .= do_lang('INTERNAL_ERROR') . ' (unexpected code: ' . strval($_is_potential_blocked) . ')';
+                    $ret .= do_lang('INTERNAL_ERROR', comcode_escape('c998b5fc742c5cc083b199e5a6d99f83')) . ' (unexpected code: ' . strval($_is_potential_blocked) . ')';
                     break;
             }
             if ($_confidence_level !== null) {

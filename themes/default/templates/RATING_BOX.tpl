@@ -1,4 +1,4 @@
-<div class="rating-box rating-for-type-{CONTENT_TYPE|*} rating-for-id-{ID|*}">
+<div class="rating-box rating-for-type-{FEEDBACK_TYPE|*} rating-for-id-{ID|*}">
 	<section class="box box---rating-box"><div class="box-inner">
 		<h3>{!RATING}</h3>
 

@@ -257,7 +257,7 @@ class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
     protected function _write_row(array $row)
     {
         if ($this->handle === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('411ee01b90db57819fb71320ee586453')));
         }
 
         require_code('character_sets');
@@ -278,7 +278,7 @@ class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
                 $delimiter = ';';
                 break;
             default:
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a6f27195229a5ee3a4f309fc4220162c')));
         }
 
         fputcsv($this->handle, @array_map('strval', $_row), $delimiter, '"', (version_compare(PHP_VERSION, '7.4.0') >= 0) ? '' : '\\'/*LEGACY*/);

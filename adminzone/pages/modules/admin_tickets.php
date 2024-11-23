@@ -432,7 +432,7 @@ class Module_admin_tickets
         } elseif (($dispatcher->error !== null) && ($dispatcher->error !== false)) {
             attach_message($dispatcher->error, 'warn', false, true);
         } else {
-            attach_message(do_lang_tempcode('INTERNAL_ERROR'), 'warn');
+            attach_message(do_lang_tempcode('SUCCESS'), 'inform'); // Probably worked / added to the queue
         }
 
         // Return the UI for sending the e-mail to another person

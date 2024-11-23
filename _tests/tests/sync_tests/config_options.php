@@ -260,7 +260,7 @@ class config_options_test_set extends cms_test_case
         $files[] = 'install.php';
         foreach ($files as $path) {
             // Exceptions
-            if ((strpos($path, 'modules/purchase.php') !== false)) { // Contains eCommerce config option upgrade code which must use get_option
+            if ((strpos($path, 'pages/modules/purchase.php') !== false)) { // Contains eCommerce config option upgrade code which must use get_option
                 continue;
             }
             if ((strpos($path, 'hooks/systems/trusted_sites/ecommerce.php') !== false)) { // Not allowed to use get_ecommerce_option here; breaks the entire site

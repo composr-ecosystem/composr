@@ -144,7 +144,7 @@ abstract class Database_super_mysql extends DatabaseDriver
                 break;
 
             default:
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0c65795617085f4d9ef7e55c6d100d8d')));
         }
 
         return 'CAST(' . $field . ' AS ' . $_type . ')';

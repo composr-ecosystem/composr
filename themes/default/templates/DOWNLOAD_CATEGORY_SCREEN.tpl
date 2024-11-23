@@ -54,7 +54,7 @@
 	2_ICON=admin/add_one_category
 	3_ACCESSKEY=q
 	3_URL={EDIT_CAT_URL*}
-	3_TITLE={!EDIT_DOWNLOAD_CATEGORY}
+	3_TITLE={!EDIT_THIS_DOWNLOAD_CATEGORY}
 	3_REL=edit
 	3_ICON=admin/edit_this_category
 {+END}

@@ -23,6 +23,11 @@
  */
 function show_site_messages()
 {
+    // Don't show site messages when fatalistic is on; warn messages will trigger stack traces
+    if (current_fatalistic() != 0) {
+        return;
+    }
+
     // Try the cache first
     require_code('caches');
     $_messages = get_cache_entry('site_messages', serialize([]));
@@ -48,52 +53,23 @@ function show_site_messages()
             continue;
         }
 
-        // Page-link checking
-        $should_display = empty($row['pages']);
-        foreach ($row['pages'] as $page_link) {
-            if ($should_display) { // No need to go through the rest of the page link filters if one already passed
-                break;
-            }
-
-            list($current_zone, $current_attributes, $current_hash) = page_link_decode(get_current_page_link(false));
-            list($filter_zone, $filter_attributes, $filter_hash) = page_link_decode($page_link['page_link']);
-
-            if (($filter_zone != '_WILD') && ($current_zone != $filter_zone)) { // Zones do not match; go to the next page-link
-                continue;
-            }
-
-            if (($filter_hash != '') && ($current_hash != $filter_hash)) { // Hashes do not match; go to the next page-link
-                continue;
-            }
-
-            $should_display = true;
-            foreach ($filter_attributes as $key => $value) {
-                if (in_array($value, ['_WILD', '_SELF', '_SEARCH'])) { // Matches everything for parameters, so skip them
-                    continue;
-                }
-                if (!array_key_exists($key, $current_attributes) || ($current_attributes[$key] != $value)) { // We have an attribute that does not match; go to the next page-link.
-                    $should_display = false;
-                    break;
-                }
-            }
-
-            if ($should_display) { // We have a page-link match; no need to process further page-link filters
-                break;
-            }
+        // Match-key check
+        $match_keys = collapse_1d_complexity('page_link', $row['pages']);
+        if (!match_key_match($match_keys)) {
+            continue;
         }
 
         // We're still considering this message for display. Now check groups.
-        if ($should_display) {
-            $groups = collapse_1d_complexity('group_id', $row['groups']);
+        $groups = collapse_1d_complexity('group_id', $row['groups']);
 
-            if (!empty($groups)) {
-                $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member());
-                $should_display = !empty(array_intersect($groups, $real_group_list));
+        if (!empty($groups)) {
+            $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member());
+            if (empty(array_intersect($groups, $real_group_list))) { // No group matches; do not display
+                continue;
             }
         }
 
-        if ($should_display) { // We can display the message!
-            attach_message(comcode_to_tempcode(get_translated_text($row['m_message'])), $row['m_type']);
-        }
+        // We can display the message at this point!
+        attach_message(comcode_to_tempcode(get_translated_text($row['m_message'])), $row['m_type']);
     }
 }

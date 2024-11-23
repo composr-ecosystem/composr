@@ -1048,7 +1048,7 @@ function filtercode_to_sql(object $db, ?array $filters, ?string $content_type = 
                     break;
 
                 default:
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Impossible opcode
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('567be0d1c47558fa8b4023a5108074e3'))); // Impossible opcode
             }
         }
         if ($alt != '') {

@@ -188,7 +188,7 @@ function attachments_script()
     }
     $myrow = $rows[0];
     if ($myrow['a_url'] == '') {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2e9324c06d1b5691a271acfdf8d7727d')));
     }
 
     if (!$has_no_restricts) {

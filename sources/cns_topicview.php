@@ -884,7 +884,7 @@ function cns_get_post_emphasis(array $_postdetails, ?array $topic_info) : array
         $pp_to_username = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['whisper_to_member']);
         $emphasis = do_lang_tempcode('PP_TO', escape_html($pp_to_displayname), escape_html($pp_to_username));
         $post_class = 'cns-post-personal';
-    } elseif (($topic_info !== null) && ($topic_info['forum_id'] === null)) {
+    } elseif (($topic_info !== null) && (isset($topic_info['t_forum_id'])) && ($topic_info['t_forum_id'] === null)) {
         $emphasis = do_lang_tempcode('PRIVATE_TOPIC');
         $post_class = 'cns-post-private-topic';
     }

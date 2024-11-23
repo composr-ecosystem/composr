@@ -104,7 +104,7 @@ class Hook_addon_registry_leader_board
     public function get_dependencies() : array
     {
         return [
-            'requires' => ['points'],
+            'requires' => ['points', 'System scheduler'],
             'recommends' => [
                 'cns_forum', // for voting power display via cns_polls
             ],
@@ -216,11 +216,11 @@ class Hook_addon_registry_leader_board
 
         if ((($content === null) || (in_array('weekly_10_holders', $content))) && (!has_predefined_content('leader_board', 'weekly_10_holders'))) {
             require_code('leader_board2');
-            add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, [], 0);
+            add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, [], 1);
         }
         if ((($content === null) || (in_array('weekly_10_earners', $content))) && (!has_predefined_content('leader_board', 'weekly_10_earners'))) {
             require_code('leader_board2');
-            add_leader_board(lorem_phrase() . '-earners', 'earners', 10, 'week', 1, 0, [], ((get_forum_type() == 'cns') ? 1 : 0));
+            add_leader_board(lorem_phrase() . '-earners', 'earners', 10, 'week', 1, 0, [], 1);
         }
     }
 

@@ -100,7 +100,7 @@ abstract class EmailIntegration
             }
         }
 
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('152c727a975352e09024c1b2665a8e7f')));
         return '';
     }
 

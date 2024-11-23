@@ -2145,7 +2145,7 @@ class Module_topics
                 if ($topic_info['t_validated'] == 0) {
                     $topic_info['t_validated'] = get_param_integer('validated', 0);
                     if (($topic_info['t_validated'] == 1) && (addon_installed('validation'))) {
-                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                     }
                 }
 
@@ -3372,7 +3372,7 @@ class Module_topics
             }
             $forfeited = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', $map);
             if ($forfeited == 0) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('10bb5285ca9757a6bbbd7b86b8ad69dd')));
             }
         }
 
@@ -3506,7 +3506,7 @@ class Module_topics
 
         if (($topic_info['t_cache_first_post_id'] == $post_id) && ((cns_may_moderate_forum($topic_info['t_forum_id'])) || ($topic_info['t_cache_first_member_id'] == get_member()))) {
             $edit_topic_url = build_url(['page' => '_SELF', 'type' => 'edit_topic', 'id' => $topic_info['id']], '_SELF');
-            attach_message(do_lang_tempcode('EDITING_FIRST_TOPIC_POST', escape_html($edit_topic_url->evaluate())), 'inform');
+            attach_message(do_lang_tempcode('EDITING_FIRST_TOPIC_POST', escape_html($edit_topic_url->evaluate())), 'notice');
         }
 
         $hidden_fields = new Tempcode();
@@ -3548,7 +3548,7 @@ class Module_topics
                 if ($post_details[0]['p_validated'] == 0) {
                     $post_details[0]['p_validated'] = get_param_integer('validated', 0);
                     if (($post_details[0]['p_validated'] == 1) && (addon_installed('validation'))) {
-                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                     }
                 }
                 $moderation_options[] = [
@@ -3798,7 +3798,7 @@ class Module_topics
                 if ($topic_info['t_validated'] == 0) {
                     $topic_info['t_validated'] = get_param_integer('validated', 0);
                     if (($topic_info['t_validated'] == 1) && (addon_installed('validation'))) {
-                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                        attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                     }
                 }
                 $moderation_options[] = [
@@ -4172,7 +4172,7 @@ class Module_topics
 
         $default_poll_options = cns_get_default_poll_options($topic_info['t_forum_id']);
         if ($default_poll_options['requireTopicPoll']) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cd0c7d1be36f580283bc286b7548df50')));
         }
 
         $this->handle_topic_breadcrumbs($topic_info['t_forum_id'], $topic_id, $topic_info['t_cache_first_title'], do_lang_tempcode('DELETE_TOPIC_POLL'));
@@ -4484,7 +4484,7 @@ class Module_topics
         } else {
             $forum_id = @intval($_forum_id);
             if ($forum_id === null) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c789c7b26ead5cf8ad23d82b63363dd5')));
             }
         }
 

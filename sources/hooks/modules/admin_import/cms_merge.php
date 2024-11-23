@@ -760,7 +760,7 @@ class Hook_import_cms_merge
             $import = $this->_import_upload($row['c_image_url'], $file_base);
             if ($import === false) {
                 $row['c_image_url'] = '';
-                attach_message('Image for custom eCommerce product ID ' . escape_html(strval($row['id'])) . ' (from old site) needs fixed.', 'warn', false, true);
+                attach_message('Image for custom eCommerce product ID ' . escape_html(strval($row['id'])) . ' (from old site) needs fixed.', 'notice', false, true);
             }
 
             $id_old = strval($row['id']);
@@ -842,7 +842,7 @@ class Hook_import_cms_merge
                 $this->_import_upload($row['a_thumb_url'], $file_base);
                 if ($import === false) {
                     $row['a_thumb_url'] = '';
-                    attach_message('Thumbnail for attachment ID ' . escape_html(strval($row['id'])) . ' (from old site) needs fixed.', 'warn', false, true);
+                    attach_message('Thumbnail for attachment ID ' . escape_html(strval($row['id'])) . ' (from old site) needs fixed.', 'notice', false, true);
                 }
 
                 $id_new = $GLOBALS['SITE_DB']->query_insert('attachments', $row_copy, true);
@@ -1578,7 +1578,7 @@ class Hook_import_cms_merge
                 $import = $this->_import_upload($row['news_image_url'], $file_base);
                 if ($import === false) {
                     $row['news_image_url'] = '';
-                    attach_message('Rep image for news / blog ' . escape_html($this->get_lang_string($db, $row['title'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Rep image for news / blog ' . escape_html($this->get_lang_string($db, $row['title'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 $news_category = [];
@@ -1756,7 +1756,7 @@ class Hook_import_cms_merge
             $import = $this->_import_upload($row['rep_image'], $file_base);
             if ($import === false) {
                 $row['rep_image'] = '';
-                attach_message('Rep image for download category ' . escape_html($this->get_lang_string($db, $row['category'])) . ' needs fixed.', 'warn', false, true);
+                attach_message('Rep image for download category ' . escape_html($this->get_lang_string($db, $row['category'])) . ' needs fixed.', 'notice', false, true);
             }
 
             $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
@@ -1886,31 +1886,31 @@ class Hook_import_cms_merge
                 $import = $this->_import_upload($row['rep_image'], $file_base);
                 if ($import === false) {
                     $row['rep_image'] = '';
-                    attach_message('Rep image for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Rep image for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 $import = $this->_import_upload($row['watermark_top_left'], $file_base);
                 if ($import === false) {
                     $row['watermark_top_left'] = '';
-                    attach_message('Top-left watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Top-left watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 $import = $this->_import_upload($row['watermark_top_right'], $file_base);
                 if ($import === false) {
                     $row['watermark_top_right'] = '';
-                    attach_message('Top-right watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Top-right watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 $import = $this->_import_upload($row['watermark_bottom_left'], $file_base);
                 if ($import === false) {
                     $row['watermark_bottom_left'] = '';
-                    attach_message('Bottom-left watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Bottom-left watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 $import = $this->_import_upload($row['watermark_bottom_right'], $file_base);
                 if ($import === false) {
                     $row['watermark_bottom_right'] = '';
-                    attach_message('Bottom-right watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Bottom-right watermark for gallery ' . escape_html($this->get_lang_string($db, $row['fullname'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 add_gallery($row['name'], $this->get_lang_string($db, $row['fullname']), $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['parent_id'], $row['accept_images'], $row['accept_videos'], $row['is_member_synched'], $row['layout_mode'], $row['rep_image'], $row['watermark_top_left'], $row['watermark_top_right'], $row['watermark_bottom_left'], $row['watermark_bottom_right'], $row['gallery_sort'], $row['media_sort'], $row['allow_rating'], $row['allow_comments'], false, $row['add_date'], null, '', '', false);
@@ -1981,13 +1981,13 @@ class Hook_import_cms_merge
                 $import = $this->_import_upload($row['thumb_url'], $file_base);
                 if ($import === false) {
                     $row['thumb_url'] = '';
-                    attach_message('Thumbnail for video ' . escape_html($this->get_lang_string($db, $row['title'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Thumbnail for video ' . escape_html($this->get_lang_string($db, $row['title'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 $import = $this->_import_upload($row['closed_captions_url'], $file_base);
                 if ($import === false) {
                     $row['closed_captions_url'] = '';
-                    attach_message('Closed captions for video ' . escape_html($this->get_lang_string($db, $row['title'])) . ' needs fixed.', 'warn', false, true);
+                    attach_message('Closed captions for video ' . escape_html($this->get_lang_string($db, $row['title'])) . ' needs fixed.', 'notice', false, true);
                 }
 
                 $submitter = $on_same_msn ? $row['submitter'] : import_id_remap_get('member', strval($row['submitter']), true);
@@ -2832,7 +2832,7 @@ class Hook_import_cms_merge
                     import_id_remap_put('catalogue_field', $old_id, $id_new);
                 }
             } else {
-                attach_message(do_lang_tempcode('CANNOT_MERGE_CATALOGUES', escape_html($row['c_name'])), 'notice');
+                attach_message(do_lang_tempcode('CANNOT_MERGE_CATALOGUES', escape_html($row['c_name'])), 'warn');
             }
         }
         $this->_import_alternative_ids($db, 'catalogue', null);
@@ -2864,7 +2864,7 @@ class Hook_import_cms_merge
             $import = $this->_import_upload($row['rep_image'], $file_base);
             if ($import === false) {
                 $row['rep_image'] = '';
-                attach_message('Rep image for catalogue category ' . escape_html($this->get_lang_string($db, $row['cc_title'])) . ' in catalogue ' . escape_html($row['c_name']) . ' needs fixed.', 'warn', false, true);
+                attach_message('Rep image for catalogue category ' . escape_html($this->get_lang_string($db, $row['cc_title'])) . ' in catalogue ' . escape_html($row['c_name']) . ' needs fixed.', 'notice', false, true);
             }
 
             $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
@@ -3822,13 +3822,13 @@ class Hook_import_cms_merge
                     $import = $this->_import_upload($row['m_photo_url'], $file_base);
                     if ($import === false) {
                         $row['m_photo_url'] = '';
-                        attach_message('Photo of member ' . escape_html($row['m_username']) . ' needs fixed.', 'warn', false, true);
+                        attach_message('Photo of member ' . escape_html($row['m_username']) . ' needs fixed.', 'notice', false, true);
                     }
 
                     $import = $this->_import_upload($row['m_avatar_url'], $file_base);
                     if ($import === false) {
                         $row['m_avatar_url'] = '';
-                        attach_message('Avatar of member ' . escape_html($row['m_username']) . ' needs fixed.', 'warn', false, true);
+                        attach_message('Avatar of member ' . escape_html($row['m_username']) . ' needs fixed.', 'notice', false, true);
                     }
 
                     $id_new = cns_make_member(

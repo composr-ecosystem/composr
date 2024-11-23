@@ -45,7 +45,7 @@ class Hook_login_provider_httpauth
                 $headers = getallheaders();
                 if (!isset($headers['Authorization'])) {
                     require_code('site2');
-                    redirect_exit(get_base_url() . 'admin_login/index.php');
+                    redirect_exit(get_base_url() . '/admin_login/index.php');
                 }
             }
 

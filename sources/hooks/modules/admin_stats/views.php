@@ -383,6 +383,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
         $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
+        require_code('temporal');
         require_code('locations');
 
         $server_timezone = get_server_timezone();
@@ -414,7 +415,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 $timestamp = $row['date_and_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 if ($row['member_id'] == $guest_id) {
                     $unique_identifier = $row['ip'];
@@ -674,7 +675,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     }
                     $timestamp = tz_time($timestamp, $server_timezone);
 
-                    $month = get_stats_month_for_timestamp($timestamp);
+                    $month = to_epoch_interval_index($timestamp, 'months');
 
                     list($zone, $attributes) = page_link_decode($row['page_link']);
                     $page = isset($attributes['page']) ? $attributes['page'] : DEFAULT_ZONE_PAGE_NAME;
@@ -1218,7 +1219,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                         break;
 
                     default:
-                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6e32e7f641775168bafdf0cf49ac48b7')));
                 }
 
                 return [
@@ -1498,7 +1499,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('11f6ccbda65856098498a9f31b8b9581')));
 
         return [];
     }

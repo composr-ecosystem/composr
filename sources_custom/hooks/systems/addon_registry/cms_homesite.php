@@ -223,6 +223,7 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/hooks/systems/privacy/cms_homesite.php',
             'sources_custom/hooks/systems/resource_meta_aware/tracker_issue.php',
             'sources_custom/hooks/systems/startup/cms_homesite__for_outdated_version.php',
+            'sources_custom/hooks/systems/symbols/CMS_REPOS_URL.php',
             'sources_custom/miniblocks/cms_homesite_download.php',
             'sources_custom/miniblocks/cms_homesite_featuretray.php',
             'sources_custom/miniblocks/cms_homesite_make_upgrader.php',
@@ -253,7 +254,6 @@ This addon does not contain the homesite install code and the overall site and t
             'uploads/website_specific/cms_homesite/upgrades/sample_data/index.html',
             'uploads/website_specific/cms_homesite/upgrades/tar_build/index.html',
             'uploads/website_specific/cms_homesite/upgrades/tars/index.html',
-            'sources_custom/hooks/systems/symbols/CMS_REPOS_URL.php',
         ];
     }
 }

@@ -23,13 +23,16 @@
  */
 function adminzone_common_pages_code()
 {
-    // Run a Health Check
+    // Run a Health Check on critical items that should alert admins
     if (has_zone_access(get_member(), 'adminzone')) {
         $health_check = [];
         if ((addon_installed('health_check')) && (current_fatalistic() == 0)) {
             require_code('health_check');
             $has_fails = false;
-            $categories = run_health_check($has_fails, ['Stability \\ Error log']);
+            $categories = run_health_check($has_fails, [
+                'Stability \\ Error log',
+                'System scheduler \\ System scheduler set up'
+            ]);
             if ($has_fails) {
                 foreach ($categories as $category_label => $sections) {
                     foreach ($sections['SECTIONS'] as $section_label => $results) {

@@ -326,7 +326,7 @@ class Module_admin_stats extends Standard_crud_module
         require_lang('stats');
 
         if (!cron_installed()) {
-            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
+            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'notice');
         }
 
         $type = get_param_string('type', 'browse');
@@ -619,7 +619,7 @@ class Module_admin_stats extends Standard_crud_module
             }
         }
 
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3d10991a1d6b52dd850127e7e1c0dcc5')));
     }
 
     /**

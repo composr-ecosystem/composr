@@ -49,9 +49,9 @@ class Hook_checklist_tickets
         }
 
         if ($outstanding > 0) {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'g578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'db3320fdb98152a39beb0115865d028d']);
         } else {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'h578142633c6f3d37776e82a869deb91']);
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => '0b722907fd5656e88e26429f63f78e86']);
         }
 
         $url = build_url(['page' => 'tickets', 'type' => 'browse'], get_module_zone('tickets'));

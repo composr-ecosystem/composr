@@ -53,7 +53,7 @@ class Hook_preview_themewizard_image
 
         $image = generate_themewizard_image($seed, $dark, 'default', 'hsv', $id);
         if ($image === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('25855d1c8f4c536db4ef6992f2203c35')));
         }
 
         $saveat = cms_tempnam();

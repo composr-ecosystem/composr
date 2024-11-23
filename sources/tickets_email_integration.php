@@ -79,7 +79,7 @@ class TicketsEmailIntegration extends EmailIntegration
             }
         }
 
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d90cfa6aecd955c1bbec2d186263501c')));
         return '';
     }
 
@@ -96,7 +96,7 @@ class TicketsEmailIntegration extends EmailIntegration
             }
         }
 
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('70715f460c425e6ba42fb517e2f456ed')));
         return '';
     }
 

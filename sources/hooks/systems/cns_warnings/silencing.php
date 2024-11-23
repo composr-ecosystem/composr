@@ -306,7 +306,7 @@ class Hook_cns_warnings_silencing
         }
 
         if (get_forum_type() != 'cns') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0a784ffb9adb542b9fdc84cca972240a')));
         }
 
         require_code('cns_general_action2');

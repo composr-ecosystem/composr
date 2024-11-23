@@ -216,7 +216,7 @@ class Module_topicview
             if ($of_member !== null) {
                 $of_username = $GLOBALS['FORUM_DRIVER']->get_username($of_member, true);
             } else {
-                $of_username = do_lang('INTERNAL_ERROR');
+                $of_username = do_lang('INTERNAL_ERROR', comcode_escape('fefd77f40ea00a4be0564f0621c1a171'));
             }
             $private_topic_page_link = build_page_link(['page' => 'members', 'type' => 'view', 'id' => $of_member], get_module_zone('members'), [], 'tab--pts');
             $breadcrumbs[] = [$private_topic_page_link, do_lang_tempcode('MEMBER_ACCOUNT', escape_html($of_username))];
@@ -515,7 +515,7 @@ class Module_topicview
                 }
 
                 $rendered_post = do_template('CNS_TOPIC_POST', [
-                    '_GUID' => 'sacd09wekfofpw2f',
+                    '_GUID' => '1d3b7f7b7f565a8294dde05e68ad0728',
                     'GIVE_CONTEXT' => false,
                     'ID' => $is_spacer_post ? '' : strval($_postdetails['id']),
                     'TOPIC_FIRST_POST_ID' => ($topic_info['first_post_id'] === null) ? '' : strval($topic_info['first_post_id']),

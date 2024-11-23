@@ -143,13 +143,13 @@ class Hook_addon_registry_installer
             'themes/default/templates/INSTALLER_INPUT_TICK.tpl',
             'themes/default/templates/INSTALLER_NOTICE.tpl',
             'themes/default/templates/INSTALLER_STEP_1.tpl',
-            'themes/default/templates/INSTALLER_STEP_10.tpl',
             'themes/default/templates/INSTALLER_STEP_2.tpl',
             'themes/default/templates/INSTALLER_STEP_3.tpl',
             'themes/default/templates/INSTALLER_STEP_4.tpl',
             'themes/default/templates/INSTALLER_STEP_4_SECTION.tpl',
             'themes/default/templates/INSTALLER_STEP_4_SECTION_HIDE.tpl',
             'themes/default/templates/INSTALLER_STEP_4_SECTION_OPTION.tpl',
+            'themes/default/templates/INSTALLER_STEP_9.tpl',
             'themes/default/templates/INSTALLER_STEP_LOG.tpl',
             'themes/default/templates/INSTALLER_WARNING.tpl',
             'themes/default/templates/INSTALLER_WARNING_LONG.tpl',
@@ -178,7 +178,7 @@ class Hook_addon_registry_installer
             'templates/INSTALLER_STEP_4.tpl' => 'administrative__installer_step_4',
             'templates/INSTALLER_STEP_LOG.tpl' => 'administrative__installer_step_log',
             'templates/INSTALLER_DONE_SOMETHING.tpl' => 'administrative__installer_step_log',
-            'templates/INSTALLER_STEP_10.tpl' => 'administrative__installer_step_10',
+            'templates/INSTALLER_STEP_9.tpl' => 'administrative__installer_step_9',
             'templates/INSTALLER_INPUT_PASSWORD.tpl' => 'administrative__installer_step_4',
             'templates/INSTALLER_STEP_4_SECTION_OPTION.tpl' => 'administrative__installer_step_4',
             'templates/INSTALLER_INPUT_LINE.tpl' => 'administrative__installer_step_4',
@@ -524,7 +524,7 @@ class Hook_addon_registry_installer
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_step_10() : object
+    public function tpl_preview__administrative__installer_step_9() : object
     {
         require_css('install');
         require_lang('installer');
@@ -534,7 +534,7 @@ class Hook_addon_registry_installer
             'SOMETHING' => lorem_sentence(),
         ]);
 
-        return lorem_globalise(do_lorem_template('INSTALLER_STEP_10', [
+        return lorem_globalise(do_lorem_template('INSTALLER_STEP_9', [
             'PREVIOUS_STEP' => placeholder_number(),
             'CURRENT_STEP' => placeholder_number(),
             'FINAL' => lorem_phrase(),

@@ -253,7 +253,7 @@ class Module_admin_awards extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'a_title ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6a297c88f2eb5e58a9c77941bde0575d')));
         }
         $sortables = [
             'a_title' => do_lang_tempcode('TITLE'),

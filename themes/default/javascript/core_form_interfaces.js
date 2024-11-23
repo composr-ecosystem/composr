@@ -1675,8 +1675,6 @@
             if (img && (img !== imgOb)) {
                 if (img.parentNode.classList.contains('selected')) {
                     img.parentNode.classList.remove('selected');
-                    img.style.outline = '0';
-                    img.style.background = 'none';
                 }
             }
         }

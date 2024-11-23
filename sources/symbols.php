@@ -472,7 +472,7 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
 
                     global $TEMPCODE_SETGET;
                     if (!isset($TEMPCODE_SETGET[$param[0]])) {
-                        attach_message(do_lang_tempcode('UNKNOWN_CSS_MODE', escape_html($param[0])));
+                        attach_message(do_lang_tempcode('UNKNOWN_CSS_MODE', escape_html($param[0])), 'warn');
                         break;
                     }
 
@@ -483,7 +483,7 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
 
                     $matches = [];
                     if (preg_match('#^(\d+)-(\d+|infinity)$#', $css_mode[0], $matches) == 0) {
-                        attach_message(do_lang_tempcode('CORRUPT_CSS_MODE', escape_html($param[0])));
+                        attach_message(do_lang_tempcode('CORRUPT_CSS_MODE', escape_html($param[0])), 'warn', false, true);
                         break;
                     }
 
@@ -507,7 +507,7 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                         $value = '@media ' . $media_rule . ' { ' . $param[1] . '}';
                     }
                 } else {
-                    attach_message(do_lang_tempcode('CORRUPT_CSS_MODE', escape_html($param[0])));
+                    attach_message(do_lang_tempcode('CORRUPT_CSS_MODE', escape_html($param[0])), 'warn', false, true);
                 }
 
                 break;

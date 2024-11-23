@@ -7,8 +7,8 @@
 		<p>Works on most servers (needs PHP FTP support or something similar to suEXEC on your server).</p>
 
 		<div>
-			<p class="right">v{QUICK_VERSION*} | {QUICK_FILESIZE*}</p>
-			<p><a class="btn btn-primary btn-scri buttons--more" href="{QUICK_URL*}">Download</a></p>
+			<div class="right">v{QUICK_VERSION*} | {QUICK_FILESIZE*}</div>
+			<div><a class="btn btn-primary btn-scri buttons--more" href="{QUICK_URL*}">Download</a></div>
 		</div>
 	{+END}
 {+END}{+END}{+END}
@@ -22,8 +22,8 @@
 		<p>This is a ZIP containing all Composr files (several thousand). It is much slower, and only recommended if you cannot use the quick installer. Some <a target="_blank" title="File permissions tutorial ({!LINK_NEW_WINDOW})" href="{$TUTORIAL_URL*,tut_install_permissions}">chmodding</a> is required.</p>
 
 		<div>
-			<p class="right">v{MANUAL_VERSION*} | {MANUAL_FILESIZE*}</p>
-			<p><a class="btn btn-secondary btn-scri buttons--more" href="{MANUAL_URL*}">Download</a></p>
+			<div class="right">v{MANUAL_VERSION*} | {MANUAL_FILESIZE*}</div>
+			<div><a class="btn btn-secondary btn-scri buttons--more" href="{MANUAL_URL*}">Download</a></div>
 		</div>
 	{+END}
 {+END}{+END}{+END}
@@ -39,8 +39,8 @@
 		It {$?,{$IN_STR,{BLEEDINGQUICK_VERSION},alpha},<strong>will not be stable</strong> like,<strong>may not be as stable</strong> as} our main version{+START,IF_PASSED,QUICK_VERSION} (v{QUICK_VERSION*}){+END}.</p>
 
 		<div>
-			<p class="right"><a class="btn btn-secondary btn-scri buttons--more" href="{BLEEDINGMANUAL_URL*}">Manual Installer</a></p>
-			<p><a class="btn btn-primary btn-scri buttons--more" href="{BLEEDINGQUICK_URL*}">Quick Installer</a></p>
+			<div class="right"><a class="btn btn-secondary btn-scri buttons--more" href="{BLEEDINGMANUAL_URL*}">Manual Installer</a></div>
+			<div><a class="btn btn-primary btn-scri buttons--more" href="{BLEEDINGQUICK_URL*}">Quick Installer</a></div>
 		</div>
 	{+END}
 {+END}{+END}{+END}

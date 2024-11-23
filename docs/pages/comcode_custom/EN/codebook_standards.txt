@@ -510,11 +510,18 @@ If you use cookies, use the Composr cookie API
 | Document any cookies in a privacy hook, so that the privacy policy may be generated correctly.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Template GUIDs must be unique
+Template GUIDs must be unique and valid
 | Themeing
 | Product development only
 | Release scripts
-| Don't copy and paste GUIDs in template calls. If you copy and paste a line with a GUID ([tt]'_GUID' => 'blahblahblah'[/tt]), remove it completely from your new line. Our automated scripts can put one back in later. The reason: these are used to allow different uses of shared templates to be differentiated via Tempcode. The GUID is a unique identifier for a specific template call.
+| Don't copy and paste GUIDs in template calls or re-use them. Generate new, random GUIDs for the [tt]_GUID[/tt] parameter, or delete it and run the "Fix missing / duplicate GUIDs" tool. The reason: these are used to allow different uses of shared templates to be differentiated via Tempcode. The GUID is a unique identifier for a specific template call.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+INTERNAL_ERROR do_lang and do_lang_tempcode calls must have a unique and valid GUID as its first parameter
+| Usability
+| Product development only
+| Release scripts
+| Don't copy and paste GUIDs in language calls to INTERNAL_ERROR; use a unique and valid GUID for the first parameter, or set it as blank and run the "Fix missing / duplicate GUIDs" tool. The reason: when an internal error occurs, the GUID will appear, allowing users to report it and developers to better trace and understand what happened (especially in eval code or when stack traces are otherwise not available).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Put standard [tt]index.html[/tt] and [tt].htaccess[/tt] files in new directories
@@ -1531,7 +1538,7 @@ Non-English languages may invent their own syntax, which is outside the scope of
 Define administrative split
 | Internationalisation: ease of
 | Product development only
-| Automated test [tt]lang_administrative_split[/tt]
+| Automated test [tt]async_tests/lang_administrative_split[/tt]
 | The [tt]sources_custom/string_scan.php[/tt] lists which language strings are and are not administrative. This is done so that translation can be focused on the non-administrative strings only.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1850,7 +1857,7 @@ Use standardised field [tt][name][/tt]s when autofill is desired
 Use comment encapsulation
 | Tooling: syntax highlighting
 | Product development only
-| Automated test [tt]comment_encapsulation[/tt]
+| Automated test [tt]async_tests/comment_encapsulation[/tt]
 | Tempcode directives should use comment encapsulation so that syntax highlighting in text editors works.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1985,14 +1992,14 @@ It works a lot better, is easier to understand, and the way our theme is built, 
 Don't leave cruft lying around
 | Technical debt, performance
 | Composr development +
-| Automated test [tt]css_file[/tt], or Firefox "Dustme selectors" addon
+| Automated test [tt]sync_tests/css_file[/tt], or Firefox "Dustme selectors" addon
 | Don't leave old unused styles in the CSS files.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Don't break the Theme Wizard
 | Themeing
 | Product development only
-| Automated test [tt]missing_colour_equations[/tt]
+| Automated test [tt]async_tests/missing_colour_equations[/tt]
 | If colours are added to the CSS then a proper Theme Wizard colour equation should also be added (see how it works for other colours for examples). The best thing to do is usually to re-use an existing colour definition -- not only does that make the colour palette consistent, it stops you needing to calculate a new equation. We made our calculations using Photoshop, by adding white/black layers above the [tt]seed[/tt] color and adjusting its opacity.
 [tt]/*{$,hardcoded_ok}*/[/tt] may be put next to a colour for very rare exceptions.
 |-
@@ -2007,7 +2014,7 @@ Don't break the Theme Wizard
 Use relative font sizes
 | Accessibility
 | Product development only
-| Automated test [tt]web_resources[/tt]
+| Automated test [tt]sync_tests/web_resources[/tt]
 | We want output to be easily scalable, so write sizes using [tt]em[/tt]. It's really easy: if you want something smaller, use something like [tt]0.85em[/tt] and something bigger like [tt]1.1em[/tt]. The advantage to scaling is a themer can easily knock the whole theme's font sizing up, and also it is possible to proportional down-scale content for embed contexts. There is a tool to convert the default theme to [tt]px[/tt] units for designers who prefer it (professional designers have good reason to want to do pixel-perfect designs).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2021,7 +2028,7 @@ Use relative font sizes
 Use [tt]BETA_CSS_PROPERTY[/tt] instead of vendor prefixing
 | Future proofing
 | Composr development +
-| Automated test [tt]css_beta[/tt]
+| Automated test [tt]async_tests/css_beta[/tt]
 | Rather than setting up multiple vendor prefixes for CSS properties that need them, use the [tt]{$BETA_CSS_PROPERTY,...}[/tt] symbol around just one normal call to the CSS property as it would ideally be written in the future. This allows PHP code to automatically add vendor prefixing and make dynamic modifications should there be some kind of standards change in the future. Don't mark stuff beta if it works unprefixed on all supported browsers.
 |}
 
@@ -2123,14 +2130,14 @@ Fix any strict warnings
 Reference language strings in a safe way
 | Stability
 | All development
-| Automated test [tt]js_lang_references[/tt]
+| Automated test [tt]async_tests/js_lang_references[/tt]
 | Any language strings that are not in either [tt]global.ini[/tt] or [tt]critical_error.ini[/tt] must be referenced using the full [tt]{!file:CODENAME}[/tt] syntax. This is because we cannot assume what language files have already been explicitly loaded before any individual JavaScript file is evaluated.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Be careful with global functions and variables
 | Stability
 | Composr development +
-| Automated test [tt]web_resources[/tt]
+| Automated test [tt]sync_tests/web_resources[/tt]
 | Generally do not use globals, but if you must then reference global variables and functions that are defined outside any particular [tt].js[/tt] file by explicitly prefixing them with [tt]window.[/tt]. This allows JavaScript code scanners to detect undeclared variables because there's no longer an ambiguity.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2144,14 +2151,14 @@ Be careful with global functions and variables
 [color="red"]Make images relative[/color]
 | Stability
 | Product development only
-| Automated test [tt]js_standards[/tt]
+| Automated test [tt]async_tests/js_standards[/tt]
 | Calls to [tt]{$IMG}[/tt] must be wrapped with [tt]$util.srl()[/tt]. This is because they need to be turned from absolute URLs to relative URLs, just in case a JavaScript file is cached under HTTP but used under HTTPS (it would generate a security error).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use relative base URLs[/color]
 | Stability
 | Product development only
-| Automated test [tt]js_standards[/tt]
+| Automated test [tt]async_tests/js_standards[/tt]
 | Use the relative version of the base URL ([tt]$util.rel($cms.getBaseUrl())[/tt]), just in case a JavaScript file is cached under HTTP but used under HTTPS (it would generate a security error) -- or if the JavaScript is working across multiple domains (another potential security error). When Composr runs on multiple domains all URLs will work on all domains, with the exception of page URLs.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2165,7 +2172,7 @@ Be careful with global functions and variables
 [color="red"]Do not encode page-links directly in JavaScript files[/color]
 | Stability
 | Product development only
-| Automated test [tt]js_standards[/tt]
+| Automated test [tt]async_tests/js_standards[/tt]
 | Use of [tt]{$PAGE_LINK}[/tt] will encode [tt]keep_[/tt] parameters, including potential session IDs. It must therefore be passed into JavaScript via an HTML [tt]data-[/tt] attribute, or you must generate with the [tt]{$PAGE_LINK}[/tt] parameter to avoid [tt]keep_[/tt] parameters and manually attach them using [tt]$cms.keep()[/tt] (being very careful on whether the existing URL does or doesn't have a [tt]?[/tt] in already, which may vary by URL scheme).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2224,7 +2231,7 @@ Be careful with global functions and variables
 [color="red"]Usually use SVG (or PNG) files[/color]
 | Performance
 | Composr development +
-| Manually, Automated test [tt]svg_quality[/tt]
+| Manually
 | Use SVG images in most cases, PNG images in rarer cases (e.g. avatars and emoticons), GIF when animation is needed (with a APNG versions too), or JPEG if there is zero chance of the image needing any transparency and never likely to be edited again (i.e. only use it at a post-development optimisation stage) and it compresses better as JPEG.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2238,7 +2245,7 @@ Be careful with global functions and variables
 [color="red"]Organise theme images neatly[/color]
 | Consistency
 | Product development only
-| Manually, Automated test [tt]theme_images[/tt]
+| Manually, Automated test [tt]async_tests/theme_images[/tt]
 | Square theme images generally should be classified somewhere under the [tt]icons[/tt] theme image directory. All icons must be square. Generally try and keep a neat directory structure, rather than littering theme images at the top level.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2252,7 +2259,7 @@ Be careful with global functions and variables
 Compress images and strip gamma from PNG files
 | Performance, compatibility
 | Composr development +
-| Automated test checks compression ratios ([tt]image_compression[/tt], Automated test checks SVG quality ([tt]theme_images[/tt]
+| Automated test [tt]async_tests/image_compression[/tt], Automated test [tt]async_tests/theme_images[/tt]
 | Pass PNG images through a compression program such as PNGGauntlet or PNGThing, and strip gamma settings in the process (needed for colour compatibility on some browsers). Strip any unneeded code from SVG files.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2325,14 +2332,14 @@ If you make a Composr tutorial that doesn't meet the normal rules (e.g. a video 
 Provide addon screenshots
 | Communication
 | Composr development +
-| Automated test [tt]addon_screenshots[/tt]
+| Automated test [tt]async_tests/addon_screenshots[/tt]
 | Every non-bundled addon that is non-development addon must have a screenshot in [tt]data_custom/images/addon_screenshots[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use standardised navigation paths[/color]
 | Communication: consistency
 | Product development only
-| Manually, Automated test [tt]tutorial_nav_paths[/tt]
+| Manually, Automated test [tt]async_tests/tutorial_nav_paths[/tt]
 | Navigation paths should be a bit like breadcrumbs starting from the Admin Zone, e.g. "Admin Zone > Setup > Configuration" or "Admin Zone > Content > Downloads"; or breadcrumbs on the default menu written like "Content > Quizzes on the default menus". Don't describe the navigation paths using prose.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2437,7 +2444,7 @@ Use standardised commit messages
 Appropriate branch naming
 | Consistency
 | Composr development
-| Automated test [tt]sensible_git_branches[/tt])
+| Automated test [tt]async_tests/sensible_git_branches[/tt]
 | The current stable version branch should be in the {$STABLE_BRANCH_NAME} branch, and any other version branch should be in [tt]v<version-number>[/tt].
 |}
 

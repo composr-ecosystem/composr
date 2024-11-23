@@ -171,7 +171,7 @@ PHP;
         }
 
         if (!cron_installed()) {
-            return do_template('RED_ALERT', ['_GUID' => 'sfkshkjfh34htiuk3ht3', 'TEXT' => do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration')))]);
+            return do_template('RED_ALERT', ['_GUID' => 'a2a0d9ca06605ebcbf98d8597a73d053', 'TEXT' => do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration')))]);
         }
 
         require_lang('leader_board');
@@ -179,14 +179,18 @@ PHP;
         require_css('leader_board');
         require_code('points');
 
-        if (!array_key_exists('param', $map)) {
+        if (!array_key_exists('param', $map)) { // Get the first leader-board if none defined
             $boards = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id', 1);
         } else {
             $boards = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => intval($map['param'])], '', 1);
         }
 
         if (empty($boards)) {
-            return do_template('RED_ALERT', ['_GUID' => '4c1a7f62c19ac80998fa1634454317bc', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'leader_board')]);
+            // Only error on a leader-board not existing if we explicitly requested one; otherwise just return blank
+            if (array_key_exists('param', $map)) {
+                return do_template('RED_ALERT', ['_GUID' => '4c1a7f62c19ac80998fa1634454317bc', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'leader_board')]);
+            }
+            return new Tempcode();
         }
 
         $board = $boards[0];
@@ -233,7 +237,7 @@ PHP;
             }
 
             $out->attach(do_template('POINTS_LEADER_BOARD_ROW', [
-                '_GUID' => '3gfy3u54t45287tg1odf8y82dcf98ruf3gt8645t92845',
+                '_GUID' => '8e37bbbf7df05544997ac27767bb7b79',
                 'ID' => strval($row['lb_member']),
                 'POINTS_URL' => $points_url,
                 'PROFILE_URL' => $profile_url,
@@ -255,7 +259,7 @@ PHP;
         $url = build_url(['page' => 'leader_board', 'id' => $leader_board_id], $zone);
 
         return do_template('POINTS_LEADER_BOARD_SET', [
-            '_GUID' => 'g354u7itg47i8gt743tgbqu5376yoty839udc13984',
+            '_GUID' => '6ad2990c8440500681a402fe4fdf3916',
             '_SET_NUMBER' => strval(count($rows)),
             '_TYPE' => $board['lb_type'],
             '_COUNT' => strval(count($rows)),

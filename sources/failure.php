@@ -75,7 +75,7 @@ function suggest_fatalistic()
             $st = do_lang_tempcode('WARN_TO_STACK_TRACE_3', escape_html($stack_trace_url->evaluate()));
         }
         require_code('site');
-        attach_message($st, 'inform');
+        attach_message($st, 'warn');
     }
 }
 
@@ -310,7 +310,7 @@ function _cms_error_handler(string $type, int $errno, string $errstr, string $er
 
         default:
             if ((!has_privilege(get_member(), 'see_php_errors')) && (!$GLOBALS['DEV_MODE'])) {
-                $errstr = do_lang('INTERNAL_ERROR');
+                $errstr = do_lang('INTERNAL_ERROR', comcode_escape('72e6bbb313db37062b97acbe7a5e8771'));
             }
             break;
     }
@@ -669,7 +669,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     $url = $_SERVER['REQUEST_URI'];
 
     // Prevent accidental lock-out by, for example, a rogue AJAX script on Composr repeating the request several times quickly
-    $test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) FROM {prefix}hackattack WHERE reason=\'{reason}\' AND ip=\'{ip}\' AND date_and_time>={date_and_time} AND user_agent=\'{user_agent}\' AND risk_score>0', [
+    $test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) FROM {prefix}hackattack WHERE ' . db_string_equal_to('reason', '{reason}') . ' AND ' . db_string_equal_to('ip', '{ip}') . ' AND date_and_time>={date_and_time} AND ' . db_string_equal_to('user_agent', '{user_agent}') . ' AND risk_score>0', [
         'reason' => $reason, // No tolerance if they triggered a different type of hack
         'ip' => $ip, // No tolerance if they changed IP addresses
         'date_and_time' => (time() - 3), // Allow a very modest 3 seconds grace; we don't want to be too tolerant in case it's a DoS attack
@@ -1603,7 +1603,7 @@ function _look_for_match_key_message(string $natural_text, bool $only_if_zone = 
 
 /**
  * Show a helpful access-denied page. Has a login ability if it senses that logging in could curtail the error.
- * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). warn_exit(do_lang_tempcode('INTERNAL_ERROR')) is for those situations, or log_hack_attack_and_exit.
+ * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). Using warn_exit with INTERNAL_ERROR is for those situations, or log_hack_attack_and_exit.
  *
  * @param  ID_TEXT $class The class of error (e.g. PRIVILEGE)
  * @param  string $param The parameter given to the error message

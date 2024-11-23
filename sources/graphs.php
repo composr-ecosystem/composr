@@ -292,7 +292,7 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
     _normalise_graph_dims($width, $height);
 
     if (empty($datasets)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('992706a795ae551c957fdd0a4349f00d')));
     }
 
     $max = 0.0;
@@ -304,7 +304,7 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
     $_datasets = [];
     foreach ($datasets as $i => $dataset) {
         if (count($dataset['datapoints']) != count($x_labels)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('74cdf2760e725d80b52bf6a1d12ccac5')));
         }
 
         $datapoints = [];

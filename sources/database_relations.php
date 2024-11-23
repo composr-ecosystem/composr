@@ -390,7 +390,7 @@ function get_table_descriptions() : array
         'filedump' => 'stores metadata for folders within the filedump',
         'galleries' => 'stores every gallery available on the site where multimedia can be submitted',
         'group_category_access' => 'defines what groups may access what categories',
-        'group_page_access' => 'defines what groups may access what pages',
+        'group_page_access' => 'defines which groups may NOT access which pages',
         'group_privileges' => 'defines what groups have what privileges',
         'group_zone_access' => 'defines what groups may access what zones',
         'hackattack' => 'stores a record of hack attempts on the site',

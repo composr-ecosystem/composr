@@ -116,7 +116,7 @@ class _template_previews_test_set extends cms_test_case
                 continue; // Does not exist in theme
             }
 
-            if ($template == 'templates/tempcode_test.tpl') {
+            if ($template == 'text/tempcode_test.txt') {
                 continue; // Only a test template
             }
             if ($template == 'templates/ADMIN_ZONE_SEARCH.tpl') {
@@ -174,7 +174,6 @@ class _template_previews_test_set extends cms_test_case
                     'templates/ADMIN_ZONE_SEARCH.tpl',
                     'templates/FILEDUMP_FOOTER.tpl',
                     'templates/FILEDUMP_SEARCH.tpl',
-                    'templates/FONT_SIZER.tpl',
                     'templates/FORM_SCREEN_ARE_REQUIRED.tpl',
                     'templates/FORM_SCREEN_FIELD_DESCRIPTION.tpl',
                     'templates/FORM_STANDARD_START.tpl',

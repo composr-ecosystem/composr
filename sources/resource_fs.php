@@ -281,7 +281,7 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
 
         // Uh oh! We failed to make a unique GUID
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_guid', ['resource_guid' => $guid]) !== null) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8d360921a1ef555ba084d6d6ce0e445e')));
         }
 
         $GLOBALS['SITE_DB']->query_insert('alternative_ids', [
@@ -1067,7 +1067,7 @@ function remap_portable_as_resource_id(string $resource_type, $portable_data)
     //$resource_id = $portable_data['id']; Would not be portable between sites
 
     // Ideally, find via GUID
-    $resource_id = array_key_exists('guid', $portable_data) ? find_id_via_guid($portable_data['guid']) : null;
+    $resource_id = ((array_key_exists('guid', $portable_data)) && ($portable_data['guid'] !== null)) ? find_id_via_guid($portable_data['guid']) : null;
     if ($resource_id !== null) {
         return $resource_id;
     }

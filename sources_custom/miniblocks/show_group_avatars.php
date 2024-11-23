@@ -24,11 +24,11 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('show_group_avatars')) {
-    return do_template('RED_ALERT', ['_GUID' => 'zupnq0hhjmuzafxnz1z17e2fv3f3yuoh', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('show_group_avatars'))]);
+    return do_template('RED_ALERT', ['_GUID' => '7dcc8480e51b5acdb4790fe09e9b457e', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('show_group_avatars'))]);
 }
 
 if (get_forum_type() != 'cns') {
-    return do_template('RED_ALERT', ['_GUID' => 'o1mp434qrijc2ms5hseqvm5ynodw74rr', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+    return do_template('RED_ALERT', ['_GUID' => 'ed304b2a3b305270980c3c69471137c9', 'TEXT' => do_lang_tempcode('NO_CNS')]);
 }
 
 $order = 'm_join_time DESC';

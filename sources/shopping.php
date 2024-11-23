@@ -578,6 +578,9 @@ function make_cart_payment_button(int $order_id, string $currency, int $price_po
     $payment_gateway = get_option('payment_gateway');
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+    if ($payment_gateway_object->is_available() === false) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('64ccae53df1d5e60b1b5d7cc06a53a52')));
+    }
 
     $trans_expecting_id = $payment_gateway_object->generate_trans_id();
     $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [

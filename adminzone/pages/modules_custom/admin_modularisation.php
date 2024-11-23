@@ -154,7 +154,7 @@ class Module_admin_modularisation
 
             $count++;
             if ($count >= $max) {
-                attach_message(do_lang_tempcode('MODULARISATION_TOO_MANY_ENTRIES', strval($max)), 'warn');
+                attach_message(do_lang_tempcode('MODULARISATION_TOO_MANY_ENTRIES', strval($max)), 'notice');
                 break;
             }
         }

@@ -160,7 +160,7 @@ class Hook_cns_warnings_point_transactions
             foreach ($_POST['points_reverse'] as $transaction_id) {
                 $_row = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => intval($transaction_id)], '', 1);
                 if (!array_key_exists(0, $_row)) { // Sanity check
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ea085e0b91d353f985cb046483d1b9d2')));
                 }
                 $row = $_row[0];
 

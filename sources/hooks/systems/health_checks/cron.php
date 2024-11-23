@@ -67,7 +67,16 @@ class Hook_health_check_cron extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue(cron_installed(), 'The system scheduler is not running; it is needed for various features to work. See the tutorials on how to set this up.');
+        if (!cron_installed()) { // Cron not running
+            $this->assertTrue(false, do_lang('CRON_NOT_RUNNING', comcode_escape(get_tutorial_url('tut_configuration'))));
+        } else { // Cron blocked by a pending upgrade
+            require_code('version');
+            $version_files = float_to_raw_string(cms_version_number(), 10, true);
+            $version_db = strval(cms_version_time_db());
+            if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files) || (get_value('db_version', '', true) != $version_db)) {
+                $this->assertTrue(false, do_lang('CRON_UPGRADE_PENDING'));
+            }
+        }
     }
 
     /**

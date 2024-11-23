@@ -310,7 +310,7 @@ class Hook_profiles_tabs_about
         $right_margin = (max($a, $b) == 0) ? 'auto' : (strval(max($a, $b) + 6) . 'px');
 
         $content = do_template('CNS_MEMBER_PROFILE_ABOUT', [
-            '_GUID' => 'fodfjdsfjsdljfdls',
+            '_GUID' => '16a5cb5d82155e0aa855a94111fb12ea',
             'MEMBER_ID' => strval($member_id_of),
             'USERNAME' => $member_info['username'],
             'RIGHT_MARGIN' => $right_margin,

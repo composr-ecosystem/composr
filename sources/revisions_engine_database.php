@@ -505,7 +505,7 @@ class RevisionEngineDatabase
                 $diff_everything_after_url = get_self_url(false, false, ['diffing' => 1, 'revision' => $revision['id']]);
 
                 $diff_icon = do_template('REVISIONS_DIFF_ICON', [
-                    '_GUID' => 'xea39609ba90f5f756b53df5269d036d',
+                    '_GUID' => '46f05670a81459baa83b22b12a3cd2c8',
                     'MORE_RECENT_REVISION' => ($more_recent_revision === null) ? '' : strval($more_recent_revision),
                     'REVISION' => strval($revision['id']),
                     'RENDERED_DIFF_IMMEDIATELY_AFTER' => $rendered_diff_immediately_after,

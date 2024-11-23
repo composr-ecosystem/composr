@@ -699,7 +699,7 @@ function _image_path_to_url(string $to_path) : string
 {
     $file_base = get_custom_file_base();
     if (substr($to_path, 0, strlen($file_base) + 1) != $file_base . '/') {
-        //fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Nothing in the code should be trying to generate a thumbnail outside the base directory
+        //fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('47326326c2565fda87418dd778d88a43'))); // Nothing in the code should be trying to generate a thumbnail outside the base directory
         return '';
     }
 

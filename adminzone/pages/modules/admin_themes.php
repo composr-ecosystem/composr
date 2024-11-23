@@ -1349,7 +1349,7 @@ class Module_admin_themes
     public function _themewizard_image() : object
     {
         if (!addon_installed('themewizard')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('508d63bc97125ae6916aa062f08c9fa1')));
         }
 
         require_code('themewizard');
@@ -1391,7 +1391,7 @@ class Module_admin_themes
         $img = generate_themewizard_image($seed, $dark, 'default', 'hsv', $id, null, null, $lang);
 
         if ($img === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5c062b8f739c568da4187e6e99342a44')));
         }
 
         // Save image
@@ -1808,7 +1808,7 @@ class Module_admin_themes
     public function diff() : object
     {
         if (!addon_installed('actionlog')) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('724b5c5298ab508b93d9597cc9e19450')));
         }
 
         require_code('revisions_engine_files');

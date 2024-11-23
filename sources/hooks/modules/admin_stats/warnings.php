@@ -105,6 +105,8 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        require_code('temporal');
+
         $server_timezone = get_server_timezone();
 
         $max = 1000;
@@ -122,7 +124,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 $timestamp = $row['w_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $month = get_stats_month_for_timestamp($timestamp);
+                $month = to_epoch_interval_index($timestamp, 'months');
 
                 $country = geolocate_ip($row['m_ip_address']);
                 if ($country === null) {
@@ -291,6 +293,6 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('73576d1294dd5e51bbdc119f44fa72fa')));
     }
 }

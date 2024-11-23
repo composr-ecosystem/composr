@@ -94,7 +94,7 @@ class Module_groups
             $id = get_param_integer('id');
 
             if ($id == db_get_first_id()) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ad8913a6a5cf5d2b9196679469972be4')));
             }
 
             $members_groups = $GLOBALS['CNS_DRIVER']->get_members_groups(get_member());
@@ -136,7 +136,7 @@ class Module_groups
             if ($id === null) {
                 $id = get_param_integer('id');
                 if ($id == db_get_first_id()) {
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c0fc39f8a30f5cba9e8660caf1d7780d')));
                 }
 
                 $group_name = cns_get_group_name($id);
@@ -597,7 +597,7 @@ class Module_groups
         // Check for pending approval into this usergroup
         $pending = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'id', ['ga_new_group_id' => $id, 'ga_member_id' => get_member(), 'ga_status' => 0]);
         if ($pending !== null) {
-            attach_message(do_lang_tempcode('GROUP_REQUEST_PENDING'), 'inform');
+            attach_message(do_lang_tempcode('GROUP_REQUEST_PENDING'), 'notice');
         }
 
         // Leadership
@@ -883,7 +883,7 @@ class Module_groups
         $id = get_param_integer('id');
 
         if ($id == db_get_first_id()) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4db078b20fc95ddb94de267393e5f120')));
         }
 
         if ($username === null) {
@@ -996,7 +996,7 @@ class Module_groups
             ]);
         }
         if ($id == db_get_first_id()) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f7c312ece7085127a9805f206c8b2053')));
         }
 
         $free_access = (cns_get_group_property($id, 'open_membership') == 1);

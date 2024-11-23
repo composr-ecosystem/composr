@@ -1001,7 +1001,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 $matches = [];
                 $result = @preg_match($regexp, $html, $matches);
                 if ($result === false) {
-                    attach_message('Bad regexp: ' . $regexp, 'warn', false, true);
+                    attach_message('Health Check Common Mistake Patterns: Bad regexp in page_errors.xml: ' . $regexp, 'warn', false, true);
                     continue;
                 }
                 /*if ($result != 0) { Debugging

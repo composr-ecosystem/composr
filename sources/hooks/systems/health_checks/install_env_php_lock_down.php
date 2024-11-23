@@ -308,6 +308,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             imagecreatefromstring imagejpeg imagepng imagettfbbox
             get_class_methods get_class_vars get_object_vars property_exists
             sodium_crypto_box_keypair sodium_crypto_box_keypair_from_secretkey_and_publickey sodium_crypto_box_publickey sodium_crypto_box_seal sodium_crypto_box_seal_open sodium_crypto_box_secretkey sodium_crypto_secretbox sodium_crypto_secretbox_open
+            cal_days_in_month
 END;
 
         foreach (preg_split('#\s+#', $baseline_functions) as $function) {

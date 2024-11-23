@@ -91,13 +91,13 @@ PHP;
         if ($room_id === null) {
             $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'MIN(id)', ['is_im' => 0/*, 'room_language' => user_lang()*/]);
             if ($room_id === null) {
-                return do_template('RED_ALERT', ['_GUID' => 'se6lmjeorpaovd8hromb19ybjtecunl5', 'TEXT' => do_lang_tempcode('NO_CATEGORIES', 'chat')]);
+                return do_template('RED_ALERT', ['_GUID' => '38f3b8db222c5098b86b599224666f97', 'TEXT' => do_lang_tempcode('NO_CATEGORIES', 'chat')]);
             }
         }
 
         $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
         if (!array_key_exists(0, $room_check)) {
-            return do_template('RED_ALERT', ['_GUID' => 'njeb9nhifmr6bfc3u3c09s5qkoejk21z', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'chat')]);
+            return do_template('RED_ALERT', ['_GUID' => '59141c01a6a95e9a9120cd2fac69d657', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'chat')]);
         }
         require_code('chat');
         if (!check_chatroom_access($room_check[0], true)) {

@@ -270,7 +270,7 @@ class Hook_cns_warnings_content
 
                 $_post = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $_post)) { // Sanity check
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('754c92bbffec56989e5775db814eae41')));
                 }
                 $post = $_post[0];
                 $post_title = $post['p_title'];

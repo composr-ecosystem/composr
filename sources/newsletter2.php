@@ -326,7 +326,7 @@ function delete_newsletter(int $id)
     $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => $id], '', 1);
 
     if (!array_key_exists(0, $rows)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('392b6146d82c5d00ab6b368b967c45de')));
     }
 
     $myrow = $rows[0];
@@ -470,7 +470,7 @@ function delete_periodic_newsletter(int $id)
     $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $id], '', 1);
 
     if (!array_key_exists(0, $rows)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('846ade3344825beb9de7eea1f54b5985')));
     }
 
     $subject = $rows[0]['np_subject'];

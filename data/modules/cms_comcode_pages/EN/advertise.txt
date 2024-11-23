@@ -7,9 +7,9 @@ The system uses a database (located on our systems) and works by tracking all of
 [title="2"]Displaying our banners[/title]
 
 Display the banner on your site, without a banner of your own being in the system. This is the simplest way to do things, however the disadvantage is that you won't get any hits back from the network for it. To use this method, simply insert the following code into your site:
-[code="HTML"]
-<iframe width="728" height="90" frameBorder="0" scrolling="no" src="{$BASE_URL*}/banner.php"></iframe>
-[/code]
+
+[b]<iframe width="728" height="90" frameBorder="0" scrolling="no" src="{$BASE_URL*}/banner.php"></iframe>[/b]
+
 
 [title="2"]Hit Balancing[/title]
 
@@ -21,7 +21,7 @@ We have the ability to change the regularity a banner is shown on the network. I
 
 {+START,IF,{$ADDON_INSTALLED,ecommerce}}[title="2"]Purchasing[/title]
 
-You may [page="_SEARCH:purchase:message:banners"]purchase a banner[/page] and hits for it.
+You may [page="_SEARCH:purchase:browse:category=banners"]purchase a banner[/page] and hits for it.
 {+END}
 [title="2"]Commercial[/title]
 

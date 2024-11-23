@@ -280,7 +280,7 @@ function _cms_http_request(string $url, array $options = []) : object
 
     if (!empty($options['force_curl']) || (empty($options['force_sockets']) && empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority)) {
         if ($curl_priority < 2) { // We cannot bypass the "no" check even if forced
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('81fe28ef5b0a5817b019d56062859d13')));
         }
         $test = $curl->run($url, $options);
         if ($test !== false) {
@@ -290,7 +290,7 @@ function _cms_http_request(string $url, array $options = []) : object
 
     if (!empty($options['force_sockets']) || (empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority)) {
         if ($sockets_priority < 2) { // We cannot bypass the "no" check even if forced
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('356f7e26d43b5277bed112349e328b96')));
         }
         $test = $sockets->run($url, $options);
         if ($test !== false) {
@@ -300,7 +300,7 @@ function _cms_http_request(string $url, array $options = []) : object
 
     if (!empty($options['force_file_wrapper']) || (empty($options['force_filesystem']) && $file_wrapper_priority > $filesystem_priority)) {
         if ($file_wrapper_priority < 2) { // We cannot bypass the "no" check even if forced
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6de5acfdd3ff5431814d8e304b340456')));
         }
         $test = $file_wrapper->run($url, $options);
         if ($test !== false) {
@@ -309,11 +309,11 @@ function _cms_http_request(string $url, array $options = []) : object
     }
 
     if ($filesystem_priority < 2) { // We cannot bypass the "no" check even if forced
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e3653a583ed957deb5a85689f1f78197')));
     }
     $test = $filesystem->run($url, $options);
     if ($test === false) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b0e046931c52542fad22f7acda7752df')));
     }
     return $filesystem;
 }

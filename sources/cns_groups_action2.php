@@ -214,7 +214,7 @@ function cns_delete_group(int $group_id, ?int $target_group = null)
 
     require_code('cns_groups2');
     if (in_array($group_id, get_all_preserved_groups(true))) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4c69b956b30c59cea32882429f32e73b')));
     }
 
     $_group_info = $GLOBALS['FORUM_DB']->query_select('f_groups', ['g_name', 'g_title', 'g_rank_image'], ['id' => $group_id], '', 1);
@@ -477,7 +477,7 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
     // Check if the member is actually pending to be added to the usergroup (if not, cns_add_member_to_secondary_group should be used instead)
     $pending = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'id', ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
     if ($pending === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5030778c22515678aef14653f8bb9b93')));
     }
 
     $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $prospective_member_id, 'gm_group_id' => $group_id], '', 1);
@@ -612,7 +612,7 @@ function cns_group_absorb_privileges_of(int $to, int $from)
 function _cns_group_absorb_privileges_of(int $to, int $from, string $table, string $id = 'group_id')
 {
     if ($to == $from) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('666680cc66635d139b43ccaf15efca69')));
     }
 
     $db = get_db_for($table);

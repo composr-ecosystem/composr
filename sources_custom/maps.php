@@ -49,7 +49,7 @@ function _generate_map_color_pool(&$color_pool)
     }
 
     if (empty($color_pool)) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('130bdb18d3255c2399bbb060f0c7dd63')));
     }
 }
 

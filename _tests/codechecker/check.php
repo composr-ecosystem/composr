@@ -1905,8 +1905,9 @@ function check_call($c, $c_pos, $class = null, $function_guard = '', $show_missi
                         }
                     }
                 } else {
-                    //@var_dump($FUNCTION_SIGNATURES[$class]['functions']);exit(); Useful for debugging
-                    log_warning('Could not find method \'' . $class . '->' . $function . '\'', $c_pos);
+                    //@var_dump($FUNCTION_SIGNATURES[$class]['functions']);
+                    //exit();
+                    log_warning('Could not find method \'' . $class . '->' . $function . '\' . If you are using an *_exists guard, make sure it is in the first or second slot in the if condition.', $c_pos);
                 }
             }
         }

@@ -1820,7 +1820,7 @@ function generate_logo(string $name, ?string $font_choice = null, ?string $colou
 
     if (!in_array($logo_type, ['large', 'standalone', 'small', 'small_white'])) {
         // Invalid value for provided for `$logo_type`
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('18eda8883fcb505396f5bdc752ca7512')));
     }
 
     if ($colour === null) {

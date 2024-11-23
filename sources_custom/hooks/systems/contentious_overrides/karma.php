@@ -104,18 +104,18 @@ class Hook_contentious_overrides_karma
 
                     // Undo previous rating
                     if (\$already_rated) {
-                        reverse_karma(null, \$member_id, null, \$content_type . ':' . \$type, \$content_id);
+                        reverse_karma(null, \$member_id, null, \$feedback_type . ':' . \$type, \$content_id);
                     }
 
                     if ((\$rating !== null) && (\$submitter !== null) && (!is_guest(\$submitter))) {
                         if (\$rating <= 2) {
-                            add_karma('bad', \$member_id, \$submitter, intval(\$karma_dislikes * \$influence), 'feedback ' . \$type, \$content_type . ':' . \$type, \$content_id);
+                            add_karma('bad', \$member_id, \$submitter, intval(\$karma_dislikes * \$influence), 'feedback ' . \$type, \$feedback_type . ':' . \$type, \$content_id);
                         } else if (\$rating <= 4) {
-                            add_karma('bad', \$member_id, \$submitter, intval((\$karma_dislikes * \$influence) / 2.0), 'feedback ' . \$type, \$content_type . ':' . \$type, \$content_id);
+                            add_karma('bad', \$member_id, \$submitter, intval((\$karma_dislikes * \$influence) / 2.0), 'feedback ' . \$type, \$feedback_type . ':' . \$type, \$content_id);
                         } else if (\$rating >= 9) {
-                            add_karma('good', \$member_id, \$submitter, intval(\$karma_likes * \$influence), 'feedback ' . \$type, \$content_type . ':' . \$type, \$content_id);
+                            add_karma('good', \$member_id, \$submitter, intval(\$karma_likes * \$influence), 'feedback ' . \$type, \$feedback_type . ':' . \$type, \$content_id);
                         } else if (\$rating >= 7) {
-                            add_karma('good', \$member_id, \$submitter, intval((\$karma_likes * \$influence) / 2.0), 'feedback ' . \$type, \$content_type . ':' . \$type, \$content_id);
+                            add_karma('good', \$member_id, \$submitter, intval((\$karma_likes * \$influence) / 2.0), 'feedback ' . \$type, \$feedback_type . ':' . \$type, \$content_id);
                         }
                     }
                 }

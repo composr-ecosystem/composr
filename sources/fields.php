@@ -37,7 +37,7 @@ function catalogue_file_script()
 
     // Security check; doesn't work for very old attachments (pre-v8) LEGACY note
     if ($table != 'catalogue_efv_short' && $table != 'catalogue_efv_long' && $table != 'f_member_custom_fields') { // FUDGE
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f68879d351cd55de97d68952de07d36b')));
     }
 
     $original_filename = get_param_string('original_filename', null, INPUT_FILTER_GET_COMPLEX);
@@ -407,7 +407,7 @@ function get_fields_hook(string $type) : object
 
     // We got nothing; fall back to short_text
     if ($type == 'short_text') { // This should never happen where even short_text fails!
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1daae0aa9d535526aedcc64dbcbe6e68')));
     }
     return get_fields_hook('short_text');
 }

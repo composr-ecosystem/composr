@@ -304,7 +304,7 @@ class Module_admin_wordfilter extends Standard_crud_module
         $match_type = post_param_string('match_type');
 
         if (!in_array($match_type, WORDFILTER_MATCH_TYPES)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('92281c2d804a5d5c940c69283921667d')));
         }
 
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'id', ['word' => $word]) !== null) {
@@ -332,7 +332,7 @@ class Module_admin_wordfilter extends Standard_crud_module
         $match_type = post_param_string('match_type');
 
         if (!in_array($match_type, WORDFILTER_MATCH_TYPES)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1c61e74f68a35ea5bfce6b555f4e190d')));
         }
 
         $conflict_id = $GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'id', ['word' => $word]);

@@ -111,7 +111,7 @@ class Module_cms_banners extends Standard_crud_module
         set_helper_panel_tutorial('tut_banners');
 
         if ((has_privilege(get_member(), 'banner_free')) && (get_option('admin_banners') == '0')) {
-            attach_message(do_lang_tempcode('PERMISSION_BANNER_SKIP'), 'inform', true);
+            attach_message(do_lang_tempcode('PERMISSION_BANNER_SKIP'), 'notice', true);
         }
 
         if ($type == 'browse') {

@@ -236,6 +236,8 @@ abstract class Hook_sitemap_base
      */
     protected function _request_page_details(string $page, string $zone, ?string $page_type = null)
     {
+        static $redirect_count = 0;
+
         require_code('site');
         $details = _request_page($page, $zone, $page_type);
         if ($details !== false) {
@@ -244,7 +246,14 @@ abstract class Hook_sitemap_base
                     return false;
                 }
 
-                $details = _request_page($details[1]['r_to_page'], $details[1]['r_to_zone'], $page_type, null, true);
+                // Prevent infinite redirect loops
+                $redirect_count++;
+                if ($redirect_count > 10) {
+                    require_lang('critical_error');
+                    warn_exit(do_lang_tempcode('REDIRECT_LOOP'), false, true); // Log it in case it is a software bug
+                }
+
+                $details = $this->_request_page_details($details[1]['r_to_page'], $details[1]['r_to_zone'], $page_type);
             }
         }
         return $details;
@@ -513,15 +522,28 @@ abstract class Hook_sitemap_base
                 }
                 if ($HAS_MANY_MATCH_KEYS) {
                     $pg_where = '1=0';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:' . $page . ':%') . '\'';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':' . $page . ':%') . '\'';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD:%') . '\'';
-                    $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':\_WILD:%') . '\'';
+                    if (addon_installed('match_key_permissions')) {
+                        $pg_where .= ' OR (' . db_string_equal_to('zone_name', '/') . ' AND (';
+                        $pg_where .= 'page_name LIKE \'' . db_encode_like('\_WILD:' . $page . ':%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:' . $page . ':%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':' . $page . ':%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD:%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:\_WILD:%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':\_WILD:%') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:' . $page) . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:' . $page) . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':' . $page) . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_WILD:\_WILD') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like('\_SEARCH:\_WILD') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone . ':\_WILD') . '\'';
+                        $pg_where .= ' OR page_name LIKE \'' . db_encode_like($zone) . '\'';
+                        $pg_where .= '))';
+                    }
                     $perhaps = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'group_page_access WHERE (' . $pg_where . ') AND (' . $groups . ')', null, 0, false, true);
                 } else {
                     // Optimisation, for when there are not a lot of match keys
                     if ($MATCH_KEYS_CACHED === null) {
-                        $pg_where = 'page_name LIKE \'' . db_encode_like('%:%') . '\'';
+                        $pg_where = 'zone_name LIKE \'' . db_encode_like('/') . '\' AND page_name LIKE \'' . db_encode_like('%:%') . '\'';
                         $MATCH_KEYS_CACHED = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'group_page_access WHERE (' . $pg_where . ') AND (' . $groups . ')', null, 0, false, true);
                     }
                     $perhaps = $MATCH_KEYS_CACHED;
@@ -857,7 +879,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             if ($zone == '_SEARCH') {
                 $zone = $matches[1];
             } else {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6a1aa790ebfc5de8b1eafa5939c5965e')));
             }
         }
         $page = $matches[2];

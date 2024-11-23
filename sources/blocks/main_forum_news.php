@@ -84,7 +84,7 @@ PHP;
         }
 
         if (has_no_forum()) {
-            return do_template('RED_ALERT', ['_GUID' => 'cp9sxfimulv0ufhct6zca6ntdivhrt8p', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
+            return do_template('RED_ALERT', ['_GUID' => 'd200ff2beb4e5137a01c386cb4f930bc', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_lang('news');
@@ -165,7 +165,7 @@ PHP;
             $date = get_timezoned_date_time_tempcode($myrow[$date_key]);
             $author_url = new Tempcode();
             if ((addon_installed('authors')) && ($map['member_based'] != '1') && (!array_key_exists('member_based', $map))) {
-                $author_url = build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));;
+                $author_url = build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));
             }
             $author = $myrow['firstusername'];
             $news_title = escape_html($myrow['title']);

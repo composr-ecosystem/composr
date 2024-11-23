@@ -101,6 +101,8 @@ class Hook_admin_stats_comments extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        require_code('temporal');
+
         $server_timezone = get_server_timezone();
 
         $feedback_type_codes = $this->find_all_feedback_type_codes();
@@ -131,7 +133,7 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                     $timestamp = $topic['t_cache_first_time'];
                     $timestamp = tz_time($timestamp, $server_timezone);
 
-                    $month = get_stats_month_for_timestamp($timestamp);
+                    $month = to_epoch_interval_index($timestamp, 'months');
 
                     $num_comments = $topic['t_cache_num_posts'] - 1;
 
@@ -250,6 +252,6 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                 ];
         }
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('94469dd17f8452eea3bb965c3b99bb51')));
     }
 }

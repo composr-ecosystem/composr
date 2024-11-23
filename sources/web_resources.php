@@ -512,7 +512,7 @@ function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $
                 $c .= '_non_minified';
                 $url .= '&keep_minify=0';
             }
-            $css->attach(do_template('CSS_NEED_FULL', ['_GUID' => 'g2d7f0303a08b9aa9e92f8b0208ee9a7', 'CODE' => $c, 'URL' => $url], user_lang(), false, null, '.tpl', 'templates', $theme));
+            $css->attach(do_template('CSS_NEED_FULL', ['_GUID' => '7a776a2b59535875b10573294bc3fc61', 'CODE' => $c, 'URL' => $url], user_lang(), false, null, '.tpl', 'templates', $theme));
         } else {
             $suffix = '';
             if (!$minify) {

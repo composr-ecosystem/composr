@@ -31,7 +31,6 @@ function init__catalogues()
     global $CAT_FIELDS_CACHE;
     $CAT_FIELDS_CACHE = [];
 
-    // We do not actually necessarily use these constants in the code (they're based on an extensive of an old BINARY field): but they're here for reference so as to understand the codes
     if (!defined('C_DT_FIELDMAPS')) {
         define('C_DT_FIELDMAPS', 0);
         define('C_DT_TITLELIST', 1);
@@ -375,7 +374,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
                     $_potential_sorter_name = new Tempcode();
                     $_potential_sorter_name->attach(escape_html($potential_sorter_name));
                     $_potential_sorter_name->attach(do_lang_tempcode($dir_lang));
-                    $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => 'dfdsfdsusd0fsd0dsf', 'SELECTED' => $sort_sel, 'NAME' => protect_from_escaping($_potential_sorter_name), 'VALUE' => strval($i) . ' ' . $dir_code]));
+                    $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => 'a4fd76ab117f552b97eebb289f6fd775', 'SELECTED' => $sort_sel, 'NAME' => protect_from_escaping($_potential_sorter_name), 'VALUE' => strval($i) . ' ' . $dir_code]));
                 }
             }
         }
@@ -412,11 +411,11 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
                 if ($extra_sort_code != 'fixed_random') {
                     $_potential_sorter_name->attach(do_lang_tempcode($dir_lang));
                 }
-                $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => 'xfdsfdsusd0fsd0dsf', 'SELECTED' => $sort_sel, 'NAME' => protect_from_escaping($_potential_sorter_name), 'VALUE' => $extra_sort_code . ' ' . $dir_code]));
+                $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => '2aa904eff4a858dc98d1a2c7802baf8a', 'SELECTED' => $sort_sel, 'NAME' => protect_from_escaping($_potential_sorter_name), 'VALUE' => $extra_sort_code . ' ' . $dir_code]));
             }
         }
         $sort_url = get_self_url(false, false, [$ordering_param => null], false, true);
-        $sorting = do_template('PAGINATION_SORT', ['_GUID' => '9fgjfdklgjdfgkjlfdjgd90', 'SORT' => $ordering_param, 'URL' => $sort_url, 'SELECTORS' => $selectors]);
+        $sorting = do_template('PAGINATION_SORT', ['_GUID' => '2493d9f280805e44a0f5243eedc573ff', 'SORT' => $ordering_param, 'URL' => $sort_url, 'SELECTORS' => $selectors]);
 
         // Sort entries manually
         if (!$in_db_sorting) {
@@ -589,7 +588,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
             break;
 
         default:
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('bd40c608e7cd5aea896550e12f5ad2a5')));
     }
 
     return [$entry_buildup, $sorting, $entries, $num_entries, $display_type];
@@ -717,7 +716,7 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
             $ob = object_factory('Hook_content_meta_aware_catalogue_entry');
             $info = $ob->info();
             if ($info === null) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a2d4bd7810295652ac74b806940f5a85')));
             }
             $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, $order_by, '', [], 'r'); // Used to get JOIN for ordering
             if ($bits !== null) {
@@ -729,7 +728,7 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
             $ob = object_factory('Hook_content_meta_aware_catalogue_entry');
             $info = $ob->info();
             if ($info === null) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a18b8249f6725fe2acbc8c6e81782776')));
             }
             $order_by_field_id = $fields[intval($order_by)]['id'];
             $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, 'field_' . strval($order_by_field_id), '', [], 'r'); // Used to get JOIN for ordering
@@ -1267,7 +1266,7 @@ function _resolve_catalogue_entry_field(array $field, $entry_id, ?array $only_fi
             }
             break;
         default:
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c112be45266751009a44320f72fae889')));
     }
 
     // Necessary to pick up on metadata very early on and without having to actually render anything
@@ -1450,7 +1449,7 @@ function create_selection_list_catalogues(?string $it = null, bool $prefer_ones_
     $query .= ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('c_title');
     $rows = $GLOBALS['SITE_DB']->query($query, intval(get_option('general_safety_listing_limit'))/*reasonable limit*/, 0, false, false, ['c_title' => 'SHORT_TRANS']);
     if (count($rows) == intval(get_option('general_safety_listing_limit'))) {
-        attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');
+        attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'notice');
     }
 
     $catalogues = [];
@@ -1501,7 +1500,7 @@ function create_selection_list_catalogue_category_tree(string $catalogue_name, ?
     $tree = [];
     $temp_rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_title'], ['c_name' => $catalogue_name, 'cc_parent_id' => null], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('cc_title'), intval(get_option('general_safety_listing_limit'))/*reasonable limit to stop it dying*/);
     if (count($temp_rows) == intval(get_option('general_safety_listing_limit'))) {
-        attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');
+        attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'notice');
     }
     foreach ($temp_rows as $row) {
         $category_id = $row['id'];
@@ -1593,7 +1592,7 @@ function get_catalogue_category_tree(string $catalogue_name, ?int $category_id, 
     $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_title'], ['c_name' => $catalogue_name, 'cc_parent_id' => $category_id], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('cc_title'), intval(get_option('general_safety_listing_limit'))/*reasonable limit to stop it dying*/);
     if (get_page_name() == 'cms_catalogues') {
         if (count($rows) == intval(get_option('general_safety_listing_limit'))) {
-            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');
+            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'notice');
         }
     }
     $no_root = !array_key_exists(0, $children);
@@ -1682,7 +1681,7 @@ function get_catalogue_entries_tree(string $catalogue_name, ?int $submitter = nu
             $temp_rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_title'], ['c_name' => $catalogue_name, 'cc_parent_id' => null], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('cc_title'), intval(get_option('general_safety_listing_limit'))/*reasonable limit to stop it dying*/);
             if (get_page_name() == 'cms_catalogues') {
                 if (count($temp_rows) == intval(get_option('general_safety_listing_limit'))) {
-                    attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');
+                    attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'notice');
                 }
             }
             $children = [];
@@ -1731,7 +1730,7 @@ function get_catalogue_entries_tree(string $catalogue_name, ?int $submitter = nu
     $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_title'], ['cc_parent_id' => $category_id], '', intval(get_option('general_safety_listing_limit'))/*reasonable limit to stop it dying*/);
     if (get_page_name() == 'cms_catalogues') {
         if (count($rows) == intval(get_option('general_safety_listing_limit'))) {
-            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__RECENT_ONLY', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');
+            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__RECENT_ONLY', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'notice');
         }
     }
     $where = ['cc_id' => $category_id];
@@ -1741,7 +1740,7 @@ function get_catalogue_entries_tree(string $catalogue_name, ?int $submitter = nu
     $erows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id', 'ce_submitter', 'ce_add_date'], $where, 'ORDER BY ce_add_date DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     if (get_page_name() == 'cms_catalogues') {
         if (count($erows) == intval(get_option('general_safety_listing_limit'))) {
-            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__RECENT_ONLY', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');
+            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__RECENT_ONLY', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'notice');
         }
     }
     $children[0]['entries'] = [];

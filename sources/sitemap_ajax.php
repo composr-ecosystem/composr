@@ -320,11 +320,23 @@ function _get_view_access_for_node(array $admin_groups, array $groups, array $no
             $negative_access = $GLOBALS['SITE_DB']->query_select('group_page_access', ['group_id'], $where);
             $negative_access = array_flip(collapse_1d_complexity('group_id', $negative_access));
             $access = [];
+
+            // Positive assertion on groups not listed in group_page_access
             foreach (array_keys($groups) as $group_id) {
                 if (!isset($negative_access[$group_id])) {
                     $access[$group_id] = true;
                 }
             }
+
+            // Now do a negative assertion on match-keys in group_page_access
+            require_code('urls');
+            $match_keys = $GLOBALS['SITE_DB']->query_select('group_page_access', ['page_name'], ['zone_name' => '/']);
+            foreach ($match_keys as $match_key) {
+                if (match_key_match($match_key['page_name'], false, ['page' => $node['permissions'][1]['page_name']], $node['permissions'][1]['zone_name'], $node['permissions'][1]['page_name'])) {
+                    unset($access[$group_id]);
+                }
+            }
+
             break;
 
         default:
@@ -627,7 +639,7 @@ function sitemap_script_saving()
                     }
                 }
                 if (!isset($p['permission_module'])) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c916e8ce93ba54a1be7c80d5739b22a8')));
                 }
                 $permission_module = $p['permission_module'];
                 $category = $p['category_name'];

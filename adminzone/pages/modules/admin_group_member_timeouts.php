@@ -72,7 +72,7 @@ class Module_admin_group_member_timeouts
     public function pre_run() : ?object
     {
         if (!cron_installed()) {
-            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
+            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'notice');
         }
 
         $type = get_param_string('type', 'browse');
@@ -240,7 +240,7 @@ class Module_admin_group_member_timeouts
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) { // Security issue, don't allow privilege elevation
             $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
             if (in_array($group_id, $admin_groups)) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c2e5388fc6065d06ae14593f62dc961b')));
             }
         }
 

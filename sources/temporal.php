@@ -541,3 +541,160 @@ function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day,
 
     return $test;
 }
+
+/**
+ * Convert an epoch timestamp to an epoch interval index.
+ * In other words, this will return the number of *full* $intervals from $epoch to $timestamp.
+ * Note that when using Unix epoch, weeks start on a Thursday given that is when epoch starts. Set $epoch to 345600 to start on a Monday, or 259200 for Sunday.
+ *
+ * @param  TIME $timestamp The timestamp which we want to convert to an interval index
+ * @param  ID_TEXT $interval The interval we want to use
+ * @set minutes, hours, days, weeks, months, years
+ * @param  TIME $epoch Define our own epoch relative to the Unix epoch to use in this calculation instead
+ * @return integer The index of the interval at which $timestamp is located
+ */
+function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 0) : int
+{
+    $corrected_timestamp = $timestamp - $epoch;
+
+    $index = 0;
+    switch ($interval) {
+        case 'minutes':
+            $index = intval(floor(floatval($corrected_timestamp) / 60.0));
+            break;
+        case 'hours':
+            $index = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0)));
+            break;
+        case 'days':
+            $index = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0 * 24.0)));
+            break;
+        case 'weeks':
+            $index = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0 * 24.0 * 7.0)));
+            break;
+        case 'months':
+            list($start_year, $start_month, $start_day, $start_hour, $start_minute, $start_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $epoch)));
+            list($end_year, $end_month, $end_day, $end_hour, $end_minute, $end_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $timestamp)));
+
+            // Calculate the difference in years and months
+            $year_diff = $end_year - $start_year;
+            $month_diff = $end_month - $start_month;
+
+            // Convert the year and month difference into a single offset in months
+            $index = ($year_diff * 12) + $month_diff;
+
+            // Are we sure we completed a full month?
+            if (
+                ($end_day < $start_day) ||
+                (($end_day == $start_day) && ($end_hour < $start_hour)) ||
+                (($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute < $start_minute)) ||
+                (($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute == $start_minute) && ($end_second < $start_second))
+            ) {
+                $index--;
+            }
+            break;
+        case 'years':
+            list($start_year, $start_month, $start_day, $start_hour, $start_minute, $start_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $epoch)));
+            list($end_year, $end_month, $end_day, $end_hour, $end_minute, $end_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $timestamp)));
+
+            // Calculate the difference in years
+            $index = ($end_year - $start_year);
+
+            // Are we sure we completed a full year?
+            if (
+                ($end_month < $start_month) ||
+                (($end_month == $start_month) && ($end_day < $start_day)) ||
+                (($end_month == $start_month) && ($end_day == $start_day) && ($end_hour < $start_hour)) ||
+                (($end_month == $start_month) && ($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute < $start_minute)) ||
+                (($end_month == $start_month) && ($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute == $start_minute) && ($end_second < $start_second))
+            ) {
+                $index--;
+            }
+            break;
+        default: // Should never happen
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4c161875f90b5be7bd0adc59a2756a20')));
+    }
+
+    return $index;
+}
+
+/**
+ * Convert a zero-based epoch interval index (e.g. from to_epoch_interval_index) to an epoch timestamp.
+ * In other words, add $index number of $intervals to $epoch.
+ * Note that when using Unix epoch, weeks start on a Thursday given that is when epoch starts. Set $epoch to 345600 to start on a Monday, or 259200 for Sunday.
+ *
+ * @param  integer $index The interval index
+ * @param  ID_TEXT $interval The interval we want to use
+ * @set minutes, hours, days, weeks, months, years
+ * @param  TIME $epoch Define our own epoch relative to the Unix epoch to use in this calculation instead
+ * @return TIME The timestamp relative to Unix epoch
+ */
+function from_epoch_interval_index(int $index, string $interval, int $epoch = 0) : int
+{
+    switch ($interval) {
+        case 'minutes':
+            $timestamp = intval(floor(floatval($index) * 60.0)) + $epoch;
+            break;
+        case 'hours':
+            $timestamp = intval(floor(floatval($index) * (60.0 * 60.0))) + $epoch;
+            break;
+        case 'days':
+            $timestamp = intval(floor(floatval($index) * (60.0 * 60.0 * 24.0))) + $epoch;
+            break;
+        case 'weeks':
+            $timestamp = intval(floor(floatval($index) * (60.0 * 60.0 * 24.0 * 7.0))) + $epoch;
+            break;
+        case 'months':
+            list($start_year, $start_month, $start_day, $start_hour, $start_minute, $start_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $epoch)));
+
+            // Calculate the target year and month
+            $target_year = $start_year + intdiv($index, 12);
+            $target_month = $start_month + ($index % 12);
+            $target_day = $start_day;
+
+            // Handle month overflow
+            if ($target_month > 12) {
+                $target_month -= 12;
+                $target_year++;
+            } elseif ($target_month < 1) {
+                $target_month += 12;
+                $target_year--;
+            }
+
+            // Determine the last valid day of the target month
+            $days_in_target_month = cal_days_in_month(CAL_GREGORIAN, $target_month, $target_year);
+
+            // Adjust the day to fit within the valid range of the target month
+            if ($days_in_target_month < $start_day) {
+                $target_day = 1;
+                $target_month++;
+
+                // Handle month overflow and increment year
+                if ($target_month > 12) {
+                    $target_month -= 12;
+                    $target_year++;
+                }
+            }
+
+            // Create the timestamp for the target month
+            $timestamp = cms_mktime($start_hour, $start_minute, $start_second, $target_month, $target_day, $target_year);
+            break;
+        case 'years':
+            list($start_year, $start_month, $start_day, $start_hour, $start_minute, $start_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $epoch)));
+
+            // If epoch falls on February 29, but the year we want does not have a February 29, we need to advance to March 1.
+            if (($start_month == 2) && ($start_day == 29)) {
+                $days_in_target_month = cal_days_in_month(CAL_GREGORIAN, $start_month, ($start_year + $index));
+                if ($days_in_target_month < 29) {
+                    $start_day = 1;
+                    $start_month = 3;
+                }
+            }
+
+            $timestamp = cms_mktime($start_hour, $start_minute, $start_second, $start_month, $start_day, ($start_year + $index));
+            break;
+        default: // Should never happen
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5bd3c836a6dd509491fea68e58593f4c')));
+    }
+
+    return $timestamp;
+}

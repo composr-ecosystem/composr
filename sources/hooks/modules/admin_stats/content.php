@@ -149,7 +149,7 @@ class Hook_admin_stats_content extends CMSStatsProvider
 
             default:
                 $y_label = new Tempcode();
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cf65ff8b3d3b5bb7b30f64a747fd796b')));
         }
 
         return [

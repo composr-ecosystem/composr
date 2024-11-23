@@ -76,10 +76,10 @@ PHP;
         }
 
         if (!function_exists('curl_init')) {
-            return do_template('RED_ALERT', ['_GUID' => 'gyh8q02fa42oidxizj593su3fs6qc9zm', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
+            return do_template('RED_ALERT', ['_GUID' => 'bd9ccf3209e453a5b166f9995663540f', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
         }
         if (!function_exists('session_status')) {
-            return do_template('RED_ALERT', ['_GUID' => '3kii599c4uz2g43k69ogp53wob87650o', 'TEXT' => 'PHP session extension missing']);
+            return do_template('RED_ALERT', ['_GUID' => '46530b6f292850c789f7458acfebf72b', 'TEXT' => 'PHP session extension missing']);
         }
 
         require_lang('facebook');
@@ -88,7 +88,7 @@ PHP;
 
         $appid = get_option('facebook_appid');
         if ($appid == '') {
-            return do_template('RED_ALERT', ['_GUID' => 'ty2jeraub73e8bu0bo57m01s4hxby4h1', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')]);
+            return do_template('RED_ALERT', ['_GUID' => 'c0afedf52221589ab900ca4c9bceda43', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')]);
         }
 
         $page_name = empty($map['page_name']) ? get_site_name() : $map['page_name'];

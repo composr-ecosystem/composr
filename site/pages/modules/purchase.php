@@ -368,7 +368,8 @@ class Module_purchase
                             $type_code = 'topic_pin';
                             break;
                     }
-                    $txn_id = 'manual-' . substr(uniqid('', true), 0, 10);
+                    require_code('crypt');
+                    $txn_id = 'man-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
                     $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
                         'id' => $txn_id,
                         't_type_code' => $type_code,
@@ -870,9 +871,12 @@ class Module_purchase
             if (!$can_purchase) {
                 $_discounted_price = do_lang('NA');
                 $written_price = do_lang_tempcode('NA_EM');
-            } elseif ($full_price === 0.00/*free without any need for discount*/) {
+            } elseif (($full_price === 0.00) && ($points_for_discount === null)/*free without any need for discount*/) {
                 $_discounted_price = do_lang('NA');
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE');
+            } elseif (($full_price === 0.00) && ($points_for_discount !== null)/*Points only*/) {
+                $_discounted_price = do_lang('NA');
+                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
             } elseif ($discounted_price === 0.00/*discounted via points to zero*/) {
                 $_discounted_price = currency_convert_wrap(0.00, $currency);
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
@@ -1110,7 +1114,7 @@ class Module_purchase
         if ($discounted_price === null) {
             $price = $details['price'];
             if ($price === null) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('550b5102b0625ee3818399fe07b85cea')));
             }
         } else {
             $price = $discounted_price;
@@ -1170,6 +1174,9 @@ class Module_purchase
         $payment_gateway = get_option('payment_gateway');
         require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
         $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+        if ($payment_gateway_object->is_available() === false) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('57f6d8ebe053506e86a7a91c90f78b6e')));
+        }
 
         $test = $this->_check_availability($type_code);
         if ($test !== null) {
@@ -1189,7 +1196,7 @@ class Module_purchase
         if ($discounted_price === null) {
             $price = $details['price'];
             if ($price === null) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e85ad95460b653e28c7a92bc27e7d42b')));
             }
         } else {
             $price = $discounted_price;
@@ -1262,41 +1269,51 @@ class Module_purchase
             }
         }
 
+        $icon = 'buttons/proceed';
+
         if ($price == 0.00) { // Free/point-based product
+            $button = new Tempcode();
+            $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
+
             if ($confirmation_box === null) {
                 if ($points_for_discount !== null) {
                     if (!addon_installed('points')) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f9da6096c690568d880fbdbac53fbd33')));
                     }
 
                     $confirmation_box = do_lang_tempcode('BUYING_FOR_POINTS_CONFIRMATION', escape_html($item_name), escape_html(integer_format($points_for_discount)));
 
                     require_css('points');
                     $icon = 'menu/social/points';
+
+                    $button = make_transaction_button($type_code, $item_name, $purchase_id, $price, [], 0.00, [], 0.00, 0.00, $currency, $points_for_discount, 'points');
+                    $finish_url = null; // Button handles the transaction
                 } else {
                     $confirmation_box = do_lang_tempcode('BUYING_FOR_FREE_CONFIRMATION', escape_html($item_name));
 
                     $icon = 'buttons/proceed';
+                    $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code, 'points' => 1, 'purchase_id' => $purchase_id], '_SELF', ['include_message' => null], true);
                 }
             }
 
             // No form
-            $result = do_template('ECOM_PURCHASE_STAGE_TRANSACT', [
-                '_GUID' => '76ecddb8d2429ed02412943e47dff5d9',
+            $result = do_template('ECOM_PURCHASE_STAGE_PAY', [
+                '_GUID' => '291dda22b4c04d6da282b78b068274eb',
                 'TITLE' => $this->title,
+                'TRANSACTION_BUTTON' => $button,
+                'CURRENCY' => $currency,
                 'ITEM_NAME' => $item_name,
                 'TYPE_CODE' => $type_code,
                 'PURCHASE_ID' => $purchase_id,
-                'FIELDS' => null,
-                'HIDDEN' => '',
-                'LOGOS' => '',
-                'PAYMENT_PROCESSOR_LINKS' => '',
+                'LENGTH' => ($length === null) ? '' : strval($length),
+                'LENGTH_UNITS' => $length_units,
+                'PRICE' => float_to_raw_string($price),
                 'TEXT' => $text,
                 'CONFIRMATION_BOX' => $confirmation_box,
+                'LOGOS' => '',
+                'PAYMENT_PROCESSOR_LINKS' => '',
             ]);
 
-            $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
-            $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'points' => 1, 'purchase_id' => $purchase_id, 'type_code' => $type_code], '_SELF', ['include_message' => null], true);
             $submit_name = do_lang_tempcode('MAKE_PAYMENT');
         } elseif (perform_local_payment()) { // Handle the transaction internally
             if ($confirmation_box === null) {
@@ -1371,7 +1388,7 @@ class Module_purchase
                     break;
                 case PRODUCT_ORDERS:
                     if (!addon_installed('shopping')) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('55f28bc39a615880bf6898ce1546e76a')));
                     }
 
                     require_code('shopping');
@@ -1438,6 +1455,9 @@ class Module_purchase
         $payment_gateway = get_option('payment_gateway');
         require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
         $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
+        if ($payment_gateway_object->is_available() === false) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('34ad104e99c85855ba58e5b5103b4281')));
+        }
 
         // Note: Some payment gateways do not support passing in your own finish / redirect URL with a type_code parameter in the button form
         $type_code = get_param_string('type_code', null);
@@ -1481,29 +1501,43 @@ class Module_purchase
             $item_name = $details['item_name'];
 
             $purchase_id = get_param_string('purchase_id');
+            $trans_expecting_id = get_param_string('trans_expecting_id');
 
             list($discounted_price, $discounted_tax_code, $points_for_discount) = get_discounted_price($details);
             if (($discounted_price === null) && ($details['price'] !== 0.00)) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // Not discounted to free and not free, we should not be here
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0bd939cf853c5df6889b4e4c1680475b'))); // Not discounted to free and not free, we should not be here
             }
 
             if ($points_for_discount !== null) {
                 // Paying with points
+                $errormsg = new Tempcode();
+                if (!addon_installed__messaged('points', $errormsg)) {
+                    return $errormsg;
+                }
+
                 $message = do_lang_tempcode('POINTS_PURCHASE', escape_html(integer_format($points_for_discount)));
                 $memo = post_param_string('memo', do_lang('POINTS'));
-                $currency = 'points';
+
+                // handle_confirmed_transaction by nature is executed when a transaction is already complete, so we need to verify points balance here
+                require_code('points');
+                if (points_balance(get_member()) < $points_for_discount) {
+                    require_lang('points');
+                    warn_exit(do_lang_tempcode('LACKING_POINTS', escape_html(integer_format($points_for_discount - points_balance(get_member())))));
+                }
             } else {
                 // Completely free
                 $message = do_lang_tempcode('FREE_PURCHASE');
                 $memo = post_param_string('memo', do_lang('FREE'));
-                $currency = get_option('currency');
             }
             $price = 0.00;
+
+            $currency = get_option('currency');
 
             $status = 'Completed';
             $reason = '';
             $pending_reason = '';
-            $txn_id = 'manual-' . substr(uniqid('', true), 0, 10);
+            require_code('crypt');
+            $txn_id = 'tx-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
             $parent_txn_id = '';
             $is_subscription = ($details['type'] == PRODUCT_SUBSCRIPTION);
             if ($is_subscription) {
@@ -1512,7 +1546,7 @@ class Module_purchase
                 $period = '';
             }
 
-            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
+            handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 
             global $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE;
             if ($ECOMMERCE_SPECIAL_SUCCESS_MESSAGE !== null) {
@@ -1610,7 +1644,7 @@ class Module_purchase
     {
         list(, $product_object) = find_product_details($type_code);
         if (!method_exists($product_object, 'is_available')) {
-            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR'));
+            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR', escape_html('d1f8a34e4a955a3984070c3ec489c74b')));
         }
 
         $availability_status = $product_object->is_available($type_code, get_member(), 1, true);
@@ -1632,7 +1666,7 @@ class Module_purchase
                 return warn_screen($this->title, do_lang_tempcode('ECOMMERCE_PRODUCT_MISSING'));
 
             case ECOMMERCE_PRODUCT_INTERNAL_ERROR:
-                return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR'));
+                return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR', escape_html('bb5a280fc2b05a84bf6986e0b4be211a')));
 
             case ECOMMERCE_PRODUCT_NO_GUESTS:
                 if ((is_guest()) && (get_forum_type() != 'cns')) {
@@ -1675,7 +1709,7 @@ class Module_purchase
 
         if ($points_for_discount !== null) {
             if (!addon_installed('points')) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('54b8975e56fe5ef58ea83e9d48ea03f0')));
             }
 
             // Can't afford the points?
@@ -1687,7 +1721,7 @@ class Module_purchase
         }
 
         if (($discounted_price === null) && ($details['price'] === null)) {
-            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR')); // Cannot buy with money and not available with points for some reason
+            return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR', escape_html('4e8a61b61b78522fbecd3b204d73c6ad'))); // Cannot buy with money and not available with points for some reason
         }
 
         return null;

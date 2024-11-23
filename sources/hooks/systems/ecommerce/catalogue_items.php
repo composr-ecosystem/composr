@@ -584,7 +584,7 @@ class Hook_ecommerce_catalogue_items
 
         if ($available_quantity < $quantity && !$stock_maintained) {
             require_code('site');
-            attach_message(do_lang_tempcode('LOW_STOCK_DISPATCH_FAILED', escape_html($product_title)));
+            attach_message(do_lang_tempcode('LOW_STOCK_DISPATCH_FAILED', escape_html($product_title)), 'warn');
         }
 
         $stock_after_dispatch = $available_quantity - $quantity;

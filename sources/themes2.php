@@ -64,7 +64,7 @@ function find_theme_seed(?string $theme = null) : string
                    We could put some auto-detection code here; possibly a future improvement but not needed currently.
             } else {*/
             if ($theme == 'default') {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3241f7311090579aa5d0d9014688171c')));
             }
             $THEME_SEED_CACHE[$theme] = find_theme_seed('default');
             //}

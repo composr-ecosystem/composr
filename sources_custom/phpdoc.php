@@ -257,7 +257,7 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
                 if ($ltrim[0] == '@') { // Some kind of code
                     if (substr($ltrim, 0, 6) == '@param') {
                         if ($return !== null) {
-                            attach_message('Parameters should not be defined after a return value', 'inform');
+                            attach_message('Parameters should not be defined after a return value', 'notice');
                         }
 
                         $arg_counter++;
@@ -268,11 +268,11 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
 
                         if ($pedantic_warnings) {
                             if (preg_match('#^@param  [^\s]+ (\.\.\.)?\$\w+ #s', $ltrim) == 0) {
-                                attach_message('The spacing alignment for a PHPDoc parameter definition on ' . $function_name . ' was not as expected; maybe too few or too many spaces. This is a pedantic error, but we like consistent code layout.', 'inform');
+                                attach_message('The spacing alignment for a PHPDoc parameter definition on ' . $function_name . ' was not as expected; maybe too few or too many spaces. This is a pedantic error, but we like consistent code layout.', 'notice');
                             }
 
                             if ((substr($ltrim, -1) == '.') && (substr_count($ltrim, '.') == 1)) {
-                                attach_message('Do not need trailing full stop for parameter definitions', 'inform');
+                                attach_message('Do not need trailing full stop for parameter definitions', 'notice');
                             }
                         }
 
@@ -314,18 +314,18 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
                         $parameters[$arg_counter]['phpdoc_name'] = ltrim(preg_replace('#^(\.\.\.)?(\$\w+) .*#', '$2', $_description), '$');
                     } elseif (substr($ltrim, 0, 7) == '@return') {
                         if ($return !== null) {
-                            attach_message('Multiple return values defined', 'inform');
+                            attach_message('Multiple return values defined', 'notice');
                         }
 
                         $return = [];
 
                         if ($pedantic_warnings) {
                             if (preg_match('#^@return [^ ]#s', $ltrim) == 0) {
-                                attach_message('The spacing alignment for a PHPDoc return definition on ' . $function_name . ' was not as expected; maybe too few or too many spaces. This is a pedantic error, but we like consistent code layout.', 'inform');
+                                attach_message('The spacing alignment for a PHPDoc return definition on ' . $function_name . ' was not as expected; maybe too few or too many spaces. This is a pedantic error, but we like consistent code layout.', 'notice');
                             }
 
                             if ((substr($ltrim, -1) == '.') && (substr_count($ltrim, '.') == 1)) {
-                                attach_message('Do not need trailing full stop for return definitions', 'inform');
+                                attach_message('Do not need trailing full stop for return definitions', 'notice');
                             }
                         }
 
@@ -353,7 +353,7 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
                 } else { // Part of the description
                     if ($pedantic_warnings) {
                         if ((!in_array(substr($ltrim, -1), ['.', ':', '!', '?', '}', ';', ','])) && (substr($ltrim, 0, 2) != '- ') && (preg_match('#^\d+\) #', $ltrim) == 0)) {
-                            attach_message('Expects trailing full stop for function description', 'inform');
+                            attach_message('Expects trailing full stop for function description', 'notice');
                         }
                     }
 

@@ -315,7 +315,7 @@ function _points_transact(int $sending_member, int $receiving_member, string $re
             }
             break;
         default: // LEDGER_STATUS_REVERSED (should never be added as a new transaction) or a non-valid status
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1738185e45db5b8b9707d673600fa62d')));
     }
 
     // Flush cache
@@ -435,7 +435,7 @@ function points_transactions_reverse_all(?bool $send_notifications = false, ?int
 
     // Prevent matching all points ledger records
     if (count($where) == 0) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('91aa6c6a39e55d55b99d699831abd5d9')));
     }
 
     $where['locked'] = 0;
@@ -477,7 +477,7 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
         if ($fail_ok) {
             return null;
         }
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e3a67a6dcb2a55c38f4bdf1642f2d86d')));
     }
 
     $amount_gift_points = $myrow['amount_gift_points'];
@@ -530,7 +530,7 @@ function _points_adjust_cpf(int $member_id, string $field_name, int $adjustment)
 {
     // Check for invalid field
     if (!in_array($field_name, ['points_balance', 'points_rank'])) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7cdf85d953a4591fa5bac1d3682056b0')));
     }
 
     // Skip if there is nothing to change

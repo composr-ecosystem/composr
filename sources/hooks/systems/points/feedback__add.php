@@ -33,6 +33,10 @@ class Hook_points_feedback__add
      */
     public function points_profile(?int $member_id_of, ?int $member_id_viewing) : ?array
     {
+        if (!addon_installed('points')) {
+            return null;
+        }
+
         return [
             'label' => do_lang('RATING_CONTENT'),
         ];

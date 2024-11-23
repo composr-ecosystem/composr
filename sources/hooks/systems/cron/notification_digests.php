@@ -128,7 +128,7 @@ class Hook_cron_notification_digests
 
                     delete_cache_entry('_get_notifications', null, $to_member_id);
 
-                    If ($finished_digest) {
+                    if ($finished_digest) {
                         $GLOBALS['SITE_DB']->query_update(
                             'digestives_consumed',
                             [

@@ -86,13 +86,16 @@ class setupwizard_test_set extends cms_test_case
 
         $ok = ($http->message == '200');
 
-        if ((!$ok) && ($this->debug)) {
-            @var_dump($http->data);
+        if (!$ok) {
+            if ($this->debug) {
+                @var_dump($http->data);
+            }
+        } else {
+            // Delete theme created by the setup wizard
+            require_code('themes3');
+            actual_delete_theme($site_name);
         }
 
-        // Delete theme created by the setup wizard
-        require_code('themes3');
-        actual_delete_theme($site_name);
 
         $this->assertTrue($ok, 'Failed to execute final Setup Wizard step');
     }

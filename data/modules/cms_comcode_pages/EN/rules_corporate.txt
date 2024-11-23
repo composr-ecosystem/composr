@@ -31,7 +31,7 @@ Welcome to {$SITE_NAME} (“we,” “our,” “us”). By accessing or using {
 [title="2"]III. Intellectual Property[/title]
 [list="1"]
 [*]Subject to the express provisions of this Terms of Service, we, together with our licensors, own and control all the copyright and other intellectual property rights in our Website and the material on our Website; and all the copyright and other intellectual property rights in our Website and the material on our Website are reserved.
-[*]By submitting content to the Website, you grant to us a worldwide, irrevocable, non-exclusive, royalty-free license to reproduce, store, and use or publish your content on and in relation to this Website. 
+[*]By submitting content to the Website, you grant to us a worldwide, irrevocable, non-exclusive, royalty-free license to reproduce, store, and use or publish your content on and in relation to this Website.
 [*]By submitting content to the Website, you waive all your moral rights in your content to the maximum extent permitted by applicable law.
 [/list]
 
@@ -78,7 +78,7 @@ Welcome to {$SITE_NAME} (“we,” “our,” “us”). By accessing or using {
  - submit any copyrighted material for which you do not have the rights;
  - share information relating / related to, or links directing to, any company in direct or near-direct competition with our own;
  - advertise, unless you have gone through official channels for advertising on our Website if they are offered;
- - pose as, or wilfully act as, any other member or staff on our Website;
+ - pose as, or willfully act as, any other member or staff on our Website;
  - use the features of this website to subvert the company or staff;
  - harass any member of our Website;
  - submit misinformation, disinformation, or misleading content;
@@ -187,7 +187,7 @@ Welcome to {$SITE_NAME} (“we,” “our,” “us”). By accessing or using {
 [title="2"]XII. Severability[/title]
 [list="1"]
 [*]If a provision of the Terms of Service is determined by any court or other competent authority to be unlawful and/or unenforceable, the other lawful and enforceable provisions will continue in effect.
-[*]If any unlawful and/or unenforceable provision of the Terms of Service would be lawful or enforceable if part of it were deleted, that part will be deemed to be deleted, and the rest of the provision will continue in effect. 
+[*]If any unlawful and/or unenforceable provision of the Terms of Service would be lawful or enforceable if part of it were deleted, that part will be deemed to be deleted, and the rest of the provision will continue in effect.
 [/list]
 
 [title="2"]XIII. Statutory and Regulatory Disclosures[/title]

@@ -243,7 +243,7 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
     public function rewind()
     {
         if ($this->handle === null) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('eb4170bd0fa3556687d51eec24b83faf')));
         }
 
         fseek($this->start_pos, SEEK_SET);
@@ -257,7 +257,7 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
     protected function _read_row()
     {
         if ($this->handle === null) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8f1d859db26a5a53958fc453581a7735')));
         }
 
         switch ($this->format) {
@@ -271,7 +271,7 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
                 $delimiter = ';';
                 break;
             default:
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4e1d846dc26856ed823d232546b40127')));
         }
 
         $ret = $this->getcsv_record($this->handle, $this->charset, $delimiter);

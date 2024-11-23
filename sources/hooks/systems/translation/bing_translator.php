@@ -186,7 +186,6 @@ class Hook_translation_bing_translator
         // Now check the language actually exists...
 
         require_code('http');
-        $errormsg = new Tempcode();
         $result = unserialize(cache_and_carry([$this, '_bing_translator_api_request'], [$url, null, &$errormsg]));
 
         if (isset($result['translation'][$ret])) {

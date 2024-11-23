@@ -107,6 +107,7 @@ class standard_dir_files_test_set extends cms_test_case
             'bb091e894176e79224ddf66e45558e53' => true, // themes/*/images*/.htaccess (Disable any kind of server-side CGI/scripting via blocking handlers; Disable JavaScript etc via HTTP headers; Long-life cache settings for non-changing files (images))
             '5b7e3044b5aac9ba5955612da8b21e29' => true, // themes/*/templates_cached/.htaccess (Disable any kind of server-side CGI/scripting via blocking handlers; Long-life cache settings for non-changing files (CSS/JS); Serve pre-compressed CSS/JS files if they exist and the client accepts Gzip or Brotli)
             'af733954322951529e9b3b9c52362352' => true, // uploads/*/.htaccess (Disable any kind of server-side CGI/scripting via blocking handlers; Disable JavaScript etc via HTTP headers)
+            '9f1385739b9ab50fe28fe89c746b9471' => true, // uploads/captcha/.htaccess (Allow downloading of CAPTCHA media via headers)
         ];
         foreach ($types as $hash => $file_paths) {
             $this->assertTrue(array_key_exists($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths) . ' with hash of ' . $hash);

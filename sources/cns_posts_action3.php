@@ -490,14 +490,14 @@ function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, str
             $num_posts_counted++;
         }
         if ($post['p_cache_forum_id'] != $from_forum_id) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8694ee59365f5fc8809ba1928cf5f766')));
         }
     }
 
     // Create topic, if this is a split
     if ($to_topic_id === null) {
         if ($to_forum_id === null) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0c08c0f84e5a525693ed641f097a8f35')));
         }
 
         // Is it a support ticket move?

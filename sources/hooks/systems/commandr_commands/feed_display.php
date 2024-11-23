@@ -34,7 +34,7 @@ class Hook_commandr_command_feed_display
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('syndication_blocks')) {
-            return ['', '', '', do_lang('INTERNAL_ERROR')];
+            return ['', '', '', do_lang('INTERNAL_ERROR', comcode_escape('b5066719fd682000116fac37883afa2c'))];
         }
 
         if (!addon_installed('news')) {

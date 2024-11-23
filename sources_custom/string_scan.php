@@ -8541,7 +8541,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DELETE_SITE_MESSAGE
         DESCRIPTION_SITE_MESSAGE_EXPIRY_DATE
         DESCRIPTION_SITE_MESSAGE_MESSAGE
-        DESCRIPTION_SITE_MESSAGE_PAGE_LINKS
+        DESCRIPTION_SITE_MESSAGE_MATCH_KEYS
         DESCRIPTION_SITE_MESSAGE_START
         DESCRIPTION_SITE_MESSAGE_TITLE
         DESCRIPTION_SITE_MESSAGE_TYPE
@@ -8610,6 +8610,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _RANK_POINTS
         ENABLE_MAIL_QUEUE_LARGE_WARNING
         CONFIG_OPTION_enable_mail_queue_large_warning
+        CMD_SEND_POINTS_HELP_NR
+        MAIL_ERROR_PREFIX
+        MAIL_QUEUE_FAIL_MESSAGE
+        MAIL_QUEUE_FAIL_SUBJECT
+        MASS_DELETE_GALLERY_MEDIA
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_mail
+
     ')));
 
     $non_admin_files = [
@@ -12178,6 +12185,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VIEW_MAIL_IN_BROWSER_2
         MAIL_TOO_LONG
         MAIL_QUEUE_LARGE
+        REDIRECT_LOOP
+        RECEIVING_LIKES
     ')));
 
     // Remove blank lines

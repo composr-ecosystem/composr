@@ -566,7 +566,7 @@ function make_dummy_db_row(string $table, bool $allow_null = true, array $forced
     }
 
     if (count($primary_map) == 0) { // Uh oh! This should never happen.
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ac7955fb28aa5e74bf92c9d27142197e')));
     }
 
     return $primary_map;

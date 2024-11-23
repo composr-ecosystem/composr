@@ -304,7 +304,7 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                 }
             }
         } else {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('03a02c22ad56560c96b03c24fc1f0223')));
         }
 
         if (!$this->_check_node_permissions($struct, $options)) {

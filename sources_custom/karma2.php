@@ -29,7 +29,7 @@
 function add_karma(string $type, ?int $member_from, int $member_to, int $amount, string $reason, string $content_type, string $content_id)
 {
     if (($type != 'good') && ($type != 'bad')) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ca1cd48976555ec0ba1c44d3c0d42a5f')));
     }
 
     // Nothing to do if karma is 0 or member we are applying karma on is a guest
@@ -73,7 +73,7 @@ function add_karma(string $type, ?int $member_from, int $member_to, int $amount,
 function reverse_karma(?int $id = null, ?int $member_from = null, ?int $member_to = null, ?string $content_type = null, ?string $content_id = null)
 {
     if (($id === null) && ($member_from === null) && ($member_to === null) && (($content_type === null) || ($content_id === null))) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f0843136057c50709324d7f72d8ab823')));
     }
 
     require_lang('karma');
@@ -119,7 +119,7 @@ function reverse_karma(?int $id = null, ?int $member_from = null, ?int $member_t
 function _adjust_karma(string $type, int $member_id, int $amount)
 {
     if (($type != 'good') && ($type != 'bad')) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6017e7b1964b547fa5d294a067a69213')));
     }
 
     if (($amount == 0) || is_guest($member_id)) {

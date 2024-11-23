@@ -142,7 +142,7 @@ class Hook_ecommerce_disastr
 
         $matches = [];
         if (preg_match('#^(CURE|IMMUNISATION)_(\d+)$#', $type_code, $matches) == 0) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b18a5f53fff35d71b279e113ce8a6211')));
         }
         $disease_id = intval($matches[2]);
 
@@ -212,7 +212,7 @@ class Hook_ecommerce_disastr
 
         $matches = [];
         if (preg_match('#^(CURE|IMMUNISATION)_(\d+)$#', $type_code, $matches) == 0) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ad80a3fd35655077a7c9aae492f55f45')));
         }
         $disease_id = intval($matches[2]);
 
@@ -220,7 +220,7 @@ class Hook_ecommerce_disastr
 
         $rows = $GLOBALS['SITE_DB']->query_select('diseases', ['*'], ['id' => $disease_id], '', 1);
         if (!array_key_exists(0, $rows)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5441dbb81d0a5727812ca6f8e046133b')));
         }
         $disease_row = $rows[0];
 

@@ -63,7 +63,7 @@ class Hook_task_install_geolocation_data
             $_data = explode(',', $data);
             if (count($_data) == 3) {
                 if (($_data[0][0] == '-') || ($_data[1][0] == '-')) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e3542e5d80d0514cba8bc69cda73b537')));
                 }
 
                 $to_insert['begin_num'][] = $_data[0]; // FUDGE. Intentionally passes in as strings, to workaround problem in PHP integer sizes (can't store unsigned data type) #3046

@@ -354,7 +354,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
     tar_close($backup_file);
 
     if (!file_exists($backup_file_tmp_path)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'), false, true);
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('70c2a4477e7551518afac9a11e7b9739')), false, true);
     }
 
     $backup_file_path = get_custom_file_base() . '/exports/backups/' . filter_naughty($file) . '.tar';

@@ -497,7 +497,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     $hidden = new Tempcode();
 
     if ($member_id === $GLOBALS['CNS_DRIVER']->get_guest_id()) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d9343d1793595470a889a2db4b301813')));
     }
 
     $fields = new Tempcode();
@@ -758,11 +758,11 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
             if ($validated == 0) {
                 if (($_validated == 1) && (addon_installed('validation'))) {
                     $validated = 1;
-                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                 }
             } elseif (($validated == 1) && ($_validated == 1) && ($member_id !== null)) {
                 $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($member_id)]);
-                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
             if (get_option_with_overrides('enable_highlight_name', $adjusted_config_options) == '1') {
                 $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('ecommerce') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));
@@ -1554,7 +1554,7 @@ function cns_delete_member(int $member_id, ?int $member_id_deleting = null)
 function cns_ban_member(int $member_id, string $reasoned_ban = '1', bool $automatic = false)
 {
     if ($reasoned_ban == '0') {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('515848cfdbbd51f785f7ef2b9a6716b4')));
     }
 
     $previous_value = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned');

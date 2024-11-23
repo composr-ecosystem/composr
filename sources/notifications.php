@@ -122,7 +122,7 @@ function do_notification_template(string $codename, array $parameters = [], ?str
     $LAST_NOTIFICATION_TEMPLATE_CALL = [$codename, $parameters, $lang, $light_error, $fallback, $suffix, $directory, $theme];
 
     if ($light_error || $fallback !== null) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // We can't support these parameters
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f30b3f0ce69c579cbbbb27f3d995fd50'))); // We can't support these parameters
     }
 
     return do_template($codename, $parameters, $lang, $light_error, $fallback, $suffix, $directory, $theme);
@@ -344,7 +344,7 @@ class Notification_dispatcher
                 (strpos($this->message, running_script('index') ? static_evaluate_tempcode(build_url(['page' => '_SELF'], '_SELF', [], true, false, true)) : get_self_url_easy()) === false) &&
                 ((strpos($_SERVER['HTTP_REFERER'], 'keep_devtest') === false) || (strpos($this->message, $_SERVER['HTTP_REFERER']) === false))
             ) { // Bad URL - it has to be general, not session-specific
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9fd4492965525229adf1064d43bf87d8')));
             }
         }
 
@@ -890,7 +890,7 @@ function set_notifications(string $notification_code, ?string $notification_cate
     if ($setting === null) {
         $ob = _get_notification_ob_for_code($notification_code);
         if ($ob === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('96b69f3bb3405e528c68c6d7eb5a0094')));
         }
         $setting = $ob->get_default_auto_setting($notification_code, $notification_category);
         if ($setting == A__STATISTICAL || !_notification_setting_available($setting, $member_id)) {
@@ -1074,7 +1074,7 @@ function notifications_setting(string $notification_code, ?string $notification_
             if ($ob === null) {
                 return A_NA; // Can happen in template test sets, as this can be called up by a symbol
             }
-            //if ($ob === null) fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            //if ($ob === null) fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7d52d78d86c35ff492045c7d0214ae6c')));
             $test = $ob->get_initial_setting($notification_code, $notification_category, $member_id);
         }
     }

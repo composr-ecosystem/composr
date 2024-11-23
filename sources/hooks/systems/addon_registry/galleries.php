@@ -249,6 +249,7 @@ class Hook_addon_registry_galleries
             'sources/hooks/systems/sitemap/video.php',
             'sources/hooks/systems/snippets/exists_gallery.php',
             'sources/hooks/systems/symbols/GALLERY_VIDEO_FOR_URL.php',
+            'sources/hooks/systems/tasks/delete_gallery_media.php',
             'sources/hooks/systems/tasks/download_gallery.php',
             'sources/hooks/systems/tasks/import_gallery_media.php',
             'sources/hooks/systems/tasks/import_orphaned_gallery_media.php',

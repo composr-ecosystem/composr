@@ -34,7 +34,7 @@ class Hook_commandr_command_continue_import
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('import')) {
-            return ['', '', '', do_lang('INTERNAL_ERROR')];
+            return ['', '', '', do_lang('INTERNAL_ERROR', comcode_escape('03635e7abf908dc71916c1f78c395ac6'))];
         }
 
         require_lang('import');

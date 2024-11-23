@@ -41,10 +41,10 @@ class Block_main_choose_to_book
         }
 
         if (!addon_installed('calendar')) {
-            return do_template('RED_ALERT', ['_GUID' => '1ayp8sbbibrvi0946jt8xqs8bm2p6rdy', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calendar'))]);
+            return do_template('RED_ALERT', ['_GUID' => '2ae91f7b2de3538695b8ae8611cf0947', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calendar'))]);
         }
         if (!addon_installed('ecommerce')) {
-            return do_template('RED_ALERT', ['_GUID' => 's6qmg4mfv0x5d7ozrvoskkdape0opr7j', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
+            return do_template('RED_ALERT', ['_GUID' => 'dedd91cf3aaa5e2a9f9c66307638f3e2', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
         }
 
         return make_string_tempcode('Not yet implemented');

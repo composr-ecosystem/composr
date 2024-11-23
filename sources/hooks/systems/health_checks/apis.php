@@ -201,7 +201,7 @@ class Hook_health_check_apis extends Hook_Health_Check
 
         foreach ($hooks as $hook) {
             $translation_object = get_translation_object_for_hook($hook);
-            $errormsg = new Tempcode();
+            $errormsg = '';
             if (has_translation($from, $to, $translation_object, $errormsg)) {
                 $GLOBALS['SITE_DB']->query_delete('translation_cache');
 

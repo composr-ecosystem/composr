@@ -412,7 +412,7 @@ abstract class Hook_privacy_base
                 }
             }
             if (empty($where)) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('31067cce8f345c2da5b29c421d45d9fb')));
             }
         }
 
@@ -603,7 +603,7 @@ abstract class Hook_privacy_base
             }
         }
         if (empty($where)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1d63b3bf46225ea19a5de854f5383785')));
         }
 
         foreach ($metadata as $key => $type) {

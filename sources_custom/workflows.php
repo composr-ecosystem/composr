@@ -630,7 +630,7 @@ function workflow_update_handler() : object
     // Grab information about the hook
     $info = $ob->info();
     if ($info === null) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6aa46c0a6bf3588a954ccb5a7e37fd00')));
     }
     $content_table = $info['table'];
     $content_id_field = $info['id_field'];
@@ -835,9 +835,9 @@ function get_approval_point_position(int $approval_point_id) : ?int
  *
  * @param  string $content_type The type of the content (e.g. download, gallery, etc.)
  * @param  string $content_id The ID of the specific piece of content (if numeric, pass as a string anyway)
- * @return AUTO_LINK The workflow_content_id
+ * @return ?AUTO_LINK The workflow_content_id (null: no workflow has been created)
  */
-function get_workflow_content_id(string $content_type, string $content_id) : int
+function get_workflow_content_id(string $content_type, string $content_id) : ?int
 {
     // Grab the specified content's ID
     $content = $GLOBALS['SITE_DB']->query_select('workflow_content', ['id'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
@@ -882,8 +882,10 @@ function approve_content_for_point(int $workflow_content_id, int $approval_point
 function remove_content_from_workflows(string $type, string $id)
 {
     $content_id = get_workflow_content_id($type, $id);
-    $GLOBALS['SITE_DB']->query_delete('workflow_content', ['id' => $content_id]);
-    $GLOBALS['SITE_DB']->query_delete('workflow_content_status', ['workflow_content_id' => $content_id]);
+    if ($content_id !== null) {
+        $GLOBALS['SITE_DB']->query_delete('workflow_content', ['id' => $content_id]);
+        $GLOBALS['SITE_DB']->query_delete('workflow_content_status', ['workflow_content_id' => $content_id]);
+    }
 }
 
 /**

@@ -159,7 +159,7 @@ function assign_refresh($url, float $multiplier = 0.0)
     }
 
     if ($url === '') {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3818227e983851e1a2ef16e0f1a3e906')));
     }
 
     // URL clean up

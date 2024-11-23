@@ -216,7 +216,7 @@ class Hook_notification_cns_topic extends Hook_Notification
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         if ((!is_numeric($category)) && ($category !== null)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // We should never be accessing as forum:<id>, that is used only behind the scenes
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9a412fcf459b5be5810e81f35cb95dcc'))); // We should never be accessing as forum:<id>, that is used only behind the scenes
         }
 
         if ($from_member_id === null) {

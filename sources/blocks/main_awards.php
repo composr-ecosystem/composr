@@ -107,11 +107,11 @@ PHP;
         require_code('content');
         $object = get_content_object($award_type_row['a_content_type']);
         if ($object === null) {
-            return do_template('RED_ALERT', ['_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jib', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($award_type_row['a_content_type']))]);
+            return do_template('RED_ALERT', ['_GUID' => '707f928f4303564aa5d542ce1371ce3f', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($award_type_row['a_content_type']))]);
         }
         $info = $object->info(null, true);
         if ($info === null) {
-            return do_template('RED_ALERT', ['_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jia', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($award_type_row['a_content_type']))]);
+            return do_template('RED_ALERT', ['_GUID' => '0259b96970245181ba740537723fe05e', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($award_type_row['a_content_type']))]);
         }
 
         // Submit URL

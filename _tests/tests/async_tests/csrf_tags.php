@@ -58,7 +58,7 @@ class csrf_tags_test_set extends cms_test_case
                         'INSTALLER_STEP_1.tpl',
                         'INSTALLER_STEP_2.tpl',
                         'INSTALLER_STEP_3.tpl',
-                        'INSTALLER_STEP_10.tpl',
+                        'INSTALLER_STEP_9.tpl',
                         'TEMPCODE_TESTER_SCREEN.tpl',
                     ])) {
                         continue;

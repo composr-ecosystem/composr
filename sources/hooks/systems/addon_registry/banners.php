@@ -470,6 +470,7 @@ class Hook_addon_registry_banners
     {
         if ((($content === null) || (in_array('have_default_banners_donation', $content))) && (!has_predefined_content('banners', 'have_default_banners_donation'))) {
             require_lang('banners');
+            require_code('banners');
             require_code('lang3');
 
             $map = [

@@ -57,7 +57,7 @@ class Block_main_contact_us
         }
 
         if (get_forum_type() == 'none') {
-            return do_template('RED_ALERT', ['_GUID' => 'dwxpstfxs8mhfud6j23yvhorurauchng', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
+            return do_template('RED_ALERT', ['_GUID' => '64285eab6d9e5828a6aeae892c19fd26', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_lang('tickets');
@@ -112,7 +112,7 @@ class Block_main_contact_us
             if ($from_email != '') {
                 require_code('type_sanitisation');
                 if (!is_valid_email_address($from_email)) {
-                    return do_template('RED_ALERT', ['_GUID' => '5pu5qw042z8exijsgty78o4tvq9mpnb6', 'TEXT' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')]);
+                    return do_template('RED_ALERT', ['_GUID' => 'f0917cfb2daa51309ce092339d5ab789', 'TEXT' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')]);
                 }
             }
             $from_name = substr(post_param_string('name', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true)), 0, 80);

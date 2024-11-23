@@ -305,11 +305,11 @@ class Module_cms_quiz extends Standard_crud_module
         if ($validated == 0) {
             if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_QUIZ', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
         }
         if (addon_installed('validation')) {
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_VALIDATED_SIMPLE'), 'validated', $validated == 1));
@@ -402,7 +402,7 @@ class Module_cms_quiz extends Standard_crud_module
 
         $num_results = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz_id' => $id]);
         if ($num_results > 0) {
-            attach_message(do_lang_tempcode('QUIZ_EDIT_SKEW_RESULTS', escape_html(integer_format($num_results))), 'warn');
+            attach_message(do_lang_tempcode('QUIZ_EDIT_SKEW_RESULTS', escape_html(integer_format($num_results))), 'notice');
         }
 
         $text = load_quiz_questions_to_string($id);

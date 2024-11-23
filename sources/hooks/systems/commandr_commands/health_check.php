@@ -34,7 +34,7 @@ class Hook_commandr_command_health_check
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('health_check')) {
-            return ['', '', '', do_lang('INTERNAL_ERROR')];
+            return ['', '', '', do_lang('INTERNAL_ERROR', comcode_escape('b24ffca009a73ccb723e8cd218f354f9'))];
         }
 
         require_lang('health_check');

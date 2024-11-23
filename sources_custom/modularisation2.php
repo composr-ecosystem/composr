@@ -54,14 +54,14 @@ function fix_modularisation(string $issue, string $file, string $addon, string $
     $output->attach($file . ': ');
 
     if (!addon_installed('cms_release_build')) {
-        $output->attach(do_lang_tempcode('INTERNAL_ERROR'));
+        $output->attach(do_lang_tempcode('INTERNAL_ERROR', escape_html('25140ae7a3ad5ee5ba477be510f93609')));
         return $output;
     }
 
     if (function_exists('_fix_modularisation__' . $issue)) {
         $result = call_user_func_array('_fix_modularisation__' . $issue, [$file, $addon, $responsible_addon]);
         if ($result === false) {
-            $output->attach(do_lang_tempcode('INTERNAL_ERROR'));
+            $output->attach(do_lang_tempcode('INTERNAL_ERROR', escape_html('d8cd623c42b957e3b8fcfd80190d907d')));
             return $output;
         }
         $output->attach($result);
@@ -101,7 +101,7 @@ function fix_modularisation_finished() : object
         if ($addon_file !== null) {
             $hook_data = cms_file_get_contents_safe(get_file_base() . '/' . $addon_file);
             if (!$hook_data) {
-                $out->attach(do_lang_tempcode('INTERNAL_ERROR'));
+                $out->attach(do_lang_tempcode('INTERNAL_ERROR', escape_html('426be13f6a62544e8e8925f79f7b87a4')));
                 $out->attach('</li>');
                 continue;
             }
@@ -112,7 +112,7 @@ function fix_modularisation_finished() : object
 
             $success = cms_file_put_contents_safe(get_file_base() . '/' . $addon_file, $hook_data_updated, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
             if (!$success) {
-                $out->attach(do_lang_tempcode('INTERNAL_ERROR'));
+                $out->attach(do_lang_tempcode('INTERNAL_ERROR', escape_html('d0b4d60041d05567ac21a023f4a07a7f')));
                 $out->attach('</li>');
                 continue;
             }

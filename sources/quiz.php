@@ -117,7 +117,7 @@ function render_quiz(array $questions) : object
                 break;
 
             default:
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('78ee7257d9465b1586af0ef1f6e46764')));
         }
     }
 

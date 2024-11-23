@@ -328,7 +328,7 @@ class Module_admin_backup
         } elseif ($b_type == 'sql') {
             $file = 'Backup_database' . date('Y-m-d', utctime_to_usertime()) . '__' . get_secure_random_string(); // The last bit is unfortunate, but we need to stop URL guessing
         } else {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a74b8f57ff1450c68717446225e5331e')));
         }
 
         $max_size = post_param_integer('max_size', 0);

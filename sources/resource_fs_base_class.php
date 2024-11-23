@@ -1257,7 +1257,7 @@ abstract class Resource_fs_base
     public function reset_resource_access(?string $filename, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('bf4adbe5d4cc59a5a6582db067e7e088')));
         }
 
         if ($resource_type === null) {
@@ -1303,7 +1303,7 @@ abstract class Resource_fs_base
     public function set_resource_access(?string $filename, array $groups, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a8d2bedc445856ac956b304d7d645a50')));
         }
 
         if ($resource_type === null) {
@@ -1375,7 +1375,7 @@ abstract class Resource_fs_base
     public function get_resource_access(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dc59ea947bc553d7b1a442ae98ddb23d')));
         }
 
         if ($resource_type === null) {
@@ -1432,7 +1432,7 @@ abstract class Resource_fs_base
     public function set_resource_access__members(?string $filename, array $members, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c844ee20bcb159e7afc74cda820b8daa')));
         }
 
         if ($resource_type === null) {
@@ -1498,7 +1498,7 @@ abstract class Resource_fs_base
     public function get_resource_access__members(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('179b492cc36355ab82f92798e5a385a6')));
         }
 
         if ($resource_type === null) {
@@ -1545,7 +1545,7 @@ abstract class Resource_fs_base
     public function reset_resource_privileges(?string $filename, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1a5ef818ec285f54a05d84cd89da8b6f')));
         }
 
         if ($resource_type === null) {
@@ -1583,7 +1583,7 @@ abstract class Resource_fs_base
     protected function _compute_privilege_preset_scheme(?string $filename, ?string $resource_type = null, ?string $category = null) : ?array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c5eeaa99a704559494080b1aa0bd19c8')));
         }
 
         if ($resource_type === null) {
@@ -1643,7 +1643,7 @@ abstract class Resource_fs_base
     public function set_resource_privileges_from_preset(?string $filename, array $group_presets, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('fdb731433a625ca8aea1adb15073a675')));
         }
 
         $privileges_scheme = $this->_compute_privilege_preset_scheme($filename, $resource_type, $category);
@@ -1674,7 +1674,7 @@ abstract class Resource_fs_base
     public function set_resource_privileges(?string $filename, array $group_settings, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f09bbc28ee2950a19a5a9eafa35fb7a1')));
         }
 
         if ($resource_type === null) {
@@ -1725,7 +1725,7 @@ abstract class Resource_fs_base
     public function get_resource_privileges(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('85a58b21e9cf5c42a06d1fb4ce5b64df')));
         }
 
         if ($resource_type === null) {
@@ -1792,7 +1792,7 @@ abstract class Resource_fs_base
     public function set_resource_privileges_from_preset__members(?string $filename, array $member_presets, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('95712a98ddc7558f92f2beea81e4c051')));
         }
 
         $privileges_scheme = $this->_compute_privilege_preset_scheme($filename, $resource_type, $category);
@@ -1823,7 +1823,7 @@ abstract class Resource_fs_base
     public function set_resource_privileges__members(?string $filename, array $member_settings, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dead6d33696a5dce856686f24db3bbec')));
         }
 
         if ($resource_type === null) {
@@ -1867,7 +1867,7 @@ abstract class Resource_fs_base
     public function get_resource_privileges__members(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b127294fe9d7533db6ad4acea4195c38')));
         }
 
         if ($resource_type === null) {
@@ -2092,7 +2092,7 @@ abstract class Resource_fs_base
             'privileges__members',
         ];
         if (!empty(array_intersect(array_keys($properties), $reserved_fields))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('474ca4570b555be9be92589226f437dc')));
         }
 
         // Alternative IDs
@@ -2333,7 +2333,7 @@ abstract class Resource_fs_base
                     $resource_fs_ob = get_resource_commandr_fs_object('topic');
                     $_topic_id = $resource_fs_ob->resource_save('topic', basename($resource_fs_path), dirname($resource_fs_path), $comments);
                     if ($_topic_id === false) {
-                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('29c3496e69fc59da82a58b39fbfaa223')));
                     }
                     $resource_fs_path_topic = find_commandr_fs_filename_via_id('topic', $_topic_id, true);
 
@@ -2343,7 +2343,7 @@ abstract class Resource_fs_base
                         $resource_fs_path_post = $resource_fs_path_topic . '/' . $post['comment__filename'];
                         $test = $resource_fs_ob->resource_save('post', basename($resource_fs_path_post), dirname($resource_fs_path_post), $post);
                         if ($test === false) {
-                            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('df09a84f9c8052c7a01f2b16b9f66940')));
                         }
                     }
                 }

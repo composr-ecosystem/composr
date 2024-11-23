@@ -426,11 +426,11 @@ class Module_cms_news extends Standard_crud_module
         if ($validated == 0) {
             if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_NEWS', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
         }
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
             if (addon_installed('validation')) {
@@ -659,7 +659,7 @@ class Module_cms_news extends Standard_crud_module
 
         if ($schedule !== null) {
             if (!addon_installed('calendar')) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d71b815fb8c550dcb21b2b79b29cbec2')));
             }
 
             require_code('calendar');
@@ -697,7 +697,7 @@ class Module_cms_news extends Standard_crud_module
         if (post_param_string('main_news_category', null) !== 'personal') {
             $main_news_category = post_param_integer('main_news_category', fractional_edit() ? INTEGER_MAGIC_NULL : false);
         } else {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c43c41ad87e15bc58145aa3871927b0b')));
         }
 
         $news_category = [];

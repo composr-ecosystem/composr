@@ -116,6 +116,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
 {
     require_code('failure');
     require_code('version');
+    require_code('global3');
 
     $ret = '';
 
@@ -181,7 +182,9 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
     // Hook details
     require_code('zones');
     $cron_hooks = find_all_hook_obs('systems', 'cron', 'Hook_cron_');
-    ksort($cron_hooks);
+
+    // Randomise the order of our hooks so that they all have a chance to run across executions given our safety time limit
+    cms_shuffle_assoc($cron_hooks);
 
     // FUDGE: Background tasks should run second to first
     if (array_key_exists('tasks', $cron_hooks)) {
@@ -414,9 +417,9 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 }
             }
 
-            // Safety limit
-            if ($time_elapsed >= 20) {
-                $log_message = loggable_date() . ' ENDING EARLY; we reached the execution time limit of 20 seconds.' . "\n";
+            // Safety limit (20 seconds, unless we are calling as part of a web request)
+            if (($time_elapsed >= 20) || ((get_option('enable_web_request_scheduler') == '1') && ($time_elapsed >= 8))) {
+                $log_message = loggable_date() . ' ENDING EARLY; we reached the execution time limit.' . "\n";
                 if ($verbose) {
                     $ret .= $log_message;
                     if ($echo_out) {

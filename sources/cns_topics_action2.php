@@ -365,7 +365,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
 
     if ($topics === null) { // All of them
         if ($from === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a276175f33ef5977838c05d7b8ba31fe')));
         }
 
         $all_topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_cache_num_posts', 't_validated'], ['t_forum_id' => $from]);
@@ -530,7 +530,7 @@ function cns_invite_to_pt(int $member_id, int $topic_id)
     }
 
     if (($topic_info[0]['t_pt_from_member'] != get_member()) && ($topic_info[0]['t_pt_to_member'] != get_member()) && (!has_privilege(get_member(), 'view_other_pt'))) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('731a5514b73651bc9649ab3ac3557afd')));
     }
 
     if (($topic_info[0]['t_pt_from_member'] == $member_id) || ($topic_info[0]['t_pt_to_member'] == $member_id)) {

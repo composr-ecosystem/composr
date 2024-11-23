@@ -2308,7 +2308,7 @@ function get_page_name() : string
     $getting_page_name = true;
     $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX);
     if (strlen($page) > 80) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('af9ff824131551eb8ed3c53d45b99e0d')));
     }
     if (($page == '') && ($ZONE !== null)) {
         $page = $ZONE['zone_default_page'];
@@ -2497,8 +2497,8 @@ function _strlen_sort($a, $b) : int
 /**
  * Helper function for usort to sort a list by string length in reverse order.
  *
- * @param  string $a The first string or array of strings to compare
- * @param  string $b The second string or array of strings to compare
+ * @param  mixed $a The first string or array of strings to compare
+ * @param  mixed $b The second string or array of strings to compare
  * @return integer The comparison result (0 for equal, -1 for less, 1 for more)
  * @ignore
  */
@@ -3062,10 +3062,17 @@ function cron_installed(bool $absolutely_sure = false) : bool
         }
     }
 
+    // Crude to allow web request Cron, but we will
+    $web_request_scheduler = get_option('enable_web_request_scheduler');
+    if ($web_request_scheduler == '1') {
+        return true;
+    }
+
     $last_cron = get_value('last_cron');
     if ($last_cron === null) {
         return false;
     }
+
     return intval($last_cron) > (time() - 60 * 60 * 5);
 }
 
@@ -5139,7 +5146,7 @@ function cms_unpack_to_uinteger(string $str, ?int $bytes = null, bool $little_en
             $result = unpack($little_endian ? 'V' : 'N', $str);
             break;
         default:
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('51d7436056d356a595e7e7427bff4c79')));
     }
     return $result[1];
 }
@@ -5804,4 +5811,28 @@ function convert_request_data_encodings(bool $known_utf8 = false)
 
     require_code('character_sets');
     _convert_request_data_encodings($known_utf8);
+}
+
+/**
+ * Randomly shuffle the order of an array's items while preserving its keys.
+ *
+ * @param  array $array The array to be shuffled, passed by reference
+ * @return boolean Always returns true
+ */
+function cms_shuffle_assoc(array &$array) : bool
+{
+    // Shuffle the keys
+    $keys = array_keys($array);
+    shuffle($keys);
+
+    // Build a new array with the order of the shuffled keys
+    $new_array = [];
+    foreach($keys as $key) {
+        $new_array[$key] = $array[$key];
+    }
+
+    // Assign the new array to our original array
+    $array = $new_array;
+
+    return true;
 }

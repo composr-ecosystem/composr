@@ -99,7 +99,7 @@ class Module_leader_board
     public function run() : object
     {
         if (!cron_installed()) {
-            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
+            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'notice');
         }
 
         $id = get_param_integer('id', null);
@@ -123,7 +123,7 @@ class Module_leader_board
             foreach ($sets as $set) {
                 $_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $set['id'], 'all' => $all, 'lb_date_and_time' => $date], '_SELF');
                 $tpl = do_template('INDEX_SCREEN_FANCIER_ENTRY', [
-                    '_GUID' => 'bvjnkjlgn3lgj3pj3lgojlvblfbvmdbmsdlb',
+                    '_GUID' => 'a4d55dfa2ee65b248390d49de63216f0',
                     'URL' => $_url,
                     'NAME' => strval($set['lb_title']),
                     'TITLE' => strval($set['lb_title']),
@@ -172,7 +172,7 @@ class Module_leader_board
             foreach ($sets as $set) {
                 $_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $id, 'lb_date_and_time' => $set['lb_date_and_time']], '_SELF');
                 $tpl = do_template('INDEX_SCREEN_FANCIER_ENTRY', [
-                    '_GUID' => 'fvnsfkjehfo3i4tl3g5n42itjg4ljg434',
+                    '_GUID' => 'eb14639b0b47568788df54c33b9c2c6a',
                     'URL' => $_url,
                     'NAME' => get_timezoned_date($set['lb_date_and_time']),
                     'TITLE' => get_timezoned_date($set['lb_date_and_time']),
@@ -182,7 +182,7 @@ class Module_leader_board
             }
             $list[do_lang('DATE')] = $tpl_li;
 
-            return do_template('INDEX_SCREEN_FANCIER_SCREEN', ['_GUID' => 'kghekgh4lkg4lktktgknviu42gh2ot', 'TITLE' => $this->title, 'ARRAY' => true, 'CONTENT' => $list, 'POST' => '', 'PRE' => '']);
+            return do_template('INDEX_SCREEN_FANCIER_SCREEN', ['_GUID' => 'f06afac88ca355c882c6e5ccc7319363', 'TITLE' => $this->title, 'ARRAY' => true, 'CONTENT' => $list, 'POST' => '', 'PRE' => '']);
         }
 
         // Are there any rank images going to display?
@@ -224,7 +224,7 @@ class Module_leader_board
                 }
 
                 $set_tpl->attach(do_template('POINTS_LEADER_BOARD_ROW', [
-                    '_GUID' => 'fuyi2f2yrhhf894fh1hvnu31ht9945tbnjk',
+                    '_GUID' => 'c739d46b079855b6ad5d5741fa2f5240',
                     'POINTS_URL' => $points_url,
                     'PROFILE_URL' => $profile_url,
                     '_POINTS' => strval($row['lb_points']),
@@ -247,7 +247,7 @@ class Module_leader_board
             $url = build_url(['page' => '_SELF', 'id' => $board['id']], '_SELF');
 
             $out->attach(do_template('POINTS_LEADER_BOARD_SET', [
-                '_GUID' => 'f2r81347fh3f49y134tgf752ythho8317gh1',
+                '_GUID' => 'abc419824f08594e99fa3d3a1db39c9d',
                 '_SET_NUMBER' => strval($index),
                 '_TYPE' => $board['lb_type'],
                 '_COUNT' => strval(count($rows)),
@@ -265,7 +265,7 @@ class Module_leader_board
         $pagination = pagination(do_lang_tempcode('POINT_LEADER_BOARD'), $start, 'lb_start', $max, 'lb_max', $num_sets);
 
         $tpl = do_template('POINTS_LEADER_BOARD_SCREEN', [
-            '_GUID' => 'gg76ty2utkidh12iotbtuyg254if3yt3867tg3oti8',
+            '_GUID' => '6f146726a93a576fbeba8231d7c90b99',
             '_ID' => strval($board['id']),
             '_TYPE' => $board['lb_type'],
             '_COUNT' => strval(count($rows)),

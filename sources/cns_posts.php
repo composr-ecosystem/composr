@@ -104,6 +104,7 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
         return false;
     }
 
+    // Check if we are silenced from this topic
     $sql = 'SELECT p_warning_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings_punitive p RIGHT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings w ON w.id=p.p_warning_id WHERE ((' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_TOPIC') . ' AND ' . db_string_equal_to('p.p_param_a', strval($topic_id)) . ')';
     if ($forum_id !== null) {
         $sql .= ' OR (' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_FORUM') . ' AND ' . db_string_equal_to('p.p_param_a', strval($forum_id)) . ')';
@@ -112,7 +113,7 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
     $test = $GLOBALS['FORUM_DB']->query_value_if_there($sql, false, true);
     if ($test !== null) {
         if ($show_messages) {
-            attach_message(do_lang_tempcode('SILENCED_FROM_TOPIC'), 'warn');
+            attach_message(do_lang_tempcode('SILENCED_FROM_TOPIC'), 'notice');
         }
         return false;
     }
@@ -169,7 +170,7 @@ function cns_may_edit_post_by(int $post_id, ?int $post_time, ?int $resource_owne
     if ($post_time === null) {
         $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_posting_member', 'p_cache_forum_id', 't_is_open'], ['id' => $post_id], '', 1);
         if (!array_key_exists(0, $posts)) {
-            $reason = do_lang('INTERNAL_ERROR');
+            $reason = do_lang('INTERNAL_ERROR', comcode_escape('a6ea6c9f3861a3ee630212941a213fb5'));
             return false;
         }
         $post_time = $posts[0]['p_time'];
@@ -246,7 +247,7 @@ function cns_may_delete_post_by(int $post_id, ?int $post_time, ?int $resource_ow
     if ($post_time === null) {
         $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_posting_member', 'p_cache_forum_id', 't_is_open'], ['p.id' => $post_id], '', 1);
         if (!array_key_exists(0, $posts)) {
-            $reason = do_lang('INTERNAL_ERROR');
+            $reason = do_lang('INTERNAL_ERROR', comcode_escape('45830312468969d7b7580c3314e21ff4'));
             return false;
         }
         $post_time = $posts[0]['p_time'];

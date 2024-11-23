@@ -778,7 +778,7 @@ class Module_quiz
 
             // ??!
             default:
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dae64eef81025324bea832cae6e83884')));
         }
 
         // Store results for entry

@@ -54,7 +54,7 @@ class CMSUserWrite
         }
 
         if (!addon_installed('chat')) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dc622b7c4b8f581d95320279ed76b5d0')));
         }
 
         require_code('chat2');

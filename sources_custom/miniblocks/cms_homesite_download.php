@@ -26,11 +26,11 @@ class Miniblock_cms_homesite_download
     public function run()
     {
         if (!addon_installed('cms_homesite')) {
-            return do_template('RED_ALERT', ['_GUID' => 'o107q0s4tzjnq3djhc3e38wwfdywx1h7', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
+            return do_template('RED_ALERT', ['_GUID' => 'fef3c13ce5045ef28155aa58d25122f4', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
         }
 
         if (!addon_installed('downloads')) {
-            return do_template('RED_ALERT', ['_GUID' => 'gal8hu40ptk3dlran4bwiodqrpb41jqs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
+            return do_template('RED_ALERT', ['_GUID' => '12b0302296c4542a9b4e2a30ac5a7392', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
         }
 
         require_lang('cms_homesite');

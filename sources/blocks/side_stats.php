@@ -147,7 +147,7 @@ PHP;
                 $week = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24 * 7));
 
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
-                    '_GUID' => 'gc9760b2ed9e985e96b53c91c511e84e',
+                    '_GUID' => '11293e62f4f4514697781e31dde82acf',
                     'KEY' => do_lang_tempcode('PAGE_VIEWS_THIS_WEEK'),
                     'RAW_VALUE' => strval($week),
                     'VALUE' => integer_format($week, 0),
@@ -157,7 +157,7 @@ PHP;
                 $month = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24 * 31));
 
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
-                    '_GUID' => 'hc9760b2ed9e985e96b53c91c511e84e',
+                    '_GUID' => '0e022498b078585582d7a58f2ac15841',
                     'KEY' => do_lang_tempcode('PAGE_VIEWS_THIS_MONTH'),
                     'RAW_VALUE' => strval($month),
                     'VALUE' => integer_format($month, 0),

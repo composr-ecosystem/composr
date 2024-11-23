@@ -401,7 +401,7 @@ function ecv2_COMMA_LIST_FROM_BREADCRUMBS(string $lang, array $escaped, array $p
     }
 
     if (isset($param[0])) {
-        $separator = do_template('BREADCRUMB_SEPARATOR', ['_GUID' => 'y28e21cdbc38a3037d083f619bb311ae',]);
+        $separator = do_template('BREADCRUMB_SEPARATOR', ['_GUID' => '8d6be41a324459ea8b1b0e0419332240',]);
         $value = '=' . str_replace($separator->evaluate(), ',=', str_replace(',', '\,', $param[0]));
         if ((!isset($param[1])) || ($param[1] == '0')) {
             $value = strip_tags($value);

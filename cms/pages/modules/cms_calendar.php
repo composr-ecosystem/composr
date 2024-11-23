@@ -379,13 +379,13 @@ class Module_cms_calendar extends Standard_crud_module
             if ($date != '') {
                 $date2 = explode(' ', $date);
                 $exploded = explode('-', $date2[0]);
-                //if (count($exploded)!=3) warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                //if (count($exploded)!=3) warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e3e75db3c5565ff4beb927e4d987b462')));
                 $start_year = intval($exploded[0]);
                 $start_month = intval($exploded[1]);
                 $start_day = intval($exploded[2]);
                 if (array_key_exists(1, $date2)) {
                     $exploded = explode(':', $date2[1]);
-                    //if (count($exploded)!=2) warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    //if (count($exploded)!=2) warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4d277d3794b3584aa399aa3833cf9492')));
 
                     $start_hour = intval($exploded[0]);
                     $start_minute = intval($exploded[1]);
@@ -520,11 +520,11 @@ class Module_cms_calendar extends Standard_crud_module
         if ($validated == 0) {
             if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CALENDAR_EVENT', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
         }
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
             if (addon_installed('validation')) {

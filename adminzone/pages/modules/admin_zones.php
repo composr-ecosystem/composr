@@ -710,7 +710,7 @@ class Module_admin_zones
         $change_htaccess = (($url_scheme == 'HTM') || ($url_scheme == 'SIMPLE'));
         $htaccess_path = get_file_base() . '/.htaccess';
         if (($change_htaccess) && (file_exists($htaccess_path)) && (!cms_is_writable($htaccess_path))) {
-            attach_message(do_lang_tempcode('HTM_SHORT_URLS_CARE'), 'warn');
+            attach_message(do_lang_tempcode('HTM_SHORT_URLS_CARE'), 'notice');
         }
 
         url_default_parameters__enable();

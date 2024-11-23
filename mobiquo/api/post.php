@@ -76,7 +76,7 @@ function get_quote_post_func($raw_params)
     require_once(COMMON_CLASS_PATH_READ . '/post_read.php');
 
     if (empty($params[0])) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8a84bb6e69975f1e8781910237eff624')));
     }
     $post_ids = array_map('intval', explode('-', $params[0]));
 

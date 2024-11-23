@@ -401,7 +401,7 @@ function ajax_tree_script()
     require_code('hooks/systems/ajax_tree/' . $hook, true);
     $object = object_factory('Hook_ajax_tree_' . $hook, true);
     if ($object === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('224f4f451e8f578998ac0af021e41c96')));
     }
     $id = get_param_string('id', '', INPUT_FILTER_GET_COMPLEX);
     if ($id == '') {
@@ -422,7 +422,7 @@ function ajax_tree_script()
         if ($hook == 'choose_homesite_addon') { // LEGACY: May use old serialized format
             $options = [];
         } else {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('eb07a7f7a45e5679a48cf80d21f2ee6d')));
         }
     }
     $val = $object->run($id, $options, get_param_string('default', null, INPUT_FILTER_GET_COMPLEX));

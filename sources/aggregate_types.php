@@ -322,7 +322,7 @@ function parse_aggregate_xml(bool $display_errors = false) : array
 
                                 case 'access':
                                     if ((!array_key_exists('usergroup', $rs_row_attributes)) && (!array_key_exists('member', $rs_row_attributes))) {
-                                        $parse_errors[] = 'Missing access.usergroup/access.member';
+                                        $parse_errors[] = 'Missing access.usergroup / access.member';
                                         continue 2;
                                     }
                                     if (!array_key_exists('value', $rs_row_attributes)) {
@@ -340,7 +340,7 @@ function parse_aggregate_xml(bool $display_errors = false) : array
 
                                 case 'privilege':
                                     if ((!array_key_exists('usergroup', $rs_row_attributes)) && (!array_key_exists('member', $rs_row_attributes))) {
-                                        $parse_errors[] = 'Missing privilege.usergroup/privilege.member';
+                                        $parse_errors[] = 'Missing privilege.usergroup / privilege.member';
                                         continue 2;
                                     }
 

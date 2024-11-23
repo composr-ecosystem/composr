@@ -274,7 +274,7 @@
         pastCommand.className = 'past-command';
 
         if (!ajaxResult) {
-            var stderrText = document.createTextNode('{!commandr:ERROR_NON_TERMINAL;^}\n{!INTERNAL_ERROR;^}');
+            var stderrText = document.createTextNode('{!commandr:ERROR_NON_TERMINAL;^}\n{!INTERNAL_ERROR;^,dd76dd8679154f4da7d141852d5898e5}');
             var stderrTextP = document.createElement('p');
             stderrTextP.className = 'error_output';
             stderrTextP.appendChild(stderrText);

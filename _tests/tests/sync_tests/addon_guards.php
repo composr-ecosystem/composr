@@ -99,6 +99,7 @@ class addon_guards_test_set extends cms_test_case
             'Hook_commandr_fs_\w+' => 'is_active',
             'Hook_config_\w+' => 'get_default',
             'Hook_ecommerce_\w+' => 'is_available,get_product_category',
+            'Hook_payment_gateway_\w+' => 'is_available',
             'Hook_preview_\w+' => 'applies',
             'Hook_profiles_tabs_\w+' => 'is_active',
             'Hook_rss_\w+' => 'has_access', // Careful! Make sure run is calling this.

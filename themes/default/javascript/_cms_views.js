@@ -1031,20 +1031,16 @@
                 try {
                     return (iframe != null) && (iframe.contentWindow.location.host !== '');
                 } catch (ignore) {
-                    // continue
+                    return true; // Forcefully indicate the iframe is loaded; there is no way to check if it is not same-origin due to contentWindow restrictions
                 }
-
-                return false;
             }
 
             function hasIframeOwnership(iframe) {
                 try {
                     return (iframe != null) && (iframe.contentWindow.location.host === window.location.host) && (iframe.contentWindow.document != null);
                 } catch (ignore) {
-                    // continue
+                    return false; // Not same-origin (contentWindow restriction), so always false
                 }
-
-                return false;
             }
         }
     });

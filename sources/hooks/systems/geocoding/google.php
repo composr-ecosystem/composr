@@ -218,7 +218,7 @@ class Hook_geocoding_google
         }
 
         if ($result['status'] != 'OK') { // Usually INVALID_REQUEST; should not happen so raise stack trace
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('28ada86f471458f1a110081a70d714e3')));
         }
 
         return $result;

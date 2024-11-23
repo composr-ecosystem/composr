@@ -16,11 +16,11 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('idolisr')) {
-    return do_template('RED_ALERT', ['_GUID' => 'c1m5vfp4k8sb8l8shehlp343cyjmtkbq', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('idolisr'))]);
+    return do_template('RED_ALERT', ['_GUID' => '75474e44bd3f596da5ec4a1ab7303d1a', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('idolisr'))]);
 }
 
 if (!addon_installed('points')) {
-    return do_template('RED_ALERT', ['_GUID' => 'vuipx2qfsru49w3f74f4f7t16wv4usjq', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
+    return do_template('RED_ALERT', ['_GUID' => '1bf7a60538bd5c3dbcffcf99b3c1b8b6', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
 }
 
 $block_id = get_block_id($map);

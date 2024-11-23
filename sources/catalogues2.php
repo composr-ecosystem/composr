@@ -854,7 +854,7 @@ function actual_edit_catalogue_category(int $id, string $title, string $descript
         }
         $_under_category_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'cc_parent_id', ['id' => $under_category_id]);
         if ($under_category_id === $_under_category_id) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('bf9d756824c459e788bedb3d0e6ec0c0')));
         }
         $under_category_id = $_under_category_id;
     }

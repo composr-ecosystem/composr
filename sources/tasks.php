@@ -100,7 +100,7 @@ function execute_task_background(array $task_row)
             'id' => $task_row['id'],
         ], '', 1);
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2183d24f3ed25c1393a6f9d5e0177527')));
     }
     require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
     $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
@@ -203,7 +203,7 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             erase_block_cache();
         }
         if ($result === false) {
-            $result = [null, do_lang_tempcode('INTERNAL_ERROR')];
+            $result = [null, do_lang_tempcode('INTERNAL_ERROR', escape_html('2ff9c408d65c440206e47c80e632d1e5'))];
         }
         task_log(null, 'Finished task ' . $hook);
         task_log_close();
@@ -278,7 +278,7 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             } else {
                 echo $content_result;
             }*/
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ddfe406af74a5701acf49776d95ddb18')));
         }
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
         exit();
@@ -409,7 +409,7 @@ function dispatch_task_notification(string $task_title, int $requester, $result)
 
         if ($result === false) {
             $mime_type = null;
-            $content_result = do_lang('INTERNAL_ERROR');
+            $content_result = do_lang('INTERNAL_ERROR', comcode_escape('a7b2cebb8d092f939346f2aed91a939d'));
         } else {
             list($mime_type, $content_result) = $result;
         }
@@ -438,7 +438,7 @@ function dispatch_task_notification(string $task_title, int $requester, $result)
                 if (is_array($content_result)) {
                     $attachments[$content_result[1]] = $content_result[0];
                 } else {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f17262a060855d189b792b3e1bf4afe7')));
                 }
 
                 $message = do_notification_lang('TASK_COMPLETED_BODY_ATTACHMENT');

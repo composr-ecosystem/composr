@@ -137,7 +137,7 @@ function find_default_font(bool $mono = false) : string
         }
     }
 
-    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('02cc6f98072a5fb38b6188e29dab9628')));
     return '';
 }
 

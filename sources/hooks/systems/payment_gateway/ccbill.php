@@ -67,6 +67,16 @@ class Hook_payment_gateway_ccbill
     ];
 
     /**
+     * Whether this payment gateway is available for use.
+     *
+     * @return boolean Whether it is available
+     */
+    public function is_available() : bool
+    {
+        return true;
+    }
+
+    /**
      * Get a standardised config map.
      *
      * @return array The config
@@ -75,6 +85,8 @@ class Hook_payment_gateway_ccbill
     {
         return [
             'supports_remote_memo' => false,
+            'local_only' => false,
+            'internal_only' => false,
         ];
     }
 

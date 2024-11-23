@@ -40,7 +40,7 @@ function captcha_script()
     }
 
     if (get_option('recaptcha_site_key') != '') {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d66ef5e4a89054d29050a63ad118e7d1')));
     }
 
     header('X-Robots-Tag: noindex');

@@ -61,7 +61,7 @@ class Hook_snippet_block
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('temp_block_permissions', 'p_block_constraints', ['p_session_id' => is_guest() ? '' : get_session_id(), 'id' => $auth_key]);
             if (($test === null) || (!block_signature_check(comma_list_str_to_arr($test), $map))) {
                 require_lang('permissions');
-                return do_template('RED_ALERT', ['_GUID' => 'wtoaz4b4yp5rwe4wcmyknihps8ujoguv', 'TEXT' => do_lang_tempcode('ACCESS_DENIED__ACCESS_DENIED', escape_html($map['block']))]);
+                return do_template('RED_ALERT', ['_GUID' => '1d0d419810c75eb0b1e6a195e02e24fc', 'TEXT' => do_lang_tempcode('ACCESS_DENIED__ACCESS_DENIED', escape_html($map['block']))]);
             }
         }
 

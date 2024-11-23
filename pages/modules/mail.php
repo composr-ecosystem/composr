@@ -105,7 +105,7 @@ class Module_mail
 
         require_code('comcode');
 
-        attach_message(do_lang_tempcode('MAIL_EXPIRATION', escape_html(get_option('email_log_store_time'))));
+        attach_message(do_lang_tempcode('MAIL_EXPIRATION', escape_html(get_option('email_log_store_time'))), 'notice');
 
         if ($email['message_extended'] != '') {
             $message = $email['message_extended'];

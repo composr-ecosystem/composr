@@ -280,7 +280,7 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
 
     $ob = _get_notification_ob_for_code($notification_code);
     if ($ob === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e26b826a670653dd9b05f2aefd82c979')));
     }
     $info_details = $ob->list_handled_codes();
 
@@ -357,7 +357,7 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
         $enable_message = protect_from_escaping(str_replace('{1}', do_lang('UNKNOWN'), $enable_message->evaluate()));
 
         if (notifications_enabled($notification_code, $notification_category)) {
-            attach_message($disable_message, 'warn');
+            attach_message($disable_message, 'notice');
         } else {
             attach_message($enable_message, 'inform');
         }

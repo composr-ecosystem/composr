@@ -814,7 +814,7 @@ class Module_warnings extends Standard_crud_module
         if (method_exists($hook, 'undo_punitive_action') && ($hook->get_details() !== null)) {
             $hook->undo_punitive_action($punitive_action, $warning);
         } else {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e885739f6b295ac69e4f9a9321a16620')));
         }
 
         set_related_warning_id(null);

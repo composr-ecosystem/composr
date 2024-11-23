@@ -41,7 +41,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
     }
 
     if (count($line) < 2) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2302dbf13d345a178c53eb11fa0e381a')));
     }
 
     $tooltip = implode("\n", array_slice($line, 2));

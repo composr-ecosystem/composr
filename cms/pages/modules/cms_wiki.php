@@ -546,7 +546,7 @@ class Module_cms_wiki
     public function edit_tree() : object
     {
         if (get_option('wiki_enable_children') == '0') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5b98af11ad97598fb973349b0b182e3d')));
         }
 
         $id = $this->id;
@@ -614,7 +614,7 @@ class Module_cms_wiki
     public function _edit_tree() : object
     {
         if (get_option('wiki_enable_children') == '0') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cebcd863b96f589c8c7ad3b3a76fc836')));
         }
 
         $_title = get_screen_title('WIKI_EDIT_TREE');

@@ -71,11 +71,11 @@ class Hook_commandr_command_deep_clean
                     if ($is_trans) {
                         $old_value = get_translated_text($_old_value);
                     } else {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b8a1b79b24d05ee6bc00d6db8b85162c')));
                     }
                 } else {
                     if ($is_trans) {
-                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('049daecf28435489abf378109cfb1e2a')));
                     } else {
                         $old_value = $_old_value;
                     }
@@ -89,11 +89,11 @@ class Hook_commandr_command_deep_clean
                         if ($is_title_trans) {
                             $title = get_translated_text($_title);
                         } else {
-                            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cf38dfb8c9ee5632b4760a711a2cad9c')));
                         }
                     } else {
                         if ($is_title_trans) {
-                            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('40fc360b965e5789b84ce429ca7ecf77')));
                         } else {
                             $title = $_title;
                         }

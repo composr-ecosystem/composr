@@ -454,7 +454,7 @@ class Module_admin_config
         }
 
         $categories_tpl->attach(do_template('COMCODE_SUBTITLE', [
-            '_GUID' => '7fde99ae81367fb7405e94b6731a7d9x',
+            '_GUID' => '4b641b9cecb15576b36b1b857eb0f624',
             'TITLE' => do_lang('DEEPER_CONFIGURATION'),
             'LEVEL' => '2',
         ]));
@@ -667,7 +667,7 @@ class Module_admin_config
         $category = get_param_string('id', 'MAIN');
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'), false, false, 400);
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2da66c7e8db4514eb34d606c398e17ec')), false, false, 400);
         }
 
         // Find all options in category

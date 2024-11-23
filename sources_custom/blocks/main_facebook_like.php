@@ -54,17 +54,17 @@ class Block_main_facebook_like
         }
 
         if (!function_exists('curl_init')) {
-            return do_template('RED_ALERT', ['_GUID' => '5ldkzkb0bo25j30gmw653k5t7keqb1nv', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
+            return do_template('RED_ALERT', ['_GUID' => 'f6adf05fad8852cfa380e03319badef3', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
         }
         if (!function_exists('session_status')) {
-            return do_template('RED_ALERT', ['_GUID' => '4kii599c4uz2g43k69ogp53wob87650o', 'TEXT' => 'PHP session extension missing']);
+            return do_template('RED_ALERT', ['_GUID' => '0d52d50df5145cb386f48a187328472e', 'TEXT' => 'PHP session extension missing']);
         }
 
         $block_id = get_block_id($map);
 
         $appid = get_option('facebook_appid');
         if ($appid == '') {
-            return do_template('RED_ALERT', ['_GUID' => 'k3k28zaoxf1llhy49dvuihh0ptemcmd8', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')]);
+            return do_template('RED_ALERT', ['_GUID' => '76f51faafcef536c84d197af418c9567', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')]);
         }
 
         return do_template('BLOCK_MAIN_FACEBOOK_LIKE', [

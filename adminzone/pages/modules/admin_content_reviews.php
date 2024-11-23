@@ -184,7 +184,7 @@ class Module_admin_content_reviews
                 $content->attach(form_input_list_entry($content_id, false, $title));
             }
             if (count($content_ids) == intval(get_option('general_safety_listing_limit'))) {
-                attach_message(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'), 'warn');
+                attach_message(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'), 'notice');
             }
 
             if (!$content->is_empty()) {

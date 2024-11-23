@@ -299,7 +299,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'aggregate_label ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e82ce40f74535b8c91cdd72a63e83a7d')));
         }
         $sortables = [
             'aggregate_label' => do_lang_tempcode('LABEL'),

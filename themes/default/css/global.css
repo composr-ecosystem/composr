@@ -1000,7 +1000,7 @@ header .toplevel-link img.icon {
 	/*{+START,IF_EMPTY,{$THEME_OPTION,header_classic_text_colour}}*/
 		color: {$GET,seed} !important;
 	/*{+END}*/
-	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+	/*{+START,IF,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}}}*/
 		background: url('{$IMG_INLINE,{$THEME_OPTION,header_classic_image}}') no-repeat;
 		background-size: cover;
 	/*{+END}*/
@@ -1008,7 +1008,7 @@ header .toplevel-link img.icon {
 }
 
 /*{+START,CSS_MODE,desktop}*/
-	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+	/*{+START,IF,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}}}*/
 		.header-classic .logo-link {
 			height: {$IMG_HEIGHT,{$IMG,{$THEME_OPTION,header_classic_image}}}px;
 		}
@@ -1832,6 +1832,10 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 
 .global-message-warn .global-message-icon {
 	color: {$GET,danger_color};
+}
+
+.global-message-notice .global-message-icon {
+	color: {$GET,warning_color};
 }
 
 .global-message strong {
@@ -2870,6 +2874,11 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .box---message-warn {
 	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
 	background-color: {$GET,light_error_background_1};
+}
+
+.box---message-notice {
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_warning_border},transparent};
+	background-color: {$GET,light_warning_background_1};
 }
 
 /* Expanding and contracting, mostly for boxes but not necessarily always */

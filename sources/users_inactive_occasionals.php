@@ -103,7 +103,8 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         }
     }
 
-    if (($invisible) && (get_option('is_on_invisibility') == '0')) {
+    // Do not allow invisibility if disabled (unless we are using SU / a backdoor)
+    if (($invisible) && (get_option('is_on_invisibility') == '0') && (!$GLOBALS['IS_VIA_BACKDOOR'])) {
         $invisible = false;
     }
 

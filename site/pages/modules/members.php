@@ -256,11 +256,11 @@ class Module_members
         if ($validated == 0) {
             if (($_validated == 1) && (addon_installed('validation'))) {
                 $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
             }
         } elseif (($validated == 1) && ($_validated == 1)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($this->member_id_of)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
         }
 
         require_code('cns_profiles');
@@ -279,7 +279,7 @@ class Module_members
 
         $_subscriber = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $_subscriber)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9498c25ff8565e30a55d797df7797d2e')));
         }
         $subscriber = $_subscriber[0];
 

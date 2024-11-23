@@ -62,7 +62,7 @@ function cns_make_topic(?int $forum_id, string $description = '', string $emotic
             }
 
             if ($pt_to === null) {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('161c6b0370625f4a8061e912651d7dc0')));
             }
 
             require_code('cns_members2');

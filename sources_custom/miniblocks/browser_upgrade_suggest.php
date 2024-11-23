@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('browser_detect')) {
-    return do_template('RED_ALERT', ['_GUID' => 'mtnxujz7y0ldjtbsm14b370oe4y2j3th', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('browser_detect'))]);
+    return do_template('RED_ALERT', ['_GUID' => '601c6c2f495e587b86571093ef7a1cd0', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('browser_detect'))]);
 }
 
 $ie_needed = array_key_exists('ie_needed', $map) ? floatval($map['ie_needed']) : 11.0;

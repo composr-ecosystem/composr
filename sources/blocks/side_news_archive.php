@@ -100,7 +100,7 @@ PHP;
         $rows = array_reverse($rows);
 
         if (empty($rows)) {
-            return do_template('RED_ALERT', ['_GUID' => '2kkpdv5vq2zbhuu4j4n6gteucgi1mee1', 'TEXT' => do_lang_tempcode('NO_ENTRIES')]);
+            return do_template('RED_ALERT', ['_GUID' => '7e78bea91fdd55dea289f66387e3a424', 'TEXT' => do_lang_tempcode('NO_ENTRIES')]);
         }
         $first = $rows[0]['date_and_time'];
         $last = $rows[count($rows) - 1]['date_and_time'];

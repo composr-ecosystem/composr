@@ -53,7 +53,7 @@ function set_member_group_timeout(int $member_id, int $group_id, int $timestamp,
 {
     // We don't want guests here!
     if (is_guest($member_id)) {
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c0ca62d9e9915598b4f5502389981a0d')));
     }
 
     $db = get_db_for('f_group_member_timeouts');

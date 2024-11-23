@@ -128,9 +128,16 @@ class Hook_rss_cns_birthdays
 
         push_query_limiting(false);
 
+        $already_done = [];
         foreach ($rows as $row) {
             $id = strval($row['id']);
             $author = $row['m_username'];
+
+            // Do not repeat the same member as this violates W3C
+            if (array_key_exists($id, $already_done)) {
+                continue;
+            }
+            $already_done[$id] = true;
 
             $news_date = date($date_string, $row['birthday_time']); // The "post" date is actually the birthday
             $edit_date = date($date_string, max($row['m_join_time'], $row['birthday_time'])); // The "edit" date is actually the join date

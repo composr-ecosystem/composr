@@ -200,7 +200,7 @@ function save_booking_form_to_db(array $request, array $ignore_bookings, ?int $m
 
     if (get_option('member_booking_only') == '1') {
         if (is_guest($member_id)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('02d5b8db253650e299ad62fea5d8a508')));
         }
     }
 
@@ -236,7 +236,7 @@ function add_booking(array $request, int $member_id) : array
 
                 $code = find_free_bookable_code($req['bookable_id'], $day, $month, $year, $code); // Hopefully $code will stay the same, but it might not
                 if ($code === null) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Should not be possible, as we already checked availability
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5e8daaa4ecf35d32a19df068dbed754d'))); // Should not be possible, as we already checked availability
                 }
 
                 $row = [
@@ -350,7 +350,7 @@ function find_booking_price(array $request) : float
                 $price += $_supplement[0]['price'] * $supplement_quantity * (($_supplement[0]['price_is_per_period'] == 1) ? count($days) : 1);
 
                 if (($supplement_quantity != 0) && ($_supplement[0]['supports_quantities'] == 0)) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ff2205cb9f8d5ac8966bcf8e0a3bcf52')));
                 }
             }
         }
@@ -416,14 +416,14 @@ function booking_date_available(int $bookable_id, int $day, int $month, int $yea
     // Check bookable exists
     $_bookable_row = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => $bookable_id], '', 1);
     if (!array_key_exists(0, $_bookable_row)) {
-        return do_lang_tempcode('INTERNAL_ERROR');
+        return do_lang_tempcode('INTERNAL_ERROR', escape_html('960ecd275782f2271580a9110ae74249'));
     }
     $bookable_row = $_bookable_row[0];
     $codes_in_total = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', ['bookable_id' => $bookable_id]);
 
     // Check bookable enabled
     if ($bookable_row['enabled'] == 0) {
-        return do_lang_tempcode('INTERNAL_ERROR');
+        return do_lang_tempcode('INTERNAL_ERROR', escape_html('75598373f6a46b3f584c3f741fd0703a'));
     }
 
     // Check bookable time is in active period

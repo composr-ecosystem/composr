@@ -439,20 +439,6 @@ class Module_admin_errorlog
      */
     public function show_cron_progression_table() : object
     {
-        // Upgrade pending?
-        require_code('version');
-        $version_files = float_to_raw_string(cms_version_number(), 10, true);
-        $version_db = strval(cms_version_time_db());
-        if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files) || (get_value('db_version', '', true) != $version_db)) {
-            attach_message(do_lang_tempcode('CRON_UPGRADE_PENDING'), 'warn');
-        } else {
-            // Not configured or not running?
-            $last_cron = get_value('last_cron');
-            if (($last_cron === null) || (intval($last_cron) < time() - 60 * 60 * 24)) {
-                attach_message(do_lang_tempcode('CRON_NOT_RUNNING', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
-            }
-        }
-
         require_code('templates_results_table');
         $_header_row = [
             do_lang_tempcode('LABEL'),

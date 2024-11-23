@@ -141,7 +141,7 @@ function get_first_default_group() : int
 function cns_get_all_default_groups(bool $include_primary = false, bool $include_all_configured_default_groups = false) : array
 {
     if ((!$include_primary) && ($include_all_configured_default_groups)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('854ffd82988c51d385ffc69c0b98bdad')));
     }
 
     static $all_default_groups_cache = [];
@@ -421,7 +421,7 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
         $member_id = get_member();
     }
 
-    if (($handle_probation) && ((!$GLOBALS['IS_VIA_BACKDOOR']) || ($member_id != get_member()))) {
+    if (($handle_probation) && ((!$GLOBALS['IS_VIA_BACKDOOR']) || ($member_id == get_member()))) {
         $opt = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_probation_expiration_time');
         if (($opt !== null) && ($opt > time())) {
             $probation_group = get_probation_group();

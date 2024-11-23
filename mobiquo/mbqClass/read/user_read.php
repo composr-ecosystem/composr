@@ -127,7 +127,7 @@ class CMSUserRead
             case 'post_countdown':
                 return cns_get_member_best_group_property($user_id, 'flood_control_submit_secs');
             default:
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('366638f7737050b2b696aee97798bd2a')));
         }
 
         return null;

@@ -18,7 +18,7 @@ function handle_confluence_page_error_result($id, $result, $http_message, $http_
     if ($http_message == '404') {
         $title = get_screen_title('Could not find documentation page', false);
         $url = build_url(['page' => '_SELF'], '_SELF');
-        attach_message('Could not find documentation page ' . confluence_current_page() . ', redirected to main page', 'notice');
+        attach_message('Could not find documentation page ' . confluence_current_page() . ', redirected to main page', 'warn');
         $tpl = redirect_screen($title, $url);
         $tpl->evaluate_echo();
         return;
@@ -77,7 +77,7 @@ $http_message_b = null;
 
 if ($posting_day !== null) {
     if ($content_type != 'blogpost') {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('310e9c58a1f15dbca6973e8d896beea7')));
     }
 
     // Searches for a blog post. The only way we can reference these is via $blog_title+$posting_day query, as we cannot get IDs for direct querying through a confluence_get_mappings search

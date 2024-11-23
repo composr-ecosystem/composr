@@ -566,7 +566,7 @@ class Module_newsletter
 
         $_subscriber = $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $_subscriber)) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f0d98ed010c157e5a7038e831eaa8f4d')));
         }
         $subscriber = $_subscriber[0];
 

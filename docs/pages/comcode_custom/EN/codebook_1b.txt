@@ -316,7 +316,7 @@ require_code('templates_results_table');
 // Read in current sorting, and apply security
 $current_ordering = get_param_string('sort', 'name ASC', INPUT_FILTER_GET_COMPLEX);
 if (strpos($current_ordering, ' ') === false) {
-    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('unique-guid')));
 }
 list($sortable, $sort_order) = explode(' ', $current_ordering, 2); // Invalid parameter
 $sortables = array(

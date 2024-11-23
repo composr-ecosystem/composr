@@ -460,10 +460,15 @@ Another limitation, to preserve site stability, is that statistics from over 31 
  - You run the automated test suite for stats ([tt]testing_platform[/tt] non-bundled addon)
 Once statistics have been pre-processed, they will remain in the system unless manually cleared even if they are older than 31 days. It is only if statistics do not get pre-processed for over 31 days that they will not end up in the module.
 
-[title="3"]Time zones[/title]
+[title="3"]Time zones and start-of-week[/title]
 
 All times are calculated/shown in the configured website time zone, regardless of the time zone of visitors or the time zone your own account is configured to. This is a necessary limitation based on how statistics are pre-computed.
+
 Some graphs allow showing hour-by-hour stats and also filtering by country, in which case you may get an idea for the local times by manually considering any local time zone differences.
+
+The statistics system does not respect the [tt]ssw[/tt] (Week starts on a Sunday) configuration option; week graphs always start on a Monday due to limitations in PHP's date functions.
+
+Quarterly graphs are based on month; Q1 runs January 1 - March 31, Q2 runs April 1 - June 30, Q3 runs July 1 - September 30, and Q4 runs October 1 - December 31.
 
 [title="2"]Accessing other statistics[/title]
 

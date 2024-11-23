@@ -66,6 +66,9 @@ foreach ($files as $i => $path) {
     foreach ($scan['errors_duplicate'] as $error) {
         echo escape_html($error) . '<br />';
     }
+    foreach ($scan['errors_invalid'] as $error) {
+        echo escape_html($error) . '<br />';
+    }
 
     if ($scan['changes']) {
         if ($debug) {

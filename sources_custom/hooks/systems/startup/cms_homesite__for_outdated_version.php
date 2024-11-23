@@ -44,7 +44,7 @@ class Hook_startup_cms_homesite__for_outdated_version
                 $message = 'The latest version of Composr CMS is ' . strval($latest_number) . ', but you are viewing archived documentation <em>text</em> for version ' . strval($docs_viewed_for_number) . '.';
                 $message .= '<br />Be aware that old documentation is not fully maintained. Screenshots may be wrong/missing, links may become broken, etc.';
                 $message .= '<br />We recommend that if you are actively working on your site, that you upgrade. Holding off upgrading too long is a security risk.';
-                attach_message(protect_from_escaping($message), 'warn');
+                attach_message(protect_from_escaping($message), 'notice');
             }
         }
 
@@ -100,7 +100,7 @@ class Hook_startup_cms_homesite__for_outdated_version
                     $message = 'The latest version of Composr CMS is ' . strval($latest_number) . ', but you are viewing archived addons for version ' . strval($addons_viewed_for_number) . '.';
                     $message .= '<br />Be aware that old non-bundled addons are not fully maintained. Screenshots may be wrong/missing, etc.';
                     $message .= '<br />We recommend that if you are actively working on your site, that you upgrade. Holding off upgrading too long is a security risk.';
-                    attach_message(protect_from_escaping($message), 'warn');
+                    attach_message(protect_from_escaping($message), 'notice');
                 }
             }
         }

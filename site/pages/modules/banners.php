@@ -500,7 +500,7 @@ class Module_banners
 
             $current_ordering = get_param_string('sort', 'month ASC', INPUT_FILTER_GET_COMPLEX);
             if (strpos($current_ordering, ' ') === false) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('369894bd146f56ddb72bf32abfea74e7')));
             }
             list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
             $sortables = [

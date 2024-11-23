@@ -53,7 +53,7 @@ class Hook_preview_cns_post
         cns_check_post($original_comcode, post_param_integer('topic_id', null), get_member());
         $posting_ref_id = post_param_integer('posting_ref_id', mt_rand(0, mt_getrandmax()));
         if ($posting_ref_id < 0) {
-            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1e39d1da4ca55cb294c9447e6bed4b47')));
         }
         $post_bits = do_comcode_attachments($original_comcode, 'cns_post', strval(-$posting_ref_id), true, $GLOBALS['FORUM_DB']);
         $post_comcode = $post_bits['comcode'];

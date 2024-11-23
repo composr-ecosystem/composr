@@ -211,7 +211,7 @@ function get_secure_random_password(?int $strength = null, string $username = ''
 
         // Exceeded the allowed number of characters? Bail out with an error.
         if (count($password) > min(255, intval(get_option('maximum_password_length')))) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6c32a7b68e395de297a68d879343e734')));
             break;
         }
 
@@ -253,30 +253,51 @@ function get_secure_random_number() : int
  */
 function get_secure_v1_guid() : string
 {
-    // Generate random sequence index
-    static $clock_sequence = 0;
-    $clock_sequence = get_secure_random_number();
+    // Initialize clock sequence
+    $_clock_sequence = get_value_newer_than('guidv1_clock_sequence', time() - 1, true);
 
-    // Get timestamp
-    $ts = intval((microtime(true) * 10000000) + mt_rand(0, 9) + 0x01b21dd213814000);
+    // Generate a random clock sequence if we do not need to worry about replication
+    if ($_clock_sequence === null) {
+        $clock_sequence = random_int(0, 0x3FFF);
+    } else {
+        $clock_sequence = intval($_clock_sequence) & 0x3FFF;
+    }
+
+    // Increment sequence for next use
+    set_value('guidv1_clock_sequence', strval($clock_sequence + 1), true);
+
+    // Set the variant (RFC 4122)
+    $clock_sequence |= 0x8000;
+
+    // Get timestamp (with 100-nanosecond precision)
+    $time = intval((microtime(true) * 10000000) + mt_rand(0, 9) + 0x01b21dd213814000);
+
+    // Convert time to 60-bit value (as UUID uses only 60 bits for timestamp)
+    $time_hex = str_pad(dechex($time), 15, '0', STR_PAD_LEFT);
+
+    // Format time into UUID parts
+    $time_low = substr($time_hex, 7, 8);
+    $time_mid = substr($time_hex, 3, 4);
+    $time_high_and_version = substr($time_hex, 0, 3);
+
+    // Set version to 1 (time-based UUID)
+    $time_high_and_version = dechex(hexdec($time_high_and_version) | 0x1000);
 
     // Use the first 12 characters of the MD5 of the site salt as the node
     $node = substr(md5(get_site_salt()), 0, 12);
     $node[0] = dechex(hexdec($node[0]) & 1);
 
-    // Piece together time and clock components
-    $time_low = $ts & 0xFFFFFFFF;
-    $time_mid = ($ts >> 32) & 0xFFFF;
-    $time_hi_and_version = ($ts >> 48) & 0x0FFF;
-    $time_hi_and_version |= (1 << 12);
-    $clock_seq_hi_and_reserved = ($clock_sequence & 0x3F00) >> 8;
-    $clock_seq_hi_and_reserved |= 0x80;
-    $clock_seq_low = $clock_sequence & 0xFF;
+    // Assemble the GUID
+    $guid = sprintf(
+        '%s-%s-%s-%04x-%s',
+        $time_low,
+        $time_mid,
+        $time_high_and_version,
+        $clock_sequence,
+        $node
+    );
 
-    // Increment sequence for next use
-    $clock_sequence++;
-
-    return sprintf('%08x-%04x-%04x-%02x%02x-%s', $time_low, $time_mid, $time_hi_and_version, $clock_seq_hi_and_reserved, $clock_seq_low, $node);
+    return $guid;
 }
 
 /**

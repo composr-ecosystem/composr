@@ -1180,13 +1180,17 @@ Composr will react fatally on most errors unless they are suppressed. This inclu
 
 To raise an error you'll typically call one of these functions:
  - [tt]trigger_error[/tt] -- routed through PHP error handling (which itself is taken up by Composr, with logging and error notifications).
+  - Error levels (Notice, Warn, Error) are PHP-specific.
  - [tt]relay_error_notification[/tt] -- just send an error notification
  - [tt]error_log[/tt] -- direct logging to the Composr error log (via the PHP error logging system)
  - [tt]cms_error_log[/tt] -- as above, but also includes an error notification
- - [tt]fatal_exit[/tt] -- some kind of particularly unexpected/egregious error, that needs to come with a stack track. Includes logging and error notifications.
- - [tt]warn_exit[/tt] -- normal error situation, inform the user.
+ - [tt]fatal_exit[/tt] -- some kind of particularly unexpected/egregious error, that needs to come with a stack trace and bail Composr out completely. Includes logging and error notifications.
+ - [tt]warn_exit[/tt] -- A general error with a warning message to the user.
  - [tt]inform_exit[/tt] -- not actually an error, but exit with a message.
  - [tt]attach_message[/tt] -- an error is shown in the global layout, processing otherwise continues as normal. You can generate [tt]inform[/tt]/[tt]notice[/tt]/[tt]warn[/tt] messages.
+  - [tt]inform[/tt] -- Used to inform the user of general / neutral information that does not typically require action. The message will appear in the theme's seed color.
+  - [tt]notice[/tt] -- Used to tell the user something that needs their attention but is itself not an error. The message will be seeded towards yellow.
+  - [tt]warn[/tt] -- Used to tell the user something went wrong (think warn_exit, but without the need to exit). The message will be seeded towards red.
 
 Use [tt]trigger_error[/tt]/[tt]fatal_exit[/tt] if it is a totally unexpected but detectable error condition (i.e. not user error, not a common system error, i.e. very likely a Composr bug). As such it would be subject to logging and error notifications. As [tt]trigger_error[/tt] goes through the Composr's handling of the PHP error system, the configuration options for how to handle PHP errors are respected. In many cases [tt]trigger_error[/tt] will effectively call [tt]fatal_exit[/tt]/[tt]attach_message[/tt] based on these settings. The other functions are to be called directly in detectable situations that are typically user errors, where you want to specify the precise handling for them.
 

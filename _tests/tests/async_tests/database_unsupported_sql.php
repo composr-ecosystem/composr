@@ -28,15 +28,15 @@ class database_unsupported_sql_test_set extends cms_test_case
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
             $matches = [];
-
             $num_matches = preg_match_all('#(query|sql).*\'[^\'\n]*(SUM|COUNT|AVG|MIN|MAX)\([\s*.\w]*[^\'\s*.\w][\s*.\w]*\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
-                $this->assertTrue(false, 'Unsupported SQL aggregate syntax (expression within aggregate function) in ' . $path);
+                $this->assertTrue(false, 'Unsupported SQL aggregate syntax (expression within aggregate function) in ' . $path . ' (' . $matches[0][$i] . ')');
             }
 
+            $matches = [];
             $num_matches = preg_match_all('#(query|sql)[^\'\n]*\'.*(SUM|COUNT|AVG|MIN|MAX)\([^\'()]*.\)\s*[+\-*/]\s*(SUM|COUNT|AVG|MIN|MAX)\([^\'()]*.\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
-                $this->assertTrue(false, 'Unsupported SQL aggregate syntax (expression between aggregate functions) in ' . $path);
+                $this->assertTrue(false, 'Unsupported SQL aggregate syntax (expression between aggregate functions) in ' . $path . ' (' . $matches[0][$i] . ')');
             }
 
             // Exceptions...
@@ -56,9 +56,10 @@ class database_unsupported_sql_test_set extends cms_test_case
                 continue;
             }
 
+            $matches = [];
             $num_matches = preg_match_all('#WHERE.*\w+(<>|=)\\\\\'#i', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
-                $this->assertTrue(false, 'SQL equal/not-equal operations have to use db_string_equal_to/db_string_not_equal_to for Oracle, in ' . $path);
+                $this->assertTrue(false, 'SQL equal/not-equal operations have to use db_string_equal_to/db_string_not_equal_to for Oracle (even in query_parameterised), in ' . $path . ' (' . $matches[0][$i] . ')');
             }
         }
     }

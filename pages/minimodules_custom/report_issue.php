@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('cms_homesite_tracker') || !addon_installed('cms_homesite')) {
-    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('82e2c878e1c55dfa835b2234cc823a30')));
 }
 
 // Do not allow reports from Guests due to excessive spam

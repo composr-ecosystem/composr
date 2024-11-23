@@ -67,7 +67,7 @@ class Block_main_include_module
         // Find out what we're virtualising
         $param = array_key_exists('param', $map) ? $map['param'] : '';
         if ($param == '') {
-            return do_template('RED_ALERT', ['_GUID' => 'o3plvsqh2931w7kjt0u04c4zn2f93xs6', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
+            return do_template('RED_ALERT', ['_GUID' => 'ccbae2011199514ea4b7542abca4ab32', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
         }
         list($zone, $attributes,) = page_link_decode($param);
         if (!array_key_exists('page', $attributes)) {
@@ -79,7 +79,7 @@ class Block_main_include_module
             $zone = get_zone_name();
         }
         if ($zone === null) {
-            return do_template('RED_ALERT', ['_GUID' => 'tc67wb1v1sg1hsvegsxqkxhf1iodh2m1', 'TEXT' => do_lang_tempcode('MISSING_PAGE', escape_html($attributes['page']))]);
+            return do_template('RED_ALERT', ['_GUID' => '64fe49825abb526f8b73f294d83ca189', 'TEXT' => do_lang_tempcode('MISSING_PAGE', escape_html($attributes['page']))]);
         }
         foreach ($_GET as $key => $val) {
             if (is_integer($key)) {

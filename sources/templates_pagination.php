@@ -70,7 +70,7 @@ function get_keyset_pagination_settings(string $max_name, int $max_default, stri
         $_sort = $sort_default;
     } else {
         if ($sort_default === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3e3fc36b4c175ef79342252cc24bfdf3')));
         }
 
         $_sort = get_param_string($sort_name, $sort_default);

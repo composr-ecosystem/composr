@@ -31,7 +31,7 @@ class Hook_snippet_rating
     public function run() : object
     {
         if (get_option('is_on_rating') == '0') {
-            return do_lang_tempcode('INTERNAL_ERROR');
+            return do_lang_tempcode('INTERNAL_ERROR', escape_html('1a08cb7c8a94a1335e33e70f48a47f22'));
         }
 
         // Has there actually been any rating?
@@ -40,7 +40,7 @@ class Hook_snippet_rating
         } else {
             $rating = post_param_integer('rating'); // Will fail if no rating
         }
-        $content_type = get_param_string('content_type');
+        $feedback_type = get_param_string('feedback_type');
         $type = get_param_string('type', '');
         $content_id = get_param_string('id');
 
@@ -48,16 +48,16 @@ class Hook_snippet_rating
         $content_title = get_param_string('content_title', '', INPUT_FILTER_GET_COMPLEX);
 
         require_code('feedback');
-        actualise_specific_rating($rating, get_page_name(), get_member(), $content_type, $type, $content_id, $content_url, $content_title);
+        actualise_specific_rating($rating, get_page_name(), get_member(), $feedback_type, $type, $content_id, $content_url, $content_title);
 
-        actualise_credit_rating_points($content_type, $content_id);
+        actualise_credit_rating_points($feedback_type, $content_id);
 
         $template = get_param_string('template', null);
         if ($template !== '') {
             if ($template === null) {
                 $template = 'RATING_BOX';
             }
-            return display_rating($content_url, $content_title, $content_type, $content_id, $template);
+            return display_rating($content_url, $content_title, $feedback_type, $content_id, $template);
         }
 
         return do_lang_tempcode('THANKYOU_FOR_RATING_SHORT');

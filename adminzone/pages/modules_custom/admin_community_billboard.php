@@ -191,7 +191,7 @@ class Module_admin_community_billboard extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'the_message ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0c291cd541c6560c878126b4b78cf762')));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         $sortables = [

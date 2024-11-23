@@ -78,7 +78,7 @@ PHP;
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', ['_GUID' => '0g2we1y689cd9211nq5i3830v32cqsjh', 'TEXT' => do_lang_tempcode('NO_CNS')]);
+            return do_template('RED_ALERT', ['_GUID' => 'de2767ebcde95a5e9fc9fd4b5022f123', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         if (is_guest()) {

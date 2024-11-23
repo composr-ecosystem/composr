@@ -39,6 +39,16 @@ class Hook_payment_gateway_authorize
     protected $percentage_fee = 0.029;
 
     /**
+     * Whether this payment gateway is available for use.
+     *
+     * @return boolean Whether it is available
+     */
+    public function is_available() : bool
+    {
+        return true;
+    }
+
+    /**
      * Get a standardised config map.
      *
      * @return array The config
@@ -47,6 +57,8 @@ class Hook_payment_gateway_authorize
     {
         return [
             'supports_remote_memo' => false,
+            'local_only' => false,
+            'internal_only' => false,
         ];
     }
 
@@ -467,7 +479,8 @@ class Hook_payment_gateway_authorize
 
         // Authorize.net always uses 0 for transaction_id in sandbox. But we need a unique ID.
         if ($txn_id == '0') {
-            $txn_id = uniqid('', true);
+            require_code('crypt');
+            $txn_id = 'tx-' . str_replace('-', '', get_secure_v1_guid()); // Must keep under 40 characters
         }
 
         $this->store_shipping_address($trans_expecting_id, $txn_id);
