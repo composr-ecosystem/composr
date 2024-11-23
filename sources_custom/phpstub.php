@@ -5067,7 +5067,7 @@ function sodium_crypto_box_secretkey(string $key_pair) : string
  * @param  integer $year The year which we are calculating
  * @return integer The number of days in the month
  */
-function cal_days_in_month(int $calendar, int $month, int $year): int
+function cal_days_in_month(int $calendar, int $month, int $year) : int
 {
     return 0;
 }

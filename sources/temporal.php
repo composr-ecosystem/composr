@@ -551,7 +551,7 @@ function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day,
  * @param  ID_TEXT $interval The interval we want to use
  * @set minutes, hours, days, weeks, months, years
  * @param  TIME $epoch Define our own epoch relative to the Unix epoch to use in this calculation instead
- * @return int The index of the interval at which $timestamp is located
+ * @return integer The index of the interval at which $timestamp is located
  */
 function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 0) : int
 {
