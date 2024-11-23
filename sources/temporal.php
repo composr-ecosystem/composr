@@ -557,18 +557,19 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
 {
     $corrected_timestamp = $timestamp - $epoch;
 
+    $index = 0;
     switch ($interval) {
         case 'minutes':
-            $interval = intval(floor(floatval($corrected_timestamp) / 60.0));
+            $index = intval(floor(floatval($corrected_timestamp) / 60.0));
             break;
         case 'hours':
-            $interval = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0)));
+            $index = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0)));
             break;
         case 'days':
-            $interval = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0 * 24.0)));
+            $index = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0 * 24.0)));
             break;
         case 'weeks':
-            $interval = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0 * 24.0 * 7.0)));
+            $index = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0 * 24.0 * 7.0)));
             break;
         case 'months':
             list($start_year, $start_month, $start_day, $start_hour, $start_minute, $start_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $epoch)));
@@ -579,7 +580,7 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
             $month_diff = $end_month - $start_month;
 
             // Convert the year and month difference into a single offset in months
-            $interval = ($year_diff * 12) + $month_diff;
+            $index = ($year_diff * 12) + $month_diff;
 
             // Are we sure we completed a full month?
             if (
@@ -588,7 +589,7 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
                 (($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute < $start_minute)) ||
                 (($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute == $start_minute) && ($end_second < $start_second))
             ) {
-                $interval--;
+                $index--;
             }
             break;
         case 'years':
@@ -596,7 +597,7 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
             list($end_year, $end_month, $end_day, $end_hour, $end_minute, $end_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $timestamp)));
 
             // Calculate the difference in years
-            $interval = ($end_year - $start_year);
+            $index = ($end_year - $start_year);
 
             // Are we sure we completed a full year?
             if (
@@ -606,14 +607,14 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
                 (($end_month == $start_month) && ($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute < $start_minute)) ||
                 (($end_month == $start_month) && ($end_day == $start_day) && ($end_hour == $start_hour) && ($end_minute == $start_minute) && ($end_second < $start_second))
             ) {
-                $interval--;
+                $index--;
             }
             break;
         default: // Should never happen
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4c161875f90b5be7bd0adc59a2756a20')));
     }
 
-    return $interval;
+    return $index;
 }
 
 /**
