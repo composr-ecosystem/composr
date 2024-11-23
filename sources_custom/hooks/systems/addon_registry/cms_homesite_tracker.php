@@ -192,7 +192,7 @@ class Hook_addon_registry_cms_homesite_tracker
             'tracker/.github/dependabot.yml',
             'tracker/.imgbotconfig',
             'tracker/KEYS.md',
-            'tracker/README.md',
+            'tracker/readme.md',
             'tracker/SECURITY.md',
             'tracker/account_delete.php',
             'tracker/account_manage_columns_page.php',
