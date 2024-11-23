@@ -1065,7 +1065,6 @@ class Hook_addon_registry_cms_homesite_tracker
             'tracker/proj_doc_update.php',
             'tracker/query_store.php',
             'tracker/query_store_page.php',
-            'tracker/readme.md',
             'tracker/return_dynamic_filters.php',
             'tracker/roadmap_page.php',
             'tracker/scripts/.htaccess',
