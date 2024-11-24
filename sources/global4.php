@@ -850,7 +850,7 @@ function get_exact_usernames_and_suexec() : array
     if (running_script('install')) {
         $path_to_check = get_file_base() . '/install.php';
     } else {
-        $path_to_check = get_file_base() . '/sources/global.php';
+        $path_to_check = get_file_base() . '/sources/bootstrap.php';
     }
 
     if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {

@@ -1516,11 +1516,11 @@ class HttpDownloaderSockets extends HttpDownloader
 
         if ($mysock !== false) {
             if (function_exists('stream_set_timeout')) {
-                if (@stream_set_timeout($mysock, intval($this->timeout), fmod($this->timeout, 1.0) / 1000000.0) === false) {
+                if (@stream_set_timeout($mysock, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)) === false) {
                     $mysock = false;
                 }
             } elseif (function_exists('socket_set_timeout')) {
-                if (@socket_set_timeout($mysock, intval($this->timeout), fmod($this->timeout, 1.0) / 1000000.0) === false) {
+                if (@socket_set_timeout($mysock, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)) === false) {
                     $mysock = false;
                 }
             }

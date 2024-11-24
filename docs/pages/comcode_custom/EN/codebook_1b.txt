@@ -111,7 +111,8 @@ The following are the core Composr APIs (green is used to indicate the most impo
 ! Typical usage
 |-
 | [color="green"]GLOBAL[/color]
-| [tt]sources/global.php[/tt]
+| [tt]sources/bootstrap.php[/tt]
+[tt]sources/global.php[/tt]
 [tt]sources/global2.php[/tt]
 [tt]sources/global3.php[/tt]
 | Pre-loaded and available in global scope

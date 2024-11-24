@@ -33,10 +33,11 @@ An Composr page view comes into an [tt]index.php[/tt] file within a zone directo
 The [tt]index.php[/tt] file contains standard initialisation code. It:
 1) sets up the basic Composr file paths
 2) sets the directory path to the base directory (so everything is harmonised across different Composr requests)
-3) passes control to [tt]sources/global.php[/tt]
+3) initialises the minimal bootstrap code [tt]sources/bootstrap.php[/tt]
+4) uses bootstrap to pass off control to [tt]sources/global.php[/tt] (and injecting a PHP strict_types declaration if running in development mode)
 
 [tt]global.php[/tt] defines the very core of the Composr framework, in particular code needed to load up library files.
-[tt]global.php[/tt] calls up [tt]global2.php[/tt], as the first library file called using [tt]require_code[/tt] (i.e. [tt]global2.php[/tt] supports overrides to its code and has a standard initialisation function, [tt]global.php[/tt] does not).
+[tt]global.php[/tt] calls up [tt]global2.php[/tt], as the first library file called using [tt]require_code[/tt] (i.e. [tt]global2.php[/tt] supports overrides to its code and has a standard initialisation function, [tt]global.php[/tt] and [tt]bootstrap.php[/tt] do not).
 
 Next [tt]init__global2()[/tt] runs, as this is the standard initialisation function for [tt]global2.php[/tt]. This code loads up most Composr subsystems (such as the database connection). Lots of code files get loaded up (making APIs available), with lots of initialisation functions.
 

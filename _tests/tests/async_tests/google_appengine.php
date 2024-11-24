@@ -35,7 +35,7 @@ class google_appengine_test_set extends cms_test_case
 
             /*
             Think Google AppEngine was since fixed, and we use this for symlink resolution
-            if ((strpos($c, '\'SCRIPT_FILENAME\'') !== false) && ($path != 'sources/minikernel.php') && ($path != 'sources/global.php') && ($path != 'sources/global2.php') && ($path != 'sources_custom/phpstub.php')) {
+            if ((strpos($c, '\'SCRIPT_FILENAME\'') !== false) && ($path != 'sources/bootstrap.php') && ($path != 'sources/minikernel.php') && ($path != 'sources/global.php') && ($path != 'sources/global2.php') && ($path != 'sources_custom/phpstub.php')) {
                 $this->assertTrue(false, 'SCRIPT_FILENAME does not work stably across platforms (in ' . $path . ')');
             }
             */

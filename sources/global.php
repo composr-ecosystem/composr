@@ -15,7 +15,7 @@
 /*EXTRA FUNCTIONS: strtoupper|strtolower*/
 
 /*
-    initial bootstrap loaded by any frontend script
+    secondary bootstrap loaded after bootstrap.php by any front-end script
 */
 
 /**
@@ -276,6 +276,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 
 /**
  * Require code, but without looking for sources_custom overrides.
+ * This also bypasses special DEV_MODE declare strict_types as this uses require_once and not eval.
  *
  * @param  string $codename The codename for the source module to load
  */
@@ -340,6 +341,16 @@ function call_included_code(string $path, string $codename, bool $light_exit, ?s
         error_clear_last();
     }
     $errormsg_before = error_get_last();
+
+    // In DEV_MODE, declare PHP strict_types at the top unless "No strict_types" is commented.
+    if ($GLOBALS['DEV_MODE']) {
+        if ($code === null) {
+            $code = clean_php_file_for_eval(file_get_contents($path), $path);
+        }
+        if (strpos($code, '/*No strict_types*/') === false) {
+            $code = 'declare(strict_types=1); ' . $code;
+        }
+    }
 
     try {
         if ($code === null) {
@@ -483,7 +494,7 @@ function override_str_replace_exactly($search, $replace, $subject, int $times = 
  */
 function appengine_is_live() : bool
 {
-    return (GOOGLE_APPENGINE) && (!is_writable(get_file_base() . '/sources/global.php'));
+    return (GOOGLE_APPENGINE) && (!is_writable(get_file_base() . '/sources/bootstrap.php'));
 }
 
 /**

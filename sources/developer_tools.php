@@ -132,8 +132,11 @@ function semi_dev_mode_startup()
     }
 
     if (($_SERVER['SCRIPT_NAME'] != '') && (empty($GLOBALS['EXTERNAL_CALL'])) && ($DEV_MODE) && (strpos($_SERVER['SCRIPT_NAME'], 'data_custom') === false)) {
-        if (@strlen(cms_file_get_contents_safe($_SERVER['SCRIPT_NAME'], FILE_READ_LOCK)) > 4500) {
-            fatal_exit('Entry scripts (front controllers) should not be shoved full of code.');
+        if (is_file($_SERVER['SCRIPT_NAME'])) {
+            $file = cms_file_get_contents_safe($_SERVER['SCRIPT_NAME'], FILE_READ_LOCK);
+            if (($file !== false) && strlen($file) > 4500) {
+                fatal_exit('Entry scripts (front controllers) should not be shoved full of code.');
+            }
         }
     }
 }
@@ -210,7 +213,10 @@ function restrictify()
 
         if (get_param_integer('keep_xss_detect', null) !== 0) {
             global $PREVIOUS_XSS_STATE;
-            cms_ini_set('ocproducts.xss_detect', array_pop($PREVIOUS_XSS_STATE));
+            $prev = array_pop($PREVIOUS_XSS_STATE);
+            if ($prev !== false) {
+                cms_ini_set('ocproducts.xss_detect', $prev);
+            }
         }
     }
     if (!GOOGLE_APPENGINE) {

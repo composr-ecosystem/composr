@@ -129,7 +129,9 @@ class Hook_startup_tapatalk
 
             attach_to_screen_header($app_head_include);
 
-            cms_ini_set('ocproducts.type_strictness', $before);
+            if ($before !== false) {
+                cms_ini_set('ocproducts.type_strictness', $before);
+            }
         }
     }
 }

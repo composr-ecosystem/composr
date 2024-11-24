@@ -161,7 +161,7 @@ function get_afm_form_fields() : object
     $ftp_domain = get_value('ftp_domain');
     $_uses_ftp = running_script('upgrader') ? '0' : get_value('uses_ftp');
     if ($_uses_ftp === null) {
-        $uses_ftp = !cms_is_writable(get_file_base() . '/sources/global.php');
+        $uses_ftp = !cms_is_writable(get_file_base() . '/sources/bootstrap.php');
     } else {
         $uses_ftp = ($_uses_ftp == '1');
     }
@@ -714,7 +714,7 @@ function afm_delete_file(string $basic_path)
  */
 function website_default_php_file_permissions() : int
 {
-    return fileperms(get_file_base() . '/sources/global.php');
+    return fileperms(get_file_base() . '/sources/bootstrap.php');
 }
 
 /**

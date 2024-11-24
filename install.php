@@ -13,6 +13,8 @@
 
 /*EXTRA FUNCTIONS: ftp_.*|fileowner*/
 
+declare(strict_types= 1);
+
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
@@ -1751,7 +1753,7 @@ function step_5_checks_a() : object
     }
 
     // Check path
-    if (!file_exists(get_file_base() . '/sources/global.php')) {
+    if (!file_exists(get_file_base() . '/sources/bootstrap.php')) {
         warn_exit(do_lang_tempcode('BAD_PATH'));
     }
 
@@ -2920,6 +2922,8 @@ function require_code(string $codename)
         $file = file_array_get('sources/' . $codename . '.php');
         $file = str_replace('<' . '?php', '', $file);
         $file = str_replace('?' . '>', '', $file);
+
+        // NB: When running the quick installer, we almost certainly are not running DEV_MODE, so do not try injecting strict_types.
         if (function_exists('cms_eval')) {
             cms_eval($file, $path);
         } else {
@@ -2934,7 +2938,19 @@ function require_code(string $codename)
             exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr installer startup error</h1><p>A required installation file, sources/' . $codename . '.php, could not be located. This is almost always due to an incomplete upload of the Composr manual installation package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the installer can function. Please note that we have a quick installer package which requires uploading only two files, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
         }
 
-        require_once($path);
+        // Inject strict types if we are running in development mode (_tests directory exists)
+        if (is_dir($FILE_BASE . '/_tests')) {
+            $code = clean_php_file_for_eval(file_get_contents($path));
+            $code = 'declare(strict_types=1); ' . $code;
+            if (function_exists('cms_eval')) {
+                cms_eval($code, $path);
+            } else {
+                eval($code);
+            }
+        } else {
+            require_once($path);
+        }
+
         if (function_exists('init__' . str_replace('/', '__', $codename))) {
             call_user_func('init__' . str_replace('/', '__', $codename));
         }
@@ -3647,4 +3663,24 @@ function confirm_db_credentials(bool $return_connection = false)
     }
 
     return $tmp;
+}
+
+/**
+ * Make a PHP file evaluable.
+ *
+ * @param  string $c File contents
+ * @param  ?string $path File path (null: N/A)
+ * @return string Cleaned up file
+ */
+function clean_php_file_for_eval(string $c, ?string $path = null) : string
+{
+    $reps = [];
+    $reps['?' . '>'] = '';
+    $reps['<' . '?php'] = '';
+    if ($path !== null) {
+        $reps['__FILE__'] = "'" . addslashes($path) . "'";
+        $reps['__DIR__'] = "'" . addslashes(dirname($path)) . "'";
+    }
+
+    return str_replace(array_keys($reps), array_values($reps), $c);
 }

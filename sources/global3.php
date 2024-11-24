@@ -364,7 +364,7 @@ function is_suexec_like() : bool
                 (posix_getuid() == website_file_owner())
             )
             ||
-            (cms_is_writable(get_file_base() . (running_script('install') ? '/install.php' : '/sources/global.php')));
+            (cms_is_writable(get_file_base() . (running_script('install') ? '/install.php' : '/sources/bootstrap.php')));
         }
     }
     return $answer;
@@ -2066,7 +2066,7 @@ function cms_parse_url_safe(string $url, int $component = -1)
         }
 
         if (!array_key_exists('port', $ret)) {
-            $ret['port'] = (cms_strtolower_ascii($ret['scheme']) == 'https') ? '443' : '80';
+            $ret['port'] = (cms_strtolower_ascii($ret['scheme']) == 'https') ? 443 : 80;
         }
 
         if (!array_key_exists('path', $ret)) {
@@ -4912,7 +4912,7 @@ function website_file_owner() : int
     if (running_script('install')) {
         $path_to_check = get_file_base() . '/install.php';
     } else {
-        $path_to_check = get_file_base() . '/sources/global.php';
+        $path_to_check = get_file_base() . '/sources/bootstrap.php';
     }
     return fileowner($path_to_check);
 }
@@ -4928,7 +4928,7 @@ function website_file_group() : int
     if (running_script('install')) {
         $path_to_check = get_file_base() . '/install.php';
     } else {
-        $path_to_check = get_file_base() . '/sources/global.php';
+        $path_to_check = get_file_base() . '/sources/bootstrap.php';
     }
     return filegroup($path_to_check);
 }
@@ -4943,7 +4943,7 @@ function website_creation_time() : int
     if (running_script('install')) {
         $path_to_check = get_file_base() . '/install.php';
     } else {
-        $path_to_check = get_file_base() . '/sources/global.php';
+        $path_to_check = get_file_base() . '/sources/bootstrap.php';
     }
     return filemtime($path_to_check);
 }

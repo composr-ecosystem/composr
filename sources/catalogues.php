@@ -1949,7 +1949,7 @@ function render_catalogue_entry_screen(int $id) : object
         $_id = strval($id);
         list(, $product_object) = find_product_details($_id);
         if ((is_object($product_object)) && (method_exists($product_object, 'get_catalogue_template_parameters'))) {
-            $product_object->get_catalogue_template_parameters($_id, $map);
+            $product_object->get_catalogue_template_parameters(intval($_id), $map);
         }
     }
 

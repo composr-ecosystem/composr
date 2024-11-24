@@ -910,6 +910,7 @@ class Hook_addon_registry_core
             'sources/filtercode.php',
             'sources/firephp.php',
             'sources/forum_stub.php',
+            'sources/bootstrap.php',
             'sources/global.php',
             'sources/global2.php',
             'sources/global3.php',

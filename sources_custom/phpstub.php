@@ -150,9 +150,9 @@ function abs($number)
  *
  * @param  float $x The dividend
  * @param  float $y The divisor
- * @return mixed The remainder
+ * @return float The remainder
  */
-function fmod(float $x, float $y)
+function fmod(float $x, float $y) : float
 {
     return 0.0;
 }

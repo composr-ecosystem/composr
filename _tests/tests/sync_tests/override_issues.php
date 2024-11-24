@@ -44,7 +44,7 @@ class override_issues_test_set extends cms_test_case
 
             $this->assertTrue((strpos($_c, 'function  ') === false) && (strpos($_c, "function\t") === false), 'Problematic function definition will cause Composr override system issues: ' . $path);
 
-            if ((strpos($path, '_custom') === false) && (!in_array($path, ['sources/global.php', 'sources/global2.php']))) {
+            if ((strpos($path, '_custom') === false) && (!in_array($path, ['sources/bootstrap.php', 'sources/global.php', 'sources/global2.php']))) {
                 if (strpos($_c, 'function init__') !== false) {
                     $this->assertTrue((strpos($_c, "\n    define(") === false), '\'define\' commands need a defined guard, so whole code file can be overridden naively, where init function will run twice: ' . $path);
                 }

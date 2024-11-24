@@ -55,8 +55,12 @@ class Hook_oauth_screen_sup_hybridauth_admin
 
         ksort($services, SORT_NATURAL | SORT_FLAG_CASE);
 
-        cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-        cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        if ($before_type_strictness !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+        }
+        if ($before_xss_detect !== false) {
+            cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        }
 
         return $services;
     }

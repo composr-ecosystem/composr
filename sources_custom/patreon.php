@@ -47,8 +47,12 @@ function get_patreon_hybridauth_adapters()
         }
     }
 
-    cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-    cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+    if ($before_type_strictness !== false) {
+        cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+    }
+    if ($before_xss_detect !== false) {
+        cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+    }
 
     return $adapters;
 }
@@ -179,8 +183,12 @@ function patreon_sync()
 
             return;
         } finally {
-            cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-            cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+            if ($before_type_strictness !== false) {
+                cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+            }
+            if ($before_xss_detect !== false) {
+                cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+            }
         }
 
         $member_ids = [];
@@ -285,8 +293,12 @@ function patreon_sync_individual_member($user_id, $alternate_config)
 
         return;
     } finally {
-        cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-        cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        if ($before_type_strictness !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+        }
+        if ($before_xss_detect !== false) {
+            cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        }
     }
 
     $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
