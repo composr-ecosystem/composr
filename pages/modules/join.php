@@ -296,10 +296,25 @@ class Module_join
      */
     public function step3() : object
     {
+        $declarations_made = $this->parse_declarations();
+
+        list($message) = cns_join_actual($declarations_made);
+
+        $this->dispatch_declarations_mail($declarations_made, get_param_string('email', '', INPUT_FILTER_GET_IDENTIFIER));
+
+        return inform_screen($this->title, $message);
+    }
+
+    protected function parse_declarations() : string
+    {
+        require_lang('cns');
+
+        // Bail if the member did not properly make declarations
         if ((get_option('show_first_join_page') == '1') && (!$this->declarations_made())) {
             warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
         }
 
+        // Parse params for declarations made
         $declarations_made = '';
         $declarations = $this->get_declarations();
         foreach ($declarations as $i => $declaration) {
@@ -311,9 +326,37 @@ class Module_join
             }
         }
 
-        list($message) = cns_join_actual($declarations_made);
+        return $declarations_made;
+    }
 
-        return inform_screen($this->title, $message);
+    /**
+     * Send a mail confirmation of declarations made to the member.
+     *
+     * @param  LONG_TEXT $declarations_made A list of declarations made, one per line
+     * @param  SHORT_TEXT $email_address The e-mail address of the member
+     */
+    protected function dispatch_declarations_mail(string $declarations_made, string $email_address)
+    {
+        require_lang('cns');
+
+        // Send mail confirmation of rules and declarations to the member which were agreed
+        if ($email_address != '') {
+            require_code('temporal');
+            require_code('mail');
+
+            $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+            $rules = request_page('_rules', true, get_comcode_zone('_rules'), null, true);
+            $privacy_policy = request_page('privacy', false, get_comcode_zone('privacy'), null, true);
+            $subject = do_lang('RULES_CONFIRMATION_MAIL_SUBJECT');
+            $body = do_template('RULES_CONFIRMATION_MAIL', [
+                'AGREEMENT_DATE_TIME' => get_timezoned_date_time(time(), false, true),
+                'RULES' => $rules,
+                'PRIVACY_POLICY' => $privacy_policy,
+                'DECLARATIONS' => explode("\n", $declarations_made),
+            ], null, false, null, '.txt', 'text');
+
+            dispatch_mail($subject, $body->evaluate(), '', [$email_address], [$username]);
+        }
     }
 
     /**
@@ -469,22 +512,10 @@ class Module_join
             access_denied('NOT_AS_GUEST');
         }
 
-        if ((get_option('show_first_join_page') == '1') && (!$this->declarations_made())) {
-            warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
-        }
-
-        $declarations_made = '';
-        $declarations = $this->get_declarations();
-        foreach ($declarations as $i => $declaration) {
-            if (post_param_string('confirm_' . strval($i), '') == $declaration) {
-                if ($declarations_made != '') {
-                    $declarations_made .= "\n";
-                }
-                $declarations_made .= $declaration;
-            }
-        }
-
+        $declarations_made = $this->parse_declarations();
         $GLOBALS['FORUM_DRIVER']->set_custom_field(get_member(), 'agreed_declarations', $declarations_made);
+
+        $this->dispatch_declarations_mail($declarations_made, $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()));
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }
