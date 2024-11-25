@@ -406,7 +406,10 @@ class Hook_ecommerce_tax_taxjar
         }
 
         $__tjs = $this->make_taxjar_request($this->endpoints['categories'], ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false], true, true);
-        $_tjs = @json_decode($__tjs, true);
+        if ($__tjs === null) {
+            return;
+        }
+        $_tjs = json_decode($__tjs, true);
         if (isset($_tjs['categories']) && is_array($_tjs['categories'])) {
             $tjs = new Tempcode();
             foreach ($_tjs['categories'] as $category) {

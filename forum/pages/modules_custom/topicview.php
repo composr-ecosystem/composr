@@ -13,23 +13,6 @@
  * @package    jestr
  */
 
-function init__forum__pages__modules_custom__topicview($in)
-{
-    i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
-
-    if (!addon_installed('jestr')) {
-        return $in;
-    }
-
-    $in = str_replace(
-        "\$_postdetails['post']",
-        "jestr_filtering_wrap(\$_postdetails['post']->evaluate())",
-        $in
-    );
-
-    return $in;
-}
-
 function jestr_filtering_wrap($in)
 {
     $orig = $in;

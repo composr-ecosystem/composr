@@ -154,8 +154,8 @@ class Hook_addon_registry_challengr
     {
         return [
             'lang_custom/EN/quiz.ini',
-            'site/pages/modules_custom/quiz.php',
             'sources_custom/hooks/systems/addon_registry/challengr.php',
+            'sources_custom/hooks/systems/contentious_overrides/challengr.php',
             'themes/default/templates_custom/QUIZ_BOX.tpl',
             'themes/default/templates_custom/QUIZ_DONE_SCREEN.tpl',
         ];

@@ -268,10 +268,10 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
             'add_date' => $db_row['t_add_date'],
             'edit_date' => $db_row['t_edit_date'],
 
-            'rating' => @intval(round($db_row['rating'])),
-            'rating_recent' => @intval(round($db_row['rating_recent'])),
-            'likes' => @intval(round($db_row['likes'])),
-            'likes_recent' => @intval(round($db_row['likes_recent'])),
+            'rating' => (($db_row['rating'] !== null) ? intval(round($db_row['rating'])) : null),
+            'rating_recent' => (($db_row['rating_recent'] !== null) ? intval(round($db_row['rating_recent'])) : null),
+            'likes' => (($db_row['likes'] !== null) ? intval(round($db_row['likes'])) : null),
+            'likes_recent' => (($db_row['likes_recent'] !== null) ? intval(round($db_row['likes_recent'])) : null),
         ];
     }
 

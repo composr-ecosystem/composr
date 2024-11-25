@@ -34,6 +34,8 @@ function init__forum_stub()
         define('USERNAME_DEFAULT_BLANK', 32);
         define('USERNAME_DEFAULT_ERROR', 64);
     }
+
+    require_code('users');
 }
 
 /**

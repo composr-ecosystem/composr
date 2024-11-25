@@ -55,7 +55,7 @@ class Hook_contentious_overrides_karma
         }
     }
 
-    public function call_included_code($path, $codename, &$code)
+    public function compile_included_code($path, $codename, &$code)
     {
         if (!addon_installed('karma') || (get_forum_type() != 'cns')) {
             return;

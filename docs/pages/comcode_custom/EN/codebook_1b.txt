@@ -586,7 +586,7 @@ class Hook_contentious_overrides_foo
     }
 
     // Note that this method only works after some of the bootstrapping has finished
-    public function call_included_code($path, $codename, &$code)
+    public function compile_included_code($path, $codename, &$code)
     {
         // Make breadcrumbs say "Foobar"
         if ($codename == 'site') {

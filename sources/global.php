@@ -136,32 +136,41 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                 $possible_new_functions = [];
                 $num_function_matches = preg_match_all('#\sfunction\s+(\w+)\(#', $custom, $function_matches);
                 for ($i = 0; $i < $num_function_matches; $i++) {
-                    $possible_new_function = $function_matches[1][$i];
-                    if (!function_exists($possible_new_function)) {
-                        $possible_new_functions[] = $possible_new_function;
-                    }
+                    $possible_new_functions[] = $function_matches[1][$i];
                 }
                 $class_matches = [];
                 $possible_new_classes = [];
                 $num_class_matches = preg_match_all('#\sclass\s+(\w+)#', $custom, $class_matches);
                 for ($i = 0; $i < $num_class_matches; $i++) {
-                    $possible_new_class = $class_matches[1][$i];
-                    if (!class_exists($possible_new_class)) {
-                        $possible_new_classes[] = $possible_new_class;
-                    }
+                    $possible_new_classes[] = $class_matches[1][$i];
                 }
 
-                call_included_code($path_custom, $codename, $light_exit); // Include our custom
+                // We need to also get the functions and classes from the original
+                $function_matches = [];
+                $orig_functions = [];
+                $num_function_matches = preg_match_all('#\sfunction\s+(\w+)\(#', $orig, $function_matches);
+                for ($i = 0; $i < $num_function_matches; $i++) {
+                    $orig_functions[] = $function_matches[1][$i];
+                }
+                $class_matches = [];
+                $orig_classes = [];
+                $num_class_matches = preg_match_all('#\sclass\s+(\w+)#', $orig, $class_matches);
+                for ($i = 0; $i < $num_class_matches; $i++) {
+                    $orig_classes[] = $class_matches[1][$i];
+                }
+
+                // Compile in our custom code
+                compile_included_code($path_custom, $codename, $light_exit, $custom);
 
                 $functions_diff = [];
                 foreach ($possible_new_functions as $possible_new_function) {
-                    if (function_exists($possible_new_function)) {
+                    if (in_array($possible_new_function, $orig_functions)) {
                         $functions_diff[] = $possible_new_function;
                     }
                 }
                 $classes_diff = [];
                 foreach ($possible_new_classes as $possible_new_class) {
-                    if (class_exists($possible_new_class)) {
+                    if (in_array($possible_new_class, $orig_classes)) {
                         $classes_diff[] = $possible_new_class;
                     }
                 }
@@ -194,7 +203,9 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     }
                 }
 
+                // TODO: Does not work
                 // See if we can get away with loading init function early. If we can we do a special version of it that supports fancy code modification. Our override isn't allowed to call the non-overridden init function as it won't have been loaded up by PHP in time. Instead though we will call it ourselves if it still exists (hasn't been removed by our own init function) because it likely serves a different purpose to our code-modification init function and copy&paste coding is bad.
+                /*
                 $doing_code_modifier_init = function_exists($init_func);
                 if ($doing_code_modifier_init) {
                     $test = call_user_func_array($init_func, [$orig]);
@@ -206,27 +217,35 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                         $pure = false;
                     }
                 }
+                */
 
-                if (!$doing_code_modifier_init && !$overlaps) { // To make stack traces more helpful and help with opcode caching
-                    call_included_code($path_orig, $codename, $light_exit);
-                } else {
-                    call_included_code($path_orig, $codename, $light_exit, $orig); // Load up modified original
-                }
+                // Compile in modified original code
+                compile_included_code($path_orig, $codename, $light_exit, $orig);
 
+                // We are clear to call the compiled code now
+                call_compiled_code($path_custom, $codename, $light_exit);
+                call_compiled_code($path_orig, $codename, $light_exit);
+
+                /*
                 if ((!$pure) && ($doing_code_modifier_init) && (function_exists('non_overridden__init__' . str_replace('/', '__', str_replace('.php', '', $codename))))) {
                     call_user_func('non_overridden__init__' . str_replace('/', '__', str_replace('.php', '', $codename)));
                 }
+                */
             } else {
                 // Note we load the original and then the override. This is so function_exists can be used in the overrides (as we can't support the re-definition) OR in the case of Mx_ class derivation, so that the base class is loaded first.
+                compile_included_code($path_orig, $codename, $light_exit);
+                compile_included_code($path_custom, $codename, $light_exit);
 
-                call_included_code($path_orig, $codename, $light_exit);
-
-                call_included_code($path_custom, $codename, $light_exit);
+                // We are clear to call the compiled code now
+                call_compiled_code($path_orig, $codename, $light_exit);
+                call_compiled_code($path_custom, $codename, $light_exit);
             }
         } else {
             // Have a custom but no original...
 
-            call_included_code($path_custom, $codename, $light_exit);
+            compile_included_code($path_custom, $codename, $light_exit);
+
+            call_compiled_code($path_custom, $codename, $light_exit);
         }
 
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -248,7 +267,9 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
     } else {
         // Have an original and no custom (no override)...
 
-        call_included_code($path_orig, $codename, $light_exit);
+        compile_included_code($path_orig, $codename, $light_exit);
+
+        call_compiled_code($path_orig, $codename, $light_exit);
 
         // Optional process tracking (has to run before init function called)
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -314,23 +335,109 @@ function clean_php_file_for_eval(string $c, ?string $path = null) : string
 }
 
 /**
- * Run some code that is to be included. Bail out on failure.
+ * Compile some code into sources_compiled for later inclusion by call_compiled_code.
  *
- * @param  string $path File path
+ * @param  string $orig_path File path
  * @param  string $codename The codename for the source module to load
- * @param  boolean $light_exit Whether to cleanly fail when a source file is missing
- * @param  ?string $code File contents (null: use include not eval, which we prefer when possible as we benefit from opcode caching)
+ * @param  boolean $light_exit Whether to cleanly fail when an error occurs
+ * @param  ?string $code Custom file contents (null: use directly what is in $orig_path)
  */
-function call_included_code(string $path, string $codename, bool $light_exit, ?string $code = null)
+function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null)
 {
+    // Files which have been compiled already will be tracked here; the next time this function runs, we assume we are appending onto the compiled file.
+    static $already_compiled = [];
+
+    $path = $orig_path; // $path tracks the actual file for inclusion
+    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $orig_path);
+    $compiled_relative_path = 'sources_compiled/' . $relative_path;
+    $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
+
+    // If we already compiled this file, exit out
+    $done_this = isset($already_compiled[$relative_path]);
+    if ($done_this) {
+        return;
+    }
+
+    // Run contentious overrides (but not on themselves)
     if ((function_exists('find_all_hook_obs')) && (strpos($codename, 'sources_custom/hooks/systems/contentious_overrides') !== 0)) {
         $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
         foreach ($override_hooks as $hook_ob) {
-            if (method_exists($hook_ob, 'call_included_code')) {
-                $hook_ob->call_included_code($path, $codename, /*Passed by reference*/$code);
+            if (method_exists($hook_ob, 'compile_included_code')) {
+                $hook_ob->compile_included_code($orig_path, $codename, /*Passed by reference*/$code);
             }
         }
+        unset($override_hooks); // Free up memory when we are done
     }
+
+    $prepend = ''; // NB: Must begin with a space if populated
+
+    // Code must be able to compile into a PHP file (unless we are appending)
+    if (($code !== null) && (strpos('<' . '?php ', $code) === false)) {
+        $code = '<' . '?php' . $code;
+    }
+
+    // In DEV_MODE, declare PHP strict_types at the top unless "No strict_types" is commented.
+    if ($GLOBALS['DEV_MODE']) {
+        if ($code === null) {
+            $code = file_get_contents($path);
+        }
+        if (strpos($code, '/*No strict_types*/') === false) {
+            $prepend .= ' declare(strict_types=1);';
+        }
+    }
+
+    $recompile = false;
+    if ($code !== null) {
+        // Create missing directories
+        if (!is_dir(dirname($compiled_path))) {
+            if (@mkdir(dirname($compiled_path), 0777, true) === false) {
+                exit('Error, cannot create directory ' . dirname($compiled_relative_path) . ' for compiling source PHP scripts. Maybe you do not have the correct file permissions?');
+            }
+
+            file_put_contents(dirname($compiled_path) . '/index.html', '');
+        }
+
+        // Prepare code
+        $prepend .= ' /* DO NOT EDIT THIS FILE; this is a temporary compiled file. Instead, edit ' . $relative_path . ' and its overrides. */';
+        $code = str_replace('<' . '?php ', '<' . '?php' . $prepend, $code);
+
+        // Write operations are very time-consuming; don't write if the contents of the PHP file will not change.
+        if (!is_file($compiled_path)) {
+            $recompile = true;
+        } else {
+            $file_hash = @hash_file('crc32', $compiled_path); // Might throw a permission denied if locked
+            if ((!is_string($file_hash)) || ($file_hash != hash('crc32', $code))) {
+                $recompile = true;
+            }
+        }
+
+        if ($recompile === true) {
+            // Keep trying to write for 5 seconds
+            $time = microtime(true);
+            while (file_put_contents($compiled_path, $code, LOCK_EX) === false) {
+                if ((microtime(true) - $time) > 5.0) {
+                    exit('Cannot write file ' . $compiled_relative_path);
+                }
+
+                usleep(250000);
+            }
+        }
+
+        unset($code);
+    }
+}
+
+/**
+ * Include some code for use within the software.
+ * If a sources_compiled version is available, we will use that one instead of the original.
+ *
+ * @param  string $orig_path The file path to the original file (not the compiled one)
+ * @param  string $codename The codename for the source module to load
+ * @param  boolean $light_exit Whether to cleanly fail when an error occurs
+ */
+function call_compiled_code(string $path, string $codename, bool $light_exit)
+{
+    static $already_called = [];
 
     $do_sed = function_exists('push_suppress_error_death');
     if ($do_sed) {
@@ -342,22 +449,45 @@ function call_included_code(string $path, string $codename, bool $light_exit, ?s
     }
     $errormsg_before = error_get_last();
 
-    // In DEV_MODE, declare PHP strict_types at the top unless "No strict_types" is commented.
-    if ($GLOBALS['DEV_MODE']) {
-        if ($code === null) {
-            $code = clean_php_file_for_eval(file_get_contents($path), $path);
-        }
-        if (strpos($code, '/*No strict_types*/') === false) {
-            $code = 'declare(strict_types=1); ' . $code;
-        }
+    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $path);
+    $compiled_relative_path = 'sources_compiled/' . $relative_path;
+    $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
+
+    if (is_file($compiled_path)) {
+        $calling_path = $compiled_path;
+        $calling_relative_path = $compiled_relative_path;
+    } else {
+        $calling_path = $path;
+        $calling_relative_path = $relative_path;
+    }
+
+    if (isset($already_called[$calling_path])) { // We already called this code
+        return;
     }
 
     try {
-        if ($code === null) {
-            $result = include($path);
-        } else {
-            $result = eval($code);
+        $already_called[$calling_path] = true;
+
+        // Possible edge case; somehow the file was not compiled
+        if (!is_file($calling_path)) {
+            exit('Cannot read file ' . $calling_relative_path);
         }
+
+        // We need to wait (but not too long) for locks to be released before we can include the file
+        $time = microtime(true);
+        $file = fopen($calling_path, 'rb');
+        if ($file === false) {
+            exit('Cannot read file ' . $calling_relative_path);
+        }
+        while (flock($file, LOCK_SH) === false) {
+            if ((microtime(true) - $time) > 5.0) {
+                exit('Cannot read file as it was locked: ' . $calling_relative_path);
+            }
+
+            usleep(100000);
+        }
+
+        $result = include $calling_path;
 
         if ($result === false) {
             $errormsg = cms_error_get_last();
@@ -386,21 +516,36 @@ function call_included_code(string $path, string $codename, bool $light_exit, ?s
 
     if ($errormsg != '') {
         if (!function_exists('do_lang')) {
-            if (!is_file($path)) {
+            if (!is_file($calling_path)) {
+                require_code('critical_errors');
                 critical_error('MISSING_SOURCE', $codename);
             }
         }
 
         if ((!function_exists('do_lang')) || (!function_exists('fatal_exit')) || ($codename === 'failure')) {
-            critical_error('PASSON', $errormsg . ' in ' . $path);
+            require_code('critical_errors');
+            critical_error('PASSON', $errormsg . ' in ' . $calling_relative_path);
         }
 
-        $error_lang_str = (is_file($path) ? 'CORRUPT_SOURCE_FILE' : 'MISSING_SOURCE_FILE');
-        $error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($path), $errormsg);
-        if ($light_exit) {
-            warn_exit($error_message, false, true);
+        // We need to be careful of the potential that a lot of these functions have not been loaded up yet
+        $error_lang_str = (is_file($calling_path) ? 'CORRUPT_SOURCE_FILE' : 'MISSING_SOURCE_FILE');
+        if (function_exists('do_lang_tempcode')) {
+            $error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($calling_relative_path), escape_html($errormsg));
+        } else {
+            $error_message = $error_lang_str . ': ' . escape_html($codename) . '; ' . escape_html($calling_relative_path) . '; ' . escape_html($errormsg);
         }
-        fatal_exit($error_message);
+        if ($light_exit) {
+            if (function_exists('warn_exit')) {
+                warn_exit($error_message, false, true);
+            } else {
+                exit(is_object($error_message) ? $error_message->evaluate() : $error_message);
+            }
+        }
+        if (function_exists('fatal_exit')) {
+            fatal_exit($error_message, true);
+        } else {
+            exit(is_object($error_message) ? $error_message->evaluate() : $error_message);
+        }
     }
 }
 

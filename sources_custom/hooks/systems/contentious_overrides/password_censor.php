@@ -1,9 +1,9 @@
 <?php /*
 
- Composr
- Copyright (c) Christopher Graham, 2004-2024
+Composr
+Copyright (c) Christopher Graham, 2004-2024
 
- See docs/LICENSE.md for full licensing information.
+See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -13,17 +13,29 @@
  * @package    password_censor
  */
 
-if (!function_exists('init__notifications')) {
-    function init__notifications($in)
+/**
+ * Hook class.
+ */
+class Hook_contentious_overrides_password_censor
+{
+    public function compile_included_code($path, $codename, &$code)
     {
+        if ($codename != 'notifications') {
+            return;
+        }
+
         if (!addon_installed('password_censor')) {
-            return $in;
+            return;
+        }
+
+        if ($code === null) {
+            $code = clean_php_file_for_eval(file_get_contents($path));
         }
 
         require_code('override_api');
 
         insert_code_before__by_command(
-            $in,
+            $code,
             'dispatch_notification',
             "\$dispatcher = new Notification_dispatcher",
             "
@@ -48,7 +60,5 @@ if (!function_exists('init__notifications')) {
                 \$message = _password_censor(\$message, PASSWORD_CENSOR__INTERACTIVE_SCAN);
             }
             ");
-
-        return $in;
     }
 }

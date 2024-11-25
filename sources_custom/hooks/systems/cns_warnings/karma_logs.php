@@ -114,7 +114,7 @@ class Hook_cns_warnings_karma_logs
                 }
                 $description->attach('.');
 
-                $_fields->attach(form_input_list_entry($row['id'], false, $pretty_name, false, false)); // TODO: need to use proper software tooltips for description
+                $_fields->attach(form_input_list_entry(strval($row['id']), false, $pretty_name, false, false)); // TODO: need to use proper software tooltips for description
             }
             if (!$_fields->is_empty()) {
                 $fields->attach(form_input_multi_list(do_lang_tempcode('PUNITIVE_KARMA_LOGS'), do_lang_tempcode('DESCRIPTION_PUNITIVE_KARMA_LOGS'), 'karma_reverse', $_fields, null, 10));

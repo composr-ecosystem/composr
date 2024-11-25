@@ -13,46 +13,6 @@
  * @package    jestr
  */
 
-if (!function_exists('init__forum__cns')) {
-    function init__forum__cns($in)
-    {
-        if (!addon_installed('jestr')) {
-            return $in;
-        }
-
-        $in = override_str_replace_exactly(
-            "return \$this->get_member_row_field(\$member_id, 'm_username');",
-            "return jestr_name_filter(\$this->get_member_row_field(\$member_id, 'm_username'));",
-            $in,
-            1,
-            true
-        );
-
-        $in = override_str_replace_exactly(
-            "\$avatar = \$this->get_member_row_field(\$member_id, 'm_avatar_url');",
-            "
-            require_code('selectcode');
-            \$passes = (!empty(array_intersect(@selectcode_to_idlist_using_memory(get_option('jestr_avatar_switch_shown_for', true), \$GLOBALS['FORUM_DRIVER']->get_usergroup_list()), \$GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))));
-            if (\$passes) {
-                if (\$member_id == get_member()) {
-                    \$avatar = '';
-                    \$fallback_support = false;
-                } else {
-                    \$avatar = \$this->get_member_row_field(get_member(), 'm_avatar_url');
-                }
-            } else {
-                <ditto>
-            }
-            ",
-            $in,
-            1,
-            true
-        );
-
-        return $in;
-    }
-}
-
 function jestr_name_filter($in)
 {
     $changes_shown_for = get_option('jestr_name_changes_shown_for', true);
