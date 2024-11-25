@@ -175,16 +175,11 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     }
                 }
 
-                $pure = true; // We will set this to false if it does not have all functions the main one has. If it does have all functions we know we should not run the original init, as it will almost certainly just have been the same code copy&pasted through.
-                $overlaps = false;
                 $strpos_func = 'strpos';
                 $str_replace_func = 'str_replace';
                 foreach ($functions_diff as $function) { // Go through override's functions and make sure original doesn't have them: rename original's to non_overridden__ equivs.
                     if ($strpos_func($orig, 'function ' . $function . '(') !== false) { // NB: If this fails, it may be that "function\t" is in the file (you can't tell with a three-width proper tab)
                         $orig = $str_replace_func('function ' . $function . '(', 'function non_overridden__' . $function . '(', $orig);
-                        $overlaps = true;
-                    } else {
-                        $pure = false;
                     }
                 }
                 foreach ($classes_diff as $class) {
@@ -194,43 +189,17 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     if (cms_strtolower_ascii(substr($class, 0, 4)) === 'hook') {
                         $class = cms_ucfirst_ascii($class);
                     }
-
                     if (strpos($orig, 'class ' . $class) !== false) {
                         $orig = str_replace('class ' . $class, 'class non_overridden__' . $class, $orig);
-                        $overlaps = true;
-                    } else {
-                        $pure = false;
                     }
                 }
 
-                // TODO: Does not work
-                // See if we can get away with loading init function early. If we can we do a special version of it that supports fancy code modification. Our override isn't allowed to call the non-overridden init function as it won't have been loaded up by PHP in time. Instead though we will call it ourselves if it still exists (hasn't been removed by our own init function) because it likely serves a different purpose to our code-modification init function and copy&paste coding is bad.
-                /*
-                $doing_code_modifier_init = function_exists($init_func);
-                if ($doing_code_modifier_init) {
-                    $test = call_user_func_array($init_func, [$orig]);
-                    if (is_string($test)) {
-                        $orig = $test;
-                    }
-                    $done_init = true;
-                    if ((count($functions_diff) === 1) && (count($classes_diff) === 0)) {
-                        $pure = false;
-                    }
-                }
-                */
-
-                // Compile in modified original code
+                // Compile in fixed original code
                 compile_included_code($path_orig, $codename, $light_exit, $orig);
 
                 // We are clear to call the compiled code now
                 call_compiled_code($path_custom, $codename, $light_exit);
                 call_compiled_code($path_orig, $codename, $light_exit);
-
-                /*
-                if ((!$pure) && ($doing_code_modifier_init) && (function_exists('non_overridden__init__' . str_replace('/', '__', str_replace('.php', '', $codename))))) {
-                    call_user_func('non_overridden__init__' . str_replace('/', '__', str_replace('.php', '', $codename)));
-                }
-                */
             } else {
                 // Note we load the original and then the override. This is so function_exists can be used in the overrides (as we can't support the re-definition) OR in the case of Mx_ class derivation, so that the base class is loaded first.
                 compile_included_code($path_orig, $codename, $light_exit);
