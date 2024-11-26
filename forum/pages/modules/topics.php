@@ -1057,11 +1057,11 @@ class Module_topics
         $options = [];
         if (addon_installed('cns_signatures')) {
             if (get_option('enable_skip_sig') == '1') {
-                $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', false, do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE')];
+                $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', '1', do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE'), false, false];
             }
         }
         if (get_option('enable_post_emphasis') == '1') {
-            $options[] = [do_lang_tempcode('EMPHASISED'), 'is_emphasised', true, do_lang_tempcode('DESCRIPTION_EMPHASISED')];
+            $options[] = [do_lang_tempcode('EMPHASISED'), 'is_emphasised', '1', do_lang_tempcode('DESCRIPTION_EMPHASISED'), false, true];
         }
         $fields->attach(form_input_various_ticks($options, ''));
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('OPTIONAL_REASON'), 'reason', '', false));
@@ -1752,19 +1752,21 @@ class Module_topics
         // Various kinds of tick (check) options
         if ((!$private_topic) && (cns_may_moderate_forum($forum_id, get_member()))) {
             $moderation_options = [
-                [do_lang_tempcode('OPEN'), 'open', true, do_lang_tempcode('DESCRIPTION_OPEN')],
-                [do_lang_tempcode('EMPHASISED'), 'is_emphasised', false, do_lang_tempcode('DESCRIPTION_EMPHASISED')],
-                [do_lang_tempcode('PINNED'), 'pinned', false, do_lang_tempcode('DESCRIPTION_PINNED')],
+                [do_lang_tempcode('OPEN'), 'open', '1', do_lang_tempcode('DESCRIPTION_OPEN'), false, true],
+                [do_lang_tempcode('EMPHASISED'), 'is_emphasised', '1', do_lang_tempcode('DESCRIPTION_EMPHASISED'), false, false],
+                [do_lang_tempcode('PINNED'), 'pinned', '1', do_lang_tempcode('DESCRIPTION_PINNED'), false, false],
             ];
             if (addon_installed('validation')) {
                 $moderation_options[] = [
                     do_lang_tempcode('VALIDATED'),
                     'validated',
-                    true,
+                    '1',
                     do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'topic'),
+                    false,
+                    true,
                 ];
             }
-            $moderation_options[] = [do_lang_tempcode('CASCADING'), 'cascading', false, do_lang_tempcode('DESCRIPTION_CASCADING')];
+            $moderation_options[] = [do_lang_tempcode('CASCADING'), 'cascading', '1', do_lang_tempcode('DESCRIPTION_CASCADING'), false, false];
             if (addon_installed('calendar')) {
                 $specialisation2->attach(form_input_date__cron(do_lang_tempcode('CNS_PUBLICATION_TIME'), do_lang_tempcode('CNS_DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, true, true));
             }
@@ -1779,18 +1781,18 @@ class Module_topics
         if (!is_guest()) {
             if (addon_installed('cns_signatures')) {
                 if (get_option('enable_skip_sig') == '1') {
-                    $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', false, do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE'), false];
+                    $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', '1', do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE'), false, false];
                 }
             }
             if (cns_forum_allows_anonymous_posts($forum_id)) {
-                $options[] = [do_lang_tempcode('_MAKE_ANONYMOUS_POST'), 'anonymous', false, do_lang_tempcode('MAKE_ANONYMOUS_POST_DESCRIPTION'), false];
+                $options[] = [do_lang_tempcode('_MAKE_ANONYMOUS_POST'), 'anonymous', '1', do_lang_tempcode('MAKE_ANONYMOUS_POST_DESCRIPTION'), false, false];
             }
         }
         require_code('cns_polls_action3');
 
         $add_poll_url = build_url(['page' => '_SELF', 'type' => 'add_poll', 'adding_new_topic' => '1', 'forum_id' => $forum_id], '_SELF'); // The actual adding of the topic to the database will be done alongside the poll itself
         $default_poll_options = cns_get_default_poll_options($forum_id);
-        $options[] = [do_lang_tempcode('ADD_TOPIC_POLL'), 'add_poll', $default_poll_options['requireTopicPoll'], do_lang_tempcode('DESCRIPTION_ADD_TOPIC_POLL'), $default_poll_options['requireTopicPoll']];
+        $options[] = [do_lang_tempcode('ADD_TOPIC_POLL'), 'add_poll', '1', do_lang_tempcode('DESCRIPTION_ADD_TOPIC_POLL'), $default_poll_options['requireTopicPoll'], $default_poll_options['requireTopicPoll']];
 
         // Only load JS for toggling form action URL if topic polls are not required. Else, forcefully re-direct to add poll.
         if ($default_poll_options['requireTopicPoll']) {
@@ -1801,7 +1803,7 @@ class Module_topics
             $hidden_fields->attach(form_input_hidden('csrf_token_preserve', '0'));
         }
         if (count($options) == 1) {
-            $specialisation->attach(form_input_tick($options[0][0], $options[0][3], $options[0][1], $options[0][2], null, '1', $options[0][4]));
+            $specialisation->attach(form_input_tick($options[0][0], $options[0][3], $options[0][1], $options[0][5], null, $options[0][2], $options[0][4]));
         } else {
             $specialisation2->attach(form_input_various_ticks($options, ''));
         }
@@ -2039,14 +2041,16 @@ class Module_topics
         }
         if (cns_may_moderate_forum($forum_id, get_member())) {
             $moderation_options = [
-                [do_lang_tempcode('EMPHASISED'), 'is_emphasised', false, do_lang_tempcode('DESCRIPTION_EMPHASISED')],
+                [do_lang_tempcode('EMPHASISED'), 'is_emphasised', '1', do_lang_tempcode('DESCRIPTION_EMPHASISED'), false, false],
             ];
             if (addon_installed('validation')) {
                 $moderation_options[] = [
                     do_lang_tempcode('VALIDATED'),
                     'validated',
-                    true,
+                    '1',
                     do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'post'),
+                    false,
+                    true,
                 ];
             }
             //if ($whisper_to_member === null) $moderation_options[] = [do_lang_tempcode('CASCADING'), 'cascading', false, do_lang_tempcode('DESCRIPTION_CASCADING')];     Too much to offer this too
@@ -2058,11 +2062,11 @@ class Module_topics
         if (!is_guest()) {
             if (addon_installed('cns_signatures')) {
                 if (get_option('enable_skip_sig') == '1') {
-                    $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', false, do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE')];
+                    $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', '1', do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE'), false, false];
                 }
             }
             if (cns_forum_allows_anonymous_posts($forum_id)) {
-                $options[] = [do_lang_tempcode('_MAKE_ANONYMOUS_POST'), 'anonymous', false, do_lang_tempcode('MAKE_ANONYMOUS_POST_DESCRIPTION')];
+                $options[] = [do_lang_tempcode('_MAKE_ANONYMOUS_POST'), 'anonymous', '1', do_lang_tempcode('MAKE_ANONYMOUS_POST_DESCRIPTION'), false, false];
             }
         }
         $specialisation2 = new Tempcode();
@@ -2138,8 +2142,8 @@ class Module_topics
             $specialisation2->attach(form_input_line(do_lang_tempcode('TITLE'), '', 'new_title', $topic_title, false));
             $specialisation2->attach(form_input_tree_list(do_lang_tempcode('DESTINATION_FORUM'), do_lang_tempcode('DESCRIPTION_DESTINATION_FORUM'), 'to', null, 'choose_forum', [], false, ($forum_id === null) ? '' : strval($forum_id)));
             $options = [
-                [do_lang_tempcode('OPEN'), 'open', $topic_info['t_is_open'] == 1, do_lang_tempcode('DESCRIPTION_OPEN')],
-                [do_lang_tempcode('PINNED'), 'pinned', $topic_info['t_pinned'] == 1, do_lang_tempcode('DESCRIPTION_PINNED')],
+                [do_lang_tempcode('OPEN'), 'open', '1', do_lang_tempcode('DESCRIPTION_OPEN'), false, $topic_info['t_is_open'] == 1],
+                [do_lang_tempcode('PINNED'), 'pinned', '1', do_lang_tempcode('DESCRIPTION_PINNED'), false, $topic_info['t_pinned'] == 1],
             ];
             if (addon_installed('validation')) {
                 if ($topic_info['t_validated'] == 0) {
@@ -2152,12 +2156,14 @@ class Module_topics
                 $options[] = [
                     do_lang_tempcode('VALIDATED'),
                     'topic_validated',
-                    $topic_info['t_validated'] == 1,
+                    '1',
                     do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'topic'),
+                    false,
+                    $topic_info['t_validated'] == 1,
                 ];
             }
             if ($forum_id !== null) {
-                $options[] = [do_lang_tempcode('CASCADING'), 'cascading', $topic_info['t_cascading'] == 1, do_lang_tempcode('DESCRIPTION_CASCADING')];
+                $options[] = [do_lang_tempcode('CASCADING'), 'cascading', '1', do_lang_tempcode('DESCRIPTION_CASCADING'), false, $topic_info['t_cascading'] == 1];
             }
             $specialisation2->attach(form_input_various_ticks($options, ''));
             if (addon_installed('calendar')) {
@@ -3075,50 +3081,50 @@ class Module_topics
 
         // Maintain current value for is_open rather than forcing it from XML if we are editing a poll
         if ($new_poll && $_default_options['votingEnabled']) {
-            $options[] = [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', true, do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN'), true];
+            $options[] = [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', '1', do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN'), true, true];
         } else {
-            $options[] = [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', $is_open == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN'), $_default_options['votingEnabled']];
+            $options[] = [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', '1', do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN'), $_default_options['votingEnabled'], $is_open == 1];
         }
 
         if ($_default_options['guestsCanVote'] !== null) {
-            $options[] = [do_lang_tempcode('GUESTS_CAN_VOTE'), 'guests_can_vote', $_default_options['guestsCanVote'], do_lang_tempcode('DESCRIPTION_GUESTS_CAN_VOTE'), true];
+            $options[] = [do_lang_tempcode('GUESTS_CAN_VOTE'), 'guests_can_vote', '1', do_lang_tempcode('DESCRIPTION_GUESTS_CAN_VOTE'), true, $_default_options['guestsCanVote']];
         } else {
-            $options[] = [do_lang_tempcode('GUESTS_CAN_VOTE'), 'guests_can_vote', $guests_can_vote == 1, do_lang_tempcode('DESCRIPTION_GUESTS_CAN_VOTE'), false];
+            $options[] = [do_lang_tempcode('GUESTS_CAN_VOTE'), 'guests_can_vote', '1', do_lang_tempcode('DESCRIPTION_GUESTS_CAN_VOTE'), false, $guests_can_vote == 1];
         }
 
         if ($_default_options['requiresReply'] !== null) {
-            $options[] = [do_lang_tempcode('_POLL_REQUIRES_REPLY'), 'requires_reply', $_default_options['requiresReply'], do_lang_tempcode('DESCRIPTION_POLL_REQUIRES_REPLY'), true];
+            $options[] = [do_lang_tempcode('_POLL_REQUIRES_REPLY'), 'requires_reply', '1', do_lang_tempcode('DESCRIPTION_POLL_REQUIRES_REPLY'), true, $_default_options['requiresReply']];
         } else {
-            $options[] = [do_lang_tempcode('_POLL_REQUIRES_REPLY'), 'requires_reply', $requires_reply == 1, do_lang_tempcode('DESCRIPTION_POLL_REQUIRES_REPLY'), false];
+            $options[] = [do_lang_tempcode('_POLL_REQUIRES_REPLY'), 'requires_reply', '1', do_lang_tempcode('DESCRIPTION_POLL_REQUIRES_REPLY'), false, $requires_reply == 1];
         }
 
         if ($_default_options['voteRevocation'] !== null) {
-            $options[] = [do_lang_tempcode('VOTE_REVOCATION'), 'vote_revocation', $_default_options['voteRevocation'], do_lang_tempcode('DESCRIPTION_VOTE_REVOCATION'), true];
+            $options[] = [do_lang_tempcode('VOTE_REVOCATION'), 'vote_revocation', '1', do_lang_tempcode('DESCRIPTION_VOTE_REVOCATION'), true, $_default_options['voteRevocation']];
         } else {
-            $options[] = [do_lang_tempcode('VOTE_REVOCATION'), 'vote_revocation', $vote_revocation == 1, do_lang_tempcode('DESCRIPTION_VOTE_REVOCATION'), false];
+            $options[] = [do_lang_tempcode('VOTE_REVOCATION'), 'vote_revocation', '1', do_lang_tempcode('DESCRIPTION_VOTE_REVOCATION'), false, $vote_revocation == 1];
         }
 
         // Maintain current value for is_private rather than forcing it from XML if we are editing a poll
         if ((has_privilege(get_member(), 'may_unblind_own_poll')) || (has_privilege(get_member(), 'edit_midrange_content', 'topics', ['forums', $forum_id])) || ($is_private == 0)) {
             if ($new_poll && $_default_options['resultsHidden']) {
-                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', true, do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), true];
+                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), true, true];
             } else {
-                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', $is_private == 1, do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), false];
+                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), false, $is_private == 1];
             }
         }
 
         if ($_default_options['viewMemberVotes'] !== null) {
-            $options[] = [do_lang_tempcode('VIEW_MEMBER_VOTES'), 'view_member_votes', $_default_options['viewMemberVotes'], do_lang_tempcode('DESCRIPTION_VIEW_MEMBER_VOTES'), true];
+            $options[] = [do_lang_tempcode('VIEW_MEMBER_VOTES'), 'view_member_votes', '1', do_lang_tempcode('DESCRIPTION_VIEW_MEMBER_VOTES'), true, $_default_options['viewMemberVotes']];
         } else {
-            $options[] = [do_lang_tempcode('VIEW_MEMBER_VOTES'), 'view_member_votes', $view_member_votes == 1, do_lang_tempcode('DESCRIPTION_VIEW_MEMBER_VOTES'), false];
+            $options[] = [do_lang_tempcode('VIEW_MEMBER_VOTES'), 'view_member_votes', '1', do_lang_tempcode('DESCRIPTION_VIEW_MEMBER_VOTES'), false, $view_member_votes == 1];
         }
 
         // Show point weighting tick (check) if points addon is installed and point weighting is enabled site-wide
         if (addon_installed('points') && (get_option('enable_poll_point_weighting') == '1')) {
             if ($_default_options['pointWeighting'] !== null) {
-                $options[] = [do_lang_tempcode('ENABLE_POLL_POINT_WEIGHTING'), 'point_weighting', $_default_options['pointWeighting'], do_lang_tempcode('DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING'), true];
+                $options[] = [do_lang_tempcode('ENABLE_POLL_POINT_WEIGHTING'), 'point_weighting', '1', do_lang_tempcode('DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING'), true, $_default_options['pointWeighting']];
             } else {
-                $options[] = [do_lang_tempcode('ENABLE_POLL_POINT_WEIGHTING'), 'point_weighting', $point_weighting == 1, do_lang_tempcode('DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING'), false];
+                $options[] = [do_lang_tempcode('ENABLE_POLL_POINT_WEIGHTING'), 'point_weighting', '1', do_lang_tempcode('DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING'), false, $point_weighting == 1];
             }
         }
 
@@ -3584,9 +3590,9 @@ class Module_topics
         if (get_option('is_on_post_map') == '1') {
             $hidden_fields->attach(form_input_hidden('mark_as_unread', '1'));
         } else {
-            $options[] = [do_lang_tempcode('MARK_UNREAD'), 'mark_as_unread', false, do_lang_tempcode('DESCRIPTION_MARK_UNREAD')];
+            $options[] = [do_lang_tempcode('MARK_UNREAD'), 'mark_as_unread', '1', do_lang_tempcode('DESCRIPTION_MARK_UNREAD'), false, false];
         }
-        $options[] = [do_lang_tempcode('SHOW_AS_EDITED'), 'show_as_edited', ((time() - $post_details[0]['p_time']) > 60 * 3), do_lang_tempcode('DESCRIPTION_POST_SHOW_AS_EDITED')];
+        $options[] = [do_lang_tempcode('SHOW_AS_EDITED'), 'show_as_edited', '1', do_lang_tempcode('DESCRIPTION_POST_SHOW_AS_EDITED'), false, ((time() - $post_details[0]['p_time']) > 60 * 3)];
         $specialisation2->attach(form_input_various_ticks($options, ''));
         if (cns_may_delete_post_by($post_id, $post_details[0]['p_time'], $post_details[0]['p_posting_member'], $forum_id)) {
             $specialisation2->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
@@ -3793,8 +3799,8 @@ class Module_topics
         $hidden_fields = new Tempcode();
         if (cns_may_moderate_forum($forum_id, get_member())) {
             $moderation_options = [
-                [do_lang_tempcode('OPEN'), 'open', $topic_info['t_is_open'] == 1, do_lang_tempcode('DESCRIPTION_OPEN')],
-                [do_lang_tempcode('PINNED'), 'pinned', $topic_info['t_pinned'] == 1, do_lang_tempcode('DESCRIPTION_PINNED')],
+                [do_lang_tempcode('OPEN'), 'open', '1', do_lang_tempcode('DESCRIPTION_OPEN'), false, $topic_info['t_is_open'] == 1],
+                [do_lang_tempcode('PINNED'), 'pinned', '1', do_lang_tempcode('DESCRIPTION_PINNED'), false, $topic_info['t_pinned'] == 1],
             ];
             if (addon_installed('validation')) {
                 if ($topic_info['t_validated'] == 0) {
@@ -3806,12 +3812,14 @@ class Module_topics
                 $moderation_options[] = [
                     do_lang_tempcode('VALIDATED'),
                     'validated',
-                    $topic_info['t_validated'] == 1,
+                    '1',
                     do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'topic'),
+                    false,
+                    $topic_info['t_validated'] == 1,
                 ];
             }
             if (!$private_topic) {
-                $options[] = [do_lang_tempcode('CASCADING'), 'cascading', $topic_info['t_cascading'] == 1, do_lang_tempcode('DESCRIPTION_CASCADING')];
+                $options[] = [do_lang_tempcode('CASCADING'), 'cascading', '1', do_lang_tempcode('DESCRIPTION_CASCADING'), false, $topic_info['t_cascading'] == 1];
             }
         } else {
             $moderation_options = [];
@@ -4392,11 +4400,11 @@ class Module_topics
         $options = [];
         if (addon_installed('cns_signatures')) {
             if (get_option('enable_skip_sig') == '1') {
-                $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', false, do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE')];
+                $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', '1', do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE'), false, false];
             }
         }
         if (get_option('enable_post_emphasis') == '1') {
-            $options[] = [do_lang_tempcode('EMPHASISED'), 'is_emphasised', true, do_lang_tempcode('DESCRIPTION_EMPHASISED')];
+            $options[] = [do_lang_tempcode('EMPHASISED'), 'is_emphasised', '1', do_lang_tempcode('DESCRIPTION_EMPHASISED'), false, true];
         }
         $fields->attach(form_input_various_ticks($options, ''));
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('OPTIONAL_REASON'), 'reason', '', false));
