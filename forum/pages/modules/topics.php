@@ -3542,7 +3542,7 @@ class Module_topics
         $specialisation->attach(form_input_line(do_lang_tempcode('REASON'), '', 'reason', '', false, 2));
         if (cns_may_moderate_forum($forum_id, get_member())) {
             $moderation_options = [
-                [do_lang_tempcode('EMPHASISED'), 'is_emphasised', $post_details[0]['p_is_emphasised'] == 1, do_lang_tempcode('DESCRIPTION_EMPHASISED')],
+                [do_lang_tempcode('EMPHASISED'), 'is_emphasised', '1', do_lang_tempcode('DESCRIPTION_EMPHASISED'), false, $post_details[0]['p_is_emphasised'] == 1],
             ];
             if (addon_installed('validation')) {
                 if ($post_details[0]['p_validated'] == 0) {
@@ -3554,8 +3554,10 @@ class Module_topics
                 $moderation_options[] = [
                     do_lang_tempcode('VALIDATED'),
                     'validated',
-                    $post_details[0]['p_validated'] == 1,
+                    '1',
                     do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'post'),
+                    false,
+                    $post_details[0]['p_validated'] == 1,
                 ];
             }
         } else {

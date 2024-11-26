@@ -836,6 +836,7 @@ class CMS_Topic
                 }
 
                 // Misc meta details for post
+                require_code('cns_posts');
                 list($post_class, $emphasis) = cns_get_post_emphasis($post, $topic_info);
                 $not_validated = ($post['validated'] == 0) ? do_lang_tempcode('NOT_VALIDATED') : new Tempcode();
                 if (array_key_exists('last_edit_time', $post)) {
