@@ -32,6 +32,10 @@ class Hook_contentious_overrides_workflows
 
         switch ($codename) {
             case 'galleries2':
+                if (strpos($path, 'sources_custom/') !== false) {
+                    return;
+                }
+
                 if (!addon_installed('galleries')) {
                     return;
                 }
@@ -140,6 +144,10 @@ class Hook_contentious_overrides_workflows
                     ");
                 break;
             case 'hooks/systems/content_meta_aware/image':
+                if (strpos($path, 'sources_custom/') !== false) {
+                    return;
+                }
+
                 if (!addon_installed('galleries')) {
                     return;
                 }
@@ -155,6 +163,10 @@ class Hook_contentious_overrides_workflows
                 );
                 break;
             case 'hooks/systems/content_meta_aware/video':
+                if (strpos($path, 'sources_custom/') !== false) {
+                    return;
+                }
+
                 if (!addon_installed('galleries')) {
                     return;
                 }

@@ -32,6 +32,10 @@ class Hook_contentious_overrides_referrals
 
         switch ($codename) {
             case 'cns_join':
+                if (strpos($path, 'sources_custom/') !== false) {
+                    return;
+                }
+
                 // More referral fields in form
                 $ref_path = get_custom_file_base() . '/text_custom/referrals.txt';
                 if (!is_file($ref_path)) {
@@ -62,9 +66,7 @@ class Hook_contentious_overrides_referrals
                     $code,
                     'cns_join_form',
                     "/*PSEUDO-HOOK: cns_join_form special fields*/",
-                    "
-                    " . $extra_code . "
-                    ",
+                    $extra_code,
                     1,
                     true
                 );
@@ -95,6 +97,10 @@ class Hook_contentious_overrides_referrals
                 );
                 break;
             case 'hooks/systems/ecommerce/cart_orders':
+                if (strpos($path, 'sources_custom/') !== false) {
+                    return;
+                }
+
                 if ($code === null) {
                     $code = clean_php_file_for_eval(file_get_contents($path));
                 }
@@ -119,6 +125,10 @@ class Hook_contentious_overrides_referrals
                 ); // TODO: Needs updating
                 break;
             case 'hooks/systems/ecommerce/usergroup':
+                if (strpos($path, 'sources_custom/') !== false) {
+                    return;
+                }
+
                 if ($code === null) {
                     $code = clean_php_file_for_eval(file_get_contents($path));
                 }

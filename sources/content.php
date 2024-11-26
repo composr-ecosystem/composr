@@ -133,7 +133,7 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
     }
 
     // Privacy
-    if (addon_installed('content_privacy')) {
+    if (($real_content_type != '') && (addon_installed('content_privacy'))) {
         require_code('content_privacy');
         if (!has_privacy_access($real_content_type, $content_id)) {
             return false;

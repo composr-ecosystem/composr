@@ -1489,6 +1489,7 @@ function form_input_tick($pretty_name, $description, string $name, bool $ticked,
 
 /**
  * Get the Tempcode for a bank of tick (check) boxes.
+ * Note: ticks do *not* get passed into the request parameters at all if not ticked. When ticked, they will pass whatever is set for value.
  *
  * @param  array $options A list of tuples (asterisk are required): (prettyname*, name*, value, description, disabled, ticked (null or not defined: true if value is truthy))
  * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
@@ -1528,6 +1529,9 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
         foreach ($_option[0] as $option) {
             list($pretty_name, $name, $_value, $_description) = $option;
 
+            $disabled = !empty($option[4]) && $option[4];
+            $ticked = ((isset($option[5]) && $option[5]) || (!isset($option[5]) && ($value != '0') && ($value != '')));
+
             if (($_value === false) || ($_value === null) || ($_value === '')) {
                 $value = '0';
             } elseif ($_value === true) {
@@ -1537,9 +1541,6 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
             }
 
             $value = (filter_form_field_default($name, $value));
-
-            $disabled = !empty($option[4]) && $option[4];
-            $ticked = ((isset($option[5]) && $option[5]) || (!isset($option[5]) && ($value != '0') && ($value != '')));
 
             $out[] = ['DISABLED' => $disabled, 'CHECKED' => $ticked, 'VALUE' => $value, 'TABINDEX' => strval($tabindex), 'NAME' => $name, 'PRETTY_NAME' => $pretty_name, 'DESCRIPTION' => $_description];
         }

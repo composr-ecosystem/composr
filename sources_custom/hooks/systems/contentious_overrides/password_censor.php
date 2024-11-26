@@ -20,7 +20,7 @@ class Hook_contentious_overrides_password_censor
 {
     public function compile_included_code($path, $codename, &$code)
     {
-        if ($codename != 'notifications') {
+        if (($codename != 'notifications') || (strpos($path, 'sources_custom/') !== false)) {
             return;
         }
 

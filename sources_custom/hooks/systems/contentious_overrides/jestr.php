@@ -28,6 +28,10 @@ class Hook_contentious_overrides_jestr
 
         switch ($codename) {
             case 'forum/cns':
+                if (strpos($path, 'sources_custom/') !== false) {
+                    return;
+                }
+
                 if ($code === null) {
                     $code = clean_php_file_for_eval(file_get_contents($path));
                 }

@@ -349,7 +349,7 @@ class Module_warnings extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
 
             $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_member_id'], '', false);
             $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_issuing_member']);

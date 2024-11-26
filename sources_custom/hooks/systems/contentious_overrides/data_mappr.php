@@ -20,7 +20,7 @@ class Hook_contentious_overrides_data_mappr
 {
     public function compile_included_code($path, $codename, &$code)
     {
-        if ($codename != 'catalogues2') {
+        if (($codename != 'catalogues2') || (strpos($path, 'sources_custom/') !== false)) {
             return;
         }
 
