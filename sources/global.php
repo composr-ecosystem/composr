@@ -134,6 +134,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                 // We need to identify the new functions and classes. Ideally we'd use get_defined_functions and get_declared_classes, and do a diff before/after - but this does a massive amount of memory access
                 $function_matches = [];
                 $possible_new_functions = [];
+                $has_new = false;
                 $num_function_matches = preg_match_all('#\sfunction\s+(\w+)\(#', $custom, $function_matches);
                 for ($i = 0; $i < $num_function_matches; $i++) {
                     $possible_new_functions[] = $function_matches[1][$i];
@@ -159,27 +160,30 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     $orig_classes[] = $class_matches[1][$i];
                 }
 
-                // Compile in our custom code
-                compile_included_code($path_custom, $codename, $light_exit, $custom);
-
                 $functions_diff = [];
                 foreach ($possible_new_functions as $possible_new_function) {
                     if (in_array($possible_new_function, $orig_functions)) {
                         $functions_diff[] = $possible_new_function;
+                    } else {
+                        $has_new = true;
                     }
                 }
                 $classes_diff = [];
                 foreach ($possible_new_classes as $possible_new_class) {
                     if (in_array($possible_new_class, $orig_classes)) {
                         $classes_diff[] = $possible_new_class;
+                    } else {
+                        $has_new = true;
                     }
                 }
 
                 $strpos_func = 'strpos';
                 $str_replace_func = 'str_replace';
+                $overlaps = false;
                 foreach ($functions_diff as $function) { // Go through override's functions and make sure original doesn't have them: rename original's to non_overridden__ equivs.
                     if ($strpos_func($orig, 'function ' . $function . '(') !== false) { // NB: If this fails, it may be that "function\t" is in the file (you can't tell with a three-width proper tab)
                         $orig = $str_replace_func('function ' . $function . '(', 'function non_overridden__' . $function . '(', $orig);
+                        $overlaps = true;
                     }
                 }
                 foreach ($classes_diff as $class) {
@@ -191,30 +195,38 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     }
                     if (strpos($orig, 'class ' . $class) !== false) {
                         $orig = str_replace('class ' . $class, 'class non_overridden__' . $class, $orig);
+                        $overlaps = true;
                     }
                 }
 
-                // Compile in fixed original code
-                compile_included_code($path_orig, $codename, $light_exit, $orig);
+                // Compile in custom code (we do not need a sources_compiled by default)
+                $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
+
+                // Compile in original code (pass in $orig code if we modified it so a sources_compiled is generated)
+                if ($overlaps == true) {
+                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $orig);
+                } else {
+                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
+                }
 
                 // We are clear to call the compiled code now
-                call_compiled_code($path_custom, $codename, $light_exit);
-                call_compiled_code($path_orig, $codename, $light_exit);
+                call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
+                call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
             } else {
                 // Note we load the original and then the override. This is so function_exists can be used in the overrides (as we can't support the re-definition) OR in the case of Mx_ class derivation, so that the base class is loaded first.
-                compile_included_code($path_orig, $codename, $light_exit);
-                compile_included_code($path_custom, $codename, $light_exit);
+                $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
+                $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
 
                 // We are clear to call the compiled code now
-                call_compiled_code($path_orig, $codename, $light_exit);
-                call_compiled_code($path_custom, $codename, $light_exit);
+                call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
+                call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
             }
         } else {
             // Have a custom but no original...
 
-            compile_included_code($path_custom, $codename, $light_exit);
+            $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
 
-            call_compiled_code($path_custom, $codename, $light_exit);
+            call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
         }
 
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -236,9 +248,9 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
     } else {
         // Have an original and no custom (no override)...
 
-        compile_included_code($path_orig, $codename, $light_exit);
+        $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
 
-        call_compiled_code($path_orig, $codename, $light_exit);
+        call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
 
         // Optional process tracking (has to run before init function called)
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -304,14 +316,15 @@ function clean_php_file_for_eval(string $c, ?string $path = null) : string
 }
 
 /**
- * Compile some code into sources_compiled for later inclusion by call_compiled_code.
+ * Compile some code into sources_compiled if we need to for later inclusion by call_compiled_code.
  *
  * @param  string $orig_path File path
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  ?string $code Custom file contents (null: use directly what is in $orig_path)
+ * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a sources_compiled if we do not need one)
+ * @return ?boolean Whether we should delete any existing sources_compiled files for this, through call_compiled_code
  */
-function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null)
+function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : ?bool
 {
     // Files which have been compiled already will be tracked here; the next time this function runs, we assume we are appending onto the compiled file.
     static $already_compiled = [];
@@ -324,8 +337,18 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
     // If we already compiled this file, exit out
     $done_this = isset($already_compiled[$relative_path]);
     if ($done_this) {
-        return;
+        return false;
     }
+
+    $exceptions = list_untouchable_third_party_directories();
+    if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $relative_path) != 0) {
+        return true;
+    }
+    $exceptions = list_untouchable_third_party_files();
+    if (in_array($relative_path, $exceptions)) {
+        return true;
+    }
+
 
     // Run contentious overrides (but not on themselves)
     if ((function_exists('find_all_hook_obs')) && (strpos($codename, 'sources_custom/hooks/systems/contentious_overrides') !== 0)) {
@@ -350,13 +373,14 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         if ($code === null) {
             $code = file_get_contents($path);
         }
-        if (strpos($code, '/*No strict_types*/') === false) {
+         if (strpos($code, '/*No strict_types*/') === false) {
             $prepend .= ' declare(strict_types=1);';
         }
     }
 
-    $recompile = false;
     if ($code !== null) {
+        $recompile = false;
+
         // Create missing directories
         if (!is_dir(dirname($compiled_path))) {
             if (@mkdir(dirname($compiled_path), 0777, true) === false) {
@@ -392,19 +416,22 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
             }
         }
 
-        unset($code);
+        return false;
     }
+
+    return true;
 }
 
 /**
- * Include some code for use within the software.
+ * Include some code for use within the software (after we ran compile_included_code on it).
  * If a sources_compiled version is available, we will use that one instead of the original.
  *
  * @param  string $orig_path The file path to the original file (not the compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
+ * @param  boolean $delete_compiled Whether we should ignore, and delete, the sources_compiled file
  */
-function call_compiled_code(string $path, string $codename, bool $light_exit)
+function call_compiled_code(string $path, string $codename, bool $light_exit, bool $delete_compiled = false)
 {
     static $already_called = [];
 
@@ -423,14 +450,21 @@ function call_compiled_code(string $path, string $codename, bool $light_exit)
     $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
 
     if (is_file($compiled_path)) {
-        $calling_path = $compiled_path;
-        $calling_relative_path = $compiled_relative_path;
+        if ($delete_compiled) {
+            @unlink($compiled_path);
+            $calling_path = $path;
+            $calling_relative_path = $relative_path;
+        } else {
+            $calling_path = $compiled_path;
+            $calling_relative_path = $compiled_relative_path;
+        }
     } else {
         $calling_path = $path;
         $calling_relative_path = $relative_path;
     }
 
-    if (isset($already_called[$calling_path])) { // We already called this code
+    // If we already included this file, just exit
+    if (isset($already_called[$calling_path])) {
         return;
     }
 
@@ -1384,3 +1418,138 @@ if (GOOGLE_APPENGINE) {
     require_code('google_appengine');
 }
 require_code('global2');
+
+// This code is used to find code in our ecosystem that we should not touch with regular Composr processes.
+//  We don't count it in line counts, don't do automatic reformatting, don't do full CQC scans.
+
+/**
+ * Get a list of third-party directories we should not touch with standard software processes.
+ *
+ * @return array List of relative directories
+ */
+function list_untouchable_third_party_directories() : array
+{
+    return [
+        'caches',
+        'data/ace',
+        'data/ckeditor',
+        'data/ckeditor/plugins/codemirror',
+        'data_custom/ckeditor',
+        'data_custom/pdf_viewer',
+        'data/polyfills',
+        'docs/api',
+        'docs/api-template',
+        'docs/jsdoc',
+        'exports',
+        'imports',
+        'mobiquo/lib',
+        'mobiquo/smartbanner',
+        'nbproject',
+        '_old',
+        //'sources/diff', We maintain this now
+        'sources_custom/aws_ses',
+        'sources_custom/Cloudinary',
+        'sources_custom/composr_mobile_sdk',
+        'sources_custom/imap',
+        'sources_custom/geshi',
+        'sources_custom/getid3',
+        'sources_custom/sabredav',
+        'sources_custom/openspout',
+        'sources_custom/swift_mailer',
+        'sources_custom/Transliterator',
+        'sources_custom/hybridauth',
+        'temp',
+        '_tests/assets',
+        '_tests/codechecker',
+        '_tests/html_dump',
+        '_tests/screens_tested',
+        '_tests/simpletest',
+        'themes/admin/templates_cached/EN',
+        'themes/default/templates_cached/EN',
+        'themes/_unnamed_/templates_cached/EN',
+        'tracker',
+        'uploads/website_specific/test',
+        'vendor',
+    ];
+}
+
+/**
+ * Get a list of third-party files we should not touch with standard software processes.
+ *
+ * @return array List of relative files to not touch
+ */
+function list_untouchable_third_party_files() : array
+{
+    return [
+        //'sources/crc24.php', We maintain this now
+        '_config.php',
+        'aps/test/TEST-META.xml',
+        'aps/test/composrIDEtest.xml',
+        'data/curl-ca-bundle.crt',
+        'data_custom/errorlog.php',
+        'data_custom/execute_temp.php',
+        'data_custom/webfonts/adgs-icons.svg',
+        'data/modules/admin_stats/IP_Country.txt',
+        'install.sql',
+        'mobiquo/lib/xmlrpc.php',
+        'mobiquo/lib/xmlrpcs.php',
+        'mobiquo/license_agreement.txt',
+        'mobiquo/smartbanner/appbanner.css',
+        'mobiquo/smartbanner/appbanner.js',
+        'mobiquo/tapatalkdetect.js',
+        'sources_custom/browser_detect.php',
+        'sources_custom/curl.php',
+        'sources_custom/geshi.php',
+        'sources_custom/sugar_crm_lib.php',
+        'sources/firephp.php',
+        //'sources/jsmin.php', We maintain this now
+        //'sources/lang_stemmer_EN.php', We maintain this now
+        'sources/mail_dkim.php',
+        '_tests/codechecker/codechecker.ini',
+        '_tests/codechecker/nbactions.xml',
+        '_tests/codechecker/pom.xml',
+        '_tests/libs/mf_parse.php',
+        'themes/default/css_custom/columns.css',
+        'themes/default/css_custom/confluence.css',
+        'themes/default/css_custom/flip.css',
+        'themes/default/css_custom/google_search.css',
+        'themes/default/css/skitter.css',
+        'themes/default/css_custom/sortable_tables.css',
+        'themes/default/css_custom/unslider.css',
+        'themes/default/css/mediaelementplayer.css',
+        'themes/default/css/widget_color.css',
+        'themes/default/css/widget_plupload.css',
+        'themes/default/css/widget_select2.css',
+        'themes/default/css/toastify.css',
+        'themes/default/javascript/charts.js',
+        'themes/default/javascript_custom/columns.js',
+        'themes/default/javascript_custom/confluence2.js',
+        'themes/default/javascript_custom/confluence.js',
+        'themes/default/javascript_custom/jquery_flip.js',
+        'themes/default/javascript/skitter.js',
+        'themes/default/javascript_custom/sortable_tables.js',
+        'themes/default/javascript_custom/tag_cloud.js',
+        'themes/default/javascript_custom/unslider.js',
+        'themes/default/javascript/glide.js',
+        'themes/default/javascript/jquery.js',
+        'themes/default/javascript/webfontloader.js',
+        'themes/default/javascript/_json5.js',
+        'themes/default/javascript/masonry.js',
+        'themes/default/javascript/mediaelement-and-player.js',
+        'themes/default/javascript/modernizr.js',
+        'themes/default/javascript/plupload.js',
+        'themes/default/javascript/select2.js',
+        'themes/default/javascript/sound.js',
+        'themes/default/javascript/toastify.js',
+        'themes/default/javascript/widget_color.js',
+        'themes/default/javascript/xsl_mopup.js',
+        'themes/default/javascript/cookie_consent.js',
+        'themes/default/javascript/_polyfill_fetch.js',
+        'themes/default/javascript/_polyfill_general.js',
+        'themes/default/javascript/_polyfill_keyboardevent_key.js',
+        'themes/default/javascript/_polyfill_url.js',
+        'themes/default/javascript/_polyfill_web_animations.js',
+        'themes/default/javascript/jquery_autocomplete.js',
+        'themes/default/css/toastify.css',
+    ];
+}
