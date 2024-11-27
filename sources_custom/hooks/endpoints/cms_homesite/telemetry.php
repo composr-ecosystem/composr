@@ -149,6 +149,9 @@ class Hook_endpoint_cms_homesite_telemetry
                     }
                     return ['success' => true, 'relayed_error_id' => $row[0]['id']];
                 } else { // No match; create a new relay
+                    $refs_compiled = (strpos($decrypted_data['error_message'], '_compiled/') !== false);
+                    $refs_compiled = $refs_compiled || (strpos($decrypted_data['error_message'], '_compiled\\') !== false);
+
                     $map = [
                         'first_date_and_time' => time(),
                         'last_date_and_time' => time(),
@@ -158,6 +161,7 @@ class Hook_endpoint_cms_homesite_telemetry
                         'error_hash' => $error_hash,
                         'error_count' => 1,
                         'resolved' => 0,
+                        'refs_compiled' => ($refs_compiled ? 1 : 0),
                     ];
                     if ($auto_resolve !== null) { // Auto-resolve it when necessary
                         $map['resolved'] = 1;

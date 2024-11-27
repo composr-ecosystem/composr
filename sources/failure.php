@@ -1212,8 +1212,8 @@ function relay_error_notification(string $text, bool $developers = true, string 
         (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
         (!running_script('cron_bridge')) &&
         ($text != '!') &&
-        (strpos($error_message, '_custom/') === false) &&
-        (strpos($error_message, '_custom\\') === false) &&
+        //(strpos($error_message, '_custom/') === false) && // We use _compiled now, which does not always mean the error is in custom code
+        //(strpos($error_message, '_custom\\') === false) && // We use _compiled now, which does not always mean the error is in custom code
         (strpos($error_message, 'FTP server error') === false) && // LDAP error, misconfiguration
         (strpos($error_message, 'Search: Operations error') === false) && // LDAP error, misconfiguration
         (strpos($error_message, 'Can\'t contact LDAP server') === false) && // LDAP error, network issue
