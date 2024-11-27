@@ -1530,7 +1530,7 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
             list($pretty_name, $name, $_value, $_description) = $option;
 
             $disabled = !empty($option[4]) && $option[4];
-            $ticked = ((isset($option[5]) && $option[5]) || (!isset($option[5]) && ($value != '0') && ($value != '')));
+            $ticked = ((isset($option[5]) && $option[5]) || (!isset($option[5]) && ($_value != '0') && ($_value != '')));
 
             if (($_value === false) || ($_value === null) || ($_value === '')) {
                 $value = '0';
