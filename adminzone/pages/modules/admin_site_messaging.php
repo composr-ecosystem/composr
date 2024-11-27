@@ -410,7 +410,7 @@ class Module_admin_site_messaging
             ]));
 
             $map = [
-                $myrow['id'],
+                integer_format($myrow['id']),
                 $myrow['m_type'],
                 $myrow['m_title'],
                 $start_date_time,
