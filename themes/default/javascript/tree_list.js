@@ -480,7 +480,7 @@
             function dragPage(from, to) {
                 var newZone = to.replace(/:/, ''),
                     bits = from.split(/:/),
-                    moveUrl = '{$PAGE_LINK;,_SELF:_SELF:_move:zone=[1]:destination_zone=[3]:page__[2]=1,0,1}' + $cms.keep();
+                    moveUrl = '{$PAGE_LINK;,_SEARCH:admin_sitemap:_move:zone=[1]:destination_zone=[3]:page__[2]=1,0,1}' + $cms.keep();
 
                 if (bits.length === 1) {// Workaround IE bug
                     bits.push(bits[0]);
