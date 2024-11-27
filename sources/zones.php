@@ -457,7 +457,7 @@ function get_module_zone(string $module_name, string $type = 'modules', ?string 
 
     // $error = false;
 
-    if (($module_name === get_page_name()) && (running_script('index')) && ($module_name !== 'login')) {
+    if (($module_name === get_page_name()) && ($module_name !== 'login') && (running_script('index') || running_script('snippet'))) {
         $MODULES_ZONES_CACHE[$check_redirects][$_zone][$type][$module_name] = $_zone;
         return $_zone;
     }
@@ -550,6 +550,11 @@ function get_module_zone(string $module_name, string $type = 'modules', ?string 
             }
             return $zone;
         }
+    }
+
+    // If we checked modules, maybe it's a minimodule instead?
+    if ($type == 'modules') {
+        return get_module_zone($module_name, 'minimodules', $dir2, $ftype, $error, $check_redirects, $first_zone_to_check);
     }
 
     if (!$error) {
