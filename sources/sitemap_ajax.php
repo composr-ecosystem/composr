@@ -480,7 +480,10 @@ function _get_overridable_privileges_for_privilege_page(?string $privilege_page)
         ];
     }
 
-    $zone = get_module_zone($privilege_page, 'modules', null, 'php', true, false);
+    $zone = get_module_zone($privilege_page, 'modules', null, 'php', false, false);
+    if ($zone === null) {
+        $zone = get_module_zone($privilege_page, 'minimodules', null, 'php', true, false);
+    }
     $_overridables = extract_module_functions_page($zone, $privilege_page, ['get_privilege_overrides']);
     if ($_overridables[0] === null) {
         return [];

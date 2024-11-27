@@ -455,7 +455,7 @@ function get_module_zone(string $module_name, string $type = 'modules', ?string 
         }
     }
 
-    $error = false; // hack for now
+    // $error = false;
 
     if (($module_name === get_page_name()) && (running_script('index')) && ($module_name !== 'login')) {
         $MODULES_ZONES_CACHE[$check_redirects][$_zone][$type][$module_name] = $_zone;
