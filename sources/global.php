@@ -385,10 +385,18 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         // Create missing directories
         if (!is_dir(dirname($compiled_path))) {
             if (@mkdir(dirname($compiled_path), 0777, true) === false) {
-                exit('Error, cannot create directory ' . dirname($compiled_relative_path) . ' for compiling source PHP scripts. Maybe you do not have the correct file permissions?');
+                if (!is_dir(dirname($compiled_path))) { // Maybe another process beat us to creating it?
+                    $error_message = 'Cannot create directory ' . dirname($compiled_relative_path) . ' for compiling source PHP scripts. Maybe you do not have the correct file permissions?';
+                    if (function_exists('fatal_exit')) {
+                        fatal_exit($error_message, true);
+                    } else {
+                        require_code('critical_errors');
+                        critical_error('PASSON', $error_message);
+                    }
+                }
+            } else {
+                file_put_contents(dirname($compiled_path) . '/index.html', '');
             }
-
-            file_put_contents(dirname($compiled_path) . '/index.html', '');
         }
 
         // Prepare code
