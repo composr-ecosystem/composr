@@ -256,6 +256,8 @@ QUERYING ADDONS
  */
 function find_available_addons(bool $installed_too = true, bool $hash_and_mtime = true, array $already_known = [], bool $get_info = true, bool $even_incompatible = false) : array
 {
+    $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
     require_code('version');
 
     $addons_available_for_installation = [];
@@ -348,6 +350,8 @@ function find_available_addons(bool $installed_too = true, bool $hash_and_mtime 
             $addons_available_for_installation[$file] = $info;
         }
     }
+
+    cms_set_time_limit($old);
 
     return $addons_available_for_installation;
 }
