@@ -408,7 +408,7 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         if ($recompile === true) {
             // Keep trying to write for 5 seconds; there might be parallel processes compiling files
             $time = microtime(true);
-            while (file_put_contents($compiled_path, $code, LOCK_EX) === false) {
+            while (file_put_contents($compiled_path, $code, LOCK_EX | LOCK_NB) === false) {
                 if ((microtime(true) - $time) > 5.0) {
                     $error_message = 'Cannot write file ' . $compiled_relative_path;
                     if (function_exists('fatal_exit')) {
@@ -482,8 +482,8 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
 
         // We need to wait (but not too long) for locks to be released before we can include the file
         $time = microtime(true);
-        $file = fopen($calling_path, 'rb');
-        while (flock($file, LOCK_SH) === false) {
+        $file = fopen($calling_path, 'r');
+        while (flock($file, LOCK_SH | LOCK_NB) === false) {
             if ((microtime(true) - $time) > 5.0) {
                 throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
             }
