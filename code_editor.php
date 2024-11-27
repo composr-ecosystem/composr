@@ -226,6 +226,9 @@ function ce_do_dir(string $dir) : array
                 if (is_file($_dir . '/' . $file)) {
                     if ((substr($file, -4, 4) == '.php') || (substr($file, -4, 4) == '.ini')) {
                         $path = $dir . (($dir != '') ? '/' : '') . $file;
+                        if (strpos($path , '_compiled/') !== false) { // Should never be edited; can use Commandr-fs if we really want to edit these
+                            continue;
+                        }
                         $alt = str_replace('lang/', 'lang_custom/', str_replace('pages/modules/', 'pages/modules_custom/', str_replace('sources/', 'sources_custom/', $path)));
                         if (($alt == $path) || (!file_exists($alt))) {
                             $out[] = '<option>' . code_editor_escape_html($path) . '</option>';
