@@ -349,6 +349,7 @@ class Module_join
             $privacy_policy = request_page('privacy', false, get_comcode_zone('privacy'), null, true);
             $subject = do_lang('RULES_CONFIRMATION_MAIL_SUBJECT');
             $body = do_template('RULES_CONFIRMATION_MAIL', [
+                '_GUID' => '2f516a38c113569a9e1e269df7ba89f9',
                 'AGREEMENT_DATE_TIME' => get_timezoned_date_time(time(), false, true),
                 'RULES' => $rules,
                 'PRIVACY_POLICY' => $privacy_policy,

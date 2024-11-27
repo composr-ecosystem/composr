@@ -505,7 +505,7 @@ class Module_admin_workflow extends Standard_crud_module
         $fields = new Tempcode();
         $rows = get_all_workflows();
         foreach ($rows as $id => $name) {
-            $fields->attach(form_input_list_entry($id, false, $name));
+            $fields->attach(form_input_list_entry(strval($id), false, $name));
         }
 
         return $fields;

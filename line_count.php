@@ -48,7 +48,6 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
 require_once($FILE_BASE . '/sources/bootstrap.php');
 require_code__bootstrap('global');
 
-require_code('third_party_code');
 require_code('files2');
 
 disable_php_memory_limit();

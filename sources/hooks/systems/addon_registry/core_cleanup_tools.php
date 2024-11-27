@@ -138,6 +138,7 @@ class Hook_addon_registry_core_cleanup_tools
             'sources/hooks/systems/cleanup/.htaccess',
             'sources/hooks/systems/cleanup/blocks.php',
             'sources/hooks/systems/cleanup/comcode.php',
+            'sources/hooks/systems/cleanup/compiled_scripts.php',
             'sources/hooks/systems/cleanup/disposable_values.php',
             'sources/hooks/systems/cleanup/email_bounces.php',
             'sources/hooks/systems/cleanup/http.php',

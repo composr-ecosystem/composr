@@ -493,6 +493,7 @@ function cms_parse_ini_file_fast(?string $path, ?string $contents = null) : arra
 
 /**
  * Find whether a file/directory is known to be something that should/could be there but isn't a software distribution file, or for some other reason should be ignored.
+ * NB: Don't forget to edit untouchable directories and files in global.php where necessary.
  *
  * @param  string $path Path (relative to the software base directory)
  * @param  integer $bitmask Bitmask of extra stuff to ignore (see IGNORE_* constants)

@@ -170,7 +170,6 @@ class Hook_addon_registry_meta_toolkit
             'sources_custom/hooks/systems/page_groupings/meta_toolkit.php',
             'sources_custom/install_headless.php',
             'sources_custom/string_scan.php',
-            'sources_custom/third_party_code.php',
         ];
     }
 }

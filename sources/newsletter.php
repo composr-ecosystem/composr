@@ -463,6 +463,7 @@ function newsletter_preview(string $message_raw, string $subject, string $lang, 
                 'LANG' => get_site_default_lang(),
                 'LOGOURL' => get_logo_url(''),
                 'CONTENT' => $comcode_version,
+                'VIEW_IN_BROWSER' => 'Lorem ipsum',
             ],
             null,
             false,
@@ -474,7 +475,7 @@ function newsletter_preview(string $message_raw, string $subject, string $lang, 
     }
 
     // Text message
-    $text_version = $html_only ? '' : strip_comcode($message_wrapped);
+    $text_version = $html_only ? '' : static_evaluate_tempcode($html_version);
 
     return [$html_version, $text_version, $html_only];
 }

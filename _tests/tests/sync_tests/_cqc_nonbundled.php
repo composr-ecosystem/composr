@@ -22,8 +22,6 @@ class _cqc_nonbundled_test_set extends cms_test_case
     {
         cms_set_time_limit(300);
 
-        require_code('third_party_code');
-
         $to_scan = [];
 
         $hooks = find_all_hooks('systems', 'addon_registry');

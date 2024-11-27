@@ -27,7 +27,6 @@ class path_references_test_set extends cms_test_case
             '#\"([^\"/:]+/[^\"/:]+\.\w+)\"#', // Matches double-quoted paths
         ];
 
-        require_code('third_party_code');
         require_code('files2');
         require_code('themes');
         require_code('themes2');

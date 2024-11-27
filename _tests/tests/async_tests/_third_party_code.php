@@ -25,8 +25,6 @@ class _third_party_code_test_set extends cms_test_case
     {
         parent::setUp();
 
-        require_code('third_party_code');
-
         require_code('files_spreadsheets_read');
 
         $this->third_party_code = [];
