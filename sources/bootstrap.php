@@ -18,6 +18,10 @@ NOTE TO PROGRAMMERS:
     After requiring, use require_code__bootstrap to load your first bootstrap script (whether global or minikernel) which contains the require_code function. Use require_code from that point forward.
 */
 
+ini_set('display_errors', '0');
+ini_set('html_errors', '1');
+@header_remove('x-powered-by'); // Security
+
 global $DEV_MODE, $SITE_INFO, $FILE_BASE;
 
 // Load in site config if we can so we can determine if we are in DEV_MODE
@@ -71,12 +75,56 @@ function require_code__bootstrap(string $codename)
         $code = str_replace('<' . '?php ', '<' . '?php declare(strict_types=1);' . $code_warning, $code);
 
         $_path = str_replace(["/", "\\"], ['_', '_'], $codename) . '.php';
-        file_put_contents(get_file_base__bootstrap() . '/sources_compiled/' . $_path, $code);
+        file_put_contents(get_file_base__bootstrap() . '/_compiled/' . $_path, $code);
 
-        $path = get_file_base__bootstrap() . '/sources_compiled/' . $_path;
+        $path = get_file_base__bootstrap() . '/_compiled/' . $_path;
     }
 
-    require_once $path;
+    if (function_exists('error_clear_last')) {
+        error_clear_last();
+    }
+    $errormsg_before = error_get_last();
+
+    try {
+        $result = require_once $path;
+
+        if ($result === false) {
+            $errormsg = error_get_last();
+            if (($errormsg == '') || ($errormsg === $errormsg_before)) {
+                $errormsg = '';
+            }
+            if (stripos($errormsg, 'deprecated') !== false) {
+                $errormsg = ''; // Deprecated errors can leak through because even though we return true in our error handler, error handlers won't run recursively, so if this code is loaded during an error it'll stream through deprecated stuff here
+            }
+        } else {
+            $errormsg = '';
+        }
+    } catch (Exception $e) {
+        $result = false;
+
+        $errormsg = $e->getMessage();
+        $errormsg .= '. ' . $e->getTraceAsString();
+    } catch (Error $e) {
+        $result = false;
+
+        $errormsg = $e->getMessage();
+        $errormsg .= '. ' . $e->getTraceAsString();
+    }
+
+    if ($errormsg != '') {
+        $clean_error = str_replace([get_file_base__bootstrap() . '/', get_file_base__bootstrap() . '\\'], ['', ''], $errormsg);
+
+        if (!headers_sent()) {
+            http_response_code(500);
+        }
+
+        // Standard error logging
+        if (php_function_allowed('error_log')) {
+            @error_log('Composr: CRITICAL ' . str_replace("\n", '', $errormsg), 0);
+        }
+
+        exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>An error occurred trying to bootstrap the software: ' . $clean_error . '.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+    }
 }
 
 /**
@@ -90,7 +138,7 @@ function filter_naughty_harsh__bootstrap(string $in) : string
     if (preg_match('#^[\w\-]*$#', $in) != 0) {
         return $in;
     }
-    exit();
+    exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>An error occurred trying to bootstrap the software: a naughty codename was provided for the script to bootstrap; the script exited for security.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
 }
 
 /**

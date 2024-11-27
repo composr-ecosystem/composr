@@ -615,7 +615,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'safe_mode_temp' => '', // LEGACY
 
         // Temporary files
-        'sources_compiled' => '.*',
+        '_compiled' => '.*',
 
         // Testing platform
         'codechecker.ini' => '_tests/codechecker',

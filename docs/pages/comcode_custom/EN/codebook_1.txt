@@ -1175,7 +1175,7 @@ For example:
 
 [title="4"]Suppressing errors[/title]
 
-Composr will react fatally on most errors unless they are suppressed. This includes [tt]PHP_NOTICE[/tt]s. To suppress errors from a PHP command, put an [tt]@[/tt] symbol before the function call. If the PHP command causing the error is buried inside a Composr API function and you want errors to be shown as 'attached' rather than fatal, you can call [tt]push_suppress_error_death(true)[/tt] then [tt]pop_suppress_error_death()[/tt] after.
+Composr will react fatally on most errors unless they are suppressed. This includes [tt]PHP_NOTICE[/tt]s. To suppress errors from a PHP command, put an [tt]@[/tt] symbol before the function call (although highly not recommended; you should handle errors responsibly instead). If the PHP command causing the error is buried inside a Composr API function and you want errors to be shown as 'attached' rather than fatal, you can call [tt]push_suppress_error_death(true)[/tt] then [tt]pop_suppress_error_death()[/tt] after.
 
 [title="4"]Manually raising errors / showing messages[/title]
 

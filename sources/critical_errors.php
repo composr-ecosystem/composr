@@ -75,7 +75,8 @@ if (!function_exists('critical_error')) {
         ob_start();
 
         if ($relay !== null) {
-            $relay = _sanitise_error_msg($relay);
+            // Cannot rely on sanitise_error_msg as it might not have been loaded
+            $relay = str_replace([get_custom_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '/', get_file_base() . '\\'], ['', '', '', ''], $relay);
         }
 
         if (!headers_sent()) {
@@ -220,6 +221,7 @@ if (!function_exists('critical_error')) {
                         $_value = '...';
                     }
 
+                    // Sanitise stack trace values
                     global $SITE_INFO;
                     if ((isset($SITE_INFO['db_site_password'])) && (strlen($SITE_INFO['db_site_password']) > 4)) {
                         $_value = str_replace($SITE_INFO['db_site_password'], '(password removed)', $_value);
@@ -227,6 +229,7 @@ if (!function_exists('critical_error')) {
                     if ((isset($SITE_INFO['db_forums_password'])) && (strlen($SITE_INFO['db_forums_password']) > 4)) {
                         $_value = str_replace($SITE_INFO['db_forums_password'], '(password removed)', $_value);
                     }
+                    $_value = str_replace([get_custom_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '/', get_file_base() . '\\'], ['', '', '', ''], $_value);
 
                     $traces .= (function_exists('cms_ucfirst_ascii') ? cms_ucfirst_ascii($key) : ucfirst($key)) . ' -> ' . htmlentities($_value) . '<br />' . "\n";
                 }

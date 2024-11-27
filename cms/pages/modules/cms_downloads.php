@@ -312,7 +312,7 @@ class Module_cms_downloads extends Standard_crud_module
 
         $server_path = post_param_string('server_path', false, INPUT_FILTER_POST_IDENTIFIER);
 
-        $subfolders = post_param_integer('subfolders', 0);
+        $subfolders = (post_param_integer('subfolders', 0) == 1);
 
         log_it('FILESYSTEM_DOWNLOADS');
 
@@ -934,9 +934,15 @@ class Module_cms_downloads_alt extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager(?object $title, object $description, ?string $id = null) : object
+    public function do_next_manager(?object $title, object $description, ?string $_id = null) : object
     {
-    return $GLOBALS['MODULE_CMS_DOWNLOADS']->cat_crud_module->_do_next_manager($title, $description, null, null, $id/*licence*/);
+        if ($_id !== null) {
+            $id = intval($_id);
+        } else {
+            $id = null;
+        }
+
+        return $GLOBALS['MODULE_CMS_DOWNLOADS']->cat_crud_module->_do_next_manager($title, $description, null, null, $id/*licence*/);
     }
 }
 

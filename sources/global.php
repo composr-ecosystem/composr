@@ -199,10 +199,10 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     }
                 }
 
-                // Compile in custom code (we do not need a sources_compiled by default)
+                // Compile in custom code (we do not need a _compiled file by default)
                 $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
 
-                // Compile in original code (pass in $orig code if we modified it so a sources_compiled is generated)
+                // Compile in original code (pass in $orig code if we modified it so a _compiled file is generated)
                 if ($overlaps == true) {
                     $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $orig);
                 } else {
@@ -316,22 +316,23 @@ function clean_php_file_for_eval(string $c, ?string $path = null) : string
 }
 
 /**
- * Compile some code into sources_compiled if we need to for later inclusion by call_compiled_code.
+ * Compile some code into the _compiled directory if we need to for later inclusion by call_compiled_code.
  *
  * @param  string $orig_path File path
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a sources_compiled if we do not need one)
- * @return ?boolean Whether we should delete any existing sources_compiled files for this, through call_compiled_code
+ * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled if we do not need one)
+ * @return ?boolean Whether we should delete any existing _compiled files for this, through call_compiled_code
  */
 function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : ?bool
 {
     // Files which have been compiled already will be tracked here; the next time this function runs, we assume we are appending onto the compiled file.
-    static $already_compiled = [];
+    // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
+    static $already_compiled = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
 
     $path = $orig_path; // $path tracks the actual file for inclusion
-    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $orig_path);
-    $compiled_relative_path = 'sources_compiled/' . $relative_path;
+    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '\\'], ['', '', '', ''], $orig_path);
+    $compiled_relative_path = '_compiled/' . $relative_path;
     $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
 
     // If we already compiled this file, exit out
@@ -340,6 +341,7 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         return false;
     }
 
+    // Untouchable third-party code should never be compiled by the software.
     $exceptions = list_untouchable_third_party_directories();
     if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $relative_path) != 0) {
         return true;
@@ -348,7 +350,6 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
     if (in_array($relative_path, $exceptions)) {
         return true;
     }
-
 
     // Run contentious overrides (but not on themselves)
     if ((function_exists('find_all_hook_obs')) && (strpos($codename, 'sources_custom/hooks/systems/contentious_overrides') !== 0)) {
@@ -405,11 +406,17 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         }
 
         if ($recompile === true) {
-            // Keep trying to write for 5 seconds
+            // Keep trying to write for 5 seconds; there might be parallel processes compiling files
             $time = microtime(true);
             while (file_put_contents($compiled_path, $code, LOCK_EX) === false) {
                 if ((microtime(true) - $time) > 5.0) {
-                    exit('Cannot write file ' . $compiled_relative_path);
+                    $error_message = 'Cannot write file ' . $compiled_relative_path;
+                    if (function_exists('fatal_exit')) {
+                        fatal_exit($error_message, true);
+                    } else {
+                        require_code('critical_errors');
+                        critical_error('PASSON', $error_message);
+                    }
                 }
 
                 usleep(250000);
@@ -424,16 +431,18 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
 
 /**
  * Include some code for use within the software (after we ran compile_included_code on it).
- * If a sources_compiled version is available, we will use that one instead of the original.
+ * If a _compiled file version is available, we will use that one instead of the original.
  *
  * @param  string $orig_path The file path to the original file (not the compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  boolean $delete_compiled Whether we should ignore, and delete, the sources_compiled file
+ * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file
  */
 function call_compiled_code(string $path, string $codename, bool $light_exit, bool $delete_compiled = false)
 {
-    static $already_called = [];
+    // These files have already been required in by this function.
+    // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
+    static $already_called = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
 
     $do_sed = function_exists('push_suppress_error_death');
     if ($do_sed) {
@@ -445,8 +454,8 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
     }
     $errormsg_before = error_get_last();
 
-    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $path);
-    $compiled_relative_path = 'sources_compiled/' . $relative_path;
+    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '\\'], ['', '', '', ''], $path);
+    $compiled_relative_path = '_compiled/' . $relative_path;
     $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
 
     if (is_file($compiled_path)) {
@@ -471,26 +480,23 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
     try {
         $already_called[$calling_path] = true;
 
-        // Possible edge case; somehow the file was not compiled
-        if (!is_file($calling_path)) {
-            exit('Cannot read file ' . $calling_relative_path);
-        }
-
         // We need to wait (but not too long) for locks to be released before we can include the file
         $time = microtime(true);
         $file = fopen($calling_path, 'rb');
-        if ($file === false) {
-            exit('Cannot read file ' . $calling_relative_path);
-        }
         while (flock($file, LOCK_SH) === false) {
             if ((microtime(true) - $time) > 5.0) {
-                exit('Cannot read file as it was locked: ' . $calling_relative_path);
+                throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
             }
 
             usleep(100000);
         }
 
         $result = include $calling_path;
+
+        if ($file !== false) {
+            fclose($file);
+            $file = false;
+        }
 
         if ($result === false) {
             $errormsg = cms_error_get_last();
@@ -541,13 +547,15 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
             if (function_exists('warn_exit')) {
                 warn_exit($error_message, false, true);
             } else {
-                exit(is_object($error_message) ? $error_message->evaluate() : $error_message);
+                require_code('critical_errors');
+                critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
             }
         }
         if (function_exists('fatal_exit')) {
             fatal_exit($error_message, true);
         } else {
-            exit(is_object($error_message) ? $error_message->evaluate() : $error_message);
+            require_code('critical_errors');
+            critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
         }
     }
 }
