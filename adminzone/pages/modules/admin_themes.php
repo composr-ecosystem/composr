@@ -1720,7 +1720,9 @@ class Module_admin_themes
                 <script ' . csp_nonce_html() . ' src="' . get_base_url() . '/data/ace/ace.js"></script>
                 <script ' . csp_nonce_html() . ' src="' . get_base_url() . '/data/ace/ace_composr.js"></script>
                 <script ' . csp_nonce_html() . '>
-                    aceComposrLoader(\'tempcode\',\'text\');
+                    window.addEventListener(\'load\', (event) => {
+                        aceComposrLoader(\'tempcode\',\'text\');
+                    });
                 </script>
             ')); // XHTMLXHTML
         }

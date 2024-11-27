@@ -108,9 +108,11 @@ function code_editor_do_footer()
 </form>
 
 <script>
-if (document.getElementById('file')) {
-    aceComposrLoader('file','php');
-}
+window.addEventListener('load', (event) => {
+    if (document.getElementById('file')) {
+        aceComposrLoader('file','php');
+    }
+});
 </script>
 
 </div></body>
