@@ -174,6 +174,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
             'IP' => 'nvarchar(40)',
             'LANGUAGE_NAME' => 'nvarchar(5)',
             'TOKEN' => 'nvarchar(15)',
+            'SERIAL' => 'nvarchar(MAX)', // 'TEXT' cannot be indexed.
             'URLPATH' => 'nvarchar(255)',
         ];
         return $type_remap;
@@ -402,10 +403,9 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * When running this SQL you must suppress errors.
      *
      * @param  mixed $table The table name(s)
-     * @param  mixed $connection The DB connection
      * @return array List of SQL queries to run
      */
-    public function drop_table_if_exists__sql($table, $connection) : array
+    public function drop_table_if_exists__sql($table) : array
     {
         if (!is_array($table)) {
             $table = [$table];

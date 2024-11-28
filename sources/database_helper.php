@@ -115,8 +115,10 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         'LANGUAGE_NAME' => 5 + 1,
         'URLPATH' => 255 + 1,
         'TOKEN' => 13 + 1,
+        'SERIAL' => 1,
         'unicode_SHORT_TEXT' => $take_unicode_into_account * 255 + 1,
         'unicode_LONG_TEXT' => $take_unicode_into_account * 255 + 1,
+        'unicode_SERIAL' => $take_unicode_into_account * 255 + 1,
         'unicode_ID_TEXT' => $take_unicode_into_account * 80 + 1,
         'unicode_IP' => $take_unicode_into_account * 15 + 1,
         'unicode_TOKEN' => $take_unicode_into_account * 13 + 1,
@@ -458,7 +460,7 @@ function _helper_generate_index_fields(string $table_name, array $fields, bool $
 
             if ((strpos($field_name, '(') === false) && (!$is_full_text) && ((!multi_lang_content()) || (strpos($db_type, '_TRANS') === false))) {
                 if (strpos($field_name, '(') === false) {
-                    if ((strpos($db_type, 'TEXT') === 0) || (strpos($db_type, 'SHORT_TEXT') !== false) || (strpos($db_type, 'SHORT_TRANS') !== false) || (strpos($db_type, 'LONG_TEXT') !== false) || (strpos($db_type, 'LONG_TRANS') !== false) || (strpos($db_type, 'URLPATH') !== false)) {
+                    if ((strpos($db_type, 'TEXT') === 0) || (strpos($db_type, 'SHORT_TEXT') !== false) || (strpos($db_type, 'SHORT_TRANS') !== false) || (strpos($db_type, 'LONG_TEXT') !== false) || (strpos($db_type, 'SERIAL') !== false) || (strpos($db_type, 'LONG_TRANS') !== false) || (strpos($db_type, 'URLPATH') !== false)) {
                         $_fields .= '(250)'; // 255 would be too much with MySQL's UTF. Only MySQL supports index lengths, but the other drivers will strip them back out again.
                     }
                 }

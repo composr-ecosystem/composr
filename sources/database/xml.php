@@ -103,6 +103,7 @@ function init__database__xml()
         'URLPATH' => 255,
         'UINTEGER' => 10, // Fudge as we need to send in unsigned integers using strings, as PHP can't hold them
         'TOKEN' => 15,
+        'SERIAL' => null,
     ];
     if (!multi_lang_content()) {
         $STRING_TYPES['SHORT_TRANS'] = 255;
@@ -221,6 +222,8 @@ class Database_Static_xml extends DatabaseDriver
             'MINIID_TEXT' => 'MINIID_TEXT',
             'IP' => 'IP',
             'LANGUAGE_NAME' => 'LANGUAGE_NAME',
+            'TOKEN' => 'TOKEN',
+            'SERIAL' => 'SERIAL',
             'URLPATH' => 'URLPATH',
         ];
         return $type_remap;
@@ -2715,7 +2718,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (($haystack === null) || ($needle === null)) {
                     return null;
                 }
-                return strpos($string, $needle);
+                return strpos($haystack, $needle);
 
             case 'X_UPPER':
                 $string = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);

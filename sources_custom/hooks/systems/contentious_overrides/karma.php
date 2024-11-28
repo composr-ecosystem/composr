@@ -221,7 +221,7 @@ class Hook_contentious_overrides_karma
         }
 
         // giftr karma
-        if ($codename == 'hooks/systems/ecommerce/giftr') {
+        if ($codename == 'hooks/systems/ecommerce/giftr'/*this is a non-bundled addon, so no sources_custom checks*/) {
             if ($code === null) {
                 $code = clean_php_file_for_eval(file_get_contents($path));
             }

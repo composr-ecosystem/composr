@@ -155,6 +155,7 @@ class Database_Static_ibm extends DatabaseDriver
             'IP' => 'varchar(40)',
             'LANGUAGE_NAME' => 'varchar(5)',
             'TOKEN' => 'varchar(15)',
+            'SERIAL' => 'clob',
             'URLPATH' => 'varchar(255)',
         ];
         return $type_remap;

@@ -459,6 +459,7 @@ abstract class Database_super_mysql extends DatabaseDriver
             'IP' => 'varchar(40)', // 15 for ip4, but we now support ip6
             'LANGUAGE_NAME' => 'varchar(5)',
             'TOKEN' => 'varchar(15)',
+            'SERIAL' => 'longtext',
             'URLPATH' => 'varchar(255) BINARY',
         ];
         return $type_remap;

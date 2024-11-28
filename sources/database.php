@@ -750,6 +750,7 @@ abstract class DatabaseDriver
             case 'LANGUAGE_NAME':
             case 'URLPATH':
             case 'TOKEN':
+            case 'SERIAL':
                 $default = '';
                 break;
         }
@@ -820,7 +821,7 @@ abstract class DatabaseDriver
         $__type = str_replace(['*', '?'], ['', ''], $_type);
         $sql_type = $type_remap[$__type] . ' ' . $perhaps_null;
 
-        if (($__type != 'LONG_TEXT') || ($this->has_default_for_text_fields())) {
+        if ((($__type != 'LONG_TEXT') && ($__type != 'SERIAL')) || ($this->has_default_for_text_fields())) {
             // We have to provide a default value for any non-NULL field so the database knows what to put in here
             if ($default === null) {
                 $extra = ' DEFAULT NULL';
@@ -1597,6 +1598,9 @@ class DatabaseConnector
     public $driver;
 
     public $dedupe_mode = false;
+
+    // These tables should use a delayed insert where possible and available
+    protected $delayed_insert_tables = ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'];
 
     /**
      * Construct a database driver from connection parameters.
@@ -2596,7 +2600,7 @@ class DatabaseConnector
         }
 
         if (count($all_values) === 1) { // usually $all_values only has length of 1
-            if ((function_exists('get_value')) && (get_value('enable_delayed_inserts') === '1') && (in_array($table, ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'/*FUDGE: Ideally we would define this list via database_relations.php, but performance matters*/])) && (substr(get_db_type(), 0, 5) === 'mysql')) {
+            if ((function_exists('get_value')) && (get_value('enable_delayed_inserts') === '1') && (in_array($table, $this->delayed_insert_tables)) && (substr(get_db_type(), 0, 5) === 'mysql')) {
                 $query = 'INSERT DELAYED INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $all_values[0] . ')'; // This is a very MySQL-specific optimisation (MyISAM). Other DBs don't do table-level locking!
             } else {
                 $query = 'INSERT INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $all_values[0] . ')';
@@ -3044,7 +3048,7 @@ class DatabaseConnector
      */
     public function table_is_locked(string $table) : bool
     {
-        if (in_array($table, ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'])) {
+        if (in_array($table, $this->delayed_insert_tables)) {
             return false; // Actually, we have delayed insert for these so locking is not an issue
         }
 

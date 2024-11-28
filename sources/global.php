@@ -322,9 +322,9 @@ function clean_php_file_for_eval(string $c, ?string $path = null) : string
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
  * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled if we do not need one)
- * @return ?boolean Whether we should delete any existing _compiled files for this, through call_compiled_code
+ * @return boolean Whether we should delete any existing _compiled files for this, through call_compiled_code
  */
-function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : ?bool
+function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : bool
 {
     // Files which have been compiled already will be tracked here; the next time this function runs, we assume we are appending onto the compiled file.
     // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
@@ -444,7 +444,7 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
  * @param  string $orig_path The file path to the original file (not the compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file
+ * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file, if it exists
  */
 function call_compiled_code(string $path, string $codename, bool $light_exit, bool $delete_compiled = false)
 {
@@ -499,7 +499,7 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
             usleep(100000);
         }
 
-        $result = include $calling_path;
+        $result = require $calling_path;
 
         if ($file !== false) {
             fclose($file);

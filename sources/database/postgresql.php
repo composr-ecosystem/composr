@@ -275,6 +275,7 @@ class Database_Static_postgresql extends DatabaseDriver
             'IP' => 'varchar(40)',
             'LANGUAGE_NAME' => 'varchar(5)',
             'TOKEN' => 'varchar(15)',
+            'SERIAL' => 'text',
             'URLPATH' => 'varchar(255)',
         ];
         return $type_remap;

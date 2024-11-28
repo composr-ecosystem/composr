@@ -266,7 +266,7 @@ abstract class Hook_privacy_base
 
         if ($email_address != '') {
             foreach ($table_details['email_fields'] as $email_address_field) {
-                $conditions[] = db_string_equal_to($email_address_field, $email_address);
+                $conditions[] = '(' . db_string_equal_to($email_address_field, $email_address) . ' OR ' . $email_address_field . ' LIKE ' . db_encode_like('%"' . $email_address . '"%') . ')'; // We need to work with potentially serialised data
             }
         }
 
@@ -276,7 +276,7 @@ abstract class Hook_privacy_base
             }
 
             foreach ($table_details['additional_anonymise_fields'] as $other_field) {
-                $conditions[] = db_string_equal_to($other_field, $other);
+                $conditions[] = $other_field . ' LIKE ' . db_encode_like('%' . $other . '%'); // We need to work with potentially serialised data
             }
         }
 
@@ -374,6 +374,8 @@ abstract class Hook_privacy_base
             } elseif ((strpos($type, 'AUTO_LINK') !== false) && (isset($relation_map[$table_name . '.' . $key]))) {
                 $row2[$key] = $row[$key];
                 $row2[$key . '__auto_link'] = $relation_map[$table_name . '.' . $key];
+            } elseif ((strpos($type, 'SERIAL') !== false) && ($row[$key] !== null) && ($row[$key] != '')) {
+                $row2[$key] = unserialize($row[$key]); // ...because we are using JSON for this data, not PHP's serialize
             } else {
                 $row2[$key] = $row[$key];
             }
@@ -473,17 +475,47 @@ abstract class Hook_privacy_base
         // Anonymise e-mail address
         $email_fields = $table_details['email_fields'];
         foreach ($email_fields as $email_field) {
-            $should_anonymise = (($email_address != '') && ($row[$email_field] === $email_address));
-            if ($reverse_logic_return) {
-                $should_anonymise = (($email_address != '') && ($row[$email_field] !== $email_address));
-            }
+            if (strpos($metadata[$owner_id_field], 'SERIAL') !== false) { // We might have serialised e-mail addresses
+                if (($row[$email_field] === null) || ($row[$email_field] == '')) {
+                    continue;
+                }
 
-            // Don't anonymise the wrong e-mail addresses in case additional e-mail fields were defined
-            if (!$should_anonymise) {
-                continue;
-            }
+                /* Easiest way to do this given we do not know the structure of the data:
+                 * 1) Unserialize
+                 * 2) JSON encode to get it back to a string, but one we can modify in-place without corrupting it
+                 * 3) str_replace our e-mail address
+                 * 4) JSON decode the modified string
+                 * 5) Serialize again
+                */
+                if ($reverse_logic_return === false) {
+                    if (($email_address !== null) && ($email_address != '')) {
+                        $data_obj = unserialize($row[$email_field]);
+                        $data_json = json_encode($data_obj);
 
-            $update[$email_field] = '';
+                        // JSON makes it easy for us because the e-mail address will always be within double-quotes (and quotes will never be part of an address)
+                        $data_json = str_replace('"' . $email_address . '"', '"' . do_lang('UNKNOWN') . '"', $data_json);
+
+                        $data_obj_2 = json_decode($data_json, true);
+                        $data_serial = serialize($data_obj_2);
+                        $update[$email_field] = $data_serial;
+                    }
+                } else {
+                    // It's too complicated trying to implicitly find e-mail addresses. But we must anonymise somehow. Just show the member's own address.
+                    $update[$email_field] = (($email_address !== null) ? $email_address : '');
+                }
+            } else {
+                $should_anonymise = (($email_address != '') && ($row[$email_field] === $email_address));
+                if ($reverse_logic_return) {
+                    $should_anonymise = (($email_address != '') && ($row[$email_field] !== $email_address));
+                }
+
+                // Don't anonymise the wrong e-mail addresses in case additional e-mail fields were defined
+                if (!$should_anonymise) {
+                    continue;
+                }
+
+                $update[$email_field] = '';
+            }
         }
 
         // Anonymise username
@@ -511,25 +543,61 @@ abstract class Hook_privacy_base
         $additional_anonymise_fields = $table_details['additional_anonymise_fields'];
         $is_owner = $this->is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
         foreach ($additional_anonymise_fields as $additional_anonymise_field) {
-            // If this person is not the owner, then only anonymise fields matching given others criteria
-            if (!$is_owner) {
-                if ($reverse_logic_return) {
-                    if (count($others) == 0) {
-                        break;
-                    }
-                    if (in_array($row[$additional_anonymise_field], $others)) {
-                        continue;
-                    }
-                } else {
-                    if (!in_array($row[$additional_anonymise_field], $others)) {
-                        continue;
-                    }
-                }
-            } elseif ($reverse_logic_return) {
+            if (($is_owner) && ($reverse_logic_return)) { // Nothing to anonymise if the owner is downloading their own data
                 break;
             }
 
-            $update[$additional_anonymise_field] = do_lang('UNKNOWN');
+            if (strpos($metadata[$owner_id_field], 'SERIAL') !== false) { // We might have serialised additional fields
+                /* Easiest way to do this given we do not know the structure of the data:
+                 * 1) Unserialize
+                 * 2) JSON encode to get it back to a string, but one we can modify in-place without corrupting it
+                 * 3) str_replace our e-mail address
+                 * 4) JSON decode the modified string
+                 * 5) Serialize again
+                */
+                if ($reverse_logic_return === false) {
+                    $data_obj = unserialize($row[$additional_anonymise_field]);
+                    $data_json = json_encode($data_obj, JSON_HEX_QUOT); // Need to be careful about quotes within quotes
+
+                    if ($is_owner) { // If owner, anonymise the entire field
+                        $update[$additional_anonymise_field] = '';
+                    } else { // If not owner, only anonymise portions of the fields which match the given criteria
+                        foreach ($others as $other) {
+                            $other = str_replace(['"', '&quot;'], ['\\u0022', '\\u0022'], $other); // Need to be careful about quotes within quotes
+                            $data_json = str_replace(':"' . $other . '"', ':"' . do_lang('UNKNOWN') . '"', $data_json); // Colons ensure we are only replacing values
+                        }
+                    }
+
+                    $data_obj_2 = json_decode($data_json, true);
+                    $data_serial = serialize($data_obj_2);
+                    $update[$additional_anonymise_field] = $data_serial;
+                } else {
+                    if (!$is_owner) { // For others fields, we assume owners own all of the data (unlike, for example, e-mail addresses)
+                        // Too complicated to try stripping data which does not match the defined criteria, but we must anonymise, so strip it all
+                        $update[$additional_anonymise_field] = do_lang('UNKNOWN');
+                    }
+                }
+            } else {
+                // If this person is not the owner, then only anonymise fields matching given others criteria
+                if (!$is_owner) {
+                    if ($reverse_logic_return) {
+                        if (count($others) == 0) {
+                            break;
+                        }
+                        if (in_array($row[$additional_anonymise_field], $others)) {
+                            continue;
+                        }
+                    } else {
+                        if (!in_array($row[$additional_anonymise_field], $others)) {
+                            continue;
+                        }
+                    }
+                } elseif ($reverse_logic_return) {
+                    break;
+                }
+
+                $update[$additional_anonymise_field] = do_lang('UNKNOWN');
+            }
         }
 
         // Anonymise file fields but only if we are owner (unless reverse logic)
@@ -657,12 +725,12 @@ abstract class Hook_privacy_base
             return true;
         }
 
-        // If no owner ID field, exactly one e-mail field, and e-mail provided matches that field, they are owner
+        // If no owner ID field, exactly one e-mail field, and e-mail provided matches that field, they are owner (this would always fail for serialized e-mail fields, as it should)
         if (($table_details['owner_id_field'] === null) && (count($table_details['email_fields']) == 1) && ($email_address != '') && ($row[$table_details['email_fields'][0]] == $email_address)) {
             return true;
         }
 
-        // If any criteria match a database field that is a key, then consider them owner
+        // If any unique criteria match a database field that is a key, then consider them owner
         $metadata = $this->get_field_metadata($table_name);
         $criteria = [
             'additional_member_id_fields' => $member_id,
