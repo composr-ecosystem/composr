@@ -130,9 +130,9 @@ class Module_purchase
                 'e_session_id' => 'ID_TEXT',
                 'e_ip_address' => 'IP',
                 'e_price' => 'REAL',
-                'e_tax_derivation' => 'LONG_TEXT',
+                'e_tax_derivation' => 'LONG_TEXT', // TODO: #6074
                 'e_tax' => 'REAL',
-                'e_tax_tracking' => 'LONG_TEXT',
+                'e_tax_tracking' => 'LONG_TEXT',  // TODO: #6074
                 'e_shipping' => 'REAL',
                 'e_currency' => 'ID_TEXT',
                 'e_price_points' => 'INTEGER', // This is supplementary, not an alternative; if it is only points then no ecom_trans_expecting record will be created
@@ -140,7 +140,7 @@ class Module_purchase
                 'e_length' => '?INTEGER',
                 'e_length_units' => 'ID_TEXT',
                 'e_memo' => 'LONG_TEXT',
-                'e_invoicing_breakdown' => 'LONG_TEXT',
+                'e_invoicing_breakdown' => 'LONG_TEXT', // TODO: #6074
             ]);
 
             require_code('currency');
@@ -159,9 +159,9 @@ class Module_purchase
                 't_status' => 'SHORT_TEXT', // Pending|Completed|SModified|SCancelled
                 't_reason' => 'SHORT_TEXT',
                 't_price' => 'REAL',
-                't_tax_derivation' => 'LONG_TEXT',
+                't_tax_derivation' => 'LONG_TEXT', // TODO: #6074
                 't_tax' => 'REAL',
-                't_tax_tracking' => 'LONG_TEXT',
+                't_tax_tracking' => 'LONG_TEXT', // TODO: #6074
                 't_shipping' => 'REAL',
                 't_transaction_fee' => 'REAL',
                 't_currency' => 'ID_TEXT',
@@ -170,7 +170,7 @@ class Module_purchase
                 't_pending_reason' => 'SHORT_TEXT',
                 't_memo' => 'LONG_TEXT',
                 't_payment_gateway' => 'ID_TEXT',
-                't_invoicing_breakdown' => 'LONG_TEXT',
+                't_invoicing_breakdown' => 'LONG_TEXT', // TODO: #6074
                 't_member_id' => 'MEMBER', // Of the paying member
                 't_session_id' => 'ID_TEXT', // Of the paying user
             ]);
@@ -254,7 +254,7 @@ class Module_purchase
             // This is used to store purchase details where there's too much data not stored anywhere else to use directly as a purchase ID
             $GLOBALS['SITE_DB']->create_table('ecom_sales_expecting', [
                 'id' => '*AUTO', // Used as a unique purchase ID
-                'e_details' => 'LONG_TEXT', // JSON encoded data
+                'e_details' => 'LONG_TEXT', // JSON encoded data  // TODO: #6074
                 'e_time' => 'TIME',
             ]);
 

@@ -76,9 +76,9 @@ class Module_subscriptions
                 's_state' => 'ID_TEXT', // pending|new|active|cancelled (pending means payment has been requested)
                 's_price' => 'REAL', // can't always find this from s_type_code
                 's_tax_code' => 'ID_TEXT',
-                's_tax_derivation' => 'LONG_TEXT', // Needs to be stored, as it's locked in time
+                's_tax_derivation' => 'LONG_TEXT', // Needs to be stored, as it's locked in time // TODO: #6074
                 's_tax' => 'REAL', // Needs to be stored, as it's locked in time
-                's_tax_tracking' => 'LONG_TEXT', // Needs to be stored, as it's locked in time
+                's_tax_tracking' => 'LONG_TEXT', // Needs to be stored, as it's locked in time // TODO: #6074
                 's_currency' => 'ID_TEXT',
                 's_purchase_id' => 'ID_TEXT',
                 's_time' => 'TIME',

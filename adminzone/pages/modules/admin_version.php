@@ -35,7 +35,7 @@ class Module_admin_version
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 21;
+        $info['version'] = 22;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -374,22 +374,22 @@ class Module_admin_version
                 'm_subject' => 'LONG_TEXT', // While data for a subject would be tied to SHORT_TEXT, a language string could bump it up higher
                 'm_message' => 'LONG_TEXT',
                 'm_message_extended' => 'LONG_TEXT',
-                'm_to_email' => 'LONG_TEXT',
-                'm_extra_cc_addresses' => 'LONG_TEXT',
-                'm_extra_bcc_addresses' => 'LONG_TEXT',
+                'm_to_email' => 'SERIAL',
+                'm_extra_cc_addresses' => 'SERIAL',
+                'm_extra_bcc_addresses' => 'SERIAL',
                 'm_join_time' => '?TIME',
-                'm_to_name' => 'LONG_TEXT',
+                'm_to_name' => 'SERIAL',
                 'm_from_email' => 'SHORT_TEXT',
                 'm_from_name' => 'SHORT_TEXT',
                 'm_priority' => 'SHORT_INTEGER',
-                'm_attachments' => 'LONG_TEXT',
+                'm_attachments' => 'SERIAL',
                 'm_no_cc' => 'BINARY',
                 'm_as_member' => 'MEMBER',
                 'm_as_admin' => 'BINARY',
                 'm_in_html' => 'BINARY',
                 'm_date_and_time' => 'TIME',
                 'm_member_id' => 'MEMBER',
-                'm_url' => 'LONG_TEXT',
+                'm_url' => 'URLPATH',
                 'm_queued' => 'BINARY',
                 'm_template' => 'ID_TEXT',
                 'm_sender_email' => 'SHORT_TEXT',
@@ -425,7 +425,7 @@ class Module_admin_version
                 'timezone' => 'MINIID_TEXT', // May be blank
                 'lang' => 'LANGUAGE_NAME', // *Always* set
                 'the_theme' => 'MINIID_TEXT', // *Always* set
-                'the_value' => 'LONG_TEXT',
+                'the_value' => 'LONG_TEXT', // Could be SERIAL, could be Tempcode assembly
                 'dependencies' => 'LONG_TEXT',
                 'date_and_time' => 'TIME',
             ]);
@@ -470,7 +470,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_table('cron_caching_requests', [
                 'id' => '*AUTO',
                 'c_codename' => 'ID_TEXT',
-                'c_map' => 'LONG_TEXT',
+                'c_map' => 'SERIAL',
                 'c_store_as_tempcode' => 'BINARY',
                 'c_staff_status' => '?BINARY',
                 'c_member' => '?MEMBER',
@@ -1259,6 +1259,22 @@ class Module_admin_version
 
             // This has been broken in v10 and v11 for quite some time now; 'catalogues' is not a valid content type and actually referred to entries.
             $GLOBALS['SITE_DB']->query_update('rating', ['rating_for_type' => 'catalogue_entry'], ['rating_for_type' => 'catalogues']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 22)) { // LEGACY: 11.beta6
+            // Special SERIAL field for serialised data (so the privacy system accounts for them)
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_to_email', 'SERIAL');
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_extra_cc_addresses', 'SERIAL');
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_extra_bcc_addresses', 'SERIAL');
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_to_name', 'SERIAL');
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_attachments', 'SERIAL');
+            $GLOBALS['SITE_DB']->alter_table_field('cron_caching_requests', 'c_map', 'SERIAL');
+
+            // Odd field that should have been URLPATH but never was (even the tests did not pick up on this)
+            $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_url', 'URLPATH');
+
+            // Missing promotion to Comcode field from 11.beta5
+            $GLOBALS['SITE_DB']->promote_text_field_to_comcode('messages_to_render', 'r_message', 'id', 4);
         }
     }
 

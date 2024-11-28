@@ -2323,7 +2323,7 @@ function log_stats(?string $page_link, int $pg_time)
     if ((get_option('super_logging') == '1') && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
         $post2 = [];
         foreach ($_POST as $key => $val) {
-            if (!is_password_field($key)) {
+            if (!is_password_field(strval($key))) {
                 $post2[$key] = $val;
             }
         }

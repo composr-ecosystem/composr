@@ -84,7 +84,7 @@ class Module_admin_revisions
             'r_original_content_owner' => 'MEMBER',
             'r_original_content_timestamp' => 'TIME',
             'r_original_resource_fs_path' => 'LONG_TEXT',
-            'r_original_resource_fs_record' => 'LONG_TEXT',
+            'r_original_resource_fs_record' => 'LONG_TEXT', // TODO: #6074
             'r_actionlog_id' => '?AUTO_LINK',
             'r_moderatorlog_id' => '?AUTO_LINK',
         ]);

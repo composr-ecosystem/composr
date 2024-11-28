@@ -1255,13 +1255,16 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Echo out an error message. If the user doesn't have permissions to view queries it shows a generic message.
+     * Echo out an error message (and also log it). If the user doesn't have permissions to view queries it shows a generic message.
      * Only use this in unusual situations, like upgrading or importing, where throwing out rough messages rather than using the normal framework is the best choice.
      *
      * @param  string $message Message to show
      */
     public function failed_query_echo(string $message)
     {
+        // Log the original error so it can later be referenced
+        @error_log(brand_name() . ' database: ERROR ' . $message);
+
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);
         }
@@ -1269,8 +1272,8 @@ abstract class DatabaseDriver
 
         // Bomb out anyway if we have a bunch of failed queries; usually indicates something seriously wrong.
         $this->echoed_failed_queries++;
-        if ($this->echoed_failed_queries >= 100) {
-            $this->failed_query_exit(htmlentities('Too many failed database queries.'));
+        if ($this->echoed_failed_queries >= 25) {
+            $this->failed_query_exit(htmlentities('A safety cut-out was triggered due to a high number of failed database queries.'));
         }
     }
 

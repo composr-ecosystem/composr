@@ -35,7 +35,7 @@ class Module_search
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 6;
+        $info['version'] = 7;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -72,7 +72,7 @@ class Module_search
                 's_member_id' => 'MEMBER',
                 's_time' => 'TIME',
                 's_primary' => 'SHORT_TEXT',
-                's_auxillary' => 'LONG_TEXT',
+                's_auxillary' => 'SERIAL',
                 's_num_results' => 'INTEGER',
             ]);
 
@@ -93,6 +93,10 @@ class Module_search
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
             $GLOBALS['SITE_DB']->create_index('searches_logged', 'member_id', ['s_member_id']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY: 11.beta6
+            $GLOBALS['SITE_DB']->alter_table_field('searches_logged', 's_auxillary', 'SERIAL');
         }
     }
 

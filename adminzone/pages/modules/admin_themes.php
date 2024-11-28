@@ -92,7 +92,7 @@ class Module_admin_themes
             $GLOBALS['SITE_DB']->create_table('theme_screen_tree', [
                 'id' => '*AUTO',
                 'page_link' => 'SHORT_TEXT',
-                'json_tree' => 'LONG_TEXT',
+                'json_tree' => 'LONG_TEXT', // TODO: #6074
             ]);
             $GLOBALS['SITE_DB']->create_index('theme_screen_tree', 'page_link', ['page_link']);
         }

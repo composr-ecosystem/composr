@@ -50,7 +50,8 @@ class Module_admin_aggregate_types extends Standard_crud_module
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 1;
+        $info['version'] = 2;
+        $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'aggregate_types';
@@ -73,15 +74,21 @@ class Module_admin_aggregate_types extends Standard_crud_module
      */
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
-        $GLOBALS['SITE_DB']->create_table('aggregate_type_instances', [
-            'id' => '*AUTO',
-            'aggregate_label' => 'SHORT_TEXT',
-            'aggregate_type' => 'ID_TEXT',
-            'other_parameters' => 'LONG_TEXT',
-            'add_time' => 'TIME',
-            'edit_time' => '?TIME',
-        ]);
-        $GLOBALS['SITE_DB']->create_index('aggregate_type_instances', 'aggregate_lookup', ['aggregate_label'/*, 'aggregate_type' key would be too long*/]);
+        if ($upgrade_from === null) {
+            $GLOBALS['SITE_DB']->create_table('aggregate_type_instances', [
+                'id' => '*AUTO',
+                'aggregate_label' => 'SHORT_TEXT',
+                'aggregate_type' => 'ID_TEXT',
+                'other_parameters' => 'SERIAL',
+                'add_time' => 'TIME',
+                'edit_time' => '?TIME',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('aggregate_type_instances', 'aggregate_lookup', ['aggregate_label'/*, 'aggregate_type' key would be too long*/]);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
+            $GLOBALS['SITE_DB']->alter_table_field('aggregate_type_instances', 'other_parameters', 'SERIAL');
+        }
     }
 
     /**
