@@ -2069,7 +2069,8 @@ class DatabaseConnector
     }
 
     /**
-     * This function is a raw query executor. It shouldn't usually be used unless you need to write SQL involving 'OR' statements or other complexities. There are abstracted versions available which you probably want instead (mainly, query_select).
+     * This function is a raw query executor.
+     * This should rarely ever be used; other functions like query_select are available. Additionally, for complex queries, it is still better to use query_parameterised as it handles escaping.
      *
      * @param  string $query The complete SQL query
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)

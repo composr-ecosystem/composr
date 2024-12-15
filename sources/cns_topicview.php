@@ -587,6 +587,7 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
 function cns_cache_member_details(array $members)
 {
     require_code('cns_members');
+    require_code('cns_posts');
 
     $member_or_list = '';
     foreach ($members as $member_id) {

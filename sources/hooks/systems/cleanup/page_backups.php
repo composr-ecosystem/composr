@@ -96,6 +96,12 @@ class Hook_cleanup_page_backups
             $this->process($path);
         }
 
+        // XML config
+        $path = get_custom_file_base() . '/data/xml_config';
+        $this->process($path);
+        $path = get_custom_file_base() . '/data_custom/xml_config';
+        $this->process($path);
+
         return new Tempcode();
     }
 

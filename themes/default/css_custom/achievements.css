@@ -1,0 +1,38 @@
+.achievement-progress-wrapper {
+	position: relative;
+	width: 100%;
+	height: 1em;
+	background-color: {$GET,area_4_background};
+}
+
+.achievement-progress-wrapper .achievement-progress {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 1em;
+	background-color: {$COLOR_RGBA,{$GET,seed},0.75};
+}
+
+.achievement-progress-wrapper .achievement-progress.progress-complete {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 1em;
+	background-color: {$GET,success_color};
+}
+
+.achievement-progress-wrapper .achievement-progress.progress-read-only {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 1em;
+	background-color: {$COLOR_RGBA,{$GET,danger_color},0.5};
+}
+
+.block-main-achievements {
+	padding: 0.25em;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	{$BETA_CSS_PROPERTY,display: flex;}
+}

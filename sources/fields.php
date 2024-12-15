@@ -838,7 +838,7 @@ function create_selection_list_field_type(string $type = '', bool $limit_to_stor
     } else {
         $types = $all_types;
     }
-    $orderings = [
+    $orderings = [ // FUDGE
         do_lang_tempcode('FIELD_TYPES__TEXT'), 'short_trans', 'short_trans_multi', 'short_text', 'short_text_multi', 'long_trans', 'long_text', 'posting_field', 'codename', 'password', 'email',
         do_lang_tempcode('FIELD_TYPES__NUMBERS'), 'integer', 'float',
         do_lang_tempcode('FIELD_TYPES__CHOICES'), 'list', 'list_multi', 'state', 'country', 'region', 'tick',

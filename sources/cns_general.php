@@ -172,8 +172,9 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
     // Signature details
     if (($need === null) || (in_array('signature', $need)) || (in_array('signature_comcode', $need))) {
         if (addon_installed('cns_signatures')) {
-            $member_info['signature_comcode'] = get_translated_text($row['m_signature'], $GLOBALS['FORUM_DB']);
+            require_code('cns_posts');
 
+            $member_info['signature_comcode'] = get_translated_text($row['m_signature'], $GLOBALS['FORUM_DB']);
             global $SIGNATURES_CACHE;
             if (array_key_exists($member_id, $SIGNATURES_CACHE)) {
                 $member_info['signature'] = $SIGNATURES_CACHE[$member_id];
@@ -317,7 +318,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
 
     // Last viewed page
     if (($need === null) || (in_array('current_action', $need))) {
-        $_at_title = $GLOBALS['SITE_DB']->query_select('sessions', ['the_title', 'last_activity'], ['member_id' => $member_id], 'ORDER BY last_activity DESC', 1);
+        $_at_title = $GLOBALS['SITE_DB']->query_select('sessions', ['the_title', 'last_activity_time'], ['member_id' => $member_id], 'ORDER BY last_activity_time DESC', 1);
         if (array_key_exists(0, $_at_title)) {
             $member_info['current_action'] = $_at_title[0]['the_title'];
         }

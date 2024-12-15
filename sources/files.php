@@ -905,6 +905,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
             'failover_rewritemap__mobile.txt' => 'data_custom',
             'aggregate_types.xml' => 'data_custom/xml_config',
             'hybridauth.xml' => 'data_custom/xml_config',
+            'achievements.xml' => 'data_custom/xml_config',
             'breadcrumbs.xml' => 'data_custom/xml_config',
             'fields.xml' => 'data_custom/xml_config',
             'page_errors.xml' => 'data_custom/xml_config',

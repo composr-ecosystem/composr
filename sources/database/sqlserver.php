@@ -85,7 +85,8 @@ class Database_Static_sqlserver extends Database_super_sqlserver
     }
 
     /**
-     * This function is a very basic query executor. It shouldn't usually be used by you, as there are abstracted versions available.
+     * This function is a raw query executor.
+     * This should rarely ever be used; other functions like query_select are available. Additionally, for complex queries, it is still better to use query_parameterised as it handles escaping.
      *
      * @param  string $query The complete SQL query
      * @param  mixed $connection The DB connection
