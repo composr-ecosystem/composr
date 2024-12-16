@@ -31,13 +31,13 @@ class Hook_cron_achievements
             return null;
         }
 
-        // If we want to know the queue count, let's determine if the XML is valid and display how many members we will process accordingly
+        // If we want to know the queue count, then let's use "1" if this hook will actually run (XML is valid)
         $num_queued = null;
         if ($calculate_num_queued) {
             require_code('achievements');
             $ob = load_achievements();
             if ($ob->is_xml_valid() === true) {
-                $num_queued = 5; // FUDGE: same as $max in the run function
+                $num_queued = 1;
             } else {
                 $num_queued = 0;
             }
@@ -71,13 +71,19 @@ class Hook_cron_achievements
             return; // For safety, do not run re-calculations if any XML issues are present in the achievements system
         }
 
-        // Get 5 random members (we randomly calculate on an interval between just a few members because this is a very resource intensive process)
-        $max = 5;
+        // Get 100 random members
+        $max = 100;
         $members_to_do = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], [], ' AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY ' . db_function('RAND'), $max);
 
         // Run re-calculations on the members randomly chosen
+        $time_start = microtime(true);
         foreach ($members_to_do as $member) {
             $ob->recalculate_achievement_progress($member['id']);
+
+            // Don't process any more members once we've spent 5 or more seconds on this hook
+            if ((microtime(true) - $time_start) >= 5.0) {
+                break;
+            }
         }
     }
 }
