@@ -166,10 +166,12 @@ function make_installers($skip_file_grab = false)
         }
         tar_close($data_file);
         fix_permissions($builds_path . '/builds/' . $version_dotted . '/data.cms');
+
+        // The installer does a size check for upload integrity
         $archive_size = filesize($builds_path . '/builds/' . $version_dotted . '/data.cms');
-        // The installer does an md5 check to check integrity - prepare for it
-        $md5_test_path = 'data/images/advertise_here.png';
-        $md5 = md5(cms_file_get_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $md5_test_path, FILE_READ_LOCK));
+
+        // The installer also does an md5 check to check integrity
+        $md5_file = md5_file($builds_path . '/builds/' . $version_dotted . '/data.cms');
 
         // Write out our PHP installer file
         $file_count = count($MAKE_INSTALLERS__FILE_ARRAY);
@@ -185,38 +187,78 @@ function make_installers($skip_file_grab = false)
 
         // Build install.php, which has to have all our data.cms file offsets put into it (data.cms is an uncompressed ZIP, but the quick installer cheats - it can't truly read arbitrary ZIPs)
         $code = cms_file_get_contents_safe(get_file_base() . '/install.php', FILE_READ_LOCK);
-        $installer_start = "<" . "?php
+        $code = clean_php_file_for_eval($code);
+
+        if (strpos($code, '/* Do not remove this comment: quick installer injection */') === false) {
+            warn_exit('Could not find the comment in install.php to tell us where to inject the quick installer code.');
+        }
+
+        $quick_installer = "
             /* QUICK INSTALLER CODE starts */
 
             global \$FILE_ARRAY,\$SIZE_ARRAY,\$OFFSET_ARRAY,\$DIR_ARRAY,\$DATADOTCMS_FILE;
             \$OFFSET_ARRAY = [{$offset_list}];
             \$SIZE_ARRAY = [{$size_list}];
             \$FILE_ARRAY = [{$file_list}];
-            \$DATADOTCMS_FILE = @fopen('data.cms','rb');
-            if (\$DATADOTCMS_FILE === false) exit('data.cms missing / inaccessible -- make sure you upload it');
-            if (filesize('data.cms') != " . strval($archive_size) . ") exit('data.cms not fully uploaded, or wrong version for this installer');
-            if (md5(file_array_get('{$md5_test_path}')) != '{$md5}') exit('data.cms corrupt. Must not be uploaded in text mode');
 
-            function file_array_get(\$path)
+            if (!is_file('data.cms')) {
+                header('Content-Type: text/plain; charset=utf-8');
+                exit('data.cms does not exist -- did you upload it?');
+            }
+            if (filesize('data.cms') !== " . strval($archive_size) . ") {
+                header('Content-Type: text/plain; charset=utf-8');
+                exit('data.cms failed file size validation. It might not have been fully uploaded, or you are using the wrong one for this version.');
+            }
+            if (md5_file('data.cms') !== '{$md5_file}') {
+                header('Content-Type: text/plain; charset=utf-8');
+                exit('data.cms failed checksum validation; the file is probably corrupt or was tampered. Please re-download the quick installer directly from the homesite and upload again to your server.');
+            }
+
+            // NB: We do not want to open the file until we verified MD5 integrity above. This helps reduce security risks.
+            \$DATADOTCMS_FILE = @fopen('data.cms','rb');
+            if (\$DATADOTCMS_FILE === false) {
+                header('Content-Type: text/plain; charset=utf-8');
+                exit('Could not open data.cms -- make sure the server has read permissions for it');
+            }
+
+            /**
+             * Get the raw data of a specific file from data.cms.
+             *
+             * @param  PATH \$path The relative path to the file
+             * @return string The file data (blank: not found)
+             */
+            function file_array_get(string \$path) : string
             {
                 global \$OFFSET_ARRAY,\$SIZE_ARRAY,\$DATADOTCMS_FILE,\$FILE_BASE;
 
                 if (substr(\$path,0,strlen(\$FILE_BASE.'/')) == \$FILE_BASE.'/')
                     \$path = substr(\$path,strlen(\$FILE_BASE.'/'));
 
-                if (!isset(\$OFFSET_ARRAY[\$path])) return;
+                if (!isset(\$OFFSET_ARRAY[\$path])) return '';
                 \$offset = \$OFFSET_ARRAY[\$path];
                 \$size = \$SIZE_ARRAY[\$path];
                 if (\$size == 0) return '';
                 fseek(\$DATADOTCMS_FILE,\$offset,SEEK_SET);
+
+                // TODO: Unacceptable return type for this function; must be string
+                /*
                 if (\$size>1024*1024) {
                     return [\$size,\$DATADOTCMS_FILE,\$offset];
                 }
+                */
+
                 \$data = fread(\$DATADOTCMS_FILE,\$size);
                 return \$data;
             }
 
-            function file_array_scandir(\$path) {
+            /**
+             * Find files within a given directory inside the file array.
+             *
+             * @param  PATH \$path The relative path to scan
+             * @return array Sub-directories and files
+             */
+            function file_array_scandir(string \$path) : array
+            {
                 global \$FILE_ARRAY;
                 \$ret = [];
 
@@ -236,35 +278,51 @@ function make_installers($skip_file_grab = false)
                 return \$ret;
             }
 
-            function file_array_exists(\$path)
+            /**
+             * Find whether the given path exists in the archive.
+             *
+             * @param  PATH \$path The relative path to check
+             * @return boolean Whether it exists
+             */
+            function file_array_exists(string \$path) : bool
             {
                 global \$OFFSET_ARRAY;
                 return (isset(\$OFFSET_ARRAY[\$path]));
             }
 
-            function file_array_get_at(\$i)
+            /**
+             * Get a data.cms file at the given file array index / offset.
+             *
+             * @param  integer \$i The offset
+             * @return array A double of the relative path and the contents of the file
+             */
+            function file_array_get_at(int \$i) : array
             {
                 global \$FILE_ARRAY;
                 \$name = \$FILE_ARRAY[\$i];
                 return [\$name,file_array_get(\$name)];
             }
 
-            function file_array_count()
+            /**
+             * Get how many files are in the archive.
+             *
+             * @return integer How many files exist
+             */
+            function file_array_count() : int
             {
                 return " . strval($file_count) . ";
             }
 
             ";
-        $installer_start = preg_replace('#^\t{3}#m', '', $installer_start); // Format it correctly
-        $auto_installer_code = '';
-        $auto_installer_code .= $installer_start;
+        $quick_installer = preg_replace('#^\t{3}#m', '', $quick_installer); // Format it correctly
         global $MAKE_INSTALLERS__DIR_ARRAY;
         foreach ($MAKE_INSTALLERS__DIR_ARRAY as $dir) {
-            $auto_installer_code .= '$DIR_ARRAY[]=\'' . $dir . '\';' . "\n";
+            $quick_installer .= '$DIR_ARRAY[]=\'' . $dir . '\';' . "\n";
         }
-        $auto_installer_code .= '/* QUICK INSTALLER CODE ends */ ?' . '>';
-        $auto_installer_code .= $code;
-        cms_file_put_contents_safe($builds_path . '/builds/' . $version_dotted . '/install.php', $auto_installer_code, FILE_WRITE_FIX_PERMISSIONS);
+        $quick_installer .= '/* QUICK INSTALLER CODE ends */';
+        $code = str_replace('/* Do not remove this comment: quick installer injection */', $quick_installer, $code);
+        $code = "<" . "?php " . $code;
+        cms_file_put_contents_safe($builds_path . '/builds/' . $version_dotted . '/install.php', $code, FILE_WRITE_FIX_PERMISSIONS);
 
         @unlink($quick_zip);
 

@@ -60,8 +60,8 @@ if (is_file($FILE_BASE . '/_config.php')) {
 $DEV_MODE = (((!array_key_exists('dev_mode', $SITE_INFO) || ($SITE_INFO['dev_mode'] == '1')) && (is_dir($FILE_BASE . '/.git') || (function_exists('ocp_mark_as_escaped')))) && ((!array_key_exists('keep_dev_mode', $_GET) || ($_GET['keep_dev_mode'] == '1'))));
 
 /**
- * Load up an entry script (usually global or minikernel).
- * This does not fully support overrides, but it does support strict_types.
+ * Load up a script in safe mode (without overrides, unless there is only a custom file present).
+ * This supports the file array for the quick installer.
  *
  * @param  ID_TEXT $codename The sources script to load
  */
@@ -87,25 +87,48 @@ function require_code__bootstrap(string $codename)
             //cms_flush_safe();
         }
 
+        // Check original code first (we do not support overrides)
         $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources/' . $codename . '.php') : ('/' . preg_replace('#(sources|modules|minimodules)_custom#', '${1}', $codename)));
-        if (!file_exists($path)) {
-            $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources_custom/' . $codename . '.php') : ('/' . $codename));
-        }
         $relative_path = str_replace($FILE_BASE . '/', '', $path);
 
-        $REQUIRED_BEFORE[$codename] = true;
-        $code = null;
-        if ((@is_array($FILE_ARRAY)) && ((!isset($_GET['keep_quick_hybrid'])) || (!file_exists($path)))) {
-            $code = file_array_get($relative_path);
-            $code = clean_php_file_for_eval__bootstrap(file_get_contents($path));
-        } else {
-            if (!file_exists($path)) {
-                throw new \Exception('A required file, ' . $relative_path . ', could not be located. This is almost always due to an incomplete upload of the Composr package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the software function. Please note, in the event you are installing, that we have a quick installer package which requires uploading only two files, so you might consider using that instead.');
+        $file_exists = false;
+        if ((@is_array($FILE_ARRAY)) && (!isset($_GET['keep_quick_hybrid']))) {
+            $file_exists = file_array_exists($relative_path);
+        }
+        if (($file_exists === false) && (!@is_array($FILE_ARRAY)) || (isset($_GET['keep_quick_hybrid']))) {
+            $file_exists = file_exists($path);
+        }
+
+        // Check custom code next
+        if ($file_exists === false) {
+            $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources_custom/' . $codename . '.php') : ('/' . $codename));
+            $relative_path = str_replace($FILE_BASE . '/', '', $path);
+
+            $file_exists = false;
+            if ((@is_array($FILE_ARRAY)) && (!isset($_GET['keep_quick_hybrid']))) {
+                $file_exists = file_array_exists($relative_path);
+            }
+            if (($file_exists === false) && (!@is_array($FILE_ARRAY)) || (isset($_GET['keep_quick_hybrid']))) {
+                $file_exists = file_exists($path);
             }
         }
 
+        // We still do not have a file, so bail
+        if ($file_exists === false) {
+            throw new \Exception('A required file, ' . $relative_path . ', could not be located. This is almost always due to an incomplete upload of the Composr package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the software function. Please note, in the event you are installing, that we have a quick installer package which requires uploading only two files, so you might consider using that instead.');
+        }
+
+        $REQUIRED_BEFORE[$codename] = true;
+
+        // For file array files, we must load up its contents and compile it
+        $code = null;
+        if ((@is_array($FILE_ARRAY)) && ((!isset($_GET['keep_quick_hybrid'])) || (!file_exists($path)))) {
+            $code = file_array_get($relative_path);
+            $code = clean_php_file_for_eval__bootstrap($code);
+        }
+
         // Inject strict types if we are running in development mode
-        if ($GLOBALS['DEV_MODE']) {
+        if (($GLOBALS['DEV_MODE']) && (!@is_array($FILE_ARRAY))) {
             if ($code === null) {
                 $code = clean_php_file_for_eval__bootstrap(file_get_contents($path));
             }
@@ -210,9 +233,7 @@ function require_code__bootstrap(string $codename)
         }
 
         // Standard error logging
-        if (php_function_allowed('error_log')) {
-            @error_log('Composr: CRITICAL ' . str_replace("\n", '', $errormsg), 0);
-        }
+        @error_log('Composr: CRITICAL ' . str_replace("\n", '', $errormsg), 0);
 
         exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>' . $clean_error . '.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
     }

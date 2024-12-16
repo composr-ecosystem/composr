@@ -6,6 +6,8 @@
 			<strong>Welcome! &middot; Bienvenue! &middot; Willkommen! &middot; Bienvenidos! &middot; Welkom! &middot; Swaagatam! &middot; Irashaimasu! &middot; Huan yin! &middot; Dobro pozhalovat'! &middot; Witaj!</strong>
 		</p>
 
+		{!INSTALLER_STEP_1_WELCOME}
+
 		{+START,IF_NON_EMPTY,{WARNINGS}}
 			{WARNINGS}
 		{+END}

@@ -13,7 +13,7 @@
 
 /*EXTRA FUNCTIONS: ftp_.*|fileowner*/
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
@@ -41,6 +41,8 @@ if ((array_key_exists('type', $_GET)) && ($_GET['type'] != 'finish') && (file_ex
     exit('Installer is locked for security reasons (delete the \'install_locked\' file to return to the installer)');
 }
 
+/* Do not remove this comment: quick installer injection */
+
 global $IN_MINIKERNEL_VERSION;
 $IN_MINIKERNEL_VERSION = true;
 
@@ -57,10 +59,19 @@ $RELATIVE_PATH = '';
 error_reporting(E_ALL);
 
 // Load up bootstrap and minikernel
-if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
-    exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+if ((@is_array($FILE_ARRAY)) && (!isset($_GET['keep_quick_hybrid']))) {
+    $bootstrap_code = file_array_get('sources/bootstrap.php');
+    $bootstrap_code = str_replace('<' . '?php', '', $bootstrap_code);
+    if ($bootstrap_code == '') {
+        exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located in the data.cms archive. This is almost always due to an incomplete upload of the quick installer, so please check all files are uploaded correctly.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+    }
+    eval($bootstrap_code);
+} else {
+    if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
+        exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+    }
+    require_once($FILE_BASE . '/sources/bootstrap.php');
 }
-require_once($FILE_BASE . '/sources/bootstrap.php');
 require_code__bootstrap('minikernel');
 
 cms_ini_set('display_errors', '1');
@@ -94,6 +105,11 @@ if (($shl === false) || ($shl == '') || ($shl == '0')) {
         $shl .= 'M'; // Units are in MB for this, while PHP's memory limit setting has it in bytes
     }
     cms_ini_set('memory_limit', $shl);
+}
+
+// Try extending the PHP timeout to 30 seconds because compilation of require_code may take some time especially from the quick installer
+if (php_function_allowed('set_time_limit')) {
+    @set_time_limit(30);
 }
 
 // Tunnel into some Composr code we can use
@@ -429,9 +445,12 @@ function step_1() : object
     }
 
     // Health Checks
-    $_warnings = installer_health_checks();
+    list($_warnings, $_successes) = installer_health_checks();
     foreach ($_warnings as $_warning) {
         $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => '6f6390d4410fae3b2a3761eb65b99db4', 'MESSAGE' => $_warning]));
+    }
+    foreach (array_keys($_successes) as $_success) {
+        $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => 'All pre-installation checks passed for ' . $_success]));
     }
 
     // Some checks relating to installation permissions
@@ -1781,7 +1800,7 @@ function step_5_checks_b() : object
     $log = new Tempcode();
 
     // MySQL check (could not be checked earlier due to lack of active connection)
-    $_warnings = installer_health_checks(['Installation environment \\ MySQL version']);
+    list($_warnings, $_successes) = installer_health_checks(['Installation environment \\ MySQL version']);
     foreach ($_warnings as $_warning) {
         $warning = do_template('INSTALLER_WARNING', ['_GUID' => 'fb748246869dd9ebffa4d2967a2931cd', 'MESSAGE' => $_warning]);
         $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '214790e075dc09f8dff8e69789311984', 'SOMETHING' => $warning]));
@@ -1794,17 +1813,18 @@ function step_5_checks_b() : object
  * Run installer Health Checks.
  *
  * @param  ?array $sections_to_run Which check sections to run (null: all)
- * @return array Warnings
+ * @return array Double of warnings and successes
  */
 function installer_health_checks(?array $sections_to_run = null) : array
 {
     $_warnings = [];
+    $_successes = [];
     if (addon_installed('health_check')) {
         require_code('health_check');
         health_check_log_start();
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
         foreach ($hook_obs as $ob) {
-            list(, $sections) = $ob->run($sections_to_run, CHECK_CONTEXT__INSTALL);
+            list($category_name, $sections) = $ob->run($sections_to_run, CHECK_CONTEXT__INSTALL);
             foreach ($sections as $results) {
                 foreach ($results as $_result) {
                     if ($_result[0] == HEALTH_CHECK__FAIL) {
@@ -1813,13 +1833,26 @@ function installer_health_checks(?array $sections_to_run = null) : array
                         }
                         $_warning = comcode_to_tempcode($_result[1]);
                         $_warnings[] = $_warning;
+                        $_successes[$category_name] = false;
+                    } elseif ($_result[0] == HEALTH_CHECK__PASS) {
+                        if (!isset($_successes[$category_name])) {
+                            $_successes[$category_name] = true;
+                        }
                     }
                 }
             }
         }
         health_check_log_stop();
     }
-    return $_warnings;
+
+    // Remove sections that actually had a failure somewhere
+    foreach ($_successes as $i => $success) {
+        if ($success === false) {
+            unset($_successes[$i]);
+        }
+    }
+
+    return [$_warnings, $_successes];
 }
 
 /**
