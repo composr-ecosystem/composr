@@ -56,18 +56,19 @@ $RELATIVE_PATH = '';
 
 error_reporting(E_ALL);
 
+// Load up bootstrap and minikernel
+if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
+    exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+}
+require_once($FILE_BASE . '/sources/bootstrap.php');
+require_code__bootstrap('minikernel');
+
 cms_ini_set('display_errors', '1');
 cms_ini_set('assert.active', '0');
 cms_ini_set('opcache.revalidate_freq', '1'); // Bitnami WAMP puts it to 60 by default, breaking reading of _config.php
 
 global $DEFAULT_FORUM;
 $DEFAULT_FORUM = 'cns';
-
-global $REQUIRED_BEFORE;
-$REQUIRED_BEFORE = [];
-
-global $SITE_INFO;
-$SITE_INFO = [];
 
 global $CURRENT_SHARE_USER;
 $CURRENT_SHARE_USER = null;
@@ -96,9 +97,9 @@ if (($shl === false) || ($shl == '') || ($shl == '0')) {
 }
 
 // Tunnel into some Composr code we can use
+require_code('minikernel');
 require_code('critical_errors');
 require_code('permissions');
-require_code('minikernel');
 require_code('file_permissions_check');
 require_code('forum_stub');
 require_code('global3');
@@ -2591,7 +2592,7 @@ function step_8_build_install_order(array $addons_to_install) : array
 
         if (count($addons_to_process) == $before_count) {
             var_dump($addons_to_process);
-            fatal_exit('Cyclic dependency error');
+            fatal_exit('Cyclic addon dependency error');
         }
     }
 
@@ -2883,133 +2884,6 @@ function step_10() : object
     // Redirect
     require_code('templates_redirect_screen');
     return redirect_screen(get_screen_title('Composr', false), $redirect_url);
-}
-
-/**
- * This function is a very important one when coding. It allows you to include a source code file (from root/sources/ or root/sources_custom/) through the proper channels.
- * You should remember this function, and not substitute anything else for it, as that will likely make your code unstable.
- * It is key to source code modularity in Composr.
- *
- * @param  string $codename The codename for the source module to load
- */
-function require_code(string $codename)
-{
-    if ($codename == 'mail' || $codename == 'failure') {
-        return;
-    }
-
-    global $FILE_ARRAY, $REQUIRED_BEFORE;
-    if (array_key_exists($codename, $REQUIRED_BEFORE)) {
-        return;
-    }
-
-    if (!array_key_exists('type', $_GET)) {
-        $prior = memory_get_usage();
-        //echo '<' . '!-- Memory: ' . number_format($prior) . ' --' . '>' . "\n"; Can break JS validity if we inject this
-        //echo '<' . '!-- Loading code file: ' . $codename . ' --' . '>' . "\n";
-        //cms_flush_safe();
-    }
-
-    global $FILE_BASE;
-
-    $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources/' . $codename . '.php') : ('/' . preg_replace('#(sources|modules|minimodules)_custom#', '${1}', $codename)));
-    if (!file_exists($path)) {
-        $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources_custom/' . $codename . '.php') : ('/' . $codename));
-    }
-
-    $REQUIRED_BEFORE[$codename] = true;
-    if ((@is_array($FILE_ARRAY)) && ((!isset($_GET['keep_quick_hybrid'])) || (!file_exists($path)))) {
-        $file = file_array_get('sources/' . $codename . '.php');
-        $file = str_replace('<' . '?php', '', $file);
-        $file = str_replace('?' . '>', '', $file);
-
-        // NB: When running the quick installer, we almost certainly are not running DEV_MODE, so do not try injecting strict_types.
-        if (function_exists('cms_eval')) {
-            cms_eval($file, $path);
-        } else {
-            eval($file);
-        }
-
-        if (function_exists('init__' . str_replace('/', '__', $codename))) {
-            call_user_func('init__' . str_replace('/', '__', $codename));
-        }
-    } else {
-        if (!file_exists($path)) {
-            exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr installer startup error</h1><p>A required installation file, sources/' . $codename . '.php, could not be located. This is almost always due to an incomplete upload of the Composr manual installation package, so please check all files are uploaded correctly.</p><p>Only once all Composr files are in place can the installer can function. Please note that we have a quick installer package which requires uploading only two files, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
-        }
-
-        // Inject strict types if we are running in development mode (_tests directory exists)
-        if (is_dir($FILE_BASE . '/_tests')) {
-            $code = clean_php_file_for_eval(file_get_contents($path));
-            $code = 'declare(strict_types=1); ' . $code;
-            if (function_exists('cms_eval')) {
-                cms_eval($code, $path);
-            } else {
-                eval($code);
-            }
-        } else {
-            require_once($path);
-        }
-
-        if (function_exists('init__' . str_replace('/', '__', $codename))) {
-            call_user_func('init__' . str_replace('/', '__', $codename));
-        }
-    }
-    /*if (!array_key_exists('type', $_GET))   Memory usage debugging. Not safe, as can mess up Tempcode generation (mixed echos) {
-        echo '<' . '!-- Memory diff for ' . $codename . ' was: ' . @number_format(memory_get_usage() - $prior) . ' --' . '>' . "\n";
-    }*/
-}
-
-/**
- * Make an object of the given class.
- *
- * @param  string $class The class name
- * @param  boolean $failure_ok Whether to return null if there is no such class
- * @param  array $parameters Array of parameters
- * @return ?object The object (null: could not create)
- */
-function object_factory(string $class, bool $failure_ok = false, array $parameters = []) : ?object
-{
-    return new $class(...$parameters);
-}
-
-/**
- * Sets the value of a configuration option, if the PHP environment allows it.
- *
- * @param  string $var Config option
- * @param  string $value New value of option
- * @return ~string Old value of option (false: error)
- */
-function cms_ini_set(string $var, string $value)
-{
-    if ($var == 'memory_limit' && PHP_DEBUG == 1) {
-        $value = '-1';
-    }
-
-    $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
-    $_blocked = [];
-    foreach ($to_block as $func) {
-        $ini_val = ini_get($func);
-        if ($ini_val !== false) {
-            $_blocked[] = $ini_val;
-        }
-    }
-    $blocked = implode(',', $_blocked);
-    if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {
-        return false;
-    }
-
-    return @ini_set($var, $value);
-}
-
-/**
- * Flush but don't break Brotli compression.
- */
-function cms_flush_safe()
-{
-    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
-        flush();
-    }
 }
 
 /**
@@ -3663,24 +3537,4 @@ function confirm_db_credentials(bool $return_connection = false)
     }
 
     return $tmp;
-}
-
-/**
- * Make a PHP file evaluable.
- *
- * @param  string $c File contents
- * @param  ?string $path File path (null: N/A)
- * @return string Cleaned up file
- */
-function clean_php_file_for_eval(string $c, ?string $path = null) : string
-{
-    $reps = [];
-    $reps['?' . '>'] = '';
-    $reps['<' . '?php'] = '';
-    if ($path !== null) {
-        $reps['__FILE__'] = "'" . addslashes($path) . "'";
-        $reps['__DIR__'] = "'" . addslashes(dirname($path)) . "'";
-    }
-
-    return str_replace(array_keys($reps), array_values($reps), $c);
 }

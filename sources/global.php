@@ -1426,31 +1426,9 @@ if (is_file($FILE_BASE . '/sources_custom/critical_errors.php')) {
     }
 }
 
-// Load up config file
+// NB: bootstrap should have loaded $SITE_INFO already, but bootstrap does not actually check if it's missing because it's not critical until global.php
 global $SITE_INFO;
-/** Site base configuration settings.
- *
- * @global array $SITE_INFO
- */
-$SITE_INFO = [];
-@include($FILE_BASE . '/_config.php');
-if (empty($SITE_INFO)) {
-    // LEGACY
-    if ((!is_file($FILE_BASE . '/_config.php')) && (is_file($FILE_BASE . '/info.php'))) {
-        @copy($FILE_BASE . '/info.php', $FILE_BASE . '/_config.php');
-        if (is_file($FILE_BASE . '/_config.php')) {
-            $new_config_file = file_get_contents($FILE_BASE . '/_config.php');
-            $new_config_file = str_replace(['ocf_table_prefix', 'use_mem_cache', 'ocp_member_id', 'ocp_member_hash', 'ocf', 'admin_password', 'master_password'], ['cns_table_prefix', 'use_persistent_cache', 'cms_member_id', 'cms_member_hash', 'cns', 'maintenance_password', 'maintenance_password'], $new_config_file);
-            $new_config_file = str_replace(']=\'', '] = \'', $new_config_file); // Clean up formatting to new convention
-            file_put_contents($FILE_BASE . '/_config.php', $new_config_file, LOCK_EX);
-        } else {
-            exit('Error, cannot rename info.php to _config.php: check the Composr upgrade instructions');
-        }
-        @include($FILE_BASE . '/_config.php');
-    }
-}
-
-if (empty($SITE_INFO)) {
+if (!is_array($SITE_INFO) || (count($SITE_INFO) == 0) || (empty($SITE_INFO))) {
     if (!is_file($FILE_BASE . '/_config.php')) {
         critical_error('_CONFIG.PHP_MISSING');
     } elseif (strlen(trim(file_get_contents($FILE_BASE . '/_config.php'))) == 0) {
