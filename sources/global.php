@@ -429,6 +429,8 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
 
                 usleep(250000);
             }
+
+            clearstatcache(true, $compiled_path);
         }
 
         return false;
@@ -468,9 +470,12 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
 
     if (is_file($compiled_path)) {
         if ($delete_compiled) {
+            clearstatcache(true, $compiled_path);
             @unlink($compiled_path);
+
             $calling_path = $path;
             $calling_relative_path = $relative_path;
+            clearstatcache(true, $path);
         } else {
             $calling_path = $compiled_path;
             $calling_relative_path = $compiled_relative_path;

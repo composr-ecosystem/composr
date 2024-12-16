@@ -143,6 +143,8 @@ function require_code__bootstrap(string $codename)
 
                     usleep(250000);
                 }
+
+                clearstatcache(true, $compiled_path);
             }
 
             $path = $compiled_path;

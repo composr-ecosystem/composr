@@ -35,6 +35,8 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
     copy(get_file_base() . '/_config.php', get_file_base() . '/_config.php.bak');
     fix_permissions(get_file_base() . '/_config.php.bak');
 
+    clearstatcache(true, get_file_base() . '/_config.php');
+
     $success = _do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver, $board_path, $forum_base_url, $database_forums, $username_forums, $password_forums, $extra_settings, $db_type);
 
     if ($success && $do_index_test) {
@@ -65,6 +67,8 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
     if (!$keep_config) {
         @unlink(get_file_base() . '/_config.php');
         @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
+
+        clearstatcache(true, get_file_base() . '/_config.php');
     }
 
     return $success;
