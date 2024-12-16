@@ -254,7 +254,9 @@ class Module_admin_make_release
         $version_file = preg_replace($pattern, $replacement, $version_file);
 
         // Update branch status flag
-        if (strpos($new_version, 'alpha') !== false) {
+        if (strpos($new_version, 'dev') !== false) {
+            $_replacement = 'VERSION_ALPHA';
+        } elseif (strpos($new_version, 'alpha') !== false) {
             $_replacement = 'VERSION_ALPHA';
         } elseif (strpos($new_version, 'beta') !== false) {
             $_replacement = 'VERSION_BETA';
@@ -442,7 +444,10 @@ class Module_admin_make_release
         $new_version = $this->get_new_version();
 
         $release_description = null;
-        if (strpos($new_version, 'alpha') !== false) {
+        if (strpos($new_version, 'dev') !== false) {
+            $release_description = do_lang('DESCRIPTION_RELEASE_DEV');
+            $default_necessity = 'unrecommended';
+        } elseif (strpos($new_version, 'alpha') !== false) {
             $release_description = do_lang('DESCRIPTION_RELEASE_ALPHA');
             $default_necessity = 'unrecommended';
         } elseif (strpos($new_version, 'beta') !== false) {
@@ -494,7 +499,7 @@ class Module_admin_make_release
             [
                 do_lang_tempcode('BUILD_OPTIONS_BLEEDING_EDGE'),
                 'bleeding_edge',
-                ((strpos($new_version, 'alpha') !== false) || (strpos($new_version, 'beta') !== false)) ? '1' : '0',
+                ((strpos($new_version, 'dev') !== false) || (strpos($new_version, 'alpha') !== false) || (strpos($new_version, 'beta') !== false)) ? '1' : '0',
                 '',
                 false
             ],
