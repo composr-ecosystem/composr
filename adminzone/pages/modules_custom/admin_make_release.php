@@ -675,6 +675,11 @@ class Module_admin_make_release
         }
         $command_to_try .= ' ' . get_custom_file_base() . '/exports/builds/' . $new_version . '/';
 
+        // Development builds should never be released
+        if (strpos($new_version, 'dev') !== false) {
+            return inform_screen($this->title, do_lang_tempcode('MAKE_RELEASE_STEP4_TEXT_DEV'));
+        }
+
         $text = do_lang_tempcode('MAKE_RELEASE_STEP4_TEXT');
 
         return do_template('MAKE_RELEASE_STEP4_SCREEN', [
