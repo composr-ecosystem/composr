@@ -56,7 +56,7 @@ class telemetry_test_set extends cms_test_case
             return;
         }
 
-        $this->assertTrue((strpos($response, '{"relayed_error_id":0}') !== false), 'Expected Telemetry to return an error ID of 0 (dummy) but did not.');
+        $this->assertTrue((strpos($response, '{"relayed_error_id":"0"}') !== false), 'Expected Telemetry to return an error ID of 0 (dummy) but did not.');
     }
 
     public function testAdminZoneTelemetry()

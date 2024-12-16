@@ -91,6 +91,7 @@ class Module_admin_cmsusers
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
             $GLOBALS['SITE_DB']->create_table('relayed_errors', [
                 'id' => '*AUTO',
+                'guid' => 'SHORT_TEXT',
                 'first_date_and_time' => 'TIME',
                 'last_date_and_time' => 'TIME',
                 'website_url' => 'URLPATH',
@@ -130,6 +131,7 @@ class Module_admin_cmsusers
 
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta6
             $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'refs_compiled', 'BINARY');
+            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'guid', 'SHORT_TEXT');
         }
     }
 

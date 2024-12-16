@@ -1312,7 +1312,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
                     cms_error_log(brand_name() . ' telemetry: WARNING Could not forward error to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
                 } else {
                     $matches = [];
-                    if (preg_match('#\{\"relayed_error_id\":(\d*)\}#', $response, $matches) != 0) {
+                    if (preg_match('#\{\"relayed_error_id\":"([0-9a-fA-F\-]*)"\}#', $response, $matches) != 0) {
                         if ((php_function_allowed('error_log')) && (file_exists(get_custom_file_base() . '/data_custom/errorlog.php')) && (cms_is_writable(get_custom_file_base() . '/data_custom/errorlog.php'))) {
                             @error_log('TELEMETRY ' . strval($matches[1]) . "\n", 3, get_file_base() . '/data_custom/errorlog.php');
                         }

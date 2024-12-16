@@ -81,12 +81,11 @@ class Hook_endpoint_cms_homesite_telemetry
                 $error_message = $decrypted_data['error_message'];
 
                 if ($error_message == 'TEST') { // Unit test; return dummy ID
-                    return ['success' => true, 'relayed_error_id' => 0];
+                    return ['success' => true, 'relayed_error_id' => '0'];
                 }
 
-                // FUDGE: Ignore cases that might not yet be mainstream in the relay_error_notification function for the software
+                // Prevent infinite loops where telemetry fails on an error about telemetry
                 if (
-                    (strpos($error_message, 'Cannot write to ') !== false) ||
                     (strpos($error_message, 'telemetry: ') !== false)
                 ) {
                     return ['success' => true, 'error_details' => '(This relay was ignored)'];
@@ -96,7 +95,7 @@ class Hook_endpoint_cms_homesite_telemetry
                 $_error_hash = $error_message;
 
                 // Now we must remove unnecessary unique junk from the error message to improve duplicate checking capabilities
-                $_error_hash = preg_replace('/[a-fA-F0-9]{13,}/', '', $_error_hash); // Remove what might be MD5 hashes, uniqids, or GUIDs
+                $_error_hash = preg_replace('/[a-zA-Z0-9\-\_]{13,}/', '', $_error_hash); // Remove what might be hex hashes, uniqids, crypto strings, or GUIDs
                 $_error_hash = preg_replace('/\$\S{59,}/', '', $_error_hash); // Remove bcrypt hashes
                 $_error_hash = preg_replace('/\d{8,}/', '', $_error_hash); // Remove numbers with 8 or more digits... probably a timestamp or identifier
                 $_error_hash = preg_replace('/tcpfunc_([0-9a-zA-Z_\.])*/', '', $_error_hash); // Tempcode uses unique IDs
@@ -109,7 +108,7 @@ class Hook_endpoint_cms_homesite_telemetry
                 $error_hash = md5($_error_hash);
 
                 // See if this error was already reported
-                $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_count', 'note', 'resolved'], [
+                $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'guid', 'error_count', 'note', 'resolved'], [
                     // Every relay is specific to a website; treat separate websites as separate relays
                     'website_url' => $decrypted_data['website_url'],
 
@@ -130,6 +129,15 @@ class Hook_endpoint_cms_homesite_telemetry
                     }
                 }
 
+                // Auto-resolve any errors matching what is in the error service spreadsheet
+                if ($auto_resolve === null) {
+                    require_code('errorservice');
+                    $match = get_problem_match_nearest($error_message);
+                    if ($match !== null) {
+                        $auto_resolve = $match . "\n\n\n\n" . '[b]If you strongly feel this is a software bug, please report to the tracker.[/b]'; // FUDGE
+                    }
+                }
+
                 // Clear the checklist cache so we have an updated number
                 require_code('caches');
                 delete_cache_entry('main_staff_checklist');
@@ -147,12 +155,16 @@ class Hook_endpoint_cms_homesite_telemetry
                         $map += lang_remap_comcode('note', $row[0]['note'], $auto_resolve);
                         $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row[0]['id']]);
                     }
-                    return ['success' => true, 'relayed_error_id' => $row[0]['id']];
+                    return ['success' => true, 'relayed_error_id' => $row[0]['guid']];
                 } else { // No match; create a new relay
                     $refs_compiled = (strpos($decrypted_data['error_message'], '_compiled/') !== false);
                     $refs_compiled = $refs_compiled || (strpos($decrypted_data['error_message'], '_compiled\\') !== false);
 
+                    require_code('crypt');
+                    $guid = get_secure_random_v4_guid();
+
                     $map = [
+                        'guid' => $guid,
                         'first_date_and_time' => time(),
                         'last_date_and_time' => time(),
                         'website_url' => $decrypted_data['website_url'],
@@ -169,8 +181,8 @@ class Hook_endpoint_cms_homesite_telemetry
                     } else {
                         $map += insert_lang_comcode('note', '', 4);
                     }
-                    $id = $GLOBALS['SITE_DB']->query_insert('relayed_errors', $map, true);
-                    return ['success' => true, 'relayed_error_id' => $id];
+                    $GLOBALS['SITE_DB']->query_insert('relayed_errors', $map);
+                    return ['success' => true, 'relayed_error_id' => $guid];
                 }
                 break;
 

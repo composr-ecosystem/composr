@@ -94,10 +94,15 @@ class Module_telemetry
      */
     public function view() : object
     {
-        $id = get_param_integer('type');
+        $id = get_param_string('type');
         $lang = get_param_string('lang', get_site_default_lang());
 
-        $_error = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['id' => $id]);
+        // LEGACY: remove when v11 hits stable
+        if (is_numeric($id)) {
+            warn_exit('Telemetry now utilises random GUIDs which are more secure than ID numbers. Composr 11 beta6 will properly generate GUID-based telemetry links. Errors are still being received on our end despite this change.');
+        }
+
+        $_error = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['guid' => $id]);
         if (($_error === null) || !array_key_exists(0, $_error)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
