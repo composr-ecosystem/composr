@@ -114,6 +114,9 @@ _meta_tree
 /themes/admin/images_custom/icons_sprite.svg
 /data_custom/keys/*.key
 /data_custom/keys/*.ini
+/_compiled/*
+!/_compiled/.htaccess
+!/_compiled/index.html
 
 ; The matched files should be blocked for the main Composr dev repository but not for Composr projects
 /themes/_unnamed_/

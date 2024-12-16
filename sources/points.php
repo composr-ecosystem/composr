@@ -175,7 +175,7 @@ function points_used(int $member_id) : int
 }
 
 /**
- * Get the total points the specified member has spent to the system.
+ * Get the total points the specified member has spent to the system. This does not include gift points.
  *
  * @param  MEMBER $member_id The member
  * @return integer The number of points the member has spent to the system

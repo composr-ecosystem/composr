@@ -258,7 +258,7 @@ function get_composr_branches()
 
                 $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
                 $uid = uniqid('', false);
-                $version_file = str_replace('<?php', '', $version_file);
+                $version_file = clean_php_file_for_eval($version_file, get_file_base() . '/sources/version.php');
                 $version_file = preg_replace('/function\s+(\w+)\s*\(/', 'function ${1}_' . $uid . '(', $version_file);
 
                 cms_eval($version_file, 'git branch ' . $git_branch . ' sources/version.php');
@@ -325,7 +325,7 @@ function get_composr_branches()
             }
             $version_file = base64_decode($_version_file['content']);
             $uid = uniqid('', false);
-            $version_file = str_replace('<?php', '', $version_file);
+            $version_file = clean_php_file_for_eval($version_file, get_file_base() . '/sources/version.php');
             $version_file = preg_replace('/function\s+(\w+)\s*\(/', 'function ${1}_' . $uid . '(', $version_file);
 
             cms_eval($version_file, 'GitLab branch ' . $branch . ' sources/version.php');

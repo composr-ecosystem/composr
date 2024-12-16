@@ -20,7 +20,6 @@ class _lang_no_unused_test_set extends cms_test_case
 {
     public function testNothingUnused()
     {
-        require_code('third_party_code');
         require_code('files2');
         require_code('lang_compile');
 

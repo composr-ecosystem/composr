@@ -284,8 +284,12 @@ PHP;
             return do_template('RED_ALERT', ['_GUID' => '9fcebd74147f4724a0cf20642d58a109', 'TEXT' => $e->getMessage()]);
         }
 
-        cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-        cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        if ($before_type_strictness !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+        }
+        if ($before_xss_detect !== false) {
+            cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        }
 
         return do_template('BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS', [
             '_GUID' => 'd231298079cbdf9662a366e8479d872e',

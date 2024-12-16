@@ -179,6 +179,19 @@ function _upgrader_file_upgrade_screen() : string
     // Upgrades always contain the full addon_registry directory; hotfixes do not
     $is_hotfix = (tar_get_file($upgrade_resource, 'sources/hooks/systems/addon_registry/index.html') === null);
 
+    // Do not allow upgrading to a development build; too risky and not supported (also not the intention of development builds)
+    $version_file = tar_get_file($upgrade_resource, 'sources/version.php');
+    if ($version_file !== null) {
+        $uid = uniqid('', false);
+        $data = clean_php_file_for_eval($version_file['data'], get_file_base() . '/sources/version.php');
+        $version_functions = preg_replace('/function\s+(\w+)\s*\(/', 'function ${1}_' . $uid . '(', $data);
+        cms_eval($version_functions, 'upgrade tar ' . $upgrade_path . ' sources/version.php');
+        $version_minor = call_user_func_array('cms_version_minor_' . $uid, []);
+        if (strpos($version_minor, 'dev') !== false) {
+            warn_exit(do_lang_tempcode('NO_UPGRADE_FROM_DEV_BUILD'));
+        }
+    }
+
     /*
      * Files that must be upgraded first and through immediate extraction (if mapped to true, will also require re-running the upgrade step)
      * You should also check data/upgrader2.php when modifying this.

@@ -30,15 +30,19 @@ $RELATIVE_PATH = '';
 
 error_reporting(E_ALL);
 
+// Load up bootstrap and minikernel
+if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
+    exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
+}
+require_once($FILE_BASE . '/sources/bootstrap.php');
+require_code__bootstrap('minikernel');
+
 cms_ini_set('display_errors', '1');
 assert_options(ASSERT_ACTIVE, 0);
 cms_ini_set('assert.active', '0');
 
 global $REQUIRED_BEFORE;
 $REQUIRED_BEFORE = [];
-
-global $SITE_INFO;
-$SITE_INFO = [];
 
 global $CURRENT_SHARE_USER;
 $CURRENT_SHARE_USER = null;
@@ -70,7 +74,6 @@ if (version_compare(PHP_VERSION, '7.2', '<')) {
 include('_config.php');
 require_code('critical_errors');
 require_code('permissions');
-require_code('minikernel');
 require_code('global3');
 require_code('temporal');
 require_code('files');
@@ -228,96 +231,6 @@ function finish_restorer_output(string $msg)
     $tpl = do_template('RESTORE_HTML_WRAP', ['_GUID' => '8e3b9d894d8ef06b5057fb654f7db59b', 'CSS_NOCACHE' => $css_nocache, 'MESSAGE' => $msg]);
     echo $tpl->evaluate();
     exit();
-}
-
-/**
- * This function is a very important one when coding. It allows you to include a source code file (from root/sources/ or root/sources_custom/) through the proper channels.
- * You should remember this function, and not substitute anything else for it, as that will likely make your code unstable.
- * It is key to source code modularity in Composr.
- *
- * @param  string $codename The codename for the source module to load
- */
-function require_code(string $codename)
-{
-    global $FILE_ARRAY, $REQUIRED_BEFORE;
-    if (array_key_exists($codename, $REQUIRED_BEFORE)) {
-        return;
-    }
-    $REQUIRED_BEFORE[$codename] = 1;
-    if (@is_array($FILE_ARRAY)) {
-        $file = file_array_get('sources/' . $codename . '.php');
-        $file = str_replace('<' . '?php', '', $file);
-        $file = str_replace('?' . '>', '', $file);
-        eval($file);
-
-        if (function_exists('init__' . str_replace('/', '__', $codename))) {
-            call_user_func('init__' . str_replace('/', '__', $codename));
-        }
-    } else {
-        global $FILE_BASE;
-
-        $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources/' . $codename . '.php') : '/' . str_replace('_custom', '', $codename));
-        if (!file_exists($path)) {
-            $path = $FILE_BASE . ((strpos($codename, '.php') === false) ? ('/sources_custom/' . $codename . '.php') : '/' . str_replace('_custom', '', $codename));
-        }
-        require_once($path);
-
-        if (function_exists('init__' . str_replace('/', '__', $codename))) {
-            call_user_func('init__' . str_replace('/', '__', $codename));
-        }
-    }
-}
-
-/**
- * Make an object of the given class.
- *
- * @param  string $class The class name
- * @param  boolean $failure_ok Whether to return null if there is no such class
- * @param  array $parameters Array of parameters
- * @return ?object The object (null: could not create)
- */
-function object_factory(string $class, bool $failure_ok = false, array $parameters = []) : ?object
-{
-    return new $class(...$parameters);
-}
-
-/**
- * Sets the value of a configuration option, if the PHP environment allows it.
- *
- * @param  string $var Config option.
- * @param  string $value New value of option.
- * @return ~string                      Old value of option (false: error).
- */
-function cms_ini_set(string $var, string $value)
-{
-    if ($var == 'memory_limit' && PHP_DEBUG == 1) {
-        $value = '-1';
-    }
-
-    $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
-    $_blocked = [];
-    foreach ($to_block as $func) {
-        $ini_val = ini_get($func);
-        if ($ini_val !== false) {
-            $_blocked[] = $ini_val;
-        }
-    }
-    $blocked = implode(',', $_blocked);
-    if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {
-        return false;
-    }
-
-    return @ini_set($var, $value);
-}
-
-/**
- * Flush but don't break Brotli compression.
- */
-function cms_flush_safe()
-{
-    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
-        flush();
-    }
 }
 
 /**

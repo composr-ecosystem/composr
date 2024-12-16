@@ -1,0 +1,203 @@
+﻿<!-- 
+	Each achievement supports these attributes:
+	- name (required; a unique alphanumeric codename for the achievement)
+	- title (required; a title for this achievement which will be publicly visible... can be a language string codename or raw text)
+	- image (optional but recommended; image to use as the achievement badge. Can be an absolute URL, relative path, or a theme image code. Defaults to no image.)
+	- readOnly (Optional; set to 1 to disable the ability to earn this achievement if not already earned. Defaults to 0.)
+	- hidden (Optional; set to 1 if you do not want to display this achievement among those that can be earned... it will only be visible when earned and only to the member who earned it. Defaults to 0.)
+	 - If an achievement has no qualifications defined, or all of the qualifications are disabled, the achievement will be both hidden and readOnly.
+	- permanent (optional; set to 1 if this achievement cannot be revoked if a member earned it but later no-longer meets its qualifications. Defaults to 0.)
+		- Note that if you set this to 1, you must manually remove achievement awards from the database (achievements_members) and their points if you want to revoke an achievement from a member.
+	- points (optional; award this many points for the achievement [points will be reversed if the achievement is removed])
+-->
+
+<!-- 
+	You should check sources_custom/hooks/systems/achievement_qualifications for parameters to specific qualifications. 
+	Qualification tags also have these additional global attributes:
+	- name (Required; the name of the achievement_qualifications hook we are using [filename without the .php at the end]; if it does not exist or it returns null, it will be ignored.)
+	- persist (Optional; set to 1 if qualification progress should only ever go up, not down [e.g. if a content is deleted, progress would not discount it anymore]. Defaults to a hook persist_progress_default value.)
+-->
+
+<!--
+	A note about how achievement progress is tracked:
+	 - Tracking in the database of achievements earned is matched to the defined achievement "name". If you change a name, everyone loses the achievement.
+	 - Tracking in the database of qualification progress is matched to a hash of the qualification attributes, group number, and achievement (the hash also considers the name of the achievement).
+	  - If you change any qualification parameters or the achievement name, progress is reset and re-calculated.
+	  - If you move a qualification to another achievement, progress will also be reset and re-calculated.
+-->
+
+<achievements>
+	<achievement name="anniversary" image="icons_monochrome/calendar/birthday" title="achievements:ACHIEVEMENT_ANNIVERSARY">
+		<qualifications>
+			<qualification name="account_age" days="365" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="explorer" image="icons_monochrome/menu/social/members" title="achievements:ACHIEVEMENT_EXPLORER" points="25">
+		<qualifications>
+			<qualification name="actionlog" type="VIEW_PROFILE" count="25" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="extrovert" image="icons_monochrome/menu/social/chat/chat" title="achievements:ACHIEVEMENT_EXTROVERT" points="100">
+		<!-- 
+				Multiple "qualifications" are treated as an OR, and multiple "qualification" within the same "qualifications" is treated as an AND.
+				In this case, the achievement is awarded if the member either made 10 activity messages and 50 chat messages, or they made 25 forum posts.
+		-->
+		<qualifications>
+			<qualification name="activity_feed" count="10" />
+			<qualification name="chat_messages" count="50" />
+		</qualifications>
+		<qualifications>
+			<qualification name="content" types="post" count="25" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="attachment_guru" image="icons_monochrome/buttons/upload" title="achievements:ACHIEVEMENT_ATTACHMENT_GURU" points="50">
+		<qualifications>
+			<qualification name="attachments" count="10" downloads="10" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="content_samurai" image="icons_monochrome/spare/content" title="achievements:ACHIEVEMENT_CONTENT_SAMURAI" points="100">
+		<qualifications>
+			<qualification name="author" />
+			<qualification name="awards" count="3" />
+			<qualification name="content" count="25" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="reputable_randy" image="icons_monochrome/spare/popular" title="achievements:ACHIEVEMENT_REPUTABLE_RANDY" points="50">
+		<qualifications>
+			<qualification name="bad_karma" count="5" as_percent="1" />
+			<qualification name="karma" count="100" subtract_bad="1" />
+			<qualification name="karmic_influence" count="3" />
+			<qualification name="no_warnings" count="1" days="90" />
+			<qualification name="no_warnings" count="3" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="calendar_follower" image="icons_monochrome/menu/rich_content/calendar" title="achievements:ACHIEVEMENT_CALENDAR_FOLLOWER" points="25">
+		<qualifications>
+			<qualification name="calendar_interests" count="1" />
+		</qualifications>
+		<qualifications>
+			<qualification name="calendar_reminders" count="3" />
+		</qualifications>	
+	</achievement>
+
+	<achievement name="frequent_visitor" image="icons_monochrome/menu/site_meta/user_actions/login" title="achievements:ACHIEVEMENT_FREQUENT_VISITOR">
+		<qualifications>
+			<qualification name="daily_visits" count="90" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="download_all_the_things" image="icons_monochrome/menu/rich_content/downloads" title="achievements:ACHIEVEMENT_DOWNLOAD_ALL_THE_THINGS" points="25">
+		<qualifications>
+			<qualification name="download" count="10" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="ecommerce_purse" image="icons_monochrome/menu/rich_content/ecommerce/orders" title="achievements:ACHIEVEMENT_ECOMMERCE_PURSE" points="100">
+		<qualifications>
+			<qualification name="ecom_transactions" count="5" no_free="1" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="escrower_power" title="achievements:ACHIEVEMENT_ESCROWER_POWER" points="50">
+		<qualifications>
+			<qualification name="escrows" count="1000" as_points="1" />
+		</qualifications>
+		<qualifications>
+			<qualification name="escrows" count="10" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="file_dumper" image="icons_monochrome/menu/cms/filedump" title="achievements:ACHIEVEMENT_FILE_DUMPER" points="25">
+		<qualifications>
+			<qualification name="filedump" count="100" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="friendly_freddy" image="icons_monochrome/menu/social/friends" title="achievements:ACHIEVEMENT_FRIENDLY_FREDDY" points="25">
+		<qualifications>
+			<qualification name="friends" count="10" mutual="1" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="kind_kim" title="achievements:ACHIEVEMENT_KIND_KIM" points="50">
+		<qualifications>
+			<qualification name="giftr" count="5" />
+			<qualification name="points_used" count="250" sent_only="1" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="staff_roster" image="icons_monochrome/menu/social/groups" title="achievements:ACHIEVEMENT_STAFF_ROSTER" permanent="1">
+		<qualifications>
+			<qualification name="group" ids="2,3" />
+		</qualifications>
+		<qualifications>
+			<qualification name="page_access" page="home" zone="adminzone" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="invite_might" image="icons_monochrome/spare/referrals" title="achievements:ACHIEVEMENT_INVITE_MIGHT" points="100">
+		<qualifications>
+			<qualification name="invites" count="5" taken_only="1" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="leader_board_dominator" image="icons_monochrome/menu/social/leader_board" title="achievements:ACHIEVEMENT_LEADER_BOARD_DOMINATOR" points="100" permanent="1">
+		<qualifications>
+			<qualification name="leader_board" count="3" rank="3" earners_only="1" days="90" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="points_master" image="icons_monochrome/menu/social/points" title="achievements:ACHIEVEMENT_POINTS_MASTER">
+		<qualifications>
+			<qualification name="points_received" count="1000" rank="1" earned_only="1" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="speak_up" image="icons_monochrome/spare/opinion" title="achievements:ACHIEVEMENT_SPEAK_UP" points="100">
+		<qualifications>
+			<qualification name="poll_votes" count="10" />
+		</qualifications>
+		<qualifications>
+			<qualification name="topic_poll_votes" count="20" />
+		</qualifications>
+		<qualifications>
+			<qualification name="quiz_entries" count="5" competitions="0" tests="0" surveys="1" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="getting_seen" image="icons_monochrome/menu/social/profile" title="achievements:ACHIEVEMENT_GETTING_SEEN" points="25">
+		<qualifications>
+			<qualification name="profile_views" count="100" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="quizzer" image="icons_monochrome/menu/rich_content/quiz" title="achievements:ACHIEVEMENT_QUIZZER" points="100">
+		<qualifications>
+			<qualification name="quiz_entries" count="5" winner_only="1" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="rater_tater" image="icons_monochrome/feedback/rate" title="achievements:ACHIEVEMENT_RATER_TATER" points="25">
+		<qualifications>
+			<qualification name="ratings" count="25" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="tracker_master_9000" image="icons_monochrome/spare/report_usability" title="achievements:ACHIEVEMENT_TRACKER_MASTER_9000" points="100">
+		<qualifications>
+			<qualification name="tracker" count="10" />
+		</qualifications>
+	</achievement>
+
+	<achievement name="doc_on_the_block" image="icons_monochrome/content_types/page" title="achievements:ACHIEVEMENT_DOC_ON_THE_BLOCK" points="100">
+		<qualifications>
+			<qualification name="tutorials" count="3" />
+		</qualifications>
+	</achievement>
+</achievements>

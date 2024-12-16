@@ -35,7 +35,7 @@ class Module_newsletter
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 14;
+        $info['version'] = 15;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -128,7 +128,7 @@ class Module_newsletter
                 'id' => '*AUTO',
                 'd_inject_time' => 'TIME',
                 'd_message_id' => 'AUTO_LINK',
-                'd_message_binding' => 'LONG_TEXT',
+                'd_message_binding' => 'LONG_TEXT', // TODO: #6074
                 'd_to_email' => 'SHORT_TEXT',
                 'd_to_name' => 'SHORT_TEXT',
             ]);
@@ -140,12 +140,12 @@ class Module_newsletter
                 'np_message' => 'LONG_TEXT',
                 'np_subject' => 'LONG_TEXT',
                 'np_lang' => 'LANGUAGE_NAME',
-                'np_send_details' => 'LONG_TEXT',
+                'np_send_details' => 'SERIAL',
                 'np_html_only' => 'BINARY',
                 'np_from_email' => 'SHORT_TEXT',
                 'np_from_name' => 'SHORT_TEXT',
                 'np_priority' => 'SHORT_INTEGER',
-                'np_spreadsheet_data' => 'LONG_TEXT',
+                'np_spreadsheet_data' => 'LONG_TEXT', // TODO: #6074
                 'np_frequency' => 'SHORT_TEXT',
                 'np_day' => 'SHORT_INTEGER',
                 'np_in_full' => 'BINARY',
@@ -211,6 +211,10 @@ class Module_newsletter
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('newsletter_archive', 'date_and_time', 'TIME');
             $GLOBALS['SITE_DB']->alter_table_field('newsletter_periodic', 'np_last_sent', 'TIME', 'np_last_sent_time');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 15)) { // LEGACY: 11.beta6
+            $GLOBALS['SITE_DB']->alter_table_field('np_send_details', 'np_send_details', 'SERIAL');
         }
     }
 

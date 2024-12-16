@@ -494,7 +494,7 @@ function lex($text = null)
                         if (!in_array($token_found, ['COMMA', 'DOUBLE_ARROW'])) { // We don't count array definitions, etc
                             $tokens_since_comment++;
                             if ((!empty($GLOBALS['FLAG__PEDANTIC'])) && ($tokens_since_comment > 200)) {
-                                log_warning('Bad comment density', $i, true);
+                                log_warning('Bad comment density. You might need to split this code up and add more comments.', $i, true);
                                 $tokens_since_comment = 0;
                             }
                         }

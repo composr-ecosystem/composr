@@ -94,6 +94,8 @@ class Hook_health_check_cloudinary extends Hook_Health_Check
             $this->assertTrue(false, 'Cloudinary error: ' . $errormsg);
         }
 
-        cms_ini_set('ocproducts.type_strictness', $before);
+        if ($before !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before);
+        }
     }
 }

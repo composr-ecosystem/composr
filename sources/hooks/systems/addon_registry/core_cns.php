@@ -522,6 +522,7 @@ class Hook_addon_registry_core_cns
             'themes/default/templates/CNS_VIEW_GROUP_SCREEN.tpl',
             'themes/default/templates/POSTING_FIELD.tpl',
             'themes/default/text/PARENTAL_CONSENT_MAIL.txt',
+            'themes/default/text/RULES_CONFIRMATION_MAIL.txt',
         ];
     }
 

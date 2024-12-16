@@ -469,6 +469,7 @@ function init__global2()
 
     if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
         // Before anything gets outputted
+        require_code('users');
         handle_logins();
 
         require_code('site'); // This powers the site (top level page generation)

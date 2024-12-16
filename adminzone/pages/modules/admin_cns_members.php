@@ -652,7 +652,7 @@ class Module_admin_cns_members
             $sql .= ' id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
             $sql .= ' AND id<>' . strval(get_member());
             if ($max_posts > 0) {
-                $sql .= 'AND m_cache_num_posts<=' . strval($max_posts);
+                $sql .= ' AND m_cache_num_posts<=' . strval($max_posts);
             }
             if ($min_days_since_login > 0) {
                 $sql .= ' AND m_last_visit_time<' . strval(time() - $min_days_since_login * 60 * 60 * 24);

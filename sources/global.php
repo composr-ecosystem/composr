@@ -15,7 +15,7 @@
 /*EXTRA FUNCTIONS: strtoupper|strtolower*/
 
 /*
-    initial bootstrap loaded by any frontend script
+    secondary bootstrap loaded after bootstrap.php by any front-end script
 */
 
 /**
@@ -134,48 +134,56 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                 // We need to identify the new functions and classes. Ideally we'd use get_defined_functions and get_declared_classes, and do a diff before/after - but this does a massive amount of memory access
                 $function_matches = [];
                 $possible_new_functions = [];
+                $has_new = false;
                 $num_function_matches = preg_match_all('#\sfunction\s+(\w+)\(#', $custom, $function_matches);
                 for ($i = 0; $i < $num_function_matches; $i++) {
-                    $possible_new_function = $function_matches[1][$i];
-                    if (!function_exists($possible_new_function)) {
-                        $possible_new_functions[] = $possible_new_function;
-                    }
+                    $possible_new_functions[] = $function_matches[1][$i];
                 }
                 $class_matches = [];
                 $possible_new_classes = [];
                 $num_class_matches = preg_match_all('#\sclass\s+(\w+)#', $custom, $class_matches);
                 for ($i = 0; $i < $num_class_matches; $i++) {
-                    $possible_new_class = $class_matches[1][$i];
-                    if (!class_exists($possible_new_class)) {
-                        $possible_new_classes[] = $possible_new_class;
-                    }
+                    $possible_new_classes[] = $class_matches[1][$i];
                 }
 
-                call_included_code($path_custom, $codename, $light_exit); // Include our custom
+                // We need to also get the functions and classes from the original
+                $function_matches = [];
+                $orig_functions = [];
+                $num_function_matches = preg_match_all('#\sfunction\s+(\w+)\(#', $orig, $function_matches);
+                for ($i = 0; $i < $num_function_matches; $i++) {
+                    $orig_functions[] = $function_matches[1][$i];
+                }
+                $class_matches = [];
+                $orig_classes = [];
+                $num_class_matches = preg_match_all('#\sclass\s+(\w+)#', $orig, $class_matches);
+                for ($i = 0; $i < $num_class_matches; $i++) {
+                    $orig_classes[] = $class_matches[1][$i];
+                }
 
                 $functions_diff = [];
                 foreach ($possible_new_functions as $possible_new_function) {
-                    if (function_exists($possible_new_function)) {
+                    if (in_array($possible_new_function, $orig_functions)) {
                         $functions_diff[] = $possible_new_function;
+                    } else {
+                        $has_new = true;
                     }
                 }
                 $classes_diff = [];
                 foreach ($possible_new_classes as $possible_new_class) {
-                    if (class_exists($possible_new_class)) {
+                    if (in_array($possible_new_class, $orig_classes)) {
                         $classes_diff[] = $possible_new_class;
+                    } else {
+                        $has_new = true;
                     }
                 }
 
-                $pure = true; // We will set this to false if it does not have all functions the main one has. If it does have all functions we know we should not run the original init, as it will almost certainly just have been the same code copy&pasted through.
-                $overlaps = false;
                 $strpos_func = 'strpos';
                 $str_replace_func = 'str_replace';
+                $overlaps = false;
                 foreach ($functions_diff as $function) { // Go through override's functions and make sure original doesn't have them: rename original's to non_overridden__ equivs.
                     if ($strpos_func($orig, 'function ' . $function . '(') !== false) { // NB: If this fails, it may be that "function\t" is in the file (you can't tell with a three-width proper tab)
                         $orig = $str_replace_func('function ' . $function . '(', 'function non_overridden__' . $function . '(', $orig);
                         $overlaps = true;
-                    } else {
-                        $pure = false;
                     }
                 }
                 foreach ($classes_diff as $class) {
@@ -185,48 +193,40 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     if (cms_strtolower_ascii(substr($class, 0, 4)) === 'hook') {
                         $class = cms_ucfirst_ascii($class);
                     }
-
                     if (strpos($orig, 'class ' . $class) !== false) {
                         $orig = str_replace('class ' . $class, 'class non_overridden__' . $class, $orig);
                         $overlaps = true;
-                    } else {
-                        $pure = false;
                     }
                 }
 
-                // See if we can get away with loading init function early. If we can we do a special version of it that supports fancy code modification. Our override isn't allowed to call the non-overridden init function as it won't have been loaded up by PHP in time. Instead though we will call it ourselves if it still exists (hasn't been removed by our own init function) because it likely serves a different purpose to our code-modification init function and copy&paste coding is bad.
-                $doing_code_modifier_init = function_exists($init_func);
-                if ($doing_code_modifier_init) {
-                    $test = call_user_func_array($init_func, [$orig]);
-                    if (is_string($test)) {
-                        $orig = $test;
-                    }
-                    $done_init = true;
-                    if ((count($functions_diff) === 1) && (count($classes_diff) === 0)) {
-                        $pure = false;
-                    }
-                }
+                // Compile in custom code (we do not need a _compiled file by default)
+                $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
 
-                if (!$doing_code_modifier_init && !$overlaps) { // To make stack traces more helpful and help with opcode caching
-                    call_included_code($path_orig, $codename, $light_exit);
+                // Compile in original code (pass in $orig code if we modified it so a _compiled file is generated)
+                if ($overlaps == true) {
+                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $orig);
                 } else {
-                    call_included_code($path_orig, $codename, $light_exit, $orig); // Load up modified original
+                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
                 }
 
-                if ((!$pure) && ($doing_code_modifier_init) && (function_exists('non_overridden__init__' . str_replace('/', '__', str_replace('.php', '', $codename))))) {
-                    call_user_func('non_overridden__init__' . str_replace('/', '__', str_replace('.php', '', $codename)));
-                }
+                // We are clear to call the compiled code now
+                call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
+                call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
             } else {
                 // Note we load the original and then the override. This is so function_exists can be used in the overrides (as we can't support the re-definition) OR in the case of Mx_ class derivation, so that the base class is loaded first.
+                $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
+                $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
 
-                call_included_code($path_orig, $codename, $light_exit);
-
-                call_included_code($path_custom, $codename, $light_exit);
+                // We are clear to call the compiled code now
+                call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
+                call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
             }
         } else {
             // Have a custom but no original...
 
-            call_included_code($path_custom, $codename, $light_exit);
+            $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
+
+            call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
         }
 
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -248,7 +248,9 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
     } else {
         // Have an original and no custom (no override)...
 
-        call_included_code($path_orig, $codename, $light_exit);
+        $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
+
+        call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
 
         // Optional process tracking (has to run before init function called)
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -276,6 +278,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 
 /**
  * Require code, but without looking for sources_custom overrides.
+ * This also bypasses special DEV_MODE declare strict_types as this uses require_once and not eval.
  *
  * @param  string $codename The codename for the source module to load
  */
@@ -313,23 +316,143 @@ function clean_php_file_for_eval(string $c, ?string $path = null) : string
 }
 
 /**
- * Run some code that is to be included. Bail out on failure.
+ * Compile some code into the _compiled directory if we need to for later inclusion by call_compiled_code.
  *
- * @param  string $path File path
+ * @param  string $orig_path File path
  * @param  string $codename The codename for the source module to load
- * @param  boolean $light_exit Whether to cleanly fail when a source file is missing
- * @param  ?string $code File contents (null: use include not eval, which we prefer when possible as we benefit from opcode caching)
+ * @param  boolean $light_exit Whether to cleanly fail when an error occurs
+ * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled if we do not need one)
+ * @return boolean Whether we should delete any existing _compiled files for this, through call_compiled_code
  */
-function call_included_code(string $path, string $codename, bool $light_exit, ?string $code = null)
+function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : bool
 {
+    // Files which have been compiled already will be tracked here; the next time this function runs, we assume we are appending onto the compiled file.
+    // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
+    static $already_compiled = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
+
+    $path = $orig_path; // $path tracks the actual file for inclusion
+    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '\\'], ['', '', '', ''], $orig_path);
+    $compiled_relative_path = '_compiled/' . $relative_path;
+    $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
+
+    // If we already compiled this file, exit out
+    $done_this = isset($already_compiled[$relative_path]);
+    if ($done_this) {
+        return false;
+    }
+
+    // Untouchable third-party code should never be compiled by the software.
+    $exceptions = list_untouchable_third_party_directories();
+    if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $relative_path) != 0) {
+        return true;
+    }
+    $exceptions = list_untouchable_third_party_files();
+    if (in_array($relative_path, $exceptions)) {
+        return true;
+    }
+
+    // Run contentious overrides (but not on themselves)
     if ((function_exists('find_all_hook_obs')) && (strpos($codename, 'sources_custom/hooks/systems/contentious_overrides') !== 0)) {
         $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
         foreach ($override_hooks as $hook_ob) {
-            if (method_exists($hook_ob, 'call_included_code')) {
-                $hook_ob->call_included_code($path, $codename, /*Passed by reference*/$code);
+            if (method_exists($hook_ob, 'compile_included_code')) {
+                $hook_ob->compile_included_code($orig_path, $codename, /*Passed by reference*/$code);
             }
         }
+        unset($override_hooks); // Free up memory when we are done
     }
+
+    $prepend = ''; // NB: Must begin with a space if populated
+
+    // Code must be able to compile into a PHP file (unless we are appending)
+    if (($code !== null) && (strpos('<' . '?php ', $code) === false)) {
+        $code = '<' . '?php' . $code;
+    }
+
+    // In DEV_MODE, declare PHP strict_types at the top unless "No strict_types" is commented.
+    if ($GLOBALS['DEV_MODE']) {
+        if ($code === null) {
+            $code = file_get_contents($path);
+        }
+         if (strpos($code, '/*No strict_types*/') === false) {
+            $prepend .= ' declare(strict_types=1);';
+        }
+    }
+
+    if ($code !== null) {
+        $recompile = false;
+
+        // Create missing directories
+        if (!is_dir(dirname($compiled_path))) {
+            if (@mkdir(dirname($compiled_path), 0777, true) === false) {
+                if (!is_dir(dirname($compiled_path))) { // Maybe another process beat us to creating it?
+                    $error_message = 'Cannot create directory ' . dirname($compiled_relative_path) . ' for compiling source PHP scripts. Maybe you do not have the correct file permissions?';
+                    if (function_exists('fatal_exit')) {
+                        fatal_exit($error_message, true);
+                    } else {
+                        require_code('critical_errors');
+                        critical_error('PASSON', $error_message);
+                    }
+                }
+            } else {
+                file_put_contents(dirname($compiled_path) . '/index.html', '');
+            }
+        }
+
+        // Prepare code
+        $prepend .= ' /* DO NOT EDIT THIS FILE; this is a temporary compiled file. Instead, edit ' . $relative_path . ' and its overrides. */';
+        $code = str_replace('<' . '?php ', '<' . '?php' . $prepend, $code);
+
+        // Write operations are very time-consuming; don't write if the contents of the PHP file will not change.
+        if (!is_file($compiled_path)) {
+            $recompile = true;
+        } else {
+            $file_hash = @hash_file('crc32', $compiled_path); // Might throw a permission denied if locked
+            if ((!is_string($file_hash)) || ($file_hash != hash('crc32', $code))) {
+                $recompile = true;
+            }
+        }
+
+        if ($recompile === true) {
+            // Keep trying to write for 5 seconds; there might be parallel processes compiling files
+            $time = microtime(true);
+            while (file_put_contents($compiled_path, $code, LOCK_EX | LOCK_NB) === false) {
+                if ((microtime(true) - $time) > 5.0) {
+                    $error_message = 'Cannot write file ' . $compiled_relative_path;
+                    if (function_exists('fatal_exit')) {
+                        fatal_exit($error_message, true);
+                    } else {
+                        require_code('critical_errors');
+                        critical_error('PASSON', $error_message);
+                    }
+                }
+
+                usleep(250000);
+            }
+
+            clearstatcache(true, $compiled_path);
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Include some code for use within the software (after we ran compile_included_code on it).
+ * If a _compiled file version is available, we will use that one instead of the original.
+ *
+ * @param  string $orig_path The file path to the original file (not the compiled one)
+ * @param  string $codename The codename for the source module to load
+ * @param  boolean $light_exit Whether to cleanly fail when an error occurs
+ * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file, if it exists
+ */
+function call_compiled_code(string $path, string $codename, bool $light_exit, bool $delete_compiled = false)
+{
+    // These files have already been required in by this function.
+    // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
+    static $already_called = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
 
     $do_sed = function_exists('push_suppress_error_death');
     if ($do_sed) {
@@ -341,11 +464,51 @@ function call_included_code(string $path, string $codename, bool $light_exit, ?s
     }
     $errormsg_before = error_get_last();
 
-    try {
-        if ($code === null) {
-            $result = include($path);
+    $relative_path = str_replace([get_custom_file_base() . '/', get_file_base() . '/', get_custom_file_base() . '\\', get_file_base() . '\\'], ['', '', '', ''], $path);
+    $compiled_relative_path = '_compiled/' . $relative_path;
+    $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
+
+    if (is_file($compiled_path)) {
+        if ($delete_compiled) {
+            clearstatcache(true, $compiled_path);
+            @unlink($compiled_path);
+
+            $calling_path = $path;
+            $calling_relative_path = $relative_path;
+            clearstatcache(true, $path);
         } else {
-            $result = eval($code);
+            $calling_path = $compiled_path;
+            $calling_relative_path = $compiled_relative_path;
+        }
+    } else {
+        $calling_path = $path;
+        $calling_relative_path = $relative_path;
+    }
+
+    // If we already included this file, just exit
+    if (isset($already_called[$calling_path])) {
+        return;
+    }
+
+    try {
+        $already_called[$calling_path] = true;
+
+        // We need to wait (but not too long) for locks to be released before we can include the file
+        $time = microtime(true);
+        $file = fopen($calling_path, 'r');
+        while (flock($file, LOCK_SH | LOCK_NB) === false) {
+            if ((microtime(true) - $time) > 5.0) {
+                throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
+            }
+
+            usleep(100000);
+        }
+
+        $result = require $calling_path;
+
+        if ($file !== false) {
+            fclose($file);
+            $file = false;
         }
 
         if ($result === false) {
@@ -375,21 +538,38 @@ function call_included_code(string $path, string $codename, bool $light_exit, ?s
 
     if ($errormsg != '') {
         if (!function_exists('do_lang')) {
-            if (!is_file($path)) {
+            if (!is_file($calling_path)) {
+                require_code('critical_errors');
                 critical_error('MISSING_SOURCE', $codename);
             }
         }
 
         if ((!function_exists('do_lang')) || (!function_exists('fatal_exit')) || ($codename === 'failure')) {
-            critical_error('PASSON', $errormsg . ' in ' . $path);
+            require_code('critical_errors');
+            critical_error('PASSON', $errormsg . ' in ' . $calling_relative_path);
         }
 
-        $error_lang_str = (is_file($path) ? 'CORRUPT_SOURCE_FILE' : 'MISSING_SOURCE_FILE');
-        $error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($path), $errormsg);
-        if ($light_exit) {
-            warn_exit($error_message, false, true);
+        // We need to be careful of the potential that a lot of these functions have not been loaded up yet
+        $error_lang_str = (is_file($calling_path) ? 'CORRUPT_SOURCE_FILE' : 'MISSING_SOURCE_FILE');
+        if (function_exists('do_lang_tempcode')) {
+            $error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($calling_relative_path), escape_html($errormsg));
+        } else {
+            $error_message = $error_lang_str . ': ' . escape_html($codename) . '; ' . escape_html($calling_relative_path) . '; ' . escape_html($errormsg);
         }
-        fatal_exit($error_message);
+        if ($light_exit) {
+            if (function_exists('warn_exit')) {
+                warn_exit($error_message, false, true);
+            } else {
+                require_code('critical_errors');
+                critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
+            }
+        }
+        if (function_exists('fatal_exit')) {
+            fatal_exit($error_message, true);
+        } else {
+            require_code('critical_errors');
+            critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
+        }
     }
 }
 
@@ -483,7 +663,7 @@ function override_str_replace_exactly($search, $replace, $subject, int $times = 
  */
 function appengine_is_live() : bool
 {
-    return (GOOGLE_APPENGINE) && (!is_writable(get_file_base() . '/sources/global.php'));
+    return (GOOGLE_APPENGINE) && (!is_writable(get_file_base() . '/sources/bootstrap.php'));
 }
 
 /**
@@ -1043,6 +1223,138 @@ function cms_safe_exit_flow()
     }
 }
 
+/**
+ * Get a list of third-party directories we should not touch with standard software processes.
+ *
+ * @return array List of relative directories
+ */
+function list_untouchable_third_party_directories() : array
+{
+    return [
+        'caches',
+        'data/ace',
+        'data/ckeditor',
+        'data/ckeditor/plugins/codemirror',
+        'data_custom/ckeditor',
+        'data_custom/pdf_viewer',
+        'data/polyfills',
+        'docs/api',
+        'docs/api-template',
+        'docs/jsdoc',
+        'exports',
+        'imports',
+        'mobiquo/lib',
+        'mobiquo/smartbanner',
+        'nbproject',
+        '_old',
+        //'sources/diff', We maintain this now
+        'sources_custom/aws_ses',
+        'sources_custom/Cloudinary',
+        'sources_custom/composr_mobile_sdk',
+        'sources_custom/imap',
+        'sources_custom/geshi',
+        'sources_custom/getid3',
+        'sources_custom/sabredav',
+        'sources_custom/openspout',
+        'sources_custom/swift_mailer',
+        'sources_custom/Transliterator',
+        'sources_custom/hybridauth',
+        'temp',
+        '_tests/assets',
+        '_tests/codechecker',
+        '_tests/html_dump',
+        '_tests/screens_tested',
+        '_tests/simpletest',
+        'themes/admin/templates_cached/EN',
+        'themes/default/templates_cached/EN',
+        'themes/_unnamed_/templates_cached/EN',
+        'tracker',
+        'uploads/website_specific/test',
+        'vendor',
+    ];
+}
+
+/**
+ * Get a list of third-party files we should not touch with standard software processes.
+ *
+ * @return array List of relative files to not touch
+ */
+function list_untouchable_third_party_files() : array
+{
+    return [
+        //'sources/crc24.php', We maintain this now
+        '_config.php',
+        'aps/test/TEST-META.xml',
+        'aps/test/composrIDEtest.xml',
+        'data/curl-ca-bundle.crt',
+        'data_custom/errorlog.php',
+        'data_custom/execute_temp.php',
+        'data_custom/webfonts/adgs-icons.svg',
+        'data/modules/admin_stats/IP_Country.txt',
+        'install.sql',
+        'mobiquo/lib/xmlrpc.php',
+        'mobiquo/lib/xmlrpcs.php',
+        'mobiquo/license_agreement.txt',
+        'mobiquo/smartbanner/appbanner.css',
+        'mobiquo/smartbanner/appbanner.js',
+        'mobiquo/tapatalkdetect.js',
+        'sources_custom/browser_detect.php',
+        'sources_custom/curl.php',
+        'sources_custom/geshi.php',
+        'sources_custom/sugar_crm_lib.php',
+        'sources/firephp.php',
+        //'sources/jsmin.php', We maintain this now
+        //'sources/lang_stemmer_EN.php', We maintain this now
+        'sources/mail_dkim.php',
+        '_tests/codechecker/codechecker.ini',
+        '_tests/codechecker/nbactions.xml',
+        '_tests/codechecker/pom.xml',
+        '_tests/libs/mf_parse.php',
+        'themes/default/css_custom/columns.css',
+        'themes/default/css_custom/confluence.css',
+        'themes/default/css_custom/flip.css',
+        'themes/default/css_custom/google_search.css',
+        'themes/default/css/skitter.css',
+        'themes/default/css_custom/sortable_tables.css',
+        'themes/default/css_custom/unslider.css',
+        'themes/default/css/mediaelementplayer.css',
+        'themes/default/css/widget_color.css',
+        'themes/default/css/widget_plupload.css',
+        'themes/default/css/widget_select2.css',
+        'themes/default/css/toastify.css',
+        'themes/default/javascript/charts.js',
+        'themes/default/javascript_custom/columns.js',
+        'themes/default/javascript_custom/confluence2.js',
+        'themes/default/javascript_custom/confluence.js',
+        'themes/default/javascript_custom/jquery_flip.js',
+        'themes/default/javascript/skitter.js',
+        'themes/default/javascript_custom/sortable_tables.js',
+        'themes/default/javascript_custom/tag_cloud.js',
+        'themes/default/javascript_custom/unslider.js',
+        'themes/default/javascript/glide.js',
+        'themes/default/javascript/jquery.js',
+        'themes/default/javascript/webfontloader.js',
+        'themes/default/javascript/_json5.js',
+        'themes/default/javascript/masonry.js',
+        'themes/default/javascript/mediaelement-and-player.js',
+        'themes/default/javascript/modernizr.js',
+        'themes/default/javascript/plupload.js',
+        'themes/default/javascript/select2.js',
+        'themes/default/javascript/sound.js',
+        'themes/default/javascript/toastify.js',
+        'themes/default/javascript/widget_color.js',
+        'themes/default/javascript/xsl_mopup.js',
+        'themes/default/javascript/cookie_consent.js',
+        'themes/default/javascript/_polyfill_fetch.js',
+        'themes/default/javascript/_polyfill_general.js',
+        'themes/default/javascript/_polyfill_keyboardevent_key.js',
+        'themes/default/javascript/_polyfill_url.js',
+        'themes/default/javascript/_polyfill_web_animations.js',
+        'themes/default/javascript/jquery_autocomplete.js',
+        'themes/default/css/toastify.css',
+    ];
+}
+
 // Useful for basic profiling
 global $PAGE_START_TIME;
 $PAGE_START_TIME = microtime(true);
@@ -1119,31 +1431,9 @@ if (is_file($FILE_BASE . '/sources_custom/critical_errors.php')) {
     }
 }
 
-// Load up config file
+// NB: bootstrap should have loaded $SITE_INFO already, but bootstrap does not actually check if it's missing because it's not critical until global.php
 global $SITE_INFO;
-/** Site base configuration settings.
- *
- * @global array $SITE_INFO
- */
-$SITE_INFO = [];
-@include($FILE_BASE . '/_config.php');
-if (empty($SITE_INFO)) {
-    // LEGACY
-    if ((!is_file($FILE_BASE . '/_config.php')) && (is_file($FILE_BASE . '/info.php'))) {
-        @copy($FILE_BASE . '/info.php', $FILE_BASE . '/_config.php');
-        if (is_file($FILE_BASE . '/_config.php')) {
-            $new_config_file = file_get_contents($FILE_BASE . '/_config.php');
-            $new_config_file = str_replace(['ocf_table_prefix', 'use_mem_cache', 'ocp_member_id', 'ocp_member_hash', 'ocf', 'admin_password', 'master_password'], ['cns_table_prefix', 'use_persistent_cache', 'cms_member_id', 'cms_member_hash', 'cns', 'maintenance_password', 'maintenance_password'], $new_config_file);
-            $new_config_file = str_replace(']=\'', '] = \'', $new_config_file); // Clean up formatting to new convention
-            file_put_contents($FILE_BASE . '/_config.php', $new_config_file, LOCK_EX);
-        } else {
-            exit('Error, cannot rename info.php to _config.php: check the Composr upgrade instructions');
-        }
-        @include($FILE_BASE . '/_config.php');
-    }
-}
-
-if (empty($SITE_INFO)) {
+if (!is_array($SITE_INFO) || (count($SITE_INFO) == 0) || (empty($SITE_INFO))) {
     if (!is_file($FILE_BASE . '/_config.php')) {
         critical_error('_CONFIG.PHP_MISSING');
     } elseif (strlen(trim(file_get_contents($FILE_BASE . '/_config.php'))) == 0) {

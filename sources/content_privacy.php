@@ -42,6 +42,11 @@ function get_privacy_where_clause(string $content_type, string $table_alias, ?in
         return $pass_thru;
     }
 
+    // This could happen if we could not convert a different type to a content type
+    if ($content_type == '') {
+        return $pass_thru;
+    }
+
     if (($content_type[0] == '_') && ($content_type != '_photo')) {
         return $pass_thru; // FUDGE: No privacy individually set on custom content catalogue entries, and don't want to give default restrictions
     }

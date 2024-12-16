@@ -934,10 +934,7 @@ class Advanced_banning_loader
         if (function_exists('libxml_disable_entity_loader')) {
             @libxml_disable_entity_loader(); // LEGACY
         }
-        $xml_parser = @xml_parser_create(get_charset());
-        if ($xml_parser === false) {
-            return [[], [], []]; // PHP5 default build on windows comes with this function disabled, so we need to be able to escape on error
-        }
+        $xml_parser = xml_parser_create(get_charset());
         xml_set_object($xml_parser, $this);
         @xml_parser_set_option($xml_parser, XML_OPTION_TARGET_ENCODING, get_charset());
         xml_set_element_handler($xml_parser, 'startElement', 'endElement');

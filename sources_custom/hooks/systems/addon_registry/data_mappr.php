@@ -188,8 +188,8 @@ Coordinates of the Google map centre point and zoom level are configurable. You 
         return [
             'lang_custom/EN/google_map.ini',
             'sources_custom/blocks/main_google_map.php',
-            'sources_custom/catalogues2.php',
             'sources_custom/hooks/systems/addon_registry/data_mappr.php',
+            'sources_custom/hooks/systems/contentious_overrides/data_mappr.php',
             'sources_custom/hooks/systems/fields/float.php',
             'sources_custom/hooks/systems/trusted_sites/data_mappr.php',
             'sources_custom/hooks/systems/upon_query/google_maps.php',

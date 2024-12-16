@@ -30,7 +30,7 @@ class Module_admin_cmsusers
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 8;
+        $info['version'] = 9;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -98,6 +98,7 @@ class Module_admin_cmsusers
                 'error_message' => 'LONG_TEXT',
                 'error_hash' => 'SHORT_TEXT',
                 'error_count' => 'INTEGER',
+                'refs_compiled' => 'BINARY', // Whether this error references _compiled code; 0 always means the error is in original Composr code, but 1 does *not* always mean the error is in custom / user code.
                 'resolved' => 'BINARY',
                 'note' => 'LONG_TRANS__COMCODE',
             ]);
@@ -125,6 +126,10 @@ class Module_admin_cmsusers
 
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY: 11.beta3
             $GLOBALS['SITE_DB']->add_table_field('logged', 'addons_installed', 'LONG_TEXT', '');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta6
+            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'refs_compiled', 'BINARY');
         }
     }
 
@@ -393,6 +398,7 @@ class Module_admin_cmsusers
         $filter_website = get_param_string('filter_website', '');
         $filter_error_message = get_param_string('filter_error_message', '');
         $filter_show_resolved = get_param_integer('filter_show_resolved', 0);
+        $filter_show_compiled = get_param_integer('filter_show_compiled', 1);
         //$filter_from = post_param_date('filter_from', true);
         //$filter_to = post_param_date('filter_to', true);
 
@@ -407,6 +413,9 @@ class Module_admin_cmsusers
         }
         if ($filter_show_resolved == 0) {
             $where['resolved'] = 0;
+        }
+        if ($filter_show_compiled == 0) {
+            $where['refs_compiled'] = 0;
         }
 
         // Query
@@ -439,6 +448,7 @@ class Module_admin_cmsusers
             do_lang_tempcode('IDENTIFIER'),
             do_lang_tempcode('URL'),
             do_lang_tempcode('ERROR_SUMMARY'),
+            do_lang_tempcode('ERROR_REFS_COMPILED'),
             do_lang_tempcode('FIRST_REPORTED'),
             do_lang_tempcode('LAST_REPORTED'),
             do_lang_tempcode('VERSION'),
@@ -473,6 +483,7 @@ class Module_admin_cmsusers
                 $id,
                 $website_url,
                 $summary,
+                (($myrow['refs_compiled'] == 1) ? do_lang('YES') : do_lang('NO')),
                 $first_date,
                 $last_date,
                 $myrow['e_version'],
@@ -546,6 +557,7 @@ class Module_admin_cmsusers
         $first_date = get_timezoned_date_time($row['first_date_and_time'], false);
         $last_date = get_timezoned_date_time($row['last_date_and_time'], false);
         $resolved = ($row['resolved'] == 1);
+        $refs_compiled = ($row['refs_compiled'] == 1);
 
         $buttons = new Tempcode();
 
@@ -564,12 +576,13 @@ class Module_admin_cmsusers
         $fields = [
             'IDENTIFIER' => $formatted_id,
             'URL' => $website_url,
+            'ERROR_REFS_COMPILED' => $refs_compiled ? do_lang('YES') : do_lang('NO'),
             'ERROR_MESSAGE' => $row['error_message'],
             'FIRST_REPORTED' => $first_date,
             'LAST_REPORTED' => $last_date,
             'VERSION' => $row['e_version'],
             'TIMES_REPORTED' => integer_format($row['error_count']),
-            'RESOLVED' => $resolved ? do_lang('YES') : do_lang('NO')
+            'RESOLVED' => $resolved ? do_lang('YES') : do_lang('NO'),
         ];
 
         $title = get_screen_title('CMS_SITE_ERROR', true, [integer_format($id)]);

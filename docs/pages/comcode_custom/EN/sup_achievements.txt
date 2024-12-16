@@ -1,0 +1,127 @@
+[title sub="Written by Patrick Schmalstig"]Composr Supplementary: Adding an achievements system[/title]
+
+[media width="150" description="List of achievements and progress towards unlocking them" float="right"]data_custom/images/docs/sup_achievements/achievements.png[/media]
+The {$IS_MAINTAINED,achievements,Achievements non-bundled addon} allows Composr webmasters to set up an achievements system on their website. Achievements are publicly-viewable badges which can be unlocked when meeting certain requirements such as submitting content. These badges, once unlocked, are viewable on a member's profile page and, when using Conversr, on every forum post they made.
+
+[contents]decimal,lower-alpha[/contents]
+
+[title="2"]Installing the achievements addon[/title]
+The first thing you will need to do to is install the addon; achievements is non-bundled and not included with Composr by default. To do this:
+[list="1"]
+[*] Go to the Admin Zone
+[*] Navigate to the Structure section of the Admin Zone menu
+[*] Choose the Addons icon
+[*] Scroll down and choose "Import non-bundled addon(s)"
+[*] Click Download and choose the Community category
+[*] Choose achievements
+[*] Scroll down and click the "Import non-bundled addon(s)" button
+[*] The next screen shows all of the files which will be edited or installed. Check this list carefully if you have manually edited files to make sure nothing is being overwritten which will break your site. If you are happy you can click Proceed.
+[/list]
+
+Once installed, achievements will begin working immediately. There is a default XML file with a list of default achievements that is included with the addon. This will help you quickly get started with the achievements system.
+
+[title="2"]Achievements module[/title]
+The achievements module will be immediately available on your website (usually the site zone). When you or any members go to this page, it will list all publicly-visible achievements, the member's progress towards unlocking them, and the requirements for unlocking them.
+
+[title="3"]Notes about how progress is calculated[/title]
+Under each achievement title is a progress bar. This progress bar gives a visual indication of how close a member is to unlocking that achievement. There are special considerations with how this progress bar calculates progress:
+ - Achievements can have multiple sets of requirements; this is treated as an "or" condition where members only have to satisfy the requirements of one of those sets. As such, the progress bar will represent whichever set is closest to 100% completion.
+ - The progress bar is virtually split up into equal parts, one for each requirement. For example, let's say there are two requirements; one has 5/10 and the other 70/100 completion. Despite one requirement having 10 items and the other 100 items, they each get 50% of the progress bar.
+  - The first requirement is 5/10 (or 50%) complete. Since it gets 50% of the progress bar, 50% of 50% is 25%, so that adds 25% to the progress bar.
+  - The second requirement is 70/100 (or 70%) complete. Since it gets 50% of the progress bar, 50% of 70% is 35%, so this adds 35% to the progress bar.
+  - Therefore, the total progress so far for the achievement is 25% + 35%, or 60%.
+  - Any requirements with a simple satisfied / not satisfied will add, respectfully, 100% or 0% of their portion to the bar.
+
+[title="2"]Public visibility[/title]
+[surround]
+[media width="150" description="Unlocked achievements on a profile (under the Karma bar)" float="left"]data_custom/images/docs/sup_achievements/achievements_profile.png[/media]
+[media width="150" description="Unlocked achievements on a forum post (under the Karma bar)" float="left"]data_custom/images/docs/sup_achievements/achievements_forum_post.png[/media]
+[/surround]
+There are two locations in which a member's unlocked achievements will be publicly visible to all other members and guests: profile pages and (if using Conversr) forum posts. Both utilise the block [tt]main_achievements[/tt].
+
+Hovering over any achievement will display the name of the achievement and the date/time the member earned it. Clicking on an achievement will take you to the achievements module and will scroll down to the achievement you clicked. This allows you to read up on the achievement, its requirements, and your own progress towards unlocking it.
+
+[title="2"]XML Configuration[/title]
+[surround]
+[media width="150" description="XML configuration for achievements" float="left"]data_custom/images/docs/sup_achievements/achievements_xml.png[/media]
+The achievements system utilises an XML file for configuration. This is an intentional choice over using a User Interface because it allows for much greater flexibility. This section of the tutorial will go over in detail how to configure achievements and write the XML configuration.
+
+The configuration can be accessed in the Admin Zone > Setup > Achievements configuration.
+
+Note that this XML interface supports file-based revisions (similar to Comcode pages); when you make changes to the XML file through this interface, revisions of your changes will be saved and displayed below the XML form. This allows you to review your changes and revert any if you need to do so.
+
+First, the entire configuration is nested within the [tt]<achievements></achievements>[/tt] tag. Here, you will define everything for the achievements system.
+[/surround]
+
+[title="3"]The achievement tag[/title]
+Every achievement that can be unlocked is nested in an [tt]<achievement></achievement>[/tt] tag. The achievement tag supports the following attributes:
+[list]
+[*][b]name[/b]
+Required. A unique alphanumeric codename for the achievement. You cannot share the same codename with other achievements. This is used to track achievements in the database.
+[*][b]title[/b]
+Required. A human-friendly title for this achievement which will be used on the website. This can be raw text or a language string codename (it also supports defining the language file, e.g. [tt]achievements:SOME_ACHIEVEMENT_NAME[/tt]).
+[*][b]image[/b]
+Optional, but the achievement will not be visible without one if unlocked. This is an image representing the achievement (the badge) which will display on a member's profile and forum posts when they unlocked the achievement. You can specify this as an absolute URL anywhere online to a valid image, a relative path to an image in your Composr installation, or a theme image codename.
+[*][b]readOnly[/b]
+Set this to "1" if you want to disable the ability for this achievement to be unlocked. Members who already unlocked it will still have it, but anyone who did not yet unlock it cannot unlock it even if they meet the requirements.
+[*][b]hidden[/b]
+Set this to "1" if you want to hide the achievement entirely from the public (e.g. the module page). Additionally, when a member unlocks the achievement, only they will see it on their own profile / forum posts.
+[*][b]permanent[/b]
+Normally, if a member unlocks an achievement but later no-longer meets the requirements, the achievement will be revoked. Set this to "1" to prevent this behaviour; once they unlock it, it cannot be revoked (unless you manually remove unlocks from the [tt]achievements_earned[/tt] database table).
+[*][b]points[/b]
+Optional. If you have the points addon installed, then unlocking this achievement will also award this many points to the member. Note that the points will be reversed if the achievement is later revoked (except when manually revoking via the database; you will have to reverse the points transaction yourself).
+[/list]
+
+[title="4"]The qualifications tag[/title]
+Within each achievement, you should define a number of qualifications (requirements) that must be met to unlock the achievement. The [tt]<qualifications></qualifications>[/tt] tag defines a "set" of qualifications that must be met. Think of sets as an "or" condition; if you have more than one qualifications tag, then a member has to satisfy all of the qualifications under one of the tags (but not all of them). In most cases, you will only have one qualifications tag, which means there are no "or" conditions.
+
+[title="5"]The qualification tag[/title]
+Within each qualifications set, you will define a number of qualifications (as a self-closing [tt]<qualification />[/tt] tag), or requirements, that must be met. Qualifications are controlled by hooks located under [tt]sources_custom/hooks/systems/achievement_qualifications[/tt]. You will want to take a look at these files and their contents; each hook will tell you what attributes you need to define for them. In addition to the attributes specified by the hooks, these additional attributes are supported:
+[list]
+[*][b]name[/b]
+Required. The name of the qualification hook (e.g. the filename without the PHP extension at the end).
+[*][b]persist[/b]
+Optional.
+By default, progress does not persist. For example, with the content qualification, if you create a piece of content and it is later deleted, that content no-longer counts towards your progress. If you persist, then deleted items will still count towards progress (assuming progress was calculated before the item was deleted; see the nuances section for more information).
+If not defined, a hook's [tt]persist_progress_default[/tt] will determine if progress is persisted across calculations. Otherwise, you can override this with "-1" for false (does not persist) or "1" for true (persists).
+Note that if a hook has [tt]supports_persist[/tt] set to false, then it will never persist regardless of these settings.
+[/list]
+
+[title="3"]Example[/title]
+Let's go through an example of an achievement in XML form, and I will explain it:
+[code="XML"]
+	<achievement name="extrovert" image="icons_monochrome/menu/social/chat/chat" title="achievements:ACHIEVEMENT_EXTROVERT" points="100">
+		<qualifications>
+			<qualification name="activity_feed" count="10" />
+			<qualification name="chat_messages" count="50" />
+		</qualifications>
+		<qualifications>
+			<qualification name="content" types="post" count="25" />
+		</qualifications>
+	</achievement>
+[/code]
+
+This defines an "extrovert" achievement for unlocking. It uses the theme image "icons_monochrome/menu/social/chat/chat" as the badge. It uses the language string "achievements:ACHIEVEMENT_EXTROVERT" for the public title. And it will award 100 points when unlocked. Since readOnly was not defined, members can unlock it. Since hidden was not defined, it is publicly visible. And since permanent was not defined, the achievement will be revoked if a member unlocked it but later no longer met the requirements.
+
+This achievement defines two sets of qualifications. This means a member only has to meet the qualifications in one of those two sets to unlock the achievement. They can either:
+ - post 10 statuses on the acticity feed and post 50 messages in the chat rooms, OR
+ - make 25 forum posts (content is a generic all-encompassing qualification for submitted content, and the types attribute defined the content type of post)
+
+[title="2"]Nuances[/title]
+There are a few nuances to be aware of when using the achievements system as explained in this section.
+
+[title="3"]Performance / delayed progress[/title]
+The achievements system is very complex and involves many database queries and calculations. As such, achievement progress and unlocking / revoking of achievements is not done or displayed in real-time; there may be a delay. Progress is calculated, for a particular member, on every new day a member logs in. And progress is calculated for a few randomly-selected members each time the system scheduler is executed. This progress is then cached in the database so it does not have to be calculated again every time the achievements page or the [tt]main_achievements[/tt] block is loaded.
+
+As such, the unlocking or revoking of achievements may be delayed for members particularly if your site has thousands of members. Assuming they log in on a daily basis, the delay should be no longer than a day (but usually shorter thanks to the random calculations by the system scheduler).
+
+[title="3"]Erasing or renaming achievements from the XML configuration[/title]
+When you remove an achievement from the XML configuration, or you change the name attribute, all members will lose the achievement and its progress (and the achievement will be cleaned up from the database). This cannot be reversed even if you put the achievement back or undo the XML configuration through the revisions system. This is because tracking in the database of which achievements members earned is done using the name attribute of achievements. Each time you save the XML configuration, the database is cleaned of achievements which no longer exist. Be very careful when you remove or rename achievements.
+
+[title="3"]Changing qualifications[/title]
+Tracking of qualification progress in the database is done by generating a hash using both the achievement name and a serial of the qualification's attributes. If you change any attributes on a qualification, or you change the name of the achievement, the progress of the qualification will be re-calculated. This is particularly important for qualifications in which progress is supposed to persist. If the hash is changed (from editing the qualification attributes or the achievement name), the progress is lost even if marked to persist.
+
+[title="3"]Qualification persisting[/title]
+Since progress is not calculated in real-time, it is possible on a persisting qualification for an item to not count if, for example, it was added and then deleted before calculations are run again for that member.
+
+{$SET,tutorial_tags,Addon,Fun and Games,regular}{$SET,tutorial_add_date,Dec 2024}{$SET,tutorial_summary,This tutorial covers how you can add achievements (public badges) which members can earn for meeting certain requirements.}[block]main_tutorial_rating[/block]

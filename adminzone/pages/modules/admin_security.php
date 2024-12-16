@@ -63,7 +63,7 @@ class Module_admin_security
             $GLOBALS['SITE_DB']->create_table('hackattack', [
                 'id' => '*AUTO',
                 'url' => 'URLPATH',
-                'data_post' => 'LONG_TEXT',
+                'data_post' => 'LONG_TEXT', // TODO: #6074
                 'user_agent' => 'SHORT_TEXT',
                 'referer_url' => 'URLPATH',
                 'user_os' => 'SHORT_TEXT',

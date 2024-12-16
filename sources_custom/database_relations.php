@@ -28,6 +28,8 @@ function get_table_purpose_flags() : array
     }
 
     $more = [
+        'achievements_earned' => TABLE_PURPOSE__NORMAL,
+        'achievements_progress' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'activities' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'bank' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'bookable' => TABLE_PURPOSE__NORMAL,
@@ -109,6 +111,8 @@ function get_table_descriptions() : array
     }
 
     $more = [
+        'achievements_earned' => 'a log of the achievements each member unlocked and when',
+        'achievements_progress' => 'a cache of progress for each individual qualification / requirement of an achievement; on its own, you cannot derive contextual meaning due to hash-based matching',
         'activities' => 'a log of activities posted in the activity feed',
         'bank' => 'a ledger of transactions and dividends from bankr',
         'bookable' => 'a database of booking events and their metadata',

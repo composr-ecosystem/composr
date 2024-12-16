@@ -28,7 +28,6 @@ class basic_code_formatting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
         disable_php_memory_limit();
 
-        require_code('third_party_code');
         require_code('files2');
 
         $this->files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_FLOATING | IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_CUSTOM_THEMES);

@@ -59,6 +59,8 @@ function rebuild_indices(bool $only_trans = false)
  */
 function disable_content_translation()
 {
+    return; // TODO: catastrophically broken and will corrupt websites! Disabled for integrity.
+
     push_db_scope_check(false);
     push_query_limiting(false);
 
@@ -144,6 +146,8 @@ function disable_content_translation()
  */
 function enable_content_translation()
 {
+    return; // TODO: catastrophically broken and will corrupt websites! Disabled for integrity.
+
     push_db_scope_check(false);
     push_query_limiting(false);
 

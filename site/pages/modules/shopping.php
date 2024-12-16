@@ -89,9 +89,9 @@ class Module_shopping
                 'member_id' => 'MEMBER',
                 'add_date' => 'TIME',
                 'total_price' => 'REAL',
-                'total_tax_derivation' => 'LONG_TEXT', // Needs to be stored, as the product is dynamic and it's locked in time
+                'total_tax_derivation' => 'LONG_TEXT', // Needs to be stored, as the product is dynamic and it's locked in time // TODO: #6074
                 'total_tax' => 'REAL', // Needs to be stored, as the product is dynamic and it's locked in time
-                'total_tax_tracking' => 'LONG_TEXT', // Needs to be stored, as the product is dynamic and it's locked in time
+                'total_tax_tracking' => 'LONG_TEXT', // Needs to be stored, as the product is dynamic and it's locked in time // TODO: #6074
                 'total_shipping_cost' => 'REAL',
                 'total_shipping_tax' => 'REAL', // Needs to be stored, as the product is dynamic and it's locked in time
                 'total_product_weight' => 'REAL',

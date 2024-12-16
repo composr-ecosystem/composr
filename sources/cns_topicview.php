@@ -587,6 +587,7 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
 function cns_cache_member_details(array $members)
 {
     require_code('cns_members');
+    require_code('cns_posts');
 
     $member_or_list = '';
     foreach ($members as $member_id) {
@@ -863,30 +864,4 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
     }
 
     return $buttons;
-}
-
-/**
- * Get post emphasis Tempcode.
- *
- * @param  array $_postdetails Map of post info
- * @param  ?array $topic_info Map of topic info (null: not available or not running Conversr)
- * @return array A pair of emphasis class to use and the text Tempcode
- */
-function cns_get_post_emphasis(array $_postdetails, ?array $topic_info) : array
-{
-    $emphasis = new Tempcode();
-    $post_class = '';
-    if ($_postdetails['is_emphasised']) {
-        $emphasis = do_lang_tempcode('IMPORTANT');
-        $post_class = 'cns-post-emphasis';
-    } elseif (array_key_exists('whisper_to_member', $_postdetails)) {
-        $pp_to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['whisper_to_member'], true);
-        $pp_to_username = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['whisper_to_member']);
-        $emphasis = do_lang_tempcode('PP_TO', escape_html($pp_to_displayname), escape_html($pp_to_username));
-        $post_class = 'cns-post-personal';
-    } elseif (($topic_info !== null) && (isset($topic_info['t_forum_id'])) && ($topic_info['t_forum_id'] === null)) {
-        $emphasis = do_lang_tempcode('PRIVATE_TOPIC');
-        $post_class = 'cns-post-private-topic';
-    }
-    return [$post_class, $emphasis];
 }

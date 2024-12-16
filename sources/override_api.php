@@ -67,7 +67,7 @@ function insert_code_before__by_linenum(string &$code, string $function, int $li
         }
         $pos = $next + 1;
     }
-    $code = substr($code, 0, $pos) . "\t" . $newcode . "\n" . substr($code, $pos);
+    $code = substr($code, 0, $pos) . "\n\t" . $newcode . "\n" . substr($code, $pos);
 
     return true;
 }
@@ -120,7 +120,7 @@ function insert_code_before__by_command(string &$code, string $function, string 
         $pos = $next + 1;
     }
     $pos = strrpos(substr($code, 0, $pos), "\n");
-    $code = substr($code, 0, $pos) . "\n\t" . $newcode . substr($code, $pos);
+    $code = substr($code, 0, $pos) . "\n\t" . $newcode . "\n" . substr($code, $pos);
 
     return true;
 }
@@ -158,7 +158,7 @@ function insert_code_after__by_command(string &$code, string $function, string $
         $pos = $next + 1;
     }
     $pos = strpos($code, "\n", $pos);
-    $code = substr($code, 0, $pos) . "\n\t" . $newcode . substr($code, $pos);
+    $code = substr($code, 0, $pos) . "\n\t" . $newcode . "\n" . substr($code, $pos);
 
     return true;
 }
@@ -196,7 +196,7 @@ function remove_code(string &$code, string $function, string $command, int $inst
     }
     $old_pos = $pos;
     $pos = strpos($code, "\n", $pos);
-    $code = substr($code, 0, $pos) . "\n" . substr($code, $old_pos + 1);
+    $code = substr($code, 0, $pos) . substr($code, $old_pos + 1);
 
     return true;
 }

@@ -21,7 +21,6 @@ class file_naming_test_set extends cms_test_case
     public function testFileNamingConvention()
     {
         require_code('files2');
-        require_code('third_party_code');
 
         $ignore_substrings = [
             '/-logo.png',

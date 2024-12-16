@@ -96,7 +96,7 @@ class Hook_points_transact__karma
         // Undo karma when reversing point transactions
         if (($linked_ledger !== null) && ($status == LEDGER_STATUS_REVERSING)) {
             require_code('karma2');
-            reverse_karma(null, null, null, 'points_transaction', $linked_ledger['id']);
+            reverse_karma(null, null, null, 'points_transaction', strval($linked_ledger['id']));
         }
     }
 }

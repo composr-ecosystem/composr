@@ -129,12 +129,12 @@ function get_version_dotted__from_anything(string $any_format) : string
     // Change dashes and spaces to dots
     $dotted = str_replace(['-', ' '], ['.', '.'], $dotted);
 
-    foreach (['alpha', 'beta', 'RC'] as $qualifier) {
+    foreach (['alpha', 'beta', 'RC', 'dev'] as $qualifier) {
         $dotted = preg_replace('#\.?' . preg_quote($qualifier, '#') . '\.?#i', '.' . $qualifier, $dotted);
     }
 
     // Canonical to not have extra .0's on end. Don't really care about what the software stores as we clean this up in our server's version.php - it is crucial that news post and download names are canonical though so version.php works. NB: Latest recommended versions are done via download name and description labelling.
-    $dotted = preg_replace('#(\.0)+($|\.alpha|\.beta|\.RC)#', '$2', $dotted);
+    $dotted = preg_replace('#(\.0)+($|\.alpha|\.beta|\.dev|\.RC)#', '$2', $dotted);
 
     return $dotted;
 }
@@ -151,7 +151,7 @@ function get_version_components__from_dotted(string $dotted) : array
     $qualifier = null;
     $qualifier_number = null;
     $basis_dotted_number = null;
-    foreach (['RC', 'beta', 'alpha'] as $type) {
+    foreach (['RC', 'beta', 'alpha', 'dev'] as $type) {
         if (strpos($dotted, '.' . $type) !== false) {
             $qualifier = $type;
             $qualifier_number = intval(substr($dotted, strrpos($dotted, '.' . $type) + strlen('.' . $type)));
@@ -191,7 +191,7 @@ function get_version_components__from_dotted(string $dotted) : array
  */
 function get_version_pretty__from_dotted(string $dotted) : string
 {
-    return preg_replace('#(\.0)*\.(alpha|beta|RC)#', ' ${2}', $dotted);
+    return preg_replace('#(\.0)*\.(alpha|beta|RC|dev)#', ' ${2}', $dotted);
 }
 
 /**

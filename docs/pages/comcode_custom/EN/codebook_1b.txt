@@ -111,7 +111,8 @@ The following are the core Composr APIs (green is used to indicate the most impo
 ! Typical usage
 |-
 | [color="green"]GLOBAL[/color]
-| [tt]sources/global.php[/tt]
+| [tt]sources/bootstrap.php[/tt]
+[tt]sources/global.php[/tt]
 [tt]sources/global2.php[/tt]
 [tt]sources/global3.php[/tt]
 | Pre-loaded and available in global scope
@@ -585,18 +586,28 @@ class Hook_contentious_overrides_foo
     }
 
     // Note that this method only works after some of the bootstrapping has finished
-    public function call_included_code($path, $codename, &$code)
+    public function compile_included_code($path, $codename, &$code)
     {
+		  // Skip this entirely if we do not have our addon installed for this feature
+        if (!addon_installed('silly_addon')) {
+			   return;
+		  }
+
         // Make breadcrumbs say "Foobar"
         if ($codename == 'site') {
             if ($code === null) {
                 $code = clean_php_file_for_eval(file_get_contents($path));
             }
+
             $code = str_replace('static $out = null;', 'return make_string_tempcode(\'<a href="https://example.com">Foobar</a>\');', $code);
         }
     }
 }
 [/code]
+
+Regarding compile_included_code: now, when you run your site, when the [tt]site[/tt] script gets loaded, instead of PHP including the original [tt]sources/site.php[/tt] file, a new file will be compiled into [tt]_compiled/sources/site.php[/tt] and/or [tt]_compiled/sources_custom/site.php[/tt], and those will be included instead. This version contains your override. And since it's included rather than eval'd, proper stack traces will be maintained if errors occur (but you still need to be cautious to edit the correct file and to be mindful of line numbers; don't edit the compiled file as it is only temporary).
+
+A word of caution about [tt]$code = clean_php_file_for_eval(file_get_contents($path));[/tt]. You should only ever populate a null [tt]$code[/tt] variable here when you know for sure you are about to make an override. Otherwise, a null [tt]$code[/tt] should be left alone. When [tt]$code[/tt] is not null, that tells Composr it needs to make a [tt]_compiled[/tt] file. This is unnecessary to do if you did not actually make any code overrides.
 
 [title="3"]Running temporary code[/title]
 
@@ -660,6 +671,8 @@ If Composr is running out of a Git repository, or with our own custom version of
  - You'll get an error if you don't call a template ending [tt]_SCREEN[/tt] at some point during your code. This enforces our convention of labelling for the screen templates.
  - Relative URLs will intentionally not work, due to an intentionally broken HTML [tt]base[/tt] tag. This forces you to use absolute URLs as per coding standards. One exception is URLs like [tt]#example[/tt], which are broken by the [tt]base[/tt] tag, but then fixed at run time using JavaScript -- you are allowed to use those.
  - To save time you can define language strings inline in PHP code, and then Composr will automatically find the closest matching loaded language file to the name of the page you are running, and then move your inline definition into that file while removing it from your PHP file. For example, you can write: [tt]do_lang('EXAMPLE=This is an example');[/tt] and as soon as it runs for the first time the definition will be shifted into a proper language file. Note that if the call does not get executed, nothing is done -- but that's a good way to see if you're not testing your code fully.
+ - In development mode, [tt]require_code[/tt] will inject [tt]define(strict_types=1);[/tt] at the top of every PHP file to enforce strict typing, which means every PHP file loaded will have to be compiled into [tt]_compiled[/tt]. This could be very slow at first, but once they are generated, the site will run faster as the software will intelligently determine when they need to be written again or not. If you get a time-out at first, just refresh the page. You should not get a time-out after the first time.
+  - In non-development mode operation, Composr will not need to compile that many files into _compiled (only anything that has overrides), so it should not run nearly as slow on first page hits.
 
 You can turn off most of development mode by putting "[tt]&keep_dev_mode=0[/tt]" into the URL, but this is not promoted as development mode was intentionally written to help us do on-the-fly testing of things that might otherwise go unnoticed.
 

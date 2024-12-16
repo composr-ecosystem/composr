@@ -1159,7 +1159,7 @@ class DatabaseRepair
                 $type = 'REAL';
                 break;
             case 'longtext':
-                $type = 'LONG_TEXT';
+                $type = 'LONG_TEXT'; // Could be SERIAL, but we have no way of telling without analysing individual data
                 break;
         }
 

@@ -208,7 +208,7 @@ class Module_warnings extends Standard_crud_module
         $fields = new Tempcode();
 
         $post_id = get_param_integer('post_id', null);
-        $spam_mode = get_param_integer('spam', 0) == 1;
+        $spam_mode = get_param_integer('spam', 0);
         $ip_address = ($post_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_ip_address', ['id' => $post_id]);
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
@@ -282,7 +282,7 @@ class Module_warnings extends Standard_crud_module
         $keep = symbol_tempcode('KEEP');
         $load_url = find_script('warnings_browse') . '?type=load' . $keep->evaluate();
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9aa', 'TITLE' => do_lang_tempcode('EXPLANATORY_TEXT'), 'HELP' => do_lang_tempcode('LOAD_SAVED_WARNING', escape_html($load_url))]));
-        if (($explanation == '') && ($spam_mode)) {
+        if (($explanation == '') && ($spam_mode == 1)) {
             $explanation = do_lang('SPAM');
         }
 
@@ -349,7 +349,7 @@ class Module_warnings extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
 
             $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_member_id'], '', false);
             $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_issuing_member']);

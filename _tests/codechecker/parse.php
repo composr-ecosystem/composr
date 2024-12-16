@@ -26,7 +26,7 @@ function parse($_tokens = null)
     $structure = _parse_php($TOKENS);
     $structure['ok_extra_functions'] = $OK_EXTRA_FUNCTIONS;
     global $FILENAME;
-    if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources/global.php') && ($FILENAME != 'data/static_cache.php') && ($FILENAME != 'sources/critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
+    if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources/bootstrap.php') && ($FILENAME != 'sources/global.php') && ($FILENAME != 'data/static_cache.php') && ($FILENAME != 'sources/critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
         if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
             log_warning('Sources files should not contain loose code');
         }
@@ -831,6 +831,10 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
 
     $suppress_error = ($next[0] == 'SUPPRESS_ERROR');
     if ($suppress_error) {
+        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+            log_warning('Avoid error suppression unless you absolutely have to use it; this may hide bugs. Use try / catch instead if you can.');
+        }
+
         pparse__parser_next();
         $next = pparse__parser_peek(true);
     }
@@ -1506,6 +1510,10 @@ function _parse_expression_inner()
     }
     $suppress_error = ($next == 'SUPPRESS_ERROR');
     if ($suppress_error) {
+        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+            log_warning('Avoid error suppression unless you absolutely have to use it; this may hide bugs. Use try / catch instead if you can.');
+        }
+
         pparse__parser_next();
         $next = pparse__parser_peek();
     }
@@ -1776,6 +1784,10 @@ function _parse_variable($suppress_error, $can_be_dangling_method_call_instead =
     }
     $suppress_error = $suppress_error || ($next[0] == 'SUPPRESS_ERROR');
     if ($next[0] == 'SUPPRESS_ERROR') {
+        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+            log_warning('Avoid error suppression unless you absolutely have to use it; this may hide bugs. Use try / catch instead if you can.');
+        }
+
         pparse__parser_next();
         $next = pparse__parser_peek(true);
     }

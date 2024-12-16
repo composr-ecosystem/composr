@@ -100,7 +100,7 @@ function reverse_karma(?int $id = null, ?int $member_from = null, ?int $member_t
     // Actualise reversal of karma, and log each
     foreach ($rows as $row) {
         _adjust_karma($row['k_type'], intval($row['k_member_to']), -intval($row['k_amount']));
-        log_it('REVERSED_KARMA', $row['id']);
+        log_it('REVERSED_KARMA', strval($row['id']));
     }
 
     // Mark all relevant logs as reversed so they cannot be reversed again

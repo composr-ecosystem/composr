@@ -55,7 +55,7 @@ function show_site_messages()
 
         // Match-key check
         $match_keys = collapse_1d_complexity('page_link', $row['pages']);
-        if (!match_key_match($match_keys)) {
+        if (!empty($match_keys) && !match_key_match($match_keys)) {
             continue;
         }
 

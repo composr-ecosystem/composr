@@ -603,7 +603,9 @@ function get_video_details_from_file(string $file_path, ?string $filename, bool 
                     }
                 }
 
-                cms_ini_set('ocproducts.type_strictness', $before);
+                if ($before !== false) {
+                    cms_ini_set('ocproducts.type_strictness', $before);
+                }
             }
             break;
     }

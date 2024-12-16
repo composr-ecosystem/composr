@@ -74,8 +74,12 @@ class Hook_oembed_hybridauth_admin
             }
         }
 
-        cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-        cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        if ($before_type_strictness !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+        }
+        if ($before_xss_detect !== false) {
+            cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+        }
 
         return null;
     }

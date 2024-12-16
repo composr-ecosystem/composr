@@ -89,7 +89,7 @@ class Module_admin_stats extends Standard_crud_module
                 'id' => '*AUTO',
                 'date_and_time' => 'TIME',
                 'page_link' => 'SHORT_TEXT',
-                'post' => 'LONG_TEXT',
+                'post' => 'LONG_TEXT', // TODO: #6074
                 'referer_url' => 'URLPATH',
                 'ip' => 'IP',
                 'member_id' => 'MEMBER',

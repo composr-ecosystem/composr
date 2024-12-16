@@ -3,6 +3,7 @@
 /*CQC: No API check*/
 /*CQC: !FLAG__SOMEWHAT_PEDANTIC*/
 /*CQC: !FLAG__ESLINT*/
+/*No strict_types*/
 
 /*
  * This file is part of the JShrink package.

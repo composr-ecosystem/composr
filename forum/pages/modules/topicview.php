@@ -498,6 +498,7 @@ class Module_topicview
                     decache_private_topics(get_member());
                 }
 
+                require_code('cns_posts');
                 list($post_class, $emphasis) = cns_get_post_emphasis($_postdetails, $topic_info);
 
                 require_code('feedback');

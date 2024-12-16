@@ -850,6 +850,7 @@ class Hook_addon_registry_core
             'sources/blocks/side_personal_stats.php',
             'sources/blocks/top_login.php',
             'sources/blocks/top_personal_stats.php',
+            'sources/bootstrap.php',
             'sources/caches.php',
             'sources/caches2.php',
             'sources/caches3.php',

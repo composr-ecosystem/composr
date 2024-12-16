@@ -2335,7 +2335,7 @@ class Tempcode
         global $NO_EVAL_CACHE, $XSS_DETECT, $USER_LANG_CACHED, $KEEP_TPL_FUNCS, $MEMORY_OVER_SPEED, $FULL_RESET_VAR_CODE, $RESET_VAR_CODE, $DEV_MODE;
 
         if ($XSS_DETECT) {
-            $before = @ini_get('ocproducts.xss_detect');
+            $before = ini_get('ocproducts.xss_detect');
             cms_ini_set('ocproducts.xss_detect', '0');
         }
 
@@ -2382,7 +2382,7 @@ class Tempcode
                     if (!$no_eval_cache_before) {
                         $NO_EVAL_CACHE = $no_eval_cache_before;
                     }
-                    if ($XSS_DETECT) {
+                    if (($XSS_DETECT) && ($before !== false)) {
                         cms_ini_set('ocproducts.xss_detect', $before);
                     }
                     $this->is_empty = false;
@@ -2405,7 +2405,7 @@ class Tempcode
         if (!$no_eval_cache_before) {
             $NO_EVAL_CACHE = $no_eval_cache_before;
         }
-        if ($XSS_DETECT) {
+        if (($XSS_DETECT) && ($before !== false)) {
             cms_ini_set('ocproducts.xss_detect', $before);
         }
         $ret = ($tmp === '');
@@ -2445,7 +2445,7 @@ class Tempcode
         ob_start();
 
         if ($XSS_DETECT) {
-            $before = @ini_get('ocproducts.xss_detect');
+            $before = ini_get('ocproducts.xss_detect');
             cms_ini_set('ocproducts.xss_detect', '0');
         }
 
@@ -2488,7 +2488,7 @@ class Tempcode
             }
         }
 
-        if ($XSS_DETECT) {
+        if (($XSS_DETECT) && ($before !== false)) {
             cms_ini_set('ocproducts.xss_detect', $before);
         }
 

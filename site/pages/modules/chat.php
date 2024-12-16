@@ -633,7 +633,11 @@ class Module_chat
     {
         require_javascript('posting');
 
-        $prefs = @explode(';', $_COOKIE['software_chat_prefs']);
+        $prefs = [];
+        $prefs_cookie = isset($_COOKIE['software_chat_prefs']) ? $_COOKIE['software_chat_prefs'] : false;
+        if (!empty($prefs_cookie)) {
+            $prefs = explode(';', $prefs_cookie);
+        }
         $room_id = $this->room_id;
         $room_row = $this->room_row;
         $room_name = $this->room_name;

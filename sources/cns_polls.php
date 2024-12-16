@@ -118,7 +118,7 @@ function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id
 
 /**
  * Find a map of results relating to a certain poll.
- * Applies forfeiting is required.
+ * Applies forfeiting if required.
  *
  * @param  AUTO_LINK $poll_id The poll
  * @param  boolean $request_results Whether we must record that the current member is requesting the results, blocking future voting for them

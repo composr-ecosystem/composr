@@ -128,7 +128,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
 
                 $country = geolocate_ip($row['m_ip_address']);
                 if ($country === null) {
-                    $country = '';
+                    $country = do_lang('UNKNOWN');
                 }
 
                 $explanation = $row['w_explanation'];
@@ -248,7 +248,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 }
 
                 return [
-                    'type' => self::GRAPH_BAR_CHART,
+                    'type' => self::GRAPH_PIE_CHART,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('REASON'),
                     'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
@@ -269,23 +269,26 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 $extra .= ' AND p_month>=' . strval($range[0]);
                 $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
+
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
-                    foreach ($_data as $country => $total_punishments) {
-                        $_country = find_country_name_from_iso($country);
-                        if ($_country === null) {
-                            $_country = do_lang('OTHER');
-                        }
+                    foreach ($_data as $country => $___) {
+                        foreach ($___ as $explanation => $total_punishments) {
+                            if ((!empty($filters[$bucket . '__reason'])) && ($filters[$bucket . '__reason'] != $explanation)) {
+                                continue;
+                            }
 
-                        if (!isset($data[$_country])) {
-                            $data[$_country] = 0;
+                            if (!isset($data[$country])) {
+                                $data[$country] = 0;
+                            }
+
+                            $data[$country] += $total_punishments;
                         }
-                        $data[$_country] += $total_punishments;
                     }
                 }
 
                 return [
-                    'type' => self::GRAPH_BAR_CHART,
+                    'type' => self::GRAPH_PIE_CHART,
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('COUNTRY'),
                     'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),

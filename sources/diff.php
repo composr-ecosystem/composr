@@ -55,7 +55,9 @@ function diff_simple_text(string $old_contents, string $new_contents, bool $unif
 
     $ret = _diff_simple(($old_contents == '') ? [] : explode("\n", $old_contents), ($new_contents == '') ? [] : explode("\n", $new_contents), $unified, $include_unchanged);
 
-    cms_ini_set('ocproducts.type_strictness', $before);
+    if ($before !== false) {
+        cms_ini_set('ocproducts.type_strictness', $before);
+    }
 
     return $ret;
 }
@@ -159,7 +161,9 @@ function diff_3way_text(string $text_1, string $text_2, string $text_3) : string
         }
     }
 
-    cms_ini_set('ocproducts.type_strictness', $before);
+    if ($before !== false) {
+        cms_ini_set('ocproducts.type_strictness', $before);
+    }
 
     return $new;
 }

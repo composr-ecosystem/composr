@@ -1661,7 +1661,7 @@ function install_cns(?float $upgrade_from = null)
         // Migrate old f_warnings columns to f_warnings_punitive rows. Then, delete the old columns.
         $start = 0;
             do {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], [], '', 500, $start);
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], [], '', 250, $start);
                 foreach ($rows as $i => $row) {
                     if ($row['p_silence_from_topic'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
@@ -1755,7 +1755,7 @@ function install_cns(?float $upgrade_from = null)
                         ]);
                     }
                 }
-                $start += 500;
+                $start += 250;
             } while (array_key_exists(0, $rows));
             $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_topic');
             $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_forum');

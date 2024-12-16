@@ -493,6 +493,7 @@ function cms_parse_ini_file_fast(?string $path, ?string $contents = null) : arra
 
 /**
  * Find whether a file/directory is known to be something that should/could be there but isn't a software distribution file, or for some other reason should be ignored.
+ * NB: Don't forget to edit untouchable directories and files in global.php where necessary.
  *
  * @param  string $path Path (relative to the software base directory)
  * @param  integer $bitmask Bitmask of extra stuff to ignore (see IGNORE_* constants)
@@ -613,6 +614,9 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         // Legacy temporary files
         'temp' => '',
         'safe_mode_temp' => '', // LEGACY
+
+        // Temporary files
+        '_compiled' => '.*',
 
         // Testing platform
         'codechecker.ini' => '_tests/codechecker',
@@ -901,6 +905,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
             'failover_rewritemap__mobile.txt' => 'data_custom',
             'aggregate_types.xml' => 'data_custom/xml_config',
             'hybridauth.xml' => 'data_custom/xml_config',
+            'achievements.xml' => 'data_custom/xml_config',
             'breadcrumbs.xml' => 'data_custom/xml_config',
             'fields.xml' => 'data_custom/xml_config',
             'page_errors.xml' => 'data_custom/xml_config',

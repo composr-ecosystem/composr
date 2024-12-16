@@ -750,6 +750,7 @@ abstract class DatabaseDriver
             case 'LANGUAGE_NAME':
             case 'URLPATH':
             case 'TOKEN':
+            case 'SERIAL':
                 $default = '';
                 break;
         }
@@ -820,7 +821,7 @@ abstract class DatabaseDriver
         $__type = str_replace(['*', '?'], ['', ''], $_type);
         $sql_type = $type_remap[$__type] . ' ' . $perhaps_null;
 
-        if (($__type != 'LONG_TEXT') || ($this->has_default_for_text_fields())) {
+        if ((($__type != 'LONG_TEXT') && ($__type != 'SERIAL')) || ($this->has_default_for_text_fields())) {
             // We have to provide a default value for any non-NULL field so the database knows what to put in here
             if ($default === null) {
                 $extra = ' DEFAULT NULL';
@@ -1254,13 +1255,16 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Echo out an error message. If the user doesn't have permissions to view queries it shows a generic message.
+     * Echo out an error message (and also log it). If the user doesn't have permissions to view queries it shows a generic message.
      * Only use this in unusual situations, like upgrading or importing, where throwing out rough messages rather than using the normal framework is the best choice.
      *
      * @param  string $message Message to show
      */
     public function failed_query_echo(string $message)
     {
+        // Log the original error so it can later be referenced
+        @error_log(brand_name() . ' database: ERROR ' . $message);
+
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);
         }
@@ -1268,8 +1272,8 @@ abstract class DatabaseDriver
 
         // Bomb out anyway if we have a bunch of failed queries; usually indicates something seriously wrong.
         $this->echoed_failed_queries++;
-        if ($this->echoed_failed_queries >= 100) {
-            $this->failed_query_exit(htmlentities('Too many failed database queries.'));
+        if ($this->echoed_failed_queries >= 25) {
+            $this->failed_query_exit(htmlentities('A safety cut-out was triggered due to a high number of failed database queries.'));
         }
     }
 
@@ -1597,6 +1601,9 @@ class DatabaseConnector
     public $driver;
 
     public $dedupe_mode = false;
+
+    // These tables should use a delayed insert where possible and available
+    protected $delayed_insert_tables = ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'];
 
     /**
      * Construct a database driver from connection parameters.
@@ -2062,7 +2069,8 @@ class DatabaseConnector
     }
 
     /**
-     * This function is a raw query executor. It shouldn't usually be used unless you need to write SQL involving 'OR' statements or other complexities. There are abstracted versions available which you probably want instead (mainly, query_select).
+     * This function is a raw query executor.
+     * This should rarely ever be used; other functions like query_select are available. Additionally, for complex queries, it is still better to use query_parameterised as it handles escaping.
      *
      * @param  string $query The complete SQL query
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
@@ -2596,7 +2604,7 @@ class DatabaseConnector
         }
 
         if (count($all_values) === 1) { // usually $all_values only has length of 1
-            if ((function_exists('get_value')) && (get_value('enable_delayed_inserts') === '1') && (in_array($table, ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'/*FUDGE: Ideally we would define this list via database_relations.php, but performance matters*/])) && (substr(get_db_type(), 0, 5) === 'mysql')) {
+            if ((function_exists('get_value')) && (get_value('enable_delayed_inserts') === '1') && (in_array($table, $this->delayed_insert_tables)) && (substr(get_db_type(), 0, 5) === 'mysql')) {
                 $query = 'INSERT DELAYED INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $all_values[0] . ')'; // This is a very MySQL-specific optimisation (MyISAM). Other DBs don't do table-level locking!
             } else {
                 $query = 'INSERT INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $all_values[0] . ')';
@@ -3044,7 +3052,7 @@ class DatabaseConnector
      */
     public function table_is_locked(string $table) : bool
     {
-        if (in_array($table, ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'])) {
+        if (in_array($table, $this->delayed_insert_tables)) {
             return false; // Actually, we have delayed insert for these so locking is not an issue
         }
 

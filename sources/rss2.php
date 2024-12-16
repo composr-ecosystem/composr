@@ -111,7 +111,16 @@ function rss_backend_script()
         return;
     }
 
-    load_csp(['csp_enabled' => '0']); // FUDGE: We need this for XSLT to work. We cannot put a nonce on an XSLT import, and we can't safelist specific scripts. Besides, no JS can run in Atom/RSS on its own so we don't need it.
+    load_csp([
+        'csp_enabled' => '1',
+        'csp_allow_plugins' => '0',
+        'csp_allow_inline_js' => '1',
+        'csp_allow_eval_js' => '0',
+        'csp_allow_dyn_js' => '1',
+        'csp_allow_insecure_resources' => '0',
+        'csp_allow_workers' => '0',
+        'csp_on_forms' => '0',
+    ]);
 
     $type = cms_strtoupper_ascii($type);
     if (($type != 'RSS2') && ($type != 'ATOM')) {
@@ -203,7 +212,6 @@ function rss_backend_script()
 
     // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(
     header('Content-Type: text/xml'); // application/rss+xml ?
-    header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     require_code('hooks/systems/rss/' . $mode, true);
     $object = object_factory('Hook_rss_' . $mode);

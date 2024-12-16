@@ -109,7 +109,7 @@ class RevisionEngineDatabase
             'r_original_content_owner' => ($original_content_owner === null) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $original_content_owner,
             'r_original_content_timestamp' => ($original_content_timestamp === null) ? time() : $original_content_timestamp,
             'r_original_resource_fs_path' => $original_data_resource_fs_path,
-            'r_original_resource_fs_record' => $original_data_resource_fs_record,
+            'r_original_resource_fs_record' => $original_data_resource_fs_record, // TODO: See #6074
             'r_actionlog_id' => $this->is_log_mod ? null : $log_id,
             'r_moderatorlog_id' => $this->is_log_mod ? $log_id : null,
         ]);

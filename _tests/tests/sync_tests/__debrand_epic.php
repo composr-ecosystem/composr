@@ -38,7 +38,6 @@ class __debrand_epic_test_set extends cms_test_case
 
         require_code('files');
         require_code('files2');
-        require_code('third_party_code');
     }
 
     public function testScripts()

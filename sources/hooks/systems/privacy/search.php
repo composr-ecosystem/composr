@@ -59,7 +59,7 @@ class Hook_privacy_search extends Hook_privacy_base
                     'email_fields' => [],
                     'username_fields' => [],
                     'file_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'additional_anonymise_fields' => ['s_primary', 's_auxillary'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'removal_default_handle_method_member_override' => null,

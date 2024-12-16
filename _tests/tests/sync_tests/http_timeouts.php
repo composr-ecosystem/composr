@@ -136,7 +136,7 @@ class http_timeouts_test_set extends cms_test_case
         $default_port = ($scheme == 'ssl://') ? 443 : 80;
         $fh = fsockopen($scheme . $parsed['host'], isset($parsed['port']) ? $parsed['port'] : $default_port, $errno, $errstr, $timeout);
         if ($fh !== false) {
-            socket_set_timeout($fh, intval($timeout), fmod($timeout, 1.0) / 1000000.0);
+            socket_set_timeout($fh, intval($timeout), intval(fmod($timeout, 1.0) / 1000000.0));
             $out = "GET " . $url . " HTTP/1.1\r\n";
             $out .= "Host: " . $parsed['host'] . "\r\n";
             $out .= "Authorization: Basic " . base64_encode($this->test_options['cms_homesite_maintenance_password']) . "\r\n";
@@ -145,7 +145,7 @@ class http_timeouts_test_set extends cms_test_case
             $_frh = [$fh];
             $_fwh = null;
             while (!feof($fh)) {
-                if (!stream_select($_frh, $_fwh, $_fwh, intval($timeout), fmod($timeout, 1.0) / 1000000.0)) {
+                if (!stream_select($_frh, $_fwh, $_fwh, intval($timeout), intval(fmod($timeout, 1.0) / 1000000.0))) {
                     $result = false;
                     break;
                 }

@@ -46,6 +46,10 @@ $version_dotted = get_param_string('version');
 require_code('version2');
 $version_pretty = get_version_pretty__from_dotted(get_version_dotted__from_anything($version_dotted));
 
+if (strpos($version_dotted, 'dev') !== false) {
+    warn_exit('Development builds are not intended for public release.');
+}
+
 $is_substantial = is_substantial_release($version_dotted);
 
 $is_old_tree = get_param_integer('is_old_tree') == 1;

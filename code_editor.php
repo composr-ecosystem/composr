@@ -22,7 +22,7 @@ $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
-if (!is_file($FILE_BASE . '/sources/global.php')) {
+if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
     $RELATIVE_PATH = basename($FILE_BASE);
     $FILE_BASE = dirname($FILE_BASE);
 } else {
@@ -108,9 +108,11 @@ function code_editor_do_footer()
 </form>
 
 <script>
-if (document.getElementById('file')) {
-    aceComposrLoader('file','php');
-}
+window.addEventListener('load', (event) => {
+    if (document.getElementById('file')) {
+        aceComposrLoader('file','php');
+    }
+});
 </script>
 
 </div></body>
@@ -224,6 +226,9 @@ function ce_do_dir(string $dir) : array
                 if (is_file($_dir . '/' . $file)) {
                     if ((substr($file, -4, 4) == '.php') || (substr($file, -4, 4) == '.ini')) {
                         $path = $dir . (($dir != '') ? '/' : '') . $file;
+                        if (strpos($path , '_compiled/') !== false) { // Should never be edited; can use Commandr-fs if we really want to edit these
+                            continue;
+                        }
                         $alt = str_replace('lang/', 'lang_custom/', str_replace('pages/modules/', 'pages/modules_custom/', str_replace('sources/', 'sources_custom/', $path)));
                         if (($alt == $path) || (!file_exists($alt))) {
                             $out[] = '<option>' . code_editor_escape_html($path) . '</option>';
@@ -293,7 +298,7 @@ function ce_is_suexec_like() : bool
         $answer = (function_exists('posix_getuid')) &&
             (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
             (is_integer(@posix_getuid())) &&
-            (posix_getuid() == @fileowner($FILE_BASE . '/sources/global.php'));
+            (posix_getuid() == @fileowner($FILE_BASE . '/sources/bootstrap.php'));
     }
     return $answer;
 }

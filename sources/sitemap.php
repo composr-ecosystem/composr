@@ -236,7 +236,7 @@ abstract class Hook_sitemap_base
      */
     protected function _request_page_details(string $page, string $zone, ?string $page_type = null)
     {
-        static $redirect_count = 0;
+        static $redirect_count = [];
 
         require_code('site');
         $details = _request_page($page, $zone, $page_type);
@@ -246,11 +246,14 @@ abstract class Hook_sitemap_base
                     return false;
                 }
 
-                // Prevent infinite redirect loops
-                $redirect_count++;
-                if ($redirect_count > 10) {
+                // Prevent infinite redirect loops if we recursively hit the same zone:page more than twice
+                if (!isset($redirect_count[$zone . ':' . $page])) {
+                    $redirect_count[$zone . ':' . $page] = 0;
+                }
+                $redirect_count[$zone . ':' . $page]++;
+                if ($redirect_count[$zone . ':' . $page] > 2) {
                     require_lang('critical_error');
-                    warn_exit(do_lang_tempcode('REDIRECT_LOOP'), false, true); // Log it in case it is a software bug
+                    warn_exit(do_lang_tempcode('REDIRECT_LOOP', escape_html(serialize($redirect_count))), false, true); // Log it in case it is a software bug
                 }
 
                 $details = $this->_request_page_details($details[1]['r_to_page'], $details[1]['r_to_zone'], $page_type);

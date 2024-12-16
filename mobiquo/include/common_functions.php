@@ -50,10 +50,11 @@ function initialise_composr()
     global $EXTERNAL_CALL;
     $EXTERNAL_CALL = true;
 
-    if (!is_file($FILE_BASE . '/sources/global.php')) {
+    if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
         exit(json_encode(['status' => 'Required system file is missing']));
     }
-    require_once($FILE_BASE . '/sources/global.php');
+    require_once($FILE_BASE . '/sources/bootstrap.php');
+    require_code__bootstrap('global');
 
     error_reporting(E_ALL);
     cms_ini_set('ocproducts.type_strictness', '0'); // Much Tapatalk client code will not be compatible with this

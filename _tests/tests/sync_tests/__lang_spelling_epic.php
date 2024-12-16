@@ -25,7 +25,6 @@ class __lang_spelling_epic_test_set extends cms_test_case
 
         require_code('files2');
         require_code('spelling');
-        require_code('third_party_code');
 
         require_once(get_file_base() . '/_tests/tests/async_tests/lang_spelling.php');
         $manual_check_ob = new lang_spelling_test_set();

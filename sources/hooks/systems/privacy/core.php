@@ -229,7 +229,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'owner_id_field' => 'm_member_id',
                     'additional_member_id_fields' => ['m_as_member'],
                     'ip_address_fields' => [],
-                    'email_fields' => ['m_from_email', 'm_sender_email'], // TODO: need special functions for m_to_email (serialised) in this hook
+                    'email_fields' => ['m_from_email', 'm_sender_email', 'm_to_email'],
                     'username_fields' => [],
                     'file_fields' => [],
                     'additional_anonymise_fields' => ['m_to_name', 'm_from_name'],

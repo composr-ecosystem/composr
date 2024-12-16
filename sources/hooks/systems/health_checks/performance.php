@@ -160,9 +160,10 @@ class Hook_health_check_performance extends Hook_Health_Check
 
         $url = $this->firewallify_url($this->get_page_url());
 
+        require_code('global4');
         require_code('files');
 
-        $headers = @get_headers($url, 1);
+        $headers = @cms_get_headers($url, 1);
         if ($headers === false) {
             $this->stateCheckSkipped('Could not find headers for URL [url="' . $url . '"]' . $url . '[/url]');
             return;
@@ -226,6 +227,8 @@ class Hook_health_check_performance extends Hook_Health_Check
             return;
         }
 
+        require_code('global4');
+
         $css_basename = basename(css_enforce('global', 'default'));
         $javascript_basename = basename(javascript_enforce('global', 'default'));
         if (php_function_allowed('usleep')) {
@@ -243,7 +246,7 @@ class Hook_health_check_performance extends Hook_Health_Check
             $url = $this->firewallify_url($url);
 
             stream_context_set_default(['http' => ['header' => 'Accept-Encoding: gzip']]);
-            $headers = @get_headers($url, 1);
+            $headers = @cms_get_headers($url, 1);
             if ($headers === false) {
                 $this->stateCheckSkipped('Could not find headers for URL [url="' . $url . '"]' . $url . '[/url]');
                 continue;

@@ -339,7 +339,7 @@ class Module_admin_karma
             ]));
 
             $map = [
-                $myrow['id'],
+                integer_format($myrow['id']),
                 $_date,
                 $myrow['k_type'], // TODO: more intuitive via language strings? Maybe icons?
                 integer_format($myrow['k_amount']),

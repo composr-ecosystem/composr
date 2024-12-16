@@ -64,7 +64,9 @@ class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
         $this->row_iterator = $sheet_iterator->current()->getRowIterator();
         $this->row_iterator->rewind();
 
-        cms_ini_set('ocproducts.type_strictness', $before);
+        if ($before !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before);
+        }
 
         parent::__construct($path, $filename, $algorithm, $trim, $default_charset);
     }
@@ -77,7 +79,9 @@ class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
         $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
         $this->row_iterator->rewind();
-        cms_ini_set('ocproducts.type_strictness', $before);
+        if ($before !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before);
+        }
     }
 
     /**
@@ -95,7 +99,9 @@ class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
         cms_ini_set('ocproducts.type_strictness', '0');
 
         if (!$this->row_iterator->valid()) {
-            cms_ini_set('ocproducts.type_strictness', $before);
+            if ($before !== false) {
+                cms_ini_set('ocproducts.type_strictness', $before);
+            }
             return false;
         }
 
@@ -108,7 +114,9 @@ class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
             $cells[] = @strval($cell->getValue());
         }
 
-        cms_ini_set('ocproducts.type_strictness', $before);
+        if ($before !== false) {
+            cms_ini_set('ocproducts.type_strictness', $before);
+        }
 
         return $cells;
     }
@@ -130,7 +138,9 @@ class CMS_OpenSpout_Reader extends CMS_Spreadsheet_Reader
             $before = ini_get('ocproducts.type_strictness');
             cms_ini_set('ocproducts.type_strictness', '0');
             $this->reader->close();
-            cms_ini_set('ocproducts.type_strictness', $before);
+            if ($before !== false) {
+                cms_ini_set('ocproducts.type_strictness', $before);
+            }
             $this->reader = null;
         }
     }

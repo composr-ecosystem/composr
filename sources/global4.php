@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fileowner|php_sapi_name*/
+/*EXTRA FUNCTIONS: fileowner|php_sapi_name|get_headers*/
 
 /*
     Optional general library code that must be manually loaded
@@ -850,7 +850,7 @@ function get_exact_usernames_and_suexec() : array
     if (running_script('install')) {
         $path_to_check = get_file_base() . '/install.php';
     } else {
-        $path_to_check = get_file_base() . '/sources/global.php';
+        $path_to_check = get_file_base() . '/sources/bootstrap.php';
     }
 
     if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {
@@ -946,4 +946,22 @@ function looks_like_guid(string $potential) : bool
     }
 
     return false;
+}
+
+/**
+ * LEGACY: Fetches all the headers sent by the server in response to a HTTP request.
+ * This is legacy code for PHP's get_headers to work around the change of $parse to a boolean in PHP 8.0.
+ *
+ * @param  URLPATH $url The target URL
+ * @param  BINARY $parse Whether to parse into a map
+ * @param  ?resource $context A stream context to attach to (null: no special context)
+ * @return array Result
+ */
+function cms_get_headers(string $url, int $parse = 0, $context = null) : array
+{
+    if (version_compare(PHP_VERSION, '8.0', '<')) {
+        return get_headers($url, $parse, $context);
+    }
+
+    return get_headers($url, ($parse == 1), $context);
 }

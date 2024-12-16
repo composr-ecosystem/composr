@@ -116,6 +116,25 @@ function init__minikernel()
 }
 
 /**
+ * This function is a very important one when coding. It allows you to include a source code file (from root/sources/ or root/sources_custom/) through the proper channels.
+ * You should remember this function, and not substitute anything else for it, as that will likely make your code unstable.
+ * It is key to source code modularity in Composr.
+ *
+ * @param  string $codename The codename for the source module to load
+ */
+function require_code(string $codename)
+{
+    // The minikernel should never load these in because we either already loaded them or are using our own reduced API
+    $bad_scripts = ['bootstrap', 'minikernel', 'global', 'global2', 'users', 'mail', 'failure'];
+    if (in_array($codename, $bad_scripts)) {
+        return;
+    }
+
+    // Otherwise, we just utilise bootstrap's require_code when using minikernel
+    require_code__bootstrap($codename);
+}
+
+/**
  * Set HTTP caching in a conclusive and simple way.
  *
  * @param  ?TIME $last_modified When the resource was last modified (null: dynamic non-cached request)
@@ -1650,4 +1669,76 @@ function disable_php_memory_limit()
         }
         ini_set('memory_limit', $shl);
     }
+}
+
+/**
+ * Sets the value of a configuration option, if the PHP environment allows it.
+ *
+ * @param  string $var Config option
+ * @param  string $value New value of option
+ * @return ~string Old value of option (false: error)
+ */
+function cms_ini_set(string $var, string $value)
+{
+    if ($var == 'memory_limit' && PHP_DEBUG == 1) {
+        $value = '-1';
+    }
+
+    $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
+    $_blocked = [];
+    foreach ($to_block as $func) {
+        $ini_val = ini_get($func);
+        if ($ini_val !== false) {
+            $_blocked[] = $ini_val;
+        }
+    }
+    $blocked = implode(',', $_blocked);
+    if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {
+        return false;
+    }
+
+    return @ini_set($var, $value);
+}
+
+/**
+ * Make an object of the given class.
+ *
+ * @param  string $class The class name
+ * @param  boolean $failure_ok Whether to return null if there is no such class
+ * @param  array $parameters Array of parameters
+ * @return ?object The object (null: could not create)
+ */
+function object_factory(string $class, bool $failure_ok = false, array $parameters = []) : ?object
+{
+    return new $class(...$parameters);
+}
+
+/**
+ * Flush but don't break Brotli compression.
+ */
+function cms_flush_safe()
+{
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+        flush();
+    }
+}
+
+/**
+ * Make a PHP file evaluable.
+ *
+ * @param  string $c File contents
+ * @param  ?string $path File path (null: N/A)
+ * @return string Cleaned up file
+ */
+function clean_php_file_for_eval(string $c, ?string $path = null) : string
+{
+    $reps = [];
+    $reps['?' . '>'] = '';
+    $reps['<' . '?php'] = '';
+    if ($path !== null) {
+        $reps['__FILE__'] = "'" . addslashes($path) . "'";
+        $reps['__DIR__'] = "'" . addslashes(dirname($path)) . "'";
+    }
+
+    return str_replace(array_keys($reps), array_values($reps), $c);
 }

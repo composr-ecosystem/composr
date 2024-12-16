@@ -150,9 +150,9 @@ function abs($number)
  *
  * @param  float $x The dividend
  * @param  float $y The divisor
- * @return mixed The remainder
+ * @return float The remainder
  */
-function fmod(float $x, float $y)
+function fmod(float $x, float $y) : float
 {
     return 0.0;
 }
@@ -4483,19 +4483,6 @@ function file_put_contents(string $filename, string $data, int $flags = 0, $cont
 }
 
 /**
- * Fetches all the headers sent by the server in response to a HTTP request.
- *
- * @param  URLPATH $url The target URL
- * @param  BINARY $parse Whether to parse into a map
- * @param  ?resource $context A stream context to attach to (null: no special context)
- * @return array Result
- */
-function get_headers(string $url, int $parse = 0, $context = null) : array
-{
-    return [];
-}
-
-/**
  * Returns a list of response headers sent (or ready to send).
  *
  * @return array List of headers
@@ -5125,6 +5112,11 @@ output_reset_rewrite_vars
 crypt
 mktime
 gmmktime
+
+Disabled due to incompatibilities between the minimum supported PHP version for the software and the mainstream PHP versions...
+(generally, we use a cms_* wrapper for legacy)
+
+get_headers
 
 Disabled due to multi-OS compatibility...
 

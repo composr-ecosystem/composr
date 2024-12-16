@@ -189,6 +189,7 @@ function render_post_box(array $row, bool $use_post_title = false, bool $give_co
     }
 
     // Emphasis? PP to?
+    require_code('cns_posts');
     list($post_class, $emphasis) = cns_get_post_emphasis($row, null);
 
     // Feedback

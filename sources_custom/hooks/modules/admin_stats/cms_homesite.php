@@ -65,11 +65,11 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
 
         if (addon_installed('cms_homesite_tracker')) {
             $tracker_issue_types = [
-                '' => do_lang('TRACKER_ISSUE_TYPE_all'),
-                '10' => do_lang('TRACKER_ISSUE_TYPE_not_assigned'),
-                '50' => do_lang('TRACKER_ISSUE_TYPE_assigned'),
-                '80' => do_lang('TRACKER_ISSUE_TYPE_resolved'),
-                '90' => do_lang('TRACKER_ISSUE_TYPE_closed'),
+                's_all' => do_lang('TRACKER_ISSUE_TYPE_all'),
+                's_10' => do_lang('TRACKER_ISSUE_TYPE_not_assigned'),
+                's_50' => do_lang('TRACKER_ISSUE_TYPE_assigned'),
+                's_80' => do_lang('TRACKER_ISSUE_TYPE_resolved'),
+                's_90' => do_lang('TRACKER_ISSUE_TYPE_closed'),
             ];
             $ret['tracker_issue_activity'] = [
                 'label' => do_lang_tempcode('TRACKER_ISSUE_ACTIVITY'),
@@ -85,9 +85,9 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
             // Get tracker categories
             $_categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0 ORDER BY name'));
             $categories = [];
-            $categories[''] = do_lang('ALL');
+            $categories['c_all'] = do_lang('ALL');
             foreach ($_categories as $id => $_category) {
-                $categories[strval($id)] = $_category;
+                $categories['c_' . strval($id)] = $_category;
             }
             $categories = array_unique($categories);
 
@@ -182,16 +182,16 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
                     foreach (array_keys($date_pivots) as $pivot) {
                         $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                        if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status])) {
-                            $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status] = 0;
+                        if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['s_' . strval($status)])) {
+                            $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['s_' . strval($status)] = 0;
                         }
-                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][$status]++;
+                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['s_' . strval($status)]++;
 
                         // For all
-                        if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][''])) {
-                            $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value][''] = 0;
+                        if (!isset($data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['s_all'])) {
+                            $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['s_all'] = 0;
                         }
-                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['']++;
+                        $data_buckets['tracker_issue_activity'][$month][$pivot][$pivot_value]['s_all']++;
                     }
                 }
 
@@ -222,16 +222,16 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
                     foreach (array_keys($date_pivots) as $pivot) {
                         $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                        if (!isset($data_buckets['tracker_issues'][$month][$pivot][$pivot_value][$category])) {
-                            $data_buckets['tracker_issues'][$month][$pivot][$pivot_value][$category] = 0;
+                        if (!isset($data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['c_' . strval($category)])) {
+                            $data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['c_' . strval($category)] = 0;
                         }
-                        $data_buckets['tracker_issues'][$month][$pivot][$pivot_value][$category]++;
+                        $data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['c_' . strval($category)]++;
 
                         // For all
-                        if (!isset($data_buckets['tracker_issues'][$month][$pivot][$pivot_value][''])) {
-                            $data_buckets['tracker_issues'][$month][$pivot][$pivot_value][''] = 0;
+                        if (!isset($data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['c_all'])) {
+                            $data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['c_all'] = 0;
                         }
-                        $data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['']++;
+                        $data_buckets['tracker_issues'][$month][$pivot][$pivot_value]['c_all']++;
                     }
                 }
 
@@ -311,7 +311,7 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
                         foreach ($__ as $type => $value) {
-                            if (($type != '') && (!empty($filters[$bucket . '__type'])) && ($filters[$bucket . '__type'] != $type)) {
+                            if (($type != 's_all') && (!empty($filters[$bucket . '__type'])) && ($filters[$bucket . '__type'] != $type)) {
                                 continue;
                             }
 
@@ -351,7 +351,7 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
                         foreach ($__ as $category => $value) {
-                            if (($category != '') && (!empty($filters[$bucket . '__type'])) && ($filters[$bucket . '__type'] != $category)) {
+                            if (($category != 'c_all') && (!empty($filters[$bucket . '__type'])) && ($filters[$bucket . '__type'] != $category)) {
                                 continue;
                             }
 

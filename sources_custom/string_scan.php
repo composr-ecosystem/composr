@@ -8616,7 +8616,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MAIL_QUEUE_FAIL_SUBJECT
         MASS_DELETE_GALLERY_MEDIA
         NOTIFICATION_CATEGORY_TYPE_error_occurred_mail
-
+        COMPILED_SCRIPTS
+        DESCRIPTION_COMPILED_SCRIPTS
     ')));
 
     $non_admin_files = [

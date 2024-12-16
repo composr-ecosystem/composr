@@ -262,8 +262,12 @@ function js_minify(string $js) : string
         $js = \JShrink\Minifier::minify($js);
     }
 
-    cms_ini_set('ocproducts.type_strictness', $before_ts);
-    cms_ini_set('ocproducts.xss_detect', $before_xd);
+    if ($before_ts !== false) {
+        cms_ini_set('ocproducts.type_strictness', $before_ts);
+    }
+    if ($before_xd !== false) {
+        cms_ini_set('ocproducts.xss_detect', $before_xd);
+    }
 
     return $js;
 }

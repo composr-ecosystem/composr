@@ -86,7 +86,8 @@ I'm sure you can see why such a function library (and the pre-written subsystems
 
 [title="2"]Overrides[/title]
 
-Composr lets you override individual PHP files with changes by adding to the [tt]sources_custom[/tt] directory, which parallels the [tt]sources[/tt] directory. Overrides take precedence.
+Composr lets you override individual PHP files with changes by adding to the [tt]sources_custom[/tt] directory, which parallels the [tt]sources[/tt] directory. For more fine-grained control, you can also make a [tt]contentious_overrides[/tt] hook. Overrides take precedence.
+
 Overrides work at the file level. When Composr is running code it is rarely doing anything at an addon level, addon management is more to do with initial packaging/install, and then it's just files.
 
 If you are overriding a file you are taking responsibility for merging in any changes made to the original file back into your version.
@@ -97,9 +98,9 @@ There are 4 different kinds of PHP override in Composr:
 1) Extending a module -- a special case where we allow automatic instantiation of a derived version of the original module
 2) Replacing/supplementing a file, with your override loading first, then any non-overridden functions/classes from the original loading second
 3) Replacing/supplementing a file, with the original loading first, then your override
-4) Replacing/supplementing a file, [b]with support for programmatic alteration of the original code[/b] -- actually this can be done in tandem with techniques 1 & 2 above
+4) Replacing/supplementing a file, [b]with support for programmatic alteration of the original code[/b] -- actually this can be done in tandem with techniques 1 & 2 above, but not so easily technique 3
 
-It's important to note that as well as overrides you can place entirely new files in the [tt]*_custom[/tt] directories, and Composr will be able to reference them as if they were original files.
+It's important to note that as well as overrides you can place entirely new files in the [tt]*_custom[/tt] directories, and Composr will be able to compile them as if they were original files.
 
 All these techniques are handled inside the Composr [tt]sources/global.php[/tt] file. If you are a good programmer but still can't work out how to do all this stuff (it's easy once you know how, but a bit unorthodox compared to normal techniques), look at the code of this file. As [tt]sources/global.php[/tt] is the file that does the magic it's the only file that you can't override; it is therefore kept minimal, hence why we have a [tt]sources/global2.php[/tt] which picks up where [tt]sources/global.php[/tt] leaves off.
 
@@ -109,7 +110,7 @@ Where possible it is good to use hooks to add in functionality. For example, you
 
 This form of overriding works via class inheritance. All you need to do is to make a [tt]modules_custom[/tt] directory version of an original [tt]modules[/tt] directory file, with two differences:
 1) Instead of just naming the module class [tt]Module_<modulename>[/tt], rename it and inherit using [tt]Mx_<modulename> extends Module_<modulename>[/tt]
-2) Make sure the top of the file contains [tt]/*FORCE_ORIGINAL_LOAD_FIRST*/[/tt]
+2) Make sure the top of the file contains [tt]/*FORCE_ORIGINAL_LOAD_FIRST*/[/tt], otherwise you will get errors about the class [tt]Module_<modulename>[/tt] not being found.
 3) As this works via standard class inheritance you are at liberty to, and should, only re-define methods in your override when those methods are actually different from the original ones. i.e. start with a shell of a class and only re-define methods that you are actually wanting to change
 
 [title="3"]Replacing/supplementing a file[/title]
@@ -126,6 +127,7 @@ function example_function($a,$b)
 	return $ret;
 }
 [/code]
+
 It is also very useful for classes because it allows you to create a subclass of the original, without changing its name (which would break Composr, as Composr expects a certain fixed name for its classes). For example:
 [code="PHP"]
 class example extends non_overridden__example
@@ -162,12 +164,15 @@ There are 3 ways this problem could be solved:
 We took approach '3', and thus have written a special feature into Composr for it. Its admittedly a bit messy but in practical terms it works almost flawlessly.
 
 In Composr it works as thus:
-1) First you create a [tt]sources_custom[/tt] file
-2) Next you define an init function of this file. If you were overriding [tt]sources/example.php[/tt] you would define a [tt]init__example[/tt] function. If you were overriding [tt]sources/forum/example.php[/tt] you would define a [tt]init__forum__example[/tt] function (i.e. any slashes get changed to [tt]__[/tt] in the function name)
-3) The init function should take a single parameter, and return something based upon that parameter. The value of this parameter will be the string value of the code you're overriding, after any function/class renaming has happened (see 'Replacing/supplementing a file' above). i.e. your function is taking a huge lump of PHP code as its parameter. In-between taking the parameter and returning it you can perform any changes you like. You can use any string functions like [tt]preg_replace[/tt] or [tt]strpos[/tt]; or use the handy Composr [tt]get_function_hash / insert_code_before__by_linenum / insert_code_after__by_linenum / insert_code_before__by_command / insert_code_after__by_command / remove_code[/tt] functions
+1) First, you create a [tt]contentious_overrides[/tt] hook in [tt]sources_custom/hooks/systems/contentious_overrides[/tt]. Generally, name it the same name as your addon, but you do not have to do that.
+2) Within the Hook_contentious_overrides_file_name_without_extension class, define a public function compile_included_code. See [page="docs:codebook_1b"]Code Book, part 1b (Further back-end concepts)[/page] under the section "Contentious override hooks" for an example to see how to structure it.
+3) Put your addon guards in at the top of the function which return nothing if not installed.
+4) Put your [tt]$codename[/tt] guards in place, doing different things depending on what code is being included. You want to make sure your overrides only apply to the applicable files you want to override and nothing else.
+5) When you know for sure you are about to modify the code, make sure to populate [tt]$code[/tt] with the file contents of [tt]$path[/tt] if it is null.
+6) Finally, you can define your overrides. You can use any string functions like [tt]preg_replace[/tt] or [tt]strpos[/tt], but it is highly recommended to instead use the handy Composr [tt]get_function_hash / insert_code_before__by_linenum / insert_code_after__by_linenum / insert_code_before__by_command / insert_code_after__by_command / remove_code[/tt] functions from the [tt]override_api[/tt] source. This is more elegant and will also output proper errors should the overrides no-longer work.
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
-There is one important rule when it comes to programmatic alteration: you are not allowed to call [tt]non_overridded__init__<whatever>[/tt] from your [tt]init__<whatever>[/tt] function. You cannot do this because the PHP code containing that function has not been evaluated at that point and thus the function is not yet defined. If you try and do it then Composr will disable programmatic alteration and hence revert to the more basic 'Replacing/supplementing a file' technique. Composr will automatically call [tt]non_overridded__init__<whatever>[/tt] as soon as it becomes available so you do not need to copy&paste its contents to your own function. If you do not want [tt]non_overridded__init__<whatever>[/tt] to be automatically called then you need to rename it in your own init function so that Composr cannot find it.
+There is one important rule when it comes to init functions: you are not allowed to call [tt]non_overridden__init__<whatever>[/tt] from your [tt]init__<whatever>[/tt] function. You cannot do this because the PHP code containing that function has not been evaluated at that point and thus the function is not yet defined. If you try and do it then Composr will disable programmatic alteration and hence revert to the more basic 'Replacing/supplementing a file' technique. Composr will automatically call [tt]non_overridden__init__<whatever>[/tt] as soon as it becomes available so you do not need to copy&paste its contents to your own function. If you do not want [tt]non_overridden__init__<whatever>[/tt] to be automatically called then you need to rename it in your own init function so that Composr cannot find it.
 
 [title="2"]Exporting addons[/title]
 

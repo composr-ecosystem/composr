@@ -27,16 +27,16 @@ $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
-if (!is_file($FILE_BASE . '/sources/global.php')) {
+if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
     $RELATIVE_PATH = basename($FILE_BASE);
     $FILE_BASE = dirname($FILE_BASE);
 } else {
     $RELATIVE_PATH = '';
 }
-if (!is_file($FILE_BASE . '/sources/global.php')) {
+if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
     $FILE_BASE = $_SERVER['SCRIPT_FILENAME']; // this is with symlinks-unresolved (__FILE__ has them resolved); we need as we may want to allow zones to be symlinked into the base directory without getting path-resolved
     $FILE_BASE = dirname($FILE_BASE);
-    if (!is_file($FILE_BASE . '/sources/global.php')) {
+    if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
         $RELATIVE_PATH = basename($FILE_BASE);
         $FILE_BASE = dirname($FILE_BASE);
     } else {

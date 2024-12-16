@@ -160,7 +160,6 @@ function scan_modularisation($only_populate_data = false, $stricter_checking = f
     // Check declared packages in files against the addon they're supposed to be within, and for files not including in any addon...
 
     require_code('files2');
-    require_code('third_party_code');
     $unput_files = []; // A map of non-existent packages to a list in them
     $ignore = IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_FLOATING | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES;
     if ($stricter_checking) {
