@@ -227,7 +227,7 @@ class Module_admin_errorlog
                         $stuff[] = [$matches[1], $matches[2], $matches[3], $matches[4], ''];
                     } elseif (preg_match('#^\[([^\]]*)\] (CRITICAL|ERROR|WARNING|INFO|DEBUG|)[\s]?(.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], do_lang('NA'), $matches[2], $matches[3], ''];
-                    } elseif ((preg_match('#^TELEMETRY (\d*)#', $_line, $matches) != 0) && (count($stuff) > 0)) { // We have a telemetry ID #
+                    } elseif ((preg_match('#^TELEMETRY ([0-9a-fA-F\-]*)#', $_line, $matches) != 0) && (count($stuff) > 0)) { // We have a telemetry GUID
                         $stuff[count($stuff) - 1][4] = $matches[1];
                     } elseif (count($stuff) > 0) { // Additional lines for error message, so append them
                         $stuff[count($stuff) - 1][3] .= "\n" . $_line;
@@ -303,7 +303,8 @@ class Module_admin_errorlog
 
             $td_class = cms_mb_strtolower($log_level);
 
-            if (is_numeric($telemetry_id)) {
+            require_code('global4');
+            if (looks_like_guid($telemetry_id)) {
                 $telemetry = hyperlink(get_brand_page_url(['page' => 'telemetry', 'type' => $telemetry_id, 'lang' => get_lang(get_member())], ''), do_lang('YES'), true, true);
             } else {
                 $telemetry = do_lang_tempcode('NO');
