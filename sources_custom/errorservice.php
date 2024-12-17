@@ -39,7 +39,7 @@ function get_problem_match_nearest(string $error_message) : ?string
         $assembled = $summary . "\n\n[title=\"2\"]How did this happen?[/title]\n\n" . $how . "\n\n[title=\"2\"]How do I fix it?[/title]\n\n" . $solution;
 
         // Possible rebranding
-        $brand = get_param_string('product');
+        $brand = get_param_string('product', DEFAULT_BRAND_NAME);
         if (($brand != DEFAULT_BRAND_NAME) && ($brand != '')) {
             $brand_base_url = get_param_string('product_site', '');
             if ($brand_base_url != '') {
