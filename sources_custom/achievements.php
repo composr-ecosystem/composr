@@ -619,8 +619,17 @@ class Achievements_loader
             return null;
         }
 
-        // Return the text
-        return $ob->to_text($member_id, $params, $count_done, $count_required);
+        // Process the text
+        $results = $ob->to_text($member_id, $params, $count_done, $count_required);
+
+        // Return the results
+        if ($results === null) {
+            return null;
+        }
+        return do_template('ACHIEVEMENT_PROGRESS_QUALIFICATION', [
+            'QUALIFICATION_TEXT' => $results,
+            'QUALIFICATION_DONE' => ($count_done >= $count_required),
+        ]);
     }
 
     /**

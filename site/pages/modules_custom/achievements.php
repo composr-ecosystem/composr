@@ -150,7 +150,8 @@ class Module_achievements
     {
         // Try cache first
         require_code('caches');
-        $data = get_cache_entry('achievements', serialize([get_member()]), CACHE_AGAINST_NOTHING_SPECIAL, 60);
+        $data = null;
+        //$data = get_cache_entry('achievements', serialize([get_member()]), CACHE_AGAINST_NOTHING_SPECIAL, 60);
 
         // No cache available; we have to get the data from the achievements system
         if ($data === null) {
@@ -229,8 +230,7 @@ class Module_achievements
             $qualifications = new Tempcode();
             foreach ($achievement_details['qualification_groups'] as $i => $qualification_group) {
                 if ($i > 0) {
-                    $qualifications->attach('<hr>');
-                    $qualifications->attach(paragraph(do_lang_tempcode('OR')));
+                    $qualifications->attach(do_template('ACHIEVEMENT_QUALIFICATIONS_OR'));
                 }
                 foreach ($qualification_group['qualifications'] as $qualification) {
                     if ($qualification['text'] === null) {

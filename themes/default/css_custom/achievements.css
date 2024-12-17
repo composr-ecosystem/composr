@@ -2,31 +2,23 @@
 	position: relative;
 	width: 100%;
 	height: 1em;
-	background-color: {$GET,area_4_background};
+	border: 1px solid {$GET,dark_border};
 }
 
 .achievement-progress-wrapper .achievement-progress {
 	position: absolute;
 	top: 0;
 	left: 0;
-	height: 1em;
-	background-color: {$COLOR_RGBA,{$GET,seed},0.75};
+	height: 0.9em;
+	background-color: {$GET,seed};
 }
 
 .achievement-progress-wrapper .achievement-progress.progress-complete {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 1em;
 	background-color: {$GET,success_color};
 }
 
 .achievement-progress-wrapper .achievement-progress.progress-read-only {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 1em;
-	background-color: {$COLOR_RGBA,{$GET,danger_color},0.5};
+	background-color: {$GET,danger_color};
 }
 
 .block-main-achievements {
@@ -35,4 +27,40 @@
 	flex-wrap: wrap;
 	justify-content: space-between;
 	{$BETA_CSS_PROPERTY,display: flex;}
+}
+
+.box.box---achievement-qualification {
+	background-color: {$GET,light_error_background_2} !important;
+}
+
+.box.box---achievement-qualification.box---achievement-qualification-done {
+	background-color: {$GET,light_success_background_2} !important;
+}
+
+.achievement-qualifications-or {
+	display: flex;
+	align-items: center;
+	text-align: center;
+	margin: 1.5em 0;
+}
+
+.achievement-qualifications-or::before,
+.achievement-qualifications-or::after {
+	content: "";
+	flex: 1;
+	border-bottom: 1px solid {$GET,divider_line};
+}
+
+.achievement-qualifications-or::before {
+	margin-right: 0.75em;
+}
+ 
+.achievement-qualifications-or::after {
+	margin-left: 0.75em;
+}
+
+.achievement-qualifications-or span {
+	white-space: nowrap;
+	font-weight: bold;
+	font-size: 1.25em;
 }
