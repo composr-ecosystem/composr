@@ -67,11 +67,11 @@ class Module_telemetry
             return $error_msg;
         }
 
-        $id = get_param_integer('type');
+        $id = get_param_string('type');
 
         require_lang('cms_homesite');
 
-        $this->title = get_screen_title('RELAYED_ERROR', true, [escape_html(integer_format($id))]);
+        $this->title = get_screen_title('RELAYED_ERROR', true, [escape_html($id)]);
 
         return null;
     }
