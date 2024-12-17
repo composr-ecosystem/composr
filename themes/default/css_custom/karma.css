@@ -3,13 +3,14 @@
 	width: 100%;
 	height: 1.5em;
 	background-color: {$GET,area_4_background};
+	border: 1px solid {$GET,point_of_interest_border};
 }
 
 .block-main-karma-graph .karma-bar {
 	position: absolute;
 	top: 0;
 	left: 0;
-	height: 1.5em;
+	height: 1.4em;
 }
 
 .block-main-karma-graph .karma-bar.good-karma {
