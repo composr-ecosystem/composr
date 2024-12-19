@@ -71,8 +71,8 @@ class Module_achievements
                 'id' => '*AUTO',
                 'ap_member_id' => 'MEMBER',
                 'ap_qualification_hash' => 'SHORT_TEXT',
-                'ap_count_required' => 'UINTEGER',
-                'ap_count_done' => 'UINTEGER',
+                'ap_count_required' => 'INTEGER',
+                'ap_count_done' => 'INTEGER',
                 'ap_date_and_time' => 'TIME',
             ]);
         }

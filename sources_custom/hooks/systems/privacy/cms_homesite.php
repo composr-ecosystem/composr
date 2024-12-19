@@ -51,7 +51,7 @@ class Hook_privacy_cms_homesite extends Hook_privacy_base
 
             'database_records' => [
                 'relayed_errors' => [
-                    'timestamp_field' => 'last_date_and_time',
+                    'timestamp_field' => 'e_last_date_and_time',
                     'retention_days' => 90,
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
                     'owner_id_field' => null,
@@ -60,7 +60,7 @@ class Hook_privacy_cms_homesite extends Hook_privacy_base
                     'email_fields' => [],
                     'username_fields' => [],
                     'file_fields' => [],
-                    'additional_anonymise_fields' => ['website_url', 'error_message'],
+                    'additional_anonymise_fields' => ['e_website_url', 'e_error_message'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'removal_default_handle_method_member_override' => null,

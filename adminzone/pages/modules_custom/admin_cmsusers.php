@@ -91,17 +91,17 @@ class Module_admin_cmsusers
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
             $GLOBALS['SITE_DB']->create_table('relayed_errors', [
                 'id' => '*AUTO',
-                'guid' => 'SHORT_TEXT',
-                'first_date_and_time' => 'TIME',
-                'last_date_and_time' => 'TIME',
-                'website_url' => 'URLPATH',
+                'e_guid' => 'SHORT_TEXT',
+                'e_first_date_and_time' => 'TIME',
+                'e_last_date_and_time' => 'TIME',
+                'e_website_url' => 'URLPATH',
                 'e_version' => 'ID_TEXT',
-                'error_message' => 'LONG_TEXT',
-                'error_hash' => 'SHORT_TEXT',
-                'error_count' => 'INTEGER',
-                'refs_compiled' => 'BINARY', // Whether this error references _compiled code; 0 always means the error is in original Composr code, but 1 does *not* always mean the error is in custom / user code.
-                'resolved' => 'BINARY',
-                'note' => 'LONG_TRANS__COMCODE',
+                'e_error_message' => 'LONG_TEXT',
+                'e_error_hash' => 'SHORT_TEXT',
+                'e_error_count' => 'INTEGER',
+                'e_refs_compiled' => 'BINARY', // Whether this error references _compiled code; 0 always means the error is in original Composr code, but 1 does *not* always mean the error is in custom / user code.
+                'e_resolved' => 'BINARY',
+                'e_note' => 'LONG_TRANS__COMCODE',
             ]);
         }
 
@@ -130,8 +130,19 @@ class Module_admin_cmsusers
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta6
-            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'refs_compiled', 'BINARY');
-            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'guid', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'e_refs_compiled', 'BINARY');
+            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'e_guid', 'SHORT_TEXT');
+
+            // Consistency to avoid restricted keywords
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'first_date_and_time', 'TIME', 'e_first_date_and_time');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'last_date_and_time', 'TIME', 'e_last_date_and_time');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'website_url', 'URLPATH', 'e_website_url');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_message', 'LONG_TEXT', 'e_error_message');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_hash', 'SHORT_TEXT', 'e_error_hash');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_count', 'INTEGER', 'e_error_count');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'refs_compiled', 'BINARY', 'e_refs_compiled');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'resolved', 'BINARY', 'e_resolved');
+            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'note', 'LONG_TRANS__COMCODE', 'e_note');
         }
     }
 
@@ -408,28 +419,28 @@ class Module_admin_cmsusers
         $where = [];
         $end = '';
         if ($filter_website != '') {
-            $end .= ' AND website_url LIKE \'' . db_encode_like('%' . $filter_website . '%') . '\'';
+            $end .= ' AND e_website_url LIKE \'' . db_encode_like('%' . db_escape_string($filter_website) . '%') . '\'';
         }
         if ($filter_error_message != '') {
-            $end .= ' AND error_message LIKE \'' . db_encode_like('%' . $filter_error_message . '%') . '\'';
+            $end .= ' AND e_error_message LIKE \'' . db_encode_like('%' . db_escape_string($filter_error_message) . '%') . '\'';
         }
         if ($filter_show_resolved == 0) {
-            $where['resolved'] = 0;
+            $where['e_resolved'] = 0;
         }
         if ($filter_show_compiled == 0) {
-            $where['refs_compiled'] = 0;
+            $where['e_refs_compiled'] = 0;
         }
 
         // Query
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('relayed_errors', 'COUNT(*)', $where, $end);
         $sortables = [
-            'website_url' => do_lang_tempcode('URL'),
-            'first_date_and_time' => do_lang_tempcode('FIRST_REPORTED'),
-            'last_date_and_time' => do_lang_tempcode('LAST_REPORTED'),
+            'e_website_url' => do_lang_tempcode('URL'),
+            'e_first_date_and_time' => do_lang_tempcode('FIRST_REPORTED'),
+            'e_last_date_and_time' => do_lang_tempcode('LAST_REPORTED'),
             'e_version' => do_lang_tempcode('VERSION'),
-            'error_count' => do_lang_tempcode('TIMES_REPORTED'),
+            'e_error_count' => do_lang_tempcode('TIMES_REPORTED'),
         ];
-        $test = explode(' ', get_param_string('sort', 'last_date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        $test = explode(' ', get_param_string('sort', 'e_last_date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
         }
@@ -461,14 +472,14 @@ class Module_admin_cmsusers
 
         foreach ($rows as $myrow) {
             $id = hyperlink(build_url(['page' => '_SELF', 'type' => 'error', 'id' => $myrow['id']], '_SELF'), '#' . integer_format($myrow['id']), false, true);
-            $website_url = hyperlink($myrow['website_url'], $myrow['website_url'], true, true);
-            $summary = generate_tooltip_by_truncation($myrow['error_message'], 160);
-            $first_date = get_timezoned_date_time($myrow['first_date_and_time'], false);
-            $last_date = get_timezoned_date_time($myrow['last_date_and_time'], false);
+            $website_url = hyperlink($myrow['e_website_url'], $myrow['e_website_url'], true, true);
+            $summary = generate_tooltip_by_truncation($myrow['e_error_message'], 160);
+            $first_date = get_timezoned_date_time($myrow['e_first_date_and_time'], false);
+            $last_date = get_timezoned_date_time($myrow['e_last_date_and_time'], false);
 
             $actions = new Tempcode();
 
-            if ($myrow['resolved'] == 0) {
+            if ($myrow['e_resolved'] == 0) {
                 $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $myrow['id']], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '1e30e4f5fcc295e0320eaced5d18e03c',
@@ -485,11 +496,11 @@ class Module_admin_cmsusers
                 $id,
                 $website_url,
                 $summary,
-                (($myrow['refs_compiled'] == 1) ? do_lang('YES') : do_lang('NO')),
+                (($myrow['e_refs_compiled'] == 1) ? do_lang('YES') : do_lang('NO')),
                 $first_date,
                 $last_date,
                 $myrow['e_version'],
-                integer_format($myrow['error_count']),
+                integer_format($myrow['e_error_count']),
                 $actions
             ];
 
@@ -555,15 +566,16 @@ class Module_admin_cmsusers
         require_code('temporal');
 
         $formatted_id = '#' . integer_format($row['id']);
-        $website_url = hyperlink($row['website_url'], $row['website_url'], true, true);
-        $first_date = get_timezoned_date_time($row['first_date_and_time'], false);
-        $last_date = get_timezoned_date_time($row['last_date_and_time'], false);
-        $resolved = ($row['resolved'] == 1);
-        $refs_compiled = ($row['refs_compiled'] == 1);
+        $guid = $row['e_guid'];
+        $website_url = hyperlink($row['e_website_url'], $row['e_website_url'], true, true);
+        $first_date = get_timezoned_date_time($row['e_first_date_and_time'], false);
+        $last_date = get_timezoned_date_time($row['e_last_date_and_time'], false);
+        $resolved = ($row['e_resolved'] == 1);
+        $refs_compiled = ($row['e_refs_compiled'] == 1);
 
         $buttons = new Tempcode();
 
-        if ($row['resolved'] == 0) {
+        if ($row['e_resolved'] == 0) {
             $resolve_url = build_url(['page' => '_SELF', 'type' => 'resolve_error', 'id' => $id], '_SELF');
             $buttons->attach(do_template('BUTTON_SCREEN', [
                 '_GUID' => '5721066370f5f9fbd8f43621a54628ed',
@@ -577,13 +589,14 @@ class Module_admin_cmsusers
 
         $fields = [
             'IDENTIFIER' => $formatted_id,
+            'GUID' => $guid,
             'URL' => $website_url,
             'ERROR_REFS_COMPILED' => $refs_compiled ? do_lang('YES') : do_lang('NO'),
-            'ERROR_MESSAGE' => $row['error_message'],
+            'ERROR_MESSAGE' => $row['e_error_message'],
             'FIRST_REPORTED' => $first_date,
             'LAST_REPORTED' => $last_date,
             'VERSION' => $row['e_version'],
-            'TIMES_REPORTED' => integer_format($row['error_count']),
+            'TIMES_REPORTED' => integer_format($row['e_error_count']),
             'RESOLVED' => $resolved ? do_lang('YES') : do_lang('NO'),
         ];
 
@@ -606,7 +619,7 @@ class Module_admin_cmsusers
         }
         $row = $_row[0];
 
-        $note = get_translated_text($row['note']);
+        $note = get_translated_text($row['e_note']);
 
         require_code('form_templates');
 
@@ -647,8 +660,8 @@ class Module_admin_cmsusers
         $new_note = post_param_string('note');
 
         // Actualiser
-        $map = ['resolved' => $resolved];
-        $map += lang_remap_comcode('note', $row['note'], $new_note);
+        $map = ['e_resolved' => $resolved];
+        $map += lang_remap_comcode('e_note', $row['e_note'], $new_note);
         $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $id]);
         $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
@@ -823,16 +836,17 @@ class Module_admin_cmsusers
         }
 
         // Auto-resolve existing errors according to the specified criteria
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
         $start = 0;
         $max = 100;
         $count = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'error_message', 'note'], ['resolved' => 0], '', $max, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'e_error_message', 'e_note'], ['e_resolved' => 0], '', $max, $start);
             foreach ($rows as $row) {
-                if (strpos($row['error_message'], $ignore_string) !== false) {
+                if (strpos($row['e_error_message'], $ignore_string) !== false) {
                     $count++;
-                    $map = ['resolved' => 1];
-                    $map += lang_remap_comcode('note', $row['note'], $resolve_message);
+                    $map = ['e_resolved' => 1];
+                    $map += lang_remap_comcode('e_note', $row['e_note'], $resolve_message);
                     $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row['id']]);
                 }
             }
@@ -845,7 +859,7 @@ class Module_admin_cmsusers
     }
 
     /**
-     * The UI or actualizer for deleting an ignore error.
+     * The UI or actualiser for deleting an ignore error.
      *
      * @param  AUTO_LINK $id The ID of the ignore error to delete
      * @return Tempcode The results

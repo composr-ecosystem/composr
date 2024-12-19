@@ -2954,11 +2954,12 @@ class DatabaseConnector
      * @param  integer $level The translation level to use
      * @set 1 2 3 4
      * @param  boolean $in_assembly Whether our data is already stored in Tempcode assembly format
+     * @param  boolean $long_trans Whether this should be a LONG_TRANS__COMCODE field, not a SHORT_TRANS__COMCODE field
      */
-    public function promote_text_field_to_comcode(string $table_name, string $name, string $key = 'id', int $level = 2, bool $in_assembly = false)
+    public function promote_text_field_to_comcode(string $table_name, string $name, string $key = 'id', int $level = 2, bool $in_assembly = false, bool $long_trans = false)
     {
         require_code('database_helper');
-        _helper_promote_text_field_to_comcode($this, $table_name, $name, $key, $level, $in_assembly);
+        _helper_promote_text_field_to_comcode($this, $table_name, $name, $key, $level, $in_assembly, $long_trans);
     }
 
     /**
@@ -3045,10 +3046,11 @@ class DatabaseConnector
     }
 
     /**
-     * Find if a table is locked for more than 5 seconds. Only works with MySQL/MyISAM (and irrelevant for other DBs which don't do table-level locking).
+     * Wait up to 5 iterations for a table to be unlocked (if it is locked).
+     * Only works with MySQL/MyISAM (and irrelevant for other DBs which don't do table-level locking).
      *
      * @param  ID_TEXT $table The table name
-     * @return boolean Whether the table is locked
+     * @return boolean Whether the table was still locked after trying 5 times
      */
     public function table_is_locked(string $table) : bool
     {
@@ -3056,6 +3058,7 @@ class DatabaseConnector
             return false; // Actually, we have delayed insert for these so locking is not an issue
         }
 
+        // InnoDB tables do not have table-level locking, and non-MySQL databases also do not support it
         if (strpos(get_db_type(), 'mysql') === false || get_value('innodb') === '1') {
             return false;
         }

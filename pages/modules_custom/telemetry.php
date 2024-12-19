@@ -102,7 +102,7 @@ class Module_telemetry
             warn_exit('Telemetry now utilises random GUIDs which are more secure than ID numbers. Composr 11 beta6 will properly generate GUID-based telemetry links. Errors are still being received on our end despite this change.');
         }
 
-        $_error = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['guid' => $id]);
+        $_error = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['e_guid' => $id]);
         if (($_error === null) || !array_key_exists(0, $_error)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -114,11 +114,11 @@ class Module_telemetry
         require_code('temporal');
 
         $fields = [
-            'STATUS' => (($error['resolved'] == 1) ? do_lang_tempcode('RELAYED_ERROR_CLOSED', protect_from_escaping($issue_tracker)) : do_lang_tempcode('RELAYED_ERROR_OPEN')),
-            'FIRST_REPORTED' => get_timezoned_date_time($error['first_date_and_time'], false),
-            'LAST_REPORTED' => get_timezoned_date_time($error['last_date_and_time'], false),
-            'TIMES_REPORTED' => integer_format($error['error_count']),
-            'NOTES' => get_translated_tempcode('relayed_errors', $error, 'note', null, $lang),
+            'STATUS' => (($error['e_resolved'] == 1) ? do_lang_tempcode('RELAYED_ERROR_CLOSED', protect_from_escaping($issue_tracker)) : do_lang_tempcode('RELAYED_ERROR_OPEN')),
+            'FIRST_REPORTED' => get_timezoned_date_time($error['e_first_date_and_time'], false),
+            'LAST_REPORTED' => get_timezoned_date_time($error['e_last_date_and_time'], false),
+            'TIMES_REPORTED' => integer_format($error['e_error_count']),
+            'NOTES' => get_translated_tempcode('relayed_errors', $error, 'e_note', null, $lang),
         ];
 
         $text = do_lang_tempcode('DESCRIPTION_RELAYED_ERROR', protect_from_escaping($issue_tracker));

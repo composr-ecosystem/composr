@@ -930,17 +930,23 @@ function rebuild_table_from_meta_database(object $db, string $table_name)
  * @param  integer $level The translation level to use
  * @set 1 2 3 4
  * @param  boolean $in_assembly Whether our data is already stored in Tempcode assembly format
+ * @param  boolean $long_trans Whether this should be a LONG_TRANS__COMCODE field, not a SHORT_TRANS__COMCODE field
  *
  * @ignore
  */
-function _helper_promote_text_field_to_comcode(object $this_ref, string $table_name, string $name, string $key = 'id', int $level = 2, bool $in_assembly = false)
+function _helper_promote_text_field_to_comcode(object $this_ref, string $table_name, string $name, string $key = 'id', int $level = 2, bool $in_assembly = false, bool $long_trans = false)
 {
+    $field_type = 'SHORT_TRANS__COMCODE';
+    if ($long_trans === true) {
+        $field_type = 'LONG_TRANS__COMCODE';
+    }
+
     $rows = $this_ref->query_select($table_name, [$name, $key]);
     if ($rows === null) {
         return; // Issue in upgrader
     }
     $this_ref->delete_table_field($table_name, $name);
-    $this_ref->add_table_field($table_name, $name, 'SHORT_TRANS__COMCODE');
+    $this_ref->add_table_field($table_name, $name, $field_type);
     foreach ($rows as $row) {
         if ($in_assembly) {
             $map = insert_lang($name, '', $level, $this_ref, true, null, null, false, null, $row[$name]);
