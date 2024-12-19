@@ -417,6 +417,10 @@ function has_page_access(int $member_id, string $page, string $zone, bool $at_no
         }
     }
 
+    // Infinite loop prevention; we should never reach this point more than once on the same execution for the same parameters
+    check_for_infinite_loop('has_page_access', func_get_args());
+
+    // Had to populate cache, so we must check again now with the caches populated
     return has_page_access($member_id, $page, $zone, $at_now);
 }
 

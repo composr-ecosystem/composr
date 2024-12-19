@@ -197,17 +197,13 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         return ''; // Suppressing errors
     }
 
-    static $am_looping = 0;
-    if ($am_looping > 2) {
-        return ''; // Was a lang lookup error and got in an infinite loop of attaching errors about missing lang errors (because each iteration causes a reevaluation of past messages)
-    }
-    $am_looping++;
+    // Was a lang lookup error and got in an infinite loop of attaching errors about missing lang errors (because each iteration causes a reevaluation of past messages)
+    check_for_infinite_loop('attach_message', [$message, $type], 2);
 
     global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES, $SITE_INFO;
 
     foreach ($ATTACHED_MESSAGES_RAW as $last) {
         if ([$last[0], $last[1]] == [$message_eval, $type]) {
-            $am_looping--;
             return ''; // Already shown
         }
     }
@@ -297,7 +293,6 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         $GLOBALS['SITE_DB']->query_insert('messages_to_render', $map);
     }
 
-    $am_looping--;
     return '';
 }
 

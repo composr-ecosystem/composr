@@ -87,6 +87,9 @@ function init__global3()
     global $OUTPUT_STATE_STACK;
     $OUTPUT_STATE_STACK = [];
 
+    global $CHECK_FOR_INFINITE_LOOP;
+    $CHECK_FOR_INFINITE_LOOP = [];
+
     // Registry of output state globals
     global $OUTPUT_STATE_VARS;
     $OUTPUT_STATE_VARS = [
@@ -5288,7 +5291,7 @@ function cms_preg_safety_guard_ok(array &$guard) : bool
     if ($guard['i'] > 100 || $guard['init_time'] < time() - 5) {
         // Too thorny, do not continue
         if ($GLOBALS['DEV_MODE']) {
-            fatal_exit('Prevented possible infinite loop');
+            fatal_exit('Bailed out on a regex infinite loop');
         }
         return false;
     }
@@ -5835,4 +5838,33 @@ function cms_shuffle_assoc(array &$array) : bool
     $array = $new_array;
 
     return true;
+}
+
+/**
+ * Check for infinite loops and bail if we detected one.
+ *
+ * @param  ID_TEXT $codename A codename to use for this check, such as a function name
+ * @param  array $args An array of arguments to determine if this is a unique call, usually parameters passed to the function (func_get_args)
+ * @param  integer $allowed_iterations The number of times we are allowed to call check_for_infinite_loop with the same $codename and $args before bailing on error
+ */
+function check_for_infinite_loop(string $codename, array $args, int $allowed_iterations = 1)
+{
+    global $CHECK_FOR_INFINITE_LOOP;
+
+    $hash = md5(serialize($args));
+
+    // Prepare global array tracker
+    if (!isset($CHECK_FOR_INFINITE_LOOP[$codename])) {
+        $CHECK_FOR_INFINITE_LOOP[$codename] = [];
+    }
+    if (!isset($CHECK_FOR_INFINITE_LOOP[$codename][$hash])) {
+        $CHECK_FOR_INFINITE_LOOP[$codename][$hash] = 0;
+    }
+
+    // Increment count and handle if we surpassed the allowed number of iterations
+    $CHECK_FOR_INFINITE_LOOP[$codename][$hash]++;
+    if ($CHECK_FOR_INFINITE_LOOP[$codename][$hash] > $allowed_iterations) {
+        require_lang('critical_error');
+        warn_exit(do_lang_tempcode('INFINITE_LOOP_HALTED', escape_html($codename)));
+    }
 }
