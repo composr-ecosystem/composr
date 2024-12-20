@@ -24,7 +24,7 @@
  */
 function upload_attach_func($raw_params)
 {
-    require_once(COMMON_CLASS_PATH_WRITE . '/attachment_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/attachment_write.php';
 
     $account_object = new CMSAttachmentWrite();
     $results = $account_object->handle_upload_attach();
@@ -46,7 +46,7 @@ function upload_attach_func($raw_params)
  */
 function upload_avatar_func($raw_params)
 {
-    require_once(COMMON_CLASS_PATH_WRITE . '/attachment_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/attachment_write.php';
 
     $account_object = new CMSAttachmentWrite();
     $results = $account_object->handle_upload_avatar();
@@ -69,7 +69,7 @@ function remove_attachment_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/attachment_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/attachment_write.php';
 
     $attachment_id = intval($params[0]);
     $forum_id = ($params[1] == '0') ? null : intval($params[1]);

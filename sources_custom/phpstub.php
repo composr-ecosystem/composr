@@ -2833,9 +2833,10 @@ function stripos(string $haystack, string $needle, int $offset = 0)
  *
  * @param  string $haystack Haystack
  * @param  string $needle Needle
+ * @param  integer $offset Offset at which to start
  * @return ~integer The offset it is found at (false: not found)
  */
-function strrpos(string $haystack, string $needle)
+function strrpos(string $haystack, string $needle, int $offset = 0)
 {
     return 0;
 }

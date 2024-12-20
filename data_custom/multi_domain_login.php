@@ -15,7 +15,7 @@
 
 global $SITE_INFO;
 
-require_once(dirname(__DIR__) . '/_config.php');
+require dirname(__DIR__) . '/_config.php';
 
 $session_expiry_time = floatval($_GET['session_expiry_time']);
 $session_id = $_GET['session_id'];

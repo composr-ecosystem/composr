@@ -26,7 +26,7 @@ function search_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/search_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/search_read.php';
 
     $search_key = (isset($params[0])) ? $params[0] : '';
 
@@ -61,7 +61,7 @@ function search_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/search_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/search_read.php';
 
     $search_key = (isset($params[0])) ? $params[0] : '';
 
@@ -96,7 +96,7 @@ function search_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/search_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/search_read.php';
 
     $filter = $params[0];
 

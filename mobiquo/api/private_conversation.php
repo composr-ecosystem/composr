@@ -26,7 +26,7 @@ function new_conversation_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pt_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pt_write.php';
 
     $user_name_list = $params[0];
     $subject = $params[1];
@@ -54,7 +54,7 @@ function reply_conversation_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pt_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pt_write.php';
 
     $topic_id = intval($params[0]);
     $subject = isset($params[2]) ? $params[2] : '';
@@ -82,7 +82,7 @@ function invite_participant_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pt_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pt_write.php';
 
     $user_name_list = $params[0];
     $topic_id = intval($params[1]);
@@ -105,7 +105,7 @@ function get_conversations_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/pt_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/pt_read.php';
 
     list($start, $max) = get_pagination_positions($params, 0, 1, 20);
 
@@ -175,7 +175,7 @@ function get_conversation_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/pt_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/pt_read.php';
 
     $topic_id = intval($params[0]);
     list($start, $max) = get_pagination_positions($params, 1, 2, 8);
@@ -252,7 +252,7 @@ function get_quote_conversation_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/pt_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/pt_read.php';
 
     $post_id = intval($params[1]);
 
@@ -276,7 +276,7 @@ function delete_conversation_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pt_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pt_write.php';
 
     $topic_id = intval($params[0]);
 
@@ -297,7 +297,7 @@ function mark_conversation_unread_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pt_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pt_write.php';
 
     $topic_id = intval($params[0]);
 
@@ -318,7 +318,7 @@ function mark_conversation_read_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pt_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pt_write.php';
 
     $topic_id = isset($params[0]) ? intval($params[0]) : null;
 

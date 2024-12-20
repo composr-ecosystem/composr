@@ -13,11 +13,11 @@
  * @package    testing_platform
  */
 
-require_once(get_file_base() . '/_tests/simpletest/unit_tester.php');
-require_once(get_file_base() . '/_tests/simpletest/web_tester.php');
-require_once(get_file_base() . '/_tests/simpletest/mock_objects.php');
-require_once(get_file_base() . '/_tests/simpletest/collector.php');
-require_once(get_file_base() . '/_tests/cmstest/cms_test_case.php');
+require_once get_file_base() . '/_tests/simpletest/unit_tester.php';
+require_once get_file_base() . '/_tests/simpletest/web_tester.php';
+require_once get_file_base() . '/_tests/simpletest/mock_objects.php';
+require_once get_file_base() . '/_tests/simpletest/collector.php';
+require_once get_file_base() . '/_tests/cmstest/cms_test_case.php';
 
 function unit_testing_run()
 {

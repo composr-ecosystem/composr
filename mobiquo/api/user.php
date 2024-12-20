@@ -26,7 +26,7 @@ function login_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_ACL . '/member_acl.php');
+    require_once COMMON_CLASS_PATH_ACL . '/member_acl.php';
 
     $username = $params[0];
     $password = @cms_empty_safe($params[1]) ? '' : $params[1];
@@ -48,7 +48,7 @@ function login_func($raw_params)
         warn_exit(do_lang_tempcode('MEMBER_BAD_PASSWORD'));
     }
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_user_details($user_id);
@@ -109,7 +109,7 @@ function get_inbox_stat_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_inbox_stats();
@@ -132,7 +132,7 @@ function logout_user_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_ACL . '/member_acl.php');
+    require_once COMMON_CLASS_PATH_ACL . '/member_acl.php';
 
     $user_object = new CMSMemberACL();
     $user_object->logout_user();
@@ -151,7 +151,7 @@ function get_online_users_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     list($start, $max) = get_pagination_positions__by_page($params, 0, 1, 20);
 
@@ -200,7 +200,7 @@ function get_user_info_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     if (!empty($params)) {
         if (!@cms_empty_safe($params[1])) {
@@ -271,7 +271,7 @@ function get_user_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     if (!empty($params)) {
         if (isset($params[1])) {
@@ -310,7 +310,7 @@ function get_user_reply_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     if (!empty($params)) {
         if (isset($params[1])) {
@@ -345,7 +345,7 @@ function get_recommended_user_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     list($start, $max) = get_pagination_positions($params, 0, 1, 20);
     //$mode = $params[2];   Not used, we don't differentiate Tapatalk vs non-Tapatalk users
@@ -394,7 +394,7 @@ function search_user_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     $keywords = $params[0];
     list($start, $max) = get_pagination_positions__by_page($params, 1, 2, 20);
@@ -436,7 +436,7 @@ function ignore_user_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/user_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/user_write.php';
 
     $user_id = intval($params[0]);
     $adding = (!isset($params[1]) || $params[1] == 1);
@@ -458,7 +458,7 @@ function update_signature_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/user_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/user_write.php';
 
     $signature = $params[0];
 
@@ -483,7 +483,7 @@ function get_contact_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     if (!isset($params['code']) || !isset($params['user_id'])) {
         warn_exit('Missing parameter');

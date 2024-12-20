@@ -26,7 +26,7 @@ function report_pm_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pm_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pm_write.php';
 
     $msg_id = intval($params[0]);
     $reason = isset($params[1]) ? $params[1] : '';
@@ -48,7 +48,7 @@ function create_message_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pm_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pm_write.php';
 
     $pm_object = new CMSPmWrite();
 
@@ -78,7 +78,7 @@ function get_box_info_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/pm_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/pm_read.php';
 
     $pm_object = new CMSPmRead();
     $details = $pm_object->get_box_info();
@@ -119,7 +119,7 @@ function get_box_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/pm_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/pm_read.php';
 
     list($start, $max) = get_pagination_positions($params, 1, 2, 20);
     $box_id = intval($params[0]);
@@ -179,7 +179,7 @@ function get_message_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/pm_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/pm_read.php';
 
     $post_id = intval($params[0]);
     $return_html = isset($params[2]) && $params[2];
@@ -227,7 +227,7 @@ function get_quote_pm_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/pm_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/pm_read.php';
 
     $post_id = intval($params[0]);
 
@@ -254,7 +254,7 @@ function delete_message_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pm_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pm_write.php';
 
     $post_id = intval($params[0]);
 
@@ -275,7 +275,7 @@ function mark_pm_unread_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pm_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pm_write.php';
 
     $message_ids = isset($params[0]) ? array_map('intval', explode(',', $params[0])) : null;
 
@@ -296,7 +296,7 @@ function mark_pm_read_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/pm_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/pm_write.php';
 
     $message_ids = isset($params[0]) ? array_map('intval', explode(',', $params[0])) : null;
 

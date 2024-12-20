@@ -288,11 +288,12 @@ class addon_guards_test_set extends cms_test_case
                                     $has_line = strpos($code, 'addon_installed__messaged(\'' . addslashes($addon_name) . '\')');
                                 }
                                 if ($has_line !== false) {
+                                    $offset = 0;
                                     $prev_newline = strrpos($code, "\n", $has_line);
-                                    if ($prev_newline === false) {
-                                        $prev_newline = 0;
+                                    if (is_numeric($prev_newline)) { // NB: No idea why but IDEs and code checker is extremely picky; we have to force the value to int
+                                        $offset = intval($prev_newline);
                                     }
-                                    if (strpos(trim(substr($code, $prev_newline, ($has_line - $prev_newline))), 'return') === 0) {
+                                    if (strpos(trim(substr($code, $offset, ($has_line - $offset))), 'return') === 0) {
                                         $has_not = true;
                                     }
                                 }
@@ -515,7 +516,7 @@ class addon_guards_test_set extends cms_test_case
                                         $in_if = true;
                                         $guard_buffer = [];
                                         $condition_buffer = '';
-                                        $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_COND (code block stack is ' . count($active_guards) . ' items)';
+                                        $debug[$path . '::' . $class_name . '::' . $function_name][] = 'START_IF_COND (code block stack is ' . strval(count($active_guards)) . ' items)';
                                     } elseif ($in_if) { // Still tracking if conditions; add to buffer
                                         $condition_buffer .= $token_text;
                                     } elseif (($token_id == T_STRING)) { // could be a call to a function we want to track

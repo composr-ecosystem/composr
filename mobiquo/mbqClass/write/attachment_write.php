@@ -51,7 +51,7 @@ class CMSAttachmentWrite
             $filepath = get_file_base() . '/' . rawurldecode($urls[0]);
             $filesize = filesize($filepath);
 
-            require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+            require_once COMMON_CLASS_PATH_READ . '/user_read.php';
             $user_read_object = new CMSUserRead();
             if ($filesize > $user_read_object->get_posting_setting(get_member(), 'max_attachment_size')) {
                 unlink($filepath);
@@ -109,7 +109,7 @@ class CMSAttachmentWrite
             $filepath = get_file_base() . '/' . rawurldecode($urls[0]);
             $filesize = filesize($filepath);
 
-            require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+            require_once COMMON_CLASS_PATH_READ . '/user_read.php';
             $user_read_object = new CMSUserRead();
             if ($filesize > $user_read_object->get_posting_setting(get_member(), 'max_attachment_size')) {
                 unlink($filepath);

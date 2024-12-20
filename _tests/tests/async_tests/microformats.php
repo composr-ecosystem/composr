@@ -26,7 +26,7 @@ class microformats_test_set extends cms_test_case
 
         require_code('lorem');
 
-        require_once(get_file_base() . '/_tests/libs/mf_parse.php');
+        require_once get_file_base() . '/_tests/libs/mf_parse.php';
 
         $this->establish_admin_session();
     }

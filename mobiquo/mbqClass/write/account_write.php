@@ -116,7 +116,7 @@ class CMSAccountWrite
 
             // SSO passed
             if ($exists) {
-                require_once(COMMON_CLASS_PATH_ACL . '/member_acl.php');
+                require_once COMMON_CLASS_PATH_ACL . '/member_acl.php';
                 $acl_object = new CMSMemberACL();
                 $acl_object->set_auth($member_id);
 
@@ -227,7 +227,7 @@ class CMSAccountWrite
 
         $preview_topic_id = get_option('rules_topic_id');
 
-        require_once(COMMON_CLASS_PATH_ACL . '/member_acl.php');
+        require_once COMMON_CLASS_PATH_ACL . '/member_acl.php';
         $acl_object = new CMSMemberACL();
         $acl_object->set_auth($member_id);
 
@@ -387,7 +387,7 @@ class CMSAccountWrite
         $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
 
         // Check old password
-        require_once(COMMON_CLASS_PATH_ACL . '/member_acl.php');
+        require_once COMMON_CLASS_PATH_ACL . '/member_acl.php';
         $acl_object = new CMSMemberACL();
         $member_id = $acl_object->authenticate_credentials_and_set_auth($username, $old_password);
         if ($member_id === null) {
@@ -477,7 +477,7 @@ class CMSAccountWrite
         $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
 
         // Check old password
-        require_once(COMMON_CLASS_PATH_ACL . '/member_acl.php');
+        require_once COMMON_CLASS_PATH_ACL . '/member_acl.php';
         $acl_object = new CMSMemberACL();
         $member_id = $acl_object->authenticate_credentials_and_set_auth($username, $password);
         if ($member_id === null) {

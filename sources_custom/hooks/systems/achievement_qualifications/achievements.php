@@ -74,7 +74,7 @@ class Hook_achievement_qualifications_achievements
         $count_required = count($achievements);
 
         // Determine which achievements have been earned
-        $extra_where = ' AND a_name IN (' . implode(',', $achievements) .')';
+        $extra_where = ' AND a_name IN (' . implode(',', $achievements) . ')';
         if ($last_time !== null) {
             $extra_where .= ' AND a_date_and_time>' . strval($last_time);
         }

@@ -104,7 +104,7 @@ class Hook_achievement_qualifications_points_received
             $secondary_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
         }
         if ($earned_only == '-1') {
-            $extra_where .= ' AND sending_member<>' . $GLOBALS['FORUM_DRIVER']->get_guest_id();
+            $extra_where .= ' AND sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         }
         if ($type !== null) {
             $extra_where .= ' AND ' . db_string_equal_to('t_type', $type);

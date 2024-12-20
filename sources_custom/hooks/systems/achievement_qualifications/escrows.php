@@ -100,7 +100,7 @@ class Hook_achievement_qualifications_escrows
             case '-1':
                 $where_map['receiving_member'] = $member_id;
                 break;
-            case '0';
+            case '0':
                 $where_map['sending_member'] = $member_id;
                 break;
             case '1':
@@ -112,14 +112,14 @@ class Hook_achievement_qualifications_escrows
             foreach ($content_types as $type) {
                 $stringified_content_types[] = '\'' . db_escape_string($type) . '\'';
             }
-            $extra_where .= ' AND content_type IN (' . implode(',', $stringified_content_types) .')';
+            $extra_where .= ' AND content_type IN (' . implode(',', $stringified_content_types) . ')';
         }
         if (($content_ids !== null) && (count($content_ids) > 0)) {
             $stringified_content_ids = [];
             foreach ($content_ids as $content_id) {
                 $stringified_content_ids[] = '\'' . db_escape_string($content_id) . '\'';
             }
-            $extra_where .= ' AND content_id IN (' . implode(',', $stringified_content_ids) .')';
+            $extra_where .= ' AND content_id IN (' . implode(',', $stringified_content_ids) . ')';
         }
         if ($days !== null) {
             $extra_where .= ' AND update_date_and_time>=' . strval(time() - ($days * 24 * 60 * 60));
@@ -183,10 +183,10 @@ class Hook_achievement_qualifications_escrows
 
         // Direction
         switch ($bidirectional) {
-            case '-1';
+            case '-1':
                 $conditions->attach(do_lang_tempcode('ACHIEVEMENT_ESCROWS_REQUIREMENT_RECEIVE_ONLY'));
                 break;
-            case '0';
+            case '0':
                 $conditions->attach(do_lang_tempcode('ACHIEVEMENT_ESCROWS_REQUIREMENT_SEND_ONLY'));
                 break;
             case '1':

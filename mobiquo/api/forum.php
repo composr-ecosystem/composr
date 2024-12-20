@@ -202,7 +202,7 @@ function get_forum_func($raw_params) // Get forum tree structure
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/forum_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/forum_read.php';
 
     if (array_key_exists(0, $params)) {
         $return_description = $params[0];
@@ -238,7 +238,7 @@ function get_participated_forum_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/forum_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/forum_read.php';
 
     $forum_object = new CMSForumRead();
 
@@ -272,7 +272,7 @@ function mark_all_as_read_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/forum_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/forum_write.php';
 
     if (!isset($params[0])) {
         $forum_id = db_get_first_id();
@@ -335,7 +335,7 @@ function get_board_stat_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/board_stats.php');
+    require_once COMMON_CLASS_PATH_READ . '/board_stats.php';
 
     $board_stats_object = new CMSBoardStats();
     $board_stats_result = $board_stats_object->get_board_stat();
@@ -362,7 +362,7 @@ function get_forum_status_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/forum_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/forum_read.php';
 
     $forum_ids = [];
     foreach ($params[0] as $_forum_id) {
@@ -400,7 +400,7 @@ function get_smilies_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/forum_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/forum_read.php';
 
     $forum_object = new CMSForumRead();
     $_smiley_categories = $forum_object->get_smilies();

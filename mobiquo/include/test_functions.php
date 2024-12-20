@@ -32,14 +32,14 @@ function call_mobiquo_test(string $method)
     require_code('character_sets');
 
     // We may need, in case we get XML-RPC output
-    require_once(get_file_base() . '/' . $mobiquo . '/lib/xmlrpc.php');
-    require_once(get_file_base() . '/' . $mobiquo . '/lib/xmlrpcs.php');
+    require_once get_file_base() . '/' . $mobiquo . '/lib/xmlrpc.php';
+    require_once get_file_base() . '/' . $mobiquo . '/lib/xmlrpcs.php';
 
-    require_once(get_file_base() . '/' . $mobiquo . '/include/mobiquo_functions.php');
-    require_once(get_file_base() . '/' . $mobiquo . '/include/server_define.php');
+    require_once get_file_base() . '/' . $mobiquo . '/include/mobiquo_functions.php';
+    require_once get_file_base() . '/' . $mobiquo . '/include/server_define.php';
 
     $filename = request_helper_get_file($method);
-    require_once(dirname(__DIR__) . '/tests/' . $filename . '.php');
+    require_once dirname(__DIR__) . '/tests/' . $filename . '.php';
 
     call_user_func($method . '_test');
 }
@@ -65,8 +65,8 @@ function mobiquo_xmlrpc_simple_call(string $method, array $params, ?string $user
     $url .= static_evaluate_tempcode(symbol_tempcode('KEEP', []));
 
     // We need this to have the XML-RPC parameter encoding code as available
-    require(dirname(__DIR__) . '/lib/mobiquo.php');
-    require(dirname(__DIR__) . '/lib/mobiquo_xmlrpc.php');
+    require dirname(__DIR__) . '/lib/mobiquo.php';
+    require dirname(__DIR__) . '/lib/mobiquo_xmlrpc.php';
     global $MOBIQUO_SERVER;
     $MOBIQUO_SERVER = new MobiquoServerXMLRPC();
 
