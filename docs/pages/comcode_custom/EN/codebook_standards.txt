@@ -321,6 +321,13 @@ Do not use braces around the file path for [tt]require[/tt] / [tt]require_once[/
 | Braces are not necessary for these directives. Furthermore, we have noticed some unstable behaviour in PHP when using these directives with braces around the path. This is especially the case when utilising the output to perform error-handling.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not use [tt]require_once[/tt] or [tt]include_once[/tt] on dynamic PHP files[/color]
+| Stability
+| Product development only
+| Manually
+| The contents of [tt]_config.php[/tt], [tt]data_custom/rate_limiter.php[/tt], and [tt]data_custom/errorlog.php[/tt] might change dynamically. When reading any of these or other dynamic PHP files, you should use [tt]include[/tt] or [tt]require[/tt], not their [tt]*_once[/tt] versions, to ensure you have the most up-to-date version loaded in.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use Composr APIs wherever appropriate[/color]
 | Security, stability, consistency
 | Composr development +

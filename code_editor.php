@@ -45,7 +45,7 @@ function code_editor_escape_html(string $string) : string
     return htmlspecialchars($string, ENT_QUOTES);
 }
 
-require_once $FILE_BASE . '/_config.php';
+require $FILE_BASE . '/_config.php';
 
 if ((array_key_exists('given_password', $_POST))) {
     $given_password = $_POST['given_password'];
