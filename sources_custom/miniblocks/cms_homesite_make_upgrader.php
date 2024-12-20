@@ -10,20 +10,20 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    composr_homesite
+ * @package    cms_homesite
  */
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('composr_homesite')) {
-    return do_template('RED_ALERT', ['_GUID' => '0q6vvpwtbrnqw5y6wmpzn7kqechhxkv9', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'ff30902212eb5ae1ac80ee8dc6ed6eb9', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
 }
 
 if (!addon_installed('downloads')) {
-    return do_template('RED_ALERT', ['_GUID' => '033cdc5wtl2new7j2degs0lo2n2gbhwy', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'a94c5b0b4a025fc78499134dd56789dd', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
 }
 if (!addon_installed('news')) {
-    return do_template('RED_ALERT', ['_GUID' => 'c39eg9wtj29jb07b15zkmno460d6712y', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'e464e41181285391afb151cb1714627c', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
 }
 
 if (!function_exists('mu_ui')) {

@@ -627,6 +627,7 @@ class Achievements_loader
             return null;
         }
         return do_template('ACHIEVEMENT_PROGRESS_QUALIFICATION', [
+            '_GUID' => '751596a0d26e5a6d8ab5358568e9bef5',
             'QUALIFICATION_TEXT' => $results,
             'QUALIFICATION_DONE' => ($count_done >= $count_required),
         ]);
