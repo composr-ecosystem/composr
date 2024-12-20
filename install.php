@@ -59,6 +59,7 @@ $RELATIVE_PATH = '';
 error_reporting(E_ALL);
 
 // Load up bootstrap and minikernel
+global $FILE_ARRAY;
 if ((@is_array($FILE_ARRAY)) && (!isset($_GET['keep_quick_hybrid']))) {
     $bootstrap_code = file_array_get('sources/bootstrap.php');
     $bootstrap_code = str_replace('<' . '?php', '', $bootstrap_code);
@@ -341,6 +342,8 @@ function prepare_installer_url(string $url) : string
  */
 function step_1() : object
 {
+    global $FILE_ARRAY;
+
     // To stop previous installs interfering
     require_code('caches3');
     erase_cached_templates();
@@ -454,7 +457,6 @@ function step_1() : object
     }
 
     // Some checks relating to installation permissions
-    global $FILE_ARRAY;
     if (!@is_array($FILE_ARRAY)) { // Talk about manual permission setting a bit
         if ((is_suexec_like()) && (strpos(PHP_OS, 'WIN') === false)) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
             $warnings->attach(do_template('INSTALLER_NOTICE', ['_GUID' => 'ed0c38f4e68b0cd456ec7029d061a070', 'MESSAGE' => do_lang_tempcode('SUEXEC_SERVER')]));

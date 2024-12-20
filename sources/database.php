@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fb*/
+/*EXTRA FUNCTIONS: fb|error_log*/
 
 /*
 Struggling to remember the functions needed for dereferencing translated fields?
@@ -1263,7 +1263,9 @@ abstract class DatabaseDriver
     public function failed_query_echo(string $message)
     {
         // Log the original error so it can later be referenced
-        @error_log(brand_name() . ' database: ERROR ' . $message);
+        if (php_function_allowed('error_log')) {
+            @error_log(brand_name() . ' database: ERROR ' . $message);
+        }
 
         if (!running_script('upgrader')) {
             $this->substitute_query_message($message);

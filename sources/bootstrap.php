@@ -18,6 +18,8 @@ NOTE TO PROGRAMMERS:
     After requiring, use require_code__bootstrap to load your first bootstrap script (whether global or minikernel) which contains the require_code function. Use require_code from that point forward.
 */
 
+/*EXTRA FUNCTIONS: error_log|usleep*/
+
 ini_set('display_errors', '0');
 ini_set('html_errors', '1');
 @header_remove('x-powered-by'); // Security
@@ -35,7 +37,7 @@ $SITE_INFO = [];
 // Load up config file
 // NB: We ignore any issues for now and let global.php do the error handling for this (e.g. it's fine if it's missing if, say, we are running the installer
 if (is_file($FILE_BASE . '/_config.php')) {
-    @include($FILE_BASE . '/_config.php');
+    @include $FILE_BASE . '/_config.php';
     if (!is_array($SITE_INFO) || (count($SITE_INFO) == 0) || (empty($SITE_INFO))) {
         // LEGACY
         if ((!is_file($FILE_BASE . '/_config.php')) && (is_file($FILE_BASE . '/info.php'))) {
@@ -48,7 +50,7 @@ if (is_file($FILE_BASE . '/_config.php')) {
             } else {
                 exit('Error, cannot rename info.php to _config.php: check the Composr upgrade instructions');
             }
-            @include($FILE_BASE . '/_config.php');
+            @include $FILE_BASE . '/_config.php';
         }
     }
 }
@@ -164,7 +166,9 @@ function require_code__bootstrap(string $codename)
                         throw new \Exception('Cannot compile (write) file ' . $compiled_relative_path);
                     }
 
-                    usleep(250000);
+                    if (php_function_allowed__bootstrap('usleep')) {
+                        usleep(250000);
+                    }
                 }
 
                 clearstatcache(true, $compiled_path);
@@ -182,7 +186,9 @@ function require_code__bootstrap(string $codename)
                 throw new \Exception('Cannot read file ' . $relative_path . '; a lock was not released on the file in a timely manner.');
             }
 
-            usleep(100000);
+            if (php_function_allowed__bootstrap('usleep')) {
+                @usleep(100000);
+            }
         }
 
         $result = require_once $path;
@@ -233,7 +239,9 @@ function require_code__bootstrap(string $codename)
         }
 
         // Standard error logging
-        @error_log('Composr: CRITICAL ' . str_replace("\n", '', $errormsg), 0);
+        if (php_function_allowed__bootstrap('error_log')) {
+            @error_log('Composr: CRITICAL ' . str_replace("\n", '', $errormsg), 0);
+        }
 
         exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>' . $clean_error . '.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
     }
@@ -268,4 +276,29 @@ function get_file_base__bootstrap() : string
 {
     global $FILE_BASE;
     return $FILE_BASE;
+}
+
+/**
+ * Find whether a particular PHP function is blocked.
+ *
+ * @param  string $function Function name
+ * @return boolean Whether it is
+ */
+function php_function_allowed__bootstrap(string $function) : bool
+{
+    if (!in_array($function, /*These are actually language constructs rather than functions*/['eval', 'exit', 'include', 'include_once', 'isset', 'require', 'require_once', 'unset', 'empty', 'print',])) {
+        if (!function_exists($function)) {
+            return false;
+        }
+    }
+    $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
+    $_blocked = [];
+    foreach ($to_block as $func) {
+        $ini_val = ini_get($func);
+        if ($ini_val !== false) {
+            $_blocked[] = $ini_val;
+        }
+    }
+    $blocked = implode(',', $_blocked);
+    return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $blocked) == 0);
 }

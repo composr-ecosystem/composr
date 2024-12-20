@@ -301,7 +301,7 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
     ], true);
 
     if (GOOGLE_APPENGINE) {
-        require_once('google/appengine/api/taskqueue/PushTask.php');
+        require_once 'google/appengine/api/taskqueue/PushTask.php';
 
         $task = new \google\appengine\api\taskqueue\PushTask('/data/tasks.php', ['id' => strval($id), 'secure_ref' => $secure_ref], ['name' => $hook . '_' . $secure_ref]);
         $task_name = $task->add();

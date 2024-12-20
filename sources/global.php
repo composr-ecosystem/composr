@@ -12,7 +12,7 @@
 
 */
 
-/*EXTRA FUNCTIONS: strtoupper|strtolower*/
+/*EXTRA FUNCTIONS: strtoupper|strtolower|usleep*/
 
 /*
     secondary bootstrap loaded after bootstrap.php by any front-end script
@@ -203,7 +203,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                 $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
 
                 // Compile in original code (pass in $orig code if we modified it so a _compiled file is generated)
-                if ($overlaps == true) {
+                if ($overlaps) {
                     $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $orig);
                 } else {
                     $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
@@ -289,7 +289,7 @@ function require_code_no_override(string $codename)
         return;
     }
     $REQUIRED_CODE[$codename] = true;
-    require_once(get_file_base() . '/sources/' . filter_naughty($codename) . '.php');
+    require_once get_file_base() . '/sources/' . filter_naughty($codename) . '.php';
     if (function_exists('init__' . str_replace('/', '__', $codename))) {
         call_user_func('init__' . str_replace('/', '__', $codename));
     }
@@ -374,7 +374,7 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         if ($code === null) {
             $code = file_get_contents($path);
         }
-         if (strpos($code, '/*No strict_types*/') === false) {
+        if (strpos($code, '/*No strict_types*/') === false) {
             $prepend .= ' declare(strict_types=1);';
         }
     }
@@ -427,7 +427,9 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
                     }
                 }
 
-                usleep(250000);
+                if (php_function_allowed('usleep')) {
+                    usleep(250000);
+                }
             }
 
             clearstatcache(true, $compiled_path);
@@ -443,7 +445,7 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
  * Include some code for use within the software (after we ran compile_included_code on it).
  * If a _compiled file version is available, we will use that one instead of the original.
  *
- * @param  string $orig_path The file path to the original file (not the compiled one)
+ * @param  string $path The file path to the original file (not the compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
  * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file, if it exists
@@ -501,7 +503,9 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
                 throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
             }
 
-            usleep(100000);
+            if (php_function_allowed('usleep')) {
+                usleep(100000);
+            }
         }
 
         $result = require $calling_path;
@@ -552,7 +556,8 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
         // We need to be careful of the potential that a lot of these functions have not been loaded up yet
         $error_lang_str = (is_file($calling_path) ? 'CORRUPT_SOURCE_FILE' : 'MISSING_SOURCE_FILE');
         if (function_exists('do_lang_tempcode')) {
-            $error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($calling_relative_path), escape_html($errormsg));
+            $_error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($calling_relative_path), escape_html($errormsg));
+            $error_message = $_error_message->evaluate();
         } else {
             $error_message = $error_lang_str . ': ' . escape_html($codename) . '; ' . escape_html($calling_relative_path) . '; ' . escape_html($errormsg);
         }
@@ -561,14 +566,14 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
                 warn_exit($error_message, false, true);
             } else {
                 require_code('critical_errors');
-                critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
+                critical_error('PASSON', $error_message . ' in ' . $calling_relative_path);
             }
         }
         if (function_exists('fatal_exit')) {
             fatal_exit($error_message, true);
         } else {
             require_code('critical_errors');
-            critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
+            critical_error('PASSON', $error_message . ' in ' . $calling_relative_path);
         }
     }
 }
@@ -1418,13 +1423,13 @@ $IN_MINIKERNEL_VERSION = false;
 // Critical error reporting system
 global $FILE_BASE;
 if (is_file($FILE_BASE . '/sources_custom/critical_errors.php')) {
-    require($FILE_BASE . '/sources_custom/critical_errors.php');
+    require $FILE_BASE . '/sources_custom/critical_errors.php';
 } else {
     if (function_exists('error_clear_last')) {
         error_clear_last();
     }
     $errormsg_before = error_get_last();
-    $result = @include($FILE_BASE . '/sources/critical_errors.php');
+    $result = @include $FILE_BASE . '/sources/critical_errors.php';
     $errormsg = error_get_last();
     if ((!$result) && ($errormsg !== null) && ($errormsg !== $errormsg_before)) {
         exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The third most basic Composr startup file, sources/critical_errors.php, could not be loaded (error: ' . $errormsg['message'] . '). This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
@@ -1492,7 +1497,7 @@ if ($rate_limiting) {
             if (is_file($rate_limiter_path)) {
                 $fp = fopen($rate_limiter_path, 'rb');
                 flock($fp, LOCK_SH);
-                include($rate_limiter_path);
+                include $rate_limiter_path;
                 flock($fp, LOCK_UN);
                 fclose($fp);
             }

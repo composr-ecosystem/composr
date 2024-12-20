@@ -831,7 +831,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
 
     $suppress_error = ($next[0] == 'SUPPRESS_ERROR');
     if ($suppress_error) {
-        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+        if (!empty($GLOBALS['FLAG__PEDANTIC'])) {
             log_warning('Avoid error suppression unless you absolutely have to use it; this may hide bugs. Use try / catch instead if you can.');
         }
 
@@ -1269,6 +1269,21 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             }
             break;
 
+        case 'REQUIRE':
+        case 'REQUIRE_ONCE':
+        case 'INCLUDE':
+        case 'INCLUDE_ONCE':
+            pparse__parser_next();
+            if (pparse__parser_peek() == 'PARENTHESIS_OPEN') { // Can cause unexpected behaviour in PHP
+                log_warning('Do not use braces on require/include.');
+                pparse__parser_next();
+            }
+            $command = [$next[0], _parse_expression(), $GLOBALS['I']];
+            if (pparse__parser_peek() == 'PARENTHESIS_CLOSE') {
+                pparse__parser_next();
+            }
+            break;
+
         default:
             parser_error('Expected <command> but got ' . $next[0]);
     }
@@ -1510,7 +1525,7 @@ function _parse_expression_inner()
     }
     $suppress_error = ($next == 'SUPPRESS_ERROR');
     if ($suppress_error) {
-        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+        if (!empty($GLOBALS['FLAG__PEDANTIC'])) {
             log_warning('Avoid error suppression unless you absolutely have to use it; this may hide bugs. Use try / catch instead if you can.');
         }
 
@@ -1590,7 +1605,7 @@ function _parse_expression_inner()
             } else {
                 if (strtolower($next[1]) == $next[1]) {
                     if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
-                        log_warning('Lower case constant, breaks convention. Likely a variable with a missing $');
+                        log_warning('Lower case constant ' . $next[1] . ', breaks convention. Likely a variable with a missing $');
                     }
                 }
                 $expression = ['CONSTANT', $next[1], $GLOBALS['I']];
@@ -1754,6 +1769,21 @@ function _parse_expression_inner()
             }
             break;
 
+            case 'REQUIRE':
+            case 'REQUIRE_ONCE':
+            case 'INCLUDE':
+            case 'INCLUDE_ONCE':
+                pparse__parser_next();
+                if (pparse__parser_peek() == 'PARENTHESIS_OPEN') { // Can cause unexpected behaviour in PHP
+                    log_warning('Do not use braces on require/include.');
+                    pparse__parser_next();
+                }
+                $expression = [$next, _parse_expression(), $GLOBALS['I']];
+                if (pparse__parser_peek() == 'PARENTHESIS_CLOSE') {
+                    pparse__parser_next();
+                }
+                break;
+
         default: // By elimination: Must be a variable or a call chained to a variable. Actually this branch should not run due to 'variable' above being added in.
             $expression = _parse_variable($suppress_error, true);
     }
@@ -1784,7 +1814,7 @@ function _parse_variable($suppress_error, $can_be_dangling_method_call_instead =
     }
     $suppress_error = $suppress_error || ($next[0] == 'SUPPRESS_ERROR');
     if ($next[0] == 'SUPPRESS_ERROR') {
-        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+        if (!empty($GLOBALS['FLAG__PEDANTIC'])) {
             log_warning('Avoid error suppression unless you absolutely have to use it; this may hide bugs. Use try / catch instead if you can.');
         }
 
@@ -1971,7 +2001,7 @@ function _parse_literal()
         case 'IDENTIFIER':
             $_literal = pparse__parser_next(true);
             if (strtolower($_literal[1]) == $_literal[1]) {
-                parser_warning('Lower case constant, breaks convention. Likely a variable with a missing $');
+                parser_warning('Lower case constant ' . $_literal[1] . ', breaks convention. Likely a variable with a missing $');
             }
             $literal = ['CONSTANT', $_literal[1], $GLOBALS['I']];
             break;

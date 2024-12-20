@@ -141,7 +141,7 @@ function require_code(string $codename)
  * @param  boolean $public Whether the request is public (can be cached in public proxy caches)
  * @param  TIME $expiry_seconds Seconds until cache expires (only applicable if $last_modified is not null)
  */
-function set_http_caching($last_modified, $public = false, $expiry_seconds = 604800/*1 week*/)
+function set_http_caching(?int $last_modified, bool $public = false, int $expiry_seconds = 604800/*1 week*/)
 {
     if ($last_modified === null) {
         @header('Cache-Control: no-store');
@@ -160,7 +160,7 @@ function set_http_caching($last_modified, $public = false, $expiry_seconds = 604
  *
  * @param  boolean $setting New setting
  */
-function push_suppress_error_death($setting)
+function push_suppress_error_death(bool $setting)
 {
     global $SUPPRESS_ERROR_DEATH;
     array_push($SUPPRESS_ERROR_DEATH, $setting);
@@ -315,7 +315,7 @@ function fixup_bad_php_env_vars()
  * Get server hostname as used in the base URL.
  * See also get_domain() and get_request_hostname() and get_server_names().
  *
- * @return string The hostname
+ * @return ~string The hostname (false: error)
  */
 function get_base_url_hostname()
 {
@@ -336,7 +336,7 @@ function get_base_url_hostname()
  * Get server hostname as used in the URL.
  * See also get_domain() and get_base_url_hostname().
  *
- * @return string The hostname
+ * @return ~string The hostname (false: error)
  */
 function get_request_hostname()
 {
@@ -350,7 +350,7 @@ function get_request_hostname()
  * Get the domain the website is installed on (preferably, without any www). The domain is used for e-mail defaults among other things.
  * See also get_request_hostname() and get_base_url_hostname().
  *
- * @return string The domain of the website
+ * @return ~string The domain of the website (false: error)
  */
 function get_domain()
 {
@@ -385,7 +385,7 @@ function get_domain()
  *
  * @return string Error message (blank: none)
  */
-function cms_error_get_last()
+function cms_error_get_last() : string
 {
     $error = error_get_last();
     if ($error === null) {
@@ -431,7 +431,7 @@ function cms_error_get_last()
  *
  * @return boolean If it is running as a live Google App Engine application
  */
-function appengine_is_live()
+function appengine_is_live() : bool
 {
     return false;
 }
@@ -442,7 +442,7 @@ function appengine_is_live()
  *
  * @return boolean If we are
  */
-function tacit_https()
+function tacit_https() : bool
 {
     $https = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : '';
     return ($https != '') && ($https != 'off');
@@ -453,33 +453,20 @@ function tacit_https()
  *
  * @param  PATH $filename File/directory name to sync on (full path)
  */
-function sync_file($filename)
+function sync_file(string $filename)
 {
 }
 
 /**
  * Find whether a particular PHP function is blocked.
+ * This is a wrapper for bootstrap's php_function_allowed.
  *
  * @param  string $function Function name
  * @return boolean Whether it is
  */
-function php_function_allowed($function)
+function php_function_allowed(string $function) : bool
 {
-    if (!in_array($function, /*These are actually language constructs rather than functions*/['eval', 'exit', 'include', 'include_once', 'isset', 'require', 'require_once', 'unset', 'empty', 'print',])) {
-        if (!function_exists($function)) {
-            return false;
-        }
-    }
-    $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
-    $_blocked = [];
-    foreach ($to_block as $func) {
-        $ini_val = ini_get($func);
-        if ($ini_val !== false) {
-            $_blocked[] = $ini_val;
-        }
-    }
-    $blocked = implode(',', $_blocked);
-    return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $blocked) == 0);
+    return php_function_allowed__bootstrap($function);
 }
 
 /**
@@ -487,7 +474,7 @@ function php_function_allowed($function)
  *
  * @return Tempcode Debugging backtrace
  */
-function get_html_trace()
+function get_html_trace() : object
 {
     $x = @ob_get_contents();
     cms_ob_end_clean();
@@ -627,7 +614,7 @@ function fatal_exit($text)
  * @param  mixed $error_message The error message (string or Tempcode)
  * @return ?string The result from the web service (null: no result)
  */
-function get_webservice_result($error_message)
+function get_webservice_result($error_message) : ?string
 {
     return null;
 }
@@ -668,7 +655,7 @@ function catch_fatal_errors()
  * @param  integer $errline The line the error occurred on
  * @return boolean Always false
  */
-function cms_error_handler($errno, $errstr, $errfile, $errline)
+function cms_error_handler(int $errno, string $errstr, string $errfile, int $errline) : bool
 {
     if (peek_suppress_error_death()) {
         return false;
@@ -717,11 +704,12 @@ function cms_error_handler($errno, $errstr, $errfile, $errline)
 
 /**
  * Find whether the current member is a guest.
+ * (Always true in minikernel).
  *
  * @param  ?MEMBER $member_id Member ID to check (null: current user)
  * @return boolean Whether the current member is a guest
  */
-function is_guest($member_id = null)
+function is_guest(int $member_id = null) : bool
 {
     return true;
 }
@@ -731,7 +719,7 @@ function is_guest($member_id = null)
  *
  * @return boolean Whether we are in safe mode
  */
-function in_safe_mode()
+function in_safe_mode() : bool
 {
     // Force safe mode in the upgrader so corrupt non-bundled addons (which are not supported by the upgrader) do not break it.
     if (running_script('upgrader')) {
@@ -747,7 +735,7 @@ function in_safe_mode()
  * @param  string $is_this_running Script filename (canonically we want NO .php file type suffix)
  * @return boolean Whether the script is running
  */
-function running_script($is_this_running)
+function running_script(string $is_this_running) : bool
 {
     if (substr($is_this_running, -4) != '.php') {
         $is_this_running .= '.php';
@@ -761,7 +749,7 @@ function running_script($is_this_running)
  *
  * @return string The character set
  */
-function get_charset()
+function get_charset() : string
 {
     if (function_exists('do_lang')) {
         $ret = do_lang('charset', null, null, null, null, false);
@@ -805,7 +793,7 @@ function get_charset()
  *
  * @param  string $message An error message
  */
-function die_html_trace($message)
+function die_html_trace(string $message)
 {
     critical_error('PASSON', $message);
 }
@@ -880,17 +868,18 @@ function warn_exit($text)
  *
  * @return integer The major version number of your installation
  */
-function cms_version()
+function cms_version() : int
 {
     return intval(cms_version_number());
 }
 
 /**
  * Get the full string version of the software that you are running.
+ * (Minikernel always returns blank).
  *
  * @return string The string saying the full software version number
  */
-function cms_version_pretty()
+function cms_version_pretty() : string
 {
     return '';
 }
@@ -900,7 +889,7 @@ function cms_version_pretty()
  *
  * @return string The type of forum installed
  */
-function get_forum_type()
+function get_forum_type() : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['forum_type'])) {
@@ -914,7 +903,7 @@ function get_forum_type()
  *
  * @return URLPATH The installed forum base URL
  */
-function get_forum_base_url()
+function get_forum_base_url() : string
 {
     if (get_forum_type() == 'none') {
         return '';
@@ -928,10 +917,11 @@ function get_forum_base_url()
 
 /**
  * Get the site name.
+ * (Minikernel always returns blank).
  *
  * @return string The name of the site
  */
-function get_site_name()
+function get_site_name() : string
 {
     return '';
 }
@@ -942,7 +932,7 @@ function get_site_name()
  * @param  string $zone_for What zone this is running in
  * @return URLPATH The base URL
  */
-function get_base_url($zone_for = '')
+function get_base_url(string $zone_for = '') : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
@@ -967,16 +957,18 @@ function get_base_url($zone_for = '')
 
 /**
  * Get the base URL (the minimum fully qualified URL to our personal data installation). For a shared install only, this is different to the base URL.
+ * (In minikernel, this returns the base URL).
  *
  * @return URLPATH The base URL
  */
-function get_custom_base_url()
+function get_custom_base_url() : string
 {
     return get_base_url();
 }
 
 /**
  * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
+ * (In minikernel, this simply bails out with a generic message).
  *
  * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
  * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
@@ -984,7 +976,7 @@ function get_custom_base_url()
  * @param  integer $risk The default risk score for this hack attack; could be overridden by advanced banning
  * @exits
  */
-function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '', int $risk_score = 10)
+function log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '', int $risk_score = 10)
 {
     exit('You should not see this message. If you do, contact the Core Development Team and tell them a \'lhaae\' showed during installation.');
 }
@@ -996,7 +988,7 @@ function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b
  * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
  * @return ?string The value of the parameter (null: not there, and default was null)
  */
-function either_param_string($name, $default = null)
+function either_param_string(string $name, ?string $default = null) : ?string
 {
     $a = __param($_REQUEST, $name, $default);
     return $a;
@@ -1009,7 +1001,7 @@ function either_param_string($name, $default = null)
  * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
  * @return ?string The value of the parameter (null: not there, and default was null)
  */
-function post_param_string($name, $default = null)
+function post_param_string(string $name, ?string $default = null) : ?string
 {
     $a = __param($_POST, $name, $default);
     return $a;
@@ -1022,7 +1014,7 @@ function post_param_string($name, $default = null)
  * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
  * @return ?string The value of the parameter (null: not there, and default was null)
  */
-function get_param_string($name, $default = null)
+function get_param_string(string $name, ?string $default = null) : ?string
 {
     $a = __param($_GET, $name, $default);
     return $a;
@@ -1039,7 +1031,7 @@ function get_param_string($name, $default = null)
  * @return ?string The value of the parameter (null: not there, and default was null)
  * @ignore
  */
-function __param($array, string $name, $default, $must_integer = false, $is_post = false)
+function __param(array $array, string $name, $default, bool $must_integer = false, bool $is_post = false) : ?string
 {
     if (!array_key_exists($name, $array)) {
         return $default;
@@ -1054,10 +1046,10 @@ function __param($array, string $name, $default, $must_integer = false, $is_post
  * You should always use integer specified versions when inputting integers, for the added security that type validation allows. If the value is of the wrong type, it indicates a hack attempt and will be logged.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?mixed $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return integer The parameter value
+ * @param  ?integer $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @return ?integer The parameter value (null: not found and default was null)
  */
-function either_param_integer($name, $default = null)
+function either_param_integer(string $name, ?int $default = null) : ?int
 {
     $ret = __param($_REQUEST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
     if (($default === null) && (($ret === '') || ($ret === null))) {
@@ -1070,10 +1062,10 @@ function either_param_integer($name, $default = null)
  * This function is the integeric partner of post_param_string, as it returns the value as an integer.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?mixed $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return integer The parameter value
+ * @param  ?integer $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @return ?integer The parameter value (null: not found and default was null)
  */
-function post_param_integer($name, $default = null)
+function post_param_integer(string $name, ?int $default = null) : ?int
 {
     $ret = __param($_POST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
     if (($default === null) && (($ret === '') || ($ret === null))) {
@@ -1086,10 +1078,10 @@ function post_param_integer($name, $default = null)
  * This function is the integeric partner of get_param_string, as it returns the value as an integer.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?mixed $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return integer The parameter value
+ * @param  ?integer $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @return ?integer The parameter value (null: not found and default was null)
  */
-function get_param_integer($name, $default = null)
+function get_param_integer(string $name, ?int $default = null) : ?int
 {
     $ret = __param($_GET, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
     if (($default === null) && (($ret === '') || ($ret === null))) {
@@ -1103,19 +1095,19 @@ function get_param_integer($name, $default = null)
  *
  * @return PATH The file base, without a trailing slash
  */
-function get_file_base()
+function get_file_base() : string
 {
     global $FILE_BASE;
     return $FILE_BASE;
 }
 
 /**
- * Get the file base for your installation of the software.
- * For a shared install only, this is different to the base URL.
+ * Get the file base for your installation of the software. For a shared install only, this is different to the main file base.
+ * (In minikernel, this returns the main file base).
  *
  * @return PATH The file base, without a trailing slash
  */
-function get_custom_file_base()
+function get_custom_file_base() : string
 {
     global $FILE_BASE;
     return $FILE_BASE;
@@ -1128,10 +1120,10 @@ function get_custom_file_base()
  * @param  string $in String to test
  * @return string Same as input string
  */
-function filter_naughty($in)
+function filter_naughty(string $in) : string
 {
     if (strpos($in, '..') !== false) {
-        exit();
+        exit('Detected path traversal attempt');
     }
     return $in;
 }
@@ -1142,12 +1134,12 @@ function filter_naughty($in)
  * @param  string $in String to test
  * @return string Same as input string
  */
-function filter_naughty_harsh($in)
+function filter_naughty_harsh(string $in) : string
 {
     if (preg_match('#^[\w\-]*$#', $in) != 0) {
         return $in;
     }
-    exit();
+    exit('A parameter which was supposed to be alphanumeric was not');
 }
 
 /**
@@ -1156,7 +1148,7 @@ function filter_naughty_harsh($in)
  * @param  string $in The data to clean
  * @return string The cleaned data
  */
-function unixify_line_format($in)
+function unixify_line_format(string $in) : string
 {
     $in = str_replace("\r\n", "\n", $in);
     return str_replace("\r", "\n", $in);
@@ -1164,23 +1156,25 @@ function unixify_line_format($in)
 
 /**
  * Make sure that the given CSS file is loaded up.
+ * This does nothing in minikernel.
  *
  * @sets_output_state
  *
  * @param  ID_TEXT $css The CSS file required
  */
-function require_css($css)
+function require_css(string $css)
 {
 }
 
 /**
  * Make sure that the given JavaScript file is loaded up.
+ * This does nothing in minikernel.
  *
  * @sets_output_state
  *
- * @param  ID_TEXT $css The JavaScript file required
+ * @param  ID_TEXT $js The JavaScript file required
  */
-function require_javascript($css)
+function require_javascript(string $js)
 {
 }
 
@@ -1194,7 +1188,7 @@ function require_javascript($css)
  * @param  boolean $case_sensitive Whether it is case sensitive
  * @return boolean Whether we have a match
  */
-function simulated_wildcard_match($target, $expression, $full_cover = false, $case_sensitive = false)
+function simulated_wildcard_match(string $target, string $expression, bool $full_cover = false, bool $case_sensitive = false) : bool
 {
     $rexp = '';
     $len = strlen($expression);
@@ -1232,48 +1226,52 @@ function simulated_wildcard_match($target, $expression, $full_cover = false, $ca
 
 /**
  * Check to see if caching is enabled.
+ * (In minikernel, this always returns true).
  *
  * @param  string $type Cache type
  * @set block lang comcode_page template
  * @param  ?string $name The name (filename? codename?) of what we are using the cache for, so we can support low-level cache avoidance via URL parameter (null: none)
  * @return boolean Whether it has the caching
  */
-function has_caching_for($type, $name = null)
+function has_caching_for(string $type, ?string $name = null) : bool
 {
     return true;
 }
 
 /**
  * Get data from the persistent cache.
+ * (In minikernel, this always returns false).
  *
  * @param  mixed $key Key
  * @param  ?TIME $min_cache_date Minimum timestamp that entries from the cache may hold (null: don't care)
  * @return ?mixed The data (null: not found / null entry)
  */
-function persistent_cache_get($key, $min_cache_date = null)
+function persistent_cache_get($key, ?int $min_cache_date = null)
 {
     return null;
 }
 
 /**
  * Put data into the persistent cache.
+ * (In minikernel, this does nothing).
  *
  * @param  mixed $key Key
  * @param  mixed $data The data
  * @param  boolean $server_wide Whether it is server-wide data
  * @param  ?integer $expire_secs The expiration time in seconds. (null: Default expiry in 60 minutes, or never if it is server-wide).
  */
-function persistent_cache_set($key, $data, $server_wide = false, $expire_secs = null)
+function persistent_cache_set($key, $data, bool $server_wide = false, ?int $expire_secs = null)
 {
 }
 
 /**
  * Delete data from the persistent cache.
+ * (In minikernel, this does nothing).
  *
  * @param  mixed $key Key name
  * @param  boolean $substring Whether we are deleting via substring
  */
-function persistent_cache_delete($key, $substring = false)
+function persistent_cache_delete($key, bool $substring = false)
 {
 }
 
@@ -1298,7 +1296,7 @@ function cms_ob_end_clean()
  * @param  mixed $var Input
  * @return boolean Whether it is CONSIDERED empty
  */
-function cms_empty_safe($var)
+function cms_empty_safe($var) : bool
 {
     return (empty($var)) && ($var !== '0');
 }
@@ -1308,7 +1306,7 @@ function cms_empty_safe($var)
  *
  * @return ?string The site cookie path (null: no special path, global)
  */
-function get_cookie_path()
+function get_cookie_path() : ?string
 {
     global $SITE_INFO;
     $ret = array_key_exists('cookie_path', $SITE_INFO) ? $SITE_INFO['cookie_path'] : '/';
@@ -1320,7 +1318,7 @@ function get_cookie_path()
  *
  * @return string The site cookie domain (blank: current domain)
  */
-function get_cookie_domain()
+function get_cookie_domain() : string
 {
     global $SITE_INFO;
     $ret = array_key_exists('cookie_domain', $SITE_INFO) ? $SITE_INFO['cookie_domain'] : '';
@@ -1332,11 +1330,11 @@ function get_cookie_domain()
  *
  * @return string The session ID cookie's name
  */
-function get_session_cookie()
+function get_session_cookie() : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['session_cookie'])) {
-        $SITE_INFO['session_cookie'] = '__Host-cms_session';
+        $SITE_INFO['session_cookie'] = '__Host-cms_session'; // Default
     }
 
     validate_special_cookie_prefix($SITE_INFO['session_cookie']);

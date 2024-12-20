@@ -240,7 +240,7 @@ function _sync_file(string $filename)
         $has_sync_script = is_file($FILE_BASE . '/data_custom/sync_script.php');
     }
     if ($has_sync_script) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (function_exists('master__sync_file')) {
             master__sync_file($filename);
         }
@@ -272,7 +272,7 @@ function _sync_file_move(string $old, string $new)
 {
     global $FILE_BASE;
     if (is_file($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (substr($old, 0, strlen($FILE_BASE)) == $FILE_BASE) {
             $old = substr($old, strlen($FILE_BASE));
         }

@@ -931,7 +931,7 @@ class Module_cms_downloads_alt extends Standard_crud_module
      *
      * @param  ?Tempcode $title The title (output of get_screen_title) (null: don't use full page)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
+     * @param  ?ID_TEXT $_id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager(?object $title, object $description, ?string $_id = null) : object

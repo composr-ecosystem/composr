@@ -332,7 +332,7 @@ function static_cache(int $mode)
 
                         $aaf = ini_get('auto_append_file');
                         if (!empty($aaf)) {
-                            @include($aaf); // Because exit() avoids running this
+                            @include $aaf; // Because exit() avoids running this
                         }
 
                         exit();

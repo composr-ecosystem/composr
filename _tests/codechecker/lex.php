@@ -77,6 +77,11 @@ $PTOKENS['CONTINUE'] = 'continue';
 $PTOKENS['FOR'] = 'for';
 $PTOKENS['WHILE'] = 'while';
 $PTOKENS['DO'] = 'do';
+// requires / includes
+$PTOKENS['REQUIRE'] = 'require';
+$PTOKENS['REQUIRE_ONCE'] = 'require_once';
+$PTOKENS['INCLUDE'] = 'include';
+$PTOKENS['INCLUDE_ONCE'] = 'include_once';
 // Casts
 $PTOKENS['INTEGER'] = 'integer';
 $PTOKENS['BOOLEAN'] = 'boolean';

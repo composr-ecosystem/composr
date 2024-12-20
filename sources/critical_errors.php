@@ -29,7 +29,7 @@ if ((isset($_SERVER['argv'][0])) && (strpos($_SERVER['argv'][0], 'critical_error
             if (function_exists('set_time_limit')) {
                 @set_time_limit(0);
             }
-            require_once('_config.php');
+            require_once '_config.php';
             global $SITE_INFO;
             $email_to = isset($SITE_INFO['email_to']) ? $SITE_INFO['email_to'] : ('webmaster@' . $SITE_INFO['domain']);
             echo 'Monitoring for logged critical errors; we will email ' . $email_to . ' if we find anything.' . "\n";

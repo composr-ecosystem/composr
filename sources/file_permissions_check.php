@@ -127,6 +127,7 @@ function scan_permissions(bool $live_output = false, bool $live_commands = false
 
 /**
  * Get the list of folders/files that need CHmodding for write access.
+ * Caution: this does not support contentious overrides on addon registry hooks.
  *
  * @param  boolean $runtime Include folders/files that are created dynamically
  * @param  boolean $check_custom Whether to consider and prioritise sources_custom hooks
@@ -172,7 +173,7 @@ function get_chmod_array(bool $runtime = true, bool $check_custom = true) : arra
                     continue;
                 }
 
-                require_once($base_dir . '/' . $file);
+                require_once $base_dir . '/' . $file;
                 $class = 'Hook_addon_registry_' . $hook_name;
                 $object = new $class();
 
@@ -188,6 +189,7 @@ function get_chmod_array(bool $runtime = true, bool $check_custom = true) : arra
         $chmod = array_merge(
             $chmod,
             [
+                '_compiled/**/*.php',
                 'adminzone/pages/comcode_custom/**/*.txt',
                 'adminzone/pages/html_custom/**/*.htm',
                 'caches/http/*.bin',
@@ -199,7 +201,7 @@ function get_chmod_array(bool $runtime = true, bool $check_custom = true) : arra
                 'cms/pages/comcode_custom/**/*.txt',
                 'cms/pages/html_custom/**/*.htm',
                 'data_custom/modules/web_notifications/*.bin',
-                'data_custom/sitemaps/* ',
+                'data_custom/sitemaps/*',
                 'data_custom/spelling/personal_dicts/*',
                 'data_custom/xml_config/*.xml',
                 'exports/**/*.tar',
@@ -233,6 +235,7 @@ function get_chmod_array(bool $runtime = true, bool $check_custom = true) : arra
         $chmod,
         [
             '_config.php',
+            '_compiled',
             'adminzone/pages/comcode_custom/**',
             'adminzone/pages/html_custom/**',
             'caches/http',
