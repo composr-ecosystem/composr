@@ -440,7 +440,7 @@ class Hook_import_ipb2
         if (!file_exists($file_base . '/conf_global.php')) {
             warn_exit(do_lang_tempcode('BAD_IMPORT_PATH', escape_html('conf_global.php')));
         }
-        require_once($file_base . '/conf_global.php');
+        require_once $file_base . '/conf_global.php';
 
         return [$INFO['sql_database'], $INFO['sql_user'], $INFO['sql_pass'], $INFO['sql_tbl_prefix'], $INFO['sql_host']];
     }

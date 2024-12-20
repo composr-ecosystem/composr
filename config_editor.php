@@ -28,7 +28,7 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
 }
 @chdir($FILE_BASE);
 
-require_once($FILE_BASE . '/_config.php');
+require_once $FILE_BASE . '/_config.php';
 if (isset($GLOBALS['SITE_INFO']['admin_password'])) { // LEGACY
     $GLOBALS['SITE_INFO']['master_password'] = $GLOBALS['SITE_INFO']['admin_password'];
     unset($GLOBALS['SITE_INFO']['admin_password']);
@@ -487,7 +487,7 @@ function co_sync_file(string $filename)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (substr($filename, 0, strlen($FILE_BASE)) == $FILE_BASE) {
             $filename = substr($filename, strlen($FILE_BASE));
         }
@@ -507,7 +507,7 @@ function co_sync_file_move(string $old, string $new)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (substr($old, 0, strlen($FILE_BASE)) == $FILE_BASE) {
             $old = substr($old, strlen($FILE_BASE));
         }
@@ -529,7 +529,7 @@ function co_sync_file_move(string $old, string $new)
 function co_check_maintenance_password(string $password_given) : bool
 {
     global $FILE_BASE;
-    require_once($FILE_BASE . '/sources/crypt_maintenance.php');
+    require_once $FILE_BASE . '/sources/crypt_maintenance.php';
     return check_maintenance_password($password_given);
 }
 

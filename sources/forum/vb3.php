@@ -1091,7 +1091,7 @@ class Forum_driver_vb3 extends Forum_driver_base
             $dbpassword = '';
             $tableprefix = '';
             $config = [];
-            @include($path . '/includes/config.php');
+            @include $path . '/includes/config.php';
             $PROBED_FORUM_CONFIG = [];
             if ($dbname !== null) {
                 $PROBED_FORUM_CONFIG['sql_host'] = $servername;

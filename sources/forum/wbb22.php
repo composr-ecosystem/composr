@@ -194,7 +194,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
             $sqluser = '';
             $sqlpassword = '';
             $n = '';
-            @include($path . '/acp/lib/config.inc.php');
+            @include $path . '/acp/lib/config.inc.php';
             $PROBED_FORUM_CONFIG['sql_host'] = $sqlhost;
             $PROBED_FORUM_CONFIG['sql_database'] = $sqldb;
             $PROBED_FORUM_CONFIG['sql_user'] = $sqluser;

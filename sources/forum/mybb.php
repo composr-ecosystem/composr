@@ -189,7 +189,7 @@ class Forum_driver_mybb extends Forum_driver_base
         if (@file_exists($path . '/inc/config.php')) {
             $config = [];
 
-            @include($path . '/inc/config.php');
+            @include $path . '/inc/config.php';
             if (array_key_exists('database', $config)) {
                 $PROBED_FORUM_CONFIG['sql_host'] = !empty($config['database']['hostname']) ? $config['database']['hostname'] : '';
                 $PROBED_FORUM_CONFIG['sql_database'] = !empty($config['database']['database']) ? $config['database']['database'] : '';

@@ -119,7 +119,7 @@ class Hook_import_vb3
         if (!file_exists($file_base . '/includes/config.php')) {
             warn_exit(do_lang_tempcode('BAD_IMPORT_PATH', escape_html('includes/config.php')));
         }
-        require($file_base . '/includes/config.php');
+        require $file_base . '/includes/config.php';
 
         if ($dbname !== null) {
             $sql_database = $dbname;

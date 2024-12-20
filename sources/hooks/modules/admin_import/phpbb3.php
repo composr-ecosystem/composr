@@ -132,7 +132,7 @@ class Hook_import_phpbb3
         if (!file_exists($file_base . '/config.php')) {
             warn_exit(do_lang_tempcode('BAD_IMPORT_PATH', escape_html('config.php')));
         }
-        require($file_base . '/config.php');
+        require $file_base . '/config.php';
 
         return [$dbname, $dbuser, $dbpasswd, $table_prefix, $dbhost];
     }

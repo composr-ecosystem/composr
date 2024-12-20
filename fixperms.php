@@ -13,6 +13,8 @@
  * @package    helper_scripts
  */
 
+// CAUTION: This script loads in original software code without overrides (unless the --full option is used).
+
 /*EXTRA FUNCTIONS: php_sapi_name|set_time_limit*/
 
 @header('Content-Type: text/plain; charset=utf-8');
@@ -41,7 +43,7 @@ Usage: php fixperms.php [options]
 
     --verbose                                 show verbose output
 
-    --full                                    set full permissions, which requires bootstrapping Composr
+    --full                                    bootstrap the software so we can support code overrides and full permissions fixes
                                               (not guaranteed to work if some basic permissions are missing)
 
     --web_username=<username|user_id>         On Linux/Mac OS:
@@ -107,8 +109,8 @@ if ($full) {
     if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
         exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
     }
-    require_once($FILE_BASE . '/sources/bootstrap.php');
-require_code__bootstrap('global');
+    require_once $FILE_BASE . '/sources/bootstrap.php';
+    require_code__bootstrap('global');
 }
 
 error_reporting(E_ALL);
@@ -118,7 +120,11 @@ set_time_limit(0);
 
 chdir(__DIR__);
 
-require(__DIR__ . '/sources/file_permissions_check.php');
+if (function_exists('require_code')) {
+    require_code('file_permissions_check');
+} else {
+    require __DIR__ . '/sources/file_permissions_check.php';
+}
 
 if ($trial) {
     echo "Running in trial mode...\n\n";
@@ -149,7 +155,7 @@ if ($trial) {
 
     // Clear cache first, as we don't chmod cache files in this code
     if (is_file(__DIR__ . '/decache.php')) {
-        require(__DIR__ . '/decache.php');
+        require __DIR__ . '/decache.php';
         echo "1/2 Cleared caches\n";
     }
 

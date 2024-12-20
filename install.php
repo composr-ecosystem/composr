@@ -13,6 +13,7 @@
 
 /*EXTRA FUNCTIONS: ftp_.*|fileowner*/
 
+// This runs independently of core software, so we cannot support dynamic injection of this declaration in DEV_MODE, but we still need type strictness.
 declare(strict_types=1);
 
 /**
@@ -71,7 +72,7 @@ if ((@is_array($FILE_ARRAY)) && (!isset($_GET['keep_quick_hybrid']))) {
     if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
         exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
     }
-    require_once($FILE_BASE . '/sources/bootstrap.php');
+    require_once $FILE_BASE . '/sources/bootstrap.php';
 }
 require_code__bootstrap('minikernel');
 
@@ -632,7 +633,7 @@ function step_3() : object
     }
     global $DEFAULT_FORUM;
     if ((file_exists(get_file_base() . '/_config.php')) && (filesize(get_file_base() . '/_config.php') != 0)) {
-        require_once(get_file_base() . '/_config.php');
+        require get_file_base() . '/_config.php';
         global $SITE_INFO;
         if (array_key_exists('forum_type', $SITE_INFO)) {
             $DEFAULT_FORUM = $SITE_INFO['forum_type'];
@@ -878,7 +879,7 @@ function step_4() : object
     global $SITE_INFO;
     if ((file_exists(get_file_base() . '/_config.php')) && (filesize(get_file_base() . '/_config.php') != 0)) {
         // De-set what we know we can't re-use because we have better info now
-        require_once(get_file_base() . '/_config.php');
+        require get_file_base() . '/_config.php';
         if (($PROBED_FORUM_CONFIG['sql_database'] != '') && ($forum_type != 'cns') && ($forum_type != 'none')) {
             if ((!array_key_exists('forum_type', $SITE_INFO)) || ($SITE_INFO['forum_type'] != $forum_type)) { // Don't want to throw detected versions of these away
                 unset($SITE_INFO['user_cookie']);
@@ -1306,7 +1307,7 @@ function step_5() : object
 
     // If this exists, we may as well try and read it - may have some special flags in here during installation that we want to propagate
     global $SITE_INFO;
-    @include(get_file_base() . '/_config.php');
+    @include get_file_base() . '/_config.php';
     foreach ($SITE_INFO as $key => $val) {
         if (isset($_POST[$key])) {
             continue;
@@ -2021,7 +2022,7 @@ if (appengine_is_live()) {
         warn_exit(do_lang_tempcode('INSTALL_WRITE_ERROR', escape_html($config_file)));
     }
 
-    require_once(get_file_base() . '/' . $config_file);
+    require get_file_base() . '/' . $config_file;
 
     global $FILE_ARRAY, $DIR_ARRAY;
     if ((@is_array($FILE_ARRAY)) && (!is_suexec_like())) {
@@ -2432,7 +2433,7 @@ function step_6() : object
     $log = new Tempcode();
 
     $config_file = '_config.php';
-    require_once(get_file_base() . '/' . $config_file);
+    require get_file_base() . '/' . $config_file;
     require_code('database');
     require_code('config');
     require_all_core_cms_code();
@@ -2467,7 +2468,7 @@ function big_installation_common()
     }
 
     $config_file = '_config.php';
-    require_once(get_file_base() . '/' . $config_file);
+    require get_file_base() . '/' . $config_file;
 
     require_code('database');
 

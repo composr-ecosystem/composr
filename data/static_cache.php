@@ -19,11 +19,10 @@
  */
 
 /*
-This file is designed to be able to work as standalone, should you want to hook rewrite rules directly into it.
-This allows static cache to run even when the software is itself not booting at all.
+    This file is designed to be able to work as standalone, should you want to hook rewrite rules directly into it.
+    This allows static cache to run even when the software is itself not booting at all.
+    Caution: If you use this, it does not support overrides or the init function on the static cache file.
 */
-
-require_once('../sources/static_cache.php');
 
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
@@ -35,7 +34,8 @@ $FILE_BASE = dirname($FILE_BASE, 2);
 
 chdir($FILE_BASE);
 
-require($FILE_BASE . '/_config.php');
+require $FILE_BASE . '/_config.php';
+require_once $FILE_BASE . '/sources/static_cache.php';
 
 if (!defined('STATIC_CACHE__FAST_SPIDER')) {
     define('STATIC_CACHE__FAST_SPIDER', 1);

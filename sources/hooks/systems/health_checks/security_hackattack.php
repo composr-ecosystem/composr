@@ -187,7 +187,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         if (is_file($rate_limiter_path)) {
             $fp = fopen($rate_limiter_path, 'rb');
             flock($fp, LOCK_SH);
-            include($rate_limiter_path);
+            include $rate_limiter_path;
             flock($fp, LOCK_UN);
             fclose($fp);
         }

@@ -25,21 +25,27 @@
  */
 
 /**
- * This function is a very important one when coding. It allows you to include a source code file (from root/sources/ or root/sources_custom/) through the proper channels.
- * You should remember this function, and not substitute anything else for it, as that will likely make your code unstable.
- * It is key to source code modularity in Composr.
+ * Require a software PHP file while, where applicable, compiling in overrides from *_custom folders and contentious overrides.
+ * You should remember this function and use this opposed to require/include/require_once/include_once for proper modularity (except for bootstrap.php which has to be required directly).
  *
  * @param  string $codename The codename for the source module to load (or a full relative path, ending with .php; if custom checking is needed, this must be the custom version)
  * @param  boolean $light_exit Whether to cleanly fail when a source file is missing
  * @param  ?boolean $has_custom Whether this is going to be from under a custom directory (null: search). This is used for performance to avoid extra searching when we already know where a file is
- * @param  boolean $force_custom Whether to forcefully allow custom overrides even if in safe mode
+ * @param  boolean $force_custom Whether to forcefully allow custom overrides even if in safe mode (still ignored for files which do not support overrides)
  */
 function require_code(string $codename, bool $light_exit = false, ?bool $has_custom = null, bool $force_custom = false)
 {
     // Handle if already required...
-
     global $REQUIRED_CODE, $REQUIRING_CODE, $FILE_BASE, $SITE_INFO;
     if (isset($REQUIRED_CODE[$codename])) {
+        return;
+    }
+
+    // These scripts can be loaded in directly from outside software (but only the original code). For consistency, do not allow overrides on them.
+    // Exception: if we are running in dev_mode, compile anyway because we need strict typing on them.
+    $no_override_support = ['crypt_maintenance', 'version'];
+    if (in_array($codename, $no_override_support) && (!$GLOBALS['DEV_MODE'])) {
+        require_code_no_override($codename);
         return;
     }
 
@@ -111,6 +117,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
         }
     }
 
+    // Overrides are disabled in safe mode
     if ((isset($SITE_INFO['safe_mode'])) && ($SITE_INFO['safe_mode'] === '1')) {
         $has_custom = false;
     }
@@ -277,8 +284,8 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 }
 
 /**
- * Require code, but without looking for sources_custom overrides.
- * This also bypasses special DEV_MODE declare strict_types as this uses require_once and not eval.
+ * Require code from the software without considering or compiling overrides.
+ * This also bypasses special DEV_MODE declare strict_types.
  *
  * @param  string $codename The codename for the source module to load
  */
@@ -317,12 +324,14 @@ function clean_php_file_for_eval(string $c, ?string $path = null) : string
 
 /**
  * Compile some code into the _compiled directory if we need to for later inclusion by call_compiled_code.
+ * Do not use this function directly; use require_code instead.
  *
  * @param  string $orig_path File path
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled if we do not need one)
+ * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled file if we do not need one)
  * @return boolean Whether we should delete any existing _compiled files for this, through call_compiled_code
+ * @ignore
  */
 function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : bool
 {
@@ -442,18 +451,18 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
 }
 
 /**
- * Include some code for use within the software (after we ran compile_included_code on it).
- * If a _compiled file version is available, we will use that one instead of the original.
+ * Require some code for use within the software (after we ran compile_included_code on it), prioritising _compiled files if they exist.
+ * Do not use this function directly; use require_code instead.
  *
  * @param  string $path The file path to the original file (not the compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
  * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file, if it exists
+ * @ignore
  */
 function call_compiled_code(string $path, string $codename, bool $light_exit, bool $delete_compiled = false)
 {
-    // These files have already been required in by this function.
-    // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
+    // The files already defined here are always required in before using the core software's methods of requiring code.
     static $already_called = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
 
     $do_sed = function_exists('push_suppress_error_death');
@@ -508,7 +517,7 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
             }
         }
 
-        $result = require $calling_path;
+        $result = require_once $calling_path;
 
         if ($file !== false) {
             fclose($file);

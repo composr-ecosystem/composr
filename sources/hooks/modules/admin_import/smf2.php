@@ -120,7 +120,7 @@ class Hook_import_smf2
         if (!file_exists($file_base . '/Settings.php')) {
             warn_exit(do_lang_tempcode('BAD_IMPORT_PATH', escape_html('Settings.php')));
         }
-        require($file_base . '/Settings.php');
+        require $file_base . '/Settings.php';
 
         return [$db_name, $db_user, $db_passwd, $db_prefix, $db_server];
     }
@@ -140,7 +140,7 @@ class Hook_import_smf2
         $cookiename = '';
         $auth_secret = null;
 
-        require($file_base . '/Settings.php');
+        require $file_base . '/Settings.php';
 
         $rows = $db->query_select('settings');
 
@@ -650,7 +650,7 @@ class Hook_import_smf2
     public function import_cns_member_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
-        require($file_base . '/Settings.php');
+        require $file_base . '/Settings.php';
 
         $avatar_path = $this->get_setting($db, 'custom_avatar_dir');
         $avatar_gallery_path = $this->get_setting($db, 'avatar_directory');
@@ -1113,7 +1113,7 @@ class Hook_import_smf2
     {
         $boardurl = '';
 
-        require($file_base . '/Settings.php');
+        require $file_base . '/Settings.php';
         $old_base_url = $boardurl;
 
         $post = preg_replace_callback('#' . preg_quote($old_base_url) . '/(index\.php\?topic=)(\d*)#', [$this, '_fix_links_callback_topic'], $post);
@@ -1143,7 +1143,7 @@ class Hook_import_smf2
         $boardurl = '';
         $boarddir = '';
 
-        require($file_base . '/Settings.php');
+        require $file_base . '/Settings.php';
         $homeurl = $boardurl;
 
         $forum_dir = preg_replace('#\\\\#', '/', $boarddir); // Full path to the forum folder
@@ -1825,7 +1825,7 @@ class Hook_import_smf2
         require_code('files');
 
         $boardurl = '';
-        require($file_base . '/Settings.php');
+        require $file_base . '/Settings.php';
 
         $row_start = 0;
         $rows = [];

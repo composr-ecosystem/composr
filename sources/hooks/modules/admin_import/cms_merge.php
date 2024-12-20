@@ -206,7 +206,7 @@ class Hook_import_cms_merge
             global $SITE_INFO;
             $backup_site_info = $SITE_INFO;
             $SITE_INFO = null;
-            @include($file_base . '/_config.php');
+            @include $file_base . '/_config.php';
             if ($SITE_INFO === null) {
                 $SITE_INFO = $backup_site_info;
                 attach_message(do_lang_tempcode('ERROR_INACCESSIBLE_DIR'), 'warn');
@@ -261,7 +261,7 @@ class Hook_import_cms_merge
         global $SITE_INFO;
         $backup_site_info = $SITE_INFO;
         $SITE_INFO = null;
-        @include($file_base . '/_config.php');
+        @include $file_base . '/_config.php';
         $sites_site_info = $SITE_INFO;
         $SITE_INFO = $backup_site_info;
 
