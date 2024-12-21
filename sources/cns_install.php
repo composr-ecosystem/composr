@@ -1446,7 +1446,7 @@ function install_cns(?float $upgrade_from = null)
             'i_post_id',
         ]);
 
-        /* TODO: too long
+        /* TODO: Index too long
             $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main', [
                 'i_lang',
                 'i_ngram',

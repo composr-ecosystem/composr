@@ -220,7 +220,6 @@ class Module_admin_privacy
                     $details = $hook_ob->info();
                     if ($details !== null) {
                         foreach ($details['database_records'] as $table_name => $table_details) {
-                            // TODO: Add record counts
                             $purge_options = new Tempcode();
                             $purge_options->attach(form_input_list_entry(strval(PRIVACY_METHOD__LEAVE), $table_details['removal_default_handle_method'] == PRIVACY_METHOD__LEAVE, do_lang_tempcode('PRIVACY_METHOD__LEAVE')));
                             if (($table_details['allowed_handle_methods'] & PRIVACY_METHOD__ANONYMISE) != 0) {

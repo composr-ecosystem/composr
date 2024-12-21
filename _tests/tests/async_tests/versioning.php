@@ -28,6 +28,11 @@ class versioning_test_set extends cms_test_case
     public function testGetDotted()
     {
         $tests = [
+            '3 dev 1734810583' => '3.dev1734810583',
+            '3.1 dev 1734810583' => '3.1.dev1734810583',
+            '3.1.0 dev 1734810583' => '3.1.dev1734810583',
+            '3.1.1 dev 1734810583' => '3.1.1.dev1734810583',
+
             '3 alpha 1' => '3.alpha1',
             '3.1 alpha 1' => '3.1.alpha1',
             '3.1.0 alpha 1' => '3.1.alpha1',
@@ -54,8 +59,8 @@ class versioning_test_set extends cms_test_case
             '3.1.1' => '3.1.1',
         ];
         foreach ($tests as $from => $to) {
-            $got = get_version_dotted__from_anything($from);
-            $this->assertTrue($got == $to, 'Failed on ' . $from);
+            $got = get_version_dotted__from_anything(strval($from));
+            $this->assertTrue($got == strval($to), 'Failed on ' . strval($from));
         }
     }
 
@@ -72,16 +77,16 @@ class versioning_test_set extends cms_test_case
         $this->assertTrue($general_number == 3.1);
         $this->assertTrue($long_dotted_number_with_qualifier == '3.1.0.beta1');
 
-        $v = '3.1.beta1';
+        $v = '3.1.dev1734810583';
 
         list($basis_dotted_number, $qualifier, $qualifier_number, $long_dotted_number, $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($v);
 
         $this->assertTrue($basis_dotted_number == '3.1');
-        $this->assertTrue($qualifier == 'beta');
-        $this->assertTrue($qualifier_number == 1);
+        $this->assertTrue($qualifier == 'dev');
+        $this->assertTrue($qualifier_number == 1734810583);
         $this->assertTrue($long_dotted_number == '3.1.0');
         $this->assertTrue($general_number == 3.1);
-        $this->assertTrue($long_dotted_number_with_qualifier == '3.1.0.beta1');
+        $this->assertTrue($long_dotted_number_with_qualifier == '3.1.0.dev1734810583');
     }
 
     public function testGetPretty()
@@ -90,7 +95,7 @@ class versioning_test_set extends cms_test_case
 
         $this->assertTrue(get_version_pretty__from_dotted('3.1.0.beta1') == '3.1 beta1');
 
-        $this->assertTrue(get_version_pretty__from_dotted('3.1.beta1') == '3.1 beta1');
+        $this->assertTrue(get_version_pretty__from_dotted('3.1.dev1734810583') == '3.1 dev1734810583');
     }
 
     public function testIsSubstantial()
@@ -115,11 +120,14 @@ class versioning_test_set extends cms_test_case
         $this->assertTrue(is_substantial_release('3.1.0.RC1'));
         $this->assertTrue(is_substantial_release('3.1.0'));
 
+        $this->assertTrue(!is_substantial_release('3.1.dev1734810583'));
+        $this->assertTrue(!is_substantial_release('3.1.1.dev1734810583'));
         $this->assertTrue(!is_substantial_release('3.1.alpha1'));
         $this->assertTrue(!is_substantial_release('3.1.1.alpha1'));
         $this->assertTrue(!is_substantial_release('3.1.1.beta1'));
         $this->assertTrue(!is_substantial_release('3.1.1.RC1'));
         $this->assertTrue(!is_substantial_release('3.1.1'));
+        $this->assertTrue(!is_substantial_release('3.1.dev'));
         $this->assertTrue(!is_substantial_release('3.1.alpha2'));
         $this->assertTrue(!is_substantial_release('3.1.beta2'));
         $this->assertTrue(!is_substantial_release('3.1.RC2'));

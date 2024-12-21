@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: tempnam*/
+
 /**
  * Standard code module initialisation function.
  *

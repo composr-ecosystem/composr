@@ -12,10 +12,17 @@ NOTE TO PROGRAMMERS:
 
 */
 
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  Christopher Graham
+ * @package    core
+ */
+
 /*
-    This is the primary bootstrap script for loading in the Composr system. It should be required by any and all front-end scripts.
+    This is the primary bootstrap script for loading in the software. It should be required first by virtually all front-end scripts.
     This file should be kept to an absolute minimum because it cannot be strict-typed.
-    After requiring, use require_code__bootstrap to load your first bootstrap script (whether global or minikernel) which contains the require_code function. Use require_code from that point forward.
+    After requiring, use require_code__bootstrap to load your first bootstrap script (whether global or minikernel) which contains the require_code function.
+    Use require_code from that point forward for proper override support.
 */
 
 /*EXTRA FUNCTIONS: error_log|usleep*/

@@ -590,7 +590,7 @@ function get_event_data_ical(array $event_nodes) : array
         }
         $start = strtotime($event_nodes['DTSTART']);
         if ($start === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('857d45a96d13574e9b91c5c4ea9c69ee')));
         }
         $start_year = intval(date('Y', $start));
         $start_month = intval(date('m', $start));
