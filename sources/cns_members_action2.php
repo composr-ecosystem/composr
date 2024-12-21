@@ -117,24 +117,43 @@ function member_get_spreadsheet_headings() : array
 }
 
 /**
- * If we are using human names for usernames, a conflict is likely. Store a suffixed variety.
- * TODO: Maybe later the software will strip these suffixes out in some contexts.
+ * Given a username, append (or change) a discriminator if the username already exists.
+ * A discriminator is a # followed by 4 random letters or numbers suffixed at the end of a username (in rare cases, it might also contain a - or _).
  *
- * @param  SHORT_TEXT $username The desired human name for the member profile
- * @return SHORT_TEXT A unique username
+ * @param  SHORT_TEXT $username The desired name for the member profile
+ * @param  boolean $username_only Whether we just want the username without a discriminator, and $username might contain a discriminator
+ * @return SHORT_TEXT A username with a discriminator if necessary
  */
-function get_username_from_human_name(string $username) : string
+function process_username_discriminator(string $username, bool $username_only = false) : string
 {
-    $username = preg_replace('# \(\d+\)$#', '', $username);
+    $username = preg_replace('#\#\w{4}$#', '', $username);
+    if ($username_only) {
+        return $username;
+    }
+
     $_username = $username;
-    $i = 1;
+
+    // Get existing usernames matching itself or any discriminator
+    $rows = $GLOBALS['FORUM_DB']->query_parameterised('SELECT DISTINCT m_username FROM {prefix}f_members WHERE m_username LIKE \'' . db_encode_like(db_escape_string('{username}#%')) . '\' OR m_username=\'{username}\'', ['username' => $username]);
+    $usernames = collapse_1d_complexity('m_username', $rows);
+
+    $time_taken = microtime(true);
     do {
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $_username]);
-        if ($test !== null) {
-            $i++;
-            $_username = $username . ' (' . strval($i) . ')';
+        $test = in_array($_username, $usernames);
+        if ($test) {
+            require_code('crypt');
+            if (count($usernames) < 100000) { // Should rarely ever happen but base32 affords us a little over 1 million discriminators; we should opt for base64 if we have 100k+ matches.
+                $_username = $username . '#' . get_secure_random_string(4, CRYPT_BASE32);
+            } else {
+                $_username = $username . '#' . get_secure_random_string(4, CRYPT_BASE64);
+            }
+
+            if ((microtime(true) - $time_taken) >= 3.0) { // Stop trying and error if we still do not have a good username after 3 seconds
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+            }
         }
-    } while ($test !== null);
+    } while ($test);
+
     $username = $_username;
     return $username;
 }
@@ -164,7 +183,7 @@ function cns_member_external_linker_ask(string $type, string $username, string $
     $title = get_screen_title('FINISH_PROFILE');
 
     if ($username != '') {
-        $username = get_username_from_human_name($username);
+        $username = process_username_discriminator($username);
     }
 
     list($fields, $hidden) = cns_get_member_fields(true, $type, null, $username, $email_address, null, null, $dob_day, $dob_month, $dob_year, null, $timezone, $language);
