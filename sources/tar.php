@@ -54,7 +54,9 @@ function tar_open(string $path, string $mode, bool $known_exists = false, ?strin
             intelligent_write_error($path);
         }
     }
-    if (substr($mode, 0, 1) == 'w') {
+    if (in_array(substr($mode, 0, 1), ['w', 'c', 'a', 'x'])) {
+        @flock($myfile, LOCK_EX);
+    } elseif (substr($mode, 1, 1) == '+') {
         @flock($myfile, LOCK_EX);
     } else {
         flock($myfile, LOCK_SH);
@@ -630,7 +632,7 @@ function tar_add_file(array &$resource, string $target_path, string $data, int $
         $slash_pos = strpos(substr($target_path, strlen($target_path) - 100), '/');
         if ($slash_pos === false) { // Must chop off start of filename because $prefix must be a directory :S
             $slash_pos = 0;
-            $target_path = substr($target_path, 0, strrpos(substr($target_path, 0, -100), '/')) . substr($target_path, -100);
+            $target_path = '/' . substr($target_path, 100, (100 - strlen($target_path)));
         } else {
             $slash_pos++;
         }
@@ -736,7 +738,11 @@ function tar_close(array $resource)
         }
     }
 
-    @flock($resource['myfile'], LOCK_UN);
+    $unlock = flock($resource['myfile'], LOCK_UN);
+    if ($unlock === false) {
+        fatal_exit('Nope');
+    }
+
     if ((function_exists('gzclose')) && (cms_strtolower_ascii(substr($resource['real_filename'], -3)) == '.gz')) {
         gzclose($resource['myfile']);
     } else {

@@ -243,6 +243,7 @@ function get_public_key_telemetry(?float $version = null)
  */
 function get_private_key_telemetry(float $version)
 {
+    // NB: private keys should always exist in data_custom and never data
     return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.key', FILE_READ_LOCK);
 }
 

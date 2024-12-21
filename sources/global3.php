@@ -646,9 +646,10 @@ function cms_fsock_request(string $payload, string $url, ?int &$error_code = nul
  * Find whether a file/directory is writeable. This function is designed to get past that the PHP is_writable function does not work properly on Windows.
  *
  * @param  PATH $path The file path
+ * @param  boolean $aggressive Whether to perform an aggressive test (if necessary) where we actually try writing to the file
  * @return boolean Whether the file is writeable
  */
-function cms_is_writable(string $path) : bool
+function cms_is_writable(string $path, bool $aggressive = false) : bool
 {
     if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
         return is_writable($path);
@@ -674,11 +675,40 @@ function cms_is_writable(string $path) : bool
         return is_writable($path); // imperfect unfortunately; but unlikely to cause a problem
     }
 
-    $test = @fopen($path, 'cb');
-    if ($test !== false) {
-        fclose($test);
+    $test = @fopen($path, 'a');
+    if ($test === false) {
+        return false;
+    }
+
+    if ($aggressive) {
+        $test_string = uniqid('writetest_', false); // Arbitrary data to write
+        $bytes_written = @fwrite($test, $test_string);
+        @fclose($test);
+
+        // Clean-up
+        if (is_numeric($bytes_written)) {
+            $test = @fopen($path, 'r+');
+            if ($test === false) {
+                fatal_exit('Could not clean up file ' . str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $path) . ' after aggressive write test. You must manually remove ' . $test_string . ' from the end of this file immediately.');
+            }
+            fseek($test, -$bytes_written, SEEK_END);
+            $truncate = ftruncate($test, ftell($test)); // Truncate the file to remove test string
+            if ($truncate === false) {
+                fatal_exit('Could not clean up file ' . str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $path) . ' after aggressive write test. You must manually remove ' . $test_string . ' from the end of this file immediately.');
+            }
+            @fclose($test);
+        } else {
+            return false;
+        }
+
+        if (intval($bytes_written) == strlen($test_string)) {
+            return true;
+        }
+    } else {
+        @fclose($test);
         return true;
     }
+
     return false;
 }
 

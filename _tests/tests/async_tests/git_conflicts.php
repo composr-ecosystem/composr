@@ -21,6 +21,7 @@ class git_conflicts_test_set extends cms_test_case
     public function testNoConflicts()
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+        disable_php_memory_limit();
 
         require_code('files2');
 

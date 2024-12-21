@@ -58,7 +58,7 @@ class Hook_contentious_overrides_referrals
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 // Inject code, but do not cause full-on critical error if it is broken so members can still register.
@@ -102,7 +102,7 @@ class Hook_contentious_overrides_referrals
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 override_str_replace_exactly(
@@ -130,7 +130,7 @@ class Hook_contentious_overrides_referrals
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 override_str_replace_exactly(

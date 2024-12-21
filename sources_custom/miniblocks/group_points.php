@@ -62,7 +62,7 @@ foreach ($group_points as $group_id => $points) {
 }
 
 if ($done == 0) {
-    echo '<tr><td colspan="4"><p class="nothing-here">No bonuses configured yet. <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'group_points'], get_page_zone('group_points')))) . '">Configure bonuses here</a>.</p></td></tr>';
+    echo '<tr><td colspan="4"><p class="nothing-here">No bonuses configured yet. <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'group_points'], get_module_zone('group_points')))) . '">Configure bonuses here</a>.</p></td></tr>';
 }
 
 echo '</tbody></table>';

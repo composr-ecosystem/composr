@@ -41,7 +41,7 @@ class Hook_contentious_overrides_workflows
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 // We want to inject our workflow handling code into add_image...
@@ -153,7 +153,7 @@ class Hook_contentious_overrides_workflows
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 $code = override_str_replace_exactly(
@@ -172,7 +172,7 @@ class Hook_contentious_overrides_workflows
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 $code = override_str_replace_exactly(
@@ -183,7 +183,7 @@ class Hook_contentious_overrides_workflows
                 break;
             case 'adminzone/pages/modules/admin_validation.php':
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 $code = override_str_replace_exactly(
@@ -204,7 +204,7 @@ class Hook_contentious_overrides_workflows
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 // NOTE: There are many classes defined in the cms_galleries file. We need to make all work.
@@ -260,7 +260,7 @@ class Hook_contentious_overrides_workflows
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 require_code('override_api');

@@ -2177,12 +2177,18 @@ function __param(array $array, string $name, $default, bool $integer = false, ?b
         improperly_filled_in($name, $posted, $array);
     }
 
-    $val = $array[$name];
-    if (is_array($val)) {
-        $val = @trim(implode(',', $val), ' ,'); // @ because it could be any complex arbitrary data structure (the software does not do this, but bots may generate such URLs)
+    $_val = $array[$name];
+    if (is_array($_val)) {
+        $val = @trim(implode(',', $_val), ' ,'); // @ because it could be any complex arbitrary data structure (the software does not do this, but bots may generate such URLs)
+    } else {
+        $val = $_val;
     }
 
-    return $val;
+    // Sometimes PHP might coerce values into an integer and trigger a type error; we must return as a string if this happens
+    if ($val === null) {
+        return null;
+    }
+    return strval($val);
 }
 
 /**

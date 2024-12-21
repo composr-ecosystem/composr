@@ -133,10 +133,10 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
         do {
             $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
             foreach ($rows as $row) {
-                $timestamp = $row['first_date_and_time'];
+                $timestamp = $row['e_first_date_and_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $resolved = strval($row['resolved']);
+                $resolved = strval($row['e_resolved']);
 
                 $month = to_epoch_interval_index($timestamp, 'months');
 

@@ -5,7 +5,7 @@
 		<p>{$TRUNCATE_LEFT,{EXCERPT},100,1}</p>
 	{+END}
 
-	{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,_SEARCH:admin_trackbacks}}
+	{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_trackbacks}}
 		<fieldset class="innocuous-fieldset">
 			<legend class="accessibility-hidden">{!ACTION}</legend>
 

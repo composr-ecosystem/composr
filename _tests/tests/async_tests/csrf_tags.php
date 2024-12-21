@@ -31,7 +31,22 @@ class csrf_tags_test_set extends cms_test_case
                     continue;
                 }
 
-                $c = cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                if (!is_file($dir . '/' . $file)) { // We might have sub-directories
+                    continue;
+                }
+
+                if (strpos($dir, '/_old_backups') !== false) { // Do not check anything in backups
+                    continue;
+                }
+
+                $_c = cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                if ($_c === false) {
+                    $this->assertTrue(false, 'Error opening file: ' . $dir . '/' . $file);
+                    continue;
+                }
+
+                $c = strval($_c);
+
                 if (strpos($c, '<form') !== false) {
                     if (strpos($c, 'button-hyperlink') !== false) {
                         continue;

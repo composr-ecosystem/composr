@@ -197,9 +197,6 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         return ''; // Suppressing errors
     }
 
-    // Was a lang lookup error and got in an infinite loop of attaching errors about missing lang errors (because each iteration causes a reevaluation of past messages)
-    check_for_infinite_loop('attach_message', [$message, $type], 2);
-
     global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES, $SITE_INFO;
 
     foreach ($ATTACHED_MESSAGES_RAW as $last) {
@@ -207,6 +204,10 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
             return ''; // Already shown
         }
     }
+
+    // We wait until after checking if the message was already shown before counting towards infinite loop to prevent premature terminations
+    check_for_infinite_loop('attach_message', [$message, $type], 2);
+
     $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
 
     if ($log_error) {

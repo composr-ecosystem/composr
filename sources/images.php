@@ -806,7 +806,12 @@ function cms_imagesave($image, string $path, ?string $ext = null, bool $lossy = 
             for ($y = 0; $y < $height; $y++) {
                 for ($x = 0; $x < $width; $x++) {
                     $color_index = imagecolorat($temp, $x, $y);
-                    $components = @imagecolorsforindex($temp, $color_index);
+                    $total_colors = imagecolorstotal($temp);
+                    if (($color_index !== false) && ($color_index >= 0) && ($color_index < $total_colors)) {
+                        $components = imagecolorsforindex($temp, $color_index);
+                    } else {
+                        $components = false;
+                    }
                     if ($components !== false) {
                         if ($components['alpha'] >= 64) {
                             imagesetpixel($image, $x, $y, $transparent);

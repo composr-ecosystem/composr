@@ -460,13 +460,11 @@ class CMSHtmlReporter extends SimpleReporter
     /**
      * Paints a PHP error.
      *
-     * @param string $message        Message is ignored.
+     * @param string $message
      */
     public function paintError($message)
     {
-        // Forcefully dump and terminate on exceptions because ob cache messes with the output and then we do not see the exception otherwise
-        var_dump($message);
-        exit();
+        $this->paintFail('An error occurred: ' . $message);
     }
 
     /**
@@ -476,9 +474,7 @@ class CMSHtmlReporter extends SimpleReporter
      */
     public function paintException($exception)
     {
-        // Forcefully dump and terminate on exceptions because ob cache messes with the output and then we do not see the exception otherwise
-        var_dump($exception);
-        exit();
+        $this->paintFail('An unhandled exception occurred: ' . $exception->getMessage() . ', in ' . $exception->getFile() . ' on line ' . $exception->getLine());
     }
 
     /**

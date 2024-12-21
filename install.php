@@ -2650,7 +2650,7 @@ function step_8() : object
     $was_finished = true;
 
     $offset = get_param_integer('offset', 0);
-    $keep_going = (get_param_integer('keep_going', 0) == 1); // If specified, we will not break step 8 up into parts (necessary for headless installs)
+    $keep_step8_all_at_once = (get_param_integer('keep_step8_all_at_once', 0) == 1); // If specified, we will not break step 8 up into parts (necessary for headless installs)
     $_offset = 0;
 
     require_code('addons2');
@@ -2677,7 +2677,7 @@ function step_8() : object
         send_http_output_ping();
 
         $time_before = microtime(true);
-        if ((($time_before - $time_start) >= 10.0) && (!$keep_going)) { // Actually, do not proceed if we spent 10 or more seconds; proceed on next execution
+        if ((($time_before - $time_start) >= 5.0) && (!$keep_step8_all_at_once)) { // Actually, split this into another execution after 5 seconds
             $was_finished = false;
             break;
         }
@@ -2742,7 +2742,7 @@ function step_8() : object
     } else { // We have more to do
         $time = microtime(true) - $time_start;
         $url = prepare_installer_url('install.php?step=8&offset=' . strval($_offset));
-        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'ed67f2107a69514ef74683609c2f53e0', 'SOMETHING' => do_lang_tempcode('MORE_TO_INSTALL')])];
+        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'ed67f2107a69514ef74683609c2f53e0', 'SOMETHING' => do_lang_tempcode('MORE_TO_INSTALL', integer_format($_offset), integer_format(count($data)))])];
     }
 
     $time_end = microtime(true);

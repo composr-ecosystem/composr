@@ -15,8 +15,8 @@
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
-if (!addon_installed('composr_homesite')) {
-    return do_template('RED_ALERT', ['_GUID' => 'ff30902212eb5ae1ac80ee8dc6ed6eb9', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
+if (!addon_installed('cms_homesite')) {
+    return do_template('RED_ALERT', ['_GUID' => 'ff30902212eb5ae1ac80ee8dc6ed6eb9', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
 }
 
 if (!addon_installed('downloads')) {
@@ -129,7 +129,7 @@ END;
 require_code('version2');
 $from_version_dotted = get_version_dotted__from_anything($from_long_dotted_number_with_qualifier); // Canonicalise
 
-require_code('composr_homesite');
+require_code('cms_homesite');
 require_code('uploads/website_specific/composr.app/upgrades/make_upgrader.php');
 $ret = make_upgrade_get_path($from_version_dotted, $to_version_dotted);
 

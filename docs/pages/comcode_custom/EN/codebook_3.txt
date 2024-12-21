@@ -803,6 +803,7 @@ The following 'keep' parameters have interface triggers, but are also handy for 
 
 The following 'keep' parameters have interface triggers and are not useful for manual use:
  - [tt]keep_full_structure[/tt] -- whether to avoid merging nodes together in the Sitemap, used by the Permissions tree editor so that permissions on non-accessible nodes are settable
+ - [tt]keep_step8_all_at_once[/tt] -- whether to process step 8 of the installer in one execution rather than breaking it up into multiple executions (to avoid server time-outs), used by headless install code as it does not support this behaviour
 
 The following aren't 'keep' parameters, but are still useful and otherwise behave in the same way:
  - [tt]auth[/tt] -- set to '1' to make Composr request HTTP authentication. This is useful for RSS URLs, if you want the feeds to be generated as authenticated.

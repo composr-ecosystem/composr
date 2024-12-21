@@ -459,7 +459,7 @@ function sync_file(string $filename)
 
 /**
  * Find whether a particular PHP function is blocked.
- * This is a wrapper for bootstrap's php_function_allowed.
+ * This is just a wrapper for bootstrap's php_function_allowed.
  *
  * @param  string $function Function name
  * @return boolean Whether it is
@@ -985,10 +985,10 @@ function log_hack_attack_and_exit(string $reason, string $reason_param_a = '', s
  * Get a value (either POST [u]or[/u] GET), or the default if neither can be found.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
  * @return ?string The value of the parameter (null: not there, and default was null)
  */
-function either_param_string(string $name, ?string $default = null) : ?string
+function either_param_string(string $name, $default = false) : ?string
 {
     $a = __param($_REQUEST, $name, $default);
     return $a;
@@ -998,12 +998,12 @@ function either_param_string(string $name, ?string $default = null) : ?string
  * Get the value of the specified POST key, if it is found, or the default otherwise.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
  * @return ?string The value of the parameter (null: not there, and default was null)
  */
-function post_param_string(string $name, ?string $default = null) : ?string
+function post_param_string(string $name, $default = false) : ?string
 {
-    $a = __param($_POST, $name, $default);
+    $a = __param($_POST, $name, $default, false, true);
     return $a;
 }
 
@@ -1011,10 +1011,10 @@ function post_param_string(string $name, ?string $default = null) : ?string
  * Get the value of the specified GET key, if it is found, or the default otherwise.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
  * @return ?string The value of the parameter (null: not there, and default was null)
  */
-function get_param_string(string $name, ?string $default = null) : ?string
+function get_param_string(string $name, $default = false) : ?string
 {
     $a = __param($_GET, $name, $default);
     return $a;
@@ -1025,7 +1025,7 @@ function get_param_string(string $name, ?string $default = null) : ?string
  *
  * @param  array $array The array we're extracting parameters from
  * @param  ID_TEXT $name The name of the parameter
- * @param  ?mixed $default The default value to use for the parameter (null: no default)
+ * @param  ?~mixed $default The default value to use for the parameter (null: no default) (false: give error on missing parameter)
  * @param  boolean $must_integer Whether the parameter has to be an integer
  * @param  boolean $is_post Whether the parameter is a POST parameter
  * @return ?string The value of the parameter (null: not there, and default was null)
@@ -1033,12 +1033,19 @@ function get_param_string(string $name, ?string $default = null) : ?string
  */
 function __param(array $array, string $name, $default, bool $must_integer = false, bool $is_post = false) : ?string
 {
-    if (!array_key_exists($name, $array)) {
+    if ((!isset($array[$name])) || ($array[$name] === false) || (($must_integer) && ($array[$name] === ''))) {
+        if ($default === false) {
+            warn_exit('A required parameter was not passed: ' . $name);
+        }
         return $default;
     }
     $val = trim($array[$name]);
 
-    return $val;
+    // Sometimes PHP might coerce values into an integer and trigger a type error; we must return as a string if this happens
+    if ($val === null) {
+        return null;
+    }
+    return strval($val);
 }
 
 /**
@@ -1046,12 +1053,12 @@ function __param(array $array, string $name, $default, bool $must_integer = fals
  * You should always use integer specified versions when inputting integers, for the added security that type validation allows. If the value is of the wrong type, it indicates a hack attempt and will be logged.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?integer $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @param  ?~mixed $default The default value to use for the parameter (null: no default) (false: give error on missing parameter)
  * @return ?integer The parameter value (null: not found and default was null)
  */
-function either_param_integer(string $name, ?int $default = null) : ?int
+function either_param_integer(string $name, $default = false) : ?int
 {
-    $ret = __param($_REQUEST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
+    $ret = __param($_REQUEST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)), true);
     if (($default === null) && (($ret === '') || ($ret === null))) {
         return null;
     }
@@ -1062,12 +1069,12 @@ function either_param_integer(string $name, ?int $default = null) : ?int
  * This function is the integeric partner of post_param_string, as it returns the value as an integer.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?integer $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @param  ?~mixed $default The default value to use for the parameter (null: no default) (false: give error on missing parameter)
  * @return ?integer The parameter value (null: not found and default was null)
  */
-function post_param_integer(string $name, ?int $default = null) : ?int
+function post_param_integer(string $name, $default = false) : ?int
 {
-    $ret = __param($_POST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
+    $ret = __param($_POST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)), true, true);
     if (($default === null) && (($ret === '') || ($ret === null))) {
         return null;
     }
@@ -1078,12 +1085,12 @@ function post_param_integer(string $name, ?int $default = null) : ?int
  * This function is the integeric partner of get_param_string, as it returns the value as an integer.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?integer $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
+ * @param  ?~mixed $default The default value to use for the parameter (null: no default) (false: give error on missing parameter)
  * @return ?integer The parameter value (null: not found and default was null)
  */
-function get_param_integer(string $name, ?int $default = null) : ?int
+function get_param_integer(string $name, $default = false) : ?int
 {
-    $ret = __param($_GET, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
+    $ret = __param($_GET, $name, ($default === false) ? false : (($default === null) ? null : strval($default)), true);
     if (($default === null) && (($ret === '') || ($ret === null))) {
         return null;
     }
@@ -1719,24 +1726,4 @@ function cms_flush_safe()
     if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
         flush();
     }
-}
-
-/**
- * Make a PHP file evaluable.
- *
- * @param  string $c File contents
- * @param  ?string $path File path (null: N/A)
- * @return string Cleaned up file
- */
-function clean_php_file_for_eval(string $c, ?string $path = null) : string
-{
-    $reps = [];
-    $reps['?' . '>'] = '';
-    $reps['<' . '?php'] = '';
-    if ($path !== null) {
-        $reps['__FILE__'] = "'" . addslashes($path) . "'";
-        $reps['__DIR__'] = "'" . addslashes(dirname($path)) . "'";
-    }
-
-    return str_replace(array_keys($reps), array_values($reps), $c);
 }

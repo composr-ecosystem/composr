@@ -1029,6 +1029,9 @@ class Module_catalogues
         if ($sort == '') {
             $sort = 'title ASC';
         }
+        if (count(explode(' ', $sort)) == 1) {
+            $sort .= ' ASC';
+        }
         list($_sort, $_dir) = explode(' ', $sort, 2);
         if ($_sort == 'title') {
             $sort = $GLOBALS['SITE_DB']->translate_field_ref('cc_title') . ' ' . $_dir;

@@ -842,7 +842,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/async_tests/sorting.php',
             '_tests/tests/async_tests/spreadsheets.php',
             '_tests/tests/async_tests/sql_compat.php',
-            '_tests/tests/async_tests/stats.php',
+            '_tests/tests/sync_tests/stats.php',
             '_tests/tests/async_tests/string_functions.php',
             '_tests/tests/async_tests/strip_tags.php',
             '_tests/tests/async_tests/suphp.php',

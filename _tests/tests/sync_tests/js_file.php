@@ -243,7 +243,9 @@ class js_file_test_set extends cms_test_case
         $_classes_defined_html = array_flip($classes_defined_html);
         $_classes_defined_css = array_flip($classes_defined_css);
 
-        foreach ($classes_used_js as $class) {
+        foreach ($classes_used_js as $_class) {
+            $class = strval($_class);
+
             // Exceptions
             if (in_array($class, [
                 'tooltip',
@@ -281,7 +283,9 @@ class js_file_test_set extends cms_test_case
             $this->assertTrue(isset($_classes_defined_html[$class]), 'Class used in JavaScript but not present in HTML: ' . $class);
         }
 
-        foreach ($classes_used_js as $class) {
+        foreach ($classes_used_js as $_class) {
+            $class = strval($_class);
+
             // Exceptions
             if (in_array($class, [
                 'menu-editor-page-inner',
@@ -301,7 +305,9 @@ class js_file_test_set extends cms_test_case
             }
         }
 
-        foreach ($classes_defined_html as $class) {
+        foreach ($classes_defined_html as $_class) {
+            $class = strval($_class);
+
             // Exceptions
             if (in_array($class, [
                 'js-comcode-button-',
@@ -316,7 +322,9 @@ class js_file_test_set extends cms_test_case
             }
         }
 
-        foreach ($_classes_defined_css as $class) {
+        foreach ($_classes_defined_css as $_class) {
+            $class = strval($_class);
+
             // Exceptions
             if (in_array($class, [])) {
                 continue;

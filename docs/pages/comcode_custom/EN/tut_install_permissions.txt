@@ -46,6 +46,7 @@ Run [tt]php fixperms.php[/tt] from the Composr base directory.
 
 [media width="150" description="Tick (check) the highlighted boxes for all the files/folders listed to the left. This screenshot was taken on a Mac using Cyberduck, but the process is similar for other software. Usually to get to a screen like this you right-click on a file/folder and choose something like 'Properties'." float="right"]data_custom/images/docs/tut_install_permissions/install_chmod.png[/media]
 Set the following to [b]777[/b] (full directory permissions):
+ - [tt]_compiled[/tt]
  - [tt]adminzone/pages/comcode_custom/<for-each-language>[/tt]
  - [tt]adminzone/pages/html_custom/<for-each-language>[/tt]
  - [tt]caches/http[/tt]

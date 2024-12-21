@@ -8618,6 +8618,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_CATEGORY_TYPE_error_occurred_mail
         COMPILED_SCRIPTS
         DESCRIPTION_COMPILED_SCRIPTS
+        INFINITE_LOOP_HALTED
+        NO_UPGRADE_FROM_DEV_BUILD
+        INSTALLER_STEP_1_WELCOME
+        WRONG_JOIN_MODULE_PERMISSIONS
     ')));
 
     $non_admin_files = [
@@ -12188,6 +12192,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MAIL_QUEUE_LARGE
         REDIRECT_LOOP
         RECEIVING_LIKES
+        GUID
+        RULES_CONFIRMATION_MAIL_FOOTER
+        RULES_CONFIRMATION_MAIL_HEADER
+        RULES_CONFIRMATION_MAIL_HEADER_DECLARATIONS
+        RULES_CONFIRMATION_MAIL_HEADER_PRIVACY_POLICY
+        RULES_CONFIRMATION_MAIL_HEADER_RULES
+        RULES_CONFIRMATION_MAIL_SUBJECT
     ')));
 
     // Remove blank lines

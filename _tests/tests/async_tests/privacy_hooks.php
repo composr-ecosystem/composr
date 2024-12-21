@@ -174,7 +174,7 @@ class privacy_hooks_test_set extends cms_test_case
                 if (preg_match('#^[\*\?]*(IP)$#', $type) != 0) {
                     $relevant_fields_ip_address[$name] = $type;
                 }
-                if ((strpos($name, 'email') !== false) && ((preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0) || (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0))) {
+                if ((strpos($name, 'email') !== false) && ((preg_match('#^[\*\?]*(SHORT_TEXT)$#', $type) != 0) || (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0) || (preg_match('#^[\*\?]*(SERIAL)$#', $type) != 0))) {
                     $relevant_fields_email[$name] = $type;
                 }
                 if ((strpos($name, 'username') !== false) && (preg_match('#^[\*\?]*(ID_TEXT)$#', $type) != 0)) {
@@ -354,6 +354,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'w_rooms' => ['password_fail_message'],
                     'device_token_details' => ['token_type'],
                     'relayed_errors' => ['e_error_hash'],
+                    'achievements_progress' => ['ap_qualification_hash'],
                 ];
                 foreach ($fields_should_anonymise as $name => $type) {
                     if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {
@@ -378,7 +379,8 @@ class privacy_hooks_test_set extends cms_test_case
                     'stats' => ['referer_url'],
                     'stats_link_tracker' => ['c_url'],
                     'tutorials_external' => ['t_url'],
-                    'trackbacks' => ['trackback_url']
+                    'trackbacks' => ['trackback_url'],
+                    'logged_mail_messages' => ['m_url'],
                 ];
                 foreach ($relevant_fields_url as $name => $type) {
                     if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {

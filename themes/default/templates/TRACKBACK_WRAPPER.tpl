@@ -9,12 +9,12 @@
 	<!--dc:title="{TRACKBACK_TITLE*}" -->
 
 	{+START,IF_NON_EMPTY,{TRACKBACKS}}
-		{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,_SEARCH:admin_trackbacks}}
-		<form title="{!TRACKBACKS}" action="{$PAGE_LINK*,_SEARCH:admin_trackbacks:delete:redirect={$SELF_URL&}}" method="post">
+		{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_trackbacks}}
+		<form title="{!TRACKBACKS}" action="{$PAGE_LINK*,admin_trackbacks:delete:redirect={$SELF_URL&}}" method="post">
 			{$INSERT_FORM_POST_SECURITY}
 		{+END}
 		{TRACKBACKS}
-		{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,_SEARCH:admin_trackbacks}}
+		{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_trackbacks}}
 			<p class="proceed-button">
 				<button data-disable-on-click="1" class="btn btn-danger btn-scr" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!MANAGE_TRACKBACKS}</button>
 			</p>

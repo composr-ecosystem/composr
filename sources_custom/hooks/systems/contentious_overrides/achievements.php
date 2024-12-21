@@ -71,7 +71,7 @@ class Hook_contentious_overrides_achievements
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 // Make sure each new day a member logs in, we explicitly re-calculate their achievements

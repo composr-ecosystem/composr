@@ -279,11 +279,11 @@ function do_work()
     // chatrooms
     require_code('chat2');
     require_code('chat');
-    echo 'STARTING: Chat rooms' . "\n";
+    echo 'STARTING: Chatrooms' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $room_id = add_chatroom(random_text(), random_line(), mt_rand(db_get_first_id() + 1, $num_wanted - 1), strval(db_get_first_id() + 1), '', '', '', fallback_lang());
     }
-    echo 'FINISHED: Chat rooms' . "\n";
+    echo 'FINISHED: Chatrooms' . "\n";
     $room_id = db_get_first_id() + 1;
 
     // messages in chatroom

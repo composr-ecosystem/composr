@@ -38,7 +38,7 @@
 }
 
 .achievement-qualifications-or {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	text-align: center;
 	margin: 1.5em 0;
@@ -47,7 +47,6 @@
 .achievement-qualifications-or::before,
 .achievement-qualifications-or::after {
 	content: "";
-	flex: 1;
 	border-bottom: 1px solid {$GET,divider_line};
 }
 
