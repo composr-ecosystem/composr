@@ -577,9 +577,19 @@ function delete_config_option(string $name)
  */
 function rename_config_option(string $old, string $new)
 {
-    $GLOBALS['SITE_DB']->query_delete('config', ['c_name' => $new], '', 1);
+    // Nothing to do if the old config does not exist; we don't want to accidentally delete new if it might already exist
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('config', 'name', ['name' => $old]);
+    if ($test === null) {
+        return;
+    }
 
-    $GLOBALS['SITE_DB']->query_update('config', ['c_name' => $new], ['c_name' => $old], '', 1);
+    // If somehow both the old and the new one exists, keep the value of the new one but delete the old one
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('config', 'name', ['name' => $new]);
+    if ($test !== null) {
+        $GLOBALS['SITE_DB']->query_delete('config', ['c_name' => $old], '', 1);
+    } else {
+        $GLOBALS['SITE_DB']->query_update('config', ['c_name' => $new], ['c_name' => $old], '', 1);
+    }
 
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('OPTIONS');
