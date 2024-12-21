@@ -1248,9 +1248,26 @@ class Module_cms_comcode_pages
         $show_as_edit = post_param_integer('show_as_edit', 0);
         $text_raw = post_param_string('post');
         $metadata = actual_metadata_get_fields('comcode_page', $zone . ':' . $file, [], $new_file);
+        $is_deleting = (post_param_integer('delete', 0) == 1);
+
+        $resource_owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', ['the_zone' => $zone, 'the_page' => $file]);
+
+        // Privilege and permission checking
+        if ($resource_owner === null) { // Add
+            if (!has_add_comcode_page_permission($zone)) {
+                access_denied('ADD_COMCODE_PAGE');
+            }
+        } elseif (!$is_deleting) { // Edit
+            if (!has_edit_comcode_page_permission($zone, $file, $resource_owner)) {
+                access_denied('EDIT_COMCODE_PAGE');
+            }
+        } else { // Delete
+            if (!has_delete_comcode_page_permission($zone, $file, $resource_owner)) {
+                access_denied('DELETE_COMCODE_PAGE');
+            }
+        }
 
         // Deleting?
-        $is_deleting = (post_param_integer('delete', 0) == 1);
         if ($is_deleting) {
             $is_translation = ($lang != get_site_default_lang());
 
@@ -1275,13 +1292,7 @@ class Module_cms_comcode_pages
         $path = save_comcode_page($zone, $new_file, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $metadata['add_time'], $metadata['edit_time'], $show_as_edit, $metadata['submitter'], $file, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
 
         // Some general CRUD maintenance that we don't do within the save_comcode_page function
-        // TODO: Should the access denied checks happen before save_comcode_page and the is_deleting block?
-        $resource_owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', ['the_zone' => $zone, 'the_page' => $file]);
         if ($resource_owner === null) { // Add
-            if (!has_add_comcode_page_permission($zone)) {
-                access_denied('ADD_COMCODE_PAGE');
-            }
-
             require_code('submit');
             give_submit_points('COMCODE_PAGE_ADD', 'comcode_page', $zone . ':' . $file);
 

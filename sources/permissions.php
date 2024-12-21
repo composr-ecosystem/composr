@@ -1258,3 +1258,40 @@ function has_edit_comcode_page_permission(string $zone, string $page, ?int $owne
 
     return has_privilege($member_id, $privilege, 'cms_comcode_pages', $cats);
 }
+
+/**
+ * Check to see if a member has permission to delete a specific Comcode page.
+ *
+ * @param  ID_TEXT $zone The zone of the page
+ * @param  ID_TEXT $page The name of the page
+ * @param  ?MEMBER $owner Owner of the page (null: look it up)
+ * @param  ?MEMBER $member_id The member being checked for access (null: current member)
+ * @return boolean If the permission is there
+ */
+function has_delete_comcode_page_permission(string $zone, string $page, ?int $owner = null, ?int $member_id = null) : bool
+{
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
+    if ($owner === null) {
+        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', ['the_zone' => $zone, 'the_page' => $page]);
+    }
+
+    if (!has_actual_page_access($member_id, $page, $zone)) {
+        return false;
+    }
+    if (!has_actual_page_access($member_id, 'cms_comcode_pages')) {
+        return false;
+    }
+
+    $is_owner = (($owner == $member_id) && (!is_guest($member_id)));
+    $privilege = $is_owner ? 'delete_own_highrange_content' : 'delete_highrange_content';
+
+    $cats = null;
+    if ($zone !== null) {
+        $cats = ['zone_page', $zone];
+    }
+
+    return has_privilege($member_id, $privilege, 'cms_comcode_pages', $cats);
+}
