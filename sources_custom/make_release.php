@@ -82,14 +82,6 @@ function make_installers($skip_file_grab = false)
         fix_permissions($builds_path . '/builds/' . $version_dotted . '/');
     }
 
-    // Integrity check: files_previous manifest
-    require_code('upgrade_integrity_scan');
-    $manifest = load_integrity_manifest(true);
-    if (cms_empty_safe($manifest)) {
-        warn_exit(do_lang_tempcode('MANIFEST_CORRUPT_FILES'));
-    }
-    unset($manifest);
-
     if (!$skip_file_grab) {
         @copy(get_file_base() . '/install.php', $builds_path . '/builds/build/' . $version_branch . '/install.php');
         fix_permissions($builds_path . '/builds/build/' . $version_branch . '/install.php');
@@ -111,9 +103,22 @@ function make_installers($skip_file_grab = false)
         }
         make_database_manifest();
 
+        // Re-generate sprites
         require_code('themes3');
         generate_svg_sprite('default', false, false);
         generate_svg_sprite('default', true, false);
+
+        // Update automatic versions in bundled addons
+        require_code('addons2');
+        $hooks = find_all_hooks('systems', 'addon_registry', false);
+        foreach ($hooks as $addon_name => $hook_dir) {
+            if ($hook_dir == 'sources_custom') {
+                continue;
+            }
+
+            update_addon_auto_version($hook_dir, $addon_name);
+        }
+        $out .= '<ul>Updated automatic versions of bundled addons.</ul>';
 
         // Get file data array; must be done second-to-last to ensure all updated files are transported to the build
         $out .= '<ul>';

@@ -481,7 +481,7 @@ function _upgrader_file_upgrade_screen() : string
 
                     $file_data = tar_get_file($old_addon_file, $d['path']);
 
-                    $file_data['data'] = preg_replace('#^version=.*#m', 'version=(version-synched)', $file_data['data']);
+                    $file_data['data'] = preg_replace('#^version=.*#m', 'version=(version-synched)', $file_data['data']); // LEGACY
 
                     tar_add_file($new_addon_file, $d['path'], $file_data['data'], $d['mode'], $d['mtime']);
                 }

@@ -179,7 +179,7 @@ function read_addon_info(string $addon_name, bool $get_dependencies_on_this = fa
             'name' => $addon_name,
             'author' => $author,
             'organisation' => $organisation,
-            'version' => float_to_raw_string($version, 2, true),
+            'version' => $version,
             'category' => $category,
             'copyright_attribution' => $copyright_attribution,
             'licence' => $licence,
@@ -206,7 +206,7 @@ function read_addon_info(string $addon_name, bool $get_dependencies_on_this = fa
 
     if ($ini_info !== null) {
         $version = $ini_info['version'];
-        if ($version == '(version-synched)') {
+        if ($version == '(version-synched)') { // LEGACY
             $version = float_to_raw_string(cms_version_number(), 2, true);
         }
 

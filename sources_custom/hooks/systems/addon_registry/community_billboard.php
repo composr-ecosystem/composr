@@ -30,13 +30,14 @@ class Hook_addon_registry_community_billboard
     }
 
     /**
-     * Get the version of the software this addon is for (used in generating the TAR filename).
+     * Get the current version of this addon (usually software major, software minor, addon build).
+     * Put the comment "// addon_version_auto_update" to the right of the return if you want release tools to automatically update this according to software version and find_addon_effective_mtime.
      *
-     * @return float Version number
+     * @return SHORT_TEXT Version number
      */
-    public function get_version() : float
+    public function get_version() : string
     {
-        return cms_version_number();
+        return '11.0.0'; // addon_version_auto_update
     }
 
     /**

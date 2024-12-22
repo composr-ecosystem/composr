@@ -55,6 +55,7 @@ class Hook_endpoint_cms_homesite_addon_manifest
             $id = get_param_string('version');
         }
 
+        // Locate our addon download categories for the provided software version (in ID)
         $id_float = floatval($id);
         $_id = null;
         do {
@@ -69,6 +70,7 @@ class Hook_endpoint_cms_homesite_addon_manifest
             }
         } while (($_id === null) && ($id_float >= 0.0));
 
+        // No categories? Return empty.
         if ($_id === null) {
             if ($id === '_LEGACY_') { // LEGACY
                 echo serialize([]);
@@ -77,9 +79,9 @@ class Hook_endpoint_cms_homesite_addon_manifest
             return [];
         }
 
-        require_code('selectcode');
+        $addon_manifest = [];
 
-        $addon_times = [];
+        require_code('selectcode');
 
         $filter_sql = selectcode_to_sqlfragment(strval($_id) . '*', 'id', 'download_categories', 'parent_id', 'category_id', 'id');
 
@@ -87,54 +89,92 @@ class Hook_endpoint_cms_homesite_addon_manifest
 
         foreach (array_keys($_POST) as $x) {
             if (substr($x, 0, 6) == 'addon_') {
+                // Query for the addon download
                 $addon_name = post_param_string($x);
                 $addon_name_titled = titleify($addon_name);
                 $name_remap[$addon_name_titled] = $addon_name;
-                $query = 'SELECT d.id,url,name,edit_date,add_date FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name_titled) . ' AND (' . $filter_sql . ')';
-                $result = $GLOBALS['SITE_DB']->query($query, null, 0, false, true, ['name' => 'SHORT_TRANS']);
+                $query = 'SELECT d.id,url,name,edit_date,add_date,additional_details FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name_titled) . ' AND (' . $filter_sql . ')';
+                $result = $GLOBALS['SITE_DB']->query($query, null, 0, false, true, ['name' => 'SHORT_TRANS', 'additional_details' => 'LONG_TRANS__COMCODE']);
+                $name_titled = get_translated_text($result[0]['name']);
+                $additional_details = get_translated_text($result[0]['additional_details']);
+                $addon_id = intval(substr($x, 6));
 
-                $addon_times[intval(substr($x, 6))] = [null, null, null, $addon_name];
+                // Prepare addon entry in our output
+                $addon_manifest[$addon_id] = [
+                    'name' => $addon_name,
+                    'download_id' => null,
+                    'download_url' => null,
+                    'version' => null,
+                    'updated' => null,
+                    'hash' => null,
 
+                    // LEGACY: 11.beta5 and below
+                    0 => null,
+                    1 => null,
+                    2 => null,
+                    3 => $addon_name,
+                    4 => null,
+                ];
+
+                // Populate our manifest with what we found in the database (if we found anything)
                 if (array_key_exists(0, $result)) {
-                    $url = $result[0]['url'];
+                    $addon_manifest[$addon_id]['download_id'] = $result[0]['id'];
+                    $addon_manifest[$addon_id]['download_url'] = $result[0]['url'];
 
-                    $hash = null;
-                    if (url_is_local($url)) {
-                        $last_date = @filemtime(get_custom_file_base() . '/' . rawurldecode($url));
-                        $hash = @hash_file('crc32', get_custom_file_base() . '/' . rawurldecode($url));
+                    // Determine the CRC32 hash
+                    if (url_is_local($result[0]['url'])) {
+                        $hash = @hash_file('crc32', get_custom_file_base() . '/' . rawurldecode($result[0]['url']));
                     } else {
-                        $last_date = @filemtime($url);
-                        $hash = @hash_file('crc32', $url);
+                        $hash = @hash_file('crc32', $result[0]['url']);
                     }
+                    if (is_string($hash)) {
+                        $addon_manifest[$addon_id]['hash'] = $hash;
+                    }
+
+                    // Determine the updated date / time in this order: download edit date, file mtime, download add date
                     if ($last_date === false) {
                         $last_date = (($result[0]['edit_date'] !== null) ? intval($result[0]['edit_date']) : false);
                     }
                     if ($last_date === false) {
-                        $last_date = (($result[0]['add_date'] !== null) ? intval($result[0]['add_date']) : false);
+                        if (url_is_local($result[0]['url'])) {
+                            $last_date = @filemtime(get_custom_file_base() . '/' . rawurldecode($result[0]['url']));
+                        } else {
+                            $last_date = @filemtime($result[0]['url']);
+                        }
                     }
                     if ($last_date === false) {
-                        continue;
+                        $last_date = (($result[0]['add_date'] !== null) ? intval($result[0]['add_date']) : false);
                     }
-                    if ($hash === false) {
-                        $hash = null;
+                    if ($last_date !== false) {
+                        $addon_manifest[$addon_id]['updated'] = $last_date;
                     }
 
-                    $name_titled = get_translated_text($result[0]['name']);
-                    if (array_key_exists($name_titled, $name_remap)) {
-                        $name = $name_remap[$name_titled];
-                        $url = $result[0]['url'];
-                        $id = $result[0]['id'];
-                        $addon_times[intval(substr($x, 6))] = [$last_date, $id, $url, $name, $hash];
+                    // Determine the addon version from the download additional details
+                    $matches = [];
+                    if (preg_match('/^Addon version ([\S]*)/', $additional_details, $matches) != 0) {
+                        $addon_manifest[$addon_id]['version'] = $matches[1];
+                    }
+
+                    // Did the addon name change?
+                    if (array_key_exists($name_titled, $name_remap)) { // Integrity check
+                        $addon_manifest[$addon_id]['name'] = $name_remap[$name_titled];
                     }
                 }
+
+                // LEGACY: 11.beta5 and below
+                $addon_manifest[$addon_id][0] = $addon_manifest[$addon_id]['updated'];
+                $addon_manifest[$addon_id][1] = $addon_manifest[$addon_id]['download_id'];
+                $addon_manifest[$addon_id][2] = $addon_manifest[$addon_id]['download_url'];
+                $addon_manifest[$addon_id][3] = $addon_manifest[$addon_id]['name'];
+                $addon_manifest[$addon_id][4] = $addon_manifest[$addon_id]['hash'];
             }
         }
 
         if ($id === '_LEGACY_') { // LEGACY
-            echo serialize($addon_times);
+            echo serialize($addon_manifest);
             exit();
         }
 
-        return $addon_times;
+        return $addon_manifest;
     }
 }
