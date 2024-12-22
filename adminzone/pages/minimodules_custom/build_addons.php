@@ -84,9 +84,14 @@ foreach ($addons as $name => $place) {
         continue;
     }
 
+    // Update automatic addon versions before we even load in the info (so the updated version is loaded in the info)
+    update_addon_auto_version($place, $name);
+
     $addon_info = read_addon_info($name);
 
-    $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $name)) . '-' . get_version_branch(floatval($addon_info['version'])) . '.tar';
+    list(, , , , $version_major_minor) = get_version_components__from_dotted(get_version_dotted__from_anything($addon_info['version']));
+
+    $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $name)) . '-' . get_version_branch($version_major_minor) . '.tar';
     $full_path = get_custom_file_base() . '/exports/addons/' . $file;
 
     // Copy through times from previous build IF the files didn't change (as Git munges mtimes)

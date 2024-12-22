@@ -290,9 +290,9 @@ function generate_addon_description($info)
     }
 
     $description .= "\n\n[title=\"2\"]Website Software Requirements[/title]\n\n";
-    $description .= "Minimum version: [tt]" . $info['min_cms_version'] . "[/tt]\n";
+    $description .= "Minimum software version: [tt]" . $info['min_cms_version'] . "[/tt]\n";
     if (!empty($info['max_cms_version'])) {
-        $description .= "Maximum version: [tt]" . $info['max_cms_version'] . "[/tt]\n";
+        $description .= "Maximum software version: [tt]" . $info['max_cms_version'] . "[/tt]\n";
     }
 
     $incompatibilities = implode(', ', $info['incompatibilities']);

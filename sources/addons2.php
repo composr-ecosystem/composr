@@ -53,7 +53,7 @@ function resolve_addon_dependency_problems(array &$installing, array &$uninstall
     preload_all_addons_info();
 
     $addons_not_installed = find_available_addons(false); // filename => addon details
-    $addons_installed = find_installed_addons(false, true, true); // addon name => addon details
+    //$addons_installed = find_installed_addons(false, true, true); // addon name => addon details
 
     $addon_names_to_filenames = [];
     foreach ($addons_not_installed as $addon_file => $addon_info) {
@@ -245,7 +245,7 @@ QUERYING ADDONS
 */
 
 /**
- * Find all the available addons (addons in imports/addons that are not necessarily installed).
+ * Find all the available addons located in imports/addons.
  *
  * @param  boolean $installed_too Whether to include addons that are installed already
  * @param  boolean $hash_and_mtime Whether to generate a file hash and include it along with the file mtime in the info
@@ -272,6 +272,11 @@ function find_available_addons(bool $installed_too = true, bool $hash_and_mtime 
             }
         }
         closedir($dh);
+    }
+
+    if (empty($files)) {
+        cms_set_time_limit($old);
+        return [];
     }
 
     // Find mtimes (in separate loop so as to not have to interleave fs-STAT calls between readdir calls (disk seeking)
@@ -1030,7 +1035,7 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
         erase_cached_language();
     }
 
-    // Load addon_install_code.php if it exists
+    // LEGACY: Load addon_install_code.php if it exists (normally you would put this in an install function within the addon's registry hook)
     if ($do_db) {
         $_modphp_file = tar_get_file($tar, 'addon_install_code.php');
         if ($_modphp_file !== null) {
@@ -1133,7 +1138,7 @@ UPGRADING ADDONS
 /**
  * Find updated addons via checking the homesite web service.
  *
- * @return array List of addons updated
+ * @return array Map of addons needing updated, name to download ID on the homesite
  */
 function find_updated_addons() : array
 {
@@ -1150,32 +1155,6 @@ function find_updated_addons() : array
         return [];
     }
 
-    // Repair: To properly check for non-bundled addons needing upgrading, they must have a TAR. Sometimes they get removed for whatever reason.
-    require_code('tar');
-    $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
-    foreach ($addons as $addon_name => $info) {
-        if (!is_file(get_custom_file_base() . '/imports/addons/' . $addon_name . '.tar')) {
-            create_addon(
-                $addon_name . '.tar',
-                $info['files'],
-                $info['name'],
-                implode(',', $info['incompatibilities']),
-                implode(',', $info['dependencies']),
-                $info['author'],
-                $info['organisation'],
-                $info['version'],
-                $info['category'],
-                implode("\n", $info['copyright_attribution']),
-                $info['licence'],
-                $info['description'],
-                $info['min_cms_version'],
-                $info['max_cms_version'],
-                'imports/addons'
-            );
-        }
-    }
-    cms_set_time_limit($old);
-
     $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/addon_manifest/' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
     $post = [];
     foreach (array_keys($addons) as $i => $addon_name) {
@@ -1186,31 +1165,72 @@ function find_updated_addons() : array
     list($_addon_data) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 5/*5 minute cache*/);
     $addon_data = @json_decode($_addon_data, true);
     if (($addon_data === null) || (!$addon_data['success'])) {
-        return [];
+        return []; // Just silently exit with no available addons to update
         //warn_exit(do_lang('INTERNAL_ERROR', comcode_escape('a1a699cb5dd65a23b8d2a331e0c4ae2e')));
     }
 
     $available_addons = find_available_addons(true, true, $addons, false, true);
 
     $updated_addons = [];
-    foreach ($addon_data['response_data'] as $i => $addon_bits) {
+    foreach ($addon_data['response_data'] as $i => $addon_manifest) {
         $found = false;
 
+        // Not actually known to server, so there is no way to check if it needs updating
+        if ($addon_manifest['download_id'] === null) {
+            continue;
+        }
+
         foreach ($available_addons as $available_addon) {
-            if ($available_addon['name'] == $addon_bits[3]) {
-                $found = true;
-                if (($addon_bits[0] !== null) && (($addon_bits[4] === null) || ($available_addon['hash'] != $addon_bits[4])) && ($available_addon['mtime'] < $addon_bits[0])) { // If known to server, and updated
-                    $updated_addons[$addon_bits[3]] = [$addon_bits[1]]; // Is known to server though
+            if ($available_addon['name'] != $addon_manifest['name']) {
+                continue;
+            }
+
+            $found = true;
+
+            // Can we check if it is updated by version?
+            if ($addon_manifest['version'] !== null) {
+                if (version_compare($addon_manifest['version'], $available_addon['version']) > 0) {
+                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
                 }
                 break;
             }
-        }
-        if ((!$found) && (addon_installed($addon_bits[3], false, false))) { // Don't have our original .tar, so lets say we need to reinstall
-            if ($addon_bits[0] !== null) { // If server has it
-                $mtime = find_addon_effective_mtime($addon_bits[3], $addon_bits[0]);
-                if (($mtime !== null) && ($mtime < $addon_bits[0])) { // If it is newer
-                    $updated_addons[$addon_bits[3]] = [$addon_bits[1]];
+
+            // Can we check by update time?
+            if ($addon_manifest['updated'] !== null) {
+                if ($addon_manifest['updated'] > $available_addon['mtime']) {
+                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
                 }
+                break;
+            }
+
+            // Can we check by TAR hash?
+            if ($addon_manifest['hash'] !== null) {
+                if ($addon_manifest['hash'] != $available_addon['hash']) {
+                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                }
+                break;
+            }
+            break;
+        }
+
+        // Installed but not located in imports/addons? We can still compare the installed addon to the manifest (except we cannot do a hash check)
+        if ((!$found) && (addon_installed($addon_manifest['name'], false, false))) {
+            $info = read_addon_info($addon_manifest['name']);
+
+            // Can we check if it is updated by version?
+            if ($addon_manifest['version'] !== null) {
+                if (version_compare($addon_manifest['version'], $info['version']) > 0) {
+                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                }
+                continue;
+            }
+
+            // Can we check by update time? (NB: install time is usually the mtime of the addon registry hook; and this file would normally change for get_version())
+            if ($addon_manifest['updated'] !== null) {
+                if ($addon_manifest['updated'] > $info['install_time']) {
+                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                }
+                continue;
             }
         }
     }
@@ -1280,7 +1300,7 @@ function upgrade_addon_soft(string $addon_name) : int
         return (-1);
     }
 
-    $disk_version = float_to_raw_string($ob->get_version(), 2, true);
+    $disk_version = $ob->get_version();
 
     $ret = 0;
     if (floatval($upgrade_from) < floatval($disk_version)) {
@@ -1688,5 +1708,81 @@ function site_maintenance_lock_disengage()
         $SITE_MAINTENANCE_LOCK = false;
 
         set_value('site_maintenance_lock', '');
+    }
+}
+
+/**
+ * Update the return value of get_version() in an addon registry hook if it is designated to have automatic versions.
+ *
+ * @param  ID_TEXT $place The location of the hook
+ * @set sources sources_custom
+ * @param  ID_TEXT $name The name of the hook / addon to update
+ */
+function update_addon_auto_version(string $place, string $name)
+{
+    require_code('files');
+    require_code('files2');
+    require_code('version');
+    require_code('version2');
+
+    $hook_path = get_custom_file_base() . '/' . filter_naughty_harsh($place) . '/hooks/systems/addon_registry/' . filter_naughty_harsh($name) . '.php';
+
+    $c = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
+    if ($c === false) {
+        return;
+    }
+
+    // Pattern accounts for the current version, comment, and an optional mtime which is auto-populated by this function to keep track of when to bump the patch number
+    $pattern = '/return\s\'(.*?)\'\;\s\/\/\saddon_version_auto_update\s?([\d]*)/';
+    $matches = [];
+
+    // Optimisation: bail if we find nothing as there is nothing to do
+    if (preg_match_all($pattern, $c, $matches) == 0) {
+        return;
+    }
+    $current_version = get_version_dotted__from_anything($matches[1][0]);
+    $current_mtime = $matches[2][0];
+
+    $new_mtime = find_addon_effective_mtime($name);
+
+    // Break apart the versions
+    $cms_version_parts = explode('.', float_to_raw_string(cms_version_number(), 1));
+    list(, , , $long_version) = get_version_components__from_dotted($current_version);
+    $version_parts = explode('.', $long_version);
+    $build_number = intval($version_parts[2]);
+
+    // If major or minor software version changed, reset patch to 0 and update accordingly regardless of effective mtime
+    if ((intval($cms_version_parts[0]) != intval($version_parts[0])) || (intval($cms_version_parts[1]) != intval($version_parts[1]))) {
+        $build_number = 0; // Reset build number to 0
+    } else {
+        // Nothing to do if we could not get an effective mtime or the effective mtime is the same as the mtime listed in the comment
+        if (($new_mtime === null) || ((is_numeric($current_mtime)) && (intval($current_mtime) == $new_mtime))) {
+            return;
+        }
+
+        if (is_numeric($current_mtime)) {
+            $build_number++; // Bump build number but only if an mtime was present (otherwise we are just updating to populate an mtime)
+        }
+    }
+
+    if ($new_mtime === null) {
+        $new_mtime = 0; // We have to have an mtime in this case so just set this to 0 for now
+    }
+
+    // Re-construct the version parts
+    $new_version_parts = [
+        strval($cms_version_parts[0]),
+        strval($cms_version_parts[1]),
+        strval($build_number),
+    ];
+    $new_version = get_version_dotted__from_anything(implode('.', $new_version_parts));
+
+    // Make our new version (and put the mtime in the comment so we can track when to next bump the build)
+    $replacement = 'return \'' . $new_version . '\'; // addon_version_auto_update ' . strval($new_mtime);
+
+    // Only save the updated version if we actually changed the version; we do not want to arbitrarily change the file mtime otherwise.
+    if (strpos($c, $replacement) === false) {
+        $c = str_replace($pattern, $replacement, $c);
+        cms_file_put_contents_safe($hook_path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
     }
 }

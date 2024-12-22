@@ -542,7 +542,7 @@ class Module_admin_addons
                 }
                 $status = do_lang_tempcode('STATUS_NOT_INSTALLED');
                 $description = $addon_info['description'];
-                if ($addon_info['version'] == '(version-synched)') {
+                if ($addon_info['version'] == '(version-synched)') { // LEGACY
                     $addon_info['version'] = float_to_raw_string(cms_version_number());
                 }
 
@@ -880,7 +880,7 @@ class Module_admin_addons
         $url = build_url(['page' => '_SELF', 'type' => '_addon_install'], '_SELF');
 
         $_description = comcode_to_tempcode($info['description'], $GLOBALS['FORUM_DRIVER']->get_guest_id());
-        if ($info['version'] == '(version-synched)') {
+        if ($info['version'] == '(version-synched)') { // LEGACY
             $info['version'] = float_to_raw_string(cms_version_number());
         }
 
