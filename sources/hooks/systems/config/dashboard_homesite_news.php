@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_dashboard_homesite_news // TODO: renamed; needs upgrader migration
+class Hook_config_dashboard_homesite_news
 {
     /**
      * Gets the details relating to the config option.

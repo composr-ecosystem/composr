@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__enable_for_minimum_ngram_count // TODO: renamed; needs upgrader migration
+class Hook_config_fast_custom_index__enable_for_minimum_ngram_count
 {
     /**
      * Gets the details relating to the config option.

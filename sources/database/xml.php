@@ -225,6 +225,7 @@ class Database_Static_xml extends DatabaseDriver
             'TOKEN' => 'TOKEN',
             'SERIAL' => 'SERIAL',
             'URLPATH' => 'URLPATH',
+            'BGUID' => 'BGUID',
         ];
         return $type_remap;
     }

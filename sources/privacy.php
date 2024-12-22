@@ -376,6 +376,8 @@ abstract class Hook_privacy_base
                 $row2[$key . '__auto_link'] = $relation_map[$table_name . '.' . $key];
             } elseif ((strpos($type, 'SERIAL') !== false) && ($row[$key] !== null) && ($row[$key] != '')) {
                 $row2[$key] = unserialize($row[$key]); // ...because we are using JSON for this data, not PHP's serialize
+            } elseif (strpos($type, 'BGUID') !== false) {
+                $row2[$key] = bin2hex($row[$key]);
             } else {
                 $row2[$key] = $row[$key];
             }

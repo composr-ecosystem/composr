@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__allow_fuzzy_search // TODO: renamed; needs upgrader migration
+class Hook_config_fast_custom_index__allow_fuzzy_search
 {
     /**
      * Gets the details relating to the config option.

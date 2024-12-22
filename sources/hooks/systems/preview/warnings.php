@@ -52,7 +52,6 @@ class Hook_preview_warnings
         $message = post_param_string('message', '');
 
         // Attach punitive actions to end of message
-        // TODO: redo this
         $_message = '';
         if ($message != '' && $_message != '') {
             $message .= "\n\n" . $_message;

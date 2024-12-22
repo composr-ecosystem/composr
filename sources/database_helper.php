@@ -116,6 +116,7 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         'URLPATH' => 255 + 1,
         'TOKEN' => 13 + 1,
         'SERIAL' => 1,
+        'BGUID' => 16,
         'unicode_SHORT_TEXT' => $take_unicode_into_account * 255 + 1,
         'unicode_LONG_TEXT' => $take_unicode_into_account * 255 + 1,
         'unicode_SERIAL' => $take_unicode_into_account * 255 + 1,

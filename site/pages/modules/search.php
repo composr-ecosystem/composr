@@ -97,6 +97,20 @@ class Module_search
 
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY: 11.beta6
             $GLOBALS['SITE_DB']->alter_table_field('searches_logged', 's_auxillary', 'SERIAL');
+
+            rename_config_option('composr_fast_custom_index__allow_fuzzy_search', 'fast_custom_index__allow_fuzzy_search');
+            rename_config_option('composr_fast_custom_index__count_estimate', 'fast_custom_index__count_estimate');
+            rename_config_option('composr_fast_custom_index__do_stemming', 'fast_custom_index__do_stemming');
+            rename_config_option('composr_fast_custom_index__enable_for_filtered', 'fast_custom_index__enable_for_filtered');
+            rename_config_option('composr_fast_custom_index__enable_for_minimum_ngram_count', 'fast_custom_index__enable_for_minimum_ngram_count');
+            rename_config_option('composr_fast_custom_index__enable_for_ngrams', 'fast_custom_index__enable_for_ngrams');
+            rename_config_option('composr_fast_custom_index__enable_for_no_fulltext', 'fast_custom_index__enable_for_no_fulltext');
+            rename_config_option('composr_fast_custom_index__enable_for_under_radar', 'fast_custom_index__enable_for_under_radar');
+            rename_config_option('composr_fast_custom_index__enable', 'fast_custom_index__enable');
+            rename_config_option('composr_fast_custom_index__max_ngram_size', 'fast_custom_index__max_ngram_size');
+            rename_config_option('composr_fast_custom_index__max_post_length', 'fast_custom_index__max_post_length');
+            rename_config_option('composr_fast_custom_index__scale_by_commonality', 'fast_custom_index__scale_by_commonality');
+            rename_config_option('composr_fast_custom_index__use_imprecise_ordering', 'fast_custom_index__use_imprecise_ordering');
         }
     }
 

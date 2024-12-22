@@ -309,6 +309,7 @@ class Database_Static_oracle extends DatabaseDriver
             'TOKEN' => 'varchar(15)',
             'SERIAL' => 'CLOB',
             'URLPATH' => 'varchar(255)',
+            'BGUID' => 'RAW(16)'
         ];
         return $type_remap;
     }

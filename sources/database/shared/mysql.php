@@ -402,6 +402,20 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
+     * Encode a WHERE query part for performing a comparison on a BINARY type field.
+     *
+     * @param  ID_TEXT $column The column name being compared
+     * @param  ID_TEXT $operator The operation to be performed
+     * @set < > = <> <= >=
+     * @param  string $value The value to compare, in binary string format
+     * @return string The encoded WHERE part
+     */
+    public function encode_binary_compare(string $column, string $operator, string $value) : string
+    {
+        return 'BINARY ' . $column . ' ' . $operator . ' BINARY \'' . db_escape_string($value) . '\'';
+    }
+
+    /**
      * Handle messaging for a failed query.
      *
      * @param  string $query The complete SQL query
@@ -461,6 +475,7 @@ abstract class Database_super_mysql extends DatabaseDriver
             'TOKEN' => 'varchar(15)',
             'SERIAL' => 'longtext',
             'URLPATH' => 'varchar(255) BINARY',
+            'BGUID' => 'BINARY(16)',
         ];
         return $type_remap;
     }

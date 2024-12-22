@@ -340,6 +340,20 @@ function db_encode_like(string $pattern) : string
 }
 
 /**
+ * Encode a WHERE query part for performing a comparison on a BINARY type field.
+ *
+ * @param  ID_TEXT $column The column name being compared
+ * @param  ID_TEXT $operator The operation to be performed
+ * @set < > = != <= >=
+ * @param  string $value The value to compare, in binary string format
+ * @return string The encoded WHERE part
+ */
+function db_encode_binary_compare(string $column, string $operator, string $value) : string
+{
+    return $GLOBALS['DB_DRIVER']->encode_binary_compare($column, $operator, $value);
+}
+
+/**
  * Escape a string so it may be inserted into a query. If SQL statements are being built up and passed using db_query then it is essential that this is used for security reasons. Otherwise, the abstraction layer deals with the situation.
  *
  * @param  string $string The string
@@ -751,6 +765,7 @@ abstract class DatabaseDriver
             case 'URLPATH':
             case 'TOKEN':
             case 'SERIAL':
+            case 'BGUID':
                 $default = '';
                 break;
         }
@@ -1229,6 +1244,20 @@ abstract class DatabaseDriver
     public function encode_like(string $pattern) : string
     {
         return $this->escape_string($pattern);
+    }
+
+    /**
+     * Encode a WHERE query part for performing a comparison on a BINARY type field.
+     *
+     * @param  ID_TEXT $column The column name being compared
+     * @param  ID_TEXT $operator The operation to be performed
+     * @set < > = <> <= >=
+     * @param  string $value The value to compare, in binary string format
+     * @return string The encoded WHERE part
+     */
+    public function encode_binary_compare(string $column, string $operator, string $value) : string
+    {
+        return $column . $operator . '\'' . db_escape_string($value) . '\'';
     }
 
     /**
