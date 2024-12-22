@@ -675,7 +675,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
         'date_and_time' => (time() - 3), // Allow a very modest 3 seconds grace; we don't want to be too tolerant in case it's a DoS attack
         'user_agent' => cms_mb_substr(get_browser_string(), 0, 255), // No tolerance if they changed devices
     ]);
-    if ($test > 0) {
+    if (count($test) > 0) {
         $risk_score = 0; // We still want to proceed with logging and blocking, but don't add any score to the hack attack.
     }
 
