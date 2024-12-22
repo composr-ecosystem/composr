@@ -140,7 +140,6 @@ class Module_admin_cmsusers
             $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_message', 'LONG_TEXT', 'e_error_message');
             $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_hash', 'SHORT_TEXT', 'e_error_hash');
             $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_count', 'INTEGER', 'e_error_count');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'refs_compiled', 'BINARY', 'e_refs_compiled');
             $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'resolved', 'BINARY', 'e_resolved');
             $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'note', 'LONG_TRANS__COMCODE', 'e_note');
         }
