@@ -203,7 +203,7 @@ class CMSPtRead
             access_denied('NOT_AS_GUEST');
         }
 
-        require_once(COMMON_CLASS_PATH_READ . '/post_read.php');
+        require_once COMMON_CLASS_PATH_READ . '/post_read.php';
 
         $post_object = new CMSPostRead();
         $post_details = $post_object->get_raw_post($post_id);

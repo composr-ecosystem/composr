@@ -182,7 +182,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $cookiename = '';
             $auth_secret = '';
 
-            @include($path . '/Settings.php');
+            @include $path . '/Settings.php';
             $PROBED_FORUM_CONFIG['sql_host'] = $db_server;
             $PROBED_FORUM_CONFIG['sql_database'] = $db_name;
             $PROBED_FORUM_CONFIG['sql_user'] = $db_user;

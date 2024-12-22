@@ -341,7 +341,7 @@ function get_table_descriptions() : array
         'chat_blocking' => 'a record of which members blocked which other members from chatting with them',
         'chat_friends' => 'a record of which members are friends with which other members',
         'chat_messages' => 'stores messages sent in chat and metadata about the message',
-        'chat_rooms' => 'stores the available chat rooms and their settings',
+        'chat_rooms' => 'stores the available chatrooms and their settings',
         'chat_sound_effects' => 'stores chat sound effect settings for members',
         'comcode_pages' => 'stores Comcode page metadata',
         'config' => 'all the configuration settings that have been saved',

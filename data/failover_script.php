@@ -45,7 +45,7 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
 }
 @chdir($FILE_BASE);
 
-require($FILE_BASE . '/_config.php');
+require $FILE_BASE . '/_config.php';
 
 $cli = ((function_exists('php_sapi_name')) && (strpos(ini_get('disable_functions'), 'php_sapi_name') === false) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR'])) && (empty($_ENV['REMOTE_ADDR'])));
 if ($cli) {

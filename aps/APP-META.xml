@@ -272,6 +272,9 @@
         <installed-size>52428800</installed-size>
         <mapping path="htdocs" url="/">
           <!-- Writable directories and files -->
+			 <mapping url="_compiled">
+            <php:permissions writable="true"/>
+          </mapping>
           <mapping url="adminzone/pages/comcode_custom/EN">
             <php:permissions writable="true"/>
           </mapping>

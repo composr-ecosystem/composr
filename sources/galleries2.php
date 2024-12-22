@@ -824,13 +824,13 @@ function add_image($title, string $cat, $description, string $url, int $validate
         require_code('images_cleanup_pipeline');
 
         // Only directly modify uploads to the galleries folder; other uploads (e.g. filedump) should be copied so as to not modify the original
-        $filename = basename($url);
-        if (strpos($url, 'uploads/galleries') === false) {
-            $_url = $url;
+        $filename = basename(rawurldecode($url));
+        if (strpos(rawurldecode($url), 'uploads/galleries') === false) {
+            $_url = rawurldecode($url);
             $url = 'uploads/galleries/' . $filename;
-            @copy($_url, $url) or intelligent_write_error($url);
-            sync_file($url);
-            fix_permissions($url);
+            @copy($_url, get_custom_file_base() . '/' . $url) or intelligent_write_error($url);
+            sync_file(get_custom_file_base() . '/' . $url);
+            fix_permissions(get_custom_file_base() . '/' . $url);
         }
 
         $maximum_dimension = intval(get_option('maximum_image_size'));

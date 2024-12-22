@@ -397,7 +397,7 @@ class file_type_safelisting_test_set extends cms_test_case
         require_code('images');
         $images = $GLOBALS['SITE_DB']->query_select('images', ['url']);
         foreach ($images as $image) {
-            $this->assertTrue(is_image($image['url'], IMAGE_CRITERIA_WEBSAFE));
+            $this->assertTrue(is_image($image['url'], IMAGE_CRITERIA_WEBSAFE), 'Expected ' . $image['url'] . ' to be a web-safe image but it was not.');
         }
     }
 

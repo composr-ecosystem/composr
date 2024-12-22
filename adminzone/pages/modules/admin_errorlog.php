@@ -237,7 +237,7 @@ class Module_admin_errorlog
         } else {
             $stuff = [];
 
-            require_once('google/appengine/api/log/LogService.php');
+            require_once 'google/appengine/api/log/LogService.php';
 
             $_log_service = 'google\appengine\api\log\LogService';
             $log_service = new $_log_service();

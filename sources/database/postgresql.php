@@ -278,6 +278,7 @@ class Database_Static_postgresql extends DatabaseDriver
             'TOKEN' => 'varchar(15)',
             'SERIAL' => 'text',
             'URLPATH' => 'varchar(255)',
+            'BGUID' => 'BYTEA',
         ];
         return $type_remap;
     }
@@ -639,5 +640,19 @@ class Database_Static_postgresql extends DatabaseDriver
             }
         }
         $this->cache_db = [];
+    }
+
+    /**
+     * Encode a WHERE query part for performing a comparison on a BINARY type field.
+     *
+     * @param  ID_TEXT $column The column name being compared
+     * @param  ID_TEXT $operator The operation to be performed
+     * @set < > = <> <= >=
+     * @param  string $value The value to compare, in binary string format
+     * @return string The encoded WHERE part
+     */
+    public function encode_binary_compare(string $column, string $operator, string $value) : string
+    {
+        return $column . ' COLLATE "C" ' . $operator . ' \'' . db_escape_string($value) . '\'';
     }
 }

@@ -90,7 +90,7 @@ END;
         if (isset($_GET['settings'])) { // Running out of the task queue
             $settings = unserialize($_GET['settings']);
         } else { // Put into the task queue
-            require_once('google/appengine/api/taskqueue/PushTask.php');
+            require_once 'google/appengine/api/taskqueue/PushTask.php';
 
             $task = new \google\appengine\api\taskqueue\PushTask('/rootkit_detection.php', ['type' => 'go', 'settings' => serialize($settings)]);
             $task_name = $task->add();
@@ -219,7 +219,7 @@ END;
     }
 
     if ((!empty($settings['email'])) && (class_exists('\google\appengine\api\mail\Message'))) { // Will only be the case on Google App Engine
-        require_once('google/appengine/api/mail/Message.php');
+        require_once 'google/appengine/api/mail/Message.php';
 
         $task = new \google\appengine\api\mail\Message([
             'to' => $settings['email'],
@@ -314,6 +314,6 @@ END;
 function rk_check_maintenance_password(string $password_given) : bool
 {
     global $FILE_BASE;
-    require_once($FILE_BASE . '/sources/crypt_maintenance.php');
+    require_once $FILE_BASE . '/sources/crypt_maintenance.php';
     return check_maintenance_password($password_given);
 }

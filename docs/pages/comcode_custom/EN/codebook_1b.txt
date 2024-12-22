@@ -596,7 +596,7 @@ class Hook_contentious_overrides_foo
         // Make breadcrumbs say "Foobar"
         if ($codename == 'site') {
             if ($code === null) {
-                $code = clean_php_file_for_eval(file_get_contents($path));
+                $code = clean_php_file_for_eval(file_get_contents($path), $path);
             }
 
             $code = str_replace('static $out = null;', 'return make_string_tempcode(\'<a href="https://example.com">Foobar</a>\');', $code);
@@ -607,7 +607,7 @@ class Hook_contentious_overrides_foo
 
 Regarding compile_included_code: now, when you run your site, when the [tt]site[/tt] script gets loaded, instead of PHP including the original [tt]sources/site.php[/tt] file, a new file will be compiled into [tt]_compiled/sources/site.php[/tt] and/or [tt]_compiled/sources_custom/site.php[/tt], and those will be included instead. This version contains your override. And since it's included rather than eval'd, proper stack traces will be maintained if errors occur (but you still need to be cautious to edit the correct file and to be mindful of line numbers; don't edit the compiled file as it is only temporary).
 
-A word of caution about [tt]$code = clean_php_file_for_eval(file_get_contents($path));[/tt]. You should only ever populate a null [tt]$code[/tt] variable here when you know for sure you are about to make an override. Otherwise, a null [tt]$code[/tt] should be left alone. When [tt]$code[/tt] is not null, that tells Composr it needs to make a [tt]_compiled[/tt] file. This is unnecessary to do if you did not actually make any code overrides.
+A word of caution about [tt]$code = clean_php_file_for_eval(file_get_contents($path), $path);[/tt]. You should only ever populate a null [tt]$code[/tt] variable here when you know for sure you are about to make an override. Otherwise, a null [tt]$code[/tt] should be left alone. When [tt]$code[/tt] is not null, that tells Composr it needs to make a [tt]_compiled[/tt] file. This is unnecessary to do if you did not actually make any code overrides.
 
 [title="3"]Running temporary code[/title]
 

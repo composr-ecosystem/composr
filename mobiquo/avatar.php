@@ -18,7 +18,7 @@ define('FORUM_ROOT', __DIR__);
 
 define('COMMON_CLASS_PATH_INCLUDE', __DIR__ . '/include');
 
-include(COMMON_CLASS_PATH_INCLUDE . '/common_functions.php');
+include COMMON_CLASS_PATH_INCLUDE . '/common_functions.php';
 
 initialise_composr();
 

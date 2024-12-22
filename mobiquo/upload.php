@@ -13,6 +13,6 @@
  * @package    cns_tapatalk
  */
 
-require(__DIR__ . '/mobiquo.php');
+require __DIR__ . '/mobiquo.php';
 
 // NB: Requests to this script have the method_name post parameter, so will relay through

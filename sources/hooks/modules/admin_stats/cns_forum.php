@@ -80,7 +80,7 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
             ],
             'topic_poll_votes' => [
                 'label' => do_lang_tempcode('TOPIC_POLL_VOTES'),
-                'category' => 'forum', // TODO: Feedback and engagement?
+                'category' => 'forum',
                 'filters' => [
                     'topic_poll_votes__month_range' => new CMSStatsDateMonthRangeFilter('topic_poll_votes__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],

@@ -157,6 +157,7 @@ class Database_Static_ibm extends DatabaseDriver
             'TOKEN' => 'varchar(15)',
             'SERIAL' => 'clob',
             'URLPATH' => 'varchar(255)',
+            'BGUID' => 'char(16) FOR BIT DATA'
         ];
         return $type_remap;
     }

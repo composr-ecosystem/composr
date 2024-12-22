@@ -1420,10 +1420,9 @@ function put_value_in_stack_trace($value) : string
                 }
             }
         } elseif ((is_array($value)) || (is_object($value))) {
-            if (strlen(json_encode($value)) > MAX_STACK_TRACE_VALUE_LENGTH) {
+            $_value = json_encode($value);
+            if (($_value === false) || (strlen($_value) > MAX_STACK_TRACE_VALUE_LENGTH)) {
                 $_value = gettype($value);
-            } else {
-                $_value = json_encode($value);
             }
         } elseif (is_string($value)) {
             if (strlen($value) > MAX_STACK_TRACE_VALUE_LENGTH) {

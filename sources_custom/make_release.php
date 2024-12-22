@@ -1295,7 +1295,11 @@ function _guid_scan_callback__template($match)
     }
 
     $match_pos = strpos($GUID_ORIGINAL_CONTENTS, $full_match_line);
-    $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0, $match_pos), "\n") + 1;
+    if (is_numeric($match_pos)) {
+        $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0, intval($match_pos)), "\n") + 1;
+    } else {
+        $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0), "\n") + 1;
+    }
 
     // First sweep
     if (($first_param_value !== null) && ($first_param_name == '_GUID')) {
@@ -1358,7 +1362,11 @@ function _guid_scan_callback__internal_error($match)
     }
 
     $match_pos = strpos($GUID_ORIGINAL_CONTENTS, $full_match_line);
-    $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0, $match_pos), "\n") + 1;
+    if (is_numeric($match_pos)) {
+        $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0, intval($match_pos)), "\n") + 1;
+    } else {
+        $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0), "\n") + 1;
+    }
 
     // First sweep (GUID exists)
     $inner_matches = [];

@@ -81,6 +81,7 @@ class Module_news
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('news', [
                 'id' => '*AUTO',
+                //'news_guid' => 'BGUID', // TODO: does not work yet: "data too long"
                 'date_and_time' => 'TIME',
                 'title' => 'SHORT_TRANS__COMCODE',
                 'news' => 'LONG_TRANS__COMCODE',
@@ -187,6 +188,27 @@ class Module_news
             $GLOBALS['SITE_DB']->alter_table_field('news_rss_cloud', 'rem_ip', 'IP', 'rem_ip_address');
             $GLOBALS['SITE_DB']->alter_table_field('news_rss_cloud', 'watching_channel', 'URLPATH', 'watch_channel_url');
         }
+
+        // TODO: does not work yet: "data too long"
+        /*
+        if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta6
+            $GLOBALS['SITE_DB']->add_table_field('news', 'news_guid', 'BGUID');
+
+            // Create a time-based GUID for existing records
+            require_code('crypt');
+            $start = 0;
+            $max = 100;
+            do {
+                $rows = $GLOBALS['SITE_DB']->query_select('news', ['id', 'date_and_time'], [], '', $max, $start);
+                foreach ($rows as $row) {
+                    $guid = hex2bin(str_replace('-', '', get_secure_v1_guid(floatval($row['date_and_time']))));
+                    $GLOBALS['SITE_DB']->query_update('news', ['news_guid' => $guid], ['id' => $row['id']]);
+                }
+
+                $start += $max;
+            } while (count($rows) > 0);
+        }
+        */
     }
 
     /**
@@ -724,43 +746,51 @@ class Module_news
         $next_article_url = null;
         $next_article_title = null;
 
-        // Find a previous article
-        // TODO: Does not work when multiple articles have the same date_and_time
-        $prev_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['news_category' => $category], ' AND date_and_time<=' . strval($myrow['date_and_time']), 100/*Performance*/);
-        sort_maps_by($prev_articles, '!date_and_time');
-        foreach ($prev_articles as $prev_article) {
-            // Validation
-            if (($prev_article['validated'] == 0) && (addon_installed('validation'))) {
-                if ((!has_privilege(get_member(), 'see_not_validated')) && ((is_guest()) || ($prev_article['submitter'] != get_member()))) {
-                    continue;
+        // Find a previous article (not reliable for articles published at the same time)
+        $where_map = ['news_category' => $myrow['news_category']];
+        // $extra_where = ' AND ' . db_encode_binary_compare('news_guid', '<', $myrow['news_guid']); // TODO: does not work yet: "data too long"
+        $extra_where = ' AND date_and_time<' . strval($myrow['date_and_time']);
+        if (addon_installed('validation')) {
+            if ((!has_privilege(get_member(), 'see_not_validated')) || (is_guest())) {
+                $extra_where .= ' AND (validated=1';
+                if (!is_guest()) {
+                    $extra_where .= ' OR submitter=' . strval(get_member());
                 }
+                $extra_where .= ')';
             }
-
+        }
+        $extra_where .= ' ORDER BY date_and_time DESC';
+        $prev_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], $where_map, $extra_where, 1);
+        if (array_key_exists(0, $prev_articles)) {
+            $prev_article = $prev_articles[0];
             $_prev_article_title = $prev_article['title'];
             if (!cms_empty_safe($_prev_article_title) && ($id != $prev_article['id'])) {
                 $prev_article_title = get_translated_text($_prev_article_title);
                 $prev_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $prev_article['id']], '_SELF');
-                break;
             }
         }
 
-        // Find a next article
-        // TODO: Does not work when multiple articles have the same date_and_time
-        $next_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['news_category' => $category], ' AND date_and_time>=' . strval($myrow['date_and_time']), 101/*Performance*/, 1);
-        sort_maps_by($next_articles, 'date_and_time');
-        foreach ($next_articles as $next_article) {
-            // Validation
-            if (($next_article['validated'] == 0) && (addon_installed('validation'))) {
-                if ((!has_privilege(get_member(), 'see_not_validated')) && ((is_guest()) || ($next_article['submitter'] != get_member()))) {
-                    continue;
+        // Find a next article (not reliable for articles published at the same time)
+        $where_map = ['news_category' => $myrow['news_category']];
+        //$extra_where = ' AND ' . db_encode_binary_compare('news_guid', '>', $myrow['news_guid']); // TODO: does not work yet: "data too long"
+        $extra_where = ' AND date_and_time>' . strval($myrow['date_and_time']);
+        if (addon_installed('validation')) {
+            if ((!has_privilege(get_member(), 'see_not_validated')) || (is_guest())) {
+                $extra_where .= ' AND (validated=1';
+                if (!is_guest()) {
+                    $extra_where .= ' OR submitter=' . strval(get_member());
                 }
+                $extra_where .= ')';
             }
-
+        }
+        $extra_where .= ' ORDER BY date_and_time ASC';
+        $next_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], $where_map, $extra_where, 1);
+        if (array_key_exists(0, $next_articles)) {
+            $next_article = $next_articles[0];
             $_next_article_title = $next_article['title'];
             if (!cms_empty_safe($_next_article_title) && ($id != $next_article['id'])) {
                 $next_article_title = get_translated_text($_next_article_title);
                 $next_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $next_article['id']], '_SELF');
-                break;
             }
         }
 

@@ -33,7 +33,7 @@ class Hook_contentious_overrides_jestr
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 $code = override_str_replace_exactly(
@@ -67,7 +67,7 @@ class Hook_contentious_overrides_jestr
                 break;
             case 'forum/pages/modules/topicview.php':
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 // NB: cannot use overrides API for this

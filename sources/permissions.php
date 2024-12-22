@@ -417,6 +417,10 @@ function has_page_access(int $member_id, string $page, string $zone, bool $at_no
         }
     }
 
+    // Infinite loop prevention; we should never reach this point more than once on the same execution for the same parameters
+    check_for_infinite_loop('has_page_access', func_get_args());
+
+    // Had to populate cache, so we must check again now with the caches populated
     return has_page_access($member_id, $page, $zone, $at_now);
 }
 
@@ -1246,6 +1250,43 @@ function has_edit_comcode_page_permission(string $zone, string $page, ?int $owne
 
     $is_owner = (($owner == $member_id) && (!is_guest($member_id)));
     $privilege = $is_owner ? 'edit_own_highrange_content' : 'edit_highrange_content';
+
+    $cats = null;
+    if ($zone !== null) {
+        $cats = ['zone_page', $zone];
+    }
+
+    return has_privilege($member_id, $privilege, 'cms_comcode_pages', $cats);
+}
+
+/**
+ * Check to see if a member has permission to delete a specific Comcode page.
+ *
+ * @param  ID_TEXT $zone The zone of the page
+ * @param  ID_TEXT $page The name of the page
+ * @param  ?MEMBER $owner Owner of the page (null: look it up)
+ * @param  ?MEMBER $member_id The member being checked for access (null: current member)
+ * @return boolean If the permission is there
+ */
+function has_delete_comcode_page_permission(string $zone, string $page, ?int $owner = null, ?int $member_id = null) : bool
+{
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
+    if ($owner === null) {
+        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', ['the_zone' => $zone, 'the_page' => $page]);
+    }
+
+    if (!has_actual_page_access($member_id, $page, $zone)) {
+        return false;
+    }
+    if (!has_actual_page_access($member_id, 'cms_comcode_pages')) {
+        return false;
+    }
+
+    $is_owner = (($owner == $member_id) && (!is_guest($member_id)));
+    $privilege = $is_owner ? 'delete_own_highrange_content' : 'delete_highrange_content';
 
     $cats = null;
     if ($zone !== null) {

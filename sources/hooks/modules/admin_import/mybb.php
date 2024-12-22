@@ -113,7 +113,7 @@ class Hook_import_mybb
         if (!file_exists($file_base . '/inc/config.php')) {
             warn_exit(do_lang_tempcode('BAD_IMPORT_PATH', escape_html('inc/config.php')));
         }
-        require($file_base . '/inc/config.php');
+        require $file_base . '/inc/config.php';
 
         return [$config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['table_prefix'], $config['database']['hostname']];
     }
@@ -127,7 +127,7 @@ class Hook_import_mybb
      */
     public function import_config(object $db, string $table_prefix, string $file_base)
     {
-        require($file_base . '/inc/config.php');
+        require $file_base . '/inc/config.php';
 
         $rows = $db->query_select('settings');
 
@@ -263,7 +263,7 @@ class Hook_import_mybb
      */
     public function import_cns_groups(object $db, string $table_prefix, string $file_base)
     {
-        require($file_base . '/inc/config.php');
+        require $file_base . '/inc/config.php';
 
         $rows = $db->query_select('settings');
         $PROBED_FORUM_CONFIG = [];

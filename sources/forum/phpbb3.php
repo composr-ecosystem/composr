@@ -445,7 +445,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             $dbuser = '';
             $dbpasswd = '';
             $table_prefix = '';
-            @include($path . '/config.php');
+            @include $path . '/config.php';
             $PROBED_FORUM_CONFIG['sql_host'] = $dbhost;
             $PROBED_FORUM_CONFIG['sql_database'] = $dbname;
             $PROBED_FORUM_CONFIG['sql_user'] = $dbuser;

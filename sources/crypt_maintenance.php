@@ -20,6 +20,7 @@
 
 /*
     IMPORTANT: This file is loaded outside the core software, so must work as standalone and not use external APIs.
+    Furthermore, overrides are not supported for the same reason.
 */
 
 /**

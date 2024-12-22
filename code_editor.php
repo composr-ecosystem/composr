@@ -45,7 +45,7 @@ function code_editor_escape_html(string $string) : string
     return htmlspecialchars($string, ENT_QUOTES);
 }
 
-require_once($FILE_BASE . '/_config.php');
+require $FILE_BASE . '/_config.php';
 
 if ((array_key_exists('given_password', $_POST))) {
     $given_password = $_POST['given_password'];
@@ -611,7 +611,7 @@ function ce_sync_file(string $filename)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (substr($filename, 0, strlen($FILE_BASE)) == $FILE_BASE) {
             $filename = substr($filename, strlen($FILE_BASE));
         }
@@ -631,7 +631,7 @@ function ce_sync_file_move(string $old, string $new)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (substr($old, 0, strlen($FILE_BASE)) == $FILE_BASE) {
             $old = substr($old, strlen($FILE_BASE));
         }
@@ -653,7 +653,7 @@ function ce_sync_file_move(string $old, string $new)
 function ce_check_maintenance_password(string $password_given) : bool
 {
     global $FILE_BASE;
-    require_once($FILE_BASE . '/sources/crypt_maintenance.php');
+    require_once $FILE_BASE . '/sources/crypt_maintenance.php';
     return check_maintenance_password($password_given);
 }
 

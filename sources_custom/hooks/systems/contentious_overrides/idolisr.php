@@ -37,7 +37,7 @@ class Hook_contentious_overrides_idolisr
                 }
 
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 insert_code_after__by_command(
@@ -57,7 +57,7 @@ class Hook_contentious_overrides_idolisr
                 break;
             case 'site/pages/modules/points.php':
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 // Make sure we reason our transactions for Idolisr properly

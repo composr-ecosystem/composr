@@ -203,8 +203,8 @@ function _roll_gae_redirect(array $matches, string $to)
  */
 function gae_is_admin() : bool
 {
-    require_once('google/appengine/api/users/User.php');
-    require_once('google/appengine/api/users/UserService.php');
+    require_once 'google/appengine/api/users/User.php';
+    require_once 'google/appengine/api/users/UserService.php';
 
     $_userservice = 'google\appengine\api\users\UserService';
     $userservice = new $_userservice();

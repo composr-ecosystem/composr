@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__max_ngram_size // TODO: renamed; needs upgrader migration
+class Hook_config_fast_custom_index__max_ngram_size
 {
     /**
      * Gets the details relating to the config option.

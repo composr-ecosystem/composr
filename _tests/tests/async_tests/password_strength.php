@@ -69,7 +69,7 @@ class password_strength_test_set extends cms_test_case
         }
 
         foreach ($expects as $password => $score_expected) {
-            $score_got = test_password($password, $username, $email_address);
+            $score_got = test_password(strval($password), $username, $email_address);
             $this->assertTrue($score_got == $score_expected, 'For ' . $password . ', got ' . integer_format($score_got) . ' expected ' . integer_format($score_expected));
         }
     }

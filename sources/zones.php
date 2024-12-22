@@ -697,7 +697,7 @@ function _load_mini_code(string $string, array $map = []) : object
     }
 
     ob_start();
-    $test1 = require(get_file_base() . '/' . $string);
+    $test1 = require get_file_base() . '/' . $string;
     $test2 = ob_get_contents();
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($test2);
@@ -1461,9 +1461,8 @@ function do_block_hunt_file(string $codename, array $map = []) : array
     global $REQUIRED_CODE;
     if ((!in_safe_mode()) && (((isset($BLOCKS_AT_CACHE[$codename])) && ($BLOCKS_AT_CACHE[$codename] === 'sources_custom/blocks')) || ((!isset($BLOCKS_AT_CACHE[$codename])) && (is_file($file_base . '/sources_custom/blocks/' . $codename . '.php'))))) {
         if (!isset($REQUIRED_CODE['blocks/' . $codename])) {
-            require_once($file_base . '/sources_custom/blocks/' . $codename . '.php');
+            require_code('blocks/' . $codename, false, true);
         }
-        $REQUIRED_CODE['blocks/' . $codename] = true;
 
         if (!isset($BLOCKS_AT_CACHE[$codename])) {
             $BLOCKS_AT_CACHE[$codename] = 'sources_custom/blocks';
@@ -1477,9 +1476,8 @@ function do_block_hunt_file(string $codename, array $map = []) : array
         }
     } elseif (((isset($BLOCKS_AT_CACHE[$codename])) && ($BLOCKS_AT_CACHE[$codename] === 'sources/blocks')) || ((!isset($BLOCKS_AT_CACHE[$codename])) && (is_file($file_base . '/sources/blocks/' . $codename . '.php')))) {
         if (!isset($REQUIRED_CODE['blocks/' . $codename])) {
-            require_once($file_base . '/sources/blocks/' . $codename . '.php');
+            require_code('blocks/' . $codename, false, false);
         }
-        $REQUIRED_CODE['blocks/' . $codename] = true;
 
         if (!isset($BLOCKS_AT_CACHE[$codename])) {
             $BLOCKS_AT_CACHE[$codename] = 'sources/blocks';

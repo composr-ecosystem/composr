@@ -107,8 +107,8 @@ class Module_admin_site_messaging
 
         $ret = [
             'browse' => ['SITE_MESSAGING', 'menu/social/chat/chat'], // TODO: change
-            'edit' => ['EDIT_SITE_MESSAGES', 'admin/edit'], // TODO: change
-            'add' => ['ADD_SITE_MESSAGE', 'admin/add'], // TODO: change
+            'edit' => ['EDIT_SITE_MESSAGES', 'admin/edit'],
+            'add' => ['ADD_SITE_MESSAGE', 'admin/add'],
         ];
 
         return $ret;

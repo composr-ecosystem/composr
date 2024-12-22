@@ -108,11 +108,11 @@ class Hook_endpoint_cms_homesite_telemetry
                 $error_hash = md5($_error_hash);
 
                 // See if this error was already reported
-                $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'guid', 'error_count', 'note', 'resolved'], [
+                $row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'e_guid', 'e_error_count', 'e_note', 'e_resolved'], [
                     // Every relay is specific to a website; treat separate websites as separate relays
-                    'website_url' => $decrypted_data['website_url'],
+                    'e_website_url' => $decrypted_data['website_url'],
 
-                    'error_hash' => $error_hash,
+                    'e_error_hash' => $error_hash,
 
                     // We want to treat same errors from different versions as a new / separate telemetry relays (this indicates the error might still be present even after a fix was attempted)
                     'e_version' => $decrypted_data['version'],
@@ -144,18 +144,19 @@ class Hook_endpoint_cms_homesite_telemetry
 
                 if (array_key_exists(0, $row)) { // We have a match; just update the matched record
                     $map = [
-                        'last_date_and_time' => time(),
-                        'error_count' => $row[0]['error_count'] + 1,
+                        'e_last_date_and_time' => time(),
+                        'e_error_count' => $row[0]['e_error_count'] + 1,
                     ];
-                    $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row[0]['id']]);
 
                     // Also auto-resolve it when necessary
-                    if (($auto_resolve !== null) && ($row[0]['resolved'] == 0)) {
-                        $map = ['resolved' => 1];
-                        $map += lang_remap_comcode('note', $row[0]['note'], $auto_resolve);
-                        $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row[0]['id']]);
+                    if (($auto_resolve !== null) && ($row[0]['e_resolved'] == 0)) {
+                        $map['e_resolved'] = 1;
+                        $map += lang_remap_comcode('e_note', $row[0]['e_note'], $auto_resolve);
                     }
-                    return ['success' => true, 'relayed_error_id' => $row[0]['guid']];
+
+                    $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row[0]['id']]);
+
+                    return ['success' => true, 'relayed_error_id' => $row[0]['e_guid']];
                 } else { // No match; create a new relay
                     $refs_compiled = (strpos($decrypted_data['error_message'], '_compiled/') !== false);
                     $refs_compiled = $refs_compiled || (strpos($decrypted_data['error_message'], '_compiled\\') !== false);
@@ -164,22 +165,22 @@ class Hook_endpoint_cms_homesite_telemetry
                     $guid = get_secure_random_v4_guid();
 
                     $map = [
-                        'guid' => $guid,
-                        'first_date_and_time' => time(),
-                        'last_date_and_time' => time(),
-                        'website_url' => $decrypted_data['website_url'],
+                        'e_guid' => $guid,
+                        'e_first_date_and_time' => time(),
+                        'e_last_date_and_time' => time(),
+                        'e_website_url' => $decrypted_data['website_url'],
                         'e_version' => $decrypted_data['version'],
-                        'error_message' => $decrypted_data['error_message'],
-                        'error_hash' => $error_hash,
-                        'error_count' => 1,
-                        'resolved' => 0,
-                        'refs_compiled' => ($refs_compiled ? 1 : 0),
+                        'e_error_message' => $decrypted_data['error_message'],
+                        'e_error_hash' => $error_hash,
+                        'e_error_count' => 1,
+                        'e_resolved' => 0,
+                        'e_refs_compiled' => ($refs_compiled ? 1 : 0),
                     ];
                     if ($auto_resolve !== null) { // Auto-resolve it when necessary
-                        $map['resolved'] = 1;
-                        $map += insert_lang_comcode('note', $auto_resolve, 4);
+                        $map['e_resolved'] = 1;
+                        $map += insert_lang_comcode('e_note', $auto_resolve, 4);
                     } else {
-                        $map += insert_lang_comcode('note', '', 4);
+                        $map += insert_lang_comcode('e_note', '', 4);
                     }
                     $GLOBALS['SITE_DB']->query_insert('relayed_errors', $map);
                     return ['success' => true, 'relayed_error_id' => $guid];

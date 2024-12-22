@@ -1229,6 +1229,10 @@ class css_file_test_set extends cms_test_case
 
             // userguide_comcode.txt:
             'responsive-table-separate-lines',
+
+            // achievements
+            'progress-complete',
+            'progress-read-only',
         ];
         if (in_array($class, $exceptions)) {
             return true;

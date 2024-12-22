@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: tempnam*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -136,7 +138,7 @@ function cms_get_temp_dir() : array
         make_missing_directory($local_path);
     }
     $server_path = rtrim(sys_get_temp_dir(), '/\\');
-    $identified_problem_saving = ((get_option('force_local_temp_dir') == '1') || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)' . preg_quote($server_path, '#') . '($|:|;|/)#', ini_get('open_basedir')) == 0)));
+    $identified_problem_saving = ((get_option('force_local_temp_dir') == '1') || (!cms_is_writable($server_path)) || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)' . preg_quote($server_path, '#') . '($|:|;|/)#', ini_get('open_basedir')) == 0)));
     $path = ($identified_problem_saving ? $local_path : $server_path);
     return [$path, $identified_problem_saving, $server_path, $local_path];
 }
@@ -152,14 +154,15 @@ function cms_get_temp_dir() : array
 function _cms_tempnam(string $prefix = '')
 {
     list($tmp_path, $identified_problem_saving, $server_path, $local_path) = cms_get_temp_dir();
-    if (php_function_allowed('tempnam')) {
+    $can_write_to_tmp_path = (php_function_allowed('tempnam') && (cms_is_writable($tmp_path)));
+    if ($can_write_to_tmp_path) {
         // Create a real temporary file
         //  We have to use "@" in case of "file created in the system's temporary directory" notice
         $tempnam = @tempnam($tmp_path, 'tmpfile__' . $prefix);
 
         $seemed_to_save_okay = (($tempnam !== false) && ($tempnam != ''/*Should not be blank, but seen in the wild*/));
 
-        if ($seemed_to_save_okay && !cms_is_writable($tempnam)/*Windows maybe created a file but not a writable one!*/) {
+        if ($seemed_to_save_okay && !cms_is_writable($tempnam, true)/*Windows maybe created a file but not a writable one!*/) {
             @unlink($tempnam);
             $seemed_to_save_okay = false;
         }
@@ -240,7 +243,7 @@ function _sync_file(string $filename)
         $has_sync_script = is_file($FILE_BASE . '/data_custom/sync_script.php');
     }
     if ($has_sync_script) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (function_exists('master__sync_file')) {
             master__sync_file($filename);
         }
@@ -272,7 +275,7 @@ function _sync_file_move(string $old, string $new)
 {
     global $FILE_BASE;
     if (is_file($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
+        require_once $FILE_BASE . '/data_custom/sync_script.php';
         if (substr($old, 0, strlen($FILE_BASE)) == $FILE_BASE) {
             $old = substr($old, strlen($FILE_BASE));
         }

@@ -74,7 +74,7 @@ if (is_file(__DIR__ . '/_config.php')) {
 
 // Useful script, outside of web dir, for doing custom decaching
 if (@is_file(dirname(__DIR__) . '/decache.php')) {
-    require(dirname(__DIR__) . '/decache.php');
+    require dirname(__DIR__) . '/decache.php';
 }
 
 if (strpos($_SERVER['argv'][0], 'decache.php') !== false) {

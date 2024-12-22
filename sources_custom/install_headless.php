@@ -204,7 +204,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
 
     foreach ($stages as $i => $stage) {
         list($get, $post) = $stage;
-        $url = get_base_url() . '/install.php?keep_going=1&keep_safe_mode=' . ($safe_mode ? '1' : '0'); // keep_going necessary so step 8 does not break itself up into parts
+        $url = get_base_url() . '/install.php?keep_step8_all_at_once=1&keep_safe_mode=' . ($safe_mode ? '1' : '0'); // keep_step8_all_at_once necessary so step 8 does not break itself up into parts
         if (!empty($get)) {
             $url .= '&' . http_build_query($get);
         }

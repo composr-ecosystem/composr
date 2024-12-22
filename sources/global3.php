@@ -87,6 +87,9 @@ function init__global3()
     global $OUTPUT_STATE_STACK;
     $OUTPUT_STATE_STACK = [];
 
+    global $CHECK_FOR_INFINITE_LOOP;
+    $CHECK_FOR_INFINITE_LOOP = [];
+
     // Registry of output state globals
     global $OUTPUT_STATE_VARS;
     $OUTPUT_STATE_VARS = [
@@ -643,9 +646,10 @@ function cms_fsock_request(string $payload, string $url, ?int &$error_code = nul
  * Find whether a file/directory is writeable. This function is designed to get past that the PHP is_writable function does not work properly on Windows.
  *
  * @param  PATH $path The file path
+ * @param  boolean $aggressive Whether to perform an aggressive test (if necessary) where we actually try writing to the file
  * @return boolean Whether the file is writeable
  */
-function cms_is_writable(string $path) : bool
+function cms_is_writable(string $path, bool $aggressive = false) : bool
 {
     if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
         return is_writable($path);
@@ -671,11 +675,40 @@ function cms_is_writable(string $path) : bool
         return is_writable($path); // imperfect unfortunately; but unlikely to cause a problem
     }
 
-    $test = @fopen($path, 'cb');
-    if ($test !== false) {
-        fclose($test);
+    $test = @fopen($path, 'a');
+    if ($test === false) {
+        return false;
+    }
+
+    if ($aggressive) {
+        $test_string = uniqid('writetest_', false); // Arbitrary data to write
+        $bytes_written = @fwrite($test, $test_string);
+        @fclose($test);
+
+        // Clean-up
+        if (is_numeric($bytes_written)) {
+            $test = @fopen($path, 'r+');
+            if ($test === false) {
+                fatal_exit('Could not clean up file ' . str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $path) . ' after aggressive write test. You must manually remove ' . $test_string . ' from the end of this file immediately.');
+            }
+            fseek($test, -$bytes_written, SEEK_END);
+            $truncate = ftruncate($test, ftell($test)); // Truncate the file to remove test string
+            if ($truncate === false) {
+                fatal_exit('Could not clean up file ' . str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $path) . ' after aggressive write test. You must manually remove ' . $test_string . ' from the end of this file immediately.');
+            }
+            @fclose($test);
+        } else {
+            return false;
+        }
+
+        if (intval($bytes_written) == strlen($test_string)) {
+            return true;
+        }
+    } else {
+        @fclose($test);
         return true;
     }
+
     return false;
 }
 
@@ -5288,7 +5321,7 @@ function cms_preg_safety_guard_ok(array &$guard) : bool
     if ($guard['i'] > 100 || $guard['init_time'] < time() - 5) {
         // Too thorny, do not continue
         if ($GLOBALS['DEV_MODE']) {
-            fatal_exit('Prevented possible infinite loop');
+            fatal_exit('Bailed out on a regex infinite loop');
         }
         return false;
     }
@@ -5835,4 +5868,33 @@ function cms_shuffle_assoc(array &$array) : bool
     $array = $new_array;
 
     return true;
+}
+
+/**
+ * Check for infinite loops and bail if we detected one.
+ *
+ * @param  ID_TEXT $codename A codename to use for this check, such as a function name
+ * @param  array $args An array of arguments to determine if this is a unique call, usually parameters passed to the function (func_get_args)
+ * @param  integer $allowed_iterations The number of times we are allowed to call check_for_infinite_loop with the same $codename and $args before bailing on error
+ */
+function check_for_infinite_loop(string $codename, array $args, int $allowed_iterations = 1)
+{
+    global $CHECK_FOR_INFINITE_LOOP;
+
+    $hash = md5(serialize($args));
+
+    // Prepare global array tracker
+    if (!isset($CHECK_FOR_INFINITE_LOOP[$codename])) {
+        $CHECK_FOR_INFINITE_LOOP[$codename] = [];
+    }
+    if (!isset($CHECK_FOR_INFINITE_LOOP[$codename][$hash])) {
+        $CHECK_FOR_INFINITE_LOOP[$codename][$hash] = 0;
+    }
+
+    // Increment count and handle if we surpassed the allowed number of iterations
+    $CHECK_FOR_INFINITE_LOOP[$codename][$hash]++;
+    if ($CHECK_FOR_INFINITE_LOOP[$codename][$hash] > $allowed_iterations) {
+        require_lang('critical_error');
+        warn_exit(do_lang_tempcode('INFINITE_LOOP_HALTED', escape_html($codename)));
+    }
 }

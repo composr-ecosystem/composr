@@ -18,6 +18,17 @@
  * @package    core_cns
  */
 
+ /*
+    A note about declarations:
+    To comply with GDPR and other user protection laws, this module is explicitly configured in such a way that it
+    does not make assumptions about what declarations a member made. It physically reads the inputs of the
+    tickboxes from the rules page as a formal and official declaration that the member did, in fact, agree to those
+    declarations. This input is then used when storing which declarations were made by the member and when sending
+    out the confirmation e-mail of declarations made.
+
+    More details are explained in the functions below.
+ */
+
 /**
  * Module page class.
  */
@@ -272,7 +283,8 @@ class Module_join
             warn_exit(do_lang_tempcode('NO_JOIN_LOGGED_IN'));
         }
 
-        if ((get_option('show_first_join_page') == '1') && (!$this->declarations_made())) {
+        // Bail if the member did not agree to all required declarations
+        if (!$this->declarations_made()) {
             warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
         }
 
@@ -296,29 +308,44 @@ class Module_join
      */
     public function step3() : object
     {
+        if (!is_guest()) {
+            warn_exit(do_lang_tempcode('NO_JOIN_LOGGED_IN'));
+        }
+
+        // Bail if the member did not agree to all required declarations
+        if (!$this->declarations_made()) {
+            warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
+        }
+
+        // We get the physical declarations text from the values of the tickboxes to legally formalise the member did, in fact, agree to them.
         $declarations_made = $this->parse_declarations();
 
+        // Use the explicit value text when saving to the member's profile field and when sending out the e-mail;
+        // don't just pull from the database because then we cannot say in the court of law the member literally agreed to them.
         list($message) = cns_join_actual($declarations_made);
-
         $this->dispatch_declarations_mail($declarations_made, get_param_string('email', '', INPUT_FILTER_GET_IDENTIFIER));
 
         return inform_screen($this->title, $message);
     }
 
+    /**
+     * Return a string of declarations which the member made.
+     *
+     * @return string The declarations to which the member agreed, one per line
+     */
     protected function parse_declarations() : string
     {
         require_lang('cns');
 
-        // Bail if the member did not properly make declarations
-        if ((get_option('show_first_join_page') == '1') && (!$this->declarations_made())) {
-            warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
-        }
-
-        // Parse params for declarations made
+        /*
+            Parse params for declarations made.
+            We store the full text of each declaration in the tickbox values, and then read the full text here,
+            to ensure legally the member physically agreed to them.
+        */
         $declarations_made = '';
         $declarations = $this->get_declarations();
         foreach ($declarations as $i => $declaration) {
-            if (post_param_string('confirm_' . strval($i), '') == $declaration) {
+            if (post_param_string('confirm_' . strval($i), '') == $declaration) { // Only consider the declaration if the full text exactly matches the config
                 if ($declarations_made != '') {
                     $declarations_made .= "\n";
                 }
@@ -332,7 +359,7 @@ class Module_join
     /**
      * Send a mail confirmation of declarations made to the member.
      *
-     * @param  LONG_TEXT $declarations_made A list of declarations made, one per line
+     * @param  LONG_TEXT $declarations_made This must be the declarations which the member made, taken from the form input values and not the database, one per line
      * @param  SHORT_TEXT $email_address The e-mail address of the member
      */
     protected function dispatch_declarations_mail(string $declarations_made, string $email_address)
@@ -361,7 +388,7 @@ class Module_join
     }
 
     /**
-     * Get a list of declarations that need to be made.
+     * Get a list of declarations that are configured and need to be made.
      *
      * @return array List of declarations
      */
@@ -371,19 +398,27 @@ class Module_join
     }
 
     /**
-     * See if all the necessary declations were made.
+     * See if the member agreed to all configured declarations.
      *
      * @return boolean Whether they have
      */
     protected function declarations_made() : bool
     {
-        $declarations = $this->get_declarations();
-        foreach ($declarations as $i => $declaration) {
-            if (post_param_string('confirm_' . strval($i), '') != $declaration) {
-                return false;
-            }
+        // We say they were made if we aren't even requiring them
+        if ((get_option('show_first_join_page') != '1')) {
+            return true;
         }
-        return true;
+
+        $declarations_configured = implode("\n", $this->get_declarations());
+
+        // No declarations configured means nothing required to declare
+        if ($declarations_configured == '') {
+            return true;
+        }
+
+        $declarations_made = $this->parse_declarations();
+
+        return ($declarations_configured == $declarations_made);
     }
 
     /**
@@ -513,9 +548,17 @@ class Module_join
             access_denied('NOT_AS_GUEST');
         }
 
+        // Bail if the member did not agree to all required declarations
+        if (!$this->declarations_made()) {
+            warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
+        }
+
+        /*
+            Again, we use the literal full text declaration values from the form to declare legally the member
+            actually and physically agreed to these declarations.
+        */
         $declarations_made = $this->parse_declarations();
         $GLOBALS['FORUM_DRIVER']->set_custom_field(get_member(), 'agreed_declarations', $declarations_made);
-
         $this->dispatch_declarations_mail($declarations_made, $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()));
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));

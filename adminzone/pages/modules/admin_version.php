@@ -710,7 +710,7 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->query_update('values', ['the_name' => 'setupwizard_completed'], ['the_name' => 'setup_wizard_completed'], '', 1);
 
-            $GLOBALS['SITE_DB']->promote_text_field_to_comcode('digestives_tin', 'd_message', 'id', 4);
+            $GLOBALS['SITE_DB']->promote_text_field_to_comcode('digestives_tin', 'd_message', 'id', 4, false, true);
             $GLOBALS['SITE_DB']->add_table_field('digestives_tin', 'd_read', 'BINARY');
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'notifications_enabled SET l_setting=l_setting+' . strval(A_WEB_NOTIFICATION) . ' WHERE l_setting<>0');
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'd_read', ['d_read']);
@@ -1255,7 +1255,7 @@ class Module_admin_version
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 21)) { // LEGACY: 11.beta5
-            $GLOBALS['SITE_DB']->alter_table_field('messages_to_render', 'r_message', 'LONG_TRANS__COMCODE'); // TODO: Conversion to a Comcode type does not work; meta is changed but columns are not created
+            $GLOBALS['SITE_DB']->alter_table_field('messages_to_render', 'r_message', 'LONG_TRANS__COMCODE');
 
             // This has been broken in v10 and v11 for quite some time now; 'catalogues' is not a valid content type and actually referred to entries.
             $GLOBALS['SITE_DB']->query_update('rating', ['rating_for_type' => 'catalogue_entry'], ['rating_for_type' => 'catalogues']);
@@ -1274,7 +1274,10 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_url', 'URLPATH');
 
             // Missing promotion to Comcode field from 11.beta5
-            $GLOBALS['SITE_DB']->promote_text_field_to_comcode('messages_to_render', 'r_message', 'id', 4);
+            $GLOBALS['SITE_DB']->promote_text_field_to_comcode('messages_to_render', 'r_message', 'id', 4, false, true);
+
+            // Needs re-done; in a previous upgrade this would result in a SHORT_TRANS__COMCODE field, which was wrong
+            $GLOBALS['SITE_DB']->promote_text_field_to_comcode('digestives_tin', 'd_message', 'id', 4, false, true);
         }
     }
 

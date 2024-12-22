@@ -248,10 +248,10 @@ function get_secure_random_number() : int
  * Get a secure v1 GUID using the site salt as the node.
  * This should only be used for chronological non-sensitive data as the randomness is only applied to the clock sequence.
  *
- * @see https://github.com/charm-php/uuid
+ * @param  ?float $time_at Use the provided time in microtime format (null: current time)
  * @return string The GUID
  */
-function get_secure_v1_guid() : string
+function get_secure_v1_guid(?float $time_at = null) : string
 {
     // Initialize clock sequence
     $_clock_sequence = get_value_newer_than('guidv1_clock_sequence', time() - 1, true);
@@ -266,24 +266,22 @@ function get_secure_v1_guid() : string
     // Increment sequence for next use
     set_value('guidv1_clock_sequence', strval($clock_sequence + 1), true);
 
-    // Set the variant (RFC 4122)
+    // Set the sequence variant (RFC 4122)
     $clock_sequence |= 0x8000;
 
-    // Get timestamp (with 100-nanosecond precision)
-    $time = intval((microtime(true) * 10000000) + mt_rand(0, 9) + 0x01b21dd213814000);
+    // Generate 60-bit timestamp for UUID (time in 100-nanosecond intervals since 1582-10-15)
+    if ($time_at === null) {
+        $time_at = microtime(true);
+    }
+    $time = ($time_at * 10000000.0) + 0x01B21DD213814000;
 
-    // Convert time to 60-bit value (as UUID uses only 60 bits for timestamp)
-    $time_hex = str_pad(dechex($time), 15, '0', STR_PAD_LEFT);
+    // Convert the timestamp into binary format
+    $time_hex = sprintf("%016x", $time);
+    $time_low = substr($time_hex, 8, 8);
+    $time_mid = substr($time_hex, 4, 4);
+    $time_high_and_version = dechex((hexdec(substr($time_hex, 0, 4)) & 0x0FFF) | 0x1000); // Apply version 1
 
-    // Format time into UUID parts
-    $time_low = substr($time_hex, 7, 8);
-    $time_mid = substr($time_hex, 3, 4);
-    $time_high_and_version = substr($time_hex, 0, 3);
-
-    // Set version to 1 (time-based UUID)
-    $time_high_and_version = dechex(hexdec($time_high_and_version) | 0x1000);
-
-    // Use the first 12 characters of the MD5 of the site salt as the node
+    // MD5 the site salt and use the first 12 characters as the node ID
     $node = substr(md5(get_site_salt()), 0, 12);
     $node[0] = dechex(hexdec($node[0]) & 1);
 

@@ -127,11 +127,11 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         }
 
         // TODO: configurable threshold
-        $threshold = 50;
+        $threshold = 250;
 
-        $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'hackattack WHERE date_and_time>' . strval(time() - 60 * 60 * 24);
+        $sql = 'SELECT SUM(risk_score) FROM ' . get_table_prefix() . 'hackattack WHERE date_and_time>' . strval(time() - 60 * 60 * 24);
         $num_failed = $GLOBALS['SITE_DB']->query_value_if_there($sql);
-        $this->assertTrue($num_failed < $threshold, 'High number of hack-attacks triggered in the last 24 hours, at ' . integer_format($num_failed, 0));
+        $this->assertTrue($num_failed < $threshold, 'High hack-attack activity in the last 24 hours; cumulative risk scores at ' . integer_format($num_failed, 0));
     }
 
     /**
@@ -187,7 +187,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         if (is_file($rate_limiter_path)) {
             $fp = fopen($rate_limiter_path, 'rb');
             flock($fp, LOCK_SH);
-            include($rate_limiter_path);
+            include $rate_limiter_path;
             flock($fp, LOCK_UN);
             fclose($fp);
         }

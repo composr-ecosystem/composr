@@ -31,44 +31,44 @@ $post_url = build_url(['page' => '_SELF', 'type' => 'save'], '_SELF');
 // Default XML in case it does not exist or is empty
 $default_xml = '
 <!--
-	Each achievement supports these attributes:
-	- name (required; a unique alphanumeric codename for the achievement)
-	- title (required; a title for this achievement which will be publicly visible... can be a language string codename or raw text)
-	- image (optional but recommended; image to use as the achievement badge. Can be an absolute URL, relative path, or a theme image code. Defaults to no image.)
-	- readOnly (Optional; set to 1 to disable the ability to earn this achievement if not already earned. Defaults to 0.)
-	- hidden (Optional; set to 1 if you do not want to display this achievement among those that can be earned... it will only be visible when earned and only to the member who earned it. Defaults to 0.)
-	 - If an achievement has no qualifications defined, or all of the qualifications are disabled, the achievement will be both hidden and readOnly.
-	- permanent (optional; set to 1 if this achievement cannot be revoked if a member earned it but later no-longer meets its qualifications. Defaults to 0.)
-		- Note that if you set this to 1, you must manually remove achievement awards from the database (achievements_members) and their points if you want to revoke an achievement from a member.
-	- points (optional; award this many points for the achievement [points will be reversed if the achievement is removed])
+    Each achievement supports these attributes:
+    - name (required; a unique alphanumeric codename for the achievement)
+    - title (required; a title for this achievement which will be publicly visible... can be a language string codename or raw text)
+    - image (optional but recommended; image to use as the achievement badge. Can be an absolute URL, relative path, or a theme image code. Defaults to no image.)
+    - readOnly (Optional; set to 1 to disable the ability to earn this achievement if not already earned. Defaults to 0.)
+    - hidden (Optional; set to 1 if you do not want to display this achievement among those that can be earned... it will only be visible when earned and only to the member who earned it. Defaults to 0.)
+     - If an achievement has no qualifications defined, or all of the qualifications are disabled, the achievement will be both hidden and readOnly.
+    - permanent (optional; set to 1 if this achievement cannot be revoked if a member earned it but later no-longer meets its qualifications. Defaults to 0.)
+        - Note that if you set this to 1, you must manually remove achievement awards from the database (achievements_members) and their points if you want to revoke an achievement from a member.
+    - points (optional; award this many points for the achievement [points will be reversed if the achievement is removed])
 -->
 
 <!--
-	You should check sources_custom/hooks/systems/achievement_qualifications for parameters to specific qualifications.
-	Qualification tags also have these additional global attributes:
-	- name (Required; the name of the achievement_qualifications hook we are using [filename without the .php at the end]; if it does not exist or it returns null, it will be ignored.)
-	- persist (Optional; set to 1 if qualification progress should only ever go up, not down [e.g. if a content is deleted, progress would not discount it anymore]. Defaults to a hook persist_progress_default value.)
+    You should check sources_custom/hooks/systems/achievement_qualifications for parameters to specific qualifications.
+    Qualification tags also have these additional global attributes:
+    - name (Required; the name of the achievement_qualifications hook we are using [filename without the .php at the end]; if it does not exist or it returns null, it will be ignored.)
+    - persist (Optional; set to 1 if qualification progress should only ever go up, not down [e.g. if a content is deleted, progress would not discount it anymore]. Defaults to a hook persist_progress_default value.)
 -->
 
 <!--
-	A note about how achievement progress is tracked:
-	 - Tracking in the database of achievements earned is matched to the defined achievement "name". If you change a name, everyone loses the achievement.
-	 - Tracking in the database of qualification progress is matched to a hash of the qualification attributes, group number, and achievement (the hash also considers the name of the achievement).
-	  - If you change any qualification parameters or the achievement name, progress is reset and re-calculated.
-	  - If you move a qualification to another achievement, progress will also be reset and re-calculated.
+    A note about how achievement progress is tracked:
+     - Tracking in the database of achievements earned is matched to the defined achievement "name". If you change a name, everyone loses the achievement.
+     - Tracking in the database of qualification progress is matched to a hash of the qualification attributes, group number, and achievement (the hash also considers the name of the achievement).
+      - If you change any qualification parameters or the achievement name, progress is reset and re-calculated.
+      - If you move a qualification to another achievement, progress will also be reset and re-calculated.
 -->
 
 <achievements>
     <!--
-	<achievement name="extrovert" title="achievements:ACHIEVEMENT_EXTROVERT" points="100">
-		<qualifications>
-			<qualification name="activity_feed" count="10" />
-			<qualification name="chat_messages" count="50" />
-		</qualifications>
-		<qualifications>
-			<qualification name="content" types="post" count="25" />
-		</qualifications>
-	</achievement>
+    <achievement name="extrovert" title="achievements:ACHIEVEMENT_EXTROVERT" points="100">
+        <qualifications>
+            <qualification name="activity_feed" count="10" />
+            <qualification name="chat_messages" count="50" />
+        </qualifications>
+        <qualifications>
+            <qualification name="content" types="post" count="25" />
+        </qualifications>
+    </achievement>
     -->
 </achievements>
 ';

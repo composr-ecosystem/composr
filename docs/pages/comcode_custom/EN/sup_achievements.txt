@@ -104,7 +104,7 @@ Let's go through an example of an achievement in XML form, and I will explain it
 This defines an "extrovert" achievement for unlocking. It uses the theme image "icons_monochrome/menu/social/chat/chat" as the badge. It uses the language string "achievements:ACHIEVEMENT_EXTROVERT" for the public title. And it will award 100 points when unlocked. Since readOnly was not defined, members can unlock it. Since hidden was not defined, it is publicly visible. And since permanent was not defined, the achievement will be revoked if a member unlocked it but later no longer met the requirements.
 
 This achievement defines two sets of qualifications. This means a member only has to meet the qualifications in one of those two sets to unlock the achievement. They can either:
- - post 10 statuses on the acticity feed and post 50 messages in the chat rooms, OR
+ - post 10 statuses on the acticity feed and post 50 messages in the chatrooms, OR
  - make 25 forum posts (content is a generic all-encompassing qualification for submitted content, and the types attribute defined the content type of post)
 
 [title="2"]Nuances[/title]
@@ -124,4 +124,4 @@ Tracking of qualification progress in the database is done by generating a hash 
 [title="3"]Qualification persisting[/title]
 Since progress is not calculated in real-time, it is possible on a persisting qualification for an item to not count if, for example, it was added and then deleted before calculations are run again for that member.
 
-{$SET,tutorial_tags,Addon,Fun and Games,regular}{$SET,tutorial_add_date,Dec 2024}{$SET,tutorial_summary,This tutorial covers how you can add achievements (public badges) which members can earn for meeting certain requirements.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Addon,Fun and Games,regular,achievements}{$SET,tutorial_add_date,Dec 2024}{$SET,tutorial_summary,This tutorial covers how you can add achievements (public badges) which members can earn for meeting certain requirements.}[block]main_tutorial_rating[/block]

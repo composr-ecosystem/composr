@@ -12,7 +12,7 @@
 
 */
 
-/*EXTRA FUNCTIONS: strtoupper|strtolower*/
+/*EXTRA FUNCTIONS: strtoupper|strtolower|usleep*/
 
 /*
     secondary bootstrap loaded after bootstrap.php by any front-end script
@@ -25,21 +25,27 @@
  */
 
 /**
- * This function is a very important one when coding. It allows you to include a source code file (from root/sources/ or root/sources_custom/) through the proper channels.
- * You should remember this function, and not substitute anything else for it, as that will likely make your code unstable.
- * It is key to source code modularity in Composr.
+ * Require a software PHP file while, where applicable, compiling in overrides from *_custom folders and contentious overrides.
+ * You should remember this function and use this opposed to require/include/require_once/include_once for proper modularity (except for bootstrap.php which has to be required directly).
  *
  * @param  string $codename The codename for the source module to load (or a full relative path, ending with .php; if custom checking is needed, this must be the custom version)
  * @param  boolean $light_exit Whether to cleanly fail when a source file is missing
  * @param  ?boolean $has_custom Whether this is going to be from under a custom directory (null: search). This is used for performance to avoid extra searching when we already know where a file is
- * @param  boolean $force_custom Whether to forcefully allow custom overrides even if in safe mode
+ * @param  boolean $force_custom Whether to forcefully allow custom overrides even if in safe mode (still ignored for files which do not support overrides)
  */
 function require_code(string $codename, bool $light_exit = false, ?bool $has_custom = null, bool $force_custom = false)
 {
     // Handle if already required...
-
     global $REQUIRED_CODE, $REQUIRING_CODE, $FILE_BASE, $SITE_INFO;
     if (isset($REQUIRED_CODE[$codename])) {
+        return;
+    }
+
+    // These scripts can be loaded in directly from outside software (but only the original code). For consistency, do not allow overrides on them.
+    // Exception: if we are running in dev_mode, compile anyway because we need strict typing on them.
+    $no_override_support = ['crypt_maintenance', 'version'];
+    if (in_array($codename, $no_override_support) && (!$GLOBALS['DEV_MODE'])) {
+        require_code_no_override($codename);
         return;
     }
 
@@ -111,6 +117,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
         }
     }
 
+    // Overrides are disabled in safe mode
     if ((isset($SITE_INFO['safe_mode'])) && ($SITE_INFO['safe_mode'] === '1')) {
         $has_custom = false;
     }
@@ -203,7 +210,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                 $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
 
                 // Compile in original code (pass in $orig code if we modified it so a _compiled file is generated)
-                if ($overlaps == true) {
+                if ($overlaps) {
                     $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $orig);
                 } else {
                     $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
@@ -277,8 +284,8 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 }
 
 /**
- * Require code, but without looking for sources_custom overrides.
- * This also bypasses special DEV_MODE declare strict_types as this uses require_once and not eval.
+ * Require code from the software without considering or compiling overrides.
+ * This also bypasses special DEV_MODE declare strict_types.
  *
  * @param  string $codename The codename for the source module to load
  */
@@ -289,40 +296,22 @@ function require_code_no_override(string $codename)
         return;
     }
     $REQUIRED_CODE[$codename] = true;
-    require_once(get_file_base() . '/sources/' . filter_naughty($codename) . '.php');
+    require_once get_file_base() . '/sources/' . filter_naughty($codename) . '.php';
     if (function_exists('init__' . str_replace('/', '__', $codename))) {
         call_user_func('init__' . str_replace('/', '__', $codename));
     }
 }
 
 /**
- * Make a PHP file evaluable.
- *
- * @param  string $c File contents
- * @param  ?string $path File path (null: N/A)
- * @return string Cleaned up file
- */
-function clean_php_file_for_eval(string $c, ?string $path = null) : string
-{
-    $reps = [];
-    $reps['?' . '>'] = '';
-    $reps['<' . '?php'] = '';
-    if ($path !== null) {
-        $reps['__FILE__'] = "'" . addslashes($path) . "'";
-        $reps['__DIR__'] = "'" . addslashes(dirname($path)) . "'";
-    }
-
-    return str_replace(array_keys($reps), array_values($reps), $c);
-}
-
-/**
  * Compile some code into the _compiled directory if we need to for later inclusion by call_compiled_code.
+ * Do not use this function directly; use require_code instead.
  *
- * @param  string $orig_path File path
+ * @param  string $orig_path Path to the original or custom file (not _compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled if we do not need one)
+ * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled file if we do not need one)
  * @return boolean Whether we should delete any existing _compiled files for this, through call_compiled_code
+ * @ignore
  */
 function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : bool
 {
@@ -364,19 +353,20 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
 
     $prepend = ''; // NB: Must begin with a space if populated
 
-    // Code must be able to compile into a PHP file (unless we are appending)
-    if (($code !== null) && (strpos('<' . '?php ', $code) === false)) {
-        $code = '<' . '?php' . $code;
-    }
-
     // In DEV_MODE, declare PHP strict_types at the top unless "No strict_types" is commented.
     if ($GLOBALS['DEV_MODE']) {
         if ($code === null) {
             $code = file_get_contents($path);
+            $code = clean_php_file_for_eval($code, $path); // We will later put the PHP declaration back in, but we need to replace __FILE__ and __DIR__.
         }
-         if (strpos($code, '/*No strict_types*/') === false) {
+        if (strpos($code, '/*No strict_types*/') === false) {
             $prepend .= ' declare(strict_types=1);';
         }
+    }
+
+    // Code must be able to compile into a PHP file
+    if (($code !== null) && (strpos('<' . '?php ', $code) === false)) {
+        $code = '<' . '?php' . $code;
     }
 
     if ($code !== null) {
@@ -400,7 +390,7 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         }
 
         // Prepare code
-        $prepend .= ' /* DO NOT EDIT THIS FILE; this is a temporary compiled file. Instead, edit ' . $relative_path . ' and its overrides. */';
+        $prepend .= ' /* DO NOT EDIT THIS FILE; this is a temporary compiled file. Instead, edit ' . $relative_path . ' and its overrides. */ ';
         $code = str_replace('<' . '?php ', '<' . '?php' . $prepend, $code);
 
         // Write operations are very time-consuming; don't write if the contents of the PHP file will not change.
@@ -427,7 +417,9 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
                     }
                 }
 
-                usleep(250000);
+                if (php_function_allowed('usleep')) {
+                    usleep(250000);
+                }
             }
 
             clearstatcache(true, $compiled_path);
@@ -440,18 +432,18 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
 }
 
 /**
- * Include some code for use within the software (after we ran compile_included_code on it).
- * If a _compiled file version is available, we will use that one instead of the original.
+ * Require some code for use within the software (after we ran compile_included_code on it), prioritising _compiled files if they exist.
+ * Do not use this function directly; use require_code instead.
  *
- * @param  string $orig_path The file path to the original file (not the compiled one)
+ * @param  string $path The file path to the original file (not the compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
  * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file, if it exists
+ * @ignore
  */
 function call_compiled_code(string $path, string $codename, bool $light_exit, bool $delete_compiled = false)
 {
-    // These files have already been required in by this function.
-    // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
+    // The files already defined here are always required in before using the core software's methods of requiring code.
     static $already_called = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
 
     $do_sed = function_exists('push_suppress_error_death');
@@ -501,10 +493,12 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
                 throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
             }
 
-            usleep(100000);
+            if (php_function_allowed('usleep')) {
+                usleep(100000);
+            }
         }
 
-        $result = require $calling_path;
+        $result = require_once $calling_path;
 
         if ($file !== false) {
             fclose($file);
@@ -552,7 +546,8 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
         // We need to be careful of the potential that a lot of these functions have not been loaded up yet
         $error_lang_str = (is_file($calling_path) ? 'CORRUPT_SOURCE_FILE' : 'MISSING_SOURCE_FILE');
         if (function_exists('do_lang_tempcode')) {
-            $error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($calling_relative_path), escape_html($errormsg));
+            $_error_message = do_lang_tempcode($error_lang_str, escape_html($codename), escape_html($calling_relative_path), escape_html($errormsg));
+            $error_message = $_error_message->evaluate();
         } else {
             $error_message = $error_lang_str . ': ' . escape_html($codename) . '; ' . escape_html($calling_relative_path) . '; ' . escape_html($errormsg);
         }
@@ -561,14 +556,14 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
                 warn_exit($error_message, false, true);
             } else {
                 require_code('critical_errors');
-                critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
+                critical_error('PASSON', $error_message . ' in ' . $calling_relative_path);
             }
         }
         if (function_exists('fatal_exit')) {
             fatal_exit($error_message, true);
         } else {
             require_code('critical_errors');
-            critical_error('PASSON', is_object($error_message) ? $error_message->evaluate() : $error_message . ' in ' . $calling_relative_path);
+            critical_error('PASSON', $error_message . ' in ' . $calling_relative_path);
         }
     }
 }
@@ -767,7 +762,7 @@ function cms_flush_safe()
 }
 
 /**
- * Get the file base for your installation of Composr.
+ * Get the file base for your installation of the software.
  *
  * @return PATH The file base, without a trailing slash
  */
@@ -778,7 +773,7 @@ function get_file_base() : string
 }
 
 /**
- * Get the file base for your installation of Composr.  For a shared install, or a GAE-install, this is different to the file-base.
+ * Get the file base for your installation of the software.  For a shared install, or a GAE-install, this is different to the file-base.
  *
  * @return PATH The file base, without a trailing slash
  */
@@ -800,7 +795,7 @@ function get_custom_file_base() : string
 
 /**
  * Get the parameter put into it, with no changes. If it detects that the parameter is naughty (i.e malicious, and probably from a hacker), it will log the hack-attack and output an error message.
- * This function is designed to be called on parameters that will be embedded in a path, and defines malicious as trying to reach a parent directory using '..'. All file paths in Composr should be absolute.
+ * This function is designed to be called on parameters that will be embedded in a path, and defines malicious as trying to reach a parent directory using '..'. All file paths in the software should be absolute.
  *
  * @param  string $in String to test
  * @param  boolean $preg Whether to just filter out the naughtiness
@@ -903,7 +898,7 @@ function fixup_bad_php_env_vars_pre()
 
 /**
  * See if we should consider the user admin based on the backdoor_ip setting.
- * If Composr is not fully bootstrapped then it will do simpler checks.
+ * If the software is not fully bootstrapped then it will do simpler checks.
  *
  * @return boolean Whether backdoor is activated
  */
@@ -1418,13 +1413,13 @@ $IN_MINIKERNEL_VERSION = false;
 // Critical error reporting system
 global $FILE_BASE;
 if (is_file($FILE_BASE . '/sources_custom/critical_errors.php')) {
-    require($FILE_BASE . '/sources_custom/critical_errors.php');
+    require $FILE_BASE . '/sources_custom/critical_errors.php';
 } else {
     if (function_exists('error_clear_last')) {
         error_clear_last();
     }
     $errormsg_before = error_get_last();
-    $result = @include($FILE_BASE . '/sources/critical_errors.php');
+    $result = @include $FILE_BASE . '/sources/critical_errors.php';
     $errormsg = error_get_last();
     if ((!$result) && ($errormsg !== null) && ($errormsg !== $errormsg_before)) {
         exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The third most basic Composr startup file, sources/critical_errors.php, could not be loaded (error: ' . $errormsg['message'] . '). This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
@@ -1492,7 +1487,7 @@ if ($rate_limiting) {
             if (is_file($rate_limiter_path)) {
                 $fp = fopen($rate_limiter_path, 'rb');
                 flock($fp, LOCK_SH);
-                include($rate_limiter_path);
+                include $rate_limiter_path;
                 flock($fp, LOCK_UN);
                 fclose($fp);
             }

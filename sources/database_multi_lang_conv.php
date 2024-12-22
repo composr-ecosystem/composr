@@ -61,6 +61,7 @@ function disable_content_translation()
 {
     return; // TODO: catastrophically broken and will corrupt websites! Disabled for integrity.
 
+    /*
     push_db_scope_check(false);
     push_query_limiting(false);
 
@@ -139,6 +140,7 @@ function disable_content_translation()
     _update_base_config_for_content_translation(false);
 
     rebuild_indices(true);
+    */
 }
 
 /**
@@ -148,6 +150,7 @@ function enable_content_translation()
 {
     return; // TODO: catastrophically broken and will corrupt websites! Disabled for integrity.
 
+    /*
     push_db_scope_check(false);
     push_query_limiting(false);
 
@@ -194,7 +197,7 @@ function enable_content_translation()
         // Copy to translate table
         $start = 0;
         do {
-            $trans = $db->query_select($field['m_table'], ['*'], [], '', 100, $start, false, []/*Needs to disable auto-field-grabbing as DB state is currently inconsistent*/);
+            $trans = $db->query_select($field['m_table'], ['*'], [], '', 100, $start, false, []);
             foreach ($trans as $t) {
                 $lang_id = null;
                 $lock = false;
@@ -239,6 +242,7 @@ function enable_content_translation()
     _update_base_config_for_content_translation(true);
 
     rebuild_indices(true);
+    */
 }
 
 /**

@@ -26,8 +26,8 @@ function sign_in_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/account_write.php');
-    require_once(COMMON_CLASS_PATH_READ . '/account_read.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/account_write.php';
+    require_once COMMON_CLASS_PATH_READ . '/account_read.php';
 
     $token = $params[0];
     $code = $params[1];
@@ -60,7 +60,7 @@ function sign_in_func($raw_params)
         return mobiquo_response($response);
     }
 
-    require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/user_read.php';
 
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_user_details($results['member_id']);
@@ -122,7 +122,7 @@ function forget_password_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/account_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/account_write.php';
 
     $username = $params[0];
     $token = isset($params[1]) ? $params[1] : '';
@@ -153,7 +153,7 @@ function update_password_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/account_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/account_write.php';
 
     $account_object = new CMSAccountWrite();
     if (isset($params[2])) {
@@ -176,7 +176,7 @@ function update_email_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/account_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/account_write.php';
 
     $password = $params[0];
     $new_email = $params[1];
@@ -198,7 +198,7 @@ function register_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/account_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/account_write.php';
 
     $username = $params[0];
     $password = $params[1];
@@ -231,7 +231,7 @@ function prefetch_account_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/account_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/account_read.php';
 
     if (!empty($params[0])) {
         $email = $params[0];
@@ -312,7 +312,7 @@ function sync_user_func($raw_params)
 
     $users = [];
     if (get_option('tapatalk_enable_sync_user') == '1') {
-        require_once(COMMON_CLASS_PATH_READ . '/account_read.php');
+        require_once COMMON_CLASS_PATH_READ . '/account_read.php';
 
         $account_object = new CMSAccountRead();
         $users = $account_object->sync_members($start, $max);

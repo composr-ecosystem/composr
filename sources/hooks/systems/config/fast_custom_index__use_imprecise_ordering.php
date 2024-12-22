@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fast_custom_index__use_imprecise_ordering // TODO: renamed; needs upgrader migration
+class Hook_config_fast_custom_index__use_imprecise_ordering
 {
     /**
      * Gets the details relating to the config option.

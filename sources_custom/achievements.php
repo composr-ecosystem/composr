@@ -627,6 +627,7 @@ class Achievements_loader
             return null;
         }
         return do_template('ACHIEVEMENT_PROGRESS_QUALIFICATION', [
+            '_GUID' => '751596a0d26e5a6d8ab5358568e9bef5',
             'QUALIFICATION_TEXT' => $results,
             'QUALIFICATION_DONE' => ($count_done >= $count_required),
         ]);
@@ -782,6 +783,14 @@ class Achievements_loader
                 $count_done += $current_value;
             }
         }
+
+        // NB: Normally, negative "done" progress would be theoretically impossible, so we would use an unsigned integer in the database.
+        // However, this is not true. A negative karma could be possible, and so could negative points. And these need to be accounted for accordingly.
+        /*
+            if ($count_done < 0) {
+                $count_done = 0;
+            }
+        */
 
         // Update the database with our new progress
         $GLOBALS['SITE_DB']->query_delete('achievements_progress', ['ap_member_id' => $member_id, 'ap_qualification_hash' => $hash]);

@@ -66,7 +66,7 @@ class Hook_contentious_overrides_karma
         // Top Content / Awards karma (we do not support removing karma for this)
         if ($codename == 'awards' && (strpos($path, 'sources_custom/') === false)) {
             if ($code === null) {
-                $code = clean_php_file_for_eval(file_get_contents($path));
+                $code = clean_php_file_for_eval(file_get_contents($path), $path);
             }
 
             insert_code_before__by_command(
@@ -86,7 +86,7 @@ class Hook_contentious_overrides_karma
         // Feedback karma
         if (($codename == 'feedback') && (strpos($path, 'sources_custom/') === false)) {
             if ($code === null) {
-                $code = clean_php_file_for_eval(file_get_contents($path));
+                $code = clean_php_file_for_eval(file_get_contents($path), $path);
             }
 
             insert_code_before__by_command(
@@ -128,7 +128,7 @@ class Hook_contentious_overrides_karma
         // Topic poll voting karma
         if (($codename == 'cns_polls_action2') && (strpos($path, 'sources_custom/') === false)) {
             if ($code === null) {
-                $code = clean_php_file_for_eval(file_get_contents($path));
+                $code = clean_php_file_for_eval(file_get_contents($path), $path);
             }
 
             // When erasing all votes on a poll, also reverse all karma.
@@ -198,7 +198,7 @@ class Hook_contentious_overrides_karma
         // Website poll voting karma (web polls do not support vote reversals, and deleting polls do not delete the votes)
         if (($codename == 'polls') && (strpos($path, 'sources_custom/') === false)) {
             if ($code === null) {
-                $code = clean_php_file_for_eval(file_get_contents($path));
+                $code = clean_php_file_for_eval(file_get_contents($path), $path);
             }
 
             // Add karma when voting
@@ -223,7 +223,7 @@ class Hook_contentious_overrides_karma
         // giftr karma
         if ($codename == 'hooks/systems/ecommerce/giftr'/*this is a non-bundled addon, so no sources_custom checks*/) {
             if ($code === null) {
-                $code = clean_php_file_for_eval(file_get_contents($path));
+                $code = clean_php_file_for_eval(file_get_contents($path), $path);
             }
 
             // Add karma when receiving a gift
@@ -250,7 +250,7 @@ class Hook_contentious_overrides_karma
         // eCommerce purchases
         if (($codename == 'ecommerce') && (strpos($path, 'sources_custom/') === false)) {
             if ($code === null) {
-                $code = clean_php_file_for_eval(file_get_contents($path));
+                $code = clean_php_file_for_eval(file_get_contents($path), $path);
             }
 
             // Add karma when making a purchase

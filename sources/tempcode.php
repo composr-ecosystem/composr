@@ -2626,10 +2626,14 @@ function tempcode_include(string $filepath)
 
     if (GOOGLE_APPENGINE) {
         gae_optimistic_cache(true);
-        $ret = @include($filepath);
+        $ret = @include $filepath;
         gae_optimistic_cache(false);
     } else {
-        $ret = is_file($filepath) ? include($filepath) : false;
+        if (is_file($filepath)) {
+            $ret = @include $filepath;
+        } else {
+            $ret = false;
+        }
     }
 
     return $ret;

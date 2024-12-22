@@ -99,7 +99,7 @@ class Hook_resource_meta_aware_warning_punitive extends Hook_CMA
             'cms_page' => null,
             'module' => 'warnings',
 
-            'commandr_filesystem_hook' => null, // TODO
+            'commandr_filesystem_hook' => null,
             'commandr_filesystem__is_folder' => false,
 
             'support_revisions' => false,
@@ -110,7 +110,7 @@ class Hook_resource_meta_aware_warning_punitive extends Hook_CMA
 
             'support_spam_heuristics' => null,
 
-            'actionlog_regexp' => null, // TODO: probably should have a prefix or suffix
+            'actionlog_regexp' => null,
 
             'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
             'default_prominence_flags' => 0,

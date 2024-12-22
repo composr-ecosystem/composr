@@ -27,16 +27,20 @@ class gallery_images_test_set extends cms_test_case
         require_code('galleries');
         require_code('galleries2');
 
-        $this->image_id = add_image('', '', '', 'images/test.jpg', 0, 0, 0, 0, '', null, null, null, 0, null);
+        $this->image_id = add_image('', '', '', 'themes/default/images/no_image.png', 0, 0, 0, 0, '', null, null, null, 0, null);
 
-        $this->assertTrue('images/test.jpg' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
+        // The software copies local images not in the galleries upload folder to the galleries upload folder
+        $actual_path = $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]);
+        $this->assertTrue('uploads/galleries/no_image.png' == $actual_path, 'Wrong path: Got ' . $actual_path);
     }
 
     public function testEditGalleryImage()
     {
-        edit_image($this->image_id, '', '', '', 'images/sample.jpg', 0, 0, 0, 0, '', '', '');
+        edit_image($this->image_id, '', '', '', 'themes/default/images/blank.gif', 0, 0, 0, 0, '', '', '');
 
-        $this->assertTrue('images/sample.jpg' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
+        // The software copies local images not in the galleries upload folder to the galleries upload folder
+        $actual_path = $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]);
+        $this->assertTrue('uploads/galleries/blank.gif' == $actual_path, 'Wrong path: Got ' . $actual_path);
     }
 
     public function tearDown()

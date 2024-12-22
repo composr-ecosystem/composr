@@ -98,6 +98,10 @@ class tutorial_quality_test_set extends cms_test_case
                 continue;
             }
 
+            if (!is_file($path . '/' . $file)) { // Possible sub-directories like _old_backups
+                continue;
+            }
+
             $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 
             $c = str_replace('[page="docs:"]', '', $c);
@@ -129,6 +133,10 @@ class tutorial_quality_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (($this->only !== null) && ($this->only != $file)) {
+                continue;
+            }
+
+            if (!is_file($path . '/' . $file)) { // Possible sub-directories like _old_backups
                 continue;
             }
 
@@ -167,6 +175,10 @@ class tutorial_quality_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (($this->only !== null) && ($this->only != $file)) {
+                continue;
+            }
+
+            if (!is_file($path . '/' . $file)) { // Possible sub-directories like _old_backups
                 continue;
             }
 
@@ -221,6 +233,10 @@ class tutorial_quality_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (($this->only !== null) && ($this->only != $file)) {
+                continue;
+            }
+
+            if (!is_file($path . '/' . $file)) { // Possible sub-directories like _old_backups
                 continue;
             }
 

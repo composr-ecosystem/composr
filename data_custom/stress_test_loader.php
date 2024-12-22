@@ -39,7 +39,7 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
     exit('<!DOCTYPE html>' . "\n" . '<html lang="EN"><head><title>Critical startup error</title></head><body><h1>Composr startup error</h1><p>The second most basic Composr startup file, sources/bootstrap.php, could not be located. This is almost always due to an incomplete upload of the Composr system, so please check all files are uploaded correctly.</p><p>Once all Composr files are in place, Composr must actually be installed by running the installer. You must be seeing this message either because your system has become corrupt since installation, or because you have uploaded some but not all files from our manual installer package: the quick installer is easier, so you might consider using that instead.</p><p>The core developers maintain full documentation for all procedures and tools, especially those for installation. These may be found on the <a href="https://composr.app">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p><hr /><p style="font-size: 0.8em">Composr is a website engine created by Christopher Graham.</p></body></html>');
 }
 
-require_once($FILE_BASE . '/sources/bootstrap.php');
+require_once $FILE_BASE . '/sources/bootstrap.php';
 require_code__bootstrap('global');
 
 if (!addon_installed('stress_test')) {
@@ -279,11 +279,11 @@ function do_work()
     // chatrooms
     require_code('chat2');
     require_code('chat');
-    echo 'STARTING: Chat rooms' . "\n";
+    echo 'STARTING: Chatrooms' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $room_id = add_chatroom(random_text(), random_line(), mt_rand(db_get_first_id() + 1, $num_wanted - 1), strval(db_get_first_id() + 1), '', '', '', fallback_lang());
     }
-    echo 'FINISHED: Chat rooms' . "\n";
+    echo 'FINISHED: Chatrooms' . "\n";
     $room_id = db_get_first_id() + 1;
 
     // messages in chatroom

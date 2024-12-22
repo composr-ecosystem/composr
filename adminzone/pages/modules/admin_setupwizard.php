@@ -601,9 +601,9 @@ class Module_admin_setupwizard
             'printer_friendly_block',
             'data_mappr', // this will be downloaded as it is not bundled
             'user_mappr', // this will be downloaded as it is not bundled
-            'facebook_support', // this will be downloaded as it is not bundled
             'hybridauth', // this will be downloaded as it is not bundled
             'karma', // This will be downloaded as it is not bundled
+            'achievements', // This will be downloaded as it is not bundled
         ];
         if (GOOGLE_APPENGINE) {
             $addon_list_advanced_off_by_default[] = 'google_appengine';
@@ -730,7 +730,7 @@ class Module_admin_setupwizard
 
         $hooks = find_all_hooks('modules', 'admin_setupwizard');
         foreach (array_keys($hooks) as $hook) {
-            if ((post_param_integer('addon_' . $hook, 0) == 1) && ($hook != 'core')) {
+            if ((post_param_integer('addon_' . $hook, 0) == 1) && ($hook != 'core')) { // Core one explicitly goes last
                 $path = get_file_base() . '/sources_custom/hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook) . '.php';
                 if (!file_exists($path)) {
                     $path = get_file_base() . '/sources/hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook) . '.php';

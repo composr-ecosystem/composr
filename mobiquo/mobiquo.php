@@ -19,7 +19,7 @@ define('IN_MOBIQUO', true);
 define('FORUM_ROOT', __DIR__);
 
 if (isset($_GET['welcome'])) {
-    include(__DIR__ . '/smartbanner/app.php');
+    include __DIR__ . '/smartbanner/app.php';
     exit();
 }
 
@@ -28,23 +28,23 @@ define('COMMON_CLASS_PATH_WRITE', __DIR__ . '/mbqClass/write');
 define('COMMON_CLASS_PATH_ACL', __DIR__ . '/mbqClass/acl');
 define('COMMON_CLASS_PATH_INCLUDE', __DIR__ . '/include');
 
-include(COMMON_CLASS_PATH_INCLUDE . '/mobiquo_functions.php');
-include(COMMON_CLASS_PATH_INCLUDE . '/common_functions.php');
-include(COMMON_CLASS_PATH_INCLUDE . '/forum_functions.php');
-include(COMMON_CLASS_PATH_INCLUDE . '/permission_functions.php');
-include(COMMON_CLASS_PATH_INCLUDE . '/pm_functions.php');
+include COMMON_CLASS_PATH_INCLUDE . '/mobiquo_functions.php';
+include COMMON_CLASS_PATH_INCLUDE . '/common_functions.php';
+include COMMON_CLASS_PATH_INCLUDE . '/forum_functions.php';
+include COMMON_CLASS_PATH_INCLUDE . '/permission_functions.php';
+include COMMON_CLASS_PATH_INCLUDE . '/pm_functions.php';
 
-require(__DIR__ . '/lib/mobiquo.php');
+require __DIR__ . '/lib/mobiquo.php';
 
 initialise_composr();
 
 // This is needed here, due to the $xmlrpc* globals being needed in server_define, regardless of protocol
-require(__DIR__ . '/lib/xmlrpc.php');
-require(__DIR__ . '/lib/xmlrpcs.php');
+require __DIR__ . '/lib/xmlrpc.php';
+require __DIR__ . '/lib/xmlrpcs.php';
 
 initialise_mobiquo();
 
-include(COMMON_CLASS_PATH_INCLUDE . '/server_define.php');
+include COMMON_CLASS_PATH_INCLUDE . '/server_define.php';
 
 global $MOBIQUO_SERVER;
 $headers = apache_request_headers();
@@ -52,27 +52,27 @@ $content_type = isset($headers['Content-Type']) ? $headers['Content-Type'] : '';
 
 switch ($content_type) {
     case 'application/json':
-        require(__DIR__ . '/lib/mobiquo_json.php');
+        require __DIR__ . '/lib/mobiquo_json.php';
         $MOBIQUO_SERVER = new MobiquoServerJSON();
         break;
     case 'text/xml':
-        require(__DIR__ . '/lib/mobiquo_xmlrpc.php');
+        require __DIR__ . '/lib/mobiquo_xmlrpc.php';
         $MOBIQUO_SERVER = new MobiquoServerXMLRPC();
         break;
     default:
         if (isset($_POST['method_name']) || isset($_GET['method_name'])) {
-            require(__DIR__ . '/lib/mobiquo_post.php');
+            require __DIR__ . '/lib/mobiquo_post.php';
             $MOBIQUO_SERVER = new MobiquoServerPOST();
         } else {
-            require(__DIR__ . '/lib/mobiquo_xmlrpc.php');
+            require __DIR__ . '/lib/mobiquo_xmlrpc.php';
             $MOBIQUO_SERVER = new MobiquoServerXMLRPC();
         }
         break;
 }
 
-require(__DIR__ . '/lib/classTTConnection.php');
-require(__DIR__ . '/lib/classTTCipherEncrypt.php');
-require(__DIR__ . '/lib/TapatalkPush.php');
+require __DIR__ . '/lib/classTTConnection.php';
+require __DIR__ . '/lib/classTTCipherEncrypt.php';
+require __DIR__ . '/lib/TapatalkPush.php';
 
 $request_method_name = $MOBIQUO_SERVER->get_method_name();
 
@@ -81,7 +81,7 @@ header('Mobiquo_is_login: ' . (is_guest() ? 'false' : 'true'));
 global $SERVER_DEFINE;
 if (!empty($request_method_name) && isset($SERVER_DEFINE[$request_method_name])) {
     $filename = request_helper_get_file($request_method_name);
-    require_once(__DIR__ . '/api/' . $filename . '.php');
+    require_once __DIR__ . '/api/' . $filename . '.php';
 }
 
 if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {

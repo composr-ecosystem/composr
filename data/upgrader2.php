@@ -50,7 +50,8 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
 // Check access
 $hashed_password = $_GET['hashed_password'];
 global $SITE_INFO;
-require_once(is_file($FILE_BASE . '/_config.php') ? ($FILE_BASE . '/_config.php') : ($FILE_BASE . '/info.php')); // LEGACY
+$file_to_require = (is_file($FILE_BASE . '/_config.php') ? ($FILE_BASE . '/_config.php') : ($FILE_BASE . '/info.php')); // LEGACY
+require_once $file_to_require;
 if (!upgrader2_check_maintenance_password($hashed_password)) {
     exit('Access Denied');
 }
@@ -258,13 +259,14 @@ function upgrader2_check_maintenance_password(string $password_given_hashed) : b
 {
     global $FILE_BASE;
     if (!is_file($FILE_BASE . '/sources/crypt_maintenance.php')) { // LEGACY (v10 -> v11 upgrade)
-        require_once($FILE_BASE . '/sources/crypt_master.php');
+        require_once $FILE_BASE . '/sources/crypt_master.php';
         if (function_exists('check_master_password_from_hash')) {
             return check_master_password_from_hash($password_given_hashed);
         }
+        exit('Error: no valid crypt_master or crypt_maintenance source file present.');
     }
 
-    require_once($FILE_BASE . '/sources/crypt_maintenance.php');
+    require_once $FILE_BASE . '/sources/crypt_maintenance.php';
     return check_maintenance_password_from_hash($password_given_hashed);
 }
 

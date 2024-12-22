@@ -149,7 +149,7 @@ function request_helper_get_file(string $request_method) : string
             if (substr($f, -4) == '.php') {
                 $_f = $_d . '/' . $f;
                 $funcs_before = get_defined_functions();
-                require_once($_f);
+                require_once $_f;
                 $funcs_after = get_defined_functions();
                 $funcs_diff = array_diff($funcs_after['user'], $funcs_before['user']);
 

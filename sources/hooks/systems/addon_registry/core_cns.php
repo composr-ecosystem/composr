@@ -564,6 +564,7 @@ class Hook_addon_registry_core_cns
             'templates/BLOCK_MAIN_JOIN.tpl' => 'block_main_join',
             'templates/CNS_JOIN_FORM.tpl' => 'cns_join_form',
             'text/PARENTAL_CONSENT_MAIL.txt' => 'parental_consent_mail',
+            'text/RULES_CONFIRMATION_MAIL.txt' => 'rules_confirmation_mail',
         ];
     }
 
@@ -1686,6 +1687,29 @@ class Hook_addon_registry_core_cns
             'FIELDS_DONE' => $fields_done,
             'PRIVACY_POLICY_URL' => placeholder_url(),
             'RULES_URL' => placeholder_url(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__rules_confirmation_mail() : object
+    {
+        $declarations = [
+            lorem_sentence(),
+            lorem_sentence(),
+            lorem_sentence(),
+        ];
+
+        return lorem_globalise(do_lorem_template('RULES_CONFIRMATION_MAIL', [
+            'AGREEMENT_DATE_TIME' => placeholder_date(),
+            'RULES' => lorem_sentence_html(),
+            'PRIVACY_POLICY' => lorem_sentence_html(),
+            'DECLARATIONS' => $declarations,
         ], null, false, null, '.txt', 'text'), null, '', true);
     }
 

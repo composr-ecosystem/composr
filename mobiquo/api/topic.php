@@ -45,7 +45,7 @@ function get_topic_status_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/topic_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/topic_read.php';
 
     $topic_ids = array_map('intval', $params[0]);
 
@@ -85,7 +85,7 @@ function new_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/topics_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/topics_write.php';
 
     $forum_id = intval($params[0]);
     $title = $params[1];
@@ -114,7 +114,7 @@ function get_topic_func($raw_params) // Get topics in a forum
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/topic_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/topic_read.php';
 
     $topic_list = [];
     $topic_object = new CMSTopicRead();
@@ -165,7 +165,7 @@ function get_unread_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/topic_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/topic_read.php';
 
     list($start, $max) = get_pagination_positions($params, 0, 1, 9);
 
@@ -202,7 +202,7 @@ function get_participated_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/topic_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/topic_read.php';
 
     list($start, $max) = get_pagination_positions($params, 1, 2, 9);
 
@@ -251,7 +251,7 @@ function get_latest_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/topic_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/topic_read.php';
 
     list($start, $max) = get_pagination_positions($params, 0, 1, 9);
 

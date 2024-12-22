@@ -462,8 +462,8 @@ function hybridauth_create_authenticated_account($provider, $id, $email_address,
 
     // Actualiser...
 
-    // If there's a conflicting username, we may need to change it (suffix a number)  [we don't do in code branch above, as cns_member_external_linker_ask already handles it]
-    $username = get_username_from_human_name($username);
+    // If there's a conflicting username, we may need to change it  [we don't do in code branch above, as cns_member_external_linker_ask already handles it]
+    $username = process_username_discriminator($username);
 
     // Check RBL's/stopforumspam
     $spam_check_level = get_option('spam_check_level');

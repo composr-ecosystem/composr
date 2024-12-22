@@ -88,14 +88,23 @@ class lang_missing_parameters_test_set extends cms_test_case
 
         $line_num = substr_count($c, "\n", 0, $offset) + 1;
 
-        $params = array_fill(1, $num_params, 'xxx');
+        $_params = array_fill(1, $num_params, 'xxx');
+
+        $params = [];
         $params[0] = $string_codename;
+        $params[1] = ((count($_params) > 0) ? array_pop($_params) : null);
+        $params[2] = ((count($_params) > 0) ? array_pop($_params) : null);
+        $params[3] = ((count($_params) > 0) ? $_params : null);
         ksort($params);
 
         $result = call_user_func_array('do_lang', $params);
 
         $pass = preg_match('#\{\d+\}#', $result) == 0;
         $this->assertTrue($pass, 'Issue with call to \'' . $string_codename . '\' in ' . $path . ' on line ' . strval($line_num));
+        if ((!$pass) && ($this->debug)) {
+            $this->dump($result, 'RESULT');
+            $this->dump($params, 'PARAMS');
+        }
 
         return $pass;
     }

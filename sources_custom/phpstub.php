@@ -72,6 +72,20 @@ function hash_file(string $algo, string $filename, bool $binary = false, array $
 }
 
 /**
+ * Generate a non-keyed hash value of the given data.
+ *
+ * @param  string $algo The name of the hashing algorithm to use
+ * @param  string $data The data to be hashed
+ * @param  boolean $binary Whether to output raw binary data (false: output lowercase hex)
+ * @param  array $options Additional algorithm-specific options
+ * @return string The hash value
+ */
+function hash(string $algo, string $data, bool $binary = false, array $options = []) : string
+{
+    return '';
+}
+
+/**
  * Generate a keyed hash value using the HMAC method.
  *
  * @param  string $algo Name of the algorithm to use
@@ -2819,9 +2833,10 @@ function stripos(string $haystack, string $needle, int $offset = 0)
  *
  * @param  string $haystack Haystack
  * @param  string $needle Needle
+ * @param  integer $offset Offset at which to start
  * @return ~integer The offset it is found at (false: not found)
  */
-function strrpos(string $haystack, string $needle)
+function strrpos(string $haystack, string $needle, int $offset = 0)
 {
     return 0;
 }

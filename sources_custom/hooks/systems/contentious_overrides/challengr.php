@@ -37,7 +37,7 @@ class Hook_contentious_overrides_challengr
         switch ($codename) {
             case 'site/pages/modules/quiz.php':
                 if ($code === null) {
-                    $code = clean_php_file_for_eval(file_get_contents($path));
+                    $code = clean_php_file_for_eval(file_get_contents($path), $path);
                 }
 
                 // Charge for entering the competition

@@ -126,17 +126,17 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
         $max = 1000;
         $start = 0;
 
-        $query = 'SELECT first_date_and_time,resolved FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'relayed_errors WHERE ';
-        $query .= 'first_date_and_time>=' . strval($start_time) . ' AND ';
-        $query .= 'first_date_and_time<=' . strval($end_time);
-        $query .= ' ORDER BY first_date_and_time';
+        $query = 'SELECT e_first_date_and_time,e_resolved FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'relayed_errors WHERE ';
+        $query .= 'e_first_date_and_time>=' . strval($start_time) . ' AND ';
+        $query .= 'e_first_date_and_time<=' . strval($end_time);
+        $query .= ' ORDER BY e_first_date_and_time';
         do {
             $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
             foreach ($rows as $row) {
-                $timestamp = $row['first_date_and_time'];
+                $timestamp = $row['e_first_date_and_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
-                $resolved = strval($row['resolved']);
+                $resolved = strval($row['e_resolved']);
 
                 $month = to_epoch_interval_index($timestamp, 'months');
 

@@ -26,7 +26,7 @@ function get_subscribed_forum_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/subscription_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/subscription_read.php';
 
     $subscription_object = new CMSSubscriptionRead();
 
@@ -61,7 +61,7 @@ function subscribe_forum_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/subscription_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/subscription_write.php';
 
     $subscription_write_object = new CMSSubscriptionWrite();
     $subscription_write_object->subscribe_forum(intval($params[0]));
@@ -80,7 +80,7 @@ function unsubscribe_forum_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/subscription_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/subscription_write.php';
 
     $subscription_write_object = new CMSSubscriptionWrite();
     $subscription_write_object->unsubscribe_forum(($params[0] == 'ALL') ? null : intval($params[0]));
@@ -99,7 +99,7 @@ function get_subscribed_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/subscription_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/subscription_read.php';
 
     list($start, $max) = get_pagination_positions($params, 0, 1, 50);
 
@@ -124,7 +124,7 @@ function subscribe_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/subscription_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/subscription_write.php';
 
     $subscription_write_object = new CMSSubscriptionWrite();
     $subscription_write_object->subscribe_topic(intval($params[0]));
@@ -143,7 +143,7 @@ function unsubscribe_topic_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/subscription_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/subscription_write.php';
 
     $subscription_write_object = new CMSSubscriptionWrite();
     $subscription_write_object->unsubscribe_topic(($params[0] == 'ALL') ? null : intval($params[0]));
@@ -175,7 +175,7 @@ function user_subscription_func($raw_params)
         warn_exit('Could not verify connection');
     }
 
-    require_once(COMMON_CLASS_PATH_READ . '/subscription_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/subscription_read.php';
 
     $account_object = new CMSSubscriptionRead();
     $forums = $account_object->get_member_forum_monitoring($uid);

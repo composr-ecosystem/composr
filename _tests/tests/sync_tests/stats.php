@@ -13,6 +13,11 @@
  * @package    testing_platform
  */
 
+/*
+    NB: This is a very sensitive test and needs to be able to clean itself up (or other tests and the site as a whole will break).
+    As such, all tests should take place in testStats to ensure tearDown runs and only ever runs once.
+*/
+
 /**
  * Composr test case class (unit testing).
  */
@@ -24,17 +29,19 @@ class stats_test_set extends cms_test_case
         parent::setUp();
 
         disable_php_memory_limit();
-        cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
-    }
-
-    public function testPreprocessRawData()
-    {
-        push_query_limiting(false);
+        cms_set_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
         require_code('stats');
         require_code('temporal');
         require_lang('stats');
         require_code('developer_tools');
+
+        push_query_limiting(false);
+    }
+
+    public function testStats()
+    {
+        /* Generating stats */
 
         $dummy_data = [
             // 'table_name' => [array of forced field=>value maps; one row will be created for each array item],
@@ -81,7 +88,6 @@ class stats_test_set extends cms_test_case
                 [],
                 ['code_confirm' => 0],
             ],
-            'points_ledger' => [[]],
             'poll_votes' => [[]],
             'rating' => [[]],
             'searches_logged' => [[]],
@@ -129,17 +135,18 @@ class stats_test_set extends cms_test_case
             $dummy_data['f_topics'][] = ['_ALLOW_NULL_' => false, 't_forum_id' => get_ticket_forum_id()];
         }
         if (addon_installed('points')) {
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'receiving_member' => 2];
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 2, 'receiving_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 3, 'receiving_member' => 2];
-            $dummy_data['points_ledger'][] = ['status' => 0, 'sending_member' => 3, 'receiving_member' => 2, 'amount_gift_points' => 1];
+            $dummy_data['points_ledger'] = [['amount_gift_points' => 100, 'amount_points' => 100, 'status' => 0]];
+            $dummy_data['points_ledger'][] = ['amount_gift_points' => 0, 'amount_points' => 100, 'status' => 0, 'sending_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'receiving_member' => 2];
+            $dummy_data['points_ledger'][] = ['amount_gift_points' => 0, 'amount_points' => 100, 'status' => 0, 'sending_member' => 2, 'receiving_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+            $dummy_data['points_ledger'][] = ['amount_gift_points' => 0, 'amount_points' => 100, 'status' => 0, 'sending_member' => 3, 'receiving_member' => 2];
+            $dummy_data['points_ledger'][] = ['amount_gift_points' => 1, 'amount_points' => 0, 'status' => 0, 'sending_member' => 3, 'receiving_member' => 2];
 
             // FUDGE: so we can test top members by points (which uses CPF and not database)
             $GLOBALS['FORUM_DRIVER']->set_custom_field(2, 'points_rank', '1000');
         }
 
         if (addon_installed('cms_homesite')) {
-            $dummy_data['relayed_errors'] = [[], ['resolved' => 0], ['resolved' => 1]];
+            $dummy_data['relayed_errors'] = [[], ['e_resolved' => 0], ['e_resolved' => 1]];
         }
 
         // Remove old preprocessed stats so we can force pre-processing again
@@ -203,51 +210,7 @@ class stats_test_set extends cms_test_case
 
         $this->assertTrue(empty($buckets_diff), 'Expected pre-processed statistical data on these buckets but got none (maybe you need to define in this test the db tables used so dummy data can be generated): ' . implode(', ', $buckets_diff));
 
-        // Remove old preprocessed stats so we can force pre-processing again
-        $GLOBALS['SITE_DB']->query_delete('stats_preprocessed');
-        $GLOBALS['SITE_DB']->query_delete('stats_preprocessed_flat');
-
-        // Delete dummy data
-        if (count($this->dummy_data_added) > 0) {
-            foreach ($this->dummy_data_added as $table => $rows) {
-                $db = get_db_for($table);
-                foreach ($rows as $primary_map) {
-                    if ($this->debug) {
-                        $rows = $db->query_select($table, ['*'], $primary_map);
-                        $this->dump($primary_map, $table . ' primary map');
-                        $this->dump($rows, $table . ' data');
-                    }
-                    $db->query_delete($table, $primary_map);
-                }
-            }
-
-            // FUDGE: We had to fudge points lifetime so re-calculate this
-            if (addon_installed('points')) {
-                require_code('tasks');
-                call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), null, 'points_recalculate_cpf', [], true, true, false);
-            }
-        }
-
-        // Re-populate with actual statistics so stats do not show our dummy ones
-        $hook_obs = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
-        foreach ($hook_obs as $hook_name => $ob) {
-            $_buckets = $ob->info();
-            if ($_buckets === null) {
-                continue;
-            }
-            preprocess_raw_data_for($hook_name, $start_time, $end_time);
-        }
-
-        pop_query_limiting();
-    }
-
-    public function testGenerateFinalData()
-    {
-        require_code('stats');
-        require_code('temporal');
-        require_lang('stats');
-
-        $p_month = to_epoch_interval_index(time(), 'months');
+        /* Final Data */
 
         $bucket_hook = [];
         $bucket_filters = [];
@@ -355,5 +318,56 @@ class stats_test_set extends cms_test_case
                 }
             }
         }
+    }
+
+    public function tearDown()
+    {
+        // Remove old preprocessed stats so we can force pre-processing again
+        $GLOBALS['SITE_DB']->query_delete('stats_preprocessed');
+        $GLOBALS['SITE_DB']->query_delete('stats_preprocessed_flat');
+
+        // Delete dummy data
+        if (count($this->dummy_data_added) > 0) {
+            foreach ($this->dummy_data_added as $table => $rows) {
+                $db = get_db_for($table);
+                foreach ($rows as $primary_map) {
+                    if ($this->debug) {
+                        $rows = $db->query_select($table, ['*'], $primary_map);
+                        $this->dump($primary_map, $table . ' primary map');
+                        $this->dump($rows, $table . ' data');
+                    }
+                    $db->query_delete($table, $primary_map);
+                }
+            }
+
+            // FUDGE: We had to fudge points lifetime so re-calculate this
+            if (addon_installed('points')) {
+                require_code('tasks');
+                call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), null, 'points_recalculate_cpf', [], true, true, false);
+            }
+        }
+
+        $server_timezone = get_server_timezone();
+
+        $today = cms_date('Y-m-d');
+        list($year, $month, $day) = array_map('intval', explode('-', $today));
+        $end_time = cms_mktime(0, 0, 0, $month, $day, $year) + (60 * 60 * 31);
+        $end_time = tz_time($end_time, $server_timezone);
+        $start_time = cms_mktime(0, 0, 0, $month, $day, $year) - (60 * 60 * 24 * 365);
+        $start_time = tz_time($start_time, $server_timezone);
+
+        // Re-populate with actual statistics so stats do not show our dummy ones
+        $hook_obs = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
+        foreach ($hook_obs as $hook_name => $ob) {
+            $_buckets = $ob->info();
+            if ($_buckets === null) {
+                continue;
+            }
+            preprocess_raw_data_for($hook_name, $start_time, $end_time);
+        }
+
+        pop_query_limiting();
+
+        parent::tearDown();
     }
 }

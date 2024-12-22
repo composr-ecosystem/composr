@@ -18,7 +18,6 @@ i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_
 if (!class_exists('Miniblock_cms_homesite_download')) {
     class Miniblock_cms_homesite_download
     {
-
         /**
          * Execute the miniblock.
          *
@@ -144,4 +143,4 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
 }
 
 $miniblock = new Miniblock_cms_homesite_download();
-return $miniblock->run();
+$miniblock->run()->evaluate_echo();

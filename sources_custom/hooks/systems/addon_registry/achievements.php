@@ -211,6 +211,8 @@ class Hook_addon_registry_achievements
             'sources_custom/hooks/systems/privacy/achievements.php',
             'themes/default/css_custom/achievements.css',
             'themes/default/templates_custom/ACHIEVEMENT_PROGRESS.tpl',
+            'themes/default/templates_custom/ACHIEVEMENT_PROGRESS_QUALIFICATION.tpl',
+            'themes/default/templates_custom/ACHIEVEMENT_QUALIFICATIONS_OR.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_ACHIEVEMENTS.tpl',
         ];
     }

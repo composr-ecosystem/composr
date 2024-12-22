@@ -26,7 +26,7 @@ function report_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/post_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/post_write.php';
 
     $post_id = intval($params[0]);
     $reason = isset($params[1]) ? $params[1] : '';
@@ -47,7 +47,7 @@ function reply_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/post_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/post_write.php';
 
     $forum_id = intval($params[0]);
     $topic_id = intval($params[1]);
@@ -73,7 +73,7 @@ function get_quote_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/post_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/post_read.php';
 
     if (empty($params[0])) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8a84bb6e69975f1e8781910237eff624')));
@@ -106,7 +106,7 @@ function get_raw_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/post_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/post_read.php';
 
     $post_id = intval($params[0]);
 
@@ -135,7 +135,7 @@ function save_raw_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/post_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/post_write.php';
 
     $post_id = intval($params[0]);
     $title = $params[1];
@@ -161,7 +161,7 @@ function get_thread_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/post_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/post_read.php';
 
     $topic_id = intval($params[0]);
     list($start, $max) = get_pagination_positions($params, 1, 2, 20);
@@ -185,7 +185,7 @@ function get_thread_by_unread_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/post_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/post_read.php';
 
     $topic_id = intval($params[0]);
     $max = isset($params[1]) ? $params[1] : 20;
@@ -239,7 +239,7 @@ function get_thread_by_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/post_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/post_read.php';
 
     $post_id = intval($params[0]);
     $max = isset($params[1]) ? $params[1] : 20;

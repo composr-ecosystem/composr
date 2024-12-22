@@ -92,6 +92,9 @@ function output_ical(bool $headers_and_exit = true)
     $_categories = $GLOBALS['SITE_DB']->query_select('calendar_types', ['*']);
     foreach ($_categories as $category) {
         $categories[$category['id']] = get_translated_text($category['t_title']);
+        if ($categories[$category['id']] === null) { // This happens in some edge cases
+            $categories[$category['id']] = do_lang('UNKNOWN');
+        }
     }
     if (($filter === null) || (!array_key_exists($filter, $categories))) {
         echo "X-WR-CALNAME:" . ical_escape(get_site_name()) . "\r\n";
@@ -153,7 +156,11 @@ function output_ical(bool $headers_and_exit = true)
                     echo "\r\n";
                 }
             }
-            echo "CATEGORIES:" . ical_escape($categories[$event['e_type']]) . "\r\n";
+            if (isset($categories[$event['e_type']])) {
+                echo "CATEGORIES:" . ical_escape($categories[$event['e_type']]) . "\r\n";
+            } else {
+                echo "CATEGORIES:" . ical_escape(do_lang('UNKNOWN')) . "\r\n";
+            }
             echo "CLASS:" . ($public ? 'PUBLIC' : 'PRIVATE') . "\r\n";
             echo "STATUS:" . (($event['validated'] == 1) ? 'CONFIRMED' : 'TENTATIVE') . "\r\n";
             echo "UID:" . ical_escape(strval($event['id']) . '@' . get_base_url()) . "\r\n";
@@ -582,6 +589,9 @@ function get_event_data_ical(array $event_nodes) : array
             $all_day = false;
         }
         $start = strtotime($event_nodes['DTSTART']);
+        if ($start === false) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('857d45a96d13574e9b91c5c4ea9c69ee')));
+        }
         $start_year = intval(date('Y', $start));
         $start_month = intval(date('m', $start));
         $start_day = intval(date('d', $start));

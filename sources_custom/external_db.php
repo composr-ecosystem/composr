@@ -153,7 +153,7 @@ function external_db_user_add(array $record) : int
     $email_address_field = get_value('external_db_login__email_address_field', null, true);
 
     $username = $record[$username_field];
-    $username = get_username_from_human_name($username);
+    $username = process_username_discriminator($username);
 
     $password = $record[$password_field];
     $email_address = $record[$email_address_field];

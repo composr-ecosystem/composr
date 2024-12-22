@@ -762,7 +762,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
         if (@file_exists($path . '/conf_global.php')) {
             if (!@file_exists($path . '/conf_shared.php')) { // We can't work with ipb->site bound forums
                 global $INFO;
-                @include($path . '/conf_global.php');
+                @include $path . '/conf_global.php';
                 $PROBED_FORUM_CONFIG['sql_host'] = $INFO['sql_host'];
                 $PROBED_FORUM_CONFIG['sql_database'] = $INFO['sql_database'];
                 $PROBED_FORUM_CONFIG['sql_user'] = $INFO['sql_user'];

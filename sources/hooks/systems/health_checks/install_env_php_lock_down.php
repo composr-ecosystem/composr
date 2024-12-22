@@ -277,7 +277,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             ob_clean printf cosh count_chars gethostbynamel getlastmod fpassthru
             gettimeofday get_cfg_var get_resource_type hypot ignore_user_abort array_intersect_assoc
             is_link is_callable debug_print_backtrace stream_context_create next array_sum
-            file_get_contents html_entity_decode hash_file hash_hmac
+            file_get_contents html_entity_decode hash hash_file hash_hmac
             array_combine array_walk_recursive header_remove
             str_split strpbrk substr_compare file_put_contents get_headers headers_list
             http_build_query scandir str_shuffle fnmatch gethostname

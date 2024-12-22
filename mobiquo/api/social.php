@@ -26,7 +26,7 @@ function thank_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/social_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/social_write.php';
 
     $post_id = intval($params[0]);
 
@@ -47,7 +47,7 @@ function follow_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/social_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/social_write.php';
 
     $user_id = intval($params[0]);
 
@@ -68,7 +68,7 @@ function unfollow_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/social_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/social_write.php';
 
     $user_id = intval($params[0]);
 
@@ -89,7 +89,7 @@ function like_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/social_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/social_write.php';
 
     $post_id = intval($params[0]);
 
@@ -110,7 +110,7 @@ function unlike_post_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_WRITE . '/social_write.php');
+    require_once COMMON_CLASS_PATH_WRITE . '/social_write.php';
 
     $post_id = intval($params[0]);
 
@@ -157,7 +157,7 @@ function get_following_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/social_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/social_read.php';
 
     $social_read_object = new CMSSocialRead();
     $_following = $social_read_object->get_following();
@@ -196,7 +196,7 @@ function get_follower_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/social_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/social_read.php';
 
     $social_read_object = new CMSSocialRead();
     $_followers = $social_read_object->get_followers();
@@ -247,7 +247,7 @@ function get_alert_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/social_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/social_read.php';
 
     list($start, $max) = get_pagination_positions__by_page($params, 0, 1, 20);
 
@@ -302,7 +302,7 @@ function get_activity_func($raw_params)
 {
     $params = mobiquo_params_decode($raw_params);
 
-    require_once(COMMON_CLASS_PATH_READ . '/social_read.php');
+    require_once COMMON_CLASS_PATH_READ . '/social_read.php';
 
     list($start, $max) = get_pagination_positions__by_page($params, 0, 1, 20);
 

@@ -36,7 +36,7 @@ class Module_admin_validation
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
-        $info['locked'] = true; // TODO: temporarily locked; see install
+        $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'validation';
         return $info;

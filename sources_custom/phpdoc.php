@@ -543,7 +543,7 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
             if (!function_exists('do_lang__phpdoc')) {
                 exit('Missing function comment for: ' . $line);
             }
-            attach_message('There is a missing function comment for \'' .  rtrim($line) . '\'', 'warn');
+            attach_message('There is a missing function comment for \'' .  rtrim($line) . '\' in ' . $filename, 'warn');
         }
     }
 

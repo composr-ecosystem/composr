@@ -314,6 +314,20 @@ These rules are very standard, but if broken then code-overriding may not work c
 | Look to see how usernames/passwords/e-mails/domain-names/paths etc are input in other parts of the code and do the same. Mainly we trim white-space to reduce the chance of copy & paste errors. Also we don't do other normal manipulations on password fields.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+Do not use braces around the file path for [tt]require[/tt] / [tt]require_once[/tt] / [tt]include[/tt] / [tt]include_once[/tt]
+| Stability
+| Product development only
+| Code Quality Checker
+| Braces are not necessary for these directives. Furthermore, we have noticed some unstable behaviour in PHP when using these directives with braces around the path. This is especially the case when utilising the output to perform error-handling.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not use [tt]require_once[/tt] or [tt]include_once[/tt] on dynamic PHP files[/color]
+| Stability
+| Product development only
+| Manually
+| The contents of [tt]_config.php[/tt], [tt]data_custom/rate_limiter.php[/tt], and [tt]data_custom/errorlog.php[/tt] might change dynamically. When reading any of these or other dynamic PHP files, you should use [tt]include[/tt] or [tt]require[/tt], not their [tt]*_once[/tt] versions, to ensure you have the most up-to-date version loaded in.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use Composr APIs wherever appropriate[/color]
 | Security, stability, consistency
 | Composr development +
@@ -325,7 +339,7 @@ These rules are very standard, but if broken then code-overriding may not work c
 | Internationalisation / consistency
 | All development
 | Manually
-| Don't forget about users potentially being in different timezones. Rarely if ever use PHP's inbuilt date/time functions -- use Composr's temporal API. The PHP [tt]date[/tt] function doesn't even support non-English strings.
+| Don't forget about users potentially being in different timezones. Rarely if ever use PHP's inbuilt date/time functions -- use Composr's temporal API. The PHP [tt]date[/tt] function doesn't even support non-English strings. Additionally, when dealing with intervals, we have two very-efficient functions in this API that should be used (e.g. instead of the unreliable strtotime): [tt]to_epoch_interval_index[/tt] and [tt]from_epoch_interval_index[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use the [tt]type[/tt] parameter for your modules[/color]
@@ -424,6 +438,13 @@ Avoid using [tt]eval[/tt], [tt]$$[/tt], [tt]create_function[/tt], or [tt]preg_re
 | Product development only
 | Manually
 | It's hackerish and prone to security issues. There's rarely a good reason to do it.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Create a file and use [tt]require[/tt] or [tt]require_once[/tt] instead of using [tt]eval[/tt] or [tt]cms_eval[/tt] when using more than a small snippet of PHP code
+| Security, performance
+| Product development only
+| Manually
+| Using eval is hackerish and prone to security issues. Additionally, eval code does not utilise PHP's built-in cache engines. When compiling together PHP code to execute, consider creating temporary PHP files in the [tt]_compiled[/tt] directory and using [tt]require[/tt] or [tt]require_once[/tt] on them. Make sure if you do that you use a fast file hash check so you only save when the code has changed. Additionally, you should use file locking both on save and before requiring to prevent compilation dog-piling. Note that Composr's built-in code override system and require_once already does this.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Long running requests should be tasks[/color]

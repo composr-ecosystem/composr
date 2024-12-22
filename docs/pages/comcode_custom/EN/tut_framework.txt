@@ -165,7 +165,7 @@ We took approach '3', and thus have written a special feature into Composr for i
 
 In Composr it works as thus:
 1) First, you create a [tt]contentious_overrides[/tt] hook in [tt]sources_custom/hooks/systems/contentious_overrides[/tt]. Generally, name it the same name as your addon, but you do not have to do that.
-2) Within the Hook_contentious_overrides_file_name_without_extension class, define a public function compile_included_code. See [page="docs:codebook_1b"]Code Book, part 1b (Further back-end concepts)[/page] under the section "Contentious override hooks" for an example to see how to structure it.
+2) Within the Hook_contentious_overrides_file_name_without_extension class, define a public function compile_included_code. See [page="_SEARCH:codebook_1b"]Code Book, part 1b (Further back-end concepts)[/page] under the section "Contentious override hooks" for an example to see how to structure it.
 3) Put your addon guards in at the top of the function which return nothing if not installed.
 4) Put your [tt]$codename[/tt] guards in place, doing different things depending on what code is being included. You want to make sure your overrides only apply to the applicable files you want to override and nothing else.
 5) When you know for sure you are about to modify the code, make sure to populate [tt]$code[/tt] with the file contents of [tt]$path[/tt] if it is null.
