@@ -23,13 +23,13 @@ This graph shows the number of actions that took place on site which have been l
 [/box]
 
 [box="Downloads"]
-This graph shows the number of times someone downloaded something on a given day.
-[block="downloads" month_range__start="-12"]main_staff_stats_graph[/block]
+This graph shows the number of times someone downloaded something in a given week. This only counts unique downloads (a member downloading a file will only ever be counted once even if that same member downloaded that same file multiple times).
+[block="downloads" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Points"]
-This graph shows the total number of points which have been sent, received / earned, or spent / charged in any way in a given day. Note that there could be a wide range of spikes especially if some members earned a lot of points on a specific day.
-[block="points_transacted" month_range__start="-12"]main_staff_stats_graph[/block]
+This graph shows the total number of points which have been sent, received / earned, or spent / charged in any way in a given week. Note that there could be a wide range of spikes especially if some members earned a lot of points.
+[block="points_transacted" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
 [/box]
 
 [title="2"]Content[/title]
@@ -42,15 +42,15 @@ This graph shows how many new accounts were created on a given week (new members
 [/box]
 
 [box="Forums"]
-This graph shows how many new (public) forum topics were created.
-[block="public_topics" month_range__start="-12"]main_staff_stats_graph[/block]
+This graph shows how many new (public) forum topics were created in a given week.
+[block="public_topics" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
 
-This graph shows how many new (public) forum posts and comments were made.
-[block="public_posts" month_range__start="-12"]main_staff_stats_graph[/block]
+This graph shows how many new (public) forum posts and comments were made in a given week.
+[block="public_posts" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
 [/box]
 
 [box="New Content"]
-This graph tallies how many new items were discovered in the sitemap. This is usually an indication of how many new pieces of content were created on a given day.
+This graph tallies how many new items were discovered in the sitemap on any given day. This is usually an indication of how many new pieces of content were created on a given day.
 [block="sitemap_growth" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
@@ -76,7 +76,7 @@ This graph showcases the number of new tracker issues which have been created ea
 These graphs provide a bit of transparency into the operations of composr.app .
 
 [box="Security Incidences Halted"]
-This graph shows the number of security incidences which have been stopped by the Composr software on composr.app by week. These can include failed login attempts and hack attempts. These only include incidences halted by the Composr software on composr.app and not by the server running the site or by the third-party Web Application Firewall.
+This graph shows the number of security incidences which have been stopped by the Composr software on composr.app by week. These can include failed login attempts, anti-spam, and hack attempts. These only include incidences halted by the Composr software on composr.app and not by the server running the site or by the third-party Web Application Firewall.
 [block="security_incidents" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
 
@@ -84,6 +84,6 @@ This graph shows the number of security incidences which have been stopped by th
 This graph shows the total number of warnings that have been issued by week.
 [block="recorded_punishments" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
 
-This graph shows a breakdown of the warnings / punishments staff have issued in the past year according to reason.
+This graph shows the number of warnings which have been issued according to reason within the last year.
 [block="recorded_punishment_reasons" month_range__start="-12"]main_staff_stats_graph[/block]
 [/box]
