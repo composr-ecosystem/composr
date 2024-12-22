@@ -669,13 +669,14 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     $url = $_SERVER['REQUEST_URI'];
 
     // Prevent accidental lock-out by, for example, a rogue AJAX script on Composr repeating the request several times quickly
-    $test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) FROM {prefix}hackattack WHERE ' . db_string_equal_to('reason', '{reason}') . ' AND ' . db_string_equal_to('ip', '{ip}') . ' AND date_and_time>={date_and_time} AND ' . db_string_equal_to('user_agent', '{user_agent}') . ' AND risk_score>0', [
+    $_test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) AS recent_hacks FROM {prefix}hackattack WHERE ' . db_string_equal_to('reason', '{reason}') . ' AND ' . db_string_equal_to('ip', '{ip}') . ' AND date_and_time>={date_and_time} AND ' . db_string_equal_to('user_agent', '{user_agent}') . ' AND risk_score>0', [
         'reason' => $reason, // No tolerance if they triggered a different type of hack
         'ip' => $ip, // No tolerance if they changed IP addresses
         'date_and_time' => (time() - 3), // Allow a very modest 3 seconds grace; we don't want to be too tolerant in case it's a DoS attack
         'user_agent' => cms_mb_substr(get_browser_string(), 0, 255), // No tolerance if they changed devices
     ]);
-    if (count($test) > 0) {
+    $test = $_test[0]['recent_hacks'];
+    if ($test > 0) {
         $risk_score = 0; // We still want to proceed with logging and blocking, but don't add any score to the hack attack.
     }
 
