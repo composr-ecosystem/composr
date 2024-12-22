@@ -251,7 +251,7 @@ function get_secure_random_number() : int
  * @param  ?float $time_at Use the provided time in microtime format (null: current time)
  * @return string The GUID
  */
-function get_secure_v1_guid(float $time_at = null) : string
+function get_secure_v1_guid(?float $time_at = null) : string
 {
     // Initialize clock sequence
     $_clock_sequence = get_value_newer_than('guidv1_clock_sequence', time() - 1, true);

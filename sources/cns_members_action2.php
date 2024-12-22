@@ -134,7 +134,7 @@ function process_username_discriminator(string $username, bool $username_only = 
     $_username = $username;
 
     // Get existing usernames matching itself or any discriminator
-    $rows = $GLOBALS['FORUM_DB']->query_parameterised('SELECT DISTINCT m_username FROM {prefix}f_members WHERE m_username LIKE \'' . db_encode_like(db_escape_string('{username}#%')) . '\' OR m_username=\'{username}\'', ['username' => $username]);
+    $rows = $GLOBALS['FORUM_DB']->query_parameterised('SELECT DISTINCT m_username FROM {prefix}f_members WHERE m_username LIKE \'' . db_encode_like(db_escape_string('{username}#%')) . '\' OR ' . db_string_equal_to('{username}', $username), ['username' => $username]);
     $usernames = collapse_1d_complexity('m_username', $rows);
 
     $time_taken = microtime(true);
