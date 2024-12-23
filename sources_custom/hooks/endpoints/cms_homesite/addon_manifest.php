@@ -132,9 +132,7 @@ class Hook_endpoint_cms_homesite_addon_manifest
                     }
 
                     // Determine the updated date / time in this order: download edit date, file mtime, download add date
-                    if ($last_date === false) {
-                        $last_date = (($result[0]['edit_date'] !== null) ? intval($result[0]['edit_date']) : false);
-                    }
+                    $last_date = (($result[0]['edit_date'] !== null) ? intval($result[0]['edit_date']) : false);
                     if ($last_date === false) {
                         if (url_is_local($result[0]['url'])) {
                             $last_date = @filemtime(get_custom_file_base() . '/' . rawurldecode($result[0]['url']));
