@@ -37,7 +37,7 @@ class Hook_addon_registry_simplified_emails
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update b3f863c084405a1311233a4d50bcab38
     }
 
     /**

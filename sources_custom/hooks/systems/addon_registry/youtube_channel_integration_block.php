@@ -30,7 +30,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update c9d32f70b08e895d5d2b2a83ad1f52e4
     }
 
     /**

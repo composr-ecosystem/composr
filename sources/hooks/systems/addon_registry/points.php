@@ -42,7 +42,7 @@ class Hook_addon_registry_points
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734831283
+        return '11'; // addon_version_auto_update a6a9ba58422c6c7d83e491ca35c49730
     }
 
     /**

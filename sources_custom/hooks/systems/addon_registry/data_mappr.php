@@ -37,7 +37,7 @@ class Hook_addon_registry_data_mappr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734831283
+        return '11'; // addon_version_auto_update ad0c4d0de9d73f502550937810e0f04b
     }
 
     /**

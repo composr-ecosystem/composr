@@ -37,7 +37,7 @@ class Hook_addon_registry_wordpress_style_page_children
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update ba72610247ce7b66785421b32d51a4d3
     }
 
     /**

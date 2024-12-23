@@ -37,7 +37,7 @@ class Hook_addon_registry_shoutr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400056
+        return '11'; // addon_version_auto_update bbbe3bb53db4334d54f178b329b692f1
     }
 
     /**

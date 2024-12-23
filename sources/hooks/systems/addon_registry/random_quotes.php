@@ -42,7 +42,7 @@ class Hook_addon_registry_random_quotes
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956905
+        return '11'; // addon_version_auto_update f391590ced63d0380d778695bf7dc68d
     }
 
     /**

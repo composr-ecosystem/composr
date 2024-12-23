@@ -37,7 +37,7 @@ class Hook_addon_registry_downloads_followup_email
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 24cdc3e550c4620ba5cf3df8534df54f
     }
 
     /**

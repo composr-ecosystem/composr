@@ -37,7 +37,7 @@ class Hook_addon_registry_stealr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update 2da11d60d608b2345e0aad152c8356a5
     }
 
     /**

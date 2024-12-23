@@ -42,7 +42,7 @@ class Hook_addon_registry_forum_blocks
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400056
+        return '11'; // addon_version_auto_update 1dfa9d82d1a6b089266c759924db238c
     }
 
     /**

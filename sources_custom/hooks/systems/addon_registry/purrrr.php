@@ -39,7 +39,7 @@ class Hook_addon_registry_purrrr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608404
+        return '11'; // addon_version_auto_update ee9dd94b204867ff349ac12e4cbdf64b
     }
 
     /**

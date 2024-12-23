@@ -37,7 +37,7 @@ class Hook_addon_registry_world_regions
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608408
+        return '11'; // addon_version_auto_update 00f2a0e320e59bd4a49112be4f2a2f49
     }
 
     /**

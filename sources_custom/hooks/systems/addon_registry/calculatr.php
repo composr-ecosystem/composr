@@ -37,7 +37,7 @@ class Hook_addon_registry_calculatr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400057
+        return '11'; // addon_version_auto_update 8f41769bab798cdf5097d2a5948484a3
     }
 
     /**

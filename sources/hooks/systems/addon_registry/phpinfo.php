@@ -42,7 +42,7 @@ class Hook_addon_registry_phpinfo
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update ff1df0aaff9db863b6232795c5351ce3
     }
 
     /**

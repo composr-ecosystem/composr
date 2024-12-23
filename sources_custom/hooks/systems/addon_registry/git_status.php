@@ -37,7 +37,7 @@ class Hook_addon_registry_git_status
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400056
+        return '11'; // addon_version_auto_update df36ba4f37a1107a8d5c88d10e580ccf
     }
 
     /**

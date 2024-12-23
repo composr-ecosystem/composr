@@ -37,7 +37,7 @@ class Hook_addon_registry_google_search_console
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400057
+        return '11'; // addon_version_auto_update 437bf1d2fa9ec45423d11d23ac8f51b2
     }
 
     /**

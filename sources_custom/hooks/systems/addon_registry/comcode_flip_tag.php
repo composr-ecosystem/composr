@@ -37,7 +37,7 @@ class Hook_addon_registry_comcode_flip_tag
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update e127e19f4890a6e105d2dbdd1f3e4712
     }
 
     /**

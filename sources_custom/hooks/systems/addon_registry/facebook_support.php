@@ -37,7 +37,7 @@ class Hook_addon_registry_facebook_support
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732742699
+        return '11'; // addon_version_auto_update 5dbbd4da49164a0af30c8108dd32269d
     }
 
     /**

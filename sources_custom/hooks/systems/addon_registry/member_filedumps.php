@@ -37,7 +37,7 @@ class Hook_addon_registry_member_filedumps
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400057
+        return '11'; // addon_version_auto_update 4bff3dfd64f58c04b4aa66a855664e9f
     }
 
     /**

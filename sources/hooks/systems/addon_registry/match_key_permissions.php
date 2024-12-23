@@ -42,7 +42,7 @@ class Hook_addon_registry_match_key_permissions
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 092e241fe051672f85f03affc58c477b
     }
 
     /**

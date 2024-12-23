@@ -37,7 +37,7 @@ class Hook_addon_registry_community_billboard
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400056
+        return '11'; // addon_version_auto_update 0f1b6e26b3099cd15e5eacca7723d624
     }
 
     /**

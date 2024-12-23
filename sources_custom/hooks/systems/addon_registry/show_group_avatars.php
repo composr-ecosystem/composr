@@ -37,7 +37,7 @@ class Hook_addon_registry_show_group_avatars
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400057
+        return '11'; // addon_version_auto_update 021a9987bc90025a13925197c547af19
     }
 
     /**

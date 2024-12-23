@@ -37,7 +37,7 @@ class Hook_addon_registry_bankr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update d7b4b5787fd703be27bb2984e8b0c5a0
     }
 
     /**

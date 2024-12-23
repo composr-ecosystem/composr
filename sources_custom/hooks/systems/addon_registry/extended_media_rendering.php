@@ -37,7 +37,7 @@ class Hook_addon_registry_extended_media_rendering
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update b9ae833eda4f5e2841959d76708f2589
     }
 
     /**

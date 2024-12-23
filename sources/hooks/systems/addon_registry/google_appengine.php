@@ -42,7 +42,7 @@ class Hook_addon_registry_google_appengine
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734831283
+        return '11'; // addon_version_auto_update 207f8eba67ae287e3e9485edf66010e2
     }
 
     /**

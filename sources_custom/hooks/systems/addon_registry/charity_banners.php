@@ -37,7 +37,7 @@ class Hook_addon_registry_charity_banners
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update ea9c0e7d2ad3ff0e16dd9a926f761792
     }
 
     /**

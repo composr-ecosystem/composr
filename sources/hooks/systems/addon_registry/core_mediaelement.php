@@ -42,7 +42,7 @@ class Hook_addon_registry_core_mediaelement
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 5a14aa3fae0b90ad3f6b706a0d2806e5
     }
 
     /**

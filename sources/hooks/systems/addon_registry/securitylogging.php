@@ -42,7 +42,7 @@ class Hook_addon_registry_securitylogging
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734384427
+        return '11'; // addon_version_auto_update c5df834a7ad415fd5cd24c4855c95fc9
     }
 
     /**

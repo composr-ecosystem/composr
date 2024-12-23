@@ -37,7 +37,7 @@ class Hook_addon_registry_bantr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732745863
+        return '11'; // addon_version_auto_update c993b5869b032af3e691c6ed7f314622
     }
 
     /**

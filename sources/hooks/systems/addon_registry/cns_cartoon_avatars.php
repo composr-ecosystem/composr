@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_cartoon_avatars
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608408
+        return '11'; // addon_version_auto_update 62a617b3499d3b439961ba51777d127f
     }
 
     /**

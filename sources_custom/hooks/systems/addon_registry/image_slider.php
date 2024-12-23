@@ -37,7 +37,7 @@ class Hook_addon_registry_image_slider
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update 4f6df1b0b7dcd18033f98b6e74b45ef8
     }
 
     /**

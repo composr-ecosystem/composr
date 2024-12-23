@@ -37,7 +37,7 @@ class Hook_addon_registry_remote_content_grabber
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608408
+        return '11'; // addon_version_auto_update ed4224e3ea972d66dd03eb1ac93649e6
     }
 
     /**

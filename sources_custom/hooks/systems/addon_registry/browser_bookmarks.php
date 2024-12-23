@@ -37,7 +37,7 @@ class Hook_addon_registry_browser_bookmarks
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608407
+        return '11'; // addon_version_auto_update d3b00402a739015913c31851a0ad4549
     }
 
     /**

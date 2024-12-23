@@ -1242,9 +1242,10 @@ function find_updated_addons() : array
  *
  * @param  string $addon_name The name of the addon
  * @param  ?TIME $newer_than_ok Optimisation: If the date is newer than this then that's good enough for a comparison and we can not look harder (null: no optimisation)
+ * @param  boolean $exclude_registry Do not consider addon registry hooks in the calculation
  * @return ?TIME Modification time (null: could not find any files)
  */
-function find_addon_effective_mtime(string $addon_name, ?int $newer_than_ok = null) : ?int
+function find_addon_effective_mtime(string $addon_name, ?int $newer_than_ok = null, bool $exclude_registry = false) : ?int
 {
     $addon_info = read_addon_info($addon_name);
 
@@ -1252,6 +1253,9 @@ function find_addon_effective_mtime(string $addon_name, ?int $newer_than_ok = nu
 
     $mtime = null;
     foreach ($addon_info['files'] as $filepath) {
+        if ($exclude_registry && (strpos($filepath, 'hooks/systems/addon_registry/') !== false)) {
+            continue;
+        }
         if (@file_exists(get_file_base() . '/' . $filepath)) { //@d due to possible bad file paths
             $_mtime = filemtime(get_file_base() . '/' . $filepath);
             $mtime = ($mtime === null) ? $_mtime : max($mtime, $_mtime);
@@ -1261,6 +1265,32 @@ function find_addon_effective_mtime(string $addon_name, ?int $newer_than_ok = nu
         }
     }
     return $mtime;
+}
+
+/**
+ * Find effective md5 hash of an addon (takes the crc32 of all addon files and returns an MD5 hash).
+ *
+ * @param  string $addon_name The name of the addon
+ * @param  boolean $exclude_registry Do not consider addon registry hooks in the calculation
+ * @return string the MD5 hash of all the addon file's crc32 hashes
+ */
+function find_addon_effective_md5(string $addon_name, bool $exclude_registry = false) : string
+{
+    $addon_info = read_addon_info($addon_name);
+
+    $crcs = [];
+    foreach ($addon_info['files'] as $filepath) {
+        if ($exclude_registry && (strpos($filepath, 'hooks/systems/addon_registry/') !== false)) {
+            continue;
+        }
+        if (@file_exists(get_file_base() . '/' . $filepath)) { //@d due to possible bad file paths
+            $hash = @hash_file('crc32', get_file_base() . '/' . $filepath);
+            if (is_string($hash)) {
+                $crcs[] = $hash;
+            }
+        }
+    }
+    return md5(serialize($crcs));
 }
 
 /**
@@ -1725,15 +1755,18 @@ function update_addon_auto_version(string $place, string $name)
     require_code('version');
     require_code('version2');
 
+    // Get a hash of all the addon files to do change detection
+    $new_hash = find_addon_effective_md5($name, true);
+
     $hook_path = get_custom_file_base() . '/' . filter_naughty_harsh($place) . '/hooks/systems/addon_registry/' . filter_naughty_harsh($name) . '.php';
 
-    $c = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
+    $c = cms_file_get_contents_safe($hook_path);
     if ($c === false) {
         return;
     }
 
-    // Pattern accounts for the current version, comment, and an optional mtime which is auto-populated by this function to keep track of when to bump the patch number
-    $pattern = '/return\s\'(.*?)\'\;\s\/\/\saddon_version_auto_update\s?([\d]*)/';
+    // Pattern accounts for the current version, comment, and an optional hash which is auto-populated by this function to keep track of when to bump the patch number
+    $pattern = '/return\s\'(.*?)\'\;\s\/\/\saddon_version_auto_update\s?([a-z0-9]*)\n/';
     $matches = [];
 
     // Optimisation: bail if we find nothing as there is nothing to do
@@ -1741,9 +1774,7 @@ function update_addon_auto_version(string $place, string $name)
         return;
     }
     $current_version = get_version_dotted__from_anything($matches[1][0]);
-    $current_mtime = $matches[2][0];
-
-    $new_mtime = find_addon_effective_mtime($name);
+    $current_hash = $matches[2][0];
 
     // Break apart the versions
     $cms_version_parts = explode('.', float_to_raw_string(cms_version_number(), 1));
@@ -1751,22 +1782,19 @@ function update_addon_auto_version(string $place, string $name)
     $version_parts = explode('.', $long_version);
     $build_number = intval($version_parts[2]);
 
-    // If major or minor software version changed, reset patch to 0 and update accordingly regardless of effective mtime
+    // If major or minor software version changed, reset patch to 0 and update the version accordingly regardless if the hash changed
     if ((intval($cms_version_parts[0]) != intval($version_parts[0])) || (intval($cms_version_parts[1]) != intval($version_parts[1]))) {
         $build_number = 0; // Reset build number to 0
     } else {
-        // Nothing to do if we could not get an effective mtime or the effective mtime is the same as the mtime listed in the comment
-        if (($new_mtime === null) || ((is_numeric($current_mtime)) && (intval($current_mtime) == $new_mtime))) {
+        // Nothing to do if the hashes are the same (nothing changed)
+        if ($current_hash == $new_hash) {
             return;
         }
 
-        if (is_numeric($current_mtime)) {
-            $build_number++; // Bump build number but only if an mtime was present (otherwise we are just updating to populate an mtime)
+        // Bump the build number but only if there was previously a hash listed
+        if ((trim($current_hash) != '')) {
+            //$build_number++;
         }
-    }
-
-    if ($new_mtime === null) {
-        $new_mtime = 0; // We have to have an mtime in this case so just set this to 0 for now
     }
 
     // Re-construct the version parts
@@ -1778,11 +1806,14 @@ function update_addon_auto_version(string $place, string $name)
     $new_version = get_version_dotted__from_anything(implode('.', $new_version_parts));
 
     // Make our new version (and put the mtime in the comment so we can track when to next bump the build)
-    $replacement = 'return \'' . $new_version . '\'; // addon_version_auto_update ' . strval($new_mtime);
+    $replacement = 'return \'' . $new_version . '\'; // addon_version_auto_update ' . strval($new_hash) . "\n";
 
-    // Only save the updated version if we actually changed the version; we do not want to arbitrarily change the file mtime otherwise.
+    global $ADDON_INFO_CACHE;
+
+    // Save the updated version / hash if it changed
     if (strpos($c, $replacement) === false) {
-        $c = str_replace($pattern, $replacement, $c);
+        $c = preg_replace($pattern, $replacement, $c);
         cms_file_put_contents_safe($hook_path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+        unset($ADDON_INFO_CACHE[$name]);
     }
 }

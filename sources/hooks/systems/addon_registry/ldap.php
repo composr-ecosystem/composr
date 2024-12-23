@@ -42,7 +42,7 @@ class Hook_addon_registry_ldap
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update c8dc22c577f61c384c7915bc72afad84
     }
 
     /**

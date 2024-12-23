@@ -39,7 +39,7 @@ class Hook_addon_registry_google_search
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 4cbf6805310c61c78340cadce754f882
     }
 
     /**

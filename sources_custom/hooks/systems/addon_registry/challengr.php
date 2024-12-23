@@ -37,7 +37,7 @@ class Hook_addon_registry_challengr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734831283
+        return '11'; // addon_version_auto_update ac8abd3095743be93dc2214b0e6fcffd
     }
 
     /**
