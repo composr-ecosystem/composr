@@ -44,6 +44,10 @@ if ($target_cat === null) {
         warn_exit('Please pass the target category name in the URL (?cat=name).');
     }
 }
+if (strpos($target_cat, 'Version ') !== 0) {
+    warn_exit('The target category should start with \'Version \' followed by the major (.minor) version of the software.');
+}
+
 $version_branch = get_param_string('version_branch', null);
 if ($version_branch === null) {
     if ($GLOBALS['DEV_MODE']) {
