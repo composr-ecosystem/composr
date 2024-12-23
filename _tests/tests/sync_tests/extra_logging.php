@@ -88,7 +88,7 @@ class extra_logging_test_set extends cms_test_case
         if ($this->debug) {
             $this->dump($data, 'adminzone page with no cache');
         }
-        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'Over time limit @'), 'Expected an over time limit log but did not get one.');
+        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path, FILE_READ_LOCK | FILE_READ_BOM), 'request time above monitor_slow_urls @'), 'Expected a request time above monitor_slow_urls log but did not get one.');
 
         set_value('monitor_slow_urls', '0');
     }

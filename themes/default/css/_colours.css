@@ -31,14 +31,8 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#e3f0fd,fixed_width_background,11% (seed sat_to 100) + 89% WB}
 {$THEMEWIZARD_COLOR,#78b6f5,fixed_width_border,61% seed + 39% WB}
 {$THEMEWIZARD_COLOR,#f2f2f2,main_2_background,95% WB + 5% BW}
-/*{+START,IF,{$THEME_DARK}}*/
-	{$THEMEWIZARD_COLOR,#eef6fe,main_background,92% WB + 8% seed}
-	{$THEMEWIZARD_COLOR,#d3e7fc,main_background_seeded,80% WB + 20% seed}
-/*{+END}*/
-/*{+START,IF,{$NOT,{$THEME_DARK}}}*/
-	{$THEMEWIZARD_COLOR,#fbfdff,main_background,98% WB + 2% seed}
-	{$THEMEWIZARD_COLOR,#f4f9fe,main_background_seeded,95% WB + 5% seed}
-/*{+END}*/
+{$THEMEWIZARD_COLOR,#fbfdff,main_background,98% WB + 2% seed}
+{$THEMEWIZARD_COLOR,#f4f9fe,main_background_seeded,95% WB + 5% seed}
 
 /* Colours to mirror UI conventions (i.e. non-thematic) */
 {$THEMEWIZARD_COLOR,#000000,native_ui_foreground,100% 000000}
