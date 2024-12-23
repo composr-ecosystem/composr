@@ -782,12 +782,7 @@ input.input-username::-webkit-calendar-picker-indicator {
 
 /* Consider .website-body as 'body': it is just we cannot put our styles directly on body because sometimes this gets used in things we should not mess with such as the WYSIWYG editors frame (which is #wysiwyg-editor) and e-mails */
 .website-body {
-	/*{+START,IF,{$THEME_DARK}}*/
-		background-color: {$GET,main_background_80};
-	/*{+END}*/
-	/*{+START,IF,{$NOT,{$THEME_DARK}}}*/
-		background-color: {$GET,main_background_95};
-	/*{+END}*/
+	background-color: {$GET,main_background_seeded};
 }
 
 .website-body.frame {
