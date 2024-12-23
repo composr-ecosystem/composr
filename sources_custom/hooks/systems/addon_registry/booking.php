@@ -37,7 +37,7 @@ class Hook_addon_registry_booking
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 4dc54d24324162b584476abf25c63ce6
+        return '11'; // addon_version_auto_update 7cf4ed3f05c23424a72cc45401ad5823
     }
 
     /**

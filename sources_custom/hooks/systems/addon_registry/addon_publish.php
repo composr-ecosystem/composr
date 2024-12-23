@@ -37,7 +37,7 @@ class Hook_addon_registry_addon_publish
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update c9e6f12ec3a617047fc85f58fb11257a
+        return '11'; // addon_version_auto_update aca914c4e19315e6447240aee8ca49ae
     }
 
     /**

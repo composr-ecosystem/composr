@@ -42,7 +42,7 @@ class Hook_addon_registry_uninstaller
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update f353f577d91722e3a2226099b95a5958
+        return '11'; // addon_version_auto_update 8e712e70e580be8fcec05b6a8b092f3f
     }
 
     /**

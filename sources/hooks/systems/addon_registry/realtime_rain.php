@@ -42,7 +42,7 @@ class Hook_addon_registry_realtime_rain
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update a835a14a367c5342220d7aa9d2416154
+        return '11'; // addon_version_auto_update 604d986891daef4236504cd62e69fa86
     }
 
     /**

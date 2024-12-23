@@ -37,7 +37,7 @@ class Hook_addon_registry_patreon
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 8e5c8f44bf6b6e9f209ebf7bf171a904
+        return '11'; // addon_version_auto_update 2e043944bb0f4f74497de707de0d3afa
     }
 
     /**

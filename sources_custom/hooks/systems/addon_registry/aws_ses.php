@@ -37,7 +37,7 @@ class Hook_addon_registry_aws_ses
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update abbf3643af1acc895dfe0fa04c009826
+        return '11'; // addon_version_auto_update df62743b7bbc3f893ca75c2430a5fec9
     }
 
     /**

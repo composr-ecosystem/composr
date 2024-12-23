@@ -37,7 +37,7 @@ class Hook_addon_registry_hybridauth
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 05942e90273007d200858ee20b3802a6
+        return '11'; // addon_version_auto_update f1ea30c57e4cd2c1737be4a4d97c2a9c
     }
 
     /**

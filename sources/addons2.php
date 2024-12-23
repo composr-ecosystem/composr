@@ -1278,19 +1278,20 @@ function find_addon_effective_md5(string $addon_name, bool $exclude_registry = f
 {
     $addon_info = read_addon_info($addon_name);
 
-    $crcs = [];
+    $hashes = [];
     foreach ($addon_info['files'] as $filepath) {
-        if ($exclude_registry && (strpos($filepath, 'hooks/systems/addon_registry/') !== false)) {
+        if ($exclude_registry && (strpos($filepath, '/hooks/systems/addon_registry/') !== false)) {
             continue;
         }
+
         if (@file_exists(get_file_base() . '/' . $filepath)) { //@d due to possible bad file paths
             $hash = @hash_file('crc32', get_file_base() . '/' . $filepath);
             if (is_string($hash)) {
-                $crcs[] = $hash;
+                $hashes[] = $hash;
             }
         }
     }
-    return md5(serialize($crcs));
+    return md5(serialize($hashes));
 }
 
 /**

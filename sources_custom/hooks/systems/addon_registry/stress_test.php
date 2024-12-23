@@ -37,7 +37,7 @@ class Hook_addon_registry_stress_test
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 9ffac5393df522ea380a36dcc251a304
+        return '11'; // addon_version_auto_update df9404988058b0da8313a324a0bc3385
     }
 
     /**

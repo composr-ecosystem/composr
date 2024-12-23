@@ -42,7 +42,7 @@ class Hook_addon_registry_newsletter
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 74846287bb821a59043d7dfe72199925
+        return '11'; // addon_version_auto_update 47a99a5299c19f023a4e4561048cbd93
     }
 
     /**

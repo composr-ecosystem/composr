@@ -42,7 +42,7 @@ class Hook_addon_registry_redirects_editor
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 4f876206a96fd17ed96d48fe4944a8bc
+        return '11'; // addon_version_auto_update 43416c8ea4f8a76843ce97da212e88fc
     }
 
     /**

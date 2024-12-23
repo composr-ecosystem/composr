@@ -42,7 +42,7 @@ class Hook_addon_registry_failover
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 870d8ae210da12e9f2def5f8086016cd
+        return '11'; // addon_version_auto_update 74a7d990a79512bdfc5e7a8daf1cc9b0
     }
 
     /**

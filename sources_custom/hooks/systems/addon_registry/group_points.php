@@ -37,7 +37,7 @@ class Hook_addon_registry_group_points
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 92b1eac5903081cd94bc05602334c13f
+        return '11'; // addon_version_auto_update 3360d67501fc88b2a772f17999f6b924
     }
 
     /**

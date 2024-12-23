@@ -42,7 +42,7 @@ class Hook_addon_registry_core_forum_drivers
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update c12e5dede92d7d1c47977d4a24db0552
+        return '11'; // addon_version_auto_update 5a46be509d54a63557f8c46d05b98ed6
     }
 
     /**

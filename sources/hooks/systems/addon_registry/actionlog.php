@@ -42,7 +42,7 @@ class Hook_addon_registry_actionlog
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 6bf90faa8eeeaeefb4b9a35eb275bb59
+        return '11'; // addon_version_auto_update 8294a91c29cf0928ff74619e45113c19
     }
 
     /**

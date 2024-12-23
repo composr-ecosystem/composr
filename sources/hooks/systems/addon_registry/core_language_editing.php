@@ -42,7 +42,7 @@ class Hook_addon_registry_core_language_editing
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update fe3558ee35950fb200bdac7d98d426fa
+        return '11'; // addon_version_auto_update fc1fd560796ff5f07ef50aa153f9f3e0
     }
 
     /**
