@@ -37,7 +37,7 @@ class Hook_addon_registry_calendar_from_6am
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 934047d922ec34fdbacc68e4eba6cb56
     }
 
     /**

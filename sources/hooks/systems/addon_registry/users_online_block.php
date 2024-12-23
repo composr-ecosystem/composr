@@ -42,7 +42,7 @@ class Hook_addon_registry_users_online_block
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update 6a4fd1b74be857d7f4b11344821513b3
     }
 
     /**

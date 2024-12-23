@@ -37,7 +37,7 @@ class Hook_addon_registry_pagination_protection
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608407
+        return '11'; // addon_version_auto_update 3bf6bf45301be7d37a8cfd662ada5cae
     }
 
     /**

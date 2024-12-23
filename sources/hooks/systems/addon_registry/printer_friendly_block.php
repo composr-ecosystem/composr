@@ -42,7 +42,7 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update a0f42d6068f034474c6f718a794f9696
     }
 
     /**

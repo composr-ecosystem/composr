@@ -37,7 +37,7 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 5584af7da0398b60c74c80d0c10f5282
     }
 
     /**

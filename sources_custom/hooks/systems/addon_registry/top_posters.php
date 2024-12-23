@@ -37,7 +37,7 @@ class Hook_addon_registry_top_posters
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400057
+        return '11'; // addon_version_auto_update 0394fecc21aff3573c3c274e089ae083
     }
 
     /**

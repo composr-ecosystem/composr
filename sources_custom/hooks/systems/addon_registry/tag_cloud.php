@@ -37,7 +37,7 @@ class Hook_addon_registry_tag_cloud
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update af0147c80f903e8224d418a5489bc7a1
     }
 
     /**

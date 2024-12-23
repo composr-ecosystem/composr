@@ -42,7 +42,7 @@ class Hook_addon_registry_news_shared
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 1c6c32bfe958d06b8fc568a59f0b52c7
     }
 
     /**

@@ -37,7 +37,7 @@ class Hook_addon_registry_installprofile_generator
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608407
+        return '11'; // addon_version_auto_update dfc1d7665e0e2a61fb891a0f7addf214
     }
 
     /**

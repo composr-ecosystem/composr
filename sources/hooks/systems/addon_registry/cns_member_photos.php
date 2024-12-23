@@ -57,7 +57,7 @@ class Hook_addon_registry_cns_member_photos
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608411
+        return '11'; // addon_version_auto_update fd1d8130659fe811ae3ef9c3895ad355
     }
 
     /**

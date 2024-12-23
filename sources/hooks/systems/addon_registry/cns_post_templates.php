@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_post_templates
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update b47425e74f8b7b600ecb814f17d685da
     }
 
     /**

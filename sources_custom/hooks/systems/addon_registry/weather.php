@@ -37,7 +37,7 @@ class Hook_addon_registry_weather
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update bacc253359bcdeeb87ab3b944fe7407a
     }
 
     /**

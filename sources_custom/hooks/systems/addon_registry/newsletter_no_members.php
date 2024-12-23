@@ -37,7 +37,7 @@ class Hook_addon_registry_newsletter_no_members
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608407
+        return '11'; // addon_version_auto_update 80a4a5e968cdcb4d4d6a7b875274ee01
     }
 
     /**

@@ -37,7 +37,7 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update 32aa4f56857a44e7430bbe7c77865665
     }
 
     /**

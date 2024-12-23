@@ -42,7 +42,7 @@ class Hook_addon_registry_counting_blocks
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400056
+        return '11'; // addon_version_auto_update a80f0080b9950f14d530c2ad8c6d59e4
     }
 
     /**

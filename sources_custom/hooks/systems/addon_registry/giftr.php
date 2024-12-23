@@ -45,7 +45,7 @@ class Hook_addon_registry_giftr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update b60d471cc43f43ab4e77f6e5a613ab41
     }
 
     /**

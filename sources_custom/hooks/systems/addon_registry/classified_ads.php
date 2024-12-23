@@ -37,7 +37,7 @@ class Hook_addon_registry_classified_ads
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400057
+        return '11'; // addon_version_auto_update 727b07e111ac9ac8b1da2208f6749186
     }
 
     /**

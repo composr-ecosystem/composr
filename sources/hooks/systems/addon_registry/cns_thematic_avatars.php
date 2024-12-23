@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_thematic_avatars
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1707077466
+        return '11'; // addon_version_auto_update a6ad00e40c9b1295f6fa1ffd5e745186
     }
 
     /**

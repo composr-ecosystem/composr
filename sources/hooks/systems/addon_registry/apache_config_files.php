@@ -42,7 +42,7 @@ class Hook_addon_registry_apache_config_files
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732727034
+        return '11'; // addon_version_auto_update 53a89d7422b39f8bb0c103f5a4cb272a
     }
 
     /**

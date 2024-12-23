@@ -42,7 +42,7 @@ class Hook_addon_registry_core_all_icons
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734382736
+        return '11'; // addon_version_auto_update 037e87fd726d4fa8cbb08e483788018b
     }
 
     /**

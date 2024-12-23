@@ -37,7 +37,7 @@ class Hook_addon_registry_nested_cpf_spreadsheet_lists
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608408
+        return '11'; // addon_version_auto_update 34d1a2eef2aa21310257afafa5fa36ba
     }
 
     /**

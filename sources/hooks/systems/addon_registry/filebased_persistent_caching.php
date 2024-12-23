@@ -42,7 +42,7 @@ class Hook_addon_registry_filebased_persistent_caching
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608403
+        return '11'; // addon_version_auto_update fb0856844e0bbf6d147b82e52c6c545c
     }
 
     /**

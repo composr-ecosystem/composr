@@ -37,7 +37,7 @@ class Hook_addon_registry_cloudinary
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734384427
+        return '11'; // addon_version_auto_update c1405838466260459f9db4ab96bdc41a
     }
 
     /**

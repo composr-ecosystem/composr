@@ -37,7 +37,7 @@ class Hook_addon_registry_jestr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734831283
+        return '11'; // addon_version_auto_update 82701f8c814e348a997ce22421f1155c
     }
 
     /**

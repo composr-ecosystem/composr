@@ -37,7 +37,7 @@ class Hook_addon_registry_sugarcrm
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734831282
+        return '11'; // addon_version_auto_update 140dc0672c358f0af4f0e3d258d06297
     }
 
     /**

@@ -37,7 +37,7 @@ class Hook_addon_registry_member_comments
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update ef6f2f0b9d87e25bd461b1987a35e900
     }
 
     /**

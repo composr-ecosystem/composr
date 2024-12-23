@@ -37,7 +37,7 @@ class Hook_addon_registry_google_analytics
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400056
+        return '11'; // addon_version_auto_update d37c1bd05840c45b1db14da81a705c9c
     }
 
     /**

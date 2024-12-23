@@ -42,7 +42,7 @@ class Hook_addon_registry_wordfilter
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1732400056
+        return '11'; // addon_version_auto_update 600e2f19eae68d0f5bc26ca2141b12a8
     }
 
     /**

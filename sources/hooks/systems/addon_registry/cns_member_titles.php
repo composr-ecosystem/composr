@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_member_titles
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update 480fe37a00205ac11aff752726481dee
     }
 
     /**

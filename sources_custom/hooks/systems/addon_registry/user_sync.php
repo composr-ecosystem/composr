@@ -37,7 +37,7 @@ class Hook_addon_registry_user_sync
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update 11b2c5e85071ed29392c46fa3716dde9
     }
 
     /**

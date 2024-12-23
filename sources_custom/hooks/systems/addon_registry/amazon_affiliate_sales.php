@@ -37,7 +37,7 @@ class Hook_addon_registry_amazon_affiliate_sales
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 8ad9275daa60a5cafe80968cc14d667e
     }
 
     /**

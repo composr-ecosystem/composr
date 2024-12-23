@@ -37,7 +37,7 @@ class Hook_addon_registry_imap
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608408
+        return '11'; // addon_version_auto_update d9df9dfa3193ebadaa8b9d80fc02dce4
     }
 
     /**

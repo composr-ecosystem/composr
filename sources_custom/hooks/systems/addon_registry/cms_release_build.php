@@ -37,7 +37,7 @@ class Hook_addon_registry_cms_release_build // TODO: renamed; do we need upgrade
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1734912113
+        return '11'; // addon_version_auto_update 4bcbbc6b38ee128313a1a04c1cbc853a
     }
 
     /**

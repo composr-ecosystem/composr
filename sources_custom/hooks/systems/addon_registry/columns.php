@@ -37,7 +37,7 @@ class Hook_addon_registry_columns
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608409
+        return '11'; // addon_version_auto_update 65b941c77ed29270fe5ac9c453ffd68a
     }
 
     /**

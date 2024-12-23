@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_signatures
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731956906
+        return '11'; // addon_version_auto_update b1a4a048c16d31a032d4b826dc14d1e7
     }
 
     /**

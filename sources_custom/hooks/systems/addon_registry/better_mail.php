@@ -37,7 +37,7 @@ class Hook_addon_registry_better_mail
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731864602
+        return '11'; // addon_version_auto_update 7f4c62eb0e02ed8c3ef0d060c8b44d94
     }
 
     /**

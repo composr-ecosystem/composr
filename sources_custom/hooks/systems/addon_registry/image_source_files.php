@@ -37,7 +37,7 @@ class Hook_addon_registry_image_source_files
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 1731608404
+        return '11'; // addon_version_auto_update dacb1e570c06b0a58f6aa292a84fde32
     }
 
     /**
