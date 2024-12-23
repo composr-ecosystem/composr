@@ -28,8 +28,8 @@ if (!addon_installed('galleries')) {
 }
 
 if (post_param_integer('confirm', 0) == 0) {
-    $preview = 'Public non-bundled addons';
-    $title = get_screen_title($preview, false);
+    $preview = 'Build public non-bundled addons. Caution: this will update the version of any non-bundled addons with automatic versioning whose files changed. You should only run this when getting ready to release the updated non-bundled addons.';
+    $title = get_screen_title('Build non-bundled addons', false);
     $url = get_self_url(false, false);
     return do_template('CONFIRM_SCREEN', ['_GUID' => 'e68a3b48474d9c8ad4d7107009fb3e83', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }

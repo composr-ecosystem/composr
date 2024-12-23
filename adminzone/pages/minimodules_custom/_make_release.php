@@ -90,7 +90,7 @@ $release_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('downloa
 if ($release_category_id === null) {
     $release_category_id = add_download_category('Version ' . strval(intval($version_dotted)), $releases_category_id, '', '');
     set_global_category_access('downloads', $release_category_id);
-    set_privilege_access('downloads', $release_category_id, 'submit_midrange_content', 0);
+    set_privilege_access('downloads', strval($release_category_id), 'submit_midrange_content', false);
 }
 // NB: We don't add addon categories. This is done in publish_addons_as_downloads.php
 
@@ -98,21 +98,21 @@ $installatron_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('do
 if ($installatron_category_id === null) {
     $installatron_category_id = add_download_category('Installatron integration', $releases_category_id, '', '');
     set_global_category_access('downloads', $installatron_category_id);
-    set_privilege_access('downloads', $installatron_category_id, 'submit_midrange_content', 0);
+    set_privilege_access('downloads', strval($installatron_category_id), 'submit_midrange_content', false);
 }
 
 $microsoft_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Microsoft integration']);
 if ($microsoft_category_id === null) {
     $microsoft_category_id = add_download_category('Microsoft integration', $releases_category_id, '', '');
     set_global_category_access('downloads', $microsoft_category_id);
-    set_privilege_access('downloads', $microsoft_category_id, 'submit_midrange_content', 0);
+    set_privilege_access('downloads', strval($microsoft_category_id), 'submit_midrange_content', false);
 }
 
 $aps_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'APS integration']);
 if ($aps_category_id === null) {
     $aps_category_id = add_download_category('APS integration', $releases_category_id, '', '');
     set_global_category_access('downloads', $aps_category_id);
-    set_privilege_access('downloads', $aps_category_id, 'submit_midrange_content', 0);
+    set_privilege_access('downloads', strval($aps_category_id), 'submit_midrange_content', false);
 }
 
 $major_release = '';

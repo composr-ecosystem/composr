@@ -13,8 +13,15 @@
  * @package    addon_publish
  */
 
-// Find existing category ID for a named category. Insert into the database if the category does not exist
-function find_addon_category_download_category($category_name, $parent_id = null/*null means under "Addons" category or under root category if Addons*/, $description = null)
+/**
+ * Find existing category ID for a named category. Insert into the database if the category does not exist.
+ *
+ * @param  SHORT_TEXT $category_name The name of the download category to search or create
+ * @param  ?AUTO_LINK $parent_id The parent ID where the category is located (null: under "Addons" category or under root category if Addons)
+ * @param  ?LONG_TEXT $description Provide a description for the category if it does not exist (null: use a default description)
+ * @return AUTO_LINK The ID of the download category
+ */
+function find_addon_category_download_category(string $category_name, ?int $parent_id = null, ?string $description = null) : int
 {
     static $cache = [];
 
@@ -169,7 +176,7 @@ function find_addon_category_download_category($category_name, $parent_id = null
         require_code('permissions2');
         set_global_category_access('downloads', $id);
         if (!$has_submit_access) {
-            set_privilege_access('downloads', $id, 'submit_midrange_content', 0);
+            set_privilege_access('downloads', strval($id), 'submit_midrange_content', false);
         }
     }
 
@@ -178,13 +185,17 @@ function find_addon_category_download_category($category_name, $parent_id = null
     return $id;
 }
 
-function set_privilege_access($permission_module, $category_name, $permission, $value)
+/**
+ * Set privileges on a module and category for all non-admin groups.
+ *
+ * @param  ?ID_TEXT $permission_module The permission module (null: none required)
+ * @param  ?ID_TEXT $category_name The category-name/value for the permission (null: none required)
+ * @param  ID_TEXT $permission The codename of the permission
+ * @param  boolean $value Whether the groups will have the privilege
+ */
+function set_privilege_access(?string $permission_module, ?string $category_name, string $permission, bool $value)
 {
     require_code('permissions3');
-
-    if (is_integer($category_name)) {
-        $category_name = strval($category_name);
-    }
 
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
@@ -195,7 +206,14 @@ function set_privilege_access($permission_module, $category_name, $permission, $
     }
 }
 
-function get_addons_list_under_category($category_name, $version_branch)
+/**
+ * Get a list of available addons under a given category which can be published (have a TAR available).
+ *
+ * @param  ID_TEXT $category_name The name of the addon category
+ * @param  ID_TEXT $version_branch The version branch
+ * @return array A list of addons available for publishing
+ */
+function get_addons_list_under_category(string $category_name, string $version_branch) : array
 {
     static $addons_in_cats = null;
     if ($addons_in_cats === null) {
@@ -233,6 +251,8 @@ function get_addons_list_under_category($category_name, $version_branch)
     $addons_here = isset($addons_in_cats[$category_name]) ? $addons_in_cats[$category_name] : [];
 
     // Look in local filesystem too
+    // NB: Nope, this will cause errors if the TAR files for these addons do not exist (which is already checked above)
+    /*
     $addons = find_all_hooks('systems', 'addon_registry');
     foreach ($addons as $addon_name => $place) {
         if ($place == 'sources_custom') {
@@ -249,12 +269,17 @@ function get_addons_list_under_category($category_name, $version_branch)
             }
         }
     }
+    */
 
     return $addons_here;
 }
 
-// Returns list of categories
-function find_addon_category_list()
+/**
+ * Get a list of addon categories defined by non-bundled addons.
+ *
+ * @return array An array of addon category names
+ */
+function find_addon_category_list() : array
 {
     $categories = [];
 
@@ -276,7 +301,13 @@ function find_addon_category_list()
     return array_unique($categories);
 }
 
-function generate_addon_description($info)
+/**
+ * Generate addon description Comcode from the given addon info.
+ *
+ * @param  array $info The addon info
+ * @return LONG_TEXT A Comcode description for this addon
+ */
+function generate_addon_description(array $info) : string
 {
     $description = $info['description'];
 

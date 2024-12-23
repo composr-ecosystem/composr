@@ -27,18 +27,6 @@ if (!addon_installed('galleries')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('galleries')));
 }
 
-if (post_param_integer('confirm', 0) == 0) {
-    $preview = 'Publish addons';
-    $title = get_screen_title($preview, false);
-    $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', ['_GUID' => '06eba6d4c63652892ec737c96ccaf3fa', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
-}
-
-$title = get_screen_title('Publish addons', false);
-$title->evaluate_echo();
-
-define('DOWNLOAD_OWNER', 2); // Hard-coded ID of user that gets ownership of the downloads
-
 require_code('addon_publish');
 require_code('addons2');
 require_code('version');
@@ -64,6 +52,18 @@ if ($version_branch === null) {
         warn_exit('Please pass the branch version in the URL (?version_branch=num.x).');
     }
 }
+
+if (post_param_integer('confirm', 0) == 0) {
+    $preview = 'Publish addon TARs (exports/addons, or uploads/downloads, in that order of priority) to category <kbd>' . escape_html($target_cat) . '</kbd>, version branch <kbd>' . escape_html($version_branch) . '</kbd>? Note, this particular installation of the software should be fully up-to-date, and all installed non-bundled addons should be up-to-date (e.g. their addon registry hooks) before proceeding. Otherwise, wrong / outdated information may be extracted and used on the downloads.';
+    $title = get_screen_title('Publish addons as downloads', false);
+    $url = get_self_url(false, false);
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '06eba6d4c63652892ec737c96ccaf3fa', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
+}
+
+$title = get_screen_title('Publish addons', false);
+$title->evaluate_echo();
+
+define('DOWNLOAD_OWNER', 2); // FUDGE: Hard-coded ID of user that gets ownership of the downloads
 
 $c_main_id = find_addon_category_download_category($target_cat);
 
@@ -145,8 +145,8 @@ function publish_addon($addon_name, $version_branch, $cat_id)
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $addon_url]);
     if ($test === null) {
-        if (is_file($from)) {
-            $tar = tar_open($from, 'rb');
+        if (is_file($to)) {
+            $tar = tar_open($to, 'rb');
             $info_file = tar_get_file($tar, 'addon.inf', true);
             $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
             tar_close($tar);
@@ -156,6 +156,7 @@ function publish_addon($addon_name, $version_branch, $cat_id)
             $name = titleify($addon_info['name']);
             $author = $addon_info['author'];
             $category = $addon_info['category'];
+            $version = $addon_info['version'];
 
             $description = generate_addon_description($addon_info);
 
@@ -166,9 +167,9 @@ function publish_addon($addon_name, $version_branch, $cat_id)
 
             $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $name]);
             if ($download_id === null) {
-                $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
+                $download_id = add_download($cat_id, $name, $addon_url, $description, $author, 'Addon version ' . $version, null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
             } else {
-                edit_download($download_id, $cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, '', '');
+                edit_download($download_id, $cat_id, $name, $addon_url, $description, $author, 'Addon version ' . $version, null, 1, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, '', '');
             }
 
             $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon_name . '.png';
@@ -211,8 +212,8 @@ function publish_theme($file, $version_branch, $cat_id)
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $addon_url]);
     if ($test === null) {
-        if (is_file($from)) {
-            $tar = tar_open($from, 'rb');
+        if (is_file($to)) {
+            $tar = tar_open($to, 'rb');
             $info_file = tar_get_file($tar, 'addon.inf', true);
             $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
             tar_close($tar);
@@ -221,6 +222,7 @@ function publish_theme($file, $version_branch, $cat_id)
 
             $description = $addon_info['description'];
             $author = $addon_info['author'];
+            $version = $addon_info['version'];
 
             $download_owner = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
             if ($download_owner === null) {
@@ -228,9 +230,9 @@ function publish_theme($file, $version_branch, $cat_id)
             }
             $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $cat_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $addon_name]);
             if ($download_id === null) {
-                $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
+                $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, 'Addon version ' . $version, null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
             } else {
-                edit_download($download_id, $cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, '', '');
+                edit_download($download_id, $cat_id, $addon_name, $addon_url, $description, $author, 'Addon version ' . $version, null, 1, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, '', '');
             }
 
             $screenshot_url = 'data_custom/images/addon_screenshots/' . urlencode(preg_replace('#^theme-#', 'theme__', preg_replace('#\d+$#', '', basename($file, '.tar'))) . '.png');
