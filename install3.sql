@@ -1,28 +1,28 @@
 DROP TABLE IF EXISTS cms_f_polls;
 CREATE TABLE cms_f_polls (
-    po_maximum_selections integer NOT NULL,
-    po_vote_revocation tinyint(1) NOT NULL,
-    po_guests_can_vote tinyint(1) NOT NULL,
-    po_point_weighting tinyint(1) NOT NULL,
-    po_requires_reply tinyint(1) NOT NULL,
-    po_closing_time integer unsigned NULL,
-    po_view_member_votes tinyint(1) NOT NULL,
-    po_cache_voting_power real NULL,
-    id integer unsigned auto_increment NOT NULL,
-    po_question varchar(255) NOT NULL,
     po_cache_total_votes integer NOT NULL,
-    po_is_private tinyint(1) NOT NULL,
+    po_maximum_selections integer NOT NULL,
+    po_cache_voting_power real NULL,
+    po_point_weighting tinyint(1) NOT NULL,
+    po_guests_can_vote tinyint(1) NOT NULL,
     po_is_open tinyint(1) NOT NULL,
+    po_question varchar(255) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    po_vote_revocation tinyint(1) NOT NULL,
+    po_view_member_votes tinyint(1) NOT NULL,
+    po_closing_time integer unsigned NULL,
+    po_requires_reply tinyint(1) NOT NULL,
     po_minimum_selections integer NOT NULL,
+    po_is_private tinyint(1) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_f_post_templates;
 CREATE TABLE cms_f_post_templates (
-    t_use_default_forums tinyint(1) NOT NULL,
-    t_title varchar(255) NOT NULL,
-    t_text longtext NOT NULL,
-    t_forum_multi_code varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    t_use_default_forums tinyint(1) NOT NULL,
+    t_forum_multi_code varchar(255) NOT NULL,
+    t_text longtext NOT NULL,
+    t_title varchar(255) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 INSERT INTO cms_f_post_templates (id, t_title, t_text, t_forum_multi_code, t_use_default_forums) VALUES (1, 'Bug report', 'Version: ?\nSupport software environment (operating system, etc.):\n?\n\nAssigned to: ?\nSeverity: ?\nExample URL: ?\nDescription:\n?\n\nSteps for reproduction:\n?\n\n', '', 0),
@@ -31,22 +31,22 @@ INSERT INTO cms_f_post_templates (id, t_title, t_text, t_forum_multi_code, t_use
 
 DROP TABLE IF EXISTS cms_f_posts;
 CREATE TABLE cms_f_posts (
-    p_cache_forum_id integer NULL,
-    p_topic_id integer NOT NULL,
-    p_validated tinyint(1) NOT NULL,
-    p_poster_name_if_guest varchar(80) NOT NULL,
-    p_skip_sig tinyint(1) NOT NULL,
-    p_posting_member integer NOT NULL,
-    p_ip_address varchar(40) NOT NULL,
-    p_time integer unsigned NOT NULL,
-    p_post longtext NOT NULL,
-    p_parent_id integer NULL,
-    p_is_emphasised tinyint(1) NOT NULL,
-    p_title varchar(255) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    p_last_edit_member integer NULL,
-    p_last_edit_time integer unsigned NULL,
     p_whisper_to_member integer NULL,
+    p_poster_name_if_guest varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    p_title varchar(255) NOT NULL,
+    p_post longtext NOT NULL,
+    p_time integer unsigned NOT NULL,
+    p_ip_address varchar(40) NOT NULL,
+    p_posting_member integer NOT NULL,
+    p_parent_id integer NULL,
+    p_validated tinyint(1) NOT NULL,
+    p_topic_id integer NOT NULL,
+    p_cache_forum_id integer NULL,
+    p_last_edit_time integer unsigned NULL,
+    p_last_edit_member integer NULL,
+    p_is_emphasised tinyint(1) NOT NULL,
+    p_skip_sig tinyint(1) NOT NULL,
     p_post__text_parsed longtext NOT NULL,
     p_post__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -84,22 +84,22 @@ ALTER TABLE cms_f_posts ADD INDEX posts_since (p_time,p_cache_forum_id);
 ALTER TABLE cms_f_posts ADD INDEX postsinforum (p_cache_forum_id);
 
 ALTER TABLE cms_f_posts ADD INDEX search_join (p_post(250));
-INSERT INTO cms_f_posts (id, p_title, p_post, p_time, p_ip_address, p_posting_member, p_whisper_to_member, p_poster_name_if_guest, p_validated, p_topic_id, p_cache_forum_id, p_last_edit_time, p_last_edit_member, p_is_emphasised, p_skip_sig, p_parent_id, p_post__text_parsed, p_post__source_user) VALUES (1, 'Welcome to the forums', 'This is the inbuilt forum system (known as Conversr).\n\nA forum system is a tool for communication between members; it consists of posts, organised into topics: each topic is a line of conversation.\n\nComposr provides support for a number of different forum systems, and each forum handles authentication of members: Conversr is the built-in forum, which provides seamless integration between the main website, the forums, and the inbuilt member accounts system.', 1732399096, '127.0.0.1', 1, NULL, 'System', 1, 1, 5, NULL, NULL, 0, 0, NULL, '', 1);
+INSERT INTO cms_f_posts (id, p_title, p_post, p_time, p_ip_address, p_posting_member, p_whisper_to_member, p_poster_name_if_guest, p_validated, p_topic_id, p_cache_forum_id, p_last_edit_time, p_last_edit_member, p_is_emphasised, p_skip_sig, p_parent_id, p_post__text_parsed, p_post__source_user) VALUES (1, 'Welcome to the forums', 'This is the inbuilt forum system (known as Conversr).\n\nA forum system is a tool for communication between members; it consists of posts, organised into topics: each topic is a line of conversation.\n\nComposr provides support for a number of different forum systems, and each forum handles authentication of members: Conversr is the built-in forum, which provides seamless integration between the main website, the forums, and the inbuilt member accounts system.', 1734983976, '127.0.0.1', 1, NULL, 'System', 1, 1, 5, NULL, NULL, 0, 0, NULL, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:7:{i:0;a:5:{i:0;s:39:\\\"string_attach_6769c1289e5966.23246408_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_6769c1289e5966.23246408_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:39:\\\"string_attach_6769c1289e5966.23246408_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:3;a:5:{i:0;s:39:\\\"string_attach_6769c1289e5966.23246408_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:4;a:5:{i:0;s:39:\\\"string_attach_6769c1289e5966.23246408_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:5;a:5:{i:0;s:39:\\\"string_attach_6769c1289e5966.23246408_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:6;a:5:{i:0;s:39:\\\"string_attach_6769c1289e5966.23246408_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:7:{s:39:\\\"string_attach_6769c1289e5966.23246408_1\\\";s:121:\\\"\\$tpl_funcs[\'string_attach_6769c1289e5966.23246408_1\']=\\\"echo \\\\\\\"This is the inbuilt forum system (known as Conversr).\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1289e5966.23246408_2\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_6769c1289e5966.23246408_2\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1289e5966.23246408_3\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_6769c1289e5966.23246408_3\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1289e5966.23246408_4\\\";s:210:\\\"\\$tpl_funcs[\'string_attach_6769c1289e5966.23246408_4\']=\\\"echo \\\\\\\"A forum system is a tool for communication between members; it consists of posts, organised into topics: each topic is a line of conversation.\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1289e5966.23246408_5\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_6769c1289e5966.23246408_5\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1289e5966.23246408_6\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_6769c1289e5966.23246408_6\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1289e5966.23246408_7\\\";s:329:\\\"\\$tpl_funcs[\'string_attach_6769c1289e5966.23246408_7\']=\\\"echo \\\\\\\"Composr provides support for a number of different forum systems, and each forum handles authentication of members: Conversr is the built-in forum, which provides seamless integration between the main website, the forums, and the inbuilt member accounts system.\\\\\\\";\\\";\\n\\\";}}\");\n', 1);
 
 DROP TABLE IF EXISTS cms_f_posts_fulltext_index;
 CREATE TABLE cms_f_posts_fulltext_index (
+    i_ngram integer NOT NULL,
+    i_add_time integer unsigned NOT NULL,
+    i_lang varchar(5) NOT NULL,
+    i_ac integer NOT NULL,
+    i_occurrence_rate real NOT NULL,
+    i_forum_id integer NOT NULL,
+    i_posting_member integer NOT NULL,
+    i_post_id integer NOT NULL,
+    i_open tinyint(1) NOT NULL,
     i_pinned tinyint(1) NOT NULL,
     i_starter tinyint(1) NOT NULL,
-    i_posting_member integer NOT NULL,
-    i_forum_id integer NOT NULL,
-    i_add_time integer unsigned NOT NULL,
-    i_occurrence_rate real NOT NULL,
-    i_open tinyint(1) NOT NULL,
-    i_ac integer NOT NULL,
-    i_ngram integer NOT NULL,
-    i_lang varchar(5) NOT NULL,
-    i_post_id integer NOT NULL,
-    PRIMARY KEY (i_ac, i_ngram, i_lang, i_post_id)
+    PRIMARY KEY (i_ngram, i_lang, i_ac, i_post_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_posts_fulltext_index ADD INDEX content_id (i_post_id);
 
@@ -140,16 +140,16 @@ ALTER TABLE cms_f_posts_fulltext_index ADD INDEX main_8 (i_lang,i_ngram,i_add_ti
 ALTER TABLE cms_f_posts_fulltext_index ADD INDEX main_9 (i_lang,i_ngram,i_add_time,i_open,i_occurrence_rate);
 DROP TABLE IF EXISTS cms_f_pposts_fulltext_index;
 CREATE TABLE cms_f_pposts_fulltext_index (
-    i_posting_member integer NOT NULL,
-    i_starter tinyint(1) NOT NULL,
-    i_post_id integer NOT NULL,
     i_for integer NOT NULL,
-    i_lang varchar(5) NOT NULL,
-    i_ngram integer NOT NULL,
-    i_ac integer NOT NULL,
-    i_occurrence_rate real NOT NULL,
+    i_starter tinyint(1) NOT NULL,
+    i_posting_member integer NOT NULL,
     i_add_time integer unsigned NOT NULL,
-    PRIMARY KEY (i_post_id, i_for, i_lang, i_ngram, i_ac)
+    i_occurrence_rate real NOT NULL,
+    i_ac integer NOT NULL,
+    i_ngram integer NOT NULL,
+    i_post_id integer NOT NULL,
+    i_lang varchar(5) NOT NULL,
+    PRIMARY KEY (i_for, i_ac, i_ngram, i_post_id, i_lang)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_pposts_fulltext_index ADD INDEX content_id (i_post_id);
 
@@ -218,46 +218,30 @@ ALTER TABLE cms_f_pposts_fulltext_index ADD INDEX main_8 (i_lang,i_ngram,i_ac,i_
 ALTER TABLE cms_f_pposts_fulltext_index ADD INDEX main_9 (i_lang,i_ngram,i_ac,i_starter,i_occurrence_rate);
 DROP TABLE IF EXISTS cms_f_read_logs;
 CREATE TABLE cms_f_read_logs (
+    l_member_id integer NOT NULL,
     l_topic_id integer NOT NULL,
     l_time integer unsigned NOT NULL,
-    l_member_id integer NOT NULL,
-    PRIMARY KEY (l_topic_id, l_member_id)
+    PRIMARY KEY (l_member_id, l_topic_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_read_logs ADD INDEX erase_old_read_logs (l_time);
 DROP TABLE IF EXISTS cms_f_saved_warnings;
 CREATE TABLE cms_f_saved_warnings (
-    s_message longtext NOT NULL,
-    s_explanation longtext NOT NULL,
     s_title varchar(255) NOT NULL,
+    s_explanation longtext NOT NULL,
+    s_message longtext NOT NULL,
     PRIMARY KEY (s_title)
 ) CHARACTER SET=utf8 engine=MyISAM;
 DROP TABLE IF EXISTS cms_f_special_pt_access;
 CREATE TABLE cms_f_special_pt_access (
-    s_topic_id integer NOT NULL,
     s_member_id integer NOT NULL,
-    PRIMARY KEY (s_topic_id, s_member_id)
+    s_topic_id integer NOT NULL,
+    PRIMARY KEY (s_member_id, s_topic_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_special_pt_access ADD INDEX sp_member (s_member_id);
 
 ALTER TABLE cms_f_special_pt_access ADD INDEX sp_topic (s_topic_id);
 DROP TABLE IF EXISTS cms_f_topics;
 CREATE TABLE cms_f_topics (
-    t_forum_id integer NULL,
-    t_cascading tinyint(1) NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    t_cache_last_title varchar(255) NOT NULL,
-    t_cache_first_post longtext NOT NULL,
-    t_pinned tinyint(1) NOT NULL,
-    t_cache_num_posts integer NOT NULL,
-    t_cache_last_member_id integer NULL,
-    t_cache_last_time integer unsigned NULL,
-    t_cache_first_member_id integer NULL,
-    t_cache_last_post_id integer NULL,
-    t_cache_first_username varchar(80) NOT NULL,
-    t_cache_first_title varchar(255) NOT NULL,
-    t_cache_first_time integer unsigned NULL,
-    t_cache_first_post_id integer NULL,
-    t_poll_id integer NULL,
     t_is_open tinyint(1) NOT NULL,
     t_validated tinyint(1) NOT NULL,
     t_num_views integer NOT NULL,
@@ -268,7 +252,23 @@ CREATE TABLE cms_f_topics (
     t_pt_from_category varchar(255) NOT NULL,
     t_pt_to_member integer NULL,
     t_pt_from_member integer NULL,
+    t_forum_id integer NULL,
+    t_cascading tinyint(1) NOT NULL,
+    t_pinned tinyint(1) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    t_cache_first_title varchar(255) NOT NULL,
+    t_cache_num_posts integer NOT NULL,
+    t_cache_last_member_id integer NULL,
     t_cache_last_username varchar(80) NOT NULL,
+    t_cache_last_title varchar(255) NOT NULL,
+    t_cache_last_time integer unsigned NULL,
+    t_cache_last_post_id integer NULL,
+    t_cache_first_member_id integer NULL,
+    t_cache_first_username varchar(80) NOT NULL,
+    t_cache_first_post longtext NOT NULL,
+    t_cache_first_time integer unsigned NULL,
+    t_cache_first_post_id integer NULL,
+    t_poll_id integer NULL,
     t_cache_first_post__text_parsed longtext NOT NULL,
     t_cache_first_post__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -314,16 +314,16 @@ ALTER TABLE cms_f_topics ADD INDEX topic_order_time (t_cache_last_time);
 ALTER TABLE cms_f_topics ADD INDEX topic_order_time_2 (t_cache_first_time);
 
 ALTER TABLE cms_f_topics ADD INDEX unread_forums (t_forum_id,t_cache_last_time);
-INSERT INTO cms_f_topics (id, t_pinned, t_cascading, t_forum_id, t_pt_from_member, t_pt_to_member, t_pt_from_category, t_pt_to_category, t_description, t_description_link, t_emoticon, t_num_views, t_validated, t_is_open, t_poll_id, t_cache_first_post_id, t_cache_first_time, t_cache_first_title, t_cache_first_post, t_cache_first_username, t_cache_first_member_id, t_cache_last_post_id, t_cache_last_time, t_cache_last_title, t_cache_last_username, t_cache_last_member_id, t_cache_num_posts, t_cache_first_post__text_parsed, t_cache_first_post__source_user) VALUES (1, 0, 0, 5, NULL, NULL, '', '', '', '', '', 0, 1, 1, NULL, 1, 1732399096, 'Welcome to the forums', '', 'System', 1, 1, 1732399096, 'Welcome to the forums', 'System', 1, 1, '', 1);
+INSERT INTO cms_f_topics (id, t_pinned, t_cascading, t_forum_id, t_pt_from_member, t_pt_to_member, t_pt_from_category, t_pt_to_category, t_description, t_description_link, t_emoticon, t_num_views, t_validated, t_is_open, t_poll_id, t_cache_first_post_id, t_cache_first_time, t_cache_first_title, t_cache_first_post, t_cache_first_username, t_cache_first_member_id, t_cache_last_post_id, t_cache_last_time, t_cache_last_title, t_cache_last_username, t_cache_last_member_id, t_cache_num_posts, t_cache_first_post__text_parsed, t_cache_first_post__source_user) VALUES (1, 0, 0, 5, NULL, NULL, '', '', '', '', '', 0, 1, 1, NULL, 1, 1734983976, 'Welcome to the forums', '', 'System', 1, 1, 1734983976, 'Welcome to the forums', 'System', 1, 1, '', 1);
 
 DROP TABLE IF EXISTS cms_f_usergroup_sub_mails;
 CREATE TABLE cms_f_usergroup_sub_mails (
-    m_usergroup_sub_id integer NOT NULL,
     m_subject longtext NOT NULL,
     m_body longtext NOT NULL,
-    id integer unsigned auto_increment NOT NULL,
-    m_ref_point varchar(80) NOT NULL,
     m_ref_point_offset integer NOT NULL,
+    m_ref_point varchar(80) NOT NULL,
+    m_usergroup_sub_id integer NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_usergroup_sub_mails ADD FULLTEXT m_body (m_body);
@@ -332,18 +332,18 @@ ALTER TABLE cms_f_usergroup_sub_mails ADD FULLTEXT m_subject (m_subject);
 DROP TABLE IF EXISTS cms_f_usergroup_subs;
 CREATE TABLE cms_f_usergroup_subs (
     id integer unsigned auto_increment NOT NULL,
+    s_title longtext NOT NULL,
     s_description longtext NOT NULL,
     s_price real NOT NULL,
-    s_auto_recur tinyint(1) NOT NULL,
-    s_enabled tinyint(1) NOT NULL,
-    s_mail_start longtext NOT NULL,
-    s_mail_end longtext NOT NULL,
-    s_mail_uhoh longtext NOT NULL,
-    s_uses_primary tinyint(1) NOT NULL,
-    s_title longtext NOT NULL,
-    s_length_units varchar(255) NOT NULL,
-    s_length integer NOT NULL,
     s_tax_code varchar(80) NOT NULL,
+    s_length integer NOT NULL,
+    s_length_units varchar(255) NOT NULL,
+    s_auto_recur tinyint(1) NOT NULL,
+    s_uses_primary tinyint(1) NOT NULL,
+    s_mail_uhoh longtext NOT NULL,
+    s_mail_end longtext NOT NULL,
+    s_mail_start longtext NOT NULL,
+    s_enabled tinyint(1) NOT NULL,
     s_group_id integer NOT NULL,
     s_description__text_parsed longtext NOT NULL,
     s_description__source_user integer DEFAULT 1 NOT NULL,
@@ -360,28 +360,28 @@ ALTER TABLE cms_f_usergroup_subs ADD FULLTEXT s_mail_uhoh (s_mail_uhoh);
 ALTER TABLE cms_f_usergroup_subs ADD FULLTEXT s_title (s_title);
 DROP TABLE IF EXISTS cms_f_warnings;
 CREATE TABLE cms_f_warnings (
-    id integer unsigned auto_increment NOT NULL,
     w_time integer unsigned NOT NULL,
-    w_member_id integer NOT NULL,
-    w_explanation longtext NOT NULL,
     w_issuing_member integer NOT NULL,
     w_is_warning tinyint(1) NOT NULL,
     w_topic_id integer NULL,
+    id integer unsigned auto_increment NOT NULL,
+    w_member_id integer NOT NULL,
+    w_explanation longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_warnings ADD INDEX warningsmemberid (w_member_id);
 DROP TABLE IF EXISTS cms_f_warnings_punitive;
 CREATE TABLE cms_f_warnings_punitive (
-    p_reversed tinyint(1) NOT NULL,
-    p_action varchar(80) NOT NULL,
-    p_email_address varchar(255) NOT NULL,
-    p_member_id integer NOT NULL,
     p_warning_id integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
-    p_ip_address varchar(40) NOT NULL,
-    p_hook varchar(80) NOT NULL,
     p_param_a varchar(255) NOT NULL,
     p_param_b varchar(255) NOT NULL,
+    p_action varchar(80) NOT NULL,
+    p_hook varchar(80) NOT NULL,
+    p_email_address varchar(255) NOT NULL,
+    p_ip_address varchar(40) NOT NULL,
+    p_reversed tinyint(1) NOT NULL,
+    p_member_id integer NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_warnings_punitive ADD INDEX warninghook (p_hook);
@@ -389,14 +389,14 @@ ALTER TABLE cms_f_warnings_punitive ADD INDEX warninghook (p_hook);
 ALTER TABLE cms_f_warnings_punitive ADD INDEX warningsid (p_warning_id);
 DROP TABLE IF EXISTS cms_f_welcome_emails;
 CREATE TABLE cms_f_welcome_emails (
+    w_text longtext NOT NULL,
     w_send_after_hours integer NOT NULL,
+    w_newsletter_id integer NULL,
     w_usergroup integer NULL,
     w_usergroup_type varchar(80) NOT NULL,
-    w_newsletter_id integer NULL,
     id integer unsigned auto_increment NOT NULL,
     w_name varchar(255) NOT NULL,
     w_subject longtext NOT NULL,
-    w_text longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_f_welcome_emails ADD FULLTEXT w_subject (w_subject);
@@ -413,27 +413,27 @@ CREATE TABLE cms_failedlogins (
 ALTER TABLE cms_failedlogins ADD INDEX failedlogins_by_ip (ip);
 DROP TABLE IF EXISTS cms_feature_lifetime_monitor;
 CREATE TABLE cms_feature_lifetime_monitor (
-    block_cache_id varchar(80) NOT NULL,
     run_period integer NOT NULL,
     running_now tinyint(1) NOT NULL,
     last_update integer unsigned NOT NULL,
     content_id varchar(80) NOT NULL,
-    PRIMARY KEY (block_cache_id, content_id)
+    block_cache_id varchar(80) NOT NULL,
+    PRIMARY KEY (content_id, block_cache_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_filedump;
 CREATE TABLE cms_filedump (
-    id integer unsigned auto_increment NOT NULL,
-    name varchar(80) NOT NULL,
-    subpath varchar(255) NOT NULL,
     the_description longtext NOT NULL,
+    subpath varchar(255) NOT NULL,
     the_member integer NOT NULL,
+    name varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_filedump ADD FULLTEXT the_description (the_description);
 DROP TABLE IF EXISTS cms_ft_index_commonality;
 CREATE TABLE cms_ft_index_commonality (
-    c_ngram varchar(255) NOT NULL,
     c_commonality real NOT NULL,
+    c_ngram varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
@@ -442,27 +442,27 @@ ALTER TABLE cms_ft_index_commonality ADD INDEX c_commonality (c_commonality);
 ALTER TABLE cms_ft_index_commonality ADD INDEX c_ngram (c_ngram(250));
 DROP TABLE IF EXISTS cms_galleries;
 CREATE TABLE cms_galleries (
+    watermark_bottom_left varchar(255) BINARY NOT NULL,
+    rep_image varchar(255) BINARY NOT NULL,
+    add_date integer unsigned NOT NULL,
+    fullname longtext NOT NULL,
+    the_description longtext NOT NULL,
+    watermark_bottom_right varchar(255) BINARY NOT NULL,
+    accept_images tinyint(1) NOT NULL,
     accept_videos tinyint(1) NOT NULL,
     allow_rating tinyint(1) NOT NULL,
+    name varchar(80) NOT NULL,
     allow_comments tinyint NOT NULL,
     notes longtext NOT NULL,
     is_member_synched tinyint(1) NOT NULL,
     layout_mode varchar(80) NOT NULL,
-    accept_images tinyint(1) NOT NULL,
+    gallery_views integer NOT NULL,
     g_owner integer NULL,
-    watermark_bottom_right varchar(255) BINARY NOT NULL,
-    watermark_bottom_left varchar(255) BINARY NOT NULL,
-    watermark_top_right varchar(255) BINARY NOT NULL,
-    watermark_top_left varchar(255) BINARY NOT NULL,
-    rep_image varchar(255) BINARY NOT NULL,
-    fullname longtext NOT NULL,
-    add_date integer unsigned NOT NULL,
-    name varchar(80) NOT NULL,
-    the_description longtext NOT NULL,
-    parent_id varchar(80) NOT NULL,
     gallery_sort varchar(80) NOT NULL,
     media_sort varchar(80) NOT NULL,
-    gallery_views integer NOT NULL,
+    watermark_top_right varchar(255) BINARY NOT NULL,
+    watermark_top_left varchar(255) BINARY NOT NULL,
+    parent_id varchar(80) NOT NULL,
     fullname__text_parsed longtext NOT NULL,
     fullname__source_user integer DEFAULT 1 NOT NULL,
     the_description__text_parsed longtext NOT NULL,
@@ -490,15 +490,15 @@ ALTER TABLE cms_galleries ADD INDEX watermark_bottom_right (watermark_bottom_rig
 ALTER TABLE cms_galleries ADD INDEX watermark_top_left (watermark_top_left(250));
 
 ALTER TABLE cms_galleries ADD INDEX watermark_top_right (watermark_top_right(250));
-INSERT INTO cms_galleries (name, the_description, fullname, add_date, rep_image, parent_id, watermark_top_left, watermark_top_right, watermark_bottom_left, watermark_bottom_right, accept_images, accept_videos, allow_rating, allow_comments, notes, is_member_synched, layout_mode, gallery_views, g_owner, gallery_sort, media_sort, the_description__text_parsed, the_description__source_user, fullname__text_parsed, fullname__source_user) VALUES ('root', '', 'Galleries home', 1732399134, '', '', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', '', 2, '', 2),
-('homepage_hero_slider', 'Slides for the homepage hero slider', 'Homepage Hero Slider', 1732399134, '', 'root', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', '', 2, '', 2);
+INSERT INTO cms_galleries (name, the_description, fullname, add_date, rep_image, parent_id, watermark_top_left, watermark_top_right, watermark_bottom_left, watermark_bottom_right, accept_images, accept_videos, allow_rating, allow_comments, notes, is_member_synched, layout_mode, gallery_views, g_owner, gallery_sort, media_sort, the_description__text_parsed, the_description__source_user, fullname__text_parsed, fullname__source_user) VALUES ('root', '', 'Galleries home', 1734984000, '', '', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_23\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_23\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_23\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_24\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_24\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_24\']=\\\"echo \\\\\\\"Galleries home\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
+('homepage_hero_slider', 'Slides for the homepage hero slider', 'Homepage Hero Slider', 1734984000, '', 'root', '', '', '', '', 1, 1, 0, 0, '', 0, 'grid', 0, NULL, '', '', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_25\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_25\\\";s:104:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_25\']=\\\"echo \\\\\\\"Slides for the homepage hero slider\\\\\\\";\\\";\\n\\\";}}\");\n', 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_26\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_26\\\";s:89:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_26\']=\\\"echo \\\\\\\"Homepage Hero Slider\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_group_category_access;
 CREATE TABLE cms_group_category_access (
+    module_the_name varchar(80) NOT NULL,
     group_id integer NOT NULL,
     category_name varchar(80) NOT NULL,
-    module_the_name varchar(80) NOT NULL,
-    PRIMARY KEY (group_id, category_name, module_the_name)
+    PRIMARY KEY (module_the_name, group_id, category_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 INSERT INTO cms_group_category_access (module_the_name, category_name, group_id) VALUES ('banners', 'advertise_here', 1),
 ('banners', 'advertise_here', 3),
@@ -791,10 +791,10 @@ INSERT INTO cms_group_category_access (module_the_name, category_name, group_id)
 
 DROP TABLE IF EXISTS cms_group_page_access;
 CREATE TABLE cms_group_page_access (
-    zone_name varchar(80) NOT NULL,
     group_id integer NOT NULL,
     page_name varchar(80) NOT NULL,
-    PRIMARY KEY (zone_name, group_id, page_name)
+    zone_name varchar(80) NOT NULL,
+    PRIMARY KEY (group_id, page_name, zone_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_group_page_access ADD INDEX group_id (group_id);
 INSERT INTO cms_group_page_access (page_name, zone_name, group_id) VALUES ('admin_addons', 'adminzone', 1),
@@ -916,20 +916,20 @@ INSERT INTO cms_group_page_access (page_name, zone_name, group_id) VALUES ('cont
 
 DROP TABLE IF EXISTS cms_group_points;
 CREATE TABLE cms_group_points (
-    p_points_one_off integer NOT NULL,
     p_points_per_month integer NOT NULL,
+    p_points_one_off integer NOT NULL,
     p_group_id integer NOT NULL,
     PRIMARY KEY (p_group_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_group_privileges;
 CREATE TABLE cms_group_privileges (
-    the_value tinyint(1) NOT NULL,
-    module_the_name varchar(80) NOT NULL,
     group_id integer NOT NULL,
     privilege varchar(80) NOT NULL,
     the_page varchar(80) NOT NULL,
+    module_the_name varchar(80) NOT NULL,
     category_name varchar(80) NOT NULL,
-    PRIMARY KEY (module_the_name, group_id, privilege, the_page, category_name)
+    the_value tinyint(1) NOT NULL,
+    PRIMARY KEY (group_id, privilege, the_page, module_the_name, category_name)
 ) CHARACTER SET=utf8 engine=MyISAM;
 ALTER TABLE cms_group_privileges ADD INDEX by_privilege (privilege);
 
@@ -1151,9 +1151,9 @@ INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name
 (3, 'sees_javascript_error_alerts', '', '', '', 1),
 (2, 'see_software_docs', '', '', '', 1),
 (3, 'see_software_docs', '', '', '', 1),
-(2, 'jump_to_not_validated', '', '', '', 1),
-(2, 'see_not_validated', '', '', '', 1),
 (3, 'see_not_validated', '', '', '', 1),
+(2, 'see_not_validated', '', '', '', 1),
+(2, 'jump_to_not_validated', '', '', '', 1),
 (2, 'may_enable_staff_notifications', '', '', '', 1),
 (3, 'may_enable_staff_notifications', '', '', '', 1),
 (2, 'bypass_flood_control', '', '', '', 1),
@@ -1390,51 +1390,68 @@ INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name
 (9, 'upload_filedump', '', '', '', 1),
 (2, 'delete_anything_filedump', '', '', '', 1),
 (3, 'delete_anything_filedump', '', '', '', 1),
-(3, 'no_personal_gallery_limit', '', '', '', 1),
-(2, 'no_personal_gallery_limit', '', '', '', 1),
-(3, 'high_personal_gallery_limit', '', '', '', 1),
 (2, 'may_download_gallery', '', '', '', 1),
 (3, 'may_download_gallery', '', '', '', 1),
 (2, 'high_personal_gallery_limit', '', '', '', 1),
-(3, 'autocomplete_title_gallery', '', '', '', 1),
-(3, 'autocomplete_keyword_image', '', '', '', 1),
-(2, 'autocomplete_title_gallery', '', '', '', 1),
-(3, 'autocomplete_keyword_gallery', '', '', '', 1),
-(2, 'autocomplete_keyword_image', '', '', '', 1),
+(3, 'high_personal_gallery_limit', '', '', '', 1),
+(2, 'no_personal_gallery_limit', '', '', '', 1),
+(3, 'no_personal_gallery_limit', '', '', '', 1),
 (2, 'autocomplete_keyword_gallery', '', '', '', 1),
+(3, 'autocomplete_keyword_gallery', '', '', '', 1),
+(2, 'autocomplete_title_gallery', '', '', '', 1),
+(3, 'autocomplete_title_gallery', '', '', '', 1),
+(2, 'autocomplete_keyword_image', '', '', '', 1),
+(3, 'autocomplete_keyword_image', '', '', '', 1),
+(2, 'autocomplete_title_image', '', '', '', 1),
+(3, 'autocomplete_title_image', '', '', '', 1),
+(2, 'autocomplete_keyword_videos', '', '', '', 1),
+(3, 'autocomplete_keyword_videos', '', '', '', 1),
+(2, 'autocomplete_title_videos', '', '', '', 1),
+(3, 'autocomplete_title_videos', '', '', '', 1),
 (2, 'change_newsletter_subscriptions', '', '', '', 1),
 (3, 'change_newsletter_subscriptions', '', '', '', 1),
-(3, 'view_points_ledger', '', '', '', 1),
-(2, 'view_points_ledger', '', '', '', 1),
-(3, 'send_points_to_self', '', '', '', 1),
-(2, 'send_points_to_self', '', '', '', 1),
+(1, 'use_points', '', '', '', 1),
+(2, 'use_points', '', '', '', 1),
+(3, 'use_points', '', '', '', 1),
+(4, 'use_points', '', '', '', 1),
+(5, 'use_points', '', '', '', 1);
+INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name, category_name, the_value) VALUES (6, 'use_points', '', '', '', 1),
+(7, 'use_points', '', '', '', 1),
+(8, 'use_points', '', '', '', 1),
+(9, 'use_points', '', '', '', 1),
+(2, 'trace_anonymous_points_transactions', '', '', '', 1),
 (3, 'trace_anonymous_points_transactions', '', '', '', 1),
+(2, 'send_points_to_self', '', '', '', 1),
+(3, 'send_points_to_self', '', '', '', 1),
+(2, 'view_points_ledger', '', '', '', 1),
+(3, 'view_points_ledger', '', '', '', 1),
 (1, 'send_points', '', '', '', 1),
 (2, 'send_points', '', '', '', 1),
 (3, 'send_points', '', '', '', 1),
-(2, 'use_points', '', '', '', 1),
-(1, 'use_points', '', '', '', 1),
-(1, 'use_points_escrow', '', '', '', 1);
-INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name, category_name, the_value) VALUES (9, 'send_points', '', '', '', 1),
-(8, 'send_points', '', '', '', 1),
-(7, 'send_points', '', '', '', 1),
-(6, 'send_points', '', '', '', 1),
-(5, 'send_points', '', '', '', 1),
 (4, 'send_points', '', '', '', 1),
-(2, 'trace_anonymous_points_transactions', '', '', '', 1),
-(9, 'use_points', '', '', '', 1),
-(8, 'use_points', '', '', '', 1),
-(7, 'use_points', '', '', '', 1),
-(6, 'use_points', '', '', '', 1),
-(5, 'use_points', '', '', '', 1),
-(4, 'use_points', '', '', '', 1),
-(3, 'use_points', '', '', '', 1),
+(5, 'send_points', '', '', '', 1),
+(6, 'send_points', '', '', '', 1),
+(7, 'send_points', '', '', '', 1),
+(8, 'send_points', '', '', '', 1),
+(9, 'send_points', '', '', '', 1);
+INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name, category_name, the_value) VALUES (1, 'use_points_escrow', '', '', '', 1),
 (2, 'use_points_escrow', '', '', '', 1),
 (3, 'use_points_escrow', '', '', '', 1),
 (4, 'use_points_escrow', '', '', '', 1),
+(5, 'use_points_escrow', '', '', '', 1),
+(6, 'use_points_escrow', '', '', '', 1),
+(7, 'use_points_escrow', '', '', '', 1),
+(8, 'use_points_escrow', '', '', '', 1),
+(9, 'use_points_escrow', '', '', '', 1),
+(2, 'moderate_points_escrow', '', '', '', 1),
+(3, 'moderate_points_escrow', '', '', '', 1),
+(2, 'moderate_points', '', '', '', 1),
+(3, 'moderate_points', '', '', '', 1),
+(2, 'amend_point_transactions', '', '', '', 1),
+(3, 'amend_point_transactions', '', '', '', 1),
 (2, 'choose_poll', '', '', '', 1),
-(3, 'choose_poll', '', '', '', 1);
-INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name, category_name, the_value) VALUES (2, 'autocomplete_keyword_poll', '', '', '', 1),
+(3, 'choose_poll', '', '', '', 1),
+(2, 'autocomplete_keyword_poll', '', '', '', 1),
 (3, 'autocomplete_keyword_poll', '', '', '', 1),
 (2, 'autocomplete_title_poll', '', '', '', 1),
 (3, 'autocomplete_title_poll', '', '', '', 1),
@@ -1454,13 +1471,16 @@ INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name
 (8, 'edit_own_midrange_content', 'cms_polls', '', '', 0),
 (9, 'bypass_validation_midrange_content', 'cms_polls', '', '', 0),
 (9, 'edit_own_midrange_content', 'cms_polls', '', '', 0),
-(2, 'bypass_quiz_timer', '', '', '', 1),
-(3, 'view_others_quiz_results', '', '', '', 1),
-(3, 'bypass_quiz_repeat_time_restriction', '', '', '', 1),
 (2, 'bypass_quiz_repeat_time_restriction', '', '', '', 1),
+(3, 'bypass_quiz_repeat_time_restriction', '', '', '', 1),
 (2, 'view_others_quiz_results', '', '', '', 1),
-(2, 'autocomplete_keyword_quiz', '', '', '', 1),
+(3, 'view_others_quiz_results', '', '', '', 1);
+INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name, category_name, the_value) VALUES (2, 'bypass_quiz_timer', '', '', '', 1),
 (3, 'bypass_quiz_timer', '', '', '', 1),
+(2, 'autocomplete_keyword_quiz', '', '', '', 1),
+(3, 'autocomplete_keyword_quiz', '', '', '', 1),
+(2, 'autocomplete_title_quiz', '', '', '', 1),
+(3, 'autocomplete_title_quiz', '', '', '', 1),
 (2, 'use_own_recommend_message', '', '', '', 1),
 (3, 'use_own_recommend_message', '', '', '', 1),
 (2, 'autocomplete_past_search', '', '', '', 1),
@@ -1474,8 +1494,8 @@ INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name
 (2, 'sms_higher_limit', '', '', '', 1),
 (3, 'sms_higher_limit', '', '', '', 1),
 (2, 'sms_higher_trigger_limit', '', '', '', 1),
-(3, 'sms_higher_trigger_limit', '', '', '', 1);
-INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name, category_name, the_value) VALUES (1, 'may_report_content', '', '', '', 1),
+(3, 'sms_higher_trigger_limit', '', '', '', 1),
+(1, 'may_report_content', '', '', '', 1),
 (2, 'may_report_content', '', '', '', 1),
 (3, 'may_report_content', '', '', '', 1),
 (4, 'may_report_content', '', '', '', 1),
@@ -1490,29 +1510,9 @@ INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name
 (3, 'support_operator', '', '', '', 1),
 (3, 'bypass_validation_lowrange_content', '', 'forums', '6', 1),
 (3, 'bypass_validation_midrange_content', '', 'forums', '6', 1),
+(3, 'jump_to_not_validated', '', '', '', 1),
 (2, 'wiki_manage_tree', '', '', '', 1),
 (3, 'wiki_manage_tree', '', '', '', 1),
-(3, 'autocomplete_keyword_quiz', '', '', '', 1),
-(2, 'autocomplete_title_quiz', '', '', '', 1),
-(3, 'autocomplete_title_quiz', '', '', '', 1),
-(5, 'use_points_escrow', '', '', '', 1),
-(6, 'use_points_escrow', '', '', '', 1),
-(7, 'use_points_escrow', '', '', '', 1),
-(8, 'use_points_escrow', '', '', '', 1),
-(9, 'use_points_escrow', '', '', '', 1),
-(2, 'moderate_points_escrow', '', '', '', 1),
-(3, 'moderate_points_escrow', '', '', '', 1),
-(2, 'moderate_points', '', '', '', 1),
-(3, 'moderate_points', '', '', '', 1),
-(2, 'amend_point_transactions', '', '', '', 1),
-(3, 'amend_point_transactions', '', '', '', 1),
-(3, 'jump_to_not_validated', '', '', '', 1),
-(2, 'autocomplete_title_image', '', '', '', 1),
-(3, 'autocomplete_title_image', '', '', '', 1),
-(2, 'autocomplete_keyword_videos', '', '', '', 1),
-(3, 'autocomplete_keyword_videos', '', '', '', 1),
-(2, 'autocomplete_title_videos', '', '', '', 1),
-(3, 'autocomplete_title_videos', '', '', '', 1),
 (2, 'set_content_review_settings', '', '', '', 1),
 (3, 'set_content_review_settings', '', '', '', 1);
 INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name, category_name, the_value) VALUES (2, 'autocomplete_keyword_news', '', '', '', 1),
@@ -1522,9 +1522,9 @@ INSERT INTO cms_group_privileges (group_id, privilege, the_page, module_the_name
 
 DROP TABLE IF EXISTS cms_group_zone_access;
 CREATE TABLE cms_group_zone_access (
-    zone_name varchar(80) NOT NULL,
     group_id integer NOT NULL,
-    PRIMARY KEY (zone_name, group_id)
+    zone_name varchar(80) NOT NULL,
+    PRIMARY KEY (group_id, zone_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_group_zone_access ADD INDEX group_id (group_id);
 INSERT INTO cms_group_zone_access (zone_name, group_id) VALUES ('', 1),
@@ -1566,20 +1566,20 @@ INSERT INTO cms_group_zone_access (zone_name, group_id) VALUES ('', 1),
 
 DROP TABLE IF EXISTS cms_hackattack;
 CREATE TABLE cms_hackattack (
-    risk_score integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     url varchar(255) BINARY NOT NULL,
+    member_id integer NOT NULL,
+    silent_to_staff_log tinyint(1) NOT NULL,
     data_post longtext NOT NULL,
     user_agent varchar(255) NOT NULL,
     referer_url varchar(255) BINARY NOT NULL,
     user_os varchar(255) NOT NULL,
-    member_id integer NOT NULL,
     date_and_time integer unsigned NOT NULL,
     ip varchar(40) NOT NULL,
     reason varchar(80) NOT NULL,
     reason_param_a varchar(255) NOT NULL,
     reason_param_b varchar(255) NOT NULL,
-    silent_to_staff_log tinyint(1) NOT NULL,
+    risk_score integer NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_hackattack ADD INDEX h_date_and_time (date_and_time);
@@ -1587,29 +1587,29 @@ ALTER TABLE cms_hackattack ADD INDEX h_date_and_time (date_and_time);
 ALTER TABLE cms_hackattack ADD INDEX otherhacksby (ip);
 DROP TABLE IF EXISTS cms_hybridauth_content_map;
 CREATE TABLE cms_hybridauth_content_map (
-    h_provider_id varchar(255) NOT NULL,
-    h_sync_time integer unsigned NOT NULL,
     h_provider varchar(80) NOT NULL,
     h_content_id varchar(80) NOT NULL,
     h_content_type varchar(80) NOT NULL,
+    h_provider_id varchar(255) NOT NULL,
+    h_sync_time integer unsigned NOT NULL,
     PRIMARY KEY (h_provider, h_content_id, h_content_type)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_images;
 CREATE TABLE cms_images (
-    url varchar(255) BINARY NOT NULL,
-    the_description longtext NOT NULL,
+    allow_rating tinyint(1) NOT NULL,
+    allow_comments tinyint NOT NULL,
     allow_trackbacks tinyint(1) NOT NULL,
     notes longtext NOT NULL,
-    allow_rating tinyint(1) NOT NULL,
-    add_date integer unsigned NOT NULL,
-    validated tinyint(1) NOT NULL,
     submitter integer NOT NULL,
-    allow_comments tinyint NOT NULL,
+    validated tinyint(1) NOT NULL,
+    add_date integer unsigned NOT NULL,
+    edit_date integer unsigned NULL,
     image_views integer NOT NULL,
     title longtext NOT NULL,
-    edit_date integer unsigned NULL,
-    id integer unsigned auto_increment NOT NULL,
     cat varchar(80) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
+    url varchar(255) BINARY NOT NULL,
+    the_description longtext NOT NULL,
     the_description__text_parsed longtext NOT NULL,
     the_description__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -1633,9 +1633,49 @@ ALTER TABLE cms_images ADD INDEX iadd_date (add_date);
 ALTER TABLE cms_images ADD INDEX image_views (image_views);
 
 ALTER TABLE cms_images ADD INDEX xis (submitter);
-INSERT INTO cms_images (id, cat, url, the_description, allow_rating, allow_comments, allow_trackbacks, notes, submitter, validated, add_date, edit_date, image_views, title, the_description__text_parsed, the_description__source_user) VALUES (1, 'homepage_hero_slider', 'uploads/galleries/root/homepage_hero_slider/bastei_bridge.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Content Management System for Next-Gen Websites\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1732399134, NULL, 0, 'Slider 1', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:2:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_67425024550772.91761099_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_67425023cf7de7.08943038_70\\\";s:501:\\\"\\$tpl_funcs[\'string_attach_67425023cf7de7.08943038_70\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_67425023cf7de7.08943038_70\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:40:\\\"string_attach_67425023d09f91.37504586_38\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:2:{s:33:\\\"tcpfunc_67425024550772.91761099_1\\\";s:580:\\\"\\$tpl_funcs[\'tcpfunc_67425024550772.91761099_1\']=\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\";\\\";s:40:\\\"string_attach_67425023d09f91.37504586_38\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_67425023d09f91.37504586_38\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(2, 'homepage_hero_slider', 'uploads/galleries/root/homepage_hero_slider/rustic.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Leader In Design\nSUBLINE=Form and Function Revolutionised!\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1732399134, NULL, 0, 'Slider 2', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:2:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_674250245596e8.31509010_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_67425023cf7de7.08943038_71\\\";s:446:\\\"\\$tpl_funcs[\'string_attach_67425023cf7de7.08943038_71\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_67425023cf7de7.08943038_71\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:40:\\\"string_attach_67425023d09f91.37504586_39\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:2:{s:33:\\\"tcpfunc_674250245596e8.31509010_1\\\";s:525:\\\"\\$tpl_funcs[\'tcpfunc_674250245596e8.31509010_1\']=\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\";\\\";s:40:\\\"string_attach_67425023d09f91.37504586_39\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_67425023d09f91.37504586_39\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";}}\");\n', 2),
-(3, 'homepage_hero_slider', 'uploads/galleries/root/homepage_hero_slider/waterfall.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Think Ahead\nSUBLINE=Boost your online business growth!\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1732399134, NULL, 0, 'Slider 3', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:2:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_6742502457f3f2.18986373_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_67425023cf7de7.08943038_72\\\";s:409:\\\"\\$tpl_funcs[\'string_attach_67425023cf7de7.08943038_72\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_67425023cf7de7.08943038_72\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:40:\\\"string_attach_67425023d09f91.37504586_40\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:2:{s:33:\\\"tcpfunc_6742502457f3f2.18986373_1\\\";s:488:\\\"\\$tpl_funcs[\'tcpfunc_6742502457f3f2.18986373_1\']=\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\";\\\";s:40:\\\"string_attach_67425023d09f91.37504586_40\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_67425023d09f91.37504586_40\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_images (id, cat, url, the_description, allow_rating, allow_comments, allow_trackbacks, notes, submitter, validated, add_date, edit_date, image_views, title, the_description__text_parsed, the_description__source_user) VALUES (1, 'homepage_hero_slider', 'uploads/galleries/root/homepage_hero_slider/bastei_bridge.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Content Management System for Next-Gen Websites\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1734984001, NULL, 0, 'Slider 1', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_6769c1410e9810.74919828_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_27\\\";s:501:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_27\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_27\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_6769c1410e9dc1.32692101_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_6769c1410e9810.74919828_1\\\";s:700:\\\"\\$tpl_funcs[\'tcpfunc_6769c1410e9810.74919828_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_6769c1410e9810.74919828_1\']=recall_named_function(\'6769c1410e9844.57263196\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Content Management System for Next-Gen Websites\\\\\\\\nSUBLINE=Tired of primitive web systems that don\'t meet your requirements?\\\\\\\\nTEXT=With tons of features at your fingertips, let your creativity loose.<br />Welcome your visitors with elegance and flexibility.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_6769c1410e9a56.94358091_1\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_1\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_6769c1410e9dc1.32692101_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_6769c1410e9dc1.32692101_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_6769c1410e9dc1.32692101_1\']=recall_named_function(\'6769c1410e9dd4.15504248\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2),
+(2, 'homepage_hero_slider', 'uploads/galleries/root/homepage_hero_slider/rustic.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Leader In Design\nSUBLINE=Form and Function Revolutionised!\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1734984001, NULL, 0, 'Slider 2', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_6769c1414548f1.73135003_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_28\\\";s:446:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_28\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_28\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_2\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_6769c141455183.56806909_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_6769c1414548f1.73135003_1\\\";s:645:\\\"\\$tpl_funcs[\'tcpfunc_6769c1414548f1.73135003_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_6769c1414548f1.73135003_1\']=recall_named_function(\'6769c141454918.31010274\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Leader In Design\\\\\\\\nSUBLINE=Form and Function Revolutionised!\\\\\\\\nTEXT=Our awesome bundled theme will help users, designers, developers, and companies create websites for their startups quickly and easily.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_6769c1410e9a56.94358091_2\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_2\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_6769c141455183.56806909_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_6769c141455183.56806909_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_6769c141455183.56806909_1\']=recall_named_function(\'6769c1414551b9.78643740\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2),
+(3, 'homepage_hero_slider', 'uploads/galleries/root/homepage_hero_slider/waterfall.jpg', '{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}\nHEADLINE=Think Ahead\nSUBLINE=Boost your online business growth!\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\nLINK1_URL=https://composr.app/features.htm\nLINK1_TEXT=Discover features\nLINK2_URL=https://composr.app/forum/forumview.htm\nLINK2_TEXT=Join the community\n{+END}\n{$,page hint: no_wysiwyg}', 0, 0, 0, '', 2, 1, 1734984001, NULL, 0, 'Slider 3', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:3:{i:0;a:5:{i:0;s:33:\\\"tcpfunc_6769c141778716.14993906_1\\\";i:1;a:1:{s:19:\\\"DIRECTIVE_EMBEDMENT\\\";O:8:\\\"Tempcode\\\":3:{s:18:\\\"code_to_preexecute\\\";a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_29\\\";s:409:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_29\']=\\\"echo \\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\";\\\";\\n\\\";}s:9:\\\"seq_parts\\\";a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_29\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}s:8:\\\"codename\\\";s:10:\\\":container\\\";}}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_3\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:2;a:5:{i:0;s:33:\\\"tcpfunc_6769c141778dc3.72492453_1\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:1:{i:0;a:4:{i:0;a:0:{}i:1;i:4;i:2;s:7:\\\"INCLUDE\\\";i:3;a:1:{i:0;s:27:\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\";}}}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:3:{s:33:\\\"tcpfunc_6769c141778716.14993906_1\\\";s:608:\\\"\\$tpl_funcs[\'tcpfunc_6769c141778716.14993906_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_6769c141778716.14993906_1\']=recall_named_function(\'6769c141778733.24495497\',\'\\$parameters,\\$cl\',\\\"echo ecv(\\\\\\$cl,[],4,\\\\\\\"INCLUDE\\\\\\\",[\\\\\\\"GALLERY_HOMEPAGE_HERO_SLIDE\\\\\\\",\\\\\\\"\\\\\\\\nHEADLINE=Think Ahead\\\\\\\\nSUBLINE=Boost your online business growth!\\\\\\\\nTEXT=Fully Open Source, Composr is built on a tradition of software freedom and empowering regular people.\\\\\\\\nLINK1_URL=https://composr.app/features.htm\\\\\\\\nLINK1_TEXT=Discover features\\\\\\\\nLINK2_URL=https://composr.app/forum/forumview.htm\\\\\\\\nLINK2_TEXT=Join the community\\\\\\\\n\\\\\\\",\'vars\'=>\\\\\\$parameters],\\\\\\\"\\\\\\\");\\\");\\\";s:39:\\\"string_attach_6769c1410e9a56.94358091_3\\\";s:74:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_3\']=\\\"echo \\\\\\\"<br />\\\\\\\";\\\";\\n\\\";s:33:\\\"tcpfunc_6769c141778dc3.72492453_1\\\";s:181:\\\"\\$tpl_funcs[\'tcpfunc_6769c141778dc3.72492453_1\']=\\$KEEP_TPL_FUNCS[\'tcpfunc_6769c141778dc3.72492453_1\']=recall_named_function(\'6769c141778dd9.21387350\',\'\\$parameters,\\$cl\',\\\"echo \\\\\\\"\\\\\\\";\\\");\\\";}}\");\n', 2),
+(4, 'root', 'uploads/galleries/root/funny-pictures-cat-has-trophy-wife.jpg', 'TROPHY WIFE', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'TROPHY WIFE', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_33\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_33\\\";s:80:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_33\']=\\\"echo \\\\\\\"TROPHY WIFE\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(5, 'root', 'uploads/galleries/root/funny-pictures-cat-is-on-steroids.jpg', 'STREROIDS', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'STREROIDS', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_34\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_34\\\";s:78:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_34\']=\\\"echo \\\\\\\"STREROIDS\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(6, 'root', 'uploads/galleries/root/funny-pictures-cat-is-a-hoarder.jpg', 'Tonight on A&E', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Tonight on A&E', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_4\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_6769c1410e9a56.94358091_4\\\";s:86:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_4\']=\\\"echo \\\\\\\"Tonight on A&amp;E\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(7, 'root', 'uploads/galleries/root/funny-pictures-cat-winks-at-you.jpg', 'Hey there', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Hey there', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_35\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_35\\\";s:78:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_35\']=\\\"echo \\\\\\\"Hey there\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(8, 'root', 'uploads/galleries/root/funny-pictures-cat-does-not-see-your-point.jpg', '...your point?', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, '...your point?', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_36\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_36\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_36\']=\\\"echo \\\\\\\"...your point?\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(9, 'root', 'uploads/galleries/root/funny-pictures-cat-asks-you-to-pay-fine.jpg', 'just pay the fine', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'just pay the fine', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_37\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_37\\\";s:86:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_37\']=\\\"echo \\\\\\\"just pay the fine\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(10, 'root', 'uploads/galleries/root/funny-pictures-cat-is-a-people-lady.jpg', 'Walter never showed up ...', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Walter never showed up ...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_38\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_38\\\";s:95:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_38\']=\\\"echo \\\\\\\"Walter never showed up ...\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(11, 'root', 'uploads/galleries/root/funny-pictures-cat-looks-like-a-vase.jpg', 'Feline Dynasty', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Feline Dynasty', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_39\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_39\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_39\']=\\\"echo \\\\\\\"Feline Dynasty\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(12, 'root', 'uploads/galleries/root/funny-pictures-cat-can-poop-rainbows.jpg', 'And I can poop dem too ...', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'And I can poop dem too ...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_40\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_40\\\";s:95:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_40\']=\\\"echo \\\\\\\"And I can poop dem too ...\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(13, 'root', 'uploads/galleries/root/funny-pictures-cat-does-math.jpg', 'You and your wife have 16 kittens ...', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'You and your wife have 16 kittens ...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_41\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_41\\\";s:106:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_41\']=\\\"echo \\\\\\\"You and your wife have 16 kittens ...\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(14, 'root', 'uploads/galleries/root/funny-pictures-kittens-dispose-of-boyfriend.jpg', 'Itteh Bitteh Kitteh Boyfriend Disposal Committeh', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Itteh Bitteh Kitteh Boyfriend Disposal Committeh', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_42\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_42\\\";s:117:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_42\']=\\\"echo \\\\\\\"Itteh Bitteh Kitteh Boyfriend Disposal Committeh\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(15, 'root', 'uploads/galleries/root/funny-pictures-cat-has-had-fun.jpg', 'Now DAT', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Now DAT', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_43\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_43\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_43\']=\\\"echo \\\\\\\"Now DAT\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(16, 'root', 'uploads/galleries/root/funny-pictures-kitten-tries-to-stay-neutral.jpg', 'Mah bottom is twyin to take ovuh', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Mah bottom is twyin to take ovuh', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_44\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_44\\\";s:101:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_44\']=\\\"echo \\\\\\\"Mah bottom is twyin to take ovuh\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(17, 'root', 'uploads/galleries/root/funny-pictures-cat-decides-what-to-do.jpg', 'Crap! Here he comes...!', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Crap! Here he comes...!', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_45\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_45\\\";s:92:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_45\']=\\\"echo \\\\\\\"Crap! Here he comes...!\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(18, 'root', 'uploads/galleries/root/funny-pictures-cat-looks-like-boots.jpg', 'GET GLASSES!', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'GET GLASSES!', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_46\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_46\\\";s:81:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_46\']=\\\"echo \\\\\\\"GET GLASSES!\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(19, 'root', 'uploads/galleries/root/funny-pictures-cats-have-war.jpg', 'How wars start.', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'How wars start.', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_47\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_47\\\";s:84:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_47\']=\\\"echo \\\\\\\"How wars start.\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(20, 'root', 'uploads/galleries/root/funny-pictures-cat-is-stuck-in-drawer.jpg', 'Dog can\'t take a joke.', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Dog can\'t take a joke.', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_5\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:39:\\\"string_attach_6769c1410e9a56.94358091_5\\\";s:95:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_5\']=\\\"echo \\\\\\\"Dog can&#039;t take a joke.\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(21, 'root', 'uploads/galleries/root/funny-pictures-kitten-drops-a-nickel-under-couch.jpg', 'I drop a nikel under der.', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'I drop a nikel under der.', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_48\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_48\\\";s:94:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_48\']=\\\"echo \\\\\\\"I drop a nikel under der.\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(22, 'root', 'uploads/galleries/root/funny-pictures-cat-asks-you-for-a-favor.jpg', 'Do me a favor', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'Do me a favor', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_49\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_49\\\";s:82:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_49\']=\\\"echo \\\\\\\"Do me a favor\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(23, 'root', 'uploads/galleries/root/funny-pictures-kitten-fixes-puppy.jpg', 'I fix puppy so now he listen.', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'I fix puppy so now he listen.', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_50\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_50\\\";s:98:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_50\']=\\\"echo \\\\\\\"I fix puppy so now he listen.\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(24, 'root', 'uploads/galleries/root/funny-pictures-cat-is-very-comfortable.jpg', 'i is sooooooooo comfurbals...', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'i is sooooooooo comfurbals...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_51\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_51\\\";s:98:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_51\']=\\\"echo \\\\\\\"i is sooooooooo comfurbals...\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(25, 'root', 'uploads/galleries/root/funny-pictures-kitten-ends-meeting2.jpg', 'This meeting is over.', 1, 1, 1, '', 1, 1, 1734984016, NULL, 0, 'This meeting is over.', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_52\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_52\\\";s:90:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_52\']=\\\"echo \\\\\\\"This meeting is over.\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(26, 'root', 'uploads/galleries/root/funny-pictures-cats-are-in-a-musical.jpg', 'When you\'re a cat ...', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'When you\'re a cat ...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:2:{i:0;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_6\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_7\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:2:{s:39:\\\"string_attach_6769c1410e9a56.94358091_6\\\";s:91:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_6\']=\\\"echo \\\\\\\"When you&#039;re a cat \\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1410e9a56.94358091_7\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_7\']=\\\"echo \\\\\\\"&hellip;\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(27, 'root', 'uploads/galleries/root/funny-pictures-cat-hates-your-tablecloth.jpg', 'No, thanks.', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'No, thanks.', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_53\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_53\\\";s:80:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_53\']=\\\"echo \\\\\\\"No, thanks.\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(28, 'root', 'uploads/galleries/root/funny-pictures-cat-eyes-steak.jpg', 'is it dun yet?', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'is it dun yet?', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_54\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_54\\\";s:83:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_54\']=\\\"echo \\\\\\\"is it dun yet?\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(29, 'root', 'uploads/galleries/root/funny-pictures-basement-cat-has-pink-sheets.jpg', 'PINK??!', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'PINK??!', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_55\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_55\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_55\']=\\\"echo \\\\\\\"PINK??!\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(30, 'root', 'uploads/galleries/root/funny-pictures-kittens-yell-at-eachother.jpg', 'WAIT YOUR TURN!', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'WAIT YOUR TURN!', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_56\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_56\\\";s:84:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_56\']=\\\"echo \\\\\\\"WAIT YOUR TURN!\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(31, 'root', 'uploads/galleries/root/funny-pictures-cat-sits-in-box.jpg', 'Sittin in ur mails', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Sittin in ur mails', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_57\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_57\\\";s:87:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_57\']=\\\"echo \\\\\\\"Sittin in ur mails\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(32, 'root', 'uploads/galleries/root/funny-pictures-cat-has-a-beatle.jpg', 'GEORGE', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'GEORGE', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_58\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_58\\\";s:75:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_58\']=\\\"echo \\\\\\\"GEORGE\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(33, 'root', 'uploads/galleries/root/funny-pictures-cat-sits-on-your-laptop.jpg', 'Rebutting ...', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Rebutting ...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_59\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_59\\\";s:82:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_59\']=\\\"echo \\\\\\\"Rebutting ...\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(34, 'root', 'uploads/galleries/root/funny-pictures-cat-has-a-close-encounter.jpg', 'CLOSE  ENCOUNTRES ...', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'CLOSE  ENCOUNTRES ...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:2:{i:0;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_8\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}i:1;a:5:{i:0;s:39:\\\"string_attach_6769c1410e9a56.94358091_9\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:2:{s:39:\\\"string_attach_6769c1410e9a56.94358091_8\\\";s:91:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_8\']=\\\"echo \\\\\\\"CLOSE &nbsp;ENCOUNTRES \\\\\\\";\\\";\\n\\\";s:39:\\\"string_attach_6769c1410e9a56.94358091_9\\\";s:76:\\\"\\$tpl_funcs[\'string_attach_6769c1410e9a56.94358091_9\']=\\\"echo \\\\\\\"&hellip;\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(35, 'root', 'uploads/galleries/root/funny-pictures-ridiculous-poses-moddles.jpg', 'Ridiculous poses', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Ridiculous poses', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_60\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_60\\\";s:85:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_60\']=\\\"echo \\\\\\\"Ridiculous poses\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(36, 'root', 'uploads/galleries/root/funny-pictures-cat-is-a-doctor.jpg', 'Dr. House cat...', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Dr. House cat...', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_61\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_61\\\";s:85:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_61\']=\\\"echo \\\\\\\"Dr. House cat...\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(37, 'root', 'uploads/galleries/root/funny-pictures-cat-pounces-on-deer.jpg', 'National Geographic', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'National Geographic', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_62\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_62\\\";s:88:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_62\']=\\\"echo \\\\\\\"National Geographic\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(38, 'root', 'uploads/galleries/root/funny-pictures-fish-and-cat-judge-your-outfit.jpg', 'Bad outfit', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Bad outfit', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_63\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_63\\\";s:79:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_63\']=\\\"echo \\\\\\\"Bad outfit\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(39, 'root', 'uploads/galleries/root/funny-pictures-cat-comes-to-save-day.jpg', 'Here I come to save the day!!', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Here I come to save the day!!', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_64\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_64\\\";s:98:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_64\']=\\\"echo \\\\\\\"Here I come to save the day!!\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(40, 'root', 'uploads/galleries/root/funny-pictures-cat-ok-captain-obvious.jpg', 'Okay, Captain Obvious', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Okay, Captain Obvious', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_65\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_65\\\";s:90:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_65\']=\\\"echo \\\\\\\"Okay, Captain Obvious\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(41, 'root', 'uploads/galleries/root/funny-pictures-cat-kermit-was-about.jpg', 'Kermit makes a discovery', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Kermit makes a discovery', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_66\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_66\\\";s:93:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_66\']=\\\"echo \\\\\\\"Kermit makes a discovery\\\\\\\";\\\";\\n\\\";}}\");\n', 1);
+INSERT INTO cms_images (id, cat, url, the_description, allow_rating, allow_comments, allow_trackbacks, notes, submitter, validated, add_date, edit_date, image_views, title, the_description__text_parsed, the_description__source_user) VALUES (42, 'root', 'uploads/galleries/root/funny-pictures-cat-ai-calld-jenny-craig.jpg', 'Jenny Craig', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Jenny Craig', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_67\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_67\\\";s:80:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_67\']=\\\"echo \\\\\\\"Jenny Craig\\\\\\\";\\\";\\n\\\";}}\");\n', 1),
+(43, 'root', 'uploads/galleries/root/funny-pictures-cat-special-delivery.jpg', 'Special Delivery', 1, 1, 1, '', 1, 1, 1734984017, NULL, 0, 'Special Delivery', 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_6769c1344f5ef9.09392756_68\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_6769c1344f5ef9.09392756_68\\\";s:85:\\\"\\$tpl_funcs[\'string_attach_6769c1344f5ef9.09392756_68\']=\\\"echo \\\\\\\"Special Delivery\\\\\\\";\\\";\\n\\\";}}\");\n', 1);
 
 DROP TABLE IF EXISTS cms_import_id_remap;
 CREATE TABLE cms_import_id_remap (
@@ -1647,30 +1687,30 @@ CREATE TABLE cms_import_id_remap (
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_import_parts_done;
 CREATE TABLE cms_import_parts_done (
-    imp_id varchar(255) NOT NULL,
     imp_session varchar(80) NOT NULL,
+    imp_id varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_import_session;
 CREATE TABLE cms_import_session (
-    imp_db_host varchar(80) NOT NULL,
     imp_old_base_dir varchar(255) NOT NULL,
-    imp_session varchar(80) NOT NULL,
     imp_refresh_interval integer NOT NULL,
     imp_hook varchar(80) NOT NULL,
-    imp_db_user varchar(80) NOT NULL,
     imp_db_table_prefix varchar(80) NOT NULL,
+    imp_db_user varchar(80) NOT NULL,
     imp_db_name varchar(80) NOT NULL,
+    imp_db_host varchar(80) NOT NULL,
+    imp_session varchar(80) NOT NULL,
     PRIMARY KEY (imp_session)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_incoming_uploads;
 CREATE TABLE cms_incoming_uploads (
-    i_save_url varchar(255) BINARY NOT NULL,
-    i_orig_filename varchar(255) NOT NULL,
-    i_date_and_time integer unsigned NOT NULL,
-    i_submitter integer NOT NULL,
     id integer unsigned auto_increment NOT NULL,
+    i_submitter integer NOT NULL,
+    i_date_and_time integer unsigned NOT NULL,
+    i_orig_filename varchar(255) NOT NULL,
+    i_save_url varchar(255) BINARY NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_ip_country;
@@ -1686,14 +1726,14 @@ ALTER TABLE cms_ip_country ADD INDEX begin_num (begin_num);
 ALTER TABLE cms_ip_country ADD INDEX end_num (end_num);
 DROP TABLE IF EXISTS cms_leader_board;
 CREATE TABLE cms_leader_board (
-    lb_points integer NOT NULL,
-    lb_date_and_time integer unsigned NOT NULL,
+    lb_leader_board_id integer NOT NULL,
     lb_member integer NOT NULL,
+    lb_date_and_time integer unsigned NOT NULL,
+    lb_points integer NOT NULL,
+    lb_rank integer NOT NULL,
     lb_voting_control real NULL,
     lb_voting_power real NULL,
-    lb_rank integer NOT NULL,
-    lb_leader_board_id integer NOT NULL,
-    PRIMARY KEY (lb_date_and_time, lb_member, lb_leader_board_id)
+    PRIMARY KEY (lb_leader_board_id, lb_member, lb_date_and_time)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_leader_board ADD INDEX lb_date_and_time (lb_date_and_time);
 
@@ -1702,15 +1742,15 @@ ALTER TABLE cms_leader_board ADD INDEX lb_leader_board_id (lb_leader_board_id);
 ALTER TABLE cms_leader_board ADD INDEX lb_rank (lb_leader_board_id,lb_date_and_time,lb_rank);
 DROP TABLE IF EXISTS cms_leader_boards;
 CREATE TABLE cms_leader_boards (
+    lb_calculate_voting_power tinyint(1) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     lb_title varchar(255) NOT NULL,
     lb_creation_date_and_time integer unsigned NOT NULL,
     lb_type varchar(255) NOT NULL,
     lb_member_count integer NOT NULL,
+    lb_include_staff tinyint(1) NOT NULL,
     lb_timeframe varchar(255) NOT NULL,
     lb_rolling tinyint(1) NOT NULL,
-    lb_calculate_voting_power tinyint(1) NOT NULL,
-    lb_include_staff tinyint(1) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_leader_boards_groups;
@@ -1721,17 +1761,17 @@ CREATE TABLE cms_leader_boards_groups (
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 DROP TABLE IF EXISTS cms_locations;
 CREATE TABLE cms_locations (
+    l_longitude real NULL,
+    l_latitude real NULL,
+    id integer unsigned auto_increment NOT NULL,
+    l_place varchar(255) NOT NULL,
     l_type varchar(80) NOT NULL,
     l_continent varchar(80) NOT NULL,
     l_country varchar(80) NOT NULL,
-    l_parent_1 varchar(80) NOT NULL,
-    l_parent_2 varchar(80) NOT NULL,
     l_parent_3 varchar(80) NOT NULL,
     l_population integer NULL,
-    l_latitude real NULL,
-    l_longitude real NULL,
-    id integer unsigned auto_increment NOT NULL,
-    l_place varchar(255) NOT NULL,
+    l_parent_1 varchar(80) NOT NULL,
+    l_parent_2 varchar(80) NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_locations ADD INDEX l_country (l_country);
@@ -1743,29 +1783,29 @@ ALTER TABLE cms_locations ADD INDEX l_longitude (l_longitude);
 ALTER TABLE cms_locations ADD INDEX l_place (l_place(250));
 DROP TABLE IF EXISTS cms_logged_mail_messages;
 CREATE TABLE cms_logged_mail_messages (
-    m_from_email varchar(255) NOT NULL,
-    m_from_name varchar(255) NOT NULL,
-    m_priority tinyint NOT NULL,
-    m_attachments longtext NOT NULL,
-    m_no_cc tinyint(1) NOT NULL,
-    m_as_member integer NOT NULL,
-    m_as_admin tinyint(1) NOT NULL,
-    m_in_html tinyint(1) NOT NULL,
-    m_date_and_time integer unsigned NOT NULL,
-    m_member_id integer NOT NULL,
-    m_url longtext NOT NULL,
-    m_queued tinyint(1) NOT NULL,
-    m_template varchar(80) NOT NULL,
     m_sender_email varchar(255) NOT NULL,
-    m_plain_subject tinyint(1) NOT NULL,
+    m_template varchar(80) NOT NULL,
+    m_queued tinyint(1) NOT NULL,
+    m_url varchar(255) BINARY NOT NULL,
+    m_member_id integer NOT NULL,
+    m_date_and_time integer unsigned NOT NULL,
+    m_in_html tinyint(1) NOT NULL,
+    m_as_admin tinyint(1) NOT NULL,
+    m_as_member integer NOT NULL,
+    m_no_cc tinyint(1) NOT NULL,
+    m_attachments longtext NOT NULL,
+    m_priority tinyint NOT NULL,
+    m_from_name varchar(255) NOT NULL,
+    m_from_email varchar(255) NOT NULL,
     id integer unsigned auto_increment NOT NULL,
     m_subject longtext NOT NULL,
-    m_message longtext NOT NULL,
-    m_message_extended longtext NOT NULL,
-    m_to_email longtext NOT NULL,
-    m_extra_cc_addresses longtext NOT NULL,
-    m_extra_bcc_addresses longtext NOT NULL,
+    m_plain_subject tinyint(1) NOT NULL,
     m_join_time integer unsigned NULL,
+    m_extra_bcc_addresses longtext NOT NULL,
+    m_extra_cc_addresses longtext NOT NULL,
+    m_to_email longtext NOT NULL,
+    m_message_extended longtext NOT NULL,
+    m_message longtext NOT NULL,
     m_to_name longtext NOT NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
@@ -1778,9 +1818,9 @@ ALTER TABLE cms_logged_mail_messages ADD INDEX queued (m_queued);
 ALTER TABLE cms_logged_mail_messages ADD INDEX recentmessages (m_date_and_time);
 DROP TABLE IF EXISTS cms_match_key_messages;
 CREATE TABLE cms_match_key_messages (
-    id integer unsigned auto_increment NOT NULL,
     k_message longtext NOT NULL,
     k_match_key varchar(255) NOT NULL,
+    id integer unsigned auto_increment NOT NULL,
     k_message__text_parsed longtext NOT NULL,
     k_message__source_user integer DEFAULT 1 NOT NULL,
     PRIMARY KEY (id)
@@ -1802,10 +1842,10 @@ ALTER TABLE cms_member_category_access ADD INDEX mcaname (module_the_name,catego
 DROP TABLE IF EXISTS cms_member_page_access;
 CREATE TABLE cms_member_page_access (
     active_until integer unsigned NULL,
-    member_id integer NOT NULL,
     zone_name varchar(80) NOT NULL,
     page_name varchar(80) NOT NULL,
-    PRIMARY KEY (member_id, zone_name, page_name)
+    member_id integer NOT NULL,
+    PRIMARY KEY (zone_name, page_name, member_id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_member_page_access ADD INDEX active_until (active_until);
 

@@ -37,7 +37,7 @@ class Hook_addon_registry_cns_tapatalk
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 8f781bf254601d87f4f6744356d20b70
+        return '11.0.1'; // addon_version_auto_update 89051d469ad5dd93aff7b23fd6741249
     }
 
     /**

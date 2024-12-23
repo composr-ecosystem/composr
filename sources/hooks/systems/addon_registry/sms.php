@@ -42,7 +42,7 @@ class Hook_addon_registry_sms
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 17e40077742a8851f32cdc0eb2839215
+        return '11.0.1'; // addon_version_auto_update 45b7da1f9e12c3a29b2d8ae46b808ab1
     }
 
     /**

@@ -42,7 +42,7 @@ class Hook_addon_registry_page_management
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 74a61f26c8dff644fe5cc198e22e36a3
+        return '11.0.1'; // addon_version_auto_update b7aba86daf6c8464d7452beaa9212515
     }
 
     /**

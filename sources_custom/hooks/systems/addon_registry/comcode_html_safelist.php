@@ -37,7 +37,7 @@ class Hook_addon_registry_comcode_html_safelist
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update c7fc2170d0a5054183acaf941dcdc2d2
+        return '11.0.1'; // addon_version_auto_update 6e1ce69ba4c41a822634658215aa2351
     }
 
     /**

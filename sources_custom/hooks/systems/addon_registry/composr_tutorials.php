@@ -37,7 +37,7 @@ class Hook_addon_registry_composr_tutorials
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 5a1b8913456f0e54ea868c65052bb436
+        return '11.0.1'; // addon_version_auto_update b3475afb15f71fdfd9d2559faa849433
     }
 
     /**

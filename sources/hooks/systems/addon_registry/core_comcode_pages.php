@@ -42,7 +42,7 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 4afb840b6482b81884fd1bb57d233392
+        return '11.0.1'; // addon_version_auto_update 3b18c126eaab8275e7692418e1a77964
     }
 
     /**
