@@ -214,7 +214,7 @@ class Module_newsletter
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 15)) { // LEGACY: 11.beta6
-            $GLOBALS['SITE_DB']->alter_table_field('np_send_details', 'np_send_details', 'SERIAL');
+            $GLOBALS['SITE_DB']->alter_table_field('newsletter_periodic', 'np_send_details', 'SERIAL');
         }
     }
 

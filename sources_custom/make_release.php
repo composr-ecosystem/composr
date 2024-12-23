@@ -109,16 +109,19 @@ function make_installers($skip_file_grab = false)
         generate_svg_sprite('default', true, false);
 
         // Update automatic versions in bundled addons
-        require_code('addons2');
-        $hooks = find_all_hooks('systems', 'addon_registry', false);
-        foreach ($hooks as $addon_name => $hook_dir) {
-            if ($hook_dir == 'sources_custom') {
-                continue;
+        if (post_param_integer('bump_addon_versions', 0) == 1) {
+            require_code('addons2');
+            $hooks = find_all_hooks('systems', 'addon_registry', false);
+            foreach ($hooks as $addon_name => $hook_dir) {
+                if ($hook_dir == 'sources_custom') {
+                    continue;
+                }
+
+                update_addon_auto_version($hook_dir, $addon_name);
             }
 
-            update_addon_auto_version($hook_dir, $addon_name);
+            $out .= '<ul>Updated automatic versions of bundled addons.</ul>';
         }
-        $out .= '<ul>Updated automatic versions of bundled addons.</ul>';
 
         // Get file data array; must be done second-to-last to ensure all updated files are transported to the build
         $out .= '<ul>';
