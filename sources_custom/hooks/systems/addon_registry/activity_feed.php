@@ -37,7 +37,7 @@ class Hook_addon_registry_activity_feed
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 0d204d63c249f73f9230352ee1e17e70
+        return '11.0.1'; // addon_version_auto_update 0d204d63c249f73f9230352ee1e17e70
     }
 
     /**

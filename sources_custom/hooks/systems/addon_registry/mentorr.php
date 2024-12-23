@@ -181,11 +181,12 @@ New users should then be assigned a mentor/friend who will receive an equal amou
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
-        if ($upgrade_from === null) {
+        if ($upgrade_major_minor === null) {
             $GLOBALS['SITE_DB']->create_table('members_mentors', [
                 'id' => '*AUTO',
                 'member_id' => '*MEMBER',
@@ -194,14 +195,14 @@ New users should then be assigned a mentor/friend who will receive an equal amou
             ]);
         }
 
-        if ($upgrade_from !== null && $upgrade_from < 11) { // LEGACY
+        if (($upgrade_major_minor !== null) && ($upgrade_major_minor < 11.0)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('members_mentors', 'date_and_time', 'TIME');
 
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('members_mentors', 'mentor_id', '*MEMBER', 'mentor_member_id');
         }
 
-        if ($upgrade_from === null || $upgrade_from < 11) {
+        if (($upgrade_major_minor === null) || ($upgrade_major_minor < 11.0)) {
             $GLOBALS['SITE_DB']->create_index('members_mentors', 'date_and_time', ['date_and_time']);
         }
     }

@@ -169,12 +169,13 @@ You must first configure Google/YouTube API access:
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
         // If old config option exists from older version of addon, remove it
-        if (get_option('youtube_channel_block_update_time', true) !== null) {
+        if ($upgrade_major_minor !== null) { // LEGACY
             delete_config_option('youtube_channel_block_update_time');
         }
     }

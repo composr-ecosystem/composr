@@ -42,7 +42,7 @@ class Hook_addon_registry_sms
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 45b7da1f9e12c3a29b2d8ae46b808ab1
+        return '11.0.1'; // addon_version_auto_update 45b7da1f9e12c3a29b2d8ae46b808ab1
     }
 
     /**
@@ -167,11 +167,12 @@ class Hook_addon_registry_sms
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
-        if ($upgrade_from === null) {
+        if ($upgrade_major_minor === null) {
             $GLOBALS['SITE_DB']->create_table('sms_log', [
                 'id' => '*AUTO',
                 's_member_id' => 'MEMBER',
@@ -195,7 +196,7 @@ class Hook_addon_registry_sms
             /*$GLOBALS['SITE_DB']->create_index('confirmed_mobiles', 'confirmed_numbers', ['m_confirm_code']);*/
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
+        if (($upgrade_major_minor !== null) && ($upgrade_major_minor < 11.0)) { // LEGACY
             // Database integrity fixes
             $GLOBALS['SITE_DB']->alter_table_field('sms_log', 's_trigger_ip', 'IP', 's_trigger_ip_address');
 

@@ -535,6 +535,13 @@ class Module_admin_make_release
                 false
             ],
             [
+                do_lang_tempcode('BUILD_OPTIONS_INCREMENT_ADDON_VERSIONS'),
+                'bump_addon_versions',
+                ($new_version === $this->get_previous_version()) ? '0' : '1',
+                '',
+                false
+            ],
+            [
                 do_lang_tempcode('BUILD_OPTIONS_SKIP_DATA_FILES'),
                 'skip_data_files',
                 (cms_version_time() > (time() - (60 * 60 * 24))) ? '1' : '0', // Auto-tick if we made a build in the last 24 hours to prevent flooding the API

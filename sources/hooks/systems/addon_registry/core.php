@@ -42,7 +42,7 @@ class Hook_addon_registry_core
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 00eb9607d5af449acf4bc739e51d3854
+        return '11.0.1'; // addon_version_auto_update b0a87cc0bec86d4ce304957d92aa0553
     }
 
     /**
@@ -2008,6 +2008,8 @@ class Hook_addon_registry_core
             'uploads/repimages/index.html',
             'uploads/website_specific/index.html',
             'web.config',
+            '_compiled/.htaccess',
+            '_compiled/index.html',
         ];
     }
 

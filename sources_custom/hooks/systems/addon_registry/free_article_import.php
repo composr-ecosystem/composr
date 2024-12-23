@@ -37,7 +37,7 @@ class Hook_addon_registry_free_article_import
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update b81efd3d161f44153258f3cb7c68a44d
+        return '11.0.1'; // addon_version_auto_update b81efd3d161f44153258f3cb7c68a44d
     }
 
     /**

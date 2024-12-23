@@ -615,9 +615,6 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'temp' => '',
         'safe_mode_temp' => '', // LEGACY
 
-        // Temporary files
-        '_compiled' => '.*',
-
         // Testing platform
         'codechecker.ini' => '_tests/codechecker',
         'checker.ini' => '_tests/codechecker', // LEGACY
@@ -647,6 +644,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'bak' => '.*',
         'old' => '.*',
         'cms' => '.*', // Installers and upgraders
+        'php' => '_compiled/.*',
 
         // Build files
         'class' => '.*',

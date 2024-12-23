@@ -57,7 +57,7 @@ class Hook_addon_registry_catalogues
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update e7437b625c7dd59b98bf7ac47f8fdcba
+        return '11.0.1'; // addon_version_auto_update e7437b625c7dd59b98bf7ac47f8fdcba
     }
 
     /**

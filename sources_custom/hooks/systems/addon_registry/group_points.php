@@ -37,7 +37,7 @@ class Hook_addon_registry_group_points
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 92b1eac5903081cd94bc05602334c13f
+        return '11.0.1'; // addon_version_auto_update 92b1eac5903081cd94bc05602334c13f
     }
 
     /**
@@ -175,11 +175,12 @@ class Hook_addon_registry_group_points
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
-        if ($upgrade_from === null) {
+        if ($upgrade_major_minor === null) {
             $GLOBALS['SITE_DB']->create_table('group_points', [
                 'p_group_id' => '*GROUP',
                 'p_points_one_off' => 'INTEGER',

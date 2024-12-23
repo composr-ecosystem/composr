@@ -42,7 +42,7 @@ class Hook_addon_registry_calendar
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 99a8ca36be3c51fc36e4da2a5a312ef6
+        return '11.0.1'; // addon_version_auto_update 99a8ca36be3c51fc36e4da2a5a312ef6
     }
 
     /**

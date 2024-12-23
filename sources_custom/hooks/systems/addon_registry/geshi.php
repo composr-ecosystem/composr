@@ -37,7 +37,7 @@ class Hook_addon_registry_geshi
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 4924f919fcc9d9093632c07ebd1fa8da
+        return '11.0.1'; // addon_version_auto_update 4924f919fcc9d9093632c07ebd1fa8da
     }
 
     /**

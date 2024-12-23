@@ -12,52 +12,52 @@ Form handlers are managed through special hooks located under [tt]sources_custom
 [title="3"]Hooks: join[/title]
 These hooks are triggered when a member registers an account on your website (note that these are not triggered when a member is added manually; these are explicitly run on registration). These hooks support one method: run. The run method will take the following parameters:
 [list="1"]
-[*]MEMBER [b]$member_id[/b]
+[*]MEMBER [tt]$member_id[/tt]
 The member ID assigned to the new member.
-[*]ID_TEXT [b]$username[/b]
+[*]ID_TEXT [tt]$username[/tt]
 The username chosen by the member.
-[*]string [b]$email_address[/b]
+[*]string [tt]$email_address[/tt]
 The provided e-mail address of the member.
-[*]?int [b]$dob_day, $dob_month, and $dob_year[/b]
+[*]?int [tt]$dob_day, $dob_month, and $dob_year[/tt]
 The member's provided birthday. Relevant values will be null if not specified.
-[*]array [b]$actual_custom_fields[/b]
+[*]array [tt]$actual_custom_fields[/tt]
 A map of custom profile fields filled in by the member, the key being the custom field ID and the value being the specified value by the member.
-[*]string [b]$timezone[/b]
+[*]string [tt]$timezone[/tt]
 The time zone of the member.
-[*]BINARY [b]$validated[/b]
+[*]BINARY [tt]$validated[/tt]
 Whether the member is validated (1) or not (0).
-[*]ID_TEXT [b]$language[/b]
+[*]ID_TEXT [tt]$language[/tt]
 The language code of the member.
-[*]BINARY [b]$allow_emails[/b]
+[*]BINARY [tt]$allow_emails[/tt]
 Whether the member is allowing e-mails from other members (1) or not (0).
-[*]BINARY [b]$allow_emails_from_staff[/b]
+[*]BINARY [tt]$allow_emails_from_staff[/tt]
 Whether the member is allowing mass e-mails from staff (1) or not (0).
-[*]IP [b]$ip_address[/b]
+[*]IP [tt]$ip_address[/tt]
 The IP address of the member.
 [/list]
 
 [title="3"]Hooks: profile_edit[/title]
 These hooks are triggered when a member edits their profile (note these are not triggered when a member is manually edited; these are explicitly triggered when a member or staff edits their profile from the profile page). These hooks support one method: run. The run method will take the following parameters:
 [list="1"]
-[*]MEMBER [b]$member_id_of[/b]
+[*]MEMBER [tt]$member_id_of[/tt]
 The ID of the member that was edited.
-[*]?ID_TEXT [b]$username[/b]
+[*]?ID_TEXT [tt]$username[/tt]
 The new username of the member (null: it is not being changed).
-[*]?string [b]$email_address[/b]
+[*]?string [tt]$email_address[/tt]
 The new e-mail address of the member (null: it is not being changed).
-[*]?int [b]$dob_day, $dob_month, and $dob_year[/b]
+[*]?int [tt]$dob_day, $dob_month, and $dob_year[/tt]
 The member's provided birthday. Null values should be treated as literal null, that-is the member removed it from their profile.
-[*]array [b]$actual_custom_fields[/b]
+[*]array [tt]$actual_custom_fields[/tt]
 A map of custom profile fields filled in by the member, the key being the custom field ID and the value being the specified value by the member. Custom profile fields which are not to be changed from their original value will not be included in the array.
-[*]?string [b]$timezone[/b]
+[*]?string [tt]$timezone[/tt]
 The time zone of the member (null: it is not to be changed).
-[*]?ID_TEXT [b]$language[/b]
+[*]?ID_TEXT [tt]$language[/tt]
 The language code of the member (null or STRING_MAGIC_NULL: it is not to be changed).
-[*]?BINARY [b]$allow_emails[/b]
+[*]?BINARY [tt]$allow_emails[/tt]
 Whether the member is allowing e-mails from other members (1) or not (0) (null or STRING_MAGIC_NULL: it is not to be changed).
-[*]?BINARY [b]$allow_emails_from_staff[/b]
+[*]?BINARY [tt]$allow_emails_from_staff[/tt]
 Whether the member is allowing mass e-mails from staff (1) or not (0) (null or STRING_MAGIC_NULL: it is not to be changed).
-[*]BINARY [b]$validated[/b]
+[*]BINARY [tt]$validated[/tt]
 Whether the member is validated (1) or not (0).
 [/list]
 

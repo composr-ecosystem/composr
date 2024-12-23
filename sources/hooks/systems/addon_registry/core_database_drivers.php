@@ -42,7 +42,7 @@ class Hook_addon_registry_core_database_drivers
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 668a93b2bf56fec233ef5a52fe5f6747
+        return '11.0.1'; // addon_version_auto_update 668a93b2bf56fec233ef5a52fe5f6747
     }
 
     /**

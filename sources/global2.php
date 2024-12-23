@@ -207,7 +207,6 @@ function init__global2()
     if ((running_script('notifications')) && (get_param_integer('time_barrier', null) !== null) && (@filemtime(get_custom_file_base() . '/data_custom/modules/web_notifications/latest.bin') <= get_param_integer('time_barrier')) && (get_param_string('type', '') == 'poller')) {
         prepare_backend_response();
 
-        //  encoding="' . escape_html(get_charset()) . '" not needed due to no data in it
         $output = '<?xml version="1.0" ?' . '><response><result><time>' . strval(time()) . '</time></result></response>';
         echo $output;
 

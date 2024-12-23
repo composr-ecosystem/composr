@@ -42,7 +42,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 9b30538136f95eed5d67549387bd7a52
+        return '11.0.1'; // addon_version_auto_update 9b30538136f95eed5d67549387bd7a52
     }
 
     /**

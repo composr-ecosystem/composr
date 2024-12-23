@@ -57,7 +57,7 @@ class Hook_addon_registry_downloads
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 47d7554ede6ed3156e6956e268f4ea61
+        return '11.0.1'; // addon_version_auto_update 47d7554ede6ed3156e6956e268f4ea61
     }
 
     /**

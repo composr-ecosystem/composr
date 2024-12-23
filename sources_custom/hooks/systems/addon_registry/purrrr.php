@@ -211,15 +211,16 @@ class Hook_addon_registry_purrrr
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
         if (!module_installed('galleries')) {
             return;
         }
 
-        if ($upgrade_from === null) {
+        if ($upgrade_major_minor === null) {
             require_lang('galleries');
             require_code('galleries2');
 

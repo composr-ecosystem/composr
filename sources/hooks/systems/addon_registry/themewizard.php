@@ -42,7 +42,7 @@ class Hook_addon_registry_themewizard
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 10c6f01f40195320764946d939858f82
+        return '11.0.1'; // addon_version_auto_update 10c6f01f40195320764946d939858f82
     }
 
     /**

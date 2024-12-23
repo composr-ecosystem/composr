@@ -578,7 +578,7 @@ function delete_config_option(string $name)
 function rename_config_option(string $old, string $new)
 {
     // Nothing to do if the old config does not exist; we don't want to accidentally delete new if it might already exist
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('config', 'name', ['name' => $old]);
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('config', 'c_name', ['c_name' => $old]);
     if ($test === null) {
         return;
     }

@@ -37,7 +37,7 @@ class Hook_addon_registry_confluence
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 4f9ac7bf399b8969fc94ee40c7470aca
+        return '11.0.1'; // addon_version_auto_update 4f9ac7bf399b8969fc94ee40c7470aca
     }
 
     /**
