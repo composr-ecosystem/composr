@@ -130,7 +130,7 @@ require_code('version2');
 $from_version_dotted = get_version_dotted__from_anything($from_long_dotted_number_with_qualifier); // Canonicalise
 
 require_code('cms_homesite');
-require_code('uploads/website_specific/composr.app/upgrades/make_upgrader.php');
+require_code('cms_homesite_make_upgrader');
 $ret = make_upgrade_get_path($from_version_dotted, $to_version_dotted);
 
 if ($ret[1] !== null) {
