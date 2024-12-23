@@ -150,7 +150,7 @@ class Hook_endpoint_cms_homesite_addon_manifest
                     // Determine the addon version from the download additional details
                     $matches = [];
                     if (preg_match('/^Addon version ([\S]*)/', $additional_details, $matches) != 0) {
-                        $addon_manifest[$addon_id]['version'] = $matches[1];
+                        $addon_manifest[$addon_id]['version'] = strval($matches[1]);
                     }
 
                     // Did the addon name change?

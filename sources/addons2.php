@@ -1793,7 +1793,7 @@ function update_addon_auto_version(string $place, string $name)
 
         // Bump the build number but only if there was previously a hash listed
         if ((trim($current_hash) != '')) {
-            //$build_number++;
+            $build_number++;
         }
     }
 
