@@ -199,11 +199,12 @@ Allows people to specify who referred them when they join your site or other con
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
-        if ($upgrade_from === null) {
+        if ($upgrade_major_minor === null) {
             $GLOBALS['SITE_DB']->create_table('referrer_override', [
                 'o_referring_member' => '*MEMBER',
                 'o_scheme_name' => '*ID_TEXT',
@@ -250,7 +251,7 @@ Allows people to specify who referred them when they join your site or other con
             }
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
+        if (($upgrade_major_minor !== null) && ($upgrade_major_minor < 11.0)) { // LEGACY
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('referrer_override', 'o_referrer', '*MEMBER', 'o_referring_member');
             $GLOBALS['SITE_DB']->alter_table_field('referees_qualified_for', 'q_referee', 'MEMBER', 'q_referred_member');

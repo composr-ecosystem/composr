@@ -205,16 +205,19 @@ Basic setup instructions:
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
-        $GLOBALS['SITE_DB']->create_table('patreon_patrons', [
-            'p_member_id' => '*MEMBER',
-            'p_tier' => '*ID_TEXT',
-            'p_id' => 'ID_TEXT',
-            'p_monthly' => 'INTEGER',
-            'p_name' => 'SHORT_TEXT',
-        ]);
+        if ($upgrade_major_minor === null) {
+            $GLOBALS['SITE_DB']->create_table('patreon_patrons', [
+                'p_member_id' => '*MEMBER',
+                'p_tier' => '*ID_TEXT',
+                'p_id' => 'ID_TEXT',
+                'p_monthly' => 'INTEGER',
+                'p_name' => 'SHORT_TEXT',
+            ]);
+        }
     }
 }

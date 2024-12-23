@@ -1303,6 +1303,7 @@ function find_addon_effective_md5(string $addon_name, bool $exclude_registry = f
 function upgrade_addon_soft(string $addon_name) : int
 {
     require_code('files2');
+    require_code('version2');
     require_all_core_cms_code();
 
     $rows = $GLOBALS['SITE_DB']->query_select('addons', ['*'], ['addon_name' => $addon_name], '', 1);
@@ -1311,6 +1312,16 @@ function upgrade_addon_soft(string $addon_name) : int
     }
 
     $upgrade_from = $rows[0]['addon_version'];
+    $upgrade_from_bits = explode('.', get_version_dotted__from_anything($upgrade_from), 3);
+    $upgrade_minor = 0;
+    $upgrade_patch = 0;
+    if (isset($upgrade_from_bits[1]) && is_numeric($upgrade_from_bits[1])) {
+        $upgrade_minor = intval($upgrade_from_bits[1]);
+    }
+    if (isset($upgrade_from_bits[2]) && is_numeric($upgrade_from_bits[2])) {
+        $upgrade_patch = intval($upgrade_from_bits[2]);
+    }
+    $upgrade_major_minor = floatval(strval($upgrade_from_bits[0]) . '.' . strval($upgrade_minor));
 
     if (!hook_exists('systems', 'addon_registry', $addon_name)) {
         return 0;
@@ -1337,7 +1348,7 @@ function upgrade_addon_soft(string $addon_name) : int
     if (floatval($upgrade_from) < floatval($disk_version)) {
         if (method_exists($ob, 'install')) {
             $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-            $ob->install($upgrade_from);
+            $ob->install($upgrade_major_minor, $upgrade_patch);
             $ret = 1;
             cms_set_time_limit($old);
         }

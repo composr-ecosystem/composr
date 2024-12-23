@@ -160,11 +160,12 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
     /**
      * Install the addon.
      *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
      */
-    public function install(?int $upgrade_from = null)
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
-        if ($upgrade_from === null) {
+        if ($upgrade_major_minor === null) {
             // Table for holding the IDs of devices signed up for notifications
             $GLOBALS['SITE_DB']->create_table('device_token_details', [
                 'id' => '*AUTO',
