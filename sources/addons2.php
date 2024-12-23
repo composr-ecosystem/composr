@@ -1173,48 +1173,13 @@ function find_updated_addons() : array
 
     $updated_addons = [];
     foreach ($addon_data['response_data'] as $i => $addon_manifest) {
-        $found = false;
-
         // Not actually known to server, so there is no way to check if it needs updating
         if ($addon_manifest['download_id'] === null) {
             continue;
         }
 
-        foreach ($available_addons as $available_addon) {
-            if ($available_addon['name'] != $addon_manifest['name']) {
-                continue;
-            }
-
-            $found = true;
-
-            // Can we check if it is updated by version?
-            if ($addon_manifest['version'] !== null) {
-                if (version_compare($addon_manifest['version'], $available_addon['version']) > 0) {
-                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
-                }
-                break;
-            }
-
-            // Can we check by update time?
-            if ($addon_manifest['updated'] !== null) {
-                if ($addon_manifest['updated'] > $available_addon['mtime']) {
-                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
-                }
-                break;
-            }
-
-            // Can we check by TAR hash?
-            if ($addon_manifest['hash'] !== null) {
-                if ($addon_manifest['hash'] != $available_addon['hash']) {
-                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
-                }
-                break;
-            }
-            break;
-        }
-
-        // Installed but not located in imports/addons? We can still compare the installed addon to the manifest (except we cannot do a hash check)
-        if ((!$found) && (addon_installed($addon_manifest['name'], false, false))) {
+        // We should prioritise the installed addon over TAR files if it is installed
+        if (addon_installed($addon_manifest['name'], false, false)) {
             $info = read_addon_info($addon_manifest['name']);
 
             // Can we check if it is updated by version?
@@ -1231,6 +1196,37 @@ function find_updated_addons() : array
                     $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
                 }
                 continue;
+            }
+        } else {
+            foreach ($available_addons as $available_addon) {
+                if ($available_addon['name'] != $addon_manifest['name']) {
+                    continue;
+                }
+
+                // Can we check if it is updated by version?
+                if ($addon_manifest['version'] !== null) {
+                    if (version_compare($addon_manifest['version'], $available_addon['version']) > 0) {
+                        $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                    }
+                    break;
+                }
+
+                // Can we check by update time?
+                if ($addon_manifest['updated'] !== null) {
+                    if ($addon_manifest['updated'] > $available_addon['mtime']) {
+                        $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                    }
+                    break;
+                }
+
+                // Can we check by TAR hash?
+                if ($addon_manifest['hash'] !== null) {
+                    if ($addon_manifest['hash'] != $available_addon['hash']) {
+                        $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                    }
+                    break;
+                }
+                break;
             }
         }
     }

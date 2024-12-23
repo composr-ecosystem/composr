@@ -400,7 +400,7 @@ class Module_admin_addons
             if ($updated_addons != '') {
                 $updated_addons .= ',';
             }
-            $updated_addons .= strval($updated_addon[0]);
+            $updated_addons .= strval($updated_addon);
         }
 
         // Actually caching is very detrimental for the speed of this page!
