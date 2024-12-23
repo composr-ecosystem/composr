@@ -95,8 +95,6 @@ class Hook_endpoint_cms_homesite_addon_manifest
                 $name_remap[$addon_name_titled] = $addon_name;
                 $query = 'SELECT d.id,url,name,edit_date,add_date,additional_details FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name_titled) . ' AND (' . $filter_sql . ')';
                 $result = $GLOBALS['SITE_DB']->query($query, null, 0, false, true, ['name' => 'SHORT_TRANS', 'additional_details' => 'LONG_TRANS__COMCODE']);
-                $name_titled = get_translated_text($result[0]['name']);
-                $additional_details = get_translated_text($result[0]['additional_details']);
                 $addon_id = intval(substr($x, 6));
 
                 // Prepare addon entry in our output
@@ -118,6 +116,8 @@ class Hook_endpoint_cms_homesite_addon_manifest
 
                 // Populate our manifest with what we found in the database (if we found anything)
                 if (array_key_exists(0, $result)) {
+                    $name_titled = get_translated_text($result[0]['name']);
+                    $additional_details = get_translated_text($result[0]['additional_details']);
                     $addon_manifest[$addon_id]['download_id'] = $result[0]['id'];
                     $addon_manifest[$addon_id]['download_url'] = $result[0]['url'];
 
